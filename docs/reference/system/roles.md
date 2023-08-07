@@ -65,6 +65,8 @@ List all roles that exist in Directus.
 
 `SEARCH /roles`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -80,15 +82,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, readRoles } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readRoles({
-		fields: ['*'],
-	})
+	readRoles( query_object )
 );
 ```
 
@@ -136,8 +135,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, readRoles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -175,15 +173,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRole } from '@directus/sdk/rest';
+import { createDirectus, rest, readRole } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readRole('role_id', {
-		fields: ['*'],
-	})
+	readRole( role_id, query_object )
 );
 ```
 
@@ -226,8 +221,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRole } from '@directus/sdk/rest';
+import { createDirectus, rest, readRole } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -251,16 +245,7 @@ Create a new role.
 <template #rest>
 
 `POST /roles`
-
-```json
-{
-	"role_field_1": "value_1",
-	"role_field_2": "value_2",
-	"role_field_3": "value_3",
-	"role_field_4": "value_4",
-	"role_field_5": "value_5"
-}
-```
+Provide a [role object](#the-role-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -277,19 +262,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createRole } from '@directus/sdk/rest';
+import { createDirectus, rest, createRole } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createRole({
-		role_field_1: 'value_1',
-		role_field_2: 'value_2',
-		role_field_3: 'value_3',
-		role_field_4: 'value_4',
-		role_field_5: 'value_5',
-	})
+	createRole( role_object )
 );
 ```
 
@@ -348,8 +326,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createRole } from '@directus/sdk/rest';
+import { createDirectus, rest, createRole } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -377,25 +354,7 @@ Create multiple new roles.
 <template #rest>
 
 `POST /roles`
-
-```json
-[
-	{
-		"role_object_1_field_1": "value_1",
-		"role_object_1_field_2": "value_2",
-		"role_object_1_field_3": "value_3",
-		"role_object_1_field_4": "value_4",
-		"role_object_1_field_5": "value_5"
-	},
-	{
-		"role_object_2_field_1": "value_6",
-		"role_object_2_field_2": "value_7",
-		"role_object_2_field_3": "value_8",
-		"role_object_2_field_4": "value_9",
-		"role_object_2_field_5": "value_10"
-	}
-]
-```
+Provide an array of [role objects](#the-role-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -412,28 +371,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, createRoles } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createRoles([
-		{
-			role_object_1_field_1: 'value_1',
-			role_object_1_field_2: 'value_2',
-			role_object_1_field_3: 'value_3',
-			role_object_1_field_4: 'value_4',
-			role_object_1_field_5: 'value_5',
-		},
-		{
-			role_object_2_field_1: 'value_6',
-			role_object_2_field_2: 'value_7',
-			role_object_2_field_3: 'value_8',
-			role_object_2_field_4: 'value_9',
-			role_object_2_field_5: 'value_10',
-		},
-	])
+	createRoles( role_object_array )
 );
 ```
 
@@ -504,8 +447,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, createRoles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -542,12 +484,7 @@ Update an existing role.
 <template #rest>
 
 `PATCH /roles/:id`
-
-```json
-{
-	"roles_object_field": "value_1"
-}
-```
+Provide a partial [role object](#the-role-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -564,15 +501,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateRole } from '@directus/sdk/rest';
+import { createDirectus, rest, updateRole } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateRole('role_id', {
-		role_field: 'value',
-	})
+	updateRole( role_id, partial_role_object )
 );
 ```
 
@@ -625,8 +559,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateRole } from '@directus/sdk/rest';
+import { createDirectus, rest, updateRole } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -653,10 +586,8 @@ Update multiple existing roles.
 
 ```json
 {
-	"keys": ["role_1_key", "role_2_key"],
-	"data": {
-		"role_object_field": "value_1"
-	}
+	"keys": role_id_array,
+	"data": partial_role_object 
 }
 ```
 
@@ -675,15 +606,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, updateRoles } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateRoles(['role_1_id', 'role_2_id'], {
-		field: 'value',
-	})
+	updateRoles( role_id_array, partial_role_object )
 );
 ```
 
@@ -746,8 +674,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, updateRoles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -787,12 +714,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteRole } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteRole } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteRole('role_id'));
+const result = await client.request(deleteRole( role_id ));
 ```
 
 </template>
@@ -826,8 +752,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteRole } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteRole } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -848,9 +773,7 @@ Delete multiple existing roles.
 
 `DELETE /roles`
 
-```json
-["role_1_key", "role_2_key"]
-```
+Provide an array of role ids as the body of your request.
 
 </template>
 <template #graphql>
@@ -867,12 +790,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteRoles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteRoles(['role_1_id', 'role_2_id']));
+const result = await client.request(deleteRoles( role_id_array ));
 ```
 
 </template>
@@ -914,8 +836,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteRoles } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteRoles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
