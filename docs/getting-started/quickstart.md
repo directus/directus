@@ -7,9 +7,9 @@ readTime: 7 min read
 
 # Quickstart Guide
 
-> This quickstart guide is designed to get you up and running with a Directus Project in a snap. Along the way, you will
-> better understand what Directus is, setup your Directus Cloud Account, get a _hands-on introduction_ to the App and
-> API, and find more resources to deep-dive into.
+> This quickstart guide is designed to get you up and running with a Directus Project in a few minutes. Along the way, you will
+> better understand what Directus is, setup your Directus project locally or with Directus Cloud, and get a_hands-on introduction to the App and
+> API.
 
 ## 1. Create a Project
 
