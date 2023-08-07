@@ -219,8 +219,11 @@ const client = createDirectus('https://directus.example.com').with(authenticatio
 // refresh using the authentication composable
 const result = await client.refresh();
 
-// refresh http request
-const result = await client.request(refresh('refresh_token'));
+// refresh http request using a cookie
+const result = await client.request(refresh('cookie'));
+
+// refresh http request using json
+const result = await client.request(refresh('json', 'refresh_token'));
 ```
 
 </template>
@@ -288,8 +291,11 @@ const client = createDirectus('https://directus.example.com').with(authenticatio
 // refresh using the authentication composable
 const result = await client.refresh();
 
-// refresh http request
-const result = await client.request(refresh('gmPd...8wuB'));
+// refresh http request using a cookie
+const result = await client.request(refresh('cookie'));
+
+// refresh http request using json
+const result = await client.request(refresh('json', 'gmPd...8wuB'));
 ```
 
 </template>
