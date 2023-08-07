@@ -36,19 +36,25 @@ export class VmManager {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
 
+		let code = await readFile(extensionPath, 'utf-8')
+
 		const isolate: Isolate = new ivm.Isolate({ inspector: true, memoryLimit: isolateSizeMb });
 		this.createInspector(isolate.createInspectorSession())
 		const context = await isolate.createContext({ inspector: true });
 
 		this.prepareGeneralContext(context, extension)
 
+		let runExtensionCode;
 
 		if (extension.type === "endpoint") {
 			this.defineEndpoint.prepareContext(context, extension)
+			runExtensionCode = `import ext from 'extension.js'; defineEndpoint(ext)`
 		} else if (extension.type === "hook") {
 			this.defineHook.prepareContext(context, extension)
+			runExtensionCode = `import ext from 'extension.js'; defineHook(ext)`
 		} else if (extension.type === "operation") {
 			this.defineOperation.prepareContext(context, extension)
+			runExtensionCode = `import ext from 'extension.js'; defineOperationApi(ext)`
 		} else if (extension.type === "bundle") {
 			let hasHook = false;
 			let hasOperation = false;
@@ -63,15 +69,36 @@ export class VmManager {
 					hasEndpoint = true;
 				}
 			})
+			runExtensionCode = `import {endpoints, hooks, operations} from 'extension.js';`
 
-			if (hasHook) this.defineHook.prepareContext(context, extension)
-			if (hasOperation) this.defineOperation.prepareContext(context, extension)
-			if (hasEndpoint) this.defineEndpoint.prepareContext(context, extension)
+			if (hasHook) {
+				this.defineHook.prepareContext(context, extension)
+				runExtensionCode += `for(let hook of hooks) { defineHook(hook.config) }`
+			}
+			if (hasOperation) {
+				this.defineOperation.prepareContext(context, extension)
+				runExtensionCode += `for(let operation of operations) { defineOperationApi(operation.config) }`
+
+			}
+			if (hasEndpoint) {
+				this.defineEndpoint.prepareContext(context, extension)
+				runExtensionCode += `for(let endpoint of endpoints) { defineEndpoint(endpoint.config) }`
+			}
+
+		} else {
+			throw new Error("Unknown extension type")
 		}
 
-		let code = await readFile(extensionPath, 'utf-8')
+		const runModule = await isolate.compileModule(runExtensionCode)
 
-		context.eval(code, {
+		await runModule.instantiate(context, (specifier: string) => {
+			if (specifier === 'extension.js') {
+				return isolate.compileModule(code)
+			}
+			throw new Error(`Cannot find module ${specifier}`)
+		})
+
+		runModule.evaluate({
 			timeout: scriptTimeoutMs
 		}).then(() => {
 			console.log('Script completed successfully');
