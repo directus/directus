@@ -68,6 +68,8 @@ to a collection that the current user doesn't have access to are stripped out.
 
 `SEARCH /revisions`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -83,15 +85,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevisions } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevisions } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readRevisions({
-		fields: ['*'],
-	})
+	readRevisions( query_object )
 );
 ```
 
@@ -137,8 +136,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevisions } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevisions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -178,15 +176,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevision } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevision } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readRevision('revision_id', {
-		fields: ['*'],
-	})
+	readRevision( revision_id, query_object )
 );
 ```
 
@@ -227,8 +222,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevision } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevision } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
