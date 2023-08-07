@@ -180,12 +180,21 @@
 		<slot v-else-if="itemCount === 0" name="no-items" />
 
 		<drawer-item
+			ref="itemDrawer"
 			v-model:active="sideDrawerOpenWritable"
 			:collection="collection"
 			:primary-key="sideDrawerItemKey"
 			@input="saveItem"
-		/>
-
+		>
+			<template #actions>
+				<v-button v-tooltip.bottom="t('back')" icon rounded @click="advanceItem(-1)" :disabled="backDisabled">
+					<v-icon name="navigate_before" />
+				</v-button>
+				<v-button v-tooltip.bottom="t('next')" icon rounded @click="advanceItem(1)" :disabled="nextDisabled">
+					<v-icon name="navigate_next" />
+				</v-button>
+			</template>
+		</drawer-item>
 	</div>
 </template>
 
@@ -211,6 +220,7 @@ import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import { nextTick } from 'vue';
 
 interface Props {
 	collection: string;
@@ -262,15 +272,45 @@ const props = withDefaults(defineProps<Props>(), {
 	onAlignChange: () => undefined,
 });
 
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields', 'update:sideDrawerOpen']);
+const emit = defineEmits([
+	'update:selection',
+	'update:tableHeaders',
+	'update:limit',
+	'update:fields',
+	'update:sideDrawerOpen',
+	'update:sideDrawerItemKey',
+]);
 
 const { t } = useI18n();
-const { collection, sideDrawerItemKey } = toRefs(props);
+const { collection } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
 const limitWritable = useSync(props, 'limit', emit);
 const sideDrawerOpenWritable = useSync(props, 'sideDrawerOpen', emit);
+const sideDrawerItemKey = useSync(props, 'sideDrawerItemKey', emit);
+const itemDrawer = ref();
+const interceptPageLoad = ref<boolean>(false);
+const newItemIndex = ref<number>(0);
+const lastVisitedRow = computed<number>(() => {
+	return props.items.findIndex((item) => item[props.primaryKeyField!.field] === sideDrawerItemKey.value);
+});
+const backDisabled = computed<boolean>(() => {
+	return lastVisitedRow.value === 0 && props.page === 1;
+});
+const nextDisabled = computed<boolean>(() => {
+	return lastVisitedRow.value === props.items.length - 1 && props.page === props.totalPages;
+});
+
+watch(lastVisitedRow, (value) => {
+	// Remove visited class from all rows
+	const rows = document.querySelectorAll('main > div > .v-table tr.visited');
+	rows.forEach((row) => row.classList.remove('visited'));
+	if (value !== -1) {
+		const row = document.querySelector(`main > div > .v-table tr:not(.fixed):nth-child(${value + 1})`);
+		row?.classList.add('visited');
+	}
+});
 
 async function saveItem(values: Record<string, any>): Promise<void> {
 	try {
@@ -281,6 +321,43 @@ async function saveItem(values: Record<string, any>): Promise<void> {
 
 	await props.refresh();
 }
+function advanceItem(amount: number) {
+	let index = lastVisitedRow.value;
+	// console.log('[Advance] Index = ', index, 'key = ', sideDrawerItemKey.value);
+	if (index === -1) {
+		return;
+	}
+	index += amount;
+	if (index < 0) {
+		if (props.page > 1) {
+			interceptPageLoad.value = true;
+			newItemIndex.value = props.limit - 1;
+			props.toPage(props.page - 1);
+			return;
+		} else {
+			index = 0;
+		}
+	} else if (index >= props.limit) {
+		if (props.page < props.totalPages) {
+			interceptPageLoad.value = true;
+			newItemIndex.value = 0;
+			props.toPage(props.page + 1);
+			return;
+		} else {
+			index = props.limit - 1;
+		}
+	}
+	const item = props.items[index];
+	const newKey = item[props.primaryKeyField!.field];
+	// console.log('[Advance] Limit = ', props.limit, 'Page = ', props.page, '/ ', props.totalPages);
+	// console.log('[Normal] New index = ', index, 'new key = ', newKey);
+	if (sideDrawerItemKey.value !== newKey) {
+		sideDrawerItemKey.value = newKey;
+		nextTick(async () => {
+			await itemDrawer.value.fetchItem();
+		});
+	}
+}
 
 const mainElement = inject<Ref<Element | undefined>>('main-element');
 
@@ -289,6 +366,25 @@ const table = ref<ComponentPublicInstance>();
 watch(
 	() => props.page,
 	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+);
+
+watch(
+	() => props.items,
+	() => {
+		if (interceptPageLoad.value) {
+			interceptPageLoad.value = false;
+			const item = props.items[newItemIndex.value];
+			const newKey = item[props.primaryKeyField!.field];
+			// console.log('[Watcher] Limit = ', props.limit, 'Page = ', props.page, '/ ', props.totalPages);
+			// console.log('[Watcher] New index = ', newItemIndex.value, 'new key = ', newKey);
+			if (sideDrawerItemKey.value !== newKey) {
+				sideDrawerItemKey.value = newKey;
+				nextTick(async () => {
+					await itemDrawer.value.fetchItem();
+				});
+			}
+		}
+	}
 );
 
 useShortcut(
@@ -344,7 +440,7 @@ function removeField(fieldKey: string) {
  * Copies the values present in the given column to the clipboard
  * @param fieldKey The name of the field
  */
- async function copyValues(fieldKey: string) {
+async function copyValues(fieldKey: string) {
 	function fallbackCopy(text: string) {
 		const textArea = document.createElement('textarea');
 		textArea.value = text;
@@ -396,6 +492,13 @@ function removeField(fieldKey: string) {
 
 		tr {
 			margin-right: var(--content-padding);
+		}
+
+		tr.visited > td {
+			background-color: var(--primary-25);
+		}
+		tr.visited:hover > td {
+			background-color: var(--primary-25) !important;
 		}
 	}
 }

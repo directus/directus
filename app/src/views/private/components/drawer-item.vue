@@ -138,8 +138,13 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField } =
 	useRelation();
 
-const { internalEdits, loading, initialValues } = useItem();
+const { internalEdits, loading, initialValues, fetchItem } = useItem();
 const { save, cancel } = useActions();
+defineExpose({
+	save,
+	cancel,
+	fetchItem
+});
 
 const { collection } = toRefs(props);
 
