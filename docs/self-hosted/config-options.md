@@ -843,7 +843,7 @@ AUTH_FACEBOOK_LABEL="Facebook"
 | Variable                      | Description                                                                                                      | Default Value |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
 | `FLOWS_ENV_ALLOW_LIST`        | A comma-separated list of environment variables.                                                                 | `false`       |
-| `FLOWS_RUN_SCRIPT_MAX_MEMORY` | The maximum amount of memory the 'Run Script'-Operation can allocate in megabytes. A minimum of 8mb is required. | `32`          |
+| `FLOWS_RUN_SCRIPT_MAX_MEMORY` | The maximum amount of memory the 'Run Script'-Operation can allocate in megabytes. A minimum of 8MB is required. | `32`          |
 | `FLOWS_RUN_SCRIPT_TIMEOUT`    | The maximum duration the 'Run Script'-Operation can run for in milliseconds.                                     | `10000`       |
 
 ::: tip Usage in Flows Run Script Operation
