@@ -954,7 +954,7 @@ importers:
         specifier: 1.0.0-alpha.75
         version: 1.0.0-alpha.75(@algolia/client-search@4.17.0)
       vitepress-plugin-tabs:
-        specifier: ^0.3.0
+        specifier: 0.3.0
         version: 0.3.0(vitepress@1.0.0-alpha.75)(vue@3.3.4)
       vue:
         specifier: 3.3.4
