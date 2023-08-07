@@ -64,6 +64,8 @@ List all notifications that exist in Directus.
 
 `SEARCH /notifications`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -79,12 +81,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, readNotifications } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readNotifications(query));
+const result = await client.request(readNotifications( query_object ));
 ```
 
 </template>
@@ -129,8 +130,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, readNotifications } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -170,12 +170,13 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, readNotification } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readNotification('notification_id', query));
+const result = await client.request(
+	readNotification( notification_id, query_object )
+);
 ```
 
 </template>
@@ -215,8 +216,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, readNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -241,12 +241,7 @@ Create a new notification.
 
 `POST /notifications`
 
-```json
-{
-	"notification_object_field_1": "value_1",
-	"notification_object_field_2": "value_2"
-}
-```
+Provide an [notification object](#the-notification-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -263,17 +258,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, createNotification } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createNotification({
-		notification_field: 'value_1',
-		notification_field_2: 'value_2',
-		notification_field_3: 'value_3',
-	})
+	createNotification( notification_object )
 );
 ```
 
@@ -324,8 +314,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, createNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -352,20 +341,7 @@ Create multiple new notifications.
 
 `POST /notifications`
 
-```json
-[
-	{
-		"notification_field": "value_1",
-		"notification_field_2": "value_2",
-		"notification_field_3": "value_3"
-	},
-	{
-		"notification_2_field": "value_3",
-		"notification_2_field_2": "value_4",
-		"notification_2_field_3": "value_5"
-	}
-]
-```
+Provide an array of [notification objects](#the-notification-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -382,24 +358,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, createNotifications } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createNotifications([
-		{
-			notification_field: 'value_1',
-			notification_field_2: 'value_2',
-			notification_field_3: 'value_3',
-		},
-		{
-			notification_2_field: 'value_4',
-			notification_2_field_2: 'value_5',
-			notification_2_field_3: 'value_6',
-		},
-	])
+	createNotifications( notifcation_object_array )
 );
 ```
 
@@ -471,8 +435,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, createNotifications } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -513,11 +476,8 @@ notification email to be sent.
 
 `PATCH /notifications/:id`
 
-```json
-{
-	"notification_object_field": "value_1"
-}
-```
+Provide a partial [notification object](#the-notification-object) as the body of your request.
+
 
 </template>
 <template #graphql>
@@ -534,15 +494,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, updateNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateNotification('notification_id', {
-		field: 'value',
-	})
+	updateNotification( notification_id, partial_notification_object )
 );
 ```
 
@@ -592,8 +549,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, updateNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -620,10 +576,8 @@ Update multiple existing notifications.
 
 ```json
 {
-	"keys": ["notification_key_1", "notification_key_2"],
-	"data": {
-		"notification_object_field": "field_1"
-	}
+	"keys": notification_id_array,
+	"data": partial_notification_object 
 }
 ```
 
@@ -642,15 +596,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, updateNotifications } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
-		field: 'value',
-	})
+	updateNotifications( notification_id_array, partial_notification_object )
 );
 ```
 
@@ -707,8 +658,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, updateNotifications } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -748,12 +698,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteNotification('notification_1_id'));
+const result = await client.request(deleteNotification( notification_id ));
 ```
 
 </template>
@@ -787,8 +736,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteNotification } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -807,10 +755,9 @@ Delete multiple existing notifications.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-```json
-// DELETE /notifications
-["notification_1_id", "notification_2_id", "notification_3_id"]
-```
+`DELETE /notifications`
+
+Provide an array of notification ids as your request body. 
 
 </template>
 <template #graphql>
@@ -827,13 +774,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteNotifications } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	deleteNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'])
+	deleteNotifications( notification_id_array )
 );
 ```
 
@@ -876,8 +822,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteNotifications } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteNotifications } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
