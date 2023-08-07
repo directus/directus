@@ -91,6 +91,8 @@ other than the current user's role won't be returned.
 
 `SEARCH /presets`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -106,15 +108,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPresets } from '@directus/sdk/rest';
+import { createDirectus, rest, readPresets } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readPresets({
-		fields: ['*'],
-	})
+	readPresets( object_field )
 );
 ```
 
@@ -159,8 +158,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPresets } from '@directus/sdk/rest';
+import { createDirectus, rest, readPresets } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -200,15 +198,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPreset } from '@directus/sdk/rest';
+import { createDirectus, rest, readPreset } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readPreset('preset_id', {
-		fields: ['*'],
-	})
+	readPreset( preset_id, query_object )
 );
 ```
 
@@ -248,8 +243,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPreset } from '@directus/sdk/rest';
+import { createDirectus, rest, readPreset } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -274,13 +268,7 @@ Create a new preset.
 
 `POST /presets`
 
-```json
-{
-	"preset_field_1": "value_1",
-	"preset_field_2": "value_2",
-	"preset_field_3": "value_3"
-}
-```
+Provide a [preset object](#the-preset-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -297,16 +285,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPreset } from '@directus/sdk/rest';
+import { createDirectus, rest, createPreset } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createPreset({
-		preset_field_1: 'value_1',
-		preset_field_2: 'value_2',
-	})
+	createPreset( presets_object )
 );
 ```
 
@@ -358,8 +342,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPreset } from '@directus/sdk/rest';
+import { createDirectus, rest, createPreset } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -385,20 +368,7 @@ Create multiple new presets.
 
 `POST /presets`
 
-```json
-[
-	{
-		"preset_1_field_1": "value_1",
-		"preset_1_field_2": "value_2",
-		"preset_1_field_3": "value_3"
-	},
-	{
-		"preset_2_field_1": "value_1",
-		"preset_2_field_2": "value_2",
-		"preset_2_field_3": "value_3"
-	}
-]
-```
+Provide an array of [presets objects](#the-presets-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -415,22 +385,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPresets } from '@directus/sdk/rest';
+import { createDirectus, rest, createPresets } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createPresets([
-		{
-			preset_1_field_1: 'value_1',
-			preset_1_field_2: 'value_2',
-		},
-		{
-			preset_2_field_1: 'value_3',
-			preset_2_field_2: 'value_4',
-		},
-	])
+	createPresets( presets_object_array )
 );
 ```
 
@@ -500,8 +460,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPresets } from '@directus/sdk/rest';
+import { createDirectus, rest, createPresets } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -533,11 +492,7 @@ Update an existing preset.
 
 `PATCH /presets/:id`
 
-```json
-{
-	"preset_object_field": "value_1"
-}
-```
+Provide a partial [preset object](#the-preset-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -554,15 +509,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePresets } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePresets } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updatePreset('preset_id', {
-		field: 'value',
-	})
+	updatePreset( preset_id, partial_preset_object)
 );
 ```
 
@@ -612,8 +564,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePreset } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePreset } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -640,10 +591,8 @@ Update multiple existing presets.
 
 ```json
 {
-	"keys": ["preset_1_key", "preset_2_key"],
-	"data": {
-		"preset_object_field": "value_1"
-	}
+	"keys": preset_id_array,
+	"data": partial_preset_object 
 }
 ```
 
@@ -662,15 +611,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePresets } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePresets } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updatePresets(['preset_1_id', 'preset_2_id'], {
-		field: 'value',
-	})
+	updatePresets( preset_id_array, partial_preset_object )
 );
 ```
 
@@ -727,8 +673,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePresets } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePresets } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -768,12 +713,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePreset } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePreset } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePreset('preset_id'));
+const result = await client.request(deletePreset( preset_id ));
 ```
 
 </template>
@@ -807,8 +751,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePreset } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePreset } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -829,9 +772,7 @@ Delete multiple existing presets.
 
 `DELETE /presets`
 
-```json
-["preset_1_key", "preset_2_key", "preset_3_key"]
-```
+Provide an array of preset ids as the body of your request.
 
 </template>
 <template #graphql>
@@ -848,12 +789,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePresets } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePresets } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePreset(['preset_1_id', 'preset_2_id']));
+const result = await client.request(deletePreset( preset_id_array ));
 ```
 
 </template>
@@ -895,12 +835,11 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePresets } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePresets } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deletePreset(['24', '48']));
+const result = await client.request(deletePresets(['24', '48']));
 ```
 
 </template>
