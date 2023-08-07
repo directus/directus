@@ -22,13 +22,19 @@ export class DefineOperationVMFunction extends VMFunction {
 				console.log("register operation", id)
 				const flowManager = getFlowManager();
 
-				flowManager.addOperation(id, (options, context) => {
+				flowManager.addOperation(id, async (options, context) => {
 					console.log('operation', id, options)
 
-					handler.apply(null, [
+					const result = await handler.apply(null, [
 						new ivm.ExternalCopy(options).copyInto(),
 						new ivm.ExternalCopy({}).copyInto(),
 					])
+
+					if (result instanceof Error) {
+						throw result
+					}
+
+					return result
 				})
 			})
 		])
