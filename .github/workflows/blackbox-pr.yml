@@ -13,7 +13,7 @@ on:
       - .github/workflows/blackbox-pr.yml
 
 concurrency:
-  group: blackbox-pr-${{ github.ref }}
+  group: blackbox-pr-mysql2-${{ github.ref }}
   cancel-in-progress: true
 
 env:
