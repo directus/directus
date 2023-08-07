@@ -176,3 +176,39 @@ test('Resolves when asynchronous function is valid', async () => {
 		} as any)
 	).resolves.toEqual({ result: 'Hello, I ran asynchronously' });
 });
+
+test('Rejects when wrong unit is passed to max memory config', async () => {
+	const testCode = `
+		module.exports = async function (data) {
+			return 1+1;
+		};
+	`;
+
+	await expect(
+		config.handler({ code: testCode }, {
+			data: { greeting: 'Hello' },
+			env: {
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 'thisShouldFail',
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
+			},
+		} as any)
+	).rejects.toThrow('`memoryLimit` must be a number');
+});
+
+test('Rejects when wrong unit is passed to timeout config', async () => {
+	const testCode = `
+		module.exports = async function (data) {
+			return 1+1;
+		};
+	`;
+
+	await expect(
+		config.handler({ code: testCode }, {
+			data: { greeting: 'Hello' },
+			env: {
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 'thisShouldFail',
+			},
+		} as any)
+	).rejects.toThrow('`timeout` must be a 32-bit number');
+});
