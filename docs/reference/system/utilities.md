@@ -21,7 +21,7 @@ Generate a hash for a given string.
 
 ```json
 {
-	"string": "hash"
+	"string": string_to_hash
 }
 ```
 
@@ -40,12 +40,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, generateHash } from '@directus/sdk/rest';
+import { createDirectus, rest, generateHash } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(generateHash('string'));
+const result = await client.request(generateHash( string_to_hash ));
 ```
 
 </template>
@@ -86,8 +85,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, generateHash } from '@directus/sdk/rest';
+import { createDirectus, rest, generateHash } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -110,8 +108,8 @@ Verify a string with a hash.
 
 ```json
 {
-	"string": "test_string",
-	"hash": "hash"
+	"string": string_to_verify,
+	"hash": hash
 }
 ```
 
@@ -130,12 +128,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, verifyHash } from '@directus/sdk/rest';
+import { createDirectus, rest, verifyHash } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(verifyHash('string_to_verify', 'hash'));
+const result = await client.request(verifyHash( string_to_verify, hash ));
 ```
 
 </template>
@@ -182,8 +179,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, verifyHash } from '@directus/sdk/rest';
+import { createDirectus, rest, verifyHash } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -211,8 +207,8 @@ If a collection has a sort field, this util can be used to move items in that ma
 
 ```json
 {
-	"item": "id_item_to_move",
-	"to": "id_item_moving_to"
+	"item": id_item_to_move,
+	"to": id_item_moving_to
 }
 ```
 
@@ -231,12 +227,13 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, utilitySort } from '@directus/sdk/rest';
+import { createDirectus, rest, utilitySort } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(utilitySort('collection_name', 'id_item_to_move', 'id_item_moving_to'));
+const result = await client.request(
+	utilitySort( collection_name,  id_item_to_move,  id_item_moving_to )
+);
 ```
 
 </template>
@@ -283,12 +280,13 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, utilitySort } from '@directus/sdk/rest';
+import { createDirectus, rest, utilitySort } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(utilitySort('things', '2', '4'));
+const result = await client.request(
+	utilitySort('things', '2', '4')
+);
 ```
 
 </template>
@@ -316,15 +314,14 @@ Body must be formatted as a `multipart/form-data` with a `file` property.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, utilsImport } from '@directus/sdk/rest';
+import { createDirectus, rest, utilsImport } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const formData = new FormData();
 formData.append('file', raw_file);
 
-const result = await client.request(utilsImport(formData));
+const result = await client.request(utilsImport( formData ));
 ```
 
 </template>
@@ -377,10 +374,9 @@ Export a larger data set to a file in the File Library
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, utilsExport } from '@directus/sdk/rest';
+import { createDirectus, rest, utilsExport } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	utilsExport(
@@ -455,8 +451,7 @@ Empty body
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, utilsExport } from '@directus/sdk/rest';
+import { createDirectus, rest, utilsExport } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -507,8 +502,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, clearCache } from '@directus/sdk/rest';
+import { createDirectus, rest, clearCache } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
