@@ -7,9 +7,9 @@ readTime: 7 min read
 
 # Quickstart Guide
 
-> This quickstart guide is designed to get you up and running with a Directus Project in a few minutes. Along the way, you will
-> better understand what Directus is, setup your Directus project locally or with Directus Cloud, and get a_hands-on introduction to the App and
-> API.
+> This quickstart guide is designed to get you up and running with a Directus Project in a few minutes. Along the way,
+> you will better understand what Directus is, setup your Directus project locally or with Directus Cloud, and get
+> a_hands-on introduction to the App and API.
 
 ## 1. Create a Project
 
@@ -18,9 +18,12 @@ readTime: 7 min read
 
 Create and login to your [Directus Cloud account](https://directus.cloud).
 
-The very first time you log in to your Cloud Account, you will be prompted to create a Team. Each Directus Cloud Project exists within the scope of one Team. They allow you to organize Team Members, Projects and Project Billing as desired.
+The very first time you log in to your Cloud Account, you will be prompted to create a Team. Each Directus Cloud Project
+exists within the scope of one Team. They allow you to organize Team Members, Projects and Project Billing as desired.
 
-Create a new project - once started, it should take around 90 seconds for the Cloud Project to created. During this time, a link will be sent to the email associated with your Cloud Account. The email will contain your Project URL as well as an email and password to login. If you used GitHub to create your account, this will be your GitHub email.
+Create a new project - once started, it should take around 90 seconds for the Cloud Project to created. During this
+time, a link will be sent to the email associated with your Cloud Account. The email will contain your Project URL as
+well as an email and password to login. If you used GitHub to create your account, this will be your GitHub email.
 
 Login to your new project using the URL in your email inbox or on your Directus Cloud Dashboard.
 
