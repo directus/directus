@@ -6,6 +6,8 @@
                 <interface-tags
                     :value="emails"
                     @input="updateEmails"
+                    placeholder="Type an email, hit Enter"
+                    icon-right=""
                 />
 			</div>
 			<div class="field full">
@@ -21,17 +23,13 @@
                 <v-textarea v-model="body" />
 			</div>
 		</div>
+
         <div class="actions">
             <v-button @click="sendEmail" :loading="sending">Send</v-button>
         </div>
 
-        <v-divider />
-
         <div class="page-description">
-            <p>
-                The current file will be attached to your email.
-                You can use variables such as \{\{ file.title }} in your email.
-            </p>
+            <p v-md="description" />
         </div>
 	</sidebar-detail>
 </template>
@@ -45,6 +43,8 @@ const props = defineProps<{
 }>();
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const description = `The current file will be attached to your email.
+You can use variables such as {{ file.title }} in your email.`;
 
 const subject = ref<string | null>(null);
 const emails = ref<string[] | null>(null);

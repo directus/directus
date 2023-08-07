@@ -14,6 +14,7 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { FilesService } from '../services/files.js';
+import { MailService } from '../services/mail/index.js';
 import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -223,6 +224,37 @@ router.post(
 		return next();
 	}),
 	respond
+);
+
+const sendSchema = Joi.object({
+	emails: Joi.array().items(Joi.string().email()).required(),
+	subject: Joi.string().allow('').allow(null),
+	body: Joi.string().allow('').allow(null),
+	key: Joi.string().uuid().required(),
+});
+
+router.post(
+	'/send',
+	asyncHandler(async (req, res, _next) => {
+		const { error } = sendSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
+
+		// TODO@Raffy27: Get the fields from the body and render them
+
+		// @ts-ignore
+		const mailService = new MailService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		
+
+		// TODO@Raffy27: Actually send the email
+
+		res.json({ success: true });
+	})
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
