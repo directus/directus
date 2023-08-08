@@ -994,7 +994,7 @@ const result = await client.request(deleteItems('articles', ['6', '7']));
 
 //or
 
-const result2 = await client.request(
+const result = await client.request(
 	deleteItems('articles', {
 		filter: {
 			status: {
