@@ -5,22 +5,26 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Create A Searchable Dropdown With Items From Another Collection
 
-Interfaces provide a meaningful way for users to provide data. This guide will show you how to create a dropdown menu that is searchable for data from another collection.
+Interfaces provide a meaningful way for users to provide data. This guide will show you how to create a dropdown menu
+that is searchable for data from another collection.
 
 ![A dropdown showing a number of values](https://marketing.directus.app/assets/46b4070d-fd77-4ee3-b08b-654519dda031)
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the boilerplate code for your interface.
+Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+boilerplate code for your interface.
 
 ```
 npm i create-directus-extension
 npm init directus-extension
 ```
 
-A list of options will appear (choose interface), and type a name for your extension (for example, `directus-interface-m2o-searchable-dropdown`). For this guide, select JavaScript.
+A list of options will appear (choose interface), and type a name for your extension (for example,
+`directus-interface-m2o-searchable-dropdown`). For this guide, select JavaScript.
 
-Now the interface has been created, go into the current directory and build the extension. This must be performed whenever your changes are ready to be deployed.
+Now the interface has been created, go into the current directory and build the extension. This must be performed
+whenever your changes are ready to be deployed.
 
 ```
 cd directus-interface-m2o-searchable-dropdown
@@ -29,7 +33,8 @@ npm run build
 
 ## Specify Configuration
 
-Interfaces have 2 parts, the `index.js` configuration file, and the `interface.vue` view. The first part is defining what information you need to render the interface in the configuration.
+Interfaces have 2 parts, the `index.js` configuration file, and the `interface.vue` view. The first part is defining
+what information you need to render the interface in the configuration.
 
 ```js
 import InterfaceSelectDropdownM2O from './interface.vue';
@@ -50,15 +55,21 @@ export default {
 };
 ```
 
-Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
+Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
+include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
-The value of `types` will need to account for the different possibilities of id fields. Sometimes this will be an INT or BIGINT when using incremental IDs, or this could be GUID which is stored as a `String` or `UUID`.
+The value of `types` will need to account for the different possibilities of id fields. Sometimes this will be an INT or
+BIGINT when using incremental IDs, or this could be GUID which is stored as a `String` or `UUID`.
 
-`localTypes` is unique to relational fields. Some interfaces can have `o2m` and `m2o`. This interface can only be used for `m2o`. `group` will allow us to add this interface alongside other relational interfaces.
+`localTypes` is unique to relational fields. Some interfaces can have `o2m` and `m2o`. This interface can only be used
+for `m2o`. `group` will allow us to add this interface alongside other relational interfaces.
 
-Setting `relational: true` will force Directus to only offer this interface on a relational field. Finally, `recommendedDisplays` are a way of pinning one or more displays to the top of the list when the user is setting up the field.
+Setting `relational: true` will force Directus to only offer this interface on a relational field. Finally,
+`recommendedDisplays` are a way of pinning one or more displays to the top of the list when the user is setting up the
+field.
 
-Currently the options object is `null`. An interface can have a set customization options - here, the user must provide the field to display and search. For this guide, use `system-display-template` which is the built-in field selector.
+Currently the options object is `null`. An interface can have a set customization options - here, the user must provide
+the field to display and search. For this guide, use `system-display-template` which is the built-in field selector.
 
 ```js
 options: ({ relations }) => {
@@ -79,7 +90,8 @@ options: ({ relations }) => {
 },
 ```
 
-Add a `placeholder` field to allow the user to add their own placeholder. Make sure to place this within the return list alongside the template field:
+Add a `placeholder` field to allow the user to add their own placeholder. Make sure to place this within the return list
+alongside the template field:
 
 ```js
 {
@@ -96,7 +108,8 @@ Add a `placeholder` field to allow the user to add their own placeholder. Make s
 },
 ```
 
-When using data from another collection, sometimes it is useful to include the ability to filter the usable data. Use the following to add the built-in filter builder.
+When using data from another collection, sometimes it is useful to include the ability to filter the usable data. Use
+the following to add the built-in filter builder.
 
 ```js
 {
@@ -114,7 +127,8 @@ When using data from another collection, sometimes it is useful to include the a
 
 ## Build the View
 
-The `interface.vue` file contains the barebones code required for an interface to work. Import dependencies from Vue and the Directus Extensions SDK right before `export default`:
+The `interface.vue` file contains the barebones code required for an interface to work. Import dependencies from Vue and
+the Directus Extensions SDK right before `export default`:
 
 ```js
 import { ref, computed } from 'vue';
@@ -156,13 +170,16 @@ props: {
 },
 ```
 
-- `field` is the current field that is using the interface. This is defined by the user when setting up their collection. You will need the field variable to read and write the value.
+- `field` is the current field that is using the interface. This is defined by the user when setting up their
+  collection. You will need the field variable to read and write the value.
 - `collection` is the name given to the table, this is also required when reading and writing the value.
-- `value` is the current value for this field. In a new record this will be null. For existing records, you will need this variable to show what option is selected.
+- `value` is the current value for this field. In a new record this will be null. For existing records, you will need
+  this variable to show what option is selected.
 
 The `placeholder`, `template`, and `filter` properties were defined in the `index.js` file.
 
-In the `setup` method, include `props` and `emit`. Add the following constants to gather all the functions and information that are needed:
+In the `setup` method, include `props` and `emit`. Add the following constants to gather all the functions and
+information that are needed:
 
 ```js
 emits: ['input'],
@@ -182,9 +199,11 @@ setup(props, { emit }) {
 },
 ```
 
-Create a function to fetch the results from the relational collection using the code below. This will use the imported API to make a query on the related collection, then save the response into the `results` constant. 
+Create a function to fetch the results from the relational collection using the code below. This will use the imported
+API to make a query on the related collection, then save the response into the `results` constant.
 
-If a value is already saved to this field, this will also query the related collection for the information to output to the user.
+If a value is already saved to this field, this will also query the related collection for the information to output to
+the user.
 
 ```js
 async function fetchResults(){
@@ -211,9 +230,11 @@ async function fetchResults(){
 fetchResults();
 ```
 
-This function must run as soon as the record is opened, so be sure to call it immediately after it's defined, inside of the `setup` function.
+This function must run as soon as the record is opened, so be sure to call it immediately after it's defined, inside of
+the `setup` function.
 
-To be able to use the information gathered here, return the functions and constants. Add the following line at the bottom of `setup`:
+To be able to use the information gathered here, return the functions and constants. Add the following line at the
+bottom of `setup`:
 
 ```js
 return { results, setDropdown, searchQuery, displayField, onInput, primaryKey, outputFields };
@@ -224,7 +245,7 @@ _Note: there are some returned functions that haven't been created yet._
 Below the return statement, add the following functions:
 
 ```js
-// Iterates over keys and values inside provided item, then replaces the template with the corresponding values. 
+// Iterates over keys and values inside provided item, then replaces the template with the corresponding values.
 function outputFields(item){
 	var displayTemplate = props.template;
 	var replace = '';
@@ -275,12 +296,14 @@ function useRelation() {
 
 ### Create the Template
 
-Inside the `template` tag, add the following code which uses Directus' provided components. For the `v-input`, pass the `searchQuery`, `disabled` and `placeholder` values and include the `onInput` function on the `@update:model-value` event. 
+Inside the `template` tag, add the following code which uses Directus' provided components. For the `v-input`, pass the
+`searchQuery`, `disabled` and `placeholder` values and include the `onInput` function on the `@update:model-value`
+event.
 
 There is also a `v-icon` to prompt the user to dropdown the field and close the dropdown when open.
 
 ```html
-<v-menu 
+<v-menu
 	attached
 	:disabled="disabled"
 	:close-on-content-click="true"
@@ -313,7 +336,8 @@ There is also a `v-icon` to prompt the user to dropdown the field and close the 
 </v-menu>
 ```
 
-Replace the comment inside the `v-menu` with the following content. This uses built-in components called `v-list` and `v-list-item`.
+Replace the comment inside the `v-menu` with the following content. This uses built-in components called `v-list` and
+`v-list-item`.
 
 ```html
 <div class="content" :class="width">
@@ -343,9 +367,11 @@ Replace the comment inside the `v-menu` with the following content. This uses bu
 </div>
 ```
 
-The first list item is a deselection option to null the field, followed by a list item loop. Inside the loop is the list item content where `outputFields` is called to render the template with values.
+The first list item is a deselection option to null the field, followed by a list item loop. Inside the loop is the list
+item content where `outputFields` is called to render the template with values.
 
-The click event on the list items calls the function called `setDropdown`. This assigns the value to this field and closes the dropdown.
+The click event on the list items calls the function called `setDropdown`. This assigns the value to this field and
+closes the dropdown.
 
 Build the interface with the latest changes.
 
@@ -355,21 +381,25 @@ npm run build
 
 ## Add Interface to Directus
 
-In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder. 
+In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder.
 
-1. In the Directus extensions directory, open the interfaces directory and make a new directory called `directus-interface-m2o-searchable-dropdown`.
-2. From the interface's directory, open the __dist__ folder and copy the `index.js` file into the directory.
+1. In the Directus extensions directory, open the interfaces directory and make a new directory called
+   `directus-interface-m2o-searchable-dropdown`.
+2. From the interface's directory, open the **dist** folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
-## Use the Interface 
+## Use the Interface
 
-The interface will appear in the list of available interfaces. Create a new field and select the interface from the list and create options.
+The interface will appear in the list of available interfaces. Create a new field and select the interface from the list
+and create options.
 
 ![An interface configuration showing the new M2O Dropdown with Search option](https://marketing.directus.app/assets/95195049-82f4-4494-8ed7-9a1a2dcd184d)
 
 ## Summary
 
-With this interface, you have learned how to use input fields to configure your interface, including display template, standard input and a filter builder. You also learned how to fetch data from the related collection, emitting values to the database and use built-in components to easily build the interactive field.
+With this interface, you have learned how to use input fields to configure your interface, including display template,
+standard input and a filter builder. You also learned how to fetch data from the related collection, emitting values to
+the database and use built-in components to easily build the interactive field.
 
 ## Complete Code
 
@@ -437,7 +467,7 @@ export default {
 
 ```html
 <template>
-	<v-menu 
+	<v-menu
 		attached
 		:disabled="disabled"
 		:close-on-content-click="true"
@@ -547,7 +577,7 @@ export default {
 		var awaitingSearch = false;
 		const results = ref([]);
 		const searchQuery = ref('');
-		
+
 		async function fetchResults(){
 			try {
 				const response = await api.get(

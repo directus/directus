@@ -9,15 +9,18 @@
 
 - [Create An Email Template With Dynamic Values](/guides/extensions/email-template.html)
 
-## Hooks 
+## Hooks
+
 - [Use Hooks to Create Stripe Customers](/guides/extensions/hooks-add-stripe-customer.html)
 - [Use Hooks To Validate Phone Numbers With Twilio](/guides/extensions/hooks-validate-number-twilio.html)
 
 ## Interfaces
+
 - [Create A Radio Selector With Icons, SVG, or Images](/guides/extensions/interfaces-radio-selector-icons.html)
 - [Create A Searchable Dropdown With Items From Another Collection](/guides/extensions/interfaces-relational-dropdown.html)
 
 ## Layouts
+
 - [Create Your First Layout Extension](/guides/extensions/layouts-getting-started.html)
 
 ## Panels

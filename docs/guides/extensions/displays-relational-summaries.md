@@ -5,22 +5,26 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Use Displays To Summarize Relational Items
 
-Displays provide a meaningful way for users to consume data. This guide will show you how to create a display that queries another table and returns the `SUM` or `COUNT` of a column.
+Displays provide a meaningful way for users to consume data. This guide will show you how to create a display that
+queries another table and returns the `SUM` or `COUNT` of a column.
 
 ![In a table, a new field called 'Test Junction' is shown. The values are '5 items' and '2 items'.](https://marketing.directus.app/assets/c1965f6c-dfa3-461a-bda9-e3767f9d40be)
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the boilerplate code for your display.
+Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+boilerplate code for your display.
 
 ```
 npm i create-directus-extension
 npm init directus-extension
 ```
 
-A list of options will appear (choose display), and type a name for your extension (for example, `directus-display-sum-count`). For this guide, select JavaScript.
+A list of options will appear (choose display), and type a name for your extension (for example,
+`directus-display-sum-count`). For this guide, select JavaScript.
 
-Now the display has been created, go into the current directory and build the extension. This must be performed whenever your changes are ready to be deployed.
+Now the display has been created, go into the current directory and build the extension. This must be performed whenever
+your changes are ready to be deployed.
 
 ```
 cd directus-display-sum-count
@@ -29,9 +33,12 @@ npm run build
 
 ## Specify Configuration
 
-Displays have 2 parts, the `index.js` configuration file, and the `display.vue` view. The first part is defining what information you need to render the display in the configuration.
+Displays have 2 parts, the `index.js` configuration file, and the `display.vue` view. The first part is defining what
+information you need to render the display in the configuration.
 
-Open the `index.js` file and update the existing information relevant to this display. Since you are working with relational fields, you need to change `types` value and add `localTypes` as well. This will ensure this display will only be available for relational fields.
+Open the `index.js` file and update the existing information relevant to this display. Since you are working with
+relational fields, you need to change `types` value and add `localTypes` as well. This will ensure this display will
+only be available for relational fields.
 
 ```js
 import DisplayComponent from './display.vue';
@@ -52,13 +59,15 @@ export default {
 };
 ```
 
-Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
+Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
+include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
 With the information above, the display will appear in the list like this:
 
 ![A new display option is shown - Related Values.](https://marketing.directus.app/assets/128e9282-a988-4e8f-9775-ec6cfe208525)
 
-Currently the options object is `null`. To provide the option to include months, update the `options` object with the following code:
+Currently the options object is `null`. To provide the option to include months, update the `options` object with the
+following code:
 
 ```js
 options: null, // [!code --]
@@ -67,7 +76,8 @@ options: ({ editing, relations }) => { // [!code ++]
 }, // [!code ++]
 ```
 
-Before the `options` `return` value, add the following constants to retrieve the related collection and the field store and determine if the related collection uses a junction table:
+Before the `options` `return` value, add the following constants to retrieve the related collection and the field store
+and determine if the related collection uses a junction table:
 
 ```js
 const relatedCollection = relations.o2m?.meta.junction_field != null ? relations.m2o?.related_collection : relations.o2m?.collection;
@@ -76,7 +86,9 @@ const { useFieldsStore } = useStores();
 const fieldsStore = useFieldsStore();
 ```
 
-After the constants, add an `if` statement to disable the field selection dropdown while the relational field is still being created. The variable called `editing` was included in the function which will equal `+` during this state. Use the `presentation-notice` interface to display a message while this display is unavailable.
+After the constants, add an `if` statement to disable the field selection dropdown while the relational field is still
+being created. The variable called `editing` was included in the function which will equal `+` during this state. Use
+the `presentation-notice` interface to display a message while this display is unavailable.
 
 ```js
 if (editing === '+') {
@@ -91,7 +103,8 @@ if (editing === '+') {
 }
 ```
 
-In the `else` block, use the `fieldStore` to fetch all the fields from the related collection into the `field_choices` array, then create a selection dropdown interface with the choices set to `field_choices`:
+In the `else` block, use the `fieldStore` to fetch all the fields from the related collection into the `field_choices`
+array, then create a selection dropdown interface with the choices set to `field_choices`:
 
 ```js
 if (editing === '+') {
@@ -116,7 +129,8 @@ if (editing === '+') {
 }
 ```
 
-Inside the returned array, output all of the options to use with this display. For the field called `column`, set meta to `fieldSelection`. The rest can be added as normal.
+Inside the returned array, output all of the options to use with this display. For the field called `column`, set meta
+to `fieldSelection`. The rest can be added as normal.
 
 ```js
 return [
@@ -164,7 +178,9 @@ return [
 ];
 ```
 
-Now that options are set up, use the `options.column` to set the scope for the fields at the very bottom of this script. This section determines what fields are included in the `props.value`. For example, if you set this to `['*']`, all the fields for the related collection will be included. For best performance, set this to the field chosen in the options.
+Now that options are set up, use the `options.column` to set the scope for the fields at the very bottom of this script.
+This section determines what fields are included in the `props.value`. For example, if you set this to `['*']`, all the
+fields for the related collection will be included. For best performance, set this to the field chosen in the options.
 
 ```js
 fields: (options) => {
@@ -173,7 +189,8 @@ fields: (options) => {
 },
 ```
 
-Note, displays will fetch related collection values for each row on the page. Fetching more that you need will impact the performance of Directus.
+Note, displays will fetch related collection values for each row on the page. Fetching more that you need will impact
+the performance of Directus.
 
 Here is a preview of how this appears in Directus:
 
@@ -181,7 +198,8 @@ Here is a preview of how this appears in Directus:
 
 ## Build the View
 
-The `display.vue` file contains the barebones code required for a display to work. The value is imported in the `props` section, then output in the template:
+The `display.vue` file contains the barebones code required for a display to work. The value is imported in the `props`
+section, then output in the template:
 
 ```html
 <template>
@@ -255,7 +273,8 @@ setup(props) {
 },
 ```
 
-This code calculates the sum or count of the chosen column. The `props.value` will contain an array of objects with the fields defined in the scope. Make sure to return the constant at the bottom.
+This code calculates the sum or count of the chosen column. The `props.value` will contain an array of objects with the
+fields defined in the scope. Make sure to return the constant at the bottom.
 
 Update the template to use the `calculateValue` constant, `prefix` and `suffix` instead of the direct value.
 
@@ -275,15 +294,17 @@ npm run build
 
 ## Add Display to Directus
 
-In order to use this display in Directus, you must copy the compiled index file into the project's extension folder. 
+In order to use this display in Directus, you must copy the compiled index file into the project's extension folder.
 
-1. In the Directus extensions directory, open the displays directory and make a new directory called `directus-display-sum-count`.
-2. From the display’s directory, open the __dist__ folder and copy the `index.js` file into the directory.
+1. In the Directus extensions directory, open the displays directory and make a new directory called
+   `directus-display-sum-count`.
+2. From the display’s directory, open the **dist** folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
 ## Use the Display
 
-Now the display will appear in the list of available displays for relational fields. Follow these steps to use the new display:
+Now the display will appear in the list of available displays for relational fields. Follow these steps to use the new
+display:
 
 1. Create a new relational field and select your new display from the list.
 2. After saving the new field, edit the field to configure the display and populate the fields as needed.
@@ -293,7 +314,9 @@ Now the display will appear in the list of available displays for relational fie
 
 ## Summary
 
-With this display, you have learned how to interact with relational fields and values for a display and use options to customize the output. Be mindful of how much processing is happening inside a display because it will run for every single row in the table and will impact the performance of Directus.
+With this display, you have learned how to interact with relational fields and values for a display and use options to
+customize the output. Be mindful of how much processing is happening inside a display because it will run for every
+single row in the table and will impact the performance of Directus.
 
 ## Complete Code
 
@@ -429,7 +452,7 @@ export default {
 	},
 	setup(props) {
 		const calculatedValue = ref(0);
-		
+
 		if(props.sum){
 			props.value.forEach(item => {
 				let columns = props.column.split('.');

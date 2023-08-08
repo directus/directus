@@ -5,22 +5,26 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Use Custom Operations to Add an Item Comment
 
-Operations allow you to trigger your own code in a Flow. This guide will show you how to add comments to a record using built-in services and make it available as a configurable Flow operation.
+Operations allow you to trigger your own code in a Flow. This guide will show you how to add comments to a record using
+built-in services and make it available as a configurable Flow operation.
 
 ![An Add Comment operation in a Flow](https://marketing.directus.app/assets/5b20c836-39f1-4905-95ad-e829f1a65efc.png)
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the boilerplate code for your operation.
+Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+boilerplate code for your operation.
 
 ```
 npm i create-directus-extension
 npm init directus-extension
 ```
 
-A list of options will appear (choose operation), and type a name for your extension (for example, `directus-operation-add-comment`). For this guide, select JavaScript.
+A list of options will appear (choose operation), and type a name for your extension (for example,
+`directus-operation-add-comment`). For this guide, select JavaScript.
 
-Now the operation has been created, go into the current directory and build the extension. This must be performed whenever your changes are ready to be deployed.
+Now the operation has been created, go into the current directory and build the extension. This must be performed
+whenever your changes are ready to be deployed.
 
 ```
 cd directus-operation-add-comment
@@ -29,7 +33,8 @@ npm run build
 
 ## Build the Operation UI
 
-Operations have 2 parts - the `api.js` file that performs logic, and the `app.js` file that describes the front-end UI for the operation. 
+Operations have 2 parts - the `api.js` file that performs logic, and the `app.js` file that describes the front-end UI
+for the operation.
 
 Open `app.js` and change the `id`, `name`, `icon`, and `description`.
 
@@ -40,13 +45,15 @@ icon: 'chat',
 description: 'Add a comment to a record',
 ```
 
-Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
+Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
+include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
 With the information above, the operation will appear in the list like this:
 
 <img src="https://marketing.directus.app/assets/7033ae7b-178f-489a-aa7f-170d498e6c83.png" alt="Add comment - add a comment to a record. A chat icon is displayed in the box." style="padding:2px 6px;"/>
 
-`options` are the fields presented in the frontend when adding this operation to the Flow. To add a comment, you will need to know the collection, item id and the comment itself. Replace the placeholder options with the following:
+`options` are the fields presented in the frontend when adding this operation to the Flow. To add a comment, you will
+need to know the collection, item id and the comment itself. Replace the placeholder options with the following:
 
 ```js
 options: [
@@ -83,15 +90,21 @@ options: [
 ],
 ```
 
-- `collection` - the interface system-collection which renders a searchable dropdown for all collections. This field will also accept a manually entered string or a variable from the Flow.
-- `comment_key` - field where the ID of the item is entered. This will accept a string, guid, int or a variable from the Flow. This must be an existing record in Directus.
-- `comment` - a simple input-multiline field (textarea) to match how comments are made. Variables from the Flow can be mixed with standard text.
+- `collection` - the interface system-collection which renders a searchable dropdown for all collections. This field
+  will also accept a manually entered string or a variable from the Flow.
+- `comment_key` - field where the ID of the item is entered. This will accept a string, guid, int or a variable from the
+  Flow. This must be an existing record in Directus.
+- `comment` - a simple input-multiline field (textarea) to match how comments are made. Variables from the Flow can be
+  mixed with standard text.
 
 <img src="https://marketing.directus.app/assets/000d7d2a-8bdf-400f-8e46-2a6c018a58b3.png" alt="Add comment operation is selected. There are three fields - collection, IDs, and comment. Collection is a dropdown and IDs is a key." style="padding:6px 8px;"/>
 
-The `overview` section defines what is visible inside the operation’s card on the Flow canvas. An overview object contains 2 parameters, `label` and `text`. The label can be any string and does not need to match the field name. The text parameter can be a variable or just another string.
+The `overview` section defines what is visible inside the operation’s card on the Flow canvas. An overview object
+contains 2 parameters, `label` and `text`. The label can be any string and does not need to match the field name. The
+text parameter can be a variable or just another string.
 
-It will be useful to see the collection and the comment on the card. To do this you must include the fields value from the options (eg `collection` and `comment`) as properties. Replace the placeholder objects with the following:
+It will be useful to see the collection and the comment on the card. To do this you must include the fields value from
+the options (eg `collection` and `comment`) as properties. Replace the placeholder objects with the following:
 
 ```js
 overview: ({ collection, comment }) => [
@@ -113,9 +126,10 @@ overview: ({ collection, comment }) => [
 
 ## Build the API Function
 
-Open the `api.js` file and update the `id` to match the one used in the `app.js` file. 
+Open the `api.js` file and update the `id` to match the one used in the `app.js` file.
 
-The `handler` needs to include the values from the options and some key services to create a comment. Replace the handler definition with the following:
+The `handler` needs to include the values from the options and some key services to create a comment. Replace the
+handler definition with the following:
 
 ```js
 handler: async ({ collection, comment_key, comment }, { services, database, accountability, getSchema }) => {
@@ -123,7 +137,8 @@ handler: async ({ collection, comment_key, comment }, { services, database, acco
 
 Notice the fields are added in the first object, then the services in the second.
 
-Comments are stored inside the `directus_activity` table so the `ActivityService` is required to perform the action. Inside the handler, set the following constants:
+Comments are stored inside the `directus_activity` table so the `ActivityService` is required to perform the action.
+Inside the handler, set the following constants:
 
 ```js
 const { ActivityService } = services;
@@ -135,7 +150,9 @@ const activityService = new ActivityService({
 });
 ```
 
-The id field called `comment_key` needs to be able to accept both a single ID or multiple IDs. Add the following to convert a single ID to an array then add them to the `keys` constant. Note the use of JSON.parse to allow JSON entry into the field.
+The id field called `comment_key` needs to be able to accept both a single ID or multiple IDs. Add the following to
+convert a single ID to an array then add them to the `keys` constant. Note the use of JSON.parse to allow JSON entry
+into the field.
 
 ```js
 if(!Array.isArray(comment_key) && comment_key.includes("[") === false){
@@ -144,9 +161,11 @@ if(!Array.isArray(comment_key) && comment_key.includes("[") === false){
 const keys = (Array.isArray(comment_key))?comment_key:JSON.parse(Array.isArray(comment_key));
 ```
 
-The final part of the script is to loop through all the keys and write the comment to them. Also it will be useful to write the outcome back to the Flow’s logs. This is done by return as response to the function.
+The final part of the script is to loop through all the keys and write the comment to them. Also it will be useful to
+write the outcome back to the Flow’s logs. This is done by return as response to the function.
 
-Create some disposable variables results and activity, then write the response from `activtyService.createOne` to the activity variable and append it to the results array.
+Create some disposable variables results and activity, then write the response from `activtyService.createOne` to the
+activity variable and append it to the results array.
 
 ```js
 let results = [];
@@ -173,9 +192,12 @@ for await (const key of keys) {
 return results;
 ```
 
-The function `activtyService.createOne` requires the above parameters. For the comment to work, the `action` must be `'comment'`. Then update the comment, collection and item parameters with the fields from `app.js`. The exception being item which uses the key from the loop.
+The function `activtyService.createOne` requires the above parameters. For the comment to work, the `action` must be
+`'comment'`. Then update the comment, collection and item parameters with the fields from `app.js`. The exception being
+item which uses the key from the loop.
 
-`user`, `ip`, `user_agent`, and `origin` all come from the `accountability` service. This means the comment will be left by the user that triggers the workflow. At the end, the results array is returned and will be visible in the Flow logs.
+`user`, `ip`, `user_agent`, and `origin` all come from the `accountability` service. This means the comment will be left
+by the user that triggers the workflow. At the end, the results array is returned and will be visible in the Flow logs.
 
 Here is an example of how the comment will appear on a record:
 
@@ -189,25 +211,33 @@ npm run build
 
 ## Add Operation to Directus
 
-In order to use this operation in Directus, you must copy the compiled index file into the project's extension folder. 
+In order to use this operation in Directus, you must copy the compiled index file into the project's extension folder.
 
-1. In the Directus extensions directory, open the operations directory and make a new directory called `directus-operation-add-comment`.
-2. From the operation's directory, open the __dist__ folder and copy the `index.js` file into the directory.
+1. In the Directus extensions directory, open the operations directory and make a new directory called
+   `directus-operation-add-comment`.
+2. From the operation's directory, open the **dist** folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
 ## Use the Operation
 
-In the Directus Data Studio, open the Flows section in Settings. Create a new flow with an event trigger such as `item.update`. Select the collection(s) to use.
+In the Directus Data Studio, open the Flows section in Settings. Create a new flow with an event trigger such as
+`item.update`. Select the collection(s) to use.
 
-Add a new step (operation) in the flow by clicking the tick/plus on the card. This can be at any point in the workflow. From the list of options, choose __Add Comment__.
+Add a new step (operation) in the flow by clicking the tick/plus on the card. This can be at any point in the workflow.
+From the list of options, choose **Add Comment**.
 
 <img src="https://marketing.directus.app/assets/0bc1022b-2da7-4064-8c80-0fc32da59159.png" alt="Select Add Comment. Inside of Collection, type {{$trigger.payload.collection}}. Inside of IDs, type {{$trigger.payload.keys}}. For the comment, type any that you would like to add as a comment." style="padding:6px 8px;"/>
 
-Save the operation, save the Flow, and then trigger it by updating a record from the chosen collections. Open the collection records again to see the new comment. To see the response from the API function, open the flow and check out the logs in the right side toolbar.
+Save the operation, save the Flow, and then trigger it by updating a record from the chosen collections. Open the
+collection records again to see the new comment. To see the response from the API function, open the flow and check out
+the logs in the right side toolbar.
 
 ## Summary
 
-With this operation, a comment will be created with the pre-configured settings on all submitted keys and respond with an array of activity IDs for the comments. This operation requires setting up fields on the front-end and using Directus services on the API side to complete the transaction. Now that you know how to interact with these services, you can investigate other ways to extend your operations.
+With this operation, a comment will be created with the pre-configured settings on all submitted keys and respond with
+an array of activity IDs for the comments. This operation requires setting up fields on the front-end and using Directus
+services on the API side to complete the transaction. Now that you know how to interact with these services, you can
+investigate other ways to extend your operations.
 
 ## Complete Code
 
@@ -299,7 +329,7 @@ export default {
 export default {
 	id: 'your-extension-id',
 	handler: async ({ collection, comment_key, comment }, { services, database, accountability, getSchema }) => {
-		
+
 		const { ActivityService } = services;
 		const schema = await getSchema({ database });
 
@@ -313,7 +343,7 @@ export default {
 			comment_key = [comment_key];
 		}
 		const keys = (Array.isArray(comment_key))?comment_key:JSON.parse(Array.isArray(comment_key));
-		
+
 		console.log(`Converted ${keys}`);
 
 		let results = [];
@@ -338,7 +368,7 @@ export default {
 				return error;
 			}
 		};
-		
+
 		return results;
 	},
 };

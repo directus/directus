@@ -5,50 +5,64 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Create Your First Layout Extension
 
-Layouts are used to query your collection and visualize the data in a meaningful way. This guide will provide you with the skills to create custom layouts that will utilize the built-in API and UI functions to query the current collection and output the results.
+Layouts are used to query your collection and visualize the data in a meaningful way. This guide will provide you with
+the skills to create custom layouts that will utilize the built-in API and UI functions to query the current collection
+and output the results.
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the boilerplate code for your interface.
+Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+boilerplate code for your interface.
 
 ```
 npm i create-directus-extension
 npm init directus-extension
 ```
 
-A list of options will appear (choose layout), and type a name for your extension (for example, `directus-layout-example`). For this guide, select JavaScript.
+A list of options will appear (choose layout), and type a name for your extension (for example,
+`directus-layout-example`). For this guide, select JavaScript.
 
-Now the layout has been created, go into the current directory and build the extension. This must be performed whenever your changes are ready to be deployed.
+Now the layout has been created, go into the current directory and build the extension. This must be performed whenever
+your changes are ready to be deployed.
 
 ```
 cd directus-layout-example
 npm run build
 ```
 
-## Build the Structure 
+## Build the Structure
 
-Open the extension directory that was created in the previous steps then open the directory called `src`. This is where the source code is located - `index.js` and `layout.vue`. Any new files that are required, must go in this directory.
+Open the extension directory that was created in the previous steps then open the directory called `src`. This is where
+the source code is located - `index.js` and `layout.vue`. Any new files that are required, must go in this directory.
 
-This layout will currently only load an empty page with the title “Custom Layout” followed by the name of the collection that you have assigned this custom layout to. 
+This layout will currently only load an empty page with the title “Custom Layout” followed by the name of the collection
+that you have assigned this custom layout to.
 
 ![A mostly-empty layout that reads "name: custom layout, collection: test"](https://marketing.directus.app/assets/96f01ff4-0574-4388-8060-5ca598744648)
 
-In most cases, a layout will visualize the data within a collection. This guide will show you how to fetch records with the internal API and render them on the page.
+In most cases, a layout will visualize the data within a collection. This guide will show you how to fetch records with
+the internal API and render them on the page.
 
 ## Access Data Using Internal APIs
 
-To start interacting with Directus, you will need to import various functions that will bridge the gap between the empty page and the data.
+To start interacting with Directus, you will need to import various functions that will bridge the gap between the empty
+page and the data.
 
-Open the `index.js` file and change the id to a unique value. This is usually your layout name such as example-layout. Then, change the `name` of the layout. This is visible in the list of layout options when changing a collection’s layout. If you want to change the icon, use the material-icons library to find the name of the icon and replace it in this file.
+Open the `index.js` file and change the id to a unique value. This is usually your layout name such as example-layout.
+Then, change the `name` of the layout. This is visible in the list of layout options when changing a collection’s
+layout. If you want to change the icon, use the material-icons library to find the name of the icon and replace it in
+this file.
 
-Import the `useItems` and `useCollection` stores to this file by importing the functions from the Directus Extensions SDK. Add the following line underneath the ref import from vue and include `toRefs` from vue.
+Import the `useItems` and `useCollection` stores to this file by importing the functions from the Directus Extensions
+SDK. Add the following line underneath the ref import from vue and include `toRefs` from vue.
 
 ```js
 import { toRefs } from 'vue';
 import { useItems, useCollection } from '@directus/extensions-sdk';
 ```
 
-In the `setup()` method, copy and paste the following code which defines all the constants needed to fetch the items for the current collection and uses the built-in search and filters from the Directus UI.
+In the `setup()` method, copy and paste the following code which defines all the constants needed to fetch the items for
+the current collection and uses the built-in search and filters from the Directus UI.
 
 ```js
 const { collection, filter, search } = toRefs(props);
@@ -79,7 +93,8 @@ return {
 };
 ```
 
-Lastly, add props inside the setup brackets to give us access to the layout properties such as `collection`, `search` and `filters`.
+Lastly, add props inside the setup brackets to give us access to the layout properties such as `collection`, `search`
+and `filters`.
 
 ```js
 setup() { // [!code --]
@@ -88,9 +103,11 @@ setup(props) { // [!code ++]
 
 ## Set Up the Vue Component
 
-The `layout.vue` file is where you will build the output of the layout using Vue.js. Before you can start on the HTML, there are a few changes needed in the JavaScript.
+The `layout.vue` file is where you will build the output of the layout using Vue.js. Before you can start on the HTML,
+there are a few changes needed in the JavaScript.
 
-To use the data that is passed to this template, the variables must be declared in the `props`. Add the following to the object:
+To use the data that is passed to this template, the variables must be declared in the `props`. Add the following to the
+object:
 
 ```js
 items: Array,
@@ -126,7 +143,8 @@ Update the `template`:
 </template>
 ```
 
-Within the `<tbody>`, you must output my array of items using a for loop on a `<tr>` tag. The table row will be repeated for each item.
+Within the `<tbody>`, you must output my array of items using a for loop on a `<tr>` tag. The table row will be repeated
+for each item.
 
 ```html
 <tbody>
@@ -148,10 +166,11 @@ npm run build
 
 ## Add Layout To Directus
 
-In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder. 
+In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder.
 
-1. In the Directus extensions directory, open the interfaces directory and make a new directory called `directus-layout-example`.
-2. From the interface's directory, open the __dist__ folder and copy the `index.js` file into the directory.
+1. In the Directus extensions directory, open the interfaces directory and make a new directory called
+   `directus-layout-example`.
+2. From the interface's directory, open the **dist** folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
 ## Use The Layout
@@ -159,14 +178,16 @@ In order to use this interface in Directus, you must copy the compiled index fil
 To use your new layout in Directus, you will need a table that already contains the fields `id`, `name` and `email`:
 
 1. Open a collection
-2. If the right side menu is closed, click on the Layout Options icon. 
+2. If the right side menu is closed, click on the Layout Options icon.
 3. Click on the dropdown and choose your new layout from the list.
 
 ![Two screenshots. On the left is the layout dropdown showing that custom layout is selected. On the right is the table showing data from the layout.](https://marketing.directus.app/assets/ef0c6c19-ef1d-45bd-a66d-df8f581b98a4)
 
 ## Summary
 
-You have created a custom layout which uses the built-in functions to fetch all items for the current collection and provide search and filter options. Spend time designing the output of your layout to suit your needs. Use your browser’s development console to see how the API is called.
+You have created a custom layout which uses the built-in functions to fetch all items for the current collection and
+provide search and filter options. Spend time designing the output of your layout to suit your needs. Use your browser’s
+development console to see how the API is called.
 
 ## Complete Code
 

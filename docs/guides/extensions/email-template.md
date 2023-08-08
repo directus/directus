@@ -5,9 +5,14 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Create An Email Template With Dynamic Values
 
-Email templates allow you to design your own email look and feel, then populate the template with data from Directus before sending it to the recipient. This guide will introduce you to the basics of LiquidJS and how to render data inside your email template.
+Email templates allow you to design your own email look and feel, then populate the template with data from Directus
+before sending it to the recipient. This guide will introduce you to the basics of LiquidJS and how to render data
+inside your email template.
 
-Unlike many extensions types, email templates are not included in the Directus Extensions SDK so all you will need to get started is your favorite text editor and some knowledge of [LiquidJS](https://liquidjs.com/). A useful feature of LiquidJS is the ability to split the template into blocks such as base, header, footer, content etc then import the base and overwrite what needed.
+Unlike many extensions types, email templates are not included in the Directus Extensions SDK so all you will need to
+get started is your favorite text editor and some knowledge of [LiquidJS](https://liquidjs.com/). A useful feature of
+LiquidJS is the ability to split the template into blocks such as base, header, footer, content etc then import the base
+and overwrite what needed.
 
 ## Use a Base Template
 
@@ -27,11 +32,14 @@ For the base template, start with the raw essentials:
 </html>
 ```
 
-You can use a free responsive email template and adjust it to fit your brand. Be aware that images cannot be uploaded alongside your template and must be hosted. If you host them in Directus, make sure the image permission is set to public and you use the full URL in the template.
+You can use a free responsive email template and adjust it to fit your brand. Be aware that images cannot be uploaded
+alongside your template and must be hosted. If you host them in Directus, make sure the image permission is set to
+public and you use the full URL in the template.
 
 ## Extend the Template
 
-Once you have your base template, you can create smaller templates with a specific purpose that reference your base template.
+Once you have your base template, you can create smaller templates with a specific purpose that reference your base
+template.
 
 ```html
 {% layout "my-custom-base" %}
@@ -46,14 +54,15 @@ In this example, anything inside this content block will replace the content blo
 
 There are a few predefined variables available to email templates. They are:
 
-|Variable|Description|Default|
-|---|---|---|
-|`projectName`|String|`Directus`|
-|`projectColor`|Hex Color|`#546e7a`|
-|`projectLogo`|Image URL||
-|`projectUrl`|URL||
+| Variable       | Description | Default    |
+| -------------- | ----------- | ---------- |
+| `projectName`  | String      | `Directus` |
+| `projectColor` | Hex Color   | `#546e7a`  |
+| `projectLogo`  | Image URL   |            |
+| `projectUrl`   | URL         |            |
 
-Beyond this, you can inject whatever data you need. If you are using an extension, you can include information inside the data section:
+Beyond this, you can inject whatever data you need. If you are using an extension, you can include information inside
+the data section:
 
 ```js
 await mailService.send({
@@ -107,11 +116,13 @@ You can provide an array of data to a template and use a for loop to render the 
 
 ## Real-World Example
 
-A team needs a weekly update of how many new subscriptions were created in the last week. The company has a base template called `example-base` and looks like this:
+A team needs a weekly update of how many new subscriptions were created in the last week. The company has a base
+template called `example-base` and looks like this:
 
 ![A designed boilerplate email with clear placeholders for header text and content](https://marketing.directus.app/assets/760d10b0-92dd-4a22-b221-1b811441035d)
 
-Using Flows, create a Schedule trigger with the value `0 8 * * 1` to send the email every Monday at 8am, then add a Read Data operation with the following filters:
+Using Flows, create a Schedule trigger with the value `0 8 * * 1` to send the email every Monday at 8am, then add a Read
+Data operation with the following filters:
 
 ![A query on the customers collections showing a filter of active users in the last 7 days, aggregated by customer ID and grouped by subscription name.](https://marketing.directus.app/assets/0fa9b186-8d4d-478a-a4de-314d0628001d)
 
@@ -144,11 +155,13 @@ The response may look like this:
 }
 ```
 
-Create an operation to Send an Email and change the type to Template. In the Data field, add the results of `{{$last}}` to a variable such as `report`.
+Create an operation to Send an Email and change the type to Template. In the Data field, add the results of `{{$last}}`
+to a variable such as `report`.
 
 ![An email showing the custom template and passing in an object with one property - report - and the value of last.](https://marketing.directus.app/assets/a9450c81-a133-48c6-9d87-876fb8247915)
 
-For this report, the template uses a for loop to generate a table of results and capitalize the name for better appearance:
+For this report, the template uses a for loop to generate a table of results and capitalize the name for better
+appearance:
 
 ```html
 {% layout "example-base" %}
@@ -177,16 +190,20 @@ For this report, the template uses a for loop to generate a table of results and
 
 ## Add Template to Directus
 
-Inside the Directus project directory is an extensions directory, this is where the custom extensions live. There is a directory for each type. In this case you are adding a template.
+Inside the Directus project directory is an extensions directory, this is where the custom extensions live. There is a
+directory for each type. In this case you are adding a template.
 
-1. Inside the templates directory, copy and paste the required liquid files for your email. These cannot go in a subdirectory.
+1. Inside the templates directory, copy and paste the required liquid files for your email. These cannot go in a
+   subdirectory.
 2. Restart Directus.
 
 The template is now available to Directus.
 
-Make sure to keep a reference of what templates you have available because Directus will not provide a selection list for templates. You must type the filename of the template without the extension.
+Make sure to keep a reference of what templates you have available because Directus will not provide a selection list
+for templates. You must type the filename of the template without the extension.
 
 ## Summary
 
-With this guide you have learned how to create your own email templates using LiquidJS and how to include data from Directus in your emails. Make sure to read up on the various [documentation about LiquidJS](https://shopify.github.io/liquid/basics/introduction/) to see what it’s fully capable of.
-
+With this guide you have learned how to create your own email templates using LiquidJS and how to include data from
+Directus in your emails. Make sure to read up on the various
+[documentation about LiquidJS](https://shopify.github.io/liquid/basics/introduction/) to see what it’s fully capable of.

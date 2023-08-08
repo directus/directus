@@ -5,22 +5,26 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Create A Radio Selector With Icons, SVG, or Images
 
-Interfaces provide a meaningful way for users to provide data. This guide will show you how to create a radio selection input using icons, SVGs or images where the user selects an option and the value is saved in the database.
+Interfaces provide a meaningful way for users to provide data. This guide will show you how to create a radio selection
+input using icons, SVGs or images where the user selects an option and the value is saved in the database.
 
 ![Interface showing three boxes next to each other - each has an image and text.](https://marketing.directus.app/assets/20d77946-e01e-4fac-8916-536b1ccc20d6)
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the boilerplate code for your interface.
+Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+boilerplate code for your interface.
 
 ```
 npm i create-directus-extension
 npm init directus-extension
 ```
 
-A list of options will appear (choose interface), and type a name for your extension (for example, `directus-interface-custom-radio-buttons`). For this guide, select JavaScript.
+A list of options will appear (choose interface), and type a name for your extension (for example,
+`directus-interface-custom-radio-buttons`). For this guide, select JavaScript.
 
-Now the interface has been created, go into the current directory and build the extension. This must be performed whenever your changes are ready to be deployed.
+Now the interface has been created, go into the current directory and build the extension. This must be performed
+whenever your changes are ready to be deployed.
 
 ```
 cd directus-interface-custom-radio-buttons
@@ -29,7 +33,8 @@ npm run build
 
 ## Specify Configuration
 
-Interfaces have 2 parts, the `index.js` configuration file, and the `interface.vue` view. The first part is defining what information you need to render the interface in the configuration.
+Interfaces have 2 parts, the `index.js` configuration file, and the `interface.vue` view. The first part is defining
+what information you need to render the interface in the configuration.
 
 Open the `index.js` file and update the existing information relevant to this interface.
 
@@ -49,11 +54,16 @@ export default {
 };
 ```
 
-Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
+Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
+include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
-The value of `types` must be a string or number because a radio group will only output a single value. `recommendedDisplays` are a way of pinning one or more displays to the top of the list when the user is setting up the field.
+The value of `types` must be a string or number because a radio group will only output a single value.
+`recommendedDisplays` are a way of pinning one or more displays to the top of the list when the user is setting up the
+field.
 
-Currently the options object is `null`. An interface can have a set customization options - for this example, the user must provide selection options. Call the field `choices` with a type of `json`. The meta information is important, this determines how this field will appear to the user.
+Currently the options object is `null`. An interface can have a set customization options - for this example, the user
+must provide selection options. Call the field `choices` with a type of `json`. The meta information is important, this
+determines how this field will appear to the user.
 
 ```js
 options: [
@@ -73,7 +83,9 @@ options: [
 ],
 ```
 
-Use the list interface, which requires the options object as seen above. Inside `options`, you must set a `template` which is how the record is shown to users when presented in a list. Set this to `{{ text }}`, and add a field called `text`.
+Use the list interface, which requires the options object as seen above. Inside `options`, you must set a `template`
+which is how the record is shown to users when presented in a list. Set this to `{{ text }}`, and add a field called
+`text`.
 
 The raw essentials for a radio list is the text (label) and the value. Add these to the `fields` object:
 
@@ -140,11 +152,14 @@ fields: [
 ]
 ```
 
-For the SVG icon, use the code interface which allows the user to paste raw SVG code. The image upload uses the built-in file-image interface which returns the ID of the uploaded/selected image. The icon uses the built-in interface, select-icon, which provides a searchable dropdown of the icon library.
+For the SVG icon, use the code interface which allows the user to paste raw SVG code. The image upload uses the built-in
+file-image interface which returns the ID of the uploaded/selected image. The icon uses the built-in interface,
+select-icon, which provides a searchable dropdown of the icon library.
 
 ## Work With Images
 
-When working with images inside Directus, you need an access token. Rather than use a static token, create a new file called `use-directus-token.js` and use the following script that fetches the current user’s access token:
+When working with images inside Directus, you need an access token. Rather than use a static token, create a new file
+called `use-directus-token.js` and use the following script that fetches the current user’s access token:
 
 ```js
 export default function useDirectusToken(directusApi) {
@@ -184,7 +199,8 @@ export default function useDirectusToken(directusApi) {
 
 ## Build the View
 
-The `interface.vue` file contains the barebones code required for an interface to work. Import `use-directus-token` by adding the follow line before `export default`:
+The `interface.vue` file contains the barebones code required for an interface to work. Import `use-directus-token` by
+adding the follow line before `export default`:
 
 ```js
 import useDirectusToken from './use-directus-token';
@@ -212,14 +228,18 @@ props: {
 },
 ```
 
-- `field` is the current field that is using the interface. This is defined by the user when setting up their table. You will need the field variable to read and write the value.
+- `field` is the current field that is using the interface. This is defined by the user when setting up their table. You
+  will need the field variable to read and write the value.
 - `collection` is the name given to the table, this is also required when reading and writing the value.
-- `value` is the current value for this field. In a new record this will be null. For existing records, you will need this variable to show what option is selected.
+- `value` is the current value for this field. In a new record this will be null. For existing records, you will need
+  this variable to show what option is selected.
 - `disabled` is the boolean which tells you when the field has been disabled so you can prevent selection.
-- `choices` is the name given to the custom field in the index.js file. This will contain the values from the user when they created this field.
+- `choices` is the name given to the custom field in the index.js file. This will contain the values from the user when
+  they created this field.
 - `width` is either half or full. Use this to style the structure of the interface when using a smaller space.
 
-Directly after the `props`, inject the api which is made available by Directus and add the following functions to a new section called methods.
+Directly after the `props`, inject the api which is made available by Directus and add the following functions to a new
+section called methods.
 
 ```js
 inject: ['api'],
@@ -245,14 +265,16 @@ methods: {
 },
 ```
 
-- `selectOption` will “emit” the value of the selected option into the input and allow the value to be saved to the database. In short, this allows the clicked option to be saved.
-- `isChecked` will highlight the previously selected option when opening an existing record. 
+- `selectOption` will “emit” the value of the selected option into the input and allow the value to be saved to the
+  database. In short, this allows the clicked option to be saved.
+- `isChecked` will highlight the previously selected option when opening an existing record.
 - `renderImage` uses the Directus api and the current user token to fetch the image.
 - `handleChange` is a fallback if the value is changed by another interface.
 
 ### Create the Template
 
-Add the following code to output an error if no choices are configured for the interface. This goes inside the `template` tag:
+Add the following code to output an error if no choices are configured for the interface. This goes inside the
+`template` tag:
 
 ```html
 <v-notice v-if="!choices" type="warning">
@@ -260,17 +282,18 @@ Add the following code to output an error if no choices are configured for the i
 </v-notice>
 ```
 
-After the `v-notice`, add a `div` for the buttons and use `v-else` from the `if` statement above. The `class` added to this `div` will be used to style the radio buttons:
+After the `v-notice`, add a `div` for the buttons and use `v-else` from the `if` statement above. The `class` added to
+this `div` will be used to style the radio buttons:
 
 ```html
-<div 
-	v-else 
-	class="radio-icon-buttons" 
+<div
+	v-else
+	class="radio-icon-buttons"
 	:style="{ '--v-radio-color': color, }" >
 </div>
 ```
 
-Inside the `div`, add a hidden `input` field which will bind to the selected value. 
+Inside the `div`, add a hidden `input` field which will bind to the selected value.
 
 ```html
 <input
@@ -282,7 +305,8 @@ Inside the `div`, add a hidden `input` field which will bind to the selected val
 />
 ```
 
-Add an event `onInput` using `@input`, and have it run the `handleChange` function and send the value of `$event.target` and the current `field` to the function. This is a fallback if anything outside of this interface changes the value.
+Add an event `onInput` using `@input`, and have it run the `handleChange` function and send the value of `$event.target`
+and the current `field` to the function. This is a fallback if anything outside of this interface changes the value.
 
 After the `input` field, add the buttons by looping through the `choices` array.
 
@@ -305,14 +329,16 @@ After the `input` field, add the buttons by looping through the `choices` array.
 </button>
 ```
 
-Add an event to the button using `@click`, to run the `selectOption` function and send the current `choice.value` and the `field` variable. This will allow the value to be emitted when a choice is clicked.
+Add an event to the button using `@click`, to run the `selectOption` function and send the current `choice.value` and
+the `field` variable. This will allow the value to be emitted when a choice is clicked.
 
-Inside the button, add the HTML to output the icon, svg or image inside the button. Use the `v-if` directives to control which take priority if present. This example orders the priority icon, then svg, then image.
+Inside the button, add the HTML to output the icon, svg or image inside the button. Use the `v-if` directives to control
+which take priority if present. This example orders the priority icon, then svg, then image.
 
 ![Three icons next to each other with text underneath.](https://marketing.directus.app/assets/b873f262-c653-45ab-bb8e-a8dd30a92ed8)
 
-The buttons currently have no indication that they are selected. At the bottom of `interface.vue`, add the following under the closing `script` tag:
-
+The buttons currently have no indication that they are selected. At the bottom of `interface.vue`, add the following
+under the closing `script` tag:
 
 ```html
 <style lang="scss" scoped>
@@ -441,21 +467,25 @@ npm run build
 
 ## Add Interface to Directus
 
-In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder. 
+In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder.
 
-1. In the Directus extensions directory, open the interfaces directory and make a new directory called `directus-interface-custom-radio-buttons`.
-2. From the interface's directory, open the __dist__ folder and copy the `index.js` file into the directory.
+1. In the Directus extensions directory, open the interfaces directory and make a new directory called
+   `directus-interface-custom-radio-buttons`.
+2. From the interface's directory, open the **dist** folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
-## Use the Interface 
+## Use the Interface
 
-The interface will appear in the list of available interfaces. Create a new field and select the interface from the list and set options.
+The interface will appear in the list of available interfaces. Create a new field and select the interface from the list
+and set options.
 
 ![An interface configuration showing an icon button group](https://marketing.directus.app/assets/1dd9d145-d3a1-46a4-bd24-3db6d33418d6)
 
 ## Summary
 
-With this interface, you have seen how to use input fields to configure your interface, including string, text, icon picker, image and lists. You have also learned how to fetch an access token for rendering images, emitting values to the database and use Vue to render interactive HTML and SCSS.
+With this interface, you have seen how to use input fields to configure your interface, including string, text, icon
+picker, image and lists. You have also learned how to fetch an access token for rendering images, emitting values to the
+database and use Vue to render interactive HTML and SCSS.
 
 ## Complete Code
 
