@@ -164,7 +164,7 @@ overview: ({ subject, from }) => [
 ],
 ```
 
-Now, the overview of the operations looks like this:
+Now, the overview of the operation looks like this:
 
 <img src="https://marketing.directus.app/assets/63f985a6-e73a-4a2d-9c31-5e6b0c135b58.png" alt="The flow overview card shows a subject and from value." style="max-width: 400px;"/>
 

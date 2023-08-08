@@ -11,7 +11,7 @@
 
 ## Hooks 
 - [Use Hooks to Create Stripe Customers](/guides/extensions/hooks-add-stripe-customer.html)
-- [Use Hooks To Validate Phone Numbers Using Twilio](/guides/extensions/hooks-validate-number-twilio.html)
+- [Use Hooks To Validate Phone Numbers With Twilio](/guides/extensions/hooks-validate-number-twilio.html)
 
 ## Interfaces
 - [Create A Radio Selector With Icons, SVG, or Images](/guides/extensions/interfaces-radio-selector-icons.html)
@@ -31,7 +31,7 @@
 
 - [Use Custom Operations to Send Bulk Email With SendGrid](/guides/extensions/operations-bulk-email-sendgrid)
 - [Use Custom Operations to Add an Item Comment](/guides/extensions/operations-add-record-comments)
-- Send SMS Message With Vonage
+- [Use Custom Operations to Send SMS Notifications With Twilio](/guides/extensions/operations-send-sms-twilio)
 
 ## Modules
 
