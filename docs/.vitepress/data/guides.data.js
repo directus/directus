@@ -11,6 +11,7 @@ export default {
       {
         title: 'Framework Guides',
         indexPath: 'frameworks',
+        summary: 'Combine Directus with your favorite framework to create dynamic and efficient web applications.',
         cols: 2,
         blocks: [
           {
@@ -32,6 +33,7 @@ export default {
       {
         title: 'Use Case Guides',
         indexPath: 'use-cases',
+        summary: 'Use Directus features to build various use cases in one project.',
         cols: 1,
         blocks: [
           {
@@ -54,6 +56,7 @@ export default {
       },
       {
         title: 'Realtime Guides',
+        summary: 'Access real-time data in your project with WebSockets, backed by your database.',
         indexPath: 'real-time',
         cols: 1,
         blocks: [
@@ -87,6 +90,7 @@ export default {
       },
       {
         title: 'Extensions Guides',
+        summary: 'Learn how to extend Directus with various custom extension types.',
         indexPath: 'extensions',
         cols: 2,
         blocks: [
@@ -148,6 +152,7 @@ export default {
       },
       {
         title: 'Administration Guides',
+        summary: 'Learn key skills needed to successfully administer Directus in a real-world context.',
         indexPath: 'administration',
         cols: 1,
         blocks: [

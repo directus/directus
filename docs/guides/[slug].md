@@ -1,3 +1,7 @@
+---
+type: 'guides-index'
+---
+
 <script setup>
 import GuidesSection from '../.vitepress/components/guides/GuidesSection.vue'
 </script>

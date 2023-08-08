@@ -181,12 +181,19 @@ gtag('config', 'UA-24637628-7');
 			];
 		}
 
-		if (pageData.frontmatter.type == 'blog-post') {
-			pageData.title = pageData.params.title;
-			pageData.description = pageData.params.summary;
-			pageData.frontmatter.head = setOGImage(pageData.params.image);
-		} else {
-			pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
+		switch(pageData.frontmatter.type) {
+			case 'blog-post':
+				pageData.title = pageData.params.title;
+				pageData.description = pageData.params.summary;
+				pageData.frontmatter.head = setOGImage(pageData.params.image);
+				break;
+			case 'guides-index':
+				console.log(pageData)
+				pageData.title = pageData.params.title;
+				pageData.description = pageData.params.summary;
+				break;
+			default:
+				pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
 		}
 	},
 });

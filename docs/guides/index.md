@@ -1,4 +1,5 @@
 ---
+title: Guides
 description: Our official guides to help you get started, integrate, and make the most of Directus.
 ---
 
