@@ -746,7 +746,7 @@ Delete multiple existing flows.
 
 `DELETE /flows`
 
-Provide an array of flow ids as your request body.
+Provide an array of flow IDs as your request body.
 
 </template>
 <template #graphql>
@@ -861,7 +861,7 @@ Result of the flow, if any.
 <SnippetToggler :choices="['REST', 'SDK']" label="API">
 <template #rest>
 
-`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
 
 </template>
 <template #sdk>
@@ -919,7 +919,11 @@ Result of the flow, if any.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
+
+```json
+// Payload here
+```
 
 </template>
 <template #sdk>

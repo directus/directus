@@ -68,7 +68,9 @@ to a collection that the current user doesn't have access to are stripped out.
 
 `SEARCH /revisions`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -94,8 +96,6 @@ const result = await client.request(readRevisions(query_object));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 

@@ -91,7 +91,9 @@ other than the current user's role won't be returned.
 
 `SEARCH /presets`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -117,8 +119,6 @@ const result = await client.request(readPresets(object_field));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -760,7 +760,7 @@ Delete multiple existing presets.
 
 `DELETE /presets`
 
-Provide an array of preset ids as the body of your request.
+Provide an array of preset IDs as the body of your request.
 
 </template>
 <template #graphql>

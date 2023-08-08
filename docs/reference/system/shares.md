@@ -76,7 +76,9 @@ List all shares that exist in Directus.
 
 `SEARCH /shares`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -102,8 +104,6 @@ const result = await client.request(readShares(query_object));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -766,7 +766,7 @@ Delete multiple existing shares.
 
 `DELETE /shares`
 
-Provide an array of share ids as the body of your request.
+Provide an array of share IDs as the body of your request.
 
 </template>
 <template #graphql>

@@ -194,7 +194,7 @@ const result = await client.request(readSettings());
 
 `PATCH /settings`
 
-Provide a [settings object](#the-settings-object) as the body of your request.
+Provide a partial [settings object](#the-settings-object) as the body of your request.
 
 </template>
 <template #graphql>

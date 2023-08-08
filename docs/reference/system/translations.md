@@ -44,7 +44,9 @@ List all translations that exist in Directus.
 
 `SEARCH /translations`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #sdk>
@@ -59,8 +61,6 @@ const result = await client.request(readTranslations(query_object));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -531,7 +531,7 @@ Delete multiple existing translations.
 
 `DELETE /translations`
 
-Provide an array of translation ids as the body of your request.
+Provide an array of translation IDs as the body of your request.
 
 </template>
 <template #sdk>

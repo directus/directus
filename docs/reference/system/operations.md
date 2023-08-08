@@ -78,7 +78,9 @@ List all operations that exist in Directus.
 
 `SEARCH /operations`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -104,8 +106,6 @@ const result = await client.request(readOperations(query_object));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -769,7 +769,7 @@ Delete multiple existing operations.
 
 `DELETE /operations`
 
-Provide an array of operation ids as the body of your request.
+Provide an array of operation IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -888,7 +888,11 @@ Result of the operation, if any.
 <SnippetToggler :choices="['REST', 'SDK']" label="API">
 <template #rest>
 
-`// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
+
+```json
+// Payload here
+```
 
 </template>
 <template #sdk>

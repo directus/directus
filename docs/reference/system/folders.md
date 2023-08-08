@@ -43,7 +43,9 @@ List all folders that exist in Directus.
 
 `SEARCH /folders`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -69,8 +71,6 @@ const result = await client.request(readFolders(query_object));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -708,7 +708,7 @@ Any files in these folders will be moved to the root folder.
 
 `DELETE /folders`
 
-Provide an array of item ids as your request body.
+Provide an array of item IDs as your request body.
 
 </template>
 <template #graphql>

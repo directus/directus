@@ -64,7 +64,9 @@ List all notifications that exist in Directus.
 
 `SEARCH /notifications`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -90,8 +92,6 @@ const result = await client.request(readNotifications(query_object));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -746,7 +746,7 @@ Delete multiple existing notifications.
 
 `DELETE /notifications`
 
-Provide an array of notification ids as your request body.
+Provide an array of notification IDs as your request body.
 
 </template>
 <template #graphql>

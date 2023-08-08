@@ -260,9 +260,13 @@ List all files that exist in Directus.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /files` `SEARCH /files`
+`GET /files`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+`SEARCH /files`
+
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -289,8 +293,6 @@ const result = await client.request(readFiles(query_object));
 </template>
 </SnippetToggler>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
 #### Query Parameters
 
 Supports all [global query parameters](/reference/query).
@@ -305,7 +307,9 @@ be an empty array.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /files` `SEARCH /files`
+`GET /files`
+
+`SEARCH /files`
 
 </template>
 <template #graphql>
@@ -894,7 +898,7 @@ This will also delete the files from disk.
 
 `DELETE /files`
 
-Provide an array of file ids as the body of your request.
+Provide an array of file IDs as the body of your request.
 
 </template>
 <template #graphql>

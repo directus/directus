@@ -114,7 +114,9 @@ List all users that exist in Directus.
 
 `SEARCH /users`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -140,8 +142,6 @@ const result = await client.request(readUsers(query_object));
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -703,7 +703,7 @@ Update an existing user.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+`PATCH /users/:id`
 
 Provide a partial [user object](#the-user-object) as the body of your request.
 
@@ -984,7 +984,7 @@ Delete multiple existing users.
 
 `DELETE /users`
 
-Provide an array of user ids as the body of your request.
+Provide an array of user IDs as the body of your request.
 
 </template>
 <template #graphql>
