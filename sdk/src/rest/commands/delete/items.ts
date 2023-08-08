@@ -1,4 +1,3 @@
-import type { PrimaryKey } from '@directus/types';
 import type { Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -13,7 +12,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteItems =
 	<Schema extends object, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		keysOrQuery: PrimaryKey[] | TQuery
+		keysOrQuery: string[] | number[] | TQuery
 	): RestCommand<void, Schema> =>
 	() => {
 		const _collection = String(collection);
@@ -26,7 +25,6 @@ export const deleteItems =
 			path: `/items/${_collection}`,
 			body: JSON.stringify(Array.isArray(keysOrQuery) ? { keys: keysOrQuery } : { query: keysOrQuery }),
 			method: 'DELETE',
-			onResponse: null,
 		};
 	};
 /**
@@ -40,7 +38,7 @@ export const deleteItems =
 export const deleteItem =
 	<Schema extends object, Collection extends keyof Schema>(
 		collection: Collection,
-		key: PrimaryKey
+		key: string | number
 	): RestCommand<void, Schema> =>
 	() => {
 		const _collection = String(collection);
@@ -52,6 +50,5 @@ export const deleteItem =
 		return {
 			path: `/items/${_collection}/${key}`,
 			method: 'DELETE',
-			onResponse: null,
 		};
 	};

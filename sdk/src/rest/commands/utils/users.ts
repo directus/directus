@@ -19,7 +19,6 @@ export const inviteUser =
 			role,
 			...(invite_url ? { invite_url } : {}),
 		}),
-		onResponse: null,
 	});
 
 /**
@@ -39,7 +38,6 @@ export const acceptUserInvite =
 			token,
 			password,
 		}),
-		onResponse: null,
 	});
 
 /**
@@ -76,7 +74,6 @@ export const enableTwoFactor =
 			secret,
 			otp,
 		}),
-		onResponse: null,
 	});
 
 /**
@@ -92,5 +89,4 @@ export const disableTwoFactor =
 		path: `/users/me/tfa/disable`,
 		method: 'POST',
 		body: JSON.stringify({ otp }),
-		onResponse: null,
 	});

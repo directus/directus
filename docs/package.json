@@ -30,6 +30,7 @@
 		"typedoc-vitepress-theme": "1.0.0-next.2",
 		"typescript": "5.0.4",
 		"vitepress": "1.0.0-alpha.75",
+		"vitepress-plugin-tabs": "0.3.0",
 		"vue": "3.3.4"
 	}
 }

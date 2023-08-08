@@ -10,6 +10,5 @@ export const utilsImport =
 		path: `/utils/import/${collection as string}`,
 		method: 'POST',
 		body: data,
-		onResponse: null,
 		headers: { 'Content-Type': 'multipart/form-data' },
 	});

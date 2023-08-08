@@ -12,7 +12,6 @@ export const deleteDashboards =
 		path: `/dashboards`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteDashboard =
 	() => ({
 		path: `/dashboards/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

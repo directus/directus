@@ -14,5 +14,4 @@ export const passwordReset =
 		path: '/auth/password/reset',
 		method: 'POST',
 		body: JSON.stringify({ token, password }),
-		onResponse: null,
 	});

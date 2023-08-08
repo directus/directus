@@ -53,5 +53,4 @@ export const serverInfo =
 	() => ({
 		method: 'GET',
 		path: '/server/info',
-		onResponse: null,
 	});

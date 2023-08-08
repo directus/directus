@@ -19,5 +19,4 @@ export const utilsExport =
 		method: 'POST',
 		path: `/utils/export/${collection as string}`,
 		body: JSON.stringify({ format, query, file }),
-		onResponse: null,
 	});

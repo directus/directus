@@ -9,7 +9,6 @@ export default defineConfig(() => ({
 	format: ['cjs', 'esm'], // generate cjs and esm files
 	minify: env === 'production',
 	bundle: env === 'production',
-	skipNodeModulesBundle: true,
 	watch: env === 'development',
 	target: 'es2020',
 	entry: [
