@@ -489,7 +489,7 @@ function sidebar() {
 					link: '/guides/index.html',
 				},
 				{
-					text: 'JavaScript SDK Quickstart',
+					text: 'SDK Quickstart',
 					link: '/guides/sdk/getting-started',
 				},
 				...sidebarGuides()
