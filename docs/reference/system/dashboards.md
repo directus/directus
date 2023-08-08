@@ -83,7 +83,7 @@ import { createDirectus, rest, readDashboards } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readDashboards( query_object ));
+const result = await client.request(readDashboards(query_object));
 ```
 
 </template>
@@ -171,7 +171,7 @@ import { createDirectus, rest, readDashboard } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readDashboard( dashboard_id , query_object ));
+const result = await client.request(readDashboard(dashboard_id, query_object));
 ```
 
 </template>
@@ -254,9 +254,7 @@ import { createDirectus, rest, createDashboard } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createDashboard( dashboard_object )
-);
+const result = await client.request(createDashboard(dashboard_object));
 ```
 
 </template>
@@ -353,9 +351,7 @@ import { createDirectus, rest, createDashboards } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createDashboards( dashboard_object_array )
-);
+const result = await client.request(createDashboards(dashboard_object_array));
 ```
 
 </template>
@@ -466,9 +462,7 @@ import { createDirectus, rest, updateDashboard } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateDashboard( dashboard_id , partial_dashboard_object)
-);
+const result = await client.request(updateDashboard(dashboard_id, partial_dashboard_object));
 ```
 
 </template>
@@ -568,9 +562,7 @@ import { createDirectus, rest, updateDashboards } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateDashboards( dashboard_id_array, partial_dashboard_object )
-);
+const result = await client.request(updateDashboards(dashboard_id_array, partial_dashboard_object));
 ```
 
 </template>
@@ -673,7 +665,7 @@ import { createDirectus, rest, deleteDashboard } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteDashboard( dashboard_id ));
+const result = await client.request(deleteDashboard(dashboard_id));
 ```
 
 </template>
@@ -749,7 +741,7 @@ import { createDirectus, rest, deleteDashboards } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteDashboards( dashboard_id_array ));
+const result = await client.request(deleteDashboards(dashboard_id_array));
 ```
 
 </template>

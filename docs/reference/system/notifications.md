@@ -85,7 +85,7 @@ import { createDirectus, rest, readNotifications } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readNotifications( query_object ));
+const result = await client.request(readNotifications(query_object));
 ```
 
 </template>
@@ -174,9 +174,7 @@ import { createDirectus, rest, readNotification } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readNotification( notification_id, query_object )
-);
+const result = await client.request(readNotification(notification_id, query_object));
 ```
 
 </template>
@@ -262,9 +260,7 @@ import { createDirectus, rest, createNotification } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createNotification( notification_object )
-);
+const result = await client.request(createNotification(notification_object));
 ```
 
 </template>
@@ -362,9 +358,7 @@ import { createDirectus, rest, createNotifications } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createNotifications( notifcation_object_array )
-);
+const result = await client.request(createNotifications(notifcation_object_array));
 ```
 
 </template>
@@ -497,9 +491,7 @@ import { createDirectus, rest, updateNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	updateNotification( notification_id, partial_notification_object )
-);
+const result = await client.request(updateNotification(notification_id, partial_notification_object));
 ```
 
 </template>
@@ -599,9 +591,7 @@ import { createDirectus, rest, updateNotifications } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	updateNotifications( notification_id_array, partial_notification_object )
-);
+const result = await client.request(updateNotifications(notification_id_array, partial_notification_object));
 ```
 
 </template>
@@ -701,7 +691,7 @@ import { createDirectus, rest, deleteNotification } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteNotification( notification_id ));
+const result = await client.request(deleteNotification(notification_id));
 ```
 
 </template>
@@ -777,9 +767,7 @@ import { createDirectus, rest, deleteNotifications } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	deleteNotifications( notification_id_array )
-);
+const result = await client.request(deleteNotifications(notification_id_array));
 ```
 
 </template>

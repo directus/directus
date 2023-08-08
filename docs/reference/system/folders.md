@@ -64,7 +64,7 @@ import { createDirectus, rest, readFolders } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFolders( query_object ));
+const result = await client.request(readFolders(query_object));
 ```
 
 </template>
@@ -151,7 +151,7 @@ import { createDirectus, rest, readFolder } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFolder( folder_id , query_object ));
+const result = await client.request(readFolder(folder_id, query_object));
 ```
 
 </template>
@@ -235,9 +235,7 @@ import { createDirectus, rest, createFolder } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createFolder( folder_object )
-);
+const result = await client.request(createFolder(folder_object));
 ```
 
 </template>
@@ -332,9 +330,7 @@ import { createDirectus, rest, createFolders } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createFolders( folder_object_array )
-);
+const result = await client.request(createFolders(folder_object_array));
 ```
 
 </template>
@@ -439,9 +435,7 @@ import { createDirectus, rest, updateFolder } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFolder( folder_id, partial_folder_object )
-);
+const result = await client.request(updateFolder(folder_id, partial_folder_object));
 ```
 
 </template>
@@ -544,9 +538,7 @@ import { createDirectus, rest, updateFolders } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFolders( folder_id_array, partial_folder_object )
-);
+const result = await client.request(updateFolders(folder_id_array, partial_folder_object));
 ```
 
 </template>
@@ -655,7 +647,7 @@ import { createDirectus, rest, deleteFolder } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFolder( folder_id ));
+const result = await client.request(deleteFolder(folder_id));
 ```
 
 </template>
@@ -737,7 +729,7 @@ import { createDirectus, rest, deleteFolders } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFolders( folder_id_array ));
+const result = await client.request(deleteFolders(folder_id_array));
 ```
 
 </template>

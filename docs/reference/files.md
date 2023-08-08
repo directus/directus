@@ -283,9 +283,7 @@ import { createDirectus, rest, readFiles } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readFiles( query_object )
-);
+const result = await client.request(readFiles(query_object));
 ```
 
 </template>
@@ -375,9 +373,7 @@ import { createDirectus, rest, readFiles } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readFile( file_id , query_object )
-);
+const result = await client.request(readFile(file_id, query_object));
 ```
 
 </template>
@@ -500,7 +496,7 @@ Import a file from the web
 
 ```json
 {
-	"url": file_url ,
+	"url": file_url,
 	"data": file_object
 }
 ```
@@ -524,9 +520,7 @@ import { createDirectus, rest, importFile } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	importFile( file_url , file_object )
-);
+const result = await client.request(importFile(file_url, file_object));
 ```
 
 </template>
@@ -627,9 +621,7 @@ import { createDirectus, rest, updateFile } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFile( file_id , partial_file_object )
-);
+const result = await client.request(updateFile(file_id, partial_file_object));
 ```
 
 </template>
@@ -731,9 +723,7 @@ import { createDirectus, rest, updateFiles } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFiles( file_id_array , partial_file_object )
-);
+const result = await client.request(updateFiles(file_id_array, partial_file_object));
 ```
 
 </template>
@@ -839,7 +829,7 @@ import { createDirectus, rest, deleteFile } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFile( file_id ));
+const result = await client.request(deleteFile(file_id));
 ```
 
 </template>
@@ -925,13 +915,11 @@ import { createDirectus, rest, deleteFiles } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFiles( file_id_array ));
+const result = await client.request(deleteFiles(file_id_array));
 
 //or
 
-const result = await client.request(
-	deleteFiles( query_object )
-);
+const result = await client.request(deleteFiles(query_object));
 ```
 
 </template>

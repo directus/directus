@@ -97,9 +97,7 @@ import { createDirectus, rest, readShares } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readShares( query_object )
-);
+const result = await client.request(readShares(query_object));
 ```
 
 </template>
@@ -187,9 +185,7 @@ import { createDirectus, rest, readShare } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readShare( share_id, query_object )
-);
+const result = await client.request(readShare(share_id, query_object));
 ```
 
 </template>
@@ -276,9 +272,7 @@ import { createDirectus, rest, createShare } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createShare( share_object )
-);
+const result = await client.request(createShare(share_object));
 ```
 
 </template>
@@ -381,9 +375,7 @@ import { createDirectus, rest, createShares } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createShares( share_object_array )
-);
+const result = await client.request(createShares(share_object_array));
 ```
 
 </template>
@@ -512,9 +504,7 @@ import { createDirectus, rest, updateShare } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateShare( share_id, partial_share_object )
-);
+const result = await client.request(updateShare(share_id, partial_share_object));
 ```
 
 </template>
@@ -616,9 +606,7 @@ import { createDirectus, rest, updateShares } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateShares( share_id_array, partial_share_object )
-);
+const result = await client.request(updateShares(share_id_array, partial_share_object));
 ```
 
 </template>
@@ -723,7 +711,7 @@ import { createDirectus, rest, deleteShare } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteShare( share_id ));
+const result = await client.request(deleteShare(share_id));
 ```
 
 </template>
@@ -799,7 +787,7 @@ import { createDirectus, rest, deleteShares } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteShares( share_id_array ));
+const result = await client.request(deleteShares(share_id_array));
 ```
 
 </template>
@@ -887,9 +875,7 @@ import { createDirectus, rest, authenticateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	authenticateShare('share_key', 'password')
-);
+const result = await client.request(authenticateShare('share_key', 'password'));
 ```
 
 </template>
@@ -942,9 +928,7 @@ import { createDirectus, rest, authenticateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us')
-);
+const result = await client.request(authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us'));
 ```
 
 </template>
@@ -981,9 +965,7 @@ import { createDirectus, rest, inviteShare } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	inviteShare( share_id, email_address_array)
-);
+const result = await client.request(inviteShare(share_id, email_address_array));
 ```
 
 </template>
@@ -1029,7 +1011,7 @@ import { createDirectus, rest, inviteShare } from '@directus/sdk';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	inviteShare('653925a9-970e-487a-bfc0-ab6c96affcdc', ["allison@example.com", "mike@example.com"])
+	inviteShare('653925a9-970e-487a-bfc0-ab6c96affcdc', ['allison@example.com', 'mike@example.com'])
 );
 ```
 
@@ -1058,7 +1040,7 @@ import { createDirectus, rest, readShareInfo } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readShareInfo( share_id ));
+const result = await client.request(readShareInfo(share_id));
 ```
 
 </template>

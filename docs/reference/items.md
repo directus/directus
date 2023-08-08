@@ -67,9 +67,7 @@ import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readItems('collection_name', query_object )
-);
+const result = await client.request(readItems('collection_name', query_object));
 ```
 
 </template>
@@ -164,7 +162,7 @@ import { createDirectus, rest, readItem } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readItem( collection_name ,  item_id ));
+const result = await client.request(readItem(collection_name, item_id));
 ```
 
 </template>
@@ -240,7 +238,7 @@ import { createDirectus, rest, readSingleton } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readSingleton( collection_name ));
+const result = await client.request(readSingleton(collection_name));
 ```
 
 </template>
@@ -332,9 +330,7 @@ import { createDirectus, rest, createItem } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createItem( collection_name , item_object )
-);
+const result = await client.request(createItem(collection_name, item_object));
 ```
 
 </template>
@@ -438,9 +434,7 @@ import { createDirectus, rest, createItems } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createItems( collection_name , item_object_array )
-);
+const result = await client.request(createItems(collection_name, item_object_array));
 ```
 
 </template>
@@ -554,9 +548,7 @@ import { createDirectus, rest, updateItem } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateItem( collection_name ,  item_id , partial_item_object )
-);
+const result = await client.request(updateItem(collection_name, item_id, partial_item_object));
 ```
 
 </template>
@@ -651,9 +643,7 @@ import { createDirectus, rest, updateSingleton } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateSingleton( collection_name , partial_item_object )
-);
+const result = await client.request(updateSingleton(collection_name, partial_item_object));
 ```
 
 </template>
@@ -755,9 +745,7 @@ import { createDirectus, rest, updateItems } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateItems( collection_name , item_id_array , partial_item_object )
-);
+const result = await client.request(updateItems(collection_name, item_id_array, partial_item_object));
 ```
 
 </template>
@@ -853,7 +841,7 @@ import { createDirectus, rest, deleteItem } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteItem( collection_name , item_id ));
+const result = await client.request(deleteItem(collection_name, item_id));
 ```
 
 </template>
@@ -927,13 +915,11 @@ import { createDirectus, rest, deleteItems } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteItems( collection_name , item_id_array ));
+const result = await client.request(deleteItems(collection_name, item_id_array));
 
 //or
 
-const result2 = await client.request(
-	deleteItems( collection_name , query_object )
-);
+const result = await client.request(deleteItems(collection_name, query_object));
 ```
 
 </template>

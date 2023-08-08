@@ -54,9 +54,7 @@ import { createDirectus, rest, readTranslations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readTranslations( query_object )
-);
+const result = await client.request(readTranslations(query_object));
 ```
 
 </template>
@@ -119,9 +117,7 @@ import { createDirectus, rest, readTranslation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readTranslation( translation_id, query_object )
-);
+const result = await client.request(readTranslation(translation_id, query_object));
 ```
 
 </template>
@@ -181,9 +177,7 @@ import { createDirectus, rest, createTranslation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createTranslation( translation_object )
-);
+const result = await client.request(createTranslation(translation_object));
 ```
 
 </template>
@@ -257,9 +251,7 @@ import { createDirectus, rest, createTranslations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createTranslations( translation_object_array )
-);
+const result = await client.request(createTranslations(translation_object_array));
 ```
 
 </template>
@@ -347,9 +339,7 @@ import { createDirectus, rest, updateTranslation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateTranslation( translation_id, partial_translation_object )
-);
+const result = await client.request(updateTranslation(translation_id, partial_translation_object));
 ```
 
 </template>
@@ -424,9 +414,7 @@ import { createDirectus, rest, updateTranslations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateTranslations( translation_id_array, partial_translation_object )
-);
+const result = await client.request(updateTranslations(translation_id_array, partial_translation_object));
 ```
 
 </template>
@@ -501,7 +489,7 @@ import { createDirectus, rest, deleteTranslation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteTranslation( translation_id ));
+const result = await client.request(deleteTranslation(translation_id));
 ```
 
 </template>
@@ -553,9 +541,7 @@ import { createDirectus, rest, deleteTranslations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	deleteTranslations( translation_id_array )
-);
+const result = await client.request(deleteTranslations(translation_id_array));
 ```
 
 </template>

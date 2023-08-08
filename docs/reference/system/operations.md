@@ -99,7 +99,7 @@ import { createDirectus, rest, readOperations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(readOperations( query_object ));
+const result = await client.request(readOperations(query_object));
 ```
 
 </template>
@@ -186,9 +186,7 @@ import { createDirectus, rest, readOperation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readOperation( operation_id, query_object )
-);
+const result = await client.request(readOperation(operation_id, query_object));
 ```
 
 </template>
@@ -274,9 +272,7 @@ import { createDirectus, rest, createOperation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createOperation( operation_object )
-);
+const result = await client.request(createOperation(operation_object));
 ```
 
 </template>
@@ -395,9 +391,7 @@ import { createDirectus, rest, createOperations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createOperations( operations_object_array )
-);
+const result = await client.request(createOperations(operations_object_array));
 ```
 
 </template>
@@ -520,9 +514,7 @@ import { createDirectus, rest, updateOperation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateOperation( operation_id, partial_operation_object )
-);
+const result = await client.request(updateOperation(operation_id, partial_operation_object));
 ```
 
 </template>
@@ -620,9 +612,7 @@ import { createDirectus, rest, updateOperations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateOperations( operations_id_array, partial_operations_object )
-);
+const result = await client.request(updateOperations(operations_id_array, partial_operations_object));
 ```
 
 </template>
@@ -726,9 +716,7 @@ import { createDirectus, rest, deleteOperation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	deleteOperation( operation_id )
-);
+const result = await client.request(deleteOperation(operation_id));
 ```
 
 </template>
@@ -802,9 +790,7 @@ import { createDirectus, rest, deleteOperations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	deleteOperations( operations_id_array )
-);
+const result = await client.request(deleteOperations(operations_id_array));
 ```
 
 </template>
@@ -883,9 +869,7 @@ import { createDirectus, rest, triggerOperation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	triggerOperation( operation_id, webhook_payload_object )
-);
+const result = await client.request(triggerOperation(operation_id, webhook_payload_object));
 ```
 
 </template>

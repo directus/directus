@@ -84,9 +84,7 @@ import { createDirectus, rest, readWebhooks } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readWebhooks( query_object )
-);
+const result = await client.request(readWebhooks(query_object));
 ```
 
 </template>
@@ -174,9 +172,7 @@ import { createDirectus, rest, readWebhook } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readWebhook( webhook_id, query_object )
-);
+const result = await client.request(readWebhook(webhook_id, query_object));
 ```
 
 </template>
@@ -262,9 +258,7 @@ import { createDirectus, rest, createWebhook } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createWebhook( webhook_object )
-);
+const result = await client.request(createWebhook(webhook_object));
 ```
 
 </template>
@@ -370,9 +364,7 @@ import { createDirectus, rest, createWebhooks } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createWebhooks( webhook_object_array )
-);
+const result = await client.request(createWebhooks(webhook_object_array));
 ```
 
 </template>
@@ -498,9 +490,7 @@ import { createDirectus, rest, updateWebhook } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateWebhook( webhook_id, partal_webhook_object )
-);
+const result = await client.request(updateWebhook(webhook_id, partal_webhook_object));
 ```
 
 </template>
@@ -599,9 +589,7 @@ import { createDirectus, rest, updateWebhooks } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateWebhooks( webhook_id_array, partial_webhook_object )
-);
+const result = await client.request(updateWebhooks(webhook_id_array, partial_webhook_object));
 ```
 
 </template>
@@ -702,7 +690,7 @@ import { createDirectus, rest, deleteWebhook } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteWebhook( webhook_id ));
+const result = await client.request(deleteWebhook(webhook_id));
 ```
 
 </template>
@@ -778,7 +766,7 @@ import { createDirectus, rest, deleteWebhooks } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteWebhooks( webhook_id_array ));
+const result = await client.request(deleteWebhooks(webhook_id_array));
 ```
 
 </template>

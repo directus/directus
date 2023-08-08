@@ -112,9 +112,7 @@ import { createDirectus, rest, readPresets } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPresets( object_field )
-);
+const result = await client.request(readPresets(object_field));
 ```
 
 </template>
@@ -202,9 +200,7 @@ import { createDirectus, rest, readPreset } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPreset( preset_id, query_object )
-);
+const result = await client.request(readPreset(preset_id, query_object));
 ```
 
 </template>
@@ -289,9 +285,7 @@ import { createDirectus, rest, createPreset } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPreset( presets_object )
-);
+const result = await client.request(createPreset(presets_object));
 ```
 
 </template>
@@ -389,9 +383,7 @@ import { createDirectus, rest, createPresets } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPresets( presets_object_array )
-);
+const result = await client.request(createPresets(presets_object_array));
 ```
 
 </template>
@@ -513,9 +505,7 @@ import { createDirectus, rest, updatePresets } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePreset( preset_id, partial_preset_object)
-);
+const result = await client.request(updatePreset(preset_id, partial_preset_object));
 ```
 
 </template>
@@ -615,9 +605,7 @@ import { createDirectus, rest, updatePresets } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePresets( preset_id_array, partial_preset_object )
-);
+const result = await client.request(updatePresets(preset_id_array, partial_preset_object));
 ```
 
 </template>
@@ -717,7 +705,7 @@ import { createDirectus, rest, deletePreset } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePreset( preset_id ));
+const result = await client.request(deletePreset(preset_id));
 ```
 
 </template>
@@ -793,7 +781,7 @@ import { createDirectus, rest, deletePresets } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePreset( preset_id_array ));
+const result = await client.request(deletePreset(preset_id_array));
 ```
 
 </template>

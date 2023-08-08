@@ -86,9 +86,7 @@ import { createDirectus, rest, readRoles } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRoles( query_object )
-);
+const result = await client.request(readRoles(query_object));
 ```
 
 </template>
@@ -177,9 +175,7 @@ import { createDirectus, rest, readRole } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRole( role_id, query_object )
-);
+const result = await client.request(readRole(role_id, query_object));
 ```
 
 </template>
@@ -267,9 +263,7 @@ import { createDirectus, rest, createRole } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createRole( role_object )
-);
+const result = await client.request(createRole(role_object));
 ```
 
 </template>
@@ -377,9 +371,7 @@ import { createDirectus, rest, createRoles } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createRoles( role_object_array )
-);
+const result = await client.request(createRoles(role_object_array));
 ```
 
 </template>
@@ -508,9 +500,7 @@ import { createDirectus, rest, updateRole } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateRole( role_id, partial_role_object )
-);
+const result = await client.request(updateRole(role_id, partial_role_object));
 ```
 
 </template>
@@ -613,9 +603,7 @@ import { createDirectus, rest, updateRoles } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateRoles( role_id_array, partial_role_object )
-);
+const result = await client.request(updateRoles(role_id_array, partial_role_object));
 ```
 
 </template>
@@ -721,7 +709,7 @@ import { createDirectus, rest, deleteRole } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteRole( role_id ));
+const result = await client.request(deleteRole(role_id));
 ```
 
 </template>
@@ -797,7 +785,7 @@ import { createDirectus, rest, deleteRoles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteRoles( role_id_array ));
+const result = await client.request(deleteRoles(role_id_array));
 ```
 
 </template>

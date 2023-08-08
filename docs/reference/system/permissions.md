@@ -95,9 +95,7 @@ import { createDirectus, rest, readPermissions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPermissions( query_object )
-);
+const result = await client.request(readPermissions(query_object));
 ```
 
 </template>
@@ -186,9 +184,7 @@ import { createDirectus, rest, readPermission } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPermission( permission_id , query_object )
-);
+const result = await client.request(readPermission(permission_id, query_object));
 ```
 
 </template>
@@ -274,9 +270,7 @@ import { createDirectus, rest, createPermission } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPermission( permission_object )
-);
+const result = await client.request(createPermission(permission_object));
 ```
 
 </template>
@@ -380,9 +374,7 @@ import { createDirectus, rest, createPermissions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPermissions( permission_object_array )
-);
+const result = await client.request(createPermissions(permission_object_array));
 ```
 
 </template>
@@ -505,9 +497,7 @@ import { createDirectus, rest, updatePermission } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePermission( permission_id, partial_permission_object)
-);
+const result = await client.request(updatePermission(permission_id, partial_permission_object));
 ```
 
 </template>
@@ -606,9 +596,7 @@ import { createDirectus, rest, updatePermissions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePermissions( permission_id_array, permission_object_panel)
-);
+const result = await client.request(updatePermissions(permission_id_array, permission_object_panel));
 ```
 
 </template>
@@ -707,7 +695,7 @@ import { createDirectus, rest, deletePermission } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePermission( permission_id ));
+const result = await client.request(deletePermission(permission_id));
 ```
 
 </template>
@@ -783,7 +771,7 @@ import { createDirectus, rest, deletePermissions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePermissions( permission_id_array ));
+const result = await client.request(deletePermissions(permission_id_array));
 ```
 
 </template>

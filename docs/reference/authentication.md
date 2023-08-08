@@ -76,13 +76,13 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, login } from '@directus/sdk';
 
-const client = createDirectus('directus_project_url').with(authentication()).with(rest())
+const client = createDirectus('directus_project_url').with(authentication()).with(rest());
 
 // login using the authentication composable
-const result = await client.login( email,  password );
+const result = await client.login(email, password);
 
 // login http request
-const result = await client.request(login( email,  password ));
+const result = await client.request(login(email, password));
 ```
 
 </template>
@@ -158,7 +158,7 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, login } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest());
 
 // login using the authentication composable
 const result = await client.login('admin@example.com', 'd1r3ctu5');
@@ -208,13 +208,13 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, refresh } from '@directus/sdk';
 
-const client = createDirectus('directus_project_url').with(authentication()).with(rest())
+const client = createDirectus('directus_project_url').with(authentication()).with(rest());
 
 // refresh using the authentication composable
 const result = await client.refresh();
 
 // refresh http request
-const result = await client.request(refresh( refresh_token ));
+const result = await client.request(refresh(refresh_token));
 ```
 
 </template>
@@ -275,7 +275,7 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, refresh } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest());
 
 // refresh using the authentication composable
 const result = await client.refresh();
@@ -321,13 +321,13 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, logout } from '@directus/sdk';
 
-const client = createDirectus('directus_project_url').with(authentication()).with(rest())
+const client = createDirectus('directus_project_url').with(authentication()).with(rest());
 
 // logout using the authentication composable
 const result = await client.logout();
 
 // logout http request
-const result = await client.request(logout( refresh_token ));
+const result = await client.request(logout(refresh_token));
 ```
 
 </template>
@@ -369,7 +369,7 @@ mutation {
 ```js
 import { createDirectus, authentication, rest, logout } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest());
 
 // logout using the authentication composable
 const result = await client.logout();
@@ -417,7 +417,7 @@ import { createDirectus, rest, passwordRequest } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(passwordRequest( user_email ));
+const result = await client.request(passwordRequest(user_email));
 ```
 
 </template>
@@ -509,7 +509,7 @@ import { createDirectus, rest, passwordReset } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(passwordReset( reset_token, new_password ));
+const result = await client.request(passwordReset(reset_token, new_password));
 ```
 
 </template>

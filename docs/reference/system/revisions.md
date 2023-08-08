@@ -89,9 +89,7 @@ import { createDirectus, rest, readRevisions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRevisions( query_object )
-);
+const result = await client.request(readRevisions(query_object));
 ```
 
 </template>
@@ -180,9 +178,7 @@ import { createDirectus, rest, readRevision } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRevision( revision_id, query_object )
-);
+const result = await client.request(readRevision(revision_id, query_object));
 ```
 
 </template>

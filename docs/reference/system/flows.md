@@ -185,7 +185,7 @@ import { createDirectus, rest, readFlow } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFlow( flow_id , query_object ));
+const result = await client.request(readFlow(flow_id, query_object));
 ```
 
 </template>
@@ -271,9 +271,7 @@ import { createDirectus, rest, createFlow } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createFlow( flow_object )
-);
+const result = await client.request(createFlow(flow_object));
 ```
 
 </template>
@@ -372,9 +370,7 @@ import { createDirectus, rest, createFlows } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createFlows( flow_object_array )
-);
+const result = await client.request(createFlows(flow_object_array));
 ```
 
 </template>
@@ -491,9 +487,7 @@ import { createDirectus, rest, updateFlow } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFlow( flow_id, partial_flow_object )
-);
+const result = await client.request(updateFlow(flow_id, partial_flow_object));
 ```
 
 </template>
@@ -593,9 +587,7 @@ import { createDirectus, rest, updateFlows } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFlows( flow_id_array, partial_flow_object )
-);
+const result = await client.request(updateFlows(flow_id_array, partial_flow_object));
 ```
 
 </template>
@@ -699,7 +691,7 @@ import { createDirectus, rest, deleteFlow } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFlow( flow_id ));
+const result = await client.request(deleteFlow(flow_id));
 ```
 
 </template>
@@ -775,7 +767,7 @@ import { createDirectus, rest, deleteFlows } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFlows( flow_id_array ));
+const result = await client.request(deleteFlows(flow_id_array));
 ```
 
 </template>
@@ -854,9 +846,7 @@ import { createDirectus, rest, triggerFlow } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	triggerFlow( 'GET', flow_id, query_object )
-);
+const result = await client.request(triggerFlow('GET', flow_id, query_object));
 ```
 
 </template>
@@ -910,9 +900,7 @@ import { createDirectus, rest, triggerFlow } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	triggerFlow( 'POST', flow_id, webhook_payload )
-);
+const result = await client.request(triggerFlow('POST', flow_id, webhook_payload));
 ```
 
 </template>

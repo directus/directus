@@ -112,9 +112,7 @@ import { createDirectus, rest, readPanels } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPanels( query_object )
-);
+const result = await client.request(readPanels(query_object));
 ```
 
 </template>
@@ -202,9 +200,7 @@ import { createDirectus, rest, readPanel } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPanel( panel_id, query_object )
-);
+const result = await client.request(readPanel(panel_id, query_object));
 ```
 
 </template>
@@ -289,9 +285,7 @@ import { createDirectus, rest, createPanel } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPanel( panel_object )
-);
+const result = await client.request(createPanel(panel_object));
 ```
 
 </template>
@@ -393,9 +387,7 @@ import { createDirectus, rest, createPanels } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPanels( panel_object_array )
-);
+const result = await client.request(createPanels(panel_object_array));
 ```
 
 </template>
@@ -514,9 +506,7 @@ import { createDirectus, rest, updatePanel } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePanel( panel_id, partial_panel_object )
-);
+const result = await client.request(updatePanel(panel_id, partial_panel_object));
 ```
 
 </template>
@@ -617,9 +607,7 @@ import { createDirectus, rest, updatePanels } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePanels( panel_id_array, partial_panel_object )
-);
+const result = await client.request(updatePanels(panel_id_array, partial_panel_object));
 ```
 
 </template>
@@ -722,7 +710,7 @@ import { createDirectus, rest, deletePanel } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePanel( panel_id ));
+const result = await client.request(deletePanel(panel_id));
 ```
 
 </template>
@@ -798,7 +786,7 @@ import { createDirectus, rest, deletePanels } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePanels( panel_id_array ));
+const result = await client.request(deletePanels(panel_id_array));
 ```
 
 </template>

@@ -257,7 +257,7 @@ import { createDirectus, rest, readFieldsByCollection } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFieldsByCollection( collection_name ));
+const result = await client.request(readFieldsByCollection(collection_name));
 ```
 
 </template>
@@ -336,7 +336,7 @@ import { createDirectus, rest, readField } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readField( collection_name ,  field_name ));
+const result = await client.request(readField(collection_name, field_name));
 ```
 
 </template>
@@ -419,9 +419,9 @@ import { createDirectus, rest, createField } from '@directus/sdk';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createField( collection_name , {
-		field:  field_name ,
-		type:  field_type ,
+	createField(collection_name, {
+		field: field_name,
+		type: field_type,
 		field_field: value,
 	})
 );
@@ -543,9 +543,7 @@ import { createDirectus, rest, updateField } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateField( collection_name ,  field_name , partial_field_object )
-);
+const result = await client.request(updateField(collection_name, field_name, partial_field_object));
 ```
 
 </template>
@@ -671,7 +669,7 @@ import { createDirectus, rest, deleteField } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteField( collection_name , field_name ));
+const result = await client.request(deleteField(collection_name, field_name));
 ```
 
 </template>

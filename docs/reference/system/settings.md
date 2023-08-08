@@ -215,9 +215,7 @@ import { createDirectus, rest, updateSettings } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateSettings( settings_object )
-);
+const result = await client.request(updateSettings(settings_object));
 ```
 
 </template>

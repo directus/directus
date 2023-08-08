@@ -258,7 +258,7 @@ import { createDirectus, rest, readCollection } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readCollection( collection_name ));
+const result = await client.request(readCollection(collection_name));
 ```
 
 </template>
@@ -458,9 +458,7 @@ import { createDirectus, rest, updateCollection } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateCollection( collection_name , partial_collection_object )
-);
+const result = await client.request(updateCollection(collection_name, partial_collection_object));
 ```
 
 </template>
@@ -563,7 +561,7 @@ import { createDirectus, rest, deleteCollection } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteCollection( collection_name ));
+const result = await client.request(deleteCollection(collection_name));
 ```
 
 </template>

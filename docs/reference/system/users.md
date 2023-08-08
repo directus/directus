@@ -135,9 +135,7 @@ import { createDirectus, rest, readUsers } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readUsers( query_object )
-);
+const result = await client.request(readUsers(query_object));
 ```
 
 </template>
@@ -224,9 +222,7 @@ import { createDirectus, rest, readUser } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readUser( user_id, query_object )
-);
+const result = await client.request(readUser(user_id, query_object));
 ```
 
 </template>
@@ -310,9 +306,7 @@ import { createDirectus, rest, readMe } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readMe( query_object )
-);
+const result = await client.request(readMe(query_object));
 ```
 
 </template>
@@ -394,9 +388,7 @@ import { createDirectus, rest, updateMe } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateMe( partial_user_object )
-);
+const result = await client.request(updateMe(partial_user_object));
 ```
 
 </template>
@@ -486,9 +478,7 @@ import { createDirectus, rest, createUser } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createUser( user_object )
-);
+const result = await client.request(createUser(user_object));
 ```
 
 </template>
@@ -602,9 +592,7 @@ import { createDirectus, rest, createUsers } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createUsers( user_object_array )
-);
+const result = await client.request(createUsers(user_object_array));
 ```
 
 </template>
@@ -738,9 +726,7 @@ import { createDirectus, rest, updateUser } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateUser( user_id, partial_user_object )
-);
+const result = await client.request(updateUser(user_id, partial_user_object));
 ```
 
 </template>
@@ -840,9 +826,7 @@ import { createDirectus, rest, updateUsers } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateUsers( user_id_array, partial_user_object )
-);
+const result = await client.request(updateUsers(user_id_array, partial_user_object));
 ```
 
 </template>
@@ -945,7 +929,7 @@ import { createDirectus, rest, deleteUser } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteUser( user_id ));
+const result = await client.request(deleteUser(user_id));
 ```
 
 </template>
@@ -1021,7 +1005,7 @@ import { createDirectus, rest, deleteUsers } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteUsers( user_id_array ));
+const result = await client.request(deleteUsers(user_id_array));
 ```
 
 </template>
@@ -1110,9 +1094,7 @@ import { createDirectus, rest, inviteUser } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	inviteUser( invited_user_email,  invited_user_role )
-);
+const result = await client.request(inviteUser(invited_user_email, invited_user_role));
 ```
 
 </template>
@@ -1168,9 +1150,7 @@ import { createDirectus, rest, inviteUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7')
-);
+const result = await client.request(inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7'));
 ```
 
 </template>
@@ -1215,9 +1195,7 @@ import { createDirectus, rest, acceptUserInvite } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const reSUlt = await client.request(
-	acceptUserInvite( invite_token,  user_password )
-);
+const result = await client.request(acceptUserInvite(invite_token, user_password));
 ```
 
 </template>
@@ -1266,9 +1244,7 @@ import { createDirectus, rest, acceptUserInvite } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	acceptUserInvite('eyJh...KmUk', 'd1r3ctu5')
-);
+const result = await client.request(acceptUserInvite('eyJh...KmUk', 'd1r3ctu5'));
 ```
 
 </template>
@@ -1310,7 +1286,7 @@ import { createDirectus, rest, generateTwoFactorSecret } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(generateTwoFactorSecret( user_password ));
+const result = await client.request(generateTwoFactorSecret(user_password));
 ```
 
 </template>
@@ -1383,8 +1359,8 @@ Adds a TFA secret to the user account.
 
 ```json
 {
-	"otp": One_Time_Password,
-	"secret": Two-Factor_Authorization_secret
+	"otp": one_time_password,
+	"secret": two_factor_authorization_secret
 }
 ```
 
@@ -1407,9 +1383,7 @@ import { createDirectus, rest, enableTwoFactor } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	enableTwoFactor( secret,  otp )
-);
+const result = await client.request(enableTwoFactor(secret, otp));
 ```
 
 </template>
@@ -1460,9 +1434,7 @@ import { createDirectus, rest, enableTwoFactor } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	enableTwoFactor('123456', '3CtiutsNBmY3szHE')
-);
+const result = await client.request(enableTwoFactor('123456', '3CtiutsNBmY3szHE'));
 ```
 
 </template>
@@ -1481,7 +1453,7 @@ Disables two-factor authentication by removing the OTP secret from the user.
 
 ```json
 {
-	"otp": One-Time_Password
+	"otp": one_time_password
 }
 ```
 
@@ -1504,7 +1476,7 @@ import { createDirectus, rest, disableTwoFactor } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(disableTwoFactor( otp ));
+const result = await client.request(disableTwoFactor(otp));
 ```
 
 </template>

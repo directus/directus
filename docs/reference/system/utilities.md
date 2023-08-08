@@ -44,7 +44,7 @@ import { createDirectus, rest, generateHash } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(generateHash( string_to_hash ));
+const result = await client.request(generateHash(string_to_hash));
 ```
 
 </template>
@@ -132,7 +132,7 @@ import { createDirectus, rest, verifyHash } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(verifyHash( string_to_verify, hash ));
+const result = await client.request(verifyHash(string_to_verify, hash));
 ```
 
 </template>
@@ -231,9 +231,7 @@ import { createDirectus, rest, utilitySort } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	utilitySort( collection_name,  id_item_to_move,  id_item_moving_to )
-);
+const result = await client.request(utilitySort(collection_name, id_item_to_move, id_item_moving_to));
 ```
 
 </template>
@@ -284,9 +282,7 @@ import { createDirectus, rest, utilitySort } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	utilitySort('things', '2', '4')
-);
+const result = await client.request(utilitySort('things', '2', '4'));
 ```
 
 </template>
@@ -321,7 +317,7 @@ const client = createDirectus('directus_project_url').with(rest());
 const formData = new FormData();
 formData.append('file', raw_file);
 
-const result = await client.request(utilsImport( formData ));
+const result = await client.request(utilsImport(formData));
 ```
 
 </template>
