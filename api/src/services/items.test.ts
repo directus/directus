@@ -1,7 +1,7 @@
 import type { CollectionsOverview, NestedDeepQuery, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker, type RawQuery } from 'knex-mock-client';
 import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -161,48 +161,59 @@ describe('Integration Tests', () => {
 		const dbsWhichNeedReset: DatabaseClient[] = ['postgres'];
 		const item = { id: 42, name: 'random' };
 
-		it.each(dbsWhichDontNeedReset)(
-			'should not reset the databases auto increment sequence for %s of the databases',
-			async (client) => {
-				vi.mocked(getDatabaseClient).mockReturnValue(client);
+		function mockResetQuery() {
+			tracker.on
+				.any(({ sql }: RawQuery) => {
+					return sql.includes('WITH sequence_infos');
+				})
+				.responseOnce(42);
+		}
 
-				tracker.on.select(/select setval.* /).responseOnce(42);
-				tracker.on.insert('author').responseOnce(item);
-
-				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
-				await itemService.createOne(item, { emitEvents: false });
-
-				expect(tracker.history.select.length).toBe(0);
-			}
-		);
+		function historyIncludesResetStatement(): boolean {
+			return tracker.history.any.some((i) => i.sql.includes('WITH sequence_infos'));
+		}
 
 		it.each(dbsWhichNeedReset)('should reset the databases auto increment sequence for %s', async (client) => {
 			vi.mocked(getDatabaseClient).mockReturnValue(client);
 
-			tracker.on.select(/select setval.* /).responseOnce(42);
+			mockResetQuery();
 			tracker.on.insert('author').responseOnce(item);
 
 			const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
 			await itemService.createOne(item, { emitEvents: false });
 
-			expect(tracker.history.select.length).toBe(1);
+			expect(historyIncludesResetStatement()).toBe(true);
 		});
 
+		it.each(dbsWhichDontNeedReset)(
+			'should NOT reset the databases auto increment sequence for %s of the databases',
+			async (client) => {
+				vi.mocked(getDatabaseClient).mockReturnValue(client);
+
+				mockResetQuery();
+				tracker.on.insert('author').responseOnce(item);
+
+				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
+				await itemService.createOne(item, { emitEvents: false });
+
+				expect(historyIncludesResetStatement()).toBe(false);
+			}
+		);
+
 		it.each(DatabaseClients)(
-			'should not reset the databases auto increment sequence for %s when PK is not manually provided',
+			'should NOT reset the databases auto increment sequence for %s when PK is not manually provided',
 			async (client) => {
 				const itemWithoutPk = { name: 'John' };
 				vi.mocked(getDatabaseClient).mockReturnValue(client);
 
-				tracker.on.select(/select setval.* /).responseOnce(42);
+				mockResetQuery();
 				tracker.on.insert('author').response({ ...itemWithoutPk, id: 42 });
 				tracker.on.select('author').responseOnce(42);
 
 				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
 				await itemService.createOne(itemWithoutPk, { emitEvents: false });
 
-				const resetQueryInHistory = tracker.history.select.find((query) => query.sql.includes('select setval'));
-				expect(resetQueryInHistory).toBe(undefined);
+				expect(historyIncludesResetStatement()).toBe(false);
 			}
 		);
 	});
