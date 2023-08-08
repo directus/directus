@@ -10,6 +10,8 @@ import { DefineOperationVMFunction } from "./vm-functions/defineOperation/node.j
 import { DefineHookVMFunction } from "./vm-functions/defineHook/node.js";
 import { ApiServiceVMFunction } from "./vm-functions/apiServices/node.js";
 import { ConsoleVMFunction } from "./vm-functions/console/node.js";
+import type { EventHandler } from "../types/events.js";
+import emitter from "../emitter.js";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
@@ -46,18 +48,19 @@ export class VmManager {
 		this.createInspector(isolate.createInspectorSession())
 		const context = await isolate.createContext({ inspector: true });
 
-		this.prepareGeneralContext(context, extension)
+		await this.prepareGeneralContext(context, extension)
 
 		let runExtensionCode;
+		let hookEvents: EventHandler[] = []
 
 		if (extension.type === "endpoint") {
-			this.defineEndpoint.prepareContext(context, extension)
+			await this.defineEndpoint.prepareContext(context, extension)
 			runExtensionCode = `import ext from 'extension.js'; defineEndpoint(ext)`
 		} else if (extension.type === "hook") {
-			this.defineHook.prepareContext(context, extension)
+			hookEvents = await this.defineHook.prepareContext(context, extension)
 			runExtensionCode = `import ext from 'extension.js'; defineHook(ext)`
 		} else if (extension.type === "operation") {
-			this.defineOperation.prepareContext(context, extension)
+			await this.defineOperation.prepareContext(context, extension)
 			runExtensionCode = `import ext from 'extension.js'; defineOperationApi(ext)`
 		} else if (extension.type === "bundle") {
 			let hasHook = false;
@@ -76,16 +79,16 @@ export class VmManager {
 			runExtensionCode = `import {endpoints, hooks, operations} from 'extension.js';`
 
 			if (hasHook) {
-				this.defineHook.prepareContext(context, extension)
+				hookEvents = await this.defineHook.prepareContext(context, extension)
 				runExtensionCode += `for(let hook of hooks) { defineHook(hook.config) }`
 			}
 			if (hasOperation) {
-				this.defineOperation.prepareContext(context, extension)
+				await this.defineOperation.prepareContext(context, extension)
 				runExtensionCode += `for(let operation of operations) { defineOperationApi(operation.config) }`
 
 			}
 			if (hasEndpoint) {
-				this.defineEndpoint.prepareContext(context, extension)
+				await this.defineEndpoint.prepareContext(context, extension)
 				runExtensionCode += `for(let endpoint of endpoints) { defineEndpoint(endpoint.config) }`
 			}
 
@@ -109,6 +112,31 @@ export class VmManager {
 		}).catch((err: any) => {
 			console.log('Script failed:', err);
 		})
+
+		const unregister = async () => {
+			try {
+				isolate.dispose();
+				for (const event of hookEvents) {
+					switch (event.type) {
+						case 'filter':
+							emitter.offFilter(event.name, event.handler);
+							break;
+						case 'action':
+							emitter.offAction(event.name, event.handler);
+							break;
+						case 'init':
+							emitter.offInit(event.name, event.handler);
+							break;
+						case 'schedule':
+							await event.job.stop();
+							break;
+					}
+				}
+
+			} catch (err) { }
+		}
+
+		return unregister
 	}
 
 	private async prepareGeneralContext(context: Context, extension: ApiExtensionInfo) {
@@ -116,7 +144,7 @@ export class VmManager {
 		jail.setSync('global', jail.derefInto());
 
 		for (let vmFunction of this.vmFunctions) {
-			vmFunction.prepareContext(context, extension)
+			await vmFunction.prepareContext(context, extension)
 		}
 	}
 
