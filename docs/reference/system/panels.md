@@ -594,7 +594,7 @@ Update multiple existing panels.
 ```json
 {
 	"keys": panel_id_array,
-	"data": partial_panel_object 
+	"data": partial_panel_object
 }
 ```
 

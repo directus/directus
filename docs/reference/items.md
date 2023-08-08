@@ -905,8 +905,8 @@ Delete multiple existing items.
 <template #rest>
 
 `DELETE /items/:collection`
- 
-Provide an array of item primary keys or an object containing either `keys` or `query` as your request body. 
+
+Provide an array of item primary keys or an object containing either `keys` or `query` as your request body.
 
 </template>
 <template #graphql>

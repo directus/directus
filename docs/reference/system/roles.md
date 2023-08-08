@@ -245,6 +245,7 @@ Create a new role.
 <template #rest>
 
 `POST /roles`
+
 Provide a [role object](#the-role-object) as the body of your request.
 
 </template>
@@ -354,6 +355,7 @@ Create multiple new roles.
 <template #rest>
 
 `POST /roles`
+
 Provide an array of [role objects](#the-role-object) as the body of your request.
 
 </template>
@@ -484,6 +486,7 @@ Update an existing role.
 <template #rest>
 
 `PATCH /roles/:id`
+
 Provide a partial [role object](#the-role-object) as the body of your request.
 
 </template>
@@ -587,7 +590,7 @@ Update multiple existing roles.
 ```json
 {
 	"keys": role_id_array,
-	"data": partial_role_object 
+	"data": partial_role_object
 }
 ```
 

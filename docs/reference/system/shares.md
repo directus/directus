@@ -593,7 +593,7 @@ Update multiple existing shares.
 ```json
 {
 	"keys": share_id_array,
-	"data": partial_share_object 
+	"data": partial_share_object
 }
 ```
 

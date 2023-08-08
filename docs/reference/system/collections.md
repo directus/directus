@@ -317,7 +317,8 @@ Create a new Collection. This will create a new table in the database as well.
 
 `POST /collections`
 
-Provide an [collection object](#the-collection-object) as the body of your request with a `collection` name property being a required field.
+Provide an [collection object](#the-collection-object) as the body of your request with a `collection` name property
+being a required field.
 
 </template>
 <template #graphql>

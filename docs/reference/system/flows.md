@@ -570,7 +570,7 @@ Update multiple existing flows.
 ```json
 {
 	"keys": flow_id_array,
-	"data": partial_flow_object 
+	"data": partial_flow_object
 }
 ```
 
@@ -754,7 +754,7 @@ Delete multiple existing flows.
 
 `DELETE /flows`
 
-Provide an array of flow ids as your request body. 
+Provide an array of flow ids as your request body.
 
 </template>
 <template #graphql>

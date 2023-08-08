@@ -592,7 +592,7 @@ Update multiple existing presets.
 ```json
 {
 	"keys": preset_id_array,
-	"data": partial_preset_object 
+	"data": partial_preset_object
 }
 ```
 

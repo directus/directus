@@ -576,7 +576,7 @@ Update multiple existing webhooks.
 ```json
 {
 	"keys": webhook_id_array,
-	"data": partial_webhook_object 
+	"data": partial_webhook_object
 }
 ```
 

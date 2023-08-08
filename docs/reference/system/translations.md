@@ -412,7 +412,7 @@ Update multiple existing translations.
 ```json
 {
 	"keys": translation_id_array,
-	"data": partial_translation_object 
+	"data": partial_translation_object
 }
 ```
 

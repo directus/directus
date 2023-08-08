@@ -478,7 +478,6 @@ notification email to be sent.
 
 Provide a partial [notification object](#the-notification-object) as the body of your request.
 
-
 </template>
 <template #graphql>
 
@@ -577,7 +576,7 @@ Update multiple existing notifications.
 ```json
 {
 	"keys": notification_id_array,
-	"data": partial_notification_object 
+	"data": partial_notification_object
 }
 ```
 
@@ -757,7 +756,7 @@ Delete multiple existing notifications.
 
 `DELETE /notifications`
 
-Provide an array of notification ids as your request body. 
+Provide an array of notification ids as your request body.
 
 </template>
 <template #graphql>

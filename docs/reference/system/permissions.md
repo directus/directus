@@ -583,7 +583,7 @@ Update multiple existing permissions rules.
 ```json
 {
 	"keys": permission_id_array,
-	"data": partial_permission_object 
+	"data": partial_permission_object
 }
 ```
 

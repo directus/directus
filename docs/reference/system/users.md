@@ -817,7 +817,7 @@ Update multiple existing users.
 ```json
 {
 	"keys": user_id_array,
-	"data": partial_user_object 
+	"data": partial_user_object
 }
 ```
 

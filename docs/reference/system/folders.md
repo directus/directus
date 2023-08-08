@@ -521,7 +521,7 @@ Update multiple existing folders.
 ```json
 {
 	"keys": folder_id_array,
-	"data": partial_folder_object 
+	"data": partial_folder_object
 }
 ```
 
@@ -716,7 +716,7 @@ Any files in these folders will be moved to the root folder.
 
 `DELETE /folders`
 
-Provide an array of item ids as your request body. 
+Provide an array of item ids as your request body.
 
 </template>
 <template #graphql>

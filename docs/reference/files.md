@@ -501,7 +501,7 @@ Import a file from the web
 ```json
 {
 	"url": file_url ,
-	"data": file_object 
+	"data": file_object
 }
 ```
 

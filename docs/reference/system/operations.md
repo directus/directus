@@ -358,6 +358,7 @@ Create multiple new operations.
 <template #rest>
 
 `POST /operations`
+
 Provide an array of [operations objects](#the-operations-object) as the body of your request.
 
 ```json
@@ -596,7 +597,7 @@ Update multiple existing operations.
 ```json
 {
 	"keys": operation_id_array,
-	"data": partial_operation_object 
+	"data": partial_operation_object
 }
 ```
 
