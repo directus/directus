@@ -216,6 +216,9 @@ await directus.request(
 				url="/guides/real-time/chat/react"
 			/>
 		</div>
+		<div :class="$style.header">
+			<Button href="/guides">View All Guides</Button>
+		</div>
 	</div>
 </section>
 
