@@ -143,8 +143,8 @@ To keep things organized, we recommend that you namespace each collection with a
    - headline (Type: String, Interface: Input)
    - content (Type: Text, Interface: WYSIWYG)
    - group_type (Type: String, Interface: Radio, Options: ['posts', 'custom'] )
-   - posts (Type: M2M, Conditions: group_type === 'posts')
-   - cards (Type: M2O, Conditions: group_type === 'custom')
+   - posts (Type: M2M, Conditions: Hide Field on Detail IF group_type === 'posts', Related Collection: posts)
+   - cards (Type: O2M, Conditions: Hide Field on Detail IF group_type === 'custom', Related Collection: block_cardgroup_cards)
    ```
 
 ### Create the Pages Collection
