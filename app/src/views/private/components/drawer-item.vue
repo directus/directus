@@ -21,7 +21,7 @@
 
 		<div class="drawer-item-content">
 			<file-preview
-				v-if="junctionField && file"
+				v-if="file"
 				:src="file.src"
 				:mime="file.type"
 				:width="file.width"
@@ -241,8 +241,8 @@ function useFile() {
 	});
 
 	const file = computed(() => {
-		if (isDirectusFiles.value === false || !initialValues.value || !props.junctionField) return null;
-		const fileData = initialValues.value?.[props.junctionField];
+		if (isDirectusFiles.value === false || !initialValues.value) return null;
+		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
 		if (!fileData) return null;
 
 		const src = `assets/${fileData.id}?key=system-large-contain`;
@@ -355,7 +355,7 @@ function useRelation() {
 	});
 
 	const relatedCollection = computed<string | null>(() => {
-		if (!props.junctionField) return null;
+		if (!props.junctionField) return props.collection;
 
 		// If this is a m2m/m2a, there will be 2 relations associated with this field
 		const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
