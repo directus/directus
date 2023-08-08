@@ -126,8 +126,6 @@ In order to use this hook in Directus, you must first install the dependency int
 
 With Twilio now integrated in this hook, whenever a record attempts to save for the first time, this hook will validate the phone number with Twilio and respond with true or false. If false, the record is prevented from saving until a valid phone number is supplied. Now that you know how to interact with the Twilio API, you can investigate other endpoints that Twilio has to offer.
 
----
-
 ## Complete Code
 
 `index.js`

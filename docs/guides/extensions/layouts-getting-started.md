@@ -168,8 +168,6 @@ To use your new layout in Directus, you will need a table that already contains 
 
 You have created a custom layout which uses the built-in functions to fetch all items for the current collection and provide search and filter options. Spend time designing the output of your layout to suit your needs. Use your browser’s development console to see how the API is called.
 
----
-
 ## Complete Code
 
 `index.js`

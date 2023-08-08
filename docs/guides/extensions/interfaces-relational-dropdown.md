@@ -371,8 +371,6 @@ The interface will appear in the list of available interfaces. Create a new fiel
 
 With this interface, you have learned how to use input fields to configure your interface, including display template, standard input and a filter builder. You also learned how to fetch data from the related collection, emitting values to the database and use built-in components to easily build the interactive field.
 
----
-
 ## Complete Code
 
 `index.js`

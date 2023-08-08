@@ -137,8 +137,6 @@ In order to use this hook in Directus, you must first install the dependency int
 
 With Stripe now integrated in this hook, whenever a new customer is created, this hook will create a customer in Stripe and write back the customer ID to Directus. Now that you know how to interact with the Stripe API, you can investigate other endpoints that Stripe has to offer.
 
----
-
 ## Complete Code
 
 `index.js`

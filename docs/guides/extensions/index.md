@@ -30,7 +30,7 @@
 ## Operations
 
 - Send Batch Email With A Third-Party Service (TBC)
-- Add Comments To An Item
+- [Use Custom Operations to Add an Item Comment](/guides/extensions/flows-add-record-comments)
 - Send SMS Message With Vonage
 
 ## Modules

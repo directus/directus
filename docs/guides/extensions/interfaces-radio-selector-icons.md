@@ -457,8 +457,6 @@ The interface will appear in the list of available interfaces. Create a new fiel
 
 With this interface, you have seen how to use input fields to configure your interface, including string, text, icon picker, image and lists. You have also learned how to fetch an access token for rendering images, emitting values to the database and use Vue to render interactive HTML and SCSS.
 
----
-
 ## Complete Code
 
 `index.js`

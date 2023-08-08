@@ -295,8 +295,6 @@ Now the display will appear in the list of available displays for relational fie
 
 With this display, you have learned how to interact with relational fields and values for a display and use options to customize the output. Be mindful of how much processing is happening inside a display because it will run for every single row in the table and will impact the performance of Directus.
 
----
-
 ## Complete Code
 
 `index.js`

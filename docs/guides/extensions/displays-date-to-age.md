@@ -169,8 +169,6 @@ Now the display will appear in the list of available displays for a date field. 
 
 With this display, you have learned how to use a boolean field to configure a display, then create a function to transform the value using an imported package. Be mindful how much processing is happening inside a display because it will run for every single row in the table.
 
----
-
 ## Complete Code
 
 `index.js`
