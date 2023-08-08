@@ -3,7 +3,7 @@ description: Learn how to use a hook to validate phone numbers before allowing t
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
-# Use Hooks To Validate Phone Numbers With Twilio
+# Use Hooks to Validate Phone Numbers With Twilio
 
 Hooks allow you to trigger your own code when events are emitted from Directus. This guide will show you how to prevent
 a record from saving if a phone number is not valid using the Twilio Lookup API.

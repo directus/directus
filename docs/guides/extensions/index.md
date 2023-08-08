@@ -2,44 +2,36 @@
 
 ## Displays
 
-- [Use Displays To Format Date As An Age](/guides/extensions/displays-date-to-age.html)
-- [Use Displays To Summarize Relational Items](/guides/extensions/displays-relational-summaries.html)
+- [Use Displays To Format Date As An Age](/guides/extensions/displays-date-to-age)
+- [Use Displays To Summarize Relational Items](/guides/extensions/displays-relational-summaries)
 
 ## Email Templates
 
-- [Create An Email Template With Dynamic Values](/guides/extensions/email-template.html)
+- [Create An Email Template With Dynamic Values](/guides/extensions/email-template)
 
 ## Hooks
 
-- [Use Hooks to Create Stripe Customers](/guides/extensions/hooks-add-stripe-customer.html)
-- [Use Hooks To Validate Phone Numbers With Twilio](/guides/extensions/hooks-validate-number-twilio.html)
+- [Use Hooks to Create Stripe Customers](/guides/extensions/hooks-add-stripe-customer)
+- [Use Hooks to Validate Phone Numbers With Twilio](/guides/extensions/hooks-validate-number-twilio)
 
 ## Interfaces
 
-- [Create A Radio Selector With Icons, SVG, or Images](/guides/extensions/interfaces-radio-selector-icons.html)
-- [Create A Searchable Dropdown With Items From Another Collection](/guides/extensions/interfaces-relational-dropdown.html)
+- [Create A Radio Selector With Icons, SVG, or Images](/guides/extensions/interfaces-radio-selector-icons)
+- [Create A Searchable Dropdown With Items From Another Collection](/guides/extensions/interfaces-relational-dropdown)
 
 ## Layouts
 
-- [Create Your First Layout Extension](/guides/extensions/layouts-getting-started.html)
+- [Create Your First Layout Extension](/guides/extensions/layouts-getting-started)
 
 ## Panels
 
-- Show Two Data Timeseries On One Chart
-- Show Delta (Real/% Change) Between Values
-- Show Third-Party Data Without Storing It
-- Send SMS Messages with Twilio
+- [Create An Interactive Panel To Send SMS With Twilio](/guides/extensions/panels-send-sms-twilio)
 
 ## Operations
 
 - [Use Custom Operations to Send Bulk Email With SendGrid](/guides/extensions/operations-bulk-email-sendgrid)
 - [Use Custom Operations to Add an Item Comment](/guides/extensions/operations-add-record-comments)
 - [Use Custom Operations to Send SMS Notifications With Twilio](/guides/extensions/operations-send-sms-twilio)
-
-## Modules
-
-- Show Data From Third-Party APIs
-- Build An Information Portal
 
 ## Endpoints
 
