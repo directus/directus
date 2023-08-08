@@ -8,6 +8,7 @@ import { FetchVMFunction } from "./vm-functions/fetch/node.js";
 import { DefineEndpointVMFunction } from "./vm-functions/defineEndpoint/node.js";
 import { DefineOperationVMFunction } from "./vm-functions/defineOperation/node.js";
 import { DefineHookVMFunction } from "./vm-functions/defineHook/node.js";
+import { ApiServiceVMFunction } from "./vm-functions/apiServices/node.js";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
@@ -27,6 +28,7 @@ export class VmManager {
 		this.extensionManager = extensionManager;
 
 		this.vmFunctions.push(new FetchVMFunction())
+		this.vmFunctions.push(new ApiServiceVMFunction())
 		this.defineEndpoint = new DefineEndpointVMFunction(this.extensionManager)
 		this.defineHook = new DefineHookVMFunction()
 		this.defineOperation = new DefineOperationVMFunction()
