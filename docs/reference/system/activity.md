@@ -69,7 +69,7 @@ Returns a list of activity actions.
 
 `SEARCH /activity`
 
-If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request
 
 </template>
 <template #graphql>

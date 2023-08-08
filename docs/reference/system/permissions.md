@@ -74,7 +74,7 @@ other than the current user's role won't be returned.
 
 `SEARCH /permissions`
 
-If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request
 
 </template>
 <template #graphql>

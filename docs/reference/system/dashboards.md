@@ -62,7 +62,7 @@ List all dashboards that exist in Directus.
 
 `SEARCH /dashboards`
 
-If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request
 
 </template>
 <template #graphql>
@@ -233,7 +233,7 @@ Create a new dashboard.
 
 `POST /dashboards`
 
-Provide an [dashboard object](#the-dashboard-object) as the body of your request.
+Provide a [dashboard object](#the-dashboard-object) as the body of your request.
 
 </template>
 <template #graphql>

@@ -250,7 +250,7 @@ Create a new flow.
 
 `POST /flows`
 
-Provide an [flow object](#the-flow-object) as the body of your request.
+Provide a [flow object](#the-flow-object) as the body of your request.
 
 </template>
 <template #graphql>

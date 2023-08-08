@@ -155,7 +155,7 @@ List the available collections.
 
 `SEARCH /collections`
 
-If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request
 
 </template>
 <template #graphql>
@@ -317,7 +317,7 @@ Create a new Collection. This will create a new table in the database as well.
 
 `POST /collections`
 
-Provide an [collection object](#the-collection-object) as the body of your request with a `collection` name property
+Provide a [collection object](#the-collection-object) as the body of your request with a `collection` name property
 being a required field.
 
 </template>

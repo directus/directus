@@ -396,8 +396,8 @@ Create a new field in the given collection.
 
 `POST /fields/:collection`
 
-Provide an [collection object](#the-collection-object) as the body of your request with `field` and `type` being
-required parameters.
+Provide a [collection object](#the-collection-object) as the body of your request with `field` and `type` being required
+parameters.
 
 </template>
 <template #graphql>
