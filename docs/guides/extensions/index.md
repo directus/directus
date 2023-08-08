@@ -43,4 +43,5 @@
 
 ## Endpoints
 
-- [Use Custom Endpoints to Create an API Proxy](/guides/extensions/api-proxy-twilio)
+- [Use Custom Endpoints to Create an API Proxy](/guides/extensions/endpoints-api-proxy-twilio)
+- [Use Custom Endpoints to Create Privileged API Endpoints](/guides/extensions/endpoints-privileged-endpoint-stripe)

@@ -26,7 +26,7 @@ npm init directus-extension
 A list of options will appear (choose operation), and type a name for your extension (for example,
 `directus-endpoint-twilio`). For this guide, select JavaScript.
 
-Now the operation has been created, go into the current directory and build the extension. This must be performed
+Now the endpoint has been created, go into the current directory and build the extension. This must be performed
 whenever your changes are ready to be deployed.
 
 ```
@@ -119,7 +119,7 @@ npm run build
 1. In the Directus extensions directory, open the operations directory and make a new directory called
    `directus-endpoint-twilio`.
 2. From the operation's directory, open the **dist** folder and copy the `index.js` file into the directory.
-3. Update the .env file and add the Stripe API key with the `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` variables.
+3. Update the .env file and add the `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` variables.
 4. Restart Directus to load the extension.
 
 ## Use the Endpoint
