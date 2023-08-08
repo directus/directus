@@ -182,7 +182,7 @@ gtag('config', 'UA-24637628-7');
 			];
 		}
 
-		switch(pageData.frontmatter.type) {
+		switch (pageData.frontmatter.type) {
 			case 'blog-post':
 				pageData.title = pageData.params.title;
 				pageData.description = pageData.params.summary;
@@ -244,9 +244,9 @@ function sidebarTypedocs() {
 }
 
 function sidebarGuides() {
-	const guideSections = guides.sections.map(section => ({ 
+	const guideSections = guides.sections.map((section) => ({
 		text: section.title,
-		link: `/guides/${section.indexPath}`
+		link: `/guides/${section.indexPath}`,
 	}));
 
 	return guideSections;
@@ -500,7 +500,7 @@ function sidebar() {
 					text: 'SDK Quickstart',
 					link: '/guides/sdk/getting-started',
 				},
-				...sidebarGuides()
+				...sidebarGuides(),
 			],
 		},
 		{

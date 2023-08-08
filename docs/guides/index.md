@@ -8,4 +8,3 @@ import GuidesIndex from '../.vitepress/components/guides/GuidesIndex.vue'
 </script>
 
 <GuidesIndex />
-
