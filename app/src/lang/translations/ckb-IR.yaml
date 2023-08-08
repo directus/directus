@@ -445,11 +445,6 @@ open_file_in_tab: کردنەوەی پەڕگە لە پەنجەرەی نوێدا
 start_export: دەستپێکردنی هەناردەکردن
 not_available_for_local_downloads: بەردەست نییە بۆ داگرتنە نێوخۆیەکان
 exporting_all_items_in_collection: هەناردەکردنی سەرجەم {total} مادەکان لە کۆمەڵەی {collection}.
-exporting_limited_items_in_collection: هەناردەکردنی {limit} لە کۆی {total} مادە لە کۆمەڵەی {collection}.
-exporting_no_items_to_export: هیچ مادەیەک نییە بۆ هەناردە. ڕێکخستنی هەناردە لە خوارەوە ڕێکبخە.
-exporting_download_hint: کاتێک تەواوبوو، ئەم پەڕگە {format} ـە خۆکارانە دادەگیرێتە ناو ئامێرەکەتەوە.
-exporting_batch_hint: ئەم هەناردەکردنە بە وەجبە جێبەجێ دەکرێت، کاتێک تەواو بوو، پەڕگەی {format} لە پێشانگای پەڕگەکاندا پاشەکەوت دەبێت.
-exporting_batch_hint_forced: بەهۆی گەورەیی ژمارەی مادەکان، ئەم هەناردەکردنە پێویستە بە وەجبە جێبەجێ بکرێت، وە لەکاتێکدا تەواوبوو، پەڕگەی {format} پاشەکەوت دەبێت لە پێشانگای پەڕگەکان.
 collection_key: کلیلی کۆمەڵە
 name: ناو
 primary_key_field: خانەی کلیلە وشە
@@ -1943,6 +1938,7 @@ operations:
   notification:
     recipient: بەکارهێنەر
     message: پەیام
+    subject: بابەت
   request:
     url: بەستەر
     method: ڕێگە

@@ -7,10 +7,8 @@ pageClass: page-reference
 # Authentication
 
 > All data within the platform is private by default. The
-> [public role](/app/users-roles-permissions#configure-permissions) can be configured to expose data without
-> authentication, or you can pass an access token to the API to access private data.
-
----
+> [public role](/user-guide/user-management/users-roles-permissions#configure-permissions) can be configured to expose
+> data without authentication, or you can pass an access token to the API to access private data.
 
 ## Access Tokens
 
@@ -38,13 +36,61 @@ the request's Authorization Header.
 Authorization: Bearer <token>
 ```
 
----
-
 ## Login
 
 Retrieve a temporary access token and refresh token.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/login`
+
+`POST /auth/login/:provider`
+
+```json
+{
+	"email": "user_email",
+	"password": "user_password"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_login(email: "user_email", password: "user_password") {
+		access_token
+		refresh_token
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, login } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// login using the authentication composable
+const result = await client.login('email', 'password');
+
+// login http request
+const result = await client.request(login('email', 'password'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `email` **Required**\
 Email address of the user you're retrieving the access token for.
@@ -59,7 +105,7 @@ The user's one-time-password (if MFA is enabled).
 Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
 Defaults to `json`.
 
-### Response Attributes
+### Response
 
 `access_token` **string**\
 Temporary access token to be used in follow-up requests.
@@ -78,15 +124,14 @@ The token's expiration time can be configured through
 
 :::
 
-### REST API
+### Example
 
-```
-POST /auth/login
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-```
-POST /auth/login/:provider
-```
+`POST /auth/login`
+
+`POST /auth/login/:provider`
 
 ```json
 {
@@ -95,11 +140,10 @@ POST /auth/login/:provider
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -110,13 +154,79 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, login } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// login using the authentication composable
+const result = await client.login('admin@example.com', 'd1r3ctu5');
+
+// login http request
+const result = await client.request(login('admin@example.com', 'd1r3ctu5'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Refresh
 
 Retrieve a new access token using a refresh token.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/refresh`
+
+```json
+{
+	"refresh_token": "gmPd...8wuB",
+	"mode": "json"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_refresh(refresh_token: "abc...def", mode: json) {
+		access_token
+		refresh_token
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, refresh } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// refresh using the authentication composable
+const result = await client.refresh();
+
+// refresh http request
+const result = await client.request(refresh('refresh_token'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `refresh_token`\
 The refresh token to use. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have to submit
@@ -125,7 +235,7 @@ it here.
 `mode`\
 Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
 
-### Response Attributes
+### Response
 
 `access_token` **string**\
 Temporary access token to be used in follow-up requests.
@@ -137,11 +247,12 @@ How long before the access token will expire. Value is in milliseconds.
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
 as the mode in the request, the refresh token won't be returned in the JSON.
 
-### REST API
+### Example
 
-```
-POST /auth/refresh
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/refresh`
 
 ```json
 {
@@ -150,11 +261,10 @@ POST /auth/refresh
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -165,23 +275,86 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, refresh } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// refresh using the authentication composable
+const result = await client.refresh();
+
+// refresh http request
+const result = await client.request(refresh('gmPd...8wuB'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Logout
 
 Invalidate the refresh token thus destroying the user's session.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/logout`
+
+```json
+{
+	"refresh_token": "refresh_token"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_logout(refresh_token: "refresh_token")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, logout } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// logout using the authentication composable
+const result = await client.logout();
+
+// logout http request
+const result = await client.request(logout('refresh_token'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `refresh_token`\
 The refresh token to invalidate. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have
 to submit it here.
 
-### REST API
+### Example
 
-```
-POST /auth/logout
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/logout`
 
 ```json
 {
@@ -189,11 +362,10 @@ POST /auth/logout
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -201,13 +373,70 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, logout } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// logout using the authentication composable
+const result = await client.logout();
+
+// logout http request
+const result = await client.request(logout('gmPd...8wuB'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Request Password Reset
 
 Request a password reset email to be sent to the given user.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/password/request`
+
+```json
+{
+	"email": "user_email"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_password_request(email: "user_email")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordRequest } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordRequest('user_email'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `email` **Required**\
 Email address of the user you're requesting a password reset for.
@@ -217,11 +446,12 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 **Note**: You need to configure the
 [`PASSWORD_RESET_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
 
-### REST API
+### Example
 
-```
-POST /auth/password/request
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/password/request`
 
 ```json
 {
@@ -229,11 +459,10 @@ POST /auth/password/request
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -241,14 +470,67 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordRequest } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordRequest('admin@example.com'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Reset a Password
 
 The request a password reset endpoint sends an email with a link to the admin app (or a custom route) which in turn uses
 this endpoint to allow the user to reset their password.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/password/reset`
+
+```json
+{
+	"token": "password_reset_token",
+	"password": "password"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_password_reset(token: "password_reset_token", password: "password")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordReset } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordReset('reset_token', 'new_password'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `token` **Required**\
 Password reset token, as provided in the email sent by the request endpoint.
@@ -256,11 +538,12 @@ Password reset token, as provided in the email sent by the request endpoint.
 `password` **Required**\
 New password for the user.
 
-### REST API
+### Example
 
-```
-POST /auth/password/reset
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /auth/password/reset`
 
 ```json
 {
@@ -269,11 +552,10 @@ POST /auth/password/reset
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -281,7 +563,20 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordReset } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordReset('reset_token', 'new_password'));
+```
+
+</template>
+</SnippetToggler>
 
 ## List Auth Providers
 
@@ -294,17 +589,12 @@ To learn more about setting up auth providers, see
 
 :::
 
-### Response Attributes
+### Request
 
-`data` **Array**\
-Array of configured auth providers.
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<template #rest>
 
-`disableDefault` **boolean**\
-Whether or not the default authentication provider is disabled.
-
-```
-GET /auth
-```
+`GET /auth`
 
 ```json
 {
@@ -328,14 +618,79 @@ GET /auth
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readProviders } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readProviders());
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+`data` **Array**\
+Array of configured auth providers.
+
+`disableDefault` **boolean**\
+Whether or not the default authentication provider is disabled.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<template #rest>
+
+`GET /auth`
+
+```json
+{
+	"data": [
+		{
+			"name": "GitHub",
+			"driver": "oauth2",
+			"icon": "github"
+		},
+		{
+			"name": "Google",
+			"driver": "openid",
+			"icon": "google"
+		},
+		{
+			"name": "Okta",
+			"driver": "openid"
+		}
+	],
+	"disableDefault": false
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readProviders } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readProviders());
+```
+
+</template>
+</SnippetToggler>
 
 ## Login Using SSO Providers
 
 Will redirect to the configured SSO provider for the user to login.
 
+### Request
+
 ```
 GET /auth/login/:provider
 ```
-
----

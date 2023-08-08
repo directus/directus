@@ -12,7 +12,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -29,10 +29,10 @@ This recipe explains how to schedule content to be published on a future date fo
 Scheduling content has fewer steps for a dynamic site. Since you are calling your Directus API at the time that a
 visitor requests a page from your site, all you need to do is add a filter to your query.
 
-:::info Note
+::: info Note
 
 If your site is statically generated and your content fetched at build time, please
-[follow the recipe for static sites](/guides/headless-cms/schedule-content/static-sites).
+[follow the guide for static sites](/guides/headless-cms/schedule-content/static-sites).
 
 :::
 
@@ -42,7 +42,7 @@ If your site is statically generated and your content fetched at build time, ple
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have already created a collection for your site content like `articles` or `posts` or `pages` with a
 field `status` that controls the published state.
@@ -67,7 +67,7 @@ field `status` that controls the published state.
 
 ### Add Some Content and Set a Publish Date
 
-4. [Create or update an Item](/app/content/items) inside your Collection
+4. [Create or update an Item](/user-guide/content-module/content/items) inside your Collection
 
    ![A content item within the Articles collection is shown. The title is "What is Headless CMS?". English translations are also shown with a Summary field. The Summary reads "A quick overview of what Headless CMS is and how it's beneficial to your team."](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-create-content-published.webp)
 
@@ -85,7 +85,7 @@ field `status` that controls the published state.
 
 #### Examples
 
-:::tip
+::: tip
 
 In these examples, we're using an [AND logical operator](/reference/filter-rules#logical-operators) to only return
 records that match both conditions. This provides a little more control over your published content by ensuring only
@@ -93,48 +93,59 @@ articles that have a publish date AND have the `published` state are displayed o
 
 :::
 
-Using the [Directus JavaScript SDK](/reference/sdk) (preferred)
+Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 
 ```js
-const articles = await directus.items('articles').readByQuery({
-  filter: {
-    _and: [
-      {
-        status: {
-          _eq: 'published',
-        },
-      },
-      {
-        date_published: {
-          _lte: '$NOW',
-        },
-      },
-    ],
-  },
-});
+// Initialize the SDK.
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const directus = createDirectus('https://directus.example.com').with(rest());
+
+const articles = await directus.request(
+	readItems('articles', {
+		filter: {
+			_and: [
+				{
+					status: {
+						_eq: 'published',
+					},
+				},
+				{
+					date_published: {
+						_lte: '$NOW',
+					},
+				},
+			],
+		},
+	})
+);
 ```
 
 Using the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) (JavaScript)
 
 ```js
-const response = await fetch('https://yourdirectusurl.com/items/articles?' + new URLSearchParams({
-		filter: {
-			_and: [
-				{
-					status: {
-						_eq: "published"
-					}
-				},
-				{
-					date_published: {
-						_lte: "$NOW"
-					}
-				},
-			]
-		}
-})
-const articles = await response.json()
+const response = await fetch(
+	'https://yourdirectusurl.com/items/articles?' +
+		new URLSearchParams({
+			filter: {
+				_and: [
+					{
+						status: {
+							_eq: 'published',
+						},
+					},
+					{
+						date_published: {
+							_lte: '$NOW',
+						},
+					},
+				],
+			},
+		})
+);
 
+const articles = await response.json();
 ```
 
 ## Final Tips
@@ -142,5 +153,5 @@ const articles = await response.json()
 **Tips**
 
 - If you're not receiving the data you expect, double-check your [filter rule](/reference/filter-rules) syntax.
-- Also be sure you have enabled the proper [permissions](/app/users-roles-permissions/permissions) for your content
+- Also be sure you have enabled the proper [permissions](/user-guide/user-management/permissions) for your content
   Collection.

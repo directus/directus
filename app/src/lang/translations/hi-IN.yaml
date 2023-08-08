@@ -510,5 +510,6 @@ operations:
   notification:
     recipient: यूज़र
     message: संदेश
+    subject: विषय
   request:
     url: URL

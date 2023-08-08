@@ -8,8 +8,6 @@ pageClass: page-reference
 
 > Flows enable custom, event-driven data processing and task automation within Directus.
 
----
-
 ## The Flow Object
 
 `id` **uuid**\
@@ -64,35 +62,23 @@ UUID of the operation connected to the trigger in the flow.
 }
 ```
 
----
-
 ## List Flows
 
 List all flows that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /flows`
 
-An array of up to [limit](/reference/query#limit) [flow objects](#the-flow-object). If no items are available, data will
-be an empty array.
+`SEARCH /flows`
 
-### REST API
+</template>
+<template #graphql>
 
-```
-GET /flows
-SEARCH /flows
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -100,7 +86,45 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readFlows(query));
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [flow objects](#the-flow-object). If no items are available, data will
+be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /flows`
+
+`SEARCH /flows`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -112,37 +136,40 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readFlows({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a flow
 
 List an existing flow by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /flows/:id`
 
-Returns the requested [flow object](#the-flow-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /flows/:id
-```
-
-##### Example
-
-```
-GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -150,7 +177,40 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readFlow('flow_id', query));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [flow object](#the-flow-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -162,47 +222,48 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readFlow('4c01419e-0797-4f43-b95e-cbaebd2ac118', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Flow
 
 Create a new flow.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [flow object](#the-flow-object).
-
-### Returns
-
-Returns the [flow object](#the-flow-object) for the created flow.
-
-### REST API
-
-```
-POST /flows
-```
-
-##### Example
+`POST /flows`
 
 ```json
-// POST /flows
-
 {
-	"name": "My Flow",
-	"status": "active",
-	"trigger": "manual"
+	"flow_object_field_1": "value_1",
+	"flow_object_field_2": "value_2",
+	"flow_object_field_3": "value_3"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -210,7 +271,57 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createFlow({
+		flow_field_1: 'value_1',
+		flow_field_2: 'value_2',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [flow object](#the-flow-object).
+
+### Response
+
+Returns the [flow object](#the-flow-object) for the created flow.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /flows`
+
+```json
+{
+	"name": "My Flow",
+	"status": "active",
+	"trigger": "manual"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -222,35 +333,109 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createFlow({
+		name: 'Email on article published',
+		trigger: 'operation',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Flows
 
 Create multiple new flows.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /flows`
+
+```json
+[
+	{
+		"flow_1_field_1": "value_1",
+		"flow_1_field_2": "value_2",
+		"flow_1_field_3": "value_3"
+	},
+	{
+		"flow_2_field_1": "value_4",
+		"flow_2_field_2": "value_5",
+		"flow_2_field_3": "value_6"
+	}
+]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_flows_items(data: [create_directus_flows_input!]!): [directus_flows]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createFlows([
+		{
+			flow_1_field_1: 'value_1',
+			flow_1_field_2: 'value_2',
+		},
+		{
+			flow_2_field_1: 'value_3',
+			flow_2_field_2: 'value_4',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [flow objects](#the-flow-object).
 
-### Returns
+### Response
 
 Returns the [flow object](#the-flow-object) for the created flow.
 
-### REST API
+### Example
 
-```
-POST /flows
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /flows`
 
 ```json
-// POST /flows
-
 [
 	{
 		"name": "My Flow",
@@ -265,34 +450,17 @@ POST /flows
 ]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_flows_items(data: [create_directus_flows_input!]!): [directus_flows]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
 	create_flows_items(
 		data: [
-			{
-				"name": "My Flow",
-				"status": "active",
-				"trigger": "manual"
-			},
-			{
-				"name": "Another Flow",
-				"status": "active",
-				"trigger": "webhook"
-			}
+			{ name: "My Flow", status: "active", trigger: "manual" }
+			{ name: "Another Flow", status: "active", trigger: "webhook" }
 		]
 	) {
 		id
@@ -302,45 +470,53 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createFlows([
+		{
+			name: 'Email on article published',
+			trigger: 'operation',
+		},
+		{
+			name: 'Archive articles after 12 months',
+			trigger: 'schedule',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a Flow
 
 Update an existing flow.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [flow object](#the-flow-object).
-
-### Returns
-
-Returns the [flow object](#the-flow-object) for the updated flow.
-
-### REST API
-
-```
-PATCH /flows/:id
-```
-
-##### Example
+`PATCH /flows/:id`
 
 ```json
-// PATCH /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-
 {
-	"name": "My Updated Flow"
+	"flow_object_field": "value_1"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -348,7 +524,54 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFlow('flow_id', {
+		flow_field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [flow object](#the-flow-object).
+
+### Response
+
+Returns the [flow object](#the-flow-object) for the updated flow.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+```json
+{
+	"name": "My Updated Flow"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -359,17 +582,80 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFlow('53e623bd-cbeb-405d-8201-158af7e3ac83', {
+		status: 'inactive',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Flows
 
 Update multiple existing flows.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /flows`
+
+```json
+{
+	"keys": ["flow_1_key", "flow_2_key"],
+	"data": {
+		"flow_object_field": "value_1"
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_flows_items(ids: [ID!]!, data: update_directus_flows_input): [directus_flows]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFlows(['flow_1_id', 'flow_2_id'], {
+		flow_field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the flows you'd like to update.
@@ -377,21 +663,18 @@ Array of primary keys of the flows you'd like to update.
 `data` **Required**\
 Any of [the flow object](#the-flow-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [flow objects](#the-flow-object) for the updated flows.
 
-### REST API
+### Example
 
-```
-PATCH /flows
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`PATCH /flows`
 
 ```json
-// PATCH /flows
-
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
 	"data": {
@@ -400,19 +683,10 @@ PATCH /flows
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_flows_items(ids: [ID!]!, data: update_directus_flows_input): [directus_flows]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -427,33 +701,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'], {
+		status: 'inactive',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a Flow
 
 Delete an existing flow.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`DELETE /flows/:id`
 
-```
-DELETE /flows/:id
-```
+</template>
+<template #graphql>
 
-##### Example
-
-```
-DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -461,7 +742,36 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteFlow('flow_id'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -471,38 +781,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteFlow('53e623bd-cbeb-405d-8201-158af7e3ac83'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Flows
 
 Delete multiple existing flows.
 
-### Request Body
+### Request
 
-An array of flows primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Empty body.
-
-### REST API
-
-```
-DELETE /flows
-```
-
-##### Example
+`DELETE /flows`
 
 ```json
-// DELETE /flows
-["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
+["flow_1_key", "flow_2_key", "flow_3_key"]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -510,7 +822,44 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteFlows(['flow_1_id', 'flow_2_id']));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of flows primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /flows`
+
+```json
+["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -526,48 +875,143 @@ mutation {
 }
 ```
 
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlows } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'])
+);
+```
+
+</template>
+</SnippetToggler>
+
 ## Flow with GET webhook trigger
 
 Start a flow with GET webhook trigger.
 
-### Returns
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /flows/trigger/:flow_uuid`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	triggerFlow('GET', 'flow_id', {
+		fields: '*',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+### Response
 
 Result of the flow, if any.
 
-### REST API
+### Example
 
-```
-GET /flows/trigger/:flow_uuid
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<template #rest>
+
+`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	triggerFlow('GET', '90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
+		fields: '*',
+	})
+);
 ```
 
-##### Example
-
-```json
-// GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
-// Payload here
-```
+</template>
+</SnippetToggler>
 
 ## Flow with POST webhook trigger
 
 Start a flow with POST webhook trigger.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /flows/trigger/:flow_uuid`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	triggerFlow('POST', 'flow_id', {
+		field: 'value', // Payload for webhook
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 Payload for the POST request.
 
-### Returns
+### Response
 
 Result of the flow, if any.
 
-### REST API
+### Example
 
-```
-POST /flows/trigger/:flow_uuid
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	triggerFlow('POST', '90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
+		title: 'Created with flows and webhooks',
+	})
+);
 ```
 
-##### Example
-
-```json
-// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
-// Payload here
-```
+</template>
+</SnippetToggler>

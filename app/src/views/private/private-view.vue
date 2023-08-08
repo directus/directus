@@ -98,11 +98,11 @@
 <script setup lang="ts">
 import VResizeable, { ResizeableOptions } from '@/components/v-resizeable.vue';
 import { useLocalStorage } from '@/composables/use-local-storage';
-import { useTitle } from '@/composables/use-title';
 import { useWindowSize } from '@/composables/use-window-size';
-import { useAppStore } from '@directus/stores';
 import { useUserStore } from '@/stores/user';
 import { useElementSize, useSync } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
+import { useHead } from '@unhead/vue';
 import { useEventListener } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
@@ -177,8 +177,8 @@ watch(splitViewWritable, () => {
 	const previousContentOverflowY = contentEl.value.style.overflowY;
 	contentEl.value.style.overflowY = 'hidden';
 
-	let headerBarTransitionTimer: ReturnType<typeof setTimeout>;
-	let cleanupListener: () => void;
+	let headerBarTransitionTimer: ReturnType<typeof setTimeout> | undefined = undefined;
+	let cleanupListener: (() => void) | undefined = undefined;
 
 	const resetContentOverflowY = () => {
 		if (contentEl.value) {
@@ -186,7 +186,7 @@ watch(splitViewWritable, () => {
 		}
 
 		clearTimeout(headerBarTransitionTimer);
-		cleanupListener();
+		cleanupListener?.();
 	};
 
 	headerBarTransitionTimer = setTimeout(resetContentOverflowY, 1500);
@@ -344,7 +344,9 @@ router.afterEach(() => {
 	fullScreen.value = false;
 });
 
-useTitle(title);
+useHead({
+	title: title,
+});
 
 function openSidebar(event: MouseEvent) {
 	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {

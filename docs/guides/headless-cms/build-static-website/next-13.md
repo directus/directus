@@ -27,30 +27,43 @@ Create a new Directus Cloud project - any tier and configuration is suitable for
 
 Open your terminal and run the following command to create a new Next project:
 
-```
-npx create-next-app my-website --js
+```shell
+# The options below is what is recommended for a completion of this guide.
+# See https://nextjs.org/docs/pages/api-reference/create-next-app
+# for all possible options.
+
+npx create-next-app \
+  my-website \
+  --js \
+  --app \
+  --eslint \
+  --no-src-dir \
+  --no-tailwind \
+  --import-alias "@/*"
 ```
 
-At the time of writing, the usage of the `app` directory is still experimental - enable it, and then delete all of the
-files in `app` once generated so you can build this project from scratch.
+Once finished, navigate into the new directory, delete all of the files in `app` so you can build this project from
+scratch and install the Directus JavaScript SDK:
 
-Run the following commands in the terminal to install dependencies:
-
-```
+```shell
 cd my-website
+rm app/*
 npm install @directus/sdk
 ```
 
-Open `my-website` in your code editor.
+Now, open `my-website` in your code editor for the following steps.
 
-## Create Helper For @directus/sdk
+## Create a Helper for the SDK
 
 To share a single instance of the Directus JavaScript SDK between multiple pages in this project, create a single helper
 file that can be imported later. Create a new directory called `lib` and a new file called `directus.js` inside of it.
 
 ```js
-import { Directus } from '@directus/sdk';
-const directus = new Directus('https://your-project-id.directus.app/');
+import { createDirectus } from '@directus/sdk';
+import { rest } from '@directus/sdk/rest';
+
+const directus = createDirectus('https://directus.example.com').with(rest());
+
 export default directus;
 ```
 
@@ -73,14 +86,14 @@ hit save.
 By default, new collections are not accessible to the public. Navigate to Settings -> Roles & Permissions -> Public and
 give Read access to the Global collection.
 
-Inside of the `app` directory, create a new file called `page.tsx` inside of it.
+Inside of the `app` directory, create a new file called `page.tsx`.
 
-```js
+```jsx
 import directus from 'lib/directus';
+import { readItems } from '@directus/sdk/rest';
 
 async function getGlobals() {
-	const { data } = await directus.items('global').readByQuery();
-	return data;
+	return directus.request(readItems('global'));
 }
 
 export default async function HomePage() {
@@ -110,13 +123,14 @@ Public role read access to the new collection. Create 3 items in the new collect
 Inside of `app`, create a new directory called `[slug]` with a file called `page.tsx`. This is a dynamic route, so a
 single file can be used for all of the top-level pages.
 
-```js
+```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
+import { readItem } from '@directus/sdk/rest';
 
 async function getPage(slug) {
 	try {
-		const page = await directus.items('pages').readOne(slug);
+		const page = await directus.request(readItem('pages', slug));
 		return page;
 	} catch (error) {
 		notFound();
@@ -135,8 +149,8 @@ export default async function DynamicPage({ params }) {
 ```
 
 Go to `http://localhost:3000/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readOne()` only checks against your
-`slug` Primary ID Field.
+the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
+Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
 [`dangerouslySetInnerHTML` should only be used for trusted content](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml)._
@@ -166,15 +180,17 @@ Create 3 items in the posts collection -
 
 Inside of the `app` directory, create a new subdirectory called `blog` and a new file called `page.tsx` inside of it.
 
-```js
-import directus from 'lib/directus';
+```jsx
+import directus from '@/lib/directus';
+import { readItems } from '@directus/sdk/rest';
 
 async function getPosts() {
-	const posts = await directus.items('posts').readByQuery({
-		fields: ['slug', 'title', 'publish_date', 'author.name'],
-		sort: ['-publish_date'],
-	});
-	return posts.data;
+	return directus.request(
+		readItems('posts', {
+			fields: ['slug', 'title', 'publish_date', { author: ['name'] }],
+			sort: ['-publish_date'],
+		})
+	);
 }
 
 export default async function DynamicPage() {
@@ -193,42 +209,48 @@ related `author` item.
 
 Update the returned HTML:
 
-```html
+```jsx
 <div>
-  <h1>Blog</h1>
-  <ul>
-    {posts.map(post => {
-      return (
-        <li key={post.slug}>
-          <a href={`/blog/${post.slug}`}>
-            <h2>{post.title}</h2>
-          </a>
-          <span>{post.publish_date} &bull; {post.author.name}</span>
-        </li>
-      )
-    })}
-  </ul>
-</div>
+	<h1>Blog</h1>
+	<ul>
+		{posts.map((post) => {
+			return (
+				<li key={post.slug}>
+					<a href={`/blog/${post.slug}`}>
+						<h2>{post.title}</h2>
+					</a>
+					<span>
+						{post.publish_date} &bull; {post.author.name}
+					</span>
+				</li>
+			);
+		})}
+	</ul>
+</div>;
 ```
 
 Visit `http://localhost:3000` and you should now see a blog post listing, with latest items first.
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/next-blog-listing.webp)
 
-### Create Blog Post Listing
+### Create Blog Post Pages
 
 Each blog post links to a page that does not yet exist. In the `app/blog` directory, create a new directory called
 `[slug]`, and within it a `page.tsx` file:
 
-```js
-import directus from 'lib/directus';
+```jsx
+import directus from '@/lib/directus';
 import { notFound } from 'next/navigation';
+import { readItem } from '@directus/sdk/rest';
 
 async function getPost(slug) {
 	try {
-		const post = await directus.items('posts').readOne(slug, {
-			fields: ['*.*'],
-		});
+		const post = await directus.request(
+			readItem('posts', slug, {
+				fields: ['*', { relation: ['*'] }],
+			})
+		);
+
 		return post;
 	} catch (error) {
 		notFound();
@@ -261,17 +283,26 @@ Click on any of the blog post links, and it will take you to a blog post page co
 
 ## Add Navigation
 
-While not strictly Directus-related, there are now several pages that aren't linked to each other. In `app/layout.tsx`,
-above the `{children}` rendering, add a navigation. Don't forget to use your specific page slugs.
+While not strictly Directus-related, there are now several pages that aren't linked to each other. Create the file
+`app/layout.tsx` to add a navigation above the main content. Don't forget to use your specific page slugs.
 
-```html
-<nav>
-  <Link href="/">Home</Link>
-  <Link href="/about">About</Link>
-  <Link href="/conduct">Code of Conduct</Link>
-  <Link href="/privacy">Privacy Policy</Link>
-  <Link href="/blog">Blog</Link>
-</nav>
+```jsx
+export default function RootLayout({ children }) {
+	return (
+		<html lang="en">
+			<body>
+				<nav>
+					<Link href="/">Home</Link>
+					<Link href="/about">About</Link>
+					<Link href="/conduct">Code of Conduct</Link>
+					<Link href="/privacy">Privacy Policy</Link>
+					<Link href="/blog">Blog</Link>
+				</nav>
+				<main>{children}</main>
+			</body>
+		</html>
+	);
+}
 ```
 
 ## Next Steps

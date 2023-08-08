@@ -1,17 +1,24 @@
 import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 
 export default defineConfig({
 	base: '/',
 	lang: 'en-US',
 	title: 'Directus Docs',
-	description: 'Directus. An Instant App & API for your SQL Database.',
+	description: 'Explore our resources and powerful data engine to build your projects confidently.',
 	ignoreDeadLinks: true,
 	markdown: {
-		theme: 'material-theme-palenight',
+		theme: {
+			light: 'github-light',
+			dark: 'github-dark',
+		},
 		toc: {
 			level: [2],
+		},
+		config(md) {
+			md.use(tabsMarkdownPlugin);
 		},
 	},
 	head: [
@@ -128,8 +135,17 @@ gtag('config', 'UA-24637628-7');
 			dark: '/logo-dark.svg',
 		},
 		nav: [
-			{ text: 'Docs', link: '/' },
-			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
+			{
+				text: 'Developer Reference',
+				link: '/getting-started/quickstart',
+				// Active on every path except for '/', '/user-guide', '/packages'
+				activeMatch: '^\\/(?!$|user-guide|packages).*',
+			},
+			{
+				text: 'User Guide',
+				link: '/user-guide/overview/data-studio-app',
+				activeMatch: '/user-guide',
+			},
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
 			{ text: 'GitHub', link: 'https://github.com/directus/directus' },
@@ -140,13 +156,36 @@ gtag('config', 'UA-24637628-7');
 			indexName: 'directus',
 		},
 		sidebar: {
-			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
+			'/user-guide/': sidebarUserGuide(),
 			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
-			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
+			pattern: ({ filePath }) => {
+				if (filePath.includes('blog/')) {
+					return '/blog/guest-author';
+				} else {
+					return `https://github.com/directus/directus/edit/main/docs/${filePath}`;
+				}
+			},
 		},
+	},
+	transformPageData(pageData) {
+		function setOGImage(asset) {
+			return [
+				['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+			];
+		}
+
+		if (pageData.frontmatter.type == 'blog-post') {
+			pageData.title = pageData.params.title;
+			pageData.description = pageData.params.summary;
+			pageData.frontmatter.head = setOGImage(pageData.params.image);
+		} else {
+			pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
+		}
 	},
 });
 
@@ -168,6 +207,7 @@ function typeDocSidebarFormat(item) {
 			items: [],
 			collapsed: true,
 		});
+
 		item.text = formatTitle(item.text.replace('@directus/', ''));
 		item.text = item.text.replace('Sdk', 'SDK');
 	}
@@ -219,9 +259,18 @@ function sidebar() {
 					text: 'Resources',
 					link: '/getting-started/resources',
 				},
+			],
+		},
+		{
+			text: 'Developer Blog',
+			items: [
 				{
-					text: 'Glossary',
-					link: '/getting-started/glossary',
+					link: '/blog/',
+					text: 'All Posts',
+				},
+				{
+					link: '/blog/guest-author',
+					text: 'Guest Author',
 				},
 			],
 		},
@@ -230,66 +279,6 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
-				{
-					link: '/app/overview',
-					text: 'Overview',
-				},
-				{
-					link: '/app/content',
-					text: 'Content',
-					type: 'page',
-					items: [
-						{
-							link: '/app/content/collections',
-							text: 'Collection Page',
-							type: 'page',
-						},
-						{
-							link: '/app/content/items',
-							text: 'Item Page',
-						},
-						{
-							link: '/app/content/shares',
-							text: 'Shares',
-						},
-					],
-				},
-				{
-					link: '/app/user-directory',
-					text: 'User Directory',
-				},
-				{
-					link: '/app/file-library',
-					text: 'File Library',
-				},
-				{
-					link: '/app/insights',
-					text: 'Insights',
-				},
-				{
-					link: '/app/settings',
-					text: 'Settings',
-				},
-				{
-					link: '/app/display-templates',
-					text: 'Display Templates',
-				},
-				{
-					link: '/app/filters',
-					text: 'Filters',
-				},
-				{
-					link: '/app/layouts',
-					text: 'Layouts',
-				},
-				{
-					link: '/app/import-export',
-					text: 'Import / Export',
-				},
-				{
-					link: '/app/project-settings',
-					text: 'Project Settings',
-				},
 				{
 					link: '/app/data-model',
 					text: 'Data Model',
@@ -337,32 +326,6 @@ function sidebar() {
 					],
 				},
 				{
-					link: '/app/users-roles-permissions',
-					text: 'Users, Roles & Permissions',
-					items: [
-						{
-							link: '/app/users-roles-permissions/users',
-							text: 'Users',
-						},
-						{
-							link: '/app/users-roles-permissions/roles',
-							text: 'Roles',
-						},
-						{
-							link: '/app/users-roles-permissions/permissions',
-							text: 'Permissions',
-						},
-					],
-				},
-				{
-					link: '/app/presets-bookmarks',
-					text: 'Presets & Bookmarks',
-				},
-				{
-					link: '/app/translation-strings',
-					text: 'Translation Strings',
-				},
-				{
 					link: '/app/webhooks',
 					text: 'Webhooks',
 				},
@@ -380,10 +343,6 @@ function sidebar() {
 							text: 'Operations',
 						},
 					],
-				},
-				{
-					link: '/app/activity-log',
-					text: 'Activity Log',
 				},
 			],
 		},
@@ -415,10 +374,6 @@ function sidebar() {
 				{
 					link: '/reference/files',
 					text: 'Files',
-				},
-				{
-					link: '/reference/sdk',
-					text: 'JS-SDK',
 				},
 				{
 					link: '/reference/system/activity',
@@ -519,6 +474,10 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{
+					text: 'JavaScript SDK',
+					link: '/guides/sdk/getting-started',
+				},
 				{
 					text: 'Flows',
 					items: [
@@ -695,7 +654,7 @@ function sidebar() {
 			],
 		},
 		{
-			text: 'Self Hosted',
+			text: 'Self-Hosted',
 			collapsible: true,
 			collapsed: true,
 			items: [
@@ -716,13 +675,195 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-					link: '/self-hosted/sso',
 					text: 'Single Sign-On (SSO)',
+					items: [
+						{ link: '/self-hosted/sso', text: 'Quickstart' },
+						{ link: '/self-hosted/sso-examples', text: 'Examples' },
+					],
 				},
 				{
 					type: 'page',
 					link: '/self-hosted/upgrades-migrations',
 					text: 'Upgrades & Migrations',
+				},
+			],
+		},
+	];
+}
+
+function sidebarUserGuide() {
+	return [
+		{
+			text: 'Overview',
+			items: [
+				{
+					text: 'Data Studio App',
+					link: '/user-guide/overview/data-studio-app',
+				},
+				{
+					text: 'Quickstart Guide',
+					link: '/user-guide/overview/quickstart',
+				},
+				{
+					text: 'Glossary',
+					link: '/user-guide/overview/glossary',
+				},
+			],
+		},
+		{
+			text: 'Content Module',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					link: '/user-guide/content-module/content',
+					text: 'Managing Content',
+					type: 'page',
+					items: [
+						{
+							link: '/user-guide/content-module/content/collections',
+							text: 'Collection Page',
+							type: 'page',
+						},
+						{
+							link: '/user-guide/content-module/content/items',
+							text: 'Item Page',
+						},
+						{
+							link: '/user-guide/content-module/content/shares',
+							text: 'Shares',
+						},
+					],
+				},
+				{
+					text: 'Layouts',
+					link: '/user-guide/content-module/layouts',
+				},
+				{
+					text: 'Import/Export',
+					link: '/user-guide/content-module/import-export',
+				},
+				{
+					text: 'Filters',
+					link: '/user-guide/content-module/filters',
+				},
+				{
+					text: 'Translation Strings',
+					link: '/user-guide/content-module/translation-strings',
+				},
+				{
+					text: 'Display Templates',
+					link: '/user-guide/content-module/display-templates',
+				},
+			],
+		},
+		{
+			text: 'User Management',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					link: '/user-guide/user-management/users-roles-permissions',
+					text: 'Users, Roles & Permissions',
+					type: 'page',
+					items: [
+						{
+							text: 'Users',
+							link: '/user-guide/user-management/users',
+						},
+						{
+							text: 'Roles',
+							link: '/user-guide/user-management/roles',
+						},
+						{
+							text: 'Permissions',
+							link: '/user-guide/user-management/permissions',
+						},
+					],
+				},
+				{
+					text: 'User Directory',
+					link: '/user-guide/user-management/user-directory',
+				},
+			],
+		},
+		{
+			text: 'File Library',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Files',
+					link: '/user-guide/file-library/files',
+				},
+				{
+					text: 'Folders',
+					link: '/user-guide/file-library/folders',
+				},
+			],
+		},
+		{
+			text: 'Insights',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Dashboards',
+					link: '/user-guide/insights/dashboards',
+				},
+				{
+					text: 'Panels',
+					link: '/user-guide/insights/panels',
+				},
+				{
+					text: 'Charts',
+					link: '/user-guide/insights/charts',
+				},
+			],
+		},
+		{
+			text: 'Directus Cloud',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Overview',
+					link: '/user-guide/cloud/overview',
+				},
+				{
+					text: 'Projects',
+					link: '/user-guide/cloud/projects',
+				},
+				{
+					text: 'Teams',
+					link: '/user-guide/cloud/teams',
+				},
+				{
+					text: 'Accounts',
+					link: '/user-guide/cloud/accounts',
+				},
+				{
+					text: 'Glossary',
+					link: '/user-guide/cloud/glossary',
+				},
+			],
+		},
+		{
+			text: 'General Settings',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Project Settings',
+					link: '/user-guide/settings/project-settings',
+				},
+				{
+					text: 'Preset and Bookmarks',
+					link: '/user-guide/settings/presets-bookmarks',
+				},
+				{
+					text: 'Activity Log',
+					link: '/user-guide/settings/activity-log',
 				},
 			],
 		},

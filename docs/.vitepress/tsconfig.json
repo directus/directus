@@ -1,0 +1,4 @@
+{
+	"extends": "@directus/tsconfig/vue3",
+	"include": ["env.d.ts", "**/*.vue"]
+}

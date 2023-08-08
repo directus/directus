@@ -29,7 +29,7 @@ interface AbstractQueryNode {
 }
 
 /**
- * The A group of all possible field types.
+ * A group of all possible field types.
  * This can be used within the `nodes` array of the `AbstractQuery`.
  */
 export type AbstractQueryFieldNode =
@@ -180,12 +180,12 @@ export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode
 export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
-	sort?: AbstractQueryNodeSort;
-	filter?: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
+	sort?: AbstractQueryNodeSort[];
+	filter?: AbstractQueryFilterNode;
 }
 
 interface AbstractQueryModifierNode {
-	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition';
+	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition' | 'negate';
 }
 
 /**
@@ -204,21 +204,50 @@ interface AbstractQueryNodeOffset extends AbstractQueryModifierNode {
 	value: number;
 }
 
+export type AbstractQueryNodeSortTargets =
+	| AbstractQueryFieldNodePrimitive
+	| AbstractQueryFieldNodeFn
+	// TDB when we implement relations:
+	| AbstractQueryFieldNodeRelatedManyToOne
+	| AbstractQueryFieldNodeRelatedAnyToOne;
+
 /**
- * Specifies the order of the results
+ * Specifies the order of the result, f.e. for a primitive field.
+ * @example
+ * ```js
+ * const sortNode = {
+ * 		type: 'sort',
+ * 		direction: 'ascending',
+ * 		target: {
+ * 			type: 'primitive',
+ * 			field: 'attribute_xy'
+ * 		}
+ * }
+ * ```
+ * Alternatively a function can be applied a the field.
+ * The result is then used for sorting.
+ * @example
+ * ```js
+ * const sortNode = {
+ * 		type: 'sort',
+ * 		direction: 'ascending',
+ * 		target: {
+ * 			type: 'fn',
+ * 			fn: 'year',
+ * 			targetNode: {
+ * 				type: 'primitive'
+ * 				field: 'date_created'
+ * 		}
+ * }
  */
-interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
+export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
 	type: 'sort';
 
 	/** the desired order */
 	direction: 'ascending' | 'descending';
 
 	/** the node on which the sorting should be applied */
-	target:
-		| AbstractQueryFieldNodePrimitive
-		| AbstractQueryFieldNodeFn
-		| AbstractQueryFieldNodeRelatedManyToOne
-		| AbstractQueryFieldNodeRelatedAnyToOne;
+	target: AbstractQueryNodeSortTargets;
 }
 
 /**
@@ -281,13 +310,22 @@ interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * }
  * ```
  */
+export type AbstractQueryFilterNode = AbstractQueryNodeLogical | AbstractQueryNodeNegate | AbstractQueryNodeCondition;
+
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
 
-	operator: 'and' | 'or' | 'not';
+	operator: 'and' | 'or';
 
 	/** the values for the the operation. */
-	childNodes: (AbstractQueryNodeLogical | AbstractQueryNodeCondition)[];
+	childNodes: AbstractQueryFilterNode[];
+}
+
+export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
+	type: 'negate';
+
+	/** the values for the the operation. */
+	childNode: AbstractQueryFilterNode;
 }
 
 /**
@@ -306,51 +344,25 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	type: 'condition';
 
 	/** the node on which the condition should be applied */
-	targetNode:
+	target:
 		| AbstractQueryFieldNodePrimitive
 		| AbstractQueryFieldNodeFn
 		| AbstractQueryFieldNodeRelatedManyToOne
 		| AbstractQueryFieldNodeRelatedAnyToOne;
 
 	/** the operation to perform on the target */
-	operation:
-		| 'eq'
-		| 'lt'
-		| 'lte'
-		| 'gt'
-		| 'gte'
-		| 'in'
-		| 'contains'
-		| 'starts_with'
-		| 'ends_with'
-		| 'intersects'
-		| 'intersects_bounding_box';
+	operation: 'eq' | 'lt' | 'gt' | 'contains' | 'starts_with' | 'ends_with' | 'intersects' | 'intersects_bounding_box';
 
-	/** the above operations can be negated by setting the following attribute to true. */
-	negation: boolean;
-
-	/** the conditional value. Might be also a function or sub query in the future */
-	value: string | number | boolean;
+	compareTo: AbstractQueryNodeConditionValue;
 }
 
-/**
- * Used to work with parameterized queries.
- * @example
- * ```
- * {
- * 		statement: 'SELECT * FROM "articles" WHERE "articles"."id" = $1;',
- * 		values: [99],
- * }
- * ```
- */
-export interface ParameterizedSQLStatement {
-	statement: string;
-	values: (string | number | boolean)[];
+export interface AbstractQueryNodeConditionValue {
+	type: 'value';
+	value: string | number | boolean;
 }
 
 /**
  * @TODO
  * - Should we support "Distinct", if so where does it live (field level vs collection level)
  * - Rethink every / some
- * - Should logical "not" be a node with a single child? --> it's seems easier to work with a boolean flag here - see 'negation' onAbstractQueryNodeCondition
  */

@@ -2167,14 +2167,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(ws.getMessageCount(localCollectionCountries)).toBe(1);
@@ -2457,14 +2457,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(ws.getMessageCount(localCollectionCountries)).toBe(1);
@@ -2684,18 +2684,90 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
 					);
+				});
+			});
+		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const country = createCountry(pkType);
+					const country2 = createCountry(pkType);
+					const states = [];
+					const states2 = [];
+
+					country.name = name;
+					country2.name = name;
+
+					for (let count = 0; count < 2; count++) {
+						const state = createState(pkType);
+						const state2 = createState(pkType);
+						state.name = name;
+						state2.name = name;
+						states.push(state);
+						states2.push(state2);
+					}
+
+					await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: [
+							{
+								...country,
+								states: {
+									create: states,
+									update: [],
+									delete: [],
+								},
+							},
+							{
+								...country2,
+								states: {
+									create: states2,
+									update: [],
+									delete: [],
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCountries}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+								states: {
+									name: {
+										_eq: name,
+									},
+								},
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
+
+					for (const item of response.body.data) {
+						expect(item.states.length).toBe(2);
+					}
 				});
 			});
 		});

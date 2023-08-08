@@ -429,7 +429,7 @@ file_details: 파일 세부 정보
 dimensions: 규격
 size: 용량
 created: 작성됨
-modified: 수정됨 
+modified: 수정됨
 checksum: 체크섬
 owner: 소유자
 edited_by: 편집자
@@ -453,11 +453,6 @@ open_file_in_tab: 새 탭에서 파일 열기
 start_export: 내보내기 시작
 not_available_for_local_downloads: 로컬 다운로드에 사용할 수 없음
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
-exporting_limited_items_in_collection: '{collection}의 전체 {total}개 중 {limit}개 항목 내보내기'
-exporting_no_items_to_export: 내보낼 데이터가 없습니다. 아래 설정을 확인 해보세요.
-exporting_download_hint: 완료되면 이 {format} 파일이 기기에 자동으로 다운로드됩니다.
-exporting_batch_hint: 이 내보내기는 일괄 처리되며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
-exporting_batch_hint_forced: 항목 수가 많기 때문에 이 내보내기는 일괄 처리해야 하며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
 collection_key: 컬렉션 키
 name: 이름
 primary_key_field: 기본키 필드
@@ -1260,7 +1255,7 @@ field_options:
     sort_field: 필드 선택...
     accountability_divider: 책임
     duplication_divider: 복사
-    preview_divider: 미리보기 
+    preview_divider: 미리보기
   directus_files:
     title: 고유한 제목...
     description: 선택적 설명...
@@ -1596,7 +1591,7 @@ interfaces:
     markdown: 마크다운
     description: 마크다운 입력 및 미리보기
     edit: 수정
-    preview: 미리보기 
+    preview: 미리보기
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
     customSyntax: 맞춤형 블록
@@ -2110,6 +2105,7 @@ operations:
     recipient_placeholder: UUID를 입력하세요...
     recipient_note: 사용자 UUID를 추가하고 Enter 키를 누릅니다...
     message: 메시지
+    subject: 제목
   request:
     name: 웹훅 / 요청 URL
     description: 'URL에 요청하기'

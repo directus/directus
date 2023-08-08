@@ -22,10 +22,38 @@ The release notes will be generated and printed when running the `changesets` co
 GITHUB_TOKEN=<token> pnpm changeset version
 ```
 
-For local use, you'll need a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `read:user` and `repo:status` permissions.
+For local use, you'll need a
+[GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+with `read:user` and `repo:status` permissions.
 
 ### GitHub CI
 
-When running `pnpm changeset version` in the GitHub CI context, this package will automatically set the following outputs:
+When running `pnpm changeset version` in the GitHub CI context, this package will automatically set the following
+outputs:
+
 - `DIRECTUS_MAIN_VERSION`
 - `DIRECTUS_RELEASE_NOTES`
+
+## Special Changesets Features
+
+### Notices in Changesets
+
+In addition to the normal content, changeset may include a notice to draw special attention to a change. These notices
+will be rendered in the release notes under the section "⚠️ Potential Breaking Changes".
+
+Use the following format to add such a notice:
+
+<!-- prettier-ignore -->
+```md
+---
+'example-package': patch
+---
+
+::: notice
+Notices can contain any markdown syntax
+
+- An important notice
+:::
+
+Normal changeset summary
+```

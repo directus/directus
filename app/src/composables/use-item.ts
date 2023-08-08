@@ -4,23 +4,23 @@ import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
+import { Field, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
-import { computed, ComputedRef, isRef, Ref, ref, unref, watch } from 'vue';
+import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
-import { Field, Query, Relation } from '@directus/types';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
-type UsableItem = {
+type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
 	hasEdits: Ref<boolean>;
-	item: Ref<Record<string, any> | null>;
+	item: Ref<T | null>;
 	error: Ref<any>;
 	loading: Ref<boolean>;
 	saving: Ref<boolean>;
@@ -33,18 +33,17 @@ type UsableItem = {
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
 	saveAsCopy: () => Promise<any>;
-	isBatch: ComputedRef<boolean>;
 	getItem: () => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem(
+export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
 	query: Ref<Query> | Query = {}
-): UsableItem {
+): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
-	const item = ref<Record<string, any> | null>(null);
+	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
 	const loading = ref(false);
@@ -54,7 +53,6 @@ export function useItem(
 	const edits = ref<Record<string, any>>({});
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
-	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
 
 	const isArchived = computed(() => {
@@ -97,7 +95,6 @@ export function useItem(
 		isArchived,
 		archiving,
 		saveAsCopy,
-		isBatch,
 		getItem,
 		validationErrors,
 	};
@@ -125,7 +122,7 @@ export function useItem(
 			defaultValues.value,
 			item.value,
 			edits.value,
-			function (from: any, to: any) {
+			function (_from: any, to: any) {
 				if (typeof to !== 'undefined') {
 					return to;
 				}
@@ -147,13 +144,13 @@ export function useItem(
 				response = await api.post(getEndpoint(collection.value), edits.value);
 
 				notify({
-					title: i18n.global.t('item_create_success', isBatch.value ? 2 : 1),
+					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
 				response = await api.patch(itemEndpoint.value, edits.value);
 
 				notify({
-					title: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
+					title: i18n.global.t('item_update_success', 1),
 				});
 			}
 
@@ -326,7 +323,10 @@ export function useItem(
 
 				for (const col of columns) {
 					const colName = col.split('.')[1];
-					item[colName] = updatedItem[colName];
+
+					if (colName !== undefined) {
+						item[colName] = updatedItem[colName];
+					}
 				}
 			}
 		}
@@ -397,15 +397,13 @@ export function useItem(
 			});
 
 			item.value = {
-				...item.value,
+				...(item.value as T),
 				[field]: value,
 			};
 
 			notify({
 				title:
-					value === archiveValue
-						? i18n.global.t('item_delete_success', isBatch.value ? 2 : 1)
-						: i18n.global.t('item_update_success', isBatch.value ? 2 : 1),
+					value === archiveValue ? i18n.global.t('item_delete_success', 1) : i18n.global.t('item_update_success', 1),
 			});
 		} catch (err: any) {
 			unexpectedError(err);
@@ -424,7 +422,7 @@ export function useItem(
 			item.value = null;
 
 			notify({
-				title: i18n.global.t('item_delete_success', isBatch.value ? 2 : 1),
+				title: i18n.global.t('item_delete_success', 1),
 			});
 		} catch (err: any) {
 			unexpectedError(err);
@@ -455,20 +453,6 @@ export function useItem(
 			response.data.data = translate(response.data.data);
 		}
 
-		if (isBatch.value === false) {
-			item.value = response.data.data;
-		} else {
-			const valuesThatAreEqual = { ...response.data.data[0] };
-
-			response.data.data.forEach((existingItem: any) => {
-				for (const [key, value] of Object.entries(existingItem)) {
-					if (valuesThatAreEqual[key] !== value) {
-						delete valuesThatAreEqual[key];
-					}
-				}
-			});
-
-			item.value = valuesThatAreEqual;
-		}
+		item.value = response.data.data;
 	}
 }

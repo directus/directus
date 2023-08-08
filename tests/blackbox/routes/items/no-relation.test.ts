@@ -1630,14 +1630,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
@@ -1738,14 +1738,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
@@ -1848,14 +1848,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
@@ -1929,7 +1929,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
@@ -2086,28 +2086,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(response2.statusCode).toBe(400);
 							expect(response2.body.errors).toBeDefined();
 
 							expect(response2.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse2.statusCode).toBe(200);
 							expect(gqlResponse2.body.errors).toBeDefined();
 
 							expect(gqlResponse2.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
@@ -2178,11 +2178,46 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
 					);
+				});
+			});
+		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const artist = createArtist(pkType);
+					const artist2 = createArtist(pkType);
+
+					artist.name = name;
+					artist2.name = name;
+
+					await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: [artist, artist2],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
 				});
 			});
 		});

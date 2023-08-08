@@ -460,11 +460,6 @@ open_file_in_tab: Otwórz plik w nowej karcie
 start_export: Rozpocznij eksport
 not_available_for_local_downloads: Niedostępne dla lokalnych plików
 exporting_all_items_in_collection: Eksportowanie wszystkich {total} elementów w {collection}.
-exporting_limited_items_in_collection: Eksportowanie {limit} z {total} przedmiotów w {collection}.
-exporting_no_items_to_export: Brak elementów do wyeksportowania. Dostosuj konfigurację eksportu poniżej.
-exporting_download_hint: Po zakończeniu, ten plik {format} zostanie automatycznie pobrany na twoje urządzenie.
-exporting_batch_hint: Ten eksport będzie przetwarzany w partiach, a po ukończeniu plik {format} zostanie zapisany do biblioteki plików.
-exporting_batch_hint_forced: Ze względu na dużą liczbę produktów, wywóz ten musi być przetwarzany w partiach, i po zakończeniu, plik {format} zostanie zapisany do biblioteki plików.
 collection_key: Klucz kolekcji
 name: Nazwa
 primary_key_field: Pole klucza podstawowego
@@ -1452,7 +1447,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 table: Tabela
@@ -2144,6 +2138,7 @@ operations:
     recipient_placeholder: Wprowadź UUID...
     recipient_note: Dodaj UUID użytkownika i naciśnij enter...
     message: Wiadomość
+    subject: Temat
   request:
     name: Webhook / URL żądania
     description: 'Złóż prośbę do adresu URL'

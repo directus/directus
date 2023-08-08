@@ -41,12 +41,14 @@
 
 	--vp-c-red: #e35169;
 	--vp-c-red-light: #fceef0;
-	--vp-c-red-lighter: #FCEEF0;
+	--vp-c-red-lighter: #fceef0;
 	--vp-c-red-dark: #e11d48;
 	--vp-c-red-darker: #be123c;
 	--vp-c-red-dimm-1: rgba(244, 63, 94, 0.5);
 	--vp-c-red-dimm-2: rgba(244, 63, 94, 0.2);
 	--vp-c-red-dimm-3: rgba(244, 63, 94, 0.05);
+
+	--vp-c-pink: #fe97dc;
 }
 
 /**
@@ -98,4 +100,30 @@
 
 	--vp-custom-block-danger-border: var(--vp-c-red-dimm-2);
 	--vp-custom-block-danger-text: var(--vp-c-red);
+}
+
+/**
+ * Component: Docs Landing Page
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-docs-section-bg: #0e1c2f;
+}
+
+.dark {
+	--vp-docs-section-bg: #000;
+}
+
+/**
+ * Component: Snippet Toggler
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-snippet-toggler-border: var(--vp-c-gray-light-4);
+	--vp-snippet-toggler-lang-hover: var(--vp-c-gray);
+}
+
+.dark {
+	--vp-snippet-toggler-border: transparent;
+	--vp-snippet-toggler-lang-hover: var(--vp-c-gray-light-5);
 }

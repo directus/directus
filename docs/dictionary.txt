@@ -17,6 +17,7 @@
 (C|c)loudinary
 (C|c)loudinary's
 (C|c)odebase
+(C|c)omposables?
 (C|c)onfigs?
 (C|c)ustomizable
 (D|d)atacenter
@@ -126,7 +127,6 @@ CMS
 CockroachDB
 CodeDeploy
 CommonJS
-composable
 composables
 config-options
 CORS
@@ -189,6 +189,7 @@ frontend
 G2
 Gantt
 gcloud
+graphql
 GCP
 GCS
 GDPR
@@ -302,6 +303,7 @@ pnpm
 Postgres
 Postgres13
 PR
+pre
 pre-configured
 pre-defined
 pre-existing
@@ -319,6 +321,8 @@ px.
 reactively
 readonly
 readTime
+(R|r)ealtime
+(R|r)eal-(T|t)ime
 rebase
 reconfigurations
 reconnection
@@ -334,6 +338,7 @@ SAML
 scalable
 Scalable
 SCSS
+sdk
 SDK
 SDL
 semver
@@ -359,7 +364,9 @@ SSR
 StackOverflow
 stylization
 subdirectory
+subfolder
 substring
+(S|s)upabase
 SuperAdmins?
 superset
 Superset
@@ -378,6 +385,7 @@ truthy
 TTL
 TTY
 (t|T)wilio
+TypeDoc
 UI
 UID
 UIDs

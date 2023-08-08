@@ -104,7 +104,12 @@ interface Props {
 	collectionName?: string;
 	collectionField?: string;
 	collectionRequired?: boolean;
+
+	/**
+	 * Lock the interface to only allow configuring filters for the given fieldName
+	 */
 	fieldName?: string;
+
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
@@ -195,7 +200,7 @@ function addNode(key: string) {
 			}
 		}
 
-		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
+		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
 		innerValue.value = innerValue.value.concat(node);

@@ -62,13 +62,13 @@ _and much more._
 ### What Do Teams Use Directus For?
 
 - [Headless CMS](https://directus.io/headless-cms)
-- [Learning Management System](https://directus.io/headless-cms) 
+- [Learning Management System](https://directus.io/headless-cms)
 - [Product Inventory Management](https://directus.io/studio)
 - [No-Code Data Platform](https://directus.io/studio)
-- [Backend-as-a-Service](https://directus.io/engine) 
+- [Backend-as-a-Service](https://directus.io/engine)
 - [Full API-Based Data Architecture](https://directus.io/engine)
 
-:::tip Ready to dive in?
+::: tip Ready to dive in?
 
 Get a project running in minutes. Learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -93,7 +93,7 @@ have the option to bypass the Directus middleware (API, SDK, App) and connect to
 effectively removes all bottlenecks, latency overhead, and proprietary access limitations.
 
 <!--
-:::tip Ready to try the API?
+::: tip Ready to try the API?
 
 Get a Project running in minutes. Test the API hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -117,12 +117,12 @@ on the database.
 The no-code app is safe and intuitive enough to make data accessible to everyone, even the most non-technical users. Administrators
 can create fully granular permissions for roles as well as individual users.
 
-:::tip Directus Vocabulary
+::: tip Directus Vocabulary
 
 To keep things simpler, _especially for the no-code users_, Directus uses friendlier names for many database terms and
-technical concepts, including [Project](/getting-started/glossary#projects) (database),
-[Collection](/getting-started/glossary#collections) (table), [Field](/getting-started/glossary#fields) (column),
-[Item](/getting-started/glossary#items) (record), and [Type](/getting-started/glossary#types) (datatype).
+technical concepts, including [Project](/user-guide/overview/glossary#projects) (database),
+[Collection](/user-guide/overview/glossary#collections) (table), [Field](/user-guide/overview/glossary#fields) (column),
+[Item](/user-guide/overview/glossary#items) (record), and [Type](/user-guide/overview/glossary#types) (datatype).
 
 <!--
 @TODO getting-started > learn-directus
@@ -132,7 +132,7 @@ For more information on Directus-specific terms, see the guide on [how to learn 
 :::
 
 <!--
-:::tip Ready to see what Directus can do?
+::: tip Ready to see what Directus can do?
 
 Checkout the core features and learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -168,7 +168,7 @@ Establish _a single source of truth_ for all data. Build no-code analytics dashb
 and other metrics. Coalesce previously siloed department data.
 
 <!--
-:::tip Ready to dive-in?
+::: tip Ready to dive-in?
 
 Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -180,10 +180,9 @@ Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Gui
 **Directus is a simple, data-first solution to complex problems with no downsides.**
 
 Directus was created in 2004 and has been slowly, iteratively improved on for a long time. The core team has carefully
-thought through the app, beginning to end, and strives to make this platform an all-benefit and no downside
-experience. It is also plug-and-play, so you're free to link or remove it anytime, with zero impact on your data. You
-have no vendor lock-in whatsoever, _your data is yours_. There are no artificial data limits _(e.g. limits on users or
-roles)_.
+thought through the app, beginning to end, and strives to make this platform an all-benefit and no downside experience.
+It is also plug-and-play, so you're free to link or remove it anytime, with zero impact on your data. You have no vendor
+lock-in whatsoever, _your data is yours_. There are no artificial data limits _(e.g. limits on users or roles)_.
 
 Consider competing platforms in the four general use cases [mentioned above](#when-to-use-it). Due diligence to select a
 viable solution from one of these categories can easily take six months to ensure the feature list, pricing,
@@ -212,13 +211,13 @@ Members however you need. You'll be able to get a Project running in about 90 se
 over time, scale service up or down as needed at the click of a button. The cloud dashboard also provides simple,
 straightforward analytics to help understand traffic and inform scaling decisions.
 
-:::tip Ready to try Directus Cloud?
+::: tip Ready to try Directus Cloud?
 
 Set up your free Cloud account and learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
 :::
 
-:::tip Enterprise Cloud
+::: tip Enterprise Cloud
 
 Need advanced configuration, unlimited scalability, and dedicated support? [Contact us](https://directus.io/contact)
 

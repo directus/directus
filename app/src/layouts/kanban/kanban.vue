@@ -53,7 +53,16 @@
 							<router-link :to="getItemRoute(collection, element.id)" class="item">
 								<div v-if="element.title" class="title">{{ element.title }}</div>
 								<img v-if="element.image" class="image" :src="element.image" />
-								<div v-if="element.text" class="text">{{ element.text }}</div>
+								<render-display
+									v-if="element.text && textFieldConfiguration"
+									:collection="collection"
+									:value="element.text"
+									:type="textFieldConfiguration.type"
+									:field="layoutOptions.textField"
+									:display="textFieldConfiguration.meta?.display"
+									:options="textFieldConfiguration.meta?.options"
+									:interface="textFieldConfiguration.meta?.interface"
+								/>
 								<display-labels
 									v-if="element.tags"
 									:value="element.tags"
@@ -69,7 +78,7 @@
 											v-tooltip.bottom="`${user.first_name} ${user.last_name}`"
 											class="avatar"
 										>
-											<img v-if="user.avatar" :src="parseAvatar(user.avatar)" />
+											<v-image v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
 											<v-icon v-else name="person" />
 										</v-avatar>
 									</div>
@@ -109,18 +118,19 @@ export default {
 
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import { getItemRoute } from '@/utils/get-item-route';
-import { ref } from 'vue';
+import { getRootPath } from '@/utils/get-root-path';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import type { ChangeEvent, Group, Item } from './types';
+import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
+import type { Field } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
 		groupCollection?: string | null;
-		fieldsInCollection?: Record<string, any>[];
+		fieldsInCollection?: Field[];
 		primaryKeyField?: Record<string, any> | null;
 		groupedItems?: Group[];
 		groupTitle?: string | null;
@@ -134,6 +144,7 @@ const props = withDefaults(
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
+		layoutOptions: LayoutOptions;
 	}>(),
 	{
 		collection: null,
@@ -165,9 +176,8 @@ function openEditGroup(group: Group) {
 function parseAvatar(file: Record<string, any>) {
 	if (!file || !file.type) return;
 	if (file.type.startsWith('image') === false) return;
-	if (file.type.includes('svg')) return;
 
-	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&width=48&height=48`;
+	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
 	return addTokenToURL(url);
 }
 
@@ -186,6 +196,10 @@ function saveChanges() {
 	editDialogOpen.value = null;
 	editTitle.value = '';
 }
+
+const textFieldConfiguration = computed<Field | undefined>(() => {
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+});
 </script>
 
 <style lang="scss" scoped>

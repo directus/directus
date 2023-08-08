@@ -273,7 +273,7 @@ const view = ref(['editor']);
 
 const imageDialogOpen = ref(false);
 
-let count = ref(0);
+const count = ref(0);
 
 const readOnly = computed(() => {
 	if (width.value < 600) {
@@ -416,6 +416,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	font-family: var(--family-sans-serif);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror-scroll) {
+	max-height: min(1000px, 80vh);
 }
 
 .interface-input-rich-text-md.disabled {

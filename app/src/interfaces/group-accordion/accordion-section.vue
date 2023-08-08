@@ -70,7 +70,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const fieldsInSection = computed(() => {
-	let fields: Field[] = [merge({}, props.field, { hideLabel: true })];
+	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
 
 	if (props.field.meta?.special?.includes('group')) {
 		fields.push(...getFieldsForGroup(props.field.meta?.field));

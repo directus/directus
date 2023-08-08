@@ -437,11 +437,6 @@ open_file_in_tab: 在新分頁中開啟
 start_export: 開始匯出
 not_available_for_local_downloads: 無法下載至本地
 exporting_all_items_in_collection: 將 {collection} 中的所有 {total} 個項目匯出。
-exporting_limited_items_in_collection: '{collection} 中共有 {total} 個項目，現在匯出 {limit} 個。'
-exporting_no_items_to_export: 沒有可供匯出的項目，請修改匯出設定。
-exporting_download_hint: 完成後，{format} 格式的檔案將會下載到您的裝置上。
-exporting_batch_hint: 將進行批次匯出作業，完成後 {format} 檔案將會儲存到檔案庫中。
-exporting_batch_hint_forced: 由於資料項目較多，將進行批次匯出作業，完成後 {format} 檔案將會儲存到檔案庫中。
 collection_key: 資料集名稱
 name: 名稱
 primary_key_field: 主鍵欄位
@@ -2014,6 +2009,7 @@ operations:
     description: 發送管理介面通知給其他使用者
     recipient: 用戶
     message: 訊息
+    subject: 標題
   request:
     name: Webhook / 要求網址
     description: '發送要求至特定網址'

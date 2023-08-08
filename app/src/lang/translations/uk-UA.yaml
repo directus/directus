@@ -35,6 +35,7 @@ tile_size: Розмір плитки
 edit_field: Редагувати поле
 conditions: Умови
 location: Розташування
+collection_names_are_case_sensitive: Назви колекції чутливі до регістру букв
 condition_rules: Правила умов
 input: Введення
 maps: Мапи
@@ -446,11 +447,6 @@ open_file_in_tab: Відкрити файл у новій вкладці
 start_export: Розпочати експорт
 not_available_for_local_downloads: Недоступний для локальних завантажень
 exporting_all_items_in_collection: Експорт усіх {total} елементів в межах {collection}.
-exporting_limited_items_in_collection: Експорт {limit} з {total} елементів в рамках {collection}.
-exporting_no_items_to_export: Немає елементів для експорту. Налаштуйте конфігурацію для експорту нижче.
-exporting_download_hint: Після завершення цей {format} файл буде автоматично завантажений на ваш пристрій.
-exporting_batch_hint: Цей експорт буде оброблено партіями та після завершення {format} файл буде збережено до Бібліотеки Файлів.
-exporting_batch_hint_forced: Через велику кількість елементів, цей експорт буде оброблено партіями та після завершення {format} файл буде збережено до Бібліотеки Файлів.
 collection_key: Клавіша колекції
 name: Назва
 primary_key_field: Первинне ключове поле
@@ -2024,6 +2020,7 @@ operations:
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
     recipient: Користувач
     message: Повідомлення
+    subject: Тема
   request:
     name: Веб хук / URL запиту
     description: 'Зробити запит на посилання'

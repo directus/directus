@@ -29,7 +29,7 @@ folders are inside there.
 | `/cli`         | The CLI commands and matching functions that the `directus` package ships with.                                                                                                                 |
 | `/controllers` | Route handler controllers for the endpoints in the API.                                                                                                                                         |
 | `/database`    | Database manipulation abstraction, system migrations, and system data. Also where you'd find the main query runner.                                                                             |
-| `/exceptions`  | Classes for the different errors the API is expected to throw. Used to set the HTTP status and error codes.                                                                                     |
+| `/errors`      | Classes for the different errors the API is expected to throw. Used to set the HTTP status and error codes.                                                                                     |
 | `/middleware`  | Various (express) routing middleware. Includes things like cache-checker, authenticator, etc.                                                                                                   |
 | `/services`    | Internal services. The main abstraction for interfacing with the data in the database. Both GraphQL and REST requests are "translated" to use these services as the main logic in the platform. |
 | `/types`       | TypeScript types that are shared between the different parts of the API.                                                                                                                        |
@@ -44,7 +44,7 @@ Contains the Directus Data Studio App, written in Vue.js 3 w/ the Composition AP
 | `/public` | Assets that are included with the app, but not bundled. |
 | `/src`    | App source code.                                        |
 
-The source code is located in `/api/src` and the below folders are inside there.
+The source code is located in `/app/src` and the below folders are inside there.
 
 | Folder         | Content                                                                                                                                                      |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -68,9 +68,9 @@ The source code is located in `/api/src` and the below folders are inside there.
 
 ::: tip Component Library
 
-Directus comes shipped with it's own [Vue Component Library and Storybook](<(https://components.directus.io)>) that you
-can use to enrich your extensions or when developing locally. These components can be used in any of the "app
-extensions", including Interfaces, Displays, Modules, Layouts, and Panels.
+Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you can
+use to enrich your extensions or when developing locally. These components can be used in any of the "app extensions",
+including Interfaces, Displays, Modules, Layouts, and Panels.
 
 :::
 
@@ -85,7 +85,7 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 | [create-directus-extension](https://github.com/directus/directus/tree/main/packages/create-directus-extension)           | A small util that will scaffold a Directus extension                                                                                                                  |
 | [@directus/data-driver-postgres](https://github.com/directus/directus/tree/main/packages/data-driver-postgres)           | Data abstraction for Postgres                                                                                                                                         |
 | [@directus/data](https://github.com/directus/directus/tree/main/packages/data)                                           | Data abstraction for Directus                                                                                                                                         |
-| [@directus/exceptions](/packages/@directus/exceptions/)                                                                  | Shared exceptions in Directus                                                                                                                                         |
+| [@directus/errors](/packages/@directus/errors/)                                                                          | Utility functions to help creating and checking against Directus errors                                                                                               |
 | [@directus/extensions-sdk](/packages/@directus/extensions-sdk/)                                                          | A toolkit to develop extensions to extend Directus                                                                                                                    |
 | [@directus/pressure](/packages/@directus/pressure/)                                                                      | Pressure based rate limiter                                                                                                                                           |
 | [@directus/random](/packages/@directus/random/)                                                                          | Set of random-utilities for use in tests                                                                                                                              |
@@ -104,6 +104,10 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 | [@directus/types](/packages/@directus/types/)                                                                            | Shared types for Directus                                                                                                                                             |
 | [@directus/update-check](/packages/@directus/update-check/)                                                              | Check if an update is available for a given package                                                                                                                   |
 | [@directus/utils](https://github.com/directus/directus/tree/main/packages/utils)                                         | Utilities shared between the Directus packages                                                                                                                        |
+
+## The JavaScript SDK (`/sdk`)
+
+Contains the new Directus JavaScript SDK available as [@directus/sdk](/packages/@directus/sdk/) package.
 
 ## Tests (`/tests`)
 

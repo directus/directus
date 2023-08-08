@@ -1,8 +1,20 @@
 /**
  * Make logo size of the sidebar
  * -------------------------------------------------------------------------- */
-.VPNav .VPNavBar .VPNavBarTitle .logo {
-	height: unset;
+@media only screen and (min-width: 370px) {
+	.VPNav .VPNavBar .VPNavBarTitle .logo {
+		height: unset;
+	}
+}
+
+/**
+ * Workaround for navbar getting collapsed too late and overlapping page
+ * -------------------------------------------------------------------------- */
+@media only screen and (min-width: 768px) and (max-width: 940px) {
+	.VPNav .VPNavBar .container {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
 }
 
 /**
@@ -34,6 +46,9 @@
 	color-scheme: auto;
 }
 
+/**
+ * Spacing in notices
+ * -------------------------------------------------------------------------- */
 .vp-doc .custom-block li + li {
 	margin: 0;
 }
@@ -41,4 +56,53 @@
 .vp-doc .custom-block a {
 	font-weight: 500;
 	text-decoration: underline;
+}
+
+/**
+ * Homepage container
+ * -------------------------------------------------------------------------- */
+.VPHome {
+	padding-bottom: 0 !important;
+}
+
+/**
+ * Prevent flash effect in navbar on home page when scrolling down
+ * -------------------------------------------------------------------------- */
+.isHome .VPNavBar {
+	background-color: var(--vp-nav-bg-color);
+}
+
+/**
+ * Add spacing between h3 and snippet toggler for api ref pages
+ * -------------------------------------------------------------------------- */
+.vp-doc h3 + .snippet-toggler {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+/**
+* Reduce spacing at bottom of sidebar section
+* -------------------------------------------------------------------------- */
+.VPSidebarItem.level-0 {
+	padding-bottom: 10px !important;
+}
+
+/**
+* Light theme for tabs component
+* -------------------------------------------------------------------------- */
+
+:root {
+	--vp-plugin-tabs-tab-bg: transparent;
+}
+
+.plugin-tabs {
+	border: 1px solid var(--vp-plugin-tabs-tab-divider);
+}
+
+.plugin-tabs--tab-list::after {
+	height: 1px;
+}
+
+.plugin-tabs--tab {
+	border-width: 1px;
 }
