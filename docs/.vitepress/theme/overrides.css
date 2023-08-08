@@ -79,3 +79,30 @@
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
+
+/**
+* Reduce spacing at bottom of sidebar section
+* -------------------------------------------------------------------------- */
+.VPSidebarItem.level-0 {
+	padding-bottom: 10px !important;
+}
+
+/**
+* Light theme for tabs component
+* -------------------------------------------------------------------------- */
+
+:root {
+	--vp-plugin-tabs-tab-bg: transparent;
+}
+
+.plugin-tabs {
+	border: 1px solid var(--vp-plugin-tabs-tab-divider);
+}
+
+.plugin-tabs--tab-list::after {
+	height: 1px;
+}
+
+.plugin-tabs--tab {
+	border-width: 1px;
+}

@@ -142,16 +142,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelations } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRelations({
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRelations(query_object));
 ```
 
 </template>
@@ -190,8 +185,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelations } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -238,16 +232,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelationByCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelationByCollection } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRelationByCollection('collection_name', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRelationByCollection(collection_name, query_object));
 ```
 
 </template>
@@ -286,8 +275,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelationByCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelationByCollection } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -327,16 +315,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRelation('collection_name', 'field_name', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRelation(collection_name, field_name, query_object));
 ```
 
 </template>
@@ -376,8 +359,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -402,13 +384,7 @@ Create a new relation.
 
 `POST /relations`
 
-```json
-{
-	"relations_field_1": "value_1",
-	"relations_field_2": "value_2",
-	"relations_field_3": "value_3"
-}
-```
+Provide a [relation object](#the-relation-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -425,18 +401,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, createRelation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createRelation({
-		relations_field_1: 'value_1',
-		relations_field_2: 'value_2',
-		relations_field_3: 'value_3',
-	})
-);
+const result = await client.request(createRelation(relation_object));
 ```
 
 </template>
@@ -490,8 +459,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, createRelation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -518,13 +486,7 @@ Update an existing relation.
 
 `PATCH /relations/:collection/:field`
 
-```json
-{
-	"relations_field": {
-		"relations_subfield": "value"
-	}
-}
-```
+Provide a partial [relation object](#the-relation-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -541,18 +503,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, updateRelation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateRelation('collection_name', 'field_name', {
-		field: {
-			sub_field: 'value',
-		},
-	})
-);
+const result = await client.request(updateRelation(collection_name, field_name, partial_relation_object));
 ```
 
 </template>
@@ -604,8 +559,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, updateRelation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -647,12 +601,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteRelation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteRelation('collection_name', 'field_name'));
+const result = await client.request(deleteRelation(collection_name, field_name));
 ```
 
 </template>
@@ -687,8 +640,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteRelation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
