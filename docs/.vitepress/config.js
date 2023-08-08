@@ -2,6 +2,8 @@ import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
+import guidesData from './data/guides.data.js';
+const { guides } = await guidesData.load()
 
 export default defineConfig({
 	base: '/',
@@ -232,6 +234,14 @@ function sidebarTypedocs() {
 	});
 
 	return sidebar;
+}
+
+function sidebarGuides() {
+	const guideSections = guides.sections.map(section => ({ 
+		text: section.title,
+		link: `/guides/${section.indexPath}`
+	}))
+	return guideSections
 }
 
 function sidebar() {
@@ -479,65 +489,10 @@ function sidebar() {
 					link: '/guides/index.html',
 				},
 				{
-					text: 'JavaScript SDK',
+					text: 'JavaScript SDK Quickstart',
 					link: '/guides/sdk/getting-started',
 				},
-				{
-					text: 'Flows',
-					items: [
-						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
-						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
-					],
-				},
-				{
-					text: 'Headless CMS',
-					items: [
-						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
-						{
-							text: 'Re-Usable Page Components',
-							link: '/guides/headless-cms/reusable-components',
-						},
-						{
-							link: '/guides/headless-cms/schedule-content/',
-							text: 'Scheduling Future Content',
-						},
-						{
-							link: '/guides/headless-cms/trigger-static-builds/',
-							text: 'Trigger Static Site Builds',
-						},
-						{
-							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/',
-						},
-						{
-							text: 'Set Up Live Preview',
-							link: '/guides/headless-cms/live-preview/',
-						},
-						{
-							text: 'Content Translations (i18n)',
-							link: '/guides/headless-cms/content-translations',
-						},
-					],
-				},
-				{
-					link: '/guides/migration/index.html',
-					text: 'Schema Migration',
-				},
-				{
-					text: 'Real-Time',
-					items: [
-						{ text: 'Getting Started', link: '/guides/real-time/getting-started/index.html' },
-						{ text: 'Authentication', link: '/guides/real-time/authentication' },
-						{ text: 'Operations', link: '/guides/real-time/operations' },
-						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
-						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
-						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
-					],
-				},
-				{
-					text: 'Extension Building',
-					link: '/guides/extensions/index.html'
-				}
+				...sidebarGuides()
 			],
 		},
 		{
