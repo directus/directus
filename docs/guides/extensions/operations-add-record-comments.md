@@ -5,13 +5,13 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Use Custom Operations to Add an Item Comment
 
-Operations allow you to trigger your own code during a Flow. This guide will show you how to add comments to a record using built-in services and make it available as a configurable Flow operation.
+Operations allow you to trigger your own code in a Flow. This guide will show you how to add comments to a record using built-in services and make it available as a configurable Flow operation.
 
 ![An Add Comment operation in a Flow](https://marketing.directus.app/assets/5b20c836-39f1-4905-95ad-e829f1a65efc.png)
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the boilerplate code for your display.
+Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the boilerplate code for your operation.
 
 ```
 npm i create-directus-extension
@@ -94,7 +94,6 @@ The `overview` section defines what is visible inside the operation’s card on 
 It will be useful to see the collection and the comment on the card. To do this you must include the fields value from the options (eg `collection` and `comment`) as properties. Replace the placeholder objects with the following:
 
 ```js
-
 overview: ({ collection, comment }) => [
 	{
 		label: '$t:collection',
@@ -119,7 +118,7 @@ Open the `api.js` file and update the `id` to match the one used in the `app.js`
 The `handler` needs to include the values from the options and some key services to create a comment. Replace the handler definition with the following:
 
 ```js
-handler: async ({ collection, comment_key, comment }, { services, database, accountability, getSchema }) => {}
+handler: async ({ collection, comment_key, comment }, { services, database, accountability, getSchema }) => {
 ```
 
 Notice the fields are added in the first object, then the services in the second.
@@ -193,7 +192,7 @@ npm run build
 In order to use this operation in Directus, you must copy the compiled index file into the project's extension folder. 
 
 1. In the Directus extensions directory, open the operations directory and make a new directory called `directus-operation-add-comment`.
-2. From the display's directory, open the __dist__ folder and copy the `index.js` file into the directory.
+2. From the operation's directory, open the __dist__ folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
 ## Use the Operation
@@ -203,7 +202,6 @@ In the Directus Data Studio, open the Flows section in Settings. Create a new fl
 Add a new step (operation) in the flow by clicking the tick/plus on the card. This can be at any point in the workflow. From the list of options, choose __Add Comment__.
 
 <img src="https://marketing.directus.app/assets/0bc1022b-2da7-4064-8c80-0fc32da59159.png" alt="Select Add Comment. Inside of Collection, type {{$trigger.payload.collection}}. Inside of IDs, type {{$trigger.payload.keys}}. For the comment, type any that you would like to add as a comment." style="padding:6px 8px;"/>
-
 
 Save the operation, save the Flow, and then trigger it by updating a record from the chosen collections. Open the collection records again to see the new comment. To see the response from the API function, open the flow and check out the logs in the right side toolbar.
 

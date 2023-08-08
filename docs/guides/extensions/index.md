@@ -29,7 +29,7 @@
 
 ## Operations
 
-- Send Batch Email With A Third-Party Service (TBC)
+- [Use Custom Operations to Send Bulk Email With SendGrid](/guides/extensions/operations-bulk-email-sendgrid)
 - [Use Custom Operations to Add an Item Comment](/guides/extensions/operations-add-record-comments)
 - Send SMS Message With Vonage
 
