@@ -475,6 +475,10 @@ function sidebar() {
 			collapsed: true,
 			items: [
 				{
+					text: 'All Guides',
+					link: '/guides/index.html',
+				},
+				{
 					text: 'JavaScript SDK',
 					link: '/guides/sdk/getting-started',
 				},
