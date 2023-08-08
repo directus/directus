@@ -43,4 +43,4 @@
 
 ## Endpoints
 
-- Exposing/Proxying A Third-Party API via Directus
+- [Use Custom Endpoints to Create an API Proxy](/guides/extensions/api-proxy-twilio)

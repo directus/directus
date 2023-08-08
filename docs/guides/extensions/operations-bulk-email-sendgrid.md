@@ -43,9 +43,9 @@ Open `app.js` and change the `id`, `name`, `icon`, and `description`.
 
 ```js
 id: 'operation-bulk-sendgrid',
-name: 'Sendgrid Bulk Email',
+name: 'SendGrid Bulk Email',
 icon: 'mail',
-description: 'Send bulk emails using Sendgrid API.',
+description: 'Send bulk emails using SendGrid API.',
 ```
 
 Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
@@ -53,7 +53,7 @@ include a professional prefix. You can choose an icon from the library [here](ht
 
 With the information above, the operation will appear in the list like this:
 
-<img src="https://marketing.directus.app/assets/4a9c482b-0e69-4070-a2e0-4f8227f1c6c9.png" alt="SendGrid Bulk Email - send bulk emails using Sendgrid API. An envelope icon is displayed in the box." style="padding: 2px 6px 4px;">
+<img src="https://marketing.directus.app/assets/4a9c482b-0e69-4070-a2e0-4f8227f1c6c9.png" alt="SendGrid Bulk Email - send bulk emails using SendGrid API. An envelope icon is displayed in the box." style="padding: 2px 6px 4px;">
 
 `options` are the fields presented in the frontend when adding this operation to the Flow. To send an email with
 SendGrid, you will need the sending address, a recipient address, a subject and the template id. Replace the placeholder
@@ -164,7 +164,7 @@ contains 2 parameters, `label` and `text`. The label can be any string and does 
 text parameter can be a variable or just another string.
 
 It will be useful to see the subject and the from address on the card. To do this you must include the fields value from
-the options (eg `subject` and `from`) as properties. Replace the placeholder objects with the following:
+the options (`subject` and `from`) as properties. Replace the placeholder objects with the following:
 
 ```js
 overview: ({ subject, from }) => [
@@ -295,7 +295,7 @@ In the Directus Data Studio, open the Flows section in Settings. Create a new fl
 collection(s) to include this button on.
 
 Fetch some recipients by adding a **Read Data** operation and include the required fields and filters. Add a new step
-(operation) after the Data Read operation by clicking the tick/plus on the card, then choose **Sendgrid Bulk Email**
+(operation) after the Data Read operation by clicking the tick/plus on the card, then choose **SendGrid Bulk Email**
 from the list.
 
 <img alt="The full form is filled with values." src="https://marketing.directus.app/assets/028907bb-90db-47cb-994b-589f520d0f41.png" style="padding: 8px;">
@@ -318,7 +318,7 @@ flow from the right side toolbar.
 
 ## Summary
 
-This operation will send a a SendGrid API request to use an email template inside SendGrid along with the supplied
+This operation will send an SendGrid API request to use an email template inside SendGrid along with the supplied
 personal information to bulk send an email to the recipients. The response is captured in the logs for reference. Now
 that you know how to interact with a third party API, you can investigate other services that can be used in your
 workflows.

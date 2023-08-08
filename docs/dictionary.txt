@@ -215,6 +215,7 @@ IETF's
 IIS
 iisnode
 incongruent
+input-multiline
 intwined
 IoT
 ISO8601
@@ -291,6 +292,7 @@ pageClass
 param
 paywalled
 performant
+personalization
 phpMyAdmin
 Phusion
 Pinia

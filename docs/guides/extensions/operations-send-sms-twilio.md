@@ -1,5 +1,5 @@
 ---
-description: "Learn how to create an operation to send bulk email with SendGrid's Dynamic Templates."
+description: "Learn how to create an operation to send an SMS using Twilio."
 contributors: "Tim Butterfield, Kevin Lewis"
 ---
 

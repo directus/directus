@@ -104,7 +104,7 @@ contains 2 parameters, `label` and `text`. The label can be any string and does 
 text parameter can be a variable or just another string.
 
 It will be useful to see the collection and the comment on the card. To do this you must include the fields value from
-the options (eg `collection` and `comment`) as properties. Replace the placeholder objects with the following:
+the options (`collection` and `comment`) as properties. Replace the placeholder objects with the following:
 
 ```js
 overview: ({ collection, comment }) => [
