@@ -237,7 +237,7 @@ const { file } = useFile();
 
 function useFile() {
 	const isDirectusFiles = computed(() => {
-		return relatedCollection.value === 'directus_files';
+		return props.collection === 'directus_files' || relatedCollection.value === 'directus_files';
 	});
 
 	const file = computed(() => {
@@ -355,7 +355,7 @@ function useRelation() {
 	});
 
 	const relatedCollection = computed<string | null>(() => {
-		if (!props.junctionField) return props.collection;
+		if (!props.junctionField) return null;
 
 		// If this is a m2m/m2a, there will be 2 relations associated with this field
 		const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
