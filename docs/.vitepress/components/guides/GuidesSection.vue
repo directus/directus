@@ -6,7 +6,7 @@
         <li v-for="item in block.items">
           <a v-if="item.path" :href="item.path">{{ item.display }}</a>
           <span v-else>
-            <span>{{ item.display }}</span>
+            <span>{{ item.display }}:</span>
             <a v-for="variant of item.paths" :href="variant.path">{{ variant.label }}</a>
           </span>
         </li>
