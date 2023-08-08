@@ -37,15 +37,11 @@ const ivm = require('isolated-vm')
 type ApiServices = 'items' | 'assets' | 'activity' | 'collections' | 'dashboards' | 'fields' | 'files' | 'import' | 'export' | 'notifications' | 'operations' | 'panels' | 'permissions' | 'presets' | 'relations' | 'revisions' | 'roles' | 'server' | 'settings' | 'shares' | 'translations' | 'users' | 'webhooks' | 'websocket'
 
 export class ApiServiceVMFunction extends VMFunction {
-	constructor() {
-		super(import.meta.url)
-	}
-
 	override async prepareContext(context: Context, extension: ApiExtensionInfo): Promise<void> {
 
 		const schema = await getSchema()
 
-		await context.evalClosure(this.vmCode, [
+		await context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(function (type: ApiServices, ...args: any[]) {
 				console.log("Api Service: ", type)
@@ -99,9 +95,12 @@ export class ApiServiceVMFunction extends VMFunction {
 						return createReference(new WebhooksService({ schema }))
 					case 'websocket':
 						return createReference(new WebSocketService())
+					default:
+						return new ivm.ExternalCopy(new Error('Service does not exist')).copyInto()
 
 
-				})
+				}
+			})
 		])
 
 		function createReference(service: any) {

@@ -13,7 +13,7 @@ export class DefineEndpointVMFunction extends VMFunction {
 	private extensionManager: ExtensionManager
 
 	constructor(extensionManager: ExtensionManager) {
-		super(import.meta.url)
+		super()
 		this.extensionManager = extensionManager
 	}
 
@@ -24,7 +24,7 @@ export class DefineEndpointVMFunction extends VMFunction {
 		const scopedRouter = express.Router();
 		endpointRouter.use(`/${extension.name}`, scopedRouter);
 
-		context.evalClosureSync(this.vmCode, [
+		context.evalClosureSync(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(function (type: 'get' | 'post' | 'patch', path: string, callback: any) {
 				console.log("Endpoint: ", type, path)

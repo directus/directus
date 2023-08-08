@@ -9,6 +9,7 @@ import { DefineEndpointVMFunction } from "./vm-functions/defineEndpoint/node.js"
 import { DefineOperationVMFunction } from "./vm-functions/defineOperation/node.js";
 import { DefineHookVMFunction } from "./vm-functions/defineHook/node.js";
 import { ApiServiceVMFunction } from "./vm-functions/apiServices/node.js";
+import { ConsoleVMFunction } from "./vm-functions/console/node.js";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
@@ -29,6 +30,7 @@ export class VmManager {
 
 		this.vmFunctions.push(new FetchVMFunction())
 		this.vmFunctions.push(new ApiServiceVMFunction())
+		this.vmFunctions.push(new ConsoleVMFunction())
 		this.defineEndpoint = new DefineEndpointVMFunction(this.extensionManager)
 		this.defineHook = new DefineHookVMFunction()
 		this.defineOperation = new DefineOperationVMFunction()
@@ -112,11 +114,6 @@ export class VmManager {
 	private async prepareGeneralContext(context: Context, extension: ApiExtensionInfo) {
 		const jail = context.global;
 		jail.setSync('global', jail.derefInto());
-		jail.setSync('console', new ivm.ExternalCopy({
-			log: new ivm.Callback((...args: any[]) => {
-				console.log("V8: ", ...args)
-			})
-		}).copyInto());
 
 		for (let vmFunction of this.vmFunctions) {
 			vmFunction.prepareContext(context, extension)

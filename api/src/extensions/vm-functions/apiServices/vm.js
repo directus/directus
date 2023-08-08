@@ -232,12 +232,15 @@ class WebSocketService {
 		const service = databaseService.applySync(null, [
 			'websocket',
 		])
+
 		return createProxy(service)
 	}
 }
 
 
 function createProxy(service) {
+	if (service instanceof Error) throw service
+
 	return new Proxy({}, {
 		get: (_, prop) => {
 			return (...args) => {

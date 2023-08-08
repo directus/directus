@@ -8,14 +8,11 @@ const ivm = require('isolated-vm')
 
 export class FetchVMFunction extends VMFunction {
 
-	constructor() {
-		super(import.meta.url)
-	}
 
 	override prepareContext(context: Context, extension: ApiExtensionInfo): void {
 		const permissions = extension.granted_permissions
 
-		context.evalClosure(this.vmCode, [
+		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async function (url: string, options: any, resolve: any, reject: any) {
 				if (permissions.find(permission => permission.permission === "web") === undefined) {

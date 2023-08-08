@@ -10,13 +10,9 @@ const ivm = require('isolated-vm')
 
 export class DefineOperationVMFunction extends VMFunction {
 
-	constructor() {
-		super(import.meta.url)
-	}
-
 	override prepareContext(context: Context, extension: ApiExtensionInfo): void {
 
-		context.evalClosure(this.vmCode, [
+		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async function (id: string, handler: any) {
 				console.log("register operation", id)

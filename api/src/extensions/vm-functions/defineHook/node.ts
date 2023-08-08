@@ -9,13 +9,9 @@ const ivm = require('isolated-vm')
 
 export class DefineHookVMFunction extends VMFunction {
 
-	constructor() {
-		super(import.meta.url)
-	}
-
 	override prepareContext(context: Context, extension: ApiExtensionInfo): void {
 
-		context.evalClosure(this.vmCode, [
+		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async function (type: 'filter' | 'action', event: string, callback: any) {
 				if (type === 'filter') {

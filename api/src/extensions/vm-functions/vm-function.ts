@@ -5,12 +5,11 @@ import { Context } from 'isolated-vm'
 import type { ApiExtensionInfo } from "../vm.js";
 
 export abstract class VMFunction {
-	vmCode: string;
 
-	constructor(url = import.meta.url) {
+	protected readV8Code(url: string) {
 		const __dirname = fileURLToPath(new URL('.', url));
 
-		this.vmCode = readFileSync(join(__dirname, 'vm.js'), 'utf-8');
+		return readFileSync(join(__dirname, 'vm.js'), 'utf-8');
 	}
 
 	abstract prepareContext(context: Context, extension: ApiExtensionInfo): void;
