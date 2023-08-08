@@ -3,7 +3,8 @@ import { defineConfig } from 'vitepress';
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 import guidesData from './data/guides.data.js';
-const { guides } = await guidesData.load()
+
+const { guides } = await guidesData.load();
 
 export default defineConfig({
 	base: '/',
@@ -188,7 +189,6 @@ gtag('config', 'UA-24637628-7');
 				pageData.frontmatter.head = setOGImage(pageData.params.image);
 				break;
 			case 'guides-index':
-				console.log(pageData)
 				pageData.title = pageData.params.title;
 				pageData.description = pageData.params.summary;
 				break;
@@ -247,8 +247,9 @@ function sidebarGuides() {
 	const guideSections = guides.sections.map(section => ({ 
 		text: section.title,
 		link: `/guides/${section.indexPath}`
-	}))
-	return guideSections
+	}));
+
+	return guideSections;
 }
 
 function sidebar() {

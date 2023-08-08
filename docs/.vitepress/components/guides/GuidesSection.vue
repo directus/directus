@@ -1,13 +1,13 @@
 <template>
   <div class="boxes" :style="`column-count: ${section.cols}`">
-    <div v-for="block of section.blocks" class="box">
+    <div v-for="block of section.blocks" :key="block.title" class="box">
       <h3>{{ block.title }}</h3>
       <ul>
-        <li v-for="item in block.items">
+        <li v-for="item in block.items" :key="item.path">
           <a v-if="item.path" :href="item.path">{{ item.display }}</a>
           <span v-else>
             <span>{{ item.display }}:</span>
-            <a v-for="variant of item.paths" :href="variant.path">{{ variant.label }}</a>
+            <a v-for="variant of item.paths" :key="variant.path" :href="variant.path">{{ variant.label }}</a>
           </span>
         </li>
       </ul>
@@ -16,9 +16,13 @@
 </template>
 
 <script setup>
+import { toRaw } from 'vue'
+
 const props = defineProps({
   section: Object
 })
+
+const { section } = toRaw(props)
 </script>
 
 <style scoped>

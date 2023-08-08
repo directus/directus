@@ -9,12 +9,12 @@
   <div class="box">
     <h2>Getting Started</h2>
     <ul>
-      <li v-for="item in data.guides.gettingStarted">
+      <li v-for="item in data.guides.gettingStarted" :key="item.path">
         <a :href="item.path">{{ item.display }}</a>
       </li>
     </ul>
   </div>
-  <section v-for="section in data.guides.sections">
+  <section v-for="section in data.guides.sections" :key="section.indexPath">
     <h2>{{ section.title }}</h2>
     <GuidesSection :section="section" />
   </section>
