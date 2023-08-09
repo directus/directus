@@ -62,6 +62,7 @@ type ExtensionBase = {
 	version?: string;
 	host?: string;
 	secure: boolean;
+	debugger?: boolean;
 	local: boolean;
 	requested_permissions: ExtensionPermission[];
 };

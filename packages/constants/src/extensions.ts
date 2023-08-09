@@ -61,6 +61,7 @@ export const ExtensionOptionsBase = z.object({
 	host: z.string(),
 	secure: z.boolean().optional(),
 	hidden: z.boolean().optional(),
+	debugger: z.boolean().optional(),
 	permissions: z.array(ExtensionPermission).optional(),
 });
 

@@ -26,6 +26,7 @@ export class VmManager {
 	private defineEndpoint: DefineEndpointVMFunction;
 	private defineHook: DefineHookVMFunction;
 	private defineOperation: DefineOperationVMFunction;
+	private debuggerPort = 10000;
 
 	constructor(extensionManager: ExtensionManager) {
 		this.extensionManager = extensionManager;
@@ -42,11 +43,15 @@ export class VmManager {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
 
+		console.log(extensionPath)
+
 		let code = await readFile(extensionPath, 'utf-8')
 
-		const isolate: Isolate = new ivm.Isolate({ inspector: true, memoryLimit: isolateSizeMb });
-		this.createInspector(isolate.createInspectorSession())
-		const context = await isolate.createContext({ inspector: true });
+		const enableDebugger = extension.debugger === true;
+
+		const isolate: Isolate = new ivm.Isolate({ inspector: enableDebugger, memoryLimit: isolateSizeMb });
+		if (enableDebugger) this.createInspector(isolate.createInspectorSession(), extension.name)
+		const context = await isolate.createContext({ inspector: enableDebugger });
 
 		await this.prepareGeneralContext(context, extension)
 
@@ -96,11 +101,13 @@ export class VmManager {
 			throw new Error("Unknown extension type")
 		}
 
-		const runModule = await isolate.compileModule(runExtensionCode)
+		const runModule = await isolate.compileModule(runExtensionCode, { filename: 'extensionLoader.js' })
 
 		await runModule.instantiate(context, (specifier: string) => {
 			if (specifier === 'extension.js') {
-				return isolate.compileModule(code)
+				return isolate.compileModule(code, {
+					filename: extensionPath
+				})
 			}
 			throw new Error(`Cannot find module ${specifier}`)
 		})
@@ -148,10 +155,9 @@ export class VmManager {
 		}
 	}
 
-	private async createInspector(channel: any) {
-		return
+	private async createInspector(channel: any, extensionName: string) {
 
-		let wss = new WebSocket.Server({ port: 10000 });
+		let wss = new WebSocket.Server({ port: this.debuggerPort });
 
 		wss.on('connection', function (ws: any) {
 			function dispose() {
@@ -165,7 +171,7 @@ export class VmManager {
 			// Relay messages from frontend to backend
 			ws.on('message', function (message: any) {
 				try {
-					channel.dispatchProtocolMessage(String(message));
+					channel.dispatchProtocolMessage(message.toString());
 				} catch (err) {
 					// This happens if inspector session was closed unexpectedly
 					ws.close();
@@ -175,7 +181,7 @@ export class VmManager {
 			// Relay messages from backend to frontend
 			function send(message: any) {
 				try {
-					ws.send(message);
+					ws.send(message.toString());
 				} catch (err) {
 					dispose();
 				}
@@ -183,6 +189,8 @@ export class VmManager {
 			channel.onResponse = (callId: any, message: any) => send(message);
 			channel.onNotification = send;
 		});
-		console.log('Inspector: devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:10000');
+		console.log(`${extensionName} Inspector: devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:${this.debuggerPort}`);
+
+		this.debuggerPort++;
 	}
 }

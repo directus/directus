@@ -56,6 +56,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				entries: extensionOptions.entries,
 				host: extensionOptions.host,
 				secure: extensionOptions.secure === true,
+				debugger: extensionOptions.debugger === true,
 				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
@@ -73,6 +74,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				},
 				host: extensionOptions.host,
 				secure: extensionOptions.secure === true,
+				debugger: extensionOptions.debugger === true,
 				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
@@ -87,6 +89,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				entrypoint: extensionOptions.path,
 				host: extensionOptions.host,
 				secure: extensionOptions.secure === true,
+				debugger: extensionOptions.debugger === true,
 				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
