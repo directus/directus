@@ -17,8 +17,9 @@ Directus. For the sake of documentation, we'll use a fictional articles collecti
 
 ::: tip Relational Data
 
-The item object contains only physical relationships, which means that no alias relationships are returned here.
-To retrieve _all_ relationships see [Relational Data](/reference/introduction#relational-data) and [Field Parameters](/reference/query#fields).
+The item object contains only physical relationships, which means that no alias relationships are returned here. To
+retrieve _all_ relationships see [Relational Data](/reference/introduction#relational-data) and
+[Field Parameters](/reference/query#fields).
 
 :::
 
