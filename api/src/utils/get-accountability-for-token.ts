@@ -1,4 +1,5 @@
 import type { Accountability } from '@directus/types';
+import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { InvalidCredentialsError } from '../errors/index.js';
@@ -30,22 +31,31 @@ export async function getAccountabilityForToken(
 			if (payload.share_scope) accountability.share_scope = payload.share_scope;
 			if (payload.id) accountability.user = payload.id;
 		} else {
-			// Try finding the user with the provided token
-			const database = getDatabase();
-
-			const user = await database
-				.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
-				.from('directus_users')
-				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-				.where({
-					'directus_users.token': token,
-					status: 'active',
-				})
-				.first();
+			const { cache } = getCache();
+			let user = cache ? await cache.get(`user_token:${token}`) : null;
 
 			if (!user) {
-				throw new InvalidCredentialsError();
-			}
+				// Try finding the user with the provided token
+				const database = getDatabase();
+
+				user = await database
+					.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
+					.from('directus_users')
+					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+					.where({
+						'directus_users.token': token,
+						status: 'active',
+					})
+					.first();
+
+					if (cache) {
+						cache.set(`user_token:${token}`, user, 10000);
+					}
+				}
+
+				if (!user) {
+						throw new InvalidCredentialsError();
+				}
 
 			accountability.user = user.id;
 			accountability.role = user.role;

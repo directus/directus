@@ -1,20 +1,30 @@
 import type { RequestHandler } from 'express';
+import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { InvalidIpError } from '../errors/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
 export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
-	const database = getDatabase();
+	const { cache } = getCache();
+	let role: any = cache ? cache.get(`ip_access:${req.accountability!.role}`) : null;
 
-	const query = database.select('ip_access').from('directus_roles');
+	if (!role) {
+		const database = getDatabase();
 
-	if (req.accountability!.role) {
-		query.where({ id: req.accountability!.role });
-	} else {
-		query.whereNull('id');
+		const query = database.select('ip_access').from('directus_roles');
+
+		if (req.accountability!.role) {
+			query.where({ id: req.accountability!.role });
+		} else {
+			query.whereNull('id');
+		}
+
+		role = await query.first();
+
+		if (cache) {
+			cache.set(`ip_access:${req.accountability!.role}`, role, 10000);
+		}
 	}
-
-	const role = await query.first();
 
 	const ipAllowlist = (role?.ip_access || '').split(',').filter((ip: string) => ip);
 
