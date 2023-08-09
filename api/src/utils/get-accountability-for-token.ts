@@ -39,7 +39,12 @@ export async function getAccountabilityForToken(
 				const database = getDatabase();
 
 				user = await database
-					.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
+					.select(
+						'directus_users.id',
+						'directus_users.role',
+						'directus_roles.admin_access',
+						'directus_roles.app_access'
+					)
 					.from('directus_users')
 					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 					.where({
@@ -48,14 +53,14 @@ export async function getAccountabilityForToken(
 					})
 					.first();
 
-					if (cache) {
-						cache.set(`user_token:${token}`, user, 10000);
-					}
+				if (cache) {
+					cache.set(`user_token:${token}`, user, 10000);
 				}
+			}
 
-				if (!user) {
-						throw new InvalidCredentialsError();
-				}
+			if (!user) {
+				throw new InvalidCredentialsError();
+			}
 
 			accountability.user = user.id;
 			accountability.role = user.role;
