@@ -1,5 +1,5 @@
 import formatTitle from '@directus/format-title';
-import { toArray } from '@directus/utils';
+import { toArray, getFieldsFromTemplate } from '@directus/utils';
 import Busboy from 'busboy';
 import bytes from 'bytes';
 import type { RequestHandler } from 'express';
@@ -9,7 +9,7 @@ import { minimatch } from 'minimatch';
 import path from 'path';
 import env from '../env.js';
 import { ContentTooLargeException } from '../exceptions/content-too-large.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -19,6 +19,8 @@ import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { render } from 'micromustache';
+import { getStorage } from '../storage/index.js';
 
 const router = express.Router();
 
@@ -237,23 +239,63 @@ router.post(
 	'/send',
 	asyncHandler(async (req, res, _next) => {
 		const { error } = sendSchema.validate(req.body);
-
 		if (error) {
 			throw new InvalidPayloadException(error.message);
 		}
 
-		// TODO@Raffy27: Get the fields from the body and render them
+		// Obtain the required fields from the template strings
+		const fields: Set<string> = new Set(
+			getFieldsFromTemplate(req.body.body).concat(getFieldsFromTemplate(req.body.subject))
+		);
+		fields.add('id');
+		fields.add('title');
+		fields.add('filename_download');
+		fields.add('filename_disk');
+		fields.add('storage');
+		const filesService = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const values: Record<string, any> = await filesService.readOne(req.body.key, {
+			fields: Array.from(fields),
+		}, { emitEvents: false });
+		// Use micromustache to render the template strings
+		const subject = req.body.subject ? render(req.body.subject, values) : '';
+		const body = req.body.body ? render(req.body.body, values) : '';
+		// logger.info(`Sending email to ${req.body.emails.join(', ')}`);
+		// logger.info(`Subject: ${subject}`);
+		// logger.info(`Body: ${body}`);
 
-		// @ts-ignore
+		// Check if the file exists
+		const storage = await getStorage();
+		const exists = await storage.location(values['storage']).exists(values['filename_disk']);
+		if (!exists) {
+			throw new InvalidPayloadException(`File does not exist`);
+		}
+		const fileStream = await storage.location(values['storage']).read(values['filename_disk']);
+
 		const mailService = new MailService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		
-
-		// TODO@Raffy27: Actually send the email
-
-		res.json({ success: true });
+		try {
+			const result: any = await mailService.send({
+				to: req.body.emails,
+				subject,
+				text: body,
+				attachments: [{
+					filename: values['filename_download'],
+					content: fileStream,
+				}]
+			});
+			res.json({
+				success: true,
+				accepted: result.accepted?.length ?? 0,
+				rejected: result.rejected?.length ?? (req.body.emails.length - (result.accepted?.length ?? 0)),
+			});
+		} catch (error: any) {
+			throw new ServiceUnavailableException('Error sending email', { service: 'files', error });
+		}
 	})
 );
 
