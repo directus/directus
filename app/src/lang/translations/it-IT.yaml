@@ -950,6 +950,8 @@ wysiwyg_options:
   source_code: Modifica Codice Sorgente
   fullscreen: Schermo Intero
   directionality: Direzionalità
+  lazy_loading: Carica l'immagine in modalità lazy
+  lazy_loading_label: Abilita Lazy Loading
 dropdown: Menu a tendina
 choices: Scelta multipla
 choices_option_configured_incorrectly: Scelte configurate in modo errato
