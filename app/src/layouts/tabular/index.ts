@@ -169,13 +169,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const fields = computed({
 				get() {
 					if (layoutQuery.value?.fields) {
-						return layoutQuery.value.fields.filter(field => fieldsStore.getField(collection.value!, field))
+						return layoutQuery.value.fields.filter((field) => fieldsStore.getField(collection.value!, field));
 					} else {
 						return unref(fieldsDefaultValue);
 					}
 				},
 				set(value) {
-					layoutQuery.value.fields = value
+					layoutQuery.value.fields = value;
 				},
 			});
 
