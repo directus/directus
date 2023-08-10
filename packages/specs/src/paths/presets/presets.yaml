@@ -178,8 +178,8 @@ patch:
               layout_query:
                 type: string
                 description:
-                  Layout query that's saved per layout type. Controls what data is fetched on load. These follow the same
-                  format as the JS SDK parameters.
+                  Layout query that's saved per layout type. Controls what data is fetched on load. These follow the
+                  same format as the JS SDK parameters.
               layout_options:
                 type: string
                 description: Options of the views. The properties in here are controlled by the layout.
