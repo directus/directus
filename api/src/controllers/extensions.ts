@@ -15,6 +15,7 @@ const router = Router();
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
+		const a = req.query
 		if (req.accountability?.admin !== true) throw new RouteNotFoundError({ path: req.path });
 
 		const extensionManager = await getExtensionManager();

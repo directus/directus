@@ -6,11 +6,14 @@ function fetch(url, options) {
 		makeFetch.apply(undefined, [
 			url,
 			options,
-			new ivm.Reference((data, text, json) => {
+			new ivm.Reference((data, text, json, blob, arrayBuffer, formData) => {
 				resolve({
 					...data,
 					text: async () => await text.applySyncPromise(undefined, []),
-					json: async () => await json.applySyncPromise(undefined, [])
+					json: async () => await json.applySyncPromise(undefined, []),
+					blob: async () => await blob.applySyncPromise(undefined, []),
+					arrayBuffer: async () => await arrayBuffer.applySyncPromise(undefined, []),
+					formData: async () => await formData.applySyncPromise(undefined, []),
 				})
 			}),
 			new ivm.Reference((...args) => {

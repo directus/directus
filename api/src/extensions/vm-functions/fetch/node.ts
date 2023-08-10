@@ -29,14 +29,29 @@ export class FetchVMFunction extends VMFunction {
 					resolve.apply(undefined, [
 						new ivm.ExternalCopy({
 							url: response.url,
+							bodyUsed: response.bodyUsed,
+							headers: new ivm.ExternalCopy(response.headers).copyInto(),
+							ok: response.ok,
+							redirected: response.redirected,
 							status: response.status,
+							statusText: response.statusText,
+							type: response.type,
 						}).copyInto(),
 						new ivm.Reference(async () => {
 							return await response.text()
 						}),
 						new ivm.Reference(async () => {
 							return new ivm.ExternalCopy(await response.json()).copyInto()
-						})
+						}),
+						new ivm.Reference(async () => {
+							return new ivm.ExternalCopy(await response.blob()).copyInto()
+						}),
+						new ivm.Reference(async () => {
+							return new ivm.ExternalCopy(await response.arrayBuffer()).copyInto()
+						}),
+						new ivm.Reference(async () => {
+							return new ivm.ExternalCopy(await response.formData()).copyInto()
+						}),
 					], {
 						timeout: 1000
 					})

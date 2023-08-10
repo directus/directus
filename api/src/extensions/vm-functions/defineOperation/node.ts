@@ -15,7 +15,6 @@ export class DefineOperationVMFunction extends VMFunction {
 		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async function (id: string, handler: any) {
-				console.log("register operation", id)
 				const flowManager = getFlowManager();
 
 				flowManager.addOperation(id, async (options, context) => {

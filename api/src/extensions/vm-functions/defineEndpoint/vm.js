@@ -3,10 +3,19 @@ const makeEndpoint = $1
 
 function defineEndpoint(callback) {
 	const router = {
-		get: (path, endpoint_callback) => {
-			console.log("register endpoint")
+		all: makeFunc('all'),
+		get: makeFunc('get'),
+		post: makeFunc('post'),
+		patch: makeFunc('patch'),
+		delete: makeFunc('delete'),
+		options: makeFunc('options'),
+	}
+	callback(router)
+
+	function makeFunc(type) {
+		return (path, endpoint_callback) => {
 			makeEndpoint.apply(undefined, [
-				'get',
+				type,
 				path,
 				new ivm.Reference((...args) => {
 					endpoint_callback(...args)
@@ -14,7 +23,6 @@ function defineEndpoint(callback) {
 			]);
 		}
 	}
-	callback(router)
 }
 
 globalThis.defineEndpoint = defineEndpoint

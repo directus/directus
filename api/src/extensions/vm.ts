@@ -43,8 +43,6 @@ export class VmManager {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
 
-		console.log(extensionPath)
-
 		let code = await readFile(extensionPath, 'utf-8')
 
 		const enableDebugger = extension.debugger === true;
