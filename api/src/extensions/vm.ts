@@ -35,7 +35,7 @@ export class VmManager {
 		this.vmFunctions.push(new ApiServiceVMFunction())
 		this.vmFunctions.push(new ConsoleVMFunction())
 		this.defineEndpoint = new DefineEndpointVMFunction(this.extensionManager)
-		this.defineHook = new DefineHookVMFunction()
+		this.defineHook = new DefineHookVMFunction(this.extensionManager)
 		this.defineOperation = new DefineOperationVMFunction()
 	}
 

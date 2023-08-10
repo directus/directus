@@ -20,15 +20,6 @@ class ActivityService {
 	}
 }
 
-class AssetsService {
-	constructor() {
-		const service = databaseService.applySync(null, [
-			'assets',
-		])
-		return createProxy(service)
-	}
-}
-
 class CollectionsService {
 	constructor() {
 		const service = databaseService.applySync(null, [
@@ -56,15 +47,6 @@ class FieldsService {
 	}
 }
 
-class FilesService {
-	constructor() {
-		const service = databaseService.applySync(null, [
-			'files',
-		])
-		return createProxy(service)
-	}
-}
-
 class FlowsService {
 	constructor() {
 		const service = databaseService.applySync(null, [
@@ -74,32 +56,6 @@ class FlowsService {
 	}
 }
 
-class FolderService {
-	constructor() {
-		const service = databaseService.applySync(null, [
-			'folder',
-		])
-		return createProxy(service)
-	}
-}
-
-class ImportService {
-	constructor() {
-		const service = databaseService.applySync(null, [
-			'import',
-		])
-		return createProxy(service)
-	}
-}
-
-class ExportService {
-	constructor() {
-		const service = databaseService.applySync(null, [
-			'export',
-		])
-		return createProxy(service)
-	}
-}
 
 class NotificationsService {
 	constructor() {
@@ -128,15 +84,6 @@ class PanelsService {
 	}
 }
 
-class PermissionsService {
-	constructor() {
-		const service = databaseService.applySync(null, [
-			'permissions',
-		])
-		return createProxy(service)
-	}
-}
-
 class PresetsService {
 	constructor() {
 		const service = databaseService.applySync(null, [
@@ -159,15 +106,6 @@ class RevisionsService {
 	constructor() {
 		const service = databaseService.applySync(null, [
 			'revisions',
-		])
-		return createProxy(service)
-	}
-}
-
-class RolesService {
-	constructor() {
-		const service = databaseService.applySync(null, [
-			'roles',
 		])
 		return createProxy(service)
 	}
@@ -209,10 +147,10 @@ class TranslationsService {
 	}
 }
 
-class UsersService {
+class UtilsService {
 	constructor() {
 		const service = databaseService.applySync(null, [
-			'users',
+			'utils',
 		])
 		return createProxy(service)
 	}
@@ -251,7 +189,13 @@ function createProxy(service) {
 						new ivm.Reference(resolve),
 						new ivm.Reference(reject),
 						prop,
-						new ivm.ExternalCopy(args).copyInto()
+						new ivm.ExternalCopy(args.map(arg => {
+							if (typeof arg === 'function') {
+								return new ivm.Reference(arg)
+							} else {
+								return arg
+							}
+						})).copyInto()
 					])
 				})
 			}
@@ -261,27 +205,20 @@ function createProxy(service) {
 
 globalThis.ItemsService = ItemsService
 globalThis.ActivityService = ActivityService
-globalThis.AssetsService = AssetsService
 globalThis.CollectionsService = CollectionsService
 globalThis.DashboardsService = DashboardsService
 globalThis.FieldsService = FieldsService
-globalThis.FilesService = FilesService
 globalThis.FlowsService = FlowsService
-globalThis.FolderService = FolderService
-globalThis.ImportService = ImportService
-globalThis.ExportService = ExportService
 globalThis.NotificationsService = NotificationsService
 globalThis.OperationsService = OperationsService
 globalThis.PanelsService = PanelsService
-globalThis.PermissionsService = PermissionsService
 globalThis.PresetsService = PresetsService
 globalThis.RelationsService = RelationsService
 globalThis.RevisionsService = RevisionsService
-globalThis.RolesService = RolesService
 globalThis.ServerService = ServerService
 globalThis.SettingsService = SettingsService
 globalThis.SharesService = SharesService
 globalThis.TranslationsService = TranslationsService
-globalThis.UsersService = UsersService
+globalThis.UtilsService = UtilsService
 globalThis.WebhooksService = WebhooksService
 globalThis.WebSocketService = WebSocketService

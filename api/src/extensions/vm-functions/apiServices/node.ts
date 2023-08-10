@@ -26,7 +26,8 @@ import {
 	TranslationsService,
 	UsersService,
 	WebhooksService,
-	WebSocketService
+	WebSocketService,
+	UtilsService
 } from "../../../services/index.js";
 import { getSchema } from "../../../utils/get-schema.js";
 
@@ -34,7 +35,7 @@ import { getSchema } from "../../../utils/get-schema.js";
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
 
-type ApiServices = 'items' | 'assets' | 'activity' | 'collections' | 'dashboards' | 'fields' | 'files' | 'import' | 'export' | 'notifications' | 'operations' | 'panels' | 'permissions' | 'presets' | 'relations' | 'revisions' | 'roles' | 'server' | 'settings' | 'shares' | 'translations' | 'users' | 'webhooks' | 'websocket'
+type ApiServices = 'items' | 'assets' | 'activity' | 'collections' | 'dashboards' | 'fields' | 'files' | 'import' | 'export' | 'notifications' | 'operations' | 'panels' | 'permissions' | 'presets' | 'relations' | 'revisions' | 'roles' | 'server' | 'settings' | 'shares' | 'translations' | 'users' | 'utils' | 'webhooks' | 'websocket'
 
 export class ApiServiceVMFunction extends VMFunction {
 	override async prepareContext(context: Context, extension: ApiExtensionInfo): Promise<void> {
@@ -44,13 +45,10 @@ export class ApiServiceVMFunction extends VMFunction {
 		await context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(function (type: ApiServices, ...args: any[]) {
-				console.log("Api Service: ", type)
 
 				switch (type) {
 					case 'items':
 						return createReference(new ItemsService(args[0], { schema }))
-					case 'assets':
-						return createReference(new AssetsService({ schema }))
 					case 'activity':
 						return createReference(new ActivityService({ schema }))
 					case 'collections':
@@ -59,28 +57,18 @@ export class ApiServiceVMFunction extends VMFunction {
 						return createReference(new DashboardsService({ schema }))
 					case 'fields':
 						return createReference(new FieldsService({ schema }))
-					case 'files':
-						return createReference(new FilesService({ schema }))
-					case 'import':
-						return createReference(new ImportService({ schema }))
-					case 'export':
-						return createReference(new ExportService({ schema }))
 					case 'notifications':
 						return createReference(new NotificationsService({ schema }))
 					case 'operations':
 						return createReference(new OperationsService({ schema }))
 					case 'panels':
 						return createReference(new PanelsService({ schema }))
-					case 'permissions':
-						return createReference(new PermissionsService({ schema }))
 					case 'presets':
 						return createReference(new PresetsService({ schema }))
 					case 'relations':
 						return createReference(new RelationsService({ schema }))
 					case 'revisions':
 						return createReference(new RevisionsService({ schema }))
-					case 'roles':
-						return createReference(new RolesService({ schema }))
 					case 'server':
 						return createReference(new ServerService({ schema }))
 					case 'settings':
@@ -89,8 +77,8 @@ export class ApiServiceVMFunction extends VMFunction {
 						return createReference(new SharesService({ schema }))
 					case 'translations':
 						return createReference(new TranslationsService({ schema }))
-					case 'users':
-						return createReference(new UsersService({ schema }))
+					case 'utils':
+						return createReference(new UtilsService({ schema }))
 					case 'webhooks':
 						return createReference(new WebhooksService({ schema }))
 					case 'websocket':
@@ -106,12 +94,21 @@ export class ApiServiceVMFunction extends VMFunction {
 		function createReference(service: any) {
 			return new ivm.Reference(function (resolve: any, reject: any, prop: string, args: any[]) {
 
-				if (prop in service === false) {
+				if (prop in service === false || prop === 'createMutationTracker') {
 					reject.apply(null, [new ivm.ExternalCopy(new Error('Method does not exist on service')).copyInto()])
 					return
 				}
 
-				service[prop](...args).then((result) => {
+				const argWithFunc = args.map(arg => {
+					if (arg instanceof ivm.Reference) {
+						return (...callbackArgs: any[]) => {
+							arg.applyIgnored(null, callbackArgs)
+						}
+					}
+					return arg
+				})
+
+				service[prop](...argWithFunc).then((result) => {
 					resolve.apply(null, [new ivm.ExternalCopy(result).copyInto()])
 				}).catch((err) => {
 					reject.apply(null, [new ivm.ExternalCopy(err).copyInto()])
