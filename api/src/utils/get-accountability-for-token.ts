@@ -44,7 +44,8 @@ export async function getAccountabilityForToken(
 						'directus_users.id',
 						'directus_users.role',
 						'directus_roles.admin_access',
-						'directus_roles.app_access'
+						'directus_roles.app_access',
+						'directus_roles.ip_access',
 					)
 					.from('directus_users')
 					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
@@ -67,6 +68,7 @@ export async function getAccountabilityForToken(
 			accountability.role = user.role;
 			accountability.admin = user.admin_access === true || user.admin_access == 1;
 			accountability.app = user.app_access === true || user.app_access == 1;
+			accountability.ip_access = user.ip_access || '';
 		}
 	}
 
