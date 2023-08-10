@@ -2,4 +2,4 @@
 "@directus/specs": minor
 ---
 
-Added missing "update multiple" endpoints to OpenAPI specs
+Added missing "update/delete multiple" endpoints to OpenAPI specs
