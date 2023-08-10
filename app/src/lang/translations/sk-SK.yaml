@@ -121,6 +121,7 @@ archive_confirm_count: >-
   Žiadne označené položky | Naozaj chcete archivovať túto položku? | Naozaj chcete archivovať týchto {count} položiek?
 reset_system_permissions_to: 'Resetovať systémové práva na:'
 reset_system_permissions_copy: Táto akcia prepíše všetky vlastné práva, ktoré ste použili na systémové zbierky. Ste si istý?
+the_following_are_minimum_permissions: Nasledujúce minimálne práva sa automaticky použijú pri zapnutom "Prístup appky". Ak je treba môžete udeliť dodatočné práva, ale nemôžete znížiť práva pod túto úroveň.
 app_access_minimum: Minimálny prístup v aplikácii
 recommended_defaults: Odporúčané prevolenia
 unarchive: Odarchivovať
@@ -179,6 +180,7 @@ permissions_for_role: 'Položky, ktoré rola {role} môže {action}.'
 fields_for_role: 'Polia, ktoré rola {role} môže {action}.'
 validation_for_role: 'Pravidlá {action}, ktoré rola {role} musí poslúchať.'
 presets_for_role: 'Predvolená hodnota poľa pre rolu {role}.'
+presets_field_warning: 'Relačné presety pre pole "{field}" by sa mali konfigurovať "detailnou" syntaxou.'
 presentation_and_aliases: Prezentácia a aliasy
 revision_post_create: Takto vyzerala táto položka pri vytvorení.
 revision_post_update: Takto vyzerala táto položka po úprave.
@@ -530,6 +532,7 @@ create_collection: Vytvoriť zbierku
 no_collections_copy_admin: Zatiaľ nemáte žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
 no_collections_copy: Zatiaľ nemáte žiadne zbierky. Prosím kontaktujte svojho správu.
 relationship_not_setup: Tento vzťah nebol správne nastavený
+no_singleton_relations: Vzťahy so singletonmi nie sú podporované
 display_template_not_setup: Šablóna zobrazenia je zle nakonfigurovaná
 collection_field_not_setup: Voľby poľa zbierky sú zle nastavené
 select_a_collection: Vyberte zbierku
@@ -669,6 +672,7 @@ one_filtered_item: '1 odfiltrovaná položka'
 delete_collection_are_you_sure: >-
   Naozaj chcete odstrániť zbierku "{collection}"? Odstránite zbierku so všetkými jej položkami. Táto akcia je trvalá.
 delete_folder_are_you_sure: Naozaj chcete odstrániť priečinok "{folder}"? Vnorené priečinky a zbierky sa presunú na najvyššiu úroveň.
+delete_collection_peer_dependencies: Nasledujúce polia sa taktiež vymažú, keďže súvisia s aktuálnou zbierkou.
 collections_shown: Zobrazené zbierky
 visible_collections: Viditeľné zbierky
 hidden_collections: Skryté zbierky
@@ -1619,6 +1623,9 @@ interfaces:
     many-to-one: Veľa na jedno
     description: Vyberie jednu súvisiacu položku
     display_template: Šablóna zobrazenia
+  collection-item-dropdown:
+    collection-item-dropdown: Vysúvacie menu položiek zbierky
+    description: Vyberte položku zo zbierky v JSON formáte
   input-rich-text-md:
     markdown: Markdown
     description: Vloží a zobrazí markdown
@@ -1653,6 +1660,7 @@ interfaces:
     notice: Oznámenie
     description: Zobraziť krátke oznámenie
     text: Zadajte obsah oznámenia sem...
+    no_text: Žiadny text nie je nastavený...
   list-o2m:
     one-to-many: Jeden k viacerým
     description: Vyberie viacej súvisiacich položiek
@@ -1660,6 +1668,7 @@ interfaces:
   system-folder:
     folder: Priečinok
     description: Vyberte priečinok
+    field_hint: Predvolený priečinok na nahrávanie súborov bez určeného priečinka. Neovplyvní existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
     system_default: Predvolené systémom
   select-radio:
@@ -1740,6 +1749,7 @@ interfaces:
     modes:
       auto: Auto
       dropdown: Rozbaľovacia ponuka
+      modal: Vyskakujúce okno
   input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Textový editor s HTML obsahom
@@ -1750,6 +1760,7 @@ interfaces:
     imageToken_label: Statický prístupový token sa pridá do URL súborov
   input-block-editor:
     input-block-editor: Editor blokov
+    description: Editor blokov na príbehy s médiami, generuje čisté dáta v JSON pomocou Editor.js
     tools: Panel nástrojov
     tools_options:
       header: Hlavička
@@ -2035,6 +2046,7 @@ panels:
   linechart:
     name: Čiarový graf
     description: Čiarový graf na sledovanie zmeny poľa
+    disabled_grouping: Vypnuté pri zvolenom zoskupovaní.
     disabled_no_grouping: Vypnuté, keď nie je žiadna skupina zvolená.
     show_marker: Zobraziť značku popisku
     curve_type: Typ krivky
