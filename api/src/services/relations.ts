@@ -4,7 +4,7 @@ import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } fr
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { clearSystemCache, getCache } from '../cache.js';
+import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -47,6 +47,21 @@ export class RelationsService {
 		this.helpers = getHelpers(this.knex);
 	}
 
+	async foreignKeys(collection?: string) {
+		let foreignKeys: ForeignKey[] = await getCacheValue(this.systemCache, 'foreignKeys');
+
+		if (!foreignKeys) {
+			foreignKeys = await this.schemaInspector.foreignKeys();
+			setCacheValue(this.systemCache, 'foreignKeys', foreignKeys);
+		}
+
+		if (collection) {
+			return foreignKeys.filter((row) => row.table === collection);
+		}
+
+		return foreignKeys;
+	}
+
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
 		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
 			throw new ForbiddenError();
@@ -72,7 +87,7 @@ export class RelationsService {
 			return metaRow.many_collection === collection;
 		});
 
-		const schemaRows = await this.schemaInspector.foreignKeys(collection);
+		const schemaRows = await this.foreignKeys(collection);
 		const results = this.stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
@@ -113,7 +128,7 @@ export class RelationsService {
 			},
 		});
 
-		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
+		const schemaRow = (await this.foreignKeys(collection)).find(
 			(foreignKey) => foreignKey.column === field
 		);
 
@@ -390,7 +405,7 @@ export class RelationsService {
 
 		try {
 			await this.knex.transaction(async (trx) => {
-				const existingConstraints = await this.schemaInspector.foreignKeys();
+				const existingConstraints = await this.foreignKeys();
 				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
 				if (
