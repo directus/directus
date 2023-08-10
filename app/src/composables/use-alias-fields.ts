@@ -111,7 +111,7 @@ export function useAliasFields(
 	function getFromAliasedItem<K, T extends Record<string, K>>(item: T, key: string): K | undefined {
 		const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
 
-		// Skip any thumbnail keys as they don't actually exist
+		// Skip any fields prefixed with $ as they dont exist. ($thumbnail as an example)
 		key = key.split('.').filter((k) => !k.startsWith('$')).join('.');
 
 		if (!aliasInfo || !aliasInfo.aliased) return get(item, key);
