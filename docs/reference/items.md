@@ -17,7 +17,8 @@ Directus. For the sake of documentation, we'll use a fictional articles collecti
 
 ::: tip Relational Data
 
-By default, the item object doesn't contain nested relational data. To retrieve nested data, see [Relational Data](/reference/introduction#relational-data) and [Field Parameters](/reference/query#fields).
+By default, the item object doesn't contain nested relational data. To retrieve nested data, see
+[Relational Data](/reference/introduction#relational-data) and [Field Parameters](/reference/query#fields).
 
 :::
 
