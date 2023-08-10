@@ -5,18 +5,18 @@ import { ComputedRef, Ref, computed, unref } from 'vue';
 
 export type AliasFields =
 	| {
-			fieldName: string;
-			fieldAlias: string;
-			fields: string[];
-			key: string;
-			aliased: true;
-	  }
+		fieldName: string;
+		fieldAlias: string;
+		fields: string[];
+		key: string;
+		aliased: true;
+	}
 	| {
-			fieldName: string;
-			fields: string[];
-			key: string;
-			aliased: false;
-	  };
+		fieldName: string;
+		fields: string[];
+		key: string;
+		aliased: false;
+	};
 
 type UsableAliasFields = {
 	aliasedFields: ComputedRef<Record<string, AliasFields>>;
@@ -110,6 +110,9 @@ export function useAliasFields(
 	 */
 	function getFromAliasedItem<K, T extends Record<string, K>>(item: T, key: string): K | undefined {
 		const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
+
+		// Skip any thumbnail keys as they don't actually exist
+		key = key.replace('.$thumbnail', '')
 
 		if (!aliasInfo || !aliasInfo.aliased) return get(item, key);
 
