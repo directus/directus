@@ -163,6 +163,9 @@ CACHE_STORE=memory
 # How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30d"]
 ASSETS_CACHE_TTL="30d"
 
+# How long token and ip access checks are cached. eg. Restricting an IP address, could take upto 1min before it takes affect.
+CACHE_ACCESS_TTL="1m"
+
 ####################################################################################################
 ### File Storage
 

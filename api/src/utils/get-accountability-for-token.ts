@@ -5,6 +5,7 @@ import env from '../env.js';
 import { InvalidCredentialsError } from '../errors/index.js';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
+import { getMilliseconds } from './get-milliseconds.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
@@ -32,7 +33,7 @@ export async function getAccountabilityForToken(
 			if (payload.id) accountability.user = payload.id;
 		} else {
 			const { cache } = getCache();
-			let user = cache ? await cache.get(`user_token:${token}`) : null;
+			let user = cache ? await cache.get(`token_access:${token}`) : null;
 
 			if (!user) {
 				// Try finding the user with the provided token
@@ -54,7 +55,7 @@ export async function getAccountabilityForToken(
 					.first();
 
 				if (cache) {
-					cache.set(`user_token:${token}`, user, 10000);
+					cache.set(`token_access:${token}`, user, getMilliseconds(env['CACHE_ACCESS_TTL']));
 				}
 			}
 

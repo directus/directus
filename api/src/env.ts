@@ -78,6 +78,7 @@ const allowedEnvironmentVars = [
 	// cache
 	'CACHE_ENABLED',
 	'CACHE_TTL',
+	'CACHE_ACCESS_TTL',
 	'CACHE_CONTROL_S_MAXAGE',
 	'CACHE_AUTO_PURGE',
 	'CACHE_AUTO_PURGE_IGNORE_LIST',
@@ -257,6 +258,7 @@ const defaults: Record<string, any> = {
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
 	CACHE_TTL: '5m',
+	CACHE_ACCESS_TTL: '1m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'directus_activity,directus_presets',

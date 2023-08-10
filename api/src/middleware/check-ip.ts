@@ -1,8 +1,10 @@
 import type { RequestHandler } from 'express';
+import env from '../env.js';
 import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { InvalidIpError } from '../errors/index.js';
 import asyncHandler from '../utils/async-handler.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
 	const { cache } = getCache();
@@ -22,7 +24,7 @@ export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
 		role = await query.first();
 
 		if (cache) {
-			cache.set(`ip_access:${req.accountability!.role}`, role, 10000);
+			cache.set(`ip_access:${req.accountability!.role}`, role, getMilliseconds(env['CACHE_ACCESS_TTL']));
 		}
 	}
 
