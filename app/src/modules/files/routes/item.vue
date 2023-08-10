@@ -168,6 +168,10 @@
 				collection="directus_files"
 				:primary-key="primaryKey"
 			/>
+			<email-sidebar-detail
+				collection="directus_files"
+				:primary-key="primaryKey"
+			/>
 		</template>
 
 		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
@@ -194,6 +198,7 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
+import EmailSidebarDetail from '../components/email-sidebar-detail.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import ReplaceFile from '../components/replace-file.vue';
 import FilesNotFound from './not-found.vue';
