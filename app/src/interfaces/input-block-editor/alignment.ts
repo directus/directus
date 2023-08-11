@@ -1,7 +1,7 @@
 import { API, BlockAPI, BlockToolConstructorOptions, BlockToolData, BlockTune, ToolConfig } from '@editorjs/editorjs';
 
 type AlignmentData = {
-	align: 'left' | 'center' | 'right';
+	alignment: 'left' | 'center' | 'right';
 };
 
 export class Alignment implements BlockTune {
@@ -36,10 +36,10 @@ export class Alignment implements BlockTune {
 
 		if (data === undefined) {
 			data = {
-				align: this.getAlignment(),
+				alignment: this.getAlignment(),
 			};
-		} else if (data.align === undefined) {
-			data.align = this.getAlignment();
+		} else if (data.alignment === undefined) {
+			data.alignment = this.getAlignment();
 		}
 
 		this.data = data;
@@ -65,7 +65,7 @@ export class Alignment implements BlockTune {
 		this.wrapper = document.createElement('div');
 
 		this.wrapper.classList.add(
-			this.alignmentOptions.find((align) => align.name === this.data.align)?.css_class as string
+			this.alignmentOptions.find((align) => align.name === this.data.alignment)?.css_class as string
 		);
 
 		this.wrapper.append(blockContent);
@@ -82,14 +82,14 @@ export class Alignment implements BlockTune {
 			button.innerHTML = align.icon;
 			button.type = 'button';
 
-			button.classList.toggle(this.api.styles.settingsButtonActive, align.name === this.data.align);
+			button.classList.toggle(this.api.styles.settingsButtonActive, align.name === this.data.alignment);
 			wrapper.appendChild(button);
 			return button;
 		});
 
 		for (const [index, element] of buttons.entries()) {
 			element.addEventListener('click', () => {
-				this.data.align = this.alignmentOptions[index]?.name as 'left' | 'center' | 'right';
+				this.data.alignment = this.alignmentOptions[index]?.name as 'left' | 'center' | 'right';
 
 				this.block?.dispatchChange();
 
@@ -98,7 +98,7 @@ export class Alignment implements BlockTune {
 				}
 
 				for (const { name, css_class } of this.alignmentOptions) {
-					this.wrapper?.classList.toggle(css_class, this.data.align === name);
+					this.wrapper?.classList.toggle(css_class, this.data.alignment === name);
 				}
 			});
 		}
