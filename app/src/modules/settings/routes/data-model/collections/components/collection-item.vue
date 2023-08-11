@@ -17,7 +17,12 @@
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<span ref="collectionName" class="collection-name">{{ collection.collection }}</span>
+				<v-highlight
+					ref="collectionName"
+					:query="visibilityTree.search"
+					:text="collection.collection"
+					class="collection-name"
+				/>
 				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
 			</div>
 

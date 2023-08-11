@@ -171,6 +171,7 @@ export type CollectionTree = {
 	collection: string;
 	visible: boolean;
 	children: CollectionTree[];
+	search: string | null;
 	findChild(collection: string): CollectionTree | undefined;
 };
 
@@ -191,6 +192,7 @@ const visibilityTree = computed(() => {
 		return children.map((collection) => ({
 			collection: collection.collection,
 			visible: collection.collection.includes(search.value ?? ''),
+			search: search.value,
 			children: makeTree(collection.collection),
 			findChild(collection: string) {
 				return findVisibilityChild(collection, this.children);
