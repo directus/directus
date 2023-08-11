@@ -29,7 +29,7 @@ export class Alignment implements BlockTune {
 
 	private wrapper: HTMLElement | undefined;
 
-	constructor({ api, data, config, block }: BlockToolConstructorOptions, ...args: any[]) {
+	constructor({ api, data, config, block }: BlockToolConstructorOptions) {
 		this.api = api;
 		this.block = block;
 		this.config = config;
@@ -63,9 +63,11 @@ export class Alignment implements BlockTune {
 
 	wrap(blockContent: HTMLElement) {
 		this.wrapper = document.createElement('div');
+
 		this.wrapper.classList.add(
 			this.alignmentOptions.find((align) => align.name === this.data.align)?.css_class as string
 		);
+
 		this.wrapper.append(blockContent);
 		return this.wrapper;
 	}
