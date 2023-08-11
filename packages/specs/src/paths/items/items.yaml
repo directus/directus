@@ -68,7 +68,7 @@ patch:
     - $ref: '../../openapi.yaml#/components/parameters/Limit'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
     - $ref: '../../openapi.yaml#/components/parameters/Offset'
-    - $ref: '../../openapi.yaml#/components/parameters/Collection'
+
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
     - $ref: '../../openapi.yaml#/components/parameters/Search'
@@ -100,8 +100,6 @@ delete:
       description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Collection'
   requestBody:
     content:
       application/json:

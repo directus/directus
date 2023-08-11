@@ -76,17 +76,17 @@ patch:
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
     - $ref: '../../openapi.yaml#/components/parameters/Search'
   requestBody:
-  content:
-    application/json:
-      schema:
-        type: object
-        properties:
-          data:
-            $ref: '../../openapi.yaml#/components/schemas/Users'
-          keys:
-            type: array
-            items:
-              type: string
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '../../openapi.yaml#/components/schemas/Users'
+            keys:
+              type: array
+              items:
+                type: string
   responses:
     '200':
       description: Successful request

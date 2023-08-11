@@ -73,7 +73,7 @@ patch:
       application/json:
         schema:
           type: object
-          parameters:
+          properties:
             data:
               anyOf:
                 - $ref: '../../openapi.yaml#/components/schemas/Flows'

@@ -76,7 +76,7 @@ patch:
       application/json:
         schema:
           type: object
-          parameters:
+          properties:
             data:
               type: object
               properties:
