@@ -134,11 +134,12 @@ type AddJoinProps = {
 function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, knex }: AddJoinProps) {
 	let hasMultiRelational = false;
 	let isJoinAdded = false;
+	let relationalFieldPath = '';
 
 	path = clone(path);
 	followRelation(path);
 
-	return { hasMultiRelational, isJoinAdded };
+	return { hasMultiRelational, isJoinAdded, relationalFieldPath };
 
 	function followRelation(pathParts: string[], parentCollection: string = collection, parentFields?: string) {
 		/**
@@ -151,6 +152,8 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 		if (!relation) {
 			return;
 		}
+
+		relationalFieldPath += pathParts[0];
 
 		const existingAlias = parentFields
 			? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias
@@ -268,6 +271,7 @@ export function applySort(
 	const relations: Relation[] = schema.relations;
 	let hasJoins = false;
 	let hasMultiRelationalSort = false;
+	const relationalFieldPaths: string[] = [];
 
 	const sortRecords = rootSort.map((sortField) => {
 		const column: string[] = sortField.split('.');
@@ -293,7 +297,7 @@ export function applySort(
 			}
 		}
 
-		const { hasMultiRelational, isJoinAdded } = addJoin({
+		const { hasMultiRelational, isJoinAdded, relationalFieldPath } = addJoin({
 			path: column,
 			collection,
 			aliasMap,
@@ -302,6 +306,10 @@ export function applySort(
 			relations,
 			knex,
 		});
+
+		if (hasMultiRelational) {
+			relationalFieldPaths.push(relationalFieldPath);
+		}
 
 		const { columnPath } = getColumnPath({
 			path: column,
@@ -327,14 +335,14 @@ export function applySort(
 		};
 	});
 
-	if (returnRecords) return { sortRecords, hasJoins, hasMultiRelationalSort };
+	if (returnRecords) return { sortRecords, hasJoins, hasMultiRelationalSort, relationalFieldPaths };
 
 	// Clears the order if any, eg: from MSSQL offset
 	rootQuery.clear('order');
 
 	rootQuery.orderBy(sortRecords);
 
-	return { hasJoins, hasMultiRelationalSort };
+	return { hasJoins, hasMultiRelationalSort, relationalFieldPaths };
 }
 
 export function applyLimit(knex: Knex, rootQuery: Knex.QueryBuilder, limit: any) {

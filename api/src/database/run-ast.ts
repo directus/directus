@@ -7,11 +7,13 @@ import env from '../env.js';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
+import { applyParentFieldToFilter } from '../utils/apply-parent-field-to-filter.js';
 import type { ColumnSortRecord } from '../utils/apply-query.js';
 import applyQuery, { applyLimit, applySort, generateAlias } from '../utils/apply-query.js';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
+import { getFieldPathsFromFilter } from '../utils/get-field-paths-from-filter.js';
 import { stripFunction } from '../utils/strip-function.js';
 import getDatabase from './index.js';
 
@@ -75,7 +77,7 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query, ast);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -244,7 +246,8 @@ async function getDBQuery(
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
-	query: Query
+	query: Query,
+	ast: AST | NestedCollectionNode
 ): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
@@ -264,6 +267,7 @@ async function getDBQuery(
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
+	let relationalFieldPaths: string[] = [];
 
 	if (queryCopy.sort) {
 		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
@@ -271,6 +275,43 @@ async function getDBQuery(
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;
 			hasMultiRelationalSort = sortResult.hasMultiRelationalSort;
+			relationalFieldPaths = sortResult.relationalFieldPaths;
+		}
+	}
+
+	// Apply the deep filter used in multi-relational sorts to the top level query
+	if (hasMultiRelationalSort) {
+		const requiredDeepFilter = [];
+
+		for (const relationalFieldPath of relationalFieldPaths) {
+			if (Array.isArray(ast.children)) {
+				const relationalFields = relationalFieldPath.split('.');
+				const node = ast.children.find((child) => child.fieldKey === relationalFields[0]);
+
+				if (node && node.type === 'o2m' && node.query.filter && Object.keys(node.query.filter).length > 0) {
+					const filterFieldPaths = getFieldPathsFromFilter(node.query.filter, node.fieldKey);
+
+					if (filterFieldPaths.find((path) => path.startsWith(relationalFieldPath))) {
+						const processedFilter = applyParentFieldToFilter(node.fieldKey, node.query.filter);
+
+						if (processedFilter) {
+							requiredDeepFilter.push(processedFilter);
+						}
+					}
+				}
+			}
+		}
+
+		if (requiredDeepFilter.length > 0) {
+			if (!queryCopy.filter) {
+				queryCopy.filter = {
+					_and: requiredDeepFilter,
+				};
+			} else {
+				queryCopy.filter = {
+					_and: [queryCopy.filter, ...requiredDeepFilter],
+				};
+			}
 		}
 	}
 
