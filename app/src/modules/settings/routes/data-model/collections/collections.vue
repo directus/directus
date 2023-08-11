@@ -12,9 +12,9 @@
 			<v-input
 				v-model="search"
 				class="search"
-				autofocus
+				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
 				type="search"
-				:placeholder="t('search_field')"
+				:placeholder="t('search_collection')"
 				:full-width="false"
 			>
 				<template #prepend>
