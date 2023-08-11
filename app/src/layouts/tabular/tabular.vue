@@ -436,6 +436,28 @@ function removeField(fieldKey: string) {
 	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
 }
 
+function transformToText(obj: any): string {
+	if (typeof obj === 'object') {
+		if (obj === null) {
+			return 'null';
+		} else if (Array.isArray(obj)) {
+			return obj.map((item) => transformToText(item)).join('; ');
+		} else {
+			// If the object has an ID, make sure it is the first field
+			const id = obj.id;
+			let str = Object.values(obj)
+				.filter((value) => value !== id)
+				.map((value) => transformToText(value))
+				.join(', ');
+			if (id != null) {
+				str = `${id}, ${str}`;
+			}
+			return str;
+		}
+	}
+	return String(obj);
+}
+
 /**
  * Copies the values present in the given column to the clipboard
  * @param fieldKey The name of the field
@@ -449,16 +471,16 @@ async function copyValues(fieldKey: string) {
 		textArea.select();
 		try {
 			const res = document.execCommand('copy');
-			if (!res) {
-				// console.error('Failed to copy using fallback method');
-			}
+			// if (!res) {
+			// 	console.error('Failed to copy using fallback method');
+			// }
 		} catch (err) {
 			// console.error('Failed to copy using fallback method: ', err);
 		}
 		document.body.removeChild(textArea);
 	}
 
-	const values = props.items.map((item) => get(item, fieldKey));
+	const values = props.items.map((item) => transformToText(get(item, fieldKey)));
 	const text = values.join('\n');
 	if (navigator.clipboard === undefined) {
 		// console.warn('Clipboard API is not available. Is this a secure context?');
