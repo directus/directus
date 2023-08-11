@@ -9,6 +9,22 @@
 		</template>
 
 		<template #actions>
+			<v-input
+				v-model="search"
+				class="search"
+				autofocus
+				type="search"
+				:placeholder="t('search_field')"
+				:full-width="false"
+			>
+				<template #prepend>
+					<v-icon name="search" outline />
+				</template>
+				<template #append>
+					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+				</template>
+			</v-input>
+
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
 					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
@@ -50,6 +66,7 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
+							:visibility-tree="findVisibilityChild(element.collection)!"
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
 						/>
@@ -60,6 +77,7 @@
 			<v-list class="db-only">
 				<v-list-item
 					v-for="collection of tableCollections"
+					v-show="findVisibilityChild(collection.collection)!.visible"
 					:key="collection.collection"
 					v-tooltip="t('db_only_click_to_configure')"
 					class="collection-row hidden"
@@ -80,12 +98,16 @@
 				</v-list-item>
 			</v-list>
 
-			<v-detail :label="t('system_collections')">
+			<v-detail
+				v-show="systemCollections.some((collection) => findVisibilityChild(collection.collection)?.visible)"
+				:label="t('system_collections')"
+			>
 				<collection-item
 					v-for="collection of systemCollections"
 					:key="collection.collection"
 					:collection="collection"
 					:collections="systemCollections"
+					:visibility-tree="findVisibilityChild(collection.collection)!"
 					disable-drag
 				/>
 			</v-detail>
@@ -124,6 +146,7 @@ import CollectionOptions from './components/collection-options.vue';
 
 const { t } = useI18n();
 
+const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
@@ -142,6 +165,58 @@ const collections = computed(() => {
 
 const rootCollections = computed(() => {
 	return collections.value.filter((collection) => !collection.meta?.group);
+});
+
+export type CollectionTree = {
+	collection: string;
+	visible: boolean;
+	children: CollectionTree[];
+	findChild(collection: string): CollectionTree | undefined;
+};
+
+function findVisibilityChild(
+	collection: string,
+	tree: CollectionTree[] = visibilityTree.value
+): CollectionTree | undefined {
+	return tree.find((child) => child.collection === collection);
+}
+
+const visibilityTree = computed(() => {
+	const tree: CollectionTree[] = makeTree();
+	const propagateBackwards: CollectionTree[] = [];
+
+	function makeTree(parent: string | null = null): CollectionTree[] {
+		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
+
+		return children.map((collection) => ({
+			collection: collection.collection,
+			visible: collection.collection.includes(search.value ?? ''),
+			children: makeTree(collection.collection),
+			findChild(collection: string) {
+				return findVisibilityChild(collection, this.children);
+			},
+		}));
+	}
+
+	breadthSearch(tree);
+
+	function breadthSearch(tree: CollectionTree[]) {
+		for (const collection of tree) {
+			if (collection.children.length === 0) continue;
+
+			propagateBackwards.unshift(collection);
+		}
+
+		for (const collection of tree) {
+			breadthSearch(collection.children);
+		}
+	}
+
+	for (const child of propagateBackwards) {
+		child.visible = child.visible || child.children.some((child) => child.visible);
+	}
+
+	return tree;
 });
 
 const tableCollections = computed(() => {
@@ -197,6 +272,18 @@ async function onSort(updates: Collection[], removeGroup = false) {
 </script>
 
 <style scoped lang="scss">
+.v-input.search {
+	height: var(--v-button-height);
+	--border-radius: calc(44px / 2);
+	width: 200px;
+	margin-left: auto;
+
+	@media (min-width: 600px) {
+		width: 300px;
+		margin-top: 0px;
+	}
+}
+
 .padding-box {
 	padding: var(--content-padding);
 	padding-top: 0;

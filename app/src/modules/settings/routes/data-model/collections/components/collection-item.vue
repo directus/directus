@@ -1,5 +1,5 @@
 <template>
-	<div class="collection-item">
+	<div v-show="visibilityTree.visible" class="collection-item">
 		<v-list-item
 			block
 			dense
@@ -51,6 +51,7 @@
 					<collection-item
 						:collection="element"
 						:collections="collections"
+						:visibility-tree="visibilityTree.findChild(element.collection)!"
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
 					/>
@@ -67,10 +68,12 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import CollectionOptions from './collection-options.vue';
+import { CollectionTree } from '../collections.vue';
 
 const props = defineProps<{
 	collection: Collection;
 	collections: Collection[];
+	visibilityTree: CollectionTree;
 	disableDrag?: boolean;
 }>();
 
