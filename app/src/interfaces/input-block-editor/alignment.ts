@@ -30,8 +30,6 @@ export class Alignment implements BlockTune {
 	private wrapper: HTMLElement | undefined
 
 	constructor({ api, data, config, block }: BlockToolConstructorOptions, ...args: any[]) {
-		console.log('constructor', api, data, config, block, args)
-
 		this.api = api;
 		this.block = block;
 		this.config = config;
@@ -55,14 +53,15 @@ export class Alignment implements BlockTune {
 		if (this.config?.blocks && this.block!.name in this.config.blocks) {
 			return this.config.blocks[this.block!.name]
 		}
-		if (!!this.config?.default) {
+
+		if (this.config?.default) {
 			return this.config.default
 		}
+
 		return 'left'
 	}
 
 	wrap(blockContent: HTMLElement) {
-		console.log('wrap')
 		this.wrapper = document.createElement("div");
 		this.wrapper.classList.add(this.alignmentOptions.find(align => align.name === this.data.align)?.css_class as string)
 		this.wrapper.append(blockContent)
@@ -71,6 +70,7 @@ export class Alignment implements BlockTune {
 
 	render() {
 		const wrapper = document.createElement("div");
+		wrapper.classList.add('ce-align-buttons');
 
 		const buttons = this.alignmentOptions.map(align => {
 
@@ -79,23 +79,22 @@ export class Alignment implements BlockTune {
 			button.innerHTML = align.icon;
 			button.type = 'button';
 
-			console.log(align.name, this.data.align)
-
 			button.classList.toggle(this.api.styles.settingsButtonActive, align.name === this.data.align);
 			wrapper.appendChild(button);
 			return button
 		})
 
-		for (let [index, element] of buttons.entries()) {
+		for (const [index, element] of buttons.entries()) {
 			element.addEventListener('click', () => {
 				this.data.align = this.alignmentOptions[index]?.name as 'left' | 'center' | 'right'
-				this.api.saver.save()
 
-				for (let button of buttons ?? []) {
+				this.block?.dispatchChange()
+
+				for (const button of buttons ?? []) {
 					button.classList.toggle(this.api.styles.settingsButtonActive, button === element);
 				}
 
-				for (let { name, css_class } of this.alignmentOptions) {
+				for (const { name, css_class } of this.alignmentOptions) {
 					this.wrapper?.classList.toggle(css_class, this.data.align === name)
 
 				}

@@ -477,6 +477,10 @@
 	text-align: right;
 }
 
+.codex-editor .ce-align-buttons svg path {
+	stroke: none;
+}
+
 .codex-editor .ce-header {
 	padding: 0.4em 0;
 }
