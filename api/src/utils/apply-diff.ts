@@ -184,7 +184,7 @@ export async function applyDiff(
 			snapshotDiff.collections.filter(({ diff }) => {
 				if (diff.length === 0 || diff[0] === undefined) return false;
 				const collectionDiff = diff[0] as DiffDeleted<Collection>;
-				return collectionDiff.kind === DiffKind.DELETE && collectionDiff.lhs?.meta?.group === null;
+				return collectionDiff.kind === DiffKind.DELETE;
 			})
 		);
 
