@@ -337,14 +337,14 @@ function advanceItem(amount: number) {
 		} else {
 			index = 0;
 		}
-	} else if (index >= props.limit) {
+	} else if (index >= props.items.length) {
 		if (props.page < props.totalPages) {
 			interceptPageLoad.value = true;
 			newItemIndex.value = 0;
 			props.toPage(props.page + 1);
 			return;
 		} else {
-			index = props.limit - 1;
+			index = props.items.length - 1;
 		}
 	}
 	const item = props.items[index];
@@ -393,6 +393,17 @@ useShortcut(
 		props.selectAll();
 	},
 	table
+);
+
+useShortcut(
+	['arrowright', 'arrowleft'],
+	(event) => {
+		if (!props.useSideDrawer || !sideDrawerOpenWritable.value) {
+			return;
+		}
+		advanceItem(event.key === 'ArrowRight' ? 1 : -1);
+	},
+	itemDrawer
 );
 
 const permissionsStore = usePermissionsStore();
