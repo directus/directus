@@ -46,8 +46,8 @@ export async function applyDiff(
 
 	const runPostColumnChange = await helpers.schema.preColumnChange();
 
-	await database.transaction(async (trx) => {
-		const collectionsService = new CollectionsService({ knex: trx, schema });
+	await database.transaction(async (transaction) => {
+		const collectionsService = new CollectionsService({ knex: transaction, schema });
 
 		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
 			snapshotDiff.collections.filter(
@@ -111,7 +111,7 @@ export async function applyDiff(
 					);
 
 					if (relations.length > 0) {
-						const relationsService = new RelationsService({ knex: trx, schema });
+						const relationsService = new RelationsService({ knex: transaction, schema });
 
 						for (const relation of relations) {
 							try {
@@ -211,8 +211,8 @@ export async function applyDiff(
 		}
 
 		const fieldsService = new FieldsService({
-			knex: trx,
-			schema: await getSchema({ database: trx, bypassCache: true }),
+			knex: transaction,
+			schema: await getSchema({ database: transaction, bypassCache: true }),
 		});
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
@@ -262,8 +262,8 @@ export async function applyDiff(
 		}
 
 		const relationsService = new RelationsService({
-			knex: trx,
-			schema: await getSchema({ database: trx, bypassCache: true }),
+			knex: transaction,
+			schema: await getSchema({ database: transaction, bypassCache: true }),
 		});
 
 		for (const { collection, field, diff } of snapshotDiff.relations) {
