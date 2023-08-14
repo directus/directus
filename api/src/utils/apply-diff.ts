@@ -29,7 +29,7 @@ type CollectionDelta = {
 	diff: Diff<Collection | undefined>[];
 };
 
-export type createCollectionsOptions = {
+export type createCollectionsParams = {
 	snapshotDiff: SnapshotDiff;
 	mutationOptions: MutationOptions;
 	collections: CollectionDelta[];
@@ -43,7 +43,7 @@ async function createCollections({
 	collections,
 	collectionsService,
 	logger,
-}: createCollectionsOptions) {
+}: createCollectionsParams) {
 	for (const { collection, diff } of collections) {
 		if (diff?.[0]?.kind === DiffKind.NEW && diff[0].rhs) {
 			// We'll nest the to-be-created fields in the same collection creation, to prevent
@@ -97,7 +97,7 @@ async function createCollections({
 	}
 }
 
-type deleteCollectionsOptions = {
+export type deleteCollectionsParams = {
 	snapshotDiff: SnapshotDiff;
 	schema: SchemaOverview;
 	collections: CollectionDelta[];
@@ -115,7 +115,7 @@ async function deleteCollections({
 	collectionsService,
 	relationsService,
 	logger,
-}: deleteCollectionsOptions) {
+}: deleteCollectionsParams) {
 	for (const { collection, diff } of collections) {
 		if (diff?.[0]?.kind === DiffKind.DELETE) {
 			const relations = schema.relations.filter(
