@@ -54,7 +54,6 @@ export async function getMultiPayload(
 	schema: SchemaOverview,
 	event?: WebSocketEvent
 ): Promise<Record<string, any>> {
-
 	const result: Record<string, any> = {
 		event: event?.action ?? 'init',
 	};
