@@ -4,7 +4,8 @@ description: A list of any actions you may need to take as you upgrade Directus 
 
 # Breaking Changes
 
-As we continue to build Directus, we occasionally make changes that change how certain features works. We try and keep these to a minimum, but rest assured we only make them with good reason. 
+As we continue to build Directus, we occasionally make changes that change how certain features works. We try and keep
+these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
@@ -12,8 +13,9 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Consolidated Environment Variables for Redis Use
 
-
-Directus had various different functionalities that required you to use Redis when running Directus in a horizontally scaled environment such as caching, rate-limiting, realtime, and flows. The configuration for these different parts have been combined into a single set of `REDIS` environment variables that are reused across the system.
+Directus had various different functionalities that required you to use Redis when running Directus in a horizontally
+scaled environment such as caching, rate-limiting, realtime, and flows. The configuration for these different parts have
+been combined into a single set of `REDIS` environment variables that are reused across the system.
 
 :::details Migration/Mitigation
 
@@ -55,11 +57,16 @@ MESSENGER_STORE="redis"
 
 ### Dropped Support for Memcached
 
-Directus used to support either memory, Redis, or Memcached for caching and rate-limiting storage. Given a deeper integration with Redis, and the low overall usage/adoption of Memcached across Directus installations, we've decided to sunset Memcached in favor of focussing on Redis as the primary solution for pub/sub and hot-storage across load-balanced Directus installations.
+Directus used to support either memory, Redis, or Memcached for caching and rate-limiting storage. Given a deeper
+integration with Redis, and the low overall usage/adoption of Memcached across Directus installations, we've decided to
+sunset Memcached in favor of focusing on Redis as the primary solution for pub/sub and hot-storage across load-balanced
+Directus installations.
 
 ### Updated Errors Structure for Extensions
 
-As part of standardizing how extensions are built and shipped, you must replace any system exceptions you extracted from `exceptions` with new errors created within the extension itself. We recommend prefixing the error code with your extension name for improved debugging, but you can keep using the system codes if you relied on that in the past.
+As part of standardizing how extensions are built and shipped, you must replace any system exceptions you extracted from
+`exceptions` with new errors created within the extension itself. We recommend prefixing the error code with your
+extension name for improved debugging, but you can keep using the system codes if you relied on that in the past.
 
 :::details Migration/Mitigation
 
