@@ -22,11 +22,80 @@ import type {
 } from '../types/index.js';
 import { DiffKind } from '../types/index.js';
 import { getSchema } from './get-schema.js';
+import type { Logger } from 'pino';
 
 type CollectionDelta = {
 	collection: string;
 	diff: Diff<Collection | undefined>[];
 };
+
+export type createCollectionsOptions = {
+	snapshotDiff: SnapshotDiff;
+	mutationOptions: MutationOptions;
+	collections: CollectionDelta[];
+	collectionsService: CollectionsService;
+	logger: Logger;
+};
+
+async function createCollections({
+	snapshotDiff,
+	mutationOptions,
+	collections,
+	collectionsService,
+	logger,
+}: createCollectionsOptions) {
+	for (const { collection, diff } of collections) {
+		if (diff?.[0]?.kind === DiffKind.NEW && diff[0].rhs) {
+			// We'll nest the to-be-created fields in the same collection creation, to prevent
+			// creating a collection without a primary key
+			const fields = snapshotDiff.fields
+				.filter((fieldDiff) => fieldDiff.collection === collection)
+				.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
+				.map((fieldDiff) => {
+					// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
+					// This is needed because they snapshots UUID fields as char/varchar with length 36.
+					if (
+						['char', 'varchar'].includes(String(fieldDiff.schema?.data_type).toLowerCase()) &&
+						fieldDiff.schema?.max_length === 36 &&
+						(fieldDiff.schema?.is_primary_key ||
+							(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
+					) {
+						return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
+					} else {
+						return fieldDiff;
+					}
+				});
+
+			try {
+				await collectionsService.createOne(
+					{
+						...diff[0].rhs,
+						fields,
+					},
+					mutationOptions
+				);
+			} catch (err: any) {
+				logger.error(`Failed to create collection "${collection}"`);
+				throw err;
+			}
+
+			// Now that the fields are in for this collection, we can strip them from the field edits
+			snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
+
+			const nestedCollectionsToCreate = snapshotDiff.collections.filter(
+				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === collection
+			) as CollectionDelta[];
+
+			await createCollections({
+				snapshotDiff,
+				mutationOptions,
+				collections: nestedCollectionsToCreate,
+				collectionsService,
+				logger,
+			});
+		}
+	}
+}
 
 export async function applyDiff(
 	currentSnapshot: Snapshot,
@@ -53,59 +122,10 @@ export async function applyDiff(
 		const fieldsService = new FieldsService(serviceOptions);
 		const relationsService = new RelationsService(serviceOptions);
 
-		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
-			snapshotDiff.collections.filter(
-				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === currentLevelCollection
-			) as CollectionDelta[];
-
 		const getNestedCollectionsToDelete = (currentLevelCollection: string) =>
 			snapshotDiff.collections.filter(
 				({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === currentLevelCollection
 			) as CollectionDelta[];
-
-		const createCollections = async (collections: CollectionDelta[]) => {
-			for (const { collection, diff } of collections) {
-				if (diff?.[0]?.kind === DiffKind.NEW && diff[0].rhs) {
-					// We'll nest the to-be-created fields in the same collection creation, to prevent
-					// creating a collection without a primary key
-					const fields = snapshotDiff.fields
-						.filter((fieldDiff) => fieldDiff.collection === collection)
-						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
-						.map((fieldDiff) => {
-							// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
-							// This is needed because they snapshots UUID fields as char/varchar with length 36.
-							if (
-								['char', 'varchar'].includes(String(fieldDiff.schema?.data_type).toLowerCase()) &&
-								fieldDiff.schema?.max_length === 36 &&
-								(fieldDiff.schema?.is_primary_key ||
-									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
-							) {
-								return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
-							} else {
-								return fieldDiff;
-							}
-						});
-
-					try {
-						await collectionsService.createOne(
-							{
-								...diff[0].rhs,
-								fields,
-							},
-							mutationOptions
-						);
-					} catch (err: any) {
-						logger.error(`Failed to create collection "${collection}"`);
-						throw err;
-					}
-
-					// Now that the fields are in for this collection, we can strip them from the field edits
-					snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
-
-					await createCollections(getNestedCollectionsToCreate(collection));
-				}
-			}
-		};
 
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
@@ -179,7 +199,13 @@ export async function applyDiff(
 
 		// Create top level collections (no group, or highest level in existing group) first,
 		// then continue with nested collections recursively
-		await createCollections(newCollections);
+		await createCollections({
+			snapshotDiff,
+			mutationOptions,
+			collections: newCollections,
+			collectionsService,
+			logger,
+		});
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
