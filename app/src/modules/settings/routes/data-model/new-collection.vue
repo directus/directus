@@ -183,6 +183,13 @@ const defaultSystemFields = {
 		label: 'updated_by',
 		icon: 'account_circle',
 	},
+	uniqueId: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'unique_id',
+		label: 'Unique ID',
+		icon: 'fingerprint',
+	},
 };
 
 const { t } = useI18n();
@@ -461,6 +468,25 @@ function getSystemFields() {
 				},
 			},
 			schema: {},
+		});
+	}
+
+	// Unique ID
+	if (systemFields.uniqueId.enabled === true) {
+		fields.push({
+			field: systemFields.uniqueId.name,
+			type: 'string',
+			meta: {
+				interface: 'input',
+				readonly: true,
+				hidden: true,
+				required: true,
+				width: 'half',
+			},
+			schema: {
+				is_nullable: false,
+				is_unique: true,
+			},
 		});
 	}
 
