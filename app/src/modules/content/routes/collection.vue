@@ -465,11 +465,10 @@ function useBatch() {
 
 			selection.value = [];
 			await refresh();
-
-			confirmDelete.value = false;
 		} catch (err: any) {
 			error.value = err;
 		} finally {
+			confirmDelete.value = false;
 			deleting.value = false;
 		}
 	}

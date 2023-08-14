@@ -21,7 +21,7 @@
 
 		<div class="drawer-item-content">
 			<file-preview
-				v-if="junctionField && file"
+				v-if="file"
 				:src="file.src"
 				:mime="file.type"
 				:width="file.width"
@@ -237,12 +237,12 @@ const { file } = useFile();
 
 function useFile() {
 	const isDirectusFiles = computed(() => {
-		return relatedCollection.value === 'directus_files';
+		return props.collection === 'directus_files' || relatedCollection.value === 'directus_files';
 	});
 
 	const file = computed(() => {
-		if (isDirectusFiles.value === false || !initialValues.value || !props.junctionField) return null;
-		const fileData = initialValues.value?.[props.junctionField];
+		if (isDirectusFiles.value === false || !initialValues.value) return null;
+		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
 		if (!fileData) return null;
 
 		const src = `assets/${fileData.id}?key=system-large-contain`;

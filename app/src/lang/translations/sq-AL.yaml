@@ -145,6 +145,7 @@ validationError:
   required: Vlera është e nevojshme
   unique: Vlera duhet të jetë unike
   regex: Vlera nuk ka formatin e duhur
+  istarts_with: Value has to start with {substring}
 all_access: Qasje e Plote
 no_access: Pa Qasje
 use_custom: Përdor të personalizuar

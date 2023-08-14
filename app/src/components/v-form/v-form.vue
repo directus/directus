@@ -94,7 +94,7 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { useElementSize } from '@directus/composables';
 import type { Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
+import { assign, cloneDeep, isEqual, isNil, omit } from 'lodash';
 import { ComputedRef, computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
@@ -346,10 +346,17 @@ function apply(updates: { [field: string]: any }) {
 			.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
 			.map((field) => field.field);
 
-		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pick(updates, updatableKeys)));
+		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pickKeepMeta(updates, updatableKeys)));
 	} else {
-		emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
+		emit('update:modelValue', pickKeepMeta(assign({}, props.modelValue, updates), updatableKeys));
 	}
+}
+
+function pickKeepMeta(obj: Record<string, any>, keys: string[]) {
+	return Object.entries(obj).reduce<Record<string, any>>((result, [key, value]) => {
+		if (keys.includes(key) || key.startsWith('$')) result[key] = value;
+		return result;
+	}, {});
 }
 
 function unsetValue(field: TFormField | undefined) {
