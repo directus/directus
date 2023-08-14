@@ -26,3 +26,13 @@ When overriding the default email templates, make sure to include the `url` vari
 wouldn't be that useful without the link to go reset your password!
 
 :::
+
+## Guides
+
+Learn how to build email templates with our official guides:
+
+<GuidesListExtensions type="Email Templates" />
+
+<script setup>
+import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+</script>
