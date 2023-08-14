@@ -41,11 +41,11 @@
 
 					<!-- <v-list-item clickable>
 						{{ 'Compare Current Branch' }}
-					</v-list-item>
-
-					<v-list-item clickable>
-						{{ 'Promote Current Branch' }}
 					</v-list-item> -->
+
+					<v-list-item clickable @click="isBranchMergeDrawerOpen = true">
+						{{ 'Merge Current Branch' }}
+					</v-list-item>
 
 					<v-list-item v-if="deleteBranchesAllowed" class="branch-delete" clickable @click="deleteDialogActive = true">
 						{{ 'Delete Current Branch' }}
@@ -53,6 +53,14 @@
 				</template>
 			</v-list>
 		</v-menu>
+
+		<branch-merge-drawer
+			v-if="currentBranch !== null"
+			:active="isBranchMergeDrawerOpen"
+			:current-branch="currentBranch"
+			@cancel="isBranchMergeDrawerOpen = false"
+			@done="isBranchMergeDrawerOpen = false"
+		/>
 
 		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">
 			<v-card>
@@ -129,6 +137,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Branch } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import BranchMergeDrawer from './branch-merge-drawer.vue';
 
 interface Props {
 	collection: string;
@@ -148,6 +157,7 @@ const { hasPermission } = usePermissionsStore();
 const { collection, primaryKey, currentBranch } = toRefs(props);
 
 const newBranchName = ref<string | null>(null);
+const isBranchMergeDrawerOpen = ref<boolean>(false);
 
 const createBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'create'));
 const updateBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'update'));

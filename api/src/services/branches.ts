@@ -73,7 +73,7 @@ export class BranchesService extends ItemsService {
 		}
 	}
 
-	async getMainBranchItem(collection: string, item: PrimaryKey): Promise<Item> {
+	async getMainBranchItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
 		// will throw an error if the accountability does not have permission to read the item
 		await this.authorizationService.checkAccess('read', collection, item);
 
@@ -83,7 +83,7 @@ export class BranchesService extends ItemsService {
 			schema: this.schema,
 		});
 
-		return await itemsService.readOne(item);
+		return await itemsService.readOne(item, query);
 	}
 
 	async getBranchCommits(key: PrimaryKey): Promise<Partial<Item>[]> {
