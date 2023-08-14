@@ -572,6 +572,8 @@ async function deleteAndQuit() {
 		router.replace(`/content/${props.collection}`);
 	} catch {
 		// `remove` will show the unexpected error dialog
+	} finally {
+		confirmDelete.value = false;
 	}
 }
 
