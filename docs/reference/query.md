@@ -803,6 +803,12 @@ const result = await client.request(
 Metadata allows you to retrieve some additional information about the items in the collection you're fetching. `*` can
 be used as a wildcard to retrieve all metadata.
 
+::: warning DEPRECATED
+
+This will be removed in the future in favor of [Aggregation & Grouping](#aggregation-grouping).
+
+:::
+
 ### Total Count
 
 Returns the total item count of the collection you're querying.
