@@ -12,6 +12,7 @@ import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
 import type {
+	AbstractServiceOptions,
 	ActionEventParams,
 	Collection,
 	MutationOptions,
@@ -34,7 +35,6 @@ export async function applyDiff(
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const helpers = getHelpers(database);
-	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const nestedActionEvents: ActionEventParams[] = [];
 
@@ -47,7 +47,11 @@ export async function applyDiff(
 	const runPostColumnChange = await helpers.schema.preColumnChange();
 
 	await database.transaction(async (knex) => {
-		const collectionsService = new CollectionsService({ knex, schema });
+		const schema = await getSchema({ database: knex, bypassCache: true });
+		const serviceOptions: AbstractServiceOptions = { knex, schema };
+		const collectionsService = new CollectionsService(serviceOptions);
+		const fieldsService = new FieldsService(serviceOptions);
+		const relationsService = new RelationsService(serviceOptions);
 
 		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
 			snapshotDiff.collections.filter(
@@ -111,8 +115,6 @@ export async function applyDiff(
 					);
 
 					if (relations.length > 0) {
-						const relationsService = new RelationsService({ knex, schema });
-
 						for (const relation of relations) {
 							try {
 								await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
@@ -210,11 +212,6 @@ export async function applyDiff(
 			}
 		}
 
-		const fieldsService = new FieldsService({
-			knex,
-			schema: await getSchema({ database: knex, bypassCache: true }),
-		});
-
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0]?.kind === DiffKind.NEW && !isNestedMetaUpdate(diff?.[0])) {
 				try {
@@ -260,11 +257,6 @@ export async function applyDiff(
 				);
 			}
 		}
-
-		const relationsService = new RelationsService({
-			knex,
-			schema: await getSchema({ database: knex, bypassCache: true }),
-		});
 
 		for (const { collection, field, diff } of snapshotDiff.relations) {
 			const structure = {};
