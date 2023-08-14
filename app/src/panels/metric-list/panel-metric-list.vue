@@ -34,6 +34,8 @@
 <script setup lang="ts">
 import chroma from 'chroma-js';
 import { useI18n } from 'vue-i18n';
+import { formatNumber } from '@/utils/format-number';
+import type { Style, Notation, Unit } from '@/utils/format-number';
 
 const props = withDefaults(
 	defineProps<{
@@ -43,10 +45,13 @@ const props = withDefaults(
 		aggregateFunction?: string;
 		sortDirection?: string;
 		color?: string;
-		notation?: string;
-		style?: string;
-		unit?: string;
-		decimals?: number;
+
+		notation?: Notation;
+		numberStyle?: Style;
+		unit?: Unit;
+		minimumFractionDigits?: number;
+		maximumFractionDigits?: number;
+
 		prefix?: string | null;
 		suffix?: string | null;
 		collection: string;
@@ -61,49 +66,37 @@ const props = withDefaults(
 		sortDirection: 'desc',
 		color: '',
 		notation: 'standard',
-		style: 'decimal',
-		unit: '',
-		decimals: 0,
+		numberStyle: 'decimal',
+		unit: undefined,
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
 		prefix: '',
 		suffix: '',
 		data: () => ({}),
 	}
 );
 
-// This needs to use in18 but I was having trouble importing the package and using the n() function
+const { locale } = useI18n();
 
-const { n, locale } = useI18n();
-
-function round(n, r) {
-    let int = Math.floor(n).toString()
-    if (int[0] == '-' || int[0] == '+') int = int.slice(int[1], int.length)
-    return n.toPrecision(int.length + r)
-}
-
-function widthOfRow(row) {
+function widthOfRow(row: any) {
 	const aggFunc = props.aggregateFunction;
 	const aggField = props.aggregateField;
 	const data = props.data;
 	return `${(row[aggFunc][aggField] / Math.max(...data.map((o) => o[aggFunc][aggField]))) * 100 + 0}%`;
 }
 
-function displayValue(value) {
+function displayValue(value: number) {
 	if (value === null || value === undefined) {
 		return 0;
 	}
 
-	let formatOptions = {
+	return formatNumber(Number(value), locale.value, {
 		notation: props.notation,
-		minimumFractionDigits: props.decimals ?? 0,
-		maximumFractionDigits: props.decimals ?? 0,
-		style: props.format,
-	}
-
-	if(props.style == 'unit'){
-		return new Intl.NumberFormat(locale.value, {...formatOptions, unit: props.unit}).format(Number(value));
-	} else {
-		return n(Number(value), props.style, formatOptions);
-	}
+		style: props.numberStyle,
+		unit: props.unit,
+		minimumFractionDigits: props.minimumFractionDigits,
+		maximumFractionDigits: props.maximumFractionDigits,
+	});
 }
 
 

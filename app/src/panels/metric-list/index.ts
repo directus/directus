@@ -28,15 +28,13 @@ export default definePanel({
 			[options.aggregateFunction]: [options.aggregateField || '*'],
 		};
 
-		console.log(aggregate);
-
 		const group = [options.groupByField];
 
 		const panelQuery = {
 			collection: options.collection,
 			query: {
 				sort,
-				limit: options.limit,
+				limit: options.limit ?? 5,
 				aggregate,
 				group,
 			},
@@ -210,7 +208,7 @@ export default definePanel({
 				},
 			},
 			{
-				field: 'style',
+				field: 'numberStyle',
 				type: 'string',
 				name: '$t:style',
 				schema: {
@@ -282,7 +280,7 @@ export default definePanel({
 				},
 				meta: {
 					interface: 'input',
-					hidden: options?.style !== 'unit',
+					hidden: options?.numberStyle !== 'unit',
 				},
 			},
 			{
@@ -327,12 +325,33 @@ export default definePanel({
 				},
 			},
 			{
-				field: 'color',
-				name: '$t:color',
-				type: 'string',
+				field: 'minimumFractionDigits',
+				type: 'integer',
+				name: '$t:minimumFractionDigits',
 				meta: {
-					interface: 'select-color',
+					interface: 'input',
 					width: 'half',
+					options: {
+						placeholder: '$t:decimals_placeholder',
+					},
+				},
+				schema: {
+					default_value: 0,
+				},
+			},
+			{
+				field: 'maximumFractionDigits',
+				type: 'integer',
+				name: '$t:maximumFractionDigits',
+				meta: {
+					interface: 'input',
+					width: 'half',
+					options: {
+						placeholder: '$t:decimals_placeholder',
+					},
+				},
+				schema: {
+					default_value: 0,
 				},
 			},
 			{
@@ -350,7 +369,7 @@ export default definePanel({
 								name: '$t:operator',
 								type: 'string',
 								schema: {
-									default_value: '>=',
+									default_value: '=',
 								},
 								meta: {
 									interface: 'select-dropdown',
