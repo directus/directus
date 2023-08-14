@@ -146,7 +146,7 @@ export async function applyDiff(
 		};
 
 		// Finds all collections that need to be created
-		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
+		const newCollections = snapshotDiff.collections.filter(({ diff }: CollectionDelta) => {
 			// Check new collections only
 			const isNewCollection = diff[0]?.kind === DiffKind.NEW;
 			if (!isNewCollection) return false;
@@ -175,11 +175,11 @@ export async function applyDiff(
 			if (parentExists && !parentWillBeCreatedInThisApply) return true;
 
 			return false;
-		};
+		});
 
 		// Create top level collections (no group, or highest level in existing group) first,
 		// then continue with nested collections recursively
-		await createCollections(snapshotDiff.collections.filter(filterCollectionsForCreation));
+		await createCollections(newCollections);
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
