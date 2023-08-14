@@ -170,6 +170,10 @@ export default {
 						title: 'Operations',
 						items: [
 							{
+								display: 'Exposing an npm Package as a Custom Operation',
+								path: '/guides/extensions/operations-npm-package',
+							},
+							{
 								display: 'Use Custom Operations to Send Bulk Email With SendGrid',
 								path: '/guides/extensions/operations-bulk-email-sendgrid',
 							},

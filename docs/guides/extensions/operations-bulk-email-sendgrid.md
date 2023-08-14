@@ -284,7 +284,7 @@ In order to use this operation in Directus, you must copy the compiled index fil
 
 1. In the Directus extensions directory, open the operations directory and make a new directory called
    `directus-operation-bulk-sendgrid`.
-2. From the operation's directory, open the **dist** folder and copy the `index.js` file into the directory.
+2. From the operation's directory, open the **dist** folder and copy the `app.js` and `api.js` files into the directory.
 3. Update the .env file and add the Stripe API key with the variable `SENDGRID_API_KEY`.
 4. Install SendGrid into your Directus root directory with `npm install @sendgrid/mail`.
 5. Restart Directus to load the extension.

@@ -215,7 +215,7 @@ In order to use this operation in Directus, you must copy the compiled index fil
 
 1. In the Directus extensions directory, open the operations directory and make a new directory called
    `directus-operation-add-comment`.
-2. From the operation's directory, open the **dist** folder and copy the `index.js` file into the directory.
+2. From the operation's directory, open the **dist** folder and copy the `app.js` and `api.js` files into the directory.
 3. Restart Directus to load the extension.
 
 ## Use the Operation
