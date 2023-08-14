@@ -276,19 +276,6 @@ describe('page', () => {
 	});
 });
 
-describe('meta', () => {
-	test.each([
-		{ input: '*', expected: ['total_count', 'filter_count'] },
-		{ input: 'total_count', expected: ['total_count'] },
-		{ input: 'total_count,filter_count', expected: ['total_count', 'filter_count'] },
-		{ input: ['total_count', 'filter_count'], expected: ['total_count', 'filter_count'] },
-	])('should accept $input', ({ input, expected }) => {
-		const sanitizedQuery = sanitizeQuery({ meta: input }) as any;
-
-		expect(sanitizedQuery.meta).toEqual(expected);
-	});
-});
-
 describe('search', () => {
 	test('should accept valid value', () => {
 		const search = 'test';

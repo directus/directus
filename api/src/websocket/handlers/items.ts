@@ -1,5 +1,5 @@
 import emitter from '../../emitter.js';
-import { ItemsService, MetaService } from '../../services/index.js';
+import { ItemsService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
@@ -41,8 +41,7 @@ export class ItemsHandler {
 
 		const isSingleton = !!schema.collections[message.collection]?.singleton;
 		const service = new ItemsService(message.collection, { schema, accountability });
-		const metaService = new MetaService({ schema, accountability });
-		let result, meta;
+		let result;
 
 		if (message.action === 'create') {
 			const query = sanitizeQuery(message?.query ?? {}, accountability);
@@ -68,8 +67,6 @@ export class ItemsHandler {
 			} else {
 				result = await service.readByQuery(query);
 			}
-
-			meta = await metaService.getMetaForQuery(message.collection, query);
 		}
 
 		if (message.action === 'update') {
@@ -80,14 +77,12 @@ export class ItemsHandler {
 				result = await service.readOne(key);
 			} else if (message.ids) {
 				const keys = await service.updateMany(message.ids, message.data);
-				meta = await metaService.getMetaForQuery(message.collection, query);
 				result = await service.readMany(keys, query);
 			} else if (isSingleton) {
 				await service.upsertSingleton(message.data);
 				result = await service.readSingleton(query);
 			} else {
 				const keys = await service.updateByQuery(query, message.data);
-				meta = await metaService.getMetaForQuery(message.collection, query);
 				result = await service.readMany(keys, query);
 			}
 		}
@@ -112,6 +107,6 @@ export class ItemsHandler {
 			}
 		}
 
-		client.send(fmtMessage('items', { data: result, ...(meta ? { meta } : {}) }, uid));
+		client.send(fmtMessage('items', { data: result }, uid));
 	}
 }

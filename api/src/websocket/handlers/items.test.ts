@@ -2,7 +2,7 @@ import type { EventContext } from '@directus/types';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
-import { ItemsService, MetaService } from '../../services/index.js';
+import { ItemsService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { WebSocketClient } from '../types.js';
 import { ItemsHandler } from './items.js';
@@ -20,7 +20,6 @@ vi.mock('../../utils/get-schema', () => ({
 
 vi.mock('../../services', () => ({
 	ItemsService: vi.fn(),
-	MetaService: vi.fn(),
 }));
 
 function mockClient() {
@@ -146,8 +145,6 @@ describe('WebSocket heartbeat handler', () => {
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
 		const readByQuery = vi.fn();
 		(ItemsService as Mock).mockImplementation(() => ({ readByQuery }));
-		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
 		// receive message
 		const fakeClient = mockClient();
 
@@ -163,7 +160,6 @@ describe('WebSocket heartbeat handler', () => {
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(readByQuery).toBeCalled();
-		expect(getMetaForQuery).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
 
@@ -202,8 +198,6 @@ describe('WebSocket heartbeat handler', () => {
 			readMany = vi.fn();
 
 		(ItemsService as Mock).mockImplementation(() => ({ updateMany, readMany }));
-		const getMetaForQuery = vi.fn();
-		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
 		// receive message
 		const fakeClient = mockClient();
 
@@ -219,7 +213,6 @@ describe('WebSocket heartbeat handler', () => {
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(updateMany).toBeCalled();
-		expect(getMetaForQuery).toBeCalled();
 		expect(readMany).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});

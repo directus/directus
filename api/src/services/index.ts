@@ -12,7 +12,6 @@ export * from './graphql/index.js';
 export * from './import-export.js';
 export * from './items.js';
 export * from './mail/index.js';
-export * from './meta.js';
 export * from './notifications.js';
 export * from './operations.js';
 export * from './panels.js';

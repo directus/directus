@@ -7,7 +7,6 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
-import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
@@ -64,15 +63,9 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
 	const item = await service.readByQuery(req.sanitizedQuery);
-	const meta = await metaService.getMetaForQuery('directus_users', req.sanitizedQuery);
 
-	res.locals['payload'] = { data: item || null, meta };
+	res.locals['payload'] = { data: item || null };
 	return next();
 });
 

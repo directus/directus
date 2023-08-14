@@ -4,7 +4,6 @@ import { ErrorCode } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { MetaService } from '../services/meta.js';
 import { PermissionsService } from '../services/permissions.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -59,11 +58,6 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
 	let result;
 
 	// TODO fix this at the service level
@@ -78,9 +72,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(temporaryQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_permissions', temporaryQuery);
-
-	res.locals['payload'] = { data: result, meta };
+	res.locals['payload'] = { data: result };
 	return next();
 });
 

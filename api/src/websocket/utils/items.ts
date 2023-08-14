@@ -1,6 +1,6 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { getService } from '../../utils/get-service.js';
-import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
+import { CollectionsService, FieldsService } from '../../services/index.js';
 import type { WebSocketEvent } from '../messages.js';
 import type { Subscription } from '../types.js';
 
@@ -21,7 +21,6 @@ export async function getSinglePayload(
 	schema: SchemaOverview,
 	event?: WebSocketEvent
 ): Promise<Record<string, any>> {
-	const metaService = new MetaService({ schema, accountability });
 	const query = subscription.query ?? {};
 	const id = subscription.item!;
 
@@ -35,10 +34,6 @@ export async function getSinglePayload(
 	} else {
 		const service = getService(subscription.collection, { schema, accountability });
 		result['data'] = await service.readOne(id, query);
-	}
-
-	if ('meta' in query) {
-		result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
 	}
 
 	return result;
@@ -59,7 +54,6 @@ export async function getMultiPayload(
 	schema: SchemaOverview,
 	event?: WebSocketEvent
 ): Promise<Record<string, any>> {
-	const metaService = new MetaService({ schema, accountability });
 
 	const result: Record<string, any> = {
 		event: event?.action ?? 'init',
@@ -78,12 +72,6 @@ export async function getMultiPayload(
 		default:
 			result['data'] = await getItemsPayload(subscription, accountability, schema, event);
 			break;
-	}
-
-	const query = subscription.query ?? {};
-
-	if ('meta' in query) {
-		result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
 	}
 
 	return result;

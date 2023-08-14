@@ -4,7 +4,6 @@ import { ErrorCode } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { MetaService } from '../services/meta.js';
 import { PanelsService } from '../services/panels.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -59,15 +58,9 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
 	const records = await service.readByQuery(req.sanitizedQuery);
-	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-	res.locals['payload'] = { data: records || null, meta };
+	res.locals['payload'] = { data: records || null };
 	return next();
 });
 

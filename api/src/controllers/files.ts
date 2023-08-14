@@ -14,7 +14,6 @@ import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { FilesService } from '../services/files.js';
-import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
@@ -231,11 +230,6 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
 	let result;
 
 	if (req.singleton) {
@@ -246,9 +240,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
-
-	res.locals['payload'] = { data: result, meta };
+	res.locals['payload'] = { data: result };
 	return next();
 });
 

@@ -3,7 +3,6 @@ import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
 import { getEnv } from '../env.js';
 import logger from '../logger.js';
-import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
@@ -52,10 +51,6 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 
 	if (rawQuery['page']) {
 		query.page = sanitizePage(rawQuery['page']);
-	}
-
-	if (rawQuery['meta']) {
-		(query as any).meta = sanitizeMeta(rawQuery['meta']);
 	}
 
 	if (rawQuery['search'] && typeof rawQuery['search'] === 'string') {
@@ -148,22 +143,6 @@ function sanitizeOffset(rawOffset: any) {
 
 function sanitizePage(rawPage: any) {
 	return Number(rawPage);
-}
-
-function sanitizeMeta(rawMeta: any) {
-	if (rawMeta === '*') {
-		return Object.values(Meta);
-	}
-
-	if (rawMeta.includes(',')) {
-		return rawMeta.split(',');
-	}
-
-	if (Array.isArray(rawMeta)) {
-		return rawMeta;
-	}
-
-	return [rawMeta];
 }
 
 function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {

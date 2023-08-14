@@ -5,7 +5,6 @@ import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { ItemsService } from '../services/items.js';
-import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
@@ -66,11 +65,6 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
 	let result;
 
 	if (req.singleton) {
@@ -81,13 +75,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
-
-	res.locals['payload'] = {
-		meta: meta,
-		data: result,
-	};
-
+	res.locals['payload'] = { data: result };
 	return next();
 });
 

@@ -4,7 +4,6 @@ import { ErrorCode } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { CollectionsService } from '../services/collections.js';
-import { MetaService } from '../services/meta.js';
 import type { Item } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
@@ -39,11 +38,6 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
-	const metaService = new MetaService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
 	let result: Item[] = [];
 
 	if (req.body.keys) {
@@ -52,9 +46,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await collectionsService.readByQuery();
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_collections', {});
-
-	res.locals['payload'] = { data: result, meta };
+	res.locals['payload'] = { data: result };
 	return next();
 });
 
