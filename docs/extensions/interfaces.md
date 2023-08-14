@@ -132,7 +132,6 @@ If you prefer to use the Vue Options API, you can inject the `api` and `stores` 
 
 :::
 
-
 ## Guides
 
 Learn how to build interfaces with our official guides:
