@@ -961,6 +961,8 @@ wysiwyg_options:
   source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
+  lazy_loading: Lazy Load Image
+  lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
 choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
