@@ -1,10 +1,10 @@
 <template>
-	<div class="metric type-title selectable" :class="{ 'has-header': showHeader }">
-		<div :style="{ color }">
-			<span class="prefix">{{ prefix }}</span>
-			<span class="value">{{ displayValue }}</span>
-			<span class="suffix">{{ suffix }}</span>
-		</div>
+	<div ref="labelContainer" class="metric type-title selectable" :class="{ 'has-header': showHeader }">
+		<p ref="labelText" :style="{ color }">
+			{{ prefix }}
+			{{ displayValue }}
+			{{ suffix }}
+		</p>
 	</div>
 </template>
 
@@ -13,8 +13,9 @@ import { Filter } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAutoFontFit } from '@/composables/use-auto-fit-text';
 
 interface Props {
 	showHeader?: boolean;
@@ -44,6 +45,66 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const { n } = useI18n();
+
+const labelContainer = ref<HTMLDivElement | null>(null);
+const labelText = ref<HTMLParagraphElement | null>(null);
+
+const { adjustFontSize } = useAutoFontFit(labelContainer, labelText);
+
+let resizeObserver: ResizeObserver | null = null;
+
+function adjustPadding() {
+	const container = labelContainer.value;
+	if (!container) return;
+
+	const paddingWidth = container.offsetWidth * 0.05;
+	const paddingHeight = container.offsetHeight * 0.05;
+
+	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
+
+	if (props.showHeader == true) {
+		container.style.padding = '0px 12px 12px 12px';
+	} else {
+		container.style.padding = `${padding}px`;
+	}
+
+	return;
+}
+
+function updateFit() {
+	adjustPadding();
+	adjustFontSize();
+}
+
+onMounted(() => {
+	const container = labelContainer.value;
+	if (!container) return;
+
+	updateFit();
+
+	// Create a ResizeObserver to watch for changes in the container's dimensions
+	resizeObserver = new ResizeObserver(() => {
+		updateFit();
+	});
+
+	resizeObserver.observe(container);
+
+	// Delay the initial font size adjustment to allow the text/font to render fully
+	setTimeout(() => {
+		updateFit();
+	}, 500);
+});
+
+onUpdated(() => {
+	updateFit();
+});
+
+onBeforeUnmount(() => {
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+		resizeObserver = null;
+	}
+});
 
 const metric = computed(() => {
 	if (!props.data || props.data.length === 0) return null;
@@ -135,11 +196,11 @@ const color = computed(() => {
 	width: 100%;
 	height: 100%;
 	font-weight: 800;
-	font-size: 42px;
-	line-height: 52px;
+	white-space: nowrap;
+	line-height: 1.2;
 }
 
-.metric.has-header {
+/* .metric.has-header {
 	height: calc(100% - 16px);
-}
+} */
 </style>

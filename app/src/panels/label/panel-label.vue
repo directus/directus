@@ -3,9 +3,12 @@
 		ref="labelContainer"
 		class="label type-title selectable"
 		:class="[font, { 'has-header': showHeader }]"
-		:style="{ color: color }"
+		:style="{ color: color, alignItems: showHeader ? 'flex-start' : 'center' }"
 	>
-		<p ref="labelText" :style="{ whiteSpace: whiteSpace, fontWeight: fontWeight, textAlign: textAlign, fontStyle: fontStyle }">
+		<p
+			ref="labelText"
+			:style="{ whiteSpace: whiteSpace, fontWeight: fontWeight, textAlign: textAlign, fontStyle: fontStyle }"
+		>
 			{{ text }}
 		</p>
 	</div>
@@ -13,8 +16,9 @@
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, onUpdated, ref } from 'vue';
+import { useAutoFontFit } from '@/composables/use-auto-fit-text';
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		text?: string;
@@ -39,58 +43,63 @@ withDefaults(
 
 const labelContainer = ref<HTMLDivElement | null>(null);
 const labelText = ref<HTMLParagraphElement | null>(null);
+
+const { adjustFontSize } = useAutoFontFit(labelContainer, labelText);
+
 let resizeObserver: ResizeObserver | null = null;
+
+function adjustPadding() {
+	const container = labelContainer.value;
+	if (!container) return '0px';
+
+	const paddingWidth = container.offsetWidth * 0.05;
+	const paddingHeight = container.offsetHeight * 0.05;
+
+	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
+
+	if (props.showHeader == true) {
+		container.style.padding = '0px 12px 12px 12px';
+	} else {
+		container.style.padding = `${padding}px`;
+	}
+
+	return;
+}
+
+function updateFit() {
+	adjustPadding();
+	adjustFontSize();
+}
 
 onMounted(() => {
 	const container = labelContainer.value;
+	if (!container) return;
 
-	if (container) {
-		adjustFontSize(container);
+	updateFit();
 
-		// Create a ResizeObserver to watch for changes in the container's dimensions
-		resizeObserver = new ResizeObserver(() => {
-			adjustFontSize(container);
-		});
+	// Create a ResizeObserver to watch for changes in the container's dimensions
+	resizeObserver = new ResizeObserver(() => {
+		updateFit();
+	});
 
-		resizeObserver.observe(container);
-	}
+	resizeObserver.observe(container);
+
+	// Delay the initial font size adjustment to allow the text/font to render fully
+	setTimeout(() => {
+		updateFit();
+	}, 500);
 });
 
 onUpdated(() => {
-	const container = labelContainer.value;
-
-	if (container) {
-		adjustFontSize(container);
-	}
+	updateFit();
 });
 
 onBeforeUnmount(() => {
-	// Disconnect the ResizeObserver when the component is unmounted
 	if (resizeObserver) {
 		resizeObserver.disconnect();
 		resizeObserver = null;
 	}
 });
-
-function adjustFontSize(container: HTMLDivElement) {
-	const text = labelText.value;
-	if (!container || !text) return;
-	let fontSize = 128; // starting font size in px
-	let padding = Math.max(5, fontSize * 0.3);
-
-	container.style.fontSize = `${fontSize}px`;
-
-	// Decrease the font size until the text fits the container
-	while (
-		text &&
-		(text.offsetHeight > container.offsetHeight - padding * 2 || text.offsetWidth > container.offsetWidth - padding * 2)
-	) {
-		fontSize -= 1;
-		padding = Math.max(5, fontSize * 0.3)
-		container.style.fontSize = `${fontSize}px`;
-		container.style.padding = `${padding}px`;
-	}
-}
 </script>
 
 <script lang="ts">
@@ -104,7 +113,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .label {
 	display: flex;
-	align-items: center;
 	justify-content: center;
 	width: 100%;
 	height: 100%;
@@ -123,10 +131,9 @@ export default defineComponent({
 	&.monospace {
 		font-family: var(--family-monospace);
 	}
-
 }
 
 .label.has-header {
-	height: calc(100% - 24px);
+	// height: calc(100% - 24px);
 }
 </style>

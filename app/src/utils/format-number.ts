@@ -118,7 +118,7 @@ export type NumberFormatOptions = BaseNumberFormatOptions | CurrencyOptions | Un
 export function formatNumber(value: number, locales: string | string[], options?: NumberFormatOptions): string {
 
 	if(options?.style !== 'unit' && options?.unit) {
-		// delete unit if style is not unit
+		// if unit is not style but there is a unit prop, delete it
 		delete options.unit;
 	}
 
