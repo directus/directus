@@ -3,4 +3,4 @@
 "@directus/api": minor
 ---
 
-Added JSON Web Token (JWT) operation
+Introduced new JSON Web Token (JWT) operation to Flows
