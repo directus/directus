@@ -81,9 +81,17 @@ export class FieldsService {
 			fields.push(...systemFieldRows);
 		}
 
+		let fieldsInfo = await this.knex.select('*').from('directus_fields').where({ collection })
+
+		if (fieldsInfo) {
+			fieldsInfo = (await this.payloadService.processValues('read', fieldsInfo)) as FieldMeta[];
+		}
+
+		fieldsInfo = fieldsInfo || systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection);
+
 		const columns = (await this.schemaInspector.columnInfo(collection)).map((column) => ({
 			...column,
-			default_value: getDefaultValue(column),
+			default_value: getDefaultValue(column, fieldsInfo.find((field) => field.field === column.name)),
 		}));
 
 		const columnsWithSystem = columns.map((column) => {
@@ -227,9 +235,9 @@ export class FieldsService {
 
 		const columnWithCastDefaultValue = column
 			? {
-					...column,
-					default_value: getDefaultValue(column),
-			  }
+				...column,
+				default_value: getDefaultValue(column, fieldInfo),
+			}
 			: null;
 
 		const data = {
