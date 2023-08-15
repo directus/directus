@@ -1507,7 +1507,7 @@ remove_item: Remove Item
 delete_item: Delete Item
 interfaces:
   list-m2a:
-    prefix_note: Uses the related item's collection by default.
+    prefix_note: Uses the related item's collection name by default.
   filter:
     name: Filter
     description: Configure a filter object.
