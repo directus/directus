@@ -5,9 +5,15 @@ export interface AbstractSqlQueryColumn {
 	column: string;
 }
 
+/**
+ * Used to select a specific column from a table.
+ */
 export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn, AbstractSqlQueryNode {
 	type: 'primitive';
 
-	/* This should only be applied when using this node within the SELECT clause */
+	/*
+	 * An alias for the column.
+	 * This should only be applied when using this node within the SELECT clause.
+	 */
 	as?: string;
 }

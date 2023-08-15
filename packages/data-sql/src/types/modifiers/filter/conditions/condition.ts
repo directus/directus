@@ -4,6 +4,11 @@ import type { SqlConditionNumberNode } from './condition-number.js';
 import type { SqlConditionSetNode } from './condition-set.js';
 import type { SqlConditionStringNode } from './condition-string.js';
 
+/**
+ * Condition to filter rows.
+ * Various condition types are supported, each depending on a specific datatype.
+ * The condition can also be negated on this level.
+ */
 export interface AbstractSqlQueryConditionNode {
 	type: 'condition';
 	condition:
