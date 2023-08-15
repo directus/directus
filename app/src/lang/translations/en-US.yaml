@@ -102,6 +102,7 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 branch_name: Branch Name
+commit: Commit
 main_branch: Main
 create_branch: Create Branch
 rename_branch: Rename Branch

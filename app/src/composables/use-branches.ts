@@ -7,6 +7,7 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 	const currentBranch = ref<Branch | null>(null);
 	const branches = ref<Branch[] | null>(null);
 	const loading = ref(false);
+	const commitLoading = ref(false);
 
 	const query = computed<Query>(() => {
 		if (!unref(currentBranch)) return {};
@@ -24,6 +25,8 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 		loading,
 		query,
 		getBranches,
+		commitLoading,
+		commit,
 	};
 
 	async function getBranches() {
@@ -60,6 +63,20 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 			unexpectedError(err);
 		} finally {
 			loading.value = false;
+		}
+	}
+
+	async function commit(edits: Ref<Record<string, any>>) {
+		if (!unref(currentBranch)) return;
+
+		commitLoading.value = true;
+
+		try {
+			await api.post(`/branches/${unref(currentBranch)!.id}/commit`, unref(edits));
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			commitLoading.value = false;
 		}
 	}
 }

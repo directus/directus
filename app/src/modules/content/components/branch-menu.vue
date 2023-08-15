@@ -59,7 +59,7 @@
 			:active="isBranchMergeDrawerOpen"
 			:current-branch="currentBranch"
 			@cancel="isBranchMergeDrawerOpen = false"
-			@done="isBranchMergeDrawerOpen = false"
+			@merge="isBranchMergeDrawerOpen = false"
 		/>
 
 		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">

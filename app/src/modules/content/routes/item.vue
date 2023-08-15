@@ -157,6 +157,7 @@
 			</v-dialog>
 
 			<v-button
+				v-if="currentBranch === null"
 				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
@@ -175,6 +176,32 @@
 						@save-as-copy="saveAsCopyAndNavigate"
 						@discard-and-stay="discardAndStay"
 					/>
+				</template>
+			</v-button>
+			<v-button
+				v-else
+				v-tooltip.bottom="t('commit')"
+				rounded
+				icon
+				:loading="commitLoading"
+				:disabled="!isSavable"
+				@click="CommitToBranch"
+			>
+				<v-icon name="commit" />
+
+				<template #append-outer>
+					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
+						<template #activator="{ toggle }">
+							<v-icon name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<v-list>
+							<v-list-item clickable @click="discardAndStay">
+								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
+								<v-list-item-content>{{ t('discard_all_changes') }}</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
 				</template>
 			</v-button>
 		</template>
@@ -302,7 +329,15 @@ const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabi
 
 const readBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'read'));
 
-const { currentBranch, branches, loading: branchesLoading, query, getBranches } = useBranches(collection, primaryKey);
+const {
+	currentBranch,
+	branches,
+	loading: branchesLoading,
+	query,
+	getBranches,
+	commitLoading,
+	commit,
+} = useBranches(collection, primaryKey);
 
 const {
 	isNew,
@@ -511,6 +546,19 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
+async function CommitToBranch() {
+	if (isSavable.value === false) return;
+	if (unref(currentBranch) === null) return;
+
+	try {
+		await commit(edits);
+		edits.value = {};
+		if (props.singleton === false) router.push(`/content/${props.collection}`);
+	} catch {
+		// Commit shows unexpected error dialog
+	}
+}
+
 async function saveAndQuit() {
 	if (isSavable.value === false) return;
 
@@ -524,6 +572,7 @@ async function saveAndQuit() {
 
 async function saveAndStay() {
 	if (isSavable.value === false) return;
+	if (unref(currentBranch) === null) return;
 
 	try {
 		const savedItem: Record<string, any> = await save();
@@ -542,6 +591,7 @@ async function saveAndStay() {
 
 async function saveAndAddNew() {
 	if (isSavable.value === false) return;
+	if (unref(currentBranch) === null) return;
 
 	try {
 		await save();

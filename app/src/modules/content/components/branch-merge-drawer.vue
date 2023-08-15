@@ -80,7 +80,7 @@ const comparedData = ref<Comparison | null>(null);
 
 const loading = ref(false);
 
-const emit = defineEmits(['cancel', 'done']);
+const emit = defineEmits(['cancel', 'merge']);
 
 watch(currentBranch, () => getComparison(), { immediate: true });
 
@@ -125,7 +125,7 @@ async function merge() {
 			unref(selectedFields).length > 0 ? { fields: unref(selectedFields) } : {}
 		);
 
-		emit('done');
+		emit('merge');
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
