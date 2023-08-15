@@ -678,9 +678,12 @@ function sidebar() {
 					],
 				},
 				{
-					type: 'page',
 					link: '/self-hosted/upgrades-migrations',
 					text: 'Upgrades & Migrations',
+				},
+				{
+					link: '/self-hosted/breaking-changes',
+					text: 'Breaking Changes',
 				},
 			],
 		},
