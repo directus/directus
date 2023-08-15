@@ -35,6 +35,7 @@ tile_size: Rozmiar kafelków
 edit_field: Edytuj pole
 conditions: Warunki
 location: Lokalizacja
+collection_names_are_case_sensitive: Nazwy kolekcji są wrażliwe na wielkość liter
 condition_rules: Reguły warunków
 input: Wprowadź
 maps: Mapy
@@ -145,6 +146,14 @@ validationError:
   required: Wartość jest wymagana
   unique: Wartość musi być unikalna
   regex: Wartość nie ma poprawnego formatu
+  starts_with: Wartość musi zaczynać się od {substring}
+  istarts_with: Wartość musi zaczynać się od {substring}
+  nstarts_with: Wartość nie może zaczynać się od {substring}
+  nistarts_with: Wartość nie może zaczynać się od {substring}
+  ends_with: Wartość musi kończyć się {substring}
+  iends_with: Wartość musi kończyć się {substring}
+  nends_with: Wartość nie może kończyć się {substring}
+  niends_with: Wartość nie może kończyć się {substring}
 all_access: Pełny Dostęp
 no_access: Brak dostępu
 use_custom: Użyj niestandardowych
@@ -460,6 +469,11 @@ open_file_in_tab: Otwórz plik w nowej karcie
 start_export: Rozpocznij eksport
 not_available_for_local_downloads: Niedostępne dla lokalnych plików
 exporting_all_items_in_collection: Eksportowanie wszystkich {total} elementów w {collection}.
+exporting_limited_items_in_collection: '{count} z {total} elementy w {collection} zostaną wyeksportowane.'
+exporting_no_items_to_export: Brak elementów do wyeksportowania. Dostosuj konfigurację eksportu i/lub dodaj elementy do kolekcji.
+exporting_download_hint: Po utworzeniu pliku {format} zostanie on pobrany na twoje urządzenie.
+exporting_library_hint: Po utworzeniu pliku {format} zostanie on zapisany w bibliotece plików.
+exporting_library_hint_forced: Ten eksport musi być przetwarzany w partiach. Po zakończeniu, plik {format} zostanie zapisany w Bibliotece plików.
 collection_key: Klucz kolekcji
 name: Nazwa
 primary_key_field: Pole klucza podstawowego
@@ -703,8 +717,12 @@ operators:
   icontains: Zawiera (niewrażliwe)
   starts_with: Zaczyna się od
   nstarts_with: Nie zaczyna się od
+  istarts_with: Zaczyna się od (niewrażliwy)
+  nistarts_with: Nie zaczyna się od (niewrażliwe)
   ends_with: Kończy się na
   nends_with: Nie kończy się na
+  iends_with: Kończy się z (niewrażliwe)
+  niends_with: Nie kończą się (niewrażliwe)
   between: Jest pomiędzy
   nbetween: Nie jest pomiędzy
   empty: Jest pusty
@@ -932,6 +950,8 @@ wysiwyg_options:
   source_code: Edytuj kod źródłowy
   fullscreen: Pełny ekran
   directionality: Kierunek
+  lazy_loading: Lazy load dla obrazów
+  lazy_loading_label: Włącz Lazy Ładowanie
 dropdown: Lista rozwijana
 choices: Opcje
 choices_option_configured_incorrectly: Wybór skonfigurowany nieprawidłowo
@@ -955,6 +975,7 @@ settings_flows: Przepływy
 settings_presets: Szablony i zakładki
 settings_translations: Własne tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
+configure_field_key_to_continue: Skonfiguruj klucz pola, aby kontynuować
 scope: Zakres
 actions: Akcje
 select: Wybierz...
@@ -1346,6 +1367,7 @@ share: Udostępnij
 share_item: Udostępnij element
 shared_with_you: Pewien element został Ci udostępniony
 shared_enter_passcode: Wprowadź kod dostępu, aby kontynuować...
+shared_leave_blank_for_passwordless_access: Pozostaw puste dla dostępu bez hasła
 shared_leave_blank_for_unlimited: Pozostaw puste dla nieograniczonej liczby
 shared_times_remaining: Ten link może być użyty tylko {n} razy
 shared_last_remaining: Ten link może być użyty tylko raz
@@ -1447,6 +1469,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 table: Tabela
@@ -2137,6 +2160,7 @@ operations:
     recipient: Użytkownik
     recipient_placeholder: Wprowadź UUID...
     recipient_note: Dodaj UUID użytkownika i naciśnij enter...
+    item_note: Klucz elementu lub względny adres URL
     message: Wiadomość
     subject: Temat
   request:
