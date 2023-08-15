@@ -51,7 +51,7 @@ const fieldsInCollection = computed(() => {
 
 	return fields.map((field: Field) => {
 		return {
-			text: field.name,
+			text: field.field,
 			value: field.field,
 		};
 	});

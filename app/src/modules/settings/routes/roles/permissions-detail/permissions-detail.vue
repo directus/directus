@@ -73,28 +73,20 @@ const { t } = useI18n();
 
 const router = useRouter();
 
-const collectionsStore = useCollectionsStore();
-
 const isOpen = useDialogRoute();
 
 const permission = ref<Permission>();
 const role = ref<Role>();
 const loading = ref(false);
 
-const collectionName = computed(() => {
-	if (!permission.value) return null;
-	return collectionsStore.collections.find((collection) => collection.collection === permission.value!.collection)
-		?.name;
-});
-
 const modalTitle = computed(() => {
 	if (loading.value || !permission.value) return t('loading');
 
 	if (props.roleKey) {
-		return role.value!.name + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
+		return role.value!.name + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
 	}
 
-	return t('public_label') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
+	return t('public_label') + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
 });
 
 watch(() => props.permissionKey, load, { immediate: true });
