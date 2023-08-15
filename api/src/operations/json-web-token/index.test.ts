@@ -149,6 +149,7 @@ test('verify: options can be set', async () => {
 	const result = await config.handler(params, {} as any);
 
 	expect(vi.mocked(jwt.verify)).toHaveBeenCalledWith(params.token, params.secret, params.options);
+
 	expect(result).toMatchObject({
 		header: { alg: 'HS256' },
 		payload,
@@ -196,6 +197,7 @@ test('decode: options can be set', async () => {
 	const result = await config.handler(params, {} as any);
 
 	expect(vi.mocked(jwt.decode)).toHaveBeenCalledWith(params.token, params.options);
+
 	expect(result).toMatchObject({
 		header: { alg: 'HS256' },
 		payload,
