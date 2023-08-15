@@ -805,8 +805,9 @@ be used as a wildcard to retrieve all metadata.
 
 ::: warning DEPRECATED
 
-The `metadata` parameter will be removed in the future in favor of [Aggregation](#aggregation-grouping).
-To receive the previous `total_count` and `filter_count` values, please use the `aggregation[count]` parameter instead - either with or without an additional `filter` parameter respectively.
+The `metadata` parameter will be removed in the future in favor of [Aggregation](#aggregation-grouping). To receive the
+previous `total_count` and `filter_count` values, please use the `aggregation[count]` parameter instead - either with or
+without an additional `filter` parameter respectively.
 
 :::
 
