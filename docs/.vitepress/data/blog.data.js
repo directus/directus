@@ -4,7 +4,7 @@ export default {
 	async load() {
 		const { data: articles } = await (
 			await fetch(
-				'https://marketing.directus.app/items/developer_articles?fields=*,author.first_name,author.last_name,author.avatar,author.title,tags.directus_tags_id.title,tags.directus_tags_id.slug,tags.directus_tags_id.type,status&sort=-date_published'
+				'https://marketing.directus.app/items/developer_articles?fields=*,author.first_name,author.last_name,author.avatar,author.title,tags.directus_tags_id.title,tags.directus_tags_id.slug,tags.directus_tags_id.type&filter[status][_eq]=published&sort=-date_published'
 			)
 		).json();
 
@@ -12,18 +12,14 @@ export default {
 			await fetch('https://marketing.directus.app/items/docs_tags?fields=*&sort=-count(developer_articles)')
 		).json();
 
-		let posts = articles.map((article) => ({
+		const posts = articles.map((article) => ({
 			id: article.slug,
 			title: article.title,
 			date_published: article.date_published,
 			summary: article.summary,
 			image: article.image,
 			author: article.author,
-			status: article.status,
 		}));
-
-		const published = posts.filter((a) => a.status == 'published');
-		const hidden = posts.filter((a) => a.status == 'hidden');
 
 		// Create tags for the sidebar
 		let tagsForSidebar = [];
@@ -40,8 +36,7 @@ export default {
 
 		return {
 			blog: {
-				articles: published,
-				hidden: hidden,
+				articles: posts,
 				tags,
 				tagsForSidebar,
 			},
