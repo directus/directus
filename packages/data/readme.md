@@ -10,7 +10,7 @@ npm install @directus/data
 
 ## Usage
 
-Create a new manager:
+Instantiate the engine:
 
 ```js
 import { DataEngine } from '@directus/data';
@@ -18,20 +18,19 @@ import { DataEngine } from '@directus/data';
 const data = new DataEngine();
 ```
 
-Register drivers:
+Register a driver to the engine:
 
 ```js
 import { DataEngine } from '@directus/data';
 import { DataDriverPostgres } from '@directus/data-driver-postgres';
 
-const data = new DataEngine();
+const engine = new DataEngine();
 
-await data.registerStore(
-	'postgres',
-	new DataDriverPostgres({
-		connectionString: 'postgresql://root:password@localhost/mydb',
-	})
-);
+const pgDriver = new DataDriverPostgres({
+	connectionString: 'postgresql://root:password@localhost/mydb',
+});
+
+await engine.registerStore('postgres', pgDriver);
 ```
 
 Query data:
@@ -40,16 +39,15 @@ Query data:
 import { DataEngine } from '@directus/data';
 import { DataDriverPostgres } from '@directus/data-driver-postgres';
 
-const data = new DataEngine();
+const engine = new DataEngine();
 
-await data.registerStore(
-	'postgres',
-	new DataDriverPostgres({
-		connectionString: 'postgresql://root:password@localhost/mydb',
-	})
-);
+const pgDriver = new DataDriverPostgres({
+	connectionString: 'postgresql://root:password@localhost/mydb',
+});
 
-await data.query({
+await engine.registerStore('postgres', pgDriver);
+
+await engine.query({
 	root: true,
 	store: 'postgres',
 	collection: 'articles',
@@ -62,16 +60,19 @@ await data.query({
 });
 ```
 
-## Flow
+## Overall composition of the packages
 
 This visualizes the general data flow regarding `data`.
 
 ```mermaid
-graph LR;
+graph TB;
     api --> data
-    data --> sql-adapter
-    data --> no-sql-adapter
-	sql-adapter ---> db1[(datastore)]
-	sql-adapter  --- data-sql
-	no-sql-adapter ---> db2[(datastore)]
+	subgraph data[data abstraction/ -pipeline]
+	direction TB
+    engine --> data-driver-x
+    engine --> data-driver-y
+	data-driver-x ---> db1[(datastore)]
+	data-driver-x  -- if driver is SQL --> data-sql
+	data-driver-y ---> db2[(datastore)]
+	end
 ```
