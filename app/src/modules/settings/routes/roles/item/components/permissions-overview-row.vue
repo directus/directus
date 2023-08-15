@@ -90,6 +90,7 @@ function isLoading(action: string) {
 
 	.name {
 		flex-grow: 1;
+		font-family: var(--family-monospace);
 
 		.actions {
 			margin-left: 8px;

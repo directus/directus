@@ -92,6 +92,10 @@ const fields = computed({
 	margin-bottom: 36px;
 }
 
+.checkboxes :deep(.v-checkbox .type-text) {
+	font-family: var(--family-monospace);
+}
+
 .app-minimal {
 	.v-divider {
 		margin: 24px 0;
