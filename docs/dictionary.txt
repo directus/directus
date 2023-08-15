@@ -225,6 +225,8 @@ JS
 JS-SDK
 json
 JSON
+jsonwebtoken
+jsonwebtoken's
 JWT
 kanban
 Kanban
