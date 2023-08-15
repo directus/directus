@@ -82,7 +82,15 @@
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
+		<v-upload
+			v-else
+			from-library
+			from-url
+			:from-user="createAllowed"
+			:folder="folder"
+			:preset="{ allowedMimeTypes: ['image/*'] }"
+			@input="onUpload"
+		/>
 	</div>
 </template>
 

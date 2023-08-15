@@ -79,7 +79,10 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			return busboy.emit('error', new InvalidPayloadError({ reason: `File is missing filename` }));
 		}
 
-		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const allowedPatterns = toArray(
+			payload.allowedMimeTypes ?? (env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[])
+		);
+
 		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
 
 		if (mimeTypeAllowed === false) {
