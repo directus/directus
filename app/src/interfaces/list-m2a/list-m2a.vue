@@ -382,8 +382,7 @@ function hasAllowedCollection(item: DisplayItem) {
 }
 
 function getPrefix(item: DisplayItem) {
-	if (relationInfo.value?.junctionField.field && props.prefix)
-		return renderStringTemplate(props.prefix, item).displayValue.value;
+	if (props.prefix) return renderStringTemplate(props.prefix, item).displayValue.value;
 
 	const info = relationInfo.value;
 	if (!info) return false;

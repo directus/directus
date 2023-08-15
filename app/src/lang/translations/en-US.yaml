@@ -1506,6 +1506,8 @@ undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
 interfaces:
+  list-m2a:
+    prefix_note: Uses the related item's collection by default.
   filter:
     name: Filter
     description: Configure a filter object.

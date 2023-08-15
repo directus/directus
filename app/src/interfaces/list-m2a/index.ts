@@ -76,6 +76,7 @@ export default defineInterface({
 					}
 					: {
 						interface: 'system-display-template',
+						note: '$t:interfaces.list-m2a.prefix_note',
 						options: {
 							collectionName: relations.o2m?.collection
 						},
