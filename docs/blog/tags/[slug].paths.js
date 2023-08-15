@@ -14,7 +14,7 @@ export default {
 				articles: tag.developer_articles
 					.map((article) => {
 						if (!article.developer_articles_id) return;
-						if (article.developer_articles_id.status != 'published') return;
+						if (article.developer_articles_id.status !== 'published') return;
 
 						return {
 							title: article.developer_articles_id.title,
