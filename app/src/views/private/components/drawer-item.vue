@@ -14,7 +14,7 @@
 
 		<template #actions>
 			<slot name="actions" />
-			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+			<v-button v-tooltip.bottom="t('save')" :disabled="!isSavable" icon rounded @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -139,7 +139,7 @@ const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelation
 	useRelation();
 
 const { internalEdits, loading, initialValues } = useItem();
-const { save, cancel } = useActions();
+const { save, cancel, isSavable } = useActions();
 
 const { collection } = toRefs(props);
 
@@ -151,7 +151,15 @@ const swapFormOrder = computed(() => {
 	return props.junctionFieldLocation === 'top';
 });
 
-const hasEdits = computed(() => !isEmpty(internalEdits.value));
+const hasEdits = computed(() => {
+	if (isEmpty(internalEdits.value)) return false;
+
+	if (props.junctionField && Object.keys.length === 1 && isEmpty(internalEdits.value[props.junctionField]))
+		return false;
+
+	return true;
+});
+
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const router = useRouter();
 
@@ -390,7 +398,28 @@ function useRelation() {
 }
 
 function useActions() {
-	return { save, cancel };
+	const isSavable = computed(() => {
+		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
+		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
+
+		if (hasEdits.value) return true;
+
+		if (
+			primaryKeyField.value &&
+			!primaryKeyField.value?.schema?.has_auto_increment &&
+			!primaryKeyField.value?.meta?.special?.includes('uuid')
+		) {
+			return Boolean(internalEdits.value?.[primaryKeyField.value.field]);
+		}
+
+		if (isNew.value) {
+			return Object.keys(defaultValues.value).length > 0 || hasEdits.value;
+		}
+
+		return false;
+	});
+
+	return { save, cancel, isSavable };
 
 	function save() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
