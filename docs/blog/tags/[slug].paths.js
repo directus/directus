@@ -2,7 +2,7 @@ export default {
 	async paths() {
 		const response = await (
 			await fetch(
-				'https://marketing.directus.app/items/docs_tags?fields=*,developer_articles.developer_articles_id.title,developer_articles.developer_articles_id.date_published,developer_articles.developer_articles_id.slug,developer_articles.developer_articles_id.image,developer_articles.developer_articles_id.author.first_name,developer_articles.developer_articles_id.author.last_name,developer_articles.developer_articles_id.author.avatar,author.title'
+				'https://marketing.directus.app/items/docs_tags?fields=*,developer_articles.developer_articles_id.title,developer_articles.developer_articles_id.date_published,developer_articles.developer_articles_id.slug,developer_articles.developer_articles_id.image,developer_articles.developer_articles_id.author.first_name,developer_articles.developer_articles_id.author.last_name,developer_articles.developer_articles_id.author.avatar,author.title,developer_articles.developer_articles_id.status'
 			)
 		).json();
 
@@ -14,6 +14,7 @@ export default {
 				articles: tag.developer_articles
 					.map((article) => {
 						if (!article.developer_articles_id) return;
+						if (article.developer_articles_id.status != 'published') return;
 
 						return {
 							title: article.developer_articles_id.title,
