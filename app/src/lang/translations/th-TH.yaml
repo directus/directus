@@ -1475,6 +1475,9 @@ triggers:
   webhook:
     method: เมธอด
 operations:
+  json-web-token:
+    token: โทเค็น
+    options: ตัวเลือก
   log:
     message: ข้อความ
   mail:
