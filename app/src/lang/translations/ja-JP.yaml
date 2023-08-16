@@ -1453,6 +1453,9 @@ panels:
   label:
     name: ラベル
 operations:
+  json-web-token:
+    token: トークン
+    options: オプション
   log:
     message: メッセージ
   notification:
