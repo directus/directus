@@ -1538,6 +1538,10 @@ operations:
     payload: Muatan
   item-update:
     payload: Muatan
+  json-web-token:
+    payload: Muatan
+    token: Token
+    options: Pilihan
   log:
     message: Pesan
   mail:
