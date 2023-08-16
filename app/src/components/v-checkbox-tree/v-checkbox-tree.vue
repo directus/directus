@@ -29,6 +29,7 @@ export default {
 import { computed, ref, watch, toRefs } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
+import { remove as removeDiacritics } from 'diacritics';
 
 interface Props {
 	/** The choices that will be rendered as checkboxes */
@@ -119,13 +120,15 @@ watch(showSelectionOnly, (isSelectionOnly) => {
 function searchChoices(text: string, target: Record<string, any>[]) {
 	const selection: string[] = [];
 
+	const searchText = removeDiacritics(text.toLowerCase());
+
 	for (const item of target) {
-		if (item[props.itemText].toLowerCase().includes(text.toLowerCase())) {
+		if (item[props.itemText].toLowerCase().includes(searchText)) {
 			selection.push(item[props.itemValue]);
 		}
 
 		if (item[props.itemChildren]) {
-			selection.push(...searchChoices(text, item[props.itemChildren]));
+			selection.push(...searchChoices(searchText, item[props.itemChildren]));
 		}
 	}
 
