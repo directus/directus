@@ -67,9 +67,16 @@ export type Transformation = TransformationMap[keyof TransformationMap];
 
 export type TransformationResize = Pick<ResizeOptions, 'width' | 'height' | 'fit' | 'withoutEnlargement'>;
 
+export type TransformationFormat = 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
+
 export type TransformationParams = {
 	key?: string;
 	transforms?: Transformation[];
-	format?: 'auto' | 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
+	format?: TransformationFormat | 'auto';
 	quality?: number;
 } & TransformationResize;
+
+export type TransformationSet = {
+	transformationParams: TransformationParams;
+	acceptFormat?: TransformationFormat | undefined;
+};

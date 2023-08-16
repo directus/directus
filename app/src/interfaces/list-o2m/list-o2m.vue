@@ -71,7 +71,7 @@
 					<router-link
 						v-if="enableLink"
 						v-tooltip="t('navigate_to_item')"
-						:to="getLinkForItem(item)"
+						:to="getLinkForItem(item)!"
 						class="item-link"
 						:class="{ disabled: item.$type === 'created' }"
 					>
@@ -129,7 +129,7 @@
 							<router-link
 								v-if="enableLink"
 								v-tooltip="t('navigate_to_item')"
-								:to="getLinkForItem(element)"
+								:to="getLinkForItem(element)!"
 								class="item-link"
 								:class="{ disabled: element.$type === 'created' }"
 								@click.stop
@@ -197,26 +197,26 @@
 </template>
 
 <script setup lang="ts">
+import { Sort } from '@/components/v-table/types';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
-import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
+import { useFieldsStore } from '@/stores/fields';
+import { LAYOUTS } from '@/types/interfaces';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { parseFilter } from '@/utils/parse-filter';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SearchInput from '@/views/private/components/search-input.vue';
-import DrawerItem from '@/views/private/components/drawer-item.vue';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, clamp, get, isNil } from 'lodash';
-import { useFieldsStore } from '@/stores/fields';
-import { LAYOUTS } from '@/types/interfaces';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
-import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{

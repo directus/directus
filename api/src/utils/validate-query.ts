@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
 import env from '../env.js';
-import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import { InvalidQueryError } from '../errors/index.js';
 import { calculateFieldDepth } from './calculate-field-depth.js';
 
 const querySchema = Joi.object({
@@ -11,7 +11,10 @@ const querySchema = Joi.object({
 	group: Joi.array().items(Joi.string()),
 	sort: Joi.array().items(Joi.string()),
 	filter: Joi.object({}).unknown(),
-	limit: Joi.number().integer().min(-1),
+	limit:
+		'QUERY_LIMIT_MAX' in env && env['QUERY_LIMIT_MAX'] !== -1
+			? Joi.number().integer().min(-1).max(env['QUERY_LIMIT_MAX']) // min should be 0
+			: Joi.number().integer().min(-1),
 	offset: Joi.number().integer().min(0),
 	page: Joi.number().integer().min(0),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
@@ -36,14 +39,14 @@ export function validateQuery(query: Query): Query {
 	validateRelationalDepth(query);
 
 	if (error) {
-		throw new InvalidQueryException(error.message);
+		throw new InvalidQueryError({ reason: error.message });
 	}
 
 	return query;
 }
 
 function validateFilter(filter: Query['filter']) {
-	if (!filter) throw new InvalidQueryException('Invalid filter object');
+	if (!filter) throw new InvalidQueryError({ reason: 'Invalid filter object' });
 
 	for (const [key, nested] of Object.entries(filter)) {
 		if (key === '_and' || key === '_or') {
@@ -64,7 +67,6 @@ function validateFilter(filter: Query['filter']) {
 				case '_nempty':
 					validateBoolean(value, key);
 					break;
-
 				case '_intersects':
 				case '_nintersects':
 				case '_intersects_bbox':
@@ -81,8 +83,12 @@ function validateFilter(filter: Query['filter']) {
 				case '_ncontains':
 				case '_starts_with':
 				case '_nstarts_with':
+				case '_istarts_with':
+				case '_nistarts_with':
 				case '_ends_with':
 				case '_nends_with':
+				case '_iends_with':
+				case '_niends_with':
 				case '_gt':
 				case '_gte':
 				case '_lt':
@@ -108,17 +114,17 @@ function validateFilterPrimitive(value: any, key: string) {
 		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value instanceof Date) ===
 		false
 	) {
-		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
+		throw new InvalidQueryError({ reason: `The filter value for "${key}" has to be a string, number, or boolean` });
 	}
 
 	if (typeof value === 'number' && (Number.isNaN(value) || value > Number.MAX_SAFE_INTEGER)) {
-		throw new InvalidQueryException(`The filter value for "${key}" is not a valid number`);
+		throw new InvalidQueryError({ reason: `The filter value for "${key}" is not a valid number` });
 	}
 
 	if (typeof value === 'string' && value.length === 0) {
-		throw new InvalidQueryException(
-			`You can't filter for an empty string in "${key}". Use "_empty" or "_nempty" instead`
-		);
+		throw new InvalidQueryError({
+			reason: `You can't filter for an empty string in "${key}". Use "_empty" or "_nempty" instead`,
+		});
 	}
 
 	return true;
@@ -126,29 +132,29 @@ function validateFilterPrimitive(value: any, key: string) {
 
 function validateList(value: any, key: string) {
 	if (Array.isArray(value) === false || value.length === 0) {
-		throw new InvalidQueryException(`"${key}" has to be an array of values`);
+		throw new InvalidQueryError({ reason: `"${key}" has to be an array of values` });
 	}
 
 	return true;
 }
 
-function validateBoolean(value: any, key: string) {
-	if (value === null) return true;
+export function validateBoolean(value: any, key: string) {
+	if (value === null || value === '') return true;
 
 	if (typeof value !== 'boolean') {
-		throw new InvalidQueryException(`"${key}" has to be a boolean`);
+		throw new InvalidQueryError({ reason: `"${key}" has to be a boolean` });
 	}
 
 	return true;
 }
 
-function validateGeometry(value: any, key: string) {
-	if (value === null) return true;
+export function validateGeometry(value: any, key: string) {
+	if (value === null || value === '') return true;
 
 	try {
 		stringify(value);
 	} catch {
-		throw new InvalidQueryException(`"${key}" has to be a valid GeoJSON object`);
+		throw new InvalidQueryError({ reason: `"${key}" has to be a valid GeoJSON object` });
 	}
 
 	return true;
@@ -156,20 +162,20 @@ function validateGeometry(value: any, key: string) {
 
 function validateAlias(alias: any) {
 	if (isPlainObject(alias) === false) {
-		throw new InvalidQueryException(`"alias" has to be an object`);
+		throw new InvalidQueryError({ reason: `"alias" has to be an object` });
 	}
 
 	for (const [key, value] of Object.entries(alias)) {
 		if (typeof key !== 'string') {
-			throw new InvalidQueryException(`"alias" key has to be a string. "${typeof key}" given.`);
+			throw new InvalidQueryError({ reason: `"alias" key has to be a string. "${typeof key}" given` });
 		}
 
 		if (typeof value !== 'string') {
-			throw new InvalidQueryException(`"alias" value has to be a string. "${typeof key}" given.`);
+			throw new InvalidQueryError({ reason: `"alias" value has to be a string. "${typeof key}" given` });
 		}
 
 		if (key.includes('.') || value.includes('.')) {
-			throw new InvalidQueryException(`"alias" key/value can't contain a period character \`.\``);
+			throw new InvalidQueryError({ reason: `"alias" key/value can't contain a period character \`.\`` });
 		}
 	}
 }
@@ -204,7 +210,7 @@ function validateRelationalDepth(query: Query) {
 
 	for (const field of fields) {
 		if (field.split('.').length > maxRelationalDepth) {
-			throw new InvalidQueryException('Max relational depth exceeded.');
+			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
 		}
 	}
 
@@ -212,14 +218,14 @@ function validateRelationalDepth(query: Query) {
 		const filterRelationalDepth = calculateFieldDepth(query.filter);
 
 		if (filterRelationalDepth > maxRelationalDepth) {
-			throw new InvalidQueryException('Max relational depth exceeded.');
+			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
 		}
 	}
 
 	if (query.sort) {
 		for (const sort of query.sort) {
 			if (sort.split('.').length > maxRelationalDepth) {
-				throw new InvalidQueryException('Max relational depth exceeded.');
+				throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
 			}
 		}
 	}
@@ -228,7 +234,7 @@ function validateRelationalDepth(query: Query) {
 		const deepRelationalDepth = calculateFieldDepth(query.deep, ['_sort']);
 
 		if (deepRelationalDepth > maxRelationalDepth) {
-			throw new InvalidQueryException('Max relational depth exceeded.');
+			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
 		}
 	}
 }

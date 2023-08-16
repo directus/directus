@@ -1,0 +1,60 @@
+name: Assign Next Release Milestone
+
+on:
+  pull_request_target:
+    types:
+      - closed
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  assign:
+    name: Assign Milestone
+    if: github.event.pull_request.merged == true && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get milestone
+        id: get-milestone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          echo "number=$(gh api graphql \
+          --field owner='{owner}' \
+          --field name='{repo}' \
+          --field milestoneQuery='Next Release' \
+          --jq '.data.repository.milestones.nodes[].number' \
+          --raw-field query='
+            query($name: String!, $owner: String!, $milestoneQuery: String!) {
+              repository(owner: $owner, name: $name) {
+                milestones(query:$milestoneQuery, last: 1) {
+                  nodes { number }
+                }
+              }
+            }
+          ')" >> "$GITHUB_OUTPUT"
+
+      - name: Create milestone
+        id: create-milestone
+        if: steps.get-milestone.outputs.number == ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          echo "number=$(gh api \
+          'repos/{owner}/{repo}/milestones' \
+          --field title='Next Release' \
+          --jq '.number'
+          )" >> "$GITHUB_OUTPUT"
+
+      - name: Assign milestone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh api \
+          '/repos/{owner}/{repo}/issues/${{ github.event.number }}' \
+          --field milestone='${{ steps.get-milestone.outputs.number || steps.create-milestone.outputs.number }}' \
+          --silent

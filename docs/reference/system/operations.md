@@ -8,8 +8,6 @@ pageClass: page-reference
 
 > Operations are the building blocks of Data Flows within Directus.
 
----
-
 ## The Operation Object
 
 `id` **uuid**\
@@ -67,35 +65,23 @@ The flow containing this operation. Many-to-one to [flows](/reference/system/flo
 }
 ```
 
----
-
 ## List Operations
 
 List all operations that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /operations`
 
-An array of up to [limit](/reference/query#limit) [operation objects](#the-operation-object). If no items are available,
-data will be an empty array.
+`SEARCH /operations`
 
-### REST API
+</template>
+<template #graphql>
 
-```
-GET /operations
-SEARCH /operations
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -103,7 +89,45 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readOperations(query));
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [operation objects](#the-operation-object). If no items are available,
+data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /operations`
+
+`SEARCH /operations`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -115,37 +139,38 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readOperations({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve an operation
 
 List an existing operation by primary key.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-Supports all [global query parameters](/reference/query).
+`GET /operations/:id`
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the requested [operation object](#the-operation-object).
-
-### REST API
-
-```
-GET /operations/:id
-```
-
-##### Example
-
-```
-GET /operations/3c636d1c-4eb2-49cd-8a6d-3ec571ab3390
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -153,7 +178,42 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readOperation('operation_id', query));
+```
+
+</template>
+</SnippetToggler>
+
+### Request
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [operation object](#the-operation-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /operations/3c636d1c-4eb2-49cd-8a6d-3ec571ab3390`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -165,47 +225,46 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readOperation('0691f58d-ed72-40ea-81b4-81c0f1e83262', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create an Operation
 
 Create a new operation.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-Supports all [global query parameters](/reference/query).
-
-### Request Body
-
-A partial [operation object](#the-operation-object).
-
-### Returns
-
-Returns the [operation object](#the-operation-object) for the created operation.
-
-### REST API
-
-```
-POST /operations
-```
-
-##### Example
+`POST /operations`
 
 ```json
-// POST /operations
-
 {
-	"name": "My Log",
-	"key": "my_log",
-	"type": "log"
+	"operations_field_1": "value_1",
+	"operations_field_2": "value_2",
+	"operations_field_3": "value_3"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -213,7 +272,62 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createOperation({
+		key: 'operation_key',
+		type: 'operation_log',
+		position_x: 'operation_x_pos',
+		position_y: 'operation_y_pos',
+		flow: '9flow_id',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+### Request
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [operation object](#the-operation-object).
+
+### Response
+
+Returns the [operation object](#the-operation-object) for the created operation.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /operations`
+
+```json
+{
+	"name": "My Log",
+	"key": "my_log",
+	"type": "log"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -225,35 +339,118 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createOperation({
+		key: 'my_log',
+		type: 'log',
+		position_x: '25',
+		position_y: '25',
+		flow: '90a0fdd5-e760-4b4c-ac22-c14d48d44f26',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Operations
 
 Create multiple new operations.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /operations`
+
+```json
+[
+	{
+		"operations_1_field_1": "value_1",
+		"operations_1_field_2": "value_2",
+		"operations_1_field_3": "value_3"
+	},
+	{
+		"operations_2_field_1": "value_4",
+		"operations_2_field_2": "value_5",
+		"operations_2_field_3": "value_6"
+	}
+]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_operations_items(data: [create_directus_operations_input!]!): [directus_operations]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createOperations([
+		{
+			key: 'operation_key',
+			type: 'operation_log',
+			position_x: 'operation_x_pos',
+			position_y: 'operation_y_pos',
+			flow: 'flow_id',
+		},
+		{
+			key: 'operation_2_key',
+			type: 'operation_2_log',
+			position_x: 'operation_2_x_pos',
+			position_y: 'operation_2_y_pos',
+			flow: 'flow_id',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [operation objects](#the-operation-object).
 
-### Returns
+### Response
 
 Returns the [operation object](#the-operation-object) for the created operation.
 
-### REST API
+### Example
 
-```
-POST /operations
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /operations`
 
 ```json
-// POST /operations
-
 [
 	{
 		"name": "My Log",
@@ -268,34 +465,17 @@ POST /operations
 ]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_operations_items(data: [create_directus_operations_input!]!): [directus_operations]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
 	create_operations_items(
 		data: [
-			{
-				"name": "My Log",
-				"key": "my_log",
-				"type": "log"
-			},
-			{
-				"name": "Send Notification",
-				"key": "send_notification",
-				"type": "notification"
-			}
+			{ name: "My Log", key: "my_log", type: "log" }
+			{ name: "Send Notification", key: "send_notification", type: "notification" }
 		]
 	) {
 		id
@@ -305,45 +485,59 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createOperations([
+		{
+			key: 'my_log',
+			type: 'log',
+			position_x: '40',
+			position_y: '40',
+			flow: '90a0fdd5-e760-4b4c-ac22-c14d48d44f26',
+		},
+		{
+			key: 'my_other_log',
+			type: 'log',
+			position_x: '20',
+			position_y: '40',
+			flow: '90a0fdd5-e760-4b4c-ac22-c14d48d44f26',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update an Operation
 
 Update an existing operation.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [operation object](#the-operation-object).
-
-### Returns
-
-Returns the [operation object](#the-operation-object) for the updated operation.
-
-### REST API
-
-```
-PATCH /operation/:id
-```
-
-##### Example
+`PATCH /operation/:id`
 
 ```json
-// PATCH /operation/7d62f1e9-a83f-407b-84f8-1c184f014501
-
 {
-	"name": "My Updated Operation"
+	"operation_object_field": "value_1"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -351,7 +545,54 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateOperation('operation_id', {
+		operation_field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [operation object](#the-operation-object).
+
+### Response
+
+Returns the [operation object](#the-operation-object) for the updated operation.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /operation/7d62f1e9-a83f-407b-84f8-1c184f014501`
+
+```json
+{
+	"name": "My Updated Operation"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -362,17 +603,78 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateOperation('4b220e51-5e2b-48b5-a988-0a6451624d0c', {
+		position_x: '5',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Operations
 
 Update multiple existing operations.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /operations`
+
+```json
+{
+	"keys": ["operation_1_key", "operation_2_key"],
+	"data": {
+		"operation_object_field": "value_1"
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_operations_items(ids: [ID!]!, data: update_directus_operations_input): [directus_operations]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateOperations(['operation_1_id', 'operation_2_id'], {
+		field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the operations you'd like to update.
@@ -380,21 +682,18 @@ Array of primary keys of the operations you'd like to update.
 `data` **Required**\
 Any of [the operation object](#the-operation-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [operation objects](#the-operation-object) for the updated operations.
 
-### REST API
+### Example
 
-```
-PATCH /operations
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`PATCH /operations`
 
 ```json
-// PATCH /operations
-
 {
 	"keys": ["6a25fb7c-26a4-4dcb-a474-d47b6a203a38", "07ac467e-1900-4c62-9637-8dac2ab97f71"],
 	"data": {
@@ -403,19 +702,10 @@ PATCH /operations
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_operations_items(ids: [ID!]!, data: update_directus_operations_input): [directus_operations]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -430,33 +720,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'], {
+		position_y: '50',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete an Operation
 
 Delete an existing operation.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`DELETE /operations/:id`
 
-```
-DELETE /operations/:id
-```
+</template>
+<template #graphql>
 
-##### Example
-
-```
-DELETE /operations/07ac467e-1900-4c62-9637-8dac2ab97f71
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -464,7 +761,34 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteOperation('operation_id'));
+```
+
+</template>
+</SnippetToggler>
+
+### Returns
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /operations/07ac467e-1900-4c62-9637-8dac2ab97f71`
+
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -474,38 +798,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteOperation('263b18e6-7297-4a9f-af88-15af7317d4ef'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Operations
 
 Delete multiple existing operations.
 
-### Request Body
+### Request
 
-An array of operations primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Empty body.
-
-### REST API
-
-```
-DELETE /operations
-```
-
-##### Example
+`DELETE /operations`
 
 ```json
-// DELETE /operations
-["a791ce73-41a2-4fb7-8f67-c7ba176cc719", "4e57ab0e-f4ec-47b5-9dad-e36f08a25642", "5fe0a6f6-18ad-4bb3-94c6-2e033246c784"]
+["operation_1_id", "operation_2_id", "operation_2_id"]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -513,7 +839,46 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of operations primary keys
+
+### Returns
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /operations`
+
+```json
+["a791ce73-41a2-4fb7-8f67-c7ba176cc719", "4e57ab0e-f4ec-47b5-9dad-e36f08a25642", "5fe0a6f6-18ad-4bb3-94c6-2e033246c784"]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -529,11 +894,54 @@ mutation {
 }
 ```
 
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteOperations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
+);
+```
+
+</template>
+</SnippetToggler>
+
 ## Triggering an operation
 
 Trigger an operation based on primary key.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<template #rest>
+
+`POST /operations/trigger/:operation_uuid`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	triggerOperation('operation_id', {
+		// Payload
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 Payload for the operation, if needed.
 
@@ -541,15 +949,28 @@ Payload for the operation, if needed.
 
 Result of the operation, if any.
 
-### REST API
+### Example
 
-```
-POST /operations/trigger/:operation_uuid
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<template #rest>
+
+`// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerOperation } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	triggerOperation('0691f58d-ed72-40ea-81b4-81c0f1e83262', {
+		// Payload
+	})
+);
 ```
 
-##### Example
-
-```json
-// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
-// Payload here
-```
+</template>
+</SnippetToggler>

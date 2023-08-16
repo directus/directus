@@ -24,7 +24,7 @@
 						:folder="folder"
 						:current-folder="modelValue"
 						:click-handler="(id) => $emit('update:modelValue', id)"
-						:disabled="disabledFolders.includes(folder.id)"
+						:disabled="disabledFolders?.includes(folder.id)"
 						:disabled-folders="disabledFolders"
 					/>
 				</v-list-group>
@@ -33,12 +33,12 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, PropType } from 'vue';
-import api from '@/api';
-import FolderPickerListItem from './folder-picker-list-item.vue';
+<script setup lang="ts">
+import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FolderPickerListItem from './folder-picker-list-item.vue';
 
 type FolderRaw = {
 	id: string;
@@ -52,104 +52,93 @@ type Folder = {
 	children: Folder[];
 };
 
-export default defineComponent({
-	components: { FolderPickerListItem },
-	props: {
-		disabledFolders: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		modelValue: {
-			type: String,
-			default: null,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	disabledFolders?: string[];
+	modelValue: string | null;
+}>();
 
-		const loading = ref(false);
-		const folders = ref<FolderRaw[]>([]);
+defineEmits<{
+	(e: 'update:modelValue', value: string | null): void;
+}>();
 
-		const tree = computed<Folder[]>(() => {
-			return folders.value
-				.filter((folder) => folder.parent === null)
-				.map((folder) => {
-					return {
-						...folder,
-						children: getChildFolders(folder),
-					};
-				});
+const { t } = useI18n();
 
-			function getChildFolders(folder: FolderRaw): Folder[] {
-				return folders.value
-					.filter((childFolder) => {
-						return childFolder.parent === folder.id;
-					})
-					.map((childFolder) => {
-						return {
-							...childFolder,
-							children: getChildFolders(childFolder),
-						};
-					});
-			}
+const loading = ref(false);
+const folders = ref<FolderRaw[]>([]);
+
+const tree = computed<Folder[]>(() => {
+	return folders.value
+		.filter((folder) => folder.parent === null)
+		.map((folder) => {
+			return {
+				...folder,
+				children: getChildFolders(folder),
+			};
 		});
 
-		const shouldBeOpen: string[] = [];
-		const folder = folders.value.find((folder) => folder.id === props.modelValue);
-
-		if (folder && folder.parent) parseFolder(folder.parent);
-
-		const startOpenFolders = ['root'];
-
-		for (const folderID of shouldBeOpen) {
-			if (startOpenFolders.includes(folderID) === false) {
-				startOpenFolders.push(folderID);
-			}
-		}
-
-		const selectedFolder = computed(() => {
-			return folders.value.find((folder) => folder.id === props.modelValue) || {};
-		});
-
-		const openFolders = ref(startOpenFolders);
-
-		fetchFolders();
-
-		return { t, loading, folders, tree, selectedFolder, openFolders };
-
-		async function fetchFolders() {
-			if (folders.value.length > 0) return;
-			loading.value = true;
-
-			try {
-				const response = await api.get(`/folders`, {
-					params: {
-						limit: -1,
-						sort: 'name',
-					},
-				});
-
-				folders.value = response.data.data;
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		function parseFolder(id: string) {
-			if (!folders.value) return;
-			shouldBeOpen.push(id);
-
-			const folder = folders.value.find((folder) => folder.id === id);
-
-			if (folder && folder.parent) {
-				parseFolder(folder.parent);
-			}
-		}
-	},
+	function getChildFolders(folder: FolderRaw): Folder[] {
+		return folders.value
+			.filter((childFolder) => {
+				return childFolder.parent === folder.id;
+			})
+			.map((childFolder) => {
+				return {
+					...childFolder,
+					children: getChildFolders(childFolder),
+				};
+			});
+	}
 });
+
+const shouldBeOpen: string[] = [];
+const selectedFolder = folders.value.find((folder) => folder.id === props.modelValue);
+
+if (selectedFolder && selectedFolder.parent) parseFolder(selectedFolder.parent);
+
+const startOpenFolders = ['root'];
+
+for (const folderID of shouldBeOpen) {
+	if (startOpenFolders.includes(folderID) === false) {
+		startOpenFolders.push(folderID);
+	}
+}
+
+const openFolders = ref(startOpenFolders);
+
+fetchFolders();
+
+async function fetchFolders() {
+	if (folders.value.length > 0) return;
+	loading.value = true;
+
+	try {
+		folders.value = await fetchAll<{
+			id: string;
+			name: string;
+			parent: string | null;
+		}>(`/folders`, {
+			params: {
+				limit: -1,
+				sort: 'name',
+			},
+		});
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
+
+function parseFolder(id: string) {
+	if (!folders.value) return;
+	shouldBeOpen.push(id);
+
+	const folder = folders.value.find((folder) => folder.id === id);
+
+	if (folder && folder.parent) {
+		parseFolder(folder.parent);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

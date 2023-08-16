@@ -4,43 +4,33 @@
 	</v-item-group>
 </template>
 
-<script lang="ts">
-import { defineComponent, nextTick, ref, watch } from 'vue';
-export default defineComponent({
-	props: {
-		sidebarOpen: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		// By syncing the opened item here, we can force close the module once the sidebar closes
-		const openDetail = ref<string[]>([]);
+<script setup lang="ts">
+import { nextTick, ref, watch } from 'vue';
 
-		const mandatory = ref(false);
+const props = defineProps<{
+	sidebarOpen?: boolean;
+}>();
 
-		watch(
-			() => props.sidebarOpen,
-			async (newOpenState) => {
-				if (newOpenState === false) {
-					openDetail.value = [];
-				} else {
-					// Ensures the first item in the sidebar is automatically opened whenever the sidebar opens.
-					mandatory.value = true;
-					await nextTick();
+// By syncing the opened item here, we can force close the module once the sidebar closes
+const openDetail = ref<string[]>([]);
 
-					// Still allow the user to manually close it afterwards
-					mandatory.value = false;
-				}
-			}
-		);
+const mandatory = ref(false);
 
-		return {
-			openDetail,
-			mandatory,
-		};
-	},
-});
+watch(
+	() => props.sidebarOpen,
+	async (newOpenState) => {
+		if (newOpenState === false) {
+			openDetail.value = [];
+		} else {
+			// Ensures the first item in the sidebar is automatically opened whenever the sidebar opens.
+			mandatory.value = true;
+			await nextTick();
+
+			// Still allow the user to manually close it afterwards
+			mandatory.value = false;
+		}
+	}
+);
 </script>
 
 <style lang="scss" scoped>

@@ -1,13 +1,16 @@
-import { ref, watch } from 'vue';
+import { ref, UnwrapRef, watch } from 'vue';
 import { parseJSON } from '@directus/utils';
 
-type LocalStorageObjectType = string | number | boolean | object | null;
+type LocalStorageObjectType = string | number | boolean | object;
 
-export function useLocalStorage(key: string, defaultValue: LocalStorageObjectType = null) {
+export function useLocalStorage<T extends LocalStorageObjectType>(
+	key: string,
+	defaultValue: UnwrapRef<T> | null = null
+) {
 	const internalKey = `directus-${key}`;
-	const data = ref<LocalStorageObjectType>(null);
+	const data = ref<T | null>(null);
 
-	function getValue(): LocalStorageObjectType {
+	function getValue(): UnwrapRef<T> | null {
 		const rawExistingValue = localStorage.getItem(internalKey);
 
 		if (!rawExistingValue) return defaultValue;
@@ -22,7 +25,7 @@ export function useLocalStorage(key: string, defaultValue: LocalStorageObjectTyp
 		}
 	}
 
-	function setValue(value: LocalStorageObjectType) {
+	function setValue(value: UnwrapRef<T> | null) {
 		try {
 			localStorage.setItem(internalKey, JSON.stringify(value));
 		} catch (e) {

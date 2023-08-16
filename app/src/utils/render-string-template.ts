@@ -1,11 +1,10 @@
-import { useAliasFields } from '@/composables/use-alias-fields';
+import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { get, getFieldsFromTemplate } from '@directus/utils';
-import { render, renderFn } from 'micromustache';
-import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { set } from 'lodash';
-import { useExtension } from '@/composables/use-extension';
+import { render, renderFn } from 'micromustache';
+import { ComputedRef, Ref, computed, unref } from 'vue';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
@@ -67,15 +66,10 @@ export function renderDisplayStringTemplate(
 		set(fieldsUsed, key, fieldsStore.getField(collection, key));
 	}
 
-	const { aliasFields } = useAliasFields(ref(fields));
-
 	const parsedItem: Record<string, any> = {};
 
 	for (const key of fields) {
-		const value =
-			!aliasFields.value?.[key] || get(item, key) !== undefined
-				? get(item, key)
-				: get(item, aliasFields.value[key].fullAlias);
+		const value = get(item, key);
 
 		const display = useExtension(
 			'display',

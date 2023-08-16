@@ -8,13 +8,8 @@ import * as common from '@common/index';
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
 const storages = ['local', 'minio'];
 
-const imageFile = {
-	name: 'directus.png',
-	type: 'image/png',
-	filesize: '7136',
-};
-
-const imageFilePath = path.join(...assetsDirectory, imageFile.name);
+const imageFileAvif = path.join(...assetsDirectory, 'directus.avif');
+const imageFilePng = path.join(...assetsDirectory, 'directus.png');
 
 describe('/assets', () => {
 	describe('GET /assets/:id', () => {
@@ -27,7 +22,7 @@ describe('/assets', () => {
 							.post('/files')
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 							.field('storage', storage)
-							.attach('file', createReadStream(imageFilePath));
+							.attach('file', createReadStream(imageFileAvif));
 
 						// Action
 						const response = await request(getUrl(vendor))
@@ -36,7 +31,7 @@ describe('/assets', () => {
 
 						// Assert
 						expect(response.statusCode).toBe(200);
-						expect(response.headers['content-type']).toBe('image/jpeg'); // Expect fallback to jpg as default
+						expect(response.headers['content-type']).toBe('image/png'); // Expect fallback to png for image format with transparency support
 					});
 				});
 			});
@@ -45,7 +40,7 @@ describe('/assets', () => {
 				{ requestHeaderAccept: 'image/avif,image/webp,image/*,*/*;q=0.8', responseHeaderContentType: 'image/avif' },
 				{ requestHeaderAccept: 'image/avif', responseHeaderContentType: 'image/avif' },
 				{ requestHeaderAccept: 'image/webp', responseHeaderContentType: 'image/webp' },
-				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/jpeg' },
+				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/png' }, // Expect to return png as original image is png
 			])('with "$requestHeaderAccept" Accept request header', ({ requestHeaderAccept, responseHeaderContentType }) => {
 				describe.each(storages)('Storage: %s', (storage) => {
 					it.each(vendors)('%s', async (vendor) => {
@@ -54,7 +49,7 @@ describe('/assets', () => {
 							.post('/files')
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 							.field('storage', storage)
-							.attach('file', createReadStream(imageFilePath));
+							.attach('file', createReadStream(imageFilePng));
 
 						// Action
 						const response = await request(getUrl(vendor))

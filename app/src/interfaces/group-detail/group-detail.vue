@@ -31,7 +31,7 @@
 			:fields="fields"
 			:model-value="values"
 			:primary-key="primaryKey"
-			:group="field.meta.field"
+			:group="field.meta?.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
@@ -45,128 +45,82 @@
 	</v-detail>
 </template>
 
-<script lang="ts">
-import { Field } from '@directus/types';
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
-import { ValidationError } from '@directus/types';
-import { useI18n } from 'vue-i18n';
+<script setup lang="ts">
 import formatTitle from '@directus/format-title';
+import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	name: 'InterfaceGroupDetail',
-	props: {
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		fields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		values: {
-			type: Object as PropType<Record<string, unknown>>,
-			required: true,
-		},
-		initialValues: {
-			type: Object as PropType<Record<string, unknown>>,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActiveFields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		primaryKey: {
-			type: [Number, String],
-			required: true,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		validationErrors: {
-			type: Array as PropType<ValidationError[]>,
-			default: () => [],
-		},
-		badge: {
-			type: String,
-			default: null,
-		},
+const props = withDefaults(
+	defineProps<{
+		field: Field;
+		fields: Field[];
+		primaryKey: number | string;
+		values: Record<string, unknown>;
+		initialValues: Record<string, unknown>;
+		disabled?: boolean;
+		batchMode?: boolean;
+		batchActiveFields?: string[];
+		loading?: boolean;
+		validationErrors?: ValidationError[];
+		badge?: string;
+		start?: 'open' | 'closed';
+		headerIcon?: string;
+		headerColor?: string;
+		direction?: string;
+	}>(),
+	{
+		batchActiveFields: () => [],
+		validationErrors: () => [],
+		start: 'open',
+	}
+);
 
-		start: {
-			type: String,
-			enum: ['open', 'closed'],
-			default: 'open',
-		},
-		headerIcon: {
-			type: String,
-			default: null,
-		},
-		headerColor: {
-			type: String,
-			default: null,
-		},
-		direction: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['apply'],
-	setup(props) {
-		const { t } = useI18n();
+defineEmits(['apply']);
 
-		const detailOpen = ref(props.start === 'open');
+const { t } = useI18n();
 
-		const edited = computed(() => {
-			if (!props.values) return false;
+const detailOpen = ref(props.start === 'open');
 
-			const editedFields = Object.keys(props.values);
-			return props.fields.some((field) => editedFields.includes(field.field));
-		});
+const edited = computed(() => {
+	if (!props.values) return false;
 
-		const validationMessages = computed(() => {
-			if (!props.validationErrors) return;
+	const editedFields = Object.keys(props.values);
+	return props.fields.some((field) => editedFields.includes(field.field));
+});
 
-			const fields = props.fields.map((field) => field.field);
+const validationMessages = computed(() => {
+	if (!props.validationErrors) return;
 
-			const errors = props.validationErrors.reduce((acc, validationError) => {
-				if (fields.includes(validationError.field) === false) return acc;
+	const fields = props.fields.map((field) => field.field);
 
-				if (validationError.code === 'RECORD_NOT_UNIQUE') {
-					acc.push(`${formatTitle(validationError.field)} ${t('validationError.unique').toLowerCase()}`);
-				} else {
-					acc.push(
-						`${formatTitle(validationError.field)} ${t(
-							`validationError.${validationError.type}`,
-							validationError
-						).toLowerCase()}`
-					);
-				}
+	const errors = props.validationErrors.reduce((acc, validationError) => {
+		if (fields.includes(validationError.field) === false) return acc;
 
-				return acc;
-			}, [] as string[]);
+		if (validationError.code === 'RECORD_NOT_UNIQUE') {
+			acc.push(`${formatTitle(validationError.field)} ${t('validationError.unique').toLowerCase()}`);
+		} else {
+			acc.push(
+				`${formatTitle(validationError.field)} ${t(
+					`validationError.${validationError.type}`,
+					validationError
+				).toLowerCase()}`
+			);
+		}
 
-			if (errors.length === 0) return [];
+		return acc;
+	}, [] as string[]);
 
-			return errors;
-		});
+	if (errors.length === 0) return [];
 
-		watch(validationMessages, (newVal, oldVal) => {
-			if (!validationMessages.value) return;
-			if (isEqual(newVal, oldVal)) return;
-			detailOpen.value = validationMessages.value.length > 0;
-		});
+	return errors;
+});
 
-		return { t, edited, validationMessages, detailOpen };
-	},
+watch(validationMessages, (newVal, oldVal) => {
+	if (!validationMessages.value) return;
+	if (isEqual(newVal, oldVal)) return;
+	detailOpen.value = validationMessages.value.length > 0;
 });
 </script>
 

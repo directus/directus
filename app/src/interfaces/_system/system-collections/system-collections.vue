@@ -11,56 +11,47 @@
 	/>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Array,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		includeSystem: {
-			type: Boolean,
-			default: false,
-		},
-		includeSingleton: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		value: string[] | null;
+		disabled?: boolean;
+		includeSystem?: boolean;
+		includeSingleton?: boolean;
+	}>(),
+	{ includeSingleton: true }
+);
 
-		const collectionsStore = useCollectionsStore();
+defineEmits<{
+	(e: 'input', value: string[] | null): void;
+}>();
 
-		const collections = computed(() => {
-			let collections = collectionsStore.collections;
+const { t } = useI18n();
 
-			if (!props.includeSingleton) {
-				collections = collections.filter((collection) => collection?.meta?.singleton === false);
-			}
+const collectionsStore = useCollectionsStore();
 
-			if (props.includeSystem) return collections;
+const collections = computed(() => {
+	let collections = collectionsStore.collections.filter((collection) => collection.type === 'table');
 
-			return collections.filter((collection) => collection.collection.startsWith('directus_') === false);
-		});
+	if (!props.includeSingleton) {
+		collections = collections.filter((collection) => collection?.meta?.singleton === false);
+	}
 
-		const items = computed(() => {
-			return collections.value.map((collection) => ({
-				text: collection.name,
-				value: collection.collection,
-			}));
-		});
+	if (!props.includeSystem) {
+		collections = collections.filter((collection) => !collection.collection.startsWith('directus_'));
+	}
 
-		return { t, items };
-	},
+	return collections;
+});
+
+const items = computed(() => {
+	return collections.value.map((collection) => ({
+		text: collection.name,
+		value: collection.collection,
+	}));
 });
 </script>

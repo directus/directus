@@ -1,10 +1,9 @@
+import { useAppStore } from '@directus/stores';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-
-import { useAppStore } from '@/stores/app';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
-import { createMemoryHistory, createRouter, Router } from 'vue-router';
+import { Router, createMemoryHistory, createRouter } from 'vue-router';
 
 const testComponent = defineComponent({
 	render: () => h('div'),

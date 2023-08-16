@@ -9,8 +9,8 @@ readTime: 5 min read
 
 ## Create a Bundle
 
-When [scaffolding your Directus extension](/extensions/creating-extensions.html#scaffolding-your-directus-extension),
-select the `bundle` type. This will create a new empty bundle.
+When [scaffolding your Directus extension](/extensions/creating-extensions#scaffolding-your-directus-extension), select
+the `bundle` type. This will create a new empty bundle.
 
 ## Entries
 
@@ -38,7 +38,7 @@ Entries in a bundle are located within a `src` directory in the bundle.
 
 This will scaffold a new blank extension for you to work on.
 
-:::tip
+::: tip
 
 The bundle extension type currently doesn't support the migration extension type.
 

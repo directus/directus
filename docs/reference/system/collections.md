@@ -7,9 +7,7 @@ pageClass: page-reference
 # Collections
 
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
-> alter the schema of the database. [Learn more about Collections](/getting-started/glossary#collections).
-
----
+> alter the schema of the database. [Learn more about Collections](/user-guide/overview/glossary#collections).
 
 ## The Collection Object
 
@@ -57,17 +55,17 @@ Whether or not the Admin App should allow the user to view archived items.
 What field holds the sort value on the collection. The Admin App uses this to allow drag-and-drop manual sorting.
 
 `accountability` **string**\
-What data is tracked. One of `all`, `activity`. See [Accountability](/configuration/data-model#accountability) for more information.
+What data is tracked. One of `all`, `activity`. See [Accountability](/app/data-model#accountability) for more information.
 
 `item_duplication_fields` **array**\
-What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/configuration/data-model#duplication)
+What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/app/data-model#duplication)
 for more information.
 
 `group` **string**\
-The name of the parent collection. This is used in [grouping/nesting of collections](/configuration/data-model#sorting-grouping).
+The name of the parent collection. This is used in [grouping/nesting of collections](/app/data-model#sorting-grouping).
 
 `sort` **number**\
-What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/configuration/data-model#sorting-grouping).
+What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/app/data-model#sorting-grouping).
 
 `collapse` **string**\
 What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`,
@@ -87,14 +85,12 @@ The table comment.
 #### Fields
 
 This holds an array of initial fields used for the collection. You can use the same model as used in
-[Fields](/reference/system/fields.html) to submit fields here. You can use this to set a custom primary key type as
-well. If a primary key field is omitted, the request will auto-generate an auto-incremented primary key field named
-`id`.
+[Fields](/reference/system/fields) to submit fields here. You can use this to set a custom primary key type as well. If
+a primary key field is omitted, the request will auto-generate an auto-incremented primary key field named `id`.
 
 ::: tip
 
-["folder" collections do not hold any data](/configuration/data-model#sorting-grouping), hence their schema would be
-`null`.
+["folder" collections do not hold any data](/app/data-model#sorting-grouping), hence their schema would be `null`.
 
 :::
 
@@ -146,34 +142,23 @@ well. If a primary key field is omitted, the request will auto-generate an auto-
 }
 ```
 
----
-
 ## List Collections
 
 List the available collections.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /collections`
 
-An array of [collection objects](#the-collection-object).
+`SEARCH /collections`
 
-### REST API
+</template>
+<template #graphql>
 
-```
-GET /collections
-SEARCH /collections
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -181,47 +166,83 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollections } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readCollections());
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+An array of [collection objects](#the-collection-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /collections`
+
+`SEARCH /collections`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
 	collections {
-		...
+		# ...
 	}
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollections } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readCollections());
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a Collection
 
 Retrieve a single collection by table name.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /collections/:collection`
 
-A [collection object](#the-collection-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /collections/:collection
-```
-
-##### Example
-
-```
-GET /collections/articles
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -229,27 +250,122 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readCollection('collection_name'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+A [collection object](#the-collection-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /collections/articles`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
 	collections_by_name(name: "articles") {
-		...
+		# ...
 	}
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readCollection('articles'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Collection
 
 Create a new Collection. This will create a new table in the database as well.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /collections`
+
+```json
+{
+	"collection": "collection_name",
+	"field": {
+		"sub_field": "value"
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_collections_item(data: directus_collections): directus_collections
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createCollection({
+		collection: 'collection_name',
+		field: {
+			sub_field: 'value',
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Body
+#### Request Body
 
 The `collection` property is required, all other properties of the [collection object](#the-collection-object) are
 optional.
@@ -258,28 +374,25 @@ You are able to provide an array of `fields` to be created during the creation o
 [fields object](/reference/system/fields#the-fields-object) for more information on what properties are available in a
 field.
 
+::: tip
+
+Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
+entirely or use `schema: null` to create ["folder" collections](/app/data-model#sorting-grouping).
+
+:::
+
 ### Returns
 
 The [collection object](#the-collection-object) for the collection created in this request.
 
-::: tip
+### Example
 
-Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
-entirely or use `schema: null` to create ["folder" collections](/configuration/data-model#sorting-grouping).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-:::
-
-### REST API
-
-```
-POST /collections
-```
-
-##### Example
+`POST /collections`
 
 ```json
-// POST /collections
-
 {
 	"collection": "testimonials",
 	"meta": {
@@ -288,75 +401,64 @@ POST /collections
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_collections_item(data: directus_collections): directus_collections
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
-	create_collections_item(data: {
-		collection: "testimonials",
-		meta: {
-			icon: "format_quote"
-		}
-	}) {
-		...
+	create_collections_item(data: { collection: "testimonials", meta: { icon: "format_quote" } }) {
+		# ...
 	}
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createCollection({
+		collection: 'testimonials',
+		meta: {
+			note: 'Some quotes from our readers',
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a Collection
 
 Update the metadata for an existing collection.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-You can only update the `meta` values of the [collection object](#the-collection-object). Updating the collection name
-is not supported at this time.
-
-### Returns
-
-The [collection object](#the-collection-object) for the updated collection in this request.
-
-### REST API
-
-```
-PATCH /collections/:collection
-```
-
-##### Example
+`PATCH /collections/:collection`
 
 ```json
-// PATCH /collections/testimonials
-
 {
 	"meta": {
-		"note": "Short quotes from happy customers."
+		"field": "value"
 	}
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -364,7 +466,59 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateCollection('collection_name', {
+		meta: {
+			field: 'value',
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+#### Request Body
+
+You can only update the `meta` values of the [collection object](#the-collection-object). Updating the collection name
+is not supported at this time.
+
+### Response
+
+The [collection object](#the-collection-object) for the updated collection in this request.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /collections/testimonials`
+
+```json
+{
+	"meta": {
+		"note": "Short quotes from happy customers."
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -374,7 +528,26 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateCollection('testimonials', {
+		meta: {
+			note: 'Will be removing these at the end of first quarter',
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a Collection
 
@@ -386,23 +559,17 @@ Be aware, this will delete the table from the database, including all items in i
 
 :::
 
-### REST API
+### Request
 
-```
-DELETE /collections/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`DELETE /collections/:collection`
 
-```
-DELETE /collections/articles
-```
+</template>
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -410,7 +577,32 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteCollection('collection_name'));
+```
+
+</template>
+</SnippetToggler>
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /collections/articles`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -420,4 +612,17 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteCollection('testimonials'));
+```
+
+</template>
+</SnippetToggler>

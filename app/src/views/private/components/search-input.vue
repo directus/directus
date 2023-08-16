@@ -47,9 +47,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, inject, Ref } from 'vue';
+import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { useElementSize } from '@directus/composables';
 
 interface Props {
 	modelValue: string | null;
@@ -66,7 +66,10 @@ const props = withDefaults(defineProps<Props>(), {
 	alwaysActive: false,
 });
 
-const emit = defineEmits(['update:modelValue', 'update:filter']);
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: string | null): void;
+	(e: 'update:filter', value: Filter | null): void;
+}>();
 
 const { t } = useI18n();
 

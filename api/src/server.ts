@@ -1,4 +1,3 @@
-import { isUpToDate } from '@directus/update-check';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
@@ -13,7 +12,14 @@ import emitter from './emitter.js';
 import env from './env.js';
 import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import * as pkg from './utils/package.js';
+import {
+	createSubscriptionController,
+	createWebSocketController,
+	getSubscriptionController,
+	getWebSocketController,
+} from './websocket/controllers/index.js';
+import { startWebSocketHandlers } from './websocket/handlers/index.js';
+import { toBoolean } from './utils/to-boolean.js';
 
 export let SERVER_ONLINE = true;
 
@@ -84,6 +90,12 @@ export async function createServer(): Promise<http.Server> {
 		res.once('close', complete.bind(null, false));
 	});
 
+	if (toBoolean(env['WEBSOCKETS_ENABLED']) === true) {
+		createSubscriptionController(server);
+		createWebSocketController(server);
+		startWebSocketHandlers();
+	}
+
 	const terminusOptions: TerminusOptions = {
 		timeout:
 			env['SERVER_SHUTDOWN_TIMEOUT'] >= 0 && env['SERVER_SHUTDOWN_TIMEOUT'] < Infinity
@@ -108,6 +120,8 @@ export async function createServer(): Promise<http.Server> {
 	}
 
 	async function onSignal() {
+		getSubscriptionController()?.terminate();
+		getWebSocketController()?.terminate();
 		const database = getDatabase();
 		await database.destroy();
 
@@ -139,16 +153,6 @@ export async function startServer(): Promise<void> {
 
 	server
 		.listen(port, host, () => {
-			isUpToDate(pkg.name, pkg.version)
-				.then((update) => {
-					if (update) {
-						logger.warn(`Update available: ${pkg.version} -> ${update}`);
-					}
-				})
-				.catch(() => {
-					// No need to log/warn here. The update message is only an informative nice-to-have
-				});
-
 			logger.info(`Server started at http://${host}:${port}`);
 
 			emitter.emitAction(

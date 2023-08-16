@@ -1,3 +1,4 @@
+import { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/utils';
 import InterfaceListO2M from './list-o2m.vue';
 import PreviewSVG from './preview.svg?raw';
@@ -16,7 +17,7 @@ export default defineInterface({
 		const collection = relations.o2m?.collection;
 		const options = meta?.options ?? {};
 
-		const tableOptions = [
+		const tableOptions: DeepPartial<Field>[] = [
 			{
 				field: 'tableSpacing',
 				name: '$t:layouts.tabular.spacing',
@@ -57,7 +58,7 @@ export default defineInterface({
 			},
 		];
 
-		const listOptions = [
+		const listOptions: DeepPartial<Field>[] = [
 			{
 				field: 'template',
 				name: '$t:display_template',

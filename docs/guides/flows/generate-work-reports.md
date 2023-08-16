@@ -8,14 +8,14 @@ author: Eron Powell
 ---
 
 <!--
-Pairs well with [workflows](/cookbook/permissions/workflows.md)
+Pairs well with [workflows](/cookbook/permissions/workflows)
 -->
 
 # Generate Work Reports
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -34,7 +34,7 @@ https://vitepress.vuejs.org/guide/markdown
 
 ## The Recipe
 
-:::tip Requirements
+::: tip Requirements
 
 You'll need something to validate against.
 

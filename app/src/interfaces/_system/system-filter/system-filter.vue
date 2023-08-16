@@ -82,10 +82,10 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { Filter, Type, FieldFunction } from '@directus/types';
+import { FieldFunction, Filter, Type } from '@directus/types';
 import {
 	getFilterOperatorsForType,
 	getOutputTypeForFunction,
@@ -104,7 +104,12 @@ interface Props {
 	collectionName?: string;
 	collectionField?: string;
 	collectionRequired?: boolean;
+
+	/**
+	 * Lock the interface to only allow configuring filters for the given fieldName
+	 */
 	fieldName?: string;
+
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
@@ -134,7 +139,7 @@ const values = inject('values', ref<Record<string, any>>({}));
 
 const collection = computed(() => {
 	if (props.collectionName) return props.collectionName;
-	return values.value[props.collectionField] ?? null;
+	return values.value[props.collectionField!] ?? null;
 });
 
 const fieldsStore = useFieldsStore();
@@ -195,7 +200,7 @@ function addNode(key: string) {
 			}
 		}
 
-		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
+		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
 		innerValue.value = innerValue.value.concat(node);

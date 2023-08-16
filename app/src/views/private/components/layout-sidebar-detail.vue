@@ -4,8 +4,8 @@
 			<div class="field">
 				<div class="type-label">{{ t('layout') }}</div>
 				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
-					<template v-if="currentLayout.icon" #prepend>
-						<v-icon :name="currentLayout.icon" />
+					<template v-if="currentLayout!.icon" #prepend>
+						<v-icon :name="currentLayout!.icon" />
 					</template>
 				</v-select>
 			</div>
@@ -15,35 +15,35 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
-import { useSync } from '@directus/composables';
-import { useExtensions } from '@/extensions';
+<script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
+import { useSync } from '@directus/composables';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: String,
-			default: 'tabular',
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		modelValue?: string;
+	}>(),
+	{
+		modelValue: 'tabular',
+	}
+);
 
-		const { layouts } = useExtensions();
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: string): void;
+}>();
 
-		const selectedLayout = useExtension('layout', props.modelValue);
-		const fallbackLayout = useExtension('layout', 'tabular');
-		const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.value);
+const { t } = useI18n();
 
-		const layout = useSync(props, 'modelValue', emit);
+const { layouts } = useExtensions();
 
-		return { t, currentLayout, layouts, layout };
-	},
-});
+const selectedLayout = useExtension('layout', props.modelValue);
+const fallbackLayout = useExtension('layout', 'tabular');
+const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.value);
+
+const layout = useSync(props, 'modelValue', emit);
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/utils';
-import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 
 export default defineInterface({
 	id: 'select-dropdown-m2o',

@@ -20,14 +20,14 @@ Learn more about [Headless CMS Concepts](/use-cases/headless-cms/concepts).
 
 ## Features
 
-- Easy to use [Data Studio app](/app/overview) for content managers and non-technical users.
+- Easy to use [Data Studio app](/user-guide/overview/data-studio-app) for content managers and non-technical users.
 - Distribute your content anywhere with instant [REST and GraphQL APIs](/reference/introduction).
-- Manage all your [images, media, files, and assets](/app/file-library).
-- [Image transformations](/reference/files.html#requesting-a-thumbnail) to keep your website fast AND your art direction
+- Manage all your [images, media, files, and assets](/user-guide/file-library/files).
+- [Image transformations](/reference/files#requesting-a-thumbnail) to keep your website fast AND your art direction
   intact.
-- Quickly [build dashboards](/app/insights) that help your team make better decisions.
-- Create powerful, automated content approval and [publishing workflows](/cookbook/permissions/basic-workflows) without
-  writing any code.
+- Quickly [build dashboards](/user-guide/insights/dashboards) that help your team make better decisions.
+- Create powerful, automated [content approval and publishing workflows](/guides/headless-cms/approval-workflows)
+  without writing any code.
 
 ## Guides & Tutorials
 

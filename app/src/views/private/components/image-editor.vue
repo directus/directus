@@ -85,7 +85,7 @@
 							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
 							<v-list-item-content>{{ t('square') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === NaN" @click="aspectRatio = NaN">
+						<v-list-item clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
 							<v-list-item-content>{{ t('free') }}</v-list-item-content>
 						</v-list-item>
@@ -123,17 +123,16 @@
 	</v-drawer>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
-import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import Cropper from 'cropperjs';
 import throttle from 'lodash/throttle';
 import { nanoid } from 'nanoid/non-secure';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type Image = {
 	type: string;
@@ -143,367 +142,337 @@ type Image = {
 	height: number;
 };
 
-export default defineComponent({
-	props: {
-		id: {
-			type: String,
-			required: true,
-		},
-		modelValue: {
-			type: Boolean,
-			default: undefined,
-		},
+const props = defineProps<{
+	id: string;
+	modelValue?: boolean;
+}>();
+
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+	(e: 'refresh'): void;
+}>();
+
+const { t, n } = useI18n();
+
+const settingsStore = useSettingsStore();
+
+const localActive = ref(false);
+
+const internalActive = computed({
+	get() {
+		return props.modelValue === undefined ? localActive.value : props.modelValue;
 	},
-	emits: ['update:modelValue', 'refresh'],
-	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
-		const settingsStore = useSettingsStore();
-
-		const localActive = ref(false);
-
-		const internalActive = computed({
-			get() {
-				return props.modelValue === undefined ? localActive.value : props.modelValue;
-			},
-			set(newActive: boolean) {
-				localActive.value = newActive;
-				emit('update:modelValue', newActive);
-			},
-		});
-
-		const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad } = useImage();
-
-		const {
-			cropperInstance,
-			initCropper,
-			flip,
-			rotate,
-			reset,
-			aspectRatio,
-			aspectRatioIcon,
-			newDimensions,
-			dragMode,
-			cropping,
-		} = useCropper();
-
-		watch(internalActive, (isActive) => {
-			if (isActive === true) {
-				fetchImage();
-			} else {
-				if (cropperInstance.value) {
-					cropperInstance.value.destroy();
-				}
-
-				loading.value = false;
-				error.value = null;
-				imageData.value = null;
-			}
-		});
-
-		const randomId = ref<string>(nanoid());
-
-		const imageURL = computed(() => {
-			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
-		});
-
-		const dimensionsString = computed(() => {
-			let output = '';
-			const isSVG = imageData.value?.type === 'image/svg+xml';
-
-			if (imageData.value) {
-				if (isSVG) {
-					output += 'SVG';
-				} else {
-					output += `${n(imageData.value.width ?? 0)}x${n(imageData.value.height ?? 0)}`;
-				}
-
-				if (imageData.value.width !== newDimensions.width || imageData.value.height !== newDimensions.height) {
-					if (isSVG) {
-						if (newDimensions.width || newDimensions.height) {
-							output += ` -> PNG ${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
-						} else {
-							output += ' -> PNG';
-						}
-					} else {
-						output += ` -> ${isSVG ? 'PNG ' : ''}${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
-					}
-				}
-			}
-
-			return output;
-		});
-
-		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
-
-		return {
-			t,
-			n,
-			internalActive,
-			loading,
-			error,
-			imageData,
-			imageElement,
-			save,
-			onImageLoad,
-			flip,
-			rotate,
-			reset,
-			aspectRatio,
-			aspectRatioIcon,
-			saving,
-			imageURL,
-			newDimensions,
-			dragMode,
-			cropping,
-			setAspectRatio,
-			dimensionsString,
-			customAspectRatios,
-		};
-
-		function useImage() {
-			const loading = ref(false);
-			const error = ref(null);
-			const imageData = ref<Image | null>(null);
-			const saving = ref(false);
-
-			const imageElement = ref<HTMLImageElement | null>(null);
-
-			return {
-				loading,
-				error,
-				imageData,
-				saving,
-				fetchImage,
-				imageElement,
-				save,
-				onImageLoad,
-			};
-
-			async function fetchImage() {
-				try {
-					loading.value = true;
-
-					const response = await api.get(`/files/${props.id}`, {
-						params: {
-							fields: ['type', 'filesize', 'filename_download', 'width', 'height'],
-						},
-					});
-
-					imageData.value = response.data.data;
-				} catch (err: any) {
-					error.value = err;
-				} finally {
-					loading.value = false;
-				}
-			}
-
-			function save() {
-				saving.value = true;
-
-				cropperInstance.value
-					?.getCroppedCanvas({
-						imageSmoothingQuality: 'high',
-					})
-					.toBlob(async (blob) => {
-						if (blob === null) {
-							saving.value = false;
-							return;
-						}
-
-						const formData = new FormData();
-						formData.append('file', blob, imageData.value?.filename_download);
-
-						try {
-							await api.patch(`/files/${props.id}`, formData);
-							emit('refresh');
-							internalActive.value = false;
-							randomId.value = nanoid();
-						} catch (err: any) {
-							unexpectedError(err);
-						} finally {
-							saving.value = false;
-						}
-					}, imageData.value?.type);
-			}
-
-			async function onImageLoad() {
-				await nextTick();
-				initCropper();
-			}
-		}
-
-		function useCropper() {
-			const cropperInstance = ref<Cropper | null>(null);
-
-			const localAspectRatio = ref(NaN);
-
-			const newDimensions = reactive({
-				width: null as null | number,
-				height: null as null | number,
-			});
-
-			watch(imageData, () => {
-				if (!imageData.value) return;
-				localAspectRatio.value = imageData.value.width / imageData.value.height;
-				newDimensions.width = imageData.value.width;
-				newDimensions.height = imageData.value.height;
-			});
-
-			const aspectRatio = computed<number>({
-				get() {
-					return localAspectRatio.value;
-				},
-				set(newAspectRatio) {
-					localAspectRatio.value = newAspectRatio;
-					cropperInstance.value?.setAspectRatio(newAspectRatio);
-					cropperInstance.value?.crop();
-					dragMode.value = 'crop';
-				},
-			});
-
-			const aspectRatioIcon = computed(() => {
-				if (!imageData.value) return 'crop_original';
-
-				if (customAspectRatios) {
-					const customAspectRatio = customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
-					if (customAspectRatio) return 'crop_square';
-				}
-
-				switch (aspectRatio.value) {
-					case 16 / 9:
-						return 'crop_16_9';
-					case 3 / 2:
-						return 'crop_3_2';
-					case 5 / 4:
-						return 'crop_5_4';
-					case 7 / 5:
-						return 'crop_7_5';
-					case 1 / 1:
-						return 'crop_square';
-					case imageData.value.width / imageData.value.height:
-						return 'crop_original';
-					default:
-						return 'crop_free';
-				}
-			});
-
-			const localDragMode = ref<'move' | 'crop'>('move');
-
-			const dragMode = computed({
-				get() {
-					return localDragMode.value;
-				},
-				set(newMode: 'move' | 'crop') {
-					cropperInstance.value?.setDragMode(newMode);
-					localDragMode.value = newMode;
-
-					if (newMode === 'move') {
-						cropperInstance.value?.clear();
-						localCropping.value = false;
-					}
-				},
-			});
-
-			const localCropping = ref(false);
-
-			const cropping = computed({
-				get() {
-					return localCropping.value;
-				},
-				set(newCropping: boolean) {
-					if (newCropping === false) {
-						cropperInstance.value?.clear();
-					}
-
-					localCropping.value = newCropping;
-				},
-			});
-
-			return {
-				cropperInstance,
-				initCropper,
-				flip,
-				rotate,
-				reset,
-				aspectRatio,
-				aspectRatioIcon,
-				newDimensions,
-				dragMode,
-				cropping,
-			};
-
-			function initCropper() {
-				if (imageElement.value === null) return;
-
-				if (cropperInstance.value) {
-					cropperInstance.value.destroy();
-				}
-
-				localCropping.value = false;
-
-				cropperInstance.value = new Cropper(imageElement.value, {
-					autoCrop: false,
-					autoCropArea: 0.5,
-					toggleDragModeOnDblclick: false,
-					dragMode: 'move',
-					viewMode: 1,
-					crop: throttle((event) => {
-						if (!imageData.value) return;
-
-						if (cropping.value === false && (event.detail.width || event.detail.height)) {
-							cropping.value = true;
-						}
-
-						const newWidth = event.detail.width || imageData.value.width;
-						const newHeight = event.detail.height || imageData.value.height;
-
-						if (event.detail.rotate === 0 || event.detail.rotate === -180) {
-							newDimensions.width = Math.round(newWidth);
-							newDimensions.height = Math.round(newHeight);
-						} else {
-							newDimensions.height = Math.round(newWidth);
-							newDimensions.width = Math.round(newHeight);
-						}
-					}, 50),
-				});
-			}
-
-			function flip(type: 'horizontal' | 'vertical') {
-				if (type === 'vertical') {
-					if (cropperInstance.value?.getData().scaleX === -1) {
-						cropperInstance.value?.scaleX(1);
-					} else {
-						cropperInstance.value?.scaleX(-1);
-					}
-				}
-
-				if (type === 'horizontal') {
-					if (cropperInstance.value?.getData().scaleY === -1) {
-						cropperInstance.value?.scaleY(1);
-					} else {
-						cropperInstance.value?.scaleY(-1);
-					}
-				}
-			}
-
-			function rotate() {
-				cropperInstance.value?.rotate(-90);
-			}
-
-			function reset() {
-				cropperInstance.value?.reset();
-				dragMode.value = 'move';
-			}
-		}
-
-		function setAspectRatio() {
-			if (imageData.value) {
-				aspectRatio.value = imageData.value.width / imageData.value.height;
-			}
-		}
+	set(newActive: boolean) {
+		localActive.value = newActive;
+		emit('update:modelValue', newActive);
 	},
 });
+
+const { loading, error, imageData, imageElement, save, saving, fetchImage, onImageLoad } = useImage();
+
+const {
+	cropperInstance,
+	initCropper,
+	flip,
+	rotate,
+	reset,
+	aspectRatio,
+	aspectRatioIcon,
+	newDimensions,
+	dragMode,
+	cropping,
+} = useCropper();
+
+watch(internalActive, (isActive) => {
+	if (isActive === true) {
+		fetchImage();
+	} else {
+		if (cropperInstance.value) {
+			cropperInstance.value.destroy();
+		}
+
+		loading.value = false;
+		error.value = null;
+		imageData.value = null;
+	}
+});
+
+const randomId = ref<string>(nanoid());
+
+const imageURL = computed(() => {
+	return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
+});
+
+const dimensionsString = computed(() => {
+	let output = '';
+	const isSVG = imageData.value?.type === 'image/svg+xml';
+
+	if (imageData.value) {
+		if (isSVG) {
+			output += 'SVG';
+		} else {
+			output += `${n(imageData.value.width ?? 0)}x${n(imageData.value.height ?? 0)}`;
+		}
+
+		if (imageData.value.width !== newDimensions.width || imageData.value.height !== newDimensions.height) {
+			if (isSVG) {
+				if (newDimensions.width || newDimensions.height) {
+					output += ` -> PNG ${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
+				} else {
+					output += ' -> PNG';
+				}
+			} else {
+				output += ` -> ${isSVG ? 'PNG ' : ''}${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
+			}
+		}
+	}
+
+	return output;
+});
+
+const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
+
+function useImage() {
+	const loading = ref(false);
+	const error = ref(null);
+	const imageData = ref<Image | null>(null);
+	const saving = ref(false);
+
+	const imageElement = ref<HTMLImageElement | null>(null);
+
+	return {
+		loading,
+		error,
+		imageData,
+		saving,
+		fetchImage,
+		imageElement,
+		save,
+		onImageLoad,
+	};
+
+	async function fetchImage() {
+		try {
+			loading.value = true;
+
+			const response = await api.get(`/files/${props.id}`, {
+				params: {
+					fields: ['type', 'filesize', 'filename_download', 'width', 'height'],
+				},
+			});
+
+			imageData.value = response.data.data;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
+	}
+
+	function save() {
+		saving.value = true;
+
+		cropperInstance.value
+			?.getCroppedCanvas({
+				imageSmoothingQuality: 'high',
+			})
+			.toBlob(async (blob) => {
+				if (blob === null) {
+					saving.value = false;
+					return;
+				}
+
+				const formData = new FormData();
+				formData.append('file', blob, imageData.value?.filename_download);
+
+				try {
+					await api.patch(`/files/${props.id}`, formData);
+					emit('refresh');
+					internalActive.value = false;
+					randomId.value = nanoid();
+				} catch (err: any) {
+					unexpectedError(err);
+				} finally {
+					saving.value = false;
+				}
+			}, imageData.value?.type);
+	}
+
+	async function onImageLoad() {
+		await nextTick();
+		initCropper();
+	}
+}
+
+function useCropper() {
+	const cropperInstance = ref<Cropper | null>(null);
+
+	const localAspectRatio = ref(NaN);
+
+	const newDimensions = reactive({
+		width: null as null | number,
+		height: null as null | number,
+	});
+
+	watch(imageData, () => {
+		if (!imageData.value) return;
+		localAspectRatio.value = imageData.value.width / imageData.value.height;
+		newDimensions.width = imageData.value.width;
+		newDimensions.height = imageData.value.height;
+	});
+
+	const aspectRatio = computed<number>({
+		get() {
+			return localAspectRatio.value;
+		},
+		set(newAspectRatio) {
+			localAspectRatio.value = newAspectRatio;
+			cropperInstance.value?.setAspectRatio(newAspectRatio);
+			cropperInstance.value?.crop();
+			dragMode.value = 'crop';
+		},
+	});
+
+	const aspectRatioIcon = computed(() => {
+		if (!imageData.value) return 'crop_original';
+
+		if (customAspectRatios) {
+			const customAspectRatio = customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
+			if (customAspectRatio) return 'crop_square';
+		}
+
+		switch (aspectRatio.value) {
+			case 16 / 9:
+				return 'crop_16_9';
+			case 3 / 2:
+				return 'crop_3_2';
+			case 5 / 4:
+				return 'crop_5_4';
+			case 7 / 5:
+				return 'crop_7_5';
+			case 1 / 1:
+				return 'crop_square';
+			case imageData.value.width / imageData.value.height:
+				return 'crop_original';
+			default:
+				return 'crop_free';
+		}
+	});
+
+	const localDragMode = ref<'move' | 'crop'>('move');
+
+	const dragMode = computed({
+		get() {
+			return localDragMode.value;
+		},
+		set(newMode: 'move' | 'crop') {
+			cropperInstance.value?.setDragMode(newMode);
+			localDragMode.value = newMode;
+
+			if (newMode === 'move') {
+				cropperInstance.value?.clear();
+				localCropping.value = false;
+			}
+		},
+	});
+
+	const localCropping = ref(false);
+
+	const cropping = computed({
+		get() {
+			return localCropping.value;
+		},
+		set(newCropping: boolean) {
+			if (newCropping === false) {
+				cropperInstance.value?.clear();
+			}
+
+			localCropping.value = newCropping;
+		},
+	});
+
+	return {
+		cropperInstance,
+		initCropper,
+		flip,
+		rotate,
+		reset,
+		aspectRatio,
+		aspectRatioIcon,
+		newDimensions,
+		dragMode,
+		cropping,
+	};
+
+	function initCropper() {
+		if (imageElement.value === null) return;
+
+		if (cropperInstance.value) {
+			cropperInstance.value.destroy();
+		}
+
+		localCropping.value = false;
+
+		cropperInstance.value = new Cropper(imageElement.value as HTMLImageElement, {
+			autoCrop: false,
+			autoCropArea: 0.5,
+			toggleDragModeOnDblclick: false,
+			dragMode: 'move',
+			viewMode: 1,
+			crop: throttle((event) => {
+				if (!imageData.value) return;
+
+				if (cropping.value === false && (event.detail.width || event.detail.height)) {
+					cropping.value = true;
+				}
+
+				const newWidth = event.detail.width || imageData.value.width;
+				const newHeight = event.detail.height || imageData.value.height;
+
+				if (event.detail.rotate === 0 || event.detail.rotate === -180) {
+					newDimensions.width = Math.round(newWidth);
+					newDimensions.height = Math.round(newHeight);
+				} else {
+					newDimensions.height = Math.round(newWidth);
+					newDimensions.width = Math.round(newHeight);
+				}
+			}, 50),
+		});
+	}
+
+	function flip(type: 'horizontal' | 'vertical') {
+		if (type === 'vertical') {
+			if (cropperInstance.value?.getData().scaleX === -1) {
+				cropperInstance.value?.scaleX(1);
+			} else {
+				cropperInstance.value?.scaleX(-1);
+			}
+		}
+
+		if (type === 'horizontal') {
+			if (cropperInstance.value?.getData().scaleY === -1) {
+				cropperInstance.value?.scaleY(1);
+			} else {
+				cropperInstance.value?.scaleY(-1);
+			}
+		}
+	}
+
+	function rotate() {
+		cropperInstance.value?.rotate(-90);
+	}
+
+	function reset() {
+		cropperInstance.value?.reset();
+		dragMode.value = 'move';
+	}
+}
+
+function setAspectRatio() {
+	if (imageData.value) {
+		aspectRatio.value = imageData.value.width / imageData.value.height;
+	}
+}
 </script>
 
 <style lang="scss" scoped>

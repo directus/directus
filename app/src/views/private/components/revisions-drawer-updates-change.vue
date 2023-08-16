@@ -13,9 +13,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
+import { computed } from 'vue';
 import { ArrayChange } from 'diff';
 
 export type Change = {
@@ -26,47 +26,30 @@ export type Change = {
 	value: string;
 };
 
-export default defineComponent({
-	props: {
-		changes: {
-			type: Array as PropType<Change[] | ArrayChange<any>[]>,
-			required: true,
-		},
-		added: {
-			type: Boolean,
-			default: false,
-		},
-		deleted: {
-			type: Boolean,
-			default: false,
-		},
-		updated: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	changes: Change[] | ArrayChange<any>[];
+	added?: boolean;
+	deleted?: boolean;
+	updated?: boolean;
+}>();
 
-		const changesFiltered = computed(() => {
-			return (props.changes as Change[]).filter((change: any) => {
-				if (props.updated) return true;
+const { t } = useI18n();
 
-				if (props.added === true) {
-					return change.removed !== true;
-				}
+const changesFiltered = computed(() => {
+	return (props.changes as Change[]).filter((change: any) => {
+		if (props.updated) return true;
 
-				return change.added !== true;
-			});
-		});
+		if (props.added === true) {
+			return change.removed !== true;
+		}
 
-		// The whole value changed instead of parts, this should disable the highlighting
-		const wholeThing = computed(() => {
-			return props.changes.length === 2; // before/after
-		});
+		return change.added !== true;
+	});
+});
 
-		return { t, changesFiltered, wholeThing };
-	},
+// The whole value changed instead of parts, this should disable the highlighting
+const wholeThing = computed(() => {
+	return props.changes.length === 2; // before/after
 });
 </script>
 

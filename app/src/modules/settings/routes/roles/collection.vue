@@ -55,136 +55,126 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
-import SettingsNavigation from '../../components/navigation.vue';
-
-import api from '@/api';
+<script setup lang="ts">
 import { Header as TableHeader } from '@/components/v-table/types';
-import { useRouter } from 'vue-router';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
 
 type RoleItem = Partial<Role> & {
 	count?: number;
 };
 
-export default defineComponent({
-	name: 'RolesCollection',
-	components: { SettingsNavigation },
-	props: {},
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const router = useRouter();
+const router = useRouter();
 
-		const roles = ref<RoleItem[]>([]);
-		const loading = ref(false);
+const roles = ref<RoleItem[]>([]);
+const loading = ref(false);
 
-		const lastAdminRoleId = computed(() => {
-			const adminRoles = roles.value.filter((role) => role.admin_access === true);
-			return adminRoles.length === 1 ? adminRoles[0].id : null;
-		});
-
-		const tableHeaders = ref<TableHeader[]>([
-			{
-				text: '',
-				value: 'icon',
-				sortable: false,
-				width: 42,
-				align: 'left',
-				description: null,
-			},
-			{
-				text: t('name'),
-				value: 'name',
-				sortable: false,
-				width: 200,
-				align: 'left',
-				description: null,
-			},
-			{
-				text: t('users'),
-				value: 'count',
-				sortable: false,
-				width: 140,
-				align: 'left',
-				description: null,
-			},
-			{
-				text: t('description'),
-				value: 'description',
-				sortable: false,
-				width: 470,
-				align: 'left',
-				description: null,
-			},
-		]);
-
-		fetchRoles();
-
-		const addNewLink = computed(() => {
-			return `/settings/roles/+`;
-		});
-
-		return { t, loading, roles, tableHeaders, addNewLink, navigateToRole };
-
-		async function fetchRoles() {
-			loading.value = true;
-
-			try {
-				const response = await api.get(`/roles`, {
-					params: {
-						limit: -1,
-						fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
-						deep: {
-							users: {
-								_aggregate: { count: 'id' },
-								_groupBy: ['role'],
-								_sort: 'role',
-								_limit: -1,
-							},
-						},
-						sort: 'name',
-					},
-				});
-
-				roles.value = [
-					{
-						public: true,
-						name: t('public_label'),
-						icon: 'public',
-						description: t('public_description'),
-						id: 'public',
-					},
-					...response.data.data.map((role: any) => {
-						return {
-							...translate(role),
-							count: role.users[0]?.count.id || 0,
-						};
-					}),
-				];
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		function navigateToRole({ item }: { item: Role }) {
-			if (item.id !== 'public' && lastAdminRoleId.value) {
-				router.push({
-					name: 'settings-roles-item',
-					params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
-				});
-			} else {
-				router.push(`/settings/roles/${item.id}`);
-			}
-		}
-	},
+const lastAdminRoleId = computed(() => {
+	const adminRoles = roles.value.filter((role) => role.admin_access === true);
+	return adminRoles.length === 1 ? adminRoles[0].id : null;
 });
+
+const tableHeaders = ref<TableHeader[]>([
+	{
+		text: '',
+		value: 'icon',
+		sortable: false,
+		width: 42,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('name'),
+		value: 'name',
+		sortable: false,
+		width: 200,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('users'),
+		value: 'count',
+		sortable: false,
+		width: 140,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('description'),
+		value: 'description',
+		sortable: false,
+		width: 470,
+		align: 'left',
+		description: null,
+	},
+]);
+
+fetchRoles();
+
+const addNewLink = computed(() => {
+	return `/settings/roles/+`;
+});
+
+async function fetchRoles() {
+	loading.value = true;
+
+	try {
+		const response = await fetchAll<any[]>(`/roles`, {
+			params: {
+				limit: -1,
+				fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
+				deep: {
+					users: {
+						_aggregate: { count: 'id' },
+						_groupBy: ['role'],
+						_sort: 'role',
+						_limit: -1,
+					},
+				},
+				sort: 'name',
+			},
+		});
+
+		roles.value = [
+			{
+				public: true,
+				name: t('public_label'),
+				icon: 'public',
+				description: t('public_description'),
+				id: 'public',
+			},
+			...response.map((role: any) => {
+				return {
+					...translate(role),
+					count: role.users[0]?.count.id || 0,
+				};
+			}),
+		];
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
+
+function navigateToRole({ item }: { item: Role }) {
+	if (item.id !== 'public' && lastAdminRoleId.value) {
+		router.push({
+			name: 'settings-roles-item',
+			params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+		});
+	} else {
+		router.push(`/settings/roles/${item.id}`);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

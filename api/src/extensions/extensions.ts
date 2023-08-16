@@ -1,8 +1,6 @@
-import { APP_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/constants';
-import type { Extension, ExtensionInfo, ExtensionRaw } from '@directus/types';
+import { APP_EXTENSION_TYPES } from '@directus/constants';
+import type { DatabaseExtension, Extension, ExtensionInfo } from '@directus/types';
 import {
-	ensureExtensionDirs,
-	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackageExtensions,
 } from '@directus/utils/node';
@@ -18,20 +16,18 @@ import { ExtensionsService } from './service.js';
 import { RegistrationManager } from './registration.js';
 import { InstallationManager } from './installation.js';
 import { WatcherManager } from './watcher.js';
+import { VmManager } from './vm.js';
 
 let extensionManager: ExtensionManager;
 
-export function getExtensionManager(): ExtensionManager {
-	if (extensionManager) {
-		return extensionManager;
-	}
 
-	extensionManager = new ExtensionManager();
+export async function getExtensionManager(): Promise<ExtensionManager> {
+	if (!extensionManager) extensionManager = new ExtensionManager();
 
-	return extensionManager;
+	return extensionManager
 }
 
-type FullExtension = Extension & ExtensionRaw;
+type FullExtension = Extension & DatabaseExtension;
 
 type AppExtensions = string | null;
 
@@ -63,6 +59,7 @@ export class ExtensionManager {
 	public registration: RegistrationManager;
 	public installation: InstallationManager | null = null;
 	public watcher: WatcherManager;
+	public vm: VmManager;
 
 	constructor() {
 		this.options = defaultOptions;
@@ -74,6 +71,7 @@ export class ExtensionManager {
 			this.installation = new InstallationManager(this);
 		}
 		this.watcher = new WatcherManager(this);
+		this.vm = new VmManager(this);
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
@@ -82,11 +80,9 @@ export class ExtensionManager {
 			...options,
 		};
 
-		const wasWatcherInitialized = this.watcher !== null;
-
-		if (this.options.watch && !wasWatcherInitialized) {
+		if (this.options.watch && !this.watcher.isWatcherInitialized()) {
 			this.watcher.initializeWatcher();
-		} else if (!this.options.watch && wasWatcherInitialized) {
+		} else if (!this.options.watch && this.watcher.isWatcherInitialized()) {
 			await this.watcher.closeWatcher();
 		}
 
@@ -110,7 +106,7 @@ export class ExtensionManager {
 			}
 		}
 
-		if (this.options.watch && !wasWatcherInitialized) {
+		if (this.options.watch && !this.watcher.isWatcherInitialized()) {
 			this.watcher.updateWatchedExtensions(this.extensions);
 		}
 	}
@@ -186,6 +182,9 @@ export class ExtensionManager {
 			version: extension.version,
 			enabled: extension.enabled,
 			registry: extension.registry,
+			secure: extension.secure,
+			requested_permissions: extension.requested_permissions,
+			granted_permissions: extension.granted_permissions,
 		};
 
 		if (extension.type === 'bundle') {
@@ -227,8 +226,6 @@ export class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
-
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
@@ -248,7 +245,7 @@ export class ExtensionManager {
 	}
 
 	private async unload(): Promise<void> {
-		this.registration.unregisterApiExtensions();
+		await this.registration.unregisterApiExtensions();
 
 		this.apiEmitter.offAll();
 
@@ -261,16 +258,15 @@ export class ExtensionManager {
 
 	private async getExtensions(): Promise<FullExtension[]> {
 		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION']);
-		const localPackageExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
-		const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
+		const localExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
 
-		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
+		const extensions = [...packageExtensions, ...localExtensions].filter(
 			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
 		);
 
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
-		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*'] });
+		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*', 'granted_permissions.*'] });
 
 		if (registeredExtensions.length === 0 && extensions.length > 0) {
 			logger.info(
@@ -282,6 +278,7 @@ export class ExtensionManager {
 					return {
 						name: extension.name,
 						enabled: true,
+						options: {},
 					};
 				})
 			);
@@ -290,12 +287,14 @@ export class ExtensionManager {
 				name: extension.name,
 				registry: undefined,
 				enabled: true,
+				options: {},
+				granted_permissions: [],
 			}));
 		}
 
 		return extensions.map((extension) => {
 			const registeredExtension = registeredExtensions.find(
-				(registeredExtension) => registeredExtension.name === extension.name
+				(registeredExtension) => registeredExtension['name'] === extension.name
 			);
 
 			if (!registeredExtension) throw new Error(`Extension ${extension.name} is not registered in the database`);

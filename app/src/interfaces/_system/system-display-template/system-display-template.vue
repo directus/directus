@@ -14,55 +14,41 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, inject, ref, computed } from 'vue';
+<script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: String,
-			default: null,
-		},
-		collectionField: {
-			type: String,
-			default: null,
-		},
-		collectionName: {
-			type: String,
-			default: null,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	value: string | null;
+	disabled?: boolean;
+	collectionField?: string;
+	collectionName?: string;
+}>();
 
-		const collectionsStore = useCollectionsStore();
+defineEmits<{
+	(e: 'input', value: string | null): void;
+}>();
 
-		const values = inject('values', ref<Record<string, any>>({}));
+const { t } = useI18n();
 
-		const collection = computed(() => {
-			if (!props.collectionField) {
-				if (props.collectionName) return props.collectionName;
-				return null;
-			}
+const collectionsStore = useCollectionsStore();
 
-			const collectionName = values.value[props.collectionField];
+const values = inject('values', ref<Record<string, any>>({}));
 
-			const collectionExists = !!collectionsStore.collections.find(
-				(collection) => collection.collection === collectionName
-			);
+const collection = computed(() => {
+	if (!props.collectionField) {
+		if (props.collectionName) return props.collectionName;
+		return null;
+	}
 
-			if (collectionExists === false) return null;
-			return collectionName;
-		});
+	const collectionName = values.value[props.collectionField];
 
-		return { t, collection };
-	},
+	const collectionExists = !!collectionsStore.collections.find(
+		(collection) => collection.collection === collectionName
+	);
+
+	if (collectionExists === false) return null;
+	return collectionName;
 });
 </script>

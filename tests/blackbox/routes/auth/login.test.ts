@@ -2,7 +2,7 @@ import { getUrl } from '@common/config';
 import * as common from '@common/index';
 import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
-import { requestGraphQL } from '@common/index';
+import { createWebSocketConn, requestGraphQL } from '@common/index';
 
 describe('/auth', () => {
 	describe('POST /login', () => {
@@ -33,6 +33,17 @@ describe('/auth', () => {
 								},
 							});
 
+							const ws = createWebSocketConn(getUrl(vendor));
+
+							await ws.sendMessage({
+								type: 'auth',
+								email: common.USER[userKey].EMAIL,
+								password: common.USER[userKey].PASSWORD,
+							});
+
+							const wsMessages = await ws.getMessages(1);
+							ws.conn.close();
+
 							// Assert
 							expect(response.statusCode).toBe(200);
 
@@ -55,6 +66,16 @@ describe('/auth', () => {
 									},
 								},
 							});
+
+							expect(wsMessages?.length).toBe(1);
+
+							expect(wsMessages![0]).toEqual(
+								expect.objectContaining({
+									type: 'auth',
+									status: 'ok',
+									refresh_token: expect.any(String),
+								})
+							);
 						});
 					});
 				});
@@ -62,7 +83,7 @@ describe('/auth', () => {
 		});
 
 		describe('when incorrect credentials are provided', () => {
-			describe('returns code: UNAUTHORIZED for incorrect password', () => {
+			describe('returns code: INVALID_CREDENTIALS for incorrect password', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
@@ -92,6 +113,17 @@ describe('/auth', () => {
 								},
 							});
 
+							const ws = createWebSocketConn(getUrl(vendor));
+
+							await ws.sendMessage({
+								type: 'auth',
+								email: common.USER[userKey].EMAIL,
+								password: common.USER[userKey].PASSWORD + 'typo',
+							});
+
+							const wsMessages = await ws.getMessages(1);
+							ws.conn.close();
+
 							// Assert
 							expect(response.body).toMatchObject({
 								errors: [
@@ -114,12 +146,23 @@ describe('/auth', () => {
 									},
 								],
 							});
+
+							expect(wsMessages?.length).toBe(1);
+
+							expect(wsMessages![0]).toMatchObject({
+								type: 'auth',
+								status: 'error',
+								error: {
+									code: 'AUTH_FAILED',
+									message: 'Authentication handshake failed.',
+								},
+							});
 						});
 					});
 				});
 			});
 
-			describe('returns code: UNAUTHORIZED for unregistered email', () => {
+			describe('returns code: INVALID_CREDENTIALS for unregistered email', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
@@ -149,6 +192,17 @@ describe('/auth', () => {
 								},
 							});
 
+							const ws = createWebSocketConn(getUrl(vendor));
+
+							await ws.sendMessage({
+								type: 'auth',
+								email: 'test@fake.com',
+								password: common.USER[userKey].PASSWORD,
+							});
+
+							const wsMessages = await ws.getMessages(1);
+							ws.conn.close();
+
 							// Assert
 							expect(response.body).toMatchObject({
 								errors: [
@@ -170,6 +224,17 @@ describe('/auth', () => {
 										},
 									},
 								],
+							});
+
+							expect(wsMessages?.length).toBe(1);
+
+							expect(wsMessages![0]).toMatchObject({
+								type: 'auth',
+								status: 'error',
+								error: {
+									code: 'AUTH_FAILED',
+									message: 'Authentication handshake failed.',
+								},
 							});
 						});
 					});
@@ -206,11 +271,16 @@ describe('/auth', () => {
 								},
 							});
 
+							const ws = createWebSocketConn(getUrl(vendor));
+							await ws.sendMessage({ type: 'auth', email: 'invalidEmail', password: common.USER[userKey].PASSWORD });
+							const wsMessages = await ws.getMessages(1, { targetState: ws.conn.CLOSED });
+							ws.conn.close();
+
 							// Assert
 							expect(response.body).toMatchObject({
 								errors: [
 									{
-										message: '"email" must be a valid email',
+										message: 'Invalid payload. "email" must be a valid email.',
 										extensions: {
 											code: 'INVALID_PAYLOAD',
 										},
@@ -227,6 +297,17 @@ describe('/auth', () => {
 										},
 									},
 								],
+							});
+
+							expect(wsMessages?.length).toBe(1);
+
+							expect(wsMessages![0]).toMatchObject({
+								type: 'auth',
+								status: 'error',
+								error: {
+									code: 'AUTH_FAILED',
+									message: 'Authentication handshake failed.',
+								},
 							});
 						});
 					});
@@ -252,7 +333,7 @@ describe('/auth', () => {
 								mutation: {
 									[mutationKey]: {
 										__args: {
-											email: 'invalidEmail',
+											email: common.USER[userKey].EMAIL,
 										},
 										access_token: true,
 										expires: true,
@@ -261,11 +342,16 @@ describe('/auth', () => {
 								},
 							});
 
+							const ws = createWebSocketConn(getUrl(vendor));
+							await ws.sendMessage({ type: 'auth', email: common.USER[userKey].EMAIL });
+							const wsMessages = await ws.getMessages(1, { targetState: ws.conn.CLOSED });
+							ws.conn.close();
+
 							// Assert
 							expect(response.body).toMatchObject({
 								errors: [
 									{
-										message: '"password" is required',
+										message: 'Invalid payload. "password" is required.',
 										extensions: {
 											code: 'INVALID_PAYLOAD',
 										},
@@ -278,10 +364,21 @@ describe('/auth', () => {
 									{
 										message: 'GraphQL validation error.',
 										extensions: {
-											code: 'GRAPHQL_VALIDATION_EXCEPTION',
+											code: 'GRAPHQL_VALIDATION',
 										},
 									},
 								],
+							});
+
+							expect(wsMessages?.length).toBe(1);
+
+							expect(wsMessages![0]).toMatchObject({
+								type: 'auth',
+								status: 'error',
+								error: {
+									code: 'AUTH_FAILED',
+									message: 'Authentication handshake failed.',
+								},
 							});
 						});
 					});

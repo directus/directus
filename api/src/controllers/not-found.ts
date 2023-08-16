@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { RouteNotFoundException } from '../exceptions/index.js';
+import { RouteNotFoundError } from '../errors/index.js';
 
 /**
  * Handles not found routes.
@@ -31,7 +31,7 @@ const notFound: RequestHandler = async (req, res, next) => {
 			return next();
 		}
 
-		next(new RouteNotFoundException(req.path));
+		next(new RouteNotFoundError({ path: req.path }));
 	} catch (err: any) {
 		next(err);
 	}

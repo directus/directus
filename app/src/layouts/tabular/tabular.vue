@@ -25,7 +25,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="getDisplayValue(item, header.value)"
+					:value="getFromAliasedItem(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -141,11 +141,11 @@
 						/>
 					</div>
 
-					<div v-if="loading === false && items.length >= 25" class="per-page">
+					<div v-if="loading === false && (items.length >= 25 || limit < 25)" class="per-page">
 						<span>{{ t('per_page') }}</span>
 						<v-select
 							:model-value="`${limit}`"
-							:items="['25', '50', '100', '250', '500', ' 1000']"
+							:items="pageSizes"
 							inline
 							@update:model-value="limitWritable = +$event"
 						/>
@@ -177,18 +177,18 @@ export default {
 };
 </script>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import { HeaderRaw } from '@/components/v-table/types';
+import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
+import { usePageSize } from '@/composables/use-page-size';
 import { useShortcut } from '@/composables/use-shortcut';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch, computed, toRefs } from 'vue';
+import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from '@directus/utils';
-import { AliasFields } from '@/composables/use-alias-fields';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { HeaderRaw } from '@/components/v-table/types';
 
 interface Props {
 	collection: string;
@@ -239,7 +239,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
 const { t } = useI18n();
-const { collection, aliasedFields, aliasedKeys } = toRefs(props);
+const { collection } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
@@ -265,6 +265,14 @@ useShortcut(
 const permissionsStore = usePermissionsStore();
 const userStore = useUserStore();
 
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+	[25, 50, 100, 250, 500, 1000],
+	(value) => String(value),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
+
 const showManualSort = computed(() => {
 	if (!props.sortField) return false;
 
@@ -276,33 +284,16 @@ const showManualSort = computed(() => {
 
 	if (!permission) return false;
 
-	if (Array.isArray(permission.fields) && permission.fields.length > 0)
+	if (Array.isArray(permission.fields) && permission.fields.length > 0) {
 		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
+	}
+
 	return true;
 });
 
 const fieldsWritable = useSync(props, 'fields', emit);
 
-function getDisplayValue(item: Item, key: string) {
-	const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
-
-	if (!aliasInfo) return get(item, key);
-
-	const dealiasedItem = Object.keys(item).reduce<Item>((result, itemKey) => {
-		if (aliasedKeys.value.includes(itemKey)) {
-			if (itemKey !== aliasInfo.fieldAlias) return result;
-			const name = aliasedFields.value[itemKey].fieldName;
-			result[name] = item[itemKey];
-		} else {
-			// Don't overwrite already dealiased keys
-			if (itemKey in result === false) result[itemKey] = item[itemKey];
-		}
-
-		return result;
-	}, {});
-
-	return get(dealiasedItem, key);
-}
+const { getFromAliasedItem } = useAliasFields(fieldsWritable, collection);
 
 function addField(fieldKey: string) {
 	fieldsWritable.value = [...fieldsWritable.value, fieldKey];

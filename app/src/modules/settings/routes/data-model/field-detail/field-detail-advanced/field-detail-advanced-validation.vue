@@ -2,7 +2,9 @@
 	<div class="form">
 		<div class="field full">
 			<div class="label type-label">{{ t('validation') }}</div>
+			<v-notice v-if="!field.field">{{ t('configure_field_key_to_continue') }}</v-notice>
 			<interface-system-filter
+				v-else
 				:collection-name="collection"
 				:value="validation"
 				:field-name="field.field"
@@ -20,7 +22,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';

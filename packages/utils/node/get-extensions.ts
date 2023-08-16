@@ -2,15 +2,13 @@ import {
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	HYBRID_EXTENSION_TYPES,
-	NESTED_EXTENSION_TYPES,
 	ExtensionManifest,
 } from '@directus/constants';
-import type { ApiExtensionType, AppExtensionType, Extension } from '@directus/types';
+import type { Extension } from '@directus/types';
 import fse from 'fs-extra';
 import path from 'path';
-import { isIn, isTypeIn } from './array-helpers.js';
+import { isTypeIn } from './array-helpers.js';
 import { listFolders } from './list-folders.js';
-import { pluralize } from './pluralize.js';
 import { resolvePackage } from './resolve-package.js';
 
 export const findExtension = async (folder: string, filename: string) => {
@@ -57,6 +55,9 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				},
 				entries: extensionOptions.entries,
 				host: extensionOptions.host,
+				secure: extensionOptions.secure === true,
+				debugger: extensionOptions.debugger === true,
+				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
 		} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
@@ -72,6 +73,9 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 					api: extensionOptions.path.api,
 				},
 				host: extensionOptions.host,
+				secure: extensionOptions.secure === true,
+				debugger: extensionOptions.debugger === true,
+				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
 		} else {
@@ -84,6 +88,9 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				type: extensionOptions.type,
 				entrypoint: extensionOptions.path,
 				host: extensionOptions.host,
+				secure: extensionOptions.secure === true,
+				debugger: extensionOptions.debugger === true,
+				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
 		}
@@ -104,46 +111,4 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
 
 	return resolvePackageExtensions(root, extensionNames);
-}
-
-export async function getLocalExtensions(root: string): Promise<Extension[]> {
-	const extensions: Extension[] = [];
-
-	for (const extensionType of NESTED_EXTENSION_TYPES) {
-		const typeDir = pluralize(extensionType);
-		const typePath = path.resolve(root, typeDir);
-
-		try {
-			const extensionNames = await listFolders(typePath);
-
-			for (const extensionName of extensionNames) {
-				const extensionPath = path.join(typePath, extensionName);
-
-				if (isIn(extensionType, HYBRID_EXTENSION_TYPES)) {
-					extensions.push({
-						path: extensionPath,
-						name: extensionName,
-						type: extensionType,
-						entrypoint: {
-							app: await findExtension(extensionPath, 'app'),
-							api: await findExtension(extensionPath, 'api'),
-						},
-						local: true,
-					});
-				} else {
-					extensions.push({
-						path: extensionPath,
-						name: extensionName,
-						type: extensionType as AppExtensionType | ApiExtensionType,
-						entrypoint: await findExtension(extensionPath, 'index'),
-						local: true,
-					});
-				}
-			}
-		} catch (e) {
-			throw new Error(`Extension folder "${typePath}" couldn't be opened`);
-		}
-	}
-
-	return extensions;
 }

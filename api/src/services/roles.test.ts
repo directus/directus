@@ -4,7 +4,8 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import { ForbiddenError, UnprocessableContentError } from '../errors/index.js';
+
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
@@ -154,18 +155,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -236,18 +235,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -354,18 +351,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 				});
@@ -411,18 +406,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 
 						it('having a removed user', async () => {
@@ -480,18 +473,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -533,18 +524,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 
 						it('having a removed user', async () => {
@@ -602,18 +591,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -681,18 +668,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 
 						it('having a removed user', async () => {
@@ -762,18 +747,16 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+							expect(superUpdateOne.mock.lastCall![2].preMutationError.message).toBe(
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationError).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 				});

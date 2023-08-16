@@ -51,7 +51,7 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { notify } from '@/utils/notify';
@@ -153,8 +153,11 @@ const resetConfirm = () => {
 
 const getFlowTooltip = (manualFlow: FlowRaw) => {
 	if (location.value === 'item') return t('run_flow_on_current');
-	if (manualFlow.options?.requireSelection === false && selection.value.length === 0)
+
+	if (manualFlow.options?.requireSelection === false && selection.value.length === 0) {
 		return t('run_flow_on_current_collection');
+	}
+
 	return t('run_flow_on_selected', selection.value.length);
 };
 

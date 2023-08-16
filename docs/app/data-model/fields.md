@@ -15,8 +15,8 @@ to access its **Configuration Drawer** and make advanced configurations. You als
 field.
 
 **Fields and Layout** — Create, view, and configure a collection's fields as well as adjust how they are displayed and
-ordered on the [Item Details Page](/app/content/collections#item-page). This section also provides access to the **Field
-Context Menu** and **Field Configuration Drawer**, described below.
+ordered on the [Item Details Page](/user-guide/content-module/content/collections#item-page). This section also provides
+access to the **Field Context Menu** and **Field Configuration Drawer**, described below.
 
 **Field Context Menu <span mi icon>more_vert</span>** — Contains the following controls:
 
@@ -91,7 +91,8 @@ even custom input validation and conditional display logic. To configure a field
    - **Schema** — Defines the database column schema for the field.
    - **Relationship** — Controls _and only appears when configuring relational_ field details.
    - **Translations** — Controls _and only appears when configuring translation_ field details.
-   - **Field** — Sets details for the field input, which is displayed on the [item page](/app/content/items).
+   - **Field** — Sets details for the field input, which is displayed on the
+     [item page](/user-guide/content-module/content/items).
    - **Interface** — Configures how you interact with the field's values.
    - **Display** — Configures how field values are displayed in the Data Studio.
    - **Validation** — Creates a filter to determine valid user input.
@@ -118,13 +119,13 @@ To duplicate a field, follow these steps.
 3. Click the <span mi icon>content_copy</span> **Duplicate Field** option.
 4. Choose the collection you'd like to create the field in and set the Field Name.
 
-:::warning Relational and Primary Key Fields
+::: warning Relational and Primary Key Fields
 
 Currently, it is not possible to duplicate relational fields or a collection's primary key.
 
 :::
 
-:::tip Duplicates Configurations Only
+::: tip Duplicates Configurations Only
 
 When you duplicate a field, all of its configuration settings will be copied as well. However, values stored within that
 field will not be copied.
@@ -138,8 +139,8 @@ field will not be copied.
 </video>
 
 For users with any _non-admin_ role, a field's visibility can be adjusted via
-[access permissions](/configuration/users-roles-permissions.md). However, you may want to hide certain fields for admins
-as well. This is handy if the field is distracting or has no need to be seen on the item details page.
+[access permissions](/user-guide/user-management/users-roles-permissions). However, you may want to hide certain fields
+for admins as well. This is handy if the field is distracting or has no need to be seen on the item details page.
 
 ## Adjust Field Width
 
@@ -148,7 +149,7 @@ as well. This is handy if the field is distracting or has no need to be seen on 
 </video>
 
 Adjusting the field width in **Fields and Layout** will change field width on the
-[Item Detail Page](/app/content#item-page). To adjust field width, follow these steps.
+[Item Detail Page](/user-guide/content-module/content#item-page). To adjust field width, follow these steps.
 
 1. Click <span mi icon>more_vert</span> to open the field's context menu.
 1. Choose one of the following:
@@ -163,8 +164,8 @@ Adjusting the field width in **Fields and Layout** will change field width on th
 </video>
 
 Adjusting the field order in **Fields and Layout** will change its order on the
-[Item Page](/app/content/collections#item-page). To manually sort fields, click <span mi icon>drag_indicator</span> to
-drag and drop the field as desired.
+[Item Page](/user-guide/content-module/content/collections#item-page). To manually sort fields, click
+<span mi icon>drag_indicator</span> to drag and drop the field as desired.
 
 ## Delete a Field
 

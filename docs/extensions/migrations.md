@@ -22,24 +22,26 @@ for example:
 20201202A-my-custom-migration.js
 ```
 
+Every file in the root of the `migrations` folder is treated as a migration. Files that don't include a `-` character
+are ignored. If you want to rely on shared helper functions between migrations, put them in a subfolder so they aren't
+loaded in by the migrations helper.
+
 ## Structure
 
 Migrations have to export an `up` and a `down` function. These functions get a [Knex](http://knexjs.org) instance that
 can be used to do virtually whatever.
 
 ```js
-module.exports = {
-	async up(knex) {
-		await knex.schema.createTable('test', (table) => {
-			table.increments();
-			table.string('rijk');
-		});
-	},
+export async function up(knex) {
+	await knex.schema.createTable('test', (table) => {
+		table.increments();
+		table.string('rijk');
+	});
+}
 
-	async down(knex) {
-		await knex.schema.dropTable('test');
-	},
-};
+export async function down(knex) {
+	await knex.schema.dropTable('test');
+}
 ```
 
 ::: danger Danger

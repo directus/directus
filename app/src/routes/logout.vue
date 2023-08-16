@@ -4,16 +4,12 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+<script setup lang="ts">
 import { logout } from '@/auth';
+import { onMounted } from 'vue';
 
-export default defineComponent({
-	setup() {
-		onMounted(() => {
-			logout();
-		});
-	},
+onMounted(() => {
+	logout();
 });
 </script>
 

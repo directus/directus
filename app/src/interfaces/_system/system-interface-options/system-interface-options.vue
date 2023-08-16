@@ -27,102 +27,89 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, inject, ref } from 'vue';
+<script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { ExtensionOptionsContext } from '@directus/types';
+import { isVueComponent } from '@directus/utils';
+import { computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Object,
-			default: null,
-		},
-		interfaceField: {
-			type: String,
-			default: null,
-		},
-		interface: {
-			type: String,
-			default: null,
-		},
-		collection: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
+const props = defineProps<{
+	value: Record<string, unknown> | null;
+	interfaceField?: string;
+	interface?: string;
+	collection?: string;
+	disabled?: boolean;
+	context?: () => ExtensionOptionsContext;
+}>();
+
+const emit = defineEmits<{
+	(e: 'input', value: Record<string, unknown> | null): void;
+}>();
+
+const { t } = useI18n();
+
+const options = computed({
+	get() {
+		return props.value;
 	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+	set(newVal: any) {
+		emit('input', newVal);
+	},
+});
 
-		const options = computed({
-			get() {
-				return props.value;
-			},
-			set(newVal: any) {
-				emit('input', newVal);
-			},
-		});
+const values = inject('values', ref<Record<string, any>>({}));
 
-		const values = inject('values', ref<Record<string, any>>({}));
+const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField!] ?? null);
+const selectedInterface = useExtension('interface', selectedInterfaceId);
 
-		const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField] ?? null);
-		const selectedInterface = useExtension('interface', selectedInterfaceId);
+const usesCustomComponent = computed(() => {
+	if (!selectedInterface.value) return false;
 
-		const usesCustomComponent = computed(() => {
-			if (!selectedInterface.value) return false;
-			return selectedInterface.value.options && 'render' in selectedInterface.value.options;
-		});
+	return isVueComponent(selectedInterface.value.options);
+});
 
-		const optionsFields = computed(() => {
-			if (!selectedInterface.value) return [];
-			if (!selectedInterface.value.options) return [];
-			if (usesCustomComponent.value === true) return [];
+const optionsFields = computed(() => {
+	if (!selectedInterface.value?.options || usesCustomComponent.value) return [];
 
-			let optionsObjectOrArray;
+	let optionsObjectOrArray;
 
-			if (typeof selectedInterface.value.options === 'function') {
-				optionsObjectOrArray = selectedInterface.value.options({
-					field: {
-						type: 'unknown',
-					},
-					editing: '+',
-					collection: props.collection,
-					relations: {
-						o2m: undefined,
-						m2o: undefined,
-						m2a: undefined,
-					},
-					collections: {
-						related: undefined,
-						junction: undefined,
-					},
-					fields: {
-						corresponding: undefined,
-						junctionCurrent: undefined,
-						junctionRelated: undefined,
-						sort: undefined,
-					},
-					items: {},
-					localType: 'standard',
-					autoGenerateJunctionRelation: false,
-					saving: false,
-				});
-			} else {
-				optionsObjectOrArray = selectedInterface.value.options;
+	if (typeof selectedInterface.value.options === 'function') {
+		optionsObjectOrArray = selectedInterface.value.options(
+			props.context?.() ?? {
+				field: {
+					type: 'unknown',
+				},
+				editing: '+',
+				collection: props.collection,
+				relations: {
+					o2m: undefined,
+					m2o: undefined,
+					m2a: undefined,
+				},
+				collections: {
+					related: undefined,
+					junction: undefined,
+				},
+				fields: {
+					corresponding: undefined,
+					junctionCurrent: undefined,
+					junctionRelated: undefined,
+					sort: undefined,
+				},
+				items: {},
+				localType: 'standard',
+				autoGenerateJunctionRelation: false,
+				saving: false,
 			}
+		);
+	} else {
+		optionsObjectOrArray = selectedInterface.value.options;
+	}
 
-			if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
+	if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
 
-			return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
-		});
-
-		return { t, selectedInterface, values, usesCustomComponent, optionsFields, options };
-	},
+	return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
 });
 </script>
 

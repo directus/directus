@@ -19,51 +19,31 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, inject, ref, PropType } from 'vue';
+<script setup lang="ts">
 import { useFieldTree } from '@/composables/use-field-tree';
+import { computed, inject, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		collectionField: {
-			type: String,
-			default: null,
-		},
-		collectionName: {
-			type: String,
-			default: null,
-		},
-		value: {
-			type: Array as PropType<string[]>,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		allowNone: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	collectionField?: string;
+	collectionName?: string;
+	value: string[] | null;
+	disabled?: boolean;
+	placeholder?: string;
+	allowNone?: boolean;
+}>();
 
-		const values = inject('values', ref<Record<string, any>>({}));
+defineEmits<{
+	(e: 'input', value: string[] | null): void;
+}>();
 
-		const chosenCollection = computed(() => values.value[props.collectionField] || props.collectionName);
+const { t } = useI18n();
 
-		const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
+const values = inject('values', ref<Record<string, any>>({}));
 
-		return { t, values, treeList, chosenCollection, loadFieldRelations };
-	},
-});
+const chosenCollection = computed(() => values.value[props.collectionField!] || props.collectionName);
+
+const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 </script>
 
 <style scoped>

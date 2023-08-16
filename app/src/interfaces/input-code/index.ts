@@ -75,9 +75,6 @@ export default defineInterface({
 						placeholder: '$t:interfaces.input-code.placeholder',
 					},
 				},
-				schema: {
-					default_value: null,
-				},
 			},
 		];
 

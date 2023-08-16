@@ -1,6 +1,6 @@
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || itemCount > 0">
+		<template v-if="loading || itemCount! > 0">
 			<cards-header
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
@@ -13,9 +13,9 @@
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<card
 					v-for="item in items"
-					:key="item[primaryKeyField.field]"
+					:key="item[primaryKeyField!.field]"
 					v-model="selectionWritable"
-					:item-key="primaryKeyField.field"
+					:item-key="primaryKeyField!.field"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
@@ -47,12 +47,7 @@
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ t('per_page') }}</span>
-					<v-select
-						:model-value="`${limit}`"
-						:items="['25', '50', '100', '250', '500', '1000']"
-						inline
-						@update:model-value="limitWritable = +$event"
-					/>
+					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -75,167 +70,89 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, watch, PropType, ref, inject, Ref } from 'vue';
+export default {
+	inheritAttrs: false,
+};
+</script>
 
+<script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
+import { Collection } from '@/types/collections';
+import { useElementSize, useSync } from '@directus/composables';
+import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import { Ref, inject, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
-import { Field, Item } from '@directus/types';
-import { useSync, useElementSize } from '@directus/composables';
-import { Collection } from '@/types/collections';
-import { Filter, ShowSelect } from '@directus/types';
 
-export default defineComponent({
-	components: { Card, CardsHeader },
-	inheritAttrs: false,
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		selection: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
-		showSelect: {
-			type: String as PropType<ShowSelect>,
-			default: 'multiple',
-		},
-		selectMode: {
-			type: Boolean,
-			required: true,
-		},
-		readonly: {
-			type: Boolean,
-			required: true,
-		},
-		items: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
-		loading: {
-			type: Boolean,
-			required: true,
-		},
-		error: {
-			type: Object as PropType<any>,
-			default: null,
-		},
-		totalPages: {
-			type: Number,
-			required: true,
-		},
-		page: {
-			type: Number,
-			required: true,
-		},
-		toPage: {
-			type: Function as PropType<(newPage: number) => void>,
-			required: true,
-		},
-		itemCount: {
-			type: Number,
-			default: null,
-		},
-		fieldsInCollection: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
-		limit: {
-			type: Number,
-			required: true,
-		},
-		size: {
-			type: Number,
-			required: true,
-		},
-		primaryKeyField: {
-			type: Object as PropType<Field>,
-			default: null,
-		},
-		icon: {
-			type: String,
-			required: true,
-		},
-		imageSource: {
-			type: String,
-			default: null,
-		},
-		title: {
-			type: String,
-			default: null,
-		},
-		subtitle: {
-			type: String,
-			default: null,
-		},
-		getLinkForItem: {
-			type: Function as PropType<(item: Record<string, any>) => string | undefined>,
-			required: true,
-		},
-		imageFit: {
-			type: String,
-			required: true,
-		},
-		sort: {
-			type: Array as PropType<string[]>,
-			required: true,
-		},
-		info: {
-			type: Object as PropType<Collection>,
-			default: null,
-		},
-		isSingleRow: {
-			type: Boolean,
-			required: true,
-		},
-		width: {
-			type: Number,
-			required: true,
-		},
-		selectAll: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		resetPresetAndRefresh: {
-			type: Function as PropType<() => Promise<void>>,
-			required: true,
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: null,
-		},
-		search: {
-			type: String,
-			default: null,
-		},
-	},
-	emits: ['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		items: Item[];
+		selection: (number | string)[];
+		selectMode: boolean;
+		readonly: boolean;
+		limit: number;
+		size: number;
+		icon: string;
+		imageFit: string;
+		isSingleRow: boolean;
+		width: number;
+		totalPages: number;
+		page: number;
+		toPage: (newPage: number) => void;
+		getLinkForItem: (item: Record<string, any>) => string | undefined;
+		fieldsInCollection: Field[];
+		selectAll: () => void;
+		resetPresetAndRefresh: () => Promise<void>;
+		sort: string[];
+		loading: boolean;
+		showSelect?: ShowSelect;
+		error?: any;
+		itemCount?: number;
+		primaryKeyField?: Field;
+		imageSource?: string;
+		title?: string;
+		subtitle?: string;
+		info?: Collection;
+		filter?: Filter;
+		search?: string;
+	}>(),
+	{
+		showSelect: 'multiple',
+	}
+);
 
-		const selectionWritable = useSync(props, 'selection', emit);
-		const limitWritable = useSync(props, 'limit', emit);
-		const sizeWritable = useSync(props, 'size', emit);
-		const sortWritable = useSync(props, 'sort', emit);
+const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
 
-		const mainElement = inject<Ref<Element | undefined>>('main-element');
+const { t } = useI18n();
 
-		const layoutElement = ref<HTMLElement>();
+const selectionWritable = useSync(props, 'selection', emit);
+const limitWritable = useSync(props, 'limit', emit);
+const sizeWritable = useSync(props, 'size', emit);
+const sortWritable = useSync(props, 'sort', emit);
 
-		const { width } = useElementSize(layoutElement);
+const mainElement = inject<Ref<Element | undefined>>('main-element');
 
-		watch(
-			() => props.page,
-			() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
-		);
+const layoutElement = ref<HTMLElement>();
 
-		watch(width, () => {
-			emit('update:width', width.value);
-		});
+const { width } = useElementSize(layoutElement);
 
-		return { t, selectionWritable, limitWritable, sizeWritable, sortWritable, layoutElement };
-	},
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+	[25, 50, 100, 250, 500, 1000],
+	(value) => String(value),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
+
+watch(
+	() => props.page,
+	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' })
+);
+
+watch(width, () => {
+	emit('update:width', width.value);
 });
 </script>
 

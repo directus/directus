@@ -1,3 +1,4 @@
+import type { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/utils';
 import InterfaceListM2M from './list-m2m.vue';
 import PreviewSVG from './preview.svg?raw';
@@ -16,7 +17,7 @@ export default defineInterface({
 		const { collection, related_collection } = relations.m2o ?? {};
 		const options = meta?.options ?? {};
 
-		const tableOptions = [
+		const tableOptions: DeepPartial<Field>[] = [
 			{
 				field: 'tableSpacing',
 				name: '$t:layouts.tabular.spacing',

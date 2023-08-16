@@ -7,38 +7,40 @@ readTime: 7 min read
 
 # Quickstart Guide
 
-> This quickstart guide is designed to get you up and running with a Directus Cloud Project in a snap. Along the way,
-> you will better understand what Directus is, setup your free Directus Cloud Account, get a _hands-on introduction_ to
-> the App and API, and find more resources to deep-dive into.
+> This quickstart guide is designed to get you up and running with a Directus Project in a snap. Along the way, you will
+> better understand what Directus is, setup your Directus Cloud Account, get a _hands-on introduction_ to the App and
+> API, and find more resources to deep-dive into.
 
-## 1. Create Cloud Account and Login
+This guide primarily focuses on getting started with Directus Cloud. If you prefer self-hosting, we offer a guide to
+assist you in that process.
 
-First, you'll need to [create an Account and log in](/cloud/accounts#create-account-and-login) on
-[Directus Cloud](https://directus.cloud/login)
+<Card
+  title="Self-Host Directus"
+  h="2"
+  text="Learn how to run Directus on your own machine and self-host."
+  url="/self-hosted/quickstart"
+  icon="rocket_launch"
+  add-margin
+/>
+
+## 1. Create a Cloud Account and Login
+
+First, you'll need to create an Account and log in on [Directus Cloud](https://directus.cloud/login).
 
 Your Directus Cloud Account allows you to create and manage any number of Projects. We've made life easier by giving you
-the option to create and log in to your free Cloud Account automatically with GitHub. If you don't have a GitHub account
-or prefer not to use this login method, email-and-password login is available as well.
+the option to create and log in to your Cloud Account automatically with GitHub. If you don't have a GitHub account or
+prefer not to use this login method, email-and-password login is available as well.
 
-The very first time you log in to your cloud account, you will be prompted to create a Team. Teams are totally free to
-create. Each Directus Cloud Project exists within the scope of one Team. They allow you to organize Team Members,
-Projects and Project Billing as desired.
+The very first time you log in to your Cloud Account, you will be prompted to create a Team. Each Directus Cloud Project
+exists within the scope of one Team. They allow you to organize Team Members, Projects and Project Billing as desired.
 
 Once your Team is created, it's time to create your Directus Cloud Project!
-
-:::tip Learn More About Cloud
-
-- [Overview](/cloud/overview)
-- [Cloud Accounts](/cloud/accounts)
-- [Cloud Teams](/cloud/teams)
-
-:::
 
 ## 2. Create and Access Project
 
 To create a Project, follow the steps below:
 
-1. Open the Team Menu in the Dashboard Header and select or [create](/cloud/teams#create-a-team) the desired Team.
+1. Open the Team Menu in the Dashboard Header and select or create the desired Team.
 2. Navigate to **"Projects"** and click **"Create Project"**.
 3. Set the Project Name and tier.
 4. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
@@ -50,27 +52,20 @@ associated with your Cloud Account. The email will contain your Project URL as w
 If you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log
 in!_
 
-7. You can [access a Project](/cloud/projects#access-a-project) from within the Cloud Dashboard or type the URL into
-   your browser.
-8. Log in with your username and password from the email.
+6. You can access a Project from within the Cloud Dashboard or type the URL into your browser.
+7. Log in with your username and password from the email.
 
-:::tip Check All Inbox Folders
+::: tip Check All Inbox Folders
 
 Due to the algorithms used by some email providers, it is possible the email containing your Project login information
 will end up in another folder like "Social" or "Promotions".
 
 :::
 
-:::tip Learn More About Cloud Projects
-
-- [Overview](/cloud/overview)
-- [Cloud Projects](/cloud/projects)
-
-:::
-
 ## 3. Create a Collection
 
-Once logged in, you're greeted with the option to create your first [Collection](/getting-started/glossary#collections).
+Once logged in, you're greeted with the option to create your first
+[Collection](/user-guide/overview/glossary#collections).
 
 1. Navigate into the Content Module.
 2. Click **"Create Collection"** and a side menu will appear.
@@ -81,17 +76,17 @@ Once logged in, you're greeted with the option to create your first [Collection]
    Keep the values in this menu at the default, toggled off, for now. You can adjust them later.
 5. Click <span mi btn>check</span> in the menu header.
 
-:::tip Learn More About Collections
+::: tip Learn More About Collections
 
-- [The Content Module](/app/content)
-- [Create and Manage a Collection](/configuration/data-model/collections.md)
-- [Build Relationships Between Collections](/configuration/data-model/relationships)
+- [The Content Module](/user-guide/content-module/content)
+- [Create and Manage a Collection](/app/data-model/collections)
+- [Build Relationships Between Collections](/app/data-model/relationships)
 
 :::
 
 ## 4. Create a Field
 
-With your first Collection created, it's time to start adding some [Fields](/getting-started/glossary#fields).
+With your first Collection created, it's time to start adding some [Fields](/user-guide/overview/glossary#fields).
 
 1. Navigate to **Settings Module > Data Model > `Collection-Name`**.
 2. Click the **"Create Field"** button and select the **"Input"** Field type.
@@ -101,23 +96,23 @@ With your first Collection created, it's time to start adding some [Fields](/get
 
 ::: tip Learn More About Fields
 
-- [Create and Manage Fields in the App](/configuration/data-model)
+- [Create and Manage Fields in the App](/app/data-model)
 
 :::
 
 ## 5. Create an Item
 
-Now that we have a Collection with a Field configured, it's time to add an [Item](/getting-started/glossary#).
+Now that we have a Collection with a Field configured, it's time to add an [Item](/user-guide/overview/glossary#).
 
 1. Navigate to the Content Module.
 2. Click <span mi btn>add</span> in the page header to open the Item Page.
 3. Fill in the Field Value(s) as desired.
 4. Click <span mi btn>check</span> in the top-right to save your Item.
 
-:::tip Learn More About Items
+::: tip Learn More About Items
 
-- [The Content Module](/app/content)
-- [The Item Page](/app/content/items)
+- [The Content Module](/user-guide/content-module/content)
+- [The Item Page](/user-guide/content-module/content/items)
 
 :::
 
@@ -136,12 +131,12 @@ of creating a new Role.
 
 1. Navigate to **Settings Module > Roles & Permissions > Public**.
 2. Click <span mi icon dngr>block</span> under the <span mi icon>visibility</span> icon on the desired Collection.\
-   In our case, the Collection name is `article`.
+   In our case, the Collection name is `articles`.
 3. Click **"All Access"** to give the Public Role full read permissions to the Items in this Collection.
 
 ::: tip Learn More About Roles & Permissions
 
-- [Users, Roles and Permissions](/configuration/users-roles-permissions).
+- [Users, Roles and Permissions](/user-guide/user-management/users-roles-permissions).
 
 :::
 
@@ -172,9 +167,9 @@ _In this example, we made a super-simple read request with the API, but there's 
 exhaustive endpoints for the data model and every single action that you can do in the App can be done via the API. In
 fact, the App is just a GUI powered by the API._
 
-:::tip Learn More About The API
+::: tip Learn More About The API
 
 - [Intro to the API](/reference/introduction)
-- [JS SDK](/reference/sdk)
+- [JavaScript SDK](/guides/sdk/getting-started)
 
 :::

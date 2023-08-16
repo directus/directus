@@ -1,9 +1,10 @@
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
+import type { User } from '@directus/types';
 import { Filter, Preset } from '@directus/types';
 import { assign, debounce, isEqual } from 'lodash';
-import { computed, ComputedRef, ref, Ref, watch } from 'vue';
+import { ComputedRef, Ref, computed, ref, watch } from 'vue';
 
 type UsablePreset = {
 	bookmarkExists: ComputedRef<boolean>;
@@ -45,7 +46,7 @@ export function usePreset(
 	initLocalPreset();
 
 	const bookmarkSaved = ref(true);
-	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.currentUser!.id);
+	const bookmarkIsMine = computed(() => localPreset.value.user === (userStore.currentUser as User).id);
 
 	/**
 	 * Saves the preset to the database
@@ -217,7 +218,7 @@ export function usePreset(
 
 		if (data.id) delete data.id;
 
-		data.user = userStore.currentUser!.id;
+		data.user = (userStore.currentUser as User).id;
 
 		return await savePreset(data);
 	}

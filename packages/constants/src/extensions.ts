@@ -48,9 +48,21 @@ export const ExtensionOptionsBundleEntry = z.union([
 	}),
 ]);
 
+export const ExtensionPermissionOptions = z.enum(['database', 'web', 'schema', 'files']);
+
+export const ExtensionPermission = z.object({
+	permission: ExtensionPermissionOptions,
+	optional: z.boolean().optional(),
+	options: z.record(z.any()).optional(),
+})
+
+
 export const ExtensionOptionsBase = z.object({
 	host: z.string(),
+	secure: z.boolean().optional(),
 	hidden: z.boolean().optional(),
+	debugger: z.boolean().optional(),
+	permissions: z.array(ExtensionPermission).optional(),
 });
 
 export const ExtensionOptionsAppOrApi = z.object({
@@ -80,6 +92,7 @@ export const ExtensionOptions = ExtensionOptionsBase.and(
 export const ExtensionManifest = z.object({
 	name: z.string(),
 	version: z.string(),
+	type: z.union([z.literal('module'), z.literal('commonjs')]).optional(),
 	description: z.string().optional(),
 	icon: z.string().optional(),
 	dependencies: z.record(z.string()).optional(),

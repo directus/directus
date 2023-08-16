@@ -21,6 +21,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replaceDefault from '@rollup/plugin-replace';
 import terserDefault from '@rollup/plugin-terser';
 import virtualDefault from '@rollup/plugin-virtual';
+import vueDefault from '@vitejs/plugin-vue';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
@@ -29,9 +30,8 @@ import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputO
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuildDefault from 'rollup-plugin-esbuild';
 import stylesDefault from 'rollup-plugin-styles';
-import vueDefault from 'rollup-plugin-vue';
-import type { Language, RollupConfig, RollupMode } from '../types.js';
-import { getLanguageFromPath, isLanguage } from '../utils/languages.js';
+import type { Format, RollupConfig, RollupMode } from '../types.js';
+import { getFileExt } from '../utils/file.js';
 import { clear, log } from '../utils/logger.js';
 import tryParseJson from '../utils/try-parse-json.js';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
@@ -81,11 +81,14 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
+		const format = extensionManifest.type === 'module' ? 'esm' : 'cjs';
+
 		if (extensionOptions.type === 'bundle') {
 			await buildBundleExtension({
 				entries: extensionOptions.entries,
 				outputApp: extensionOptions.path.app,
 				outputApi: extensionOptions.path.api,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -96,6 +99,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				inputApi: extensionOptions.source.api,
 				outputApp: extensionOptions.path.app,
 				outputApi: extensionOptions.path.api,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -105,6 +109,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				type: extensionOptions.type,
 				input: extensionOptions.source,
 				output: extensionOptions.path,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -175,6 +180,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				entries: entries.data,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -210,6 +216,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				inputApi: splitInput.api,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -219,6 +226,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				type,
 				input,
 				output,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -231,6 +239,7 @@ async function buildAppOrApiExtension({
 	type,
 	input,
 	output,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -238,6 +247,7 @@ async function buildAppOrApiExtension({
 	type: AppExtensionType | ApiExtensionType;
 	input: string;
 	output: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -252,20 +262,13 @@ async function buildAppOrApiExtension({
 		process.exit(1);
 	}
 
-	const language = getLanguageFromPath(input);
-
-	if (!isLanguage(language)) {
-		log(`Language ${chalk.bold(language)} is not supported.`, 'error');
-		process.exit(1);
-	}
-
 	const config = await loadConfig();
 	const plugins = config.plugins ?? [];
 
 	const mode = isIn(type, APP_EXTENSION_TYPES) ? 'browser' : 'node';
 
-	const rollupOptions = getRollupOptions({ mode, input, language, sourcemap, minify, plugins });
-	const rollupOutputOptions = getRollupOutputOptions({ mode, output, sourcemap });
+	const rollupOptions = getRollupOptions({ mode, input, sourcemap, minify, plugins });
+	const rollupOutputOptions = getRollupOutputOptions({ mode, output, format, sourcemap });
 
 	if (watch) {
 		await watchExtension({ rollupOptions, rollupOutputOptions });
@@ -279,6 +282,7 @@ async function buildHybridExtension({
 	inputApi,
 	outputApp,
 	outputApi,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -287,6 +291,7 @@ async function buildHybridExtension({
 	inputApi: string;
 	outputApp: string;
 	outputApi: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -311,26 +316,12 @@ async function buildHybridExtension({
 		process.exit(1);
 	}
 
-	const languageApp = getLanguageFromPath(inputApp);
-	const languageApi = getLanguageFromPath(inputApi);
-
-	if (!isLanguage(languageApp)) {
-		log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
-		process.exit(1);
-	}
-
-	if (!isLanguage(languageApi)) {
-		log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
-		process.exit(1);
-	}
-
 	const config = await loadConfig();
 	const plugins = config.plugins ?? [];
 
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: inputApp,
-		language: languageApp,
 		sourcemap,
 		minify,
 		plugins,
@@ -339,14 +330,13 @@ async function buildHybridExtension({
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: inputApi,
-		language: languageApi,
 		sourcemap,
 		minify,
 		plugins,
 	});
 
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
+	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
 		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
@@ -364,6 +354,7 @@ async function buildBundleExtension({
 	entries,
 	outputApp,
 	outputApi,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -371,6 +362,7 @@ async function buildBundleExtension({
 	entries: ExtensionOptionsBundleEntry[];
 	outputApp: string;
 	outputApi: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -385,62 +377,6 @@ async function buildBundleExtension({
 		process.exit(1);
 	}
 
-	const languagesApp = new Set<Language>();
-	const languagesApi = new Set<Language>();
-
-	for (const entry of entries) {
-		if (isTypeIn(entry, HYBRID_EXTENSION_TYPES)) {
-			const inputApp = entry.source.app;
-			const inputApi = entry.source.api;
-
-			if (!(await fse.pathExists(inputApp)) || !(await fse.stat(inputApp)).isFile()) {
-				log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
-				process.exit(1);
-			}
-
-			if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
-				log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
-				process.exit(1);
-			}
-
-			const languageApp = getLanguageFromPath(inputApp);
-			const languageApi = getLanguageFromPath(inputApi);
-
-			if (!isLanguage(languageApp)) {
-				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
-				process.exit(1);
-			}
-
-			if (!isLanguage(languageApi)) {
-				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
-				process.exit(1);
-			}
-
-			languagesApp.add(languageApp);
-			languagesApi.add(languageApi);
-		} else {
-			const input = entry.source;
-
-			if (!(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
-				log(`Entrypoint ${chalk.bold(input)} does not exist.`, 'error');
-				process.exit(1);
-			}
-
-			const language = getLanguageFromPath(input);
-
-			if (!isLanguage(language)) {
-				log(`Language ${chalk.bold(language)} is not supported.`, 'error');
-				process.exit(1);
-			}
-
-			if (isIn(entry.type, APP_EXTENSION_TYPES)) {
-				languagesApp.add(language);
-			} else {
-				languagesApi.add(language);
-			}
-		}
-	}
-
 	const config = await loadConfig();
 	const plugins = config.plugins ?? [];
 
@@ -450,7 +386,6 @@ async function buildBundleExtension({
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: { entry: entrypointApp },
-		language: Array.from(languagesApp),
 		sourcemap,
 		minify,
 		plugins,
@@ -459,14 +394,13 @@ async function buildBundleExtension({
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: { entry: entrypointApi },
-		language: Array.from(languagesApi),
 		sourcemap,
 		minify,
 		plugins,
 	});
 
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
+	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
 		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
@@ -568,30 +502,26 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 function getRollupOptions({
 	mode,
 	input,
-	language,
 	sourcemap,
 	minify,
 	plugins,
 }: {
 	mode: RollupMode;
 	input: string | Record<string, string>;
-	language: Language | Language[];
 	sourcemap: boolean;
 	minify: boolean;
 	plugins: Plugin[];
 }): RollupOptions {
-	const languages = Array.isArray(language) ? language : [language];
-
 	return {
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
+			mode === 'browser' ? vue({ isProduction: true }) : null,
+			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser' }),
+			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
 			replace({
@@ -602,21 +532,37 @@ function getRollupOptions({
 			}),
 			minify ? terser() : null,
 		],
+		onwarn(warning, warn) {
+			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
+
+			warn(warning);
+		},
 	};
 }
 
 function getRollupOutputOptions({
 	mode,
 	output,
+	format,
 	sourcemap,
 }: {
 	mode: RollupMode;
 	output: string;
+	format: Format;
 	sourcemap: boolean;
 }): RollupOutputOptions {
+	const fileExtension = getFileExt(output);
+	let outputFormat = format;
+
+	if (mode === 'browser' || fileExtension === 'mjs') {
+		outputFormat = 'esm';
+	} else if (fileExtension === 'cjs') {
+		outputFormat = 'cjs';
+	}
+
 	return {
 		file: output,
-		format: mode === 'browser' ? 'es' : 'cjs',
+		format: outputFormat,
 		exports: 'auto',
 		inlineDynamicImports: true,
 		sourcemap,
@@ -626,9 +572,8 @@ function getRollupOutputOptions({
 function formatRollupError(error: RollupError): string {
 	let message = '';
 
-	message += `${chalk.bold.red(`[${error.name}]`)} ${error.message}${
-		error.plugin ? ` (plugin ${error.plugin})` : ''
-	}\n`;
+	message += `${chalk.bold.red(`[${error.name}]`)} ${error.message}${error.plugin ? ` (plugin ${error.plugin})` : ''
+		}\n`;
 
 	if (error.url) {
 		message += '\n' + chalk.green(error.url);

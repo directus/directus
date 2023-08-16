@@ -3,7 +3,7 @@ import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash-es';
-import { clearSystemCache } from '../cache.js';
+import { flushCaches } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
@@ -181,9 +181,11 @@ export async function applyDiff(
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
-			snapshotDiff.collections.filter(
-				({ diff }) => diff[0]?.kind === DiffKind.DELETE && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
-			)
+			snapshotDiff.collections.filter(({ diff }) => {
+				if (diff.length === 0 || diff[0] === undefined) return false;
+				const collectionDiff = diff[0] as DiffDeleted<Collection>;
+				return collectionDiff.kind === DiffKind.DELETE && collectionDiff.lhs?.meta?.group === null;
+			})
 		);
 
 		for (const { collection, diff } of snapshotDiff.collections) {
@@ -273,7 +275,14 @@ export async function applyDiff(
 
 			if (diff?.[0]?.kind === DiffKind.NEW) {
 				try {
-					await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs, mutationOptions);
+					await relationsService.createOne(
+						{
+							...(diff[0] as DiffNew<Relation>).rhs,
+							collection,
+							field,
+						},
+						mutationOptions
+					);
 				} catch (err) {
 					logger.error(`Failed to create relation "${collection}.${field}"`);
 					throw err;
@@ -315,7 +324,7 @@ export async function applyDiff(
 		await helpers.schema.postColumnChange();
 	}
 
-	await clearSystemCache();
+	await flushCaches();
 
 	if (nestedActionEvents.length > 0) {
 		const updatedSchema = await getSchema({ database, bypassCache: true });

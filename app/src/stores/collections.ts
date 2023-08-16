@@ -1,182 +1,202 @@
 import api from '@/api';
+import { COLLECTIONS_DENY_LIST } from '@/constants';
 import { i18n } from '@/lang';
-import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
 import { Collection } from '@/types/collections';
-import { getCollectionType } from '@directus/utils';
-import { notify } from '@/utils/notify';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
+import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
+import { getCollectionType } from '@directus/utils';
+import { isEqual, isNil, omit, orderBy } from 'lodash';
 import { defineStore } from 'pinia';
-import { COLLECTIONS_DENY_LIST } from '@/constants';
-import { isEqual, orderBy, omit, isNil } from 'lodash';
+import { computed, ref } from 'vue';
 import { useRelationsStore } from './relations';
 
-export const useCollectionsStore = defineStore({
-	id: 'collectionsStore',
-	state: () => ({
-		collections: [] as Collection[],
-	}),
-	getters: {
-		visibleCollections(): Collection[] {
-			return this.collections
-				.filter(({ collection }) => collection.startsWith('directus_') === false)
-				.filter((collection) => collection.meta && collection.meta?.hidden !== true);
-		},
-		allCollections(): Collection[] {
-			return this.collections.filter(({ collection }) => collection.startsWith('directus_') === false);
-		},
-		databaseCollections(): Collection[] {
-			return this.allCollections.filter((collection) => collection.schema);
-		},
-		crudSafeSystemCollections(): Collection[] {
-			return orderBy(
-				this.collections.filter((collection) => {
-					return collection.collection.startsWith('directus_') === true;
-				}),
-				['collection'],
-				['asc']
-			).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false);
-		},
-	},
-	actions: {
-		async hydrate() {
-			const response = await api.get<any>(`/collections`, { params: { limit: -1 } });
+export const useCollectionsStore = defineStore('collectionsStore', () => {
+	const collections = ref<Collection[]>([]);
 
-			const collections: CollectionRaw[] = response.data.data;
+	const visibleCollections = computed(() =>
+		collections.value
+			.filter(({ collection }) => collection.startsWith('directus_') === false)
+			.filter((collection) => collection.meta && collection.meta?.hidden !== true)
+	);
 
-			this.collections = collections.map(this.prepareCollectionForApp);
-		},
-		prepareCollectionForApp(collection: CollectionRaw): Collection {
-			const icon = collection.meta?.icon || 'label';
-			const color = collection.meta?.color;
-			let name = formatTitle(collection.collection);
-			const type = getCollectionType(collection);
+	const allCollections = computed(() =>
+		collections.value.filter(({ collection }) => collection.startsWith('directus_') === false)
+	);
 
-			const localesToKeep =
-				collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)
-					? collection.meta.translations.map((translation) => translation.language)
-					: [];
+	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
 
-			for (const locale of i18n.global.availableLocales) {
-				if (i18n.global.te(`collection_names.${collection.collection}`, locale) && !localesToKeep.includes(locale)) {
-					i18n.global.mergeLocaleMessage(locale, { collection_names: { [collection.collection]: undefined } });
-				}
+	const crudSafeSystemCollections = computed(() =>
+		orderBy(
+			collections.value.filter((collection) => {
+				return collection.collection.startsWith('directus_') === true;
+			}),
+			['collection'],
+			['asc']
+		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false)
+	);
+
+	return {
+		collections,
+		visibleCollections,
+		allCollections,
+		databaseCollections,
+		crudSafeSystemCollections,
+		hydrate,
+		dehydrate,
+		prepareCollectionForApp,
+		translateCollections,
+		upsertCollection,
+		updateCollection,
+		deleteCollection,
+		getCollection,
+	};
+
+	async function hydrate() {
+		const response = await api.get<any>(`/collections`);
+
+		const rawCollections: CollectionRaw[] = response.data.data;
+
+		collections.value = rawCollections.map(prepareCollectionForApp);
+	}
+
+	async function dehydrate() {
+		collections.value = [];
+	}
+
+	function prepareCollectionForApp(collection: CollectionRaw): Collection {
+		const icon = collection.meta?.icon || 'label';
+		const color = collection.meta?.color;
+		let name = formatTitle(collection.collection);
+		const type = getCollectionType(collection);
+
+		const localesToKeep =
+			collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)
+				? collection.meta.translations.map((translation) => translation.language)
+				: [];
+
+		for (const locale of i18n.global.availableLocales) {
+			if (i18n.global.te(`collection_names.${collection.collection}`, locale) && !localesToKeep.includes(locale)) {
+				i18n.global.mergeLocaleMessage(locale, { collection_names: { [collection.collection]: undefined } });
 			}
+		}
 
-			if (collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)) {
-				for (let i = 0; i < collection.meta.translations.length; i++) {
-					const { language, translation, singular, plural } = collection.meta.translations[i];
+		if (collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)) {
+			for (let i = 0; i < collection.meta.translations.length; i++) {
+				const { language, translation, singular, plural } = collection.meta.translations[i];
 
-					i18n.global.mergeLocaleMessage(language, {
-						...(translation
-							? {
-									collection_names: {
-										[collection.collection]: getLiteralInterpolatedTranslation(translation),
-									},
-							  }
-							: {}),
-						...(singular
-							? {
-									collection_names_singular: {
-										[collection.collection]: getLiteralInterpolatedTranslation(singular),
-									},
-							  }
-							: {}),
-						...(plural
-							? {
-									collection_names_plural: {
-										[collection.collection]: getLiteralInterpolatedTranslation(plural),
-									},
-							  }
-							: {}),
-					});
-				}
+				i18n.global.mergeLocaleMessage(language, {
+					...(translation
+						? {
+								collection_names: {
+									[collection.collection]: getLiteralInterpolatedTranslation(translation),
+								},
+						  }
+						: {}),
+					...(singular
+						? {
+								collection_names_singular: {
+									[collection.collection]: getLiteralInterpolatedTranslation(singular),
+								},
+						  }
+						: {}),
+					...(plural
+						? {
+								collection_names_plural: {
+									[collection.collection]: getLiteralInterpolatedTranslation(plural),
+								},
+						  }
+						: {}),
+				});
 			}
+		}
 
+		if (i18n.global.te(`collection_names.${collection.collection}`)) {
+			name = i18n.global.t(`collection_names.${collection.collection}`);
+		}
+
+		return {
+			...collection,
+			name,
+			type,
+			icon,
+			color,
+		};
+	}
+
+	function translateCollections() {
+		collections.value = collections.value.map((collection) => {
 			if (i18n.global.te(`collection_names.${collection.collection}`)) {
-				name = i18n.global.t(`collection_names.${collection.collection}`);
+				collection.name = i18n.global.t(`collection_names.${collection.collection}`);
 			}
 
-			return {
-				...collection,
-				name,
-				type,
-				icon,
-				color,
-			};
-		},
-		async dehydrate() {
-			this.$reset();
-		},
-		translateCollections() {
-			this.collections = this.collections.map((collection) => {
-				if (i18n.global.te(`collection_names.${collection.collection}`)) {
-					collection.name = i18n.global.t(`collection_names.${collection.collection}`);
-				}
+			return collection;
+		});
+	}
 
-				return collection;
+	async function upsertCollection(collection: string, values: DeepPartial<Collection & { fields: Field[] }>) {
+		const existing = getCollection(collection);
+
+		// Strip out any fields the app might've auto-generated at some point
+		const rawValues = omit(values, ['name', 'type', 'icon', 'color']);
+
+		try {
+			if (existing) {
+				if (isEqual(existing, values)) return;
+
+				const updatedCollectionResponse = await api.patch<{ data: CollectionRaw }>(
+					`/collections/${collection}`,
+					rawValues
+				);
+
+				collections.value = collections.value.map((existingCollection: Collection) => {
+					if (existingCollection.collection === collection) {
+						return prepareCollectionForApp(updatedCollectionResponse.data.data);
+					}
+
+					return existingCollection;
+				});
+			} else {
+				const createdCollectionResponse = await api.post<{ data: CollectionRaw }>('/collections', rawValues);
+
+				collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse.data.data)];
+			}
+		} catch (err: any) {
+			unexpectedError(err);
+		}
+	}
+
+	async function updateCollection(collection: string, updates: DeepPartial<Collection>) {
+		try {
+			await api.patch(`/collections/${collection}`, updates);
+			await hydrate();
+
+			notify({
+				title: i18n.global.t('update_collection_success'),
 			});
-		},
-		async upsertCollection(collection: string, values: DeepPartial<Collection & { fields: Field[] }>) {
-			const existing = this.getCollection(collection);
+		} catch (err: any) {
+			unexpectedError(err);
+		}
+	}
 
-			// Strip out any fields the app might've auto-generated at some point
-			const rawValues = omit(values, ['name', 'type', 'icon', 'color']);
+	async function deleteCollection(collection: string) {
+		const relationsStore = useRelationsStore();
 
-			try {
-				if (existing) {
-					if (isEqual(existing, values)) return;
+		try {
+			await api.delete(`/collections/${collection}`);
+			await Promise.all([hydrate(), relationsStore.hydrate()]);
 
-					const updatedCollectionResponse = await api.patch<{ data: CollectionRaw }>(
-						`/collections/${collection}`,
-						rawValues
-					);
+			notify({
+				title: i18n.global.t('delete_collection_success'),
+			});
+		} catch (err: any) {
+			unexpectedError(err);
+		}
+	}
 
-					this.collections = this.collections.map((existingCollection: Collection) => {
-						if (existingCollection.collection === collection) {
-							return this.prepareCollectionForApp(updatedCollectionResponse.data.data);
-						}
-
-						return existingCollection;
-					});
-				} else {
-					const createdCollectionResponse = await api.post<{ data: CollectionRaw }>('/collections', rawValues);
-
-					this.collections = [...this.collections, this.prepareCollectionForApp(createdCollectionResponse.data.data)];
-				}
-			} catch (err: any) {
-				unexpectedError(err);
-			}
-		},
-		async updateCollection(collection: string, updates: DeepPartial<Collection>) {
-			try {
-				await api.patch(`/collections/${collection}`, updates);
-				await this.hydrate();
-
-				notify({
-					title: i18n.global.t('update_collection_success'),
-				});
-			} catch (err: any) {
-				unexpectedError(err);
-			}
-		},
-		async deleteCollection(collection: string) {
-			const relationsStore = useRelationsStore();
-
-			try {
-				await api.delete(`/collections/${collection}`);
-				await Promise.all([this.hydrate(), relationsStore.hydrate()]);
-
-				notify({
-					title: i18n.global.t('delete_collection_success'),
-				});
-			} catch (err: any) {
-				unexpectedError(err);
-			}
-		},
-		getCollection(collectionKey: string): Collection | null {
-			return this.collections.find((collection) => collection.collection === collectionKey) || null;
-		},
-	},
+	function getCollection(collectionKey: string): Collection | null {
+		return collections.value.find((collection) => collection.collection === collectionKey) || null;
+	}
 });

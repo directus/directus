@@ -35,49 +35,42 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, reactive } from 'vue';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		saving: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['save', 'update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+defineProps<{
+	modelValue?: boolean;
+	saving?: boolean;
+}>();
 
-		const bookmarkValue = reactive({
-			name: null,
-			icon: 'bookmark',
-			color: null,
-		});
+const emit = defineEmits<{
+	(e: 'save', value: { name: string | null; icon: string | null; color: string | null }): void;
+	(e: 'update:modelValue', value: boolean): void;
+}>();
 
-		return { t, bookmarkValue, setIcon, setColor, cancel };
+const { t } = useI18n();
 
-		function setIcon(icon: any) {
-			bookmarkValue.icon = icon;
-		}
-
-		function setColor(color: any) {
-			bookmarkValue.color = color;
-		}
-
-		function cancel() {
-			bookmarkValue.name = null;
-			bookmarkValue.icon = 'bookmark';
-			bookmarkValue.color = null;
-			emit('update:modelValue', false);
-		}
-	},
+const bookmarkValue = reactive({
+	name: null,
+	icon: 'bookmark',
+	color: null,
 });
+
+function setIcon(icon: any) {
+	bookmarkValue.icon = icon;
+}
+
+function setColor(color: any) {
+	bookmarkValue.color = color;
+}
+
+function cancel() {
+	bookmarkValue.name = null;
+	bookmarkValue.icon = 'bookmark';
+	bookmarkValue.color = null;
+	emit('update:modelValue', false);
+}
 </script>
 
 <style lang="scss" scoped>

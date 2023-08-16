@@ -31,61 +31,55 @@
 	</public-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import api, { RequestError } from '@/api';
+import { translateAPIError } from '@/lang';
+import { jwtPayload } from '@/utils/jwt-payload';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { defineComponent, computed, ref } from 'vue';
-import { translateAPIError } from '@/lang';
-import api, { RequestError } from '@/api';
-import { jwtPayload } from '@/utils/jwt-payload';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const route = useRoute();
+const route = useRoute();
 
-		const acceptToken = computed(() => route.query.token as string);
+const acceptToken = computed(() => route.query.token as string);
 
-		const password = ref(null);
+const password = ref(null);
 
-		const creating = ref(false);
-		const error = ref<RequestError | null>(null);
-		const done = ref(false);
+const creating = ref(false);
+const error = ref<RequestError | null>(null);
+const done = ref(false);
 
-		const errorFormatted = computed(() => {
-			if (error.value) {
-				return translateAPIError(error.value);
-			}
+const errorFormatted = computed(() => {
+	if (error.value) {
+		return translateAPIError(error.value);
+	}
 
-			return null;
+	return null;
+});
+
+const signInLink = computed(() => `/login`);
+
+const email = computed(() => jwtPayload(acceptToken.value).email);
+
+async function onSubmit() {
+	creating.value = true;
+	error.value = null;
+
+	try {
+		await api.post(`/users/invite/accept`, {
+			password: password.value,
+			token: acceptToken.value,
 		});
 
-		const signInLink = computed(() => `/login`);
-
-		const email = computed(() => jwtPayload(acceptToken.value).email);
-
-		return { t, creating, error, done, password, onSubmit, signInLink, errorFormatted, email };
-
-		async function onSubmit() {
-			creating.value = true;
-			error.value = null;
-
-			try {
-				await api.post(`/users/invite/accept`, {
-					password: password.value,
-					token: acceptToken.value,
-				});
-
-				done.value = true;
-			} catch (err: any) {
-				error.value = err;
-			} finally {
-				creating.value = false;
-			}
-		}
-	},
-});
+		done.value = true;
+	} catch (err: any) {
+		error.value = err;
+	} finally {
+		creating.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>

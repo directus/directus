@@ -11,7 +11,7 @@ readTime: 15 min read
 > well as how users view and interact with data inside the data studio.
 
 <!--
-:::tip Before You Begin
+::: tip Before You Begin
 
 Learn Directus
 Please see the [Quickstart Guide]().
@@ -20,7 +20,7 @@ Configuration > Overview
 :::
 -->
 
-:::tip Learn More
+::: tip Learn More
 
 Remember, you will have full access to manage your database using SQL. Directus will mirror any changes. You can also
 configure your data model programmatically via the API. To learn more, see our API documentation on
@@ -164,7 +164,7 @@ There are several ways you can relationally link tables:
   the related tables' names.
 
 To learn more about how these relationships work conceptually, as well as how they are handled within Directus, see our
-guide on [relationships](/configuration/data-model/relationships).
+guide on [relationships](/app/data-model/relationships).
 
 ### Database Schemas
 
@@ -286,9 +286,9 @@ blog
 - author_img
 ```
 
-As described in the section on [Rows](/configuration/data-model#rows), we want each row in a data table to represent one
-unique record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the
-`blog` table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
+As described in the section on [Rows](/app/data-model#rows), we want each row in a data table to represent one unique
+record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the `blog`
+table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
 
 ```
 blog
@@ -336,9 +336,11 @@ would find it easy to work with pinpoints on a map, yet find it nearly impossibl
 from raw latitude and longitude points stored as JSON.
 
 ```json
-"location": {
-  "lat": 36.088010,
-  "lng": 120.379771
+{
+	"location": {
+		"lat": 36.08801,
+		"lng": 120.379771
+	}
 }
 ```
 
@@ -357,7 +359,7 @@ model design and configuration. The difference is that Directus handles all SQL,
 Studio which lets business users work with data in a human-friendly way.
 
 The Data Studio also offers features and functionalities to display and interact with your data intuitively. Once your
-data model is configured, the data is accessible across the other [modules](/getting-started/glossary#modules).
+data model is configured, the data is accessible across the other [modules](/user-guide/overview/glossary#modules).
 
 <!-- Data model configuration takes place across the following pages and menus:
 
@@ -386,7 +388,7 @@ collections, or a readonly view.
 
 You access all collections, including built-in system collections required to power your project, under **Settings >
 Data Model**. From there, click a collection to open its configurations page. To learn more, see our guide on
-[collections](/configuration/data-model/collections).
+[collections](/app/data-model/collections).
 
 ## Fields
 
@@ -399,8 +401,8 @@ Fields are database columns, but with a twist.
 Remember, SQL database columns store pure, raw data. From there, developers build out custom logic and UIs to determine
 how this data is displayed and interacted with. In Directus, fields encompass column configurations, as well as custom
 configuration over how to the data is displayed and interacted with in the Data Studio. Directus also has
-[alias fields](/getting-started/glossary#alias), which are virtual and do not match directly to a column. To learn more,
-see our guide on [fields](/configuration/data-model/fields/).
+[alias fields](/user-guide/overview/glossary#alias), which are virtual and do not match directly to a column. To learn
+more, see our guide on [fields](/app/data-model/fields).
 
 ## Items
 
@@ -415,13 +417,13 @@ Unfortunately, normalized data is not always the easiest for people to imagine o
 spread across multiple data tables. Therefore, when you access an item, you may get more than just the current
 collection's row level-data, _in some cases an item may provide access to the data in related rows._
 
-You access items from other app modules, such as [Content](/app/content), [User Directory](/app/user-directory), and
-[File Library](/app/file-library).
+You access items from other app modules, such as [Content](/user-guide/content-module/content),
+[User Directory](/user-guide/user-management/user-directory), and [File Library](/user-guide/file-library/files).
 
 ## Data Type Superset
 
 Directus abstracts type differences between SQL vendors with a
-[Data Type Superset](/getting-started/glossary#data-type-superset).
+[Data Type Superset](/user-guide/overview/glossary#data-type-superset).
 
 ## Keys and IDs
 
@@ -430,8 +432,8 @@ Directus abstracts type differences between SQL vendors with a
 </video>
 
 Primary keys are called IDs in Directus fairly frequently. When you
-[create a collection](/configuration/data-model/collections#create-a-collection), you must add an `id` field. Directus
-supports the following types of IDs:
+[create a collection](/app/data-model/collections#create-a-collection), you must add an `id` field. Directus supports
+the following types of IDs:
 
 - **Auto-Incremented Integer** — IDs increment `1`, `2`, `3` up to `2^31-1` or `2,147,483,647`.
 - **Auto-Incremented Big Integer** — IDs increment `1`, `2`, `3` up to `2^63-1` or `9,223,372,036,854,775,807`. _(only
@@ -448,4 +450,4 @@ supports the following types of IDs:
 </video>
 
 Directus supports all standard [types of relationships](#types-of-relationships), as well as a few more of its own
-compound types. To learn more, see our guide on [relationships](/configuration/data-model/relationships).
+compound types. To learn more, see our guide on [relationships](/app/data-model/relationships).

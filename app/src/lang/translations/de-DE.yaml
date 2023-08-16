@@ -80,14 +80,10 @@ create_user: Benutzer erstellen
 message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
-create_translation_string: Übersetzungselement erstellen
-no_translation_string: Keine Übersetzung
-no_translation_string_copy: Es existiert noch keine Übersetzung.
-translation_string_key_placeholder: Schlüssel für Übersetzungselement...
-translation_string_translations_placeholder: Neue Übersetzung hinzufügen
-edit_translation_string: Übersetzungselement editieren
-delete_translation_string_copy: >-
-  Soll das Übersetzungselement "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
+create_custom_translation: Benutzerdefinierte Übersetzung erstellen
+edit_custom_translation: Benutzerdefinierte Übersetzung bearbeiten
+no_custom_translations: Keine benutzerdefinierten Übersetzungen
+no_custom_translations_copy: Es gibt aktuell noch keine benutzerdefinierten Übersetzungen.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -118,19 +114,13 @@ public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
-directus_version: Directus-Version
-node_version: NodeJS-Version
-node_uptime: Server-Betriebszeit
-os_type: Betriebssystem
-os_version: Betriebssystem-Version
-os_uptime: System-Betriebszeit
-os_totalmem: Arbeitsspeicher
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 archive_confirm_count: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
 reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
+the_following_are_minimum_permissions: Die folgenden Mindestberechtigungen werden automatisch angewendet, wenn "App-Zugriff" aktiviert ist. Sie können bei Bedarf zusätzliche Berechtigungen erteilen, aber Sie können die Berechtigungen nicht unter dieses Niveau reduzieren.
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
@@ -181,6 +171,7 @@ permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
+presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der Syntax "detailed" konfiguriert werden.'
 presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
@@ -236,6 +227,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Zeitspanne
+translation_key_placeholder: Schlüssel eingeben ...
 datetime: Datum mit Uhrzeit
 dateTime: Datum mit Uhrzeit
 precision: Präzision
@@ -295,7 +287,12 @@ o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 m2a_relationship: n:x-Beziehung (Many to Any)
 invalid_item: Ungültiges Element
+require_confirmation: Bestätigung erforderlich
+dialog: Dialog
 modal: Modal
+confirmation_dialog: Bestätigungsdialog
+confirmation_description: Beschreibung der Bestätigung
+confirmation_input_fields: Bestätigung der Eingabefelder
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -314,6 +311,7 @@ updated_on: Geändert am
 updated_by: Geändert von
 primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
+field_key: Feldschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 toggle_raw_editor: Raw-Editor umschalten
@@ -350,7 +348,7 @@ revision_delta_reverted: Zurückgesetzt
 revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
-presentation_text_values_cannot_be_reimported: "Verwendet Präsentationstext, Werte können nicht neu importiert werden."
+presentation_text_values_cannot_be_reimported: 'Verwendet Präsentationstext, Werte können nicht neu importiert werden.'
 download_page_as_csv: 'Als CSV herunterladen'
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
@@ -442,6 +440,7 @@ checksum: Prüfsumme
 owner: Besitzer
 edited_by: Editiert von
 folder: Ordner
+folders: Ordner
 zoom: Zoom
 download: Herunterladen
 open: Öffnen
@@ -461,11 +460,6 @@ open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
-exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
-exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Konfiguration unten an.
-exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
-exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
-exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -490,7 +484,8 @@ enable_select_button: Knopf zum Auswählen aktivieren
 allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
-click_to_expand: Zum Erweitern klicken
+expand: Ausklappen
+collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen...
@@ -524,6 +519,7 @@ create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+no_singleton_relations: Relationen zu Singletons werden nicht unterstützt
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
@@ -617,6 +613,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
+  CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
@@ -662,6 +659,7 @@ one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
+delete_collection_peer_dependencies: Die folgenden Felder werden ebenfalls gelöscht, da sie sich auf die aktuelle Kollektion beziehen.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -787,8 +785,15 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
+run_flow_confirm: Sind Sie sicher, dass Sie diesen Flow ausführen wollen?
+run_flow_on_current_collection: Flow in der aktuellen Kollektion ausführen
+run_flow_on_current: Flow beim aktuellen Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
+run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
+run_flow: Flow ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
+field_name_placeholder: Feldnamen eingeben...
+field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
 trigger_options: Auslöse-Optionen
 view_trigger: Auslöser anzeigen
@@ -948,7 +953,7 @@ settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
-settings_translation_strings: Übersetzungselemente
+settings_translations: Benutzerdefinierte Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
 actions: Aktionen
@@ -998,7 +1003,8 @@ page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung 
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
 page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
-page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
+page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
+page_help_settings_translations_item: '**Benutzerdefinierte Übersetzungen-Detail** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -1042,6 +1048,7 @@ directus_collection:
   directus_shares: Verfolgen von extern freigegebenen Elementen
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
+  directus_translations: Benutzerdefinierte Übersetzungen
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -1130,6 +1137,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster
@@ -1261,6 +1269,7 @@ field_options:
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
+    preview_divider: Vorschau
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1318,6 +1327,14 @@ start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
+live_preview:
+  enable: Vorschau aktivieren
+  disable: Vorschau deaktivieren
+  change_size: Display-Auflösung ändern
+  refresh: Vorschau aktualisieren
+  new_window: In neuem Fenster öffnen
+  close_window: In geteilter Ansicht öffnen
+  toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
@@ -1423,6 +1440,7 @@ export_started: Export gestartet
 export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die Datei zum Download bereit ist.
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
+disable_sort: Sortierung deaktivieren
 template: Vorlage
 require_value_to_be_set: Wert muss bei Erstellung gesetzt werden
 translation: Übersetzung
@@ -1586,6 +1604,9 @@ interfaces:
     many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
+  collection-item-dropdown:
+    collection-item-dropdown: Dropdown für Elemente einer Sammlung
+    description: Auswahl eines Elements aus einer Sammlung im JSON-Format
   input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
@@ -1620,6 +1641,7 @@ interfaces:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...
+    no_text: Kein Text gesetzt ...
   list-o2m:
     one-to-many: 1:n
     description: Mehrere verwandte Elemente auswählen
@@ -1627,6 +1649,7 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
+    field_hint: Standardordner für hochgeladene Dateien ohne Angabe eines Ordners. Vorhandene Dateien sind davon nicht betroffen.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1680,7 +1703,7 @@ interfaces:
     input-translated-string: Übersetzte Elemente
     description: Übersetzungselement auswählen oder hinzufügen
     search_placeholder: Suchen...
-    new_translation_string: Neues Übersetzungelement
+    new_custom_translation: Neue benutzerdefinierte Übersetzung
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
@@ -1717,6 +1740,27 @@ interfaces:
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
     imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
+  input-block-editor:
+    input-block-editor: Block-Editor
+    description: Block-basierter Editor für Rich-Media-Content, erzeugt sauberes JSON mithilfe von Editor.js
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: Liste
+      embed: Einbetten
+      paragraph: Absatz
+      code: Code
+      image: Bild
+      attaches: Anhänge
+      table: Tabelle
+      quote: Zitat
+      underline: Unterstrichen
+      inlinecode: Inline-Code
+      delimiter: Trennzeichen
+      checklist: Checkliste
+      toggle: Block umschalten
+      alignment: Ausrichtung
+      raw: HTML-Code
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.
@@ -1747,7 +1791,7 @@ interfaces:
     remove_token: Token löschen
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
-    description: Eingabe von Roh- oder Mustache Template werten erlauben
+    description: Eingabe von Rohwerten oder Mustache-Templates erlauben
 displays:
   translations:
     translations: Übersetzungen
@@ -1909,9 +1953,9 @@ layouts:
   kanban:
     name: Kanban
     group_field: Gruppieren nach
-    group_field_placeholder: Feld zum Gruppieren...
+    group_field_placeholder: Feld zum Gruppieren ...
     group_title: Gruppentitel
-    group_title_placeholder: Feld für Grupentitel...
+    group_title_placeholder: Feld für Grupentitel ...
     title: Kartentitel
     title_placeholder: Optionales Titelfeld...
     text: Kartentext
@@ -1921,7 +1965,7 @@ layouts:
     tags: Karten-Tags
     tags_placeholder: Optionales Tag-Feld...
     user: Kartenbenutzer
-    user_placeholder: Optionales Benutzerfeld...
+    user_placeholder: Optionales Benutzerfeld ...
     image: Kartenbild
     image_placeholder: Optionales Bildfeld...
     image_fit: Kartenbild passen
@@ -1930,7 +1974,7 @@ layouts:
     edit_group: Gruppe bearbeiten
     delete_group: Gruppe löschen
     add_group: Gruppe hinzufügen
-    add_group_placeholder: Neuen Gruppentitel eingeben...
+    add_group_placeholder: Neuen Gruppentitel eingeben ...
     show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
@@ -1986,6 +2030,7 @@ panels:
     description: Liniendiagramm zum Vergleich der Änderung eines Feldes
     disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist.
     disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist.
+    show_marker: Tooltip-Marker anzeigen
     curve_type: Kurventyp
     smooth: Weich
     straight: Gerade
@@ -2090,10 +2135,13 @@ operations:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
+    recipient_placeholder: Eine UUID eingeben...
+    recipient_note: Benutzer UUID hinzufügen und Enter drücken...
     message: Nachricht
+    subject: Betreff
   request:
     name: Webhook / Anfrage URL
-    description: "Eine Anfrage an eine URL senden"
+    description: 'Eine Anfrage an eine URL senden'
     url: URL
     url_placeholder: https://example.com/example
     method: Methode
@@ -2121,3 +2169,4 @@ operations:
     parallel: Parallel
     batch: Stapel
     batch_size: Stapelgröße
+    cache: Cache

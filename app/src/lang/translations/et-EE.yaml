@@ -79,14 +79,6 @@ create_user: Loo Kasutaja
 message: Sõnum
 delete_panel: Kustutamise Paneel
 create_webhook: Loo Veebikonks
-create_translation_string: Loo Tõlkestring
-no_translation_string: Puuduvad Tõlkestringid
-no_translation_string_copy: Tõlkestringe veel pole.
-translation_string_key_placeholder: Tõlkestringi võti...
-translation_string_translations_placeholder: Loo uus tõlge
-edit_translation_string: Muuda Tõlkestringi
-delete_translation_string_copy: >-
-  Oled kindel, et soovid tõlkestringi "{key}" kustutada? Seda toimingut ei saa tagasi võtta.
 invite_users: Kutsu Kasutajaid
 invite: Kutsu
 email_already_invited: Meilile "{email}" on kutse juba saadetud
@@ -117,13 +109,6 @@ public_label: Avalik
 public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 admin_description: Esialgne administraatoriroll. Administraatoril on piiramatu juurdepääs rakendusele ja API-le.
 not_allowed: Ei ole lubatud
-directus_version: Directuse Versioon
-node_version: Node Versioon
-node_uptime: Node ülevaloleku aeg
-os_type: OS Tüüp
-os_version: OS Versioon
-os_uptime: OS Ülevaloleku Aeg
-os_totalmem: OS Mälu
 archive: Arhiiv
 archive_confirm: Oled kindel, et soovid arhiveerida selle kirje?
 archive_confirm_count: >-
@@ -365,6 +350,8 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_date_short: 'd. MMM'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d. MMM
+minutes: Minutit
+hours: Tundi
 month: Kuu
 year: Aasta
 select_all: Vali Kõik
@@ -435,7 +422,6 @@ enable_select_button: Luba valimise nupp
 allow_duplicates: Luba duplikaadid
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
-click_to_expand: Kliki suurendamiseks
 select_item: Vali kirje
 no_items: Kirjeid pole
 search_items: Otsi kirjeid...
@@ -455,8 +441,11 @@ no_files_copy: Faile pole.
 user_count: 'Kasutajaid pole | Üks kasutaja | {count} kasutajat'
 no_users_copy: Selles rollis pole ühtegi kasutajat.
 webhooks_count: 'Webhooke ei leitud | Üks webhook | {count} webhooki'
+no_notifications: Teavitusi ei ole
+no_notifications_copy: Kõik on ajakohane!
 activity_log: Tegevuste logi
 all_items: Kõik kirjed
+any: Ükskõik milline
 csv: CSV
 no_collections: Andmekogusid pole
 create_collection: Loo kogu
@@ -466,6 +455,7 @@ relationship_not_setup: Seos pole korrektselt seadistatud
 display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
+select_a_field: Vali väli
 active: aktiivne
 move_to: Teisalda...
 copy: Kopeeri
@@ -476,7 +466,9 @@ activity: Tegevus
 action: Tegevus
 ip_address: IP aadress
 user_agent: Kasutaja agent
+origin: Päritolu
 webhooks: Webhooks
+decimals: Komakohad
 min_value: Min väärtus
 max_value: Maksimaalne väärtus
 automatic: Automaatne
@@ -507,6 +499,7 @@ select_an_item: Vali kirje...
 edit: Muuda
 enabled: lubatud
 disable_tfa: Keela 2FA
+tfa_setup: Seadista 2FA
 tfa_scan_code: Kaheastmeliseks autoriseerimiseks skaneeri kood autoriseerimise äpist.
 enter_otp_to_disable_tfa: Sisesta OTP, et keelata 2FA
 create_account: Loo konto
@@ -521,6 +514,7 @@ errors:
   INVALID_OTP: Vale ühekordne parool
   INVALID_PAYLOAD: Vigane päring
   INVALID_QUERY: Vigane päring
+  INVALID_TOKEN: Vigane luba
   INVALID_IP: Host või IP aadress pole lubatud
   ITEM_LIMIT_REACHED: Kirjete limiit sai täis
   ITEM_NOT_FOUND: Kirjet ei leitud
@@ -530,7 +524,9 @@ errors:
   CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
   INTERNAL_SERVER_ERROR: Ootamatu viga
   NOT_NULL_VIOLATION: Väärtus ei saa olla null
+  VALUE_OUT_OF_RANGE: Väärtus lubatud vahemikust väljas
   UNKNOWN: Ootamatu viga
+  SERVICE_UNAVAILABLE: Teenus pole saadaval
   UNSUPPORTED_MEDIA_TYPE: Failitüüp pole toetatud
 security: Turvalisus
 value_hashed: Väärtus salastati
@@ -833,6 +829,7 @@ fields:
     user: Tegevuse sooritas
     comment: Kommentaar
     user_agent: Kasutaja agent
+    origin: Päritolu
     ip: IP aadress
     revisions: Versioonid
   directus_collections:
@@ -950,6 +947,7 @@ field_options:
     collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
     sort_divider: Sorteeri
+    preview_divider: Eelvaade
   directus_roles:
     fields:
       icon_name: Ikoon
@@ -976,6 +974,8 @@ save_current_datetime: Salvesta hetke kuupäev/kellaaeg
 block: Blokeeri
 inline: Tekstisisene
 comment: Kommentaar
+live_preview:
+  new_window: Ava Uues Aknas
 relational_triggers: Suhtelised lülitid
 referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
 referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...
@@ -1058,6 +1058,7 @@ interfaces:
     name: Filter
     add_filter: Lisa filter
     all: Kõik
+    any: Ükskõik milline
   presentation-links:
     presentation-links: Nuppude lingid
     links: Lingid
@@ -1260,6 +1261,14 @@ interfaces:
     custom_formats: Kohandatud vormingud
     options_override: Valikute ülekirjutamine
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
+  input-block-editor:
+    tools: Tööriistariba
+    tools_options:
+      embed: Põimitud
+      code: Kood
+      image: Pilt
+      table: Tabel
+      underline: Allajoonitud
   input-autocomplete-api:
     input-autocomplete-api: Automaatselt täidetav väli (API)
     description: Otsingutulemused välisest APIst.
@@ -1404,5 +1413,6 @@ operations:
   notification:
     recipient: Kasutaja
     message: Sõnum
+    subject: Teema
   request:
     url: URL

@@ -1,12 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { expect, test, vi } from 'vitest';
-import {
-	InvalidTokenException,
-	ServiceUnavailableException,
-	TokenExpiredException,
-} from '../../src/exceptions/index.js';
 import type { DirectusTokenPayload } from '../../src/types/index.js';
 import { verifyAccessJWT, verifyJWT } from '../../src/utils/jwt.js';
+import { TokenExpiredError, InvalidTokenError } from '../errors/index.js';
+import { ServiceUnavailableError } from '../errors/index.js';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';
@@ -23,9 +20,9 @@ test('Returns the payload of a correctly signed token', () => {
 	expect(result['iat']).toBeTypeOf('number');
 });
 
-test('Throws TokenExpiredException when token used has expired', () => {
+test('Throws TokenExpiredError when token used has expired', () => {
 	const token = jwt.sign({ ...payload, exp: new Date().getTime() / 1000 - 500 }, secret, options);
-	expect(() => verifyJWT(token, secret)).toThrow(TokenExpiredException);
+	expect(() => verifyJWT(token, secret)).toThrow(TokenExpiredError);
 });
 
 const InvalidTokenCases = {
@@ -36,27 +33,27 @@ const InvalidTokenCases = {
 
 Object.entries(InvalidTokenCases).forEach(([title, token]) =>
 	test(`Throws InvalidTokenError - ${title}`, () => {
-		expect(() => verifyJWT(token, secret)).toThrow(InvalidTokenException);
+		expect(() => verifyJWT(token, secret)).toThrow(InvalidTokenError);
 	})
 );
 
-test(`Throws ServiceUnavailableException for unexpected error from jsonwebtoken`, () => {
+test(`Throws ServiceUnavailableError for unexpected error from jsonwebtoken`, () => {
 	const mock = vi.spyOn(jwt, 'verify').mockImplementation(() => {
 		throw new Error();
 	});
 
 	const token = jwt.sign(payload, secret, options);
-	expect(() => verifyJWT(token, secret)).toThrow(ServiceUnavailableException);
+	expect(() => verifyJWT(token, secret)).toThrow(ServiceUnavailableError);
 	mock.mockRestore();
 });
 
 const RequiredEntries: Array<keyof DirectusTokenPayload> = ['role', 'app_access', 'admin_access'];
 
 RequiredEntries.forEach((entry) => {
-	test(`Throws InvalidTokenException if ${entry} not defined`, () => {
+	test(`Throws InvalidTokenError if ${entry} not defined`, () => {
 		const { [entry]: _entryName, ...rest } = payload;
 		const token = jwt.sign(rest, secret, options);
-		expect(() => verifyAccessJWT(token, secret)).toThrow(InvalidTokenException);
+		expect(() => verifyAccessJWT(token, secret)).toThrow(InvalidTokenError);
 	});
 });
 

@@ -8,7 +8,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 
 const props = withDefaults(
@@ -25,8 +25,8 @@ const props = withDefaults(
 		value: false,
 		labelOn: null,
 		labelOff: null,
-		iconOn: null,
-		iconOff: null,
+		iconOn: 'check',
+		iconOff: 'close',
 		colorOn: 'var(--primary)',
 		colorOff: 'var(--foreground-subdued)',
 	}

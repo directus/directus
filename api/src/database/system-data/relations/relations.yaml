@@ -123,3 +123,7 @@ data:
   - many_collection: directus_shares
     many_field: user_created
     one_collection: directus_users
+  - many_collection: directus_extension_permissions
+    many_field: extension
+    one_collection: directus_extensions
+    one_field: granted_permissions

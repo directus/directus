@@ -22,87 +22,79 @@
 			</v-avatar>
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
-				<div class="status-role" :class="data.status">{{ t(data.status) }} {{ data.role.name }}</div>
+				<div class="status-role" :class="data!.status">{{ t(data.status) }} {{ data.role.name }}</div>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
 	</v-menu>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import api from '@/api';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
-import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-export default defineComponent({
-	props: {
-		user: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	user: string;
+}>();
 
-		const router = useRouter();
+const { t } = useI18n();
 
-		const loading = ref(false);
-		const error = ref(null);
-		const data = ref<User | null>(null);
+const router = useRouter();
 
-		const avatarSrc = computed(() => {
-			if (data.value === null) return null;
+const loading = ref(false);
+const error = ref(null);
+const data = ref<User | null>(null);
 
-			if (data.value.avatar?.id) {
-				return `/assets/${data.value.avatar.id}?key=system-medium-cover`;
-			}
+const avatarSrc = computed(() => {
+	if (data.value === null) return null;
 
-			return null;
-		});
+	if (data.value.avatar?.id) {
+		return `/assets/${data.value.avatar.id}?key=system-medium-cover`;
+	}
 
-		const active = ref(false);
-
-		watch(active, () => {
-			if (active.value === true && data.value === null && loading.value === false) {
-				fetchUser();
-			}
-		});
-
-		onUnmounted(() => {
-			loading.value = false;
-			error.value = null;
-			data.value = null;
-		});
-
-		return { t, loading, error, data, active, avatarSrc, userName, navigateToUser };
-
-		async function fetchUser() {
-			loading.value = true;
-			error.value = null;
-
-			try {
-				const response = await api.get(`/users/${props.user}`, {
-					params: {
-						fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
-					},
-				});
-
-				data.value = response.data.data;
-			} catch (err: any) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		function navigateToUser() {
-			if (data.value) router.push(`/users/${data.value.id}`);
-		}
-	},
+	return null;
 });
+
+const active = ref(false);
+
+watch(active, () => {
+	if (active.value === true && data.value === null && loading.value === false) {
+		fetchUser();
+	}
+});
+
+onUnmounted(() => {
+	loading.value = false;
+	error.value = null;
+	data.value = null;
+});
+
+async function fetchUser() {
+	loading.value = true;
+	error.value = null;
+
+	try {
+		const response = await api.get(`/users/${props.user}`, {
+			params: {
+				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
+			},
+		});
+
+		data.value = response.data.data;
+	} catch (err: any) {
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
+}
+
+function navigateToUser() {
+	if (data.value) router.push(`/users/${data.value.id}`);
+}
 </script>
 
 <style lang="scss" scoped>

@@ -11,7 +11,7 @@ author: Eron Powell
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -29,13 +29,13 @@ English text.
 
 ## The Recipe
 
-:::tip Requirements
+::: tip Requirements
 
-You'll need a string somewhere in your [data chain](/configuration/flows.md#data-chains).
+You'll need a string somewhere in your [data chain](/app/flows#data-chains).
 
 :::
 
-1. Create a [Run Script](/configuration/flows/operations.md#run-script) operation in your flow.
+1. Create a [Run Script](/app/flows/operations#run-script) operation in your flow.
 2. Paste the following function into your Run Script operation.
 
 ```js

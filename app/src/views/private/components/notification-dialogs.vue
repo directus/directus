@@ -9,7 +9,7 @@
 					<v-error v-if="notification.error" :error="notification.error" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'" secondary>
+					<v-button v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
 						<a target="_blank" href="https://github.com/directus/directus/issues/new?template=bug_report.yml">
 							{{ t('report_error') }}
 						</a>
@@ -21,28 +21,22 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const notificationsStore = useNotificationsStore();
-		const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
+const { isAdmin } = useUserStore();
 
-		const notifications = computed(() => notificationsStore.dialogs);
+const notifications = computed(() => notificationsStore.dialogs);
 
-		return { t, notifications, admin: userStore.isAdmin, done };
-
-		function done(id: string) {
-			notificationsStore.remove(id);
-		}
-	},
-});
+function done(id: string) {
+	notificationsStore.remove(id);
+}
 </script>
 
 <style lang="scss" scoped>

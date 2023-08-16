@@ -34,9 +34,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { debounce } from 'lodash';
-import { defineComponent, PropType, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -45,43 +45,34 @@ type Choice = {
 	children?: Choice[];
 };
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		choices: {
-			type: Array as PropType<Choice[]>,
-			default: () => [],
-		},
-		valueCombining: {
-			type: String as PropType<'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive'>,
-			default: 'all',
-		},
-	},
-	emits: ['input'],
-	setup() {
-		const { t } = useI18n();
-		const search = ref('');
+withDefaults(
+	defineProps<{
+		value: string[] | null;
+		disabled?: boolean;
+		choices?: Choice[];
+		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+	}>(),
+	{
+		value: () => [],
+		choices: () => [],
+		valueCombining: 'all',
+	}
+);
 
-		const showSelectionOnly = ref(false);
+defineEmits(['input']);
 
-		const setSearchDebounced = debounce((val: string) => {
-			searchDebounced.value = val;
-		}, 250);
+const { t } = useI18n();
+const search = ref('');
 
-		watch(search, setSearchDebounced);
+const showSelectionOnly = ref(false);
 
-		const searchDebounced = ref('');
+const setSearchDebounced = debounce((val: string) => {
+	searchDebounced.value = val;
+}, 250);
 
-		return { search, t, searchDebounced, showSelectionOnly };
-	},
-});
+watch(search, setSearchDebounced);
+
+const searchDebounced = ref('');
 </script>
 
 <style scoped>

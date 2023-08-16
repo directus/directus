@@ -52,52 +52,31 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { Collection, Permission } from '@directus/types';
+import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, toRefs } from 'vue';
-import { Permission, Collection } from '@directus/types';
-import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 import useUpdatePermissions from '../composables/use-update-permissions';
+import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 
-export default defineComponent({
-	components: { PermissionsOverviewToggle },
-	props: {
-		role: {
-			type: String,
-			default: null,
-		},
-		collection: {
-			type: Object as PropType<Collection>,
-			required: true,
-		},
-		permissions: {
-			type: Array as PropType<Permission[]>,
-			required: true,
-		},
-		refreshing: {
-			type: Array as PropType<number[]>,
-			required: true,
-		},
-		appMinimal: {
-			type: [Boolean, Array] as PropType<false | Partial<Permission>[]>,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	collection: Collection;
+	permissions: Permission[];
+	refreshing: number[];
+	role?: string;
+	appMinimal?: Partial<Permission>[];
+}>();
 
-		const { collection, role, permissions } = toRefs(props);
-		const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
+const { t } = useI18n();
 
-		return { t, getPermission, isLoading, setFullAccessAll, setNoAccessAll };
+const { collection, role, permissions } = toRefs(props);
+const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
 
-		function isLoading(action: string) {
-			const permission = getPermission(action);
-			if (!permission) return false;
-			return props.refreshing.includes(permission.id);
-		}
-	},
-});
+function isLoading(action: string) {
+	const permission = getPermission(action);
+	if (!permission) return false;
+	return props.refreshing.includes(permission.id);
+}
 </script>
 
 <style lang="scss" scoped>

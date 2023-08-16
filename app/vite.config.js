@@ -6,9 +6,7 @@ import {
 	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
 import {
-	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
-	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackageExtensions,
 } from '@directus/utils/node';
@@ -19,6 +17,7 @@ import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version } from '../directus/package.json';
+import UnheadVite from '@unhead/addons/vite';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
@@ -31,11 +30,21 @@ export default defineConfig({
 	plugins: [
 		directusExtensions(),
 		vue(),
+		UnheadVite(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;
 			},
 		}),
+		{
+			name: 'watch-directus-dependencies',
+			configureServer: (server) => {
+				server.watcher.options = {
+					...server.watcher.options,
+					ignored: [/node_modules\/(?!@directus\/).*/, '**/.git/**'],
+				};
+			},
+		},
 	],
 	resolve: {
 		alias: [
@@ -70,13 +79,13 @@ export default defineConfig({
 function getExtensionsRealPaths() {
 	return fs.existsSync(EXTENSIONS_PATH)
 		? fs
-				.readdirSync(EXTENSIONS_PATH)
-				.flatMap((typeDir) => {
-					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-					if (!fs.lstatSync(extensionTypeDir).isDirectory()) return;
-					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
-				})
-				.filter((v) => v)
+			.readdirSync(EXTENSIONS_PATH)
+			.flatMap((typeDir) => {
+				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+				if (!fs.statSync(extensionTypeDir).isDirectory()) return;
+				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+			})
+			.filter((v) => v)
 		: [];
 }
 
@@ -130,14 +139,12 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 		const packageExtensions = await getPackageExtensions(API_PATH);
-		const localPackageExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
-		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH);
+		const localExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
 
 		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES];
 
-		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter((extension) =>
+		const extensions = [...packageExtensions, ...localExtensions].filter((extension) =>
 			types.includes(extension.type)
 		);
 

@@ -117,7 +117,7 @@
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
 			:filter="customFilter"
-			@input="select($event, selectingFrom ?? undefined)"
+			@input="select($event!, selectingFrom ?? undefined)"
 			@update:active="selectingFrom = null"
 		/>
 
@@ -380,10 +380,15 @@ function getCollectionName(item: DisplayItem) {
 	if (!info) return false;
 
 	const collection = allowedCollections.value.find((coll) => coll.collection === item[info.collectionField.field]);
-	if (te(`collection_names_singular.${collection?.collection}`))
+
+	if (te(`collection_names_singular.${collection?.collection}`)) {
 		return t(`collection_names_singular.${collection?.collection}`);
-	if (te(`collection_names_plural.${collection?.collection}`))
+	}
+
+	if (te(`collection_names_plural.${collection?.collection}`)) {
 		return t(`collection_names_plural.${collection?.collection}`);
+	}
+
 	return collection?.name;
 }
 
@@ -398,7 +403,7 @@ const customFilter = computed(() => {
 
 	const reverseRelation = `$FOLLOW(${info.junctionCollection.collection},${info.junctionField.field},${info.collectionField.field})`;
 
-	const selectFilter: Filter = {
+	const selectFilter = {
 		[reverseRelation]: {
 			_none: {
 				_and: [
@@ -415,7 +420,7 @@ const customFilter = computed(() => {
 				],
 			},
 		},
-	};
+	} as Filter;
 
 	const junctionField = info.junctionField.field;
 
@@ -425,12 +430,13 @@ const customFilter = computed(() => {
 		return acc;
 	}, [] as (string | number)[]);
 
-	if (selectedPrimaryKeys.length > 0)
+	if (selectedPrimaryKeys.length > 0) {
 		filter._and.push({
 			[info.relationPrimaryKeyFields[selectingFrom.value].field]: {
 				_nin: selectedPrimaryKeys,
 			},
 		});
+	}
 
 	if (props.primaryKey !== '+') filter._and.push(selectFilter);
 

@@ -1,7 +1,7 @@
 # Custom Operations <small></small>
 
 > Custom Operations allow you to create new types of steps for flows.
-> [Learn more about Operations](/configuration/flows/operations).
+> [Learn more about Operations](/app/flows/operations).
 
 ## Extension Entrypoints
 
@@ -45,8 +45,8 @@ export default {
 
 - `id` — The unique key for this operation. It is good practice to scope proprietary operations with an author prefix.
 - `name` — The human-readable name for this operation.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `description` — A short description (<80 characters) of this operation shown in the App.
 - `overview` — An overview that will be shown on the operation's tile. Can be either a function that receives the
   options of the operation and returns an array of objects containing `label` and `text` or a dedicated Vue component.
@@ -85,14 +85,13 @@ extension.
 The handler function defined inside the API endpoint will be called whenever the flow the operation is connected to is
 executed. To trigger the operation connected to the `resolve` anchor, the handler function has to return a value. To
 trigger the operation connected to the `reject` anchor, the handler function has to throw with a value. This value will
-then be added to the [data chain](/configuration/flows#the-data-chain).
+then be added to the [data chain](/app/flows#the-data-chain).
 
 The handler function receives the two parameters `options` and `context`. `options` is an object with the operation's
 options as properties and their respective already interpolated values. `context` is an object with the following
 properties:
 
 - `services` — All API internal services.
-- `exceptions` — API exception objects that can be used to throw "proper" errors.
 - `database` — Knex instance that is connected to the current database.
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables.

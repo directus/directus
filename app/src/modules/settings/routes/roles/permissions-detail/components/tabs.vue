@@ -7,28 +7,17 @@
 	</v-tabs>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { useSync } from '@directus/composables';
 
-export default defineComponent({
-	props: {
-		currentTab: {
-			type: Array,
-			default: null,
-		},
-		tabs: {
-			type: Array,
-			required: true,
-		},
-	},
-	emits: ['update:currentTab'],
-	setup(props, { emit }) {
-		const internalCurrentTab = useSync(props, 'currentTab', emit);
+const props = defineProps<{
+	tabs: [];
+	currentTab?: [];
+}>();
 
-		return { internalCurrentTab };
-	},
-});
+const emit = defineEmits(['update:currentTab']);
+
+const internalCurrentTab = useSync(props, 'currentTab', emit);
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { PermissionsAction } from '@directus/shared/types';
+import { PermissionsAction } from '@directus/types';
 import { computed, Ref } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationM2M } from './use-relation-m2m';
@@ -97,9 +97,7 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 
 	const deleteAllowed = computed(() => {
 		if (info.value?.junction.meta?.one_deselect_action === 'delete') {
-			return Object.fromEntries(
-				Object.entries(relatedPerms.value).map(([key, value]) => [key, value.delete && junctionPerms.value.delete])
-			);
+			return Object.fromEntries(Object.entries(relatedPerms.value).map(([key]) => [key, junctionPerms.value.delete]));
 		}
 
 		return Object.fromEntries(

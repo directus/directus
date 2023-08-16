@@ -19,106 +19,90 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
-import { Revision } from '@/types/revisions';
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
-import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
-import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
+import { Revision } from '@/types/revisions';
+import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
 import { isEqual } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
 
-export default defineComponent({
-	components: { RevisionsDrawerUpdatesChange },
-	props: {
-		revision: {
-			type: Object as PropType<Revision>,
-			required: true,
-		},
-		revisions: {
-			type: Array as PropType<Revision[]>,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	revision: Revision;
+	revisions: Revision[];
+}>();
 
-		const fieldsStore = useFieldsStore();
+const { t } = useI18n();
 
-		const previousRevision = computed(() => {
-			const currentIndex = props.revisions.findIndex((revision) => revision.id === props.revision.id);
+const fieldsStore = useFieldsStore();
 
-			// This is assuming props.revisions is in chronological order from newest to oldest
-			return props.revisions[currentIndex + 1];
-		});
+const previousRevision = computed(() => {
+	const currentIndex = props.revisions.findIndex((revision) => revision.id === props.revision.id);
 
-		const changes = computed(() => {
-			if (!previousRevision.value) return null;
+	// This is assuming props.revisions is in chronological order from newest to oldest
+	return props.revisions[currentIndex + 1];
+});
 
-			const changedFields = Object.keys(props.revision.delta);
+const changes = computed(() => {
+	if (!previousRevision.value) return [];
 
-			return changedFields
-				.map((fieldKey) => {
-					const field = fieldsStore.getField(props.revision.collection, fieldKey);
-					const name = field?.name;
+	const changedFields = Object.keys(props.revision.delta);
 
-					if (!name) return null;
+	return changedFields
+		.map((fieldKey) => {
+			const field = fieldsStore.getField(props.revision.collection, fieldKey);
+			const name = field?.name;
 
-					const currentValue = props.revision.delta?.[fieldKey];
-					const previousValue = previousRevision.value.data?.[fieldKey];
+			if (!name) return null;
 
-					let changes;
-					let updated = false;
+			const currentValue = props.revision.delta?.[fieldKey];
+			const previousValue = previousRevision.value.data?.[fieldKey];
 
-					if (isEqual(currentValue, previousValue)) {
-						if (field?.meta?.special && field.meta.special.includes('conceal')) {
-							updated = true;
+			let changes;
+			let updated = false;
 
-							changes = [
-								{
-									updated: true,
-									value: currentValue,
-								},
-							];
-						} else {
-							return null;
-						}
-					} else if (
-						typeof previousValue === 'string' &&
-						typeof currentValue === 'string' &&
-						currentValue.length > 25
-					) {
-						changes = diffWordsWithSpace(previousValue, currentValue);
-					} else if (Array.isArray(previousValue) && Array.isArray(currentValue)) {
-						changes = diffArrays(previousValue, currentValue);
-					} else if (
-						previousValue &&
-						currentValue &&
-						typeof currentValue === 'object' &&
-						typeof currentValue === 'object'
-					) {
-						changes = diffJson(previousValue, currentValue);
-					} else {
-						// This is considering the whole thing a change
-						changes = [
-							{
-								removed: true,
-								value: previousValue,
-							},
-							{
-								added: true,
-								value: currentValue,
-							},
-						];
-					}
+			if (isEqual(currentValue, previousValue)) {
+				if (field?.meta?.special && field.meta.special.includes('conceal')) {
+					updated = true;
 
-					return { name, updated, changes };
-				})
-				.filter((change) => change);
-		});
+					changes = [
+						{
+							updated: true,
+							value: currentValue,
+						},
+					];
+				} else {
+					return null;
+				}
+			} else if (typeof previousValue === 'string' && typeof currentValue === 'string' && currentValue.length > 25) {
+				changes = diffWordsWithSpace(previousValue, currentValue);
+			} else if (Array.isArray(previousValue) && Array.isArray(currentValue)) {
+				changes = diffArrays(previousValue, currentValue);
+			} else if (
+				previousValue &&
+				currentValue &&
+				typeof currentValue === 'object' &&
+				typeof currentValue === 'object'
+			) {
+				changes = diffJson(previousValue, currentValue);
+			} else {
+				// This is considering the whole thing a change
+				changes = [
+					{
+						removed: true,
+						value: previousValue,
+					},
+					{
+						added: true,
+						value: currentValue,
+					},
+				];
+			}
 
-		return { t, changes, previousRevision };
-	},
+			return { name, updated, changes };
+		})
+		.filter((change) => change);
 });
 </script>
 

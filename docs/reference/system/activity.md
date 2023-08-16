@@ -7,9 +7,7 @@ pageClass: page-reference
 # Activity
 
 > All events within Directus are tracked and stored in the activities collection. This gives you full accountability
-> over everything that happens. [Learn more about Activity](/getting-started/glossary#activity).
-
----
+> over everything that happens. [Learn more about Activity](/user-guide/overview/glossary#activity).
 
 ## The Activity Object
 
@@ -58,13 +56,48 @@ Any changes that were made in this activity. One-to-many to [revisions](/referen
 }
 ```
 
----
-
 ## List Activity Actions
 
 Returns a list of activity actions.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /activity`
+
+`SEARCH /activity`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Query {
+	activity: [directus_activity]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivities } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readActivities(query));
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
@@ -73,62 +106,60 @@ Supports all [global query parameters](/reference/query).
 An array of up to [limit](/reference/query#limit) [activity objects](#the-activity-object). If no items are available,
 data will be an empty array.
 
-### REST API
+### Example
 
-```
-GET /activity
-SEARCH /activity
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+`GET /activity`
 
-### GraphQL
+`SEARCH /activity`
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Query {
-	activity: [directus_activity]
-}
-```
-
-##### Example
+</template>
+<template #graphql>
 
 ```graphql
 query {
 	activity {
-		...
+		# ...
 	}
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivities } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readActivities({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve Activity Action
 
 Returns a single activity action by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /activity/:id`
 
-Returns an [activity object](#the-activity-object) if a valid identifier was provided.
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /activity/:id
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -136,23 +167,120 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivity } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readActivity('activity_id', query));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns an [activity object](#the-activity-object) if a valid identifier was provided.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /activity/15`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
 	activity_by_id(id: 15) {
-		...
+		# ...
 	}
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivity } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readActivity('53281', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Comment
 
 Creates a new comment on a given item.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /activity/comment`
+
+```json
+{
+	"collection": "collection_name",
+	"item": "item_id",
+	"comment": "comment content"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createComment({
+		collection: 'collection_name',
+		item: 'item_id',
+		comment: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `collection` **Required**\
 Collection in which the item resides.
@@ -163,21 +291,18 @@ Primary Key of the item to comment on.
 `comment` **Required**\
 The comment content. Supports Markdown.
 
-### Returns
+### Response
 
 Returns the [activity object](#the-activity-object) of the created comment.
 
-### REST API
+### Example
 
-```
-POST /activity/comment
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /activity/comment`
 
 ```json
-// POST /activity/comment
-
 {
 	"collection": "pages",
 	"item": 3,
@@ -185,107 +310,61 @@ POST /activity/comment
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
-	create_comment(
-		collection: "pages",
-		item: 3,
-		comment: "Hello World"
-	) { ... }
+	create_comment(collection: "pages", item: 3, comment: "Hello World") {
+		# ...
+	}
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createComment({
+		collection: 'articles',
+		item: '18',
+		comment: 'This is the wrong article to publish!',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a Comment
 
 Updates an existing comment by activity action primary key.
 
-### Request Body
+### Response
 
-`comment` **Required**\
-The updated comment content. Supports Markdown.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Returns the [activity object](#the-activity-object) of the created comment.
-
-### REST API
-
-```
-PATCH /activity/comment/:id
-```
-
-##### Example
+`PATCH /activity/comment/:id`
 
 ```json
-// PATCH /activity/comment/15
-
 {
-	"comment": "Hello World!!"
+	"comment": "value"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_comment(id: ID!, comment: String!): directus_activity
-}
-```
-
-##### Example
-
-```graphql
-mutation {
-	update_comment(
-		id: 3,
-		comment: "Hello World",
-	) { ... }
-}
-```
-
----
-
-## Delete a Comment
-
-Deletes a comment.
-
-### REST API
-
-```
-DELETE /activity/comment/:id
-```
-
-##### Example
-
-```
-DELETE /activity/comment/15
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -293,7 +372,125 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateComment('comment_id', {
+		comment: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`comment` **Required**\
+The updated comment content. Supports Markdown.
+
+### Response
+
+Returns the [activity object](#the-activity-object) of the created comment.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /activity/comment/15`
+
+```json
+{
+	"comment": "Hello World!!"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	update_comment(id: 3, comment: "Hello World") {
+		# ...
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateComment('53727', {
+		comment: 'Great work!',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+## Delete a Comment
+
+Deletes a comment.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /activity/comment/:id`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	delete_comment(id: ID): delete_one
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteComment('comment_id'));
+```
+
+</template>
+</SnippetToggler>
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /activity/comment/15`
+
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -302,3 +499,18 @@ mutation {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteComment('53727'));
+```
+
+</template>
+</SnippetToggler>
