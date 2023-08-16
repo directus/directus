@@ -1419,6 +1419,9 @@ panels:
   label:
     name: Silt
 operations:
+  json-web-token:
+    token: Kontrollkood
+    options: Valikud
   log:
     message: Sõnum
   mail:
