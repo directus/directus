@@ -2138,6 +2138,10 @@ operations:
     key: IDs
     payload: Nutzdaten
     query: Abfrage
+  json-web-token:
+    payload: Nutzdaten
+    token: Token
+    options: Optionen
   log:
     name: Konsolenausgabe
     description: Etwas in die Konsole ausgeben
