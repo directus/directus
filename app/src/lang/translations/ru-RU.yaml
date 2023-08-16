@@ -2087,6 +2087,10 @@ operations:
     description: Обновить элементы в базе данных
     payload: Содержимое
     query: Запрос
+  json-web-token:
+    payload: Содержимое
+    token: Ключ доступа
+    options: Параметры
   log:
     name: Лог в консоли
     description: Вывод какой-либо информации в консоль
