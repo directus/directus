@@ -2047,6 +2047,10 @@ operations:
     key: Kimlikler
     payload: Yük
     query: Sorgula
+  json-web-token:
+    payload: Yük
+    token: Erişim Anahtarı (Token)
+    options: Seçenekler
   log:
     name: Konsolda Oturum Aç
     message: Mesaj
