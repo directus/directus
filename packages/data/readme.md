@@ -8,45 +8,32 @@
 npm install @directus/data
 ```
 
+The installation of a driver is also required.
+
 ## Usage
 
-Instantiate the engine:
-
-```js
-import { DataEngine } from '@directus/data';
-
-const data = new DataEngine();
-```
-
-Register a driver to the engine:
+### Setup
 
 ```js
 import { DataEngine } from '@directus/data';
 import { DataDriverPostgres } from '@directus/data-driver-postgres';
 
+// Instantiate the engine
 const engine = new DataEngine();
 
+// Instantiate a driver
 const pgDriver = new DataDriverPostgres({
 	connectionString: 'postgresql://root:password@localhost/mydb',
 });
 
+// register the driver to the engine
 await engine.registerStore('postgres', pgDriver);
 ```
 
-Query data:
+### Query data
 
 ```js
-import { DataEngine } from '@directus/data';
-import { DataDriverPostgres } from '@directus/data-driver-postgres';
-
-const engine = new DataEngine();
-
-const pgDriver = new DataDriverPostgres({
-	connectionString: 'postgresql://root:password@localhost/mydb',
-});
-
-await engine.registerStore('postgres', pgDriver);
-
+// query data
 await engine.query({
 	root: true,
 	store: 'postgres',
@@ -60,19 +47,14 @@ await engine.query({
 });
 ```
 
-## Overall composition of the packages
-
-This visualizes the general data flow regarding `data`.
+The above is resulting in the following flow.
 
 ```mermaid
 graph TB;
     api --> data
-	subgraph data[data abstraction/ -pipeline]
-	direction TB
-    engine --> data-driver-x
-    engine --> data-driver-y
-	data-driver-x ---> db1[(datastore)]
-	data-driver-x  -- if driver is SQL --> data-sql
-	data-driver-y ---> db2[(datastore)]
+	subgraph da[data abstraction]
+		direction TB
+		data --> data-driver-x --> db1[(datastore)]
+		data --> data-driver-y --> db2[(datastore)]
 	end
 ```
