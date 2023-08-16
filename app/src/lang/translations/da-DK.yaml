@@ -2016,6 +2016,10 @@ operations:
     emit_events: Udsende begivenheder
     key: ID
     payload: Nyttelast
+  json-web-token:
+    payload: Nyttelast
+    token: Nøgle
+    options: Valgmuligheder
   log:
     name: Log på konsol
     description: Output noget til konsollen
