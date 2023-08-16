@@ -1921,6 +1921,8 @@ operations:
     emit_events: Emituje događaje
     key: IDevi
     query: Upit
+  json-web-token:
+    options: Opcije
   log:
     name: Prijava na konzolu
     description: Pošaljite nešto na konzolu
