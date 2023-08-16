@@ -2066,6 +2066,10 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Options
   log:
     name: Log to Console
     description: Output something to the console
