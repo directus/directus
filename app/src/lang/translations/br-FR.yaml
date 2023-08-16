@@ -1206,6 +1206,8 @@ panels:
   label:
     name: Tikedenn
 operations:
+  json-web-token:
+    options: Arventennoù
   mail:
     template: Patrom
   notification:
