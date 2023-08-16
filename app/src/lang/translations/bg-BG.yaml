@@ -2040,6 +2040,10 @@ operations:
     key: Ключови имена
     payload: Съдържание
     query: Заявка
+  json-web-token:
+    payload: Съдържание
+    token: Токен
+    options: Настройки
   log:
     name: Конзолен изход
     description: Извеждане на съобщение в конзолата
