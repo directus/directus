@@ -1442,6 +1442,9 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  json-web-token:
+    token: Žeton
+    options: Možnosti
   log:
     message: Sporočilo
   mail:
