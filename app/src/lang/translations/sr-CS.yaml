@@ -1276,6 +1276,9 @@ panels:
   label:
     name: Oznaka
 operations:
+  json-web-token:
+    token: Token
+    options: Opcije
   log:
     message: Poruka
   mail:
