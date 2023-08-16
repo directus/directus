@@ -276,7 +276,7 @@ This operation lets you sign and verify a JSON Web Token (JWT) using the
 - **Token** — The JSON Web Token to verify or decode.
 - **Secret** — The secret key used to sign or verify a token.
 - **Options** — The options object provided to the operation. For the list of available options, see the
-  [documentation of `jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken#usage).
+  [documentation of `jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken#usage).
 
 **Payload**
 
