@@ -2085,6 +2085,10 @@ operations:
     key: ID
     payload: 유효 탑재량
     query: 질문
+  json-web-token:
+    payload: 유효 탑재량
+    token: 접속 인증 토큰
+    options: 옵션
   log:
     name: 콘솔에 로그인
     description: 콘솔에 출력
