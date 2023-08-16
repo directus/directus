@@ -24,4 +24,6 @@ function fetch(url, options) {
 
 }
 
-globalThis.fetch = fetch
+globalThis.API.fetch = fetch
+
+

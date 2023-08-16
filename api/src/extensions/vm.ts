@@ -79,17 +79,19 @@ export class VmManager {
 					hasEndpoint = true;
 				}
 			})
+
 			runExtensionCode = `import {endpoints, hooks, operations} from 'extension.js';`
 
 			if (hasHook) {
 				hookEvents = await this.defineHook.prepareContext(context, extension)
 				runExtensionCode += `for(let hook of hooks) { defineHook(hook.config) }`
 			}
+
 			if (hasOperation) {
 				await this.defineOperation.prepareContext(context, extension)
 				runExtensionCode += `for(let operation of operations) { defineOperationApi(operation.config) }`
-
 			}
+
 			if (hasEndpoint) {
 				await this.defineEndpoint.prepareContext(context, extension)
 				runExtensionCode += `for(let endpoint of endpoints) { defineEndpoint(endpoint.config) }`
@@ -107,6 +109,7 @@ export class VmManager {
 					filename: extensionPath
 				})
 			}
+
 			throw new Error(`Cannot find module ${specifier}`)
 		})
 
@@ -121,6 +124,7 @@ export class VmManager {
 		const unregister = async () => {
 			try {
 				isolate.dispose();
+
 				for (const event of hookEvents) {
 					switch (event.type) {
 						case 'filter':
@@ -148,7 +152,9 @@ export class VmManager {
 		const jail = context.global;
 		jail.setSync('global', jail.derefInto());
 
-		for (let vmFunction of this.vmFunctions) {
+		context.eval(`globalThis.API = {}`)
+
+		for (const vmFunction of this.vmFunctions) {
 			await vmFunction.prepareContext(context, extension)
 		}
 	}

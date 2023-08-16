@@ -203,22 +203,22 @@ function createProxy(service) {
 	})
 }
 
-globalThis.ItemsService = ItemsService
-globalThis.ActivityService = ActivityService
-globalThis.CollectionsService = CollectionsService
-globalThis.DashboardsService = DashboardsService
-globalThis.FieldsService = FieldsService
-globalThis.FlowsService = FlowsService
-globalThis.NotificationsService = NotificationsService
-globalThis.OperationsService = OperationsService
-globalThis.PanelsService = PanelsService
-globalThis.PresetsService = PresetsService
-globalThis.RelationsService = RelationsService
-globalThis.RevisionsService = RevisionsService
-globalThis.ServerService = ServerService
-globalThis.SettingsService = SettingsService
-globalThis.SharesService = SharesService
-globalThis.TranslationsService = TranslationsService
-globalThis.UtilsService = UtilsService
-globalThis.WebhooksService = WebhooksService
-globalThis.WebSocketService = WebSocketService
+globalThis.API.ItemsService = ItemsService
+globalThis.API.ActivityService = ActivityService
+globalThis.API.CollectionsService = CollectionsService
+globalThis.API.DashboardsService = DashboardsService
+globalThis.API.FieldsService = FieldsService
+globalThis.API.FlowsService = FlowsService
+globalThis.API.NotificationsService = NotificationsService
+globalThis.API.OperationsService = OperationsService
+globalThis.API.PanelsService = PanelsService
+globalThis.API.PresetsService = PresetsService
+globalThis.API.RelationsService = RelationsService
+globalThis.API.RevisionsService = RevisionsService
+globalThis.API.ServerService = ServerService
+globalThis.API.SettingsService = SettingsService
+globalThis.API.SharesService = SharesService
+globalThis.API.TranslationsService = TranslationsService
+globalThis.API.UtilsService = UtilsService
+globalThis.API.WebhooksService = WebhooksService
+globalThis.API.WebSocketService = WebSocketService

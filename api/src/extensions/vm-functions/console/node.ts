@@ -24,5 +24,4 @@ export class ConsoleVMFunction extends VMFunction {
 
 		}).copyInto());
 	}
-
 }
