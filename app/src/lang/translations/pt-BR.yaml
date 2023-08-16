@@ -1943,6 +1943,10 @@ operations:
     emit_events: Emitir eventos
     key: IDs
     payload: Payload
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opções
   log:
     description: Emita algo para o console
     message: Mensagem
