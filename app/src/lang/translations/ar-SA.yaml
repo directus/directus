@@ -1633,6 +1633,9 @@ operations:
     key: المعرفات
     payload: حمولة
     query: الاستعلام
+  json-web-token:
+    token: الرمز المميز
+    options: خيارات
   log:
     message: الرسالة
   mail:
