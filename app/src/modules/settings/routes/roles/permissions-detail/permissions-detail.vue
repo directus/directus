@@ -47,7 +47,6 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { useCollectionsStore } from '@/stores/collections';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission, Role } from '@directus/types';
