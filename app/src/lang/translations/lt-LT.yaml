@@ -985,6 +985,8 @@ panels:
   label:
     name: Žyma
 operations:
+  json-web-token:
+    options: Parinktys
   mail:
     template: Šablonas
   notification:
