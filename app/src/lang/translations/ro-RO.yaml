@@ -1783,6 +1783,9 @@ triggers:
   webhook:
     method: Metodă
 operations:
+  json-web-token:
+    token: Token
+    options: Opţiuni
   log:
     message: Mesaj
   mail:
