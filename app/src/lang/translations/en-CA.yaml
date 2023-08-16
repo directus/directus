@@ -1695,6 +1695,9 @@ triggers:
   webhook:
     method: Method
 operations:
+  json-web-token:
+    token: Token
+    options: Options
   mail:
     template: Template
     data: Data
