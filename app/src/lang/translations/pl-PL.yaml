@@ -1469,7 +1469,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 table: Tabela
@@ -2141,6 +2140,10 @@ operations:
     key: ID
     payload: Ładunek
     query: Zapytanie
+  json-web-token:
+    payload: Ładunek
+    token: Token
+    options: Opcje
   log:
     name: Logi do konsoli
     description: Wyjście czegoś do konsoli
