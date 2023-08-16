@@ -1226,6 +1226,10 @@ operations:
   item-update:
     key: Identigiloj
     payload: Enhavaj datumoj
+  json-web-token:
+    payload: Enhavaj datumoj
+    token: Ĵetono
+    options: Opcioj
   log:
     name: Protokoli al la konzolo
     message: Mesaĝo
