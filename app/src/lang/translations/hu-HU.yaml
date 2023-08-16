@@ -2067,6 +2067,10 @@ operations:
     key: Azonosítók
     payload: Adattartalom
     query: Lekérdezés
+  json-web-token:
+    payload: Adattartalom
+    token: Token
+    options: Lehetőségek
   log:
     name: Jelentkezzen be a konzolba
     description: Írjon ki valamit a konzolra
