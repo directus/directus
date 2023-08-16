@@ -2138,6 +2138,10 @@ operations:
     key: ID组
     payload: 有效载荷 (Payload)
     query: 查询
+  json-web-token:
+    payload: 有效载荷 (Payload)
+    token: Token
+    options: 选项
   log:
     name: 记录到控制台
     description: 输出内容到控制台
