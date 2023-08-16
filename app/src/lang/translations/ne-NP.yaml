@@ -1822,6 +1822,10 @@ operations:
     key: IDहरू
     payload: पेलोड
     query: जिज्ञासा
+  json-web-token:
+    payload: पेलोड
+    token: टोकन
+    options: विकल्पहरू
   log:
     name: कन्सोलमा लग गर्नुहोस्
     description: कन्सोलमा केहि आउटपुट गर्नुहोस्
