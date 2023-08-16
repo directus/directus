@@ -861,6 +861,8 @@ layouts:
     cozy: Cozy
 both: Begge
 operations:
+  json-web-token:
+    options: Alternativer
   log:
     message: Melding
   notification:
