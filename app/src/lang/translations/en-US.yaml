@@ -2184,7 +2184,7 @@ operations:
     token: Token
     token_placeholder: eyJhbGciOi......
     options: Options
-    options_placeholder: Refer to https://www.npmjs.com/package/jsonwebtoken for the available options
+    options_placeholder: Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options
     sign: Sign Token
     verify: Verify Token
     decode: Decode Token
