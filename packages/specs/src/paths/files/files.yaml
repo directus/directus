@@ -114,8 +114,3 @@ delete:
       description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-  requestBody:
-    content:
-      application/json:
-        # Intentionally empty, see https://github.com/directus/directus/pull/16294
-        schema:
