@@ -2104,6 +2104,10 @@ operations:
     key: ID ها
     payload: ظرفیت یا Payload
     query: کوئری
+  json-web-token:
+    payload: ظرفیت یا Payload
+    token: توکن
+    options: گزینه‌ها
   log:
     name: ذخیره رخداد در کنسول
     description: خروجی چیزی به کنسول
