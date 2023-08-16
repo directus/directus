@@ -1731,6 +1731,9 @@ triggers:
 operations:
   condition:
     name: Villkor
+  json-web-token:
+    token: Token
+    options: Alternativ
   log:
     message: Meddelande
   mail:
