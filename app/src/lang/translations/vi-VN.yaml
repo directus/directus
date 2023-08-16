@@ -1123,6 +1123,9 @@ triggers:
   webhook:
     method: Phương thức
 operations:
+  json-web-token:
+    token: Token
+    options: Tuỳ chọn
   log:
     message: Tin nhắn
   mail:
