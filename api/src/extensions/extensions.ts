@@ -67,9 +67,11 @@ export class ExtensionManager {
 		this.reloadQueue = new JobQueue();
 
 		this.registration = new RegistrationManager(this);
-		if (env.EXTENSIONS_AUTO_INSTALL === true) {
+
+		if (env['EXTENSIONS_AUTO_INSTALL'] === true) {
 			this.installation = new InstallationManager(this);
 		}
+
 		this.watcher = new WatcherManager(this);
 		this.vm = new VmManager(this);
 	}
@@ -181,7 +183,6 @@ export class ExtensionManager {
 			host: extension.host,
 			version: extension.version,
 			enabled: extension.enabled,
-			registry: extension.registry,
 			secure: extension.secure,
 			requested_permissions: extension.requested_permissions,
 			granted_permissions: extension.granted_permissions,
@@ -285,7 +286,6 @@ export class ExtensionManager {
 
 			registeredExtensions = extensions.map((extension) => ({
 				name: extension.name,
-				registry: undefined,
 				enabled: true,
 				options: {},
 				granted_permissions: [],
