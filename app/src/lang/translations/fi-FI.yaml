@@ -1751,6 +1751,10 @@ operations:
     payload: Tietosisältö
   item-update:
     payload: Tietosisältö
+  json-web-token:
+    payload: Tietosisältö
+    token: Token
+    options: Valinnat
   log:
     message: Viesti
   mail:
