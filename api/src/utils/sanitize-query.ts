@@ -182,15 +182,14 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 	return result;
 
 	function parse(level: Record<string, any>, path: string[] = []) {
-		const parsedLevel: Record<string, any> = {};
 		const subQuery: Record<string, any> = {};
+		const parsedLevel: Record<string, any> = {};
 
 		for (const [key, value] of Object.entries(level)) {
 			if (!key) break;
 
 			if (key.startsWith('_')) {
-				// Sanitize query only accepts non-underscore-prefixed query options
-				// sanitize the entire subquery together
+				// Collect all sub query parameters without the leading underscore
 				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);
@@ -198,11 +197,12 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 		}
 
 		if (Object.keys(subQuery).length > 0) {
+			// Sanitize the entire sub query
 			const parsedSubQuery = sanitizeQuery(subQuery, accountability);
 
-			Object.entries(parsedSubQuery).forEach(([parsedKey, parsedValue]) => {
+			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
 				parsedLevel[`_${parsedKey}`] = parsedValue;
-			});
+			}
 		}
 
 		if (Object.keys(parsedLevel).length > 0) {
