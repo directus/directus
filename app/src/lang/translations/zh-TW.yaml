@@ -1991,6 +1991,10 @@ operations:
     key: ID
     payload: 傳送資料
     query: 查詢
+  json-web-token:
+    payload: 傳送資料
+    token: 權杖
+    options: 選項
   log:
     name: 紀錄於主控台
     description: 將文字顯示到控制台中
