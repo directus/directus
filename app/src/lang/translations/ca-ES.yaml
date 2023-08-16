@@ -1744,6 +1744,10 @@ operations:
     payload: Càrrega
   item-update:
     payload: Càrrega
+  json-web-token:
+    payload: Càrrega
+    token: Token
+    options: Opcions
   log:
     message: Missatge
   mail:
