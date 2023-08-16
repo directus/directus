@@ -399,9 +399,6 @@ function useRelation() {
 
 function useActions() {
 	const isSavable = computed(() => {
-		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
-		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
-
 		if (hasEdits.value) return true;
 
 		if (
@@ -411,6 +408,9 @@ function useActions() {
 		) {
 			return Boolean(internalEdits.value?.[primaryKeyField.value.field]);
 		}
+
+		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
+		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
 
 		if (isNew.value) {
 			return Object.keys(defaultValues.value).length > 0 || hasEdits.value;
