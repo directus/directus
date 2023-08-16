@@ -1963,6 +1963,9 @@ operations:
     emit_events: Povolit události
     key: ID
     query: Dotaz
+  json-web-token:
+    token: Token
+    options: Možnosti
   log:
     description: Vypsat něco do konzole
     message: Zpráva
