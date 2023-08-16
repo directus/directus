@@ -1930,6 +1930,10 @@ operations:
     payload: سودبار
   item-update:
     payload: سودبار
+  json-web-token:
+    payload: سودبار
+    token: تۆکن
+    options: بژاردەکان
   log:
     message: پەیام
   mail:
