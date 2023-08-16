@@ -2086,6 +2086,10 @@ operations:
     key: IDs
     payload: Données utiles
     query: Requête
+  json-web-token:
+    payload: Données utiles
+    token: Token
+    options: Paramètres
   log:
     name: Log dans la console
     description: Afficher quelque chose sur la console
