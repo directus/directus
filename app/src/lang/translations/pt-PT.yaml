@@ -960,6 +960,8 @@ layouts:
     advanced: Avançado
 both: Ambos
 operations:
+  json-web-token:
+    token: Token
   log:
     message: Mensagem
   mail:
