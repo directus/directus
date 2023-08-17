@@ -45,55 +45,55 @@ async function createCollections({
 	logger,
 }: createCollectionsParams) {
 	for (const { collection, diff } of collections) {
-		if (diff?.[0]?.kind === DiffKind.NEW && diff[0].rhs) {
-			// We'll nest the to-be-created fields in the same collection creation, to prevent
-			// creating a collection without a primary key
-			const fields = snapshotDiff.fields
-				.filter((fieldDiff) => fieldDiff.collection === collection)
-				.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
-				.map((fieldDiff) => {
-					// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
-					// This is needed because they snapshots UUID fields as char/varchar with length 36.
-					if (
-						['char', 'varchar'].includes(String(fieldDiff.schema?.data_type).toLowerCase()) &&
-						fieldDiff.schema?.max_length === 36 &&
-						(fieldDiff.schema?.is_primary_key ||
-							(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
-					) {
-						return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
-					} else {
-						return fieldDiff;
-					}
-				});
-
-			try {
-				await collectionsService.createOne(
-					{
-						...diff[0].rhs,
-						fields,
-					},
-					mutationOptions
-				);
-			} catch (err: any) {
-				logger.error(`Failed to create collection "${collection}"`);
-				throw err;
-			}
-
-			// Now that the fields are in for this collection, we can strip them from the field edits
-			snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
-
-			const nestedCollectionsToCreate = snapshotDiff.collections.filter(
-				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === collection
-			) as CollectionDelta[];
-
-			await createCollections({
-				snapshotDiff,
-				mutationOptions,
-				collections: nestedCollectionsToCreate,
-				collectionsService,
-				logger,
-			});
+		// Sanity check
+		if (diff?.[0]?.kind !== DiffKind.NEW || !diff?.[0].rhs) {
+			continue;
 		}
+
+		// We'll nest the to-be-created fields in the same collection creation, to prevent
+		// creating a collection without a primary key
+		const fields = snapshotDiff.fields
+			.filter((fieldDiff) => fieldDiff.collection === collection)
+			.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs) // TODO type errors?
+			.map((fieldDiff) => {
+				// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
+				// This is needed because they snapshots UUID fields as char/varchar with length 36.
+				if (
+					['char', 'varchar'].includes(String(fieldDiff.schema?.data_type).toLowerCase()) &&
+					fieldDiff.schema?.max_length === 36 &&
+					(fieldDiff.schema?.is_primary_key ||
+						(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
+				) {
+					return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
+				} else {
+					return fieldDiff;
+				}
+			});
+
+		try {
+			await collectionsService.createOne({ ...diff[0].rhs, fields }, mutationOptions);
+			logger.info(
+				`Added collection "${collection}" to transaction`
+			);
+		} catch (err: any) {
+			logger.error(`Failed to create collection "${collection}"`);
+			throw err;
+		}
+
+		// Now that the fields are in for this collection, we can strip them from the field edits
+		snapshotDiff.fields = snapshotDiff.fields.filter((fieldDiff) => fieldDiff.collection !== collection);
+
+		const nestedCollectionsToCreate = snapshotDiff.collections.filter(
+			({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === collection
+		) as CollectionDelta[];
+
+		await createCollections({
+			snapshotDiff,
+			mutationOptions,
+			collections: nestedCollectionsToCreate,
+			collectionsService,
+			logger,
+		});
 	}
 }
 
@@ -117,50 +117,54 @@ async function deleteCollections({
 	logger,
 }: deleteCollectionsParams) {
 	for (const { collection, diff } of collections) {
-		if (diff?.[0]?.kind === DiffKind.DELETE) {
-			const relations = schema.relations.filter(
-				(r) => r.related_collection === collection || r.collection === collection
-			);
+		// Sanity check
+		if (diff?.[0]?.kind !== DiffKind.DELETE) {
+			continue;
+		}
 
-			if (relations.length > 0) {
-				for (const relation of relations) {
-					try {
-						await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
-					} catch (err) {
-						logger.error(
-							`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
-						);
+		const relations = schema.relations.filter(
+			(r) => r.related_collection === collection || r.collection === collection
+		);
 
-						throw err;
-					}
+		if (relations.length > 0) {
+			for (const relation of relations) {
+				try {
+					await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
+					logger.info('Added deletion of relationship "${relation.collection}.${relation.field}" to transaction');
+				} catch (err) {
+					logger.error(
+						`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
+					);
+
+					throw err;
 				}
-
-				// clean up deleted relations from existing schema
-				schema.relations = schema.relations.filter(
-					(r) => r.related_collection !== collection && r.collection !== collection
-				);
 			}
 
-			const nestedCollectionsToDelete = snapshotDiff.collections.filter(
-				({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === collection
-			) as CollectionDelta[];
+			// clean up deleted relations from existing schema
+			schema.relations = schema.relations.filter(
+				(r) => r.related_collection !== collection && r.collection !== collection
+			);
+		}
 
-			await deleteCollections({
-				snapshotDiff,
-				schema,
-				collections: nestedCollectionsToDelete,
-				mutationOptions,
-				collectionsService,
-				relationsService,
-				logger,
-			});
+		const nestedCollectionsToDelete = snapshotDiff.collections.filter(
+			({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === collection
+		) as CollectionDelta[];
 
-			try {
-				await collectionsService.deleteOne(collection, mutationOptions);
-			} catch (err) {
-				logger.error(`Failed to delete collection "${collection}"`);
-				throw err;
-			}
+		await deleteCollections({
+			snapshotDiff,
+			schema,
+			collections: nestedCollectionsToDelete,
+			mutationOptions,
+			collectionsService,
+			relationsService,
+			logger,
+		});
+
+		try {
+			await collectionsService.deleteOne(collection, mutationOptions);
+		} catch (err) {
+			logger.error(`Failed to delete collection "${collection}"`);
+			throw err;
 		}
 	}
 }
@@ -176,8 +180,10 @@ export async function applyDiff(
 	const nestedActionEvents: ActionEventParams[] = [];
 
 	const mutationOptions: MutationOptions = {
+		autoPurgeCache: false,
 		autoPurgeSystemCache: false,
 		bypassEmitAction: (params) => nestedActionEvents.push(params),
+		emitEvents: true,
 		bypassLimits: true,
 	};
 
@@ -221,7 +227,6 @@ export async function applyDiff(
 
 			return false;
 		});
-
 		// Create top level collections (no group, or highest level in existing group) first,
 		// then continue with nested collections recursively
 		await createCollections({
@@ -232,21 +237,51 @@ export async function applyDiff(
 			logger,
 		});
 
-		// delete top level collections (no group) first, then continue with nested collections recursively
+		// // // (2/x) Deletion of relations
+
 		const toDeleteCollections = snapshotDiff.collections.filter(({ diff }) => {
 			if (diff.length === 0 || diff[0] === undefined) return false;
-			const collectionDiff = diff[0] as DiffDeleted<Collection>;
-			return collectionDiff.kind === DiffKind.DELETE;
+			return diff[0].kind === DiffKind.DELETE;
 		});
-		await deleteCollections({
-			snapshotDiff,
-			schema,
-			collections: toDeleteCollections,
-			mutationOptions,
-			collectionsService,
-			relationsService,
-			logger,
-		});
+		logger.info(`${toDeleteCollections.length} collections will be prepared for deletion`);
+
+		// The deletion of collections might not work due to constraints on relations
+		// We need to delete them first, before we can delete the collections
+
+		// TODO This is not enough for complex relations and might fail
+		// Need to clean up schema manually(?) because relational fields
+		// Get deleted by the service - do we have to or can we obtain an updated schema?
+		
+		const relationsPerCollection: Array<Array<Relation>> = [];
+		for (const diff of toDeleteCollections) {
+			const relations = schema.relations.filter(
+				(r) => r.related_collection === diff.collection || r.collection === diff.collection
+			);
+			if (relations.length === 0) {
+				continue;
+			}
+			relationsPerCollection.push(relations);
+		}
+		logger.info(`${relationsPerCollection.length} collections have relations that will be marked for deletion first`);
+		console.log(JSON.stringify(relationsPerCollection, null, 2))
+
+		for (const relations of relationsPerCollection) {
+			for (const relation of relations) {
+				await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
+				logger.info(`  - '${relation.collection}.${relation.field} <-> ${relation.related_collection}' prepared for deletion`);
+			}
+		}
+
+		// // // (3/x) Deletion of collections
+
+		const toDeleteCollectionKeys = toDeleteCollections.map((delta) => delta.collection);
+
+		for (const collectionKey of toDeleteCollectionKeys) {
+			await collectionsService.deleteOne(collectionKey, mutationOptions);
+			logger.info(`Collection '${collectionKey}' prepared for deletion`);
+		}
+
+		// // // (4/x) Updating collections
 
 		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY) {
@@ -368,7 +403,12 @@ export async function applyDiff(
 				}
 			}
 		}
+
+		// TODO DELETE
+		// Just for testing without the need to redo operations
+		throw Error('PLS ROLLBACK THANK UUUU');
 	});
+	logger.info(`Transaction successfully applied`);
 
 	if (runPostColumnChange) {
 		await helpers.schema.postColumnChange();
