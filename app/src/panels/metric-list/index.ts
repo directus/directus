@@ -7,12 +7,10 @@ import PanelMetricList from './panel-metric-list.vue';
 export default definePanel({
 	id: 'metric-list',
 	name: 'Metric List',
-	icon: 'box',
+	icon: 'format_list_numbered_rtl',
 	description: 'List and visualize aggregate metrics from a collection',
 	component: PanelMetricList,
 	query(options) {
-		console.log(options);
-
 		if (!options?.collection) return;
 
 		const collectionsStore = useCollectionsStore();

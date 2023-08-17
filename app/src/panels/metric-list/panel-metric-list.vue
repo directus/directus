@@ -19,7 +19,7 @@
 							<render-template :item="{[groupByField]: row['group'][groupByField]}" :collection="collection" :template="`{{${groupByField}}}`" />
 						</div>
 
-						<div class="metric-bar-number" :style="{ color: `${color ? chroma(color).darken(2).hex() : '#6644FF'}` }">
+						<div class="metric-bar-number" :style="{ color: `${chroma(getColor(row[aggregateFunction][aggregateField])).darken(2).hex()}` }">
 							{{ prefix }}{{ displayValue(row[aggregateFunction][aggregateField]) }}{{ suffix }}
 						</div>
 					</div>
