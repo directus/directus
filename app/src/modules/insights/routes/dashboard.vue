@@ -84,6 +84,8 @@
 				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
 
+			<comments-sidebar-detail :key="primaryKey" collection="directus_insights" :primary-key="primaryKey" />
+
 			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
 		</template>
 
@@ -216,6 +218,7 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 
 interface Props {
 	primaryKey: string;

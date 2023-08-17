@@ -65,6 +65,14 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		}
 	}
 
+	if (to.params.collection === 'directus_insights') {
+		if (to.params.primaryKey) {
+			return `/insights/${to.params.primaryKey}`;
+		} else {
+			return '/insights';
+		}
+	}
+
 	if (
 		'bookmark' in from.query &&
 		typeof from.query.bookmark === 'string' &&
