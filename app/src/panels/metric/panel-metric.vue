@@ -1,6 +1,9 @@
 <template>
 	<div ref="labelContainer" class="metric type-title selectable" :class="{ 'has-header': showHeader }">
-		<p ref="labelText" :style="{ color, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }">
+		<p
+			ref="labelText"
+			:style="{ color, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
+		>
 			{{ prefix }}
 			{{ displayValue(metric) }}
 			{{ suffix }}

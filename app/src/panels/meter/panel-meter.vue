@@ -85,9 +85,9 @@ const radius = computed(() => {
 	// Determine the shorter dimension
 	const minDimension = Math.min(widthPx, heightPx);
 
-	if(props.size == 'half' && heightPx < widthPx){
+	if (props.size == 'half' && heightPx < widthPx) {
 		// Added so half circles that have a shorter height than width can maximize the space up to the padding of the height
-		return Math.min((widthPx / 2 - strokeOffset), (props.height * 30 / 2 - 12))
+		return Math.min(widthPx / 2 - strokeOffset, (props.height * 30) / 2 - 12);
 	}
 
 	// The radius is half of the shorter dimension inclusive of padding and border
@@ -119,7 +119,6 @@ const dashOffset = computed(() => {
 	if (props.size === 'half') return full / 2;
 	return full;
 });
-
 
 const conditionalColor = computed(() => {
 	const defaultColor = props.color ?? 'var(--primary)';
@@ -189,10 +188,10 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 	top: v-bind(halfSizeOutputOffset);
 }
 .panel-meter svg circle:last-child {
-    transform-origin: center center;
-    transform: rotate(-90deg);
-    stroke-dasharray: v-bind(circumference) v-bind(circumference);
-    stroke-dashoffset: v-bind(dashOffset);
+	transform-origin: center center;
+	transform: rotate(-90deg);
+	stroke-dasharray: v-bind(circumference) v-bind(circumference);
+	stroke-dashoffset: v-bind(dashOffset);
 }
 
 .panel-meter.size-half svg circle:last-child {

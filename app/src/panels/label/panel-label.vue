@@ -7,7 +7,7 @@
 	>
 		<p
 			ref="labelText"
-			:style="{ whiteSpace, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined  }"
+			:style="{ whiteSpace, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
 		>
 			{{ text }}
 		</p>

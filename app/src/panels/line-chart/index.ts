@@ -18,15 +18,13 @@ export default definePanel({
 			filter: options['filter'] ?? {},
 			limit: -1,
 			aggregate: {
-				[options?.aggregation]: [options?.yAxis]
+				[options?.aggregation]: [options?.yAxis],
 			},
-			group: []
+			group: [],
 		};
 
-		if(options['datePrecision']){
-			query['group'].push(
-				...getGroups(options['datePrecision'],options['xAxis'])
-			)
+		if (options['datePrecision']) {
+			query['group'].push(...getGroups(options['datePrecision'], options['xAxis']));
 		} else {
 			query['group'].push(options['xAxis']);
 		}
@@ -50,13 +48,12 @@ export default definePanel({
 			if (fields.length === 0) return [];
 
 			return fields.map((field) => {
-				console.log(field)
+				console.log(field);
 				return {
 					value: field.field,
 					text: field.name,
 				};
 			});
-
 		});
 
 		return [
@@ -158,7 +155,7 @@ export default definePanel({
 					interface: 'select-dropdown',
 					options: {
 						choices: yAxisChoices,
-						allowNone: true
+						allowNone: true,
 					},
 				},
 			},

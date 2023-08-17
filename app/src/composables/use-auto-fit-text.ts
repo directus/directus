@@ -1,9 +1,15 @@
 import { Ref } from 'vue';
 
 function extractValues(paddingString: string): { top: number; right: number; bottom: number; left: number } {
-	const paddingValues: number[] = paddingString.split(' ').map((value) => parseFloat(value.trim())).filter((value) => !isNaN(value));
+	const paddingValues: number[] = paddingString
+		.split(' ')
+		.map((value) => parseFloat(value.trim()))
+		.filter((value) => !isNaN(value));
 
-	let top = 0, right = 0, bottom = 0, left = 0;
+	let top = 0,
+		right = 0,
+		bottom = 0,
+		left = 0;
 
 	switch (paddingValues.length) {
 		case 1:
@@ -26,7 +32,6 @@ function extractValues(paddingString: string): { top: number; right: number; bot
 			[top, right, bottom, left] = paddingValues;
 			break;
 	}
-
 
 	return { top, right, bottom, left };
 }

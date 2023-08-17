@@ -8,7 +8,7 @@ export default definePanel({
 	icon: 'title',
 	component: PanelLabel,
 	options: ({ options }) => {
-		if(!options) options = {};
+		if (!options) options = {};
 		return [
 			{
 				field: 'text',
@@ -128,39 +128,39 @@ export default definePanel({
 						choices: [
 							{
 								text: '$t:fonts.thin',
-								value: 100
+								value: 100,
 							},
 							{
 								text: '$t:fonts.extra_light',
-								value: 200
+								value: 200,
 							},
 							{
 								text: '$t:fonts.light',
-								value: 300
+								value: 300,
 							},
 							{
 								text: '$t:fonts.normal',
-								value: 400
+								value: 400,
 							},
 							{
 								text: '$t:fonts.medium',
-								value: 500
+								value: 500,
 							},
 							{
 								text: '$t:fonts.semi_bold',
-								value: 600
+								value: 600,
 							},
 							{
 								text: '$t:fonts.bold',
-								value: 700
+								value: 700,
 							},
 							{
 								text: '$t:fonts.extra_bold',
-								value: 800
+								value: 800,
 							},
 							{
 								text: '$t:fonts.black',
-								value: 900
+								value: 900,
 							},
 						],
 					},

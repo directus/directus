@@ -78,7 +78,7 @@ watch(
 		() => props.showLegend,
 		() => props.showMarker,
 		() => props.min,
-		() => props.max
+		() => props.max,
 	],
 	() => {
 		chart.value?.destroy();
@@ -142,7 +142,7 @@ function setUpChart() {
 		series.length
 	);
 
-	const isSparkline = props.width < 12 || props.height < 10
+	const isSparkline = props.width < 12 || props.height < 10;
 
 	chart.value = new ApexCharts(chartEl.value, {
 		colors: colors,
@@ -168,8 +168,8 @@ function setUpChart() {
 			fontFamily: 'var(--family-sans-serif)',
 			foreColor: 'var(--foreground-subdued)',
 			sparkline: {
-				enabled: isSparkline
-			}
+				enabled: isSparkline,
+			},
 		},
 		series: series,
 		stroke: {

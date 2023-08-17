@@ -13,13 +13,23 @@
 				>
 					<div
 						class="metric-bar"
-						:style="{ width: widthOfRow(row), 'background-color': `${getColor(row[aggregateFunction][aggregateField])}50` }"
+						:style="{
+							width: widthOfRow(row),
+							'background-color': `${getColor(row[aggregateFunction][aggregateField])}50`,
+						}"
 					>
 						<div class="metric-bar-text">
-							<render-template :item="{[groupByField]: row['group'][groupByField]}" :collection="collection" :template="`{{${groupByField}}}`" />
+							<render-template
+								:item="{ [groupByField]: row['group'][groupByField] }"
+								:collection="collection"
+								:template="`{{${groupByField}}}`"
+							/>
 						</div>
 
-						<div class="metric-bar-number" :style="{ color: `${chroma(getColor(row[aggregateFunction][aggregateField])).darken(2).hex()}` }">
+						<div
+							class="metric-bar-number"
+							:style="{ color: `${chroma(getColor(row[aggregateFunction][aggregateField])).darken(2).hex()}` }"
+						>
 							{{ prefix }}{{ displayValue(row[aggregateFunction][aggregateField]) }}{{ suffix }}
 						</div>
 					</div>
@@ -102,7 +112,7 @@ function displayValue(value: number) {
 	});
 }
 
-function getColor(input){
+function getColor(input) {
 	if (isNil(input)) return null;
 
 	let matchingFormat = null;
@@ -146,7 +156,7 @@ function getColor(input){
 			}
 		}
 
-		return false
+		return false;
 	}
 }
 </script>
