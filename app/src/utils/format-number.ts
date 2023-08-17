@@ -11,50 +11,53 @@
  * ```
  */
 
-export type SimpleUnit =
-	| 'acre'
-	| 'bit'
-	| 'byte'
-	| 'celsius'
-	| 'centimeter'
-	| 'day'
-	| 'degree'
-	| 'fahrenheit'
-	| 'fluid-ounce'
-	| 'foot'
-	| 'gallon'
-	| 'gigabit'
-	| 'gigabyte'
-	| 'gram'
-	| 'hectare'
-	| 'hour'
-	| 'inch'
-	| 'kilobit'
-	| 'kilobyte'
-	| 'kilogram'
-	| 'kilometer'
-	| 'liter'
-	| 'megabit'
-	| 'megabyte'
-	| 'meter'
-	| 'mile'
-	| 'mile-scandinavian'
-	| 'millimeter'
-	| 'milliliter'
-	| 'millisecond'
-	| 'minute'
-	| 'month'
-	| 'ounce'
-	| 'percent'
-	| 'petabyte'
-	| 'pound'
-	| 'second'
-	| 'stone'
-	| 'terabit'
-	| 'terabyte'
-	| 'week'
-	| 'yard'
-	| 'year';
+const SIMPLE_UNITS = [
+	'acre',
+	'bit',
+	'byte',
+	'celsius',
+	'centimeter',
+	'day',
+	'degree',
+	'fahrenheit',
+	'fluid-ounce',
+	'foot',
+	'gallon',
+	'gigabit',
+	'gigabyte',
+	'gram',
+	'hectare',
+	'hour',
+	'inch',
+	'kilobit',
+	'kilobyte',
+	'kilogram',
+	'kilometer',
+	'liter',
+	'megabit',
+	'megabyte',
+	'meter',
+	'mile',
+	'mile-scandinavian',
+	'millimeter',
+	'milliliter',
+	'millisecond',
+	'minute',
+	'month',
+	'ounce',
+	'percent',
+	'petabyte',
+	'pound',
+	'second',
+	'stone',
+	'terabit',
+	'terabyte',
+	'week',
+	'yard',
+	'year'
+] as const;
+
+export type SimpleUnit = typeof SIMPLE_UNITS[number];
 
 export type Unit = SimpleUnit | `${SimpleUnit}-per-${SimpleUnit}`; // Compound unit type
 
@@ -96,7 +99,7 @@ interface BaseNumberFormatOptions {
 	signDisplay?: SignDisplay;
 	roundingMode?: RoundingMode;
 	roundingIncrement?: number;
-	unit? : Unit;
+	unit?: Unit;
 }
 
 interface CurrencyOptions extends BaseNumberFormatOptions {
@@ -106,7 +109,6 @@ interface CurrencyOptions extends BaseNumberFormatOptions {
 	currencySign?: CurrencySign;
 }
 
-
 interface UnitOptions extends BaseNumberFormatOptions {
 	style: 'unit';
 	unit: Unit;
@@ -115,13 +117,31 @@ interface UnitOptions extends BaseNumberFormatOptions {
 
 export type NumberFormatOptions = BaseNumberFormatOptions | CurrencyOptions | UnitOptions;
 
+function isSimpleUnit(value: any): value is SimpleUnit {
+    return SIMPLE_UNITS.includes(value);
+}
+
+export function isUnit(value: any): value is Unit {
+	if(!value) return false;
+    if (isSimpleUnit(value)) return true;
+
+    const parts = value.split('-per-');
+    return parts.length === 2 && isSimpleUnit(parts[0]) && isSimpleUnit(parts[1]);
+}
+
+
 export function formatNumber(value: number, locales: string | string[], options?: NumberFormatOptions): string {
 
-	if(options?.style !== 'unit' && options?.unit) {
+	// if the style isnt unit and unit
+	if (options?.style !== 'unit' && options?.unit){
 		// if unit is not style but there is a unit prop, delete it
 		delete options.unit;
 	}
 
-	const formatter: Intl.NumberFormat = new Intl.NumberFormat(locales, options);
-	return formatter.format(value);
+	try {
+		const formatter: Intl.NumberFormat = new Intl.NumberFormat(locales, options);
+		return formatter.format(value);
+	} catch(e) {
+		return String(value);
+	}
 }
