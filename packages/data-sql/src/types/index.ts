@@ -16,3 +16,4 @@ export * from './nodes/index.js';
 export * from './modifiers/index.js';
 export * from './abstract-sql-query.js';
 export * from './parameterized-statement.js';
+export * from './utils.js';

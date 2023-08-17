@@ -1,5 +1,6 @@
-import type { AbstractSqlQueryNode, ValueNode } from '../../../index.js';
-import type { AbstractSqlQuerySelectNode } from '../../../nodes/index.js';
+import type { AbstractSqlQueryNode } from '../../../utils.js';
+import type { ValueNode } from '../../../parameterized-statement.js';
+import type { AbstractSqlQuerySelectNode } from '../../../nodes/primitive.js';
 
 /**
  * Used to only retrieve a set of data, where the column in question stored a geographic value which intersects with another given geographic value.

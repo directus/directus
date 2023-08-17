@@ -1,9 +1,7 @@
-import type {
-	AbstractSqlQueryFnNode,
-	AbstractSqlQueryNode,
-	AbstractSqlQuerySelectNode,
-	ValueNode,
-} from '../../../index.js';
+import type { AbstractSqlQueryFnNode } from '../../../nodes/fn.js';
+import type { ValueNode } from '../../../parameterized-statement.js';
+import type { AbstractSqlQueryNode } from '../../../utils.js';
+import type { AbstractSqlQuerySelectNode } from '../../../nodes/primitive.js';
 
 /**
  * Filter rows where a numeric column is equal, greater than, less than, etc. other given number.

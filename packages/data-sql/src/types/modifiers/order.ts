@@ -1,5 +1,5 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
-import type { AbstractSqlQueryNode } from '../index.js';
+import type { AbstractSqlQueryNode } from '../utils.js';
 
 export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
 	type: 'order';

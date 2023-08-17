@@ -1,5 +1,5 @@
-import type { AbstractSqlQueryNode } from '../../../index.js';
-import type { AbstractSqlQuerySelectNode } from '../../../nodes/index.js';
+import type { AbstractSqlQueryNode } from '../../../utils.js';
+import type { AbstractSqlQuerySelectNode } from '../../../nodes/primitive.js';
 
 /**
  * Condition to filter rows where two columns of different tables are equal.

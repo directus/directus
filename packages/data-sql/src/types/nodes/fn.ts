@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryNode } from '../abstract-sql-query.js';
+import type { AbstractSqlQueryNode } from '../utils.js';
 import type { AbstractSqlQuerySelectNode } from './primitive.js';
 import type { ValuesNode } from '../parameterized-statement.js';
 import type { SupportedFunctions } from '@directus/data';

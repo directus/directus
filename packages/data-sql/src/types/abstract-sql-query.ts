@@ -1,7 +1,9 @@
-import type { AbstractSqlQueryOrderNode, AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from './index.js';
 import type { AbstractSqlQueryFnNode, AbstractSqlQueryJoinNode } from './nodes/index.js';
 import type { AbstractSqlQuerySelectNode } from './nodes/primitive.js';
 import type { ValueNode, ParameterTypes } from './parameterized-statement.js';
+import type { AbstractSqlQueryOrderNode } from './modifiers/order.js';
+import type { AbstractSqlQueryLogicalNode } from './modifiers/filter/logical.js';
+import type { AbstractSqlQueryConditionNode } from './modifiers/filter/conditions/index.js';
 
 /**
  * This is an abstract SQL query which can be passed to all SQL drivers.
@@ -31,15 +33,6 @@ export interface AbstractSqlQuery {
 	 * they correspond to.
 	 */
 	paths: Map<string, string[]>;
-}
-
-/**
- * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
- * With this in place it can easily be determined how to technically handle this field.
- */
-export interface AbstractSqlQueryNode {
-	/** the type of the node */
-	type: string;
 }
 
 export type WhereUnion = Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>>;

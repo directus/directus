@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryNode } from '../abstract-sql-query.js';
+import type { AbstractSqlQueryNode } from '../utils.js';
 
 export interface AbstractSqlQueryColumn {
 	table: string;

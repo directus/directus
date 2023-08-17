@@ -1,5 +1,5 @@
 import type { GeoJSONGeometry } from 'wellknown';
-import type { AbstractSqlQueryNode } from './index.js';
+import type { AbstractSqlQueryNode } from './utils.js';
 
 /**
  * Used pass a single value.

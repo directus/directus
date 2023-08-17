@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryNode } from '../../abstract-sql-query.js';
+import type { AbstractSqlQueryNode } from '../../utils.js';
 import type { AbstractSqlQueryConditionNode } from './conditions/condition.js';
 
 /**
