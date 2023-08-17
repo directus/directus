@@ -1,8 +1,9 @@
 import type { Field, Relation, SchemaOverview } from '@directus/types';
-import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import type { Diff, DiffNew } from 'deep-diff';
 import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash-es';
+import type { Logger } from 'pino';
 import { flushCaches } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
@@ -22,7 +23,6 @@ import type {
 } from '../types/index.js';
 import { DiffKind } from '../types/index.js';
 import { getSchema } from './get-schema.js';
-import type { Logger } from 'pino';
 
 type CollectionDelta = {
 	collection: string;
@@ -72,9 +72,7 @@ async function createCollections({
 
 		try {
 			await collectionsService.createOne({ ...diff[0].rhs, fields }, mutationOptions);
-			logger.info(
-				`Added collection "${collection}" to transaction`
-			);
+			logger.info(`Added collection "${collection}" to transaction`);
 		} catch (err: any) {
 			logger.error(`Failed to create collection "${collection}"`);
 			throw err;
@@ -94,78 +92,6 @@ async function createCollections({
 			collectionsService,
 			logger,
 		});
-	}
-}
-
-export type deleteCollectionsParams = {
-	snapshotDiff: SnapshotDiff;
-	schema: SchemaOverview;
-	collections: CollectionDelta[];
-	mutationOptions: MutationOptions;
-	collectionsService: CollectionsService;
-	relationsService: RelationsService;
-	logger: Logger;
-};
-
-async function deleteCollections({
-	snapshotDiff,
-	schema,
-	collections,
-	mutationOptions,
-	collectionsService,
-	relationsService,
-	logger,
-}: deleteCollectionsParams) {
-	for (const { collection, diff } of collections) {
-		// Sanity check
-		if (diff?.[0]?.kind !== DiffKind.DELETE) {
-			continue;
-		}
-
-		const relations = schema.relations.filter(
-			(r) => r.related_collection === collection || r.collection === collection
-		);
-
-		if (relations.length > 0) {
-			for (const relation of relations) {
-				try {
-					await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
-					logger.info('Added deletion of relationship "${relation.collection}.${relation.field}" to transaction');
-				} catch (err) {
-					logger.error(
-						`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
-					);
-
-					throw err;
-				}
-			}
-
-			// clean up deleted relations from existing schema
-			schema.relations = schema.relations.filter(
-				(r) => r.related_collection !== collection && r.collection !== collection
-			);
-		}
-
-		const nestedCollectionsToDelete = snapshotDiff.collections.filter(
-			({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === collection
-		) as CollectionDelta[];
-
-		await deleteCollections({
-			snapshotDiff,
-			schema,
-			collections: nestedCollectionsToDelete,
-			mutationOptions,
-			collectionsService,
-			relationsService,
-			logger,
-		});
-
-		try {
-			await collectionsService.deleteOne(collection, mutationOptions);
-		} catch (err) {
-			logger.error(`Failed to delete collection "${collection}"`);
-			throw err;
-		}
 	}
 }
 
@@ -237,21 +163,18 @@ export async function applyDiff(
 			logger,
 		});
 
-		// // // (2/x) Deletion of relations
+		// // // Deletion of relations
 
 		const toDeleteCollections = snapshotDiff.collections.filter(({ diff }) => {
 			if (diff.length === 0 || diff[0] === undefined) return false;
 			return diff[0].kind === DiffKind.DELETE;
 		});
+		const toDeleteCollectionKeys = toDeleteCollections.map((delta) => delta.collection);
 		logger.info(`${toDeleteCollections.length} collections will be prepared for deletion`);
 
 		// The deletion of collections might not work due to constraints on relations
 		// We need to delete them first, before we can delete the collections
 
-		// TODO This is not enough for complex relations and might fail
-		// Need to clean up schema manually(?) because relational fields
-		// Get deleted by the service - do we have to or can we obtain an updated schema?
-		
 		const relationsPerCollection: Array<Array<Relation>> = [];
 		for (const diff of toDeleteCollections) {
 			const relations = schema.relations.filter(
@@ -263,25 +186,33 @@ export async function applyDiff(
 			relationsPerCollection.push(relations);
 		}
 		logger.info(`${relationsPerCollection.length} collections have relations that will be marked for deletion first`);
-		console.log(JSON.stringify(relationsPerCollection, null, 2))
 
 		for (const relations of relationsPerCollection) {
 			for (const relation of relations) {
 				await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
-				logger.info(`  - '${relation.collection}.${relation.field} <-> ${relation.related_collection}' prepared for deletion`);
+				logger.info(`  - '${relation.collection}.${relation.field}' prepared for deletion`);
 			}
 		}
 
-		// // // (3/x) Deletion of collections
+		// Deletions dont get propagated to the schema, since the transaction isnt run yet
+		// This can lead to errors when trying to delete fields, because the service
+		// deletes relational fields too - This results in duplicate deletions i.e.
+		// we need to get rid of those manually, to avoid duplicate deletions
+		schema.relations = schema.relations.filter((r) => {
+			return (
+				toDeleteCollectionKeys.includes(r.collection) === false &&
+				toDeleteCollectionKeys.includes(r.related_collection!) === false
+			);
+		});
 
-		const toDeleteCollectionKeys = toDeleteCollections.map((delta) => delta.collection);
+		// // // Deletion of collections
 
 		for (const collectionKey of toDeleteCollectionKeys) {
 			await collectionsService.deleteOne(collectionKey, mutationOptions);
 			logger.info(`Collection '${collectionKey}' prepared for deletion`);
 		}
 
-		// // // (4/x) Updating collections
+		// // // Updating collections
 
 		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY) {
@@ -403,10 +334,6 @@ export async function applyDiff(
 				}
 			}
 		}
-
-		// TODO DELETE
-		// Just for testing without the need to redo operations
-		throw Error('PLS ROLLBACK THANK UUUU');
 	});
 	logger.info(`Transaction successfully applied`);
 
