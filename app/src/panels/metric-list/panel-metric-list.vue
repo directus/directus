@@ -13,14 +13,14 @@
 				>
 					<div
 						class="metric-bar"
-						:style="{ width: widthOfRow(row), 'background-color': `${color ? color : '#6644FF'}50` }"
+						:style="{ width: widthOfRow(row), 'background-color': `${getColor(row[aggregateFunction][aggregateField])}50` }"
 					>
 						<div class="metric-bar-text">
 							<render-template :item="{[groupByField]: row['group'][groupByField]}" :collection="collection" :template="`{{${groupByField}}}`" />
 						</div>
 
 						<div class="metric-bar-number" :style="{ color: `${color ? chroma(color).darken(2).hex() : '#6644FF'}` }">
-							{{ prefix }} {{ displayValue(row[aggregateFunction][aggregateField]) }} {{ suffix }}
+							{{ prefix }}{{ displayValue(row[aggregateFunction][aggregateField]) }}{{ suffix }}
 						</div>
 					</div>
 
@@ -34,6 +34,8 @@
 <script setup lang="ts">
 import chroma from 'chroma-js';
 import { useI18n } from 'vue-i18n';
+import { cssVar } from '@directus/utils/browser';
+import { isNil } from 'lodash';
 import { formatNumber } from '@/utils/format-number';
 import type { Style, Notation, Unit } from '@/utils/format-number';
 
@@ -44,16 +46,16 @@ const props = withDefaults(
 		aggregateField?: string;
 		aggregateFunction?: string;
 		sortDirection?: string;
-		color?: string;
 
 		notation?: Notation;
 		numberStyle?: Style;
 		unit?: Unit;
-		minimumFractionDigits?: number;
-		maximumFractionDigits?: number;
-
 		prefix?: string | null;
 		suffix?: string | null;
+		minimumFractionDigits?: number;
+		maximumFractionDigits?: number;
+		conditionalFormatting?: Record<string, any>[];
+
 		collection: string;
 		dashboard: string;
 		data?: object;
@@ -64,14 +66,15 @@ const props = withDefaults(
 		aggregateField: '',
 		aggregateFunction: '',
 		sortDirection: 'desc',
-		color: '',
+
 		notation: 'standard',
 		numberStyle: 'decimal',
 		unit: undefined,
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 0,
 		prefix: '',
 		suffix: '',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+		conditionalFormatting: () => [],
 		data: () => ({}),
 	}
 );
@@ -99,7 +102,53 @@ function displayValue(value: number) {
 	});
 }
 
+function getColor(input){
+	if (isNil(input)) return null;
 
+	let matchingFormat = null;
+
+	for (const format of props.conditionalFormatting || []) {
+		if (matchesOperator(format)) {
+			matchingFormat = format;
+		}
+	}
+
+	return matchingFormat ? matchingFormat.color || cssVar('--primary') : '#6644FF';
+
+	function matchesOperator(format: Record<string, any>) {
+		if (typeof input === 'string') {
+			const value = input;
+			const compareValue = format.value ?? '';
+
+			switch (format.operator || '>=') {
+				case '=':
+					return value === compareValue;
+				case '!=':
+					return value !== compareValue;
+			}
+		} else {
+			const value = Number(input);
+			const compareValue = Number(format.value ?? 0);
+
+			switch (format.operator || '>=') {
+				case '=':
+					return value === compareValue;
+				case '!=':
+					return value !== compareValue;
+				case '>':
+					return value > compareValue;
+				case '>=':
+					return value >= compareValue;
+				case '<':
+					return value < compareValue;
+				case '<=':
+					return value < compareValue;
+			}
+		}
+
+		return false
+	}
+}
 </script>
 
 <style scoped>
@@ -110,7 +159,7 @@ function displayValue(value: number) {
 	--v-list-item-padding: 6px;
 	--v-list-item-margin: 0;
 	height: 100%;
-	padding: 0 6px;
+	padding: 6px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }

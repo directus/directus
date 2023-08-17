@@ -208,6 +208,32 @@ export default definePanel({
 				},
 			},
 			{
+				field: 'prefix',
+				type: 'string',
+				name: '$t:prefix',
+				meta: {
+					interface: 'input',
+					width: 'half',
+					options: {
+						placeholder: '$t:prefix_placeholder',
+						trim: false,
+					},
+				},
+			},
+			{
+				field: 'suffix',
+				type: 'string',
+				name: '$t:suffix',
+				meta: {
+					interface: 'input',
+					width: 'half',
+					options: {
+						placeholder: '$t:suffix_placeholder',
+						trim: false,
+					},
+				},
+			},
+			{
 				field: 'numberStyle',
 				type: 'string',
 				name: '$t:style',
@@ -284,50 +310,9 @@ export default definePanel({
 				},
 			},
 			{
-				field: 'prefix',
-				type: 'string',
-				name: '$t:prefix',
-				meta: {
-					interface: 'input',
-					width: 'half',
-					options: {
-						placeholder: '$t:prefix_placeholder',
-						trim: false,
-					},
-				},
-			},
-			{
-				field: 'suffix',
-				type: 'string',
-				name: '$t:suffix',
-				meta: {
-					interface: 'input',
-					width: 'half',
-					options: {
-						placeholder: '$t:suffix_placeholder',
-						trim: false,
-					},
-				},
-			},
-			{
-				field: 'decimals',
-				type: 'integer',
-				name: '$t:decimals',
-				meta: {
-					interface: 'input',
-					width: 'half',
-					options: {
-						placeholder: '$t:decimals_placeholder',
-					},
-				},
-				schema: {
-					default_value: 0,
-				},
-			},
-			{
 				field: 'minimumFractionDigits',
 				type: 'integer',
-				name: '$t:minimumFractionDigits',
+				name: '$t:minimum_fraction_digits',
 				meta: {
 					interface: 'input',
 					width: 'half',
@@ -342,7 +327,7 @@ export default definePanel({
 			{
 				field: 'maximumFractionDigits',
 				type: 'integer',
-				name: '$t:maximumFractionDigits',
+				name: '$t:maximum_fraction_digits',
 				meta: {
 					interface: 'input',
 					width: 'half',
@@ -386,22 +371,18 @@ export default definePanel({
 											{
 												text: '$t:operators.gt',
 												value: '>',
-												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.gte',
 												value: '>=',
-												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.lt',
 												value: '<',
-												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.lte',
 												value: '<=',
-												disabled: !fieldIsNumber.value,
 											},
 										],
 									},
