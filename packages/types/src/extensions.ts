@@ -51,6 +51,7 @@ export type DatabaseExtensionPermission = {
 	id: number,
 	extension: string,
 	permission: string,
+	enabled: boolean,
 	options: Record<string, any>,
 }
 
