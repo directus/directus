@@ -1,0 +1,20 @@
+table: directus_branches
+
+fields:
+  - field: id
+    special:
+      - uuid
+    readonly: true
+    hidden: true
+  - field: name
+  - field: collection
+  - field: icon
+  - field: color
+  - field: hash
+  - field: date_created
+    special:
+      - date-created
+      - cast-timestamp
+  - field: user_created
+    special:
+      - user-created

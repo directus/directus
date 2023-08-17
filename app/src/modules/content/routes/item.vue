@@ -56,6 +56,24 @@
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
 
+		<template #title:append>
+			<branch-menu
+				v-if="
+					collectionInfo.meta &&
+					collectionInfo.meta.branches_enabled &&
+					!isNew &&
+					readBranchesAllowed &&
+					!branchesLoading
+				"
+				:collection="collection"
+				:primary-key="internalPrimaryKey"
+				:current-branch="currentBranch"
+				:branches="branches"
+				@switch="currentBranch = $event"
+				@refresh="getBranches"
+			/>
+		</template>
+
 		<template #actions>
 			<v-button
 				v-if="previewURL"
@@ -69,7 +87,12 @@
 				<v-icon name="visibility" outline />
 			</v-button>
 
-			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
+			<v-dialog
+				v-if="!isNew && currentBranch === null"
+				v-model="confirmDelete"
+				:disabled="deleteAllowed === false"
+				@esc="confirmDelete = false"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
@@ -134,6 +157,7 @@
 			</v-dialog>
 
 			<v-button
+				v-if="currentBranch === null"
 				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
@@ -152,6 +176,32 @@
 						@save-as-copy="saveAsCopyAndNavigate"
 						@discard-and-stay="discardAndStay"
 					/>
+				</template>
+			</v-button>
+			<v-button
+				v-else
+				v-tooltip.bottom="t('commit')"
+				rounded
+				icon
+				:loading="commitLoading"
+				:disabled="!isSavable"
+				@click="CommitToBranch"
+			>
+				<v-icon name="commit" />
+
+				<template #append-outer>
+					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
+						<template #activator="{ toggle }">
+							<v-icon name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<v-list>
+							<v-list-item clickable @click="discardAndStay">
+								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
+								<v-list-item-content>{{ t('discard_all_changes') }}</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
 				</template>
 			</v-button>
 		</template>
@@ -199,11 +249,21 @@
 					ref="revisionsDrawerDetailRef"
 					:collection="collection"
 					:primary-key="internalPrimaryKey"
+					:branch="currentBranch"
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
-				<comments-sidebar-detail :collection="collection" :primary-key="internalPrimaryKey" />
-				<shares-sidebar-detail :collection="collection" :primary-key="internalPrimaryKey" :allowed="shareAllowed" />
+				<comments-sidebar-detail
+					v-if="currentBranch === null"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+				/>
+				<shares-sidebar-detail
+					v-if="currentBranch === null"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:allowed="shareAllowed"
+				/>
 				<flow-sidebar-detail
 					location="item"
 					:collection="collection"
@@ -220,12 +280,14 @@
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { useBranches } from '@/composables/use-branches';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
+import { usePermissionsStore } from '@/stores/permissions';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
@@ -235,6 +297,7 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import { useCollection } from '@directus/composables';
 import { useHead } from '@unhead/vue';
 import { useRouter } from 'vue-router';
+import BranchMenu from '../components/branch-menu.vue';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
@@ -253,6 +316,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+const { hasPermission } = usePermissionsStore();
 
 const form = ref<HTMLElement>();
 
@@ -262,6 +326,18 @@ const { breadcrumb } = useBreadcrumb();
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
+
+const readBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'read'));
+
+const {
+	currentBranch,
+	branches,
+	loading: branchesLoading,
+	query,
+	getBranches,
+	commitLoading,
+	commit,
+} = useBranches(collection, primaryKey);
 
 const {
 	isNew,
@@ -280,7 +356,7 @@ const {
 	saveAsCopy,
 	refresh,
 	validationErrors,
-} = useItem(collection, primaryKey);
+} = useItem(collection, primaryKey, query);
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
@@ -470,6 +546,19 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
+async function CommitToBranch() {
+	if (isSavable.value === false) return;
+	if (unref(currentBranch) === null) return;
+
+	try {
+		await commit(edits);
+		edits.value = {};
+		if (props.singleton === false) router.push(`/content/${props.collection}`);
+	} catch {
+		// Commit shows unexpected error dialog
+	}
+}
+
 async function saveAndQuit() {
 	if (isSavable.value === false) return;
 
@@ -483,6 +572,7 @@ async function saveAndQuit() {
 
 async function saveAndStay() {
 	if (isSavable.value === false) return;
+	if (unref(currentBranch) === null) return;
 
 	try {
 		const savedItem: Record<string, any> = await save();
@@ -501,6 +591,7 @@ async function saveAndStay() {
 
 async function saveAndAddNew() {
 	if (isSavable.value === false) return;
+	if (unref(currentBranch) === null) return;
 
 	try {
 		await save();
