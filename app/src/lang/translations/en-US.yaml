@@ -2089,6 +2089,7 @@ panels:
     smooth: Smooth
     straight: Straight
     step_line: Step Line
+    show_legend: Show Legend
   meter:
     name: Meter
     description: Meter for tracking values
@@ -2381,3 +2382,6 @@ font_size: Font Size
 minimum_fraction_digits: Minimum Decimals
 maximum_fraction_digits: Maximum Decimals
 show_percentage: Show Percentage
+aggregation: Aggregation
+series_grouping: Series Grouping
+date_precision: Date Precision
