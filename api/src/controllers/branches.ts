@@ -1,6 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { assign, pick } from 'lodash-es';
+import { assign } from 'lodash-es';
 import { ErrorCode } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -10,7 +10,6 @@ import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { ItemsService } from '../services/items.js';
 
 const router = express.Router();
 
@@ -263,23 +262,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const branch = await service.readOne(req.params['pk']!);
-
-		const commits = await service.getBranchCommits(branch['id']);
-
-		const branchResult = assign({}, ...commits);
-
-		const payloadToUpdate = req.body?.['fields'] ? pick(branchResult, req.body['fields']) : branchResult;
-
-		// will throw an error if the accountability does not have permission to update the item
-		await service.authorizationService.checkAccess('update', branch['collection'], branch['item']);
-
-		const itemsService = new ItemsService(branch['collection'], {
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const updatedItemKey = await itemsService.updateOne(branch['item'], payloadToUpdate);
+		const updatedItemKey = await service.merge(req.params['pk']!, req.body?.['fields']);
 
 		res.locals['payload'] = { data: updatedItemKey || null };
 
