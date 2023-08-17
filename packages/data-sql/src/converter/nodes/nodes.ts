@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../../types/index.js';
-import { createUniqueIdentifier } from '../../utils/create-unique-identifier.js';
+import { createUniqueIdentifier } from './create-unique-identifier.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';

@@ -1,2 +1,2 @@
-export { convertFilter } from './filter/filter.js';
-export { convertSort } from './sort.js';
+export * from './filter/index.js';
+export * from './sort.js';

@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
 import type { AbstractSqlQuerySelectNode } from '../../types/index.js';
-import { createUniqueIdentifier } from '../../utils/create-unique-identifier.js';
+import { createUniqueIdentifier } from './create-unique-identifier.js';
 
 /**
  * @param abstractPrimitive
