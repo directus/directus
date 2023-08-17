@@ -1114,6 +1114,7 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    branches_enabled: Branches
     archive_field: Archive Field
     item_duplication_fields: Item Duplication Fields
   directus_files:
@@ -1311,8 +1312,8 @@ field_options:
     accountability_divider: Accountability
     duplication_divider: Duplication
     preview_divider: Preview
-    branches_divider: Branches
-    branches_enabled: Enable Branches
+    content_versioning_divider: Content Versioning
+    enable_branches: Enable Branches
   directus_files:
     title: A unique title...
     description: An optional description...

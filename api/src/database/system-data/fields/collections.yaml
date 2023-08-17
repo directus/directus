@@ -116,14 +116,14 @@ fields:
       collectionField: collection
     width: full
 
-  - field: branches_divider
+  - field: content_versioning_divider
     special:
       - alias
       - no-data
     interface: presentation-divider
     options:
-      icon: fork_right
-      title: $t:field_options.directus_collections.branches_divider
+      icon: update
+      title: $t:field_options.directus_collections.content_versioning_divider
     width: full
 
   - field: branches_enabled
@@ -131,7 +131,7 @@ fields:
     special:
       - cast-boolean
     options:
-      label: $t:field_options.directus_collections.branches_enabled
+      label: $t:field_options.directus_collections.enable_branches
     width: half
 
   - field: archive_divider
