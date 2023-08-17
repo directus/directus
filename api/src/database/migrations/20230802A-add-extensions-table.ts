@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.increments('id').primary().notNullable();
 		table.string('extension').notNullable().references('name').inTable('directus_extensions');
 		table.string('permission').notNullable();
+		table.boolean('enabled').notNullable().defaultTo(false);
 		table.json('options')
 	});
 
