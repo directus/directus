@@ -2342,3 +2342,28 @@ compact: Compact
 currency: Currency
 notation: Notation
 style: Style
+fonts:
+  thin: Thin
+  extra_light: Extra Light
+  light: Light
+  normal: Normal
+  medium: Medium
+  semi_bold: Semi Bold
+  bold: Bold
+  extra_bold: Extra Bold
+  black: Black
+  italic: Italic
+  oblique: Oblique
+  small: Small
+  large: Large
+  auto: Auto
+text_wrap: Text Wrap
+center: Center
+justify: Justify
+text_align: Text Align
+font_weight: Font Weight
+font_style: Font Style
+font_size: Font Size
+minimum_fraction_digits: Minimum Decimals
+maximum_fraction_digits: Maximum Decimals
+show_percentage: Show Percentage
