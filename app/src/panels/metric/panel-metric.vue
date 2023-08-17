@@ -1,8 +1,8 @@
 <template>
 	<div ref="labelContainer" class="metric type-title selectable" :class="{ 'has-header': showHeader }">
-		<p ref="labelText" :style="{ color }">
+		<p ref="labelText" :style="{ color, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }">
 			{{ prefix }}
-			{{ displayValue }}
+			{{ displayValue(metric) }}
 			{{ suffix }}
 		</p>
 	</div>
@@ -10,41 +10,56 @@
 
 <script setup lang="ts">
 import { Filter } from '@directus/types';
-import { abbreviateNumber } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
 import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAutoFontFit } from '@/composables/use-auto-fit-text';
+import { formatNumber } from '@/utils/format-number';
+import type { Style, Notation, Unit } from '@/utils/format-number';
 
 interface Props {
 	showHeader?: boolean;
-	abbreviate?: boolean;
 	sortField?: string;
 	collection: string;
 	field: string;
 	function: string;
 	filter?: Filter;
 	data?: Record<string, any>[];
-	decimals?: number;
-	conditionalFormatting?: Record<string, any>[];
+	notation?: Notation;
+	numberStyle?: Style;
+	unit?: Unit;
 	prefix?: string | null;
 	suffix?: string | null;
+	minimumFractionDigits?: number;
+	maximumFractionDigits?: number;
+	conditionalFormatting?: Record<string, any>[];
+	textAlign?: string | undefined;
+	fontSize?: string;
+	fontWeight?: number | undefined;
+	fontStyle?: string | undefined;
+	font?: 'sans-serif' | 'serif' | 'monospace';
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	showHeader: false,
-	abbreviate: false,
 	sortField: undefined,
 	data: () => [],
 	filter: () => ({}),
-	decimals: 0,
+	notation: 'standard',
+	numberStyle: 'decimal',
+	unit: undefined,
+	prefix: '',
+	suffix: '',
+	minimumFractionDigits: 0,
+	maximumFractionDigits: 0,
 	conditionalFormatting: () => [],
-	prefix: null,
-	suffix: null,
+	fontSize: 'auto',
+	fontWeight: 800,
+	font: 'sans-serif',
 });
 
-const { n } = useI18n();
+const { locale } = useI18n();
 
 const labelContainer = ref<HTMLDivElement | null>(null);
 const labelText = ref<HTMLParagraphElement | null>(null);
@@ -74,29 +89,37 @@ function adjustPadding() {
 function updateFit() {
 	adjustPadding();
 	adjustFontSize();
+
+	if (!resizeObserver) {
+		const container = labelContainer.value;
+		if (!container) return;
+
+		// Create a ResizeObserver to watch for changes in the container's dimensions
+		resizeObserver = new ResizeObserver(() => {
+			updateFit();
+		});
+
+		resizeObserver.observe(container);
+	}
+
+	adjustFontSize();
 }
 
 onMounted(() => {
-	const container = labelContainer.value;
-	if (!container) return;
-
-	updateFit();
-
-	// Create a ResizeObserver to watch for changes in the container's dimensions
-	resizeObserver = new ResizeObserver(() => {
+	if (props.fontSize == 'auto') {
 		updateFit();
-	});
 
-	resizeObserver.observe(container);
-
-	// Delay the initial font size adjustment to allow the text/font to render fully
-	setTimeout(() => {
-		updateFit();
-	}, 500);
+		// Delay the initial font size adjustment to allow the text/font to render fully
+		setTimeout(() => {
+			updateFit();
+		}, 500);
+	}
 });
 
 onUpdated(() => {
-	updateFit();
+	if (props.fontSize == 'auto') {
+		updateFit();
+	}
 });
 
 onBeforeUnmount(() => {
@@ -124,22 +147,19 @@ const metric = computed(() => {
 	}
 });
 
-const displayValue = computed(() => {
-	if (isNil(metric.value)) return null;
-
-	if (typeof metric.value === 'string') {
-		return metric.value;
+function displayValue(value: number) {
+	if (value === null || value === undefined) {
+		return 0;
 	}
 
-	if (props.abbreviate) {
-		return abbreviateNumber(metric.value, props.decimals ?? 0);
-	}
-
-	return n(Number(metric.value), 'decimal', {
-		minimumFractionDigits: props.decimals ?? 0,
-		maximumFractionDigits: props.decimals ?? 0,
-	} as any);
-});
+	return formatNumber(Number(value), locale.value, {
+		notation: props.notation,
+		style: props.numberStyle,
+		unit: props.unit,
+		minimumFractionDigits: props.minimumFractionDigits,
+		maximumFractionDigits: props.maximumFractionDigits,
+	});
+}
 
 const color = computed(() => {
 	if (isNil(metric.value)) return null;
@@ -184,6 +204,8 @@ const color = computed(() => {
 					return value < compareValue;
 			}
 		}
+
+		return false;
 	}
 });
 </script>
@@ -198,9 +220,6 @@ const color = computed(() => {
 	font-weight: 800;
 	white-space: nowrap;
 	line-height: 1.2;
+	padding: 12px;
 }
-
-/* .metric.has-header {
-	height: calc(100% - 16px);
-} */
 </style>
