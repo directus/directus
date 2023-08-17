@@ -51,8 +51,8 @@ Retrieve a temporary access token and refresh token.
 
 ```json
 {
-	"email": "user_email",
-	"password": "user_password"
+	"email": user_email,
+	"password": user_password
 }
 ```
 
@@ -74,17 +74,15 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { authentication } from '@directus/sdk/authentication';
-import { rest, login } from '@directus/sdk/rest';
+import { createDirectus, authentication, rest, login } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('directus_project_url').with(authentication()).with(rest());
 
 // login using the authentication composable
-const result = await client.login('email', 'password');
+const result = await client.login(email, password);
 
 // login http request
-const result = await client.request(login('email', 'password'));
+const result = await client.request(login(email, password));
 ```
 
 </template>
@@ -158,11 +156,9 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { authentication } from '@directus/sdk/authentication';
-import { rest, login } from '@directus/sdk/rest';
+import { createDirectus, authentication, rest, login } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest());
 
 // login using the authentication composable
 const result = await client.login('admin@example.com', 'd1r3ctu5');
@@ -187,8 +183,8 @@ Retrieve a new access token using a refresh token.
 
 ```json
 {
-	"refresh_token": "gmPd...8wuB",
-	"mode": "json"
+	"refresh_token": refresh_token_string,
+	"mode": refresh_mode
 }
 ```
 
@@ -210,11 +206,9 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { authentication } from '@directus/sdk/authentication';
-import { rest, refresh } from '@directus/sdk/rest';
+import { createDirectus, authentication, rest, refresh } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('directus_project_url').with(authentication()).with(rest());
 
 // refresh using the authentication composable
 const result = await client.refresh();
@@ -223,7 +217,7 @@ const result = await client.refresh();
 const result = await client.request(refresh('cookie'));
 
 // refresh http request using json
-const result = await client.request(refresh('json', 'refresh_token'));
+const result = await client.request(refresh('json', refresh_token));
 ```
 
 </template>
@@ -282,11 +276,9 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { authentication } from '@directus/sdk/authentication';
-import { rest, refresh } from '@directus/sdk/rest';
+import { createDirectus, authentication, rest, refresh } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest());
 
 // refresh using the authentication composable
 const result = await client.refresh();
@@ -314,7 +306,7 @@ Invalidate the refresh token thus destroying the user's session.
 
 ```json
 {
-	"refresh_token": "refresh_token"
+	"refresh_token": refresh_token
 }
 ```
 
@@ -333,17 +325,15 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { authentication } from '@directus/sdk/authentication';
-import { rest, logout } from '@directus/sdk/rest';
+import { createDirectus, authentication, rest, logout } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('directus_project_url').with(authentication()).with(rest());
 
 // logout using the authentication composable
 const result = await client.logout();
 
 // logout http request
-const result = await client.request(logout('refresh_token'));
+const result = await client.request(logout(refresh_token));
 ```
 
 </template>
@@ -383,11 +373,9 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { authentication } from '@directus/sdk/authentication';
-import { rest, logout } from '@directus/sdk/rest';
+import { createDirectus, authentication, rest, logout } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest());
 
 // logout using the authentication composable
 const result = await client.logout();
@@ -412,7 +400,7 @@ Request a password reset email to be sent to the given user.
 
 ```json
 {
-	"email": "user_email"
+	"email": user_email
 }
 ```
 
@@ -431,12 +419,11 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, passwordRequest } from '@directus/sdk/rest';
+import { createDirectus, rest, passwordRequest } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(passwordRequest('user_email'));
+const result = await client.request(passwordRequest(user_email));
 ```
 
 </template>
@@ -480,8 +467,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, passwordRequest } from '@directus/sdk/rest';
+import { createDirectus, rest, passwordRequest } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -505,8 +491,8 @@ this endpoint to allow the user to reset their password.
 
 ```json
 {
-	"token": "password_reset_token",
-	"password": "password"
+	"token": password_reset_token,
+	"password": password
 }
 ```
 
@@ -525,12 +511,11 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, passwordReset } from '@directus/sdk/rest';
+import { createDirectus, rest, passwordReset } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(passwordReset('reset_token', 'new_password'));
+const result = await client.request(passwordReset(reset_token, new_password));
 ```
 
 </template>
@@ -573,8 +558,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, passwordReset } from '@directus/sdk/rest';
+import { createDirectus, rest, passwordReset } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -602,6 +586,22 @@ To learn more about setting up auth providers, see
 
 `GET /auth`
 
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readProviders } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readProviders());
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
 ```json
 {
 	"data": [
@@ -623,23 +623,6 @@ To learn more about setting up auth providers, see
 	"disableDefault": false
 }
 ```
-
-</template>
-<template #sdk>
-
-```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readProviders } from '@directus/sdk/rest';
-
-const client = createDirectus('https://directus.example.com').with(rest());
-
-const result = await client.request(readProviders());
-```
-
-</template>
-</SnippetToggler>
-
-### Response
 
 `data` **Array**\
 Array of configured auth providers.
@@ -654,34 +637,11 @@ Whether or not the default authentication provider is disabled.
 
 `GET /auth`
 
-```json
-{
-	"data": [
-		{
-			"name": "GitHub",
-			"driver": "oauth2",
-			"icon": "github"
-		},
-		{
-			"name": "Google",
-			"driver": "openid",
-			"icon": "google"
-		},
-		{
-			"name": "Okta",
-			"driver": "openid"
-		}
-	],
-	"disableDefault": false
-}
-```
-
 </template>
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readProviders } from '@directus/sdk/rest';
+import { createDirectus, rest, readProviders } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

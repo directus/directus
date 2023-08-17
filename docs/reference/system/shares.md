@@ -76,6 +76,10 @@ List all shares that exist in Directus.
 
 `SEARCH /shares`
 
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
 </template>
 <template #graphql>
 
@@ -91,22 +95,15 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readShares } from '@directus/sdk/rest';
+import { createDirectus, rest, readShares } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readShares({
-		fields: ['*'],
-	})
-);
+const result = await client.request(readShares(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -146,8 +143,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readShares } from '@directus/sdk/rest';
+import { createDirectus, rest, readShares } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -185,16 +181,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readShare } from '@directus/sdk/rest';
+import { createDirectus, rest, readShare } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readShare('share_id', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readShare(share_id, query_object));
 ```
 
 </template>
@@ -235,8 +226,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readShare } from '@directus/sdk/rest';
+import { createDirectus, rest, readShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -261,14 +251,7 @@ Create a new share.
 
 `POST /shares`
 
-```json
-{
-	"share_field_1": "value_1",
-	"share_field_2": "value_2",
-	"share_field_3": "value_3",
-	"share_field_4": "value_4"
-}
-```
+Provide a [share object](#the-share-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -285,19 +268,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createShare } from '@directus/sdk/rest';
+import { createDirectus, rest, createShare } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createShare({
-		share_field_1: 'value_1',
-		share_field_2: 'value_2',
-		share_field_3: 'value_3',
-		share_field_4: 'value_4',
-	})
-);
+const result = await client.request(createShare(share_object));
 ```
 
 </template>
@@ -351,8 +326,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createShare } from '@directus/sdk/rest';
+import { createDirectus, rest, createShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -380,22 +354,7 @@ Create multiple new shares.
 
 `POST /shares`
 
-```json
-[
-	{
-		"share_1_field_1": "value_1",
-		"share_1_field_2": "value_2",
-		"share_1_field_3": "value_3",
-		"share_1_field_4": "value_4"
-	},
-	{
-		"share_2_field_1": "value_5",
-		"share_2_field_2": "value_6",
-		"share_2_field_3": "value_7",
-		"share_2_field_4": "value_8"
-	}
-]
-```
+Provide an array of [share objects](#the-share-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -412,27 +371,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createShares } from '@directus/sdk/rest';
+import { createDirectus, rest, createShares } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createShares([
-		{
-			share_1_field_1: 'value_1',
-			share_1_field_2: 'value_2',
-			share_1_field_3: 'value_3',
-			share_1_field_4: 'value_4',
-		},
-		{
-			share_2_field_1: 'value_5',
-			share_2_field_2: 'value_6',
-			share_2_field_3: 'value_7',
-			share_2_field_4: 'value_8',
-		},
-	])
-);
+const result = await client.request(createShares(share_object_array));
 ```
 
 </template>
@@ -504,8 +447,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createShares } from '@directus/sdk/rest';
+import { createDirectus, rest, createShares } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -541,11 +483,7 @@ Update an existing share.
 
 `PATCH /shares/:id`
 
-```json
-{
-	"share_field": "value_1"
-}
-```
+Provide a partial [share objects](#the-share-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -562,16 +500,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateShare } from '@directus/sdk/rest';
+import { createDirectus, rest, updateShare } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateShare('share_id', {
-		share_field: 'value',
-	})
-);
+const result = await client.request(updateShare(share_id, partial_share_object));
 ```
 
 </template>
@@ -622,8 +555,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateShare } from '@directus/sdk/rest';
+import { createDirectus, rest, updateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -650,10 +582,8 @@ Update multiple existing shares.
 
 ```json
 {
-	"keys": ["share_1_id", "share_2_id"],
-	"data": {
-		"share_object_field": "value_1"
-	}
+	"keys": share_id_array,
+	"data": partial_share_object
 }
 ```
 
@@ -672,16 +602,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateShare } from '@directus/sdk/rest';
+import { createDirectus, rest, updateShares } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateShares(['share_1_id', 'share_2_id'], {
-		field: 'value',
-	})
-);
+const result = await client.request(updateShares(share_id_array, partial_share_object));
 ```
 
 </template>
@@ -742,8 +667,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateShare } from '@directus/sdk/rest';
+import { createDirectus, rest, updateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -780,6 +704,17 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteShare } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteShare(share_id));
+```
+
+</template>
 </SnippetToggler>
 
 ### Response
@@ -810,8 +745,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteShare } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(staticToken()).with(rest());
 
@@ -832,9 +766,7 @@ Delete multiple existing shares.
 
 `DELETE /shares`
 
-```json
-["share_1_id", "share_2_id"]
-```
+Provide an array of share IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -851,12 +783,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteShares } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteShares } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteShares(['share_1_id', 'share_2_id']));
+const result = await client.request(deleteShares(share_id_array));
 ```
 
 </template>
@@ -898,8 +829,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteShares } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteShares } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -927,8 +857,8 @@ with the credentials set returned by this endpoint.
 
 ```json
 {
-	"share": "share_key",
-	"password": "password"
+	"share": share_id,
+	"password": password
 }
 ```
 
@@ -941,12 +871,11 @@ with the credentials set returned by this endpoint.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readShareInfo } from '@directus/sdk/rest';
+import { createDirectus, rest, authenticateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(readShareInfo('share_key'));
+const result = await client.request(authenticateShare('share_key', 'password'));
 ```
 
 </template>
@@ -995,12 +924,11 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, authenticateShare } from '@directus/sdk/rest';
+import { createDirectus, rest, authenticateShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(authenticateShare('share_key', 'password'));
+const result = await client.request(authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us'));
 ```
 
 </template>
@@ -1019,8 +947,8 @@ Sends an email to the provided email addresses with a link to the share.
 
 ```json
 {
-	"share": "share_key",
-	"emails": ["email_addr_1", "email_addr_2"]
+	"share": share_key,
+	"emails": email_address_array
 }
 ```
 
@@ -1033,12 +961,11 @@ Sends an email to the provided email addresses with a link to the share.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, authenticateShare } from '@directus/sdk/rest';
+import { createDirectus, rest, inviteShare } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us'));
+const result = await client.request(inviteShare(share_id, email_address_array));
 ```
 
 </template>
@@ -1079,12 +1006,13 @@ Empty body.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, inviteShare } from '@directus/sdk/rest';
+import { createDirectus, rest, inviteShare } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(inviteShare('share_key', ['email_addr_1', 'email_addr_2']));
+const result = await client.request(
+	inviteShare('653925a9-970e-487a-bfc0-ab6c96affcdc', ['allison@example.com', 'mike@example.com'])
+);
 ```
 
 </template>
@@ -1108,14 +1036,11 @@ Allows unauthenticated users to retrieve information about the share.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, inviteShare } from '@directus/sdk/rest';
+import { createDirectus, rest, readShareInfo } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	inviteShare('653925a9-970e-487a-bfc0-ab6c96affcdc', ['allison@example.com', 'mike@example.com'])
-);
+const result = await client.request(readShareInfo(share_id));
 ```
 
 </template>
@@ -1141,8 +1066,7 @@ The [share objects](#the-share-object) for the given UUID, if it's still valid.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readShareInfo } from '@directus/sdk/rest';
+import { createDirectus, rest, readShareInfo } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
