@@ -54,8 +54,8 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 		const branch = await branchesService.readByQuery({ filter: { name: { _eq: req.sanitizedQuery.branch } } });
 
-		if (branch.length > 0) {
-			const commits = await branchesService.getBranchCommits(branch[0]!['id']);
+		if (branch[0]) {
+			const commits = await branchesService.getBranchCommits(branch[0]['id']);
 
 			assign(res.locals['payload'].data, ...commits);
 		}
