@@ -15,7 +15,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_marketplace')" class="page-description" />
 			</sidebar-detail>
 		</template>
@@ -45,7 +45,7 @@ provide('api', marketApi);
 const { t } = useI18n();
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .header-icon {
 	--v-button-color: var(--primary);
 	--v-button-background-color: var(--primary-10);

@@ -14,13 +14,12 @@
 			<search-input v-model="search" :showFilter="false" always-active />
 		</template>
 
-
 		<template #navigation>
 			<settings-navigation />
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_marketplace')" class="page-description" />
 			</sidebar-detail>
 		</template>
@@ -40,7 +39,7 @@ import { marketApi } from './market-api';
 import { useExtensionsStore } from '@/stores/extensions';
 import SearchInput from '@/views/private/components/search-input.vue';
 
-const type = ref('all')
+const type = ref('all');
 const extensionsStore = useExtensionsStore();
 
 provide('api', marketApi);
@@ -50,7 +49,7 @@ const { t } = useI18n();
 const search = ref<string | null>('');
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .header-icon {
 	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);

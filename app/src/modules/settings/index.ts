@@ -24,7 +24,6 @@ import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
-import ExtensionsOverview from './routes/extensions/overview.vue';
 import MarketOverview from './routes/market/overview.vue';
 import MarketUser from './routes/market/user.vue';
 import MarketExtension from './routes/market/extension.vue';
@@ -236,29 +235,6 @@ export default defineModule({
 					name: 'settings-translations-item',
 					path: ':primaryKey',
 					component: TranslationsItem,
-					props: true,
-				},
-			],
-		},
-		{
-			path: 'market',
-			component: RouterPass,
-			children: [
-				{
-					name: 'extensions-overview',
-					path: '',
-					component: MarketOverview,
-				},
-				{
-					name: 'extension',
-					path: 'extensions/:name(.+)',
-					component: MarketExtension,
-					props: true,
-				},
-				{
-					name: 'user',
-					path: 'users/:name',
-					component: MarketUser,
 					props: true,
 				},
 			],

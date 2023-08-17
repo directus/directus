@@ -37,7 +37,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_marketplace')" class="page-description" />
 			</sidebar-detail>
 		</template>
@@ -50,20 +50,46 @@
 			@select-version="version = $event"
 		/>
 
-		<v-dialog :model-value="installDialog">
-			<v-card>
-				<v-card-title>Install {{ title }}</v-card-title>
-				<v-card-text>
-					Are you sure that you want to install this extension? The extension has full access to your database and can
-					do anything.
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="installDialog = false">Close</v-button>
-					<v-button danger @click="install()">Install</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<v-drawer v-model="installDialog" :title="`Install ${title} extension`" @cancel="installDialog = false">
+			<template #actions>
+				<slot name="actions" />
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="install">
+					<v-icon name="check" />
+				</v-button>
+			</template>
 
+			<div class="drawer-item-content">
+				<v-notice v-if="selectedVersion.secure" type="warning">
+					This is a secure permission. You are able to configure permissions the extension has access to.
+				</v-notice>
+				<v-notice v-else type="danger">
+					<p>
+						You are installing a
+						<strong>non-secure</strong>
+						extension. This extension has full access to your database and can do anything.
+					</p>
+				</v-notice>
+				<div class="title">Required Permissions</div>
+				<v-list class="permissions required">
+					<Permission
+						v-for="(permission, index) in grantedPermissionsRequired"
+						:key="permission.permission"
+						:permission="permission"
+						@update:permissions="grantedPermissionsRequired[index] = $event"
+					/>
+				</v-list>
+				<div class="title">Optional Permissions</div>
+				<v-list class="permissions required">
+					<Permission
+						v-for="(permission, index) in grantedPermissionsOptional"
+						:key="permission.permission"
+						:permission="permission"
+						optional
+						@update:permissions="grantedPermissionsOptional[index] = $event"
+					/>
+				</v-list>
+			</div>
+		</v-drawer>
 		<v-dialog :model-value="updateDialog">
 			<v-card>
 				<v-card-title>Update {{ title }}</v-card-title>
@@ -90,9 +116,10 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
+import Permission from './permission.vue';
 import Extension from '@nitwel/directus-marketplace/market/extension.vue';
 import { formatTitle } from '@nitwel/directus-marketplace/utils/format';
-import { computed, provide, ref } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import { marketApi } from './market-api';
 import api from '@/api';
 import { useExtensionsStore } from '@/stores/extensions';
@@ -100,6 +127,12 @@ import { useServerStore } from '@/stores/server';
 
 interface Props {
 	name: string;
+}
+
+export interface Permission {
+	permission: string;
+	enabled: boolean;
+	options?: string;
 }
 
 const props = defineProps<Props>();
@@ -114,11 +147,59 @@ const extension = computed(() => {
 	return extensionsStore.extensions.find((extension) => extension.name === props.name);
 });
 
+const extensionInfo = ref<Record<string, any> | null>(null);
+const latestVersion = ref<string | null>(null);
+const grantedPermissionsRequired = ref<Permission[]>([]);
+const grantedPermissionsOptional = ref<Permission[]>([]);
+
 provide('api', marketApi);
 
 const { t } = useI18n();
 
 const local = computed(() => Boolean(extension.value && !extension.value.registry));
+
+const selectedVersion = computed(() => {
+	if (!extensionInfo.value) return null;
+
+	return extensionInfo.value.versions.find(
+		(v: any) => v.version.split('#')[1] === (version.value ?? latestVersion.value)
+	);
+});
+
+watch(installDialog, (open) => {
+	if (open) {
+		grantedPermissionsRequired.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
+			Permission[]
+		>((acc, perm) => {
+			if (perm.optional === false) {
+				acc.push({
+					permission: perm.permission,
+					enabled: true,
+					options: perm.options,
+				});
+			}
+
+			return acc;
+		}, []);
+
+		grantedPermissionsOptional.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
+			Permission[]
+		>((acc, perm) => {
+			if (perm.optional === true) {
+				acc.push({
+					permission: perm.permission,
+					enabled: false,
+					options: perm.options,
+				});
+			}
+
+			return acc;
+		}, []);
+	} else {
+		grantedPermissionsRequired.value = [];
+		grantedPermissionsOptional.value = [];
+	}
+});
 
 async function install() {
 	if (version.value) {
@@ -126,6 +207,7 @@ async function install() {
 	} else {
 		await api.post(`/extensions/${encodeURIComponent(props.name)}`);
 	}
+
 	location.reload();
 	installDialog.value = false;
 }
@@ -151,7 +233,39 @@ async function toggleExtension() {
 			enabled: !extension.value?.enabled ?? false,
 		},
 	]);
+
 	location.reload();
+}
+
+watch(
+	() => props.name,
+	() => {
+		loadExtensionInfo();
+	},
+	{ immediate: true }
+);
+
+async function loadExtensionInfo() {
+	const versionFields = [
+		'version',
+		'readme',
+		'license',
+		'size',
+		'directus_version',
+		'secure',
+		'requested_permissions.*',
+	]
+		.map((f) => `versions.${f}`)
+		.join(',');
+
+	const response = await marketApi.get(`/items/extensions/${encodeURIComponent(props.name)}`, {
+		params: {
+			fields: '*,latest_version,' + versionFields,
+		},
+	});
+
+	extensionInfo.value = response.data.data;
+	latestVersion.value = response.data.data?.latest_version.split('#')[1];
 }
 
 const title = computed(() => {
@@ -159,7 +273,7 @@ const title = computed(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .header-icon {
 	--v-button-color: var(--primary);
 	--v-button-background-color: var(--primary-10);
@@ -167,5 +281,17 @@ const title = computed(() => {
 .extension {
 	padding: var(--content-padding);
 	padding-top: 0;
+}
+
+.drawer-item-content {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
+
+	.title {
+		margin-top: 16px;
+		margin-bottom: 8px;
+		font-size: 16px;
+		font-weight: 600;
+	}
 }
 </style>
