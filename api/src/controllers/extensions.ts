@@ -1,14 +1,13 @@
 import { Router } from 'express';
 import env from '../env.js';
-import { ErrorCode, ForbiddenError, RouteNotFoundError } from '../errors/index.js';
+import { ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import { getExtensionManager } from '../extensions/extensions.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
-import type { Plural, PrimaryKey } from '@directus/types';
+import type { PrimaryKey } from '@directus/types';
 import { ExtensionsService } from '../extensions/service.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { isDirectusError } from '@directus/errors';
 
 const router = Router();
 
@@ -58,7 +57,7 @@ router.post(
 
 		const name = req.params['name'];
 		const version = req.params['version'];
-		let registry = req.query['registry'];
+		const granted_permission = req.body.granted_permission;
 
 		if (!name) {
 			throw new RouteNotFoundError({ path: req.path });
@@ -68,16 +67,12 @@ router.post(
 
 		if (extensionManager.installation === null) throw new Error(`Extension installation is disabled`);
 
-		if (typeof registry !== 'string') {
-			registry = undefined;
-		}
-
 		const extension = extensionManager.getExtension(name);
 
 		if (extension !== undefined) {
 			await extensionManager.installation.updateExtension(name);
 		} else {
-			await extensionManager.installation.installExtension(name, { version, registry });
+			await extensionManager.installation.installExtension(name, { version, granted_permission });
 		}
 
 		await extensionManager.reload();

@@ -7,9 +7,11 @@ import tar from 'tar';
 import { ExtensionsService } from './service.js';
 import getDatabase from '../database/index.js';
 import { getSchema } from '../utils/get-schema.js';
+import type { DatabaseExtensionPermission } from '@directus/types';
 
 export type ExtensionInstallationOptions = {
 	version?: string;
+	granted_permission?: DatabaseExtensionPermission[]
 };
 
 const defaultOptions = {
@@ -79,6 +81,7 @@ export class InstallationManager {
 		await extensionsService.createOne({
 			name,
 			enabled: true,
+			granted_permissions: options.granted_permission ?? [],
 		});
 	}
 

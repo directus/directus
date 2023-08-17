@@ -59,35 +59,37 @@
 			</template>
 
 			<div class="drawer-item-content">
-				<v-notice v-if="selectedVersion.secure" type="warning">
-					This is a secure permission. You are able to configure permissions the extension has access to.
-				</v-notice>
-				<v-notice v-else type="danger">
+				<v-notice v-if="!selectedVersion.secure" type="danger">
 					<p>
 						You are installing a
 						<strong>non-secure</strong>
 						extension. This extension has full access to your database and can do anything.
 					</p>
 				</v-notice>
-				<div class="title">Required Permissions</div>
-				<v-list class="permissions required">
-					<Permission
-						v-for="(permission, index) in grantedPermissionsRequired"
-						:key="permission.permission"
-						:permission="permission"
-						@update:permissions="grantedPermissionsRequired[index] = $event"
-					/>
-				</v-list>
-				<div class="title">Optional Permissions</div>
-				<v-list class="permissions required">
-					<Permission
-						v-for="(permission, index) in grantedPermissionsOptional"
-						:key="permission.permission"
-						:permission="permission"
-						optional
-						@update:permissions="grantedPermissionsOptional[index] = $event"
-					/>
-				</v-list>
+				<template v-else>
+					<v-notice type="warning">
+						This is a secure permission. You are able to configure permissions the extension has access to.
+					</v-notice>
+					<div class="title">Required Permissions</div>
+					<v-list class="permissions required">
+						<Permission
+							v-for="(permission, index) in grantedPermissionsRequired"
+							:key="permission.permission"
+							:permission="permission"
+							@update:permissions="grantedPermissionsRequired[index] = $event"
+						/>
+					</v-list>
+					<div class="title">Optional Permissions</div>
+					<v-list class="permissions required">
+						<Permission
+							v-for="(permission, index) in grantedPermissionsOptional"
+							:key="permission.permission"
+							:permission="permission"
+							optional
+							@update:permissions="grantedPermissionsOptional[index] = $event"
+						/>
+					</v-list>
+				</template>
 			</div>
 		</v-drawer>
 		<v-dialog :model-value="updateDialog">
@@ -202,10 +204,14 @@ watch(installDialog, (open) => {
 });
 
 async function install() {
+	const body = {
+		granted_permission: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
+	};
+
 	if (version.value) {
-		await api.post(`/extensions/${encodeURIComponent(props.name)}/${encodeURIComponent(version.value)}`);
+		await api.post(`/extensions/${encodeURIComponent(props.name)}/${encodeURIComponent(version.value)}`, body);
 	} else {
-		await api.post(`/extensions/${encodeURIComponent(props.name)}`);
+		await api.post(`/extensions/${encodeURIComponent(props.name)}`, body);
 	}
 
 	location.reload();
