@@ -598,6 +598,7 @@ function discardAndLeave() {
 
 	position: relative;
 	width: 100%;
+	margin-top: 48px;
 	overflow: auto;
 }
 

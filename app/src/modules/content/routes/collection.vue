@@ -80,20 +80,6 @@
 						@click="clearLocalSave"
 					/>
 				</div>
-				<div class="bookmark-controls">
-					<default-add
-						v-if="!bookmark"
-						v-model="defaultDialogActive"
-						class="add"
-						:saving="creatingDefault"
-						@save="createDefault"
-					>
-						<template #activator="{ on }">
-							<v-icon v-tooltip.right="t('create_default')" class="toggle" clickable name="star" @click="on" />
-						</template>
-					</default-add>
-
-				</div>
 			</template>
 
 			<template #actions:prepend>
@@ -294,7 +280,6 @@ import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
 import BookmarkAdd from '@/views/private/components/bookmark-add.vue';
-import DefaultAdd from '@/views/private/components/default-add.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
@@ -344,7 +329,7 @@ const {
 	search,
 	savePreset,
 	bookmarkExists,
-	saveCurrentAsPreset,
+	saveCurrentAsBookmark,
 	bookmarkTitle,
 	resetPreset,
 	bookmarkSaved,
@@ -368,8 +353,6 @@ const {
 } = useBatch();
 
 const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
-
-const { defaultDialogActive, creatingDefault, createDefault } = useDefaults();
 
 const currentLayout = useExtension('layout', layout);
 
@@ -545,12 +528,10 @@ function useBookmarks() {
 		creatingBookmark.value = true;
 
 		try {
-			const newBookmark = await saveCurrentAsPreset({
+			const newBookmark = await saveCurrentAsBookmark({
 				bookmark: bookmark.name,
 				icon: bookmark.icon,
 				color: bookmark.color,
-				user: bookmark.user,
-				role: bookmark.role,
 			});
 
 			router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
@@ -560,201 +541,6 @@ function useBookmarks() {
 			unexpectedError(err);
 		} finally {
 			creatingBookmark.value = false;
-		}
-	}
-}
-
-function useDefaults() {
-	const defaultDialogActive = ref(false);
-	const creatingDefault = ref(false);
-
-	return {
-		defaultDialogActive,
-		creatingDefault,
-		createDefault,
-	};
-
-	function determineDeleteFilters(defaultPreset: any){
-
-		const { user, role, purge } = defaultPreset;
-
-		const filterOptions = [];
-
-		for( const option of purge){
-			switch(option) {
-
-				case 'all_users':
-					// Delete all users presets for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									user: {
-										_nnull: true
-									}
-								}
-							]
-						}
-					);
-
-					break;
-
-
-				case 'all_roles':
-					// Delete all roles presets for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									role: {
-										_nnull: true
-									}
-								}
-							]
-						}
-					);
-
-					break;
-				case 'all_role_users':
-					// Delete all user presets for users in this role for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									user: {
-										role: {
-											_eq: role
-										}
-									}
-								}
-							]
-						}
-					);
-
-					break;
-				case 'all_role':
-					// Delete all role presets for this role for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									role: {
-										_eq: role
-									}
-								}
-							]
-						}
-					);
-
-					break;
-				case 'all_user':
-					// Delete all user presets for this user for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									user: {
-										_eq: user
-									}
-								}
-							]
-						}
-					);
-
-					break;
-				default:
-					break;
-			}
-		}
-
-		// If we are creating a new global default, we need to delete all other global defaults.
-		if(!user && !role){
-			filterOptions.push(
-				{
-					_and: [
-						{
-							user: {
-								_null: true
-							}
-						},
-						{
-							role: {
-								_null: true
-							}
-						}
-					]
-				}
-			);
-		}
-
-		if(filterOptions.length > 0){
-			// If we have any filters, we need to only delete presets (not bookmarks) and apply the filters.
-			return {
-				_and : [
-					{
-						bookmark: {
-							_null: true
-						}
-					},
-					{
-						_or: filterOptions
-					}
-				]
-			}
-		}
-
-		return null;
-	}
-
-	async function createDefault(defaultPreset: any) {
-		creatingDefault.value = true;
-
-		try {
-			await saveCurrentAsPreset({
-				user: defaultPreset.user,
-				role: defaultPreset.role,
-			});
-
-			const deleteFilters = determineDeleteFilters(defaultPreset);
-
-			if(deleteFilters){
-				await api.delete(`/presets`, {
-					data: {
-						filter: deleteFilters
-					}
-				});
-			}
-
-			defaultDialogActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
-		} finally {
-			creatingDefault.value = false;
 		}
 	}
 }

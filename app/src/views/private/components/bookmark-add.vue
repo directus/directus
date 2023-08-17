@@ -5,35 +5,29 @@
 		</template>
 
 		<v-card>
-			<v-card-title>
-				Create Bookmark or Default
-			</v-card-title>
+			<v-card-title>{{ t('create_bookmark') }}</v-card-title>
 
 			<v-card-text>
-
-						<div class="fields">
-							<interface-system-input-translated-string
-								:value="bookmarkValue.name"
-								class="full"
-								autofocus
-								trim
-								:placeholder="t('bookmark_name')"
-								@input="bookmarkValue.name = $event"
-								@keyup.enter="$emit('save', bookmarkValue)"
-							/>
-							<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
-							<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
-							<interface-system-scope class="full" :value="bookmarkValue.scope" @input="setScope"  />
-							<small class="full">
-								<p class="type-note">Create a personal, role, or global bookmark.</p>
-							</small>
-						</div>
+				<div class="fields">
+					<interface-system-input-translated-string
+						:value="bookmarkValue.name"
+						class="full"
+						autofocus
+						trim
+						:placeholder="t('bookmark_name')"
+						@input="bookmarkValue.name = $event"
+						@keyup.enter="$emit('save', bookmarkValue)"
+					/>
+					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
+					<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
+				</div>
 			</v-card-text>
+
 			<v-card-actions>
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="$emit('save', saveBookmarkValue)">
+				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="$emit('save', bookmarkValue)">
 					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
@@ -42,15 +36,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useUserStore } from '@/stores/user';
-
-const userStore = useUserStore();
-
-import { User } from '@directus/types';
-
-const currentUser = userStore.currentUser as User;
 
 defineProps<{
 	modelValue?: boolean;
@@ -58,49 +45,17 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'save', value: { name: string | null; icon: string | null; color: string | null; user : string | null; role : string | null; }): void;
+	(e: 'save', value: { name: string | null; icon: string | null; color: string | null }): void;
 	(e: 'update:modelValue', value: boolean): void;
 }>();
 
 const { t } = useI18n();
 
-interface bookmarkValue {
-	name: string | null;
-	icon: string | null;
-	color: string | null;
-	scope: string | null;
-}
-
-const saveBookmarkValue = computed(() => {
-
-	if (bookmarkValue?.scope?.startsWith('user_')){
-		return {
-			...bookmarkValue,
-			user: bookmarkValue.scope.replace('user_', ''),
-			role: null,
-		}
-	} else if (bookmarkValue?.scope?.startsWith('role_')){
-		return {
-			...bookmarkValue,
-			user: null,
-			role: bookmarkValue.scope.replace('role_', ''),
-		}
-	} else {
-		return {
-			...bookmarkValue,
-			user: null,
-			role: null,
-		}
-	}
-
-});
-
 const bookmarkValue = reactive({
-	name: 'My Bookmark',
+	name: null,
 	icon: 'bookmark',
 	color: null,
-	scope: currentUser ? `user_${currentUser.id}` : 'all',
-}) as bookmarkValue;
+});
 
 function setIcon(icon: any) {
 	bookmarkValue.icon = icon;
@@ -110,15 +65,10 @@ function setColor(color: any) {
 	bookmarkValue.color = color;
 }
 
-function setScope(scope: any) {
-	bookmarkValue.scope = scope;
-}
-
 function cancel() {
 	bookmarkValue.name = null;
 	bookmarkValue.icon = 'bookmark';
 	bookmarkValue.color = null;
-	bookmarkValue.scope = currentUser ? `user_${currentUser.id}` : 'all';
 	emit('update:modelValue', false);
 }
 </script>
@@ -132,26 +82,5 @@ function cancel() {
 	.full {
 		grid-column: 1 / span 2;
 	}
-}
-
-.bookmark-tabs {
-	width: 100%;
-	background-color: var(--background-normal-alt);
-	padding: 8px;
-	border-radius: var(--border-radius);
-	gap: 12px;
-}
-
-.bookmark-tab {
-	color: var(--foreground-normal) !important;
-	border-radius: var(--border-radius) !important;
-	height: 56px !important;
-}
-
-.bookmark-tab.active {
-	color: var(--white) !important;
-	background-color: var(--primary) !important;
-	box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus) !important;
-	font-weight: 600 !important;
 }
 </style>

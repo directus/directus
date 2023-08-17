@@ -15,7 +15,7 @@ type UsablePreset = {
 	search: Ref<string | null>;
 	refreshInterval: Ref<number | null>;
 	savePreset: (preset?: Partial<Preset> | undefined) => Promise<any>;
-	saveCurrentAsPreset: (overrides: Partial<Preset>) => Promise<any>;
+	saveCurrentAsBookmark: (overrides: Partial<Preset>) => Promise<any>;
 	bookmarkTitle: Ref<string | null>;
 	resetPreset: () => Promise<void>;
 	bookmarkSaved: Ref<boolean>;
@@ -60,7 +60,8 @@ export function usePreset(
 
 		localPreset.value = {
 			...localPreset.value,
-			id: updatedValues.id
+			id: updatedValues.id,
+			user: updatedValues.user,
 		};
 
 		bookmarkSaved.value = true;
@@ -155,7 +156,7 @@ export function usePreset(
 		search,
 		refreshInterval,
 		savePreset,
-		saveCurrentAsPreset,
+		saveCurrentAsBookmark,
 		bookmarkTitle,
 		resetPreset,
 		bookmarkSaved,
@@ -189,7 +190,7 @@ export function usePreset(
 	}
 
 	function initLocalPreset() {
-		const preset = { layout: 'tabular', user: (userStore.currentUser as User).id };
+		const preset = { layout: 'tabular' };
 
 		if (bookmark.value === null) {
 			assign(preset, presetsStore.getPresetForCollection(collection.value));
@@ -201,21 +202,23 @@ export function usePreset(
 	}
 
 	/**
-	 * Saves the current state of localPreset as a preset. The parameter allows you to override
+	 * Saves the current state of localPreset as a bookmark. The parameter allows you to override
 	 * any of the values of the collection preset on save.
 	 *
-	 * This will no longer automatically set the user, that logic has been moved into
-	 * useBookmark so this function can be used for useDefault as well.
+	 * This will set the user of the bookmark to the current user, and is therefore only meant to be
+	 * used to create bookmarks for yourself.
 	 *
 	 * @param overrides Individual overrides for the collection preset
 	 */
-	async function saveCurrentAsPreset(overrides: Partial<Preset>) {
+	async function saveCurrentAsBookmark(overrides: Partial<Preset>) {
 		const data = {
 			...localPreset.value,
 			...overrides,
 		};
-//create_default: Create Default
+
 		if (data.id) delete data.id;
+
+		data.user = (userStore.currentUser as User).id;
 
 		return await savePreset(data);
 	}

@@ -281,17 +281,30 @@ export const usePresetsStore = defineStore({
 		async savePreset(preset: Partial<Preset>) {
 			const userStore = useUserStore();
 			if (userStore.currentUser === null) return null;
+			const { id: userID } = userStore.currentUser;
 
 			// Clone the preset to make sure the future deletes don't affect the original object
 			preset = cloneDeep(preset);
 
 			if (preset.id === undefined || preset.id === null) {
-				return await this.create(preset);
+				return await this.create({
+					...preset,
+					user: userID,
+				});
 			}
 
-			const id = preset.id;
-			delete preset.id;
-			return await this.update(id, preset);
+			if (preset.user !== userID) {
+				if ('id' in preset) delete preset.id;
+
+				return await this.create({
+					...preset,
+					user: userID,
+				});
+			} else {
+				const id = preset.id;
+				delete preset.id;
+				return await this.update(id, preset);
+			}
 		},
 
 		saveLocal(updatedPreset: Preset) {
