@@ -2,16 +2,17 @@
 
 import { getVueComponentName } from '@/utils/get-vue-component-name';
 import { createPinia } from 'pinia';
+import { createHead } from '@unhead/vue';
 import { createApp } from 'vue';
 import App from './app.vue';
 import { registerComponents } from './components/register';
 import { DIRECTUS_LOGO } from './constants';
 import { registerDirectives } from './directives/register';
+import { loadExtensions, registerExtensions } from './extensions';
 import { i18n } from './lang/';
 import { router } from './router';
 import './styles/main.scss';
 import { registerViews } from './views/register';
-import { loadExtensions, registerExtensions } from './extensions';
 
 init();
 
@@ -37,6 +38,7 @@ async function init() {
 	app.use(router);
 	app.use(i18n);
 	app.use(createPinia());
+	app.use(createHead());
 
 	app.config.errorHandler = (err, vm, info) => {
 		const source = getVueComponentName(vm);

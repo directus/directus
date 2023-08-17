@@ -35,6 +35,7 @@ tile_size: Veľkosť dlaždice
 edit_field: Upraviť pole
 conditions: Podmienky
 location: Umiestnenie
+collection_names_are_case_sensitive: Pri názvoch zbierok záleží na veľkosti písmen
 condition_rules: Pravidlá podmienok
 input: Vstup
 maps: Mapy
@@ -80,6 +81,10 @@ create_user: Vytvoriť používateľa
 message: Správa
 delete_panel: Odstrániť panel
 create_webhook: Vytvoriť Webhook
+create_custom_translation: Vytvoriť vlastný preklad
+edit_custom_translation: Upraviť vlastný preklad
+no_custom_translations: Žiadne vlastné preklady
+no_custom_translations_copy: Zatiaľ nie sú žiadne vlastné preklady.
 invite_users: Pozvať používateľov
 invite: Pozvať
 email_already_invited: Email "{email}" už bol pozvaný
@@ -116,6 +121,7 @@ archive_confirm_count: >-
   Žiadne označené položky | Naozaj chcete archivovať túto položku? | Naozaj chcete archivovať týchto {count} položiek?
 reset_system_permissions_to: 'Resetovať systémové práva na:'
 reset_system_permissions_copy: Táto akcia prepíše všetky vlastné práva, ktoré ste použili na systémové zbierky. Ste si istý?
+the_following_are_minimum_permissions: Nasledujúce minimálne práva sa automaticky použijú pri zapnutom "Prístup appky". Ak je treba môžete udeliť dodatočné práva, ale nemôžete znížiť práva pod túto úroveň.
 app_access_minimum: Minimálny prístup v aplikácii
 recommended_defaults: Odporúčané prevolenia
 unarchive: Odarchivovať
@@ -140,6 +146,14 @@ validationError:
   required: Hodnota je povinná
   unique: Hodnota musí byť unikátna
   regex: Hodnota nemá správny formát
+  starts_with: Hodnota musí začínať na {substring}
+  istarts_with: Hodnota musí začínať na {substring}
+  nstarts_with: Hodnota nesmie začínať na {substring}
+  nistarts_with: Hodnota nesmie začínať na {substring}
+  ends_with: Hodnota musí končiť na {substring}
+  iends_with: Hodnota musí končiť na {substring}
+  nends_with: Hodnota nesmie končiť na {substring}
+  niends_with: Hodnota nesmie končiť na {substring}
 all_access: Plný prístup
 no_access: Žiadny prístup
 use_custom: Použiť vlastné
@@ -166,6 +180,7 @@ permissions_for_role: 'Položky, ktoré rola {role} môže {action}.'
 fields_for_role: 'Polia, ktoré rola {role} môže {action}.'
 validation_for_role: 'Pravidlá {action}, ktoré rola {role} musí poslúchať.'
 presets_for_role: 'Predvolená hodnota poľa pre rolu {role}.'
+presets_field_warning: 'Relačné presety pre pole "{field}" by sa mali konfigurovať "detailnou" syntaxou.'
 presentation_and_aliases: Prezentácia a aliasy
 revision_post_create: Takto vyzerala táto položka pri vytvorení.
 revision_post_update: Takto vyzerala táto položka po úprave.
@@ -221,6 +236,7 @@ bigInteger: Veľký Integer
 boolean: Boolean
 date: Dátum
 date_range: Rozsah dátumov
+translation_key_placeholder: Zadajte kľúč...
 datetime: Datetime
 dateTime: Datetime
 precision: Presnosť
@@ -280,6 +296,12 @@ o2m_relationship: Relácia jeden ku veľa
 m2m_relationship: Relácia veľa ku veľa
 m2a_relationship: Relácia veľa ku akémukoľvek
 invalid_item: Chybná položka
+require_confirmation: Vyžadovať potvrdenie
+dialog: Dialógové okno
+modal: Vyskakujúce okno
+confirmation_dialog: Potvrdzovacie okno
+confirmation_description: Popis potvrdenia
+confirmation_input_fields: Vstupné polia potvrdenia
 next: Ďalej
 field_name: Názov poľa
 translations: Preklady
@@ -298,6 +320,7 @@ updated_on: Aktualizované
 updated_by: Upravil
 primary_key: Primárny kľúč
 foreign_key: Cudzí klúč
+field_key: Kľúč poľa
 finish_setup: Dokončiť nastavenie
 dismiss: Zamietnuť
 toggle_raw_editor: Prepnúť surový editor
@@ -426,6 +449,7 @@ checksum: Kontrolný súčet
 owner: Vlastník
 edited_by: Upravil
 folder: Priečinok
+folders: Priečinky
 zoom: Priblíženie
 download: Stiahnuť
 open: Otvoriť
@@ -445,11 +469,11 @@ open_file_in_tab: Otvoriť súbor v novej záložke
 start_export: Spustiť export
 not_available_for_local_downloads: Nedostupné na lokálne stiahnutie
 exporting_all_items_in_collection: Exportuje sa všetkých {total} položiek z {collection}.
-exporting_limited_items_in_collection: Exportuje sa {limit} z celkovo {total} položiek z {collection}.
-exporting_no_items_to_export: Žiadne položky na export. Upravte nastavenia exportu nižšie.
-exporting_download_hint: Po dokončení, bude tento {format} súbor automaticky stiahnutý na vaše zariadenie.
-exporting_batch_hint: Tento export bude vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
-exporting_batch_hint_forced: Kvôli veľkému množstu položiek musí byť tento export vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
+exporting_limited_items_in_collection: '{count} z {total} položiek z {collection} exportujeme.'
+exporting_no_items_to_export: Žiadne položky na export. Upravte konfiguráciu exportu a/alebo pridajte položky do zbierky.
+exporting_download_hint: Po vytvorení {format} súboru sa stiahne do vášho zariadenia.
+exporting_library_hint: Po vytvorení {format} súboru, sa uloží do knižnice súborov.
+exporting_library_hint_forced: Tento export treba spracovať po dávkach. Po skončení bude {format} súbor uložený do knižnice súborov.
 collection_key: Kľúč zbierky
 name: Názov
 primary_key_field: Pole primárneho kľúča
@@ -474,6 +498,8 @@ enable_select_button: Zapnúť tlačidlo Vybrať
 allow_duplicates: Povoliť duplicity
 comments: Komentáre
 no_comments: Zatiaľ žiadne komentáre
+expand: Rozbaliť
+collapse: Zbaliť
 select_item: Vybrať položku
 no_items: Žiadne položky
 search_items: Hľadať položky...
@@ -506,6 +532,7 @@ create_collection: Vytvoriť zbierku
 no_collections_copy_admin: Zatiaľ nemáte žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
 no_collections_copy: Zatiaľ nemáte žiadne zbierky. Prosím kontaktujte svojho správu.
 relationship_not_setup: Tento vzťah nebol správne nastavený
+no_singleton_relations: Vzťahy so singletonmi nie sú podporované
 display_template_not_setup: Šablóna zobrazenia je zle nakonfigurovaná
 collection_field_not_setup: Voľby poľa zbierky sú zle nastavené
 select_a_collection: Vyberte zbierku
@@ -599,6 +626,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Neplatný rozsah
   METHOD_NOT_ALLOWED: Metóda nie je povolená
   REQUESTS_EXCEEDED: Dosiahnutý limit požiadaviek
+  CONTENT_TOO_LARGE: Odoslaná položka/súbor je príliš veľký
 security: Zabezpečenie
 value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
@@ -644,6 +672,7 @@ one_filtered_item: '1 odfiltrovaná položka'
 delete_collection_are_you_sure: >-
   Naozaj chcete odstrániť zbierku "{collection}"? Odstránite zbierku so všetkými jej položkami. Táto akcia je trvalá.
 delete_folder_are_you_sure: Naozaj chcete odstrániť priečinok "{folder}"? Vnorené priečinky a zbierky sa presunú na najvyššiu úroveň.
+delete_collection_peer_dependencies: Nasledujúce polia sa taktiež vymažú, keďže súvisia s aktuálnou zbierkou.
 collections_shown: Zobrazené zbierky
 visible_collections: Viditeľné zbierky
 hidden_collections: Skryté zbierky
@@ -687,8 +716,12 @@ operators:
   icontains: Obsahuje (nezáleží na veľkosti)
   starts_with: Začína na
   nstarts_with: Nezačína na
+  istarts_with: Začína na (nezáleží na veľkosti)
+  nistarts_with: Nezačína na (nezáleží na veľkosti)
   ends_with: Končí na
   nends_with: Nekončí na
+  iends_with: Končí na (nezáleží na veľkosti)
+  niends_with: Nekončí na (nezáleží na veľkosti)
   between: Je medzi
   nbetween: Nie je medzi
   empty: Je prázdne
@@ -769,8 +802,15 @@ label: Popis
 flows: Toky
 flow: Tok
 select_a_flow: Vyberte tok
+run_flow_confirm: Naozaj chcete spustiť tento tok?
+run_flow_on_current_collection: Spustiť tok nad aktuálnou zbierkou
+run_flow_on_current: Spustiť tok na aktuálnej položke
 run_flow_on_current_edited_confirm: Táto položka sa môže vykonaním tohoto toku zmeniť, naozaj to chcete vykonať?
+run_flow_on_selected: Najprv zvoľte jednu alebo viac položiek | Spustiť tok na 1 zvolenej položke | Spustiť tok na {n} zvolených položkách
+run_flow: Spustiť tok
 run_flow_success: Tok "{flow}" prebehol úspešne
+field_name_placeholder: Zadajte názov poľa...
+field_key_placeholder: Zadajte kľúč poľa...
 trigger: Spúšťač
 trigger_options: Možnosti spúšťača
 view_trigger: Zobraziť spúšťač
@@ -843,6 +883,7 @@ media: Médium
 quality: Kvalita
 width: Šírka
 height: Výška
+transformation_preset_key: Kľúč transformačného presetu
 source: Zdroj
 url_placeholder: Zadajte url...
 display_text: Zobrazený text
@@ -908,6 +949,8 @@ wysiwyg_options:
   source_code: Upraviť zdrojový kód
   fullscreen: Celá obrazovka
   directionality: Smer
+  lazy_loading: Lenivé načítanie obrázku
+  lazy_loading_label: Zapnúť lenivé načítanie
 dropdown: Rozbaľovacia ponuka
 choices: Možnosti
 choices_option_configured_incorrectly: Možnosti sú nesprávne nastavené
@@ -929,7 +972,9 @@ settings_project: Nastavenia projektu
 settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Presety a Záložky
+settings_translations: Vlastné preklady
 one_or_more_options_are_missing: Chýba jedna alebo viac možností
+configure_field_key_to_continue: Pred pokračovaním nastavte kľúč poľa
 scope: Rámec
 actions: Akcie
 select: Vybrať...
@@ -978,6 +1023,8 @@ page_help_settings_webhooks_collection: '**Prehliadanie Webhookov** — Zoznam v
 page_help_settings_webhooks_item: '**Podrobnosti webhooku** — Formulár na vytváranie a správu webhookov v projekte.'
 page_help_settings_flows_collection: '**Prehliadanie tokov** — Zoznam všetkých tokov v projekte.'
 page_help_settings_flows_item: '**Podrobnosti toku** — Pracovný priestor na správu jedného alebo viac operácií.'
+page_help_settings_translations_collection: '**Prehliadať vlastné preklady** — Vypíše zoznam všetkých vlastných prekladov v rámci projektu.'
+page_help_settings_translations_item: '**Podrobnosti vlastného prekladu** — Formulár na pozeranie a úpravu tejto položky.'
 page_help_users_collection: '**Priečinok používateľov** — Zoznam všetkých používateľov v projekte.'
 page_help_users_item: >-
   **Podrobnosti používateľa** — Spravuje informácie o vašom účte, alebo zobrazuje podrobnosti iných používateľov.
@@ -1021,6 +1068,7 @@ directus_collection:
   directus_shares: Sleduje externe zdieľané položky
   directus_users: Systémoví používatelia na platforme
   directus_webhooks: Konfigurácia HTTP požiadavkov z udalostí
+  directus_translations: Vlastné preklady
 fields:
   directus_activity:
     item: Primárny kľúč položky
@@ -1109,6 +1157,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: TIFF
+    avif: AVIF
     mapping: Mapovanie
     basemaps: Podkladové mapy
     basemaps_raster: Raster
@@ -1297,7 +1346,13 @@ block: Blokovať
 inline: V riadku
 comment: Komentovanie
 live_preview:
+  enable: Zapnúť náhľad
+  disable: Vypnúť nahľad
+  change_size: Zmeniť rozmery displeja
+  refresh: Obnoviť náhľad
   new_window: Otvoriť v novom okne
+  close_window: Otvoriť v rozdelenom okne
+  toggle_3d: Prepnúť 3D
 shares: Zdieľania
 unlimited_usage: Neobmedzené používanie
 uses_left: Nezostali žiadne použitia | Zostáva 1 použitie | Zostáva {n} použití
@@ -1309,6 +1364,7 @@ share: Zdielať
 share_item: Zdieľať položku
 shared_with_you: Niekto s vami zdieľa položku
 shared_enter_passcode: Pre pokračovanie zadajte heslo...
+shared_leave_blank_for_passwordless_access: Nechajte prázdne pre prístup bez hesla
 shared_leave_blank_for_unlimited: Nechajte prázdne pre neobmedzené
 shared_times_remaining: Tento odkaz sa dá použiť iba {n} krát
 shared_last_remaining: Tento odkaz sa dá použiť iba raz
@@ -1403,6 +1459,7 @@ export_started: Export začal
 export_started_copy: Váš export začal. Keď bude pripravený na stiahnutie dostanete upozornenie.
 sort_asc: Zoradiť vzostupne
 sort_desc: Zoradiť zostupne
+disable_sort: Vypnúť zoraďovanie
 template: Šablóna
 require_value_to_be_set: Vyžadovať hodnotu pri vytvorení
 translation: Preklad
@@ -1566,6 +1623,9 @@ interfaces:
     many-to-one: Veľa na jedno
     description: Vyberie jednu súvisiacu položku
     display_template: Šablóna zobrazenia
+  collection-item-dropdown:
+    collection-item-dropdown: Vysúvacie menu položiek zbierky
+    description: Vyberte položku zo zbierky v JSON formáte
   input-rich-text-md:
     markdown: Markdown
     description: Vloží a zobrazí markdown
@@ -1600,6 +1660,7 @@ interfaces:
     notice: Oznámenie
     description: Zobraziť krátke oznámenie
     text: Zadajte obsah oznámenia sem...
+    no_text: Žiadny text nie je nastavený...
   list-o2m:
     one-to-many: Jeden k viacerým
     description: Vyberie viacej súvisiacich položiek
@@ -1607,6 +1668,7 @@ interfaces:
   system-folder:
     folder: Priečinok
     description: Vyberte priečinok
+    field_hint: Predvolený priečinok na nahrávanie súborov bez určeného priečinka. Neovplyvní existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
     system_default: Predvolené systémom
   select-radio:
@@ -1660,6 +1722,7 @@ interfaces:
     input-translated-string: Preložené texty
     description: Vyberie alebo pridá prekladový text
     search_placeholder: Hľadať...
+    new_custom_translation: Nový vlastný preklad
   boolean:
     toggle: Prepnúť
     description: Prepínanie medzi zap a vyp
@@ -1686,6 +1749,7 @@ interfaces:
     modes:
       auto: Auto
       dropdown: Rozbaľovacia ponuka
+      modal: Vyskakujúce okno
   input-rich-text-html:
     wysiwyg: WYSIWYG
     description: Textový editor s HTML obsahom
@@ -1695,15 +1759,26 @@ interfaces:
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov
   input-block-editor:
+    input-block-editor: Editor blokov
+    description: Editor blokov na príbehy s médiami, generuje čisté dáta v JSON pomocou Editor.js
     tools: Panel nástrojov
     tools_options:
       header: Hlavička
       nestedlist: Zoznam
       embed: Vložiť
+      paragraph: Odstavec
       code: Kód
       image: Obrázok
+      attaches: Priložené
       table: Tabuľka
+      quote: Citát
       underline: Podčiarknuté
+      inlinecode: Zdrojový kód
+      delimiter: Oddeľovač
+      checklist: Zaškrtávací zoznam
+      toggle: Prepnúť blok
+      alignment: Zarovnanie
+      raw: Čisté HTML
   input-autocomplete-api:
     input-autocomplete-api: Dopĺňaný vstup (API)
     description: Dopredné vyhľadávanie hodnôt z externej API.
@@ -1923,7 +1998,28 @@ layouts:
     no_group: Žiadna skupina
     not_all_loaded: Načítalo sa len prvých 1000 položiek.
 horizontal: Horizontálne
+vertical: Vertikálne
+x_axis: Os X
+y_axis: Os Y
+y_axis_function: Funkcia osi Y
+show_x_only: Zobraziť len os X
+show_y_only: Zobraziť len os Y
+show_data_label: Zobraziť popisok údajov
 both: Oboje
+show_axis_labels: Zobraziť popisky osí
+function: Funkcia
+half_circle: Polkruh
+full_circle: Plný kruh
+stroke_width: Hrúbka ťahu
+rounded_stroke: Zaoblený ťah
+thin: Tenké
+medium: Stredné
+broad: Široké
+show_labels: Zobraziť názvy
+show_legend: Zobraziť legendu
+right: Vpravo
+left: Vľavo
+donut: Donut
 panels:
   metric:
     name: Metrické
@@ -1950,6 +2046,7 @@ panels:
   linechart:
     name: Čiarový graf
     description: Čiarový graf na sledovanie zmeny poľa
+    disabled_grouping: Vypnuté pri zvolenom zoskupovaní.
     disabled_no_grouping: Vypnuté, keď nie je žiadna skupina zvolená.
     show_marker: Zobraziť značku popisku
     curve_type: Typ krivky
@@ -2056,7 +2153,11 @@ operations:
     name: Odoslať oznámenie
     description: Pošle internú notifikáciu jednému alebo viacerým používateľom
     recipient: Používateľ
+    recipient_placeholder: Zadajte UUID...
+    recipient_note: Zadajte UUID používateľa a stlačte enter...
+    item_note: Kľúč položky alebo relatívna URL
     message: Správa
+    subject: Predmet
   request:
     name: Webhook / URL požiadavka
     description: 'Spraví požiadavku na URL'
@@ -2081,3 +2182,10 @@ operations:
     flows: Toky
     flow: Tok
     data: Údaje
+    iteration_mode: Režim opakovania
+    iteration_mode_note: Režim iterovania cez polia.
+    serial: Sériovo
+    parallel: Paralelne
+    batch: Dávkovo
+    batch_size: Veľkosť dávky
+    cache: Vyrovnávacia pamäť

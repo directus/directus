@@ -35,7 +35,7 @@ Collections. Each Collection Page displays all Items in its Collection and comes
 key action buttons for sorting, searching, filtering, creating, editing, archiving, and deleting multiple Items. To
 learn more, see our guide on the [Collection Page](/user-guide/content-module/content/collections).
 
-:::tip
+::: tip
 
 The Content module helps you manage Items. Collections are managed within the **Settings** menu, as these actions
 results in changes to the data model. To learn more, see our guide on [data model configuration](/app/data-model).

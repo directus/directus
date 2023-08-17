@@ -9,8 +9,6 @@ pageClass: page-reference
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
 > alter the schema of the database. [Learn more about Collections](/user-guide/overview/glossary#collections).
 
----
-
 ## The Collection Object
 
 `collection` **string**\
@@ -144,34 +142,27 @@ a primary key field is omitted, the request will auto-generate an auto-increment
 }
 ```
 
----
-
 ## List Collections
 
 List the available collections.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /collections`
 
-An array of [collection objects](#the-collection-object).
+`SEARCH /collections`
 
-### REST API
-
-```
-GET /collections
-SEARCH /collections
-```
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -179,7 +170,41 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readCollections } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readCollections());
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+An array of [collection objects](#the-collection-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /collections`
+
+`SEARCH /collections`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -189,37 +214,35 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readCollections } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readCollections());
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a Collection
 
 Retrieve a single collection by table name.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /collections/:collection`
 
-A [collection object](#the-collection-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /collections/:collection
-```
-
-##### Example
-
-```
-GET /collections/articles
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -227,7 +250,39 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readCollection } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readCollection(collection_name));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+A [collection object](#the-collection-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /collections/articles`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -237,17 +292,71 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readCollection } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readCollection('articles'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Collection
 
 Create a new Collection. This will create a new table in the database as well.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /collections`
+
+Provide a [collection object](#the-collection-object) as the body of your request with a `collection` name property
+being a required field.
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_collections_item(data: directus_collections): directus_collections
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createCollection } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(
+	createCollection({
+		collection: 'collection_name',
+		field: {
+			sub_field: 'value',
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Body
+#### Request Body
 
 The `collection` property is required, all other properties of the [collection object](#the-collection-object) are
 optional.
@@ -256,10 +365,6 @@ You are able to provide an array of `fields` to be created during the creation o
 [fields object](/reference/system/fields#the-fields-object) for more information on what properties are available in a
 field.
 
-### Returns
-
-The [collection object](#the-collection-object) for the collection created in this request.
-
 ::: tip
 
 Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
@@ -267,17 +372,18 @@ entirely or use `schema: null` to create ["folder" collections](/app/data-model#
 
 :::
 
-### REST API
+### Returns
 
-```
-POST /collections
-```
+The [collection object](#the-collection-object) for the collection created in this request.
 
-##### Example
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /collections`
 
 ```json
-// POST /collections
-
 {
 	"collection": "testimonials",
 	"meta": {
@@ -286,19 +392,10 @@ POST /collections
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_collections_item(data: directus_collections): directus_collections
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -308,48 +405,44 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createCollection } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createCollection({
+		collection: 'testimonials',
+		meta: {
+			note: 'Some quotes from our readers',
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a Collection
 
 Update the metadata for an existing collection.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
+`PATCH /collections/:collection`
 
-You can only update the `meta` values of the [collection object](#the-collection-object). Updating the collection name
-is not supported at this time.
+Provide a partial [collection object](#the-collection-object) as the body of your request.
 
-### Returns
+</template>
+<template #graphql>
 
-The [collection object](#the-collection-object) for the updated collection in this request.
-
-### REST API
-
-```
-PATCH /collections/:collection
-```
-
-##### Example
-
-```json
-// PATCH /collections/testimonials
-
-{
-	"meta": {
-		"note": "Short quotes from happy customers."
-	}
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -357,7 +450,52 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateCollection } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateCollection(collection_name, partial_collection_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+#### Request Body
+
+You can only update the `meta` values of the [collection object](#the-collection-object). Updating the collection name
+is not supported at this time.
+
+### Response
+
+The [collection object](#the-collection-object) for the updated collection in this request.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /collections/testimonials`
+
+```json
+{
+	"meta": {
+		"note": "Short quotes from happy customers."
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -367,7 +505,25 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateCollection } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateCollection('testimonials', {
+		meta: {
+			note: 'Will be removing these at the end of first quarter',
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a Collection
 
@@ -379,23 +535,17 @@ Be aware, this will delete the table from the database, including all items in i
 
 :::
 
-### REST API
+### Request
 
-```
-DELETE /collections/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`DELETE /collections/:collection`
 
-```
-DELETE /collections/articles
-```
+</template>
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -403,7 +553,31 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteCollection } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteCollection(collection_name));
+```
+
+</template>
+</SnippetToggler>
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /collections/articles`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -413,4 +587,16 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteCollection } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteCollection('testimonials'));
+```
+
+</template>
+</SnippetToggler>

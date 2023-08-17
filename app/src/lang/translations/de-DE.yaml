@@ -35,12 +35,13 @@ tile_size: Kachelgröße
 edit_field: Feld bearbeiten
 conditions: Bedingungen
 location: Ort
+collection_names_are_case_sensitive: Bei den Namen der Sammlungen wird zwischen Groß- und Kleinschreibung unterschieden
 condition_rules: Bedingte Stile
 input: Eingabe
 maps: Karten
 switch_user: Benutzer wechseln
-item_creation: Element erstellt
-item_revision: Element überarbeitet
+item_creation: Element-Erstellung
+item_revision: Element-Überarbeitung
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -145,6 +146,14 @@ validationError:
   required: Wert erforderlich
   unique: Wert muss eindeutig sein
   regex: Wert hat nicht das richtige Format
+  starts_with: Wert muss mit {substring} beginnen
+  istarts_with: Wert muss mit {substring} beginnen
+  nstarts_with: Wert kann nicht mit {substring} beginnen
+  nistarts_with: Wert kann nicht mit {substring} beginnen
+  ends_with: Wert muss mit {substring} enden
+  iends_with: Wert muss mit {substring} enden
+  nends_with: Wert kann nicht mit {substring} enden
+  niends_with: Wert kann nicht mit {substring} enden
 all_access: Kompletter Zugriff
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
@@ -460,11 +469,11 @@ open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
-exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
-exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Exportkonfiguration an.
-exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
-exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
-exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
+exporting_limited_items_in_collection: '{count} von {total} Elementen aus {collection} werden exportiert.'
+exporting_no_items_to_export: Keine zu exportierende Elemente. Passen Sie die Exportkonfiguration an und/oder fügen Sie Elemente zur Sammlung hinzu.
+exporting_download_hint: Sobald die {format} Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
+exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibibliothek gespeichert.
+exporting_library_hint_forced: Dieser Export muss in mehreren Durchgängen durchgeführt werden. Nach Abschluss wird die {format} Datei in der Datei-Bibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -664,7 +673,7 @@ one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
-delete_collection_peer_dependencies: Die folgenden Felder werden ebenfalls gelöscht, da sie sich auf die aktuelle Kollektion beziehen.
+delete_collection_peer_dependencies: Die folgenden Felder werden ebenfalls gelöscht, da sie sich auf die aktuelle Sammlung beziehen.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -708,8 +717,12 @@ operators:
   icontains: Enthält (Groß-, Kleinschreibung wird ignoriert)
   starts_with: Beginnt mit
   nstarts_with: Beginnt nicht mit
+  istarts_with: Beginnt mit (Groß- und Kleinschreibung unbeachtet)
+  nistarts_with: Beginnt nicht mit (Groß- und Kleinschreibung unbeachtet)
   ends_with: Endet mit
   nends_with: Endet nicht mit
+  iends_with: Endet mit (Groß- und Kleinschreibung unbeachtet)
+  niends_with: Endet nicht mit (Groß- und Kleinschreibung unbeachtet)
   between: Ist zwischen
   nbetween: Ist nicht zwischen
   empty: Ist leer
@@ -791,7 +804,7 @@ flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
 run_flow_confirm: Sind Sie sicher, dass Sie diesen Flow ausführen wollen?
-run_flow_on_current_collection: Flow in der aktuellen Kollektion ausführen
+run_flow_on_current_collection: Flow in der aktuellen Sammlung ausführen
 run_flow_on_current: Flow beim aktuellen Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
@@ -960,6 +973,7 @@ settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
 settings_translations: Benutzerdefinierte Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
+configure_field_key_to_continue: Feldschlüssel konfigurieren, um fortzufahren
 scope: Bereich
 actions: Aktionen
 select: Auswählen...
@@ -1009,7 +1023,7 @@ page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erste
 page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
 page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
-page_help_settings_translations_item: '**Benutzerdefinierte Übersetzungen-Detail** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
+page_help_settings_translations_item: '**Detailansicht Benutzerdefinierte Übersetzungen** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -1351,6 +1365,7 @@ share: Teilen
 share_item: Element teilen
 shared_with_you: Ein Element wurde mit dir geteilt
 shared_enter_passcode: Kennwort eingeben um fortzufahren...
+shared_leave_blank_for_passwordless_access: Leer lassen für passwortlosen Zugriff
 shared_leave_blank_for_unlimited: Leer lassen für kein Limit
 shared_times_remaining: Dieser Link kann nur {n} mal verwendet werden
 shared_last_remaining: Dieser Link kann nur einmal verwendet werden
@@ -2142,7 +2157,9 @@ operations:
     recipient: Benutzer
     recipient_placeholder: Eine UUID eingeben...
     recipient_note: Benutzer UUID hinzufügen und Enter drücken...
+    item_note: Elementschlüssel oder relative URL
     message: Nachricht
+    subject: Betreff
   request:
     name: Webhook / Anfrage URL
     description: 'Eine Anfrage an eine URL senden'

@@ -4,7 +4,7 @@
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"
-			:disabled="disabled"
+			:disabled="editorDisabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
@@ -29,7 +29,7 @@
 					<div class="grid">
 						<div class="field">
 							<div class="type-label">{{ t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')"></v-input>
+							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')" autofocus></v-input>
 						</div>
 						<div class="field">
 							<div class="type-label">{{ t('display_text') }}</div>
@@ -96,6 +96,10 @@
 								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
 							</div>
 						</template>
+						<div class="field half">
+							<div class="type-label">{{ t('wysiwyg_options.lazy_loading') }}</div>
+							<v-checkbox v-model="imageSelection.lazy" block :label="t('wysiwyg_options.lazy_loading_label')" />
+						</div>
 						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
 							<div class="type-label">{{ t('transformation_preset_key') }}</div>
 							<v-select
@@ -246,7 +250,6 @@ const props = withDefaults(
 		],
 		font: 'sans-serif',
 		customFormats: () => [],
-		disabled: true,
 	}
 );
 
@@ -304,6 +307,14 @@ const internalValue = computed({
 			contentUpdated();
 		}
 	},
+});
+
+const editorInitialized = ref(false);
+
+const editorDisabled = computed(() => {
+	if (!editorInitialized.value) return false;
+
+	return props.disabled;
 });
 
 watch(
@@ -430,6 +441,8 @@ function setup(editor: any) {
 		});
 
 		setCount();
+
+		editorInitialized.value = true;
 	});
 
 	editor.on('OpenWindow', function (e: any) {

@@ -454,11 +454,6 @@ open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
 start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
 exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
-exporting_limited_items_in_collection: Exportat de {limit} éléments sur {total} dans la collection {collection}.
-exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export ci-dessous.
-exporting_download_hint: Une fois terminé, ce fichier {format} sera automatiquement téléchargé sur votre appareil.
-exporting_batch_hint: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
-exporting_batch_hint_forced: En raison du grand nombre d'éléments, cet export doit être traité par lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -1389,7 +1384,7 @@ colors:
   yellow: Jaune
   orange: Orange
   red: Rouge
-  black: Black
+  black: Noir
   gray: Gris
   white: Blanc
 junction_collection: Collection de jointure
@@ -2111,6 +2106,7 @@ operations:
     recipient_placeholder: Saisir un UUID...
     recipient_note: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
+    subject: Sujet
   request:
     name: Webhook / URL de requête
     description: 'Envoyer une requête à une URL'

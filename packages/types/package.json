@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "10.1.2",
+	"version": "10.1.4",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -24,19 +24,21 @@
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch"
 	},
-	"devDependencies": {
+	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@directus/tsconfig": "workspace:*",
 		"@types/express": "4.17.17",
 		"@types/geojson": "7946.0.10",
 		"express": "4.18.2",
 		"geojson": "0.5.0",
 		"knex": "2.4.2",
 		"pino": "8.14.1",
-		"typescript": "5.0.4",
 		"vue": "3.3.4",
 		"vue-router": "4.2.0",
 		"zod": "3.21.4"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"typescript": "5.0.4"
 	}
 }

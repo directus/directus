@@ -16,6 +16,7 @@
 (C|c)loudinary
 (C|c)loudinary's
 (C|c)odebase
+(C|c)omposables?
 (C|c)onfigs?
 (C|c)ustomizable
 (D|d)atacenter
@@ -62,6 +63,7 @@
 (U|u)nfilterable
 (U|u)nlink
 (U|u)psert
+(U|u)ptime
 (U|u)tils?
 (URI|URIs)
 (URL|url)
@@ -124,7 +126,6 @@ CMS
 CockroachDB
 CodeDeploy
 CommonJS
-composable
 composables
 config-options
 CORS
@@ -299,6 +300,7 @@ pnpm
 Postgres
 Postgres13
 PR
+pre
 pre-configured
 pre-defined
 pre-existing
@@ -357,6 +359,7 @@ stylization
 subdirectory
 subfolder
 substring
+(S|s)upabase
 SuperAdmins?
 superset
 Superset
@@ -372,6 +375,7 @@ TrustRadius
 truthy
 TTL
 TTY
+TypeDoc
 UI
 UID
 UIDs

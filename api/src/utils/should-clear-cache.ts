@@ -16,12 +16,14 @@ export function shouldClearCache(
 ): cache is Keyv<any> {
 	const env = getEnv();
 
-	if (collection && env['CACHE_AUTO_PURGE_IGNORE_LIST'].includes(collection)) {
-		return false;
-	}
+	if (env['CACHE_AUTO_PURGE']) {
+		if (collection && env['CACHE_AUTO_PURGE_IGNORE_LIST'].includes(collection)) {
+			return false;
+		}
 
-	if (cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
-		return true;
+		if (cache && opts?.autoPurgeCache !== false) {
+			return true;
+		}
 	}
 
 	return false;

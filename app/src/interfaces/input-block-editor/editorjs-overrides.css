@@ -21,13 +21,6 @@
 	fill: var(--foreground-normal) !important;
 }
 
-.codex-editor .cdx-settings-button svg,
-.codex-editor .ce-inline-toolbar__dropdown svg,
-.codex-editor .ce-inline-toolbar .ce-inline-tool svg,
-.codex-editor .ce-settings .ce-settings__button svg {
-	fill: var(--v-list-color) !important;
-}
-
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
 .codex-editor .ce-settings .cdx-settings-button--active svg {
 	fill: var(--primary) !important;
@@ -470,6 +463,22 @@
 	max-width: unset;
 	margin-right: 34px;
 	margin-left: 34px;
+}
+
+.codex-editor .ce-align-left {
+	text-align: left;
+}
+
+.codex-editor .ce-align-center {
+	text-align: center;
+}
+
+.codex-editor .ce-align-right {
+	text-align: right;
+}
+
+.codex-editor .ce-align-buttons svg path {
+	stroke: none;
 }
 
 .codex-editor .ce-header {

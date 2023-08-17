@@ -1,24 +1,6 @@
 import { expect, test, describe } from 'vitest';
 import { Url } from './url.js';
 
-describe('path handling', () => {
-	test('parse and serialize an URL without path', () => {
-		expect(new Url('https://example.com').toString()).toStrictEqual('https://example.com');
-	});
-
-	test('parse and serialize an URL without path, removing trailing slash', () => {
-		expect(new Url('https://example.com/').toString()).toStrictEqual('https://example.com');
-	});
-
-	test('parse and serialize an URL with path component', () => {
-		expect(new Url('https://example.com/path').toString()).toStrictEqual('https://example.com/path');
-	});
-
-	test('parse and serialize an URL with path component, removing trailing slash', () => {
-		expect(new Url('https://example.com/path/').toString()).toStrictEqual('https://example.com/path');
-	});
-});
-
 describe('relative URL handling', () => {
 	test('parse and serialize a relative path', () => {
 		expect(new Url('/sample-path').toString()).toStrictEqual('/sample-path');
@@ -132,5 +114,83 @@ describe('isRootRelative', () => {
 
 	test('returns false when URL has host but no protocol', () => {
 		expect(new Url('//example.com/sample-path').isRootRelative()).toStrictEqual(false);
+	});
+});
+
+describe('trailing slash handling', () => {
+	test('parse and serialize an URL without path', () => {
+		expect(new Url('https://example.com').toString()).toStrictEqual('https://example.com');
+	});
+
+	test('parse and serialize an URL without path, keeping trailing slash', () => {
+		expect(new Url('https://example.com/').toString()).toStrictEqual('https://example.com/');
+	});
+
+	test('parse and serialize an URL preserving trailing slash with no query params', () => {
+		expect(new Url('https://example.com/path/').toString()).toStrictEqual('https://example.com/path/');
+	});
+
+	test('parse and serialize an URL preserving trailing slash with query params', () => {
+		expect(new Url('https://example.com/path/?foo=bar').toString()).toStrictEqual('https://example.com/path/?foo=bar');
+	});
+
+	test('parse, add query param, and serialize an URL preserving trailing slash', () => {
+		const testUrl = new Url('https://example.com/path/');
+		testUrl.setQuery('token', '123123');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/?token=123123');
+	});
+
+	test('parse, add query param, and serialize an URL preserving trailing slash with existing query params', () => {
+		const testUrl = new Url('https://example.com/path/?foo=bar');
+		testUrl.setQuery('token', '123123');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/?foo=bar&token=123123');
+	});
+
+	test('parse and serialize an URL without trailing slash with no query params', () => {
+		expect(new Url('https://example.com/path').toString()).toStrictEqual('https://example.com/path');
+	});
+
+	test('parse and serialize an URL without trailing slash with query params', () => {
+		expect(new Url('https://example.com/path?foo=bar').toString()).toStrictEqual('https://example.com/path?foo=bar');
+	});
+
+	test('parse, add query param, and serialize an URL without trailing slash', () => {
+		const testUrl = new Url('https://example.com/path');
+		testUrl.setQuery('token', '123123');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path?token=123123');
+	});
+
+	test('parse, add query param, and serialize an URL without trailing slash with existing query params', () => {
+		const testUrl = new Url('https://example.com/path?foo=bar');
+		testUrl.setQuery('token', '123123');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path?foo=bar&token=123123');
+	});
+
+	test('parse an URL and serialize after adding paths with and without trailing slashes', () => {
+		const testUrl = new Url('https://example.com/');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/');
+
+		testUrl.addPath('path');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path');
+
+		testUrl.addPath('path2/');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/path2/');
+
+		testUrl.addPath('/');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/path2/');
+
+		testUrl.addPath('.');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/path2/');
+
+		testUrl.addPath('..');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/');
+
+		const testUrl2 = new Url('https://example.com');
+		testUrl2.addPath('./');
+		expect(testUrl2.toString()).toStrictEqual('https://example.com/');
+
+		const testUrl3 = new Url('https://example.com/path');
+		testUrl3.addPath('../');
+		expect(testUrl3.toString()).toStrictEqual('https://example.com/');
 	});
 });

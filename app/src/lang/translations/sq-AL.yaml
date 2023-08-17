@@ -145,6 +145,7 @@ validationError:
   required: Vlera është e nevojshme
   unique: Vlera duhet të jetë unike
   regex: Vlera nuk ka formatin e duhur
+  istarts_with: Value has to start with {substring}
 all_access: Qasje e Plote
 no_access: Pa Qasje
 use_custom: Përdor të personalizuar
@@ -460,11 +461,6 @@ open_file_in_tab: Hap skedarin në skedë të re
 start_export: Filloni Eksportimin
 not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
 exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
-exporting_limited_items_in_collection: Eksportimi i {limit} nga {total} artikujve brenda {collection}.
-exporting_no_items_to_export: Asnjë artikull për t'u eksportuar. Rregulloni konfigurimin e eksportimit.
-exporting_download_hint: Kur të përfundojë, ky skedar {format} do të shkarkohet automatikisht në pajisjen tuaj.
-exporting_batch_hint: Ky eksport do të përpunohet në grupe, dhe kur të përfundojë, skedari {format} do të ruhet në Bibliotekën e Skedarëve.
-exporting_batch_hint_forced: Për shkak të numrit të madh të artikujve, ky eksport duhet të përpunohet në grupe, dhe kur të përfundojë, skedari {format} do të ruhet në Bibliotekën e Skedarëve.
 collection_key: Kyçi i Koleksionit
 name: Emri
 primary_key_field: Fusha e Kyçit Primar
@@ -2143,6 +2139,7 @@ operations:
     recipient_placeholder: Shkruaj një UUID...
     recipient_note: Shto UUID të përdoruesit dhe shtyp enter...
     message: Mesazh
+    subject: Subjekt
   request:
     name: Webhook / Kërkesë URL
     description: 'Bëj një kërkesë në një URL'

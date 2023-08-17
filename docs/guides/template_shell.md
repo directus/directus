@@ -11,7 +11,7 @@ author: Eron Powell
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -30,7 +30,7 @@ https://vitepress.vuejs.org/guide/markdown
 
 ## The Recipe
 
-:::tip Requirements
+::: tip Requirements
 
 Define the knowledge they need to implement the recipe. Define the pre-existing configurations such as collections,
 roles, permssions, flows, etc. that they need to use your recipe.

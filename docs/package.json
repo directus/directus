@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@directus/format-title": "10.0.0",
-		"@vue/tsconfig": "0.4.0",
+		"@directus/tsconfig": "workspace:*",
 		"eslint-parser-plain": "0.1.0",
 		"eslint-plugin-markdown": "3.0.0",
 		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@4.3.0-1",
@@ -30,6 +30,7 @@
 		"typedoc-vitepress-theme": "1.0.0-next.2",
 		"typescript": "5.0.4",
 		"vitepress": "1.0.0-alpha.75",
+		"vitepress-plugin-tabs": "0.3.0",
 		"vue": "3.3.4"
 	}
 }

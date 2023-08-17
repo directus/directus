@@ -419,11 +419,6 @@ open_file_in_tab: Otvori fajl u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
-exporting_limited_items_in_collection: Izvoz {limit} od {total} stavki unutar {collection}.
-exporting_no_items_to_export: Nema stavki za izvoz. Podesite konfiguraciju izvoza u nastavku.
-exporting_download_hint: Nakon završetka, {format} tip fajla automatski će se preuzeti na vaš uređaj.
-exporting_batch_hint: Ovaj će se izvoz obraditi u serijama, a nakon završetka, {format} fajl biće sačuvan u biblioteku fajlova.
-exporting_batch_hint_forced: Zbog velikog broja stavki, ovaj izvoz se mora obraditi u serijama, a nakon završetka, {format} fajl biće sačuvena u biblioteku fajlova.
 collection_key: Ključ kolekcije
 name: Naziv
 primary_key_field: Polje primarnog ključa
@@ -1944,6 +1939,7 @@ operations:
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika
     recipient: Korisnik
     message: Poruka
+    subject: Tema
   request:
     name: Web dojavnik / URL zahtjeva
     description: 'Pošaljite zahtjev na URL'

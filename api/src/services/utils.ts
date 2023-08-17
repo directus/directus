@@ -5,6 +5,8 @@ import { systemCollectionRows } from '../database/system-data/collections/index.
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
+import { getCache } from '../cache.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -122,6 +124,13 @@ export class UtilsService {
 				.where(sortField, '>=', targetSortValue)
 				.andWhere(sortField, '<=', sourceSortValue)
 				.andWhereNot({ [primaryKeyField]: item });
+		}
+
+		// check if cache should be cleared
+		const { cache } = getCache();
+
+		if (shouldClearCache(cache, undefined, collection)) {
+			await cache.clear();
 		}
 
 		emitter.emitAction(
