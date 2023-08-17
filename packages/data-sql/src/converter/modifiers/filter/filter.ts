@@ -1,5 +1,5 @@
 import type { AbstractQueryFilterNode, AbstractQueryConditionNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../types/index.js';
+import type { WhereUnion } from '../../../types/index.js';
 import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
 
@@ -19,13 +19,14 @@ export const convertFilter = (
 	collection: string,
 	generator: Generator<number, number, number>,
 	negate = false
-): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
+): WhereUnion => {
 	if (filter.type === 'condition') {
 		return convertCondition(filter as AbstractQueryConditionNode, collection, generator, negate);
 	} else if (filter.type === 'negate') {
 		return convertFilter(filter.childNode, collection, generator, !negate);
 	} else if (filter.type === 'logical') {
-		return convertLogical(filter, collection, generator, negate);
+		const children = filter.childNodes.map((childNode) => convertFilter(childNode, collection, generator, false));
+		return convertLogical(children, filter.operator, negate);
 	} else {
 		throw new Error(`Unknown filter type`);
 	}

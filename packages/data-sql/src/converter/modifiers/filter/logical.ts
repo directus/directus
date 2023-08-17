@@ -1,22 +1,16 @@
-import type { AbstractQueryNodeLogical } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../types/index.js';
-import { convertFilter } from './filter.js';
+import type { WhereUnion } from '../../../types/index.js';
 
-export function convertLogical(
-	filter: AbstractQueryNodeLogical,
-	collection: string,
-	generator: Generator<number, number, number>,
-	negate: boolean
-): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
-	const children = filter.childNodes.map((childNode) => convertFilter(childNode, collection, generator, false));
+export function convertLogical(children: WhereUnion[], operator: 'and' | 'or', negate: boolean): WhereUnion {
+	const childNodes = children.map((child) => child.where);
+	const parameters = children.flatMap((child) => child.parameters);
 
 	return {
 		where: {
 			type: 'logical',
 			negate,
-			operator: filter.operator,
-			childNodes: children.map((child) => child.where),
+			operator,
+			childNodes,
 		},
-		parameters: children.flatMap((child) => child.parameters),
+		parameters,
 	};
 }

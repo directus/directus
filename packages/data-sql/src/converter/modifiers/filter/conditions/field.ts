@@ -1,12 +1,8 @@
 import type { ConditionFieldNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../../types/index.js';
+import type { WhereUnion } from '../../../../types/index.js';
 import { convertPrimitive } from './utils.js';
 
-export function convertFieldCondition(
-	node: ConditionFieldNode,
-	collection: string,
-	negate: boolean
-): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
+export function convertFieldCondition(node: ConditionFieldNode, collection: string, negate: boolean): WhereUnion {
 	return {
 		where: {
 			type: 'condition',

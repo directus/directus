@@ -1,5 +1,5 @@
 import type { ConditionNumberNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../../types/index.js';
+import type { WhereUnion } from '../../../../types/index.js';
 import { convertTarget } from './utils.js';
 
 export function convertNumberNode(
@@ -7,7 +7,7 @@ export function convertNumberNode(
 	collection: string,
 	generator: Generator<number, number, number>,
 	negate: boolean
-): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
+): WhereUnion {
 	return {
 		where: {
 			type: 'condition',

@@ -41,3 +41,5 @@ export interface AbstractSqlQueryNode {
 	/** the type of the node */
 	type: string;
 }
+
+export type WhereUnion = Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>>;
