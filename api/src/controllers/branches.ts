@@ -200,6 +200,35 @@ router.delete(
 	respond
 );
 
+router.get(
+	'/:pk/compare',
+	asyncHandler(async (req, res, next) => {
+		const service = new BranchesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const branch = await service.readOne(req.params['pk']!);
+
+		const commits = await service.getBranchCommits(branch['id']);
+
+		const current = assign({}, ...commits);
+
+		const fields = Object.keys(current);
+
+		const mainBranchItem = await service.getMainBranchItem(
+			branch['collection'],
+			branch['item'],
+			fields.length > 0 ? { fields } : undefined
+		);
+
+		res.locals['payload'] = { data: { current, main: mainBranchItem } };
+
+		return next();
+	}),
+	respond
+);
+
 router.post(
 	'/:pk/commit',
 	asyncHandler(async (req, res, next) => {
@@ -219,6 +248,23 @@ router.post(
 		const result = assign(mainBranchItem, ...commits);
 
 		res.locals['payload'] = { data: result || null };
+
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/:pk/merge',
+	asyncHandler(async (req, res, next) => {
+		const service = new BranchesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const updatedItemKey = await service.merge(req.params['pk']!, req.body?.['fields']);
+
+		res.locals['payload'] = { data: updatedItemKey || null };
 
 		return next();
 	}),

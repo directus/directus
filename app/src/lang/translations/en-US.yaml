@@ -101,6 +101,20 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+branch_name: Branch Name
+commit: Commit
+main_branch: Main
+create_branch: Create Branch
+rename_branch: Rename Branch
+compare_branch: Compare Branch
+merge_branch: Merge Branch
+merge_branch_drawer_title: Merge {branch} into Main
+merge_notice: >-
+  Please review all the field values below, and confirm which version should be used when merging this version into the
+  main item.
+delete_branch: Delete Branch
+delete_branch_copy: >-
+  Are you sure you want to delete the "{branch}" branch? This action cannot be undone.
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark

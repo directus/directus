@@ -4,7 +4,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { Filter } from '@directus/types';
+import { Branch, Filter } from '@directus/types';
 import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { ref, Ref, unref, watch } from 'vue';
@@ -15,7 +15,12 @@ type UseRevisionsOptions = {
 	action?: Action;
 };
 
-export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | string>, options?: UseRevisionsOptions) {
+export function useRevisions(
+	collection: Ref<string>,
+	primaryKey: Ref<number | string>,
+	branch: Ref<Branch | null>,
+	options?: UseRevisionsOptions
+) {
 	const { t } = useI18n();
 	const { info } = useServerStore();
 
@@ -26,7 +31,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 	const created = ref<Revision>();
 	const pagesCount = ref(0);
 
-	watch([collection, primaryKey], () => getRevisions(), { immediate: true });
+	watch([collection, primaryKey, branch], () => getRevisions(), { immediate: true });
 
 	return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
 
@@ -48,6 +53,13 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 						item: {
 							_eq: unref(primaryKey),
 						},
+					},
+					{
+						branch: unref(branch)
+							? {
+									_eq: unref(branch)!.name,
+							  }
+							: { _null: true },
 					},
 				],
 			};
@@ -88,7 +100,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 				},
 			});
 
-			if (!created.value) {
+			if (!created.value && !unref(branch)) {
 				const createdResponse = await api.get(`/revisions`, {
 					params: {
 						filter: {
@@ -98,6 +110,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 							item: {
 								_eq: unref(primaryKey),
 							},
+							branch: { _null: true },
 							activity: {
 								action: {
 									_eq: Action.CREATE,

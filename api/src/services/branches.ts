@@ -1,14 +1,17 @@
 import type { Item, PrimaryKey, Query } from '@directus/types';
+import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
 import { InvalidPayloadError, UnprocessableContentError } from '../errors/index.js';
 import type { MutationOptions } from '../types/items.js';
 import type { AbstractServiceOptions } from '../types/services.js';
+import { ActivityService } from './activity.js';
 import { AuthorizationService } from './authorization.js';
 import { CollectionsService } from './collections.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
-import { ActivityService } from './activity.js';
 
 export class BranchesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -73,7 +76,7 @@ export class BranchesService extends ItemsService {
 		}
 	}
 
-	async getMainBranchItem(collection: string, item: PrimaryKey): Promise<Item> {
+	async getMainBranchItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
 		// will throw an error if the accountability does not have permission to read the item
 		await this.authorizationService.checkAccess('read', collection, item);
 
@@ -83,7 +86,7 @@ export class BranchesService extends ItemsService {
 			schema: this.schema,
 		});
 
-		return await itemsService.readOne(item);
+		return await itemsService.readOne(item, query);
 	}
 
 	async getBranchCommits(key: PrimaryKey): Promise<Partial<Item>[]> {
@@ -198,5 +201,40 @@ export class BranchesService extends ItemsService {
 		});
 
 		return data;
+	}
+
+	async merge(branch: PrimaryKey, fields?: string[]) {
+		const branchItem = await this.readOne(branch);
+
+		const commits = await this.getBranchCommits(branchItem['id']);
+
+		const branchResult = assign({}, ...commits);
+
+		const payloadToUpdate = fields ? pick(branchResult, fields) : branchResult;
+
+		// will throw an error if the accountability does not have permission to update the item
+		await this.authorizationService.checkAccess('update', branchItem['collection'], branchItem['item']);
+
+		const itemsService = new ItemsService(branchItem['collection'], {
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const updatedItemKey = await itemsService.updateOne(branchItem['item'], payloadToUpdate);
+
+		emitter.emitAction(
+			'branches.merge',
+			{
+				payload: payloadToUpdate,
+				key: branch,
+			},
+			{
+				database: getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		return updatedItemKey;
 	}
 }
