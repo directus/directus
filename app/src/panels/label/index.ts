@@ -57,6 +57,9 @@ export default definePanel({
 						],
 					},
 				},
+				schema: {
+					default_value: 'nowrap',
+				},
 			},
 			{
 				field: 'styleDivider',
@@ -92,23 +95,26 @@ export default definePanel({
 					options: {
 						choices: [
 							{
-								text: 'Left',
+								text: '$t:left',
 								value: 'left',
 							},
 							{
-								text: 'Center',
+								text: '$t:center',
 								value: 'center',
 							},
 							{
-								text: 'Right',
+								text: '$t:right',
 								value: 'right',
 							},
 							{
-								text: 'Justify',
+								text: '$t:justify',
 								value: 'justify',
 							},
 						],
 					},
+				},
+				schema: {
+					default_value: 'center',
 				},
 			},
 			{
@@ -121,43 +127,46 @@ export default definePanel({
 					options: {
 						choices: [
 							{
-								text: 'Thin',
+								text: '$t:fonts.thin',
 								value: 100
 							},
 							{
-								text: 'Extra Light',
+								text: '$t:fonts.extra_light',
 								value: 200
 							},
 							{
-								text: 'Light',
+								text: '$t:fonts.light',
 								value: 300
 							},
 							{
-								text: 'Normal',
+								text: '$t:fonts.normal',
 								value: 400
 							},
 							{
-								text: 'Medium',
+								text: '$t:fonts.medium',
 								value: 500
 							},
 							{
-								text: 'Semi Bold',
+								text: '$t:fonts.semi_bold',
 								value: 600
 							},
 							{
-								text: 'Bold',
+								text: '$t:fonts.bold',
 								value: 700
 							},
 							{
-								text: 'Extra Bold',
+								text: '$t:fonts.extra_bold',
 								value: 800
 							},
 							{
-								text: 'Black',
+								text: '$t:fonts.black',
 								value: 900
 							},
 						],
 					},
+				},
+				schema: {
+					default_value: 800,
 				},
 			},
 			{
@@ -170,19 +179,42 @@ export default definePanel({
 					options: {
 						choices: [
 							{
-								text: 'Normal',
+								text: '$t:fonts.normal',
 								value: 'normal',
 							},
 							{
-								text: 'Italic',
+								text: '$t:fonts.italic',
 								value: 'italic',
 							},
 							{
-								text: 'Oblique',
+								text: '$t:fonts.oblique',
 								value: 'oblique',
 							},
 						],
 					},
+				},
+				schema: {
+					default_value: 'normal',
+				},
+			},
+			{
+				field: 'fontSize',
+				type: 'string',
+				name: '$t:font_size',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{ text: '$t:fonts.small', value: '32px' },
+							{ text: '$t:fonts.medium', value: '48px' },
+							{ text: '$t:fonts.large', value: '64px' },
+							{ text: '$t:fonts.auto', value: 'auto' },
+						],
+					},
+				},
+				schema: {
+					default_value: 'auto',
 				},
 			},
 			{
@@ -199,6 +231,9 @@ export default definePanel({
 							{ text: '$t:displays.formatted-value.font_monospace', value: 'monospace' },
 						],
 					},
+				},
+				schema: {
+					default_value: 'sans-serif',
 				},
 			},
 		];

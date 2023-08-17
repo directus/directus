@@ -7,7 +7,7 @@
 	>
 		<p
 			ref="labelText"
-			:style="{ whiteSpace: whiteSpace, fontWeight: fontWeight, textAlign: textAlign, fontStyle: fontStyle }"
+			:style="{ whiteSpace, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined  }"
 		>
 			{{ text }}
 		</p>
@@ -25,6 +25,7 @@ const props = withDefaults(
 		whiteSpace?: string | undefined;
 		color?: string | undefined;
 		textAlign?: string | undefined;
+		fontSize?: 'sm' | 'md' | 'lg' | 'auto';
 		fontWeight?: number | undefined;
 		fontStyle?: string | undefined;
 		font?: 'sans-serif' | 'serif' | 'monospace';
@@ -35,7 +36,8 @@ const props = withDefaults(
 		color: undefined,
 		whiteSpace: 'normal',
 		textAlign: 'center',
-		fontWeight: 400,
+		fontSize: 'auto',
+		fontWeight: 800,
 		fontStyle: undefined,
 		font: 'sans-serif',
 	}
@@ -55,7 +57,7 @@ function adjustPadding() {
 	const paddingWidth = container.offsetWidth * 0.05;
 	const paddingHeight = container.offsetHeight * 0.05;
 
-	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
+	const padding = Math.round(Math.max(12, Math.min(paddingWidth, paddingHeight)));
 
 	if (props.showHeader == true) {
 		container.style.padding = '0px 12px 12px 12px';
@@ -69,29 +71,37 @@ function adjustPadding() {
 function updateFit() {
 	adjustPadding();
 	adjustFontSize();
+
+	if (!resizeObserver) {
+		const container = labelContainer.value;
+		if (!container) return;
+
+		// Create a ResizeObserver to watch for changes in the container's dimensions
+		resizeObserver = new ResizeObserver(() => {
+			updateFit();
+		});
+
+		resizeObserver.observe(container);
+	}
+
+	adjustFontSize();
 }
 
 onMounted(() => {
-	const container = labelContainer.value;
-	if (!container) return;
-
-	updateFit();
-
-	// Create a ResizeObserver to watch for changes in the container's dimensions
-	resizeObserver = new ResizeObserver(() => {
+	if (props.fontSize == 'auto') {
 		updateFit();
-	});
 
-	resizeObserver.observe(container);
-
-	// Delay the initial font size adjustment to allow the text/font to render fully
-	setTimeout(() => {
-		updateFit();
-	}, 500);
+		// Delay the initial font size adjustment to allow the text/font to render fully
+		setTimeout(() => {
+			updateFit();
+		}, 500);
+	}
 });
 
 onUpdated(() => {
-	updateFit();
+	if (props.fontSize == 'auto') {
+		updateFit();
+	}
 });
 
 onBeforeUnmount(() => {
