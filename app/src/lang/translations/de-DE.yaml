@@ -502,7 +502,6 @@ expand: Ausklappen
 collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
-search_items: Elemente suchen...
 disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
