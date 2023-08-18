@@ -2174,6 +2174,20 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  json-web-token:
+    name: JSON Web Token (JWT)
+    description: Sign and verify JSON Web Tokens
+    operation: Operation
+    secret: Secret
+    secret_placeholder: Enter a secret...
+    payload: Payload
+    token: Token
+    token_placeholder: eyJhbGciOi......
+    options: Options
+    options_placeholder: Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options
+    sign: Sign Token
+    verify: Verify Token
+    decode: Decode Token
   log:
     name: Log to Console
     description: Output something to the console

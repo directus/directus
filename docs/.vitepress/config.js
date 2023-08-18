@@ -678,9 +678,23 @@ function sidebar() {
 					],
 				},
 				{
-					type: 'page',
 					link: '/self-hosted/upgrades-migrations',
 					text: 'Upgrades & Migrations',
+				},
+			],
+		},
+		{
+			text: 'Releases',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					link: 'https://github.com/directus/directus/releases',
+					text: 'Release Notes',
+				},
+				{
+					link: '/releases/breaking-changes',
+					text: 'Breaking Changes',
 				},
 			],
 		},
