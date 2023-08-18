@@ -57,7 +57,7 @@ router.post(
 
 		const name = req.params['name'];
 		const version = req.params['version'];
-		const granted_permission = req.body.granted_permission;
+		const granted_permissions = req.body.granted_permissions;
 		let registry = req.query['registry'];
 
 		if (!name) {
@@ -77,7 +77,7 @@ router.post(
 		if (extension !== undefined) {
 			await extensionManager.installation.updateExtension(name);
 		} else {
-			await extensionManager.installation.installExtension(name, { version, granted_permission, registry });
+			await extensionManager.installation.installExtension(name, { version, granted_permissions, registry });
 		}
 
 		await extensionManager.reload();

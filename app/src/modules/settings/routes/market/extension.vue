@@ -173,13 +173,15 @@ const settingsDialog = ref(false);
 const saving = ref(false);
 const updateDialog = ref(false);
 const uninstallDialog = ref(false);
-const version = ref<string | undefined>();
+
 const extensionsStore = useExtensionsStore();
 const serverStore = useServerStore();
 
 const extension = computed(() => {
 	return extensionsStore.extensions.find((extension) => extension.name === props.name);
 });
+
+const version = ref<string | undefined>(extension.value?.version);
 
 const extensionInfo = ref<Record<string, any> | null>(null);
 const latestVersion = ref<string | null>(null);

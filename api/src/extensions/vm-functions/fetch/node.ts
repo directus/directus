@@ -15,7 +15,7 @@ export class FetchVMFunction extends VMFunction {
 		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async function (url: string, options: any, resolve: any, reject: any) {
-				if (permissions.find(permission => permission.permission === "web") === undefined) {
+				if (permissions.find(permission => permission.permission === "fetch") === undefined) {
 					reject.apply(undefined, [
 						new ivm.ExternalCopy(new Error("Permission denied")).copyInto()
 					], {
