@@ -160,6 +160,8 @@ interface Props {
 }
 
 export interface Permission {
+	id?: number;
+	extension?: string;
 	permission: string;
 	enabled: boolean;
 	options?: string;
@@ -199,11 +201,11 @@ const selectedVersion = computed(() => {
 });
 
 watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
-	if (openInstall || openSettings) {
+	if (openInstall) {
 		grantedPermissionsRequired.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
 			Permission[]
 		>((acc, perm) => {
-			if (perm.optional === false) {
+			if (!perm.optional || perm.optional === false) {
 				acc.push({
 					permission: perm.permission,
 					enabled: true,
@@ -227,6 +229,40 @@ watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
 
 			return acc;
 		}, []);
+	} else if (openSettings) {
+		grantedPermissionsRequired.value = (extension.value?.granted_permissions as Record<string, any>[]).reduce<
+			Permission[]
+		>((acc, perm) => {
+			const requestedPerm = extension.value.requested_permissions.find((p: any) => p.permission === perm.permission);
+
+			if (!requestedPerm?.optional || requestedPerm?.optional === false) {
+				acc.push({
+					id: perm.id,
+					permission: perm.permission,
+					enabled: perm.enabled,
+					options: perm.options,
+				});
+			}
+
+			return acc;
+		}, []);
+
+		grantedPermissionsOptional.value = (extension.value?.granted_permissions as Record<string, any>[]).reduce<
+			Permission[]
+		>((acc, perm) => {
+			const requestedPerm = extension.value.requested_permissions.find((p: any) => p.permission === perm.permission);
+
+			if (requestedPerm?.optional === true) {
+				acc.push({
+					id: perm.id,
+					permission: perm.permission,
+					enabled: perm.enabled,
+					options: perm.options,
+				});
+			}
+
+			return acc;
+		}, []);
 	} else {
 		grantedPermissionsRequired.value = [];
 		grantedPermissionsOptional.value = [];
@@ -242,6 +278,7 @@ async function saveSettings() {
 
 	settingsDialog.value = false;
 	saving.value = false;
+	extensionsStore.hydrate();
 }
 
 async function install() {
