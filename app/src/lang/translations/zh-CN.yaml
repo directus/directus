@@ -502,7 +502,6 @@ expand: 展开
 collapse: 收起
 select_item: 选择条目
 no_items: 无条目
-search_items: 搜索条目...
 disabled: 禁用
 information: 信息
 report_bug: 反馈Bug
