@@ -75,7 +75,13 @@
 		>
 			<template #actions>
 				<slot name="actions" />
-				<v-button v-tooltip.bottom="t('save')" :loading="installing" icon rounded @click="install">
+				<v-button
+					v-tooltip.bottom="t('save')"
+					:loading="saving"
+					icon
+					rounded
+					@click="installDialog ? install() : saveSettings()"
+				>
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -162,7 +168,7 @@ export interface Permission {
 const props = defineProps<Props>();
 const installDialog = ref(false);
 const settingsDialog = ref(false);
-const installing = ref(false);
+const saving = ref(false);
 const updateDialog = ref(false);
 const uninstallDialog = ref(false);
 const version = ref<string | undefined>();
@@ -227,8 +233,19 @@ watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
 	}
 });
 
+async function saveSettings() {
+	saving.value = true;
+
+	await api.patch(`/extensions/${encodeURIComponent(props.name)}`, {
+		granted_permission: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
+	});
+
+	settingsDialog.value = false;
+	saving.value = false;
+}
+
 async function install() {
-	installing.value = true;
+	saving.value = true;
 
 	const body = {
 		granted_permission: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
@@ -241,7 +258,7 @@ async function install() {
 	}
 
 	installDialog.value = false;
-	installing.value = false;
+	saving.value = false;
 	location.reload();
 }
 
