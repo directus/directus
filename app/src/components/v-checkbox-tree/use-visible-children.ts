@@ -1,3 +1,4 @@
+import { latinize } from 'modern-diacritics';
 import { computed, Ref } from 'vue';
 
 export function useVisibleChildren(
@@ -16,10 +17,11 @@ export function useVisibleChildren(
 		const _search = search.value;
 
 		if (_search) {
-			options = options.filter(
-				(child) =>
-					child[itemText.value].toLowerCase().includes(_search) || childrenHaveSearchMatch(child[itemChildren.value])
-			);
+			options = options.filter((child) => {
+				const normalizedItemText = latinize(child[itemText.value], { lowerCase: true, symbols: false });
+
+				return normalizedItemText.includes(_search) || childrenHaveSearchMatch(child[itemChildren.value]);
+			});
 		}
 
 		if (showSelectionOnly.value) {
@@ -35,11 +37,12 @@ export function useVisibleChildren(
 		return options.map((child) => child[itemValue.value]);
 
 		function childrenHaveSearchMatch(children: Record<string, any>[] | undefined): boolean {
-			if (!children) return false;
-			return children.some(
-				(child) =>
-					child[itemText.value].toLowerCase().includes(_search) || childrenHaveSearchMatch(child[itemChildren.value])
-			);
+			if (!children || !_search) return false;
+			return children.some((child) => {
+				const normalizedItemText = latinize(child[itemText.value], { lowerCase: true, symbols: false });
+
+				return normalizedItemText.includes(_search) || childrenHaveSearchMatch(child[itemChildren.value]);
+			});
 		}
 
 		function childrenHaveValueMatch(children: Record<string, any>[] | undefined): boolean {

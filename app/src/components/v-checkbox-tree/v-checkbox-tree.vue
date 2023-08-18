@@ -5,7 +5,7 @@
 			:key="choice[itemValue]"
 			v-model="value"
 			:value-combining="valueCombining"
-			:search="search"
+			:search="normalizedSearch"
 			:item-text="itemText"
 			:item-value="itemValue"
 			:item-children="itemChildren"
@@ -79,12 +79,12 @@ const fakeParentValue = ref('');
 
 const { modelValue, showSelectionOnly, itemText, itemValue, itemChildren, choices } = toRefs(props);
 
-const searchText = computed(() =>
+const normalizedSearch = computed(() =>
 	props.search !== null ? latinize(props.search, { lowerCase: true, symbols: false }) : null
 );
 
 const { visibleChildrenValues } = useVisibleChildren(
-	searchText,
+	normalizedSearch,
 	modelValue,
 	choices,
 	showSelectionOnly,
@@ -96,41 +96,44 @@ const { visibleChildrenValues } = useVisibleChildren(
 );
 
 let showAllSelection: (string | number)[] = [];
-const openSelection = ref<(string | number)[]>([]);
+const manualOpenSelection = ref<(string | number)[]>([]);
 
-watch(
-	searchText,
-	(newValue) => {
-		if (!newValue) return;
-
-		const selection = new Set([...openSelection.value, ...searchChoices(newValue, props.choices)]);
-
-		openSelection.value = [...selection];
-	},
-	{ immediate: true }
+const searchOpenSelection = computed(() =>
+	normalizedSearch.value ? searchChoices(normalizedSearch.value, props.choices) : []
 );
+
+const openSelection = computed({
+	get() {
+		return Array.from(new Set([...manualOpenSelection.value, ...searchOpenSelection.value]));
+	},
+	set(newValue) {
+		manualOpenSelection.value = newValue;
+	},
+});
 
 watch(showSelectionOnly, (isSelectionOnly) => {
 	if (isSelectionOnly) {
-		const selection = new Set([...openSelection.value, ...findSelectedChoices(props.choices, value.value)]);
+		const selection = new Set([...manualOpenSelection.value, ...findSelectedChoices(props.choices, value.value)]);
 
-		showAllSelection = openSelection.value;
-		openSelection.value = [...selection];
+		showAllSelection = manualOpenSelection.value;
+		manualOpenSelection.value = [...selection];
 	} else {
-		openSelection.value = [...showAllSelection];
+		manualOpenSelection.value = [...showAllSelection];
 	}
 });
 
-function searchChoices(text: string, target: Record<string, any>[]) {
+function searchChoices(text: string, target: Record<string, any>[], tree: string[] = []) {
 	const selection: string[] = [];
 
 	for (const item of target) {
-		if (item[props.itemText].toLowerCase().includes(text)) {
-			selection.push(item[props.itemValue]);
+		const normalizedItemText = latinize(item[props.itemText], { lowerCase: true, symbols: false });
+
+		if (normalizedItemText.includes(text)) {
+			selection.push(...tree, item[props.itemValue]);
 		}
 
 		if (item[props.itemChildren]) {
-			selection.push(...searchChoices(text, item[props.itemChildren]));
+			selection.push(...searchChoices(text, item[props.itemChildren], [...tree, item[props.itemValue]]));
 		}
 	}
 
