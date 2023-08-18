@@ -488,7 +488,6 @@ expand: Развернуть
 collapse: Свернуть
 select_item: Выбрать элемент
 no_items: Нет элементов
-search_items: Поиск элементов...
 disabled: Отключено
 information: Информация
 report_bug: Сообщить об ошибке
