@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.createTable('directus_extension_permissions', (table) => {
 		table.increments('id').primary().notNullable();
-		table.string('extension').notNullable().references('name').inTable('directus_extensions');
+		table.string('extension').notNullable().references('name').inTable('directus_extensions').onDelete('CASCADE');
 		table.string('permission').notNullable();
 		table.boolean('enabled').notNullable().defaultTo(false);
 		table.json('options')
