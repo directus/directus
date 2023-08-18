@@ -502,7 +502,6 @@ expand: Proširi
 collapse: Sažmi
 select_item: Odaberi stavku
 no_items: Nema stavki
-search_items: Pretraži stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
