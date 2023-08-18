@@ -1,4 +1,5 @@
 import { computed, Ref } from 'vue';
+import { remove as removeDiacritics } from 'diacritics';
 
 export function useVisibleChildren(
 	search: Ref<string | null>,
@@ -13,13 +14,14 @@ export function useVisibleChildren(
 ) {
 	const visibleChildrenValues = computed(() => {
 		let options = children.value || [];
-		const _search = search.value;
 
-		if (_search) {
+		if (search.value) {
+			const searchText = removeDiacritics(search.value.toLowerCase());
+
 			options = options.filter(
 				(child) =>
-					child[itemText.value].toLowerCase().includes(_search.toLowerCase()) ||
-					childrenHaveSearchMatch(child[itemChildren.value])
+					child[itemText.value].toLowerCase().includes(searchText) ||
+					childrenHaveSearchMatch(child[itemChildren.value], searchText)
 			);
 		}
 
@@ -35,12 +37,12 @@ export function useVisibleChildren(
 
 		return options.map((child) => child[itemValue.value]);
 
-		function childrenHaveSearchMatch(children: Record<string, any>[] | undefined): boolean {
+		function childrenHaveSearchMatch(children: Record<string, any>[] | undefined, searchText: string): boolean {
 			if (!children) return false;
 			return children.some(
 				(child) =>
-					child[itemText.value].toLowerCase().includes(search.value?.toLowerCase()) ||
-					childrenHaveSearchMatch(child[itemChildren.value])
+					child[itemText.value].toLowerCase().includes(searchText) ||
+					childrenHaveSearchMatch(child[itemChildren.value], searchText)
 			);
 		}
 
