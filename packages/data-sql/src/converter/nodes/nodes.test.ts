@@ -8,7 +8,7 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-vi.mock('../../utils/create-unique-identifier.js', () => ({
+vi.mock('./create-unique-identifier.js', () => ({
 	createUniqueIdentifier: vi.fn().mockImplementation((i) => `${i}_HASHVAL`),
 }));
 

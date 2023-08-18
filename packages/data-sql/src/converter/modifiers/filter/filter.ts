@@ -4,14 +4,14 @@ import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
 
 /**
- * Basically extracts the filter values and replaces it with parameter indexes.
+ * Extracts the user provided filter values and puts them in the list of parameters.
  * It also converts the negation format.
- * This function is called recursively for negation and logical nodes.
+ * This function is recursive.
  *
- * @param filter - all filter conditions
+ * @param filter - the filter to apply
  * @param collection - the name of the collection
- * @param firstParameterIndex - The index of the parameter. Mandatory for all operators.
- * @param secondParameterIndex - The index of an additional parameter. Only needed for some operators like BETWEEN.
+ * @param generator - the generator for the parameter index
+ * @param negate - whether the filter should be negated
  * @returns
  */
 export const convertFilter = (

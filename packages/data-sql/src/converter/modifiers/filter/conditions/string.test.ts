@@ -3,7 +3,7 @@ import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertStringNode } from './string.js';
-import type { AbstractSqlQueryConditionNode } from '../../../../index.js';
+import type { AbstractSqlQueryConditionNode } from '../../../../types/index.js';
 
 test('number', () => {
 	const idGen = parameterIndexGenerator();
