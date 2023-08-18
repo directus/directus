@@ -6,7 +6,7 @@
 			<div class="spacer" />
 			<v-icon clickable :name="open ? 'expand_less' : 'expand_more'" />
 		</div>
-		<interface-input-code v-if="open" :value="options" :disabled="!optional" @input="options = $event" />
+		<interface-input-code v-if="open" :value="options" :disabled="!optional" @click.stop @input="options = $event" />
 	</v-list-item>
 </template>
 

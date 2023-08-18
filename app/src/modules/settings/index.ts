@@ -249,14 +249,14 @@ export default defineModule({
 					component: MarketOverview,
 				},
 				{
-					name: 'extension',
+					name: 'market-extension',
 					path: 'extensions/:name(.+)',
 					component: MarketExtension,
 					props: true,
 				},
 				{
-					name: 'user',
-					path: 'users/:name',
+					name: 'market-user',
+					path: 'users/:name(.+)',
 					component: MarketUser,
 					props: true,
 				},

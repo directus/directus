@@ -15,23 +15,40 @@
 		</template>
 
 		<template #actions>
-			<v-button v-if="extension === undefined" v-tooltip.bottom="'Install Extension'" rounded icon>
-				<v-icon name="save_alt" @click="installDialog = true" />
+			<v-button
+				v-if="extension === undefined"
+				v-tooltip.bottom="'Install Extension'"
+				rounded
+				icon
+				@click="installDialog = true"
+			>
+				<v-icon name="save_alt" />
 			</v-button>
 			<template v-else>
-				<v-button v-tooltip.bottom="'Delete Extension'" danger rounded icon>
-					<v-icon name="delete" @click="uninstallDialog = true" />
+				<v-button v-tooltip.bottom="'Delete Extension'" danger rounded icon @click="uninstallDialog = true">
+					<v-icon name="delete" />
 				</v-button>
-				<v-button v-if="local === false" v-tooltip.bottom="'Update Extension'" secondary rounded icon>
-					<v-icon name="update" @click="updateDialog = true" />
+				<v-button
+					v-if="local === false"
+					v-tooltip.bottom="'Update Extension'"
+					secondary
+					rounded
+					icon
+					@click="updateDialog = true"
+				>
+					<v-icon name="update" />
+				</v-button>
+				<v-button v-tooltip.bottom="'Settings'" secondary rounded icon @click="settingsDialog = true">
+					<v-icon name="settings" />
 				</v-button>
 				<v-button
 					v-tooltip.bottom="extension.enabled ? 'Disable Extension' : 'Enable Extension'"
 					:secondary="extension.enabled === false"
 					rounded
 					icon
+					@click="toggleExtension"
 				>
-					<v-icon :name="extension.enabled ? 'check_box' : 'check_box_outline_blank'" @click="toggleExtension" />
+					<v-icon :name="extension.enabled ? 'check_box' : 'check_box_outline_blank'" />
 				</v-button>
 			</template>
 		</template>
@@ -50,16 +67,21 @@
 			@select-version="version = $event"
 		/>
 
-		<v-drawer v-model="installDialog" :title="`Install ${title} extension`" @cancel="installDialog = false">
+		<v-drawer
+			:model-value="installDialog || settingsDialog"
+			:title="`Install ${title} extension`"
+			@update:model-value="installDialog = settingsDialog = $event"
+			@cancel="installDialog = settingsDialog = false"
+		>
 			<template #actions>
 				<slot name="actions" />
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="install">
+				<v-button v-tooltip.bottom="t('save')" :loading="installing" icon rounded @click="install">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 
 			<div class="drawer-item-content">
-				<v-notice v-if="!selectedVersion.secure" type="danger">
+				<v-notice v-if="installDialog && !selectedVersion.secure" type="danger">
 					<p>
 						You are installing a
 						<strong>non-secure</strong>
@@ -67,7 +89,7 @@
 					</p>
 				</v-notice>
 				<template v-else>
-					<v-notice type="warning">
+					<v-notice v-if="installDialog" type="warning">
 						This is a secure permission. You are able to configure permissions the extension has access to.
 					</v-notice>
 					<div class="title">Required Permissions</div>
@@ -139,6 +161,8 @@ export interface Permission {
 
 const props = defineProps<Props>();
 const installDialog = ref(false);
+const settingsDialog = ref(false);
+const installing = ref(false);
 const updateDialog = ref(false);
 const uninstallDialog = ref(false);
 const version = ref<string | undefined>();
@@ -168,8 +192,8 @@ const selectedVersion = computed(() => {
 	);
 });
 
-watch(installDialog, (open) => {
-	if (open) {
+watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
+	if (openInstall || openSettings) {
 		grantedPermissionsRequired.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
 			Permission[]
 		>((acc, perm) => {
@@ -204,6 +228,8 @@ watch(installDialog, (open) => {
 });
 
 async function install() {
+	installing.value = true;
+
 	const body = {
 		granted_permission: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
 	};
@@ -214,8 +240,9 @@ async function install() {
 		await api.post(`/extensions/${encodeURIComponent(props.name)}`, body);
 	}
 
-	location.reload();
 	installDialog.value = false;
+	installing.value = false;
+	location.reload();
 }
 
 async function update() {

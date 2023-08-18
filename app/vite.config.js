@@ -18,6 +18,7 @@ import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version } from '../directus/package.json';
 import UnheadVite from '@unhead/addons/vite';
+import pluginRewriteAll from 'vite-plugin-rewrite-all';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
@@ -28,6 +29,7 @@ export default defineConfig({
 		__DIRECTUS_VERSION__: JSON.stringify(version),
 	},
 	plugins: [
+		pluginRewriteAll(),
 		directusExtensions(),
 		vue(),
 		UnheadVite(),
