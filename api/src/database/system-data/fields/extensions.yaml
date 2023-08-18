@@ -8,4 +8,5 @@ fields:
   - field: options
     special:
       - cast-json
+  - field: registry
   - field: granted_permissions

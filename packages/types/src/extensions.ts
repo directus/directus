@@ -45,6 +45,7 @@ export type DatabaseExtension = {
 	enabled: boolean,
 	options: Record<string, any>,
 	granted_permissions: DatabaseExtensionPermission[],
+	registry: string
 }
 
 export type DatabaseExtensionPermission = {

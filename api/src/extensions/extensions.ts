@@ -183,6 +183,7 @@ export class ExtensionManager {
 			host: extension.host,
 			version: extension.version,
 			enabled: extension.enabled,
+			registry: extension.registry,
 			secure: extension.secure,
 			requested_permissions: extension.requested_permissions,
 			granted_permissions: extension.granted_permissions,
@@ -289,6 +290,7 @@ export class ExtensionManager {
 				enabled: true,
 				options: {},
 				granted_permissions: [],
+				registry: undefined
 			}));
 		}
 
