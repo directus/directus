@@ -685,9 +685,6 @@ importers:
       '@types/color':
         specifier: 3.0.3
         version: 3.0.3
-      '@types/diacritics':
-        specifier: 1.3.1
-        version: 1.3.1
       '@types/diff':
         specifier: 5.0.3
         version: 5.0.3
@@ -772,9 +769,6 @@ importers:
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
-      diacritics:
-        specifier: 1.3.0
-        version: 1.3.0
       diff:
         specifier: 5.1.0
         version: 5.1.0
@@ -832,6 +826,9 @@ importers:
       mitt:
         specifier: 3.0.0
         version: 3.0.0
+      modern-diacritics:
+        specifier: 2.3.1
+        version: 2.3.1
       nanoid:
         specifier: 4.0.2
         version: 4.0.2
@@ -8331,10 +8328,6 @@ packages:
 
   /@types/detect-port@1.3.3:
     resolution: {integrity: sha512-bV/jQlAJ/nPY3XqSatkGpu+nGzou+uSwrH1cROhn+jBFg47yaNH+blW4C7p9KhopC7QxCv/6M86s37k8dMk0Yg==}
-    dev: true
-
-  /@types/diacritics@1.3.1:
-    resolution: {integrity: sha512-tAH+RY51Zbz7ZSzN7yxQBKEue78U6weZ1UUBNjFoitoLbJGFJCKI7KVHwGsnYo4s2xSFr9KGEkjst2FolpYqyA==}
     dev: true
 
   /@types/diff@5.0.3:
@@ -16547,6 +16540,11 @@ packages:
       pathe: 1.1.1
       pkg-types: 1.0.3
       ufo: 1.2.0
+    dev: true
+
+  /modern-diacritics@2.3.1:
+    resolution: {integrity: sha512-jOI0qtelWfGZ4HTB/7pKTOzAA5miXgfbMl0RYirYA5CRuNY4JYTXER+BUiH9JCxqX1gIHs6GaVTwFhvUV8MPWg==}
+    engines: {node: ^14 || >=16}
     dev: true
 
   /mri@1.1.4:
