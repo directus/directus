@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Make v-checkbox-tree search accent sensitive
+Enabled accent sensitive search in checkbox tree component 
