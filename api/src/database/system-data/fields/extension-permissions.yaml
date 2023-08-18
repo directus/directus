@@ -1,0 +1,12 @@
+table: directus_extension_permissions
+
+fields:
+  - field: id
+  - field: extension
+  - field: permission
+  - field: enabled
+    special:
+      - cast-boolean
+  - field: options
+    special:
+      - cast-json
