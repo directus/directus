@@ -1,5 +1,5 @@
 import type { AbstractQueryNodeSort } from '@directus/data';
-import type { AbstractSqlQueryOrderNode } from '../../types/modifiers/index.js';
+import type { AbstractSqlQueryOrderNode } from '../../types/index.js';
 
 /**
  * @param abstractSorts
