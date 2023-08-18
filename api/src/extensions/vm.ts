@@ -43,7 +43,7 @@ export class VmManager {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
 
-		let code = await readFile(extensionPath, 'utf-8')
+		const code = await readFile(extensionPath, 'utf-8')
 
 		const enableDebugger = extension.debugger === true;
 
@@ -123,7 +123,10 @@ export class VmManager {
 
 		const unregister = async () => {
 			try {
-				isolate.dispose();
+				// TODO: Figure out why I can't release the context
+				// if (isolate.isDisposed === false) isolate.dispose();
+
+				// context.release()
 
 				for (const event of hookEvents) {
 					switch (event.type) {
@@ -142,7 +145,9 @@ export class VmManager {
 					}
 				}
 
-			} catch (err) { }
+			} catch (err) {
+				console.error(err)
+			}
 		}
 
 		return unregister

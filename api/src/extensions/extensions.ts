@@ -290,7 +290,7 @@ export class ExtensionManager {
 				enabled: true,
 				options: {},
 				granted_permissions: [],
-				registry: undefined
+				registry: ''
 			}));
 		}
 
