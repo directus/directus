@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodePrimitive } from '../../../abstract-query.js';
+import type { AbstractQueryFieldNodePrimitive } from '../../../nodes/primitive.js';
 
 /**
  * Used to compare a number field with a number value.

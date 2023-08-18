@@ -1,5 +1,5 @@
 import type { GeoJSONGeometryCollection, GeoJSONMultiPolygon, GeoJSONPolygon } from 'wellknown';
-import type { AbstractQueryFieldNodePrimitive } from '../../../abstract-query.js';
+import type { AbstractQueryFieldNodePrimitive } from '../../../nodes/primitive.js';
 
 /**
  * Used to check if geo box objects intersect

@@ -1,4 +1,6 @@
-import type { AbstractQueryFilterNode } from './filters/filter.js';
+import type { AbstractQueryConditionNode } from './filters/conditions/condition.js';
+import type { AbstractQueryNodeLogical } from './filters/logical.js';
+import type { AbstractQueryNodeNegate } from './filters/negate.js';
 import type { AbstractQueryNodeLimit } from './limit.js';
 import type { AbstractQueryNodeOffset } from './offset.js';
 import type { AbstractQueryNodeSort } from './sort.js';
@@ -10,5 +12,5 @@ export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
 	sort?: AbstractQueryNodeSort[];
-	filter?: AbstractQueryFilterNode;
+	filter?: AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate;
 }

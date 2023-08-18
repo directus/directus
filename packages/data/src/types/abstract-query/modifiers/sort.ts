@@ -1,10 +1,5 @@
-import type { AbstractQueryNode } from '../abstract-query.js';
 import type { AbstractQueryFieldNodeFn } from '../nodes/function.js';
 import type { AbstractQueryFieldNodePrimitive } from '../nodes/primitive.js';
-import type {
-	AbstractQueryFieldNodeRelatedAnyToOne,
-	AbstractQueryFieldNodeRelatedManyToOne,
-} from '../nodes/related.js';
 
 /**
  * Specifies the order of the result, f.e. for a primitive field.
@@ -35,19 +30,17 @@ import type {
  * 		}
  * }
  */
-export interface AbstractQueryNodeSort extends AbstractQueryNode {
+export interface AbstractQueryNodeSort {
 	type: 'sort';
 
 	/** the desired order */
 	direction: 'ascending' | 'descending';
 
 	/** the node on which the sorting should be applied */
-	target: AbstractQueryNodeSortTargets;
+	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
 }
 
-export type AbstractQueryNodeSortTargets =
-	| AbstractQueryFieldNodePrimitive
-	| AbstractQueryFieldNodeFn
-	/**  @TODO support when working on relations */
-	| AbstractQueryFieldNodeRelatedManyToOne
-	| AbstractQueryFieldNodeRelatedAnyToOne;
+export type AbstractQueryNodeSortTargets = AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
+/**  @TODO support when working on relations */
+// | AbstractQueryFieldNodeRelatedManyToOne
+// | AbstractQueryFieldNodeRelatedAnyToOne;

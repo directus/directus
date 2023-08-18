@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodePrimitive } from '../../../nodes/index.js';
+import type { AbstractQueryFieldNodePrimitive } from '../../../nodes/primitive.js';
 import type {
 	GeoJSONGeometryCollection,
 	GeoJSONLineString,

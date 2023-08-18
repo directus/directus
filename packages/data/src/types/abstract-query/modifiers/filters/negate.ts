@@ -1,12 +1,12 @@
-import type { AbstractQueryNode } from '../../abstract-query.js';
-import type { AbstractQueryFilterNode } from './filter.js';
+import type { AbstractQueryConditionNode } from './conditions/condition.js';
+import type { AbstractQueryNodeLogical } from './logical.js';
 
 /**
  * Specifies that the wrapper filter should be negated.
  */
-export interface AbstractQueryNodeNegate extends AbstractQueryNode {
+export interface AbstractQueryNodeNegate {
 	type: 'negate';
 
 	/** the values for the operation. */
-	childNode: AbstractQueryFilterNode;
+	childNode: AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate;
 }

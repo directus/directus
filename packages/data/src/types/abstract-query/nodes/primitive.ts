@@ -1,5 +1,3 @@
-import type { AbstractQueryNode } from '../abstract-query.js';
-
 /**
  * Generic primitive value read from the store field
  * @example
@@ -12,7 +10,7 @@ import type { AbstractQueryNode } from '../abstract-query.js';
  * }
  * ```
  */
-export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
+export interface AbstractQueryFieldNodePrimitive {
 	type: 'primitive';
 
 	/** the name of the attribute */

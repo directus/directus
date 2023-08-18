@@ -1,4 +1,3 @@
-import type { AbstractQueryNode } from '../abstract-query.js';
 import type { AbstractQueryFieldNodePrimitive } from './primitive.js';
 
 export type SupportedFunctions = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second' | 'count';
@@ -18,7 +17,7 @@ export type SupportedFunctions = 'year' | 'month' | 'week' | 'day' | 'weekday' |
  * }
  * ```
  */
-export interface AbstractQueryFieldNodeFn extends AbstractQueryNode {
+export interface AbstractQueryFieldNodeFn {
 	type: 'fn';
 
 	fn: SupportedFunctions;

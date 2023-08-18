@@ -1,4 +1,3 @@
-import type { AbstractQueryNode } from '../../../abstract-query.js';
 import type { ConditionGeoIntersectsNode } from './geo-intersects.js';
 import type { ConditionGeoIntersectsBBoxNode } from './geo-intersects-bbox.js';
 import type { ConditionFieldNode } from './field-condition.js';
@@ -17,7 +16,7 @@ import type { ConditionStringNode } from './string-condition.js';
  * },
  * ```
  */
-export interface AbstractQueryConditionNode extends AbstractQueryNode {
+export interface AbstractQueryConditionNode {
 	type: 'condition';
 	condition: ActualConditionNodes;
 }

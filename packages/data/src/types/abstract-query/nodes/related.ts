@@ -1,16 +1,16 @@
 /**
  * This file will be split up into multiple files soon.
  */
-import type { AbstractQueryNode } from '../abstract-query.js';
-import type { AbstractQueryFilterNode } from '../modifiers/filters/filter.js';
-import type { AbstractQueryModifiers } from '../modifiers/index.js';
-import type { AbstractQueryFieldNode } from './index.js';
+import type { AbstractQueryModifiers } from '../modifiers/modifiers.js';
+import type { AbstractQueryFieldNodePrimitive } from './primitive.js';
+import type { AbstractQueryFieldNodeFn } from './function.js';
 
 /**
  * This is a basic interface for all relational field types.
  */
 export interface AbstractQueryFieldNodeRelatedBase {
-	nodes: AbstractQueryFieldNode[];
+	// @todo rethink the blow. why a primitive here although it should be a related node?
+	nodes: (AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn | AbstractQueryFieldNodeRelated)[];
 
 	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;
@@ -67,25 +67,25 @@ export interface AbstractQueryFieldNodeRelatedJoinAny {
 	};
 }
 
-export interface AbstractQueryFieldNodeRelatedManyToOne extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+export interface AbstractQueryFieldNodeRelatedManyToOne extends AbstractQueryFieldNodeRelatedBase {
 	type: 'm2o';
 
 	join: AbstractQueryFieldNodeRelatedJoinMany;
 }
 
-export interface AbstractQueryFieldNodeRelatedOneToMany extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+export interface AbstractQueryFieldNodeRelatedOneToMany extends AbstractQueryFieldNodeRelatedBase {
 	type: 'o2m';
 	// maybe every here
 	join: AbstractQueryFieldNodeRelatedJoinMany;
 }
 
-export interface AbstractQueryFieldNodeRelatedAnyToOne extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+export interface AbstractQueryFieldNodeRelatedAnyToOne extends AbstractQueryFieldNodeRelatedBase {
 	type: 'a2o';
 
 	join: AbstractQueryFieldNodeRelatedJoinAny;
 }
 
-export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryFieldNodeRelatedBase {
 	type: 'o2a';
 
 	join: AbstractQueryFieldNodeRelatedJoinAny;
@@ -106,5 +106,5 @@ export interface AbstractQueryQuantifierNode {
 	alias: string;
 
 	/** the values for the the operation. */
-	childNode: AbstractQueryFilterNode;
+	// childNode: AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate;
 }

@@ -4,9 +4,12 @@
  *
  * @module abstract-query
  */
-
 import type { AbstractQueryModifiers } from './modifiers/index.js';
-import type { AbstractQueryFieldNode } from './nodes/index.js';
+import type {
+	AbstractQueryFieldNodeFn,
+	AbstractQueryFieldNodePrimitive,
+	AbstractQueryFieldNodeRelated,
+} from './nodes/index.js';
 
 /**
  * The abstract root query
@@ -22,7 +25,7 @@ export interface AbstractQuery {
 	collection: string;
 
 	/** All fields to select in the query */
-	nodes: AbstractQueryFieldNode[];
+	nodes: (AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn | AbstractQueryFieldNodeRelated)[];
 
 	/** Optional attributes to perform a fine granular query */
 	modifiers?: AbstractQueryModifiers;
@@ -30,16 +33,6 @@ export interface AbstractQuery {
 
 // disabled for now: it might be redundant
 // type AbstractQueryNodeType = 'primitive' | 'fn' | 'm2o' | 'o2m' | 'a2o' | 'o2a';
-
-/**
- * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
- * With this in place it can easily be determined how to technically handle this field.
- * @see `AbstractQueryNodeType` for all possible types.
- */
-export interface AbstractQueryNode {
-	/** the type of the node */
-	type: string;
-}
 
 /**
  * @TODO

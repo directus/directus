@@ -1,4 +1,5 @@
-import type { AbstractQueryFilterNode, AbstractQueryNode } from '../../abstract-query.js';
+import type { AbstractQueryConditionNode } from './conditions/condition.js';
+import type { AbstractQueryNodeNegate } from './negate.js';
 
 /**
  * Used to create logical operations.
@@ -51,10 +52,10 @@ import type { AbstractQueryFilterNode, AbstractQueryNode } from '../../abstract-
  * }
  * ```
  */
-export interface AbstractQueryNodeLogical extends AbstractQueryNode {
+export interface AbstractQueryNodeLogical {
 	type: 'logical';
 	operator: 'and' | 'or';
 
 	/** the values for the operation. */
-	childNodes: AbstractQueryFilterNode[];
+	childNodes: AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate[];
 }
