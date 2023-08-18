@@ -22,6 +22,7 @@
 					:items="availableCollections"
 					item-value="collection"
 					item-text="collection"
+					item-label-font-family="var(--family-monospace)"
 					item-disabled="meta.singleton"
 					multiple
 					:is-menu-same-width="false"
