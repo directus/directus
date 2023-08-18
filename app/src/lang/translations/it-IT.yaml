@@ -502,7 +502,6 @@ expand: Espandi
 collapse: Chiudi
 select_item: Seleziona Elemento
 no_items: Nessun elemento
-search_items: Ricerca elementi...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
