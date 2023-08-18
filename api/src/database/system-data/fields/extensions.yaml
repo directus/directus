@@ -8,3 +8,4 @@ fields:
   - field: options
     special:
       - cast-json
+  - field: granted_permissions

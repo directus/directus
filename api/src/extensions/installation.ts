@@ -11,7 +11,7 @@ import type { DatabaseExtensionPermission } from '@directus/types';
 
 export type ExtensionInstallationOptions = {
 	version?: string;
-	granted_permission?: DatabaseExtensionPermission[]
+	granted_permissions?: DatabaseExtensionPermission[]
 };
 
 const defaultOptions = {
@@ -81,7 +81,7 @@ export class InstallationManager {
 		await extensionsService.createOne({
 			name,
 			enabled: true,
-			granted_permissions: options.granted_permission ?? [],
+			granted_permissions: options.granted_permissions ?? [],
 		});
 	}
 

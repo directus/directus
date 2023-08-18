@@ -237,7 +237,7 @@ async function saveSettings() {
 	saving.value = true;
 
 	await api.patch(`/extensions/${encodeURIComponent(props.name)}`, {
-		granted_permission: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
+		granted_permissions: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
 	});
 
 	settingsDialog.value = false;
@@ -248,7 +248,7 @@ async function install() {
 	saving.value = true;
 
 	const body = {
-		granted_permission: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
+		granted_permissions: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
 	};
 
 	if (version.value) {
