@@ -1,4 +1,3 @@
-import type { AbstractSqlQueryNode } from '../utils.js';
 import type { AbstractSqlQuerySelectNode } from './primitive.js';
 import type { ValuesNode } from '../parameterized-statement.js';
 import type { SupportedFunctions } from '@directus/data';
@@ -7,7 +6,7 @@ import type { SupportedFunctions } from '@directus/data';
  * Used to apply a function to a column.
  * Currently we support various EXTRACT functions to extract specific parts out of a data/time value.
  */
-export interface AbstractSqlQueryFnNode extends AbstractSqlQueryNode {
+export interface AbstractSqlQueryFnNode {
 	type: 'fn';
 
 	/**

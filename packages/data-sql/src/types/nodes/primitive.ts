@@ -1,5 +1,3 @@
-import type { AbstractSqlQueryNode } from '../utils.js';
-
 export interface AbstractSqlQueryColumn {
 	table: string;
 	column: string;
@@ -8,7 +6,7 @@ export interface AbstractSqlQueryColumn {
 /**
  * Used to select a specific column from a table.
  */
-export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn, AbstractSqlQueryNode {
+export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn {
 	type: 'primitive';
 
 	/*

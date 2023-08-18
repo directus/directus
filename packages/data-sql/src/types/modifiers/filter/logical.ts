@@ -1,10 +1,9 @@
-import type { AbstractSqlQueryNode } from '../../utils.js';
 import type { AbstractSqlQueryConditionNode } from './conditions/condition.js';
 
 /**
  * A wrapper to add multiple conditions at once.
  */
-export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
+export interface AbstractSqlQueryLogicalNode {
 	type: 'logical';
 
 	/* The logical operator to use to group the conditions. */

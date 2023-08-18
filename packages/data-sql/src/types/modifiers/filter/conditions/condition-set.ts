@@ -1,12 +1,11 @@
 import type { ValuesNode } from '../../../parameterized-statement.js';
-import type { AbstractSqlQueryNode } from '../../../utils.js';
 import type { AbstractSqlQuerySelectNode } from '../../../nodes/primitive.js';
 
 /*
  * Condition to filter rows where a column value is in a list of values.
  * The value can basically be of any time, although the type should be obviously the same as the column type.
  */
-export interface SqlConditionSetNode extends AbstractSqlQueryNode {
+export interface SqlConditionSetNode {
 	type: 'condition-set';
 
 	/* The only operator which is valid for a comparison against a set of values. */

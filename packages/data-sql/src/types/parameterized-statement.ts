@@ -1,10 +1,9 @@
 import type { GeoJSONGeometry } from 'wellknown';
-import type { AbstractSqlQueryNode } from './utils.js';
 
 /**
  * Used pass a single value.
  */
-export interface ValueNode extends AbstractSqlQueryNode {
+export interface ValueNode {
 	type: 'value';
 	parameterIndex: number;
 }
@@ -12,7 +11,7 @@ export interface ValueNode extends AbstractSqlQueryNode {
 /**
  * Used pass an arbitrary amount of values.
  */
-export interface ValuesNode extends AbstractSqlQueryNode {
+export interface ValuesNode {
 	type: 'values';
 	parameterIndexes: number[];
 }

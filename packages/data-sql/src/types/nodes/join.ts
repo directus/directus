@@ -1,10 +1,9 @@
-import type { AbstractSqlQueryNode } from '../utils.js';
 import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../modifiers/filter/index.js';
 
 /**
  * Used to join another table, regardless of the type of relation.
  */
-export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
+export interface AbstractSqlQueryJoinNode {
 	type: 'join';
 
 	/* the foreign table to join */
