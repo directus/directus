@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Enabled accent sensitive search in checkbox tree component 
+Enhanced Checkboxes (Tree) interface with accent sensitive search, fixed highlighting and open selection
