@@ -2,6 +2,10 @@
 
 <br />
 
+> We're looking for a Technical Project Manager! Interested? DM @rijkvanzanten on Discord :rocket:
+
+---
+
 ## 🐰 Introduction
 
 Directus is a real-time API and App dashboard for managing SQL database content.
