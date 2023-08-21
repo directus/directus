@@ -67,7 +67,7 @@ export const queryToParams = <Schema extends object, Item>(
 		params['sort'] = typeof query.sort === 'string' ? query.sort : query.sort.join(',');
 	}
 
-	if (typeof query.limit === 'number' && query.limit >= -1) {
+	if (typeof query.limit === 'number' && query.limit >= 0) {
 		params['limit'] = String(query.limit);
 	}
 
