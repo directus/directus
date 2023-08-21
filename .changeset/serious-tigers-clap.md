@@ -2,4 +2,4 @@
 "@directus/sdk": patch
 ---
 
-Fixed limit=-1 support in the SDK
+Fixed support for using limit parameter with unlimited (-1) value in the SDK
