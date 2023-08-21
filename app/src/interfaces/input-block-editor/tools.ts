@@ -10,7 +10,7 @@ import QuoteTool from '@editorjs/quote';
 import RawToolTool from '@editorjs/raw';
 import TableTool from '@editorjs/table';
 import UnderlineTool from '@editorjs/underline';
-import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
+import { Alignment } from './alignment';
 import ToggleBlock from 'editorjs-toggle-block';
 import { AttachesTool, ImageTool } from './plugins';
 
@@ -95,7 +95,7 @@ export default function getTools(
 			inlineToolbar: true,
 		},
 		alignment: {
-			class: AlignmentTuneTool,
+			class: Alignment,
 		},
 	};
 

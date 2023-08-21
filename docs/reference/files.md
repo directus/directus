@@ -80,7 +80,7 @@ exist, it is dynamically generated and immediately returned.
 
 ### Preset Transformations
 
-- **`key`** — This **key** of the [Storage Asset Preset](/user-guide/cloud/project-settings#files-thumbnails), a
+- **`key`** — This **key** of the [Storage Asset Preset](/user-guide/settings/project-settings#files-storage), a
   shortcut for the below parameters
 
 ### Custom Transformations

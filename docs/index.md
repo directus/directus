@@ -173,7 +173,7 @@ await directus.request(
 		</div>
 		<div :class="[$style.grid4, $style.m60]">
 			<Article
-				v-for="article in data.blog.articles"
+				v-for="article in data.blog.articles.slice(0,4)"
 				:key="article.id"
 				:title="article.title"
 				:desc="article.description"
