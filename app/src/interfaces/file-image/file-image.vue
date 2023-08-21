@@ -11,7 +11,7 @@
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
-					{{ t(`errors.${imageError}`) }}
+					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 
@@ -111,7 +111,7 @@ const props = withDefaults(
 		crop?: boolean;
 	}>(),
 	{
-		value: () => null,
+		value: null,
 		disabled: false,
 		crop: true,
 		folder: undefined,
