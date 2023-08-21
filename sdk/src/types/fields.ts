@@ -89,17 +89,13 @@ export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> ext
 /**
  * Returns the relational fields from the fields list
  */
-export type PickRelationalFields<Fields> = MergeRelations<
-	UnpackList<Fields> extends infer Field ? (Field extends object ? Field : never) : never
->;
+export type PickRelationalFields<Fields> = UnpackList<Fields> extends infer Field
+	? Field extends object
+		? Field
+		: never
+	: never;
 
-type MergeRelations<RelationalFields extends object | never> = {
-	[Key in AllKeys<RelationalFields>]: PickType<RelationalFields, Key>;
-};
-
-type PickType<T, K extends AllKeys<T>> = T extends { [k in K]?: any } ? T[K] : undefined;
-
-type AllKeys<T> = T extends any ? keyof T : never;
+export type RelationalQueryFields<Fields> = PickRelationalFields<Fields>;
 
 /**
  * Extract the required fields from an item
