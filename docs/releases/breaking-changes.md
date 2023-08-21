@@ -1,11 +1,13 @@
 ---
-description: A list of any actions you may need to take as you upgrade Directus versions.
+description: A list of any actions you may need to take on upgrades of Directus.
 ---
 
 # Breaking Changes
 
 As we continue to build Directus, we occasionally make changes that change how certain features works. We try and keep
 these to a minimum, but rest assured we only make them with good reason.
+
+[Learn more about Versioning ->](/getting-started/architecture#versioning)
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
@@ -17,13 +19,13 @@ Directus had various different functionalities that required you to use Redis wh
 scaled environment such as caching, rate-limiting, realtime, and flows. The configuration for these different parts have
 been combined into a single set of `REDIS` environment variables that are reused across the system.
 
-:::details Migration/Mitigation
+::: details Migration/Mitigation
 
 Combine all the `*_REDIS` environment variables into a single shared one as followed:
 
-_Before_
+::: code-group
 
-```
+```ini [Before]
 CACHE_STORE="redis"
 CACHE_REDIS_HOST="127.0.0.1"
 CACHE_REDIS_PORT="6379"
@@ -41,9 +43,7 @@ MESSENGER_REDIS_HOST="127.0.0.1"
 MESSENGER_REDIS_PORT="6379"
 ```
 
-_After_
-
-```
+```ini [After]
 REDIS_HOST="127.0.0.1"
 REDIS_PORT="6379"
 
@@ -68,11 +68,11 @@ As part of standardizing how extensions are built and shipped, you must replace 
 `exceptions` with new errors created within the extension itself. We recommend prefixing the error code with your
 extension name for improved debugging, but you can keep using the system codes if you relied on that in the past.
 
-:::details Migration/Mitigation
+::: details Migration/Mitigation
 
-_Before_
+::: code-group
 
-```js
+```js [Before]
 export default (router, { exceptions }) => {
 	const { ForbiddenException } = exceptions;
 
@@ -82,9 +82,7 @@ export default (router, { exceptions }) => {
 };
 ```
 
-_After_
-
-```js
+```js [After]
 import { createError } from '@directus/errors';
 
 const ForbiddenError = createError('MY_EXTENSION_FORBIDDEN', 'No script kiddies please...');

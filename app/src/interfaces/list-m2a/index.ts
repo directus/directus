@@ -11,7 +11,7 @@ export default defineInterface({
 	types: ['alias'],
 	localTypes: ['m2a'],
 	group: 'relational',
-	options: [
+	options: ({ editing, relations }) => [
 		{
 			field: 'enableSelect',
 			name: '$t:selecting_items',
@@ -62,6 +62,25 @@ export default defineInterface({
 				interface: 'boolean',
 				width: 'half',
 			},
+		},
+		{
+			field: 'prefix',
+			name: '$t:prefix',
+			meta:
+				editing === '+'
+					? {
+							interface: 'presentation-notice',
+							options: {
+								text: '$t:interfaces.list-m2m.display_template_configure_notice',
+							},
+					  }
+					: {
+							interface: 'system-display-template',
+							note: '$t:interfaces.list-m2a.prefix_note',
+							options: {
+								collectionName: relations.o2m?.collection,
+							},
+					  },
 		},
 	],
 	preview: PreviewSVG,
