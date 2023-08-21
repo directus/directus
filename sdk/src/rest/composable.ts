@@ -5,13 +5,18 @@ import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
 
+const defaultConfigValues: RestConfig = {
+	credentials: 'same-origin',
+};
+
 /**
  * Creates a client to communicate with the Directus REST API.
  *
  * @returns A Directus REST client.
  */
-export const rest = (config: RestConfig = {}) => {
+export const rest = (config: Partial<RestConfig> = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
+		const restConfig = { ...defaultConfigValues, ...config };
 		return {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
@@ -41,6 +46,7 @@ export const rest = (config: RestConfig = {}) => {
 				let fetchOptions: RequestInit = {
 					method: options.method ?? 'GET',
 					headers: options.headers ?? {},
+					credentials: restConfig.credentials,
 				};
 
 				if (options.body) {
@@ -53,21 +59,21 @@ export const rest = (config: RestConfig = {}) => {
 				}
 
 				// apply global onRequest hook
-				if (config.onRequest) {
-					fetchOptions = await config.onRequest(fetchOptions);
+				if (restConfig.onRequest) {
+					fetchOptions = await restConfig.onRequest(fetchOptions);
 				}
 
-				//const onError = config.onError ?? ((_err: any) => undefined);
+				//const onError = restConfig.onError ?? ((_err: any) => undefined);
 				let onResponse: ResponseTransformer | undefined | null;
 
 				// chain response handlers if needed
-				if (config.onResponse && options.onResponse) {
+				if (restConfig.onResponse && options.onResponse) {
 					onResponse = ((data: any) =>
-						Promise.resolve(data).then(config.onResponse).then(options.onResponse)) as ResponseTransformer;
+						Promise.resolve(data).then(restConfig.onResponse).then(options.onResponse)) as ResponseTransformer;
 				} else if ('onResponse' in options) {
 					onResponse = options.onResponse;
-				} else if ('onResponse' in config) {
-					onResponse = config.onResponse;
+				} else if ('onResponse' in restConfig) {
+					onResponse = restConfig.onResponse;
 				}
 
 				const response = await request(requestUrl.toString(), fetchOptions, onResponse); //.catch(onError);

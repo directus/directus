@@ -8,7 +8,7 @@ import { memoryStorage } from './utils/memory-storage.js';
 const defaultConfigValues: AuthenticationConfig = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
 	autoRefresh: true,
-	credentials: 'include',
+	credentials: 'same-origin',
 };
 
 /**
