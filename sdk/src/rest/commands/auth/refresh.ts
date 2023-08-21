@@ -1,5 +1,4 @@
 import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
-import { withCookies } from '../../helpers/index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
@@ -10,15 +9,13 @@ import type { RestCommand } from '../../types.js';
  *
  * @returns The new access and refresh tokens for the session.
  */
-export const refresh = <Schema extends object>(
-	mode: AuthenticationMode = 'cookie',
-	refresh_token?: string
-): RestCommand<AuthenticationData, Schema> => {
-	const command: RestCommand<AuthenticationData, Schema> = () => ({
+export const refresh =
+	<Schema extends object>(
+		mode: AuthenticationMode = 'cookie',
+		refresh_token?: string
+	): RestCommand<AuthenticationData, Schema> =>
+	() => ({
 		path: '/auth/refresh',
 		method: 'POST',
 		body: JSON.stringify(mode === 'json' ? { refresh_token, mode } : { mode }),
 	});
-
-	return mode === 'cookie' ? withCookies(command) : command;
-};
