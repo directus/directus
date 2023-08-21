@@ -128,6 +128,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify(authData),
+					credentials: authConfig.credentials,
 				});
 
 				setCredentials(data);
@@ -141,6 +142,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					headers: {
 						'Content-Type': 'application/json',
 					},
+					credentials: authConfig.credentials,
 				};
 
 				if (mode === 'json' && authData?.refresh_token) {
