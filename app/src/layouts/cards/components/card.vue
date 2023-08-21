@@ -300,7 +300,7 @@ function handleClick() {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 20px;
+	height: 26px;
 	margin-top: 2px;
 	overflow: hidden;
 	line-height: 1.3em;
