@@ -11,17 +11,17 @@ import type { RestCommand } from '../types.js';
  */
 export function withOptions<Schema extends object, Output>(
 	getOptions: RestCommand<Output, Schema>,
-	onRequest: RequestTransformer | Partial<RequestInit>
+	extraOptions: RequestTransformer | Partial<RequestInit>
 ): RestCommand<Output, Schema> {
 	return () => {
 		const options = getOptions();
 
-		if (typeof onRequest === 'function') {
-			options.onRequest = onRequest;
+		if (typeof extraOptions === 'function') {
+			options.onRequest = extraOptions;
 		} else {
 			options.onRequest = (options) => ({
 				...options,
-				...onRequest,
+				...extraOptions,
 			});
 		}
 
