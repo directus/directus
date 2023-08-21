@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryConditionNode } from './conditions/condition.js';
+import type { AbstractSqlQueryConditionNode } from './conditions/index.js';
 
 /**
  * A wrapper to add multiple conditions at once.

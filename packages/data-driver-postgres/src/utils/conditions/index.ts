@@ -28,7 +28,7 @@ function getCondition(conditionNode: AbstractSqlQueryConditionNode) {
 	switch (conditionNode.condition.type) {
 		case 'condition-number':
 			return numberCondition(conditionNode.condition, conditionNode.negate);
-		case 'condition-letter':
+		case 'condition-string':
 			return letterCondition(conditionNode.condition, conditionNode.negate);
 		case 'condition-geo':
 			return geoCondition(conditionNode.condition);

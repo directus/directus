@@ -5,11 +5,9 @@
  * @module abstract-query
  */
 import type { AbstractQueryModifiers } from './modifiers/index.js';
-import type {
-	AbstractQueryFieldNodeFn,
-	AbstractQueryFieldNodePrimitive,
-	AbstractQueryFieldNodeRelated,
-} from './nodes/index.js';
+import type { AbstractQueryFieldNodeFn } from './nodes/function.js';
+import type { AbstractQueryFieldNodePrimitive } from './nodes/primitive.js';
+import type { AbstractQueryFieldNodeRelated } from './nodes/related.js';
 
 /**
  * The abstract root query
@@ -40,4 +38,6 @@ export interface AbstractQuery {
  */
 
 export * from './modifiers/index.js';
-export * from './nodes/index.js';
+export * from './nodes/function.js';
+export * from './nodes/primitive.js';
+export * from './nodes/related.js';

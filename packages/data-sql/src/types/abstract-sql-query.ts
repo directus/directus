@@ -3,8 +3,7 @@ import type { AbstractSqlQueryFnNode } from './nodes/fn.js';
 import type { AbstractSqlQuerySelectNode } from './nodes/primitive.js';
 import type { ValueNode, ParameterTypes } from './parameterized-statement.js';
 import type { AbstractSqlQueryOrderNode } from './modifiers/order.js';
-import type { AbstractSqlQueryLogicalNode } from './modifiers/filter/logical.js';
-import type { AbstractSqlQueryConditionNode } from './modifiers/filter/conditions/condition.js';
+import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from './modifiers/filter/index.js';
 
 /**
  * This is an abstract SQL query which can be passed to all SQL drivers.
@@ -37,3 +36,7 @@ export interface AbstractSqlQuery {
 }
 
 export type WhereUnion = Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>>;
+
+export * from './modifiers/order.js';
+export * from './modifiers/filter/index.js';
+export * from './parameterized-statement.js';
