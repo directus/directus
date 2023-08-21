@@ -30,6 +30,8 @@ export const EXTENSION_NAME_REGEX = /^(?:(?:@[^/]+[/_])?directus-extension-|@dir
 
 export const EXTENSION_PKG_KEY = 'directus:extension';
 
+// ---------- types for package.json ---------- //
+
 export const SplitEntrypoint = z.object({
 	app: z.string(),
 	api: z.string(),
@@ -99,7 +101,69 @@ export const ExtensionManifest = z.object({
 	[EXTENSION_PKG_KEY]: ExtensionOptions,
 });
 
-export const ExtensionRaw = z.object({
+// ---------- types for database extension ---------- //
+
+export const DatabaseExtensionPermission = z.object({
+	id: z.number(),
+	extension: z.string(),
+	permission: z.string(),
+	enabled: z.boolean(),
+	options: z.record(z.any()).nullable(),
+});
+
+export const DatabaseExtension = z.object({
 	name: z.string(),
 	enabled: z.boolean(),
+	options: z.record(z.any()).nullable(),
+	granted_permissions: z.array(DatabaseExtensionPermission),
+	registry: z.string().nullable(),
 });
+
+
+// ---------- types for parsed extension ---------- //
+
+const ExtensionBase = z.object({
+	path: z.string(),
+	name: z.string(),
+	description: z.string().optional(),
+	icon: z.string().optional(),
+	version: z.string().optional(),
+	host: z.string().optional(),
+	secure: z.boolean(),
+	debugger: z.boolean().optional(),
+	local: z.boolean(),
+	requested_permissions: z.array(ExtensionPermission).optional(),
+});
+
+export const AppExtension = ExtensionBase.extend({
+	type: z.enum(APP_EXTENSION_TYPES),
+	entrypoint: z.string(),
+});
+
+export const ApiExtension = ExtensionBase.extend({
+	type: z.enum(API_EXTENSION_TYPES),
+	entrypoint: z.string(),
+});
+
+export const HybridExtension = ExtensionBase.extend({
+	type: z.enum(HYBRID_EXTENSION_TYPES),
+	entrypoint: SplitEntrypoint,
+});
+
+export const BundleExtension = ExtensionBase.extend({
+	type: z.literal('bundle'),
+	entrypoint: SplitEntrypoint,
+	entries: ExtensionOptionsBundleEntries,
+})
+
+export const Extension = z.union([AppExtension, ApiExtension, HybridExtension, BundleExtension]);
+
+export const FullExtension = Extension.and(DatabaseExtension)
+
+export const ExtensionInfo = DatabaseExtension.and(z.union([
+	AppExtension.omit({ entrypoint: true, path: true }),
+	ApiExtension.omit({ entrypoint: true, path: true }),
+	HybridExtension.omit({ entrypoint: true, path: true }),
+	BundleExtension.omit({ entrypoint: true, path: true }),
+]))
+

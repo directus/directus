@@ -2,7 +2,7 @@
 	<private-view :title="t('marketplace')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon>
-				<v-icon name="bolt" />
+				<v-icon name="storefront" />
 			</v-button>
 		</template>
 

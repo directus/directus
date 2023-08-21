@@ -63,7 +63,7 @@
 			:name="name"
 			:existing-extension="extension"
 			app
-			:directus-version="serverStore.info?.directus?.version"
+			:directus-version="directusVersion"
 			@select-version="version = $event"
 		/>
 
@@ -175,15 +175,15 @@ const updateDialog = ref(false);
 const uninstallDialog = ref(false);
 
 const extensionsStore = useExtensionsStore();
-const serverStore = useServerStore();
 
 const extension = computed(() => {
 	return extensionsStore.extensions.find((extension) => extension.name === props.name);
 });
 
 const version = ref<string | undefined>(extension.value?.version);
+const directusVersion = __DIRECTUS_VERSION__;
 
-const extensionInfo = ref<Record<string, any> | null>(null);
+const marketExtension = ref<Record<string, any> | null>(null);
 const latestVersion = ref<string | null>(null);
 const grantedPermissionsRequired = ref<Permission[]>([]);
 const grantedPermissionsOptional = ref<Permission[]>([]);
@@ -193,84 +193,63 @@ provide('api', marketApi);
 const { t } = useI18n();
 
 const newVersion = computed(() => {
-	return extension.value && extension.value.registry && extensionInfo.value?.latest_version !== extension.value.version;
+	return (
+		extension.value && extension.value.registry && marketExtension.value?.latest_version !== extension.value.version
+	);
 });
 
 const selectedVersion = computed(() => {
-	if (!extensionInfo.value) return null;
+	if (!marketExtension.value) return null;
 
-	return extensionInfo.value.versions.find(
+	return marketExtension.value.versions.find(
 		(v: any) => v.version.split('#')[1] === (version.value ?? latestVersion.value)
 	);
 });
 
 watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
-	if (openInstall) {
-		grantedPermissionsRequired.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
-			Permission[]
-		>((acc, perm) => {
-			if (!perm.optional || perm.optional === false) {
-				acc.push({
-					permission: perm.permission,
-					enabled: true,
-					options: perm.options,
-				});
-			}
-
-			return acc;
-		}, []);
-
-		grantedPermissionsOptional.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
-			Permission[]
-		>((acc, perm) => {
-			if (perm.optional === true) {
-				acc.push({
-					permission: perm.permission,
-					enabled: false,
-					options: perm.options,
-				});
-			}
-
-			return acc;
-		}, []);
-	} else if (openSettings) {
-		grantedPermissionsRequired.value = (extension.value?.granted_permissions as Record<string, any>[]).reduce<
-			Permission[]
-		>((acc, perm) => {
-			const requestedPerm = extension.value.requested_permissions.find((p: any) => p.permission === perm.permission);
-
-			if (!requestedPerm?.optional || requestedPerm?.optional === false) {
-				acc.push({
-					id: perm.id,
-					permission: perm.permission,
-					enabled: perm.enabled,
-					options: perm.options,
-				});
-			}
-
-			return acc;
-		}, []);
-
-		grantedPermissionsOptional.value = (extension.value?.granted_permissions as Record<string, any>[]).reduce<
-			Permission[]
-		>((acc, perm) => {
-			const requestedPerm = extension.value.requested_permissions.find((p: any) => p.permission === perm.permission);
-
-			if (requestedPerm?.optional === true) {
-				acc.push({
-					id: perm.id,
-					permission: perm.permission,
-					enabled: perm.enabled,
-					options: perm.options,
-				});
-			}
-
-			return acc;
-		}, []);
-	} else {
+	if (!openInstall && !openSettings) {
 		grantedPermissionsRequired.value = [];
 		grantedPermissionsOptional.value = [];
+		return;
 	}
+
+	grantedPermissionsRequired.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
+		Permission[]
+	>((acc, perm) => {
+		if (perm.optional) return acc;
+
+		const grantedPerm = extension.value?.granted_permissions.find((p) => p.permission === perm.permission);
+
+		acc.push({
+			id: grantedPerm?.id,
+			extension: grantedPerm?.extension,
+			permission: perm.permission,
+			enabled: grantedPerm?.enabled ?? true,
+			options: grantedPerm?.options ?? perm.options,
+		});
+
+		return acc;
+	}, []);
+
+	grantedPermissionsOptional.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
+		Permission[]
+	>((acc, perm) => {
+		if (!perm.optional) return acc;
+
+		const grantedPerm = extension.value?.granted_permissions.find((p) => p.permission === perm.permission);
+
+		if (perm.optional === true) {
+			acc.push({
+				id: grantedPerm?.id,
+				extension: grantedPerm?.extension,
+				permission: perm.permission,
+				enabled: grantedPerm?.enabled ?? false,
+				options: grantedPerm?.options ?? perm.options,
+			});
+		}
+
+		return acc;
+	}, []);
 });
 
 async function saveSettings() {
@@ -331,12 +310,12 @@ async function toggleExtension() {
 watch(
 	() => props.name,
 	() => {
-		loadExtensionInfo();
+		loadmarketExtension();
 	},
 	{ immediate: true }
 );
 
-async function loadExtensionInfo() {
+async function loadmarketExtension() {
 	const versionFields = [
 		'version',
 		'readme',
@@ -355,7 +334,7 @@ async function loadExtensionInfo() {
 		},
 	});
 
-	extensionInfo.value = response.data.data;
+	marketExtension.value = response.data.data;
 	latestVersion.value = response.data.data?.latest_version.split('#')[1];
 }
 

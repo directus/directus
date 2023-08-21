@@ -9,11 +9,19 @@ import type {
 	ExtensionOptionsBundleEntry,
 	ExtensionPermissionOptions,
 	ExtensionPermission,
-	ExtensionRaw,
 	HYBRID_EXTENSION_TYPES,
 	LOCAL_TYPES,
 	NESTED_EXTENSION_TYPES,
 	SplitEntrypoint,
+	ExtensionInfo,
+	DatabaseExtension,
+	DatabaseExtensionPermission,
+	AppExtension,
+	ApiExtension,
+	HybridExtension,
+	BundleExtension,
+	Extension,
+	FullExtension,
 } from '@directus/constants';
 import type { Knex } from 'knex';
 import type { Logger } from 'pino';
@@ -40,57 +48,19 @@ export type NestedExtensionType = (typeof NESTED_EXTENSION_TYPES)[number];
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
-export type DatabaseExtension = {
-	name: string,
-	enabled: boolean,
-	options: Record<string, any>,
-	granted_permissions: DatabaseExtensionPermission[],
-	registry: string
-}
+export type DatabaseExtension = z.infer<typeof DatabaseExtension>;
 
-export type DatabaseExtensionPermission = {
-	id: number,
-	extension: string,
-	permission: string,
-	enabled: boolean,
-	options: Record<string, any>,
-}
+export type DatabaseExtensionPermission = z.infer<typeof DatabaseExtensionPermission>;
 
-type ExtensionBase = {
-	path: string;
-	name: string;
-	description?: string;
-	icon?: string;
-	version?: string;
-	host?: string;
-	secure: boolean;
-	debugger?: boolean;
-	local: boolean;
-	requested_permissions: ExtensionPermission[];
-};
+export type AppExtension = z.infer<typeof AppExtension>;
 
-export type AppExtension = ExtensionBase & {
-	type: AppExtensionType;
-	entrypoint: string;
-};
+export type ApiExtension = z.infer<typeof ApiExtension>;
 
-export type ApiExtension = ExtensionBase & {
-	type: ApiExtensionType;
-	entrypoint: string;
-};
+export type HybridExtension = z.infer<typeof HybridExtension>;
 
-export type HybridExtension = ExtensionBase & {
-	type: HybridExtensionType;
-	entrypoint: SplitEntrypoint;
-};
+export type BundleExtension = z.infer<typeof BundleExtension>;
 
-export type BundleExtension = ExtensionBase & {
-	type: 'bundle';
-	entrypoint: SplitEntrypoint;
-	entries: { type: NestedExtensionType; name: string }[];
-};
-
-export type Extension = AppExtension | ApiExtension | HybridExtension | BundleExtension;
+export type Extension = z.infer<typeof Extension>;
 
 export type ExtensionOptions = z.infer<typeof ExtensionOptions>;
 export type ExtensionOptionsBundleEntry = z.infer<typeof ExtensionOptionsBundleEntry>;
@@ -146,12 +116,6 @@ export type ExtensionOptionsContext = {
 	saving: boolean;
 };
 
-export type ExtensionRaw = z.infer<typeof ExtensionRaw>;
+export type ExtensionInfo = z.infer<typeof ExtensionInfo>;
 
-export type ExtensionInfo = ExtensionRaw &
-	(
-		| Omit<AppExtension, 'entrypoint' | 'path'>
-		| Omit<ApiExtension, 'entrypoint' | 'path'>
-		| Omit<HybridExtension, 'entrypoint' | 'path'>
-		| Omit<BundleExtension, 'entrypoint' | 'path'>
-	);
+export type FullExtension = z.infer<typeof FullExtension>;

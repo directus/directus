@@ -1,5 +1,5 @@
-import { APP_EXTENSION_TYPES } from '@directus/constants';
-import type { DatabaseExtension, Extension, ExtensionInfo } from '@directus/types';
+import { APP_EXTENSION_TYPES, ExtensionInfo } from '@directus/constants';
+import type { ExtensionInfo as ExtensionInfoType, FullExtension } from '@directus/types';
 import {
 	getPackageExtensions,
 	resolvePackageExtensions,
@@ -27,7 +27,6 @@ export async function getExtensionManager(): Promise<ExtensionManager> {
 	return extensionManager
 }
 
-type FullExtension = Extension & DatabaseExtension;
 
 type AppExtensions = string | null;
 
@@ -153,53 +152,24 @@ export class ExtensionManager {
 		});
 	}
 
-	public getDisplayExtensions() {
-		return this.extensions.map(this.reduceExtensionInfo);
+	public getDisplayExtensions(): ExtensionInfoType[] {
+		return this.extensions.map(extension => ExtensionInfo.parse(extension));
 	}
 
-	public getDisplayExtension(name: string | undefined): ExtensionInfo | undefined {
+	public getDisplayExtension(name: string | undefined): ExtensionInfoType | undefined {
 		const extension = this.extensions.find((extension) => extension.name === name);
 
 		if (!extension) {
 			return undefined;
 		}
 
-		return this.reduceExtensionInfo(extension);
+		return ExtensionInfo.parse(extension);
 	}
 
 	public getExtensionsList(type?: string) {
 		return this.extensions
 			.filter((extension) => type === undefined || extension.type === type)
 			.map((extension) => extension.name);
-	}
-
-	private reduceExtensionInfo(extension: FullExtension): ExtensionInfo {
-		const extensionInfo = {
-			name: extension.name,
-			description: extension.description,
-			icon: extension.icon,
-			type: extension.type,
-			local: extension.local,
-			host: extension.host,
-			version: extension.version,
-			enabled: extension.enabled,
-			registry: extension.registry,
-			secure: extension.secure,
-			requested_permissions: extension.requested_permissions,
-			granted_permissions: extension.granted_permissions,
-		};
-
-		if (extension.type === 'bundle') {
-			return {
-				...extensionInfo,
-				entries: extension.entries.map((entry) => ({
-					name: entry.name,
-					type: entry.type,
-				})),
-			} as ExtensionInfo;
-		} else {
-			return extensionInfo as ExtensionInfo;
-		}
 	}
 
 	public getExtension(name: string) {
@@ -268,35 +238,33 @@ export class ExtensionManager {
 
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
-		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*', 'granted_permissions.*'] });
+		const registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*', 'granted_permissions.*'] });
 
-		if (registeredExtensions.length === 0 && extensions.length > 0) {
-			logger.info(
-				'No extensions registered in the database, registering all extensions found on disk and enabling them'
-			);
+		for (const extension of extensions) {
+			const isInDB = registeredExtensions.find((registeredExtension) => registeredExtension.name === extension.name) !== undefined;
 
-			await extensionsService.createMany(
-				extensions.map((extension) => {
-					return {
-						name: extension.name,
-						enabled: true,
-						options: {},
-					};
-				})
-			);
+			if (!isInDB) {
+				logger.info(`Registering extension ${extension.name} in the database`)
 
-			registeredExtensions = extensions.map((extension) => ({
-				name: extension.name,
-				enabled: true,
-				options: {},
-				granted_permissions: [],
-				registry: ''
-			}));
+				await extensionsService.createOne({
+					name: extension.name,
+					enabled: true,
+					options: {},
+				});
+
+				registeredExtensions.push({
+					name: extension.name,
+					enabled: true,
+					options: {},
+					granted_permissions: [],
+					registry: ''
+				});
+			}
 		}
 
 		return extensions.map((extension) => {
 			const registeredExtension = registeredExtensions.find(
-				(registeredExtension) => registeredExtension['name'] === extension.name
+				(registeredExtension) => registeredExtension.name === extension.name
 			);
 
 			if (!registeredExtension) throw new Error(`Extension ${extension.name} is not registered in the database`);
