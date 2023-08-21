@@ -68,6 +68,7 @@
 				<select-list-item-group
 					v-if="item.children"
 					:item="item"
+					:item-label-font-family="itemLabelFontFamily"
 					:model-value="modelValue"
 					:multiple="multiple"
 					:allow-other="allowOther"
@@ -78,6 +79,7 @@
 					v-else
 					:model-value="modelValue"
 					:item="item"
+					:item-label-font-family="itemLabelFontFamily"
 					:multiple="multiple"
 					:allow-other="allowOther"
 					@update:model-value="$emit('update:modelValue', $event)"
@@ -155,6 +157,8 @@ interface Props {
 	itemValue?: string;
 	/** Which key in items is used to show an icon */
 	itemIcon?: string | null;
+	/** Which font family to use for checkbox item label */
+	itemLabelFontFamily?: string;
 	/** Which key in items is used to model the disabled state */
 	itemDisabled?: string;
 	/** Which key in items is used to model the selectable state */
@@ -366,10 +370,6 @@ function useDisplayValue() {
 
 .list {
 	--v-list-min-width: 0;
-}
-
-.item-text {
-	font-family: var(--v-select-font-family);
 }
 
 .v-input {
