@@ -1,7 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode, ForbiddenError, RouteNotFoundError } from '../errors/index.js';
-import collectionExists from '../middleware/collection-exists.js';
+import { ErrorCode, RouteNotFoundError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { ExtensionPermissionsService } from '../extensions/service.js';

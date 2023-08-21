@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const ivm = $0
 const databaseService = $1
 

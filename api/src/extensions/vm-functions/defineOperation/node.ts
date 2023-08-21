@@ -10,16 +10,14 @@ const ivm = require('isolated-vm')
 
 export class DefineOperationVMFunction extends VMFunction {
 
-	override prepareContext(context: Context, extension: ApiExtensionInfo): void {
+	override prepareContext(context: Context, _extension: ApiExtensionInfo): void {
 
 		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async function (id: string, handler: any) {
 				const flowManager = getFlowManager();
 
-				flowManager.addOperation(id, async (options, context) => {
-					console.log('operation', id, options)
-
+				flowManager.addOperation(id, async (options, _context) => {
 					const result = await handler.apply(null, [
 						new ivm.ExternalCopy(options).copyInto(),
 						new ivm.ExternalCopy({}).copyInto(),

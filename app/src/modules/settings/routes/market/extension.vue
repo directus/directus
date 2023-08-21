@@ -29,7 +29,7 @@
 					<v-icon name="delete" />
 				</v-button>
 				<v-button
-					v-if="local === false"
+					v-if="newVersion"
 					v-tooltip.bottom="'Update Extension'"
 					secondary
 					rounded
@@ -192,7 +192,9 @@ provide('api', marketApi);
 
 const { t } = useI18n();
 
-const local = computed(() => Boolean(extension.value && !extension.value.registry));
+const newVersion = computed(() => {
+	return extension.value && extension.value.registry && extensionInfo.value?.latest_version !== extension.value.version;
+});
 
 const selectedVersion = computed(() => {
 	if (!extensionInfo.value) return null;

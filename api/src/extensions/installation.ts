@@ -10,8 +10,8 @@ import { getSchema } from '../utils/get-schema.js';
 import type { DatabaseExtensionPermission } from '@directus/types';
 
 export type ExtensionInstallationOptions = {
-	version?: string;
-	registry?: string;
+	version?: string | undefined;
+	registry?: string | undefined;
 	granted_permissions?: DatabaseExtensionPermission[]
 };
 

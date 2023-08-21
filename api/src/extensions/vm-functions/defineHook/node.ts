@@ -4,7 +4,7 @@ import { VMFunction } from "../vm-function.js";
 import emitter from '../../../emitter.js';
 import { createRequire } from "module";
 import type { EventHandler } from "../../../types/events.js";
-import type { ActionHandler, FilterHandler, InitHandler, ScheduleHandler } from "@directus/types";
+import type { ActionHandler, FilterHandler, InitHandler } from "@directus/types";
 import type { ExtensionManager } from "../../extensions.js";
 import { scheduleSynchronizedJob, validateCron } from "../../../utils/schedule.js";
 import logger from "../../../logger.js";
@@ -32,7 +32,7 @@ export class DefineHookVMFunction extends VMFunction {
 				if (type === 'filter') {
 					const [event, callback]: [string, Reference] = args
 
-					const handler: FilterHandler = (payload, meta, filterContext) => {
+					const handler: FilterHandler = (payload, meta, _filterContext) => {
 						callback.apply(null, [
 							new ivm.ExternalCopy(payload).copyInto(),
 							new ivm.ExternalCopy(meta).copyInto(),
@@ -46,7 +46,7 @@ export class DefineHookVMFunction extends VMFunction {
 				} else if (type === 'action') {
 					const [event, callback]: [string, Reference] = args
 
-					const handler: ActionHandler = (meta, filterContext) => {
+					const handler: ActionHandler = (meta, _filterContext) => {
 						callback.apply(null, [
 							new ivm.ExternalCopy(meta).copyInto(),
 						])

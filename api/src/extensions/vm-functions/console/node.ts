@@ -13,12 +13,15 @@ export class ConsoleVMFunction extends VMFunction {
 
 		jail.setSync('console', new ivm.ExternalCopy({
 			log: new ivm.Callback((...args: any[]) => {
+				// @ts-ignore
 				console.log(`${extension.name}: `, ...args)
 			}),
 			error: new ivm.Callback((...args: any[]) => {
+				// @ts-ignore
 				console.error(`${extension.name}: `, ...args)
 			}),
 			warn: new ivm.Callback((...args: any[]) => {
+				// @ts-ignore
 				console.warn(`${extension.name}: `, ...args)
 			}),
 

@@ -4,27 +4,20 @@ import { VMFunction } from "../vm-function.js";
 import { createRequire } from "node:module";
 import {
 	ItemsService,
-	AssetsService,
 	ActivityService,
 	CollectionsService,
 	DashboardsService,
 	FieldsService,
-	FilesService,
-	ImportService,
-	ExportService,
 	NotificationsService,
 	OperationsService,
 	PanelsService,
-	PermissionsService,
 	PresetsService,
 	RelationsService,
 	RevisionsService,
-	RolesService,
 	ServerService,
 	SettingsService,
 	SharesService,
 	TranslationsService,
-	UsersService,
 	WebhooksService,
 	WebSocketService,
 	UtilsService
@@ -38,7 +31,7 @@ const ivm = require('isolated-vm')
 type ApiServices = 'items' | 'assets' | 'activity' | 'collections' | 'dashboards' | 'fields' | 'files' | 'import' | 'export' | 'notifications' | 'operations' | 'panels' | 'permissions' | 'presets' | 'relations' | 'revisions' | 'roles' | 'server' | 'settings' | 'shares' | 'translations' | 'users' | 'utils' | 'webhooks' | 'websocket'
 
 export class ApiServiceVMFunction extends VMFunction {
-	override async prepareContext(context: Context, extension: ApiExtensionInfo): Promise<void> {
+	override async prepareContext(context: Context, _extension: ApiExtensionInfo): Promise<void> {
 
 		const schema = await getSchema()
 
@@ -105,12 +98,13 @@ export class ApiServiceVMFunction extends VMFunction {
 							arg.applyIgnored(null, callbackArgs)
 						}
 					}
+
 					return arg
 				})
 
-				service[prop](...argWithFunc).then((result) => {
+				service[prop](...argWithFunc).then((result: any) => {
 					resolve.apply(null, [new ivm.ExternalCopy(result).copyInto()])
-				}).catch((err) => {
+				}).catch((err: any) => {
 					reject.apply(null, [new ivm.ExternalCopy(err).copyInto()])
 				})
 			})

@@ -12,6 +12,7 @@ import { ApiServiceVMFunction } from "./vm-functions/apiServices/node.js";
 import { ConsoleVMFunction } from "./vm-functions/console/node.js";
 import type { EventHandler } from "../types/events.js";
 import emitter from "../emitter.js";
+import logger from "../logger.js";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
@@ -116,8 +117,10 @@ export class VmManager {
 		runModule.evaluate({
 			timeout: scriptTimeoutMs
 		}).then(() => {
+			// @ts-ignore
 			console.log('Script completed successfully');
 		}).catch((err: any) => {
+			// @ts-ignore
 			console.log('Script failed:', err);
 		})
 
@@ -146,6 +149,7 @@ export class VmManager {
 				}
 
 			} catch (err) {
+				// @ts-ignore
 				console.error(err)
 			}
 		}
@@ -172,8 +176,12 @@ export class VmManager {
 			function dispose() {
 				try {
 					channel.dispose();
-				} catch (err) { }
+				} catch (err) {
+					// @ts-ignore
+					console.error(err);
+				}
 			}
+
 			ws.on('error', dispose);
 			ws.on('close', dispose);
 
@@ -195,10 +203,12 @@ export class VmManager {
 					dispose();
 				}
 			}
-			channel.onResponse = (callId: any, message: any) => send(message);
+
+			channel.onResponse = (_callId: any, message: any) => send(message);
 			channel.onNotification = send;
 		});
-		console.log(`${extensionName} Inspector: devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:${this.debuggerPort}`);
+
+		logger.info(`${extensionName} Inspector: devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:${this.debuggerPort}`);
 
 		this.debuggerPort++;
 	}

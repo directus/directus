@@ -4,6 +4,7 @@ import { VMFunction } from "../vm-function.js";
 import express from 'express';
 import { createRequire } from "node:module";
 import type { ExtensionManager } from "../../extensions.js";
+import logger from "../../../logger.js";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
@@ -116,7 +117,7 @@ export class DefineEndpointVMFunction extends VMFunction {
 					], {
 						timeout: 1000
 					}).catch((err: any) => {
-						console.error(err)
+						logger.error(err)
 					})
 				})
 

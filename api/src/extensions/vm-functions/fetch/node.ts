@@ -56,7 +56,6 @@ export class FetchVMFunction extends VMFunction {
 						timeout: 1000
 					})
 				} catch (err) {
-					console.log(err)
 					reject.apply(undefined, [
 						new ivm.ExternalCopy(err).copyInto()
 					], {
