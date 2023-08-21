@@ -16,11 +16,11 @@
 
 		<template #actions>
 			<v-button
-				v-if="extension === undefined"
+				v-if="installedExtension === undefined"
 				v-tooltip.bottom="'Install Extension'"
 				rounded
 				icon
-				@click="installDialog = true"
+				@click="drawer = 'install'"
 			>
 				<v-icon name="save_alt" />
 			</v-button>
@@ -29,26 +29,36 @@
 					<v-icon name="delete" />
 				</v-button>
 				<v-button
-					v-if="newVersion"
-					v-tooltip.bottom="'Update Extension'"
+					v-if="canChangeVersion"
+					v-tooltip.bottom="'Change Extension Version'"
 					secondary
 					rounded
 					icon
-					@click="updateDialog = true"
+					@click="drawer = 'change'"
 				>
 					<v-icon name="update" />
 				</v-button>
-				<v-button v-tooltip.bottom="'Settings'" secondary rounded icon @click="settingsDialog = true">
+				<v-button
+					v-if="updateAvailable"
+					v-tooltip.bottom="'Update Extension'"
+					warning
+					rounded
+					icon
+					@click="onUpdateDrawer"
+				>
+					<v-icon name="file_download" />
+				</v-button>
+				<v-button v-tooltip.bottom="'Settings'" secondary rounded icon @click="drawer = 'settings'">
 					<v-icon name="settings" />
 				</v-button>
 				<v-button
-					v-tooltip.bottom="extension.enabled ? 'Disable Extension' : 'Enable Extension'"
-					:secondary="extension.enabled === false"
+					v-tooltip.bottom="installedExtension.enabled ? 'Disable Extension' : 'Enable Extension'"
+					:secondary="installedExtension.enabled === false"
 					rounded
 					icon
 					@click="toggleExtension"
 				>
-					<v-icon :name="extension.enabled ? 'check_box' : 'check_box_outline_blank'" />
+					<v-icon :name="installedExtension.enabled ? 'check_box' : 'check_box_outline_blank'" />
 				</v-button>
 			</template>
 		</template>
@@ -61,43 +71,47 @@
 
 		<Extension
 			:name="name"
-			:existing-extension="extension"
+			:existing-extension="installedExtension"
 			app
 			:directus-version="directusVersion"
 			@select-version="version = $event"
 		/>
 
 		<v-drawer
-			:model-value="installDialog || settingsDialog"
-			:title="`Install ${title} extension`"
-			@update:model-value="installDialog = settingsDialog = $event"
-			@cancel="installDialog = settingsDialog = false"
+			:model-value="drawer !== undefined"
+			:title="drawerTitle"
+			@update:model-value="onDrawerClose"
+			@cancel="onDrawerClose"
 		>
 			<template #actions>
 				<slot name="actions" />
-				<v-button
-					v-tooltip.bottom="t('save')"
-					:loading="saving"
-					icon
-					rounded
-					@click="installDialog ? install() : saveSettings()"
-				>
+				<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded @click="onDrawerSave">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 
 			<div class="drawer-item-content">
-				<v-notice v-if="installDialog && !selectedVersion.secure" type="danger">
-					<p>
-						You are installing a
-						<strong>non-secure</strong>
-						extension. This extension has full access to your database and can do anything.
-					</p>
-				</v-notice>
+				<template v-if="!selectedVersion.secure">
+					<v-notice v-if="drawer === 'install'" type="danger">
+						<p>
+							You are installing a
+							<strong>non-secure</strong>
+							extension. This extension has full access to your database and can do anything.
+						</p>
+					</v-notice>
+					<v-notice v-if="drawer === 'change' || drawer === 'update'" type="danger">
+						<p>
+							You are updating to a
+							<strong>non-secure</strong>
+							extension. This extension has full access to your database and can do anything.
+						</p>
+					</v-notice>
+				</template>
 				<template v-else>
-					<v-notice v-if="installDialog" type="warning">
+					<v-notice v-if="drawer === 'install' || drawer === 'update' || drawer === 'change'" type="warning">
 						This is a secure permission. You are able to configure permissions the extension has access to.
 					</v-notice>
+
 					<div class="title">Required Permissions</div>
 					<v-list class="permissions required">
 						<Permission
@@ -120,16 +134,6 @@
 				</template>
 			</div>
 		</v-drawer>
-		<v-dialog :model-value="updateDialog">
-			<v-card>
-				<v-card-title>Update {{ title }}</v-card-title>
-				<v-card-text>Are you sure that you want to update this extension?</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="updateDialog = false">Close</v-button>
-					<v-button @click="update()">Update</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
 		<v-dialog :model-value="uninstallDialog">
 			<v-card>
 				<v-card-title>Uninstall {{ title }}</v-card-title>
@@ -153,7 +157,6 @@ import { computed, provide, ref, watch } from 'vue';
 import { marketApi } from './market-api';
 import api from '@/api';
 import { useExtensionsStore } from '@/stores/extensions';
-import { useServerStore } from '@/stores/server';
 
 interface Props {
 	name: string;
@@ -167,20 +170,20 @@ export interface Permission {
 	options?: string;
 }
 
+type Drawer = 'install' | 'settings' | 'update' | 'change' | undefined;
+
 const props = defineProps<Props>();
-const installDialog = ref(false);
-const settingsDialog = ref(false);
-const saving = ref(false);
-const updateDialog = ref(false);
+const drawer = ref<Drawer>();
 const uninstallDialog = ref(false);
+const saving = ref(false);
 
 const extensionsStore = useExtensionsStore();
 
-const extension = computed(() => {
+const installedExtension = computed(() => {
 	return extensionsStore.extensions.find((extension) => extension.name === props.name);
 });
 
-const version = ref<string | undefined>(extension.value?.version);
+const version = ref<string | undefined>();
 const directusVersion = __DIRECTUS_VERSION__;
 
 const marketExtension = ref<Record<string, any> | null>(null);
@@ -192,12 +195,6 @@ provide('api', marketApi);
 
 const { t } = useI18n();
 
-const newVersion = computed(() => {
-	return (
-		extension.value && extension.value.registry && marketExtension.value?.latest_version !== extension.value.version
-	);
-});
-
 const selectedVersion = computed(() => {
 	if (!marketExtension.value) return null;
 
@@ -206,19 +203,32 @@ const selectedVersion = computed(() => {
 	);
 });
 
-watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
-	if (!openInstall && !openSettings) {
+const installedVersion = computed(() => {
+	if (!marketExtension.value) return null;
+
+	return marketExtension.value.versions.find((v: any) => v.version.split('#')[1] === installedExtension.value?.version);
+});
+
+const updateAvailable = computed(
+	() => marketExtension.value?.latest_version.split('#')[1] !== installedExtension.value?.version
+);
+
+const canChangeVersion = computed(() => version.value !== installedExtension.value?.version);
+
+watch(drawer, (open) => {
+	if (open === undefined) {
 		grantedPermissionsRequired.value = [];
 		grantedPermissionsOptional.value = [];
 		return;
 	}
 
-	grantedPermissionsRequired.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
-		Permission[]
-	>((acc, perm) => {
+	const permissions: Record<string, any>[] =
+		open === 'settings' ? installedVersion.value?.requested_permissions : selectedVersion.value?.requested_permissions;
+
+	grantedPermissionsRequired.value = permissions.reduce<Permission[]>((acc, perm) => {
 		if (perm.optional) return acc;
 
-		const grantedPerm = extension.value?.granted_permissions.find((p) => p.permission === perm.permission);
+		const grantedPerm = installedExtension.value?.granted_permissions.find((p) => p.permission === perm.permission);
 
 		acc.push({
 			id: grantedPerm?.id,
@@ -231,12 +241,10 @@ watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
 		return acc;
 	}, []);
 
-	grantedPermissionsOptional.value = (selectedVersion.value?.requested_permissions as Record<string, any>[]).reduce<
-		Permission[]
-	>((acc, perm) => {
+	grantedPermissionsOptional.value = permissions.reduce<Permission[]>((acc, perm) => {
 		if (!perm.optional) return acc;
 
-		const grantedPerm = extension.value?.granted_permissions.find((p) => p.permission === perm.permission);
+		const grantedPerm = installedExtension.value?.granted_permissions.find((p) => p.permission === perm.permission);
 
 		if (perm.optional === true) {
 			acc.push({
@@ -252,6 +260,35 @@ watch([installDialog, settingsDialog], ([openInstall, openSettings]) => {
 	}, []);
 });
 
+let versionBeforeUpdate: string | undefined = undefined;
+
+function onUpdateDrawer() {
+	drawer.value = 'update';
+	versionBeforeUpdate = version.value;
+	version.value = latestVersion.value ?? undefined;
+}
+
+function onDrawerSave() {
+	switch (drawer.value) {
+		case 'install':
+		case 'update':
+		case 'change':
+			install();
+			break;
+		case 'settings':
+			saveSettings();
+			break;
+	}
+}
+
+function onDrawerClose() {
+	if (drawer.value === 'update') {
+		version.value = versionBeforeUpdate;
+	}
+
+	drawer.value = undefined;
+}
+
 async function saveSettings() {
 	saving.value = true;
 
@@ -259,11 +296,12 @@ async function saveSettings() {
 		granted_permissions: [...grantedPermissionsRequired.value, ...grantedPermissionsOptional.value],
 	});
 
-	settingsDialog.value = false;
+	drawer.value = undefined;
 	saving.value = false;
 	extensionsStore.hydrate();
 }
 
+// Works both for installing and Updating
 async function install() {
 	saving.value = true;
 
@@ -277,16 +315,9 @@ async function install() {
 		await api.post(`/extensions/${encodeURIComponent(props.name)}`, body);
 	}
 
-	installDialog.value = false;
+	drawer.value = undefined;
 	saving.value = false;
 	location.reload();
-}
-
-async function update() {
-	await api.patch(`/extensions/${encodeURIComponent(props.name)}`);
-
-	location.reload();
-	updateDialog.value = false;
 }
 
 async function uninstall() {
@@ -300,7 +331,7 @@ async function toggleExtension() {
 	await api.patch(`/extensions/`, [
 		{
 			name: props.name,
-			enabled: !extension.value?.enabled ?? false,
+			enabled: !installedExtension.value?.enabled ?? false,
 		},
 	]);
 
@@ -340,6 +371,21 @@ async function loadmarketExtension() {
 
 const title = computed(() => {
 	return formatTitle(props.name);
+});
+
+const drawerTitle = computed(() => {
+	switch (drawer.value) {
+		case 'install':
+			return `Install ${title.value}`;
+		case 'update':
+			return `Update ${title.value} to latest version`;
+		case 'change':
+			return `Change ${title.value} to version ${version.value}`;
+		case 'settings':
+			return `Settings for ${title.value}`;
+	}
+
+	return '';
 });
 </script>
 

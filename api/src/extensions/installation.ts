@@ -108,11 +108,11 @@ export class InstallationManager {
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
 		await extensionsService.deleteOne(name);
+
 	}
 
-	public async updateExtension(name: string, options: ExtensionInstallationOptions = {}) {
+	public async updateExtension(name: string, options: Omit<ExtensionInstallationOptions, 'registry'> = {}) {
 		options.version ??= defaultOptions.version;
-		options.registry ??= defaultOptions.registry;
 
 		const axios = (await import('axios')).default;
 
@@ -126,12 +126,12 @@ export class InstallationManager {
 			throw new Error(`Extension "${name}" is a npm dependency.`);
 		}
 
-		if ((env['EXTENSIONS_ALLOWED_REGISTRIES'] ?? []).includes(options.registry) === false) {
-			throw new Error(`The registry "${options.registry}" is not allowed.`);
+		if ((env['EXTENSIONS_ALLOWED_REGISTRIES'] ?? []).includes(extension.registry) === false) {
+			throw new Error(`The registry "${extension.registry}" is not allowed.`);
 		}
 
 		if (options.version === undefined) {
-			const info = await axios.get(`${options.registry}/${encodeURIComponent(name)}/latest/`);
+			const info = await axios.get(`${extension.registry}/${encodeURIComponent(name)}/latest/`);
 
 			if (info.data.version === extension.version) {
 				throw new Error(`Extension "${name}" is already up to date.`);
@@ -139,11 +139,13 @@ export class InstallationManager {
 		}
 
 		if (options.version === extension.version) {
-			throw new Error(`Extension "${name}" is already up to date.`);
+			throw new Error(`Extension "${name}"@${options.version} is already installed.`);
 		}
 
 		await this.uninstallExtension(name);
 
-		await this.installExtension(name, options);
+		await this.extensionManager.reload();
+
+		await this.installExtension(name, { ...options, registry: extension.registry ?? undefined });
 	}
 }

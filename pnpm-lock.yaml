@@ -641,7 +641,7 @@ importers:
         specifier: 5.0.1
         version: 5.0.1(mapbox-gl@1.13.3)
       '@nitwel/directus-marketplace':
-        specifier: ^1.0.13
+        specifier: ^1.0.14
         version: link:../../market
       '@pinia/testing':
         specifier: 0.1.1

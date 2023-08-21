@@ -74,7 +74,7 @@ router.post(
 		const extension = extensionManager.getExtension(name);
 
 		if (extension !== undefined) {
-			await extensionManager.installation.updateExtension(name);
+			await extensionManager.installation.updateExtension(name, { version, granted_permissions });
 		} else {
 			await extensionManager.installation.installExtension(name, { version, granted_permissions, registry });
 		}
