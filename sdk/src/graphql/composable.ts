@@ -25,7 +25,7 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 				const options: RequestInit = {
 					method: 'POST',
 					body: JSON.stringify({ query, variables }),
-					credentials: gqlConfig.credentials
+					credentials: gqlConfig.credentials,
 				};
 
 				const headers: Record<string, string> = {};
