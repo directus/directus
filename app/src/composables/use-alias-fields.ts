@@ -112,10 +112,12 @@ export function useAliasFields(
 		const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
 
 		// Skip any fields prefixed with $ as they dont exist. ($thumbnail as an example)
-		key = key
-			.split('.')
-			.filter((k) => !k.startsWith('$'))
-			.join('.');
+		key = key.includes('.')
+			? key
+					.split('.')
+					.filter((k) => !k.startsWith('$'))
+					.join('.')
+			: key;
 
 		if (!aliasInfo || !aliasInfo.aliased) return get(item, key);
 
