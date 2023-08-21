@@ -115,7 +115,10 @@ await client.login(email, password);
 
 #### Cross-Domain Cookies
 
-A common situation is for the Directus backend and frontend to be hosted on different domains requiring extra configuration to make sure cookies are passed correctly. You can do this globally per composable which will apply to all requests made using that composable:
+A common situation is for the Directus backend and frontend to be hosted on different domains requiring extra
+configuration to make sure cookies are passed correctly. You can do this globally per composable which will apply to all
+requests made using that composable:
+
 ```js
 const client = createDirectus(URL)
   .with(authentication('cookie', { credentials: 'include' }))
@@ -124,6 +127,7 @@ const client = createDirectus(URL)
 ```
 
 Or you can enable this only for specific REST requests using the following helper:
+
 ```js
 const result = await client.request(withOptions(
   readItems('a-collection'),
