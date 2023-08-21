@@ -27,6 +27,7 @@
 			<select-list-item-group
 				v-if="childItem.children"
 				:item="childItem"
+				:item-label-font-family="itemLabelFontFamily"
 				:model-value="modelValue"
 				:multiple="multiple"
 				:allow-other="allowOther"
@@ -37,6 +38,7 @@
 				v-else
 				:model-value="modelValue"
 				:item="childItem"
+				:item-label-font-family="itemLabelFontFamily"
 				:multiple="multiple"
 				:allow-other="allowOther"
 				@update:model-value="$emit('update:modelValue', $event)"
@@ -52,6 +54,7 @@ import SelectListItem from './select-list-item.vue';
 
 interface Props {
 	item: Option;
+	itemLabelFontFamily?: string;
 	modelValue?: string | number | (string | number)[] | null;
 	multiple?: boolean;
 	allowOther?: boolean;
