@@ -109,11 +109,20 @@ npm run build
 
 ## Add Endpoint to Directus
 
-1. In the Directus extensions directory, open the operations directory and make a new directory called
-   `directus-endpoint-twilio`.
-2. From the operation's directory, open the **dist** folder and copy the `index.js` file into the directory.
-3. Update the .env file and add the `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` variables.
-4. Restart Directus to load the extension.
+When Directus starts, it will look in the `extensions` directory for any subdirectory starting with `directus-extension-`, and attempt to load them. 
+
+To install an extension, copy the entire directory with all source code, the `package.json` file, and the `dist` directory into the Directus `extensions` directory. Make sure the directory with your extension has a name that starts with `directus-extension`. In this case, you may choose to use `directus-extension-endpoint-twilio`.
+
+Ensure the `.env` file has `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` variables.
+
+Restart Directus to load the extension.
+
+:::info Required files
+
+Only the `package.json` and `dist` directory are required inside of your extension directory. However, adding the source code has no negative effect.
+
+:::
+
 
 ## Use the Endpoint
 

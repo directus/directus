@@ -155,12 +155,17 @@ npm run build
 
 ## Add Display to Directus
 
-In order to use this display in Directus, you must copy the compiled index file into the project's extension folder.
+When Directus starts, it will look in the `extensions` directory for any subdirectory starting with `directus-extension-`, and attempt to load them. 
 
-1. In the Directus extensions directory, open the displays directory and make a new directory called
-   `directus-display-age`.
-2. From the display's directory, open the **dist** folder and copy the `index.js` file into the directory.
-3. Restart Directus to load the extension.
+To install an extension, copy the entire directory with all source code, the `package.json` file, and the `dist` directory into the Directus `extensions` directory. Make sure the directory with your extension has a name that starts with `directus-extension`. In this case, you may choose to use `directus-extension-display-age`.
+
+Restart Directus to load the extension.
+
+:::info Required files
+
+Only the `package.json` and `dist` directory are required inside of your extension directory. However, adding the source code has no negative effect.
+
+:::
 
 ## Use the Display
 
