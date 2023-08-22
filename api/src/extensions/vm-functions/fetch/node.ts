@@ -15,7 +15,36 @@ export class FetchVMFunction extends VMFunction {
 		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async function (url: string, options: any, resolve: any, reject: any) {
-				if (permissions.find(permission => permission.permission === "web") === undefined) {
+				const permission = permissions.find(permission => permission.permission === "fetch")
+
+				if (permission?.enabled !== true) {
+					reject.apply(undefined, [
+						new ivm.ExternalCopy(new Error("Permission denied")).copyInto()
+					], {
+						timeout: 1000
+					})
+				}
+
+				const allowedUrls = permission?.options?.['allowed_urls']
+				let isAllowed = false
+
+				if (allowedUrls && Array.isArray(allowedUrls)) {
+					for (const allowedUrl of allowedUrls) {
+						if (allowedUrl.startsWith('/')) {
+							if (RegExp(allowedUrl).test(url)) {
+								isAllowed = true
+								break
+							}
+						} else {
+							if (url.startsWith(allowedUrl)) {
+								isAllowed = true
+								break
+							}
+						}
+					}
+				}
+
+				if (!isAllowed) {
 					reject.apply(undefined, [
 						new ivm.ExternalCopy(new Error("Permission denied")).copyInto()
 					], {
@@ -57,6 +86,7 @@ export class FetchVMFunction extends VMFunction {
 					})
 				} catch (err) {
 					console.log(err)
+
 					reject.apply(undefined, [
 						new ivm.ExternalCopy(err).copyInto()
 					], {
