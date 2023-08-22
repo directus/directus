@@ -163,8 +163,7 @@ async function merge() {
 	background-color: var(--background-subdued);
 	cursor: pointer;
 
-	.number,
-	.branch {
+	.number {
 		margin-right: 8px;
 	}
 
@@ -173,6 +172,7 @@ async function merge() {
 	}
 
 	.branch {
+		margin: 0 8px;
 		text-transform: uppercase;
 	}
 
