@@ -22,7 +22,7 @@
 						@click="removeField(field.field)"
 					>
 						<v-icon name="looks_one" class="branch" />
-						<v-text-overflow :text="comparedData?.main[field.field]" />
+						<branch-merge-field :value="comparedData?.main[field.field]" />
 						<v-icon v-if="!selectedFields.includes(field.field)" name="check" class="check" />
 					</div>
 					<div
@@ -31,7 +31,7 @@
 						@click="addField(field.field)"
 					>
 						<v-icon name="looks_two" class="branch" />
-						<v-text-overflow :text="comparedData?.current[field.field]" />
+						<branch-merge-field :value="comparedData?.current[field.field]" />
 						<v-icon v-if="selectedFields.includes(field.field)" name="check" class="check" />
 					</div>
 				</div>
@@ -53,6 +53,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Branch, Field } from '@directus/types';
 import { ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import BranchMergeField from './branch-merge-field.vue';
 
 type Comparison = {
 	current: Record<string, any>;
@@ -102,7 +103,7 @@ async function getComparison() {
 
 		comparedFields.value = Object.keys(result.main)
 			.map((fieldKey) => fieldsStore.getField(unref(currentBranch).collection, fieldKey))
-			.filter((field) => field);
+			.filter((field): field is Field => !!field);
 
 		selectedFields.value = comparedFields.value.map((field) => field.field);
 
