@@ -201,17 +201,23 @@ npm run build
 
 ## Add Endpoint to Directus
 
-When Directus starts, it will look in the `extensions` directory for any subdirectory starting with `directus-extension-`, and attempt to load them. 
+When Directus starts, it will look in the `extensions` directory for any subdirectory starting with
+`directus-extension-`, and attempt to load them.
 
-To install an extension, copy the entire directory with all source code, the `package.json` file, and the `dist` directory into the Directus `extensions` directory. Make sure the directory with your extension has a name that starts with `directus-extension`. In this case, you may choose to use `directus-extension-endpoint-stripe`.
+To install an extension, copy the entire directory with all source code, the `package.json` file, and the `dist`
+directory into the Directus `extensions` directory. Make sure the directory with your extension has a name that starts
+with `directus-extension`. In this case, you may choose to use `directus-extension-endpoint-stripe`.
 
-For the permissions to work, add the collection from Directus where the permissions are assigned with the variable `STRIPE_CUSTOMERS_COLLECTION` - ensure the `.env` file has `STRIPE_LIVE_SECRET_KEY` and `STRIPE_CUSTOMERS_COLLECTION` variables. 
+For the permissions to work, add the collection from Directus where the permissions are assigned with the variable
+`STRIPE_CUSTOMERS_COLLECTION` - ensure the `.env` file has `STRIPE_LIVE_SECRET_KEY` and `STRIPE_CUSTOMERS_COLLECTION`
+variables.
 
 Restart Directus to load the extension.
 
 :::info Required files
 
-Only the `package.json` and `dist` directory are required inside of your extension directory. However, adding the source code has no negative effect.
+Only the `package.json` and `dist` directory are required inside of your extension directory. However, adding the source
+code has no negative effect.
 
 :::
 
