@@ -2,7 +2,7 @@
 layout: home
 ---
 
-<script setup>
+<script setup lang="ts">
 import { data } from './.vitepress/data/blog.data.js';
 import Pattern from './.vitepress/components/home/Pattern.vue';
 import Footer from './.vitepress/components/home/Footer.vue';
@@ -173,7 +173,7 @@ await directus.request(
 		</div>
 		<div :class="[$style.grid4, $style.m60]">
 			<Article
-				v-for="article in data.blog.articles"
+				v-for="article in data.blog.articles.slice(0,4)"
 				:key="article.id"
 				:title="article.title"
 				:desc="article.description"
@@ -215,6 +215,9 @@ await directus.request(
 				img="/assets/react-guide.png"
 				url="/guides/real-time/chat/react"
 			/>
+		</div>
+		<div :class="$style.header">
+			<Button href="/guides">View All Guides</Button>
 		</div>
 	</div>
 </section>
