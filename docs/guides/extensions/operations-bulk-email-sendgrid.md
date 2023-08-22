@@ -14,11 +14,10 @@ send emails as an operation in Flows.
 
 To follow this guide, you will need a SendGrid API Key and access to SendGrid Dynamic Templates.
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+Open a console to your preferred working directory and initialize a new extension, which will create the
 boilerplate code for your operation.
 
 ```
-npm i create-directus-extension
 npm init directus-extension
 ```
 
@@ -286,8 +285,7 @@ In order to use this operation in Directus, you must copy the compiled index fil
    `directus-operation-bulk-sendgrid`.
 2. From the operation's directory, open the **dist** folder and copy the `app.js` and `api.js` files into the directory.
 3. Update the .env file and add the Stripe API key with the variable `SENDGRID_API_KEY`.
-4. Install SendGrid into your Directus root directory with `npm install @sendgrid/mail`.
-5. Restart Directus to load the extension.
+4. Restart Directus to load the extension.
 
 ## Use the Operation
 

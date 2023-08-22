@@ -12,11 +12,10 @@ input using icons, SVGs or images where the user selects an option and the value
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+Open a console to your preferred working directory and initialize a new extension, which will create the
 boilerplate code for your interface.
 
 ```
-npm i create-directus-extension
 npm init directus-extension
 ```
 

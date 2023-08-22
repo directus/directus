@@ -10,11 +10,10 @@ process should be the same for any package.
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+Open a console to your preferred working directory and initialize a new extension, which will create the
 boilerplate code for your operation.
 
 ```
-npm i create-directus-extension
 npm init directus-extension
 ```
 
@@ -105,8 +104,7 @@ In order to use this operation in Directus, you must copy the compiled index fil
 1. In the Directus extensions directory, open the operations directory and make a new directory called
    `directus-operation-lodash`.
 2. From the operation's directory, open the **dist** folder and copy the `app.js` and `api.js` files into the directory.
-3. Install `lodash` helper library into your Directus root directory with `npm install lodash`.
-4. Restart Directus to load the extension.
+3. Restart Directus to load the extension.
 
 ## Use the Operation
 

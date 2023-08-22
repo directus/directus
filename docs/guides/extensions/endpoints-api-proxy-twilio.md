@@ -15,11 +15,10 @@ As an example, this guide will proxy the Twilio API, but the same approach can b
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+Open a console to your preferred working directory and initialize a new extension, which will create the
 boilerplate code for your operation.
 
 ```
-npm i create-directus-extension
 npm init directus-extension
 ```
 

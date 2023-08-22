@@ -10,11 +10,10 @@ a record from saving if a phone number is not valid using the Twilio Lookup API.
 
 ## Install Dependencies
 
-Open a console to your preferred working directory, then install the Directus Extensions SDK, which will create the
+Open a console to your preferred working directory and initialize a new extension, which will create the
 boilerplate code for your display.
 
 ```
-npm i create-directus-extension
 npm init directus-extension
 ```
 
