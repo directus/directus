@@ -21,18 +21,24 @@
 						:class="{ active: !selectedFields.includes(field.field) }"
 						@click="removeField(field.field)"
 					>
-						<v-icon name="looks_one" class="branch" />
-						<branch-merge-field :value="comparedData?.main[field.field]" />
-						<v-icon v-if="!selectedFields.includes(field.field)" name="check" class="check" />
+						<v-icon name="looks_one" class="number" />
+						<branch-merge-field class="field-content" :value="comparedData?.main[field.field]" />
+						<span v-if="!selectedFields.includes(field.field)" class="check">
+							<v-chip class="branch" x-small>{{ t('main_branch') }}</v-chip>
+							<v-icon name="check" />
+						</span>
 					</div>
 					<div
 						class="compare current"
 						:class="{ active: selectedFields.includes(field.field) }"
 						@click="addField(field.field)"
 					>
-						<v-icon name="looks_two" class="branch" />
-						<branch-merge-field :value="comparedData?.current[field.field]" />
-						<v-icon v-if="selectedFields.includes(field.field)" name="check" class="check" />
+						<v-icon name="looks_two" class="number" />
+						<branch-merge-field class="field-content" :value="comparedData?.current[field.field]" />
+						<span v-if="selectedFields.includes(field.field)" class="check">
+							<v-chip class="branch" x-small>{{ currentBranch.name }}</v-chip>
+							<v-icon name="check" />
+						</span>
 					</div>
 				</div>
 			</div>
@@ -149,25 +155,30 @@ async function merge() {
 }
 
 .compare {
-	position: relative;
+	display: flex;
+	align-items: center;
 	width: 100%;
-	padding: 8px 40px 8px 40px;
+	padding: 8px;
 	color: var(--foreground-subdued);
 	background-color: var(--background-subdued);
 	cursor: pointer;
 
-	.v-icon {
-		position: absolute;
+	.number,
+	.branch {
+		margin-right: 8px;
+	}
 
-		&.branch {
-			top: 8px;
-			left: 8px;
-		}
+	.field-content {
+		flex: 1;
+	}
 
-		&.check {
-			top: 8px;
-			right: 8px;
-		}
+	.branch {
+		text-transform: uppercase;
+	}
+
+	.check {
+		display: inline-flex;
+		align-items: center;
 	}
 
 	&.main {
@@ -175,6 +186,12 @@ async function merge() {
 		&.active {
 			color: var(--secondary);
 			background-color: var(--secondary-alt);
+
+			.branch {
+				color: var(--secondary);
+				border-color: var(--secondary);
+				background-color: var(--secondary-25);
+			}
 		}
 	}
 
@@ -183,6 +200,12 @@ async function merge() {
 		&.active {
 			color: var(--primary);
 			background-color: var(--primary-alt);
+
+			.branch {
+				color: var(--primary);
+				border-color: var(--primary);
+				background-color: var(--primary-25);
+			}
 		}
 	}
 }
