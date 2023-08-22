@@ -9,8 +9,6 @@ fields:
   - field: name
   - field: collection
   - field: item
-  - field: icon
-  - field: color
   - field: hash
   - field: date_created
     special:
