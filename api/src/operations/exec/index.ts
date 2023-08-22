@@ -29,6 +29,7 @@ export default defineOperationApi<Options>({
 		jail.setSync('global', jail.derefInto());
 		jail.setSync('process', { env: allowedEnv }, { copy: true });
 		jail.setSync('module', { exports: null }, { copy: true });
+
 		jail.setSync(
 			'console',
 			{
