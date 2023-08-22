@@ -9,7 +9,8 @@ description:
 
 ## Install Docker
 
-You should have Docker installed and running on your machine. You can [download it here](https://docs.docker.com/get-docker/).
+You should have Docker installed and running on your machine. You can
+[download it here](https://docs.docker.com/get-docker/).
 
 ::: info What Is Docker?
 
@@ -24,9 +25,9 @@ As soon as there are new releases of Directus, we publish them on
 
 ## Create a Docker Compose File
 
-Create a new empty folder on your Desktop called `directus`. 
+Create a new empty folder on your Desktop called `directus`.
 
-Open a text editor such as Visual Studio Code, nano, Vim, TextEdit, or Notepad. 
+Open a text editor such as Visual Studio Code, nano, Vim, TextEdit, or Notepad.
 
 Copy and paste the following and save the file as `docker-compose.yml`:
 
@@ -91,7 +92,6 @@ docker compose up
 ```
 
 :::
-
 
 Directus should now be available at <a href="http://localhost:8055" target="_blank">http://localhost:8055</a> or
 <a href="http://127.0.0.1:8055" target="_blank">http://127.0.0.1:8055</a>
