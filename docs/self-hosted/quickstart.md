@@ -87,7 +87,7 @@ docker compose up
 Open the Command Line and run the following commands one line at a time:
 
 ```
-cd /d %userprofile%\Desktop
+cd /d %userprofile%\Desktop\directus
 docker compose up
 ```
 
