@@ -1,4 +1,5 @@
 import { formatTitle } from '@directus/format-title';
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
@@ -137,6 +138,7 @@ gtag('config', 'UA-24637628-7');
 			light: '/logo-light.svg',
 			dark: '/logo-dark.svg',
 		},
+		socialLinks: [{ icon: 'github', link: 'https://github.com/directus/directus' }],
 		nav: [
 			{
 				text: 'Developer Reference',
@@ -151,7 +153,6 @@ gtag('config', 'UA-24637628-7');
 			},
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
-			{ text: 'GitHub', link: 'https://github.com/directus/directus' },
 		],
 		algolia: {
 			appId: 'T5BDNEU205',
@@ -195,6 +196,16 @@ gtag('config', 'UA-24637628-7');
 			default:
 				pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
 		}
+	},
+	vite: {
+		resolve: {
+			alias: [
+				{
+					find: /^.*\/VPSidebarItem\.vue$/,
+					replacement: fileURLToPath(new URL('./theme/components/VPSidebarItem.vue', import.meta.url)),
+				},
+			],
+		},
 	},
 });
 
@@ -281,20 +292,12 @@ function sidebar() {
 		},
 		{
 			text: 'Developer Blog',
-			items: [
-				{
-					link: '/blog/',
-					text: 'All Posts',
-				},
-				{
-					link: '/blog/guest-author',
-					text: 'Guest Author',
-				},
-			],
+			link: '/blog/',
+			activeMatch: '/blog/.*',
+			items: [],
 		},
 		{
 			text: 'Data Studio App',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -308,7 +311,6 @@ function sidebar() {
 						{
 							link: '/app/data-model/fields',
 							text: 'Fields',
-							collapsible: true,
 							collapsed: true,
 							items: [
 								{
@@ -350,7 +352,6 @@ function sidebar() {
 				{
 					link: '/app/flows',
 					text: 'Flows',
-					collapsible: false,
 					items: [
 						{
 							link: '/app/flows/triggers',
@@ -366,7 +367,6 @@ function sidebar() {
 		},
 		{
 			text: 'API Reference',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -489,7 +489,6 @@ function sidebar() {
 		},
 		{
 			text: 'Guides',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -505,7 +504,6 @@ function sidebar() {
 		},
 		{
 			text: 'Use Cases',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -529,7 +527,6 @@ function sidebar() {
 		},
 		{
 			text: 'Extensions',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -602,7 +599,6 @@ function sidebar() {
 		},
 		{
 			text: 'Contributing',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{ link: '/contributing/introduction', text: 'Introduction' },
@@ -622,7 +618,6 @@ function sidebar() {
 		},
 		{
 			text: 'Self-Hosted',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -693,7 +688,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'Content Module',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -740,7 +734,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'User Management',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -770,7 +763,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'File Library',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -785,7 +777,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'Insights',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -804,7 +795,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'Directus Cloud',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -831,7 +821,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'General Settings',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{

@@ -1,12 +1,19 @@
+import { readItems } from '@directus/sdk';
+import { client } from '../.vitepress/lib/directus.js';
+
 export default {
 	async paths() {
-		const articles = await (
-			await fetch(
-				'https://marketing.directus.app/items/developer_articles?fields=*,author.first_name,author.last_name,author.avatar,author.title,tags.docs_tags_id.title,tags.docs_tags_id.slug,tags.docs_tags_id.type'
+		const articles = (
+			await client.request(
+				readItems('developer_articles', {
+					fields: [
+						'*',
+						{ author: ['first_name', 'last_name', 'avatar', 'title'] },
+						{ tags: [{ docs_tags_id: ['title', 'slug', 'type'] }] },
+					],
+				})
 			)
-		).json();
-
-		let posts = articles.data.map((article) => ({
+		).map((article) => ({
 			params: {
 				slug: article.slug,
 				title: article.title,
@@ -24,6 +31,6 @@ export default {
 			content: article.content,
 		}));
 
-		return posts;
+		return articles;
 	},
 };
