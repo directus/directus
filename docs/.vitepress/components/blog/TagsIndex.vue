@@ -4,9 +4,8 @@
 		<div class="listing">
 			<Article
 				v-for="article in tag.articles"
-				:key="article.id"
+				:key="article.slug"
 				:title="article.title"
-				:desc="article.description"
 				:author="article.author.first_name + ' ' + article.author.last_name"
 				:date="getFriendlyDate(article.date_published)"
 				:url="`/blog/${article.slug}`"
@@ -16,17 +15,12 @@
 	</section>
 </template>
 
-<script setup>
-import { getFriendlyDate } from '../../utils/time.js';
+<script setup lang="ts">
+import { getFriendlyDate } from '../../lib/date.js';
+import type { DocsTag, DeveloperArticle } from '../../types/schema.js';
 import Badge from '../Badge.vue';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const props = defineProps({
-	tag: {
-		type: Object,
-		required: true,
-	},
-});
+defineProps<{ tag: DocsTag & { articles: DeveloperArticle[] } }>();
 </script>
 
 <style scoped>

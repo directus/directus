@@ -2,6 +2,12 @@
 description: Become a Directus Guest Author and get paid to write about your favorite tech topics that leverage our platform.
 ---
 
+<script setup>
+import Badge from '../.vitepress/components/Badge.vue'
+</script>
+
+<Badge><a href="/blog/">Developer Blog</a></Badge>
+
 # Apply To Be A Guest Author
 
 Become a Directus Guest Author and get paid to write about your favorite tech topics that leverage our platform. We’ll

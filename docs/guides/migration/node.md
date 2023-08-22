@@ -1,21 +1,12 @@
 ---
 description: Learn how to migrate your data model to a new Directus project using Node.js.
-tags: []
-skill_level:
 directus_version: 9.23.0
-author_override:
 author: Kevin Lewis
 ---
 
 # Migrate Your Data Model with Node.js
 
-> {{ $frontmatter.description }}
-
-::: tip Author: {{$frontmatter.author}}
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-:::
+<GuideMeta />
 
 ## Explanation
 
