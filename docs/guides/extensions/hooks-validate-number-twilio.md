@@ -30,7 +30,7 @@ npm install twilio
 ## Build the Hook
 
 Create a collection called Customers with a text field called `phone_number`. This hook will be used to validate the
-filename when a record is saved.
+item when a record is saved.
 
 Open the `index.js` file inside the src directory. Delete all the existing code and proceed.
 
