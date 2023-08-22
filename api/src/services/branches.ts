@@ -240,6 +240,7 @@ export class BranchesService extends ItemsService {
 			['items.promote', `${collection}.items.promote`],
 			{
 				payload: payloadAfterHooks,
+				collection,
 				item: updatedItemKey,
 				branch,
 			},
