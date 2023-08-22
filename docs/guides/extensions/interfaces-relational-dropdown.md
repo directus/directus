@@ -16,7 +16,7 @@ Open a console to your preferred working directory and initialize a new extensio
 boilerplate code for your interface.
 
 ```
-npm init directus-extension
+npx create-directus-extension
 ```
 
 A list of options will appear (choose interface), and type a name for your extension (for example,
