@@ -26,13 +26,7 @@ npx create-directus-extension
 A list of options will appear (choose panel), and type a name for your extension (for example,
 `directus-panel-twilio-sms`). For this guide, select JavaScript.
 
-Now the endpoint has been created, go into the current directory and build the extension. This must be performed
-whenever your changes are ready to be deployed.
-
-```
-cd directus-panel-twilio-sms
-npm run build
-```
+Now the boilerplate has been created, open the directory in your code editor.
 
 ## Specify Configuration
 

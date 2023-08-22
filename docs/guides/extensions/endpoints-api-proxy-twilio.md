@@ -25,13 +25,7 @@ npx create-directus-extension
 A list of options will appear (choose endpoint), and type a name for your extension (for example,
 `directus-endpoint-twilio`). For this guide, select JavaScript.
 
-Now the endpoint has been created, go into the current directory and build the extension. This must be performed
-whenever your changes are ready to be deployed.
-
-```
-cd directus-endpoint-twilio
-npm run build
-```
+Now the boilerplate has been created, open the directory in your code editor.
 
 ## Build the Endpoint
 

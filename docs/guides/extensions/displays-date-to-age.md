@@ -22,13 +22,7 @@ npx create-directus-extension
 A list of options will appear (choose display), and type a name for your extension (for example,
 `directus-display-age`). For this guide, select JavaScript.
 
-Now the display has been created, go into the current directory and build the extension. This must be performed whenever
-your changes are ready to be deployed.
-
-```
-cd directus-display-age
-npm run build
-```
+Now the boilerplate has been created, open the directory in your code editor.
 
 ## Specify Configuration
 

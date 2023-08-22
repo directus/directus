@@ -20,22 +20,12 @@ npx create-directus-extension
 A list of options will appear (choose hook), and type a name for your extension (for example,
 `directus-hook-phone-validation`). For this guide, select JavaScript.
 
-Now the hook has been created, go into the current directory and build the extension. This must be performed whenever
-your changes are ready to be deployed.
+Now the boilerplate has been created, install the twilio package, and then open the directory in your code editor.
 
 ```
 cd directus-hook-phone-validation
-npm run build
-```
-
-Install twilio from npm as a dependency by running the following command:
-
-```
 npm install twilio
 ```
-
-Note, if you intend to create more than one hook using the Twilio package, consider adding it to the Directus project
-dependencies instead to improve performance.
 
 ## Build the Hook
 

@@ -24,13 +24,11 @@ npx create-directus-extension
 A list of options will appear (choose operation), and type a name for your extension (for example,
 `directus-operation-bulk-sendgrid`). For this guide, select JavaScript.
 
-Now the operation has been created, go into the current directory, install the SendGrid package, and build the
-extension. This must be performed whenever your changes are ready to be deployed.
+Now the boilerplate has been created, install the `@sendgrid/mail` package, and then open the directory in your code editor.
 
 ```
 cd directus-operation-bulk-sendgrid
 npm install @sendgrid/mail
-npm run build
 ```
 
 ## Build the Operation UI

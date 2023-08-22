@@ -20,22 +20,12 @@ npx create-directus-extension
 A list of options will appear (choose hook), and type a name for your extension (for example,
 `directus-hook-create-stripe-customer`). For this guide, select JavaScript.
 
-Now the hook has been created, go into the current directory and build the extension. This must be performed whenever
-your changes are ready to be deployed.
+Now the boilerplate has been created, install the stripe package, and then open the directory in your code editor.
 
 ```
-cd directus-hook-create-stripe-customer
-npm run build
-```
-
-Install stripe from npm as a dependency by running the following command:
-
-```
+cd directus-endpoint-stripe
 npm install stripe
 ```
-
-Note, if you intend to create more than one hook using the stripe package, consider adding it to the Directus project
-dependencies instead to improve performance.
 
 ## Build the Hook
 

@@ -22,13 +22,11 @@ npx create-directus-extension
 A list of options will appear (choose endpoint), and type a name for your extension (for example,
 `directus-endpoint-stripe`). For this guide, select JavaScript.
 
-Now the endpoint has been created, go into the current directory, install the stripe package, and build the extension.
-This must be performed whenever your changes are ready to be deployed.
+Now the boilerplate has been created, install the stripe package, and then open the directory in your code editor.
 
 ```
 cd directus-endpoint-stripe
 npm install stripe
-npm run build
 ```
 
 You will also need a Stripe account and API token, and a collection in your Directus project with restricted permissions

@@ -22,13 +22,7 @@ npx create-directus-extension
 A list of options will appear (choose interface), and type a name for your extension (for example,
 `directus-interface-custom-radio-buttons`). For this guide, select JavaScript.
 
-Now the interface has been created, go into the current directory and build the extension. This must be performed
-whenever your changes are ready to be deployed.
-
-```
-cd directus-interface-custom-radio-buttons
-npm run build
-```
+Now the boilerplate has been created, open the directory in your code editor.
 
 ## Specify Configuration
 
