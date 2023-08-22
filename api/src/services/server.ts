@@ -73,6 +73,11 @@ export class ServerService {
 				execAllowedModules: env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [],
 			};
 
+			info['extensions'] = {
+				installAllowed: toBoolean(env['EXTENSIONS_AUTO_INSTALL']),
+				unsafeAllowed: toBoolean(env['EXTENSIONS_INSTALL_UNSAFE'])
+			};
+
 			info['queryLimit'] = {
 				default: env['QUERY_LIMIT_DEFAULT'],
 				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
@@ -85,16 +90,16 @@ export class ServerService {
 
 				info['websocket'].rest = toBoolean(env['WEBSOCKETS_REST_ENABLED'])
 					? {
-							authentication: env['WEBSOCKETS_REST_AUTH'],
-							path: env['WEBSOCKETS_REST_PATH'],
-					  }
+						authentication: env['WEBSOCKETS_REST_AUTH'],
+						path: env['WEBSOCKETS_REST_PATH'],
+					}
 					: false;
 
 				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
 					? {
-							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
-							path: env['WEBSOCKETS_GRAPHQL_PATH'],
-					  }
+						authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
+						path: env['WEBSOCKETS_GRAPHQL_PATH'],
+					}
 					: false;
 
 				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
@@ -212,7 +217,7 @@ export class ServerService {
 
 			if (
 				Number(checks[`${client}:responseTime`]![0]!.observedValue!) >
-					checks[`${client}:responseTime`]![0]!.threshold! &&
+				checks[`${client}:responseTime`]![0]!.threshold! &&
 				checks[`${client}:responseTime`]![0]!.status !== 'error'
 			) {
 				checks[`${client}:responseTime`]![0]!.status = 'warn';
@@ -352,7 +357,7 @@ export class ServerService {
 
 				if (
 					checks['rateLimiterGlobal:responseTime']![0]!.observedValue >
-						checks['rateLimiterGlobal:responseTime']![0]!.threshold! &&
+					checks['rateLimiterGlobal:responseTime']![0]!.threshold! &&
 					checks['rateLimiterGlobal:responseTime']![0]!.status !== 'error'
 				) {
 					checks['rateLimiterGlobal:responseTime']![0]!.status = 'warn';
@@ -400,7 +405,7 @@ export class ServerService {
 
 					if (
 						Number(checks[`storage:${location}:responseTime`]![0]!.observedValue!) >
-							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
+						checks[`storage:${location}:responseTime`]![0]!.threshold! &&
 						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
 					) {
 						checks[`storage:${location}:responseTime`]![0]!.status = 'warn';

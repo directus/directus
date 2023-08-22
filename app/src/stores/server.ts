@@ -28,14 +28,18 @@ export type Info = {
 		custom_css: string | null;
 	};
 	rateLimit?:
-		| false
-		| {
-				points: number;
-				duration: number;
-		  };
+	| false
+	| {
+		points: number;
+		duration: number;
+	};
 	flows?: {
 		execAllowedModules: string[];
 	};
+	extensions?: {
+		installAllowed: boolean,
+		unsafeAllowed: boolean,
+	}
 	queryLimit?: {
 		default: number;
 		max: number;
@@ -81,6 +85,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.flows = serverInfoResponse.data.data?.flows;
+		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
 		auth.providers = authResponse.data.data;

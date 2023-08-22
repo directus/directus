@@ -67,6 +67,10 @@ export class InstallationManager {
 			throw new Error(`The package "${name}" is not a valid extension.`);
 		}
 
+		if (registryManifest['directus:extension'].secure !== true && env['EXTENSIONS_INSTALL_UNSAFE'] !== true) {
+			throw new Error('The extension is not secure and cannot be installed.');
+		}
+
 		const extensionFolder = path.join(env['EXTENSIONS_PATH'], name.replace(/[/\\]/g, '_'));
 		const extensionFolderTemp = path.join(env['EXTENSIONS_PATH'], name.replace(/[/\\]/g, '_') + '_temp');
 		const localTarPath = path.join(extensionFolderTemp, 'tar.tgz');
@@ -92,7 +96,6 @@ export class InstallationManager {
 
 		const manifest = await fse.readJSON(path.join(extensionFolder, 'package.json'));
 
-		// make sure that if the npm manifest says it's a secure extension, the local package.json says the same
 		try {
 			const localManifest = ExtensionManifest.parse(manifest);
 
@@ -100,10 +103,12 @@ export class InstallationManager {
 				throw new Error('');
 			}
 
+			// make sure that if the npm manifest says it's a secure extension, the local package.json says the same
 			if (isEqual(localManifest, registryManifest) === false) {
 				throw new Error('');
 			}
 		} catch (error) {
+			await fse.remove(extensionFolder);
 			throw new Error(`The package "${name}" is not a valid extension.`);
 		}
 

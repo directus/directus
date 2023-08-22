@@ -20,6 +20,7 @@
 				v-tooltip.bottom="'Install Extension'"
 				rounded
 				icon
+				:disabled="!installAllowed"
 				@click="drawer = 'install'"
 			>
 				<v-icon name="save_alt" />
@@ -34,6 +35,7 @@
 					secondary
 					rounded
 					icon
+					:disabled="!installAllowed"
 					@click="drawer = 'change'"
 				>
 					<v-icon name="update" />
@@ -44,6 +46,7 @@
 					warning
 					rounded
 					icon
+					:disabled="!installAllowed"
 					@click="onUpdateDrawer"
 				>
 					<v-icon name="file_download" />
@@ -52,13 +55,13 @@
 					<v-icon name="settings" />
 				</v-button>
 				<v-button
-					v-tooltip.bottom="installedExtension.enabled ? 'Disable Extension' : 'Enable Extension'"
-					:secondary="installedExtension.enabled === false"
+					v-tooltip.bottom="installedExtension?.enabled ? 'Disable Extension' : 'Enable Extension'"
+					:secondary="installedExtension?.enabled === false"
 					rounded
 					icon
 					@click="toggleExtension"
 				>
-					<v-icon :name="installedExtension.enabled ? 'check_box' : 'check_box_outline_blank'" />
+					<v-icon :name="installedExtension?.enabled ? 'check_box' : 'check_box_outline_blank'" />
 				</v-button>
 			</template>
 		</template>
@@ -157,6 +160,7 @@ import { computed, provide, ref, watch } from 'vue';
 import { marketApi } from './market-api';
 import api from '@/api';
 import { useExtensionsStore } from '@/stores/extensions';
+import { useServerStore } from '@/stores/server';
 
 interface Props {
 	name: string;
@@ -178,6 +182,7 @@ const uninstallDialog = ref(false);
 const saving = ref(false);
 
 const extensionsStore = useExtensionsStore();
+const serverStore = useServerStore();
 
 const installedExtension = computed(() => {
 	return extensionsStore.extensions.find((extension) => extension.name === props.name);
@@ -258,6 +263,13 @@ watch(drawer, (open) => {
 
 		return acc;
 	}, []);
+});
+
+const installAllowed = computed(() => {
+	return (
+		(serverStore.info.extensions?.installAllowed && selectedVersion.value?.secure) ||
+		(serverStore.info.extensions?.installAllowed && serverStore.info.extensions?.unsafeAllowed)
+	);
 });
 
 let versionBeforeUpdate: string | undefined = undefined;
