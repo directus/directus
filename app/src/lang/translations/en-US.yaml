@@ -109,6 +109,9 @@ rename_branch: Rename Branch
 compare_branch: Compare Branch
 merge_branch: Merge Branch
 merge_branch_drawer_title: Merge {branch} into Main
+outdated_notice: >-
+  The main item has been updated since this version was created. Please review all the field values below, and confirm
+  which version should be used when merging this version into the main item.
 merge_notice: >-
   Please review all the field values below, and confirm which version should be used when merging this version into the
   main item.

@@ -28,7 +28,7 @@
 					<v-divider />
 
 					<v-list-item clickable @click="createDialogActive = true">
-						{{ 'Create New Branch' }}
+						{{ t('create_branch') }}
 					</v-list-item>
 				</template>
 
@@ -36,19 +36,15 @@
 					<v-divider />
 
 					<v-list-item v-if="updateBranchesAllowed" clickable @click="openUpdateDialog">
-						{{ 'Rename Current Branch' }}
+						{{ t('rename_branch') }}
 					</v-list-item>
 
-					<!-- <v-list-item clickable>
-						{{ 'Compare Current Branch' }}
-					</v-list-item> -->
-
 					<v-list-item clickable @click="isBranchMergeDrawerOpen = true">
-						{{ 'Merge Current Branch' }}
+						{{ t('merge_branch') }}
 					</v-list-item>
 
 					<v-list-item v-if="deleteBranchesAllowed" class="branch-delete" clickable @click="deleteDialogActive = true">
-						{{ 'Delete Current Branch' }}
+						{{ t('delete_branch') }}
 					</v-list-item>
 				</template>
 			</v-list>
