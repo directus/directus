@@ -1,0 +1,7 @@
+{
+	"extends": "@directus/tsconfig/node18-esm",
+	"compilerOptions": {
+		"declaration": false
+	},
+	"include": ["**/*", ".vitepress/**/*.ts"]
+}
