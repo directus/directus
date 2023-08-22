@@ -2,33 +2,15 @@
 description:
   When most flows begin, they pass the trigger's payload to the data chain and execute once. This recipe explains how to
   execute a flow for each element in a payload's array.
-tags: []
-skill_level:
 directus_version: 9.18.1
-author_override:
 author: Eron Powell
 ---
 
 # For Loops In Flows
 
-> {{ $frontmatter.description }}
-
-::: tip Author: {{$frontmatter.author}}
-
-<!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-<!-- **Tags:** {{$frontmatter.tags.join(", ")}} -->
-
-:::
+<GuideMeta />
 
 ## Explanation
-
-<!--
-See the VitePress docs to learn about its markdown options:
-https://vitepress.vuejs.org/guide/markdown
--->
 
 Sometimes you may have an array of data you'd like to iterate over and run operations on, one-by-one. However, you may
 have noticed that each operation in a flow executes just one time. Because of this, you can't create a "for-loop" within
@@ -52,14 +34,6 @@ operation.
 You'll need a flow with an array of data on its data chain.
 
 :::
-
-<!--
-<video autoplay playsinline muted loop controls>
-	<source src="" type="video/mp4" />
-</video>
-
-VIDEO IS OPTIONAL: delete if not needed
--->
 
 ### Configure the Starting Flow
 
