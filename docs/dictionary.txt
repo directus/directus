@@ -6,6 +6,7 @@
 (B|b)ackend
 (B|b)ackend-as-a-(S|s)ervice
 (B|b)alancer
+(B|b)arebones
 (B|b)asemap
 (B|b)lackbox
 (B|b)ugfixes
@@ -63,11 +64,13 @@
 (U|u)nfilterable
 (U|u)nlink
 (U|u)psert
+(U|u)ptime
 (U|u)tils?
 (URI|URIs)
 (URL|url)
 (V|v)ite
 (V|v)itest
+(V|v)ue
 (W|w)alkthrough
 (W|w)ebhook.?
 (W|w)ebhooks?
@@ -202,6 +205,8 @@ granularly
 GraphQL
 greenlight
 GUIs?
+GUID
+hardcoded
 headshot
 Heya
 Hoppscotch
@@ -212,6 +217,7 @@ IETF's
 IIS
 iisnode
 incongruent
+input-multiline
 intwined
 IoT
 ISO8601
@@ -233,7 +239,9 @@ Koyeb
 KPIs
 Kubernetes
 LDAP
+LiquidJS
 localhost
+(L|l)odash
 lowercased
 LTS
 M1
@@ -287,6 +295,7 @@ pageClass
 param
 paywalled
 performant
+personalization
 phpMyAdmin
 Phusion
 Pinia
@@ -308,6 +317,8 @@ pre-installed
 programmatically
 Programmatically
 ProgressEvent
+Proxy
+Proxying
 PRs
 pub/sub
 px
@@ -347,8 +358,10 @@ siloed
 slugification
 slugify
 slugifying
+SMS
 SMTP
 socio-economic
+src
 SSG
 SSL
 SSO
@@ -362,11 +375,13 @@ substring
 SuperAdmins?
 superset
 Superset
-SVG
+svg
+SVGs?
 TablePlus
 tfa
 TFA
 TileJSON
+(T|t)imeseries
 TinyMCE
 TLS
 toc
@@ -374,6 +389,7 @@ TrustRadius
 truthy
 TTL
 TTY
+(t|T)wilio
 TypeDoc
 UI
 UID
@@ -398,6 +414,7 @@ vCPU
 Vercel
 viewability
 VitePress
+(V|v)onage
 volta
 VPC
 Vue

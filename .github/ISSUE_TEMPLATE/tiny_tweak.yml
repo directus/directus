@@ -1,0 +1,18 @@
+name: Tiny tweak
+description: Suggest a small tweak or improvement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hi, thank you for taking the time to create a suggestion issue! Before you get started, please ensure the following are correct:
+
+        - I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
+        - There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
+
+        **If your suggestion is a new feature, please open a [Feature Request](https://github.com/directus/directus/discussions/new?category=feature-requests) instead.**
+  - type: textarea
+    attributes:
+      label: Describe the Improvement
+      description: A clear and concise description of what the enhancement is. Please include as much detail as you can.
+    validations:
+      required: true

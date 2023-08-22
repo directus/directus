@@ -43,6 +43,10 @@ List all folders that exist in Directus.
 
 `SEARCH /folders`
 
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
 </template>
 <template #graphql>
 
@@ -58,18 +62,15 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, readFolders } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFolders(query));
+const result = await client.request(readFolders(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -106,8 +107,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, readFolders } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -147,12 +147,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, readFolder } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFolder('folder_id', query));
+const result = await client.request(readFolder(folder_id, query_object));
 ```
 
 </template>
@@ -190,8 +189,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, readFolder } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -216,11 +214,7 @@ Create a new (virtual) folder.
 
 `POST /folders`
 
-```json
-{
-	"name": "value_1"
-}
-```
+Provide a [folder object](#the-folder-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -237,16 +231,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, createFolder } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createFolder({
-		name: 'value',
-	})
-);
+const result = await client.request(createFolder(folder_object));
 ```
 
 </template>
@@ -295,8 +284,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, createFolder } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -321,16 +309,7 @@ Create multiple new (virtual) folders.
 
 `POST /folders`
 
-```json
-[
-	{
-		"name": "value_1"
-	},
-	{
-		"name": "value_2"
-	}
-]
-```
+Provide an array of [folder object](#the-folder-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -347,21 +326,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, createFolders } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createFolders([
-		{
-			name: 'value_1',
-		},
-		{
-			name: 'value_2',
-		},
-	])
-);
+const result = await client.request(createFolders(folder_object_array));
 ```
 
 </template>
@@ -415,8 +384,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, createFolders } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -446,11 +414,7 @@ Update an existing folder.
 
 `PATCH /folders/:id`
 
-```json
-{
-	"folder_object_field": "value_1"
-}
-```
+Provide a partial [folder object](#the-folder-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -467,16 +431,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFolder } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFolder('folder_id', {
-		field: 'value',
-	})
-);
+const result = await client.request(updateFolder(folder_id, partial_folder_object));
 ```
 
 </template>
@@ -528,8 +487,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFolder } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -556,10 +514,8 @@ Update multiple existing folders.
 
 ```json
 {
-	"keys": ["folder_1_key", "folder_2_key"],
-	"data": {
-		"folder_object_field": "value_1"
-	}
+	"keys": folder_id_array,
+	"data": partial_folder_object
 }
 ```
 
@@ -578,12 +534,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFolders } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(updateFolders(['folder_1_id', 'folder_2_id'], { field: 'value' }));
+const result = await client.request(updateFolders(folder_id_array, partial_folder_object));
 ```
 
 </template>
@@ -642,8 +597,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFolders } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -689,12 +643,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFolder } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFolder('folder_id'));
+const result = await client.request(deleteFolder(folder_id));
 ```
 
 </template>
@@ -728,8 +681,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolder } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFolder } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -756,9 +708,7 @@ Any files in these folders will be moved to the root folder.
 
 `DELETE /folders`
 
-```json
-["folder_1_key", "folder_2_key"]
-```
+Provide an array of item IDs as your request body.
 
 </template>
 <template #graphql>
@@ -775,12 +725,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFolders } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFolders(['folder_1_id', 'folder_2_id']));
+const result = await client.request(deleteFolders(folder_id_array));
 ```
 
 </template>
@@ -820,8 +769,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolders } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFolders } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
