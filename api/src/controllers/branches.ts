@@ -1,7 +1,7 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import { assign } from 'lodash-es';
-import { ErrorCode } from '../errors/index.js';
+import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -210,6 +210,8 @@ router.get(
 
 		const branch = await service.readOne(req.params['pk']!);
 
+		const { outdated, mainHash } = await service.verifyHash(branch['collection'], branch['item'], branch['hash']);
+
 		const commits = await service.getBranchCommits(branch['id']);
 
 		const current = assign({}, ...commits);
@@ -222,7 +224,7 @@ router.get(
 			fields.length > 0 ? { fields } : undefined
 		);
 
-		res.locals['payload'] = { data: { current, main: mainBranchItem } };
+		res.locals['payload'] = { data: { outdated, mainHash, current, main: mainBranchItem } };
 
 		return next();
 	}),
@@ -257,12 +259,16 @@ router.post(
 router.post(
 	'/:pk/merge',
 	asyncHandler(async (req, res, next) => {
+		if (typeof req.body.mainHash !== 'string') {
+			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
+		}
+
 		const service = new BranchesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const updatedItemKey = await service.merge(req.params['pk']!, req.body?.['fields']);
+		const updatedItemKey = await service.merge(req.params['pk']!, req.body.mainHash, req.body?.['fields']);
 
 		res.locals['payload'] = { data: updatedItemKey || null };
 

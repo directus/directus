@@ -9,7 +9,10 @@
 	>
 		<div class="content">
 			<div class="grid">
-				<v-notice type="info" class="field full">
+				<v-notice v-if="isOutdated" type="warning" class="field full">
+					{{ t('outdated_notice') }}
+				</v-notice>
+				<v-notice v-else type="info" class="field full">
 					{{ t('merge_notice') }}
 				</v-notice>
 				<div v-for="field in comparedFields" :key="field.field" class="field full">
@@ -62,6 +65,8 @@ import { useI18n } from 'vue-i18n';
 import BranchMergeField from './branch-merge-field.vue';
 
 type Comparison = {
+	outdated: boolean;
+	mainHash: string;
 	current: Record<string, any>;
 	main: Record<string, any>;
 };
@@ -78,6 +83,10 @@ const fieldsStore = useFieldsStore();
 const props = defineProps<Props>();
 
 const { currentBranch } = toRefs(props);
+
+const isOutdated = ref<boolean>(false);
+
+const mainHash = ref<string>('');
 
 const comparedFields = ref<Field[]>([]);
 
@@ -107,6 +116,10 @@ async function getComparison() {
 			.get(`/branches/${unref(currentBranch).id}/compare`)
 			.then((res) => res.data.data);
 
+		isOutdated.value = result.outdated;
+
+		mainHash.value = result.mainHash;
+
 		comparedFields.value = Object.keys(result.main)
 			.map((fieldKey) => fieldsStore.getField(unref(currentBranch).collection, fieldKey))
 			.filter((field): field is Field => !!field);
@@ -129,7 +142,9 @@ async function merge() {
 	try {
 		await api.post(
 			`/branches/${unref(currentBranch).id}/merge`,
-			unref(selectedFields).length > 0 ? { fields: unref(selectedFields) } : {}
+			unref(selectedFields).length > 0
+				? { mainHash: unref(mainHash), fields: unref(selectedFields) }
+				: { mainHash: unref(mainHash) }
 		);
 
 		emit('merge');

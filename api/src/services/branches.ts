@@ -88,6 +88,18 @@ export class BranchesService extends ItemsService {
 		return await itemsService.readOne(item, query);
 	}
 
+	async verifyHash(
+		collection: string,
+		item: PrimaryKey,
+		hash: string
+	): Promise<{ outdated: boolean; mainHash: string }> {
+		const mainBranchItem = await this.getMainBranchItem(collection, item);
+
+		const mainHash = objectHash(mainBranchItem);
+
+		return { outdated: hash !== mainHash, mainHash };
+	}
+
 	async getBranchCommits(key: PrimaryKey): Promise<Partial<Item>[]> {
 		const revisionsService = new RevisionsService({
 			knex: this.knex,
@@ -154,14 +166,6 @@ export class BranchesService extends ItemsService {
 	async commit(key: PrimaryKey, data: Partial<Item>) {
 		const branch = await super.readOne(key);
 
-		const mainBranchItem = await this.getMainBranchItem(branch['collection'], branch['item']);
-
-		if (branch['hash'] !== objectHash(mainBranchItem)) {
-			throw new UnprocessableContentError({
-				reason: `Main branch has changed since this branch was last updated`,
-			});
-		}
-
 		const payloadService = new PayloadService(this.collection, {
 			accountability: this.accountability,
 			knex: this.knex,
@@ -202,8 +206,16 @@ export class BranchesService extends ItemsService {
 		return data;
 	}
 
-	async merge(branch: PrimaryKey, fields?: string[]) {
+	async merge(branch: PrimaryKey, mainHash: string, fields?: string[]) {
 		const { id, collection, item } = (await this.readOne(branch)) as Branch;
+
+		const { outdated } = await this.verifyHash(collection, item, mainHash);
+
+		if (outdated) {
+			throw new UnprocessableContentError({
+				reason: `Main branch has changed since this branch was last updated`,
+			});
+		}
 
 		const commits = await this.getBranchCommits(id);
 
