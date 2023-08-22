@@ -112,9 +112,9 @@ Add a field or fields for an icon. For the most flexibility, include SVG, Image 
 
 ```js
 fields: [
-	{},
-	{},
-	{},
+	{ /* field info */ },
+	{ /* field info */ },
+	{ /* field info */ },
 	{
 		field: 'svg_icon',
 		type: 'text',
