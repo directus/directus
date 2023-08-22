@@ -161,7 +161,12 @@ describe('Integration Tests', () => {
 		const dbsWhichNeedReset: DatabaseClient[] = ['postgres', 'cockroachdb'];
 		const item = { id: 42, name: 'random' };
 
-		function mockResetQuery() {
+		function mockDbClientAndQueryReset(client: DatabaseClient): void {
+
+			// mock db client
+			vi.mocked(getDatabaseClient).mockReturnValue(client);
+
+			// mock response for the sequence-reset query
 			tracker.on
 				.any(({ sql }: RawQuery) => {
 					return sql.includes('WITH sequence_infos');
@@ -174,9 +179,7 @@ describe('Integration Tests', () => {
 		}
 
 		it.each(dbsWhichNeedReset)('should reset the databases auto increment sequence for %s', async (client) => {
-			vi.mocked(getDatabaseClient).mockReturnValue(client);
-
-			mockResetQuery();
+			mockDbClientAndQueryReset(client);
 			tracker.on.insert('author').responseOnce(item);
 
 			const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
@@ -188,9 +191,7 @@ describe('Integration Tests', () => {
 		it.each(dbsWhichDontNeedReset)(
 			'should NOT reset the databases auto increment sequence for %s of the databases',
 			async (client) => {
-				vi.mocked(getDatabaseClient).mockReturnValue(client);
-
-				mockResetQuery();
+				mockDbClientAndQueryReset(client);
 				tracker.on.insert('author').responseOnce(item);
 
 				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
@@ -204,9 +205,7 @@ describe('Integration Tests', () => {
 			'should NOT reset the databases auto increment sequence for %s when PK is not manually provided',
 			async (client) => {
 				const itemWithoutPk = { name: 'John' };
-				vi.mocked(getDatabaseClient).mockReturnValue(client);
-
-				mockResetQuery();
+				mockDbClientAndQueryReset(client);
 				tracker.on.insert('author').response({ ...itemWithoutPk, id: 42 });
 				tracker.on.select('author').responseOnce(42);
 
