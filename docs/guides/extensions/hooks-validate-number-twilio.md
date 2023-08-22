@@ -10,8 +10,8 @@ a record from saving if a phone number is not valid using the Twilio Lookup API.
 
 ## Install Dependencies
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your display.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your display.
 
 ```
 npx create-directus-extension

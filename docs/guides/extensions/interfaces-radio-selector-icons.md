@@ -12,8 +12,8 @@ input using icons, SVGs or images where the user selects an option and the value
 
 ## Install Dependencies
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your interface.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your interface.
 
 ```
 npx create-directus-extension

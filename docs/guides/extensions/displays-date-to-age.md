@@ -12,8 +12,8 @@ a date of birth to the current age in years and months.
 
 ## Install Dependencies
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your display.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your display.
 
 ```
 npx create-directus-extension
@@ -26,7 +26,8 @@ Now the boilerplate has been created, open the directory in your code editor.
 
 ## Specify Configuration
 
-Displays have 2 parts, the `index.js` configuration file, and the `display.vue` view. The first part allows you to configure options and the apperance when selecting the display for a field.
+Displays have 2 parts, the `index.js` configuration file, and the `display.vue` view. The first part allows you to
+configure options and the apperance when selecting the display for a field.
 
 Open the `index.js` file and update the existing information relevant to this display. Since you are working with dates
 and not datetime or strings, you need to change types to `date`. This will ensure this display will only be available if

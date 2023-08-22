@@ -11,8 +11,8 @@ and output the results.
 
 ## Install Dependencies
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your interface.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your interface.
 
 ```
 npx create-directus-extension

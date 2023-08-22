@@ -14,8 +14,8 @@ send emails as an operation in Flows.
 
 To follow this guide, you will need a SendGrid API Key and access to SendGrid Dynamic Templates.
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your operation.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your operation.
 
 ```
 npx create-directus-extension
@@ -24,7 +24,8 @@ npx create-directus-extension
 A list of options will appear (choose operation), and type a name for your extension (for example,
 `directus-operation-bulk-sendgrid`). For this guide, select JavaScript.
 
-Now the boilerplate has been created, install the `@sendgrid/mail` package, and then open the directory in your code editor.
+Now the boilerplate has been created, install the `@sendgrid/mail` package, and then open the directory in your code
+editor.
 
 ```
 cd directus-operation-bulk-sendgrid

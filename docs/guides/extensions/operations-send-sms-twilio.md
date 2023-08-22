@@ -14,8 +14,8 @@ library to send SMS messages in Flows.
 
 To follow this guide, you will need a Twilio API Key.
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your operation.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your operation.
 
 ```
 npx create-directus-extension

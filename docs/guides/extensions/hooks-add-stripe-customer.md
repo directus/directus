@@ -10,8 +10,8 @@ account when an item is created in Directus and write the customer ID back to th
 
 ## Install Dependencies
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your display.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your display.
 
 ```
 npx create-directus-extension

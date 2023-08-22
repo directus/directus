@@ -12,8 +12,8 @@ built-in services and make it available as a configurable Flow operation.
 
 ## Install Dependencies
 
-Open a console to your preferred working directory and initialize a new extension, which will create the
-boilerplate code for your operation.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your operation.
 
 ```
 npx create-directus-extension
