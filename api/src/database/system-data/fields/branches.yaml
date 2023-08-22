@@ -8,6 +8,7 @@ fields:
     hidden: true
   - field: name
   - field: collection
+  - field: item
   - field: icon
   - field: color
   - field: hash
