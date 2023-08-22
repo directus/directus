@@ -27,7 +27,7 @@ Now the boilerplate has been created, open the directory in your code editor.
 ## Specify Configuration
 
 Displays have 2 parts, the `index.js` configuration file, and the `display.vue` view. The first part allows you to
-configure options and the apperance when selecting the display for a field.
+configure options and the appearance when selecting the display for a field.
 
 Open the `index.js` file and update the existing information relevant to this display. Since you are working with
 relational fields, you need to change `types` value and add `localTypes` as well. This will ensure this display will

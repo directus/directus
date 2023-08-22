@@ -241,7 +241,7 @@ Kubernetes
 LDAP
 LiquidJS
 localhost
-Lodash
+(L|l)odash
 lowercased
 LTS
 M1
