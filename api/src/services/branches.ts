@@ -1,11 +1,10 @@
-import type { Item, PrimaryKey, Query } from '@directus/types';
+import type { Branch, Item, PrimaryKey, Query } from '@directus/types';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { InvalidPayloadError, UnprocessableContentError } from '../errors/index.js';
-import type { MutationOptions } from '../types/items.js';
-import type { AbstractServiceOptions } from '../types/services.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { ActivityService } from './activity.js';
 import { AuthorizationService } from './authorization.js';
 import { CollectionsService } from './collections.js';
@@ -204,29 +203,45 @@ export class BranchesService extends ItemsService {
 	}
 
 	async merge(branch: PrimaryKey, fields?: string[]) {
-		const branchItem = await this.readOne(branch);
+		const { id, collection, item } = (await this.readOne(branch)) as Branch;
 
-		const commits = await this.getBranchCommits(branchItem['id']);
+		const commits = await this.getBranchCommits(id);
 
 		const branchResult = assign({}, ...commits);
 
 		const payloadToUpdate = fields ? pick(branchResult, fields) : branchResult;
 
 		// will throw an error if the accountability does not have permission to update the item
-		await this.authorizationService.checkAccess('update', branchItem['collection'], branchItem['item']);
+		await this.authorizationService.checkAccess('update', collection, item);
 
-		const itemsService = new ItemsService(branchItem['collection'], {
+		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
 			schema: this.schema,
 		});
 
-		const updatedItemKey = await itemsService.updateOne(branchItem['item'], payloadToUpdate);
+		const payloadAfterHooks = await emitter.emitFilter(
+			['items.promote', `${collection}.items.promote`],
+			payloadToUpdate,
+			{
+				collection,
+				item,
+				branch,
+			},
+			{
+				database: getDatabase(),
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
 
 		emitter.emitAction(
-			'branches.merge',
+			['items.promote', `${collection}.items.promote`],
 			{
-				payload: payloadToUpdate,
-				key: branch,
+				payload: payloadAfterHooks,
+				item: updatedItemKey,
+				branch,
 			},
 			{
 				database: getDatabase(),
