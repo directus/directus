@@ -1,4 +1,5 @@
 import { EXTENSION_TYPES, ExtensionManifest } from '@directus/constants';
+import type { ExtensionManifest as ExtensionManifestType } from '@directus/types';
 import type { ExtensionManager } from './extensions.js';
 import path from 'path';
 import fse from 'fs-extra';
@@ -8,6 +9,7 @@ import { ExtensionsService } from './service.js';
 import getDatabase from '../database/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import type { DatabaseExtensionPermission } from '@directus/types';
+import { isEqual } from 'lodash-es';
 
 export type ExtensionInstallationOptions = {
 	version?: string | undefined;
@@ -53,8 +55,14 @@ export class InstallationManager {
 
 		const tarballUrl = info.data.dist.tarball;
 
+		let registryManifest: ExtensionManifestType | undefined;
+
 		try {
-			ExtensionManifest.parse(info.data);
+			registryManifest = ExtensionManifest.parse(info.data);
+
+			if (!registryManifest) {
+				throw new Error('');
+			}
 		} catch (error) {
 			throw new Error(`The package "${name}" is not a valid extension.`);
 		}
@@ -81,6 +89,24 @@ export class InstallationManager {
 
 		await fse.move(path.join(extensionFolderTemp, 'package'), extensionFolder);
 		await fse.remove(extensionFolderTemp);
+
+		const manifest = await fse.readJSON(path.join(extensionFolder, 'package.json'));
+
+		// make sure that if the npm manifest says it's a secure extension, the local package.json says the same
+		try {
+			const localManifest = ExtensionManifest.parse(manifest);
+
+			if (!localManifest) {
+				throw new Error('');
+			}
+
+			if (isEqual(localManifest, registryManifest) === false) {
+				throw new Error('');
+			}
+		} catch (error) {
+			throw new Error(`The package "${name}" is not a valid extension.`);
+		}
+
 
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
