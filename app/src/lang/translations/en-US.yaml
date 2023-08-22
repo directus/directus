@@ -509,7 +509,7 @@ expand: Expand
 collapse: Collapse
 select_item: Select Item
 no_items: No items
-search_items: Search items...
+search_items: Search Items...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -961,6 +961,8 @@ wysiwyg_options:
   source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
+  lazy_loading: Lazy Load Image
+  lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
 choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
@@ -1513,6 +1515,8 @@ no_extensions_copy: No extensions have been installed yet.
 marketplace: Marketplace
 page_help_settings_marketplace: '**Marketplace** — Browse and manage Extensions.'
 interfaces:
+  list-m2a:
+    prefix_note: Uses the related item's collection name by default.
   filter:
     name: Filter
     description: Configure a filter object.
@@ -2181,6 +2185,20 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  json-web-token:
+    name: JSON Web Token (JWT)
+    description: Sign and verify JSON Web Tokens
+    operation: Operation
+    secret: Secret
+    secret_placeholder: Enter a secret...
+    payload: Payload
+    token: Token
+    token_placeholder: eyJhbGciOi......
+    options: Options
+    options_placeholder: Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options
+    sign: Sign Token
+    verify: Verify Token
+    decode: Decode Token
   log:
     name: Log to Console
     description: Output something to the console

@@ -1,5 +1,7 @@
+import type { QueryDeep } from './deep.js';
 import type { HasNestedFields, QueryFields } from './fields.js';
-import type { ItemType, RelationalFields } from './schema.js';
+import type { QueryFilter } from './filters.js';
+import type { ItemType } from './schema.js';
 import type { IfAny, UnpackList } from './utils.js';
 
 /**
@@ -46,52 +48,6 @@ export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
 	: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
 
 /**
- * Filters
- */
-export type QueryFilter<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
-	? {
-			[Field in keyof FlatItem]?:
-				| (Field extends RelationalFields<Schema, FlatItem> ? QueryFilter<Schema, FlatItem[Field]> : never)
-				| FilterOperatorsByType<FlatItem[Field]>;
-	  }
-	: never;
-
-/**
- * All available filter operators
- * TODO would love to filter this based on field type but thats not accurate enough in the schema atm
- */
-export type FilterOperatorsByType<T> = {
-	_eq?: T;
-	_neq?: T;
-	_gt?: T;
-	_gte?: T;
-	_lt?: T;
-	_lte?: T;
-	_in?: T[];
-	_nin?: T[];
-	_between?: [T, T];
-	_nbetween?: [T, T];
-	_contains?: T;
-	_ncontains?: T;
-	_starts_with?: T;
-	_istarts_with?: T;
-	_nstarts_with?: T;
-	_nistarts_with?: T;
-	_ends_with?: T;
-	_iends_with?: T;
-	_nends_with?: T;
-	_niends_with?: T;
-	_empty?: boolean;
-	_nempty?: boolean;
-	_nnull?: boolean;
-	_null?: boolean;
-	_intersects?: T;
-	_nintersects?: T;
-	_intersects_bbox?: T;
-	_nintersects_bbox?: T;
-};
-
-/**
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
  */
@@ -99,24 +55,6 @@ export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends i
 	? {
 			[Field in keyof FlatItem]: Field | `-${Field & string}`;
 	  }[keyof FlatItem]
-	: never;
-
-/**
- * Deep filter object
- */
-export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
-	? RelationalFields<Schema, FlatItem> extends never
-		? never
-		: {
-				[Field in RelationalFields<Schema, FlatItem>]?: Query<Schema, FlatItem[Field]> extends infer TQuery
-					? MergeObjects<
-							QueryDeep<Schema, FlatItem[Field]>,
-							{
-								[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
-							}
-					  >
-					: never;
-		  }
 	: never;
 
 export type MergeObjects<A, B extends object> = A extends object ? A & B : never;

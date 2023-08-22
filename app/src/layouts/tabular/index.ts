@@ -11,7 +11,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { Field } from '@directus/types';
 import { defineLayout } from '@directus/utils';
 import { debounce } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
@@ -166,7 +166,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					.sort();
 			});
 
-			const fields = syncRefProperty(layoutQuery, 'fields', fieldsDefaultValue);
+			const fields = computed({
+				get() {
+					if (layoutQuery.value?.fields) {
+						return layoutQuery.value.fields.filter((field) => fieldsStore.getField(collection.value!, field));
+					} else {
+						return unref(fieldsDefaultValue);
+					}
+				},
+				set(value) {
+					layoutQuery.value.fields = value;
+				},
+			});
 
 			const fieldsWithRelational = computed(() => {
 				if (!props.collection) return [];

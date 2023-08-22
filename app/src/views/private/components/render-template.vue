@@ -134,7 +134,7 @@ function handleObject(fieldKey: string) {
 			.join('.');
 	}
 
-	const value = get(props.item, fieldKey);
+	const value = fieldKey ? get(props.item, fieldKey) : props.item;
 
 	if (value === undefined) return null;
 
