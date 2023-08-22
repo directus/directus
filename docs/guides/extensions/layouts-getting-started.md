@@ -21,7 +21,7 @@ npx create-directus-extension
 A list of options will appear (choose layout), and type a name for your extension (for example,
 `directus-layout-example`). For this guide, select JavaScript.
 
-Now the boilerplate has been created, open the directory in your code editor.
+Now that the boilerplate has been created, open the directory in your code editor.
 
 ## Build the Structure
 
