@@ -264,6 +264,24 @@ To learn about `payload` requirements when updating an item, see [API Reference 
 
 :::
 
+## JSON Web Token (JWT)
+
+This operation lets you sign and verify a JSON Web Token (JWT) using the
+[`jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken) package.
+
+**Options**
+
+- **Operation** — Select the operation you'd like to perform.
+- **Payload** — The string or JSON payload to sign.
+- **Token** — The JSON Web Token to verify or decode.
+- **Secret** — The secret key used to sign or verify a token.
+- **Options** — The options object provided to the operation. For the list of available options, see the
+  [documentation of `jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken#usage).
+
+**Payload**
+
+Based on the operation selected, a JSON Web Token (JWT) or `payload` will be appended under its `<operationKey>`.
+
 ## Log to Console
 
 ![Log to Console](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/log-to-console-20220603A.webp)
