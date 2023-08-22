@@ -22,7 +22,9 @@ import {
 	WebSocketService,
 	UtilsService
 } from "../../../services/index.js";
+import { capitalize } from 'lodash-es'
 import { getSchema } from "../../../utils/get-schema.js";
+import { toArray } from "@directus/utils";
 
 
 const require = createRequire(import.meta.url);
@@ -41,41 +43,41 @@ export class ApiServiceVMFunction extends VMFunction {
 
 				switch (type) {
 					case 'items':
-						return createReference(new ItemsService(args[0], { schema }))
+						return createReference(type, new ItemsService(args[0], { schema }), args[0])
 					case 'activity':
-						return createReference(new ActivityService({ schema }))
+						return createReference(type, new ActivityService({ schema }))
 					case 'collections':
-						return createReference(new CollectionsService({ schema }))
+						return createReference(type, new CollectionsService({ schema }))
 					case 'dashboards':
-						return createReference(new DashboardsService({ schema }))
+						return createReference(type, new DashboardsService({ schema }))
 					case 'fields':
-						return createReference(new FieldsService({ schema }))
+						return createReference(type, new FieldsService({ schema }))
 					case 'notifications':
-						return createReference(new NotificationsService({ schema }))
+						return createReference(type, new NotificationsService({ schema }))
 					case 'operations':
-						return createReference(new OperationsService({ schema }))
+						return createReference(type, new OperationsService({ schema }))
 					case 'panels':
-						return createReference(new PanelsService({ schema }))
+						return createReference(type, new PanelsService({ schema }))
 					case 'presets':
-						return createReference(new PresetsService({ schema }))
+						return createReference(type, new PresetsService({ schema }))
 					case 'relations':
-						return createReference(new RelationsService({ schema }))
+						return createReference(type, new RelationsService({ schema }))
 					case 'revisions':
-						return createReference(new RevisionsService({ schema }))
+						return createReference(type, new RevisionsService({ schema }))
 					case 'server':
-						return createReference(new ServerService({ schema }))
+						return createReference(type, new ServerService({ schema }))
 					case 'settings':
-						return createReference(new SettingsService({ schema }))
+						return createReference(type, new SettingsService({ schema }))
 					case 'shares':
-						return createReference(new SharesService({ schema }))
+						return createReference(type, new SharesService({ schema }))
 					case 'translations':
-						return createReference(new TranslationsService({ schema }))
+						return createReference(type, new TranslationsService({ schema }))
 					case 'utils':
-						return createReference(new UtilsService({ schema }))
+						return createReference(type, new UtilsService({ schema }))
 					case 'webhooks':
-						return createReference(new WebhooksService({ schema }))
+						return createReference(type, new WebhooksService({ schema }))
 					case 'websocket':
-						return createReference(new WebSocketService())
+						return createReference(type, new WebSocketService())
 					default:
 						return new ivm.ExternalCopy(new Error('Service does not exist')).copyInto()
 
@@ -84,7 +86,34 @@ export class ApiServiceVMFunction extends VMFunction {
 			})
 		])
 
-		function createReference(service: any) {
+		function createReference(type: string, service: any, collection?: string) {
+			const permission = extension.granted_permissions.find(perm => perm.permission === `service.${type}`)
+
+			if (permission?.enabled !== true) {
+				return new ivm.ExternalCopy(new Error(`No access to ${capitalize(type)}Service`)).copyInto()
+			}
+
+			if (type === 'items') {
+				if (!collection) {
+					return new ivm.ExternalCopy(new Error(`No collection given`)).copyInto()
+				}
+
+				const allowedCollections = permission.options?.['allowed_collections']
+				const extensionCollections = Boolean(permission.options?.['extension_collections'])
+
+				let dbPrefix = extension.name.toLowerCase().replaceAll(/[^a-z]/, '_')
+
+				if (dbPrefix.startsWith('_')) {
+					dbPrefix = dbPrefix.substring(1)
+				}
+
+				dbPrefix = 'extension_' + dbPrefix + "_"
+
+				if ((allowedCollections && Array.isArray(allowedCollections) && allowedCollections.includes(collection)) || (extensionCollections && collection.startsWith(dbPrefix))) {
+					return new ivm.ExternalCopy(new Error(`No access to ${collection}`)).copyInto()
+				}
+			}
+
 			return new ivm.Reference(function (resolve: any, reject: any, prop: string, args: any[]) {
 
 				if (prop in service === false || prop === 'createMutationTracker') {
