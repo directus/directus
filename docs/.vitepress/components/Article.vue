@@ -2,16 +2,16 @@
 	<div class="article">
 		<a :href="url">
 			<div class="image">
-				<img :src="img" alt="" />
+				<img :src="img" :alt="title" loading="lazy" />
 			</div>
-			<h3 class="heading">{{ title }}</h3>
-			<p class="description">{{ desc }}</p>
-			<div v-if="author" class="author">
-				<span>{{ author }}</span>
-				&nbsp;
-				<span>•</span>
-				&nbsp;
-				<span>{{ date }}</span>
+			<div class="content">
+				<h3 class="heading">{{ title }}</h3>
+				<p v-if="desc" class="description">{{ desc }}</p>
+				<div v-if="author" class="author">
+					<span>{{ author }}</span>
+					<span>•</span>
+					<span class="date">{{ date }}</span>
+				</div>
 			</div>
 		</a>
 	</div>
@@ -30,9 +30,22 @@ defineProps<{
 </script>
 
 <style scoped>
-.heading {
-	font-weight: 600;
-	margin-top: 12px;
+.article {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.article a {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.content {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 .image {
@@ -50,6 +63,15 @@ defineProps<{
 	transition: scale 150ms ease-out;
 }
 
+.dark .image img {
+	filter: brightness(0.9);
+}
+
+.heading {
+	font-weight: 600;
+	margin-top: 12px;
+}
+
 .description {
 	color: var(--vp-c-text-2);
 	padding-inline-end: 8px;
@@ -57,6 +79,10 @@ defineProps<{
 
 .author {
 	color: var(--vp-c-gray);
+	display: flex;
+	gap: 0.5em;
+	margin-top: 0.25em;
+	font-size: 0.8em;
 }
 
 .article:hover .heading {
