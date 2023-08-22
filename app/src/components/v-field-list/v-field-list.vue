@@ -27,6 +27,7 @@
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
 			:allow-select-all="allowSelectAll"
+			:raw-field-names="rawFieldNames"
 			@add="$emit('add', $event)"
 		/>
 	</v-list>
@@ -49,6 +50,7 @@ interface Props {
 	includeRelations?: boolean;
 	relationalFieldSelectable?: boolean;
 	allowSelectAll?: boolean;
+	rawFieldNames?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -58,6 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
 	includeRelations: true,
 	relationalFieldSelectable: true,
 	allowSelectAll: false,
+	rawFieldNames: false,
 });
 
 const emit = defineEmits(['add']);
