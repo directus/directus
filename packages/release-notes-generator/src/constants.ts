@@ -1,8 +1,15 @@
 import { VersionType } from '@changesets/types';
+import { LinkedPackage } from './types';
 
 export const REPO = 'directus/directus';
 
 export const MAIN_PACKAGE = 'directus';
+
+/** Ensure the second package is bumped if the first one has been bumped */
+export const LINKED_PACKAGES: LinkedPackage[] = [
+	// Link '@directus/app' to 'directus' to reflect correct main version in app
+	['directus', '@directus/app'],
+];
 
 export const UNTYPED_PACKAGES = {
 	docs: '📝 Documentation',

@@ -21,3 +21,5 @@ type TypeTitle = (typeof TYPE_MAP)[keyof typeof TYPE_MAP];
 export type Type = { title: TypeTitle; packages: Package[] };
 
 export type PackageVersion = { name: string; version: string };
+
+export type LinkedPackage = [string, string];

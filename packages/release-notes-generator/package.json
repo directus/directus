@@ -27,12 +27,14 @@
 	"dependencies": {
 		"@changesets/get-github-info": "0.5.2",
 		"@pnpm/find-workspace-dir": "6.0.0",
-		"@pnpm/find-workspace-packages": "6.0.8"
+		"@pnpm/find-workspace-packages": "6.0.8",
+		"semver": "7.5.1"
 	},
 	"devDependencies": {
 		"@changesets/types": "5.2.1",
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
+		"@types/semver": "7.5.0",
 		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"

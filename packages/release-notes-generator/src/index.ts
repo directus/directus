@@ -1,5 +1,4 @@
 import { appendFileSync } from 'node:fs';
-import { MAIN_PACKAGE } from './constants.js';
 import { generateMarkdown } from './utils/generate-markdown.js';
 import { getInfo } from './utils/get-info.js';
 import { processPackages } from './utils/process-packages.js';
@@ -15,12 +14,9 @@ process.on('beforeExit', async () => {
 async function run() {
 	const { mainVersion, packageVersions } = await processPackages();
 
+	// Run after `processPackages` for clean-up
 	if (changesets.size === 0) {
 		earlyExit();
-	}
-
-	if (!mainVersion) {
-		throw new Error(`Couldn't get main version ('${MAIN_PACKAGE}' package)`);
 	}
 
 	const { types, untypedPackages, notices } = await getInfo(changesets);
@@ -32,7 +28,7 @@ async function run() {
 	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
 
 	const divider = '==============================================================';
-	process.stdout.write(`${divider}\n${markdown}\n${divider}\n`);
+	process.stdout.write(`${divider}\nDirectus v${mainVersion}\n${divider}\n${markdown}\n${divider}\n`);
 
 	const githubOutput = process.env['GITHUB_OUTPUT'];
 
