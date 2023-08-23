@@ -55,7 +55,7 @@
 			:active="isBranchMergeDrawerOpen"
 			:current-branch="currentBranch"
 			@cancel="isBranchMergeDrawerOpen = false"
-			@merge="isBranchMergeDrawerOpen = false"
+			@merge="onMergeComplete"
 		/>
 
 		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">
@@ -63,16 +63,20 @@
 				<v-card-title>{{ t('create_branch') }}</v-card-title>
 
 				<v-card-text>
-					<div class="fields">
-						<interface-input
-							:value="newBranchName"
-							class="full"
-							autofocus
-							trim
-							:placeholder="t('branch_name')"
-							@input="newBranchName = $event"
-							@keyup.enter="createBranch"
-						/>
+					<div class="grid">
+						<div class="field">
+							<v-input
+								v-model="newBranchName"
+								autofocus
+								:placeholder="t('branch_name')"
+								trim
+								@input="newBranchName = $event"
+								@keyup.enter="createBranch"
+							/>
+						</div>
+						<div class="field">
+							<v-checkbox v-model="switchToBranch" :label="t('switch_to_branch_after_creation')" />
+						</div>
 					</div>
 				</v-card-text>
 
@@ -144,7 +148,12 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const emit = defineEmits(['switch', 'refresh']);
+const emit = defineEmits<{
+	add: [branch: Branch, switchToBranch: boolean];
+	rename: [name: string];
+	delete: [];
+	switch: [branch: Branch | null];
+}>();
 
 const { t } = useI18n();
 
@@ -153,7 +162,8 @@ const { hasPermission } = usePermissionsStore();
 const { collection, primaryKey, currentBranch } = toRefs(props);
 
 const newBranchName = ref<string | null>(null);
-const isBranchMergeDrawerOpen = ref<boolean>(false);
+const switchToBranch = ref(true);
+const isBranchMergeDrawerOpen = ref(false);
 
 const createBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'create'));
 const updateBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'update'));
@@ -181,14 +191,17 @@ function useCreateDialog() {
 		creating.value = true;
 
 		try {
-			await api.post(`/branches`, {
+			const {
+				data: { data: branch },
+			} = await api.post(`/branches`, {
 				name: unref(newBranchName),
 				collection: unref(collection),
 				item: unref(primaryKey),
 			});
 
-			emit('refresh');
-			createDialogActive.value = false;
+			emit('add', branch, unref(switchToBranch));
+
+			closeCreateDialog();
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -197,8 +210,9 @@ function useCreateDialog() {
 	}
 
 	function closeCreateDialog() {
-		newBranchName.value = null;
 		createDialogActive.value = false;
+		newBranchName.value = null;
+		switchToBranch.value = true;
 	}
 }
 
@@ -216,17 +230,18 @@ function useUpdateDialog() {
 	};
 
 	async function updateBranch() {
-		if (!unref(primaryKey) || unref(primaryKey) === '+') return;
+		if (!unref(primaryKey) || unref(primaryKey) === '+' || !newBranchName.value) return;
 
 		updating.value = true;
 
 		try {
 			await api.patch(`/branches/${unref(currentBranch)!.id}`, {
-				name: unref(newBranchName),
+				name: newBranchName.value,
 			});
 
-			emit('refresh');
-			updateDialogActive.value = false;
+			emit('rename', newBranchName.value);
+
+			closeUpdateDialog();
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -235,14 +250,14 @@ function useUpdateDialog() {
 	}
 
 	function openUpdateDialog() {
-		if (!unref(currentBranch)) return;
-		newBranchName.value = unref(currentBranch)!.name;
+		if (!currentBranch.value) return;
+		newBranchName.value = currentBranch.value.name;
 		updateDialogActive.value = true;
 	}
 
 	function closeUpdateDialog() {
-		newBranchName.value = null;
 		updateDialogActive.value = false;
+		newBranchName.value = null;
 	}
 }
 
@@ -257,14 +272,15 @@ function useDeleteDialog() {
 	};
 
 	async function deleteBranch() {
-		if (!unref(currentBranch)) return;
+		if (!currentBranch.value) return;
 
 		deleting.value = true;
 
 		try {
-			await api.delete(`/branches/${unref(currentBranch)!.id}`);
-			emit('switch', null);
-			emit('refresh');
+			await api.delete(`/branches/${currentBranch.value.id}`);
+
+			emit('delete');
+
 			deleteDialogActive.value = false;
 		} catch (err: any) {
 			unexpectedError(err);
@@ -273,9 +289,23 @@ function useDeleteDialog() {
 		}
 	}
 }
+
+function onMergeComplete() {
+	isBranchMergeDrawerOpen.value = false;
+
+	emit('switch', null);
+}
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/mixins/form-grid';
+
+.grid {
+	--form-vertical-gap: 8px;
+
+	@include form-grid;
+}
+
 .branch-menu {
 	flex-shrink: 0;
 }

@@ -55,9 +55,9 @@ export function useRevisions(
 						},
 					},
 					{
-						branch: unref(branch)
+						branch: branch.value
 							? {
-									_eq: unref(branch)!.name,
+									_eq: branch.value.id,
 							  }
 							: { _null: true },
 					},
@@ -100,7 +100,7 @@ export function useRevisions(
 				},
 			});
 
-			if (!created.value && !unref(branch)) {
+			if (!created.value) {
 				const createdResponse = await api.get(`/revisions`, {
 					params: {
 						filter: {
@@ -113,7 +113,7 @@ export function useRevisions(
 							branch: { _null: true },
 							activity: {
 								action: {
-									_eq: Action.CREATE,
+									_eq: unref(branch) ? Action.COMMIT : Action.CREATE,
 								},
 							},
 						},

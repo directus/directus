@@ -82,7 +82,7 @@ const fieldsStore = useFieldsStore();
 
 const props = defineProps<Props>();
 
-const { currentBranch } = toRefs(props);
+const { active, currentBranch } = toRefs(props);
 
 const isOutdated = ref<boolean>(false);
 
@@ -96,9 +96,18 @@ const comparedData = ref<Comparison | null>(null);
 
 const loading = ref(false);
 
-const emit = defineEmits(['cancel', 'merge']);
+const emit = defineEmits<{
+	cancel: [];
+	merge: [];
+}>();
 
-watch(currentBranch, () => getComparison(), { immediate: true });
+watch(
+	active,
+	(value) => {
+		if (value) getComparison();
+	},
+	{ immediate: true }
+);
 
 function addField(field: string) {
 	selectedFields.value = [...selectedFields.value, field];

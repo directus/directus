@@ -3,21 +3,21 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Branch, Filter, Query } from '@directus/types';
 import { computed, ref, Ref, unref, watch } from 'vue';
 
-export function useBranches(collection: Ref<string>, primaryKey: Ref<string | null>) {
+export function useBranches(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentBranch = ref<Branch | null>(null);
 	const branches = ref<Branch[] | null>(null);
 	const loading = ref(false);
 	const commitLoading = ref(false);
 
 	const query = computed<Query>(() => {
-		if (!unref(currentBranch)) return {};
+		if (!currentBranch.value) return {};
 
 		return {
-			branch: unref(currentBranch)!.name,
+			branch: currentBranch.value.name,
 		};
 	});
 
-	watch([collection, primaryKey], () => getBranches(), { immediate: true });
+	watch([collection, isSingleton, primaryKey], () => getBranches(), { immediate: true });
 
 	return {
 		currentBranch,
@@ -25,12 +25,15 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 		loading,
 		query,
 		getBranches,
+		addBranch,
+		renameBranch,
+		deleteBranch,
 		commitLoading,
 		commit,
 	};
 
 	async function getBranches() {
-		if (!unref(primaryKey) || unref(primaryKey) === '+') return;
+		if ((!isSingleton && !primaryKey.value) || primaryKey.value === '+') return;
 
 		loading.value = true;
 
@@ -42,11 +45,15 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 							_eq: unref(collection),
 						},
 					},
-					{
-						item: {
-							_eq: unref(primaryKey)!,
-						},
-					},
+					...(primaryKey.value
+						? [
+								{
+									item: {
+										_eq: primaryKey.value,
+									},
+								},
+						  ]
+						: []),
 				],
 			};
 
@@ -66,13 +73,47 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 		}
 	}
 
+	async function addBranch(branch: Branch, switchToBranch: boolean) {
+		branches.value = [...(branches.value ? branches.value : []), branch];
+
+		if (switchToBranch) {
+			currentBranch.value = branch;
+		}
+	}
+
+	async function renameBranch(name: string) {
+		if (!currentBranch.value || !branches.value) return;
+
+		const currentBranchId = currentBranch.value.id;
+
+		const branchToRename = branches.value.find((branch) => branch.id === currentBranchId);
+
+		if (branchToRename) {
+			branchToRename.name = name;
+			currentBranch.value = branchToRename;
+		}
+	}
+
+	async function deleteBranch() {
+		if (!currentBranch.value || !branches.value) return;
+
+		const currentBranchId = currentBranch.value.id;
+
+		const index = branches.value.findIndex((branch) => branch.id === currentBranchId);
+
+		if (index !== undefined) {
+			currentBranch.value = null;
+			branches.value.splice(index, 1);
+		}
+	}
+
 	async function commit(edits: Ref<Record<string, any>>) {
-		if (!unref(currentBranch)) return;
+		if (!currentBranch.value) return;
 
 		commitLoading.value = true;
 
 		try {
-			await api.post(`/branches/${unref(currentBranch)!.id}/commit`, unref(edits));
+			await api.post(`/branches/${currentBranch.value.id}/commit`, unref(edits));
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {

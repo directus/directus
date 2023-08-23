@@ -105,6 +105,7 @@ branch_name: Branch Name
 commit: Commit
 main_branch: Main
 create_branch: Create Branch
+switch_to_branch_after_creation: Switch to Branch After Creation
 rename_branch: Rename Branch
 compare_branch: Compare Branch
 merge_branch: Merge Branch
@@ -376,6 +377,7 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
+revision_delta_commited: 'Commit (Updated 1 Field) | Commit (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision

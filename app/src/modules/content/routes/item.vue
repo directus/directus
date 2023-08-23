@@ -56,7 +56,7 @@
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
 
-		<template #title:append>
+		<template #title-outer:append>
 			<branch-menu
 				v-if="
 					collectionInfo.meta &&
@@ -69,8 +69,10 @@
 				:primary-key="internalPrimaryKey"
 				:current-branch="currentBranch"
 				:branches="branches"
+				@add="addBranch"
+				@rename="renameBranch"
+				@delete="deleteBranch"
 				@switch="currentBranch = $event"
-				@refresh="getBranches"
 			/>
 		</template>
 
@@ -185,7 +187,7 @@
 				icon
 				:loading="commitLoading"
 				:disabled="!isSavable"
-				@click="CommitToBranch"
+				@click="commitToBranchAndQuit"
 			>
 				<v-icon name="commit" />
 
@@ -334,10 +336,12 @@ const {
 	branches,
 	loading: branchesLoading,
 	query,
-	getBranches,
+	addBranch,
+	renameBranch,
+	deleteBranch,
 	commitLoading,
 	commit,
-} = useBranches(collection, primaryKey);
+} = useBranches(collection, isSingleton, primaryKey);
 
 const {
 	isNew,
@@ -546,14 +550,25 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function CommitToBranch() {
+async function commitToBranchAndQuit() {
 	if (isSavable.value === false) return;
-	if (unref(currentBranch) === null) return;
 
 	try {
 		await commit(edits);
 		edits.value = {};
 		if (props.singleton === false) router.push(`/content/${props.collection}`);
+	} catch {
+		// Commit shows unexpected error dialog
+	}
+}
+
+async function commitToBranchAndStay() {
+	if (isSavable.value === false) return;
+
+	try {
+		await commit(edits);
+		edits.value = {};
+		refresh();
 	} catch {
 		// Commit shows unexpected error dialog
 	}
@@ -572,7 +587,11 @@ async function saveAndQuit() {
 
 async function saveAndStay() {
 	if (isSavable.value === false) return;
-	if (unref(currentBranch) === null) return;
+
+	if (unref(currentBranch) !== null) {
+		commitToBranchAndStay();
+		return;
+	}
 
 	try {
 		const savedItem: Record<string, any> = await save();
@@ -591,7 +610,7 @@ async function saveAndStay() {
 
 async function saveAndAddNew() {
 	if (isSavable.value === false) return;
-	if (unref(currentBranch) === null) return;
+	if (unref(currentBranch) !== null) return;
 
 	try {
 		await save();
