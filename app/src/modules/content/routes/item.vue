@@ -62,6 +62,7 @@
 					collectionInfo.meta &&
 					collectionInfo.meta.branches_enabled &&
 					!isNew &&
+					internalPrimaryKey !== '+' &&
 					readBranchesAllowed &&
 					!branchesLoading
 				"
