@@ -209,6 +209,9 @@ export class BranchesService extends ItemsService {
 	async merge(branch: PrimaryKey, mainHash: string, fields?: string[]) {
 		const { id, collection, item } = (await this.readOne(branch)) as Branch;
 
+		// will throw an error if the accountability does not have permission to update the item
+		await this.authorizationService.checkAccess('update', collection, item);
+
 		const { outdated } = await this.verifyHash(collection, item, mainHash);
 
 		if (outdated) {
@@ -222,9 +225,6 @@ export class BranchesService extends ItemsService {
 		const branchResult = assign({}, ...commits);
 
 		const payloadToUpdate = fields ? pick(branchResult, fields) : branchResult;
-
-		// will throw an error if the accountability does not have permission to update the item
-		await this.authorizationService.checkAccess('update', collection, item);
 
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
