@@ -3,6 +3,9 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
+import guidesData from './data/guides.data.js';
+
+const { guides } = await guidesData.load();
 
 export default defineConfig({
 	base: '/',
@@ -180,12 +183,18 @@ gtag('config', 'UA-24637628-7');
 			];
 		}
 
-		if (pageData.frontmatter.type == 'blog-post') {
-			pageData.title = pageData.params.title;
-			pageData.description = pageData.params.summary;
-			pageData.frontmatter.head = setOGImage(pageData.params.image);
-		} else {
-			pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
+		switch (pageData.frontmatter.type) {
+			case 'blog-post':
+				pageData.title = pageData.params.title;
+				pageData.description = pageData.params.summary;
+				pageData.frontmatter.head = setOGImage(pageData.params.image);
+				break;
+			case 'guides-index':
+				pageData.title = pageData.params.title;
+				pageData.description = pageData.params.summary;
+				break;
+			default:
+				pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
 		}
 	},
 	vite: {
@@ -243,6 +252,15 @@ function sidebarTypedocs() {
 	});
 
 	return sidebar;
+}
+
+function sidebarGuides() {
+	const guideSections = guides.sections.map((section) => ({
+		text: section.title,
+		link: `/guides/${section.indexPath}`,
+	}));
+
+	return guideSections;
 }
 
 function sidebar() {
@@ -474,141 +492,14 @@ function sidebar() {
 			collapsed: true,
 			items: [
 				{
-					text: 'JavaScript SDK',
+					text: 'All Guides',
+					link: '/guides/index.html',
+				},
+				{
+					text: 'SDK Quickstart',
 					link: '/guides/sdk/getting-started',
 				},
-				{
-					text: 'Flows',
-					items: [
-						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
-						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
-					],
-				},
-				{
-					text: 'Headless CMS',
-					items: [
-						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
-						{
-							text: 'Re-Usable Page Components',
-							link: '/guides/headless-cms/reusable-components',
-						},
-						{
-							link: '/guides/headless-cms/schedule-content/',
-							text: 'Scheduling Future Content',
-							hideItems: true,
-							items: [
-								{
-									link: '/guides/headless-cms/schedule-content/dynamic-sites',
-									text: 'Dynamic Websites',
-								},
-								{
-									link: '/guides/headless-cms/schedule-content/static-sites',
-									text: 'Static Websites',
-								},
-							],
-						},
-						{
-							link: '/guides/headless-cms/trigger-static-builds/',
-							text: 'Trigger Static Site Builds',
-							hideItems: true,
-							items: [
-								{
-									link: '/guides/headless-cms/trigger-static-builds/netlify',
-									text: 'Netlify',
-								},
-								{
-									link: '/guides/headless-cms/trigger-static-builds/vercel',
-									text: 'Vercel',
-								},
-							],
-						},
-						{
-							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/',
-							hideItems: true,
-							items: [
-								{
-									link: '/guides/headless-cms/build-static-website/next-13',
-									text: 'Next.js',
-								},
-								{
-									link: '/guides/headless-cms/build-static-website/nuxt-3',
-									text: 'Nuxt',
-								},
-							],
-						},
-						{
-							text: 'Set Up Live Preview',
-							link: '/guides/headless-cms/live-preview/',
-							hideItems: true,
-							items: [
-								{
-									link: '/guides/headless-cms/live-preview/nextjs',
-									text: 'Next.js',
-								},
-								{
-									link: '/guides/headless-cms/live-preview/nuxt-3',
-									text: 'Nuxt',
-								},
-							],
-						},
-						{
-							text: 'Content Translations (i18n)',
-							link: '/guides/headless-cms/content-translations',
-						},
-					],
-				},
-				{
-					link: '/guides/migration/',
-					text: 'Schema Migration',
-					hideItems: true,
-					items: [
-						{
-							link: '/guides/migration/node',
-							text: 'Node.js',
-						},
-						{
-							link: '/guides/migration/hoppscotch',
-							text: 'Hoppscotch',
-						},
-					],
-				},
-				{
-					text: 'Real-Time',
-					items: [
-						{
-							text: 'Getting Started',
-							link: '/guides/real-time/getting-started/',
-							hideItems: true,
-							items: [
-								{ text: 'WebSockets', link: '/guides/real-time/getting-started/websockets' },
-								{ text: 'GraphQL Subscriptions', link: '/guides/real-time/getting-started/graphql' },
-							],
-						},
-						{ text: 'Authentication', link: '/guides/real-time/authentication' },
-						{ text: 'Operations', link: '/guides/real-time/operations' },
-						{
-							text: 'Subscriptions',
-							link: '/guides/real-time/subscriptions/',
-							hideItems: true,
-							items: [
-								{ text: 'WebSockets', link: '/guides/real-time/subscriptions/websockets' },
-								{ text: 'GraphQL Subscriptions', link: '/guides/real-time/subscriptions/graphql' },
-							],
-						},
-						{
-							text: 'Build a Multi-User Chat',
-							link: '/guides/real-time/chat/',
-							hideItems: true,
-							items: [
-								{ text: 'JavaScript', link: '/guides/real-time/chat/javascript' },
-								{ text: 'Vue.js', link: '/guides/real-time/chat/vue' },
-								{ text: 'React.js', link: '/guides/real-time/chat/react' },
-							],
-						},
-						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
-					],
-				},
+				...sidebarGuides(),
 			],
 		},
 		{
