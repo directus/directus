@@ -26,19 +26,36 @@ test('Rejects when Isolate uses more than allowed memory', async () => {
 });
 
 test('Rejects when operation runs for longer than allowed ', async () => {
-	const testCode = `
+	const testCodeSetup = `
 		while (true) {}
 	`;
 
+	const testCodeOperation = `
+		module.exports = async function (data) {
+			while (true) {}
+		}
+	`;
+
 	await expect(
-		config.handler({ code: testCode }, {
+		config.handler({ code: testCodeSetup }, {
 			data: {},
 			env: {
 				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
-				FLOWS_RUN_SCRIPT_TIMEOUT: 500,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 250,
 			},
 		} as any)
 	).rejects.toThrow('Script execution timed out.');
+
+	await expect(
+		config.handler({ code: testCodeOperation }, {
+			data: {},
+			env: {
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 250,
+			},
+		} as any)
+	).rejects.toThrow('Script execution timed out.');
+
 });
 
 test('Rejects when cjs modules are used', async () => {
