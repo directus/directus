@@ -2,4 +2,4 @@
 "@directus/sdk": patch
 ---
 
-Fixed jsdoc typo in sdk
+Fixed JSDoc typo in `createField` method of SDK
