@@ -39,47 +39,55 @@
 			{{ t('no_notifications_copy') }}
 		</v-info>
 
-		<v-list v-else-if="loading" class="notifications">
-			<v-skeleton-loader v-for="i in 10" :key="i" />
-		</v-list>
+		<div v-else class="content">
+			<v-list v-if="loading" class="notifications">
+				<v-skeleton-loader v-for="i in 10" :key="i" />
+			</v-list>
 
-		<v-list v-else class="notifications">
-			<v-list-item
-				v-for="notification in notifications"
-				:key="notification.id"
-				block
-				:clickable="notification.message"
-				@click="toggleNotification(notification.id)"
-			>
-				<div class="header">
-					<v-checkbox
-						:model-value="selection.includes(notification.id)"
-						@update:model-value="toggleSelected(notification.id)"
+			<v-list v-else class="notifications">
+				<v-list-item
+					v-for="notification in notifications"
+					:key="notification.id"
+					block
+					:clickable="notification.message"
+					@click="toggleNotification(notification.id)"
+				>
+					<div class="header">
+						<v-checkbox
+							:model-value="selection.includes(notification.id)"
+							@update:model-value="toggleSelected(notification.id)"
+						/>
+						<div v-tooltip="notification.subject" class="title">{{ notification.subject }}</div>
+						<div class="spacer" />
+						<div class="time">{{ notification.time }}</div>
+						<v-icon
+							v-if="notification.to"
+							v-tooltip="t('goto_collection_content')"
+							clickable
+							name="open_in_new"
+							@click="onLinkClick(notification.to)"
+						/>
+						<v-icon
+							v-if="notification.message"
+							clickable
+							:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
+						/>
+					</div>
+					<div
+						v-if="openNotifications.includes(notification.id) && notification.message"
+						v-md="notification.message"
+						class="message"
+						@click.stop
 					/>
-					<div v-tooltip="notification.subject" class="title">{{ notification.subject }}</div>
-					<div class="spacer" />
-					<div class="time">{{ notification.time }}</div>
-					<v-icon
-						v-if="notification.to"
-						v-tooltip="t('goto_collection_content')"
-						clickable
-						name="open_in_new"
-						@click="onLinkClick(notification.to)"
-					/>
-					<v-icon
-						v-if="notification.message"
-						clickable
-						:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
-					/>
-				</div>
-				<div
-					v-if="openNotifications.includes(notification.id) && notification.message"
-					v-md="notification.message"
-					class="message"
-					@click.stop
-				/>
-			</v-list-item>
-		</v-list>
+				</v-list-item>
+			</v-list>
+			<v-pagination
+				v-if="totalCount > limit"
+				v-model="page"
+				:total-visible="5"
+				:length="Math.ceil(totalCount / limit)"
+			/>
+		</div>
 	</v-drawer>
 </template>
 
@@ -111,11 +119,14 @@ const collectionsStore = useCollectionsStore();
 const router = useRouter();
 
 const notifications = ref<LocalNotification[]>([]);
+const totalCount = ref(0);
 const loading = ref(false);
 const error = ref(null);
 const selection = ref<string[]>([]);
 const tab = ref(['inbox']);
 const openNotifications = ref<string[]>([]);
+const page = ref(1);
+const limit = ref(15);
 
 function toggleSelected(id: string) {
 	if (selection.value.includes(id)) {
@@ -137,30 +148,43 @@ const { notificationsDrawerOpen } = storeToRefs(appStore);
 
 fetchNotifications();
 
-watch(tab, () => fetchNotifications());
+watch([tab, page], () => fetchNotifications());
 
 async function fetchNotifications() {
 	loading.value = true;
 
 	try {
+		const filter = {
+			_and: [
+				{
+					recipient: {
+						_eq: userStore.currentUser!.id,
+					},
+				},
+				{
+					status: {
+						_eq: tab.value[0],
+					},
+				},
+			],
+		};
+
+		const countResponse = await api.get('/notifications', {
+			params: {
+				filter,
+				'aggregate[count]': 'id',
+			},
+		});
+
+		totalCount.value = countResponse.data.data[0].count.id;
+
 		const response = await api.get('/notifications', {
 			params: {
-				filter: {
-					_and: [
-						{
-							recipient: {
-								_eq: userStore.currentUser!.id,
-							},
-						},
-						{
-							status: {
-								_eq: tab.value[0],
-							},
-						},
-					],
-				},
+				filter,
 				fields: ['id', 'subject', 'message', 'collection', 'item', 'timestamp'],
 				sort: ['-timestamp'],
+				limit: limit.value,
+				page: page.value,
 			},
 		});
 
@@ -232,9 +256,12 @@ function onLinkClick(to: string) {
 	}
 }
 
-.notifications {
+.content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
+}
 
+.notifications {
+	margin-bottom: 16px;
 	.v-skeleton-loader {
 		margin-bottom: 8px;
 	}
