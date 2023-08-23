@@ -26,6 +26,13 @@ For local use, you'll need a
 [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 with `read:user` and `repo:status` permissions.
 
+To force the main version:
+
+```shell
+DIRECTUS_VERSION=10.0.0 GITHUB_TOKEN=<token> pnpm changeset version
+DIRECTUS_VERSION=10.0.0-beta.1 GITHUB_TOKEN=<token> pnpm changeset version
+```
+
 ### GitHub CI
 
 When running `pnpm changeset version` in the GitHub CI context, this package will automatically set the following
