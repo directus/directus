@@ -232,7 +232,7 @@ export class BranchesService extends ItemsService {
 		});
 
 		const payloadAfterHooks = await emitter.emitFilter(
-			['items.promote', `${collection}.items.promote`],
+			['items.merge', `${collection}.items.merge`],
 			payloadToUpdate,
 			{
 				collection,
@@ -249,7 +249,7 @@ export class BranchesService extends ItemsService {
 		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
 
 		emitter.emitAction(
-			['items.promote', `${collection}.items.promote`],
+			['items.merge', `${collection}.items.merge`],
 			{
 				payload: payloadAfterHooks,
 				collection,
