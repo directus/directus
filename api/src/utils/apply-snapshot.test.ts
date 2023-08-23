@@ -230,6 +230,7 @@ describe('applySnapshot', () => {
 				],
 				meta: {
 					accountability: 'all',
+					branches_enabled: false,
 					collection: 'test_table_3',
 					group: 'test_table_2',
 					hidden: true,
