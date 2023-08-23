@@ -97,7 +97,7 @@ export function redact(
  * Replace values and extract Error objects for use with JSON.stringify()
  */
 export function getReplacerFn(replacement: string, valuesToRedact?: string[]) {
-	const lowercasedValuesToRedact = valuesToRedact?.map((v) => v.toLowerCase());
+	const lowercasedValuesToRedact = valuesToRedact?.filter(v => typeof v === "string").map((v) => v.toLowerCase());
 
 	return (_key: string, value: unknown) => {
 		if (value instanceof Error) {
