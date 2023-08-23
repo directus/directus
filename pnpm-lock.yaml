@@ -104,12 +104,6 @@ importers:
       '@rollup/plugin-virtual':
         specifier: 3.0.1
         version: 3.0.1(rollup@3.22.0)
-      '@wasmer/wasi':
-        specifier: ^1.2.2
-        version: 1.2.2
-      '@wasmer/wasmfs':
-        specifier: ^0.12.0
-        version: 0.12.0
       argon2:
         specifier: 0.30.3
         version: 0.30.3
@@ -207,7 +201,7 @@ importers:
         specifier: 5.3.2
         version: 5.3.2
       isolated-vm:
-        specifier: ^4.6.0
+        specifier: 4.6.0
         version: 4.6.0
       joi:
         specifier: 17.9.2
@@ -6816,7 +6810,7 @@ packages:
       ramda: /@pnpm/ramda@0.28.1
       right-pad: 1.0.1
       rxjs: 7.8.1
-      semver: 7.5.4
+      semver: 7.5.1
       stacktracey: 2.1.8
       string-length: 4.0.2
       strip-ansi: 6.0.1
@@ -6955,7 +6949,7 @@ packages:
       detect-libc: 2.0.2
       execa: /safe-execa@0.1.2
       mem: 8.1.1
-      semver: 7.5.4
+      semver: 7.5.1
     dev: false
 
   /@pnpm/pnpmfile@5.0.6(@pnpm/logger@5.0.0):
@@ -7752,7 +7746,7 @@ packages:
       prompts: 2.4.2
       puppeteer-core: 2.1.1
       read-pkg-up: 7.0.1
-      semver: 7.5.4
+      semver: 7.5.1
       shelljs: 0.8.5
       simple-update-notifier: 1.1.0
       strip-json-comments: 3.1.1
@@ -7892,7 +7886,7 @@ packages:
       pretty-hrtime: 1.0.3
       prompts: 2.4.2
       read-pkg-up: 7.0.1
-      semver: 7.5.4
+      semver: 7.5.1
       serve-favicon: 2.5.0
       telejson: 7.1.0
       ts-dedent: 2.2.0
@@ -7978,7 +7972,7 @@ packages:
       memoizerific: 1.11.3
       react: 18.0.0
       react-dom: 18.0.0(react@18.0.0)
-      semver: 7.5.4
+      semver: 7.5.1
       store2: 2.14.2
       telejson: 7.1.0
       ts-dedent: 2.2.0
@@ -9381,17 +9375,14 @@ packages:
       - '@vue/composition-api'
       - vue
 
-  /@wasmer/wasi@1.2.2:
-    resolution: {integrity: sha512-39ZB3gefOVhBmkhf7Ta79RRSV/emIV8LhdvcWhP/MOZEjMmtzoZWMzt7phdKj8CUXOze+AwbvGK60lKaKldn1w==}
-    dev: false
-
-  /@wasmer/wasmfs@0.12.0:
-    resolution: {integrity: sha512-m1ftchyQ1DfSenm5XbbdGIpb6KJHH5z0gODo3IZr6lATkj4WXfX/UeBTZ0aG9YVShBp+kHLdUHvOkqjy6p/GWw==}
+  /@vueuse/shared@10.3.0(vue@3.3.4):
+    resolution: {integrity: sha512-kGqCTEuFPMK4+fNWy6dUOiYmxGcUbtznMwBZLC1PubidF4VZY05B+Oht7Jh7/6x4VOWGpvu3R37WHi81cKpiqg==}
     dependencies:
-      memfs: 3.0.4
-      pako: 1.0.11
-      tar-stream: 2.2.0
-    dev: false
+      vue-demi: 0.14.5(vue@3.3.4)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
 
   /@webassemblyjs/ast@1.11.6:
     resolution: {integrity: sha512-IN1xI7PwOvLPgjcf180gC1bqn3q/QaOCwYUahIOhbYUu8KA/3tw2RT/T0Gidi1l7Hhj5D/INhJxiICObqpMu4Q==}
@@ -12826,12 +12817,19 @@ packages:
     resolution: {integrity: sha512-VxPP4NqbUjj6MaAOafWeUn2cXWLcCtljklUtZf0Ind4XQ+QPtmA0b18zZy0jIQx+ExRVCR/ZQpBmik5lXshNsw==}
     dev: true
 
-  /fast-extend@1.0.2:
-    resolution: {integrity: sha512-XXA9RmlPatkFKUzqVZAFth18R4Wo+Xug/S+C7YlYA3xrXwfPlW3dqNwOb4hvQo7wZJ2cNDYhrYuPzVOfHy5/uQ==}
-    dev: false
-
   /fast-glob@3.2.12:
     resolution: {integrity: sha512-DVj4CQIYYow0BlaelwK1pHl5n5cRSJfM60UA0zK891sVInoPri2Ekj7+e1CT3/3qxXenpI+nBBmQAcJPJgaj4w==}
+    engines: {node: '>=8.6.0'}
+    dependencies:
+      '@nodelib/fs.stat': 2.0.5
+      '@nodelib/fs.walk': 1.2.8
+      glob-parent: 5.1.2
+      merge2: 1.4.1
+      micromatch: 4.0.5
+    dev: true
+
+  /fast-glob@3.3.1:
+    resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
     engines: {node: '>=8.6.0'}
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -13238,10 +13236,6 @@ packages:
     dependencies:
       minipass: 3.3.6
 
-  /fs-monkey@0.3.3:
-    resolution: {integrity: sha512-FNUvuTAJ3CqCQb5ELn+qCbGR/Zllhf2HtwsdAtBi59s1WeCjKMT81fHcSu7dwIskqGVK+MmOrb7VOBlq3/SItw==}
-    dev: false
-
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
@@ -13535,7 +13529,7 @@ packages:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.3.1
+      fast-glob: 3.2.12
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 3.0.0
@@ -16274,13 +16268,6 @@ packages:
       mimic-fn: 3.1.0
     dev: false
 
-  /memfs@3.0.4:
-    resolution: {integrity: sha512-OcZEzwX9E5AoY8SXjuAvw0DbIAYwUzV/I236I8Pqvrlv7sL/Y0E9aRCon05DhaV8pg1b32uxj76RgW0s5xjHBA==}
-    dependencies:
-      fast-extend: 1.0.2
-      fs-monkey: 0.3.3
-    dev: false
-
   /memoizerific@1.11.3:
     resolution: {integrity: sha512-/EuHYwAPdLtXwAwSZkh/Gutery6pD2KYd44oQLhAvQp/50mpyduZh8Q7PYHXTCJ+wuXxt7oij2LXyIJOOYFPog==}
     dependencies:
@@ -17056,7 +17043,7 @@ packages:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.5.4
+      semver: 7.5.1
       tar: 6.1.15
       which: 2.0.2
     transitivePeerDependencies:
@@ -20738,7 +20725,7 @@ packages:
       mime: 2.6.0
       qs: 6.11.2
       readable-stream: 3.6.2
-      semver: 7.5.4
+      semver: 7.5.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -22202,7 +22189,7 @@ packages:
       '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
       '@rushstack/node-core-library': 3.59.7
       debug: 4.3.4
-      fast-glob: 3.3.1
+      fast-glob: 3.2.12
       fs-extra: 10.1.0
       kolorist: 1.8.0
       magic-string: 0.29.0
