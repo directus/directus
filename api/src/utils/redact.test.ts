@@ -223,7 +223,7 @@ describe('getReplacerFn tests', () => {
 		const objWithError = {
 			...baseValue,
 			string: 'A string about errors~~',
-			nested: { another_str: 'just bEcaUse of safety' },
+			nested: { another_str: 'just bEcaUse of safety 123456' },
 			nested_array: [{ str_a: 'cause surely' }, { str_b: 'not an error' }],
 			array: ['something', 'no error', 'just because', 'all is good'],
 			error: new Error('This is an error message.', { cause: 'Here is an Error Cause!' }),
@@ -232,7 +232,7 @@ describe('getReplacerFn tests', () => {
 		const expectedResult = {
 			...baseValue,
 			string: `A string about ${replacement}s~~`,
-			nested: { another_str: `just bE${replacement} of safety` },
+			nested: { another_str: `just bE${replacement} of safety 123456` },
 			nested_array: [{ str_a: `${replacement} surely` }, { str_b: `not an ${replacement}` }],
 			array: ['something', `no ${replacement}`, `just be${replacement}`, 'all is good'],
 			error: {
@@ -242,7 +242,9 @@ describe('getReplacerFn tests', () => {
 			},
 		};
 
-		const result = JSON.parse(JSON.stringify(objWithError, getReplacerFn(replacement, ['ErrOr', 'CAusE'])));
+		const result = JSON.parse(
+			JSON.stringify(objWithError, getReplacerFn(replacement, ['ErrOr', 'CAusE', 123456] as string[]))
+		);
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();
