@@ -1,14 +1,13 @@
 import { Router } from 'express';
 import env from '../env.js';
-import { ErrorCode, ForbiddenError, RouteNotFoundError } from '../errors/index.js';
+import { ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import { getExtensionManager } from '../extensions/extensions.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
-import type { Plural, PrimaryKey } from '@directus/types';
+import type { PrimaryKey } from '@directus/types';
 import { ExtensionsService } from '../extensions/service.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { isDirectusError } from '@directus/errors';
 
 const router = Router();
 

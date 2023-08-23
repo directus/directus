@@ -1,7 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode, ForbiddenError, RouteNotFoundError } from '../errors/index.js';
-import collectionExists from '../middleware/collection-exists.js';
+import { ErrorCode, RouteNotFoundError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { ExtensionPermissionsService } from '../extensions/service.js';
@@ -10,6 +9,7 @@ import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import useCollection from '../middleware/use-collection.js';
+import { getExtensionManager } from '../extensions/extensions.js';
 
 const router = express.Router();
 
@@ -51,6 +51,9 @@ router.post(
 
 			throw error;
 		}
+
+		const extensionManager = await getExtensionManager();
+		await extensionManager.reload()
 
 		return next();
 	}),
@@ -131,6 +134,9 @@ router.patch(
 			throw error;
 		}
 
+		const extensionManager = await getExtensionManager();
+		await extensionManager.reload()
+
 		return next();
 	}),
 	respond
@@ -159,6 +165,9 @@ router.patch(
 			throw error;
 		}
 
+		const extensionManager = await getExtensionManager();
+		await extensionManager.reload()
+
 		return next();
 	}),
 	respond
@@ -183,6 +192,9 @@ router.delete(
 			await service.deleteByQuery(sanitizedQuery);
 		}
 
+		const extensionManager = await getExtensionManager();
+		await extensionManager.reload()
+
 		return next();
 	}),
 	respond
@@ -199,6 +211,9 @@ router.delete(
 		});
 
 		await service.deleteOne(req.params['pk']!);
+
+		const extensionManager = await getExtensionManager();
+		await extensionManager.reload()
 
 		return next();
 	}),
