@@ -7,7 +7,7 @@
 	>
 		<template #actions>
 			<v-button v-if="tab[0] === 'inbox'" :disabled="notifications.length === 0" small @click="archiveAll">
-				{{ t('mark_all_as_read') }}
+				{{ t('archive_all') }}
 			</v-button>
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
