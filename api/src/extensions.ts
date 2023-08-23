@@ -359,7 +359,8 @@ class ExtensionManager {
 
 		if (localExtensions.length > 0) {
 			submitDeprecationWarning('Basic Extensions are being deprecated', `Due to the upcoming release of the extension marketplace, basic extension won't be loaded anymore.
-The reason for this is that basic extensions didn't allow for configuring metadata like an icon for an extension.
+<br/><br/>
+Extensions affected: ${localExtensions.map((extension) => extension.name).join(', ')}
 <br/><br/>
 A guide on how to migrate these extensions to a supported loading method can be found [here](https://docs.directus.io/extensions/creating-extensions.html).`, 'basic-extensions')
 		}
