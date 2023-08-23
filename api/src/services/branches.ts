@@ -55,12 +55,12 @@ export class BranchesService extends ItemsService {
 
 		const existingBranches = await super.readByQuery({
 			fields: ['name', 'collection', 'item'],
-			filter: { name: { _eq: data['name'] }, collection: { _eq: data['collection'] } },
+			filter: { name: { _eq: data['name'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
 		});
 
 		if (existingBranches.length > 0) {
 			throw new UnprocessableContentError({
-				reason: `Branch "${data['name']}" already exists for collection "${data['collection']}"`,
+				reason: `Branch "${data['name']}" already exists for item "${data['item']}" collection "${data['collection']}"`,
 			});
 		}
 
