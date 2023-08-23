@@ -358,19 +358,12 @@ This endpoint doesn't currently support any query parameters.
 
 #### Request Body
 
-The `collection` property is required, all other properties of the [collection object](#the-collection-object) are
-optional.
+The `collection` and `schema` properties are required. To create a [collection folder](/app/data-model#sorting-grouping)
+that doesn't have an underlying table, you can set `schema` to `null`.
 
 You are able to provide an array of `fields` to be created during the creation of the collection. See the
 [fields object](/reference/system/fields#the-fields-object) for more information on what properties are available in a
 field.
-
-::: tip
-
-Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
-entirely or use `schema: null` to create ["folder" collections](/app/data-model#sorting-grouping).
-
-:::
 
 ### Returns
 
