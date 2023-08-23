@@ -205,7 +205,7 @@ export default ({ embed }, { env }) => {
 | `(<collection>.)items.read`   | The read item                        | `query`, `collection`                       |
 | `(<collection>.)items.create` | The new item                         | `collection`                                |
 | `(<collection>.)items.update` | The updated item                     | `keys`, `collection`                        |
-| `(<collection>.)items.merge`  | The merged item                      | `collection`, `item, `branch`               |
+| `(<collection>.)items.merge`  | The merged item                      | `collection`, `item`, `branch`              |
 | `(<collection>.)items.delete` | The keys of the item                 | `collection`                                |
 | `<system-collection>.create`  | The new item                         | `collection`                                |
 | `<system-collection>.update`  | The updated item                     | `keys`, `collection`                        |
