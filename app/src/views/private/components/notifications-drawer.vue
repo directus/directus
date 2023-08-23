@@ -41,7 +41,7 @@
 
 		<div v-else class="content">
 			<v-list v-if="loading" class="notifications">
-				<v-skeleton-loader v-for="i in 10" :key="i" />
+				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalCount > 15 }" />
 			</v-list>
 
 			<v-list v-else class="notifications">
@@ -49,6 +49,7 @@
 					v-for="notification in notifications"
 					:key="notification.id"
 					block
+					:dense="totalCount > 15"
 					:clickable="notification.message"
 					@click="toggleNotification(notification.id)"
 				>
@@ -126,7 +127,7 @@ const selection = ref<string[]>([]);
 const tab = ref(['inbox']);
 const openNotifications = ref<string[]>([]);
 const page = ref(1);
-const limit = ref(15);
+const limit = ref(25);
 
 function toggleSelected(id: string) {
 	if (selection.value.includes(id)) {
@@ -148,7 +149,13 @@ const { notificationsDrawerOpen } = storeToRefs(appStore);
 
 fetchNotifications();
 
-watch([tab, page], () => fetchNotifications());
+watch([tab, page], ([newTab], [oldTab]) => {
+	if (newTab !== oldTab) {
+		page.value = 1;
+	}
+
+	fetchNotifications();
+});
 
 async function fetchNotifications() {
 	loading.value = true;
@@ -264,6 +271,10 @@ function onLinkClick(to: string) {
 	margin-bottom: 16px;
 	.v-skeleton-loader {
 		margin-bottom: 8px;
+
+		&.dense {
+			height: 44px;
+		}
 	}
 
 	.v-list-item {
@@ -271,14 +282,18 @@ function onLinkClick(to: string) {
 			height: unset;
 			min-height: var(--input-height);
 			flex-flow: wrap;
-			padding: calc(18px) var(--input-padding) calc(10px) var(--input-padding);
+			padding: 10px var(--input-padding) 10px var(--input-padding);
+
+			&.dense {
+				min-height: 44px;
+				padding: 10px 8px;
+			}
 		}
 
 		.header {
 			width: 100%;
 			display: flex;
 			gap: 8px;
-			margin-bottom: 8px;
 
 			.title {
 				white-space: nowrap;
@@ -298,6 +313,7 @@ function onLinkClick(to: string) {
 		.message {
 			width: 100%;
 			cursor: default;
+			margin-top: 8px;
 
 			&:deep(blockquote) {
 				background-color: var(--background-normal);
