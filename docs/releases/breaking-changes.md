@@ -23,8 +23,8 @@ Flows to run safely.
 The _Run Script_ operation should only be used for simple data manipulation, and as we have not found an adequate
 solution to running arbitrary packages, we removed this functionality.
 
-If you still need to run npm packages in Flows,
-[create a custom operation extension](/guides/extensions/operations-npm-package).
+If you still need to make HTTP requests, use the __Webhook / Request URL__ operation. For other npm packages in Flows,
+your will need to [create a custom operation extension](/guides/extensions/operations-npm-package).
 
 ## Version 10.4
 
