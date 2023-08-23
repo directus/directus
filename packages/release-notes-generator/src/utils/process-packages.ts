@@ -39,7 +39,9 @@ export async function processPackages(): Promise<{
 		}
 	}
 
-	const mainVersion = semver.parse(process.env['DIRECTUS_VERSION'] ?? packageVersionMap.get(MAIN_PACKAGE));
+	const manualMainVersion = process.env['DIRECTUS_VERSION'];
+
+	const mainVersion = semver.parse(manualMainVersion ?? packageVersionMap.get(MAIN_PACKAGE));
 
 	if (!mainVersion) {
 		throw new Error(`Main version ('${MAIN_PACKAGE}' package) is missing or invalid`);
@@ -49,6 +51,8 @@ export async function processPackages(): Promise<{
 
 	if (isPrerelese) {
 		for (const [name, version] of packageVersionMap) {
+			if (name === MAIN_PACKAGE) continue;
+
 			const workspacePackage = workspacePackages.find((p) => p.manifest.name === name);
 
 			if (workspacePackage) {
@@ -61,6 +65,19 @@ export async function processPackages(): Promise<{
 
 				packageVersionMap.set(name, newVersion);
 			}
+		}
+	}
+
+	if (manualMainVersion) {
+		const workspacePackage = workspacePackages.find((p) => p.manifest.name === MAIN_PACKAGE);
+
+		if (workspacePackage) {
+			await workspacePackage.writeProjectManifest({
+				...workspacePackage.manifest,
+				version: mainVersion.version,
+			});
+
+			packageVersionMap.set(MAIN_PACKAGE, mainVersion.version);
 		}
 	}
 
