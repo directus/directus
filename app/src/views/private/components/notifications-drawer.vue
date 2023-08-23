@@ -300,7 +300,7 @@ function onLinkClick(to: string) {
 			height: unset;
 			min-height: var(--input-height);
 			flex-flow: wrap;
-			padding: 10px var(--input-padding) 10px var(--input-padding);
+			padding: 16px var(--input-padding) 16px var(--input-padding);
 
 			&.dense {
 				min-height: 44px;
