@@ -12,6 +12,7 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
+import type { Filter } from '@directus/types';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
@@ -49,16 +50,24 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		res.setHeader('Vary', 'Origin, Cache-Control');
 	}
 
-	if (req.sanitizedQuery.branch && req.collection && req.params['pk'] && 'data' in res.locals['payload']) {
+	if (
+		req.sanitizedQuery.branch &&
+		req.collection &&
+		(req.singleton || req.params['pk']) &&
+		'data' in res.locals['payload']
+	) {
 		const branchesService = new BranchesService({ accountability: req.accountability ?? null, schema: req.schema });
 
-		const branch = await branchesService.readByQuery({
-			filter: {
-				name: { _eq: req.sanitizedQuery.branch },
-				collection: { _eq: req.collection },
-				item: { _eq: req.params['pk'] },
-			},
-		});
+		const filter: Filter = {
+			name: { _eq: req.sanitizedQuery.branch },
+			collection: { _eq: req.collection },
+		};
+
+		if (req.params['pk']) {
+			filter['item'] = { _eq: req.params['pk'] };
+		}
+
+		const branch = await branchesService.readByQuery({ filter });
 
 		if (branch[0]) {
 			const commits = await branchesService.getBranchCommits(branch[0]['id']);
