@@ -15,15 +15,15 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Dropped Support for Custom NPM Modules in Flows
 
-Prior to this release, Directus relied on `vm2` to run code from _Run Script_ operations in Flows - our automation
+Prior to this release, Directus relied on `vm2` to run code from **Run Script** operations in Flows - our automation
 feature. `vm2` is now unmaintained with critical security issues that could potentially allow code to escape the sandbox
 and potentially access the whole machine which hosts your Directus project. We have migrated to `isolated-vm` to allow
 Flows to run safely.
 
-The _Run Script_ operation should only be used for simple data manipulation, and as we have not found an adequate
+The **Run Script** operation should only be used for simple data manipulation, and as we have not found an adequate
 solution to running arbitrary packages, we removed this functionality.
 
-If you still need to make HTTP requests, use the _Webhook / Request URL_ operation. For other npm packages in Flows,
+If you still need to make HTTP requests, use the **Webhook / Request URL** operation. For other npm packages in Flows,
 your will need to [create a custom operation extension](/guides/extensions/operations-npm-package).
 
 ## Version 10.4
