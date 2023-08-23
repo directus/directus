@@ -6,7 +6,8 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest --watch=false",
+		"depcruise": "depcruise src --include-only '^src' -x test.ts --output-type dot | dot -T svg > dependency-graph.svg"
 	},
 	"description": "Shared SQL helpers for SQL-based drivers",
 	"repository": {

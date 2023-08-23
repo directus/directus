@@ -24,11 +24,6 @@
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M227,-24C227,-24 798,-24 798,-24 804,-24 810,-30 810,-36 810,-36 810,-486 810,-486 810,-492 804,-498 798,-498 798,-498 227,-498 227,-498 221,-498 215,-492 215,-486 215,-486 215,-36 215,-36 215,-30 221,-24 227,-24"/>
 <text text-anchor="middle" x="512.5" y="-485.45" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">abstract&#45;query</text>
 </g>
-<g id="clust7" class="cluster">
-<title>cluster_src/types/abstract&#45;query/nodes</title>
-<path fill="#ffffff" stroke="black" stroke-width="2" d="M533.5,-406C533.5,-406 790,-406 790,-406 796,-406 802,-412 802,-418 802,-418 802,-460 802,-460 802,-466 796,-472 790,-472 790,-472 533.5,-472 533.5,-472 527.5,-472 521.5,-466 521.5,-460 521.5,-460 521.5,-418 521.5,-418 521.5,-412 527.5,-406 533.5,-406"/>
-<text text-anchor="middle" x="661.75" y="-459.45" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">nodes</text>
-</g>
 <g id="clust4" class="cluster">
 <title>cluster_src/types/abstract&#45;query/modifiers</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M326.5,-32C326.5,-32 714.5,-32 714.5,-32 720.5,-32 726.5,-38 726.5,-44 726.5,-44 726.5,-386 726.5,-386 726.5,-392 720.5,-398 714.5,-398 714.5,-398 326.5,-398 326.5,-398 320.5,-398 314.5,-392 314.5,-386 314.5,-386 314.5,-44 314.5,-44 314.5,-38 320.5,-32 326.5,-32"/>
@@ -43,6 +38,11 @@
 <title>cluster_src/types/abstract&#45;query/modifiers/filters/conditions</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M533.5,-74C533.5,-74 698.5,-74 698.5,-74 704.5,-74 710.5,-80 710.5,-86 710.5,-86 710.5,-264 710.5,-264 710.5,-270 704.5,-276 698.5,-276 698.5,-276 533.5,-276 533.5,-276 527.5,-276 521.5,-270 521.5,-264 521.5,-264 521.5,-86 521.5,-86 521.5,-80 527.5,-74 533.5,-74"/>
 <text text-anchor="middle" x="616" y="-263.45" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">conditions</text>
+</g>
+<g id="clust7" class="cluster">
+<title>cluster_src/types/abstract&#45;query/nodes</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M533.5,-406C533.5,-406 790,-406 790,-406 796,-406 802,-412 802,-418 802,-418 802,-460 802,-460 802,-466 796,-472 790,-472 790,-472 533.5,-472 533.5,-472 527.5,-472 521.5,-466 521.5,-460 521.5,-460 521.5,-418 521.5,-418 521.5,-412 527.5,-406 533.5,-406"/>
+<text text-anchor="middle" x="661.75" y="-459.45" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">nodes</text>
 </g>
 <!-- src/index.ts -->
 <g id="node1" class="node">
