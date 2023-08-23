@@ -339,6 +339,10 @@ function onLinkClick(to: string) {
 				margin: 4px 0;
 				border-radius: var(--border-radius);
 			}
+
+			&:deep(a) {
+				color: var(--primary);
+			}
 		}
 	}
 }
