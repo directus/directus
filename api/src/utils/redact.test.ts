@@ -243,7 +243,7 @@ describe('getReplacerFn tests', () => {
 		};
 
 		const result = JSON.parse(
-			JSON.stringify(objWithError, getReplacerFn(replacement, ['ErrOr', 'CAusE', 123456] as string[]))
+			JSON.stringify(objWithError, getReplacerFn(replacement, ['', 'ErrOr', 'CAusE', 123456] as string[]))
 		);
 
 		// Stack changes depending on env
