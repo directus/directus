@@ -23,7 +23,7 @@ export type ApplyQueryFields<
 		PickFlatFields<Schema, CollectionItem, FlatFields>,
 		RelationalFields extends never
 			? never
-			: {
+			: { // Apply nested relational filters
 					[Field in keyof RelationalFields]: Field extends keyof CollectionItem
 						? Extract<CollectionItem[Field], ItemType<Schema>> extends infer RelatedCollection
 							? RelationNullable<
@@ -77,3 +77,11 @@ export type ApplyNestedQueryFields<Schema extends object, Collection, Fields> = 
  * Carry nullability of
  */
 export type RelationNullable<Relation, Output> = IsNullable<Relation, Output | null, Output>;
+
+/**
+ *
+ */
+export type FieldOutputMap = {
+	'json': Record<string, any> | any[] | null,
+	'datetime': string,
+}
