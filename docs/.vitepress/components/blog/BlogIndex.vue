@@ -6,7 +6,6 @@
 				v-for="article in data.blog.articles"
 				:key="article.id"
 				:title="article.title"
-				:desc="article.description"
 				:author="article.author.first_name + ' ' + article.author.last_name"
 				:date="getFriendlyDate(article.date_published)"
 				:url="`/blog/${article.id}`"
@@ -18,7 +17,7 @@
 
 <script setup lang="ts">
 import { data } from '../../data/blog.data.js';
-import { getFriendlyDate } from '../../utils/time.js';
+import { getFriendlyDate } from '../../lib/date.js';
 import Badge from '../Badge.vue';
 </script>
 
