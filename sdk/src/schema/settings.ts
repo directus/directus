@@ -16,23 +16,14 @@ export type DirectusSettings<Schema extends object> = MergeCoreCollection<
 		auth_login_attempts: number;
 		auth_password_policy: string | null;
 		storage_asset_transform: 'all' | 'none' | 'presets';
-		storage_asset_presets:
-			| {
-					fit: string;
-					height: number;
-					width: number;
-					quality: number;
-					key: string;
-					withoutEnlargement: boolean;
-			  }[]
-			| null;
+		storage_asset_presets: 'json' | null;
 		custom_css: string | null;
 		storage_default_folder: DirectusFolder<Schema> | string | null;
-		basemaps: Record<string, any> | null;
+		basemaps: 'json' | null;
 		mapbox_key: string | null;
-		module_bar: any | null;
+		module_bar: 'json' | null;
 		project_descriptor: string | null;
 		default_language: string;
-		custom_aspect_ratios: Record<string, any> | null;
+		custom_aspect_ratios: 'json' | null;
 	}
 >;

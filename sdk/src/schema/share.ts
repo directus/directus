@@ -13,9 +13,9 @@ export type DirectusShare<Schema extends object> = MergeCoreCollection<
 		role: DirectusRole<Schema> | string | null;
 		password: string | null;
 		user_created: DirectusUser<Schema> | string | null;
-		date_created: string | null;
-		date_start: string | null;
-		date_end: string | null;
+		date_created: 'datetime' | null;
+		date_start: 'datetime' | null;
+		date_end: 'datetime' | null;
 		times_used: number | null;
 		max_uses: number | null;
 	}

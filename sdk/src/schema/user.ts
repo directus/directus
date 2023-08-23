@@ -16,7 +16,7 @@ export type DirectusUser<Schema extends object> = MergeCoreCollection<
 		location: string | null;
 		title: string | null;
 		description: string | null;
-		tags: string[] | null;
+		tags: 'json' | null;
 		avatar: DirectusFile<Schema> | string | null;
 		language: string | null;
 		theme: string | null;
@@ -24,11 +24,11 @@ export type DirectusUser<Schema extends object> = MergeCoreCollection<
 		status: string;
 		role: string | null;
 		token: string | null;
-		last_access: string | null;
+		last_access: 'datetime' | null;
 		last_page: string | null;
 		provider: string;
 		external_identifier: string | null;
-		auth_data: Record<string, any> | null;
+		auth_data: 'json' | null;
 		email_notifications: boolean | null;
 	}
 >;

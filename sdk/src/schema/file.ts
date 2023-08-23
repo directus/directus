@@ -15,9 +15,9 @@ export type DirectusFile<Schema extends object> = MergeCoreCollection<
 		type: string | null;
 		folder: DirectusFolder<Schema> | string | null;
 		uploaded_by: DirectusUser<Schema> | string | null;
-		uploaded_on: string;
+		uploaded_on: 'datetime';
 		modified_by: DirectusUser<Schema> | string | null;
-		modified_on: string;
+		modified_on: 'datetime';
 		charset: string | null;
 		filesize: string | null;
 		width: number | null;
@@ -27,6 +27,6 @@ export type DirectusFile<Schema extends object> = MergeCoreCollection<
 		description: string | null;
 		location: string | null;
 		tags: string[] | null;
-		metadata: Record<string, any> | null;
+		metadata: 'json' | null;
 	}
 >;

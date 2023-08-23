@@ -9,8 +9,8 @@ export type DirectusRevision<Schema extends object> = MergeCoreCollection<
 		activity: DirectusActivity<Schema> | number;
 		collection: string; // TODO keyof complete schema
 		item: string;
-		data: Record<string, any> | null;
-		delta: Record<string, any> | null;
+		data: 'json' | null;
+		delta: 'json' | null;
 		parent: DirectusRevision<Schema> | number | null;
 	}
 >;

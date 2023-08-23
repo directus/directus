@@ -13,11 +13,11 @@ export type DirectusOperation<Schema extends object> = MergeCoreCollection<
 		position_x: number;
 		position_y: number;
 		timestamp: string;
-		options: Record<string, any> | null;
+		options: 'json' | null;
 		resolve: DirectusOperation<Schema> | string | null;
 		reject: DirectusOperation<Schema> | string | null;
 		flow: DirectusFlow<Schema> | string;
-		date_created: string | null;
+		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 	}
 >;
