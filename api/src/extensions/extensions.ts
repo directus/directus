@@ -261,6 +261,14 @@ export class ExtensionManager {
 			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
 		);
 
+		return this.loadExtensionPermissions(extensions);
+	}
+
+	public async reloadExtensionPermissions(): Promise<void> {
+		this.extensions = await this.loadExtensionPermissions(this.extensions);
+	}
+
+	private async loadExtensionPermissions(extensions: Extension[]): Promise<FullExtension[]> {
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
 		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*', 'granted_permissions.*'] });
@@ -295,7 +303,7 @@ export class ExtensionManager {
 
 			if (!registeredExtension) throw new Error(`Extension ${extension.name} is not registered in the database`);
 
-			return { ...registeredExtension, ...extension };
+			return { ...extension, ...registeredExtension };
 		});
 	}
 

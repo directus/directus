@@ -53,7 +53,7 @@ router.post(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reload()
+		await extensionManager.reloadExtensionPermissions()
 
 		return next();
 	}),
@@ -135,7 +135,7 @@ router.patch(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reload()
+		await extensionManager.reloadExtensionPermissions()
 
 		return next();
 	}),
@@ -166,7 +166,7 @@ router.patch(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reload()
+		await extensionManager.reloadExtensionPermissions()
 
 		return next();
 	}),
@@ -193,7 +193,7 @@ router.delete(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reload()
+		await extensionManager.reloadExtensionPermissions()
 
 		return next();
 	}),
@@ -213,7 +213,7 @@ router.delete(
 		await service.deleteOne(req.params['pk']!);
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reload()
+		await extensionManager.reloadExtensionPermissions()
 
 		return next();
 	}),
