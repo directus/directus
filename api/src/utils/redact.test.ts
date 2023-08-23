@@ -1,7 +1,7 @@
 import { REDACTED_TEXT } from '@directus/constants';
 import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
-import { errorReplacer, redact } from './redact.js';
+import { getReplacerFn, redact } from './redact.js';
 
 const input = {
 	$trigger: {
@@ -40,6 +40,8 @@ const input = {
 		},
 	},
 };
+
+const replacement = '<redacted>';
 
 test('should not mutate input', () => {
 	const result = redact(input, [['$trigger']], REDACTED_TEXT);
@@ -143,11 +145,12 @@ test('should support multiple paths', () => {
 	);
 });
 
-describe('errorReplacer tests', () => {
+describe('getReplacerFn tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';
 		const errorCause = 'Error Cause';
-		const result = errorReplacer('', new Error(errorMessage, { cause: errorCause }));
+		const replacerFn = getReplacerFn(replacement);
+		const result: any = replacerFn('', new Error(errorMessage, { cause: errorCause }));
 		expect(result.name).toBe('Error');
 		expect(result.message).toBe(errorMessage);
 		expect(result.stack).toBeDefined();
@@ -173,8 +176,10 @@ describe('errorReplacer tests', () => {
 			},
 		];
 
+		const replacerFn = getReplacerFn(replacement);
+
 		for (const value of values) {
-			expect(errorReplacer('', value)).toBe(value);
+			expect(replacerFn('', value)).toBe(value);
 		}
 	});
 
@@ -199,7 +204,45 @@ describe('errorReplacer tests', () => {
 			error: { name: 'Error', message: errorMessage, cause: errorCause },
 		};
 
-		const result = JSON.parse(JSON.stringify(objWithError, errorReplacer));
+		const result = JSON.parse(JSON.stringify(objWithError, getReplacerFn(replacement)));
+
+		// Stack changes depending on env
+		expect(result.error.stack).toBeDefined();
+		delete result.error.stack;
+
+		expect(result).toStrictEqual(expectedResult);
+	});
+
+	test('Correctly redacts values when used with JSON.stringify()', () => {
+		const baseValue = {
+			num: 123,
+			bool: true,
+			null: null,
+		};
+
+		const objWithError = {
+			...baseValue,
+			string: 'A string about errors~~',
+			nested: { another_str: 'just bEcaUse of safety' },
+			nested_array: [{ str_a: 'cause surely' }, { str_b: 'not an error' }],
+			array: ['something', 'no error', 'just because', 'all is good'],
+			error: new Error('This is an error message.', { cause: 'Here is an Error Cause!' }),
+		};
+
+		const expectedResult = {
+			...baseValue,
+			string: `A string about ${replacement}s~~`,
+			nested: { another_str: `just bE${replacement} of safety` },
+			nested_array: [{ str_a: `${replacement} surely` }, { str_b: `not an ${replacement}` }],
+			array: ['something', `no ${replacement}`, `just be${replacement}`, 'all is good'],
+			error: {
+				name: replacement,
+				message: `This is an ${replacement} message.`,
+				cause: `Here is an ${replacement} ${replacement}!`,
+			},
+		};
+
+		const result = JSON.parse(JSON.stringify(objWithError, getReplacerFn(replacement, ['ErrOr', 'CAusE'])));
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();
