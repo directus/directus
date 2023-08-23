@@ -390,6 +390,10 @@ function sidebar() {
 					text: 'Items',
 				},
 				{
+					link: '/reference/branches',
+					text: 'Branches',
+				},
+				{
 					link: '/reference/files',
 					text: 'Files',
 				},
