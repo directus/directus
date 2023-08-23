@@ -63,9 +63,11 @@ class FlowManager {
 	private webhookFlowHandlers: Record<string, any> = {};
 
 	private reloadQueue: JobQueue;
+	private envs: Record<string, string>;
 
 	constructor() {
 		this.reloadQueue = new JobQueue();
+		this.envs = pick(env, env['FLOWS_ENV_ALLOW_LIST'] ? toArray(env['FLOWS_ENV_ALLOW_LIST']) : []);
 
 		const messenger = getMessenger();
 
@@ -308,7 +310,7 @@ class FlowManager {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
 			[ACCOUNTABILITY_KEY]: context?.['accountability'] ?? null,
-			[ENV_KEY]: pick(env, env['FLOWS_ENV_ALLOW_LIST'] ? toArray(env['FLOWS_ENV_ALLOW_LIST']) : []),
+			[ENV_KEY]: this.envs,
 		};
 
 		let nextOperation = flow.operation;
@@ -361,7 +363,7 @@ class FlowManager {
 					collection: 'directus_flows',
 					item: flow.id,
 					data: {
-						steps: steps,
+						steps: steps.map((step) => redact(step, [], REDACTED_TEXT, Object.values(this.envs))),
 						data: redact(
 							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
 							[
@@ -370,7 +372,8 @@ class FlowManager {
 								['**', 'query', 'access_token'],
 								['**', 'payload', 'password'],
 							],
-							REDACTED_TEXT
+							REDACTED_TEXT,
+							Object.values(this.envs)
 						),
 					},
 				});

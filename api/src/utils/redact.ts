@@ -8,12 +8,18 @@ type Paths = string[][];
  * @param input Input object in which values should be redacted.
  * @param paths Nested array of object paths to be redacted (supports `*` for shallow matching, `**` for deep matching).
  * @param replacement Replacement the values are redacted by.
+ * @param valuesToRedact String values that should be redacted.
  * @returns Redacted object.
  */
-export function redact(input: UnknownObject, paths: Paths, replacement: string): UnknownObject {
+export function redact(
+	input: UnknownObject,
+	paths: Paths,
+	replacement: string,
+	valuesToRedact?: string[]
+): UnknownObject {
 	const wildcardChars = ['*', '**'];
 
-	const clone = JSON.parse(JSON.stringify(input, errorReplacer));
+	const clone = JSON.parse(JSON.stringify(input, getReplacerFn(replacement, valuesToRedact)));
 	const visited = new WeakSet<UnknownObject>();
 	traverse(clone, paths);
 
@@ -88,17 +94,33 @@ export function redact(input: UnknownObject, paths: Paths, replacement: string):
 }
 
 /**
- * Extract values from Error objects for use with JSON.stringify()
+ * Replace values and extract Error objects for use with JSON.stringify()
  */
-export function errorReplacer(_key: string, value: unknown) {
-	if (value instanceof Error) {
-		return {
-			name: value.name,
-			message: value.message,
-			stack: value.stack,
-			cause: value.cause,
-		};
-	}
+export function getReplacerFn(replacement: string, valuesToRedact?: string[]) {
+	const lowercasedValuesToRedact = valuesToRedact?.map((v) => v.toLowerCase());
 
-	return value;
+	return (_key: string, value: unknown) => {
+		if (value instanceof Error) {
+			return {
+				name: value.name,
+				message: value.message,
+				stack: value.stack,
+				cause: value.cause,
+			};
+		}
+
+		if (lowercasedValuesToRedact && typeof value === 'string') {
+			let redactedValue = value;
+
+			for (const valueToRedact of lowercasedValuesToRedact) {
+				if (redactedValue.toLowerCase().includes(valueToRedact)) {
+					redactedValue = redactedValue.replace(new RegExp(valueToRedact, 'gi'), replacement);
+				}
+			}
+
+			return redactedValue;
+		}
+
+		return value;
+	};
 }
