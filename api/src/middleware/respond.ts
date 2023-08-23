@@ -52,7 +52,13 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (req.sanitizedQuery.branch && req.collection && req.params['pk'] && 'data' in res.locals['payload']) {
 		const branchesService = new BranchesService({ accountability: req.accountability ?? null, schema: req.schema });
 
-		const branch = await branchesService.readByQuery({ filter: { name: { _eq: req.sanitizedQuery.branch } } });
+		const branch = await branchesService.readByQuery({
+			filter: {
+				name: { _eq: req.sanitizedQuery.branch },
+				collection: { _eq: req.collection },
+				item: { _eq: req.params['pk'] },
+			},
+		});
 
 		if (branch[0]) {
 			const commits = await branchesService.getBranchCommits(branch[0]['id']);
