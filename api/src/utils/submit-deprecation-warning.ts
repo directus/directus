@@ -1,3 +1,4 @@
+import type { Notification } from "@directus/types";
 import { NotificationsService } from "../services/notifications.js";
 import { UsersService } from "../services/users.js";
 import { getSchema } from "./get-schema.js";
@@ -24,19 +25,30 @@ export async function submitDeprecationWarning(title: string, message: string, u
 		}
 	});
 
-	console.log(adminUsers)
-
-	const messages = adminUsers.map(user => {
-		return {
-			recipient: user['id'],
-			subject: title,
-			message,
-			status: 'inbox',
-			item: uid
+	const receivedAdminUsers = (await notificationsService.readByQuery({
+		filter: {
+			recipient: {
+				'_in': adminUsers.map(user => user['id'])
+			},
+			item: {
+				'_eq': uid
+			}
 		}
-	})
+	})).map(notification => notification['recipient'])
 
-	console.log(messages)
+	const messages = adminUsers.reduce<Partial<Notification>[]>((acc, user) => {
+		if (receivedAdminUsers.includes(user['id']) === false) {
+			acc.push({
+				recipient: user['id'],
+				subject: title,
+				message,
+				status: 'inbox',
+				item: uid
+			})
+		}
+
+		return acc
+	}, [])
 
 	notificationsService.createMany(messages)
 }
