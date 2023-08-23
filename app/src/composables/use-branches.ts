@@ -17,7 +17,14 @@ export function useBranches(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		};
 	});
 
-	watch([collection, isSingleton, primaryKey], () => getBranches(), { immediate: true });
+	watch(
+		[collection, isSingleton, primaryKey],
+		([newCollection, _newIsSingleton, _newPrimaryKey], [oldCollection, _oldIsSingleton, _oldPrimaryKey]) => {
+			if (newCollection !== oldCollection) currentBranch.value = null;
+			getBranches();
+		},
+		{ immediate: true }
+	);
 
 	return {
 		currentBranch,
