@@ -50,7 +50,7 @@
 					:key="notification.id"
 					block
 					:dense="totalCount > 15"
-					:clickable="notification.message"
+					:clickable="Boolean(notification.message)"
 					@click="toggleNotification(notification.id)"
 				>
 					<div class="header">
