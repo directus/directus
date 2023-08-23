@@ -126,4 +126,15 @@ router.post(
 	respond
 );
 
+router.get(
+	'/definition',
+	asyncHandler(async (req, res) => {
+		const service = new SchemaService({ accountability: req.accountability });
+		const typeDefinition = await service.generateTypeDefinition();
+
+		res.set('Content-Type', 'text/plain');
+		res.send(typeDefinition);
+	})
+)
+
 export default router;
