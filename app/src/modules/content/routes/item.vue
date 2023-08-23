@@ -453,7 +453,12 @@ const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?
 const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
 
 const previewURL = computed(() => {
-	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData);
+	const enrichedPreviewData = {
+		...unref(previewData),
+		$branch: currentBranch.value ? currentBranch.value.name : 'main',
+	};
+
+	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
 
 	return displayValue.value || null;
 });
@@ -512,9 +517,7 @@ function toggleSplitView() {
 	}
 }
 
-watch(saving, async (newVal, oldVal) => {
-	if (newVal === true || oldVal === false) return;
-
+async function refreshLivePreview() {
 	try {
 		await fetchTemplateValues();
 		window.refreshLivePreview(previewURL.value);
@@ -522,6 +525,18 @@ watch(saving, async (newVal, oldVal) => {
 	} catch (error) {
 		// noop
 	}
+}
+
+watch(saving, async (newVal, oldVal) => {
+	if (newVal === true || oldVal === false) return;
+
+	await refreshLivePreview();
+});
+
+watch(commitLoading, async (newVal, oldVal) => {
+	if (newVal === true || oldVal === false) return;
+
+	await refreshLivePreview();
 });
 
 onBeforeUnmount(() => {
