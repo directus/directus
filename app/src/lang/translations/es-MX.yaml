@@ -35,6 +35,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar campo
 conditions: Condiciones
 location: Ubicación
+collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Reglas condicionales
 input: Entrada
 maps: Mapas
