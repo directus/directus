@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - next
     paths-ignore:
       - docs/**
   pull_request:
