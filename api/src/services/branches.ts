@@ -1,4 +1,5 @@
 import type { Branch, Item, PrimaryKey, Query } from '@directus/types';
+import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import getDatabase from '../database/index.js';
@@ -11,6 +12,10 @@ import { CollectionsService } from './collections.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
+
+const branchUpdateSchema = Joi.object({
+	name: Joi.string(),
+});
 
 export class BranchesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -69,6 +74,10 @@ export class BranchesService extends ItemsService {
 	}
 
 	private async validateUpdateData(data: Partial<Item>): Promise<void> {
+		// Only allow updates on "name" field
+		const { error } = branchUpdateSchema.validate(data);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
 		// Reserves the "main" branch name for the branch query parameter
 		if ('name' in data && data['name'] === 'main') {
 			throw new InvalidPayloadError({ reason: `"main" is a reserved branch name` });
