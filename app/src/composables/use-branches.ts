@@ -3,27 +3,27 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Branch, Filter, Query } from '@directus/types';
 import { computed, ref, Ref, unref, watch } from 'vue';
 
-const currentBranch = ref<Branch | null>(null);
-
-export const query = computed<Query>(() => {
-	if (!currentBranch.value) return {};
-
-	return {
-		branch: currentBranch.value.name,
-	};
-});
-
-export function useBranches(collection: Ref<string>, primaryKey: Ref<string | null>) {
+export function useBranches(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
+	const currentBranch = ref<Branch | null>(null);
 	const branches = ref<Branch[] | null>(null);
 	const loading = ref(false);
 	const commitLoading = ref(false);
 
-	watch([collection, primaryKey], () => getBranches(), { immediate: true });
+	const query = computed<Query>(() => {
+		if (!currentBranch.value) return {};
+
+		return {
+			branch: currentBranch.value.name,
+		};
+	});
+
+	watch([collection, isSingleton, primaryKey], () => getBranches(), { immediate: true });
 
 	return {
 		currentBranch,
 		branches,
 		loading,
+		query,
 		getBranches,
 		addBranch,
 		renameBranch,
@@ -33,7 +33,7 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 	};
 
 	async function getBranches() {
-		if (!primaryKey.value || primaryKey.value === '+') return;
+		if ((!isSingleton && !primaryKey.value) || primaryKey.value === '+') return;
 
 		loading.value = true;
 
@@ -45,11 +45,15 @@ export function useBranches(collection: Ref<string>, primaryKey: Ref<string | nu
 							_eq: unref(collection),
 						},
 					},
-					{
-						item: {
-							_eq: primaryKey.value,
-						},
-					},
+					...(primaryKey.value
+						? [
+								{
+									item: {
+										_eq: primaryKey.value,
+									},
+								},
+						  ]
+						: []),
 				],
 			};
 

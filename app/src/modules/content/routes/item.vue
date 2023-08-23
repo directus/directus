@@ -62,7 +62,6 @@
 					collectionInfo.meta &&
 					collectionInfo.meta.branches_enabled &&
 					!isNew &&
-					internalPrimaryKey !== '+' &&
 					readBranchesAllowed &&
 					!branchesLoading
 				"
@@ -283,7 +282,7 @@
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { query, useBranches } from '@/composables/use-branches';
+import { useBranches } from '@/composables/use-branches';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
@@ -331,6 +330,18 @@ const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
 const readBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'read'));
+
+const {
+	currentBranch,
+	branches,
+	loading: branchesLoading,
+	query,
+	addBranch,
+	renameBranch,
+	deleteBranch,
+	commitLoading,
+	commit,
+} = useBranches(collection, isSingleton, primaryKey);
 
 const {
 	isNew,
@@ -430,17 +441,6 @@ const internalPrimaryKey = computed(() => {
 
 	return props.primaryKey;
 });
-
-const {
-	currentBranch,
-	branches,
-	loading: branchesLoading,
-	addBranch,
-	renameBranch,
-	deleteBranch,
-	commitLoading,
-	commit,
-} = useBranches(collection, internalPrimaryKey);
 
 const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];

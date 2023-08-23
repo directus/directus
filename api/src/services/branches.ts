@@ -60,7 +60,7 @@ export class BranchesService extends ItemsService {
 
 		if (existingBranches.length > 0) {
 			throw new UnprocessableContentError({
-				reason: `Branch "${data['name']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
+				reason: `Branch "${data['name']}" already exists for item "${data['item']}" collection "${data['collection']}"`,
 			});
 		}
 
