@@ -55,7 +55,6 @@ test('Rejects when operation runs for longer than allowed ', async () => {
 			},
 		} as any)
 	).rejects.toThrow('Script execution timed out.');
-
 });
 
 test('Rejects when cjs modules are used', async () => {
