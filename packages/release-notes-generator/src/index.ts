@@ -6,6 +6,7 @@ import { processReleaseLines } from './utils/process-release-lines.js';
 
 const { defaultChangelogFunctions, changesets } = processReleaseLines();
 
+// Take over control after `changesets` has finished
 process.on('beforeExit', async () => {
 	await run();
 	process.exit();
