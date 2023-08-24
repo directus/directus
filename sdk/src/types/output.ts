@@ -20,7 +20,7 @@ export type ApplyQueryFields<
 	Schema,
 	Record<string, any>,
 	Merge<
-		PickFlatFields<Schema, CollectionItem, FlatFields>,
+		MapFlatFields<Schema, CollectionItem, FlatFields>,
 		RelationalFields extends never
 			? never
 			: { // Apply nested relational filters
@@ -77,6 +77,19 @@ export type ApplyNestedQueryFields<Schema extends object, Collection, Fields> = 
  * Carry nullability of
  */
 export type RelationNullable<Relation, Output> = IsNullable<Relation, Output | null, Output>;
+
+/**
+ *
+ */
+export type MapFlatFields<_Schema extends object, Item, Fields> = Fields extends keyof Item ? {
+	[F in Fields & string]: Extract<Item[F], string> extends infer A
+		? A extends never
+		  ? 'b'
+		  : A extends keyof FieldOutputMap
+		    ? FieldOutputMap[A]// | Exclude<Item[F], string>
+		    : 'a'//Item[F]
+		: 'c';
+} : 'd'
 
 /**
  *

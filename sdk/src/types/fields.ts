@@ -103,3 +103,4 @@ export type RelationalQueryFields<Fields> = PickRelationalFields<Fields>;
 export type PickFlatFields<Schema extends object, Item, Fields> = Extract<Fields, keyof Item> extends never
 	? never
 	: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;
+
