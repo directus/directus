@@ -56,8 +56,8 @@ type BundleConfig = {
 };
 
 type RunningApiExtension = {
-	extension: string,
-	unregister: () => void | Promise<void>,
+	extension: string;
+	unregister: () => void | Promise<void>;
 };
 
 export class RegistrationManager {
@@ -86,10 +86,10 @@ export class RegistrationManager {
 
 					this.runningApiExtensions.push({
 						extension: hook.name,
-						unregister
-					})
+						unregister,
+					});
 
-					return
+					return;
 				}
 
 				const hookInstance: HookConfig | { default: HookConfig } = await import(
@@ -119,9 +119,8 @@ export class RegistrationManager {
 									break;
 							}
 						}
-					}
+					},
 				});
-
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
 				logger.warn(error);
@@ -139,14 +138,14 @@ export class RegistrationManager {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
 				if (endpoint.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(endpoint, endpointPath)
+					const unregister = await this.extensionManager.vm.runExtension(endpoint, endpointPath);
 
 					this.runningApiExtensions.push({
 						extension: endpoint.name,
-						unregister
-					})
+						unregister,
+					});
 
-					return
+					return;
 				}
 
 				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
@@ -161,7 +160,7 @@ export class RegistrationManager {
 					extension: endpoint.name,
 					unregister: () => {
 						delete require.cache[require.resolve(endpointPath)];
-					}
+					},
 				});
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
@@ -192,14 +191,14 @@ export class RegistrationManager {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
 				if (operation.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(operation, operationPath)
+					const unregister = await this.extensionManager.vm.runExtension(operation, operationPath);
 
 					this.runningApiExtensions.push({
 						extension: operation.name,
-						unregister
-					})
+						unregister,
+					});
 
-					return
+					return;
 				}
 
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
@@ -214,7 +213,7 @@ export class RegistrationManager {
 					extension: operation.name,
 					unregister: () => {
 						delete require.cache[require.resolve(operationPath)];
-					}
+					},
 				});
 			} catch (error: any) {
 				logger.warn(`Couldn't register operation "${operation.name}"`);
@@ -233,14 +232,14 @@ export class RegistrationManager {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
 				if (bundle.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(bundle, bundlePath)
+					const unregister = await this.extensionManager.vm.runExtension(bundle, bundlePath);
 
 					this.runningApiExtensions.push({
 						extension: bundle.name,
-						unregister
-					})
+						unregister,
+					});
 
-					return
+					return;
 				}
 
 				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
@@ -284,7 +283,7 @@ export class RegistrationManager {
 						}
 
 						delete require.cache[require.resolve(bundlePath)];
-					}
+					},
 				});
 			} catch (error: any) {
 				logger.warn(`Couldn't register bundle "${bundle.name}"`);
@@ -295,11 +294,10 @@ export class RegistrationManager {
 
 	public registerHook(register: HookConfig, name: string): EventHandler[] {
 		let scheduleIndex = 0;
-		const hookEvents: EventHandler[] = []
+		const hookEvents: EventHandler[] = [];
 
 		const registerFunctions = {
 			filter: (event: string, handler: FilterHandler) => {
-
 				emitter.onFilter(event, handler);
 
 				hookEvents.push({

@@ -1,9 +1,6 @@
 import { APP_EXTENSION_TYPES } from '@directus/constants';
 import type { DatabaseExtension, Extension, ExtensionInfo } from '@directus/types';
-import {
-	getPackageExtensions,
-	resolvePackageExtensions,
-} from '@directus/utils/node';
+import { getPackageExtensions, resolvePackageExtensions } from '@directus/utils/node';
 import type { Router } from 'express';
 import getDatabase from '../database/index.js';
 import { Emitter } from '../emitter.js';
@@ -20,11 +17,10 @@ import { VmManager } from './vm.js';
 
 let extensionManager: ExtensionManager;
 
-
 export async function getExtensionManager(): Promise<ExtensionManager> {
 	if (!extensionManager) extensionManager = new ExtensionManager();
 
-	return extensionManager
+	return extensionManager;
 }
 
 type FullExtension = Extension & DatabaseExtension;
@@ -271,7 +267,10 @@ export class ExtensionManager {
 	private async loadExtensionPermissions(extensions: Extension[]): Promise<FullExtension[]> {
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
-		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*', 'granted_permissions.*'] });
+		let registeredExtensions = await extensionsService.readByQuery({
+			limit: -1,
+			fields: ['*', 'granted_permissions.*'],
+		});
 
 		if (registeredExtensions.length === 0 && extensions.length > 0) {
 			logger.info(

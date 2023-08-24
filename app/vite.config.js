@@ -5,11 +5,7 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
-import {
-	generateExtensionsEntrypoint,
-	getPackageExtensions,
-	resolvePackageExtensions,
-} from '@directus/utils/node';
+import { generateExtensionsEntrypoint, getPackageExtensions, resolvePackageExtensions } from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
@@ -74,13 +70,13 @@ export default defineConfig({
 function getExtensionsRealPaths() {
 	return fs.existsSync(EXTENSIONS_PATH)
 		? fs
-			.readdirSync(EXTENSIONS_PATH)
-			.flatMap((typeDir) => {
-				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-				if (!fs.statSync(extensionTypeDir).isDirectory()) return;
-				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
-			})
-			.filter((v) => v)
+				.readdirSync(EXTENSIONS_PATH)
+				.flatMap((typeDir) => {
+					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+					if (!fs.statSync(extensionTypeDir).isDirectory()) return;
+					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+				})
+				.filter((v) => v)
 		: [];
 }
 
@@ -139,9 +135,7 @@ function directusExtensions() {
 
 		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES];
 
-		const extensions = [...packageExtensions, ...localExtensions].filter((extension) =>
-			types.includes(extension.type)
-		);
+		const extensions = [...packageExtensions, ...localExtensions].filter((extension) => types.includes(extension.type));
 
 		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}

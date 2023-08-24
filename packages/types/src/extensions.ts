@@ -41,19 +41,19 @@ export type NestedExtensionType = (typeof NESTED_EXTENSION_TYPES)[number];
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
 export type DatabaseExtension = {
-	name: string,
-	enabled: boolean,
-	options: Record<string, any>,
-	granted_permissions: DatabaseExtensionPermission[],
-}
+	name: string;
+	enabled: boolean;
+	options: Record<string, any>;
+	granted_permissions: DatabaseExtensionPermission[];
+};
 
 export type DatabaseExtensionPermission = {
-	id: number,
-	extension: string,
-	permission: string,
-	enabled: boolean,
-	options: Record<string, any>,
-}
+	id: number;
+	extension: string;
+	permission: string;
+	enabled: boolean;
+	options: Record<string, any>;
+};
 
 type ExtensionBase = {
 	path: string;

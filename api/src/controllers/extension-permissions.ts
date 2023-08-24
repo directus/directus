@@ -15,7 +15,6 @@ const router = express.Router();
 
 router.use(useCollection('directus_extension_permissions'));
 
-
 router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
@@ -53,7 +52,7 @@ router.post(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reloadExtensionPermissions()
+		await extensionManager.reloadExtensionPermissions();
 
 		return next();
 	}),
@@ -135,7 +134,7 @@ router.patch(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reloadExtensionPermissions()
+		await extensionManager.reloadExtensionPermissions();
 
 		return next();
 	}),
@@ -166,7 +165,7 @@ router.patch(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reloadExtensionPermissions()
+		await extensionManager.reloadExtensionPermissions();
 
 		return next();
 	}),
@@ -193,7 +192,7 @@ router.delete(
 		}
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reloadExtensionPermissions()
+		await extensionManager.reloadExtensionPermissions();
 
 		return next();
 	}),
@@ -213,7 +212,7 @@ router.delete(
 		await service.deleteOne(req.params['pk']!);
 
 		const extensionManager = await getExtensionManager();
-		await extensionManager.reloadExtensionPermissions()
+		await extensionManager.reloadExtensionPermissions();
 
 		return next();
 	}),

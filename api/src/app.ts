@@ -272,7 +272,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/collections', collectionsRouter);
 	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
-	app.use('/extension_permissions', extensionPermissionsRouter)
+	app.use('/extension_permissions', extensionPermissionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
 	app.use('/flows', flowsRouter);

@@ -1,5 +1,5 @@
-const ivm = $0
-const makeHook = $1
+const ivm = $0;
+const makeHook = $1;
 
 function defineHook(callback) {
 	const registerFunctions = {
@@ -8,8 +8,8 @@ function defineHook(callback) {
 				'filter',
 				event,
 				new ivm.Reference((...args) => {
-					handler(...args)
-				})
+					handler(...args);
+				}),
 			]);
 		},
 		action: (event, handler) => {
@@ -17,8 +17,8 @@ function defineHook(callback) {
 				'filter',
 				event,
 				new ivm.Reference((...args) => {
-					handler(...args)
-				})
+					handler(...args);
+				}),
 			]);
 		},
 		init: (event, handler) => {
@@ -26,8 +26,8 @@ function defineHook(callback) {
 				'init',
 				event,
 				new ivm.Reference((...args) => {
-					handler(...args)
-				})
+					handler(...args);
+				}),
 			]);
 		},
 		schedule: (cors, handler) => {
@@ -35,20 +35,16 @@ function defineHook(callback) {
 				'init',
 				cors,
 				new ivm.Reference((...args) => {
-					handler(...args)
-				})
+					handler(...args);
+				}),
 			]);
 		},
 		embed: (position, code) => {
-			makeHook.apply(undefined, [
-				'embed',
-				position,
-				typeof code === 'function' ? new ivm.Reference(code) : code
-			]);
-		}
-	}
+			makeHook.apply(undefined, ['embed', position, typeof code === 'function' ? new ivm.Reference(code) : code]);
+		},
+	};
 
-	callback(registerFunctions)
+	callback(registerFunctions);
 }
 
-globalThis.defineHook = defineHook
+globalThis.defineHook = defineHook;
