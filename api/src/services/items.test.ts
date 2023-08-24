@@ -162,7 +162,6 @@ describe('Integration Tests', () => {
 		const item = { id: 42, name: 'random' };
 
 		function mockDbClientAndQueryReset(client: DatabaseClient): void {
-
 			// mock db client
 			vi.mocked(getDatabaseClient).mockReturnValue(client);
 
