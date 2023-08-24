@@ -103,10 +103,8 @@ export function getReplacerFn(
 	valuesToRedact?: Record<string, string>,
 	replacementFn?: (key: string) => string
 ) {
-	const lowercasedValuesToRedact = valuesToRedact
-		? Object.entries(valuesToRedact)
-				.filter((v) => typeof v[1] === 'string' && v[1].length > 0)
-				.map((v) => [v[0], v[1].toLowerCase()])
+	const filteredValuesToRedact = valuesToRedact
+		? Object.entries(valuesToRedact).filter((v) => typeof v[1] === 'string' && v[1].length > 0)
 		: null;
 
 	return (_key: string, value: unknown) => {
@@ -119,17 +117,17 @@ export function getReplacerFn(
 			};
 		}
 
-		if (!lowercasedValuesToRedact) return value;
+		if (!filteredValuesToRedact) return value;
 
 		if (typeof value === 'string') {
 			let redactedValue = value;
 
-			for (const [redactKey, valueToRedact] of lowercasedValuesToRedact) {
+			for (const [redactKey, valueToRedact] of filteredValuesToRedact) {
 				if (redactKey === undefined || valueToRedact === undefined) continue;
 
-				if (redactedValue.toLowerCase().includes(valueToRedact)) {
+				if (redactedValue.includes(valueToRedact)) {
 					redactedValue = redactedValue.replace(
-						new RegExp(valueToRedact, 'gi'),
+						new RegExp(valueToRedact, 'g'),
 						replacementFn ? replacementFn(redactKey) : replacement
 					);
 				}

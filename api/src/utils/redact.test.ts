@@ -216,24 +216,26 @@ describe('getReplacerFn tests', () => {
 			num: 123,
 			bool: true,
 			null: null,
+			string_ignore: `No error Cause it's case sensitive~~`,
 		};
 
 		const objWithError = {
 			...baseValue,
-			string: 'A string about errors~~',
-			nested: { another_str: 'just bEcaUse of safety 123456' },
-			nested_array: [{ str_a: 'cause surely' }, { str_b: 'not an error' }],
-			array: ['something', 'no error', 'just because', 'all is good'],
-			error: new Error('This is an error message.', { cause: 'Here is an Error Cause!' }),
+			string: `Replace cause case matches Errors~~`,
+			nested: { another_str: 'just because of safety 123456' },
+			nested_array: [{ str_a: 'cause surely' }, { str_b: 'not an Error' }, { str_ignore: 'nothing here' }],
+			array: ['something', 'no Error', 'just because', 'all is good'],
+			error: new Error('This is an Error message.', { cause: 'Here is an Error cause!' }),
 		};
 
 		const expectedResult = {
 			...baseValue,
-			string: `A string about ${getRedactedKeyText('ERROR')}s~~`,
-			nested: { another_str: `just bE${getRedactedKeyText('cause')} of safety 123456` },
+			string: `Replace ${getRedactedKeyText('cause')} case matches ${getRedactedKeyText('ERROR')}s~~`,
+			nested: { another_str: `just be${getRedactedKeyText('cause')} of safety 123456` },
 			nested_array: [
 				{ str_a: `${getRedactedKeyText('cause')} surely` },
 				{ str_b: `not an ${getRedactedKeyText('ERROR')}` },
+				{ str_ignore: 'nothing here' },
 			],
 			array: ['something', `no ${getRedactedKeyText('ERROR')}`, `just be${getRedactedKeyText('cause')}`, 'all is good'],
 			error: {
@@ -245,9 +247,13 @@ describe('getReplacerFn tests', () => {
 
 		const expectedResultWithoutReplacementFn = {
 			...baseValue,
-			string: `A string about ${REDACTED_TEXT}s~~`,
-			nested: { another_str: `just bE${REDACTED_TEXT} of safety 123456` },
-			nested_array: [{ str_a: `${REDACTED_TEXT} surely` }, { str_b: `not an ${REDACTED_TEXT}` }],
+			string: `Replace ${REDACTED_TEXT} case matches ${REDACTED_TEXT}s~~`,
+			nested: { another_str: `just be${REDACTED_TEXT} of safety 123456` },
+			nested_array: [
+				{ str_a: `${REDACTED_TEXT} surely` },
+				{ str_b: `not an ${REDACTED_TEXT}` },
+				{ str_ignore: 'nothing here' },
+			],
 			array: ['something', `no ${REDACTED_TEXT}`, `just be${REDACTED_TEXT}`, 'all is good'],
 			error: {
 				name: REDACTED_TEXT,
@@ -263,8 +269,8 @@ describe('getReplacerFn tests', () => {
 					REDACTED_TEXT,
 					{
 						empty: '',
-						ERROR: 'ErrOr',
-						cause: 'CAusE',
+						ERROR: 'Error',
+						cause: 'cause',
 						number: 123456,
 					} as any,
 					getRedactedKeyText
@@ -277,8 +283,8 @@ describe('getReplacerFn tests', () => {
 				objWithError,
 				getReplacerFn(REDACTED_TEXT, {
 					empty: '',
-					ERROR: 'ErrOr',
-					cause: 'CAusE',
+					ERROR: 'Error',
+					cause: 'cause',
 					number: 123456,
 				} as any)
 			)
