@@ -154,7 +154,12 @@ const validationPrefix = computed(() => {
 
 function emitValue(value: any) {
 	if (
-		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
+		(isEqual(value, props.initialValue) ||
+			(props.initialValue === undefined && isEqual(value, defaultValue.value)) ||
+			(props.field.meta?.special?.some((s) =>
+				['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'].includes(s)
+			) &&
+				value === undefined)) &&
 		props.batchMode === false
 	) {
 		emit('unset', props.field);

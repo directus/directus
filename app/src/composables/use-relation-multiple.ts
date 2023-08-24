@@ -57,7 +57,7 @@ export function useRelationMultiple(
 		},
 		set(newValue) {
 			if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
-				value.value = [];
+				value.value = undefined;
 				return;
 			}
 
