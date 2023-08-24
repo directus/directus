@@ -1,9 +1,9 @@
-export { compress, decompress } from './compress.js';
 export * from './abbreviate-number.js';
 export * from './add-field-flag.js';
 export * from './adjust-date.js';
 export * from './apply-options-data.js';
 export * from './array-helpers.js';
+export { compress, decompress } from './compress.js';
 export * from './deep-map.js';
 export * from './defaults.js';
 export * from './define-extension.js';
@@ -30,5 +30,6 @@ export * from './parse-filter-function-path.js';
 export * from './parse-filter.js';
 export * from './parse-json.js';
 export * from './pluralize.js';
+export * from './redact-value.js';
 export * from './to-array.js';
 export * from './validate-payload.js';

@@ -1,4 +1,4 @@
-import { Action, REDACTED_TEXT, getRedactedKeyText } from '@directus/constants';
+import { Action } from '@directus/constants';
 import type {
 	Accountability,
 	ActionHandler,
@@ -8,7 +8,7 @@ import type {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/types';
-import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
+import { applyOptionsData, isValidJSON, parseJSON, redactValue, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
@@ -27,7 +27,7 @@ import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
-import { redact } from './utils/redact.js';
+import { redactObject } from './utils/redact-object.js';
 import { sanitizeError } from './utils/sanitize-error.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -63,11 +63,11 @@ class FlowManager {
 	private webhookFlowHandlers: Record<string, any> = {};
 
 	private reloadQueue: JobQueue;
-	private envs: Record<string, string>;
+	private envs: Record<string, any>;
 
 	constructor() {
 		this.reloadQueue = new JobQueue();
-		this.envs = pick(env, env['FLOWS_ENV_ALLOW_LIST'] ? toArray(env['FLOWS_ENV_ALLOW_LIST']) : []);
+		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 
 		const messenger = getMessenger();
 
@@ -363,18 +363,19 @@ class FlowManager {
 					collection: 'directus_flows',
 					item: flow.id,
 					data: {
-						steps: steps.map((step) => redact(step, [], REDACTED_TEXT, this.envs, getRedactedKeyText)),
-						data: redact(
+						steps: steps.map((step) => redactObject(step, { values: this.envs }, redactValue)),
+						data: redactObject(
 							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
-							[
-								['**', 'headers', 'authorization'],
-								['**', 'headers', 'cookie'],
-								['**', 'query', 'access_token'],
-								['**', 'payload', 'password'],
-							],
-							REDACTED_TEXT,
-							this.envs,
-							getRedactedKeyText
+							{
+								keys: [
+									['**', 'headers', 'authorization'],
+									['**', 'headers', 'cookie'],
+									['**', 'query', 'access_token'],
+									['**', 'payload', 'password'],
+								],
+								values: this.envs,
+							},
+							redactValue
 						),
 					},
 				});

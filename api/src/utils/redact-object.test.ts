@@ -1,7 +1,9 @@
-import { REDACTED_TEXT, getRedactedKeyText } from '@directus/constants';
+import { redactValue } from '@directus/utils';
 import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
-import { getReplacerFn, redact } from './redact.js';
+import { getReplacer, redactObject } from './redact-object.js';
+
+const REDACTED_TEXT = redactValue();
 
 const input = {
 	$trigger: {
@@ -42,13 +44,13 @@ const input = {
 };
 
 test('should not mutate input', () => {
-	const result = redact(input, [['$trigger']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['$trigger']] }, redactValue);
 
 	expect(result).not.toBe(input);
 });
 
 test('should support single level path', () => {
-	const result = redact(input, [['$trigger']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['$trigger']] }, redactValue);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -58,7 +60,7 @@ test('should support single level path', () => {
 });
 
 test('should support multi level path', () => {
-	const result = redact(input, [['$trigger', 'payload', 'password']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['$trigger', 'payload', 'password']] }, redactValue);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -70,7 +72,7 @@ test('should support multi level path', () => {
 });
 
 test('should support wildcard path', () => {
-	const result = redact(input, [['*', 'payload']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['*', 'payload']] }, redactValue);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -82,7 +84,7 @@ test('should support wildcard path', () => {
 });
 
 test('should support deep path', () => {
-	const result = redact(input, [['**', 'password']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['**', 'password']] }, redactValue);
 
 	expect(result).toMatchObject(
 		merge({}, input, {
@@ -108,14 +110,16 @@ test('should support deep path', () => {
 });
 
 test('should support multiple paths', () => {
-	const result = redact(
+	const result = redactObject(
 		input,
-		[
-			['$trigger', 'key'],
-			['*', 'payload', 'email'],
-			['**', 'password'],
-		],
-		REDACTED_TEXT
+		{
+			keys: [
+				['$trigger', 'key'],
+				['*', 'payload', 'email'],
+				['**', 'password'],
+			],
+		},
+		redactValue
 	);
 
 	expect(result).toEqual(
@@ -143,12 +147,12 @@ test('should support multiple paths', () => {
 	);
 });
 
-describe('getReplacerFn tests', () => {
+describe('getReplacer tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';
 		const errorCause = 'Error Cause';
-		const replacerFn = getReplacerFn(REDACTED_TEXT);
-		const result: any = replacerFn('', new Error(errorMessage, { cause: errorCause }));
+		const replacer = getReplacer(redactValue);
+		const result: any = replacer('', new Error(errorMessage, { cause: errorCause }));
 		expect(result.name).toBe('Error');
 		expect(result.message).toBe(errorMessage);
 		expect(result.stack).toBeDefined();
@@ -174,7 +178,7 @@ describe('getReplacerFn tests', () => {
 			},
 		];
 
-		const replacerFn = getReplacerFn(REDACTED_TEXT);
+		const replacerFn = getReplacer(redactValue);
 
 		for (const value of values) {
 			expect(replacerFn('', value)).toBe(value);
@@ -202,7 +206,7 @@ describe('getReplacerFn tests', () => {
 			error: { name: 'Error', message: errorMessage, cause: errorCause },
 		};
 
-		const result = JSON.parse(JSON.stringify(objWithError, getReplacerFn(REDACTED_TEXT)));
+		const result = JSON.parse(JSON.stringify(objWithError, getReplacer(redactValue)));
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();
@@ -230,73 +234,37 @@ describe('getReplacerFn tests', () => {
 
 		const expectedResult = {
 			...baseValue,
-			string: `Replace ${getRedactedKeyText('cause')} case matches ${getRedactedKeyText('ERROR')}s~~`,
-			nested: { another_str: `just be${getRedactedKeyText('cause')} of safety 123456` },
+			string: `Replace ${redactValue('cause')} case matches ${redactValue('ERROR')}s~~`,
+			nested: { another_str: `just be${redactValue('cause')} of safety 123456` },
 			nested_array: [
-				{ str_a: `${getRedactedKeyText('cause')} surely` },
-				{ str_b: `not an ${getRedactedKeyText('ERROR')}` },
+				{ str_a: `${redactValue('cause')} surely` },
+				{ str_b: `not an ${redactValue('ERROR')}` },
 				{ str_ignore: 'nothing here' },
 			],
-			array: ['something', `no ${getRedactedKeyText('ERROR')}`, `just be${getRedactedKeyText('cause')}`, 'all is good'],
+			array: ['something', `no ${redactValue('ERROR')}`, `just be${redactValue('cause')}`, 'all is good'],
 			error: {
-				name: getRedactedKeyText('ERROR'),
-				message: `This is an ${getRedactedKeyText('ERROR')} message.`,
-				cause: `Here is an ${getRedactedKeyText('ERROR')} ${getRedactedKeyText('cause')}!`,
-			},
-		};
-
-		const expectedResultWithoutReplacementFn = {
-			...baseValue,
-			string: `Replace ${REDACTED_TEXT} case matches ${REDACTED_TEXT}s~~`,
-			nested: { another_str: `just be${REDACTED_TEXT} of safety 123456` },
-			nested_array: [
-				{ str_a: `${REDACTED_TEXT} surely` },
-				{ str_b: `not an ${REDACTED_TEXT}` },
-				{ str_ignore: 'nothing here' },
-			],
-			array: ['something', `no ${REDACTED_TEXT}`, `just be${REDACTED_TEXT}`, 'all is good'],
-			error: {
-				name: REDACTED_TEXT,
-				message: `This is an ${REDACTED_TEXT} message.`,
-				cause: `Here is an ${REDACTED_TEXT} ${REDACTED_TEXT}!`,
+				name: redactValue('ERROR'),
+				message: `This is an ${redactValue('ERROR')} message.`,
+				cause: `Here is an ${redactValue('ERROR')} ${redactValue('cause')}!`,
 			},
 		};
 
 		const result = JSON.parse(
 			JSON.stringify(
 				objWithError,
-				getReplacerFn(
-					REDACTED_TEXT,
-					{
-						empty: '',
-						ERROR: 'Error',
-						cause: 'cause',
-						number: 123456,
-					} as any,
-					getRedactedKeyText
-				)
-			)
-		);
-
-		const resultWithoutReplacementFn = JSON.parse(
-			JSON.stringify(
-				objWithError,
-				getReplacerFn(REDACTED_TEXT, {
+				getReplacer(redactValue, {
 					empty: '',
 					ERROR: 'Error',
 					cause: 'cause',
 					number: 123456,
-				} as any)
+				})
 			)
 		);
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();
 		delete result.error.stack;
-		expect(resultWithoutReplacementFn.error.stack).toBeDefined();
-		delete resultWithoutReplacementFn.error.stack;
 
 		expect(result).toStrictEqual(expectedResult);
-		expect(resultWithoutReplacementFn).toStrictEqual(expectedResultWithoutReplacementFn);
 	});
 });
