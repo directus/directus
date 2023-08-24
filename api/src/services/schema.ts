@@ -77,13 +77,19 @@ export class SchemaService {
 
 	async generateTypeDefinition() {
         const schema = await getSchema();
-        const collections = await (new CollectionsService({ knex: this.knex, schema })).readByQuery();
-        const fields = await (new FieldsService({ knex: this.knex, schema })).readAll();
-        const relations = await (new RelationsService({ knex: this.knex, schema })).readAll();
 
-        const typeMap: Record<string, { fields: Record<string, any>, name: string }> = {};
+        const typeMap: Record<string, {
+			fields: Record<string, {
+				type: string;
+				nullable: boolean;
+				primary_key: boolean;
+				relation?: any;
+			}>,
+			singleton: boolean,
+			name: string,
+		}> = {};
 
-		const fieldTypes = {
+		const fieldTypes: Record<string, string> = {
 			string: 'string',
 			bigInteger: 'string',
 			boolean: 'boolean',
@@ -100,50 +106,93 @@ export class SchemaService {
 			hash: 'string',
 		}
 
-        // setup type map
-        for (const field of fields) {
-            if (field.meta?.system) continue;
+		// map collections
+		const collections: Record<string, { name: string; singleton: boolean; }> = {};
+        const rawCollections = await (new CollectionsService({ knex: this.knex, schema })).readByQuery();
 
-            if (!typeMap[field.collection]) {
-                typeMap[field.collection] = {
-                    fields: {},
-                    name: pascalCase(field.collection)
-                };
-            }
+		for (const collection of rawCollections) {
+			collections[collection.collection] = {
+				name: collection.collection,
+				singleton: !!collection.meta?.singleton
+			};
+		}
 
-			if (field.type in fieldTypes) {
-				typeMap[field.collection].fields[field.field] = {
-					type: fieldTypes[field.type],
-					nullable: !!field.schema?.is_nullable,
-					primary_key: !!field.schema?.is_primary_key,
-				}
-			}
-        }
+		// map fields
+		const fields: Record<string, { type: string; nullable: boolean; primary_key: boolean }[]> = {};
+        const rawFields = await (new FieldsService({ knex: this.knex, schema })).readAll();
 
-        for (const relation of relations) {
+		for (const field of rawFields) {
+			// ignore built-in system fields and unknown types
+            if (field.meta?.system || !typeMap[field.type]) continue;
+
+			const fieldList = fields[field.collection] ?? [];
+			const mappedType = fieldTypes[field.type] ?? 'any';
+
+			fieldList.push({
+				type: mappedType,
+				nullable: !!field.schema?.is_nullable,
+				primary_key: !!field.schema?.is_primary_key,
+			})
+
+			fields[field.collection] = fieldList;
+		}
+
+		// map relations
+		const relations: Record<string, Record<string, any>> = {};
+        const rawRelations = await (new RelationsService({ knex: this.knex, schema })).readAll();
+
+        for (const relation of rawRelations) {
+			// ignore built-in system relations
             if (relation.meta?.system) continue;
-            typeMap[relation.collection].fields[relation.field].relation = relation.meta;
+
+			const relationalFields = relations[relation.collection] ?? {};
+			const { many_collection, many_field, one_collection, one_field, one_collection_field } = relation.meta ?? {};
+
+			// o2m
+			if (many_collection && many_field && one_collection && one_field) {
+				relationalFields[one_field] = [many_collection, many_field]
+			}
+
+			// m2o
+			if (many_collection && many_field && one_collection && !one_field) {
+				relationalFields[many_field] = [one_collection]
+			}
+
+			// m2a
+			if (many_field === 'item' && one_collection_field) {
+				relationalFields[many_field] = [relation.meta?.one_allowed_collections]
+			}
+
+			relations[relation.collection] = relationalFields;
+
+			// const collectionDefinition = typeMap[relation.collection];
+			// const fieldDefinition = collectionDefinition?.fields[relation.field];
+			// if (!fieldDefinition) continue;
+			// fieldDefinition.relation = relation.meta;
+
+            // typeMap[relation.collection].fields[relation.field] = fieldDefinition;
         }
 
-        const mainType = {};
-
+        // const mainType = {};
         // build main type
-        for (const collection of collections) {
-            if (!typeMap[collection.collection]) continue;
-            mainType[collection.collection] = typeMap[collection.collection].name + (collection.meta?.singleton ? '' : '[]');
-        }
+        // for (const collection of collections) {
+        //     if (!typeMap[collection.collection]) continue;
+        //     mainType[collection.collection] = typeMap[collection.collection].name + (collection.meta?.singleton ? '' : '[]');
+        // }
 
-        let output = '';
-        // render main type
-        output += fmtInterface('MySchema', mainType);
+		return { collections, fields, relations };
 
-        // render individual collections
-        for (const typeDef of Object.values(typeMap)) {
-            output += fmtInterface(typeDef.name, Object.fromEntries(Object.entries(typeDef.fields)
-                .map(([key, value]) => ([key, value.type + (value.nullable ? ' | null' : '')]))));
-        }
+        // let output = '';
+        // // render main type
+        // output += fmtInterface('MySchema', mainType);
 
-		return output;
+        // // render individual collections
+        // for (const typeDef of Object.values(typeMap)) {
+        //     output += fmtInterface(typeDef.name, Object.fromEntries(Object.entries(typeDef.fields)
+        //         .map(([key, value]) => ([key, value.type + (value.nullable ? ' | null' : '')]))));
+        // }
+
+		// return output;
 	}
 }
 
