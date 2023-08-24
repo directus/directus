@@ -47,6 +47,7 @@ function defineHook(callback) {
 			]);
 		}
 	}
+
 	callback(registerFunctions)
 }
 

@@ -7,6 +7,7 @@ class ItemsService {
 			'items',
 			collection
 		])
+
 		return createProxy(service)
 	}
 }
@@ -16,6 +17,7 @@ class ActivityService {
 		const service = databaseService.applySync(null, [
 			'activity',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -25,6 +27,7 @@ class CollectionsService {
 		const service = databaseService.applySync(null, [
 			'collections',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -34,6 +37,7 @@ class DashboardsService {
 		const service = databaseService.applySync(null, [
 			'dashboards',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -43,6 +47,7 @@ class FieldsService {
 		const service = databaseService.applySync(null, [
 			'fields',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -52,6 +57,7 @@ class FlowsService {
 		const service = databaseService.applySync(null, [
 			'flows',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -62,6 +68,7 @@ class NotificationsService {
 		const service = databaseService.applySync(null, [
 			'notifications',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -71,6 +78,7 @@ class OperationsService {
 		const service = databaseService.applySync(null, [
 			'operations',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -80,6 +88,7 @@ class PanelsService {
 		const service = databaseService.applySync(null, [
 			'panels',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -89,6 +98,7 @@ class PresetsService {
 		const service = databaseService.applySync(null, [
 			'presets',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -98,6 +108,7 @@ class RelationsService {
 		const service = databaseService.applySync(null, [
 			'relations',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -107,6 +118,7 @@ class RevisionsService {
 		const service = databaseService.applySync(null, [
 			'revisions',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -116,6 +128,7 @@ class ServerService {
 		const service = databaseService.applySync(null, [
 			'server',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -125,6 +138,7 @@ class SettingsService {
 		const service = databaseService.applySync(null, [
 			'settings',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -134,6 +148,7 @@ class SharesService {
 		const service = databaseService.applySync(null, [
 			'shares',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -143,6 +158,7 @@ class TranslationsService {
 		const service = databaseService.applySync(null, [
 			'translations',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -152,6 +168,7 @@ class UtilsService {
 		const service = databaseService.applySync(null, [
 			'utils',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -161,6 +178,7 @@ class WebhooksService {
 		const service = databaseService.applySync(null, [
 			'webhooks',
 		])
+
 		return createProxy(service)
 	}
 }
@@ -182,7 +200,6 @@ function createProxy(service) {
 	return new Proxy({}, {
 		get: (_, prop) => {
 			return (...args) => {
-				console.log('args', args, prop, service)
 				return new Promise((resolve, reject) => {
 
 					service.apply(null, [

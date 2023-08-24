@@ -21,7 +21,6 @@ function fetch(url, options) {
 			})
 		]);
 	})
-
 }
 
 globalThis.API.fetch = fetch

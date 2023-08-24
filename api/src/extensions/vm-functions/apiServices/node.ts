@@ -22,9 +22,9 @@ import {
 	WebSocketService,
 	UtilsService
 } from "../../../services/index.js";
-import { capitalize } from 'lodash-es'
 import { getSchema } from "../../../utils/get-schema.js";
-import { toArray } from "@directus/utils";
+import { createVMError } from "../create-error.js";
+import { ExtensionServiceError } from "../../../errors/extension-permissions.js";
 
 
 const require = createRequire(import.meta.url);
@@ -90,12 +90,12 @@ export class ApiServiceVMFunction extends VMFunction {
 			const permission = extension.granted_permissions.find(perm => perm.permission === `service.${type}`)
 
 			if (permission?.enabled !== true) {
-				return new ivm.ExternalCopy(new Error(`No access to ${capitalize(type)}Service`)).copyInto()
+				return createVMError(new ExtensionServiceError({ service: type, reason: 'Permission denied' }))
 			}
 
 			if (type === 'items') {
 				if (!collection) {
-					return new ivm.ExternalCopy(new Error(`No collection given`)).copyInto()
+					return createVMError(new ExtensionServiceError({ service: type, reason: 'No collection provided' }))
 				}
 
 				const allowedCollections = permission.options?.['allowed_collections']
@@ -110,14 +110,15 @@ export class ApiServiceVMFunction extends VMFunction {
 				dbPrefix = 'extension_' + dbPrefix + "_"
 
 				if ((allowedCollections && Array.isArray(allowedCollections) && allowedCollections.includes(collection)) || (extensionCollections && collection.startsWith(dbPrefix))) {
-					return new ivm.ExternalCopy(new Error(`No access to ${collection}`)).copyInto()
+					return createVMError(new ExtensionServiceError({ service: type, reason: `Access of ${collection} Collection not allowed.` }))
+
 				}
 			}
 
 			return new ivm.Reference(function (resolve: any, reject: any, prop: string, args: any[]) {
 
 				if (prop in service === false || prop === 'createMutationTracker') {
-					reject.apply(null, [new ivm.ExternalCopy(new Error('Method does not exist on service')).copyInto()])
+					reject.apply(null, [createVMError(new ExtensionServiceError({ service: type, reason: `Method ${prop} not found` }))])
 					return
 				}
 

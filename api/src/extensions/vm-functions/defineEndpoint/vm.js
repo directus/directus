@@ -10,6 +10,7 @@ function defineEndpoint(callback) {
 		delete: makeFunc('delete'),
 		options: makeFunc('options'),
 	}
+
 	callback(router)
 
 	function makeFunc(type) {
