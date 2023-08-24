@@ -154,7 +154,11 @@ const swapFormOrder = computed(() => {
 const hasEdits = computed(() => {
 	if (isEmpty(internalEdits.value)) return false;
 
-	if (props.junctionField && Object.keys.length === 1 && isEmpty(internalEdits.value[props.junctionField]))
+	if (
+		props.junctionField &&
+		Object.keys(internalEdits.value).length === 1 &&
+		isEmpty(internalEdits.value[props.junctionField])
+	)
 		return false;
 
 	return true;
