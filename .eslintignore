@@ -1,9 +1,9 @@
-dist /
-    /packages/extensions - sdk / templates /
-    /extensions
-    / api / extensions /
-    !/app/.storybook /
-    !/docs/.vitepress /
-    !/docs/.typedocs /
-    /docs/.vitepress / cache /
-    /docs/.vitepress / dist /
+dist/
+/packages/extensions-sdk/templates/
+/extensions
+/api/extensions/
+!/app/.storybook/
+!/docs/.vitepress/
+!/docs/.typedocs/
+/docs/.vitepress/cache/
+/docs/.vitepress/dist/
