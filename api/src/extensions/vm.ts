@@ -172,7 +172,7 @@ export class VmManager {
 	}
 
 	private async createInspector(channel: any, extensionName: string) {
-		let wss = new WebSocket.Server({ port: this.debuggerPort });
+		const wss = new WebSocket.Server({ port: this.debuggerPort });
 
 		wss.on('connection', function (ws: any) {
 			function dispose() {

@@ -70,6 +70,7 @@ import { validateStorage } from './utils/validate-storage.js';
 import { init as initWebhooks } from './webhooks.js';
 
 const require = createRequire(import.meta.url);
+
 import proxy from 'express-http-proxy';
 
 export default async function createApp(): Promise<express.Application> {

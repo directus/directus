@@ -11,7 +11,7 @@
 		</template>
 
 		<template #actions>
-			<search-input v-model="search" :showFilter="false" always-active />
+			<search-input v-model="search" :show-filter="false" always-active />
 		</template>
 
 		<template #navigation>

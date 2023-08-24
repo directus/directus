@@ -14,5 +14,6 @@ export function compareSemver(ver1: string | undefined, ver2: string | undefined
 			return -1;
 		}
 	}
+
 	return 0;
 }

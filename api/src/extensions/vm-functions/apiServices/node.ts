@@ -144,6 +144,7 @@ export class ApiServiceVMFunction extends VMFunction {
 					reject.apply(null, [
 						createVMError(new ExtensionServiceError({ service: type, reason: `Method ${prop} not found` })),
 					]);
+
 					return;
 				}
 
