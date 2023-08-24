@@ -1,4 +1,4 @@
-import { REDACTED_TEXT } from '@directus/constants';
+import { REDACTED_TEXT, getRedactedKeyText } from '@directus/constants';
 import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
 import { getReplacerFn, redact } from './redact.js';
@@ -40,8 +40,6 @@ const input = {
 		},
 	},
 };
-
-const replacement = '<redacted>';
 
 test('should not mutate input', () => {
 	const result = redact(input, [['$trigger']], REDACTED_TEXT);
@@ -149,7 +147,7 @@ describe('getReplacerFn tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';
 		const errorCause = 'Error Cause';
-		const replacerFn = getReplacerFn(replacement);
+		const replacerFn = getReplacerFn(REDACTED_TEXT);
 		const result: any = replacerFn('', new Error(errorMessage, { cause: errorCause }));
 		expect(result.name).toBe('Error');
 		expect(result.message).toBe(errorMessage);
@@ -176,7 +174,7 @@ describe('getReplacerFn tests', () => {
 			},
 		];
 
-		const replacerFn = getReplacerFn(replacement);
+		const replacerFn = getReplacerFn(REDACTED_TEXT);
 
 		for (const value of values) {
 			expect(replacerFn('', value)).toBe(value);
@@ -204,7 +202,7 @@ describe('getReplacerFn tests', () => {
 			error: { name: 'Error', message: errorMessage, cause: errorCause },
 		};
 
-		const result = JSON.parse(JSON.stringify(objWithError, getReplacerFn(replacement)));
+		const result = JSON.parse(JSON.stringify(objWithError, getReplacerFn(REDACTED_TEXT)));
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();
@@ -231,25 +229,68 @@ describe('getReplacerFn tests', () => {
 
 		const expectedResult = {
 			...baseValue,
-			string: `A string about ${replacement}s~~`,
-			nested: { another_str: `just bE${replacement} of safety 123456` },
-			nested_array: [{ str_a: `${replacement} surely` }, { str_b: `not an ${replacement}` }],
-			array: ['something', `no ${replacement}`, `just be${replacement}`, 'all is good'],
+			string: `A string about ${getRedactedKeyText('ERROR')}s~~`,
+			nested: { another_str: `just bE${getRedactedKeyText('cause')} of safety 123456` },
+			nested_array: [
+				{ str_a: `${getRedactedKeyText('cause')} surely` },
+				{ str_b: `not an ${getRedactedKeyText('ERROR')}` },
+			],
+			array: ['something', `no ${getRedactedKeyText('ERROR')}`, `just be${getRedactedKeyText('cause')}`, 'all is good'],
 			error: {
-				name: replacement,
-				message: `This is an ${replacement} message.`,
-				cause: `Here is an ${replacement} ${replacement}!`,
+				name: getRedactedKeyText('ERROR'),
+				message: `This is an ${getRedactedKeyText('ERROR')} message.`,
+				cause: `Here is an ${getRedactedKeyText('ERROR')} ${getRedactedKeyText('cause')}!`,
+			},
+		};
+
+		const expectedResultWithoutReplacementFn = {
+			...baseValue,
+			string: `A string about ${REDACTED_TEXT}s~~`,
+			nested: { another_str: `just bE${REDACTED_TEXT} of safety 123456` },
+			nested_array: [{ str_a: `${REDACTED_TEXT} surely` }, { str_b: `not an ${REDACTED_TEXT}` }],
+			array: ['something', `no ${REDACTED_TEXT}`, `just be${REDACTED_TEXT}`, 'all is good'],
+			error: {
+				name: REDACTED_TEXT,
+				message: `This is an ${REDACTED_TEXT} message.`,
+				cause: `Here is an ${REDACTED_TEXT} ${REDACTED_TEXT}!`,
 			},
 		};
 
 		const result = JSON.parse(
-			JSON.stringify(objWithError, getReplacerFn(replacement, ['', 'ErrOr', 'CAusE', 123456] as string[]))
+			JSON.stringify(
+				objWithError,
+				getReplacerFn(
+					REDACTED_TEXT,
+					{
+						empty: '',
+						ERROR: 'ErrOr',
+						cause: 'CAusE',
+						number: 123456,
+					} as any,
+					getRedactedKeyText
+				)
+			)
+		);
+
+		const resultWithoutReplacementFn = JSON.parse(
+			JSON.stringify(
+				objWithError,
+				getReplacerFn(REDACTED_TEXT, {
+					empty: '',
+					ERROR: 'ErrOr',
+					cause: 'CAusE',
+					number: 123456,
+				} as any)
+			)
 		);
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();
 		delete result.error.stack;
+		expect(resultWithoutReplacementFn.error.stack).toBeDefined();
+		delete resultWithoutReplacementFn.error.stack;
 
 		expect(result).toStrictEqual(expectedResult);
+		expect(resultWithoutReplacementFn).toStrictEqual(expectedResultWithoutReplacementFn);
 	});
 });

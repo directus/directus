@@ -1,4 +1,4 @@
-import { Action, REDACTED_TEXT } from '@directus/constants';
+import { Action, REDACTED_TEXT, getRedactedKeyText } from '@directus/constants';
 import type {
 	Accountability,
 	ActionHandler,
@@ -363,7 +363,7 @@ class FlowManager {
 					collection: 'directus_flows',
 					item: flow.id,
 					data: {
-						steps: steps.map((step) => redact(step, [], REDACTED_TEXT, Object.values(this.envs))),
+						steps: steps.map((step) => redact(step, [], REDACTED_TEXT, this.envs, getRedactedKeyText)),
 						data: redact(
 							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
 							[
@@ -373,7 +373,8 @@ class FlowManager {
 								['**', 'payload', 'password'],
 							],
 							REDACTED_TEXT,
-							Object.values(this.envs)
+							this.envs,
+							getRedactedKeyText
 						),
 					},
 				});

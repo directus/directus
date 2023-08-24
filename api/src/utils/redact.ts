@@ -8,18 +8,20 @@ type Paths = string[][];
  * @param input Input object in which values should be redacted.
  * @param paths Nested array of object paths to be redacted (supports `*` for shallow matching, `**` for deep matching).
  * @param replacement Replacement the values are redacted by.
- * @param valuesToRedact String values that should be redacted.
+ * @param valuesToRedact A <string,string> object containing values that should be redacted.
+ * @param replacementFn Replacement function that the values are redacted by.
  * @returns Redacted object.
  */
 export function redact(
 	input: UnknownObject,
 	paths: Paths,
 	replacement: string,
-	valuesToRedact?: string[]
+	valuesToRedact?: Record<string, string>,
+	replacementFn?: (key: string) => string
 ): UnknownObject {
 	const wildcardChars = ['*', '**'];
 
-	const clone = JSON.parse(JSON.stringify(input, getReplacerFn(replacement, valuesToRedact)));
+	const clone = JSON.parse(JSON.stringify(input, getReplacerFn(replacement, valuesToRedact, replacementFn)));
 	const visited = new WeakSet<UnknownObject>();
 	traverse(clone, paths);
 
@@ -96,10 +98,16 @@ export function redact(
 /**
  * Replace values and extract Error objects for use with JSON.stringify()
  */
-export function getReplacerFn(replacement: string, valuesToRedact?: string[]) {
+export function getReplacerFn(
+	replacement: string,
+	valuesToRedact?: Record<string, string>,
+	replacementFn?: (key: string) => string
+) {
 	const lowercasedValuesToRedact = valuesToRedact
-		?.filter((v) => typeof v === 'string' && v.length > 0)
-		.map((v) => v.toLowerCase());
+		? Object.entries(valuesToRedact)
+				.filter((v) => typeof v[1] === 'string' && v[1].length > 0)
+				.map((v) => [v[0], v[1].toLowerCase()])
+		: null;
 
 	return (_key: string, value: unknown) => {
 		if (value instanceof Error) {
@@ -111,12 +119,19 @@ export function getReplacerFn(replacement: string, valuesToRedact?: string[]) {
 			};
 		}
 
-		if (lowercasedValuesToRedact && typeof value === 'string') {
+		if (!lowercasedValuesToRedact) return value;
+
+		if (typeof value === 'string') {
 			let redactedValue = value;
 
-			for (const valueToRedact of lowercasedValuesToRedact) {
+			for (const [redactKey, valueToRedact] of lowercasedValuesToRedact) {
+				if (redactKey === undefined || valueToRedact === undefined) continue;
+
 				if (redactedValue.toLowerCase().includes(valueToRedact)) {
-					redactedValue = redactedValue.replace(new RegExp(valueToRedact, 'gi'), replacement);
+					redactedValue = redactedValue.replace(
+						new RegExp(valueToRedact, 'gi'),
+						replacementFn ? replacementFn(redactKey) : replacement
+					);
 				}
 			}
 
