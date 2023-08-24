@@ -37,7 +37,7 @@ async function run() {
 		const outputs = [
 			`DIRECTUS_VERSION=${mainVersion}`,
 			`DIRECTUS_PRERELEASE=${isPrerelease}`,
-			...(prereleaseId ? `DIRECTUS_PRERELEASE_ID=${prereleaseId}` : []),
+			...(prereleaseId ? [`DIRECTUS_PRERELEASE_ID=${prereleaseId}`] : []),
 			`DIRECTUS_RELEASE_NOTES<<EOF_RELEASE_NOTES\n${markdown}\nEOF_RELEASE_NOTES`,
 		];
 
