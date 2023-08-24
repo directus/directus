@@ -176,10 +176,10 @@ describe('getReplacer tests', () => {
 			},
 		];
 
-		const replacerFn = getReplacer(getRedactedString);
+		const replacer = getReplacer(getRedactedString);
 
 		for (const value of values) {
-			expect(replacerFn('', value)).toBe(value);
+			expect(replacer('', value)).toBe(value);
 		}
 	});
 
