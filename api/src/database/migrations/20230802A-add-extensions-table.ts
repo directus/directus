@@ -12,9 +12,8 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('extension').notNullable().references('name').inTable('directus_extensions').onDelete('CASCADE');
 		table.string('permission').notNullable();
 		table.boolean('enabled').notNullable().defaultTo(false);
-		table.json('options')
+		table.json('options');
 	});
-
 }
 
 export async function down(knex: Knex): Promise<void> {

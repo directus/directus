@@ -3,10 +3,6 @@
 	"compilerOptions": {
 		"outDir": "dist"
 	},
-	"include": [
-		"src"
-	],
-	"exclude": [
-		"src/extensions/vm-functions/**/*.js"
-	]
+	"include": ["src"],
+	"exclude": ["src/extensions/vm-functions/**/*.js"]
 }

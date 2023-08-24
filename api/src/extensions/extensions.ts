@@ -1,9 +1,6 @@
 import { APP_EXTENSION_TYPES, ExtensionInfo } from '@directus/constants';
 import type { ExtensionInfo as ExtensionInfoType, FullExtension } from '@directus/types';
-import {
-	getPackageExtensions,
-	resolvePackageExtensions,
-} from '@directus/utils/node';
+import { getPackageExtensions, resolvePackageExtensions } from '@directus/utils/node';
 import type { Router } from 'express';
 import getDatabase from '../database/index.js';
 import { Emitter } from '../emitter.js';
@@ -20,13 +17,11 @@ import { VmManager } from './vm.js';
 
 let extensionManager: ExtensionManager;
 
-
 export async function getExtensionManager(): Promise<ExtensionManager> {
 	if (!extensionManager) extensionManager = new ExtensionManager();
 
-	return extensionManager
+	return extensionManager;
 }
-
 
 type AppExtensions = string | null;
 
@@ -153,7 +148,7 @@ export class ExtensionManager {
 	}
 
 	public getDisplayExtensions(): ExtensionInfoType[] {
-		return this.extensions.map(extension => ExtensionInfo.parse(extension));
+		return this.extensions.map((extension) => ExtensionInfo.parse(extension));
 	}
 
 	public getDisplayExtension(name: string | undefined): ExtensionInfoType | undefined {
@@ -246,13 +241,17 @@ export class ExtensionManager {
 	private async loadExtensionPermissions(extensions: Extension[]): Promise<FullExtension[]> {
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
-		const registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*', 'granted_permissions.*'] });
+		const registeredExtensions = await extensionsService.readByQuery({
+			limit: -1,
+			fields: ['*', 'granted_permissions.*'],
+		});
 
 		for (const extension of extensions) {
-			const isInDB = registeredExtensions.find((registeredExtension) => registeredExtension.name === extension.name) !== undefined;
+			const isInDB =
+				registeredExtensions.find((registeredExtension) => registeredExtension.name === extension.name) !== undefined;
 
 			if (!isInDB) {
-				logger.info(`Registering extension ${extension.name} in the database`)
+				logger.info(`Registering extension ${extension.name} in the database`);
 
 				await extensionsService.createOne({
 					name: extension.name,
@@ -265,7 +264,7 @@ export class ExtensionManager {
 					enabled: true,
 					options: {},
 					granted_permissions: [],
-					registry: ''
+					registry: '',
 				});
 			}
 		}

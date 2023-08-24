@@ -28,18 +28,18 @@ export type Info = {
 		custom_css: string | null;
 	};
 	rateLimit?:
-	| false
-	| {
-		points: number;
-		duration: number;
-	};
+		| false
+		| {
+				points: number;
+				duration: number;
+		  };
 	flows?: {
 		execAllowedModules: string[];
 	};
 	extensions?: {
-		installAllowed: boolean,
-		unsafeAllowed: boolean,
-	}
+		installAllowed: boolean;
+		unsafeAllowed: boolean;
+	};
 	queryLimit?: {
 		default: number;
 		max: number;

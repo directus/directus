@@ -50,7 +50,28 @@ export const ExtensionOptionsBundleEntry = z.union([
 	}),
 ]);
 
-const services = ['service.fetch', 'service.activity', 'service.collections', 'service.dashboards', 'service.fields', 'service.flows', 'service.items', 'service.notifications', 'service.operations ', 'service.panels ', 'service.presets', 'service.relations ', 'service.revisions ', 'service.server', 'service.settings', 'service.shares', 'service.translations ', 'service.utils', 'service.webhooks ', 'service.websocket'] as const;
+const services = [
+	'service.fetch',
+	'service.activity',
+	'service.collections',
+	'service.dashboards',
+	'service.fields',
+	'service.flows',
+	'service.items',
+	'service.notifications',
+	'service.operations ',
+	'service.panels ',
+	'service.presets',
+	'service.relations ',
+	'service.revisions ',
+	'service.server',
+	'service.settings',
+	'service.shares',
+	'service.translations ',
+	'service.utils',
+	'service.webhooks ',
+	'service.websocket',
+] as const;
 
 export const ExtensionPermissionOptions = z.enum(['fetch', ...services]);
 
@@ -58,8 +79,7 @@ export const ExtensionPermission = z.object({
 	permission: ExtensionPermissionOptions,
 	optional: z.boolean().optional(),
 	options: z.record(z.any()).optional(),
-})
-
+});
 
 export const ExtensionOptionsBase = z.object({
 	host: z.string(),
@@ -121,7 +141,6 @@ export const DatabaseExtension = z.object({
 	registry: z.string().nullable(),
 });
 
-
 // ---------- types for parsed extension ---------- //
 
 const ExtensionBase = z.object({
@@ -156,16 +175,17 @@ export const BundleExtension = ExtensionBase.extend({
 	type: z.literal('bundle'),
 	entrypoint: SplitEntrypoint,
 	entries: ExtensionOptionsBundleEntries,
-})
+});
 
 export const Extension = z.union([AppExtension, ApiExtension, HybridExtension, BundleExtension]);
 
-export const FullExtension = Extension.and(DatabaseExtension)
+export const FullExtension = Extension.and(DatabaseExtension);
 
-export const ExtensionInfo = DatabaseExtension.and(z.union([
-	AppExtension.omit({ entrypoint: true, path: true }),
-	ApiExtension.omit({ entrypoint: true, path: true }),
-	HybridExtension.omit({ entrypoint: true, path: true }),
-	BundleExtension.omit({ entrypoint: true, path: true }),
-]))
-
+export const ExtensionInfo = DatabaseExtension.and(
+	z.union([
+		AppExtension.omit({ entrypoint: true, path: true }),
+		ApiExtension.omit({ entrypoint: true, path: true }),
+		HybridExtension.omit({ entrypoint: true, path: true }),
+		BundleExtension.omit({ entrypoint: true, path: true }),
+	])
+);

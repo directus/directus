@@ -1,25 +1,25 @@
-import type { ExtensionManager } from "./extensions.js";
+import type { ExtensionManager } from './extensions.js';
 import { createRequire } from 'node:module';
-import { readFile } from 'fs/promises'
+import { readFile } from 'fs/promises';
 import { Isolate, Context } from 'isolated-vm';
-import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from "@directus/types";
-import type { VMFunction } from "./vm-functions/vm-function.js";
-import { FetchVMFunction } from "./vm-functions/fetch/node.js";
-import { DefineEndpointVMFunction } from "./vm-functions/defineEndpoint/node.js";
-import { DefineOperationVMFunction } from "./vm-functions/defineOperation/node.js";
-import { DefineHookVMFunction } from "./vm-functions/defineHook/node.js";
-import { ApiServiceVMFunction } from "./vm-functions/apiServices/node.js";
-import { ConsoleVMFunction } from "./vm-functions/console/node.js";
-import { LoggerVMFunction } from "./vm-functions/logger/node.js";
-import type { EventHandler } from "../types/events.js";
-import emitter from "../emitter.js";
-import logger from "../logger.js";
+import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from '@directus/types';
+import type { VMFunction } from './vm-functions/vm-function.js';
+import { FetchVMFunction } from './vm-functions/fetch/node.js';
+import { DefineEndpointVMFunction } from './vm-functions/defineEndpoint/node.js';
+import { DefineOperationVMFunction } from './vm-functions/defineOperation/node.js';
+import { DefineHookVMFunction } from './vm-functions/defineHook/node.js';
+import { ApiServiceVMFunction } from './vm-functions/apiServices/node.js';
+import { ConsoleVMFunction } from './vm-functions/console/node.js';
+import { LoggerVMFunction } from './vm-functions/logger/node.js';
+import type { EventHandler } from '../types/events.js';
+import emitter from '../emitter.js';
+import logger from '../logger.js';
 
 const require = createRequire(import.meta.url);
-const ivm = require('isolated-vm')
+const ivm = require('isolated-vm');
 const WebSocket = require('ws');
 
-export type ApiExtensionInfo = (ApiExtension | BundleExtension | HybridExtension) & DatabaseExtension
+export type ApiExtensionInfo = (ApiExtension | BundleExtension | HybridExtension) & DatabaseExtension;
 
 export class VmManager {
 	private extensionManager: ExtensionManager;
@@ -33,98 +33,100 @@ export class VmManager {
 	constructor(extensionManager: ExtensionManager) {
 		this.extensionManager = extensionManager;
 
-		this.vmFunctions.push(new FetchVMFunction())
-		this.vmFunctions.push(new ApiServiceVMFunction())
-		this.vmFunctions.push(new ConsoleVMFunction())
-		this.vmFunctions.push(new LoggerVMFunction())
-		this.defineEndpoint = new DefineEndpointVMFunction(this.extensionManager)
-		this.defineHook = new DefineHookVMFunction(this.extensionManager)
-		this.defineOperation = new DefineOperationVMFunction()
+		this.vmFunctions.push(new FetchVMFunction());
+		this.vmFunctions.push(new ApiServiceVMFunction());
+		this.vmFunctions.push(new ConsoleVMFunction());
+		this.vmFunctions.push(new LoggerVMFunction());
+		this.defineEndpoint = new DefineEndpointVMFunction(this.extensionManager);
+		this.defineHook = new DefineHookVMFunction(this.extensionManager);
+		this.defineOperation = new DefineOperationVMFunction();
 	}
 
 	async runExtension(extension: ApiExtensionInfo, extensionPath: string) {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
 
-		const code = await readFile(extensionPath, 'utf-8')
+		const code = await readFile(extensionPath, 'utf-8');
 
 		const enableDebugger = extension.debugger === true;
 
 		const isolate: Isolate = new ivm.Isolate({ inspector: enableDebugger, memoryLimit: isolateSizeMb });
-		if (enableDebugger) this.createInspector(isolate.createInspectorSession(), extension.name)
+		if (enableDebugger) this.createInspector(isolate.createInspectorSession(), extension.name);
 		const context = await isolate.createContext({ inspector: enableDebugger });
 
-		await this.prepareGeneralContext(context, extension)
+		await this.prepareGeneralContext(context, extension);
 
 		let runExtensionCode;
-		let hookEvents: EventHandler[] = []
+		let hookEvents: EventHandler[] = [];
 
-		if (extension.type === "endpoint") {
-			await this.defineEndpoint.prepareContext(context, extension)
-			runExtensionCode = `import ext from 'extension.js'; defineEndpoint(ext)`
-		} else if (extension.type === "hook") {
-			hookEvents = await this.defineHook.prepareContext(context, extension)
-			runExtensionCode = `import ext from 'extension.js'; defineHook(ext)`
-		} else if (extension.type === "operation") {
-			await this.defineOperation.prepareContext(context, extension)
-			runExtensionCode = `import ext from 'extension.js'; defineOperationApi(ext)`
-		} else if (extension.type === "bundle") {
+		if (extension.type === 'endpoint') {
+			await this.defineEndpoint.prepareContext(context, extension);
+			runExtensionCode = `import ext from 'extension.js'; defineEndpoint(ext)`;
+		} else if (extension.type === 'hook') {
+			hookEvents = await this.defineHook.prepareContext(context, extension);
+			runExtensionCode = `import ext from 'extension.js'; defineHook(ext)`;
+		} else if (extension.type === 'operation') {
+			await this.defineOperation.prepareContext(context, extension);
+			runExtensionCode = `import ext from 'extension.js'; defineOperationApi(ext)`;
+		} else if (extension.type === 'bundle') {
 			let hasHook = false;
 			let hasOperation = false;
 			let hasEndpoint = false;
 
-			extension.entries.forEach(entry => {
-				if (entry.type === "hook") {
+			extension.entries.forEach((entry) => {
+				if (entry.type === 'hook') {
 					hasHook = true;
-				} else if (entry.type === "operation") {
+				} else if (entry.type === 'operation') {
 					hasOperation = true;
-				} else if (entry.type === "endpoint") {
+				} else if (entry.type === 'endpoint') {
 					hasEndpoint = true;
 				}
-			})
+			});
 
-			runExtensionCode = `import {endpoints, hooks, operations} from 'extension.js';`
+			runExtensionCode = `import {endpoints, hooks, operations} from 'extension.js';`;
 
 			if (hasHook) {
-				hookEvents = await this.defineHook.prepareContext(context, extension)
-				runExtensionCode += `for(let hook of hooks) { defineHook(hook.config) }`
+				hookEvents = await this.defineHook.prepareContext(context, extension);
+				runExtensionCode += `for(let hook of hooks) { defineHook(hook.config) }`;
 			}
 
 			if (hasOperation) {
-				await this.defineOperation.prepareContext(context, extension)
-				runExtensionCode += `for(let operation of operations) { defineOperationApi(operation.config) }`
+				await this.defineOperation.prepareContext(context, extension);
+				runExtensionCode += `for(let operation of operations) { defineOperationApi(operation.config) }`;
 			}
 
 			if (hasEndpoint) {
-				await this.defineEndpoint.prepareContext(context, extension)
-				runExtensionCode += `for(let endpoint of endpoints) { defineEndpoint(endpoint.config) }`
+				await this.defineEndpoint.prepareContext(context, extension);
+				runExtensionCode += `for(let endpoint of endpoints) { defineEndpoint(endpoint.config) }`;
 			}
-
 		} else {
-			throw new Error("Unknown extension type")
+			throw new Error('Unknown extension type');
 		}
 
-		const runModule = await isolate.compileModule(runExtensionCode, { filename: 'extensionLoader.js' })
+		const runModule = await isolate.compileModule(runExtensionCode, { filename: 'extensionLoader.js' });
 
 		await runModule.instantiate(context, (specifier: string) => {
 			if (specifier === 'extension.js') {
 				return isolate.compileModule(code, {
-					filename: extensionPath
-				})
+					filename: extensionPath,
+				});
 			}
 
-			throw new Error(`Cannot find module ${specifier}`)
-		})
+			throw new Error(`Cannot find module ${specifier}`);
+		});
 
-		runModule.evaluate({
-			timeout: scriptTimeoutMs
-		}).then(() => {
-			// @ts-ignore
-			console.log('Script completed successfully');
-		}).catch((err: any) => {
-			// @ts-ignore
-			console.log('Script failed:', err);
-		})
+		runModule
+			.evaluate({
+				timeout: scriptTimeoutMs,
+			})
+			.then(() => {
+				// @ts-ignore
+				console.log('Script completed successfully');
+			})
+			.catch((err: any) => {
+				// @ts-ignore
+				console.log('Script failed:', err);
+			});
 
 		const unregister = async () => {
 			try {
@@ -149,29 +151,27 @@ export class VmManager {
 							break;
 					}
 				}
-
 			} catch (err) {
 				// @ts-ignore
-				console.error(err)
+				console.error(err);
 			}
-		}
+		};
 
-		return unregister
+		return unregister;
 	}
 
 	private async prepareGeneralContext(context: Context, extension: ApiExtensionInfo) {
 		const jail = context.global;
 		jail.setSync('global', jail.derefInto());
 
-		context.eval(`globalThis.API = {}`)
+		context.eval(`globalThis.API = {}`);
 
 		for (const vmFunction of this.vmFunctions) {
-			await vmFunction.prepareContext(context, extension)
+			await vmFunction.prepareContext(context, extension);
 		}
 	}
 
 	private async createInspector(channel: any, extensionName: string) {
-
 		let wss = new WebSocket.Server({ port: this.debuggerPort });
 
 		wss.on('connection', function (ws: any) {
@@ -210,7 +210,9 @@ export class VmManager {
 			channel.onNotification = send;
 		});
 
-		logger.info(`${extensionName} Inspector: devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:${this.debuggerPort}`);
+		logger.info(
+			`${extensionName} Inspector: devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:${this.debuggerPort}`
+		);
 
 		this.debuggerPort++;
 	}

@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-const ivm = $0
-const makeFetch = $1
+const ivm = $0;
+const makeFetch = $1;
 
 function fetch(url, options) {
 	return new Promise((resolve, reject) => {
@@ -16,15 +16,13 @@ function fetch(url, options) {
 					blob: async () => await blob.applySyncPromise(undefined, []),
 					arrayBuffer: async () => await arrayBuffer.applySyncPromise(undefined, []),
 					formData: async () => await formData.applySyncPromise(undefined, []),
-				})
+				});
 			}),
 			new ivm.Reference((...args) => {
-				reject(...args)
-			})
+				reject(...args);
+			}),
 		]);
-	})
+	});
 }
 
-globalThis.API.fetch = fetch
-
-
+globalThis.API.fetch = fetch;

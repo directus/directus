@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-const ivm = $0
-const makeEndpoint = $1
+const ivm = $0;
+const makeEndpoint = $1;
 
 function defineEndpoint(callback) {
 	const router = {
@@ -11,9 +11,9 @@ function defineEndpoint(callback) {
 		patch: makeFunc('patch'),
 		delete: makeFunc('delete'),
 		options: makeFunc('options'),
-	}
+	};
 
-	callback(router)
+	callback(router);
 
 	function makeFunc(type) {
 		return (path, endpoint_callback) => {
@@ -21,11 +21,11 @@ function defineEndpoint(callback) {
 				type,
 				path,
 				new ivm.Reference((...args) => {
-					endpoint_callback(...args)
-				})
+					endpoint_callback(...args);
+				}),
 			]);
-		}
+		};
 	}
 }
 
-globalThis.defineEndpoint = defineEndpoint
+globalThis.defineEndpoint = defineEndpoint;

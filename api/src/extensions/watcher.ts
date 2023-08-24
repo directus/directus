@@ -53,9 +53,9 @@ export class WatcherManager {
 					.flatMap((extension) =>
 						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
-								path.resolve(extension.path, extension.entrypoint.app),
-								path.resolve(extension.path, extension.entrypoint.api),
-							]
+									path.resolve(extension.path, extension.entrypoint.app),
+									path.resolve(extension.path, extension.entrypoint.api),
+							  ]
 							: path.resolve(extension.path, extension.entrypoint)
 					);
 

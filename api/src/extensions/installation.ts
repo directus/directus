@@ -14,7 +14,7 @@ import { isEqual } from 'lodash-es';
 export type ExtensionInstallationOptions = {
 	version?: string | undefined;
 	registry?: string | undefined;
-	granted_permissions?: DatabaseExtensionPermission[]
+	granted_permissions?: DatabaseExtensionPermission[];
 };
 
 const defaultOptions = {
@@ -112,7 +112,6 @@ export class InstallationManager {
 			throw new Error(`The package "${name}" is not a valid extension.`);
 		}
 
-
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
 		await extensionsService.createOne({
@@ -139,7 +138,6 @@ export class InstallationManager {
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
 		await extensionsService.deleteOne(name);
-
 	}
 
 	public async updateExtension(name: string, options: Omit<ExtensionInstallationOptions, 'registry'> = {}) {
