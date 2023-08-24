@@ -13,6 +13,7 @@ import { ConsoleVMFunction } from "./vm-functions/console/node.js";
 import { LoggerVMFunction } from "./vm-functions/logger/node.js";
 import type { EventHandler } from "../types/events.js";
 import emitter from "../emitter.js";
+import logger from "../logger.js";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
@@ -45,7 +46,7 @@ export class VmManager {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
 
-		let code = await readFile(extensionPath, 'utf-8')
+		const code = await readFile(extensionPath, 'utf-8')
 
 		const enableDebugger = extension.debugger === true;
 
@@ -100,7 +101,7 @@ export class VmManager {
 			}
 
 		} else {
-			throw new Error("Unknown extension type")
+			return () => { }
 		}
 
 		const runModule = await isolate.compileModule(runExtensionCode, { filename: 'extensionLoader.js' })
@@ -112,15 +113,11 @@ export class VmManager {
 				})
 			}
 
-			throw new Error(`Cannot find module ${specifier}`)
+			throw new Error(`Cannot find module ${specifier} for extension ${extension.name}`)
 		})
 
 		runModule.evaluate({
 			timeout: scriptTimeoutMs
-		}).then(() => {
-			console.log('Script completed successfully');
-		}).catch((err: any) => {
-			console.log('Script failed:', err);
 		})
 
 		const unregister = async () => {
@@ -144,7 +141,9 @@ export class VmManager {
 					}
 				}
 
-			} catch (err) { }
+			} catch (err) {
+				logger.error(err)
+			}
 		}
 
 		return unregister
