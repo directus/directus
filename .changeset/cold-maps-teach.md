@@ -3,4 +3,4 @@
 "@directus/constants": patch
 ---
 
-Redacted env values in revisions for Flows
+Redacted env values in logs for Flows
