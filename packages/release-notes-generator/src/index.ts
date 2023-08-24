@@ -12,9 +12,9 @@ process.on('beforeExit', async () => {
 });
 
 async function run() {
-	const { mainVersion, packageVersions } = await processPackages();
+	const { mainVersion, isPrerelease, prereleaseId, packageVersions } = await processPackages();
 
-	// Run after `processPackages` for clean-up
+	// Run after `processPackages` to allow package clean-up
 	if (changesets.size === 0) {
 		earlyExit();
 	}
@@ -35,7 +35,9 @@ async function run() {
 	// Set output if running inside a GitHub workflow
 	if (githubOutput) {
 		const outputs = [
-			`DIRECTUS_MAIN_VERSION=${mainVersion}`,
+			`DIRECTUS_VERSION=${mainVersion}`,
+			`DIRECTUS_PRERELEASE=${isPrerelease}`,
+			...(prereleaseId ? `DIRECTUS_PRERELEASE_ID=${prereleaseId}` : []),
 			`DIRECTUS_RELEASE_NOTES<<EOF_RELEASE_NOTES\n${markdown}\nEOF_RELEASE_NOTES`,
 		];
 

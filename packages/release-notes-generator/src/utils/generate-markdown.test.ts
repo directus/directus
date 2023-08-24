@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { NOTICE_TYPE, TYPE_MAP, UNTYPED_PACKAGES } from '../constants.js';
+import config from '../config.js';
 import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types.js';
 import { generateMarkdown } from './generate-markdown.js';
 
@@ -34,7 +34,7 @@ const change2: Change = {
 test('should generate basic release notes', () => {
 	const types: Type[] = [
 		{
-			title: TYPE_MAP.minor,
+			title: config.typedTitles.minor,
 			packages: [
 				{
 					name: '@directus/api',
@@ -43,7 +43,7 @@ test('should generate basic release notes', () => {
 			],
 		},
 		{
-			title: TYPE_MAP.patch,
+			title: config.typedTitles.patch,
 			packages: [
 				{
 					name: '@directus/app',
@@ -54,8 +54,8 @@ test('should generate basic release notes', () => {
 	];
 
 	const untypedPackages: UntypedPackage[] = [
-		{ name: UNTYPED_PACKAGES.docs, changes: [change1, change2] },
-		{ name: UNTYPED_PACKAGES['tests-blackbox'], changes: [change1] },
+		{ name: config.untypedPackageTitles['docs']!, changes: [change1, change2] },
+		{ name: config.untypedPackageTitles['tests-blackbox']!, changes: [change1] },
 	];
 
 	const packageVersions: PackageVersion[] = [
@@ -120,7 +120,7 @@ describe('notices', () => {
 	test('should show notices along with changes', () => {
 		const types: Type[] = [
 			{
-				title: NOTICE_TYPE,
+				title: config.typedTitles[config.noticeType],
 				packages: [
 					{
 						name: '@directus/api',

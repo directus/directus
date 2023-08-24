@@ -30,7 +30,10 @@ To force the main version:
 
 ```shell
 DIRECTUS_VERSION=10.0.0 GITHUB_TOKEN=<token> pnpm changeset version
-DIRECTUS_VERSION=10.0.0-beta.1 GITHUB_TOKEN=<token> pnpm changeset version
+
+# To force a prerelease version you need to be in prerelease mode
+pnpm changeset pre enter beta
+DIRECTUS_VERSION=10.0.0-beta.0 GITHUB_TOKEN=<token> pnpm changeset version
 ```
 
 ### GitHub CI
@@ -38,7 +41,9 @@ DIRECTUS_VERSION=10.0.0-beta.1 GITHUB_TOKEN=<token> pnpm changeset version
 When running `pnpm changeset version` in the GitHub CI context, this package will automatically set the following
 outputs:
 
-- `DIRECTUS_MAIN_VERSION`
+- `DIRECTUS_VERSION`
+- `DIRECTUS_PRERELEASE`
+- `DIRECTUS_PRERELEASE_ID` (available if `DIRECTUS_PRERELEASE` is `true`)
 - `DIRECTUS_RELEASE_NOTES`
 
 ## Special Changesets Features
