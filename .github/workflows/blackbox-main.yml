@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - next
     paths:
       - api/**
       - tests/blackbox/**
@@ -16,7 +17,7 @@ on:
       - .github/workflows/blackbox-main.yml
 
 concurrency:
-  group: blackbox-main-reset-auto-increment # Revert line before marking PR as ready for review
+  group: blackbox-${{ github.ref }}
   cancel-in-progress: true
 
 env:
