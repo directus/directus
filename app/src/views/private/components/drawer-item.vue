@@ -417,7 +417,7 @@ function useActions() {
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
 
 		if (isNew.value) {
-			return Object.keys(defaultValues.value).length > 0 || hasEdits.value;
+			return Object.keys(defaultValues.value).filter((key) => defaultValues.value[key]).length > 0;
 		}
 
 		return false;

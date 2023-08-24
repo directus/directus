@@ -57,7 +57,7 @@ export function useRelationMultiple(
 		},
 		set(newValue) {
 			if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
-				value.value = undefined;
+				value.value = [];
 				return;
 			}
 
@@ -171,7 +171,7 @@ export function useRelationMultiple(
 						return (
 							itemCollection === editCollection &&
 							edit[relation.value.junctionField.field][editPkField] ===
-								item[relation.value.junctionField.field][itemPkField]
+							item[relation.value.junctionField.field][itemPkField]
 						);
 					}
 				}
