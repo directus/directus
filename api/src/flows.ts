@@ -8,7 +8,7 @@ import type {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/types';
-import { applyOptionsData, isValidJSON, parseJSON, redactValue, toArray } from '@directus/utils';
+import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
@@ -363,7 +363,7 @@ class FlowManager {
 					collection: 'directus_flows',
 					item: flow.id,
 					data: {
-						steps: steps.map((step) => redactObject(step, { values: this.envs }, redactValue)),
+						steps: steps.map((step) => redactObject(step, { values: this.envs }, getRedactedString)),
 						data: redactObject(
 							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
 							{
@@ -375,7 +375,7 @@ class FlowManager {
 								],
 								values: this.envs,
 							},
-							redactValue
+							getRedactedString
 						),
 					},
 				});

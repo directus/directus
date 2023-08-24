@@ -1,9 +1,7 @@
-import { redactValue } from '@directus/utils';
+import { getRedactedString, REDACTED_TEXT } from '@directus/utils';
 import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
 import { getReplacer, redactObject } from './redact-object.js';
-
-const REDACTED_TEXT = redactValue();
 
 const input = {
 	$trigger: {
@@ -44,13 +42,13 @@ const input = {
 };
 
 test('should not mutate input', () => {
-	const result = redactObject(input, { keys: [['$trigger']] }, redactValue);
+	const result = redactObject(input, { keys: [['$trigger']] }, getRedactedString);
 
 	expect(result).not.toBe(input);
 });
 
 test('should support single level path', () => {
-	const result = redactObject(input, { keys: [['$trigger']] }, redactValue);
+	const result = redactObject(input, { keys: [['$trigger']] }, getRedactedString);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -60,7 +58,7 @@ test('should support single level path', () => {
 });
 
 test('should support multi level path', () => {
-	const result = redactObject(input, { keys: [['$trigger', 'payload', 'password']] }, redactValue);
+	const result = redactObject(input, { keys: [['$trigger', 'payload', 'password']] }, getRedactedString);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -72,7 +70,7 @@ test('should support multi level path', () => {
 });
 
 test('should support wildcard path', () => {
-	const result = redactObject(input, { keys: [['*', 'payload']] }, redactValue);
+	const result = redactObject(input, { keys: [['*', 'payload']] }, getRedactedString);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -84,7 +82,7 @@ test('should support wildcard path', () => {
 });
 
 test('should support deep path', () => {
-	const result = redactObject(input, { keys: [['**', 'password']] }, redactValue);
+	const result = redactObject(input, { keys: [['**', 'password']] }, getRedactedString);
 
 	expect(result).toMatchObject(
 		merge({}, input, {
@@ -119,7 +117,7 @@ test('should support multiple paths', () => {
 				['**', 'password'],
 			],
 		},
-		redactValue
+		getRedactedString
 	);
 
 	expect(result).toEqual(
@@ -151,7 +149,7 @@ describe('getReplacer tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';
 		const errorCause = 'Error Cause';
-		const replacer = getReplacer(redactValue);
+		const replacer = getReplacer(getRedactedString);
 		const result: any = replacer('', new Error(errorMessage, { cause: errorCause }));
 		expect(result.name).toBe('Error');
 		expect(result.message).toBe(errorMessage);
@@ -178,7 +176,7 @@ describe('getReplacer tests', () => {
 			},
 		];
 
-		const replacerFn = getReplacer(redactValue);
+		const replacerFn = getReplacer(getRedactedString);
 
 		for (const value of values) {
 			expect(replacerFn('', value)).toBe(value);
@@ -206,7 +204,7 @@ describe('getReplacer tests', () => {
 			error: { name: 'Error', message: errorMessage, cause: errorCause },
 		};
 
-		const result = JSON.parse(JSON.stringify(objWithError, getReplacer(redactValue)));
+		const result = JSON.parse(JSON.stringify(objWithError, getReplacer(getRedactedString)));
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();
@@ -234,25 +232,25 @@ describe('getReplacer tests', () => {
 
 		const expectedResult = {
 			...baseValue,
-			string: `Replace ${redactValue('cause')} case matches ${redactValue('ERROR')}s~~`,
-			nested: { another_str: `just be${redactValue('cause')} of safety 123456` },
+			string: `Replace ${getRedactedString('cause')} case matches ${getRedactedString('ERROR')}s~~`,
+			nested: { another_str: `just be${getRedactedString('cause')} of safety 123456` },
 			nested_array: [
-				{ str_a: `${redactValue('cause')} surely` },
-				{ str_b: `not an ${redactValue('ERROR')}` },
+				{ str_a: `${getRedactedString('cause')} surely` },
+				{ str_b: `not an ${getRedactedString('ERROR')}` },
 				{ str_ignore: 'nothing here' },
 			],
-			array: ['something', `no ${redactValue('ERROR')}`, `just be${redactValue('cause')}`, 'all is good'],
+			array: ['something', `no ${getRedactedString('ERROR')}`, `just be${getRedactedString('cause')}`, 'all is good'],
 			error: {
-				name: redactValue('ERROR'),
-				message: `This is an ${redactValue('ERROR')} message.`,
-				cause: `Here is an ${redactValue('ERROR')} ${redactValue('cause')}!`,
+				name: getRedactedString('ERROR'),
+				message: `This is an ${getRedactedString('ERROR')} message.`,
+				cause: `Here is an ${getRedactedString('ERROR')} ${getRedactedString('cause')}!`,
 			},
 		};
 
 		const result = JSON.parse(
 			JSON.stringify(
 				objWithError,
-				getReplacer(redactValue, {
+				getReplacer(getRedactedString, {
 					empty: '',
 					ERROR: 'Error',
 					cause: 'cause',

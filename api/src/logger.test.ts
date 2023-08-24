@@ -1,9 +1,7 @@
-import { redactValue } from '@directus/utils';
+import { REDACTED_TEXT } from '@directus/utils';
 import { Writable } from 'node:stream';
 import { pino } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
-const REDACTED_TEXT = redactValue();
 
 const REFRESH_TOKEN_COOKIE_NAME = 'directus_refresh_token';
 
