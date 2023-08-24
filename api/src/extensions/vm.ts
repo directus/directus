@@ -10,6 +10,7 @@ import { DefineOperationVMFunction } from "./vm-functions/defineOperation/node.j
 import { DefineHookVMFunction } from "./vm-functions/defineHook/node.js";
 import { ApiServiceVMFunction } from "./vm-functions/apiServices/node.js";
 import { ConsoleVMFunction } from "./vm-functions/console/node.js";
+import { LoggerVMFunction } from "./vm-functions/logger/node.js";
 import type { EventHandler } from "../types/events.js";
 import emitter from "../emitter.js";
 import logger from "../logger.js";
@@ -35,6 +36,7 @@ export class VmManager {
 		this.vmFunctions.push(new FetchVMFunction())
 		this.vmFunctions.push(new ApiServiceVMFunction())
 		this.vmFunctions.push(new ConsoleVMFunction())
+		this.vmFunctions.push(new LoggerVMFunction())
 		this.defineEndpoint = new DefineEndpointVMFunction(this.extensionManager)
 		this.defineHook = new DefineHookVMFunction(this.extensionManager)
 		this.defineOperation = new DefineOperationVMFunction()

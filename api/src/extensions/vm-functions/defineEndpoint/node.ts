@@ -116,8 +116,6 @@ export class DefineEndpointVMFunction extends VMFunction {
 						}).copyInto()
 					], {
 						timeout: 1000
-					}).catch((err: any) => {
-						logger.error(err)
 					})
 				})
 

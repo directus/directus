@@ -331,9 +331,9 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 		}
 
 		if (inconsistencies) {
-			// logger.warn(
-			// 	`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`
-			// );
+			logger.warn(
+				`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`
+			);
 		}
 	}
 

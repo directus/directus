@@ -17,10 +17,11 @@ export class DefineOperationVMFunction extends VMFunction {
 			new ivm.Reference(async function (id: string, handler: any) {
 				const flowManager = getFlowManager();
 
-				flowManager.addOperation(id, async (options, _context) => {
+				flowManager.addOperation(id, async (options, flowContext) => {
+
 					const result = await handler.apply(null, [
 						new ivm.ExternalCopy(options).copyInto(),
-						new ivm.ExternalCopy({}).copyInto(),
+						new ivm.ExternalCopy({ data: flowContext.data }).copyInto(),
 					])
 
 					if (result instanceof Error) {

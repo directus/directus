@@ -104,12 +104,6 @@ importers:
       '@rollup/plugin-virtual':
         specifier: 3.0.1
         version: 3.0.1(rollup@3.22.0)
-      '@wasmer/wasi':
-        specifier: ^1.2.2
-        version: 1.2.2
-      '@wasmer/wasmfs':
-        specifier: ^0.12.0
-        version: 0.12.0
       argon2:
         specifier: 0.30.3
         version: 0.30.3
@@ -210,7 +204,7 @@ importers:
         specifier: 5.3.2
         version: 5.3.2
       isolated-vm:
-        specifier: ^4.6.0
+        specifier: 4.6.0
         version: 4.6.0
       joi:
         specifier: 17.9.2
@@ -9499,10 +9493,11 @@ packages:
   /@wasmer/wasmfs@0.12.0:
     resolution: {integrity: sha512-m1ftchyQ1DfSenm5XbbdGIpb6KJHH5z0gODo3IZr6lATkj4WXfX/UeBTZ0aG9YVShBp+kHLdUHvOkqjy6p/GWw==}
     dependencies:
-      memfs: 3.0.4
-      pako: 1.0.11
-      tar-stream: 2.2.0
-    dev: false
+      vue-demi: 0.14.5(vue@3.3.4)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
 
   /@webassemblyjs/ast@1.11.6:
     resolution: {integrity: sha512-IN1xI7PwOvLPgjcf180gC1bqn3q/QaOCwYUahIOhbYUu8KA/3tw2RT/T0Gidi1l7Hhj5D/INhJxiICObqpMu4Q==}
@@ -12970,6 +12965,17 @@ packages:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.5
+    dev: true
+
+  /fast-glob@3.3.1:
+    resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
+    engines: {node: '>=8.6.0'}
+    dependencies:
+      '@nodelib/fs.stat': 2.0.5
+      '@nodelib/fs.walk': 1.2.8
+      glob-parent: 5.1.2
+      merge2: 1.4.1
+      micromatch: 4.0.5
 
   /fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -13368,10 +13374,6 @@ packages:
     dependencies:
       minipass: 3.3.6
 
-  /fs-monkey@0.3.3:
-    resolution: {integrity: sha512-FNUvuTAJ3CqCQb5ELn+qCbGR/Zllhf2HtwsdAtBi59s1WeCjKMT81fHcSu7dwIskqGVK+MmOrb7VOBlq3/SItw==}
-    dev: false
-
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
@@ -13665,7 +13667,7 @@ packages:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.3.1
+      fast-glob: 3.2.12
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 3.0.0
@@ -16400,13 +16402,6 @@ packages:
     dependencies:
       map-age-cleaner: 0.1.3
       mimic-fn: 3.1.0
-    dev: false
-
-  /memfs@3.0.4:
-    resolution: {integrity: sha512-OcZEzwX9E5AoY8SXjuAvw0DbIAYwUzV/I236I8Pqvrlv7sL/Y0E9aRCon05DhaV8pg1b32uxj76RgW0s5xjHBA==}
-    dependencies:
-      fast-extend: 1.0.2
-      fs-monkey: 0.3.3
     dev: false
 
   /memoizerific@1.11.3:
@@ -22312,7 +22307,7 @@ packages:
       '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
       '@rushstack/node-core-library': 3.59.7
       debug: 4.3.4
-      fast-glob: 3.3.1
+      fast-glob: 3.2.12
       fs-extra: 10.1.0
       kolorist: 1.8.0
       magic-string: 0.29.0

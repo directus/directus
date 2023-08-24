@@ -50,7 +50,9 @@ export const ExtensionOptionsBundleEntry = z.union([
 	}),
 ]);
 
-export const ExtensionPermissionOptions = z.enum(['fetch', 'service.items', 'service.flows']);
+const services = ['service.fetch', 'service.activity', 'service.collections', 'service.dashboards', 'service.fields', 'service.flows', 'service.items', 'service.notifications', 'service.operations ', 'service.panels ', 'service.presets', 'service.relations ', 'service.revisions ', 'service.server', 'service.settings', 'service.shares', 'service.translations ', 'service.utils', 'service.webhooks ', 'service.websocket'] as const;
+
+export const ExtensionPermissionOptions = z.enum(['fetch', ...services]);
 
 export const ExtensionPermission = z.object({
 	permission: ExtensionPermissionOptions,

@@ -2,6 +2,8 @@ import type { Context } from "isolated-vm";
 import type { ApiExtensionInfo } from "../../vm.js";
 import { VMFunction } from "../vm-function.js";
 import { createRequire } from "module";
+import { createVMError } from "../create-error.js";
+import { ExtensionServiceError } from "../../../errors/extension-permissions.js";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm')
@@ -19,7 +21,7 @@ export class FetchVMFunction extends VMFunction {
 
 				if (permission?.enabled !== true) {
 					reject.apply(undefined, [
-						new ivm.ExternalCopy(new Error("Permission denied")).copyInto()
+						createVMError(new ExtensionServiceError({ service: 'fetch', reason: `Permission denied` }))
 					], {
 						timeout: 1000
 					})
@@ -46,7 +48,7 @@ export class FetchVMFunction extends VMFunction {
 
 				if (!isAllowed) {
 					reject.apply(undefined, [
-						new ivm.ExternalCopy(new Error("Permission denied")).copyInto()
+						createVMError(new ExtensionServiceError({ service: 'fetch', reason: `Url is not allowed` }))
 					], {
 						timeout: 1000
 					})
@@ -85,8 +87,6 @@ export class FetchVMFunction extends VMFunction {
 						timeout: 1000
 					})
 				} catch (err) {
-					console.log(err)
-
 					reject.apply(undefined, [
 						new ivm.ExternalCopy(err).copyInto()
 					], {
