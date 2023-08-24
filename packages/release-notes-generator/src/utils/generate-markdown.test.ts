@@ -22,7 +22,7 @@ const change2: Change = {
 	commit: 'efgh456',
 	githubInfo: {
 		user: 'directus',
-		pull: 1,
+		pull: 2,
 		links: {
 			commit: '[`efgh456`](https://github.com/directus/directus/commit/efgh456)',
 			pull: '[#2](https://github.com/directus/directus/pull/2)',
