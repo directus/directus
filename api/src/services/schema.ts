@@ -83,6 +83,23 @@ export class SchemaService {
 
         const typeMap: Record<string, { fields: Record<string, any>, name: string }> = {};
 
+		const fieldTypes = {
+			string: 'string',
+			bigInteger: 'string',
+			boolean: 'boolean',
+			date: "'datetime'",
+			dateTime: "'datetime'",
+			decimal: 'number',
+			float: 'number',
+			integer: 'number',
+			json: "'json'",
+			text: 'string',
+			time: "'datetime'",
+			timestamp: "'datetime'",
+			uuid: 'string',
+			hash: 'string',
+		}
+
         // setup type map
         for (const field of fields) {
             if (field.meta?.system) continue;
@@ -94,11 +111,13 @@ export class SchemaService {
                 };
             }
 
-            typeMap[field.collection].fields[field.field] = {
-                type: `'${field.type}'`,
-                nullable: !!field.schema?.is_nullable,
-                primary_key: !!field.schema?.is_primary_key,
-            }
+			if (field.type in fieldTypes) {
+				typeMap[field.collection].fields[field.field] = {
+					type: fieldTypes[field.type],
+					nullable: !!field.schema?.is_nullable,
+					primary_key: !!field.schema?.is_primary_key,
+				}
+			}
         }
 
         for (const relation of relations) {
