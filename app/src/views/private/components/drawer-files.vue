@@ -5,7 +5,7 @@
 		:drawer-props="drawerProps"
 		:filter="mergeFilters(filter, folderFilter)"
 	>
-		<template v-if="!folder" #sidebar>
+		<template #sidebar>
 			<files-navigation
 				:custom-target-handler="onFolderChange"
 				:current-folder="currentFolder"
