@@ -43,7 +43,7 @@ export default defineOperationApi<Options>({
 			{ copy: true }
 		);
 
-		// We run the operation once to define the module.exports function
+		// Run the operation once to define the module.exports function
 		await context.eval(code, { timeout: scriptTimeoutMs });
 
 		const inputData = new ivm.ExternalCopy({ data });
