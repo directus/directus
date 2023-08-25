@@ -357,27 +357,6 @@ function decompressResponse(stream: Readable, headers: AxiosResponse['headers'])
 
 	let isEmpty = true;
 
-	function handleContentEncoding(data: any) {
-		const decompressStream =
-			// eslint-disable-next-line no-nested-ternary
-			contentEncoding === 'br'
-				? zlib.createBrotliDecompress()
-				: contentEncoding === 'deflate' && data.length > 0 && (data[0] & 0x08) === 0
-				? zlib.createInflateRaw()
-				: zlib.createUnzip();
-
-		decompressStream.once('error', (error) => {
-			if (isEmpty && !stream.readable) {
-				finalStream.end();
-				return;
-			}
-
-			finalStream.destroy(error);
-		});
-
-		checker.pipe(decompressStream).pipe(finalStream);
-	}
-
 	const checker = new TransformStream({
 		transform(data, _encoding, callback) {
 			if (isEmpty === false) {
@@ -409,4 +388,33 @@ function decompressResponse(stream: Readable, headers: AxiosResponse['headers'])
 	stream.pipe(checker);
 
 	return finalStream;
+
+	function handleContentEncoding(data: any) {
+		let decompressStream;
+
+		if (contentEncoding === 'br') {
+			decompressStream = zlib.createBrotliDecompress();
+		} else if (contentEncoding === 'deflate' && isDeflateCompression(data)) {
+			decompressStream = zlib.createInflateRaw();
+		} else {
+			decompressStream = zlib.createUnzip();
+		}
+
+		decompressStream.once('error', (error) => {
+			if (isEmpty && !stream.readable) {
+				finalStream.end();
+				return;
+			}
+
+			finalStream.destroy(error);
+		});
+
+		checker.pipe(decompressStream).pipe(finalStream);
+	}
+
+	function isDeflateCompression(data: any) {
+		const DEFLATE_ALGORITHM_HEADER = 0x08;
+
+		return data.length > 0 && (data[0] & DEFLATE_ALGORITHM_HEADER) === 0;
+	}
 }
