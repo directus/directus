@@ -1,5 +1,5 @@
 import type { AbstractQueryFieldNodePrimitive, ActualConditionNodes } from '@directus/data';
-import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode, ParameterTypes } from '../../../../types/index.js';
+import type { ParameterTypes, AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from '../../../../types/index.js';
 import { convertFn } from '../../../functions.js';
 
 /**

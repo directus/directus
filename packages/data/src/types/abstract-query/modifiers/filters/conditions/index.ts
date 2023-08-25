@@ -34,3 +34,11 @@ export type ActualConditionNodes =
 	| ConditionGeoIntersectsBBoxNode
 	| ConditionSetNode
 	| ConditionFieldNode;
+
+// Those need to be exported to be used solely in the corresponding converter
+export * from './field-condition.js';
+export * from './geo-intersects-bbox.js';
+export * from './geo-intersects.js';
+export * from './number-condition.js';
+export * from './string-condition.js';
+export * from './set-condition.js';

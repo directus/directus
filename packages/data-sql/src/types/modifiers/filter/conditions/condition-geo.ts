@@ -2,7 +2,10 @@ import type { ValueNode } from '../../../parameterized-statement.js';
 import type { AbstractSqlQuerySelectNode } from '../../../nodes/primitive.js';
 
 /**
- * Used to only retrieve a set of data, where the column in question stored a geographic value which intersects with another given geographic value.
+ * Used to retrieve a set of data, where the column in question stores a geographic value which intersects with another given geographic value.
+ * Here, the two types `condition-geo` and `condition-geo-bbox` from @directus/data are combined into one type,
+ * because the compare value is the same for both types - it's the reference to the actual value stored in the list of parameters.
+ * That also why the operations got merged together.
  */
 export interface SqlConditionGeoNode {
 	type: 'condition-geo';

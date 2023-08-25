@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNode } from '@directus/data';
+import type { AbstractQueryFieldNode, AbstractQueryFilterNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../../types/index.js';
 import { createUniqueIdentifier } from './create-unique-identifier.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';

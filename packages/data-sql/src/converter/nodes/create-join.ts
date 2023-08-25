@@ -1,9 +1,6 @@
 import type { AbstractQueryFieldNodeRelatedManyToOne } from '@directus/data';
-import type {
-	AbstractSqlQueryConditionNode,
-	AbstractSqlQueryJoinNode,
-	AbstractSqlQueryLogicalNode,
-} from '../../types/index.js';
+import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../types/index.js';
+import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
 
 export const createJoin = (
 	currentCollection: string,

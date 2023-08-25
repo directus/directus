@@ -40,3 +40,6 @@ export type WhereUnion = Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>
 export * from './modifiers/order.js';
 export * from './modifiers/filter/index.js';
 export * from './parameterized-statement.js';
+export * from './nodes/join.js';
+export * from './nodes/fn.js';
+export * from './nodes/primitive.js';

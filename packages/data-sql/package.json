@@ -35,6 +35,7 @@
 		"@types/node": "18.16.12",
 		"@types/wellknown": "0.5.4",
 		"@vitest/coverage-c8": "0.31.1",
+		"dependency-cruiser": "^13.1.4",
 		"tsup": "6.7.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"

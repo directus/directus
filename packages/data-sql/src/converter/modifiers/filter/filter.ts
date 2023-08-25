@@ -1,4 +1,4 @@
-import type { AbstractQueryFilterNode, AbstractQueryConditionNode } from '@directus/data';
+import type { AbstractQueryConditionNode, AbstractQueryFilterNode } from '@directus/data';
 import type { WhereUnion } from '../../../types/index.js';
 import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
