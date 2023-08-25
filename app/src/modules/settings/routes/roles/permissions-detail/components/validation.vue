@@ -41,6 +41,7 @@ const fields = computed(() => [
 				collectionName: permissionSync.value.collection,
 				includeValidation: true,
 				includeRelations: false,
+				rawFieldNames: true,
 			},
 		},
 	},

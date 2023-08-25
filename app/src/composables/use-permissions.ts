@@ -1,10 +1,10 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import type { Field } from '@directus/types';
-import { computed, ComputedRef, Ref } from 'vue';
-import { cloneDeep } from 'lodash';
-import { isAllowed } from '../utils/is-allowed';
 import { useCollection } from '@directus/composables';
+import type { Field } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { computed, ComputedRef, Ref } from 'vue';
+import { isAllowed } from '../utils/is-allowed';
 
 type UsablePermissions = {
 	createAllowed: ComputedRef<boolean>;
@@ -27,17 +27,17 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 
 	const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
 
-	const saveAllowed = computed(() => {
-		if (isNew.value) {
-			return true;
-		}
-
-		return isAllowed(collection.value, 'update', item.value);
-	});
-
 	const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
 
 	const shareAllowed = computed(() => isAllowed(collection.value, 'share', item.value));
+
+	const saveAllowed = computed(() => {
+		if (isNew.value) {
+			return createAllowed.value;
+		}
+
+		return updateAllowed.value;
+	});
 
 	const archiveAllowed = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return false;

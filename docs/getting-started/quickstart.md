@@ -13,7 +13,8 @@ readTime: 7 min read
 
 ## 1. Create a Project
 
-:::tabs \
+::: tabs
+
 == Directus Cloud
 
 Create and login to your [Directus Cloud account](https://directus.cloud).

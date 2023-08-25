@@ -1,7 +1,7 @@
 <template>
 	<div class="permissions-overview-row">
 		<span class="name">
-			<span v-tooltip.left="collection.collection">{{ collection.name }}</span>
+			<span v-tooltip.left="collection.name">{{ collection.collection }}</span>
 			<span class="actions">
 				<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
 				<span class="divider">/</span>
@@ -53,11 +53,12 @@
 </template>
 
 <script setup lang="ts">
-import type { Collection, Permission } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useUpdatePermissions from '../composables/use-update-permissions';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
+import type { Collection } from '@/types/collections';
 
 const props = defineProps<{
 	collection: Collection;
@@ -89,6 +90,7 @@ function isLoading(action: string) {
 
 	.name {
 		flex-grow: 1;
+		font-family: var(--family-monospace);
 
 		.actions {
 			margin-left: 8px;

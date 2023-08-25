@@ -258,9 +258,19 @@ function useForm() {
 		return fieldsInGroup.value.map((f) => f.field);
 	});
 
-	const fieldsForGroup = computed(() =>
-		fieldNames.value.map((name: string) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null))
-	);
+	const fieldsForGroup = computed(() => {
+		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
+
+		return fieldNames.value.map((name: string) => {
+			const fields = getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null);
+
+			return fields.reduce((result: Field[], field: Field) => {
+				const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+				if (newField.field) result.push(newField);
+				return result;
+			}, [] as Field[]);
+		});
+	});
 
 	return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 

@@ -453,7 +453,7 @@ function useForm() {
 				options: {
 					choices: collectionsStore.collections
 						.map((collection) => ({
-							text: collection.name,
+							text: collection.collection,
 							value: collection.collection,
 						}))
 						.filter((option) => {
@@ -543,6 +543,7 @@ function useForm() {
 				width: 'half',
 				options: {
 					collectionField: 'collection',
+					rawFieldNames: true,
 				},
 			},
 		},

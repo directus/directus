@@ -46,6 +46,7 @@ const fields = computed(() => [
 			interface: 'system-filter',
 			options: {
 				collectionName: permissionSync.value.collection,
+				rawFieldNames: true,
 			},
 		},
 	},

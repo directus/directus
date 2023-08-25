@@ -1,5 +1,5 @@
 <template>
-	<div class="collection-item">
+	<div v-show="visibilityTree.visible" class="collection-item">
 		<v-list-item
 			block
 			dense
@@ -17,7 +17,12 @@
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<span ref="collectionName" class="collection-name">{{ collection.collection }}</span>
+				<v-highlight
+					ref="collectionName"
+					:query="visibilityTree.search"
+					:text="collection.collection"
+					class="collection-name"
+				/>
 				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
 			</div>
 
@@ -51,6 +56,7 @@
 					<collection-item
 						:collection="element"
 						:collections="collections"
+						:visibility-tree="visibilityTree.findChild(element.collection)!"
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
 					/>
@@ -67,10 +73,12 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import CollectionOptions from './collection-options.vue';
+import { CollectionTree } from '../collections.vue';
 
 const props = defineProps<{
 	collection: Collection;
 	collections: Collection[];
+	visibilityTree: CollectionTree;
 	disableDrag?: boolean;
 }>();
 

@@ -2,7 +2,7 @@
 layout: home
 ---
 
-<script setup>
+<script setup lang="ts">
 import { data } from './.vitepress/data/blog.data.js';
 import Pattern from './.vitepress/components/home/Pattern.vue';
 import Footer from './.vitepress/components/home/Footer.vue';
@@ -215,6 +215,9 @@ await directus.request(
 				img="/assets/react-guide.png"
 				url="/guides/real-time/chat/react"
 			/>
+		</div>
+		<div :class="$style.header">
+			<Button href="/guides">View All Guides</Button>
 		</div>
 	</div>
 </section>

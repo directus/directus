@@ -122,7 +122,7 @@
 		"js-yaml": "4.1.0",
 		"js2xmlparser": "5.0.0",
 		"json2csv": "5.0.7",
-		"jsonwebtoken": "9.0.0",
+		"jsonwebtoken": "9.0.1",
 		"keyv": "4.5.2",
 		"knex": "2.4.2",
 		"ldapjs": "2.3.3",

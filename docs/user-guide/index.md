@@ -1,9 +1,5 @@
 ---
 description: Learn the terms and concepts you need to know about Headless CMS.
-tags: []
-skill_level:
-directus_version:
-author_override:
 author: Esther Agbaje
 ---
 
