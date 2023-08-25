@@ -175,7 +175,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					}
 				},
 				set(value) {
-					layoutQuery.value.fields = value;
+					layoutQuery.value = Object.assign({}, layoutQuery.value, { fields: value });
 				},
 			});
 
