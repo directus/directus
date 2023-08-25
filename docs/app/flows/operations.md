@@ -122,8 +122,8 @@ the original event transaction to the database.
 
 ::: tip Node Modules
 
-To prevent unauthorized access to the underlying server, node modules can't be used in the Run Script operation. If you
-require a third party library for your custom script, you can create a custom
+To prevent unauthorized access to the underlying server, node modules can't be used in the **Run Script** operation. If
+you require a third party library for your custom script, you can create a custom
 [operation extension](/extensions/operations) instead.
 
 :::
