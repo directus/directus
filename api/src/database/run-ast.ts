@@ -266,7 +266,7 @@ async function getDBQuery(
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
+		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true, queryCopy.aggregate);
 
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;

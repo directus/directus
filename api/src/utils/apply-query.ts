@@ -50,7 +50,7 @@ export default function applyQuery(
 	}
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
-		const sortResult = applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
+		const sortResult = applySort(knex, schema, dbQuery, query.sort, collection, aliasMap, false, query?.aggregate);
 
 		if (!hasJoins) {
 			hasJoins = sortResult.hasJoins;
@@ -263,7 +263,8 @@ export function applySort(
 	rootSort: string[],
 	collection: string,
 	aliasMap: AliasMap,
-	returnRecords = false
+	returnRecords = false,
+	aggregate: Aggregate | null | undefined
 ) {
 	const relations: Relation[] = schema.relations;
 	let hasJoins = false;
@@ -277,9 +278,40 @@ export function applySort(
 			order = 'desc';
 		}
 
-		if (column[0]!.startsWith('-')) {
-			column[0] = column[0]!.substring(1);
-		}
+		const aggregateT = aggregate ?? {};
+		console.log(aggregateT)
+
+		// Is the column name one of the aggregate functions used in the query if there is any?
+		// if (Object.keys(aggregate ?? {}).includes(column[0]!.replace('-', ''))) {
+		// 	console.log(aggregate)
+		// 	// If so, return the column name without the order prefix
+		// 	const operation = column[0]!.replace('-', '');
+
+		// 	// Get the field for the aggregate function
+		// 	const field = column[1]!;
+
+		// 	// If the operation is countAll there is no field.
+		// 	if (operation === 'countAll') {
+		// 		return {
+		// 			order,
+		// 			column: returnRecords ? column[0] : 'countAll',
+		// 		};
+		// 	}
+
+		// 	// If the operation is a root count there is no field.
+		// 	if (operation === 'count' && (field === '*' || !field)) {
+		// 		return {
+		// 			order,
+		// 			column: returnRecords ? column[0] : 'count',
+		// 		};
+		// 	}
+
+		// 	// Return the column name with the operation and field name
+		// 	return {
+		// 		order,
+		// 		column: returnRecords ? column[0] : `${operation}->${field}`,
+		// 	};
+		// }
 
 		if (column.length === 1) {
 			const pathRoot = column[0]!.split(':')[0]!;
