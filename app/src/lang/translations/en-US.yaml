@@ -509,7 +509,7 @@ expand: Expand
 collapse: Collapse
 select_item: Select Item
 no_items: No items
-search_items: Search items...
+search_items: Search Items...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -1507,6 +1507,8 @@ undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
 interfaces:
+  list-m2a:
+    prefix_note: Uses the related item's collection name by default.
   filter:
     name: Filter
     description: Configure a filter object.

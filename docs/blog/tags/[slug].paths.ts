@@ -1,12 +1,31 @@
+import { readItems } from '@directus/sdk';
+import { client } from '../../.vitepress/lib/directus.js';
+
 export default {
 	async paths() {
-		const response = await (
-			await fetch(
-				'https://marketing.directus.app/items/docs_tags?fields=*,developer_articles.developer_articles_id.title,developer_articles.developer_articles_id.date_published,developer_articles.developer_articles_id.slug,developer_articles.developer_articles_id.image,developer_articles.developer_articles_id.author.first_name,developer_articles.developer_articles_id.author.last_name,developer_articles.developer_articles_id.author.avatar,author.title,developer_articles.developer_articles_id.status'
+		const tags = (
+			await client.request(
+				readItems('docs_tags', {
+					fields: [
+						'*',
+						{
+							developer_articles: [
+								{
+									developer_articles_id: [
+										'title',
+										'date_published',
+										'slug',
+										'image',
+										{ author: ['first_name', 'last_name', 'avatar', 'title'] },
+										'status',
+									],
+								},
+							],
+						},
+					],
+				})
 			)
-		).json();
-
-		let tags = response.data.map((tag) => ({
+		).map((tag) => ({
 			params: {
 				slug: tag.slug,
 				title: tag.title,
@@ -25,7 +44,7 @@ export default {
 						};
 					})
 					.filter((article) => article)
-					.sort((a, b) => new Date(b.date_published) - new Date(a.date_published)),
+					.sort((a, b) => +new Date(b!.date_published) - +new Date(a!.date_published)),
 			},
 		}));
 
