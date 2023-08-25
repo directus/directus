@@ -2,20 +2,12 @@
 	<div class="metric-list" :class="{ 'has-header': showHeader }">
 		<div>
 			<v-list class="metric-list">
-				<v-list-item
-					v-for="row in data.sort((a, b) =>
-						sortDirection === 'desc'
-							? b[aggregateFunction][aggregateField] - a[aggregateFunction][aggregateField]
-							: a[aggregateFunction][aggregateField] - b[aggregateFunction][aggregateField]
-					)"
-					:key="row['group'][groupByField]"
-					class="metric-list-item"
-				>
+				<v-list-item v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
 					<div
 						class="metric-bar"
 						:style="{
 							width: widthOfRow(row),
-							'background-color': `${getColor(row[aggregateFunction][aggregateField])}50`,
+							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
 						}"
 					>
 						<div class="metric-bar-text">
@@ -28,9 +20,9 @@
 
 						<div
 							class="metric-bar-number"
-							:style="{ color: `${chroma(getColor(row[aggregateFunction][aggregateField])).darken(2).hex()}` }"
+							:style="{ color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField])).darken(2).hex()}` }"
 						>
-							{{ prefix }}{{ displayValue(row[aggregateFunction][aggregateField]) }}{{ suffix }}
+							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
 						</div>
 					</div>
 
@@ -47,14 +39,29 @@ import { useI18n } from 'vue-i18n';
 import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
 import { formatNumber } from '@/utils/format-number';
+import { computed, unref } from 'vue';
 import type { Style, Notation, Unit } from '@/utils/format-number';
+
+
+interface Group {
+    [groupByField: string]: string;
+}
+
+interface Aggregate {
+    [aggregateFunction: string]: {
+        [aggregateField: string]: number;
+    };
+}
+
+type DataPoint = Aggregate & { group: Group };
+
 
 const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
-		groupByField?: string;
-		aggregateField?: string;
-		aggregateFunction?: string;
+		groupByField: string;
+		aggregateField: string;
+		aggregateFunction: string;
 		sortDirection?: string;
 
 		notation?: Notation;
@@ -68,7 +75,7 @@ const props = withDefaults(
 
 		collection: string;
 		dashboard: string;
-		data?: object;
+		data: Array<DataPoint>;
 	}>(),
 	{
 		showHeader: false,
@@ -85,9 +92,28 @@ const props = withDefaults(
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 		conditionalFormatting: () => [],
-		data: () => ({}),
+		data: () => [],
 	}
 );
+
+const sortedData = computed(() => {
+	const dataArray = unref(props.data);
+
+	if (!dataArray || dataArray.length === 0) return [];
+
+	if (!props.aggregateFunction || !props.aggregateField) return dataArray;
+
+	return dataArray.sort((a: DataPoint, b: DataPoint) =>{
+        const aValue = a[props.aggregateFunction]?.[props.aggregateField] ?? 0;
+        const bValue = b[props.aggregateFunction]?.[props.aggregateField] ?? 0;
+
+        if (aValue === undefined || bValue === undefined) return 0;
+
+        return props.sortDirection === 'desc'
+            ? bValue - aValue
+            : aValue - bValue;
+    });
+});
 
 const { locale } = useI18n();
 
@@ -95,7 +121,7 @@ function widthOfRow(row: any) {
 	const aggFunc = props.aggregateFunction;
 	const aggField = props.aggregateField;
 	const data = props.data;
-	return `${(row[aggFunc][aggField] / Math.max(...data.map((o) => o[aggFunc][aggField]))) * 100 + 0}%`;
+	return `${(row[aggFunc][aggField] / Math.max(...data.map((o) => o[aggFunc]?.[aggField] ?? 0))) * 100 + 0}%`;
 }
 
 function displayValue(value: number) {
