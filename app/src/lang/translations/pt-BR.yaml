@@ -35,6 +35,7 @@ tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
 location: Local
+collection_names_are_case_sensitive: Os nomes das coleções diferenciam maiúsculas e minúsculas
 condition_rules: Regras da condição
 input: Entrada
 maps: Mapas
@@ -80,6 +81,9 @@ create_user: Criar Usuário
 message: Mensagem
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
+create_custom_translation: Criar tradução personalizada
+edit_custom_translation: Criar tradução personalizada
+no_custom_translations: Traduções personalizadas
 invite_users: Convidar Usuários
 invite: Convidar
 email_already_invited: Um convite já foi enviado para o email "{email}"
@@ -481,7 +485,6 @@ expand: Expandir
 collapse: Recolher
 select_item: Selecionar item
 no_items: Nenhum item
-search_items: Buscar Itens...
 disabled: Desabilitado
 information: Informação
 report_bug: Relatar erro
@@ -1943,6 +1946,10 @@ operations:
     emit_events: Emitir eventos
     key: IDs
     payload: Payload
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opções
   log:
     description: Emita algo para o console
     message: Mensagem

@@ -84,7 +84,7 @@
 				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
 
-			<comments-sidebar-detail :key="primaryKey" collection="directus_insights" :primary-key="primaryKey" />
+			<comments-sidebar-detail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
 
 			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
 		</template>

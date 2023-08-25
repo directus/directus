@@ -33,6 +33,14 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		}
 	}
 
+	if (to.params.collection === 'directus_dashboards') {
+		if (to.params.primaryKey) {
+			return `/insights/${to.params.primaryKey}`;
+		} else {
+			return '/insights';
+		}
+	}
+
 	if (to.params.collection === 'directus_activity') {
 		if (to.params.primaryKey) {
 			return `/activity/${to.params.primaryKey}`;
@@ -41,11 +49,23 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		}
 	}
 
-	if (to.params.collection === 'directus_webhooks') {
+	if (to.params.collection === 'directus_settings') {
+		return '/settings/project';
+	}
+
+	if (to.params.collection === 'directus_collections') {
 		if (to.params.primaryKey) {
-			return `/settings/webhooks/${to.params.primaryKey}`;
+			return `/settings/data-model/${to.params.primaryKey}`;
 		} else {
-			return '/settings/webhooks';
+			return '/settings/data-model';
+		}
+	}
+
+	if (to.params.collection === 'directus_roles') {
+		if (to.params.primaryKey) {
+			return `/settings/roles/${to.params.primaryKey}`;
+		} else {
+			return '/settings/roles';
 		}
 	}
 
@@ -65,11 +85,19 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		}
 	}
 
-	if (to.params.collection === 'directus_insights') {
+	if (to.params.collection === 'directus_webhooks') {
 		if (to.params.primaryKey) {
-			return `/insights/${to.params.primaryKey}`;
+			return `/settings/webhooks/${to.params.primaryKey}`;
 		} else {
-			return '/insights';
+			return '/settings/webhooks';
+		}
+	}
+
+	if (to.params.collection === 'directus_flows') {
+		if (to.params.primaryKey) {
+			return `/settings/flows/${to.params.primaryKey}`;
+		} else {
+			return '/settings/flows';
 		}
 	}
 
@@ -81,6 +109,8 @@ const checkForSystem: NavigationGuard = (to, from) => {
 	) {
 		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
 	}
+
+	return;
 };
 
 const getArchiveValue = (query: LocationQuery) => {

@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - next
     paths:
       - api/**
       - tests/blackbox/**

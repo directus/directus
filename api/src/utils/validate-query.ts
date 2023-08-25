@@ -20,6 +20,7 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('csv', 'json', 'xml', 'yaml'),
+	branch: Joi.string(),
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),
