@@ -473,7 +473,6 @@ comments: Yorumlar
 no_comments: Henüz Yorum Yok
 select_item: Öğe Seçin
 no_items: Hiç öğe yok
-search_items: Öğeleri ara...
 disabled: Devre Dışı
 information: Bilgi
 report_bug: Hata Bildir
@@ -2047,6 +2046,10 @@ operations:
     key: Kimlikler
     payload: Yük
     query: Sorgula
+  json-web-token:
+    payload: Yük
+    token: Erişim Anahtarı (Token)
+    options: Seçenekler
   log:
     name: Konsolda Oturum Aç
     message: Mesaj

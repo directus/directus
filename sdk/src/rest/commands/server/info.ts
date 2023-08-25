@@ -18,9 +18,6 @@ export type ServerInfoOutput = {
 				duration: number;
 		  }
 		| false;
-	flows?: {
-		execAllowedModules: string[];
-	};
 	queryLimit?: {
 		default: number;
 		max: number;

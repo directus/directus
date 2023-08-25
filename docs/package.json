@@ -1,6 +1,7 @@
 {
 	"name": "docs",
 	"private": true,
+	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
 		"build:packages": "pnpm --recursive --filter '!docs' --filter '!api' --filter '!app' run build",
