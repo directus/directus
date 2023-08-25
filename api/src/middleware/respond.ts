@@ -1,8 +1,10 @@
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
+import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
 import env from '../env.js';
 import logger from '../logger.js';
+import { BranchesService } from '../services/branches.js';
 import { ExportService } from '../services/import-export.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
@@ -10,6 +12,7 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
+import type { Filter } from '@directus/types';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
@@ -45,6 +48,32 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		// Don't cache anything by default
 		res.setHeader('Cache-Control', 'no-cache');
 		res.setHeader('Vary', 'Origin, Cache-Control');
+	}
+
+	if (
+		req.sanitizedQuery.branch &&
+		req.collection &&
+		(req.singleton || req.params['pk']) &&
+		'data' in res.locals['payload']
+	) {
+		const branchesService = new BranchesService({ accountability: req.accountability ?? null, schema: req.schema });
+
+		const filter: Filter = {
+			name: { _eq: req.sanitizedQuery.branch },
+			collection: { _eq: req.collection },
+		};
+
+		if (req.params['pk']) {
+			filter['item'] = { _eq: req.params['pk'] };
+		}
+
+		const branch = await branchesService.readByQuery({ filter });
+
+		if (branch[0]) {
+			const commits = await branchesService.getBranchCommits(branch[0]['id']);
+
+			assign(res.locals['payload'].data, ...commits);
+		}
 	}
 
 	if (req.sanitizedQuery.export) {

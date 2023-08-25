@@ -101,6 +101,24 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+branch_name: Branch Name
+commit: Commit
+main_branch: Main
+create_branch: Create Branch
+switch_to_branch_after_creation: Switch to Branch After Creation
+rename_branch: Rename Branch
+compare_branch: Compare Branch
+merge_branch: Merge Branch
+merge_branch_drawer_title: Merge {branch} into Main
+outdated_notice: >-
+  The main item has been updated since this version was created. Please review all the field values below, and confirm
+  which version should be used when merging this version into the main item.
+merge_notice: >-
+  Please review all the field values below, and confirm which version should be used when merging this version into the
+  main item.
+delete_branch: Delete Branch
+delete_branch_copy: >-
+  Are you sure you want to delete the "{branch}" branch? This action cannot be undone.
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -359,6 +377,7 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
+revision_delta_commited: 'Commit (Updated 1 Field) | Commit (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
@@ -1114,6 +1133,7 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    branches_enabled: Branches
     archive_field: Archive Field
     item_duplication_fields: Item Duplication Fields
   directus_files:
@@ -1311,6 +1331,8 @@ field_options:
     accountability_divider: Accountability
     duplication_divider: Duplication
     preview_divider: Preview
+    content_versioning_divider: Content Versioning
+    enable_branches: Enable Branches
   directus_files:
     title: A unique title...
     description: An optional description...

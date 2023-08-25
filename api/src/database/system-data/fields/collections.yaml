@@ -114,7 +114,26 @@ fields:
     interface: system-display-template
     options:
       collectionField: collection
+      injectBranchField: true
     width: full
+
+  - field: content_versioning_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: update
+      title: $t:field_options.directus_collections.content_versioning_divider
+    width: full
+
+  - field: branches_enabled
+    interface: boolean
+    special:
+      - cast-boolean
+    options:
+      label: $t:field_options.directus_collections.enable_branches
+    width: half
 
   - field: archive_divider
     special:

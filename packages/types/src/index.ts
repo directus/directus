@@ -1,4 +1,5 @@
 export * from './accountability.js';
+export * from './branches.js';
 export * from './collection.js';
 export * from './displays.js';
 export * from './endpoints.js';
