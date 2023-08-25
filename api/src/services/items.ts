@@ -175,12 +175,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
 			// The primary key can already exist in the object we're saving.
-			// In case of manual string / UUID primary keys it's always provided at this point,
-			// and for int primary keys, the user can provide the value manually.
-			let primaryKey = payloadWithTypeCasting[primaryKeyField];
+			// In case of manual string / UUID primary keys it's always provided at this point.
+			// In case of an integer primary key, it might be provided as the user can specify the value manually.
+			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			// If a PK of type number was provided, although the PK is set the auto_increment,
-			// the sequence needs to be reset for PostgreSQL to protect future PK collisions.
+			// the sequence needs to be reset to protect future PK collisions.
+			// This is currently only done for PostgreSQL.
 			let autoIncrementSequenceNeedsToBeReset = false;
 
 			const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
@@ -223,6 +224,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				// to read from it
 				payload[primaryKeyField] = primaryKey;
 			}
+
+			// at this point, the primary key is guaranteed to be set to the actual returned value or the best guest value
+			primaryKey = primaryKey as PrimaryKey;
 
 			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
 				payloadWithPresets,
