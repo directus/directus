@@ -209,7 +209,7 @@ async function fetchNotifications() {
 			if (notification.collection) {
 				const collection = collectionsStore.getCollection(notification.collection);
 
-				if (collection?.meta?.singleton) {
+				if (collection?.meta?.singleton || !notification.item) {
 					to = `/content/${notification.collection}`;
 				} else {
 					to = `/content/${notification.collection}/${notification.item}`;
