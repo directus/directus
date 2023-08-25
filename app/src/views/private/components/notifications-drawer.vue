@@ -149,7 +149,9 @@ function toggleNotification(id: string) {
 
 const { notificationsDrawerOpen } = storeToRefs(appStore);
 
-fetchNotifications();
+watch(notificationsDrawerOpen, (open) => {
+	if (open) fetchNotifications();
+});
 
 watch([tab, page], ([newTab], [oldTab]) => {
 	if (newTab !== oldTab) {
