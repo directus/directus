@@ -108,6 +108,7 @@
 			:collection="relationInfo.relatedCollection.collection"
 			:folder="folder"
 			:filter="customFilter"
+			:show-navigation="showNavigation"
 			multiple
 			@input="onSelect"
 		/>
@@ -152,6 +153,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		folder?: string;
+		showNavigation?: boolean;
 		limit?: number;
 	}>(),
 	{
@@ -161,6 +163,7 @@ const props = withDefaults(
 		enableCreate: true,
 		enableSelect: true,
 		folder: undefined,
+		showNavigation: true,
 		limit: 15,
 	}
 );

@@ -115,6 +115,7 @@
 			v-if="activeDialog === 'choose'"
 			:folder="folder"
 			:active="activeDialog === 'choose'"
+			:show-navigation="showNavigation"
 			@update:active="activeDialog = null"
 			@input="setSelection"
 		/>
@@ -168,6 +169,7 @@ const props = withDefaults(
 		value?: string | Record<string, any> | null;
 		disabled?: boolean;
 		folder?: string;
+		showNavigation?: boolean;
 		collection: string;
 		field: string;
 	}>(),
@@ -175,6 +177,7 @@ const props = withDefaults(
 		value: () => null,
 		disabled: false,
 		folder: undefined,
+		showNavigation: true,
 	}
 );
 

@@ -82,7 +82,15 @@
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
+		<v-upload
+			v-else
+			from-library
+			from-url
+			:from-user="createAllowed"
+			:folder="folder"
+			:show-navigation="showNavigation"
+			@input="onUpload"
+		/>
 	</div>
 </template>
 
@@ -109,12 +117,14 @@ const props = withDefaults(
 		field: string;
 		width: string;
 		crop?: boolean;
+		showNavigation?: boolean;
 	}>(),
 	{
 		value: null,
 		disabled: false,
 		crop: true,
 		folder: undefined,
+		showNavigation: true,
 	}
 );
 

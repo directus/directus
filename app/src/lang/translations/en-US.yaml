@@ -1695,7 +1695,9 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
+    folder: Root Folder
+    show_navigation: Drawer Navigation
+    show_navigation_label: Show Folder Navigation
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root

@@ -1,7 +1,7 @@
 import { fetchAll } from '@/utils/fetch-all';
-import { ref, Ref } from 'vue';
+import { MaybeRef, ref, Ref, toRef, watch } from 'vue';
 
-type FolderRaw = {
+export type FolderRaw = {
 	id: string;
 	name: string;
 	parent: string | null;
@@ -25,31 +25,37 @@ type UsableFolders = {
 
 export const openFoldersInitial = ['root'];
 
-let loading: Ref<boolean> | null = null;
-let folders: Ref<Folder[] | null> | null = null;
-let nestedFolders: Ref<Folder[] | null> | null = null;
-let openFolders: Ref<string[] | null> | null = null;
+export function useFolders(rootFolder?: MaybeRef<string | undefined>): UsableFolders {
+	const _rootFolder = toRef(rootFolder);
 
-let error: Ref<any> | null = null;
+	const loading = ref(false);
+	const folders = ref<Folder[] | null>(null);
+	const nestedFolders = ref<Folder[] | null>(null);
+	const error = ref(null);
+	let openFolders: Ref<string[] | null> | null = null;
 
-export function useFolders(): UsableFolders {
-	if (loading === null) loading = ref(false);
-	if (folders === null) folders = ref<Folder[] | null>(null);
-	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
-	if (error === null) error = ref(null);
-	if (openFolders === null) openFolders = ref(openFoldersInitial);
+	if (openFolders === null) {
+		if (_rootFolder.value === undefined) {
+			openFolders = ref(openFoldersInitial)
+		} else {
+			openFolders = ref([_rootFolder.value]);
+		}
+	}
 
 	if (folders.value === null && loading.value === false) {
-		fetchFolders();
+		if (_rootFolder.value === undefined) {
+			fetchFolders();
+		} else {
+			watch(_rootFolder, (newRootFolder) => {
+				fetchFolders(newRootFolder);
+			}, { immediate: true })
+		}
 	}
 
 	return { loading, folders, nestedFolders, error, fetchFolders, openFolders };
 
-	async function fetchFolders() {
-		if (loading === null) return;
-		if (folders === null) return;
-		if (nestedFolders === null) return;
-		if (error === null) return;
+	async function fetchFolders(rootFolder?: string) {
+		if (loading.value === true) return;
 
 		loading.value = true;
 
@@ -61,7 +67,7 @@ export function useFolders(): UsableFolders {
 			});
 
 			folders.value = response;
-			nestedFolders.value = nestFolders(response as FolderRaw[]);
+			nestedFolders.value = nestFolders(response as FolderRaw[], rootFolder);
 		} catch (err: any) {
 			error.value = err;
 		} finally {
@@ -70,16 +76,26 @@ export function useFolders(): UsableFolders {
 	}
 }
 
-export function nestFolders(rawFolders: FolderRaw[]): FolderRaw[] {
-	return rawFolders.map((rawFolder) => nestChildren(rawFolder, rawFolders)).filter((folder) => folder.parent === null);
+export function nestFolders(rawFolders: FolderRaw[], rootFolder?: string): FolderRaw[] {
+	return rawFolders.reduce<FolderRaw[]>((acc, rawFolder) => {
+		if (rawFolder.parent === (rootFolder ?? null)) {
+			acc.push(nestChildren(rawFolder, rawFolders));
+		}
+
+		return acc
+	}, []);
 }
 
 export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]): FolderRaw & Folder {
 	const folder: FolderRaw & Folder = { ...rawFolder };
 
-	const children = rawFolders
-		.filter((childFolder) => childFolder.parent === rawFolder.id && childFolder.id !== rawFolder.id)
-		.map((childRawFolder) => nestChildren(childRawFolder, rawFolders));
+	const children = rawFolders.reduce<FolderRaw[]>((acc, childFolder) => {
+		if (childFolder.parent === rawFolder.id && childFolder.id !== rawFolder.id) {
+			acc.push(nestChildren(childFolder, rawFolders));
+		}
+
+		return acc;
+	}, []);
 
 	if (children.length > 0) {
 		folder.children = children;

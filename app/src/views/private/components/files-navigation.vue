@@ -23,7 +23,8 @@
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
 						<v-list-item-content>
-							<v-text-overflow :text="t('file_library')" />
+							<v-text-overflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
+							<v-text-overflow v-else :text="t('file_library')" />
 						</v-list-item-content>
 					</template>
 
@@ -72,10 +73,13 @@ import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
 import { useRouter } from 'vue-router';
 import { SpecialFolder, FolderTarget } from '@/types/folders';
+import { toRefs } from 'vue';
+import { computed } from 'vue';
 
 const router = useRouter();
 
 const props = defineProps<{
+	rootFolder?: string;
 	currentFolder?: string;
 	currentSpecial?: SpecialFolder;
 	customTargetHandler?: (target: FolderTarget) => void;
@@ -84,11 +88,18 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const { rootFolder } = toRefs(props);
 
-const { nestedFolders, folders, loading, openFolders: sharedOpenFolders } = useFolders();
+const { nestedFolders, folders, loading, openFolders: sharedOpenFolders } = useFolders(rootFolder);
 const openFolders = props.localOpenFolders ? ref(openFoldersInitial) : sharedOpenFolders;
 
 watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
+
+const rootFolderInfo = computed(() => {
+	if (!folders.value || !props.rootFolder) return;
+
+	return folders.value.find((folder) => folder.id === rootFolder!.value);
+});
 
 function onClick(target: FolderTarget) {
 	if (props.customTargetHandler) {
