@@ -1,9 +1,9 @@
 ---
-"@directus/app": patch
-"@directus/api": patch
+"@directus/app": minor
+"@directus/api": minor
 "docs": patch
 "@directus/constants": patch
 "@directus/types": patch
 ---
 
-Content Versioning
+Add support for Content Versioning (branching)
