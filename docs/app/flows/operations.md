@@ -122,8 +122,9 @@ the original event transaction to the database.
 
 ::: tip Node Modules
 
-For security reasons, module usage is disabled by default. In cases where you really do need specific modules, you may
-create a custom [operation extension](/extensions/operations).
+To prevent unauthorized access to the underlying server, node modules can't be used in the Run Script operation. If you
+require a third party library for your custom script, you can create a custom
+[operation extension](/extensions/operations) instead.
 
 :::
 
