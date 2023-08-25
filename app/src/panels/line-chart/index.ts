@@ -48,7 +48,6 @@ export default definePanel({
 			if (fields.length === 0) return [];
 
 			return fields.map((field) => {
-				console.log(field);
 				return {
 					value: field.field,
 					text: field.name,
