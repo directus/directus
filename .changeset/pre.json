@@ -37,5 +37,7 @@
     "@directus/sdk": "11.0.3",
     "tests-blackbox": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "clean-berries-do"
+  ]
 }
