@@ -394,7 +394,7 @@ function decompressResponse(stream: Readable, headers: AxiosResponse['headers'])
 
 		if (contentEncoding === 'br') {
 			decompressStream = zlib.createBrotliDecompress();
-		} else if (contentEncoding === 'deflate' && isDeflateCompression(data)) {
+		} else if (contentEncoding === 'deflate' && isDeflateAlgorithm(data)) {
 			decompressStream = zlib.createInflateRaw();
 		} else {
 			decompressStream = zlib.createUnzip();
@@ -412,7 +412,7 @@ function decompressResponse(stream: Readable, headers: AxiosResponse['headers'])
 		checker.pipe(decompressStream).pipe(finalStream);
 	}
 
-	function isDeflateCompression(data: any) {
+	function isDeflateAlgorithm(data: any) {
 		const DEFLATE_ALGORITHM_HEADER = 0x08;
 
 		return data.length > 0 && (data[0] & DEFLATE_ALGORITHM_HEADER) === 0;
