@@ -24,24 +24,24 @@
 						:class="{ active: !selectedFields.includes(field.field) }"
 						@click="removeField(field.field)"
 					>
-						<v-icon name="looks_one" class="number" />
+						<v-icon name="looks_one" />
 						<branch-merge-field class="field-content" :value="comparedData?.main[field.field]" />
-						<span v-if="!selectedFields.includes(field.field)" class="check">
+						<template v-if="!selectedFields.includes(field.field)">
 							<v-chip class="branch" x-small>{{ t('main_branch') }}</v-chip>
 							<v-icon name="check" />
-						</span>
+						</template>
 					</div>
 					<div
 						class="compare current"
 						:class="{ active: selectedFields.includes(field.field) }"
 						@click="addField(field.field)"
 					>
-						<v-icon name="looks_two" class="number" />
+						<v-icon name="looks_two" />
 						<branch-merge-field class="field-content" :value="comparedData?.current[field.field]" />
-						<span v-if="selectedFields.includes(field.field)" class="check">
+						<template v-if="selectedFields.includes(field.field)">
 							<v-chip class="branch" x-small>{{ currentBranch.name }}</v-chip>
 							<v-icon name="check" />
-						</span>
+						</template>
 					</div>
 				</div>
 			</div>
@@ -183,26 +183,17 @@ async function merge() {
 	align-items: center;
 	width: 100%;
 	padding: 8px;
+	gap: 8px;
 	color: var(--foreground-subdued);
 	background-color: var(--background-subdued);
 	cursor: pointer;
 
-	.number {
-		margin-right: 8px;
-	}
-
 	.field-content {
-		flex: 1;
+		flex-grow: 1;
 	}
 
 	.branch {
-		margin: 0 8px;
 		text-transform: uppercase;
-	}
-
-	.check {
-		display: inline-flex;
-		align-items: center;
 	}
 
 	&.main {
