@@ -61,9 +61,8 @@
 							:model-value="selection.includes(notification.id)"
 							@update:model-value="toggleSelected(notification.id)"
 						/>
-						<div v-tooltip="notification.subject" class="title">{{ notification.subject }}</div>
-						<div class="spacer" />
-						<div class="time">{{ notification.time }}</div>
+						<v-text-overflow class="title" :text="notification.subject" />
+						<v-text-overflow class="time" :text="notification.time" />
 						<v-icon
 							v-if="notification.to"
 							v-tooltip="t('goto_collection_content')"
@@ -268,19 +267,6 @@ function onLinkClick(to: string) {
 </script>
 
 <style lang="scss" scoped>
-.v-table {
-	display: contents;
-
-	& > :deep(table) {
-		min-width: calc(100% - var(--content-padding)) !important;
-		margin-left: var(--content-padding);
-
-		tr {
-			margin-right: var(--content-padding);
-		}
-	}
-}
-
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
@@ -311,21 +297,15 @@ function onLinkClick(to: string) {
 		.header {
 			width: 100%;
 			display: flex;
+			align-items: center;
 			gap: 8px;
 
 			.title {
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				max-width: 55%;
+				flex-grow: 1;
 			}
 			.time {
 				color: var(--foreground-subdued);
 			}
-		}
-
-		.spacer {
-			flex-grow: 1;
 		}
 
 		.message {
