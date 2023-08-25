@@ -157,8 +157,8 @@ describe('Integration Tests', () => {
 			relations: [],
 		};
 
-		const dbsWhichDontNeedReset: DatabaseClient[] = ['mysql', 'sqlite', 'oracle', 'mssql', 'redshift'];
-		const dbsWhichNeedReset: DatabaseClient[] = ['postgres', 'cockroachdb'];
+		const dbsWhichDontNeedReset: DatabaseClient[] = ['mysql', 'sqlite', 'cockroachdb', 'oracle', 'mssql', 'redshift'];
+		const dbsWhichNeedReset: DatabaseClient[] = ['postgres'];
 		const item = { id: 42, name: 'random' };
 
 		function mockDbClientAndQueryReset(client: DatabaseClient): void {
