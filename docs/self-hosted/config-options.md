@@ -449,7 +449,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
 | `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
-| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `directus-cache`                     |
+| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `system-cache`                       |
 | `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
 | `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |

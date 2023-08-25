@@ -251,6 +251,7 @@ M2M
 M2Ms
 M2O
 M2Os
+macOS
 Mailgun
 Mapbox
 MDN
