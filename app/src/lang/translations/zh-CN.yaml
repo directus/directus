@@ -502,7 +502,6 @@ expand: 展开
 collapse: 收起
 select_item: 选择条目
 no_items: 无条目
-search_items: 搜索条目...
 disabled: 禁用
 information: 信息
 report_bug: 反馈Bug
@@ -2138,6 +2137,10 @@ operations:
     key: ID组
     payload: 有效载荷 (Payload)
     query: 查询
+  json-web-token:
+    payload: 有效载荷 (Payload)
+    token: Token
+    options: 选项
   log:
     name: 记录到控制台
     description: 输出内容到控制台
