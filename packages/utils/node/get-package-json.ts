@@ -1,10 +1,9 @@
+import type { JsonValue } from '@directus/types';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { findPackageRoot } from './find-package-root.js';
 
-type JSONValue = string | number | boolean | { [x: string]: JSONValue } | Array<JSONValue>;
-
-interface PackageJson extends Record<string, JSONValue> {
+interface PackageJson extends Record<string, JsonValue> {
 	name: string;
 	version: string;
 }
