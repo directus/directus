@@ -43,10 +43,45 @@ export class VmManager {
 	}
 
 	async runExtension(extension: ApiExtensionInfo, extensionPath: string) {
+
+		const extensionCode = await readFile(extensionPath, 'utf-8');
+
+		if (extension.type === 'endpoint') {
+			return this.run(`import ext from 'extension.js'; defineEndpoint(ext)`, extensionCode, extension, extensionPath)
+		} else if (extension.type === 'hook') {
+			return this.run(`import ext from 'extension.js'; defineHook(ext)`, extensionCode, extension, extensionPath)
+		} else if (extension.type === 'operation') {
+			return this.run(`import ext from 'extension.js'; defineOperationApi(ext)`, extensionCode, extension, extensionPath)
+
+		} else if (extension.type === 'bundle') {
+			const unregisterFunctions: (() => Promise<void>)[] = []
+
+			for (const innerExtension of extension.entries) {
+
+				if (innerExtension.type === 'endpoint') {
+					const unregister = await this.run(`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) defineEndpoint(endpoint)`, extensionCode, extension, extensionPath)
+					unregisterFunctions.push(unregister)
+				} else if (innerExtension.type === 'hook') {
+					const unregister = await this.run(`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) defineHook(hook)`, extensionCode, extension, extensionPath)
+					unregisterFunctions.push(unregister)
+
+				} else if (innerExtension.type === 'operation') {
+					const unregister = await this.run(`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) defineOperationApi(operation)`, extensionCode, extension, extensionPath)
+					unregisterFunctions.push(unregister)
+				}
+			}
+
+			return async () => {
+				for (const unregister of unregisterFunctions) {
+					await unregister()
+				}
+			}
+		}
+	}
+
+	private async run(startCode: string, extensionCode: string, extension: ApiExtensionInfo, extensionPath: string) {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
-
-		const code = await readFile(extensionPath, 'utf-8');
 
 		const enableDebugger = extension.debugger === true;
 
@@ -56,58 +91,22 @@ export class VmManager {
 
 		await this.prepareGeneralContext(context, extension);
 
-		let runExtensionCode;
 		let hookEvents: EventHandler[] = [];
 
 		if (extension.type === 'endpoint') {
 			await this.defineEndpoint.prepareContext(context, extension);
-			runExtensionCode = `import ext from 'extension.js'; defineEndpoint(ext)`;
 		} else if (extension.type === 'hook') {
 			hookEvents = await this.defineHook.prepareContext(context, extension);
-			runExtensionCode = `import ext from 'extension.js'; defineHook(ext)`;
 		} else if (extension.type === 'operation') {
 			await this.defineOperation.prepareContext(context, extension);
-			runExtensionCode = `import ext from 'extension.js'; defineOperationApi(ext)`;
-		} else if (extension.type === 'bundle') {
-			let hasHook = false;
-			let hasOperation = false;
-			let hasEndpoint = false;
 
-			extension.entries.forEach((entry) => {
-				if (entry.type === 'hook') {
-					hasHook = true;
-				} else if (entry.type === 'operation') {
-					hasOperation = true;
-				} else if (entry.type === 'endpoint') {
-					hasEndpoint = true;
-				}
-			});
-
-			runExtensionCode = `import {endpoints, hooks, operations} from 'extension.js';`;
-
-			if (hasHook) {
-				hookEvents = await this.defineHook.prepareContext(context, extension);
-				runExtensionCode += `for(let hook of hooks) { defineHook(hook.config) }`;
-			}
-
-			if (hasOperation) {
-				await this.defineOperation.prepareContext(context, extension);
-				runExtensionCode += `for(let operation of operations) { defineOperationApi(operation.config) }`;
-			}
-
-			if (hasEndpoint) {
-				await this.defineEndpoint.prepareContext(context, extension);
-				runExtensionCode += `for(let endpoint of endpoints) { defineEndpoint(endpoint.config) }`;
-			}
-		} else {
-			return () => {};
 		}
 
-		const runModule = await isolate.compileModule(runExtensionCode, { filename: 'extensionLoader.js' });
+		const runModule = await isolate.compileModule(startCode, { filename: 'extensionLoader.js' });
 
 		await runModule.instantiate(context, (specifier: string) => {
 			if (specifier === 'extension.js') {
-				return isolate.compileModule(code, {
+				return isolate.compileModule(extensionCode, {
 					filename: extensionPath,
 				});
 			}
@@ -165,7 +164,7 @@ export class VmManager {
 			function dispose() {
 				try {
 					channel.dispose();
-				} catch (err) {}
+				} catch (err) { }
 			}
 
 			ws.on('error', dispose);
