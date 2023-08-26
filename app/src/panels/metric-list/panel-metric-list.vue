@@ -42,19 +42,17 @@ import { formatNumber } from '@/utils/format-number';
 import { computed, unref } from 'vue';
 import type { Style, Notation, Unit } from '@/utils/format-number';
 
-
 interface Group {
-    [groupByField: string]: string;
+	[groupByField: string]: string;
 }
 
 interface Aggregate {
-    [aggregateFunction: string]: {
-        [aggregateField: string]: number;
-    };
+	[aggregateFunction: string]: {
+		[aggregateField: string]: number;
+	};
 }
 
 type DataPoint = Aggregate & { group: Group };
-
 
 const props = withDefaults(
 	defineProps<{
@@ -103,16 +101,14 @@ const sortedData = computed(() => {
 
 	if (!props.aggregateFunction || !props.aggregateField) return dataArray;
 
-	return dataArray.sort((a: DataPoint, b: DataPoint) =>{
-        const aValue = a[props.aggregateFunction]?.[props.aggregateField] ?? 0;
-        const bValue = b[props.aggregateFunction]?.[props.aggregateField] ?? 0;
+	return dataArray.sort((a: DataPoint, b: DataPoint) => {
+		const aValue = a[props.aggregateFunction]?.[props.aggregateField] ?? 0;
+		const bValue = b[props.aggregateFunction]?.[props.aggregateField] ?? 0;
 
-        if (aValue === undefined || bValue === undefined) return 0;
+		if (aValue === undefined || bValue === undefined) return 0;
 
-        return props.sortDirection === 'desc'
-            ? bValue - aValue
-            : aValue - bValue;
-    });
+		return props.sortDirection === 'desc' ? bValue - aValue : aValue - bValue;
+	});
 });
 
 const { locale } = useI18n();
