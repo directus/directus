@@ -80,13 +80,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
 
 		info.project = serverInfoResponse.data.data?.project;
-<<<<<<< HEAD
-		info.flows = serverInfoResponse.data.data?.flows;
 		info.extensions = serverInfoResponse.data.data?.extensions;
-||||||| 66a5e60fb
-		info.flows = serverInfoResponse.data.data?.flows;
-=======
->>>>>>> next
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
 		auth.providers = authResponse.data.data;
