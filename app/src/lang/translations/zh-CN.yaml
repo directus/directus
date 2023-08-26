@@ -81,7 +81,7 @@ create_user: 创建用户
 message: 消息
 delete_panel: 删除面板
 create_webhook: 创建网络钩子
-create_custom_translation: 创建自定义翻译
+create_custom_translation: 建立自定义翻译
 edit_custom_translation: 编辑自定义翻译
 no_custom_translations: 没有自定义翻译
 no_custom_translations_copy: 尚无自定义翻译。
