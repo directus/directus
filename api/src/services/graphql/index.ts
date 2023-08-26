@@ -1903,16 +1903,6 @@ export class GraphQLService {
 							}),
 					  }
 					: GraphQLBoolean,
-				flows: {
-					type: new GraphQLObjectType({
-						name: 'server_info_flows',
-						fields: {
-							execAllowedModules: {
-								type: new GraphQLList(GraphQLString),
-							},
-						},
-					}),
-				},
 				websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
 					? {
 							type: new GraphQLObjectType({

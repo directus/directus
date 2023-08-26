@@ -459,7 +459,6 @@ comments: टिप्पणीहरू
 no_comments: अहिले सम्म कुनै टिप्पणी छैन
 select_item: वस्तु चयन गर्नुहोस्
 no_items: कुनै वस्तुहरू छैनन्
-search_items: वस्तुहरू खोज्नुहोस्...
 disabled: सक्षम गरिएको छैन
 information: जानकारी
 report_bug: त्रुटि रिपोट गर्नुहोस्
@@ -1822,6 +1821,10 @@ operations:
     key: IDहरू
     payload: पेलोड
     query: जिज्ञासा
+  json-web-token:
+    payload: पेलोड
+    token: टोकन
+    options: विकल्पहरू
   log:
     name: कन्सोलमा लग गर्नुहोस्
     description: कन्सोलमा केहि आउटपुट गर्नुहोस्

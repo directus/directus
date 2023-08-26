@@ -471,7 +471,6 @@ comments: Comentarios
 no_comments: Aún Sin Comentarios
 select_item: Seleccionar Elemento
 no_items: Sin Elementos
-search_items: Buscar elementos...
 disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
@@ -2018,6 +2017,10 @@ operations:
     key: IDs
     payload: Payload
     query: Consulta
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opciones
   log:
     name: Registrar en la consola
     description: Envía algo a la consola
