@@ -67,6 +67,7 @@ export class VmManager {
 						extension,
 						extensionPath
 					);
+
 					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'hook') {
 					const unregister = await this.run(
@@ -75,6 +76,7 @@ export class VmManager {
 						extension,
 						extensionPath
 					);
+
 					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'operation') {
 					const unregister = await this.run(
@@ -83,6 +85,7 @@ export class VmManager {
 						extension,
 						extensionPath
 					);
+
 					unregisterFunctions.push(unregister);
 				}
 			}
