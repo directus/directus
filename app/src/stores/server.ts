@@ -33,9 +33,6 @@ export type Info = {
 				points: number;
 				duration: number;
 		  };
-	flows?: {
-		execAllowedModules: string[];
-	};
 	extensions?: {
 		installAllowed: boolean;
 		unsafeAllowed: boolean;
@@ -55,7 +52,6 @@ export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
 		rateLimit: undefined,
-		flows: undefined,
 		queryLimit: undefined,
 	});
 
@@ -84,8 +80,13 @@ export const useServerStore = defineStore('serverStore', () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
 
 		info.project = serverInfoResponse.data.data?.project;
+<<<<<<< HEAD
 		info.flows = serverInfoResponse.data.data?.flows;
 		info.extensions = serverInfoResponse.data.data?.extensions;
+||||||| 66a5e60fb
+		info.flows = serverInfoResponse.data.data?.flows;
+=======
+>>>>>>> next
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
 		auth.providers = authResponse.data.data;

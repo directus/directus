@@ -69,10 +69,6 @@ export class ServerService {
 				info['rateLimitGlobal'] = false;
 			}
 
-			info['flows'] = {
-				execAllowedModules: env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [],
-			};
-
 			info['extensions'] = {
 				installAllowed: toBoolean(env['EXTENSIONS_AUTO_INSTALL']),
 				unsafeAllowed: toBoolean(env['EXTENSIONS_INSTALL_UNSAFE']),

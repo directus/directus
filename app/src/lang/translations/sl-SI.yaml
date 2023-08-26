@@ -382,7 +382,6 @@ comments: Komentarji
 no_comments: Trenutno še ni komentarjev
 select_item: Izberi zapis
 no_items: Ni zapisov
-search_items: Iskanje zapisov ...
 disabled: Onemogočeno
 information: Informacija
 report_bug: Prijavi napako
@@ -1442,6 +1441,9 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  json-web-token:
+    token: Žeton
+    options: Možnosti
   log:
     message: Sporočilo
   mail:
