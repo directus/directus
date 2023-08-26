@@ -315,8 +315,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0
       tar:
-        specifier: ^6.1.13
-        version: 6.1.15
+        specifier: 6.1.13
+        version: 6.1.13
       tmp-promise:
         specifier: 3.0.3
         version: 3.0.3
@@ -476,7 +476,7 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       '@types/tar':
-        specifier: ^6.1.4
+        specifier: 6.1.4
         version: 6.1.4
       '@types/uuid':
         specifier: 9.0.1
@@ -6346,7 +6346,7 @@ packages:
       npmlog: 5.0.1
       rimraf: 3.0.2
       semver: 7.5.4
-      tar: 6.1.15
+      tar: 6.1.13
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -10568,7 +10568,7 @@ packages:
       promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
-      tar: 6.1.15
+      tar: 6.1.13
       unique-filename: 1.1.1
     transitivePeerDependencies:
       - bluebird
@@ -13430,7 +13430,7 @@ packages:
       mri: 1.2.0
       node-fetch-native: 1.2.0
       pathe: 1.1.1
-      tar: 6.1.15
+      tar: 6.1.13
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -16725,11 +16725,6 @@ packages:
   /minipass@4.2.8:
     resolution: {integrity: sha512-fNzuVyifolSLFL4NzpF+wEF4qrgqaaKX0haXPQEdQ7NKAN+WecoKMHV09YcuL/DHxrUsYQOK3MiuDf7Ip2OXfQ==}
     engines: {node: '>=8'}
-    dev: true
-
-  /minipass@5.0.0:
-    resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
-    engines: {node: '>=8'}
 
   /minisearch@6.1.0:
     resolution: {integrity: sha512-PNxA/X8pWk+TiqPbsoIYH0GQ5Di7m6326/lwU/S4mlo4wGQddIcf/V//1f9TB0V4j59b57b+HZxt8h3iMROGvg==}
@@ -17044,7 +17039,7 @@ packages:
       npmlog: 6.0.2
       rimraf: 3.0.2
       semver: 7.5.1
-      tar: 6.1.15
+      tar: 6.1.13
       which: 2.0.2
     transitivePeerDependencies:
       - bluebird
@@ -20359,7 +20354,7 @@ packages:
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11
       node-addon-api: 4.3.0
-      tar: 6.1.15
+      tar: 6.1.13
     optionalDependencies:
       node-gyp: 8.4.1
     transitivePeerDependencies:
@@ -20953,13 +20948,13 @@ packages:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  /tar@6.1.15:
-    resolution: {integrity: sha512-/zKt9UyngnxIT/EAGYuxaMYgOIJiP81ab9ZfkILq4oNLPFX50qyYmu7jRj9qeXoxmJHjGlbH0+cm2uy1WCs10A==}
+  /tar@6.1.13:
+    resolution: {integrity: sha512-jdIBIN6LTIe2jqzay/2vtYLlBHa3JF42ot3h1dW8Q0PaAG4v8rm0cvpVePtau5C6OKXGGcgO9q2AMNSWxiLqKw==}
     engines: {node: '>=10'}
     dependencies:
       chownr: 2.0.0
       fs-minipass: 2.1.0
-      minipass: 5.0.0
+      minipass: 4.2.8
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
