@@ -43,39 +43,55 @@ export class VmManager {
 	}
 
 	async runExtension(extension: ApiExtensionInfo, extensionPath: string) {
-
 		const extensionCode = await readFile(extensionPath, 'utf-8');
 
 		if (extension.type === 'endpoint') {
-			return this.run(`import ext from 'extension.js'; defineEndpoint(ext)`, extensionCode, extension, extensionPath)
+			return this.run(`import ext from 'extension.js'; defineEndpoint(ext)`, extensionCode, extension, extensionPath);
 		} else if (extension.type === 'hook') {
-			return this.run(`import ext from 'extension.js'; defineHook(ext)`, extensionCode, extension, extensionPath)
+			return this.run(`import ext from 'extension.js'; defineHook(ext)`, extensionCode, extension, extensionPath);
 		} else if (extension.type === 'operation') {
-			return this.run(`import ext from 'extension.js'; defineOperationApi(ext)`, extensionCode, extension, extensionPath)
-
+			return this.run(
+				`import ext from 'extension.js'; defineOperationApi(ext)`,
+				extensionCode,
+				extension,
+				extensionPath
+			);
 		} else if (extension.type === 'bundle') {
-			const unregisterFunctions: (() => Promise<void>)[] = []
+			const unregisterFunctions: (() => Promise<void>)[] = [];
 
 			for (const innerExtension of extension.entries) {
-
 				if (innerExtension.type === 'endpoint') {
-					const unregister = await this.run(`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) defineEndpoint(endpoint)`, extensionCode, extension, extensionPath)
-					unregisterFunctions.push(unregister)
+					const unregister = await this.run(
+						`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) defineEndpoint(endpoint)`,
+						extensionCode,
+						extension,
+						extensionPath
+					);
+					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'hook') {
-					const unregister = await this.run(`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) defineHook(hook)`, extensionCode, extension, extensionPath)
-					unregisterFunctions.push(unregister)
-
+					const unregister = await this.run(
+						`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) defineHook(hook)`,
+						extensionCode,
+						extension,
+						extensionPath
+					);
+					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'operation') {
-					const unregister = await this.run(`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) defineOperationApi(operation)`, extensionCode, extension, extensionPath)
-					unregisterFunctions.push(unregister)
+					const unregister = await this.run(
+						`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) defineOperationApi(operation)`,
+						extensionCode,
+						extension,
+						extensionPath
+					);
+					unregisterFunctions.push(unregister);
 				}
 			}
 
 			return async () => {
 				for (const unregister of unregisterFunctions) {
-					await unregister()
+					await unregister();
 				}
-			}
+			};
 		}
 	}
 
@@ -99,7 +115,6 @@ export class VmManager {
 			hookEvents = await this.defineHook.prepareContext(context, extension);
 		} else if (extension.type === 'operation') {
 			await this.defineOperation.prepareContext(context, extension);
-
 		}
 
 		const runModule = await isolate.compileModule(startCode, { filename: 'extensionLoader.js' });
@@ -164,7 +179,7 @@ export class VmManager {
 			function dispose() {
 				try {
 					channel.dispose();
-				} catch (err) { }
+				} catch (err) {}
 			}
 
 			ws.on('error', dispose);
