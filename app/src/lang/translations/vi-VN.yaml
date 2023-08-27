@@ -99,6 +99,8 @@ delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-
   Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Dữ liệu đã xóa sẽ không thể khôi phục lại được.
 delete_personal_bookmark: Xóa đánh dấu trang cá nhân
+delete_role_bookmark: Xoá dấu trang cho phân quyền
+delete_global_bookmark: Xoá dấu trang toàn app
 logoutReason:
   SIGN_OUT: Đăng Xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
@@ -136,6 +138,14 @@ validationError:
   required: Dữ liệu là bắt buộc
   unique: Giá trị phải là duy nhất
   regex: Giá trị không có định dạng đúng
+  starts_with: Giá trị phải bắt đầu với {substring}
+  istarts_with: Giá trị phải bắt đầu với {substring}
+  nstarts_with: Giá trị không thể bắt đầu với {substring}
+  nistarts_with: Giá trị không thể bắt đầu với {substring}
+  ends_with: Giá trị phải kết thúc với {substring}
+  iends_with: Giá trị phải kết thúc với {substring}
+  nends_with: Giá trị không thể kết thúc với {substring}
+  niends_with: Giá trị không thể kết thúc với {substring}
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
@@ -276,6 +286,7 @@ finish_setup: Hoàn Tất Cài Đặt
 dismiss: Bỏ qua
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Dữ liệu thực tế
+copy_raw_value: Sao chép dữ liệu thô
 copy_raw_value_success: Đã sao chép
 copy_raw_value_fail: Sao chép không thành công
 paste_raw_value: Dán dữ liệu thô
@@ -321,6 +332,10 @@ related_collections: Những Danh mục liên quan
 translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
 import_data_input_placeholder: CSV hoặc JSON...
+import_data_button: Bắt đầu nhập
+import_data_indeterminate: Đang nhập dữ liệu...
+import_data_success: Đã nhập dữ liệu thành công từ file {filename}
+import_data_error: Cấu trúc dữ liệu không phù hợp với bảng cần nhập.
 label_import: Nhập
 label_export: Xuất
 import_export: Nhập / Xuất
