@@ -245,8 +245,8 @@ function onLinkClick(to: string) {
 </script>
 
 <style lang="scss" scoped>
-.search-input.filter-active {
-	width: 300px;
+:deep(.search-input.filter-active) {
+	width: 300px !important;
 }
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
