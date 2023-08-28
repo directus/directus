@@ -60,12 +60,12 @@ export const rest = (config: RestConfig = {}) => {
 
 				// apply onResponse hook from command
 				if ('onResponse' in options) {
-					result = options.onResponse(result, fetchOptions);
+					result = await options.onResponse(result, fetchOptions);
 				}
 
 				// apply global onResponse hook
 				if ('onResponse' in config) {
-					result = config.onResponse(result, fetchOptions);
+					result = await config.onResponse(result, fetchOptions);
 				}
 
 				return result as Output;
