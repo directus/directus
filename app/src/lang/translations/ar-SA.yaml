@@ -146,6 +146,14 @@ validationError:
   required: هذه القيمة مطلوبة
   unique: القيمة يجب أن تكون
   regex: القيمة لا تحتوي على التنسيق الصحيح
+  starts_with: 'https://crowdin. com/translate/directus/70/en-ar? filter=basic&value=0#'
+  istarts_with: Arabic Translations
+  nstarts_with: يجب أن لا تحتوي القيمة على {substring}
+  nistarts_with: Arabic Translations
+  ends_with: يجب أن لا تحتوي القيمة على {substring}
+  iends_with: Value has to end with {substring}
+  nends_with: Translations
+  niends_with: Translations
 all_access: دخول كامل للترجمات
 no_access: ممنوع الدخول
 use_custom: تخصيص
@@ -227,6 +235,7 @@ bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
 date_range: فترة التاريخ
+translation_key_placeholder: ARABIC TRANSLATIONS
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
 precision: الدقة
