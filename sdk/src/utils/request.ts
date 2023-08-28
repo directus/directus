@@ -8,10 +8,7 @@ import { extractData } from './extract-data.js';
  *
  * @returns The API result if successful
  */
-export const request = async <Output = any>(
-	url: string,
-	options: RequestInit
-): Promise<Output> => {
+export const request = async <Output = any>(url: string, options: RequestInit): Promise<Output> => {
 	options.headers =
 		typeof options.headers === 'object' && !Array.isArray(options.headers)
 			? (options.headers as Record<string, string>)
