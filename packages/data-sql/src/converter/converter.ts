@@ -1,7 +1,6 @@
 /**
- * Converts an abstract query to an more SQL specific query.
- * It's used as the first action within the SQL drivers.
- * For details about the target type, see {@link AbstractSqlQuery}.
+ * Converts an abstract query to the abstract SQL query ({@link AbstractSqlQuery}).
+ * This converter is used as the first action within the SQL drivers.
  *
  * @module
  */
