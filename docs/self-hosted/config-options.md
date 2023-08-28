@@ -866,6 +866,8 @@ const publicUrl = process.env.PUBLIC_URL;
 | ------------------------------------ | ------------------------------------------------------- | -------------- |
 | `EXTENSIONS_PATH`                    | Path to your local extensions folder.                   | `./extensions` |
 | `EXTENSIONS_AUTO_RELOAD`             | Automatically reload extensions when they have changed. | `false`        |
+| `EXTENSIONS_SECURE_MEMORY`             | Amount of memory in MB accessible to a secure extension. | `100`        |
+| `EXTENSIONS_SECURE_TIMEOUT`             | Duration until a secure extension times out. | `1000`        |
 | `EXTENSIONS_CACHE_TTL`<sup>[1]</sup> | How long custom app Extensions get cached by browsers.  | --             |
 
 <sup>[1]</sup> The `EXTENSIONS_CACHE_TTL` environment variable controls for how long custom app extensions (e.t.,

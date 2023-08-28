@@ -14,6 +14,7 @@ import { RegistrationManager } from './registration.js';
 import { InstallationManager } from './installation.js';
 import { WatcherManager } from './watcher.js';
 import { VmManager } from './vm.js';
+import path from 'path';
 
 let extensionManager: ExtensionManager;
 
@@ -276,7 +277,9 @@ export class ExtensionManager {
 
 			if (!registeredExtension) throw new Error(`Extension ${extension.name} is not registered in the database`);
 
-			return { ...extension, ...registeredExtension };
+			const apiExtensionPath = typeof extension.entrypoint === 'string' ? path.resolve(extension.path, extension.entrypoint) : path.resolve(extension.path, extension.entrypoint.api)
+
+			return { ...extension, ...registeredExtension, apiExtensionPath };
 		});
 	}
 

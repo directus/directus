@@ -5,6 +5,7 @@ import express from 'express';
 import { createRequire } from 'node:module';
 import type { ExtensionManager } from '../../extensions.js';
 import logger from '../../../logger.js';
+import env from '../../../env.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -31,6 +32,8 @@ export class DefineEndpointVMFunction extends VMFunction {
 				callback: any
 			) {
 				scopedRouter[type](path, (req, res) => {
+					const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+
 					callback.apply(
 						undefined,
 						[
@@ -120,7 +123,7 @@ export class DefineEndpointVMFunction extends VMFunction {
 							}).copyInto(),
 						],
 						{
-							timeout: 1000,
+							timeout: scriptTimeoutMs,
 						}
 					);
 				});
