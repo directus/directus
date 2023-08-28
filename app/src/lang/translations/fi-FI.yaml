@@ -470,7 +470,6 @@ comments: Kommentit
 no_comments: Ei vielä kommentteja
 select_item: Valitse kohde
 no_items: Ei kohteita
-search_items: Hae kohteita...
 disabled: Pois käytöstä
 information: Tietoja
 report_bug: Raportoi bugi
@@ -1751,6 +1750,10 @@ operations:
     payload: Tietosisältö
   item-update:
     payload: Tietosisältö
+  json-web-token:
+    payload: Tietosisältö
+    token: Token
+    options: Valinnat
   log:
     message: Viesti
   mail:

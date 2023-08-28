@@ -502,7 +502,6 @@ expand: Espandi
 collapse: Chiudi
 select_item: Seleziona Elemento
 no_items: Nessun elemento
-search_items: Ricerca elementi...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
@@ -950,6 +949,8 @@ wysiwyg_options:
   source_code: Modifica Codice Sorgente
   fullscreen: Schermo Intero
   directionality: Direzionalità
+  lazy_loading: Carica l'immagine in modalità lazy
+  lazy_loading_label: Abilita Lazy Loading
 dropdown: Menu a tendina
 choices: Scelta multipla
 choices_option_configured_incorrectly: Scelte configurate in modo errato
@@ -1467,7 +1468,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -2139,6 +2139,10 @@ operations:
     key: ID
     payload: Payload
     query: Interrogazione
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opzioni
   log:
     name: Scrivi nella console
     description: Scrive qualcosa nella console

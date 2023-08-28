@@ -145,6 +145,7 @@ validationError:
   required: Vlera është e nevojshme
   unique: Vlera duhet të jetë unike
   regex: Vlera nuk ka formatin e duhur
+  istarts_with: Value has to start with {substring}
 all_access: Qasje e Plote
 no_access: Pa Qasje
 use_custom: Përdor të personalizuar
@@ -488,7 +489,6 @@ expand: Zgjero
 collapse: Tkurre
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
-search_items: Kërko artikuj...
 disabled: I Çaktivizuar
 information: Informacion
 report_bug: Raporto Defekt
@@ -2118,6 +2118,10 @@ operations:
     key: ID-të
     payload: Ngarkesa
     query: Query
+  json-web-token:
+    payload: Ngarkesa
+    token: Token
+    options: Opsione
   log:
     name: Regjistro në Konsolë
     description: Shfaq diçka në konsolë

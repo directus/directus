@@ -48,9 +48,9 @@ const success = ref(false);
 
 const feedback = reactive<{
 	id?: string;
-	rating?: number;
-	comments?: string;
-}>({});
+	rating?: number | undefined;
+	comments: string;
+}>({ comments: '' });
 
 const prompts = [
 	'Make it count',

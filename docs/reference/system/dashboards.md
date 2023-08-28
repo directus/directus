@@ -62,6 +62,10 @@ List all dashboards that exist in Directus.
 
 `SEARCH /dashboards`
 
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
 </template>
 <template #graphql>
 
@@ -77,18 +81,15 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, readDashboards } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readDashboards(query));
+const result = await client.request(readDashboards(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -126,8 +127,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, readDashboards } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -167,12 +167,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, readDashboard } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readDashboard('dashboard_id', query));
+const result = await client.request(readDashboard(dashboard_id, query_object));
 ```
 
 </template>
@@ -209,8 +208,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, readDashboard } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -235,12 +233,7 @@ Create a new dashboard.
 
 `POST /dashboards`
 
-```json
-{
-	"dashboard_field_1": "value_1",
-	"dashboard_field_2": "value_2"
-}
-```
+Provide a [dashboard object](#the-dashboard-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -257,17 +250,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, createDashboard } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createDashboard({
-		dashboard_field_1: 'value_1',
-		dashboard_field_2: 'value_2',
-	})
-);
+const result = await client.request(createDashboard(dashboard_object));
 ```
 
 </template>
@@ -317,8 +304,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, createDashboard } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -342,20 +328,9 @@ Create multiple new dashboards.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`// POST /dashboards`
+`POST /dashboards`
 
-```json
-[
-	{
-		"dashboard_1_object_field_1": "value_1",
-		"dashboard_1_object_field_2": "value_2"
-	},
-	{
-		"dashboard_2_object_field_1": "value_3",
-		"dashboard_2_object_field_2": "value_4"
-	}
-]
-```
+Provide an array of [dashboard objects](#the-dashboard-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -372,23 +347,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, createDashboards } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createDashboards([
-		{
-			dashboard_1_field_1: 'value_1',
-			dashboard_1_field_2: 'value_2',
-		},
-		{
-			dashboard_2_field_1: 'value_3',
-			dashboard_2_field_2: 'value_4',
-		},
-	])
-);
+const result = await client.request(createDashboards(dashboard_object_array));
 ```
 
 </template>
@@ -411,7 +374,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`// POST /dashboards`
+`POST /dashboards`
 
 ```json
 [
@@ -446,8 +409,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, createDashboards } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -479,11 +441,7 @@ Update an existing dashboard.
 
 `PATCH /dashboards/:id`
 
-```json
-{
-	"dashboard_field": "value_1"
-}
-```
+Provide a partial [dashboard object](#the-dashboard-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -500,16 +458,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, updateDashboard } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateDashboard('dashboard_id', {
-		dashboard_field: 'value',
-	})
-);
+const result = await client.request(updateDashboard(dashboard_id, partial_dashboard_object));
 ```
 
 </template>
@@ -558,8 +511,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, updateDashboard } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -586,10 +538,8 @@ Update multiple existing dashboards.
 
 ```json
 {
-	"keys": ["dashboard_key_1", "dashboard_key_2"],
-	"data": {
-		"dashboard_field": "value_1"
-	}
+	"keys": dashboard_id_array,
+	"data": partial_dashboard_object
 }
 ```
 
@@ -608,16 +558,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, updateDashboards } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateDashboards(['dashboard_1_id', 'dashboard_2_id'], {
-		dashboard_field: 'value_1',
-	})
-);
+const result = await client.request(updateDashboards(dashboard_id_array, partial_dashboard_object));
 ```
 
 </template>
@@ -676,8 +621,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, updateDashboards } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -717,12 +661,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteDashboard } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteDashboard('dashboard_id'));
+const result = await client.request(deleteDashboard(dashboard_id));
 ```
 
 </template>
@@ -756,8 +699,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboard } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteDashboard } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -778,9 +720,7 @@ Delete multiple existing dashboards.
 
 `DELETE /dashboards`
 
-```json
-["dashboard_id_1", "dashboard_id_2", "dashboard_id_3"]
-```
+Provide an array of dashboard IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -797,12 +737,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteDashboards } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteDashboards(['dashboard_id_1', 'dashboard_id_2']));
+const result = await client.request(deleteDashboards(dashboard_id_array));
 ```
 
 </template>
