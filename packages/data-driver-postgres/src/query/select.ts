@@ -18,6 +18,8 @@ export const select = ({ select }: AbstractSqlQuery): string => {
 		if (node.type === 'fn') {
 			return applyFunction(node);
 		}
+
+		throw Error(`Unknown node type`);
 	});
 
 	return `SELECT ${escapedColumns.join(', ')}`;

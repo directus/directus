@@ -1,7 +1,7 @@
-import { type SqlConditionLetterNode } from '@directus/data-sql';
+import type { SqlConditionStringNode } from '@directus/data-sql';
 import { wrapColumn } from '../wrap-column.js';
 
-export const letterCondition = (condition: SqlConditionLetterNode, negate: boolean): string => {
+export const stringCondition = (condition: SqlConditionStringNode, negate: boolean): string => {
 	const column = wrapColumn(condition.target.table, condition.target.column);
 	const compareValue = `$${condition.compareTo.parameterIndex + 1}`;
 

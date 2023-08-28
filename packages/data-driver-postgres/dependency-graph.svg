@@ -255,16 +255,16 @@
 <g id="node15" class="node">
 <title>src/utils/conditions/field&#45;condition.ts</title>
 <g id="a_node15"><a xlink:href="src/utils/conditions/field-condition.ts" xlink:title="field&#45;condition.ts">
-<path fill="#ddfeff" stroke="black" d="M407.46,-135.88C407.46,-135.88 336.54,-135.88 336.54,-135.88 333.58,-135.88 330.62,-132.92 330.62,-129.96 330.62,-129.96 330.62,-124.04 330.62,-124.04 330.62,-121.08 333.58,-118.12 336.54,-118.12 336.54,-118.12 407.46,-118.12 407.46,-118.12 410.42,-118.12 413.38,-121.08 413.38,-124.04 413.38,-124.04 413.38,-129.96 413.38,-129.96 413.38,-132.92 410.42,-135.88 407.46,-135.88"/>
-<text text-anchor="start" x="338.62" y="-123.33" font-family="Helvetica,sans-Serif" font-size="9.00">field&#45;condition.ts</text>
+<path fill="#ddfeff" stroke="black" d="M407.46,-105.88C407.46,-105.88 336.54,-105.88 336.54,-105.88 333.58,-105.88 330.62,-102.92 330.62,-99.96 330.62,-99.96 330.62,-94.04 330.62,-94.04 330.62,-91.08 333.58,-88.12 336.54,-88.12 336.54,-88.12 407.46,-88.12 407.46,-88.12 410.42,-88.12 413.38,-91.08 413.38,-94.04 413.38,-94.04 413.38,-99.96 413.38,-99.96 413.38,-102.92 410.42,-105.88 407.46,-105.88"/>
+<text text-anchor="start" x="338.62" y="-93.33" font-family="Helvetica,sans-Serif" font-size="9.00">field&#45;condition.ts</text>
 </a>
 </g>
 </g>
 <!-- src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/field&#45;condition.ts -->
 <g id="edge19" class="edge">
 <title>src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/field&#45;condition.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M307.92,-147.72C313.04,-145.77 318.43,-143.77 323.5,-142 326.32,-141.01 329.24,-140.02 332.19,-139.04"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="333.45,-140.19 338.5,-136.33 332.15,-136.19 333.45,-140.19"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M290.25,-147.72C297.02,-137.55 309.16,-121.42 323.5,-112 324.44,-111.39 325.4,-110.8 326.38,-110.23"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="327.82,-111.86 332.26,-107.31 325.95,-108.1 327.82,-111.86"/>
 </g>
 <!-- src/utils/conditions/geo&#45;condition.ts -->
 <g id="node16" class="node">
@@ -281,50 +281,50 @@
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M307.92,-166.28C313.04,-168.23 318.43,-170.23 323.5,-172 326.32,-172.99 329.24,-173.98 332.19,-174.96"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="332.15,-177.81 338.5,-177.67 333.45,-173.81 332.15,-177.81"/>
 </g>
-<!-- src/utils/conditions/letter&#45;condition.ts -->
-<g id="node17" class="node">
-<title>src/utils/conditions/letter&#45;condition.ts</title>
-<g id="a_node17"><a xlink:href="src/utils/conditions/letter-condition.ts" xlink:title="letter&#45;condition.ts">
-<path fill="#ddfeff" stroke="black" d="M408.96,-105.88C408.96,-105.88 335.04,-105.88 335.04,-105.88 332.08,-105.88 329.12,-102.92 329.12,-99.96 329.12,-99.96 329.12,-94.04 329.12,-94.04 329.12,-91.08 332.08,-88.12 335.04,-88.12 335.04,-88.12 408.96,-88.12 408.96,-88.12 411.92,-88.12 414.88,-91.08 414.88,-94.04 414.88,-94.04 414.88,-99.96 414.88,-99.96 414.88,-102.92 411.92,-105.88 408.96,-105.88"/>
-<text text-anchor="start" x="337.12" y="-93.33" font-family="Helvetica,sans-Serif" font-size="9.00">letter&#45;condition.ts</text>
-</a>
-</g>
-</g>
-<!-- src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/letter&#45;condition.ts -->
-<g id="edge21" class="edge">
-<title>src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/letter&#45;condition.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M290.25,-147.72C297.02,-137.55 309.16,-121.42 323.5,-112 324.44,-111.39 325.4,-110.8 326.38,-110.23"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="327.82,-111.86 332.26,-107.31 325.95,-108.1 327.82,-111.86"/>
-</g>
 <!-- src/utils/conditions/number&#45;condition.ts -->
-<g id="node18" class="node">
+<g id="node17" class="node">
 <title>src/utils/conditions/number&#45;condition.ts</title>
-<g id="a_node18"><a xlink:href="src/utils/conditions/number-condition.ts" xlink:title="number&#45;condition.ts">
+<g id="a_node17"><a xlink:href="src/utils/conditions/number-condition.ts" xlink:title="number&#45;condition.ts">
 <path fill="#ddfeff" stroke="black" d="M414.58,-225.88C414.58,-225.88 329.42,-225.88 329.42,-225.88 326.46,-225.88 323.5,-222.92 323.5,-219.96 323.5,-219.96 323.5,-214.04 323.5,-214.04 323.5,-211.08 326.46,-208.12 329.42,-208.12 329.42,-208.12 414.58,-208.12 414.58,-208.12 417.54,-208.12 420.5,-211.08 420.5,-214.04 420.5,-214.04 420.5,-219.96 420.5,-219.96 420.5,-222.92 417.54,-225.88 414.58,-225.88"/>
 <text text-anchor="start" x="331.5" y="-213.32" font-family="Helvetica,sans-Serif" font-size="9.00">number&#45;condition.ts</text>
 </a>
 </g>
 </g>
 <!-- src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/number&#45;condition.ts -->
-<g id="edge22" class="edge">
+<g id="edge21" class="edge">
 <title>src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/number&#45;condition.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M306.37,-166.35C307.87,-167.45 309.27,-168.67 310.5,-170 320.92,-181.27 312.22,-191.59 323.5,-202 323.8,-202.28 324.11,-202.55 324.42,-202.82"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="323.45,-205.07 329.58,-206.74 325.83,-201.61 323.45,-205.07"/>
 </g>
 <!-- src/utils/conditions/set&#45;condition.ts -->
-<g id="node19" class="node">
+<g id="node18" class="node">
 <title>src/utils/conditions/set&#45;condition.ts</title>
-<g id="a_node19"><a xlink:href="src/utils/conditions/set-condition.ts" xlink:title="set&#45;condition.ts">
-<path fill="#ddfeff" stroke="black" d="M404.83,-165.88C404.83,-165.88 339.17,-165.88 339.17,-165.88 336.21,-165.88 333.25,-162.92 333.25,-159.96 333.25,-159.96 333.25,-154.04 333.25,-154.04 333.25,-151.08 336.21,-148.12 339.17,-148.12 339.17,-148.12 404.83,-148.12 404.83,-148.12 407.79,-148.12 410.75,-151.08 410.75,-154.04 410.75,-154.04 410.75,-159.96 410.75,-159.96 410.75,-162.92 407.79,-165.88 404.83,-165.88"/>
-<text text-anchor="start" x="341.25" y="-153.32" font-family="Helvetica,sans-Serif" font-size="9.00">set&#45;condition.ts</text>
+<g id="a_node18"><a xlink:href="src/utils/conditions/set-condition.ts" xlink:title="set&#45;condition.ts">
+<path fill="#ddfeff" stroke="black" d="M404.83,-135.88C404.83,-135.88 339.17,-135.88 339.17,-135.88 336.21,-135.88 333.25,-132.92 333.25,-129.96 333.25,-129.96 333.25,-124.04 333.25,-124.04 333.25,-121.08 336.21,-118.12 339.17,-118.12 339.17,-118.12 404.83,-118.12 404.83,-118.12 407.79,-118.12 410.75,-121.08 410.75,-124.04 410.75,-124.04 410.75,-129.96 410.75,-129.96 410.75,-132.92 407.79,-135.88 404.83,-135.88"/>
+<text text-anchor="start" x="341.25" y="-123.33" font-family="Helvetica,sans-Serif" font-size="9.00">set&#45;condition.ts</text>
 </a>
 </g>
 </g>
 <!-- src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/set&#45;condition.ts -->
-<g id="edge23" class="edge">
+<g id="edge22" class="edge">
 <title>src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/set&#45;condition.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M310.92,-157C315.16,-157 319.66,-157 324.2,-157"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="323.96,-159.1 329.96,-157 323.96,-154.9 323.96,-159.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M307.92,-147.72C313.04,-145.77 318.43,-143.77 323.5,-142 326.32,-141.01 329.24,-140.02 332.19,-139.04"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="333.45,-140.19 338.5,-136.33 332.15,-136.19 333.45,-140.19"/>
+</g>
+<!-- src/utils/conditions/string&#45;condition.ts -->
+<g id="node19" class="node">
+<title>src/utils/conditions/string&#45;condition.ts</title>
+<g id="a_node19"><a xlink:href="src/utils/conditions/string-condition.ts" xlink:title="string&#45;condition.ts">
+<path fill="#ddfeff" stroke="black" d="M410.08,-165.88C410.08,-165.88 333.92,-165.88 333.92,-165.88 330.96,-165.88 328,-162.92 328,-159.96 328,-159.96 328,-154.04 328,-154.04 328,-151.08 330.96,-148.12 333.92,-148.12 333.92,-148.12 410.08,-148.12 410.08,-148.12 413.04,-148.12 416,-151.08 416,-154.04 416,-154.04 416,-159.96 416,-159.96 416,-162.92 413.04,-165.88 410.08,-165.88"/>
+<text text-anchor="start" x="336" y="-153.32" font-family="Helvetica,sans-Serif" font-size="9.00">string&#45;condition.ts</text>
+</a>
+</g>
+</g>
+<!-- src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/string&#45;condition.ts -->
+<g id="edge23" class="edge">
+<title>src/utils/conditions/index.ts&#45;&gt;src/utils/conditions/string&#45;condition.ts</title>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M310.92,-157C313.39,-157 315.95,-157 318.55,-157"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="318.52,-159.1 324.52,-157 318.52,-154.9 318.52,-159.1"/>
 </g>
 <!-- src/utils/functions.ts&#45;&gt;src/utils/wrap&#45;column.ts -->
 <g id="edge28" class="edge">
@@ -341,8 +341,8 @@
 <!-- src/utils/conditions/field&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts -->
 <g id="edge17" class="edge">
 <title>src/utils/conditions/field&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M413.46,-129.98C439.89,-131.93 474.51,-134.48 502.19,-136.52"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="501.78,-138.82 507.91,-137.17 502.08,-134.63 501.78,-138.82"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M411.27,-106.33C438.08,-112.87 474.07,-121.64 502.59,-128.59"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="502.85,-131.31 509.18,-130.69 503.85,-127.23 502.85,-131.31"/>
 </g>
 <!-- src/utils/conditions/geo&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts -->
 <g id="edge18" class="edge">
@@ -350,29 +350,29 @@
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M407.85,-177.71C435.9,-170.24 475.48,-159.69 505.66,-151.65"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="507.04,-152.92 512.3,-149.35 505.96,-148.86 507.04,-152.92"/>
 </g>
-<!-- src/utils/conditions/letter&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts -->
-<g id="edge24" class="edge">
-<title>src/utils/conditions/letter&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M411.27,-106.33C438.08,-112.87 474.07,-121.64 502.59,-128.59"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="502.85,-131.31 509.18,-130.69 503.85,-127.23 502.85,-131.31"/>
-</g>
 <!-- src/utils/conditions/number&#45;condition.ts&#45;&gt;src/utils/functions.ts -->
-<g id="edge25" class="edge">
+<g id="edge24" class="edge">
 <title>src/utils/conditions/number&#45;condition.ts&#45;&gt;src/utils/functions.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M420.78,-217C422.9,-217 425.01,-217 427.1,-217"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="427.08,-219.1 433.08,-217 427.08,-214.9 427.08,-219.1"/>
 </g>
 <!-- src/utils/conditions/number&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts -->
-<g id="edge26" class="edge">
+<g id="edge25" class="edge">
 <title>src/utils/conditions/number&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M411.55,-207.71C417.3,-206 423.1,-204.09 428.5,-202 463.88,-188.32 502.51,-167.36 526.34,-153.67"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="527.7,-155.15 531.83,-150.32 525.59,-151.52 527.7,-155.15"/>
 </g>
 <!-- src/utils/conditions/set&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts -->
-<g id="edge27" class="edge">
+<g id="edge26" class="edge">
 <title>src/utils/conditions/set&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M410.84,-153.35C437.62,-150.77 473.73,-147.29 502.36,-144.53"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="502.22,-146.37 507.99,-143.7 501.82,-142.18 502.22,-146.37"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M410.84,-129.79C437.62,-131.76 473.73,-134.42 502.36,-136.53"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="501.85,-138.82 507.99,-137.17 502.16,-134.64 501.85,-138.82"/>
+</g>
+<!-- src/utils/conditions/string&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts -->
+<g id="edge27" class="edge">
+<title>src/utils/conditions/string&#45;condition.ts&#45;&gt;src/utils/wrap&#45;column.ts</title>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M416.15,-152.84C442.17,-150.33 475.34,-147.14 502.08,-144.56"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="502.11,-146.38 507.88,-143.71 501.7,-142.2 502.11,-146.38"/>
 </g>
 </g>
 </svg>

@@ -1,9 +1,9 @@
 import { beforeEach, expect, test } from 'vitest';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { letterCondition } from './letter-condition.js';
-import type { SqlConditionLetterNode } from '@directus/data-sql';
+import { stringCondition } from './string-condition.js';
+import type { SqlConditionStringNode } from '@directus/data-sql';
 
-let sampleCondition: SqlConditionLetterNode;
+let sampleCondition: SqlConditionStringNode;
 let randomTable: string;
 let randomColumn: string;
 let parameterIndex: number;
@@ -14,7 +14,7 @@ beforeEach(() => {
 	parameterIndex = randomInteger(0, 100);
 
 	sampleCondition = {
-		type: 'condition-letter',
+		type: 'condition-string',
 		target: {
 			type: 'primitive',
 			table: randomTable,
@@ -29,7 +29,7 @@ beforeEach(() => {
 });
 
 test('letter condition starts_with', () => {
-	expect(letterCondition(sampleCondition, false)).toStrictEqual(
+	expect(stringCondition(sampleCondition, false)).toStrictEqual(
 		`"${randomTable}"."${randomColumn}" LIKE '$${parameterIndex + 1}%'`
 	);
 });
@@ -37,7 +37,7 @@ test('letter condition starts_with', () => {
 test('letter condition contains', () => {
 	sampleCondition.operation = 'contains';
 
-	expect(letterCondition(sampleCondition, false)).toStrictEqual(
+	expect(stringCondition(sampleCondition, false)).toStrictEqual(
 		`"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}%'`
 	);
 });
@@ -45,7 +45,7 @@ test('letter condition contains', () => {
 test('letter condition contains', () => {
 	sampleCondition.operation = 'ends_with';
 
-	expect(letterCondition(sampleCondition, false)).toStrictEqual(
+	expect(stringCondition(sampleCondition, false)).toStrictEqual(
 		`"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}'`
 	);
 });
