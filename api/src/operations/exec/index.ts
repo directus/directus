@@ -2,7 +2,6 @@ import { defineOperationApi } from '@directus/utils';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const ivm = require('isolated-vm');
 
 type Options = {
 	code: string;
@@ -19,6 +18,10 @@ function unpackArgs(args: any[]) {
 export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data, env, logger }) => {
+		// TODO Move 'require' statement out of handler again as soon as workaround
+		// mentioned in https://github.com/directus/directus/pull/19089 could be replaced
+		const ivm = require('isolated-vm');
+
 		const allowedEnv = data['$env'] ?? {};
 		const isolateSizeMb = env['FLOWS_RUN_SCRIPT_MAX_MEMORY'];
 		const scriptTimeoutMs = env['FLOWS_RUN_SCRIPT_TIMEOUT'];

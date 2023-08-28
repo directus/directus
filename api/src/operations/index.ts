@@ -4,6 +4,7 @@ export { default as itemCreate } from './item-create/index.js';
 export { default as itemDelete } from './item-delete/index.js';
 export { default as itemRead } from './item-read/index.js';
 export { default as itemUpdate } from './item-update/index.js';
+export { default as jsonWebToken } from './json-web-token/index.js';
 export { default as log } from './log/index.js';
 export { default as mail } from './mail/index.js';
 export { default as notification } from './notification/index.js';
