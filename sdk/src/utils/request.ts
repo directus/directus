@@ -17,9 +17,7 @@ export const request = async <Output = any>(
 			? (options.headers as Record<string, string>)
 			: {};
 
-	const response = await globalThis.fetch(url, options).catch((reason) => {
-		throw { reason, response };
-	});
+	const response = await globalThis.fetch(url, options);
 
 	const data = await extractData(response).catch((reason) => {
 		throw { reason, response };

@@ -1,6 +1,5 @@
 import type { StaticTokenClient } from '../auth/types.js';
 import type { DirectusClient } from '../types/client.js';
-import type { ResponseTransformer } from '../index.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
@@ -57,21 +56,19 @@ export const rest = (config: RestConfig = {}) => {
 					fetchOptions = await config.onRequest(fetchOptions);
 				}
 
-				let onResponse: ResponseTransformer<Output> | null = null;
+				let result = await request<Output>(requestUrl.toString(), fetchOptions);
 
-				// chain response handlers if needed
-				if (!!config.onResponse && !!options.onResponse) {
-					onResponse = ((data: any, request: RequestInit) =>
-						Promise.resolve(data).then((data) => config.onResponse!(data, request)).then((data) => options.onResponse!(data, request))) as ResponseTransformer;
-				} else if ('onResponse' in options) {
-					onResponse = options.onResponse;
-				} else if ('onResponse' in config) {
-					onResponse = config.onResponse;
+				// apply onResponse hook from command
+				if ('onResponse' in options) {
+					result = options.onResponse(result, fetchOptions);
 				}
 
-				const response = await request<Output>(requestUrl.toString(), fetchOptions, onResponse); //.catch(onError);
+				// apply global onResponse hook
+				if ('onResponse' in config) {
+					result = config.onResponse(result, fetchOptions);
+				}
 
-				return response as Output;
+				return result as Output;
 			},
 		};
 	};
