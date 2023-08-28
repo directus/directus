@@ -502,6 +502,7 @@ expand: Ausklappen
 collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
+search_items: Elemente suchen...
 disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
@@ -949,6 +950,7 @@ wysiwyg_options:
   source_code: Quellcode bearbeiten
   fullscreen: Vollbild
   directionality: Richtung
+  lazy_loading: Bilderer nachladen
 dropdown: Dropdown
 choices: Optionen
 choices_option_configured_incorrectly: Auswahl falsch konfiguriert
