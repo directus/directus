@@ -13,10 +13,10 @@ export const join = ({ join }: AbstractSqlQuery): string | null => {
 	let joinString = '';
 
 	for (const node of join) {
-    const tableName = escapeIdentifier(node.table);
-    const nodeAlias = escapeIdentifier(node.as);
-    const joinCondition = conditionString(node.on);
-    joinString += `LEFT JOIN ${tableName} ${nodeAlias} ON ${joinCondition}`;
+		const tableName = escapeIdentifier(node.table);
+		const nodeAlias = escapeIdentifier(node.as);
+		const joinCondition = conditionString(node.on);
+		joinString += `LEFT JOIN ${tableName} ${nodeAlias} ON ${joinCondition}`;
 	}
 
 	return joinString;
