@@ -1,9 +1,10 @@
-import type { Context } from 'isolated-vm';
+import type { Context, Reference } from 'isolated-vm';
 import type { ApiExtensionInfo } from '../../vm.js';
 import { VMFunction } from '../vm-function.js';
 import { createRequire } from 'module';
 import { createVMError } from '../create-error.js';
 import { ExtensionServiceError } from '../../../errors/extension-permissions.js';
+import env from '../../../env.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -14,15 +15,16 @@ export class FetchVMFunction extends VMFunction {
 
 		context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
-			new ivm.Reference(async function (url: string, options: any, resolve: any, reject: any) {
+			new ivm.Reference(async function (url: string, options: any, resolve: Reference<(...args: any) => void>, reject: Reference<(reason?: any) => void>) {
 				const permission = permissions.find((permission) => permission.permission === 'fetch');
+				const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
 				if (permission?.enabled !== true) {
 					reject.apply(
 						undefined,
 						[createVMError(new ExtensionServiceError({ service: 'fetch', reason: `Permission denied` }))],
 						{
-							timeout: 1000,
+							timeout: scriptTimeoutMs,
 						}
 					);
 				}
@@ -51,7 +53,7 @@ export class FetchVMFunction extends VMFunction {
 						undefined,
 						[createVMError(new ExtensionServiceError({ service: 'fetch', reason: `Url is not allowed` }))],
 						{
-							timeout: 1000,
+							timeout: scriptTimeoutMs,
 						}
 					);
 				}
@@ -89,12 +91,12 @@ export class FetchVMFunction extends VMFunction {
 							}),
 						],
 						{
-							timeout: 1000,
+							timeout: scriptTimeoutMs,
 						}
 					);
 				} catch (err) {
 					reject.apply(undefined, [new ivm.ExternalCopy(err).copyInto()], {
-						timeout: 1000,
+						timeout: scriptTimeoutMs,
 					});
 				}
 			}),

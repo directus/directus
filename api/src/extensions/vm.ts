@@ -14,6 +14,7 @@ import { LoggerVMFunction } from './vm-functions/logger/node.js';
 import type { EventHandler } from '../types/events.js';
 import emitter from '../emitter.js';
 import logger from '../logger.js';
+import env from '../env.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -42,19 +43,15 @@ export class VmManager {
 		this.defineOperation = new DefineOperationVMFunction();
 	}
 
-	async runExtension(extension: ApiExtensionInfo, extensionPath: string) {
-		const extensionCode = await readFile(extensionPath, 'utf-8');
-
+	async runExtension(extension: ApiExtensionInfo) {
 		if (extension.type === 'endpoint') {
-			return this.run(`import ext from 'extension.js'; defineEndpoint(ext)`, extensionCode, extension, extensionPath);
+			return this.run(`import ext from 'extension.js'; defineEndpoint(ext)`, extension);
 		} else if (extension.type === 'hook') {
-			return this.run(`import ext from 'extension.js'; defineHook(ext)`, extensionCode, extension, extensionPath);
+			return this.run(`import ext from 'extension.js'; defineHook(ext)`, extension);
 		} else if (extension.type === 'operation') {
 			return this.run(
 				`import ext from 'extension.js'; defineOperationApi(ext)`,
-				extensionCode,
 				extension,
-				extensionPath
 			);
 		} else if (extension.type === 'bundle') {
 			const unregisterFunctions: (() => Promise<void>)[] = [];
@@ -63,27 +60,21 @@ export class VmManager {
 				if (innerExtension.type === 'endpoint') {
 					const unregister = await this.run(
 						`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) defineEndpoint(endpoint)`,
-						extensionCode,
 						extension,
-						extensionPath
 					);
 
 					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'hook') {
 					const unregister = await this.run(
 						`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) defineHook(hook)`,
-						extensionCode,
 						extension,
-						extensionPath
 					);
 
 					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'operation') {
 					const unregister = await this.run(
 						`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) defineOperationApi(operation)`,
-						extensionCode,
 						extension,
-						extensionPath
 					);
 
 					unregisterFunctions.push(unregister);
@@ -96,11 +87,17 @@ export class VmManager {
 				}
 			};
 		}
+
+		return () => {
+			/* do nothing */
+		}
 	}
 
-	private async run(startCode: string, extensionCode: string, extension: ApiExtensionInfo, extensionPath: string) {
-		const isolateSizeMb = 8;
-		const scriptTimeoutMs = 1000;
+	private async run(startCode: string, extension: ApiExtensionInfo) {
+		const isolateSizeMb = Number(env['EXTENSIONS_SECURE_MEMORY']);
+		const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+
+		const extensionCode = await readFile(extension.apiExtensionPath!, 'utf-8');
 
 		const enableDebugger = extension.debugger === true;
 
@@ -125,7 +122,7 @@ export class VmManager {
 		await runModule.instantiate(context, (specifier: string) => {
 			if (specifier === 'extension.js') {
 				return isolate.compileModule(extensionCode, {
-					filename: extensionPath,
+					filename: extension.apiExtensionPath!,
 				});
 			}
 
@@ -182,7 +179,7 @@ export class VmManager {
 			function dispose() {
 				try {
 					channel.dispose();
-				} catch (err) {}
+				} catch (err) { }
 			}
 
 			ws.on('error', dispose);

@@ -65,6 +65,7 @@ type ExtensionBase = {
 	secure: boolean;
 	debugger?: boolean;
 	local: boolean;
+	apiExtensionPath?: string;
 	requested_permissions: ExtensionPermission[];
 };
 

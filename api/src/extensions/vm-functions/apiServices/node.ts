@@ -1,4 +1,4 @@
-import type { Context } from 'isolated-vm';
+import type { Context, Reference } from 'isolated-vm';
 import type { ApiExtensionInfo } from '../../vm.js';
 import { VMFunction } from '../vm-function.js';
 import { createRequire } from 'node:module';
@@ -25,6 +25,7 @@ import {
 import { getSchema } from '../../../utils/get-schema.js';
 import { createVMError } from '../create-error.js';
 import { ExtensionServiceError } from '../../../errors/extension-permissions.js';
+import env from '../../../env.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -139,11 +140,13 @@ export class ApiServiceVMFunction extends VMFunction {
 				}
 			}
 
-			return new ivm.Reference(function (resolve: any, reject: any, prop: string, args: any[]) {
+			return new ivm.Reference(function (resolve: Reference<(value: any) => void>, reject: Reference<(reason?: any) => void>, prop: string, args: any[]) {
+				const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+
 				if (prop in service === false || prop === 'createMutationTracker') {
 					reject.apply(null, [
 						createVMError(new ExtensionServiceError({ service: type, reason: `Method ${prop} not found` })),
-					]);
+					], { timeout: scriptTimeoutMs });
 
 					return;
 				}
@@ -158,12 +161,13 @@ export class ApiServiceVMFunction extends VMFunction {
 					return arg;
 				});
 
+
 				service[prop](...argWithFunc)
 					.then((result: any) => {
-						resolve.apply(null, [new ivm.ExternalCopy(result).copyInto()]);
+						resolve.apply(null, [new ivm.ExternalCopy(result).copyInto()], { timeout: scriptTimeoutMs });
 					})
 					.catch((err: any) => {
-						reject.apply(null, [new ivm.ExternalCopy(err).copyInto()]);
+						reject.apply(null, [new ivm.ExternalCopy(err).copyInto()], { timeout: scriptTimeoutMs });
 					});
 			});
 		}

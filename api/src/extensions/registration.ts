@@ -79,10 +79,9 @@ export class RegistrationManager {
 
 		for (const hook of hooks) {
 			try {
-				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
 				if (hook.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(hook, hookPath);
+					const unregister = await this.extensionManager.vm.runExtension(hook);
 
 					this.runningApiExtensions.push({
 						extension: hook.name,
@@ -91,6 +90,8 @@ export class RegistrationManager {
 
 					return;
 				}
+
+				const hookPath = hook.apiExtensionPath!
 
 				const hookInstance: HookConfig | { default: HookConfig } = await import(
 					`./${pathToRelativeUrl(hookPath, __dirname)}?t=${Date.now()}`
@@ -135,10 +136,9 @@ export class RegistrationManager {
 
 		for (const endpoint of endpoints) {
 			try {
-				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
 				if (endpoint.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(endpoint, endpointPath);
+					const unregister = await this.extensionManager.vm.runExtension(endpoint);
 
 					this.runningApiExtensions.push({
 						extension: endpoint.name,
@@ -147,6 +147,8 @@ export class RegistrationManager {
 
 					return;
 				}
+
+				const endpointPath = endpoint.apiExtensionPath!;
 
 				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
 					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
@@ -188,10 +190,9 @@ export class RegistrationManager {
 
 		for (const operation of operations) {
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
 				if (operation.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(operation, operationPath);
+					const unregister = await this.extensionManager.vm.runExtension(operation);
 
 					this.runningApiExtensions.push({
 						extension: operation.name,
@@ -200,6 +201,8 @@ export class RegistrationManager {
 
 					return;
 				}
+
+				const operationPath = operation.apiExtensionPath!
 
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
 					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
@@ -229,10 +232,9 @@ export class RegistrationManager {
 
 		for (const bundle of bundles) {
 			try {
-				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
 				if (bundle.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(bundle, bundlePath);
+					const unregister = await this.extensionManager.vm.runExtension(bundle);
 
 					this.runningApiExtensions.push({
 						extension: bundle.name,
@@ -241,6 +243,8 @@ export class RegistrationManager {
 
 					return;
 				}
+
+				const bundlePath = bundle.apiExtensionPath!;
 
 				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
 					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`

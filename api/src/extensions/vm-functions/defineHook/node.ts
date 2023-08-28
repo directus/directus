@@ -8,6 +8,7 @@ import type { ActionHandler, FilterHandler, InitHandler, ScheduleHandler } from 
 import type { ExtensionManager } from '../../extensions.js';
 import { scheduleSynchronizedJob, validateCron } from '../../../utils/schedule.js';
 import logger from '../../../logger.js';
+import env from '../../../env.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -28,11 +29,13 @@ export class DefineHookVMFunction extends VMFunction {
 		await context.evalClosure(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(async (type: HookType, ...args: any) => {
+				const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+
 				if (type === 'filter') {
 					const [event, callback]: [string, Reference] = args;
 
 					const handler: FilterHandler = (payload, meta) => {
-						callback.apply(null, [new ivm.ExternalCopy(payload).copyInto(), new ivm.ExternalCopy(meta).copyInto()]);
+						callback.apply(null, [new ivm.ExternalCopy(payload).copyInto(), new ivm.ExternalCopy(meta).copyInto()], { timeout: scriptTimeoutMs });
 					};
 
 					emitter.onFilter(event, handler);
@@ -42,17 +45,17 @@ export class DefineHookVMFunction extends VMFunction {
 					const [event, callback]: [string, Reference] = args;
 
 					const handler: ActionHandler = (meta) => {
-						callback.apply(null, [new ivm.ExternalCopy(meta).copyInto()]);
+						callback.apply(null, [new ivm.ExternalCopy(meta).copyInto()], { timeout: scriptTimeoutMs });
 					};
 
-					hookEvents.push({ type: 'action', name: event, handler });
-
 					emitter.onAction(event, handler);
+
+					hookEvents.push({ type: 'action', name: event, handler });
 				} else if (type === 'init') {
 					const [event, callback]: [string, Reference] = args;
 
 					const handler: InitHandler = (meta) => {
-						callback.apply(null, [new ivm.ExternalCopy(meta).copyInto()]);
+						callback.apply(null, [new ivm.ExternalCopy(meta).copyInto()], { timeout: scriptTimeoutMs });
 					};
 
 					hookEvents.push({ type: 'init', name: event, handler });
@@ -65,7 +68,7 @@ export class DefineHookVMFunction extends VMFunction {
 						const job = scheduleSynchronizedJob(`${extension.name}:${scheduleIndex}`, cron, async () => {
 							if (this.extensionManager.options.schedule) {
 								try {
-									callback.apply(null, []);
+									callback.apply(null, [], { timeout: scriptTimeoutMs });
 								} catch (error: any) {
 									logger.error(error);
 								}
@@ -84,7 +87,7 @@ export class DefineHookVMFunction extends VMFunction {
 				} else if (type === 'embed') {
 					const [position, code]: ['head' | 'body', string | Reference] = args;
 
-					const content = typeof code === 'string' ? code : (await code.apply(null, []))?.toString();
+					const content = typeof code === 'string' ? code : (await code.apply(null, [], { timeout: scriptTimeoutMs }))?.toString();
 
 					if (!content) return;
 
