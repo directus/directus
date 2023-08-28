@@ -463,7 +463,6 @@ comments: 評論
 no_comments: 還沒有評論
 select_item: 選擇項目
 no_items: 沒有任何項目
-search_items: 搜尋項目...
 disabled: 已停用
 information: 詳細資訊
 report_bug: 回報程式錯誤
@@ -1991,6 +1990,10 @@ operations:
     key: ID
     payload: 傳送資料
     query: 查詢
+  json-web-token:
+    payload: 傳送資料
+    token: 權杖
+    options: 選項
   log:
     name: 紀錄於主控台
     description: 將文字顯示到控制台中

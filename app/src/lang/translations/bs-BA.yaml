@@ -445,7 +445,6 @@ comments: Komentari
 no_comments: Još nema komentara
 select_item: Odaberi stavku
 no_items: Nema stavki
-search_items: Pretraži stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
@@ -1921,6 +1920,8 @@ operations:
     emit_events: Emituje događaje
     key: IDevi
     query: Upit
+  json-web-token:
+    options: Opcije
   log:
     name: Prijava na konzolu
     description: Pošaljite nešto na konzolu
