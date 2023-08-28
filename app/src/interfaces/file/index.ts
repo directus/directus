@@ -32,11 +32,11 @@ export default defineInterface({
 				interface: 'checkbox',
 				options: {
 					label: '$t:interfaces.system-folder.show_navigation_label',
-				}
+				},
 			},
 			schema: {
-				default_value: true
-			}
+				default_value: true,
+			},
 		},
 	],
 	recommendedDisplays: ['file'],

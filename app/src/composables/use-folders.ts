@@ -36,7 +36,7 @@ export function useFolders(rootFolder?: MaybeRef<string | undefined>): UsableFol
 
 	if (openFolders === null) {
 		if (_rootFolder.value === undefined) {
-			openFolders = ref(openFoldersInitial)
+			openFolders = ref(openFoldersInitial);
 		} else {
 			openFolders = ref([_rootFolder.value]);
 		}
@@ -46,9 +46,13 @@ export function useFolders(rootFolder?: MaybeRef<string | undefined>): UsableFol
 		if (_rootFolder.value === undefined) {
 			fetchFolders();
 		} else {
-			watch(_rootFolder, (newRootFolder) => {
-				fetchFolders(newRootFolder);
-			}, { immediate: true })
+			watch(
+				_rootFolder,
+				(newRootFolder) => {
+					fetchFolders(newRootFolder);
+				},
+				{ immediate: true }
+			);
 		}
 	}
 
@@ -82,7 +86,7 @@ export function nestFolders(rawFolders: FolderRaw[], rootFolder?: string): Folde
 			acc.push(nestChildren(rawFolder, rawFolders));
 		}
 
-		return acc
+		return acc;
 	}, []);
 }
 
