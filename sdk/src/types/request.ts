@@ -14,6 +14,6 @@ export interface RequestTransformer {
 	(options: RequestInit): RequestInit | Promise<RequestInit>;
 }
 
-export interface ResponseTransformer<Output = any> {
-	(data: any, request: RequestInit): Output | Promise<Output>;
+export interface ResponseTransformer {
+	<Output = any>(data: any, request: RequestInit): Output | Promise<Output>;
 }
