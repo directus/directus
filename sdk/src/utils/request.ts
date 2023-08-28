@@ -1,3 +1,5 @@
+import type { ResponseTransformer } from "../index.js";
+
 /**
  * Request helper providing default settings
  *
@@ -9,7 +11,7 @@
 export const request = async <Output = any>(
 	url: string,
 	options: RequestInit,
-	formatter?: ((data: any) => Output) | null
+	formatter?: ResponseTransformer<Output> | null
 ): Promise<Output> => {
 	options.headers =
 		typeof options.headers === 'object' && !Array.isArray(options.headers)
@@ -26,29 +28,31 @@ export const request = async <Output = any>(
 
 	const outputFormatter = formatter !== undefined && formatter !== null ? formatter : defaultFormatter;
 
-	const response = await globalThis
-		.fetch(url, options)
-		.then(async (response) => {
-			const type = response.headers.get('Content-Type')?.toLowerCase();
+	const response = await globalThis.fetch(url, options);
 
-			if (type?.startsWith('application/json')) {
-				const result = await response.json();
-				if (!response.ok) throw result;
-				return result;
-			}
-
-			if (type?.startsWith('text/html') || type?.startsWith('text/plain')) {
-				const result = await response.text();
-				if (!response.ok) throw result;
-				return result;
-			}
-
-			// empty body fallback
-			return;
+	const data = await extractData(response)
+		.catch((reason) => {
+			throw { reason, response };
 		})
-		.catch((err) => {
-			throw err;
-		});
 
-	return outputFormatter(response);
+	return outputFormatter(data, options);
 };
+
+async function extractData(response: Response) {
+	const type = response.headers.get('Content-Type')?.toLowerCase();
+
+	if (type?.startsWith('application/json')) {
+		const result = await response.json();
+		if (!response.ok) throw result;
+		return result;
+	}
+
+	if (type?.startsWith('text/html') || type?.startsWith('text/plain')) {
+		const result = await response.text();
+		if (!response.ok) throw result;
+		return result;
+	}
+
+	// empty body fallback
+	return;
+}

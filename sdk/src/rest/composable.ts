@@ -57,20 +57,19 @@ export const rest = (config: RestConfig = {}) => {
 					fetchOptions = await config.onRequest(fetchOptions);
 				}
 
-				//const onError = config.onError ?? ((_err: any) => undefined);
-				let onResponse: ResponseTransformer | undefined | null;
+				let onResponse: ResponseTransformer<Output> | null = null;
 
 				// chain response handlers if needed
-				if (config.onResponse && options.onResponse) {
-					onResponse = ((data: any) =>
-						Promise.resolve(data).then(config.onResponse).then(options.onResponse)) as ResponseTransformer;
+				if (!!config.onResponse && !!options.onResponse) {
+					onResponse = ((data: any, request: RequestInit) =>
+						Promise.resolve(data).then((data) => config.onResponse!(data, request)).then((data) => options.onResponse!(data, request))) as ResponseTransformer;
 				} else if ('onResponse' in options) {
 					onResponse = options.onResponse;
 				} else if ('onResponse' in config) {
 					onResponse = config.onResponse;
 				}
 
-				const response = await request(requestUrl.toString(), fetchOptions, onResponse); //.catch(onError);
+				const response = await request<Output>(requestUrl.toString(), fetchOptions, onResponse); //.catch(onError);
 
 				return response as Output;
 			},
