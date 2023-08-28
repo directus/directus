@@ -27,3 +27,4 @@ export * from './settings.js';
 export * from './shares.js';
 export * from './users.js';
 export * from './vue.js';
+export * from './secure-extensions/index.js'

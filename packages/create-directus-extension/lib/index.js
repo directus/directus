@@ -11,7 +11,7 @@ async function run() {
 	// eslint-disable-next-line no-console
 	console.log('This utility will walk you through creating a Directus extension.\n');
 
-	const { type, name, language } = await inquirer.prompt([
+	const { type, name, language, secure } = await inquirer.prompt([
 		{
 			type: 'list',
 			name: 'type',
@@ -30,7 +30,12 @@ async function run() {
 			choices: EXTENSION_LANGUAGES,
 			when: ({ type }) => BUNDLE_EXTENSION_TYPES.includes(type) === false,
 		},
+		{
+			type: 'confirm',
+			name: 'secure',
+			message: 'Create a secure extension?',
+		},
 	]);
 
-	await create(type, name, { language });
+	await create(type, name, { language, secure });
 }

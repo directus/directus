@@ -6,6 +6,8 @@ import getTemplatePath from '../../utils/get-template-path.js';
 
 type TemplateFile = { type: 'config' | 'source'; path: string };
 
+type LangWithSecure = Language | 'secure';
+
 async function copyTemplateFile(templateFile: TemplateFile, extensionPath: string, sourcePath?: string) {
 	if (sourcePath !== undefined) {
 		const oldName = path.basename(templateFile.path);
@@ -40,7 +42,7 @@ async function getLanguageTemplateFiles(templateLanguagePath: string): Promise<T
 	return [...configTemplateFiles, ...sourceTemplateFiles];
 }
 
-async function getTypeTemplateFiles(templateTypePath: string, language?: Language): Promise<TemplateFile[]> {
+async function getTypeTemplateFiles(templateTypePath: string, language?: LangWithSecure): Promise<TemplateFile[]> {
 	const [commonTemplateFiles, languageTemplateFiles] = await Promise.all([
 		getLanguageTemplateFiles(path.join(templateTypePath, 'common')),
 		language ? getLanguageTemplateFiles(path.join(templateTypePath, language)) : null,
@@ -49,7 +51,7 @@ async function getTypeTemplateFiles(templateTypePath: string, language?: Languag
 	return [...commonTemplateFiles, ...(languageTemplateFiles ? languageTemplateFiles : [])];
 }
 
-async function getTemplateFiles(type: ExtensionType, language?: Language): Promise<TemplateFile[]> {
+async function getTemplateFiles(type: ExtensionType, language?: LangWithSecure): Promise<TemplateFile[]> {
 	const templatePath = getTemplatePath();
 
 	const [commonTemplateFiles, typeTemplateFiles] = await Promise.all([
@@ -64,9 +66,18 @@ export default async function copyTemplate(
 	type: ExtensionType,
 	extensionPath: string,
 	sourcePath?: string,
-	language?: Language
+	language?: Language,
+	secure?: boolean
 ): Promise<void> {
-	const templateFiles = await getTemplateFiles(type, language);
+	let lang: LangWithSecure | undefined = language
+
+	if (['hook', 'operation', 'endpoint'].includes(type)) {
+		if (secure === true) {
+			lang = 'secure'
+		}
+	}
+
+	const templateFiles = await getTemplateFiles(type, lang);
 
 	await Promise.all(templateFiles.map((templateFile) => copyTemplateFile(templateFile, extensionPath, sourcePath)));
 }

@@ -18,6 +18,12 @@ export {
 	defineOperationApi,
 	defineOperationApp,
 	definePanel,
+	defineSecureEndpoint,
+	defineSecureHook,
+	defineSecureOperationApi,
 	getFieldsFromTemplate,
 	getRelationType,
 } from '@directus/utils';
+export type {
+	ExtensionAPI
+} from '@directus/types'
