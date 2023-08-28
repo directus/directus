@@ -1,4 +1,4 @@
-import { NOTICE_TYPE, REPO, VERSIONS_TITLE } from '../constants.js';
+import config from '../config.js';
 import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types.js';
 
 type Section = Type & { notices: Notice[] };
@@ -12,8 +12,10 @@ export function generateMarkdown(
 	// Generate sections out of types and include notices
 	let foundNoticeSection = false;
 
+	const noticeTypeTitle = config.typedTitles[config.noticeType];
+
 	let sections: Section[] = types.map((type) => {
-		if (type.title === NOTICE_TYPE) {
+		if (type.title === noticeTypeTitle) {
 			foundNoticeSection = true;
 			return { title: type.title, packages: type.packages, notices };
 		}
@@ -22,7 +24,7 @@ export function generateMarkdown(
 	});
 
 	if (notices.length > 0 && !foundNoticeSection) {
-		sections = [{ title: NOTICE_TYPE, packages: [], notices }, ...sections];
+		sections = [{ title: noticeTypeTitle, packages: [], notices }, ...sections];
 	}
 
 	const output = [];
@@ -136,7 +138,7 @@ function formatChange(change: Change, short?: boolean): string {
 	} else if (change.githubInfo?.links.commit) {
 		refUserContent.push(change.githubInfo.links.commit);
 	} else if (change.commit) {
-		refUserContent.push(`[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`);
+		refUserContent.push(`[${change.commit}](https://github.com/${config.repo}/commit/${change.commit})`);
 	}
 
 	if (!short && change.githubInfo?.user) {
@@ -161,7 +163,7 @@ function formatPackageVersions(packageVersions: PackageVersion[]): string {
 	let lines = '';
 
 	if (packageVersions.length > 0) {
-		lines += `### ${VERSIONS_TITLE}\n`;
+		lines += `### ${config.versionTitle}\n`;
 	}
 
 	for (const { name, version } of packageVersions) {

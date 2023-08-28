@@ -488,7 +488,6 @@ expand: Развернуть
 collapse: Свернуть
 select_item: Выбрать элемент
 no_items: Нет элементов
-search_items: Поиск элементов...
 disabled: Отключено
 information: Информация
 report_bug: Сообщить об ошибке
@@ -2087,6 +2086,10 @@ operations:
     description: Обновить элементы в базе данных
     payload: Содержимое
     query: Запрос
+  json-web-token:
+    payload: Содержимое
+    token: Ключ доступа
+    options: Параметры
   log:
     name: Лог в консоли
     description: Вывод какой-либо информации в консоль

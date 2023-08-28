@@ -489,7 +489,6 @@ expand: Zgjero
 collapse: Tkurre
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
-search_items: Kërko artikuj...
 disabled: I Çaktivizuar
 information: Informacion
 report_bug: Raporto Defekt
@@ -2119,6 +2118,10 @@ operations:
     key: ID-të
     payload: Ngarkesa
     query: Query
+  json-web-token:
+    payload: Ngarkesa
+    token: Token
+    options: Opsione
   log:
     name: Regjistro në Konsolë
     description: Shfaq diçka në konsolë
