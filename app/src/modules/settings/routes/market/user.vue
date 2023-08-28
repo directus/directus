@@ -7,7 +7,7 @@
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('marketplace'), to: '/settings/market' }]" />
+			<v-breadcrumb :items="[{ name: t('marketplace.title'), to: '/settings/market' }]" />
 		</template>
 
 		<template #navigation>
@@ -16,7 +16,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_marketplace')" class="page-description" />
+				<div v-md="t('marketplace.page_help_settings')" class="page-description" />
 			</sidebar-detail>
 		</template>
 

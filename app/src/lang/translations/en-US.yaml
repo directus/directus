@@ -1534,8 +1534,23 @@ disable_extension: Disable Extension
 page_help_settings_extensions: View a list of all installed extensions and either enable or disable them.
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
-marketplace: Marketplace
-page_help_settings_marketplace: '**Marketplace** — Browse and manage Extensions.'
+marketplace:
+  title: Marketplace
+  page_help_settings: '**Marketplace** — Browse and manage Extensions.'
+  extension:
+    title:
+      install: Install {name}
+      update: Update {name} to latest version
+      change: Change {name} to version {version}
+      settings: Settings for {name}
+    non_secure:
+      install: You are installing a **non-secure** extension. This extension will have full access to the Directus Api and Database.
+      update: You are updating to a **non-secure** extension. This extension will have full access to the Directus Api and Database.
+    secure: This is a secure extension. You are able to restrict what the extension will be able to access.
+    uninstall:
+      title: Uninstall {name}
+      action: Uninstall
+      description: Are you sure you want to uninstall this extension?
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.

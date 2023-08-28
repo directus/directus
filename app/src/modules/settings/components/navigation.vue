@@ -71,7 +71,7 @@ const navItems = [
 	},
 	{
 		icon: 'storefront',
-		name: t('marketplace'),
+		name: t('marketplace.title'),
 		to: `/settings/market`,
 	},
 ];

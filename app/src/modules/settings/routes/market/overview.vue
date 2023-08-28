@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="t('marketplace')">
+	<private-view :title="t('marketplace.title')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon>
 				<v-icon name="storefront" />
@@ -20,7 +20,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_marketplace')" class="page-description" />
+				<div v-md="t('marketplace.page_help_settings')" class="page-description" />
 			</sidebar-detail>
 		</template>
 

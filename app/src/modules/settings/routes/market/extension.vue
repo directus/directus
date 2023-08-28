@@ -7,7 +7,7 @@
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('marketplace'), to: '/settings/market' }]" />
+			<v-breadcrumb :items="[{ name: t('marketplace.title'), to: '/settings/market' }]" />
 		</template>
 
 		<template #navigation>
@@ -68,7 +68,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_marketplace')" class="page-description" />
+				<div v-md="t('marketplace.page_help_settings')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
@@ -96,23 +96,15 @@
 			<div class="drawer-item-content">
 				<template v-if="!selectedVersion.secure">
 					<v-notice v-if="drawer === 'install'" type="danger">
-						<p>
-							You are installing a
-							<strong>non-secure</strong>
-							extension. This extension has full access to your database and can do anything.
-						</p>
+						<p v-md="t('marketplace.extension.non_secure.install')" />
 					</v-notice>
 					<v-notice v-if="drawer === 'change' || drawer === 'update'" type="danger">
-						<p>
-							You are updating to a
-							<strong>non-secure</strong>
-							extension. This extension has full access to your database and can do anything.
-						</p>
+						<p v-md="t('marketplace.extension.non_secure.update')" />
 					</v-notice>
 				</template>
 				<template v-else>
 					<v-notice v-if="drawer === 'install' || drawer === 'update' || drawer === 'change'" type="warning">
-						This is a secure permission. You are able to configure permissions the extension has access to.
+						<p v-md="t('marketplace.extension.secure')" />
 					</v-notice>
 
 					<div class="title">Required Permissions</div>
@@ -139,11 +131,11 @@
 		</v-drawer>
 		<v-dialog :model-value="uninstallDialog">
 			<v-card>
-				<v-card-title>Uninstall {{ title }}</v-card-title>
-				<v-card-text>Are you sure that you want to uninstall this extension?</v-card-text>
+				<v-card-title>{{ t('marketplace.extension.uninstall.title', { name: title }) }}</v-card-title>
+				<v-card-text>{{ t('marketplace.extension.uninstall.description') }}</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="uninstallDialog = false">Close</v-button>
-					<v-button danger @click="uninstall()">Uninstall</v-button>
+					<v-button secondary @click="uninstallDialog = false">{{ t('close') }}</v-button>
+					<v-button danger @click="uninstall()">{{ t('marketplace.extension.uninstall.action') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -388,13 +380,13 @@ const title = computed(() => {
 const drawerTitle = computed(() => {
 	switch (drawer.value) {
 		case 'install':
-			return `Install ${title.value}`;
+			return t('marketplace.extension.title.install', { name: title.value });
 		case 'update':
-			return `Update ${title.value} to latest version`;
+			return t('marketplace.extension.title.update', { name: title.value });
 		case 'change':
-			return `Change ${title.value} to version ${version.value}`;
+			return t('marketplace.extension.title.change', { name: title.value, version: version.value });
 		case 'settings':
-			return `Settings for ${title.value}`;
+			return t('marketplace.extension.title.settings', { name: title.value });
 	}
 
 	return '';
