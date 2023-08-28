@@ -128,7 +128,7 @@ const tab = ref(['inbox']);
 const openNotifications = ref<string[]>([]);
 const page = ref(1);
 const limit = ref(25);
-const search = ref('');
+const search = ref<string | null>(null);
 const filter = ref<Filter>({});
 
 watch(tab, (newTab, oldTab) => {
