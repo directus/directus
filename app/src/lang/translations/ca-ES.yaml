@@ -470,7 +470,6 @@ comments: Comentaris
 no_comments: No hi ha comentaris, encara
 select_item: Selecciona element
 no_items: No hi ha elements
-search_items: Cerca elements...
 disabled: Deshabilitat
 information: Informació
 report_bug: Informa d'un error
@@ -1744,6 +1743,10 @@ operations:
     payload: Càrrega
   item-update:
     payload: Càrrega
+  json-web-token:
+    payload: Càrrega
+    token: Token
+    options: Opcions
   log:
     message: Missatge
   mail:

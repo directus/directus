@@ -1,4 +1,4 @@
-import { REDACTED_TEXT } from '@directus/constants';
+import { REDACTED_TEXT } from '@directus/utils';
 import { Writable } from 'node:stream';
 import { pino } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
