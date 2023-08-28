@@ -3,6 +3,7 @@
 		v-model="notificationsDrawerOpen"
 		icon="notifications"
 		:title="t('notifications')"
+		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 	>
 		<template #actions>
