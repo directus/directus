@@ -1,5 +1,5 @@
-import type { ConditionGeoIntersectsNode } from './geo-intersects.js';
-import type { ConditionGeoIntersectsBBoxNode } from './geo-intersects-bbox.js';
+import type { ConditionGeoIntersectsNode } from './geo-condition.js';
+import type { ConditionGeoIntersectsBBoxNode } from './geo-condition-bbox.js';
 import type { ConditionFieldNode } from './field-condition.js';
 import type { ConditionNumberNode } from './number-condition.js';
 import type { ConditionSetNode } from './set-condition.js';
@@ -37,8 +37,8 @@ export type ActualConditionNodes =
 
 // Those need to be exported to be used solely in the corresponding converter
 export * from './field-condition.js';
-export * from './geo-intersects-bbox.js';
-export * from './geo-intersects.js';
+export * from './geo-condition-bbox.js';
+export * from './geo-condition.js';
 export * from './number-condition.js';
 export * from './string-condition.js';
 export * from './set-condition.js';
