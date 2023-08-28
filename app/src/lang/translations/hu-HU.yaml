@@ -472,7 +472,6 @@ comments: Hozzászólások
 no_comments: Még nincs hozzászólás
 select_item: Elem kiválasztása
 no_items: Nincs megjeleníthető elem
-search_items: Tételek keresése...
 disabled: Letiltva
 information: Információ
 report_bug: Hibajelentés
@@ -2067,6 +2066,10 @@ operations:
     key: Azonosítók
     payload: Adattartalom
     query: Lekérdezés
+  json-web-token:
+    payload: Adattartalom
+    token: Token
+    options: Lehetőségek
   log:
     name: Jelentkezzen be a konzolba
     description: Írjon ki valamit a konzolra

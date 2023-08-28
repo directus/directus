@@ -1,4 +1,4 @@
-import { Action, REDACTED_TEXT } from '@directus/constants';
+import { Action } from '@directus/constants';
 import type {
 	Accountability,
 	ActionHandler,
@@ -8,7 +8,7 @@ import type {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/types';
-import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
+import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
@@ -27,7 +27,7 @@ import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
-import { redact } from './utils/redact.js';
+import { redactObject } from './utils/redact-object.js';
 import { sanitizeError } from './utils/sanitize-error.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -63,9 +63,11 @@ class FlowManager {
 	private webhookFlowHandlers: Record<string, any> = {};
 
 	private reloadQueue: JobQueue;
+	private envs: Record<string, any>;
 
 	constructor() {
 		this.reloadQueue = new JobQueue();
+		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 
 		const messenger = getMessenger();
 
@@ -308,7 +310,7 @@ class FlowManager {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
 			[ACCOUNTABILITY_KEY]: context?.['accountability'] ?? null,
-			[ENV_KEY]: pick(env, env['FLOWS_ENV_ALLOW_LIST'] ? toArray(env['FLOWS_ENV_ALLOW_LIST']) : []),
+			[ENV_KEY]: this.envs,
 		};
 
 		let nextOperation = flow.operation;
@@ -361,16 +363,19 @@ class FlowManager {
 					collection: 'directus_flows',
 					item: flow.id,
 					data: {
-						steps: steps,
-						data: redact(
+						steps: steps.map((step) => redactObject(step, { values: this.envs }, getRedactedString)),
+						data: redactObject(
 							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
-							[
-								['**', 'headers', 'authorization'],
-								['**', 'headers', 'cookie'],
-								['**', 'query', 'access_token'],
-								['**', 'payload', 'password'],
-							],
-							REDACTED_TEXT
+							{
+								keys: [
+									['**', 'headers', 'authorization'],
+									['**', 'headers', 'cookie'],
+									['**', 'query', 'access_token'],
+									['**', 'payload', 'password'],
+								],
+								values: this.envs,
+							},
+							getRedactedString
 						),
 					},
 				});

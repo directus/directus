@@ -502,7 +502,6 @@ expand: Rozbaliť
 collapse: Zbaliť
 select_item: Vybrať položku
 no_items: Žiadne položky
-search_items: Hľadať položky...
 disabled: Vypnuté
 information: Informácia
 report_bug: Nahlásiť chybu
@@ -2136,6 +2135,10 @@ operations:
     key: IDčka
     payload: Payload
     query: Dotaz
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Možnosti
   log:
     name: Logovať do konzoly
     description: Vypíše niečo do konzoly

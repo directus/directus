@@ -1,6 +1,7 @@
 {
 	"name": "docs",
 	"private": true,
+	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
 		"build:packages": "pnpm --recursive --filter '!docs' --filter '!api' --filter '!app' run build",
@@ -13,23 +14,26 @@
 		"code-blocks-check": "eslint --config .eslintrc-code-blocks.cjs \"**/*.md\""
 	},
 	"dependencies": {
-		"node-fetch": "3.3.1"
+		"node-fetch": "3.3.2"
 	},
 	"devDependencies": {
-		"@directus/format-title": "10.0.0",
+		"@directus/format-title": "10.1.0",
+		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
+		"@types/marked": "5.0.1",
 		"eslint-parser-plain": "0.1.0",
-		"eslint-plugin-markdown": "3.0.0",
+		"eslint-plugin-markdown": "3.0.1",
 		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@4.3.0-1",
-		"eslint-plugin-react": "7.32.2",
+		"eslint-plugin-react": "7.33.2",
+		"marked": "7.0.3",
 		"spellchecker-cli": "6.1.1",
-		"typedoc": "0.24.7",
+		"typedoc": "0.24.8",
 		"typedoc-plugin-frontmatter": "0.0.2",
-		"typedoc-plugin-markdown": "4.0.0-next.13",
+		"typedoc-plugin-markdown": "4.0.0-next.16",
 		"typedoc-plugin-zod": "1.0.2",
 		"typedoc-vitepress-theme": "1.0.0-next.2",
-		"typescript": "5.0.4",
-		"vitepress": "1.0.0-alpha.75",
+		"typescript": "5.1.6",
+		"vitepress": "1.0.0-rc.4",
 		"vitepress-plugin-tabs": "0.3.0",
 		"vue": "3.3.4"
 	}

@@ -300,6 +300,8 @@ layouts:
     compact: Padat
 both: Kedua-duanya
 operations:
+  json-web-token:
+    options: Pilihan-pilihan
   log:
     message: Mesej
   notification:
