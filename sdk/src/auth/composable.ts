@@ -1,4 +1,4 @@
-import type { loginOptions } from '../index.js';
+import type { LoginOptions } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
@@ -111,7 +111,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 		return {
 			refresh,
-			async login(email: string, password: string, options: loginOptions = {}) {
+			async login(email: string, password: string, options: LoginOptions = {}) {
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
