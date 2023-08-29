@@ -102,7 +102,8 @@ be combined with the twilio host to perform an API query.
 
 ### Ensure User Is Authenticated
 
-As Twilio is an API that requires authentication and costs money to use, you should also require authentication for your endpoint. Without this, any person on the internet could use it. 
+As Twilio is an API that requires authentication and costs money to use, you should also require authentication for your
+endpoint. Without this, any person on the internet could use it.
 
 At the top of your file, import the `createError` function and create a new error:
 
@@ -226,10 +227,10 @@ export default {
 		});
 
 		router.get('/*', (req, res) => {
-			if(req.accountability == null) { 
-				throw new ForbiddenError(); 
-			} 
-			
+			if(req.accountability == null) {
+				throw new ForbiddenError();
+			}
+
 			twilio_api.get(req.url).then((response) => {
 				res.json(response.data);
 			}).catch((error) => {
@@ -238,9 +239,9 @@ export default {
 		});
 
 		router.post('/*', (req, res) => {
-			if(req.accountability == null) { 
-				throw new ForbiddenError(); 
-			} 
+			if(req.accountability == null) {
+				throw new ForbiddenError();
+			}
 
 			twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
 				res.json(response.data);

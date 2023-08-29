@@ -13,9 +13,11 @@ local API endpoint and credentials, and eliminating Cross-Origin issues.
 
 As an example, this guide will proxy the PokéAPI, but the same approach can be used for any API.
 
-:::danger Consider Authenticating Proxies 
+:::danger Consider Authenticating Proxies
 
-This guide will show you how to proxy an API that does not require authentication. In production, you should consider requiring authentication in your proxy endpoints to avoid abuse, especially if the target API performs write operations or costs money to use.
+This guide will show you how to proxy an API that does not require authentication. In production, you should consider
+requiring authentication in your proxy endpoints to avoid abuse, especially if the target API performs write operations
+or costs money to use.
 
 :::
 
@@ -68,9 +70,9 @@ router.get('/*', (req, res) => {
 });
 ```
 
-The route includes the request (`req`) and response (`res`). The request has useful information that was provided by
-the user or application such as the URL, method, authentication and other HTTP headers. In this case, the URL needs to
-be combined with the base URL to perform an API query.
+The route includes the request (`req`) and response (`res`). The request has useful information that was provided by the
+user or application such as the URL, method, authentication and other HTTP headers. In this case, the URL needs to be
+combined with the base URL to perform an API query.
 
 This is now complete and ready for testing. Build the endpoint with the latest changes.
 
@@ -101,8 +103,7 @@ code has no negative effect.
 Using an application such as Postman, create a new request. The URL will be: `https://example.directus.app/pokeapi/` (be
 sure that you change the URL for your project's URL)
 
-Visit the PokéAPI docs and find an endpoint - for example
-[Request a Pokémon](https://pokeapi.co/docs/v2#pokemon).
+Visit the PokéAPI docs and find an endpoint - for example [Request a Pokémon](https://pokeapi.co/docs/v2#pokemon).
 
 Make sure to select CURL as the coding language and this will output the URL to use. Copy the URL without the host and
 paste it to the end of your Directus endpoint. It will look something like:
@@ -113,7 +114,8 @@ You should receive the direct response from PokéAPI.
 
 ## Summary
 
-With this endpoint, you now have access to the PokéAPI within Directus. Now that you know how to create a proxy to an API, you can create proxies for other 3rd party services and simplify your other extensions.
+With this endpoint, you now have access to the PokéAPI within Directus. Now that you know how to create a proxy to an
+API, you can create proxies for other 3rd party services and simplify your other extensions.
 
 ## Complete Code
 
