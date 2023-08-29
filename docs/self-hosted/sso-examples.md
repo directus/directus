@@ -185,3 +185,33 @@ Maps the email address into Directus as external_identifier:
 **Config:**
 
 Relay state - `admin/login` Application ACS URL - `https://your-directus-instance/auth/login/awssso/acs`
+
+## GOOGLE SSO 
+```
+AUTH_SSO_DRIVER="saml"
+AUTH_PROVIDERS="SSO"
+AUTH_SSO_idp_metadata='{Your SAML metadata file from Google}'
+AUTH_SSO_sp_metadata='{Create your own SAML metadata file, see example below}'
+AUTH_SSO_ALLOW_PUBLIC_REGISTRATION="true"
+AUTH_SSO_DEFAULT_ROLE_ID="{YOUR_DESIRED_ROLE_UUID_FROM_DIRECTUS}"
+AUTH_SSO_IDENTIFIER_KEY=email
+AUTH_SSO_EMAIL_KEY=email 
+```
+
+::: tip Google Help
+
+- Remove the `<?xml version="1.0" encoding="UTF-8"?>` from the start of the XML file of your idp_metadata.
+
+- Your SP Metadatafile should contain
+	- The same entityID as the one you configured in Google in the EntityDescriptor tag
+	- Location should be the ACS URL of your Directus instance in the format of `https://your-directus-instance/auth/login/sso/acs`
+
+- SP Metadata file example:
+```xml
+<EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="SHOULD_MATCH_GOOGLE_CONFIG">
+  <SPSSODescriptor WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
+    <AssertionConsumerService isDefault="true" index="0" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="YOUR_DOMAIN/auth/login/sso/acs"/>
+  </SPSSODescriptor>
+</EntityDescriptor>
+```
