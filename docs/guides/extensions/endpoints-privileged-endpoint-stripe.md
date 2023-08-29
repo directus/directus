@@ -3,7 +3,7 @@ description: 'Learn how to use Directus permissions in custom endpoints.'
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
-# Use Custom Endpoints to Create Privileged API Endpoints
+# Use Custom Endpoints to Create a Permissions-Based API Proxy
 
 Endpoints are used in the API to perform certain functions. In this guide, you will use internal Directus permissions
 when creating a custom endpoint.

@@ -1,9 +1,9 @@
 ---
-description: 'Learn how to proxy a third-party API with a custom endpoint.'
+description: 'Learn how to proxy a third-party API with a custom endpoint, requiring a valid user account.'
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
-# Use Custom Endpoints to Create an API Proxy
+# Use Custom Endpoints to Create an Authenticated API Proxy
 
 Endpoints are used in the API to perform certain functions.
 
@@ -94,12 +94,50 @@ router.post('/*', (req, res) => {
 		res.send(error);
 	});
 });
-
 ```
 
 Each route includes the request (`req`) and response (`res`). The request has useful information that was provided by
 the user or application such as the URL, method, authentication and other HTTP headers. In this case, the URL needs to
 be combined with the twilio host to perform an API query.
+
+### Ensure User Is Authenticated
+
+As Twilio is an API that requires authentication and costs money to use, you should also require authentication for your endpoint. Without this, any person on the internet could use it. 
+
+At the top of your file, import the `createError` function and create a new error:
+
+```js
+import { createError } from '@directus/errors';
+const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
+```
+
+Throw the function if `req.accountability` is `null`:
+
+```js
+router.get('/*', (req, res) => {
+	if(req.accountability == null) { // [!code ++]
+		throw new ForbiddenError(); // [!code ++]
+	} // [!code ++]
+
+	twilio_api.get(req.url).then((response) => {
+		res.json(response.data);
+	}).catch((error) => {
+		res.send(error);
+	});
+});
+
+router.post('/*', (req, res) => {
+	if(req.accountability == null) { // [!code ++]
+		throw new ForbiddenError(); // [!code ++]
+	} // [!code ++]
+
+	twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
+		res.json(response.data);
+	}).catch((error) => {
+		res.send(error);
+	});
+});
+```
 
 This is now complete and ready for testing. Build the endpoint with the latest changes.
 
@@ -168,6 +206,9 @@ simplify your other extensions.
 `index.js`
 
 ```js
+import { createError } from '@directus/errors';
+const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
+
 export default {
 	id: 'twilio',
 	handler: (router, { env }) => {
@@ -185,6 +226,10 @@ export default {
 		});
 
 		router.get('/*', (req, res) => {
+			if(req.accountability == null) { 
+				throw new ForbiddenError(); 
+			} 
+			
 			twilio_api.get(req.url).then((response) => {
 				res.json(response.data);
 			}).catch((error) => {
@@ -193,6 +238,10 @@ export default {
 		});
 
 		router.post('/*', (req, res) => {
+			if(req.accountability == null) { 
+				throw new ForbiddenError(); 
+			} 
+
 			twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
 				res.json(response.data);
 			}).catch((error) => {
