@@ -637,6 +637,10 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
+					link: '/self-hosted/nginx-config',
+					text: 'Nginx Config'
+				}
+				{
 					text: 'Single Sign-On (SSO)',
 					items: [
 						{ link: '/self-hosted/sso', text: 'Quickstart' },
