@@ -2778,7 +2778,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
 
-
 					// Setup
 					const name = 'test-auto-increment-o2m';
 					const largeIdCountry = 105555;
