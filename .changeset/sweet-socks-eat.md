@@ -1,5 +1,0 @@
----
-
----
-
-Improved stale github action
