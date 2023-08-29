@@ -637,8 +637,8 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-					link: '/self-hosted/nginx-config',
-					text: 'Nginx Config'
+					link: '/self-hosted/reverse-proxy',
+					text: 'Reverse Proxy Config'
 				}
 				{
 					text: 'Single Sign-On (SSO)',
