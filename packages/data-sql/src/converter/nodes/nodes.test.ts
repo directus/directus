@@ -2,7 +2,7 @@ import { expect, test, vi, afterEach } from 'vitest';
 import { convertNodes, type ConvertSelectOutput } from './nodes.js';
 import { randomIdentifier } from '@directus/random';
 import { parameterIndexGenerator } from '../param-index-generator.js';
-import type { AbstractQueryFilterNode } from '@directus/data';
+import type { AbstractQueryFieldNode } from '@directus/data';
 
 afterEach(() => {
 	vi.restoreAllMocks();
@@ -23,7 +23,7 @@ test('Convert nodes', () => {
 	const randomJoinNodeField = randomIdentifier();
 	const randomAlias = randomIdentifier();
 
-	const nodes: AbstractQueryFilterNode[] = [
+	const nodes: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField,
