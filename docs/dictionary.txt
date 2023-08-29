@@ -307,6 +307,7 @@ Plesk
 PNG
 pnpm
 PokéAPI
+Pokémon
 Postgres
 Postgres13
 PR
