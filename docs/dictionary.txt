@@ -306,6 +306,7 @@ Pino
 Plesk
 PNG
 pnpm
+PokéAPI
 Postgres
 Postgres13
 PR
