@@ -39,8 +39,8 @@ export default defineOperationApi<Options>({
 		});
 
 		const messageString = message ? optionToString(message) : null;
-		const collectionString = message ? optionToString(collection) : null;
-		const itemString = message ? optionToString(item) : null;
+		const collectionString = collection ? optionToString(collection) : null;
+		const itemString = item ? optionToString(item) : null;
 
 		const payload = toArray(recipient).map((userId) => {
 			return {
