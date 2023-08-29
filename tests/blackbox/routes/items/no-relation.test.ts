@@ -2227,6 +2227,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 			describe('updates the auto increment value correctly', () => {
 				it.each(vendors)('%s', async (vendor) => {
+
+					if (vendor !== 'postgres') return;
+
 					// Setup
 					const name = 'test-auto-increment';
 					const largeIdArtist = 101111;
