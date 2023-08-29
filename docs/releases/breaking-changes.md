@@ -11,6 +11,35 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.6.2
+
+### Swapping Parameters and Auth Mode for Refresh Method in SDK
+
+The parameter order for the `refresh` method and thus also the default auth mode have been swapped in order to work well
+with both auth modes, `cookie` and `json`.
+
+::: code-group
+
+```js [Before]
+// refresh http request using a cookie
+const result = await client.request(refresh('', 'cookie'));
+
+// refresh http request using json
+const result = await client.request(refresh(refresh_token));
+const result = await client.request(refresh(refresh_token, 'json'));
+```
+
+```js [After]
+// refresh http request using a cookie
+const result = await client.request(refresh());
+const result = await client.request(refresh('cookie'));
+
+// refresh http request using json
+const result = await client.request(refresh('json', refresh_token));
+```
+
+:::
+
 ## Version 10.6
 
 ### Dropped Support for Custom NPM Modules in the Run Script operation in Flows
