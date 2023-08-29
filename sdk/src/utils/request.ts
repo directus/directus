@@ -17,7 +17,7 @@ export const request = async <Output = any>(url: string, options: RequestInit): 
 	const response = await globalThis.fetch(url, options);
 
 	const data = await extractData(response).catch((reason) => {
-		const errors = typeof reason === "object" && 'errors' in reason ? reason.errors : reason;
+		const errors = typeof reason === 'object' && 'errors' in reason ? reason.errors : reason;
 		throw { errors, response };
 	});
 
