@@ -122,8 +122,8 @@ export default {
 						title: 'Endpoints',
 						items: [
 							{
-								display: 'Use Custom Endpoints to Create an API Proxy',
-								path: '/guides/extensions/endpoints-api-proxy-twilio',
+								display: 'Use Custom Endpoints to Create a Public API Proxy',
+								path: '/guides/extensions/endpoints-api-proxy',
 							},
 							{
 								display: 'Use Custom Endpoints to Create Privileged API Endpoints',
