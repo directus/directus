@@ -9,7 +9,7 @@ import type { AbstractQueryFieldNodeFn } from './function.js';
  * This is a basic interface for all relational field types.
  */
 export interface AbstractQueryFieldNodeRelatedBase {
-	// @todo rethink the blow. why a primitive here although it should be a related node?
+	/* From the related collection the user can pick primitives, apply a function or add another relational node   */
 	nodes: (AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn | AbstractQueryFieldNodeRelated)[];
 
 	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
