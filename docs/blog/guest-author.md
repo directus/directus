@@ -27,7 +27,7 @@ fits within our publication guidelines.
 
 1. Submit an idea for an original piece of written content by [opening an issue](https://github.com/directus-community/guest-authoring/issues/new/choose).
 2. Collaborate with our team to finalize the idea in the issue until the overall content and structure is approved.
-3. Take some time to read our [writing guidelines](./writing-guidelines.md).
+3. Take some time to read our writing guidelines.
 4. Fork this repo, create a new directory for your post based on the template, and submit a PR when the first draft is done. 
 5. Review the draft with our team.
 6. Revise the content based on feedback in the PR.
