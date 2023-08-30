@@ -32,6 +32,10 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 				type: Object as PropType<Query>,
 				default: () => ({}),
 			},
+			layoutProps: {
+				type: Object as PropType<any>,
+				default: () => ({}),
+			},
 			filter: {
 				type: Object as PropType<Filter>,
 				default: null,
