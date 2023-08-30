@@ -52,6 +52,9 @@ export const useNotificationsStore = defineStore({
 
 			this.unread = countResponse.data.data[0].count.id;
 		},
+		setUnreadCount(count: number) {
+			this.unread = count;
+		},
 		add(notification: SnackbarRaw) {
 			const id = nanoid();
 			const timestamp = Date.now();

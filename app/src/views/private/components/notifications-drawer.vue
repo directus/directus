@@ -100,19 +100,18 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import SearchInput from '@/views/private/components/search-input.vue';
+import { useDatetime } from '@/composables/use-datetime';
 import { useCollectionsStore } from '@/stores/collections';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { computed } from 'vue';
-import { useItems } from '@directus/composables';
-import { watch } from 'vue';
-import { useDatetime } from '@/composables/use-datetime';
 
 type LocalNotification = Notification & {
 	to?: string;
@@ -122,6 +121,8 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
+const notificationsStore = useNotificationsStore();
+const { unread } = storeToRefs(notificationsStore);
 
 const { formatter: relativeDate, refresher: relativeDateRefresher } = useDatetime('timestamp', {
 	relative: true,
@@ -227,6 +228,7 @@ async function archiveAll() {
 
 	await getItemCount();
 	await getItems();
+	notificationsStore.setUnreadCount(0);
 }
 
 async function toggleArchive() {
@@ -239,6 +241,12 @@ async function toggleArchive() {
 
 	await getItemCount();
 	await getItems();
+
+	if (tab.value[0] === 'inbox') {
+		notificationsStore.setUnreadCount(unread.value - selection.value.length);
+	} else {
+		notificationsStore.setUnreadCount(unread.value + selection.value.length);
+	}
 
 	selection.value = [];
 }
