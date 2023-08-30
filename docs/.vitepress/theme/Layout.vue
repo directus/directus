@@ -2,7 +2,7 @@
 	<Layout>
 		<template #doc-before>
 			<div
-				v-if="path.startsWith('/packages')"
+				v-if="RegExp('^/packages/.+$').test(path)"
 				class="warning custom-block"
 				style="padding-bottom: 16px; margin-bottom: 16px"
 			>
