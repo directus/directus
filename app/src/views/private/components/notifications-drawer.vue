@@ -71,7 +71,7 @@
 							@update:model-value="toggleSelected(notification.id)"
 						/>
 						<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
-						<display-datetime class="time" type="timestamp" relative :value="notification.timestamp" />
+						<v-text-overflow class="time" :text="relativeDate(notification.timestamp, relativeDateRefresher).value" />
 						<v-icon
 							v-if="notification.to"
 							v-tooltip="t('goto_collection_content')"
@@ -112,6 +112,7 @@ import { useRouter } from 'vue-router';
 import { computed } from 'vue';
 import { useItems } from '@directus/composables';
 import { watch } from 'vue';
+import { useDatetime } from '@/composables/use-datetime';
 
 type LocalNotification = Notification & {
 	to?: string;
@@ -121,6 +122,10 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
+
+const { formatter: relativeDate, refresher: relativeDateRefresher } = useDatetime('timestamp', {
+	relative: true,
+});
 
 const router = useRouter();
 
