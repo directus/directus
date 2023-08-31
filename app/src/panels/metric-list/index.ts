@@ -20,7 +20,7 @@ export default definePanel({
 		if (collectionInfo?.meta?.singleton) return;
 
 		// sort by the aggregate field
-		const sort = options.sortDirection == 'asc' ? [options.aggregateField] : ['-' + options.aggregateField];
+		const sort = options.sortDirection == 'asc' ? [`${options.aggregateFunction}.${options.aggregateField}`] : ['-' + `${options.aggregateFunction}.${options.aggregateField}`];
 
 		const aggregate = {
 			[options.aggregateFunction]: [options.aggregateField || '*'],

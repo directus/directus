@@ -4,6 +4,7 @@
 			<v-list class="metric-list">
 				<v-list-item v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
 					<div
+						v-if="row[aggregateFunction]?.[aggregateField]"
 						class="metric-bar"
 						:style="{
 							width: widthOfRow(row),
