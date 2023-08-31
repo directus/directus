@@ -219,6 +219,8 @@ import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } fr
 import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { copyToClipboard } from '@/utils/copy-to-clipboard';
+import { notify } from '@/utils/notify';
 import api from '@/api';
 import { nextTick } from 'vue';
 
@@ -474,35 +476,18 @@ function transformToText(obj: any): string {
  * @param fieldKey The name of the field
  */
 async function copyValues(fieldKey: string) {
-	function fallbackCopy(text: string) {
-		const textArea = document.createElement('textarea');
-		textArea.value = text;
-		document.body.appendChild(textArea);
-		textArea.focus();
-		textArea.select();
-		try {
-			const res = document.execCommand('copy');
-			// if (!res) {
-			// 	console.error('Failed to copy using fallback method');
-			// }
-		} catch (err) {
-			// console.error('Failed to copy using fallback method: ', err);
-		}
-		document.body.removeChild(textArea);
-	}
-
 	const values = props.items.map((item) => transformToText(get(item, fieldKey)));
-	const text = values.join('\n');
-	if (navigator.clipboard === undefined) {
-		// console.warn('Clipboard API is not available. Is this a secure context?');
-		fallbackCopy(text);
+	const result = await copyToClipboard(values.join('\n'));
+	if (result) {
+		notify({
+			type: 'success',
+			title: t('copy_raw_value_success'),
+		});
 	} else {
-		try {
-			await navigator.clipboard.writeText(text);
-		} catch (err) {
-			// console.error('Failed to copy: ', err);
-			fallbackCopy(text);
-		}
+		notify({
+			type: 'error',
+			title: t('copy_raw_value_fail'),
+		});
 	}
 }
 </script>
