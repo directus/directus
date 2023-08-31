@@ -9,7 +9,6 @@ export interface RestClient<Schema extends object> {
 }
 
 export interface RestConfig {
-	// onError?: (error: any) => any;
 	onRequest?: RequestTransformer;
 	onResponse?: ResponseTransformer;
 }

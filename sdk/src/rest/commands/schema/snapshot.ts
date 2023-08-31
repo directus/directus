@@ -1,6 +1,5 @@
 import type { RestCommand } from '../../types.js';
 
-// TODO improve typing
 export type SchemaSnapshotOutput = {
 	version: number;
 	directus: string;

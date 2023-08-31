@@ -1,6 +1,5 @@
 import type { RestCommand } from '../../types.js';
 
-// TODO can we type this?
 export type OpenApiSpecOutput = Record<string, any>;
 
 /**

@@ -1,7 +1,6 @@
 import type { RestCommand } from '../../types.js';
 import type { SchemaSnapshotOutput } from './snapshot.js';
 
-// TODO improve typing
 export type SchemaDiffOutput = {
 	hash: string;
 	diff: Record<string, any>;

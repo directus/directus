@@ -1,6 +1,5 @@
 import type { RestCommand } from '../../types.js';
 
-// TODO figure out the type here
 export interface ReadExtensionOutput {
 	name: string;
 	type: ExtensionTypes;
