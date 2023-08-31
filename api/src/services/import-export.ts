@@ -308,12 +308,12 @@ export class ExportService {
 					fields: ['first_name', 'last_name', 'email'],
 				});
 
+				const href = new Url(env['PUBLIC_URL']).addPath('admin', 'files', savedFile).toString();
+
 				const message = `
 Hello ${userName(user)},
 
-Your export of ${collection} is ready. <a href="${new Url(env['PUBLIC_URL'])
-					.addPath('admin', 'files', savedFile)
-					.toString()}">Click here to view.</a>
+Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 `;
 
 				await notificationsService.createOne({
