@@ -1,5 +1,5 @@
 ---
-description: 'Learn how to proxy a third-party API with a custom endpoint.'
+description: Learn how to proxy a third-party API with a custom endpoint.
 contributors: Kevin Lewis
 ---
 
@@ -51,22 +51,22 @@ export default {
 
 The `id` becomes the root and must be a unique identifier between all other endpoints.
 
-To perform the API query, add the `axios` package which is included in Directus.
-
-```js
-const axios = require('axios');
-```
-
 The standard way to create an API route is to specify the method and the path. Rather than recreate every possible
 endpoint that the PokéAPI has, use a wildcard (\*) to run this function for every route for each supported method.
 
 ```js
-router.get('/*', (req, res) => {
-	axios.get(`https://pokeapi.co/api/v2/${req.url}`).then((response) => {
-		res.json(response.data);
-	}).catch((error) => {
-		res.send(error);
-	});
+router.get('/*', async (req, res) => {
+	try {
+		const response = await fetch(`https://pokeapi.co/api/v2/${req.url}`);
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status).send(response.statusText);
+		}
+	} catch (error) {
+		res.send(error.message);
+	}
 });
 ```
 
@@ -108,7 +108,8 @@ Visit the PokéAPI docs and find an endpoint - for example [Request a Pokémon](
 Make sure to select CURL as the coding language and this will output the URL to use. Copy the URL without the host and
 paste it to the end of your Directus endpoint. It will look something like:
 
-`https://pokeapi.co/api/v2/pokemon/25`
+- PokéAPI URL: `https://pokeapi.co/api/v2/pokemon/25`
+- Directus URL: `https://example.directus.app/pokeapi/pokemon/25`
 
 You should receive the direct response from PokéAPI.
 
@@ -125,14 +126,18 @@ API, you can create proxies for other 3rd party services and simplify your other
 export default {
 	id: 'pokeapi',
 	handler: (router, { env }) => {
-		const axios = require('axios');
+		router.get('/*', async (req, res) => {
+			try {
+				const response = await fetch(`https://pokeapi.co/api/v2/${req.url}`);
 
-		router.get('/*', (req, res) => {
-			axios.get(`https://pokeapi.co/api/v2/${req.url}`).then((response) => {
-				res.json(response.data);
-			}).catch((error) => {
-				res.send(error);
-			});
+				if (response.ok) {
+					res.json(await response.json());
+				} else {
+					res.status(response.status).send(response.statusText);
+				}
+			} catch (error) {
+				res.send(error.message);
+			}
 		});
 	},
 };
