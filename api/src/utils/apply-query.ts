@@ -284,7 +284,7 @@ export function applySort(
 		}
 
 		// Is the column name one of the aggregate functions used in the query if there is any?
-		if (Object.keys(aggregate ?? {}).includes(column[0]!.replace('-', ''))) {
+		if (Object.keys(aggregate ?? {}).includes(column[0]!)) {
 
 			// If so, return the column name without the order prefix
 			const operation = column[0]!
