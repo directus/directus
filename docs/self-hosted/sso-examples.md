@@ -173,15 +173,14 @@ AUTH_AWSSSO_EMAIL_KEY=email
 
 **Mapping:**
 
-Maps the email address into Directus as external_identifier:
+Maps the email address into Directus as `external_identifier`:
 
-```
-| User attribute in the application | Maps to this string value or user attribute in IAM Identity Center | type |
-| --- | ----------- | --- |
-| Subject | ${user:email} | emailAddress |
-| email | ${user:email} | unspecified |
-```
+| User attribute in the application | Maps to this string value or user attribute in IAM Identity Center | type           |
+| --------------------------------- | ------------------------------------------------------------------ | -------------- |
+| `Subject`                         | `${user:email}`                                                    | `emailAddress` |
+| `email`                           | `${user:email}`                                                    | `unspecified`  |
 
 **Config:**
 
-Relay state - `admin/login` Application ACS URL - `https://your-directus-instance/auth/login/awssso/acs`
+- Relay state: `admin/login`
+- Application ACS URL: `https://your-directus-instance/auth/login/awssso/acs`
