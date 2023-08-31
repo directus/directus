@@ -16,6 +16,18 @@
 		</template>
 
 		<v-list class="links">
+			<template v-if="show_copy">
+				<v-list-item clickable @click="copyValues">
+					<v-list-item-content>
+						<v-list-item-title>{{ t('copy') }}</v-list-item-title>
+					</v-list-item-content>
+					<v-list-item-icon>
+						<v-icon name="content_copy" small />
+					</v-list-item-icon>
+				</v-list-item>
+
+				<v-divider />
+			</template>
 			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath!]">
 				<v-list-item-content>
 					<render-template
@@ -36,6 +48,9 @@
 <script setup lang="ts">
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
+import { copyToClipboard } from '@/utils/copy-to-clipboard';
+import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { notify } from '@/utils/notify';
 import { useCollection } from '@directus/composables';
 import { get } from 'lodash';
 import { computed } from 'vue';
@@ -46,6 +61,7 @@ const props = defineProps<{
 	field: string;
 	value: Record<string, any> | Record<string, any>[] | null;
 	template?: string;
+	show_copy?: boolean;
 }>();
 
 const { t, te } = useI18n();
@@ -103,6 +119,23 @@ function getLinkForItem(item: any) {
 	const primaryKey = get(item, primaryKeyFieldPath.value);
 
 	return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
+}
+
+async function copyValues() {
+	const values: Record<string, any>[] = Array.isArray(props.value) ? props.value : [props.value];
+	const renderedValues = values.map((value) => renderPlainStringTemplate(internalTemplate.value, value));
+	const result = await copyToClipboard(renderedValues.join('\n'));
+	if (result) {
+		notify({
+			type: 'success',
+			title: t('copy_raw_value_success'),
+		});
+	} else {
+		notify({
+			type: 'error',
+			title: t('copy_raw_value_fail'),
+		});
+	}
 }
 </script>
 

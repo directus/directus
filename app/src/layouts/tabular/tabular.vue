@@ -111,7 +111,7 @@
 						<v-list-item-icon>
 							<v-icon name="content_copy" />
 						</v-list-item-icon>
-						<v-list-item-content>Copy values</v-list-item-content>
+						<v-list-item-content>{{ t('copy') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</template>

@@ -44,6 +44,17 @@ export default defineDisplay({
 				name: '$t:display_template',
 				meta: displayTemplateMeta,
 			},
+			{
+				field: 'show_copy',
+				name: 'Show Copy Button',
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+				schema: {
+					default_value: false,
+				}
+			}
 		];
 	},
 	handler: (value, options, { collection, field }) => {
