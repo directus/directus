@@ -64,12 +64,13 @@ export type SubscriptionOutput<
 	TItem = TQuery extends Query<Schema, Schema[Collection]>
 		? ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>
 		: Partial<Schema[Collection]>
-> = { type: 'subscription'; uid?: string, xyz:TItem } & (
+> = { type: 'subscription'; uid?: string } & (
 	| {
-			[Event in Events]: { event: Event; data: SubscriptionPayload<TItem>[Event] };
+			[Event in Events]: { event: Event; data: SubscriptionPayload<TItem>[Event]; };
 	  }[Events]
 	| { event: 'error'; error: { code: string; message: string } }
 );
+
 
 export type SubscriptionPayload<Item> = {
 	init: Item[];
