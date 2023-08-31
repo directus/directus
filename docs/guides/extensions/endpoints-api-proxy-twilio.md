@@ -1,5 +1,5 @@
 ---
-description: 'Learn how to proxy a third-party API with a custom endpoint, requiring a valid user account.'
+description: Learn how to proxy a third-party API with a custom endpoint, requiring a valid user account.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
@@ -50,26 +50,18 @@ variables, add the `env` context to the handler like so:
 handler: (router, { env }) => {
 ```
 
-To perform the API query, add the `axios` package which is included in Directus.
+Create variables for the Twilio and construct the request headers object for Basic Authentication:
 
 ```js
-const axios = require('axios');
-```
+const twilioHost = 'https://api.twilio.com';
+const twilioSid = env.TWILIO_ACCOUNT_SID;
+const twilioToken = env.TWILIO_AUTH_TOKEN;
 
-Create variables for the Twilio auth details, and then create a new `axios` instance with them:
-
-```js
-const twilio_host = "https://api.twilio.com";
-const twilio_sid = env.TWILIO_ACCOUNT_SID;
-const twilio_token = env.TWILIO_AUTH_TOKEN;
-
-const twilio_api = axios.create({
-	baseURL: twilio_host,
-	auth: {
-		username: twilio_sid,
-		password: twilio_token,
-	},
-});
+const headers = {
+	Authorization: `Basic ${Buffer.from(
+		`${twilioSid}:${twilioToken}`
+	).toString('base64')}}`,
+};
 ```
 
 _Note: the client initialization values are unique to Twilio. Other 3rd Party services may authentication differently,
@@ -79,20 +71,39 @@ The standard way to create an API route is to specify the method and the path. R
 endpoint that Twilio has, use a wildcard (\*) to run this function for every route for each supported method.
 
 ```js
-router.get('/*', (req, res) => {
-	twilio_api.get(req.url).then((response) => {
-		res.json(response.data);
-	}).catch((error) => {
-		res.send(error);
-	});
+router.get('/*', async (req, res) => {
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), { headers });
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status).send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500).send(error.message);
+	}
 });
 
-router.post('/*', (req, res) => {
-	twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
-		res.json(response.data);
-	}).catch((error) => {
-		res.send(error);
-	});
+router.post('/*', async (req, res) => {
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), {
+			method: 'POST',
+			headers: {
+				...headers,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(req.body),
+		});
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status).send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500).send(error.message);
+	}
 });
 ```
 
@@ -115,28 +126,47 @@ const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authentic
 Throw the function if `req.accountability` is `null`:
 
 ```js
-router.get('/*', (req, res) => {
+router.get('/*', async (req, res) => {
 	if(req.accountability == null) { // [!code ++]
 		throw new ForbiddenError(); // [!code ++]
 	} // [!code ++]
 
-	twilio_api.get(req.url).then((response) => {
-		res.json(response.data);
-	}).catch((error) => {
-		res.send(error);
-	});
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), { headers });
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status).send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500).send(error.message);
+	}
 });
 
-router.post('/*', (req, res) => {
+router.post('/*', async (req, res) => {
 	if(req.accountability == null) { // [!code ++]
 		throw new ForbiddenError(); // [!code ++]
 	} // [!code ++]
 
-	twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
-		res.json(response.data);
-	}).catch((error) => {
-		res.send(error);
-	});
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), {
+			method: 'POST',
+			headers: {
+				...headers,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(req.body),
+		});
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status).send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500).send(error.message);
+	}
 });
 ```
 
@@ -208,46 +238,65 @@ simplify your other extensions.
 
 ```js
 import { createError } from '@directus/errors';
-const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
+const ForbiddenError = createError(
+	'TWILIO_FORBIDDEN',
+	'You need to be authenticated to access this endpoint'
+);
 
 export default {
 	id: 'twilio',
 	handler: (router, { env }) => {
-		const axios = require('axios');
-		const twilio_host = "https://api.twilio.com";
-		const twilio_sid = env.TWILIO_ACCOUNT_SID;
-		const twilio_token = env.TWILIO_AUTH_TOKEN;
-		const twilio_from = env.TWILIO_PHONE_NUMBER;
-		const twilio_api = axios.create({
-		 	baseURL: twilio_host,
-			auth: {
-				username: twilio_sid,
-				password: twilio_token,
-			},
-		});
+		const twilioHost = 'https://api.twilio.com';
+		const twilioSid = env.TWILIO_ACCOUNT_SID;
+		const twilioToken = env.TWILIO_AUTH_TOKEN;
 
-		router.get('/*', (req, res) => {
-			if(req.accountability == null) {
+		const headers = {
+			Authorization: `Basic ${Buffer.from(
+				`${twilioSid}:${twilioToken}`
+			).toString('base64')}}`,
+		};
+
+		router.get('/*', async (req, res) => {
+			if (req.accountability == null) {
 				throw new ForbiddenError();
 			}
 
-			twilio_api.get(req.url).then((response) => {
-				res.json(response.data);
-			}).catch((error) => {
-				res.send(error);
-			});
+			try {
+				const response = await fetch(new URL(req.url, twilioHost), { headers });
+
+				if (response.ok) {
+					res.json(await response.json());
+				} else {
+					res.status(response.status).send(response.statusText);
+				}
+			} catch (error) {
+				res.status(500).send(error.message);
+			}
 		});
 
-		router.post('/*', (req, res) => {
-			if(req.accountability == null) {
+		router.post('/*', async (req, res) => {
+			if (req.accountability == null) {
 				throw new ForbiddenError();
 			}
 
-			twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
-				res.json(response.data);
-			}).catch((error) => {
-				res.send(error);
-			});
+			try {
+				const response = await fetch(new URL(req.url, twilioHost), {
+					method: 'POST',
+					headers: {
+						...headers,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(req.body),
+				});
+
+				if (response.ok) {
+					res.json(await response.json());
+				} else {
+					res.status(response.status).send(response.statusText);
+				}
+			} catch (error) {
+				res.status(500).send(error.message);
+			}
 		});
 	},
 };

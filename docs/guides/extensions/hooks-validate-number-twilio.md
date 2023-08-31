@@ -29,10 +29,15 @@ npm install twilio
 
 ## Build the Hook
 
-Create a collection called Customers with a text field called `phone_number`. This hook will be used to validate the
-item when a record is saved.
+Create a collection called Customers with a text field called `phoneNumber`. This hook will be used to validate the item
+when a record is saved.
 
-Open the `index.js` file inside the src directory. Delete all the existing code and proceed.
+Open the `index.js` file inside the src directory. Delete all the existing code and start with the import of the Twilio
+library:
+
+```js
+import twilio from 'twilio';
+```
 
 Create an initial export. This hook will need to intercept the save function with `filter` and include `env` for the
 environment variables and `exceptions` to throw an error when validation fails:
@@ -67,11 +72,11 @@ filter('items.create', async (input, { collection }) => {
 });
 ```
 
-Prevent saving an event if the `phone_number` is `undefined`, by reporting this back to the user. Add this line
+Prevent saving an event if the `phoneNumber` is `undefined`, by reporting this back to the user. Add this line
 underneath the collections exception.
 
 ```js
-if (input.phone_number === undefined) {
+if (input.phoneNumber === undefined) {
 	throw new InvalidPayloadException('No Phone Number has been provided');
 }
 ```
@@ -81,10 +86,10 @@ Set up your Twilio phone number lookup:
 ```js
 const accountSid = env.TWILIO_ACCOUNT_SID;
 const authToken = env.TWILIO_AUTH_TOKEN;
-const client = require('twilio')(accountSid, authToken);
+const client = new twilio(accountSid, authToken);
 
-client.lookups.v2.phoneNumbers(input.phone_number).fetch()
-.then(function(phone_number) {
+client.lookups.v2.phoneNumbers(input.phoneNumber).fetch()
+.then(function(phoneNumber) {
 
 });
 ```
@@ -92,7 +97,7 @@ client.lookups.v2.phoneNumbers(input.phone_number).fetch()
 `env` looks inside the Directus environment variables for `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN`. In order to
 start using this hook, these variables must be added to the `.env` file.
 
-The lookup is performed with the `phone_number` from the input object.
+The lookup is performed with the `phoneNumber` from the input object.
 
 Inside the callback, provide a response for when the phone number is invalid, otherwise continue as normal. Twilio
 provides a very helpful boolean response called `valid`.
@@ -100,9 +105,9 @@ provides a very helpful boolean response called `valid`.
 Use this to throw an exception if `false`, or return the input to the stream and end the hook if `true`:
 
 ```js
-client.lookups.v2.phoneNumbers(input.phone_number).fetch()
-.then(function(phone_number) {
-	if(!phone_number.valid){  // [!code ++]
+client.lookups.v2.phoneNumbers(input.phoneNumber).fetch()
+.then((phoneNumber) => {
+	if(!phoneNumber.valid){  // [!code ++]
 		throw new InvalidPayloadException('Phone Number is not valid');  // [!code ++]
 	}  // [!code ++]
 	return input;  // [!code ++]
@@ -151,18 +156,17 @@ export default ({ filter }, { env, exceptions }) => {
 	const { InvalidPayloadException } = exceptions;
 
 	filter('items.create', async (input, { collection }) => {
-
 		if (collection !== 'customers') return input;
-		if (input.phone_number === undefined) {
+		if (input.phoneNumber === undefined) {
 			throw new InvalidPayloadException('No Phone Number has been provided');
 		}
 
 		const accountSid = env.TWILIO_ACCOUNT_SID;
 		const authToken = env.TWILIO_AUTH_TOKEN;
-		const client = require('twilio')(accountSid, authToken);
+		const client = new twilio(accountSid, authToken);
 
-		client.lookups.v2.phoneNumbers(input.phone_number).fetch().then(function(phone_number) {
-			if(!phone_number.valid){
+		client.lookups.v2.phoneNumbers(input.phoneNumber).fetch().then((phoneNumber) => {
+			if(!phoneNumber.valid){
 				throw new InvalidPayloadException('Phone Number is not valid');
 			}
 			return input;

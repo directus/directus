@@ -1,5 +1,5 @@
 ---
-description: 'Learn how to use Directus permissions in custom endpoints.'
+description: Learn how to use Directus permissions in custom endpoints.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
@@ -22,7 +22,7 @@ npx create-directus-extension
 A list of options will appear (choose endpoint), and type a name for your extension (for example,
 `directus-endpoint-stripe`). For this guide, select JavaScript.
 
-Now the boilerplate has been created, install the stripe package, and then open the directory in your code editor.
+Now the boilerplate has been created, install the `stripe` package, and then open the directory in your code editor.
 
 ```
 cd directus-endpoint-stripe
@@ -38,7 +38,8 @@ In the `src` directory open `index.js`. By default, the endpoint root will be th
 would be `/directus-endpoint-stripe/`. To change this, replace the code with the following:
 
 ```js
-import Stripe from 'stripe'
+import Stripe from 'stripe';
+
 export default {
 	id: 'stripe',
 	handler: (router) => {
@@ -68,8 +69,9 @@ handler: (router, { env, services }) => { // [!code ++]
 Initialize the `stripe` library and grab the Directus `PermissionsService`:
 
 ```js
-const secret_key = env.STRIPE_LIVE_SECRET_KEY;
-const stripe = require('stripe')(secret_key);
+const secretKey = env.STRIPE_LIVE_SECRET_KEY;
+const stripe = new Stripe(secretKey);
+
 const { PermissionsService } = services;
 ```
 
@@ -123,6 +125,7 @@ router.get('/customers', (req, res) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	let output = [];
 	if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)){
 		stripe.customers.list({limit: 100}).autoPagingEach((customer) => {
@@ -145,6 +148,7 @@ router.get('/payments/:customer_id', (req, res) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	let output = [];
 	if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)){
 		stripe.paymentIntents.list({
@@ -171,6 +175,7 @@ router.post('/customers', (req, res) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	if(permission.getAllowedFields('create', env.STRIPE_CUSTOMERS_COLLECTION)){
 		if(req.body.email){
 			const customer = {
@@ -253,8 +258,8 @@ import Stripe from 'stripe';
 export default {
 	id: 'stripe',
 	handler: (router, { env, services }) => {
-		const secret_key = env.STRIPE_LIVE_SECRET_KEY;
-		const stripe = new Stripe(secret_key);
+		const secretKey = env.STRIPE_LIVE_SECRET_KEY;
+		const stripe = new Stripe(secretKey);
 
 		const { PermissionsService } = services;
 
@@ -322,7 +327,6 @@ export default {
 			});
 
 			if(permission.getAllowedFields('create', env.STRIPE_CUSTOMERS_COLLECTION)){
-
 				if(req.body.email){
 					const customer = {
 						email: req.body.email,

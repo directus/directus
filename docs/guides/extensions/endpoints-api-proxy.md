@@ -108,8 +108,7 @@ Visit the PokéAPI docs and find an endpoint - for example [Request a Pokémon](
 Make sure to select CURL as the coding language and this will output the URL to use. Copy the URL without the host and
 paste it to the end of your Directus endpoint. It will look something like:
 
-- PokéAPI URL: `https://pokeapi.co/api/v2/pokemon/25`
-- Directus URL: `https://example.directus.app/pokeapi/pokemon/25`
+`https://example.directus.app/pokeapi/pokemon/25`
 
 You should receive the direct response from PokéAPI.
 
@@ -136,7 +135,7 @@ export default {
 					res.status(response.status).send(response.statusText);
 				}
 			} catch (error) {
-				res.send(error.message);
+       			res.status(500).send(error.message);
 			}
 		});
 	},

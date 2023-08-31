@@ -1,6 +1,6 @@
 ---
-description: "Learn how to create an operation to send an SMS using Twilio."
-contributors: "Tim Butterfield, Kevin Lewis"
+description: Learn how to create an operation to send an SMS using Twilio.
+contributors: Tim Butterfield, Kevin Lewis
 ---
 
 # Use Custom Operations to Send SMS Notifications With Twilio
@@ -24,7 +24,7 @@ npx create-directus-extension
 A list of options will appear (choose operation), and type a name for your extension (for example,
 `directus-operation-twilio-sms`). For this guide, select JavaScript.
 
-Now the boilerplate has been created, install the twilio package, and then open the directory in your code editor.
+Now the boilerplate has been created, install the Twilio library, and then open the directory in your code editor.
 
 ```
 cd directus-operation-twilio-sms
@@ -58,7 +58,7 @@ the phone number and a message. Replace the placeholder options with the followi
 ```js
 options: [
 	{
-		field: 'phone_number',
+		field: 'phoneNumber',
 		name: 'Phone Number',
 		type: 'string',
 		meta: {
@@ -78,7 +78,7 @@ options: [
 ],
 ```
 
-- `phone_number` is a standard string input to allow for international numbers that begin with a plus (+).
+- `phoneNumber` is a standard string input to allow for international numbers that begin with a plus (+).
 - `message` uses an input-multiline field (textarea) to allow for a long message to be sent.
 
 <img alt="A form shows all of the defined fields above" src="https://marketing.directus.app/assets/6e7f4099-8c2b-416f-8bc2-50ba0f55c47b.png" style="padding: 8px 12px;">
@@ -90,10 +90,10 @@ text parameter can be a variable or just another string.
 It will be useful to see both fields on the card. Replace the placeholder objects with the following:
 
 ```js
-overview: ({ phone_number, message }) => [
+overview: ({ phoneNumber, message }) => [
 	{
 		label: 'Phone Number',
-		text: phone_number,
+		text: phoneNumber,
 	},
 	{
 		label: 'Message',
@@ -108,39 +108,48 @@ Now, the overview of the operation looks like this:
 
 ## Build the API Function
 
-Open the `api.js` file and update the `id` to match the one used in the `app.js` file.
+Open the `api.js` file, import the Twilio library and update the `id` to match the one used in the `app.js` file:
+
+```js
+import twilio from 'twilio';
+
+export default {
+	id: 'operation-twilio-sms',
+	handler: () => {
+		// ...
+	},
+};
+```
 
 The handler needs to include the fields from the `app.js` options and the environment variables from Directus. Replace
 the handler definition with the following:
 
 ```js
-handler: ({ phone_number, message }, { env }) => {
+handler: ({ phoneNumber, message }, { env }) => {
 ```
 
 Set up the Twilio API and environment variables with the following code. These environment variables will need to be
 added to the project when installing this extension.
 
 ```js
-const twilio = require('twilio');
 const accountSid = env.TWILIO_ACCOUNT_SID;
 const authToken = env.TWILIO_AUTH_TOKEN;
-const from_number = env.TWILIO_PHONE_NUMBER;
+const fromNumber = env.TWILIO_PHONE_NUMBER;
 const client = new twilio(accountSid, authToken);
 ```
 
 Use the Twilio `messages` endpoint and create a new message, setting the `body`, `to`, and `from` parameters. `body`
-will use the message variable from our handler, `to` will use the `phone_number` variable from our handler and `from`
-will use the `from_number` constant from the environment variable `TWILIO_PHONE_NUMBER`.
+will use the message variable from our handler, `to` will use the `phoneNumber` variable from our handler and `from`
+will use the `fromNumber` constant from the environment variable `TWILIO_PHONE_NUMBER`.
 
 ```js
 client.messages.create({
 	body: message,
-	to: phone_number,
-	from: from_number,
-}).then((rsp) => {
-	return rsp;
+	to: phoneNumber,
+	from: fromNumber,
+}).then((response) => {
+	return response;
 }).catch((error) => {
-	console.error(error);
 	return error;
 });
 ```
@@ -206,10 +215,10 @@ export default {
 	name: 'Twilio SMS',
 	icon: 'forum',
 	description: 'Send SMS using the Twilio API.',
-	overview: ({ phone_number, message }) => [
+	overview: ({ phoneNumber, message }) => [
 		{
 			label: 'Phone Number',
-			text: phone_number,
+			text: phoneNumber,
 		},
 		{
 			label: 'Message',
@@ -218,7 +227,7 @@ export default {
 	],
 	options: [
 		{
-			field: 'phone_number',
+			field: 'phoneNumber',
 			name: 'Phone Number',
 			type: 'string',
 			meta: {
@@ -242,23 +251,23 @@ export default {
 `api.js`
 
 ```js
+import twilio from 'twilio';
+
 export default {
 	id: 'operation-twilio-sms',
-	handler: ({ phone_number, message }, { env }) => {
-		const twilio = require('twilio');
+	handler: ({ phoneNumber, message }, { env }) => {
 		const accountSid = env.TWILIO_ACCOUNT_SID;
 		const authToken = env.TWILIO_AUTH_TOKEN;
-		const from_number = env.TWILIO_PHONE_NUMBER;
+		const fromNumber = env.TWILIO_PHONE_NUMBER;
 		const client = new twilio(accountSid, authToken);
 
 		client.messages.create({
 			body: message,
 			to: phone_number,
 			from: from_number,
-		}).then((rsp) => {
-			return rsp;
+		}).then((response) => {
+			return response;
 		}).catch((error) => {
-			console.error(error);
 			return error;
 		});
 	},
