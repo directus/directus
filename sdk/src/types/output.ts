@@ -1,4 +1,4 @@
-import type { FieldsWildcard, HasManyToAnyRelation, PickFlatFields, PickRelationalFields } from './fields.js';
+import type { FieldsWildcard, HasManyToAnyRelation, PickRelationalFields } from './fields.js';
 import type { ItemType } from './schema.js';
 import type { IfAny, IsNullable, Merge, Mutable, UnpackList } from './utils.js';
 
@@ -14,8 +14,8 @@ export type ApplyQueryFields<
 	CollectionItem extends object = UnpackList<Collection>,
 	Fields = UnpackList<Mutable<ReadonlyFields>>,
 	RelationalFields = PickRelationalFields<Fields>,
-	RelationalKeys = RelationalFields extends never ? never : keyof RelationalFields,
-	FlatFields = FieldsWildcard<CollectionItem, Exclude<Fields, RelationalKeys>>
+	RelationalKeys extends keyof RelationalFields = RelationalFields extends never ? never : keyof RelationalFields,
+	FlatFields extends keyof CollectionItem = FieldsWildcard<CollectionItem, Exclude<Fields, RelationalKeys>>
 > = IfAny<
 	Schema,
 	Record<string, any>,
@@ -81,15 +81,15 @@ export type RelationNullable<Relation, Output> = IsNullable<Relation, Output | n
 /**
  *
  */
-export type MapFlatFields<_Schema extends object, Item, Fields> = Fields extends keyof Item ? {
-	[F in Fields & string]: Extract<Item[F], string> extends infer A
-		? A extends never
-		  ? 'b'
+export type MapFlatFields<_Schema extends object, Item, Fields extends keyof Item> = {
+	[F in Fields]: Extract<Item[F], string> extends infer A
+		? A[] extends never[]
+		  ? Item[F]
 		  : A extends keyof FieldOutputMap
-		    ? FieldOutputMap[A]// | Exclude<Item[F], string>
-		    : 'a'//Item[F]
-		: 'c';
-} : 'd'
+		    ? (FieldOutputMap[A] | Exclude<Item[F], A>)
+		    : Item[F]
+		: Item[F];
+}
 
 /**
  *
