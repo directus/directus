@@ -13,7 +13,7 @@ export type QueryFields<Schema extends object, Item> = WrapQueryFields<
 /**
  * Wrap array of fields
  */
-export type WrapQueryFields<Item, NestedFields> = readonly ('*' | keyof UnpackList<Item> | NestedFields)[];
+export type WrapQueryFields<Item, NestedFields> = readonly ('*' | keyof UnpackList<Item> | NestedFields | FunctionFields<Item>)[];
 
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
@@ -108,3 +108,9 @@ export type PickFlatFields<Schema extends object, Item, Fields> = Extract<Fields
 	? never
 	: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;
 
+/**
+ * Extract a specific literal type from a collection
+ */
+export type LiteralFields<Item, Type extends string> = {
+		[Key in keyof Item]: Extract<Item[Key], Type>[] extends never[] ? never : Key;
+}[keyof Item];

@@ -92,7 +92,7 @@ export type MapFlatFields<Item extends object, Fields extends keyof Item> = {
 }
 
 /**
- *
+ * Output map for specific literal types
  */
 export type FieldOutputMap = {
 	'json': Record<string, any> | any[] | null,

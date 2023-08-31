@@ -1,11 +1,13 @@
+import type { LiteralFields } from "./fields.js";
 import type { ItemType, RelationalFields } from "./schema.js";
 
 /**
  * Available query functions
  */
 export type QueryFunctions = {
-	date: 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
-	array: 'count';
+	datetime: 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
+	json: 'count';
+	csv: 'count';
 };
 
 /**
@@ -17,6 +19,9 @@ export type PermuteFields<Fields, Funcs> = Fields extends string
 		: never
 	: never;
 
+export type FunctionFields<Item> = TypeFunctionFields<Item, 'datetime'>;
+
+export type TypeFunctionFields<Item, Type extends keyof QueryFunctions> = PermuteFields<LiteralFields<Item, Type>, QueryFunctions[Type]>
 
 // type ArrayFunctionFields<Schema extends object, Item, RKeys extends keyof Item=RelationalFields<Schema, Item>, FKeys extends keyof Item=Fla> = {
 // 	[Key in RKeys]: Extract<Item[Key], ItemType<Schema>> extends any[] ? Key : never
