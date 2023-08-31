@@ -173,20 +173,20 @@ AUTH_AWSSSO_EMAIL_KEY=email
 
 **Mapping:**
 
-Maps the email address into Directus as external_identifier:
+Maps the email address into Directus as `external_identifier`:
 
-```
-| User attribute in the application | Maps to this string value or user attribute in IAM Identity Center | type |
-| --- | ----------- | --- |
-| Subject | ${user:email} | emailAddress |
-| email | ${user:email} | unspecified |
-```
+| User attribute in the application | Maps to this string value or user attribute in IAM Identity Center | type           |
+| --------------------------------- | ------------------------------------------------------------------ | -------------- |
+| `Subject`                         | `${user:email}`                                                    | `emailAddress` |
+| `email`                           | `${user:email}`                                                    | `unspecified`  |
 
 **Config:**
 
-Relay state - `admin/login` Application ACS URL - `https://your-directus-instance/auth/login/awssso/acs`
+- Relay state: `admin/login`
+- Application ACS URL: `https://your-directus-instance/auth/login/awssso/acs`
 
-## GOOGLE SSO 
+## GOOGLE SSO
+
 ```
 AUTH_SSO_DRIVER="saml"
 AUTH_PROVIDERS="SSO"
@@ -195,7 +195,7 @@ AUTH_SSO_sp_metadata='{Create your own SAML metadata file, see example below}'
 AUTH_SSO_ALLOW_PUBLIC_REGISTRATION="true"
 AUTH_SSO_DEFAULT_ROLE_ID="{YOUR_DESIRED_ROLE_UUID_FROM_DIRECTUS}"
 AUTH_SSO_IDENTIFIER_KEY=email
-AUTH_SSO_EMAIL_KEY=email 
+AUTH_SSO_EMAIL_KEY=email
 ```
 
 ::: tip Google Help
@@ -203,10 +203,13 @@ AUTH_SSO_EMAIL_KEY=email
 - Remove the `<?xml version="1.0" encoding="UTF-8"?>` from the start of the XML file of your idp_metadata.
 
 - Your SP Metadatafile should contain
-	- The same entityID as the one you configured in Google in the EntityDescriptor tag
-	- Location should be the ACS URL of your Directus instance in the format of `https://your-directus-instance/auth/login/sso/acs`
+
+  - The same entityID as the one you configured in Google in the EntityDescriptor tag
+  - Location should be the ACS URL of your Directus instance in the format of
+    `https://your-directus-instance/auth/login/sso/acs`
 
 - SP Metadata file example:
+
 ```xml
 <EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="SHOULD_MATCH_GOOGLE_CONFIG">
   <SPSSODescriptor WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
