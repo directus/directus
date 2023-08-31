@@ -50,7 +50,7 @@ variables, add the `env` context to the handler like so:
 handler: (router, { env }) => {
 ```
 
-Create variables for the Twilio and construct the request headers object for Basic Authentication:
+Create variables for Twilio and construct the request headers object for Basic Authentication:
 
 ```js
 const twilioHost = 'https://api.twilio.com';
