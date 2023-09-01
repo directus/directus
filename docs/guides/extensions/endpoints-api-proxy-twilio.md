@@ -250,10 +250,9 @@ export default {
 		const twilioSid = env.TWILIO_ACCOUNT_SID;
 		const twilioToken = env.TWILIO_AUTH_TOKEN;
 
+        const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
 		const headers = {
-			Authorization: `Basic ${Buffer.from(
-				`${twilioSid}:${twilioToken}`
-			).toString('base64')}}`,
+			Authorization: `Basic ${token}`,
 		};
 
 		router.get('/*', async (req, res) => {
