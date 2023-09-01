@@ -56,7 +56,7 @@ describe.todo('querying the driver', () => {
 			connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 		});
 
-		const resulingStream = driver.query(query);
+		const resultingStream = driver.query(query);
 
 		// @TODO receive all data from the stream
 		const actualResult = {};
