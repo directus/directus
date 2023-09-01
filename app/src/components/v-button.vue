@@ -68,7 +68,7 @@ interface Props {
 	/** To what external link the button should direct */
 	href?: string;
 	/** In which tab the external link of the button should open */
-	target?: '_self' | '_blank' | '_parent' | '_top';
+	target?: string;
 	/** Renders the button highlighted */
 	active?: boolean;
 	/** If the button should be highlighted if it matches the current internal link */
