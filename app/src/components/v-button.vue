@@ -67,7 +67,7 @@ interface Props {
 	to?: RouteLocationRaw;
 	/** To what external link the button should direct */
 	href?: string;
-	/** In which tab the external link of the button should open */
+	/** Where to open the external link of the button */
 	target?: string;
 	/** Renders the button highlighted */
 	active?: boolean;
