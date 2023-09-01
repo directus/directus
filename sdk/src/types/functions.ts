@@ -1,5 +1,6 @@
-import type { LiteralFields } from "./fields.js";
-import type { ItemType, RelationalFields } from "./schema.js";
+import type { LiteralFields } from './fields.js';
+import type { ItemType, RelationalFields } from './schema.js';
+import type { Merge } from './utils.js';
 
 /**
  * Available query functions
@@ -19,14 +20,43 @@ export type PermuteFields<Fields, Funcs> = Fields extends string
 		: never
 	: never;
 
-export type FunctionFields<Item> = TypeFunctionFields<Item, 'datetime'>;
+/**
+ * Create a map of function fields and output naming
+ */
+type TranslateFunctionFields<Fields, Funcs> = {
+	[F in PermuteFields<Fields, Funcs> as `${F[1]}(${F[0]})`]: `${F[0]}_${F[1]}`;
+};
 
-export type TypeFunctionFields<Item, Type extends keyof QueryFunctions> = PermuteFields<LiteralFields<Item, Type>, QueryFunctions[Type]>
+/**
+ * Get all many relations on an item
+ */
+type RelationalFunctions<Schema extends object, Item> = keyof {
+	[Key in RelationalFields<Schema, Item> as Extract<Item[Key], ItemType<Schema>> extends any[] ? Key : never]: Key;
+};
 
-// type ArrayFunctionFields<Schema extends object, Item, RKeys extends keyof Item=RelationalFields<Schema, Item>, FKeys extends keyof Item=Fla> = {
-// 	[Key in RKeys]: Extract<Item[Key], ItemType<Schema>> extends any[] ? Key : never
-// }[RKeys] | ;
+/**
+ * Combine the various function types
+ */
+export type FunctionFields<Schema extends object, Item> =
+	| {
+			[Type in keyof QueryFunctions]: TypeFunctionFields<Item, Type>;
+	  }[keyof QueryFunctions]
+	| keyof TranslateFunctionFields<RelationalFunctions<Schema, Item>, 'count'>;
 
-// export type ArrayFunctions<Schema extends object, Item, Keys extends keyof Item=RelationalFields<Schema, Item>> = {
-// 	[Key in Keys]: Extract<Item[Key], ItemType<Schema>> extends any[] ? Key : never
-// }[Keys];
+/**
+ *
+ */
+export type TypeFunctionFields<Item, Type extends keyof QueryFunctions> = keyof TranslateFunctionFields<
+	LiteralFields<Item, Type>,
+	QueryFunctions[Type]
+>;
+
+/**
+ * Map all possible function fields on an item
+ */
+export type FunctionFieldsMap<Schema extends object, Item> = Merge<
+	TranslateFunctionFields<RelationalFunctions<Schema, Item>, 'count'>,
+	TranslateFunctionFields<LiteralFields<Item, 'datetime'>, QueryFunctions['datetime']> &
+		TranslateFunctionFields<LiteralFields<Item, 'json'>, QueryFunctions['json']> &
+		TranslateFunctionFields<LiteralFields<Item, 'csv'>, QueryFunctions['csv']>
+>;
