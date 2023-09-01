@@ -39,11 +39,6 @@ export default class DataDriverPostgres implements DataDriver {
 		try {
 			client = await this.#pool.connect();
 
-			/*
-			 * @TODO rethink this:
-			 * the below call needs to be done from each SQL driver
-			 * alternatively we can move this to the engine and pass the sql drivers the abstract sql directly
-			 */
 			const abstractSqlQuery = convertAbstractQueryToAbstractSqlQuery(query);
 			const sql = constructSqlQuery(abstractSqlQuery);
 			const queryStream = new QueryStream(sql.statement, sql.parameters);
