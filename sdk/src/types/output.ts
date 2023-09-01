@@ -22,9 +22,7 @@ export type ApplyQueryFields<
 	Record<string, any>,
 	Merge<
 		FunctionFieldsMap<Schema, CollectionItem> extends infer FF
-			? FF extends Record<string, string>
-				? MapFlatFields<CollectionItem, FlatFields, FF>
-				: never
+			? MapFlatFields<CollectionItem, FlatFields, FF extends Record<string, string> ? FF : Record<string, string>>
 			: never,
 		RelationalFields extends never
 			? never
