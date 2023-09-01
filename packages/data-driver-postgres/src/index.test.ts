@@ -1,8 +1,7 @@
 import type { AbstractQuery } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
-import { expect, test } from 'vitest';
+import { expect, test, describe } from 'vitest';
 import DataDriverPostgres from './index.js';
-import { describe } from 'node:test';
 
 // @TODO mock a database response
 
