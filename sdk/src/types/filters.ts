@@ -1,5 +1,6 @@
+import type { FunctionFieldNamesMap } from './functions.js';
 import type { RelationalFields } from './schema.js';
-import type { UnpackList } from './utils.js';
+import type { Merge, UnpackList } from './utils.js';
 
 /**
  * Filters
@@ -10,13 +11,28 @@ export type QueryFilter<Schema extends object, Item> = WrapLogicalFilters<Nested
  * Query filters without logical filters
  */
 export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
-	? {
-			[Field in keyof FlatItem]?:
-				| (Field extends RelationalFields<Schema, FlatItem>
-						? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
-						: never)
-				| FilterOperators<FlatItem[Field]>;
-	  }
+	? Merge<
+			{
+				[Field in keyof FlatItem]?:
+					| (Field extends RelationalFields<Schema, FlatItem>
+							? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
+							: never)
+					| FilterOperators<FlatItem[Field]>;
+			},
+			FunctionFieldNamesMap<Schema, Item> extends infer Funcs
+				? {
+						[Func in keyof Funcs]?: Funcs[Func] extends infer Field
+							? Field extends keyof FlatItem
+								?
+										| (Field extends RelationalFields<Schema, FlatItem>
+												? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
+												: never)
+										| FilterOperators<FlatItem[Field]>
+								: never
+							: never;
+				  }
+				: never
+	  >
 	: never;
 
 /**
@@ -72,8 +88,9 @@ export type WrapRelationalFilters<Filters> =
  */
 export type LogicalFilterOperators = '_or' | '_and';
 
-export type WrapLogicalFilters<Filters> =
-	| {
-			[Operator in LogicalFilterOperators]?: WrapLogicalFilters<Filters>[];
-	  }
-	| Filters;
+export type WrapLogicalFilters<Filters extends object> = Merge<
+	{
+		[Operator in LogicalFilterOperators]?: WrapLogicalFilters<Filters>[];
+	},
+	Filters
+>;

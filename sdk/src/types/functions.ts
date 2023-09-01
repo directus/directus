@@ -28,6 +28,13 @@ type TranslateFunctionFields<Fields, Funcs> = {
 };
 
 /**
+ * Create a map of function fields and output naming
+ */
+type FunctionFieldNames<Fields, Funcs> = {
+	[F in PermuteFields<Fields, Funcs> as `${F[1]}(${F[0]})`]: F[0];
+};
+
+/**
  * Get all many relations on an item
  */
 type RelationalFunctions<Schema extends object, Item> = keyof {
@@ -59,4 +66,14 @@ export type FunctionFieldsMap<Schema extends object, Item> = Merge<
 	TranslateFunctionFields<LiteralFields<Item, 'datetime'>, QueryFunctions['datetime']> &
 		TranslateFunctionFields<LiteralFields<Item, 'json'>, QueryFunctions['json']> &
 		TranslateFunctionFields<LiteralFields<Item, 'csv'>, QueryFunctions['csv']>
+>;
+
+/**
+ * Map all possible function fields to name on an item
+ */
+export type FunctionFieldNamesMap<Schema extends object, Item> = Merge<
+	FunctionFieldNames<RelationalFunctions<Schema, Item>, 'count'>,
+	FunctionFieldNames<LiteralFields<Item, 'datetime'>, QueryFunctions['datetime']> &
+		FunctionFieldNames<LiteralFields<Item, 'json'>, QueryFunctions['json']> &
+		FunctionFieldNames<LiteralFields<Item, 'csv'>, QueryFunctions['csv']>
 >;
