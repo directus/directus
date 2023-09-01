@@ -66,11 +66,10 @@ export type SubscriptionOutput<
 		: Partial<Schema[Collection]>
 > = { type: 'subscription'; uid?: string } & (
 	| {
-			[Event in Events]: { event: Event; data: SubscriptionPayload<TItem>[Event]; };
+			[Event in Events]: { event: Event; data: SubscriptionPayload<TItem>[Event] };
 	  }[Events]
 	| { event: 'error'; error: { code: string; message: string } }
 );
-
 
 export type SubscriptionPayload<Item> = {
 	init: Item[];
