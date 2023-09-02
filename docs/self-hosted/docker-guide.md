@@ -149,6 +149,51 @@ docker compose up
 The specified image will be pulled and the containers recreated. Migrations will happen automatically so once the
 containers have started you will be on the latest version (or the version you specified).
 
+## Sample Dockerfile
+
+If you need to build a Docker image on top of the base docker image, here's a sample `Dockerfile`:
+
+```dockerfile
+FROM directus/directus:10.6.1
+
+USER node
+
+COPY --chown=node .env .
+
+COPY --chown=node ./config/docker/entrypoint.sh .
+
+COPY --chown=node ./extensions ./extensions
+
+EXPOSE 8055
+
+ENTRYPOINT ["./entrypoint.sh"]
+```
+
+where you might be connecting to an external database and file system for uploads.
+
+The `entrypoint.sh` file in `config/docker` (you can choose to put `entrypoint.sh` anywhere) would look like this:
+
+```bash
+#!/bin/sh
+
+npx directus bootstrap
+npx directus start
+
+exec "$@"
+```
+
+Run
+
+ `docker build -t [your-image-name]:[your-image-tag] .` 
+ 
+ in the folder containing your `Dockerfile` to build your Docker image.
+
+Run
+
+`docker run -p 8055:8055 [your-image-name]:[your-image-tag]`
+
+with an `.env` file with the config options mentioned [here](https://docs.directus.io/self-hosted/config-options.html) to start a Docker container based off your Docker image.
+
 ## Supported Databases
 
 The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be
