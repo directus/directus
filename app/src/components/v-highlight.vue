@@ -1,15 +1,17 @@
 <template>
-	<template v-for="(part, index) in parts" :key="index">
-		<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
-		<template v-else>{{ part.text }}</template>
-	</template>
+	<span class="v-highlight">
+		<template v-for="(part, index) in parts" :key="index">
+			<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
+			<span v-else>{{ part.text }}</span>
+		</template>
+	</span>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { toArray } from '@directus/utils';
 import { flatten } from 'lodash';
 import { remove as removeDiacritics } from 'diacritics';
-import { toArray } from '@directus/utils';
+import { computed } from 'vue';
 
 type HighlightPart = {
 	text: string;
@@ -29,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const parts = computed<HighlightPart[]>(() => {
-	const searchText = removeDiacritics(props.text.toLowerCase());
+	const normalizedText = removeDiacritics(props.text).toLowerCase();
 
 	const queries = toArray(props.query);
 
@@ -46,17 +48,17 @@ const parts = computed<HighlightPart[]>(() => {
 		queries.reduce<number[][][]>((acc, query) => {
 			if (!query) return acc;
 
-			query = removeDiacritics(query.toLowerCase());
+			const normalizedQuery = removeDiacritics(query).toLowerCase();
 
 			const indices = [];
 
 			let startIndex = 0;
-			let index = searchText.indexOf(query, startIndex);
+			let index = normalizedText.indexOf(normalizedQuery, startIndex);
 
 			while (index > -1) {
-				startIndex = index + query.length;
+				startIndex = index + normalizedQuery.length;
 				indices.push([index, startIndex]);
-				index = searchText.indexOf(query, index + 1);
+				index = normalizedText.indexOf(normalizedQuery, index + 1);
 			}
 
 			acc.push(indices);
@@ -118,7 +120,7 @@ const parts = computed<HighlightPart[]>(() => {
 		lastEnd = end;
 	}
 
-	if (lastEnd !== searchText.length) {
+	if (lastEnd !== normalizedText.length) {
 		parts.push({
 			highlighted: false,
 			text: props.text.slice(lastEnd),
@@ -130,6 +132,10 @@ const parts = computed<HighlightPart[]>(() => {
 </script>
 
 <style scoped>
+.v-highlight {
+	padding: 1px 2px;
+}
+
 mark {
 	margin: -1px -2px;
 	padding: 1px 2px;
