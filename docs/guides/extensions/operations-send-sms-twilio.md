@@ -58,7 +58,7 @@ the phone number and a message. Replace the placeholder options with the followi
 ```js
 options: [
 	{
-		field: 'phoneNumber',
+		field: 'phone_number',
 		name: 'Phone Number',
 		type: 'string',
 		meta: {
@@ -78,7 +78,7 @@ options: [
 ],
 ```
 
-- `phoneNumber` is a standard string input to allow for international numbers that begin with a plus (+).
+- `phone_number` is a standard string input to allow for international numbers that begin with a plus (+).
 - `message` uses an input-multiline field (textarea) to allow for a long message to be sent.
 
 <img alt="A form shows all of the defined fields above" src="https://marketing.directus.app/assets/6e7f4099-8c2b-416f-8bc2-50ba0f55c47b.png" style="padding: 8px 12px;">
@@ -90,10 +90,10 @@ text parameter can be a variable or just another string.
 It will be useful to see both fields on the card. Replace the placeholder objects with the following:
 
 ```js
-overview: ({ phoneNumber, message }) => [
+overview: ({ phone_number, message }) => [
 	{
 		label: 'Phone Number',
-		text: phoneNumber,
+		text: phone_number,
 	},
 	{
 		label: 'Message',
@@ -125,7 +125,7 @@ The handler needs to include the fields from the `app.js` options and the enviro
 the handler definition with the following:
 
 ```js
-handler: ({ phoneNumber, message }, { env }) => {
+handler: ({ phone_number: toNumber, message }, { env }) => {
 ```
 
 Set up the Twilio API and environment variables with the following code. These environment variables will need to be
@@ -139,13 +139,14 @@ const client = new twilio(accountSid, authToken);
 ```
 
 Use the Twilio `messages` endpoint and create a new message, setting the `body`, `to`, and `from` parameters. `body`
-will use the message variable from our handler, `to` will use the `phoneNumber` variable from our handler and `from`
-will use the `fromNumber` constant from the environment variable `TWILIO_PHONE_NUMBER`.
+will use the message variable from our handler, `to` will use the `phone_number` variable from our handler, aliased as
+`toNumber` for clarity, and `from` will use the `fromNumber` constant from the environment variable
+`TWILIO_PHONE_NUMBER`.
 
 ```js
 client.messages.create({
 	body: message,
-	to: phoneNumber,
+	to: toNumber,
 	from: fromNumber,
 }).then((response) => {
 	return response;
@@ -215,10 +216,10 @@ export default {
 	name: 'Twilio SMS',
 	icon: 'forum',
 	description: 'Send SMS using the Twilio API.',
-	overview: ({ phoneNumber, message }) => [
+	overview: ({ phone_number, message }) => [
 		{
 			label: 'Phone Number',
-			text: phoneNumber,
+			text: phone_number,
 		},
 		{
 			label: 'Message',
@@ -227,7 +228,7 @@ export default {
 	],
 	options: [
 		{
-			field: 'phoneNumber',
+			field: 'phone_number',
 			name: 'Phone Number',
 			type: 'string',
 			meta: {
@@ -255,7 +256,7 @@ import twilio from 'twilio';
 
 export default {
 	id: 'operation-twilio-sms',
-	handler: ({ phoneNumber, message }, { env }) => {
+	handler: ({ phone_number: toNumber, message }, { env }) => {
 		const accountSid = env.TWILIO_ACCOUNT_SID;
 		const authToken = env.TWILIO_AUTH_TOKEN;
 		const fromNumber = env.TWILIO_PHONE_NUMBER;
@@ -263,8 +264,8 @@ export default {
 
 		client.messages.create({
 			body: message,
-			to: phone_number,
-			from: from_number,
+			to: toNumber,
+			from: fromNumber,
 		}).then((response) => {
 			return response;
 		}).catch((error) => {
