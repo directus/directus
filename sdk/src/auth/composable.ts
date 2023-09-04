@@ -99,9 +99,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), options).catch((err) => {
-					throw err;
-				});
+				const data = await request<AuthenticationData>(requestUrl.toString(), options);
 
 				setCredentials(data);
 				return data;
@@ -155,7 +153,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				}
 
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), options, null);
+				await request(requestUrl.toString(), options);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();

@@ -122,8 +122,9 @@ the original event transaction to the database.
 
 ::: tip Node Modules
 
-For security reasons, module usage is disabled by default. You can configure what Node Modules are available through
-[the `FLOWS_EXEC_ALLOWED_MODULES` environment variable](/self-hosted/config-options#security).
+To prevent unauthorized access to the underlying server, node modules can't be used in the **Run Script** operation. If
+you require a third party library for your custom script, you can create a custom
+[operation extension](/extensions/operations) instead.
 
 :::
 
@@ -276,7 +277,7 @@ This operation lets you sign and verify a JSON Web Token (JWT) using the
 - **Token** — The JSON Web Token to verify or decode.
 - **Secret** — The secret key used to sign or verify a token.
 - **Options** — The options object provided to the operation. For the list of available options, see the
-  [documentation of `jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken#usage).
+  [documentation of `jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken#usage).
 
 **Payload**
 

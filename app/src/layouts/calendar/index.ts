@@ -11,7 +11,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
 import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { Calendar, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
+import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
@@ -136,7 +136,7 @@ export default defineLayout<LayoutOptions>({
 				eventResizableFromStart: true,
 				eventDurationEditable: true,
 				dayMaxEventRows: true,
-				height: '100%',
+				height: (props.layoutProps.height ?? '100%') as CssDimValue,
 				firstDay: firstDay.value ?? 0,
 				nextDayThreshold: '01:00:00',
 				plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],

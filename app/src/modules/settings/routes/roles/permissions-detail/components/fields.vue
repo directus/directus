@@ -51,7 +51,7 @@ const fieldsInCollection = computed(() => {
 
 	return fields.map((field: Field) => {
 		return {
-			text: field.name,
+			text: field.field,
 			value: field.field,
 		};
 	});
@@ -90,6 +90,10 @@ const fields = computed({
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.checkboxes :deep(.v-checkbox .type-text) {
+	font-family: var(--family-monospace);
 }
 
 .app-minimal {

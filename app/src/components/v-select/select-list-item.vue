@@ -17,6 +17,7 @@
 			<span v-if="multiple === false || item.selectable === false" class="item-text">{{ item.text }}</span>
 			<v-checkbox
 				v-else
+				class="checkbox"
 				:model-value="modelValue || []"
 				:label="item.text"
 				:value="item.value"
@@ -33,12 +34,14 @@ import { Option } from './types';
 
 interface Props {
 	item: Option;
+	itemLabelFontFamily: string;
 	modelValue?: string | number | (string | number)[] | null;
 	multiple?: boolean;
 	allowOther?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	itemLabelFontFamily: 'var(--v-select-font-family)',
 	modelValue: null,
 	multiple: true,
 	allowOther: false,
@@ -58,3 +61,9 @@ const isActive = computed(() => {
 	}
 });
 </script>
+
+<style scoped>
+.checkbox :deep(.type-text) {
+	font-family: v-bind('$props.itemLabelFontFamily');
+}
+</style>
