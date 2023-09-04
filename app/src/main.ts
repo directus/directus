@@ -53,7 +53,7 @@ async function init() {
 	await loadExtensions();
 
 	registerExtensions(app);
-	
+
 	app.use(router);
 
 	app.mount('#app');

@@ -21,7 +21,7 @@ function _registerModules(publicModules: ModuleConfig[]): void {
 			children: module.routes,
 			meta: {
 				public: !!module.meta?.public,
-			}
+			},
 		});
 	}
 }
@@ -32,9 +32,9 @@ export function registerModules(modules: ModuleConfig[]): {
 	onDehydrateModules: () => Promise<void>;
 } {
 	const registeredModules = shallowRef<ModuleConfig[]>([]);
-	
-	const publicModules = modules.filter( m => m.meta?.public === true);
-	const privateModules = modules.filter( m => m.meta?.public === false);
+
+	const publicModules = modules.filter((m) => m.meta?.public === true);
+	const privateModules = modules.filter((m) => m.meta?.public === false);
 
 	// TODO This way we're not re-hydrating public modules
 	_registerModules(publicModules);
@@ -59,7 +59,7 @@ export function registerModules(modules: ModuleConfig[]): {
 			)
 		).filter((module): module is ModuleConfig => module !== null);
 
-		_registerModules(registeredModules.value)
+		_registerModules(registeredModules.value);
 	};
 
 	const onDehydrateModules = async () => {
