@@ -40,7 +40,7 @@ const result = await client.request(refresh('json', refresh_token));
 
 :::
 
-### Renaming helper functions in the SDK
+### Renamed Helper Function in the SDK
 
 The SDK helper function `asSearch` has been renamed to `withSearch` for naming consistency in helpers.
 
