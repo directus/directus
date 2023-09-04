@@ -7,7 +7,7 @@ export interface ModuleConfig {
 	name: string;
 	icon: string;
 	color?: string;
-
+    meta?: {public: boolean };
 	routes: RouteRecordRaw[];
 	hidden?: boolean;
 	preRegisterCheck?: (user: User, permissions: Permission[]) => Promise<boolean> | boolean;
