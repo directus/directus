@@ -70,11 +70,11 @@ export const defaultRoutes: RouteRecordRaw[] = [
 			public: true,
 		},
 	},
-	// {
-	// 	name: 'private-404',
-	// 	path: '/:_(.+)+',
-	// 	component: PrivateNotFoundRoute,
-	// },
+	{
+		name: 'private-404',
+		path: '/:_(.+)+',
+		component: PrivateNotFoundRoute,
+	},
 ];
 
 export const router = createRouter({
@@ -108,8 +108,6 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			appStore.error = error;
 		}
 	}
-
-	console.log(`before Each ${JSON.stringify(to)}`, to)
 
 	if (to.meta?.public !== true) {
 		if (appStore.hydrated === false) {

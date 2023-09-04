@@ -12,12 +12,32 @@ export function getInternalModules(): ModuleConfig[] {
 	return sortBy(Object.values(modules), 'id');
 }
 
+function _registerModules(publicModules: ModuleConfig[]): void {
+	for (const module of publicModules) {
+		router.addRoute({
+			name: module.id,
+			path: `/${module.id}`,
+			component: RouterPass,
+			children: module.routes,
+			meta: {
+				public: !!module.meta?.public,
+			}
+		});
+	}
+}
+
 export function registerModules(modules: ModuleConfig[]): {
 	registeredModules: ShallowRef<ModuleConfig[]>;
 	onHydrateModules: () => Promise<void>;
 	onDehydrateModules: () => Promise<void>;
 } {
 	const registeredModules = shallowRef<ModuleConfig[]>([]);
+	
+	const publicModules = modules.filter( m => m.meta?.public === true);
+	const privateModules = modules.filter( m => m.meta?.public === false);
+
+	// TODO This way we're not re-hydrating public modules
+	_registerModules(publicModules);
 
 	const onHydrateModules = async () => {
 		const userStore = useUserStore();
@@ -27,7 +47,7 @@ export function registerModules(modules: ModuleConfig[]): {
 
 		registeredModules.value = (
 			await Promise.all(
-				modules.map(async (module) => {
+				privateModules.map(async (module) => {
 					if (!module.preRegisterCheck) return module;
 
 					const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
@@ -39,18 +59,11 @@ export function registerModules(modules: ModuleConfig[]): {
 			)
 		).filter((module): module is ModuleConfig => module !== null);
 
-		for (const module of registeredModules.value) {
-			router.addRoute({
-				name: module.id,
-				path: `/${module.id}`,
-				component: RouterPass,
-				children: module.routes,
-			});
-		}
+		_registerModules(registeredModules.value)
 	};
 
 	const onDehydrateModules = async () => {
-		for (const module of modules) {
+		for (const module of privateModules) {
 			router.removeRoute(module.id);
 		}
 
