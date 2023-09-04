@@ -108,7 +108,7 @@ router.get('/payments', (req, res) => {
 			res.json(output); // [!code ++]
 		}); // [!code ++]
 	} else { // [!code ++]
-		res.send(401); // [!code ++]
+		res.sendStatus(401); // [!code ++]
 	} // [!code ++]
 });
 ```
@@ -134,7 +134,7 @@ router.get('/customers', (req, res) => {
 			res.json(output);
 		});
 	} else {
-		res.send(401);
+		res.sendStatus(401);
 	}
 });
 ```
@@ -160,7 +160,7 @@ router.get('/payments/:customer_id', (req, res) => {
 			res.json(output);
 		});
 	} else {
-		res.send(401);
+		res.sendStatus(401);
 	}
 });
 ```
@@ -188,10 +188,10 @@ router.post('/customers', (req, res) => {
 				res.json(response);
 			});
 		} else {
-			res.send(400); // Bad Request
+			res.sendStatus(400); // Bad Request
 		}
 	} else {
-		res.send(401);
+		res.sendStatus(401);
 	}
 });
 ```
@@ -277,7 +277,7 @@ export default {
 					res.json(output);
 				});
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 
@@ -298,7 +298,7 @@ export default {
 					res.json(output);
 				});
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 
@@ -316,7 +316,7 @@ export default {
 					res.json(output);
 				});
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 
@@ -338,11 +338,11 @@ export default {
 						res.json(response);
 					});
 				} else {
-					res.send(400); // Bad Request
+					res.sendStatus(400); // Bad Request
 				}
 
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 	},

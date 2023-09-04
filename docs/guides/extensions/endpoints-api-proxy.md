@@ -62,9 +62,11 @@ router.get('/*', async (req, res) => {
 		if (response.ok) {
 			res.json(await response.json());
 		} else {
-			res.status(response.status).send(response.statusText);
+			res.status(response.status);
+			res.send(response.statusText);
 		}
 	} catch (error) {
+		res.status(500);
 		res.send(error.message);
 	}
 });
@@ -124,7 +126,7 @@ API, you can create proxies for other 3rd party services and simplify your other
 ```js
 export default {
 	id: 'pokeapi',
-	handler: (router, { env }) => {
+	handler: (router) => {
 		router.get('/*', async (req, res) => {
 			try {
 				const response = await fetch(`https://pokeapi.co/api/v2/${req.url}`);
@@ -132,10 +134,12 @@ export default {
 				if (response.ok) {
 					res.json(await response.json());
 				} else {
-					res.status(response.status).send(response.statusText);
+					res.status(response.status);
+					res.send(response.statusText);
 				}
 			} catch (error) {
-       			res.status(500).send(error.message);
+				res.status(500);
+				res.send(error.message);
 			}
 		});
 	},
