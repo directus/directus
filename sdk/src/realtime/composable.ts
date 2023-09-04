@@ -111,7 +111,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				if (!message) continue;
 
 				if ('type' in message) {
-					if (message['type'] === 'auth' && hasAuth(currentClient)) {
+					if (message['type'] === 'auth' && 'status' in message && message['status'] === 'error' && hasAuth(currentClient)) {
 						const access_token = await currentClient.getToken();
 
 						if (access_token) {
