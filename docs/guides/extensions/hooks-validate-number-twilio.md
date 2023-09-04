@@ -32,7 +32,12 @@ npm install twilio
 Create a collection called Customers with a text field called `phone_number`. This hook will be used to validate the
 item when a record is saved.
 
-Open the `index.js` file inside the src directory. Delete all the existing code and proceed.
+Open the `index.js` file inside the src directory. Delete all the existing code and start with the import of the Twilio
+library:
+
+```js
+import twilio from 'twilio';
+```
 
 Create an initial export. This hook will need to intercept the save function with `filter` and include `env` for the
 environment variables and `exceptions` to throw an error when validation fails:
@@ -81,10 +86,10 @@ Set up your Twilio phone number lookup:
 ```js
 const accountSid = env.TWILIO_ACCOUNT_SID;
 const authToken = env.TWILIO_AUTH_TOKEN;
-const client = require('twilio')(accountSid, authToken);
+const client = new twilio(accountSid, authToken);
 
 client.lookups.v2.phoneNumbers(input.phone_number).fetch()
-.then(function(phone_number) {
+.then((phoneNumber) => {
 
 });
 ```
@@ -101,8 +106,8 @@ Use this to throw an exception if `false`, or return the input to the stream and
 
 ```js
 client.lookups.v2.phoneNumbers(input.phone_number).fetch()
-.then(function(phone_number) {
-	if(!phone_number.valid){  // [!code ++]
+.then((phoneNumber) => {
+	if(!phoneNumber.valid){  // [!code ++]
 		throw new InvalidPayloadException('Phone Number is not valid');  // [!code ++]
 	}  // [!code ++]
 	return input;  // [!code ++]
@@ -151,7 +156,6 @@ export default ({ filter }, { env, exceptions }) => {
 	const { InvalidPayloadException } = exceptions;
 
 	filter('items.create', async (input, { collection }) => {
-
 		if (collection !== 'customers') return input;
 		if (input.phone_number === undefined) {
 			throw new InvalidPayloadException('No Phone Number has been provided');
@@ -159,10 +163,10 @@ export default ({ filter }, { env, exceptions }) => {
 
 		const accountSid = env.TWILIO_ACCOUNT_SID;
 		const authToken = env.TWILIO_AUTH_TOKEN;
-		const client = require('twilio')(accountSid, authToken);
+		const client = new twilio(accountSid, authToken);
 
-		client.lookups.v2.phoneNumbers(input.phone_number).fetch().then(function(phone_number) {
-			if(!phone_number.valid){
+		client.lookups.v2.phoneNumbers(input.phone_number).fetch().then((phoneNumber) => {
+			if(!phoneNumber.valid){
 				throw new InvalidPayloadException('Phone Number is not valid');
 			}
 			return input;
