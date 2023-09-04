@@ -13,7 +13,7 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.6.2
 
-### Swapping Parameters and Auth Mode for Refresh Method in SDK
+### Swapping Parameters and Auth Mode for Refresh Method in the SDK
 
 The parameter order for the `refresh` method and thus also the default auth mode have been swapped in order to work well
 with both auth modes, `cookie` and `json`.
@@ -39,6 +39,10 @@ const result = await client.request(refresh('json', refresh_token));
 ```
 
 :::
+
+### Renaming helper functions in the SDK
+
+The SDK helper function `asSearch` has been renamed to `withSearch` for naming consistency in helpers.
 
 ## Version 10.6
 
