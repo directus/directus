@@ -44,13 +44,11 @@ vi.mock('@/utils/fetch-all', () => {
 	};
 });
 
-// eslint-disable-next-line vue/one-component-per-file
 const TestComponent = defineComponent({
 	props: ['rootFolder'], // eslint-disable-line vue/require-prop-types
 	setup(props) {
 		const { rootFolder } = toRefs(props);
 
-		// eslint-disable-next-line vue/no-dupe-keys
 		return useFolders(rootFolder);
 	},
 	render() {
