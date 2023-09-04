@@ -4,6 +4,7 @@
 		v-slot="{ layoutState }"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
+		:layout-props="layoutProps"
 		:filter="layoutFilter"
 		:search="search"
 		:collection="values.collection"
@@ -134,22 +135,22 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import SettingsNavigation from '../../components/navigation.vue';
-import { Preset, Filter } from '@directus/types';
 import api from '@/api';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useExtension } from '@/composables/use-extension';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
-import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@directus/composables';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useEditsGuard } from '@/composables/use-edits-guard';
+import { Filter, Preset } from '@directus/types';
 import { isEqual } from 'lodash';
-import { useExtensions } from '@/extensions';
-import { useExtension } from '@/composables/use-extension';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
 
 type FormattedPreset = {
 	id: number;
@@ -203,6 +204,14 @@ const layout = computed(() => values.value.layout);
 const currentLayout = useExtension('layout', layout);
 
 const { layoutWrapper } = useLayout(layout);
+
+const layoutProps = computed(() => {
+	if (values.value.layout === 'calendar') {
+		return { height: 'auto' };
+	}
+
+	return undefined;
+});
 
 useShortcut('meta+s', () => {
 	if (hasEdits.value) save();
@@ -590,17 +599,20 @@ function discardAndLeave() {
 
 .preset-item {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
 }
 
 .layout {
 	--content-padding: 0px;
-	--content-padding-bottom: 32px;
+	--content-padding-bottom: 0px;
+	--layout-offset-top: 0;
 
 	position: relative;
 	width: 100%;
-	margin-top: 48px;
-	overflow: auto;
+	margin-top: 32px;
+
+	:deep(#map-container) {
+		min-height: 360px;
+	}
 }
 
 .layout-sidebar {
