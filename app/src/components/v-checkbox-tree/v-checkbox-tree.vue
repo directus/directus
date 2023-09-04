@@ -26,7 +26,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { latinize } from 'modern-diacritics';
+import { remove as removeDiacritics } from 'diacritics';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
@@ -79,9 +79,7 @@ const fakeParentValue = ref('');
 
 const { modelValue, showSelectionOnly, itemText, itemValue, itemChildren, choices } = toRefs(props);
 
-const normalizedSearch = computed(() =>
-	props.search !== null ? latinize(props.search, { lowerCase: true, symbols: false }) : null
-);
+const normalizedSearch = computed(() => (props.search !== null ? removeDiacritics(props.search).toLowerCase() : null));
 
 const { visibleChildrenValues } = useVisibleChildren(
 	normalizedSearch,
@@ -126,7 +124,7 @@ function searchChoices(text: string, target: Record<string, any>[], tree: string
 	const selection: string[] = [];
 
 	for (const item of target) {
-		const normalizedItemText = latinize(item[props.itemText], { lowerCase: true, symbols: false });
+		const normalizedItemText = removeDiacritics(item[props.itemText]).toLowerCase();
 
 		if (normalizedItemText.includes(text)) {
 			selection.push(...tree, item[props.itemValue]);

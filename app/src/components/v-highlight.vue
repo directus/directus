@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { toArray } from '@directus/utils';
 import { flatten } from 'lodash';
-import { latinize } from 'modern-diacritics';
+import { remove as removeDiacritics } from 'diacritics';
 import { computed } from 'vue';
 
 type HighlightPart = {
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const parts = computed<HighlightPart[]>(() => {
-	const normalizedText = latinize(props.text, { lowerCase: true, symbols: false });
+	const normalizedText = removeDiacritics(props.text).toLowerCase();
 
 	const queries = toArray(props.query);
 
@@ -48,7 +48,7 @@ const parts = computed<HighlightPart[]>(() => {
 		queries.reduce<number[][][]>((acc, query) => {
 			if (!query) return acc;
 
-			const normalizedQuery = latinize(query, { lowerCase: true, symbols: false });
+			const normalizedQuery = removeDiacritics(query).toLowerCase();
 
 			const indices = [];
 

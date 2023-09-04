@@ -685,6 +685,9 @@ importers:
       '@types/color':
         specifier: 3.0.3
         version: 3.0.3
+      '@types/diacritics':
+        specifier: 1.3.1
+        version: 1.3.1
       '@types/diff':
         specifier: 5.0.3
         version: 5.0.3
@@ -769,6 +772,9 @@ importers:
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
+      diacritics:
+        specifier: 1.3.0
+        version: 1.3.0
       diff:
         specifier: 5.1.0
         version: 5.1.0
@@ -826,9 +832,6 @@ importers:
       mitt:
         specifier: 3.0.0
         version: 3.0.0
-      modern-diacritics:
-        specifier: 2.3.1
-        version: 2.3.1
       nanoid:
         specifier: 4.0.2
         version: 4.0.2
@@ -7159,7 +7162,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
     dev: true
@@ -7171,6 +7174,20 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: false
+
+  /@rollup/pluginutils@5.0.3:
+    resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.1
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+    dev: true
 
   /@rollup/pluginutils@5.0.3(rollup@3.22.0):
     resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
@@ -8350,6 +8367,10 @@ packages:
     resolution: {integrity: sha512-bV/jQlAJ/nPY3XqSatkGpu+nGzou+uSwrH1cROhn+jBFg47yaNH+blW4C7p9KhopC7QxCv/6M86s37k8dMk0Yg==}
     dev: true
 
+  /@types/diacritics@1.3.1:
+    resolution: {integrity: sha512-tAH+RY51Zbz7ZSzN7yxQBKEue78U6weZ1UUBNjFoitoLbJGFJCKI7KVHwGsnYo4s2xSFr9KGEkjst2FolpYqyA==}
+    dev: true
+
   /@types/diff@5.0.3:
     resolution: {integrity: sha512-amrLbRqTU9bXMCc6uX0sWpxsQzRIo9z6MJPkH1pkez/qOxuqSZVuryJAWoBRq94CeG8JxY+VK4Le9HtjQR5T9A==}
     dev: true
@@ -9019,7 +9040,7 @@ packages:
   /@unhead/addons@1.1.30:
     resolution: {integrity: sha512-9Ule9CcL7RiqY8e6ZtJum/j2gi1UUngI3K8hFS2P1scx3Wz1rbCrI7bAhGdY03IARH/8vTaJJTIoWLBdl5GxEA==}
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       '@unhead/schema': 1.1.30
       '@unhead/shared': 1.1.30
       magic-string: 0.30.2
@@ -9969,7 +9990,7 @@ packages:
     engines: {node: '>=16.14.0'}
     dependencies:
       '@babel/parser': 7.22.10
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       pathe: 1.1.1
     transitivePeerDependencies:
       - rollup
@@ -16749,11 +16770,6 @@ packages:
       ufo: 1.2.0
     dev: true
 
-  /modern-diacritics@2.3.1:
-    resolution: {integrity: sha512-jOI0qtelWfGZ4HTB/7pKTOzAA5miXgfbMl0RYirYA5CRuNY4JYTXER+BUiH9JCxqX1gIHs6GaVTwFhvUV8MPWg==}
-    engines: {node: ^14 || >=16}
-    dev: true
-
   /mri@1.1.4:
     resolution: {integrity: sha512-6y7IjGPm8AzlvoUrwAaw1tLnUBudaS3752vcd8JtrpGGQn+rXIe63LFVHm/YMwtqAuh+LJPCFdlLYPWM1nYn6w==}
     engines: {node: '>=4'}
@@ -21861,7 +21877,7 @@ packages:
       '@antfu/utils': 0.7.6
       '@babel/generator': 7.22.10
       '@babel/parser': 7.22.10
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       ast-kit: 0.6.9
       magic-string-ast: 0.1.3
       unplugin: 1.4.0

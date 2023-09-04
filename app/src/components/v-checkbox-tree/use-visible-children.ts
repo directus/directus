@@ -1,4 +1,4 @@
-import { latinize } from 'modern-diacritics';
+import { remove as removeDiacritics } from 'diacritics';
 import { computed, Ref } from 'vue';
 
 export function useVisibleChildren(
@@ -18,7 +18,7 @@ export function useVisibleChildren(
 
 		if (_search) {
 			options = options.filter((child) => {
-				const normalizedItemText = latinize(child[itemText.value], { lowerCase: true, symbols: false });
+				const normalizedItemText = removeDiacritics(child[itemText.value]).toLowerCase();
 
 				return normalizedItemText.includes(_search) || childrenHaveSearchMatch(child[itemChildren.value]);
 			});
@@ -39,7 +39,7 @@ export function useVisibleChildren(
 		function childrenHaveSearchMatch(children: Record<string, any>[] | undefined): boolean {
 			if (!children || !_search) return false;
 			return children.some((child) => {
-				const normalizedItemText = latinize(child[itemText.value], { lowerCase: true, symbols: false });
+				const normalizedItemText = removeDiacritics(child[itemText.value]).toLowerCase();
 
 				return normalizedItemText.includes(_search) || childrenHaveSearchMatch(child[itemChildren.value]);
 			});
