@@ -78,6 +78,10 @@ export class ActivityService extends ItemsService {
 
 					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
+					const href = new Url(env['PUBLIC_URL'])
+						.addPath('admin', 'content', data['collection'], data['item'])
+						.toString();
+
 					const message = `
 Hello ${userName(user)},
 
@@ -85,9 +89,7 @@ ${userName(sender)} has mentioned you in a comment:
 
 ${comment}
 
-<a href="${new Url(env['PUBLIC_URL'])
-						.addPath('admin', 'content', data['collection'], data['item'])
-						.toString()}">Click here to view.</a>
+<a href="${href}">Click here to view.</a>
 `;
 
 					await this.notificationsService.createOne({

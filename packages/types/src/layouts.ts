@@ -23,6 +23,7 @@ export interface LayoutProps<Options = any, Query = any> {
 	selection: (number | string)[];
 	layoutOptions: Options;
 	layoutQuery: Query;
+	layoutProps: Record<string, unknown>;
 	filterUser: Filter | null;
 	filterSystem: Filter | null;
 	filter: Filter | null;
