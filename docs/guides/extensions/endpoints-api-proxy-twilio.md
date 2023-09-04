@@ -57,10 +57,9 @@ const twilioHost = 'https://api.twilio.com';
 const twilioSid = env.TWILIO_ACCOUNT_SID;
 const twilioToken = env.TWILIO_AUTH_TOKEN;
 
+const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
 const headers = {
-	Authorization: `Basic ${Buffer.from(
-		`${twilioSid}:${twilioToken}`
-	).toString('base64')}}`,
+	Authorization: `Basic ${token}`,
 };
 ```
 
@@ -78,10 +77,12 @@ router.get('/*', async (req, res) => {
 		if (response.ok) {
 			res.json(await response.json());
 		} else {
-			res.status(response.status).send(response.statusText);
+			res.status(response.status);
+			res.send(response.statusText);
 		}
 	} catch (error) {
-		res.status(500).send(error.message);
+		res.status(500);
+		res.send(error.message);
 	}
 });
 
@@ -99,10 +100,12 @@ router.post('/*', async (req, res) => {
 		if (response.ok) {
 			res.json(await response.json());
 		} else {
-			res.status(response.status).send(response.statusText);
+			res.status(response.status);
+			res.send(response.statusText);
 		}
 	} catch (error) {
-		res.status(500).send(error.message);
+		res.status(500);
+		res.send(error.message);
 	}
 });
 ```
@@ -137,10 +140,12 @@ router.get('/*', async (req, res) => {
 		if (response.ok) {
 			res.json(await response.json());
 		} else {
-			res.status(response.status).send(response.statusText);
+			res.status(response.status);
+			res.send(response.statusText);
 		}
 	} catch (error) {
-		res.status(500).send(error.message);
+		res.status(500);
+		res.send(error.message);
 	}
 });
 
@@ -162,10 +167,12 @@ router.post('/*', async (req, res) => {
 		if (response.ok) {
 			res.json(await response.json());
 		} else {
-			res.status(response.status).send(response.statusText);
+			res.status(response.status);
+			res.send(response.statusText);
 		}
 	} catch (error) {
-		res.status(500).send(error.message);
+		res.status(500);
+		res.send(error.message);
 	}
 });
 ```
@@ -266,10 +273,12 @@ export default {
 				if (response.ok) {
 					res.json(await response.json());
 				} else {
-					res.status(response.status).send(response.statusText);
+					res.status(response.status);
+					res.send(response.statusText);
 				}
 			} catch (error) {
-				res.status(500).send(error.message);
+				res.status(500);
+				res.send(error.message);
 			}
 		});
 
@@ -291,10 +300,12 @@ export default {
 				if (response.ok) {
 					res.json(await response.json());
 				} else {
-					res.status(response.status).send(response.statusText);
+					res.status(response.status);
+					res.send(response.statusText);
 				}
 			} catch (error) {
-				res.status(500).send(error.message);
+				res.status(500);
+				res.send(error.message);
 			}
 		});
 	},
