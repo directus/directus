@@ -63,9 +63,15 @@
 					block
 					:dense="totalPages > 1"
 					:clickable="Boolean(notification.message)"
-					@click="toggleNotification(notification.id)"
+					@mousedown.left.self="({ target }: Event) => (mouseDownTarget = target)"
+					@mouseup.left.self="
+						({ target }: Event) => {
+							if (target === mouseDownTarget) toggleNotification(notification.id);
+							mouseDownTarget = null;
+						}
+					"
 				>
-					<div class="header">
+					<div class="header" @click="toggleNotification(notification.id)">
 						<v-checkbox
 							:model-value="selection.includes(notification.id)"
 							@update:model-value="toggleSelected(notification.id)"
@@ -91,7 +97,6 @@
 						v-if="openNotifications.includes(notification.id) && notification.message"
 						v-md="notification.message"
 						class="message"
-						@click.stop
 					/>
 				</v-list-item>
 			</v-list>
@@ -134,6 +139,7 @@ const page = ref(1);
 const limit = ref(25);
 const search = ref<string | null>(null);
 const userFilter = ref<Filter>({});
+const mouseDownTarget = ref<EventTarget | null>(null);
 
 watch(tab, (newTab, oldTab) => {
 	if (newTab[0] !== oldTab[0]) {
@@ -299,8 +305,13 @@ function onLinkClick(to: string) {
 
 		.message {
 			width: 100%;
-			cursor: default;
 			margin-top: 8px;
+			user-select: text;
+			cursor: auto;
+
+			:deep(*) {
+				user-select: text;
+			}
 
 			&:deep(blockquote) {
 				background-color: var(--background-normal);
