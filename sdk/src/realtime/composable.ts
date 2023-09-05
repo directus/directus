@@ -115,12 +115,20 @@ export function realtime(config: WebSocketConfig = {}) {
 						message['type'] === 'auth' &&
 						'status' in message &&
 						message['status'] === 'error' &&
-						hasAuth(currentClient)
+						'error' in message
 					) {
-						const access_token = await currentClient.getToken();
+						if (message['error'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
+							const access_token = await currentClient.getToken();
 
-						if (access_token) {
-							ws.send(auth({ access_token }));
+							if (access_token) {
+								ws.send(auth({ access_token }));
+								continue;
+							}
+						}
+
+						if (message['error'] === 'AUTH_TIMEOUT') {
+							ws.close();
+							resetConnection();
 							continue;
 						}
 					}
@@ -161,6 +169,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 					ws.addEventListener('error', (evt: Event) => {
 						eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
+						ws.close();
 						resetConnection();
 						reconnect.call(this);
 						if (!resolved) reject(evt);
