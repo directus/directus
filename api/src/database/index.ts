@@ -61,6 +61,14 @@ export default function getDatabase(): Knex {
 			}
 
 			break;
+		case 'mysql':
+			if (!env['DB_SOCKET_PATH']) {
+				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+			} else {
+				requiredEnvVars.push('DB_DATABASE', 'DB_USER', 'DB_PASSWORD', 'DB_SOCKET_PATH');
+			}
+
+			break;	
 		case 'mssql':
 			if (!env['DB_TYPE'] || env['DB_TYPE'] === 'default') {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
