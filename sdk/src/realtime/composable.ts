@@ -128,7 +128,6 @@ export function realtime(config: WebSocketConfig = {}) {
 
 						if (message['error'] === 'AUTH_TIMEOUT') {
 							ws.close();
-							resetConnection();
 							continue;
 						}
 					}
@@ -170,8 +169,6 @@ export function realtime(config: WebSocketConfig = {}) {
 					ws.addEventListener('error', (evt: Event) => {
 						eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
 						ws.close();
-						resetConnection();
-						reconnect.call(this);
 						if (!resolved) reject(evt);
 					});
 
@@ -242,15 +239,13 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				send({ ...options, collection, type: 'subscribe' });
 
-				// const initialMessage = await messageCallback(ws);
-
 				async function* subscriptionGenerator(): AsyncGenerator<
 					SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>,
 					void,
 					unknown
 				> {
-					while (subscribed && socket && socket.readyState === WebSocket.OPEN) {
-						const message = await messageCallback(socket).catch(() => {
+					while (subscribed && ws && ws.readyState === WebSocket.OPEN) {
+						const message = await messageCallback(ws).catch(() => {
 							/* let the loop continue */
 						});
 
