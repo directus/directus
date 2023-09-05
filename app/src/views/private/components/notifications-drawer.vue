@@ -7,7 +7,7 @@
 		@cancel="notificationsDrawerOpen = false"
 	>
 		<template #actions>
-			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
+			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -71,7 +71,9 @@
 							@update:model-value="toggleSelected(notification.id)"
 						/>
 						<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
-						<v-text-overflow class="time" :text="relativeDate(notification.timestamp, relativeDateRefresher).value" />
+						<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
+							<v-text-overflow class="datetime" :text="datetime" />
+						</use-datetime>
 						<v-icon
 							v-if="notification.to"
 							v-tooltip="t('goto_collection_content')"
@@ -100,7 +102,7 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import { useDatetime } from '@/composables/use-datetime';
+import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
@@ -109,7 +111,7 @@ import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { computed, ref, unref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -121,12 +123,7 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
-const notificationsStore = useNotificationsStore();
-const { unread } = storeToRefs(notificationsStore);
-
-const { formatter: relativeDate, refresher: relativeDateRefresher } = useDatetime('timestamp', {
-	relative: true,
-});
+const { setUnreadCount } = useNotificationsStore();
 
 const router = useRouter();
 
@@ -136,15 +133,16 @@ const openNotifications = ref<string[]>([]);
 const page = ref(1);
 const limit = ref(25);
 const search = ref<string | null>(null);
-const filter = ref<Filter>({});
+const userFilter = ref<Filter>({});
 
 watch(tab, (newTab, oldTab) => {
 	if (newTab[0] !== oldTab[0]) {
 		page.value = 1;
+		selection.value = [];
 	}
 });
 
-watch([search, filter], () => {
+watch([search, userFilter], () => {
 	page.value = 1;
 });
 
@@ -166,7 +164,7 @@ function toggleNotification(id: string) {
 
 const { notificationsDrawerOpen } = storeToRefs(appStore);
 
-const _filter = computed(() => ({
+const filter = computed(() => ({
 	_and: [
 		{
 			recipient: {
@@ -178,12 +176,12 @@ const _filter = computed(() => ({
 				_eq: tab.value[0],
 			},
 		},
-		filter.value,
+		userFilter.value,
 	],
 }));
 
 const { items, loading, getItems, totalPages, getItemCount } = useItems(ref('directus_notifications'), {
-	filter: _filter,
+	filter,
 	fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
 	sort: ref(['-timestamp']),
 	search,
@@ -228,7 +226,8 @@ async function archiveAll() {
 
 	await getItemCount();
 	await getItems();
-	notificationsStore.setUnreadCount(0);
+
+	setUnreadCount(0);
 }
 
 async function toggleArchive() {
@@ -241,12 +240,6 @@ async function toggleArchive() {
 
 	await getItemCount();
 	await getItems();
-
-	if (tab.value[0] === 'inbox') {
-		notificationsStore.setUnreadCount(unread.value - selection.value.length);
-	} else {
-		notificationsStore.setUnreadCount(unread.value + selection.value.length);
-	}
 
 	selection.value = [];
 }
@@ -298,7 +291,7 @@ function onLinkClick(to: string) {
 			.title {
 				flex-grow: 1;
 			}
-			.time {
+			.datetime {
 				color: var(--foreground-subdued);
 			}
 		}
