@@ -27,7 +27,7 @@ export class DefineEndpointVMFunction extends VMFunction {
 		context.evalClosureSync(this.readV8Code(import.meta.url), [
 			ivm,
 			new ivm.Reference(function (
-				type: 'all' | 'get' | 'post' | 'patch' | 'delete' | 'options',
+				type: 'all' | 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options',
 				path: string,
 				callback: any
 			) {
@@ -84,7 +84,7 @@ export class DefineEndpointVMFunction extends VMFunction {
 								}),
 								end: new ivm.Callback((chunk: any, cb?: Reference) => {
 									res.end(chunk, () => {
-										cb?.apply(undefined, []);
+										cb?.apply(undefined, [], { timeout: scriptTimeoutMs });
 									});
 								}),
 								get: new ivm.Callback((field: string) => {
@@ -96,11 +96,11 @@ export class DefineEndpointVMFunction extends VMFunction {
 								links: new ivm.Callback((links: any) => {
 									return res.links(links);
 								}),
-								location: new ivm.Callback((response: string) => {
-									res.location(response);
+								location: new ivm.Callback((url: string) => {
+									res.location(url);
 								}),
-								redirect: new ivm.Callback((...args: any) => {
-									res.redirect(args[0], args[1]);
+								redirect: new ivm.Callback((status: number, url: string) => {
+									res.redirect(status, url);
 								}),
 								send: new ivm.Callback((body: any) => {
 									res.send(body);
@@ -108,8 +108,8 @@ export class DefineEndpointVMFunction extends VMFunction {
 								sendStatus: new ivm.Callback((code: number) => {
 									res.sendStatus(code);
 								}),
-								set: new ivm.Callback((...args: any) => {
-									res.set(args[0], args[1]);
+								set: new ivm.Callback((field: string, value?: string | string[]) => {
+									res.set(field, value);
 								}),
 								status: new ivm.Callback((code: number) => {
 									res.status(code);

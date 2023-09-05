@@ -67,6 +67,8 @@ interface Props {
 	to?: RouteLocationRaw;
 	/** To what external link the button should direct */
 	href?: string;
+	/** Where to open the external link of the button */
+	target?: string;
 	/** Renders the button highlighted */
 	active?: boolean;
 	/** If the button should be highlighted if it matches the current internal link */
@@ -111,6 +113,7 @@ const props = withDefaults(defineProps<Props>(), {
 	loading: false,
 	to: '',
 	href: undefined,
+	target: '_blank',
 	active: undefined,
 	exact: false,
 	query: false,
@@ -149,7 +152,7 @@ const additionalProps = computed(() => {
 	if (component.value === 'a') {
 		return {
 			href: props.href,
-			target: '_blank',
+			target: props.target,
 			rel: 'noopener noreferrer',
 		};
 	}

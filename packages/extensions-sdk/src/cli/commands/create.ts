@@ -27,7 +27,7 @@ import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
-type CreateOptions = { language?: string };
+type CreateOptions = { language?: string, secure?: boolean };
 
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
 	const targetDir = name.substring(name.lastIndexOf('/') + 1);
@@ -65,12 +65,14 @@ export default async function create(type: string, name: string, options: Create
 		}
 	}
 
+	options.secure = options.secure === true;
+
 	if (isIn(type, BUNDLE_EXTENSION_TYPES)) {
-		await createPackageExtension({ type, name, targetDir, targetPath });
+		await createPackageExtension({ type, name, targetDir, targetPath, secure: options.secure });
 	} else {
 		const language = options.language ?? 'javascript';
 
-		await createLocalExtension({ type, name, targetDir, targetPath, language });
+		await createLocalExtension({ type, name, targetDir, targetPath, language, secure: options.secure });
 	}
 }
 
@@ -79,11 +81,13 @@ async function createPackageExtension({
 	name,
 	targetDir,
 	targetPath,
+	secure,
 }: {
 	type: BundleExtensionType;
 	name: string;
 	targetDir: string;
 	targetPath: string;
+	secure: boolean;
 }) {
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
@@ -91,7 +95,7 @@ async function createPackageExtension({
 	await copyTemplate(type, targetPath);
 
 	const host = `^${getSdkVersion()}`;
-	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
+	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host, secure };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
@@ -111,12 +115,14 @@ async function createLocalExtension({
 	targetDir,
 	targetPath,
 	language,
+	secure
 }: {
 	type: AppExtensionType | ApiExtensionType | HybridExtensionType;
 	name: string;
 	targetDir: string;
 	targetPath: string;
 	language: string;
+	secure: boolean;
 }) {
 	if (!isLanguage(language)) {
 		log(
@@ -132,23 +138,25 @@ async function createLocalExtension({
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
-	await copyTemplate(type, targetPath, 'src', language);
+	await copyTemplate(type, targetPath, 'src', language, secure);
 
 	const host = `^${getSdkVersion()}`;
 
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {
-				type,
-				path: { app: 'dist/app.js', api: 'dist/api.js' },
-				source: { app: `src/app.${languageToShort(language)}`, api: `src/api.${languageToShort(language)}` },
-				host,
-		  }
+			type,
+			path: { app: 'dist/app.js', api: 'dist/api.js' },
+			source: { app: `src/app.${languageToShort(language)}`, api: `src/api.${languageToShort(language)}` },
+			host,
+			secure
+		}
 		: {
-				type,
-				path: 'dist/index.js',
-				source: `src/index.${languageToShort(language)}`,
-				host,
-		  };
+			type,
+			path: 'dist/index.js',
+			source: `src/index.${languageToShort(language)}`,
+			host,
+			secure
+		};
 
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 
@@ -182,6 +190,10 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 
 	if (options.type === 'bundle') {
 		packageManifest['scripts']['add'] = 'directus-extension add';
+	}
+
+	if (options.secure) {
+		packageManifest[EXTENSION_PKG_KEY]['permissions'] = []
 	}
 
 	return packageManifest;

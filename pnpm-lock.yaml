@@ -7183,7 +7183,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
     dev: true
@@ -7195,6 +7195,20 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: false
+
+  /@rollup/pluginutils@5.0.3:
+    resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.1
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+    dev: true
 
   /@rollup/pluginutils@5.0.3(rollup@3.22.0):
     resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
@@ -9066,7 +9080,7 @@ packages:
   /@unhead/addons@1.1.30:
     resolution: {integrity: sha512-9Ule9CcL7RiqY8e6ZtJum/j2gi1UUngI3K8hFS2P1scx3Wz1rbCrI7bAhGdY03IARH/8vTaJJTIoWLBdl5GxEA==}
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       '@unhead/schema': 1.1.30
       '@unhead/shared': 1.1.30
       magic-string: 0.30.2
@@ -10016,7 +10030,7 @@ packages:
     engines: {node: '>=16.14.0'}
     dependencies:
       '@babel/parser': 7.22.10
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       pathe: 1.1.1
     transitivePeerDependencies:
       - rollup
@@ -21914,7 +21928,7 @@ packages:
       '@antfu/utils': 0.7.6
       '@babel/generator': 7.22.10
       '@babel/parser': 7.22.10
-      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
+      '@rollup/pluginutils': 5.0.3
       ast-kit: 0.6.9
       magic-string-ast: 0.1.3
       unplugin: 1.4.0

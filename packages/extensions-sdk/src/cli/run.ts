@@ -15,6 +15,7 @@ program
 	.arguments('<type> <name>')
 	.description('Scaffold a new Directus extension')
 	.option('-l, --language <language>', 'specify the language to use')
+	.option('-s, --secure', 'create a secure extension')
 	.action(create);
 
 program.command('add').description('Add entries to an existing Directus extension').action(add);

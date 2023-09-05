@@ -92,25 +92,27 @@ export default async function add(): Promise<void> {
 
 		const sourcePath = path.resolve(source, name);
 
+		const secure = extensionOptions.secure === true;
+
 		await fse.ensureDir(sourcePath);
-		await copyTemplate(type, extensionPath, sourcePath, language);
+		await copyTemplate(type, extensionPath, sourcePath, language, secure);
 
 		const newEntries: ExtensionOptionsBundleEntry[] = [
 			...extensionOptions.entries,
 			isIn(type, HYBRID_EXTENSION_TYPES)
 				? {
-						type,
-						name,
-						source: {
-							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
-							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
-						},
-				  }
+					type,
+					name,
+					source: {
+						app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
+						api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
+					},
+				}
 				: {
-						type,
-						name,
-						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
-				  },
+					type,
+					name,
+					source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
+				},
 		];
 
 		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
@@ -204,12 +206,14 @@ export default async function add(): Promise<void> {
 
 		const convertFiles = await fse.readdir(source);
 
+		const secure = extensionOptions.secure === true;
+
 		await Promise.all(
 			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file)))
 		);
 
 		await fse.ensureDir(entrySourcePath);
-		await copyTemplate(type, extensionPath, entrySourcePath, language);
+		await copyTemplate(type, extensionPath, entrySourcePath, language, secure);
 
 		const toConvertSourceUrl = (entrypoint: string) =>
 			path.posix.join(pathToRelativeUrl(source), convertName, path.posix.relative(source, entrypoint));
@@ -217,32 +221,32 @@ export default async function add(): Promise<void> {
 		const entries: ExtensionOptionsBundleEntry[] = [
 			isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)
 				? {
-						type: extensionOptions.type,
-						name: convertName,
-						source: {
-							app: toConvertSourceUrl(extensionOptions.source.app),
-							api: toConvertSourceUrl(extensionOptions.source.api),
-						},
-				  }
+					type: extensionOptions.type,
+					name: convertName,
+					source: {
+						app: toConvertSourceUrl(extensionOptions.source.app),
+						api: toConvertSourceUrl(extensionOptions.source.api),
+					},
+				}
 				: {
-						type: extensionOptions.type,
-						name: convertName,
-						source: toConvertSourceUrl(extensionOptions.source),
-				  },
+					type: extensionOptions.type,
+					name: convertName,
+					source: toConvertSourceUrl(extensionOptions.source),
+				},
 			isIn(type, HYBRID_EXTENSION_TYPES)
 				? {
-						type,
-						name,
-						source: {
-							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
-							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
-						},
-				  }
+					type,
+					name,
+					source: {
+						app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
+						api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
+					},
+				}
 				: {
-						type,
-						name,
-						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
-				  },
+					type,
+					name,
+					source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
+				},
 		];
 
 		const newExtensionOptions: ExtensionOptions = {

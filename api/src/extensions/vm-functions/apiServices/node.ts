@@ -21,6 +21,7 @@ import {
 	WebhooksService,
 	WebSocketService,
 	UtilsService,
+	FlowsService,
 } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { createVMError } from '../create-error.js';
@@ -37,6 +38,7 @@ type ApiServices =
 	| 'collections'
 	| 'dashboards'
 	| 'fields'
+	| 'flows'
 	| 'files'
 	| 'import'
 	| 'export'
@@ -75,6 +77,8 @@ export class ApiServiceVMFunction extends VMFunction {
 						return createReference(type, new DashboardsService({ schema }));
 					case 'fields':
 						return createReference(type, new FieldsService({ schema }));
+					case 'flows':
+						return createReference(type, new FlowsService({ schema }));
 					case 'notifications':
 						return createReference(type, new NotificationsService({ schema }));
 					case 'operations':
