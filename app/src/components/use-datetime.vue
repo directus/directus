@@ -13,11 +13,11 @@ import { useI18n } from 'vue-i18n';
 export interface Props {
 	value: string;
 	type: 'dateTime' | 'date' | 'time' | 'timestamp';
-	format: string;
-	relative: boolean;
-	strict: boolean;
-	round: 'floor' | 'round' | 'ceil';
-	suffix: boolean;
+	format?: string;
+	relative?: boolean;
+	strict?: boolean;
+	round?: 'floor' | 'round' | 'ceil';
+	suffix?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
