@@ -255,6 +255,7 @@ function onLinkClick(to: string) {
 :deep(.search-input.filter-active) {
 	width: 300px !important;
 }
+
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
