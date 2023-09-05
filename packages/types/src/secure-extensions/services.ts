@@ -3,7 +3,7 @@ import type { Field, RawField, Type } from "../fields.js";
 import type { Item, PrimaryKey } from "../items.js";
 import type { Query } from "../query.js";
 import type { Relation } from "../relations.js";
-import type { ActionHandler, ActionHandlerSecure } from "../events.js";
+import type { ActionHandlerSecure } from "../events.js";
 
 export type MutationOptionsSecure = {
 	autoPurgeCache?: false | undefined;

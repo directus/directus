@@ -31,9 +31,12 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"@histoire/plugin-vue": "0.16.1",
 		"@histoire/shared": "0.16.1",
 		"@rollup/plugin-node-resolve": "15.0.2",
+		"@types/dompurify": "3.0.2",
 		"@vitejs/plugin-vue": "4.2.3",
 		"@vitest/coverage-c8": "0.31.1",
 		"histoire": "0.16.1",
@@ -44,6 +47,11 @@
 		"vitest": "0.31.1"
 	},
 	"dependencies": {
+		"@types/lodash-es": "4.17.7",
+		"axios": "1.4.0",
+		"dompurify": "3.0.3",
+		"lodash-es": "4.17.21",
+		"marked": "^8.0.0",
 		"pinia": "2.1.1",
 		"vue": "3.3.4",
 		"vue-i18n": "9.2.2",

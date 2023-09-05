@@ -146,8 +146,9 @@
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import Permission from './permission.vue';
-import Extension from '@nitwel/directus-marketplace/market/extension.vue';
-import { formatTitle } from '@nitwel/directus-marketplace/utils/format';
+import { Extension } from '@directus/components';
+
+import { formatTitle } from '@directus/utils/browser';
 import { computed, provide, ref, watch } from 'vue';
 import { marketApi } from './market-api';
 import api from '@/api';

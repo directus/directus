@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
-import User from '@nitwel/directus-marketplace/market/user.vue';
+import { User } from '@directus/components';
 import { provide } from 'vue';
 import { marketApi } from './market-api';
 import { useExtensionsStore } from '@/stores/extensions';

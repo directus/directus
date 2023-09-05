@@ -526,6 +526,9 @@ importers:
       '@babel/preset-env':
         specifier: 7.21.5
         version: 7.21.5(@babel/core@7.21.8)
+      '@directus/components':
+        specifier: workspace:*
+        version: link:../packages/components
       '@directus/composables':
         specifier: workspace:*
         version: link:../packages/composables
@@ -634,9 +637,6 @@ importers:
       '@mapbox/mapbox-gl-geocoder':
         specifier: 5.0.1
         version: 5.0.1(mapbox-gl@1.13.3)
-      '@nitwel/directus-marketplace':
-        specifier: ^1.0.14
-        version: link:../../market
       '@pinia/testing':
         specifier: 0.1.1
         version: 0.1.1(pinia@2.1.1)(vue@3.3.4)
@@ -989,6 +989,21 @@ importers:
 
   packages/components:
     dependencies:
+      '@types/lodash-es':
+        specifier: 4.17.7
+        version: 4.17.7
+      axios:
+        specifier: 1.4.0
+        version: 1.4.0
+      dompurify:
+        specifier: 3.0.3
+        version: 3.0.3
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
+      marked:
+        specifier: ^8.0.0
+        version: 8.0.0
       pinia:
         specifier: 2.1.1
         version: 2.1.1(typescript@5.0.4)(vue@3.3.4)
@@ -1005,6 +1020,12 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@histoire/plugin-vue':
         specifier: 0.16.1
         version: 0.16.1(histoire@0.16.1)(vite@4.3.7)(vue@3.3.4)
@@ -1014,6 +1035,9 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: 15.0.2
         version: 15.0.2(rollup@3.22.0)
+      '@types/dompurify':
+        specifier: 3.0.2
+        version: 3.0.2
       '@vitejs/plugin-vue':
         specifier: 4.2.3
         version: 4.2.3(vite@4.3.7)(vue@3.3.4)
@@ -7183,7 +7207,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3
+      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
     dev: true
@@ -7195,20 +7219,6 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: false
-
-  /@rollup/pluginutils@5.0.3:
-    resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@types/estree': 1.0.1
-      estree-walker: 2.0.2
-      picomatch: 2.3.1
-    dev: true
 
   /@rollup/pluginutils@5.0.3(rollup@3.22.0):
     resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
@@ -8600,11 +8610,9 @@ packages:
     resolution: {integrity: sha512-z0ptr6UI10VlU6l5MYhGwS4mC8DZyYer2mCoyysZtSF7p26zOX8UpbrV0YpNYLGS8K4PUFIyEr62IMFFjveSiQ==}
     dependencies:
       '@types/lodash': 4.14.194
-    dev: true
 
   /@types/lodash@4.14.194:
     resolution: {integrity: sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==}
-    dev: true
 
   /@types/mapbox-gl@2.7.13:
     resolution: {integrity: sha512-qNffhTdYkeFl8QG9Q1zPPJmcs8PvHgmLa1PcwP1rxvcfMsIgcFr/FnrCttG0ZnH7Kzdd7xfECSRNTWSr4jC3PQ==}
@@ -9080,7 +9088,7 @@ packages:
   /@unhead/addons@1.1.30:
     resolution: {integrity: sha512-9Ule9CcL7RiqY8e6ZtJum/j2gi1UUngI3K8hFS2P1scx3Wz1rbCrI7bAhGdY03IARH/8vTaJJTIoWLBdl5GxEA==}
     dependencies:
-      '@rollup/pluginutils': 5.0.3
+      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
       '@unhead/schema': 1.1.30
       '@unhead/shared': 1.1.30
       magic-string: 0.30.2
@@ -10030,7 +10038,7 @@ packages:
     engines: {node: '>=16.14.0'}
     dependencies:
       '@babel/parser': 7.22.10
-      '@rollup/pluginutils': 5.0.3
+      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
       pathe: 1.1.1
     transitivePeerDependencies:
       - rollup
@@ -12061,7 +12069,6 @@ packages:
 
   /dompurify@3.0.3:
     resolution: {integrity: sha512-axQ9zieHLnAnHh0sfAamKYiqXMJAVwu+LM/alQ7WDagoWessyWvMSFyW65CqF3owufNu8HBcE4cM2Vflu7YWcQ==}
-    dev: true
 
   /domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -16137,6 +16144,12 @@ packages:
     engines: {node: '>= 16'}
     hasBin: true
     dev: true
+
+  /marked@8.0.0:
+    resolution: {integrity: sha512-RI/D5csFVreNrFchdKFSdV38GDHJdD7OdmbNWYzGvApPb0A9pyypgfHC/FBH4ugmRE8cr7yg/TH7tu8585eMhA==}
+    engines: {node: '>= 16'}
+    hasBin: true
+    dev: false
 
   /md5-hex@3.0.1:
     resolution: {integrity: sha512-BUiRtTtV39LIJwinWBjqVsU9xhdnz7/i889V859IBFpuqGAj6LuOvHv5XLbgZ2R7ptJoJaEcxkv88/h25T7Ciw==}
@@ -21928,7 +21941,7 @@ packages:
       '@antfu/utils': 0.7.6
       '@babel/generator': 7.22.10
       '@babel/parser': 7.22.10
-      '@rollup/pluginutils': 5.0.3
+      '@rollup/pluginutils': 5.0.3(rollup@3.22.0)
       ast-kit: 0.6.9
       magic-string-ast: 0.1.3
       unplugin: 1.4.0
