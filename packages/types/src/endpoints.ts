@@ -1,5 +1,6 @@
 import type { Router } from 'express';
 import type { ApiExtensionContext } from './extensions.js';
+import type { RouterSecure } from './secure-extensions/router.js';
 
 // --- Endpoint ---
 
@@ -19,7 +20,7 @@ export type EndpointConfig = EndpointConfigFunction | EndpointConfigObject;
 
 // --- Secure Endpoint ---
 
-type SecureEndpointConfigFunction = (router: Router) => void;
+type SecureEndpointConfigFunction = (router: RouterSecure) => void;
 
 type SecureEndpointConfigObject = {
 	id: string;

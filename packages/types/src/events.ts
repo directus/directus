@@ -17,3 +17,10 @@ export type ActionHandler = (meta: Record<string, any>, context: EventContext) =
 export type InitHandler = (meta: Record<string, any>) => void;
 export type ScheduleHandler = () => void | Promise<void>;
 export type EmbedHandler = () => string;
+
+export type FilterHandlerSecure<T = unknown> = (
+	payload: T,
+	meta: Record<string, any>,
+	context: { accountability: Accountability | null; }
+) => T | Promise<T>;
+export type ActionHandlerSecure = (meta: Record<string, any>, context: { accountability: Accountability | null; }) => void;

@@ -34,8 +34,12 @@ export class DefineHookVMFunction extends VMFunction {
 				if (type === 'filter') {
 					const [event, callback]: [string, Reference] = args;
 
-					const handler: FilterHandler = (payload, meta) => {
-						callback.apply(null, [new ivm.ExternalCopy(payload).copyInto(), new ivm.ExternalCopy(meta).copyInto()], { timeout: scriptTimeoutMs });
+					const handler: FilterHandler = (payload, meta, context) => {
+						callback.apply(null, [
+							new ivm.ExternalCopy(payload).copyInto(),
+							new ivm.ExternalCopy(meta).copyInto(),
+							new ivm.ExternalCopy({ accountability: context.accountability })
+						], { timeout: scriptTimeoutMs });
 					};
 
 					emitter.onFilter(event, handler);
@@ -44,8 +48,12 @@ export class DefineHookVMFunction extends VMFunction {
 				} else if (type === 'action') {
 					const [event, callback]: [string, Reference] = args;
 
-					const handler: ActionHandler = (meta) => {
-						callback.apply(null, [new ivm.ExternalCopy(meta).copyInto()], { timeout: scriptTimeoutMs });
+					const handler: ActionHandler = (meta, context) => {
+						callback.apply(null, [
+							new ivm.ExternalCopy(meta).copyInto(),
+							new ivm.ExternalCopy({ accountability: context.accountability })
+
+						], { timeout: scriptTimeoutMs });
 					};
 
 					emitter.onAction(event, handler);
