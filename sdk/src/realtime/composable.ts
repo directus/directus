@@ -111,11 +111,23 @@ export function realtime(config: WebSocketConfig = {}) {
 				if (!message) continue;
 
 				if ('type' in message) {
-					if (message['type'] === 'auth' && hasAuth(currentClient)) {
-						const access_token = await currentClient.getToken();
+					if (
+						message['type'] === 'auth' &&
+						'status' in message &&
+						message['status'] === 'error' &&
+						'error' in message
+					) {
+						if (message['error'] === 'TOKEN_EXPIRED' && hasAuth(currentClient)) {
+							const access_token = await currentClient.getToken();
 
-						if (access_token) {
-							ws.send(auth({ access_token }));
+							if (access_token) {
+								ws.send(auth({ access_token }));
+								continue;
+							}
+						}
+
+						if (message['error'] === 'AUTH_TIMEOUT') {
+							ws.close();
 							continue;
 						}
 					}
@@ -156,8 +168,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 					ws.addEventListener('error', (evt: Event) => {
 						eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
-						resetConnection();
-						reconnect.call(this);
+						ws.close();
 						if (!resolved) reject(evt);
 					});
 
@@ -228,15 +239,13 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				send({ ...options, collection, type: 'subscribe' });
 
-				// const initialMessage = await messageCallback(ws);
-
 				async function* subscriptionGenerator(): AsyncGenerator<
 					SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>,
 					void,
 					unknown
 				> {
-					while (subscribed && socket && socket.readyState === WebSocket.OPEN) {
-						const message = await messageCallback(socket).catch(() => {
+					while (subscribed && ws && ws.readyState === WebSocket.OPEN) {
+						const message = await messageCallback(ws).catch(() => {
 							/* let the loop continue */
 						});
 
