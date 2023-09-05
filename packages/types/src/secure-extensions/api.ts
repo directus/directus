@@ -1,6 +1,6 @@
 import type { FetchSecure } from "./fetch.js"
 import type { Logger } from "./logger.js"
-import { ActivityServiceSecure, CollectionsServiceSecure, DashboardsServiceSecure, FieldsServiceSecure, FlowsServiceSecure, ItemsServiceSecure, NotificationsServiceSecure, OperationsServiceSecure, PanelsServiceSecure, PresetsServiceSecure, RelationsServiceSecure, RevisionsServiceSecure, ServerServiceSecure, SettingsServiceSecure, SharesServiceSecure, TranslationsServiceSecure, UtilsServiceSecure, WebSocketServiceSecure, WebhooksServiceSecure } from "./services.js"
+import type { ActivityServiceSecure, CollectionsServiceSecure, DashboardsServiceSecure, FieldsServiceSecure, FlowsServiceSecure, ItemsServiceSecure, NotificationsServiceSecure, OperationsServiceSecure, PanelsServiceSecure, PresetsServiceSecure, RelationsServiceSecure, RevisionsServiceSecure, ServerServiceSecure, SettingsServiceSecure, SharesServiceSecure, TranslationsServiceSecure, UtilsServiceSecure, WebSocketServiceSecure, WebhooksServiceSecure } from "./services.js"
 
 export type ExtensionAPI = {
 	fetch: FetchSecure
