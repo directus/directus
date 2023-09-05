@@ -19,7 +19,7 @@ export type WrapQueryFields<Schema extends object, Item, NestedFields> = readonl
 	| '*'
 	| keyof UnpackList<Item>
 	| NestedFields
-	| FunctionFields<Schema, Item>
+	| FunctionFields<Schema, UnpackList<Item>>
 )[];
 
 /**

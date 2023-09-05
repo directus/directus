@@ -1,4 +1,4 @@
-import type { FunctionFieldNamesMap } from './functions.js';
+import type { MappedFieldNames } from './functions.js';
 import type { RelationalFields } from './schema.js';
 import type { Merge, UnpackList } from './utils.js';
 
@@ -19,7 +19,7 @@ export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> ex
 							: never)
 					| FilterOperators<FlatItem[Field]>;
 			},
-			FunctionFieldNamesMap<Schema, Item> extends infer Funcs
+			MappedFieldNames<Schema, Item> extends infer Funcs
 				? {
 						[Func in keyof Funcs]?: Funcs[Func] extends infer Field
 							? Field extends keyof FlatItem

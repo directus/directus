@@ -5,10 +5,13 @@ import type { Merge } from './utils.js';
 /**
  * Available query functions
  */
+export type DateTimeFunctions = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
+export type ArrayFunctions = 'count';
+
 export type QueryFunctions = {
-	datetime: 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
-	json: 'count';
-	csv: 'count';
+	datetime: DateTimeFunctions;
+	json: ArrayFunctions;
+	csv: ArrayFunctions;
 };
 
 /**
@@ -48,7 +51,7 @@ export type FunctionFields<Schema extends object, Item> =
 	| {
 			[Type in keyof QueryFunctions]: TypeFunctionFields<Item, Type>;
 	  }[keyof QueryFunctions]
-	| keyof TranslateFunctionFields<RelationalFunctions<Schema, Item>, 'count'>;
+	| keyof TranslateFunctionFields<RelationalFunctions<Schema, Item>, ArrayFunctions>;
 
 /**
  *
@@ -61,19 +64,17 @@ export type TypeFunctionFields<Item, Type extends keyof QueryFunctions> = keyof 
 /**
  * Map all possible function fields on an item
  */
-export type FunctionFieldsMap<Schema extends object, Item> = Merge<
-	TranslateFunctionFields<RelationalFunctions<Schema, Item>, 'count'>,
-	TranslateFunctionFields<LiteralFields<Item, 'datetime'>, QueryFunctions['datetime']> &
-		TranslateFunctionFields<LiteralFields<Item, 'json'>, QueryFunctions['json']> &
-		TranslateFunctionFields<LiteralFields<Item, 'csv'>, QueryFunctions['csv']>
+export type MappedFunctionFields<Schema extends object, Item> = Merge<
+	TranslateFunctionFields<RelationalFunctions<Schema, Item>, ArrayFunctions>,
+	TranslateFunctionFields<LiteralFields<Item, 'datetime'>, DateTimeFunctions> &
+		TranslateFunctionFields<LiteralFields<Item, 'json' | 'csv'>, ArrayFunctions>
 >;
 
 /**
  * Map all possible function fields to name on an item
  */
-export type FunctionFieldNamesMap<Schema extends object, Item> = Merge<
-	FunctionFieldNames<RelationalFunctions<Schema, Item>, 'count'>,
-	FunctionFieldNames<LiteralFields<Item, 'datetime'>, QueryFunctions['datetime']> &
-		FunctionFieldNames<LiteralFields<Item, 'json'>, QueryFunctions['json']> &
-		FunctionFieldNames<LiteralFields<Item, 'csv'>, QueryFunctions['csv']>
+export type MappedFieldNames<Schema extends object, Item> = Merge<
+	FunctionFieldNames<RelationalFunctions<Schema, Item>, ArrayFunctions>,
+	FunctionFieldNames<LiteralFields<Item, 'datetime'>, DateTimeFunctions> &
+		FunctionFieldNames<LiteralFields<Item, 'json' | 'csv'>, ArrayFunctions>
 >;

@@ -1,9 +1,5 @@
-import type { AllCollections, GetCollection, ItemType, Query, RelationalFields, UnpackList } from './index.js';
-
-export type GroupingFunctions = {
-	date: 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
-	array: 'count';
-};
+import type { ArrayFunctions, DateTimeFunctions, MappedFieldNames, MappedFunctionFields } from './functions.js';
+import type { AllCollections, GetCollection, LiteralFields, Query, RelationalFields, UnpackList } from './index.js';
 
 // strings are used to ensure precision and prevent overflows
 export type AggregationTypes = {
@@ -52,8 +48,8 @@ export type AggregateRecord<Fields = string> = {
  * GroupBy parameters
  */
 export type GroupByFields<Schema extends object, Item> =
-	| WrappedFields<DateFields<Schema, Item>, GroupingFunctions['date']>
-	| WrappedFields<RelationalFields<Schema, Item>, GroupingFunctions['array']>;
+	| WrappedFields<LiteralFields<Item, 'datetime'>, DateTimeFunctions>
+	| WrappedFields<RelationalFields<Schema, Item>, ArrayFunctions>;
 
 /**
  * Aggregation input options
@@ -78,16 +74,18 @@ export type AggregationOutput<
 	Options extends AggregationOptions<Schema, Collection>
 > = ((Options['groupBy'] extends string[]
 	? UnpackList<GetCollection<Schema, Collection>> extends infer Item
-		? MappedFunctionFields<Schema, Item> extends infer FieldMap
-			? MappedFieldNames<Schema, Item> extends infer NamesMap
-				? {
-						[Field in UnpackList<Options['groupBy']> as TranslateFunctionField<FieldMap, Field>]: ExtractFieldName<
-							NamesMap,
-							Field
-						> extends keyof Item
-							? Item[ExtractFieldName<NamesMap, Field>]
-							: never;
-				  }
+		? Item extends object
+			? MappedFunctionFields<Schema, Item> extends infer FieldMap
+				? MappedFieldNames<Schema, Item> extends infer NamesMap
+					? {
+							[Field in UnpackList<Options['groupBy']> as TranslateFunctionField<FieldMap, Field>]: ExtractFieldName<
+								NamesMap,
+								Field
+							> extends keyof Item
+								? Item[ExtractFieldName<NamesMap, Field>]
+								: never;
+					  }
+					: never
 				: never
 			: never
 		: never
@@ -111,43 +109,8 @@ type WrappedFields<Fields, Funcs> = Fields extends string
 	: never;
 
 /**
- * Try to detect date fields
- * TODO all we can really check is for string types, can we do more?
- */
-type DateFields<Schema extends object, Item> = {
-	[Key in keyof Item]: Extract<Item[Key], ItemType<Schema>> extends never
-		? NonNullable<Item[Key]> extends string
-			? Key
-			: never
-		: never;
-}[keyof Item];
-
-/**
- * The types below are helpers for working with fields wrapped in functions
  *
- * TODO this must be doable in a simpler way to handle the logic below!
  */
-type PermuteFields<Fields, Funcs> = Fields extends string ? (Funcs extends string ? [Fields, Funcs] : never) : never;
-
-type MapFunctionFields<Fields, Funcs> = {
-	[F in PermuteFields<Fields, Funcs> as `${F[1]}(${F[0]})`]: `${F[0]}_${F[1]}`;
-};
-type MapFieldNames<Fields, Funcs> = {
-	[F in PermuteFields<Fields, Funcs> as `${F[1]}(${F[0]})`]: F[0];
-};
-
-type MappedFunctionFields<Schema extends object, Item> = MapFunctionFields<
-	DateFields<Schema, Item>,
-	GroupingFunctions['date']
-> &
-	MapFunctionFields<RelationalFields<Schema, Item>, GroupingFunctions['array']>;
-
-type MappedFieldNames<Schema extends object, Item> = MapFieldNames<
-	DateFields<Schema, Item>,
-	GroupingFunctions['date']
-> &
-	MapFieldNames<RelationalFields<Schema, Item>, GroupingFunctions['array']>;
-
 type TranslateFunctionField<FieldMap, Field> = Field extends keyof FieldMap
 	? FieldMap[Field] extends string
 		? FieldMap[Field]
@@ -156,6 +119,9 @@ type TranslateFunctionField<FieldMap, Field> = Field extends keyof FieldMap
 	? Field
 	: never;
 
+/**
+ *
+ */
 type ExtractFieldName<FieldMap, Field> = Field extends keyof FieldMap
 	? FieldMap[Field] extends string
 		? FieldMap[Field]

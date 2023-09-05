@@ -1,5 +1,5 @@
 import type { FieldsWildcard, HasManyToAnyRelation, PickRelationalFields } from './fields.js';
-import type { FunctionFieldsMap } from './functions.js';
+import type { MappedFunctionFields } from './functions.js';
 import type { ItemType } from './schema.js';
 import type { IfAny, IsNullable, Merge, Mutable, UnpackList } from './utils.js';
 
@@ -21,7 +21,7 @@ export type ApplyQueryFields<
 	Schema,
 	Record<string, any>,
 	Merge<
-		FunctionFieldsMap<Schema, CollectionItem> extends infer FF
+		MappedFunctionFields<Schema, CollectionItem> extends infer FF
 			? MapFlatFields<CollectionItem, FlatFields, FF extends Record<string, string> ? FF : Record<string, string>>
 			: never,
 		RelationalFields extends never
