@@ -408,7 +408,6 @@ comments: Comments
 no_comments: No Comments Yet
 select_item: Select Item
 no_items: No items
-search_items: Search items...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -1695,6 +1694,9 @@ triggers:
   webhook:
     method: Method
 operations:
+  json-web-token:
+    token: Token
+    options: Options
   mail:
     template: Template
     data: Data

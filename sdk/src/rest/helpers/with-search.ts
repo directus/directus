@@ -1,6 +1,6 @@
 import type { RestCommand } from '../types.js';
 
-export function asSearch<Schema extends object, Output>(
+export function withSearch<Schema extends object, Output>(
 	getOptions: RestCommand<Output, Schema>
 ): RestCommand<Output, Schema> {
 	return () => {

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - next
     paths:
       - api/**
       - tests/blackbox/**
@@ -13,7 +14,7 @@ on:
       - .github/workflows/blackbox-main.yml
 
 concurrency:
-  group: blackbox-main
+  group: blackbox-${{ github.ref }}
   cancel-in-progress: true
 
 env:

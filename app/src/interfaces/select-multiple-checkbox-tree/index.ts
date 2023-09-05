@@ -9,6 +9,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 		type: 'string',
 		name: '$t:text',
 		meta: {
+			required: true,
 			width: 'half',
 			interface: 'system-input-translated-string',
 			options: {
@@ -21,6 +22,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 		type: 'string',
 		name: '$t:value',
 		meta: {
+			required: true,
 			width: 'half',
 			interface: 'input',
 			options: {

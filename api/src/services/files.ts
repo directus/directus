@@ -1,5 +1,6 @@
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
+import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
 import type { IccProfile } from 'icc';
@@ -7,7 +8,9 @@ import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
+import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import zlib from 'node:zlib';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
@@ -274,6 +277,7 @@ export class FilesService extends ItemsService {
 
 			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
+				decompress: false,
 			});
 		} catch (err: any) {
 			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
@@ -294,7 +298,7 @@ export class FilesService extends ItemsService {
 			...(body || {}),
 		};
 
-		return await this.uploadOne(fileResponse.data, payload);
+		return await this.uploadOne(decompressResponse(fileResponse.data, fileResponse.headers), payload);
 	}
 
 	/**
@@ -341,5 +345,76 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
+	}
+}
+
+function decompressResponse(stream: Readable, headers: AxiosResponse['headers']) {
+	const contentEncoding = (headers['content-encoding'] || '').toLowerCase();
+
+	if (!['gzip', 'deflate', 'br'].includes(contentEncoding)) {
+		return stream;
+	}
+
+	let isEmpty = true;
+
+	const checker = new TransformStream({
+		transform(data, _encoding, callback) {
+			if (isEmpty === false) {
+				callback(null, data);
+				return;
+			}
+
+			isEmpty = false;
+
+			handleContentEncoding(data);
+
+			callback(null, data);
+		},
+
+		flush(callback) {
+			callback();
+		},
+	});
+
+	const finalStream = new PassThroughStream({
+		autoDestroy: false,
+		destroy(error, callback) {
+			stream.destroy();
+
+			callback(error);
+		},
+	});
+
+	stream.pipe(checker);
+
+	return finalStream;
+
+	function handleContentEncoding(data: any) {
+		let decompressStream;
+
+		if (contentEncoding === 'br') {
+			decompressStream = zlib.createBrotliDecompress();
+		} else if (contentEncoding === 'deflate' && isDeflateAlgorithm(data)) {
+			decompressStream = zlib.createInflateRaw();
+		} else {
+			decompressStream = zlib.createUnzip();
+		}
+
+		decompressStream.once('error', (error) => {
+			if (isEmpty && !stream.readable) {
+				finalStream.end();
+				return;
+			}
+
+			finalStream.destroy(error);
+		});
+
+		checker.pipe(decompressStream).pipe(finalStream);
+	}
+
+	function isDeflateAlgorithm(data: any) {
+		const DEFLATE_ALGORITHM_HEADER = 0x08;
+
+		return data.length > 0 && (data[0] & DEFLATE_ALGORITHM_HEADER) === 0;
 	}
 }

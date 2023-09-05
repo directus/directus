@@ -33,7 +33,12 @@ Create a collection called Customers with a field called `stripe_id` and the fol
 `last_name` and `email_address` (unique). This hook will be used to create a new customer in Stripe whenever a new
 customer is created in Directus.
 
-Open the `index.js` file inside the src directory. Delete all the existing code and proceed.
+Open the `index.js` file inside the src directory. Delete all the existing code and start with the import of the
+`stripe` package:
+
+```js
+import Stripe from 'stripe';
+```
 
 Create an initial export. This hook will need to intercept the save function with `action` and include `env` for the
 environment variables and `services` to write back to the record:
@@ -68,10 +73,10 @@ action('items.create', async ({ key, collection, payload }, { schema }) => {
 });
 ```
 
-Require and initialize the stripe package:
+Instantiate Stripe with the secret token:
 
 ```js
-const stripe = require(stripe)(env.STRIPE_TOKEN);
+const stripe = new Stripe(env.STRIPE_TOKEN);
 ```
 
 `env` looks inside the Directus environment variables for `STRIPE_TOKEN`. In order to start using this hook, this
@@ -157,11 +162,13 @@ other endpoints that Stripe has to offer.
 `index.js`
 
 ```js
+import Stripe from 'stripe';
+
 export default ({ action }, { env, services }) => {
 	const { MailService, ItemService } = services;
 	action('items.create', async ({ key, collection, payload }, { schema }) => {
 		if (collection !== 'customers') return;
-		const stripe = require(stripe)(env.STRIPE_TOKEN);
+		const stripe = new Stripe(env.STRIPE_TOKEN);
 		stripe.customers.create({
 			name: `${payload.first_name} ${payload.last_name}`,
 			email: payload.email_address,
