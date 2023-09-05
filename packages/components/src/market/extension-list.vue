@@ -247,6 +247,7 @@ async function loadExtensions() {
 			const extension = response.data.data.find((extension: any) => extension.id === existingExtension.name);
 
 			return {
+				...existingExtension,
 				...(extension ?? {}),
 				id: existingExtension.name,
 				enabled: existingExtension.enabled,

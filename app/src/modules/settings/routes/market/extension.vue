@@ -208,10 +208,11 @@ const installedVersion = computed(() => {
 });
 
 const updateAvailable = computed(
-	() => marketExtension.value?.latest_version.split('#')[1] !== installedExtension.value?.version
+	() =>
+		marketExtension.value && marketExtension.value?.latest_version.split('#')[1] !== installedExtension.value?.version
 );
 
-const canChangeVersion = computed(() => version.value !== installedExtension.value?.version);
+const canChangeVersion = computed(() => marketExtension.value && version.value !== installedExtension.value?.version);
 
 watch(drawer, (open) => {
 	if (open === undefined) {
@@ -220,8 +221,16 @@ watch(drawer, (open) => {
 		return;
 	}
 
-	const permissions: Record<string, any>[] =
-		open === 'settings' ? installedVersion.value?.requested_permissions : selectedVersion.value?.requested_permissions;
+	let permissions: Record<string, any>[];
+
+	if (marketExtension.value) {
+		permissions =
+			open === 'settings'
+				? installedVersion.value?.requested_permissions
+				: selectedVersion.value?.requested_permissions;
+	} else {
+		permissions = installedExtension.value?.requested_permissions ?? [];
+	}
 
 	grantedPermissionsRequired.value = permissions.reduce<Permission[]>((acc, perm) => {
 		if (perm.optional) return acc;
@@ -346,12 +355,12 @@ async function toggleExtension() {
 watch(
 	() => props.name,
 	() => {
-		loadmarketExtension();
+		loadMarketExtension();
 	},
 	{ immediate: true }
 );
 
-async function loadmarketExtension() {
+async function loadMarketExtension() {
 	const versionFields = [
 		'version',
 		'readme',
@@ -364,14 +373,18 @@ async function loadmarketExtension() {
 		.map((f) => `versions.${f}`)
 		.join(',');
 
-	const response = await marketApi.get(`/items/extensions/${encodeURIComponent(props.name)}`, {
-		params: {
-			fields: '*,latest_version,' + versionFields,
-		},
-	});
+	try {
+		const response = await marketApi.get(`/items/extensions/${encodeURIComponent(props.name)}`, {
+			params: {
+				fields: '*,latest_version,' + versionFields,
+			},
+		});
 
-	marketExtension.value = response.data.data;
-	latestVersion.value = response.data.data?.latest_version.split('#')[1];
+		marketExtension.value = response.data.data;
+		latestVersion.value = response.data.data?.latest_version.split('#')[1];
+	} catch (error) {
+		// Ignore non existing extensions
+	}
 }
 
 const title = computed(() => {

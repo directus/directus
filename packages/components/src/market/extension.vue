@@ -264,25 +264,29 @@ async function loadExtension() {
 		.map((f) => `versions.${f}`)
 		.join(',');
 
-	const response = await api.get(`/items/extensions/${encodeURIComponent(props.name)}`, {
-		params: {
-			fields:
-				'*,author.email,author.name,author.avatar,maintainers.users_email.email,maintainers.users_email.name,maintainers.users_email.avatar,downloads.date,downloads.downloads,latest_version,tags.tags_tag.tag,' +
-				versionFields,
-			deep: {
-				downloads: {
-					_filter: {
-						date: {
-							_gte: lastYear.toISOString().substring(0, 10),
+	try {
+		const response = await api.get(`/items/extensions/${encodeURIComponent(props.name)}`, {
+			params: {
+				fields:
+					'*,author.email,author.name,author.avatar,maintainers.users_email.email,maintainers.users_email.name,maintainers.users_email.avatar,downloads.date,downloads.downloads,latest_version,tags.tags_tag.tag,' +
+					versionFields,
+				deep: {
+					downloads: {
+						_filter: {
+							date: {
+								_gte: lastYear.toISOString().substring(0, 10),
+							},
 						},
+						_limit: 365,
 					},
-					_limit: 365,
 				},
 			},
-		},
-	});
+		});
 
-	extension.value = response.data.data;
+		extension.value = response.data.data;
+	} catch (error) {
+		// Ignore non existing extensions
+	}
 
 	if (!props.existingExtension && !version.value) {
 		version.value = extension.value?.latest_version?.split('#')[1];
