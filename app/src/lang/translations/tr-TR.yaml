@@ -35,6 +35,7 @@ tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
 location: Konum
+collection_names_are_case_sensitive: Koleksiyon adları büyük/küçük harfe duyarlıdır
 condition_rules: Durum Kuralları
 input: Girdi
 maps: Haritalar
@@ -80,6 +81,9 @@ create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
+create_custom_translation: Özel Çeviri Oluştur
+edit_custom_translation: Özel Çeviriyi Düzenle
+no_custom_translations: Özel Çeviri Yok
 invite_users: Kullanıcıları Davet Et
 invite: Davet Et
 email_already_invited: E-posta "{email}" zaten davet edildi
