@@ -15,6 +15,7 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
+		"./style.css": "./dist/style.css",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
