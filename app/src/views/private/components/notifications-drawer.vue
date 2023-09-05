@@ -313,15 +313,8 @@ function onLinkClick(to: string) {
 				user-select: text;
 			}
 
-			&:deep(blockquote) {
-				background-color: var(--background-normal);
-				padding: 4px 8px;
-				margin: 4px 0;
-				border-radius: var(--border-radius);
-			}
-
-			&:deep(a) {
-				color: var(--primary);
+			:deep() {
+				@import '@/styles/markdown';
 			}
 		}
 	}
