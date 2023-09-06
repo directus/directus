@@ -78,11 +78,11 @@ export type AggregationOutput<
 			? MappedFunctionFields<Schema, Item> extends infer FieldMap
 				? MappedFieldNames<Schema, Item> extends infer NamesMap
 					? {
-							[Field in UnpackList<Options['groupBy']> as TranslateFunctionField<FieldMap, Field>]: ExtractFieldName<
+							[Field in UnpackList<Options['groupBy']> as TranslateFunctionField<FieldMap, Field>]: TranslateFunctionField<
 								NamesMap,
 								Field
 							> extends keyof Item
-								? Item[ExtractFieldName<NamesMap, Field>]
+								? Item[TranslateFunctionField<NamesMap, Field>]
 								: never;
 					  }
 					: never
@@ -109,7 +109,7 @@ type WrappedFields<Fields, Funcs> = Fields extends string
 	: never;
 
 /**
- *
+ * Translate function names based on provided map
  */
 type TranslateFunctionField<FieldMap, Field> = Field extends keyof FieldMap
 	? FieldMap[Field] extends string
@@ -119,13 +119,3 @@ type TranslateFunctionField<FieldMap, Field> = Field extends keyof FieldMap
 	? Field
 	: never;
 
-/**
- *
- */
-type ExtractFieldName<FieldMap, Field> = Field extends keyof FieldMap
-	? FieldMap[Field] extends string
-		? FieldMap[Field]
-		: never
-	: Field extends string
-	? Field
-	: never;
