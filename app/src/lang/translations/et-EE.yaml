@@ -201,8 +201,11 @@ aggregate_function: Koondfunktsioon
 global: Üldine
 admins_have_all_permissions: Adminnidel on kõik õigused
 camera: Kaamera
+create_in_advanced_field_creation_mode: Loo Väli Täpsemas Režiimis
+continue_in_advanced_field_creation_mode: Jätkake Täpsemas Välja Loomises
 validation: Valideerimine
 sum: Summa
+sum_distinct: Summeerige Ainulaadsed
 avg: Keskmine
 count: Arv
 min: Miinimum
