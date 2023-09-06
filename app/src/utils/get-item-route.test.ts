@@ -4,7 +4,7 @@ import { getItemRoute } from '@/utils/get-item-route';
 
 const collection = 'some_collection';
 const systemCollection = 'directus_users';
-const primaryKeys = [123, 'abc'];
+const primaryKeys = [123, 'abc', '#abc'];
 
 describe('getItemRoute', () => {
 	it('Returns an empty string when collection is null', () => {
@@ -15,13 +15,15 @@ describe('getItemRoute', () => {
 
 	it('Returns the expected route for collection', () => {
 		for (const primaryKey of primaryKeys) {
-			expect(getItemRoute(collection, primaryKey)).toBe(`/content/${collection}/${primaryKey}`);
+			expect(getItemRoute(collection, primaryKey)).toBe(`/content/${collection}/${encodeURIComponent(primaryKey)}`);
 		}
 	});
 
 	it('Returns the expected route for system collection', () => {
 		for (const primaryKey of primaryKeys) {
-			expect(getItemRoute(systemCollection, primaryKey)).toBe(`/${systemCollection.substring(9)}/${primaryKey}`);
+			expect(getItemRoute(systemCollection, primaryKey)).toBe(
+				`/${systemCollection.substring(9)}/${encodeURIComponent(primaryKey)}`
+			);
 		}
 	});
 });
