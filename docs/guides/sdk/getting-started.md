@@ -310,8 +310,8 @@ import WebSocket from 'ws';
 globalThis.WebSocket = WebSocket;
 globalThis.fetch = ofetch;
 
-// polyfill libraries will often do this for you
-// for example, this URL polyfill for react-natve
+// Polyfill libraries will often register itself to the globalThis object.
+// For example, the following URL polyfill for react-native.
 import 'react-native-url-polyfill/auto';
 
 const client = createDirectus('http://directus.example.com');
