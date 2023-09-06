@@ -252,6 +252,59 @@ All SDK composables can also be conveniently imported from the root package `@di
 
 :::
 
+## Global API and Polyfills
+
+The SDK relies on the API's mentioned below which came from the browser ecosystem and may not be available in all environments. 
+
+#### The `fetch` API
+There are various reasons why you would want to overwrite or set fetch if not available. The most common being it not being shipped with the runtime yet (like NodeJS version 16 or lower) or wrappers around the fetch function for convenience.
+
+- [node-fetch](https://github.com/node-fetch/node-fetch)
+- [ofetch](https://github.com/unjs/ofetch)
+- [whatwg-fetch](https://github.com/JakeChampion/fetch)
+
+#### The `WebSocket` API
+WebSockets are often not implemented in backend Javascript runtimes or just not included by default.
+
+- [ws](https://github.com/websockets/ws)
+- [isomorphic-ws](https://github.com/heineiuo/isomorphic-ws)
+
+#### The `URL` API
+This API is shipped with most runtimes but for example react-native does this to be polyfilled for the SDK to work.
+- [url-polyfill](https://github.com/lifaon74/url-polyfill)
+- [react-native-url-polyfill](https://www.npmjs.com/package/react-native-url-polyfill)
+
+
+These can be polyfilled or overwritten in two ways:
+1. Setting the new function in the `createDirectus` options parameter.
+```ts
+import { createDirectus } from '@directus/sdk';
+import { ofetch } from 'ofetch';
+import WebSocket from 'ws';
+
+const client = createDirectus('http://directus.example.com', {
+  globals: {
+    WebSocket: WebSocket,
+    fetch: ofetch,
+  }
+});
+```
+2. Setting the new function directly on the `globalThis` object.
+```ts
+import { createDirectus } from '@directus/sdk';
+import { ofetch } from 'ofetch';
+import WebSocket from 'ws';
+
+globalThis.WebSocket = WebSocket;
+globalThis.fetch = ofetch;
+
+// polyfill libraries will often do this for you 
+// for example, this URL polyfill for react-natve
+import 'react-native-url-polyfill/auto';
+
+const client = createDirectus('http://directus.example.com');
+```
+
 ## Next Steps
 
 You can find code examples using the Directus SDK throughout our [API reference](/reference/items).
