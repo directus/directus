@@ -27,6 +27,6 @@ export type DirectusFile<Schema extends object> = MergeCoreCollection<
 		description: string | null;
 		location: string | null;
 		tags: string[] | null;
-		metadata: 'json' | null;
+		metadata: Record<string, any> | null;
 	}
 >;

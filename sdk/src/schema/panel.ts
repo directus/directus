@@ -18,7 +18,7 @@ export type DirectusPanel<Schema extends object> = MergeCoreCollection<
 		position_y: number;
 		width: number;
 		height: number;
-		options: 'json' | null;
+		options: Record<string, any> | null;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
 	}

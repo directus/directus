@@ -13,10 +13,10 @@ export type DirectusPreset<Schema extends object> = MergeCoreCollection<
 		collection: string | null; // TODO keyof complete schema
 		search: string | null;
 		layout: string | null;
-		layout_query: 'json' | null;
-		layout_options: 'json' | null;
+		layout_query: Record<string, any> | null;
+		layout_options: Record<string, any> | null;
 		refresh_interval: number | null;
-		filter: 'json' | null;
+		filter: Record<string, any> | null;
 		icon: string | null;
 		color: string | null;
 	}

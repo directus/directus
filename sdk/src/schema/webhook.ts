@@ -12,6 +12,6 @@ export type DirectusWebhook<Schema extends object> = MergeCoreCollection<
 		data: boolean;
 		actions: string | string[];
 		collections: string | string[];
-		headers: 'json' | null;
+		headers: Record<string, any> | null;
 	}
 >;

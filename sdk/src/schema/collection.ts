@@ -12,7 +12,7 @@ export type DirectusCollection<Schema extends object> = {
 			display_template: string | null;
 			hidden: boolean;
 			singleton: boolean;
-			translations: 'json'[] | null;
+			translations: CollectionMetaTranslationType[] | null;
 			archive_field: string | null;
 			archive_app_filter: boolean;
 			archive_value: string | null;
@@ -20,7 +20,7 @@ export type DirectusCollection<Schema extends object> = {
 			sort_field: string | null;
 			accountability: string | null;
 			color: string | null;
-			item_duplication_fields: 'json'[] | null;
+			item_duplication_fields: string[] | null;
 			sort: string | null;
 			group: string | null;
 			collapse: string;
@@ -34,9 +34,9 @@ export type DirectusCollection<Schema extends object> = {
 	} | null;
 };
 
-// export type CollectionMetaTranslationType = {
-// 	language: string;
-// 	plural: string;
-// 	singular: string;
-// 	translation: string;
-// };
+export type CollectionMetaTranslationType = {
+	language: string;
+	plural: string;
+	singular: string;
+	translation: string;
+};

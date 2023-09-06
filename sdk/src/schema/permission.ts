@@ -9,9 +9,9 @@ export type DirectusPermission<Schema extends object> = MergeCoreCollection<
 		role: DirectusRole<Schema> | string | null;
 		collection: string; // TODO keyof complete schema
 		action: string;
-		permissions: 'json' | null;
-		validation: 'json' | null;
-		presets: 'json' | null;
+		permissions: Record<string, any> | null;
+		validation: Record<string, any> | null;
+		presets: Record<string, any> | null;
 		fields: string | null;
 	}
 >;

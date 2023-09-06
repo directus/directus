@@ -13,7 +13,7 @@ export type DirectusOperation<Schema extends object> = MergeCoreCollection<
 		position_x: number;
 		position_y: number;
 		timestamp: string;
-		options: 'json' | null;
+		options: Record<string, any> | null;
 		resolve: DirectusOperation<Schema> | string | null;
 		reject: DirectusOperation<Schema> | string | null;
 		flow: DirectusFlow<Schema> | string;

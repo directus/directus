@@ -14,7 +14,7 @@ export type DirectusFlow<Schema extends object> = MergeCoreCollection<
 		status: string;
 		trigger: string | null;
 		accountability: string | null;
-		options: 'json' | null;
+		options: Record<string, any> | null;
 		operation: DirectusOperation<Schema> | string | null;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;

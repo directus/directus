@@ -11,21 +11,21 @@ export type DirectusField<Schema extends object> = {
 			id: number;
 			collection: string; // TODO keyof complete schema
 			field: string;
-			special: string[] | null;
+			special: string | null;
 			interface: string | null;
-			options: 'json' | null;
+			options: Record<string, any> | null;
 			display: string | null;
-			display_options: 'json' | null;
+			display_options: Record<string, any> | null;
 			readonly: boolean;
 			hidden: boolean;
 			sort: number | null;
 			width: string | null;
-			translations: 'json' | null;
+			translations: FieldMetaTranslationType[] | null;
 			note: string | null;
-			conditions: 'json' | null;
+			conditions: FieldMetaConditionType[] | null;
 			required: boolean;
 			group: string | null;
-			validation: 'json' | null;
+			validation: Record<string, any> | null;
 			validation_message: string | null;
 		}
 	>;
@@ -51,31 +51,29 @@ export type DirectusField<Schema extends object> = {
 	};
 };
 
-// export type FieldMetaConditionType = {
-// 	// TODO: review
-// 	hidden: boolean;
-// 	name: string;
-// 	options: FieldMetaConditionOptionType;
-// 	readonly: boolean;
-// 	required: boolean;
-// 	// TODO: rules use atomic operators and can nest
-// 	rule: unknown;
-// };
+export type FieldMetaConditionType = {
+	hidden: boolean;
+	name: string;
+	options: FieldMetaConditionOptionType;
+	readonly: boolean;
+	required: boolean;
+	// TODO: rules use atomic operators and can nest
+	rule: unknown;
+};
 
-// export type FieldMetaConditionOptionType = {
-// 	// TODO: review
-// 	clear: boolean;
-// 	font: string;
-// 	iconLeft?: string;
-// 	iconRight?: string;
-// 	masked: boolean;
-// 	placeholder: string;
-// 	slug: boolean;
-// 	softLength?: number;
-// 	trim: boolean;
-// };
+export type FieldMetaConditionOptionType = {
+	clear: boolean;
+	font: string;
+	iconLeft?: string;
+	iconRight?: string;
+	masked: boolean;
+	placeholder: string;
+	slug: boolean;
+	softLength?: number;
+	trim: boolean;
+};
 
-// export type FieldMetaTranslationType = {
-// 	language: string;
-// 	translation: string;
-// };
+export type FieldMetaTranslationType = {
+	language: string;
+	translation: string;
+};
