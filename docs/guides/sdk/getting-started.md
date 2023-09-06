@@ -259,13 +259,11 @@ ecosystem and may not be available in all environments.
 
 #### The `fetch` API
 
-There are various reasons why you would want to overwrite or set fetch if not available. The most common being it not
-being shipped with the runtime yet (like NodeJS version 16 or lower) or wrappers around the fetch function for
-convenience.
+There are various reasons why you would want to overwrite or set fetch if not available. For example NodeJS versions 16 and below do not yet ship `fetch`.
 
-- [```node-fetch```](https://github.com/node-fetch/node-fetch)
-- [```ofetch```](https://github.com/unjs/ofetch)
-- [```whatwg-fetch```](https://github.com/JakeChampion/fetch)
+- [`node-fetch`](https://github.com/node-fetch/node-fetch)
+- [`ofetch`](https://github.com/unjs/ofetch)
+- [`whatwg-fetch`](https://github.com/JakeChampion/fetch)
 
 #### The `URL` API
 
@@ -276,7 +274,8 @@ This API is shipped in almost every runtime but for example react-native does re
 
 #### The `WebSocket` API
 
-This API is optional if you're not making use of the `realtime()` features in the SDK. Backend Javascript environments often do not ship with an implementation of  WebSockets.
+This API is optional if you're not making use of the `realtime()` features in the SDK. Backend Javascript environments
+often do not ship with an implementation of WebSockets.
 
 - [`ws`](https://github.com/websockets/ws)
 - [`isomorphic-ws`](https://github.com/heineiuo/isomorphic-ws)
