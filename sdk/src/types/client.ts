@@ -17,7 +17,7 @@ export interface ClientGlobals {
 }
 
 /**
- * available options on the client
+ * Available options on the client
  */
 export interface ClientOptions {
 	globals?: Partial<ClientGlobals>;
