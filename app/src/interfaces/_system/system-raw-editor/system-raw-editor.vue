@@ -55,7 +55,7 @@ onMounted(async () => {
 
 		codemirror = CodeMirror(codemirrorEl.value, {
 			mode: props.language,
-			value: unref(isObjectLike) ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
+			value: getStringifiedValue(props.value),
 			tabSize: 0,
 			autoRefresh: true,
 			indentUnit: 4,
@@ -133,10 +133,20 @@ watch(
 		const currentValue = codemirror?.getValue();
 
 		if (currentValue !== newValue) {
-			codemirror?.setValue(unref(isObjectLike) ? JSON.stringify(newValue, null, 4) : String(newValue ?? ''));
+			codemirror?.setValue(getStringifiedValue(newValue));
 		}
 	}
 );
+
+function getStringifiedValue(value: string | object | undefined) {
+	if (unref(isObjectLike)) {
+		const valueToStringify = typeof value === 'string' && isValidJSON(String(value)) ? parseJSON(String(value)) : value;
+
+		return JSON.stringify(valueToStringify, null, 4);
+	} else {
+		return String(value ?? '');
+	}
+}
 </script>
 
 <style lang="scss" scoped>
