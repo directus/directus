@@ -22,17 +22,12 @@ import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from 
 export interface AbstractSqlQuery {
 	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 	from: string;
-	join?: AbstractSqlQueryJoinNode[];
+	joins?: AbstractSqlQueryJoinNode[];
 	limit?: ValueNode;
 	offset?: ValueNode;
 	order?: AbstractSqlQueryOrderNode[];
 	where?: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 	parameters: ParameterTypes[];
-	/**
-	 * SQL returns data as a flat object. This map contains the flat property names and the JSON path
-	 * they correspond to.
-	 */
-	paths: Map<string, string[]>;
 }
 
 export type WhereUnion = Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>>;

@@ -7,16 +7,16 @@ import { escapeIdentifier } from '../utils/escape-identifier.js';
  * @param query the whole abstract query
  * @returns the JOIN part or null if there are no joins in the query
  */
-export const join = ({ join }: AbstractSqlQuery): string | null => {
-	if (join === undefined || join.length === 0) return null;
+export const join = ({ joins }: AbstractSqlQuery): string | null => {
+	if (joins === undefined || joins.length === 0) return null;
 
 	let joinString = '';
 
-	for (const node of join) {
-		const tableName = escapeIdentifier(node.table);
-		const nodeAlias = escapeIdentifier(node.as);
-		const joinCondition = conditionString(node.on);
-		joinString += `LEFT JOIN ${tableName} ${nodeAlias} ON ${joinCondition}`;
+	for (const join of joins) {
+		const tableName = escapeIdentifier(join.table);
+		const alias = escapeIdentifier(join.as);
+		const joinCondition = conditionString(join.on);
+		joinString += `LEFT JOIN ${tableName} ${alias} ON ${joinCondition}`;
 	}
 
 	return joinString;

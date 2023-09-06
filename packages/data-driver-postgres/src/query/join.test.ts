@@ -31,7 +31,7 @@ beforeEach(() => {
 				},
 			],
 			from: randomIdentifier(),
-			join: [
+			joins: [
 				{
 					type: 'join',
 					table: targetTable,
@@ -73,7 +73,7 @@ test('With an alias', () => {
 	const compareToTable2 = randomIdentifier();
 	const compareToColumn2 = randomIdentifier();
 
-	sample.statement.join = [
+	sample.statement.joins = [
 		{
 			type: 'join',
 			table: targetTable,

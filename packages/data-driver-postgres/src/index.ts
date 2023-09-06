@@ -5,7 +5,7 @@
  */
 
 import type { AbstractQuery, DataDriver } from '@directus/data';
-import { convertAbstractQueryToAbstractSqlQuery, expand } from '@directus/data-sql';
+import { convertAbstractQueryToAbstractSqlQuery, expand, mapAliasesToNestedPaths } from '@directus/data-sql';
 import { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
@@ -47,7 +47,15 @@ export default class DataDriverPostgres implements DataDriver {
 			stream.on('end', () => client?.release());
 
 			const webStream = Readable.toWeb(stream);
-			return webStream.pipeThrough(expand(abstractSqlQuery.paths));
+
+			const aliasMap = mapAliasesToNestedPaths(
+				query.collection,
+				query.nodes,
+				abstractSqlQuery.select,
+				abstractSqlQuery.joins ?? []
+			);
+
+			return webStream.pipeThrough(expand(aliasMap));
 		} catch (err) {
 			client?.release();
 			throw new Error('Could not query the PostgreSQL datastore: ' + err);

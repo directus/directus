@@ -33,4 +33,6 @@ export interface AbstractSqlQueryFnNode {
 
 	/* This can only be applied when using the function it within the SELECT clause */
 	as?: string;
+
+	alias?: string;
 }

@@ -21,7 +21,6 @@ test('Convert nodes', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomJoinNodeField = randomIdentifier();
-	const randomAlias = randomIdentifier();
 
 	const nodes: AbstractQueryFieldNode[] = [
 		{
@@ -46,7 +45,6 @@ test('Convert nodes', () => {
 					field: randomJoinNodeField,
 				},
 			],
-			alias: randomAlias,
 		},
 		{
 			type: 'fn',
@@ -82,9 +80,10 @@ test('Convert nodes', () => {
 					table: collection,
 					column: randomPrimitiveField,
 				},
+				as: 'count_HASHVAL',
 			},
 		],
-		join: [
+		joins: [
 			{
 				type: 'join',
 				table: randomExternalCollection,
@@ -109,10 +108,6 @@ test('Convert nodes', () => {
 				as: `${randomExternalCollection}_HASHVAL`,
 			},
 		],
-		paths: new Map([
-			[`${randomPrimitiveField}_HASHVAL`, [randomPrimitiveField]],
-			[`${randomJoinNodeField}_HASHVAL`, [randomAlias, randomJoinNodeField]],
-		]),
 		parameters: [],
 	};
 

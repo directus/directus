@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNodePrimitive, ActualConditionNodes } from '@directus/data';
 import type { ParameterTypes, AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from '../../../../types/index.js';
-import { convertFn } from '../../../functions.js';
+import { convertFn } from '../../../nodes/functions.js';
 
 /**
  * It adds the table name to the node.

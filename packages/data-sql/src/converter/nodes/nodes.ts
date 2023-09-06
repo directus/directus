@@ -3,46 +3,39 @@ import type { AbstractSqlQuery } from '../../types/index.js';
 import { createUniqueIdentifier } from './create-unique-identifier.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
-import { convertFn } from '../functions.js';
+import { convertFn } from './functions.js';
 
-export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'join' | 'paths' | 'parameters'>;
+export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'joins' | 'parameters'>;
 
 /**
  * Splits up the nodes into the different parts of the query.
  * Any primitive nodes and function nodes will be added to the list of selects.
  * Any m2o node will be added to the list of joins, but the field will also be added to the list of selects.
  *
- * Also a map will be created, which stores the paths from the unique, hashed alias to the original field.
+ * Each select node will get an auto generated alias. This alias will be used later on to convert the response to a nested object.
  *
- * @param collection - the current collection
- * @param nodes - all nodes from the abstract query
+ * @param collection - the current collection, will be an alias when called recursively
+ * @param abstractFields - all nodes from the abstract query
  * @param idxGenerator - the generator used to increase the parameter indices
- * @param path - the mapping of uniques aliases to original fields
- * @returns Select, join, paths and parameters
+ * @returns Select, join and parameters
  */
 export const convertNodes = (
 	collection: string,
-	nodes: AbstractQueryFieldNode[],
-	idxGenerator: Generator<number, number, number>,
-	path: string[] = []
+	abstractFields: AbstractQueryFieldNode[],
+	idxGenerator: Generator<number, number, number>
 ): ConvertSelectOutput => {
 	const select: ConvertSelectOutput['select'] = [];
-	const join: ConvertSelectOutput['join'] = [];
-	const paths: ConvertSelectOutput['paths'] = new Map();
+	const joins: ConvertSelectOutput['joins'] = [];
 	const parameters: AbstractSqlQuery['parameters'] = [];
 
-	for (const node of nodes) {
-		if (node.type === 'primitive') {
-			const selectNode = createPrimitiveSelect(collection, node);
-
+	for (const abstractField of abstractFields) {
+		if (abstractField.type === 'primitive') {
+			const selectNode = createPrimitiveSelect(collection, abstractField);
 			select.push(selectNode);
-			paths.set(selectNode.as, [...path, node.alias ?? node.field]);
 			continue;
 		}
 
-		if (node.type === 'm2o') {
-			const externalCollectionAlias = createUniqueIdentifier(node.join.external.collection);
-
+		if (abstractField.type === 'm2o') {
 			/**
 			 * Always fetch the current context foreign key as well. We need it to check if the current
 			 * item has a related item so we don't expand `null` values in a nested object where every
@@ -51,25 +44,26 @@ export const convertNodes = (
 			 * @TODO
 			 */
 
-			join.push(createJoin(collection, node, externalCollectionAlias));
-
-			const nestedOutput = convertNodes(externalCollectionAlias, node.nodes, idxGenerator, [...path, node.alias]);
-
+			const m2oField = abstractField;
+			const externalCollectionAlias = createUniqueIdentifier(m2oField.join.external.collection);
+			const sqlJoinNode = createJoin(collection, m2oField, externalCollectionAlias);
+			joins.push(sqlJoinNode);
+			const nestedOutput = convertNodes(externalCollectionAlias, m2oField.nodes, idxGenerator);
 			select.push(...nestedOutput.select);
-			nestedOutput.paths.forEach((value, key) => paths.set(key, value));
-
 			continue;
 		}
 
-		if (node.type === 'fn') {
-			const fn = convertFn(collection, node, idxGenerator);
+		if (abstractField.type === 'fn') {
+			const fnField = abstractField;
+			const id = createUniqueIdentifier(fnField.fn);
+			const fn = convertFn(collection, fnField, idxGenerator, id);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
 			continue;
 		}
 
-		throw new Error(`Node type ${node.type} is not supported`);
+		throw new Error(`Node type ${abstractField.type} is not supported`);
 	}
 
-	return { select, join, paths, parameters };
+	return { select, joins, parameters };
 };

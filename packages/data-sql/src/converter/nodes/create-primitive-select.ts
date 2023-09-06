@@ -10,11 +10,17 @@ import { createUniqueIdentifier } from './create-unique-identifier.js';
 export const createPrimitiveSelect = (
 	collection: string,
 	abstractPrimitive: AbstractQueryFieldNodePrimitive
-): Required<AbstractSqlQuerySelectNode> => {
-	return {
+): AbstractSqlQuerySelectNode => {
+	const primitive: AbstractSqlQuerySelectNode = {
 		type: 'primitive',
 		table: collection,
 		column: abstractPrimitive.field,
 		as: createUniqueIdentifier(abstractPrimitive.field),
 	};
+
+	if (abstractPrimitive.alias) {
+		primitive.alias = abstractPrimitive.alias;
+	}
+
+	return primitive;
 };

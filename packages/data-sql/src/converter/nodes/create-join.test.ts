@@ -32,7 +32,6 @@ test('Convert m2o relation on single field ', () => {
 				field: randomExternalSelectField,
 			},
 		],
-		alias: randomAlias,
 	};
 
 	const expected: AbstractSqlQueryJoinNode = {

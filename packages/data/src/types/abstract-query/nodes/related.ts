@@ -15,7 +15,7 @@ export interface AbstractQueryFieldNodeRelatedBase {
 	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;
 
-	alias: string;
+	alias?: string;
 }
 
 /**
