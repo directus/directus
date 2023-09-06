@@ -24,7 +24,7 @@ function isAccessibleSystemCollection(collection: string): collection is keyof t
  * Get the route of an accessible system collection in the admin app for a given collection name
  *
  * @param collection - Collection name
- * @returns - URL route for the system collection
+ * @returns - URL route for the system collection, empty string if not an accessible system collection
  */
 export function getSystemCollectionRoute(collection: string) {
 	if (isAccessibleSystemCollection(collection)) return accessibleSystemCollections[collection].route;
