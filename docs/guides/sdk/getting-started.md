@@ -263,28 +263,27 @@ There are various reasons why you would want to overwrite or set fetch if not av
 being shipped with the runtime yet (like NodeJS version 16 or lower) or wrappers around the fetch function for
 convenience.
 
-- [node-fetch](https://github.com/node-fetch/node-fetch)
-- [ofetch](https://github.com/unjs/ofetch)
-- [whatwg-fetch](https://github.com/JakeChampion/fetch)
+- [```node-fetch```](https://github.com/node-fetch/node-fetch)
+- [```ofetch```](https://github.com/unjs/ofetch)
+- [```whatwg-fetch```](https://github.com/JakeChampion/fetch)
 
 #### The `URL` API
 
-This API is shipped with most runtimes but for example react-native does this to be polyfilled for the SDK to work.
+This API is shipped in almost every runtime but for example react-native does require a polyfill for the SDK to work.
 
-- [url-polyfill](https://github.com/lifaon74/url-polyfill)
-- [react-native-url-polyfill](https://www.npmjs.com/package/react-native-url-polyfill)
+- [`url-polyfill`](https://github.com/lifaon74/url-polyfill)
+- [`react-native-url-polyfill`](https://www.npmjs.com/package/react-native-url-polyfill)
 
 #### The `WebSocket` API
 
-WebSockets are often not implemented in backend Javascript runtimes or just not included by default. This API is
-optional if you're not making use of the `realtime()` features in the SDK.
+This API is optional if you're not making use of the `realtime()` features in the SDK. Backend Javascript environments often do not ship with an implementation of  WebSockets.
 
-- [ws](https://github.com/websockets/ws)
-- [isomorphic-ws](https://github.com/heineiuo/isomorphic-ws)
+- [`ws`](https://github.com/websockets/ws)
+- [`isomorphic-ws`](https://github.com/heineiuo/isomorphic-ws)
 
 ### Polyfilling
 
-These can be polyfilled or overwritten in two ways:
+These can be overwritten in two ways:
 
 1. Setting the new function in the `createDirectus` options parameter.
 
