@@ -43,13 +43,6 @@ describe('getItemRoute', async () => {
 	const collection = 'some_collection';
 	const collectionRoute = `/content/${collection}`;
 
-	vi.doMock('@/utils/get-route', () => {
-		return {
-			getCollectionRoute: () => collectionRoute,
-			getItemRoute,
-		};
-	});
-
 	it('Returns an empty string when collection is null', () => {
 		const primaryKey = 123;
 
@@ -79,5 +72,12 @@ describe('getItemRoute', async () => {
 		const primaryKey = '+';
 
 		expect(getItemRoute(collection, primaryKey)).toBe(`${collectionRoute}/${primaryKey}`);
+	});
+
+	it('Returns the route with ignored primary key for singleton system collection', () => {
+		const collection = 'directus_settings';
+		const primaryKey = 123;
+
+		expect(getItemRoute(collection, primaryKey)).toBe('/settings/project');
 	});
 });
