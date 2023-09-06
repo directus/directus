@@ -3,4 +3,4 @@
 "@directus/sdk": patch
 ---
 
-Added configuration options for global APIs in the SDK
+Added options allowing to override global APIs in the SDK
