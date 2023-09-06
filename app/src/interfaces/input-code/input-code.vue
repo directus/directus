@@ -10,6 +10,7 @@
 
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
+import { isValidJSON, parseJSON } from '@directus/utils';
 import CodeMirror, { ModeSpec } from 'codemirror';
 import { Ref, computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -103,7 +104,12 @@ const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
 
 	if (props.type === 'json' || typeof props.value === 'object') {
-		return JSON.stringify(props.value, null, 4);
+		const valueToStringify =
+			typeof props.value === 'string' && isValidJSON(String(props.value))
+				? parseJSON(String(props.value))
+				: props.value;
+
+		return JSON.stringify(valueToStringify, null, 4);
 	}
 
 	return props.value as string;
