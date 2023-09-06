@@ -33,7 +33,7 @@
 					</nav>
 				</v-resizeable>
 
-				<main ref="mainEl" class="main">
+				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
 					<header-bar
 						:title="title"
 						primary-action-icon="close"
@@ -228,6 +228,10 @@ body {
 				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}
+		}
+
+		.main.small-search-input:deep(.search-input.filter-active) {
+			width: 300px !important;
 		}
 	}
 
