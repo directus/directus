@@ -120,14 +120,18 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				if ('otp' in options) authData['otp'] = options.otp;
 				if ('mode' in options) authData['mode'] = options.mode;
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
+				const data = await request<AuthenticationData>(
+					requestUrl.toString(),
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(authData),
+						credentials: authConfig.credentials,
 					},
-					body: JSON.stringify(authData),
-          credentials: authConfig.credentials,
-				}, client.globals.fetch);
+					client.globals.fetch
+				);
 
 				setCredentials(data);
 				return data;

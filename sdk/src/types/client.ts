@@ -8,7 +8,7 @@ export interface DirectusClient<Schema extends object> {
 }
 
 export interface ClientGlobals {
-	fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>,
-	WebSocket: typeof globalThis.WebSocket,
-	URL: typeof globalThis.URL,
+	fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+	WebSocket: typeof globalThis.WebSocket;
+	URL: typeof globalThis.URL;
 }
