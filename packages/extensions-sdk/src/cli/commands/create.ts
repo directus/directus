@@ -180,6 +180,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
 		type: 'module',
 		[EXTENSION_PKG_KEY]: options,
+		files: ['dist', 'src'],
 		scripts: {
 			build: 'directus-extension build',
 			dev: 'directus-extension build -w --no-minify',
