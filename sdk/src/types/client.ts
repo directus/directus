@@ -7,8 +7,18 @@ export interface DirectusClient<Schema extends object> {
 	with: <Extension extends object>(createExtension: (client: DirectusClient<Schema>) => Extension) => this & Extension;
 }
 
+/**
+ * All used globals for the client
+ */
 export interface ClientGlobals {
-	fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+	fetch: typeof globalThis.fetch;
 	WebSocket: typeof globalThis.WebSocket;
 	URL: typeof globalThis.URL;
+}
+
+/**
+ * available options on the client
+ */
+export interface ClientOptions {
+	globals?: Partial<ClientGlobals>;
 }

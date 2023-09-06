@@ -1,8 +1,4 @@
-import type { ClientGlobals, DirectusClient } from './types/client.js';
-
-type ClientOptions = {
-	globals?: ClientGlobals
-};
+import type { ClientGlobals, ClientOptions, DirectusClient } from './types/client.js';
 
 /**
  * The default globals supplied to the client
@@ -21,8 +17,11 @@ const defaultGlobals = {
  *
  * @returns A Directus client.
  */
-export const createDirectus = <Schema extends object = any>(url: string, options: ClientOptions = {}): DirectusClient<Schema> => {
-	const globals = options.globals ? { ...defaultGlobals, ...options.globals } : defaultGlobals
+export const createDirectus = <Schema extends object = any>(
+	url: string,
+	options: ClientOptions = {}
+): DirectusClient<Schema> => {
+	const globals = options.globals ? { ...defaultGlobals, ...options.globals } : defaultGlobals;
 	return {
 		globals,
 		url: new globals.URL(url),
