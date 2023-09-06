@@ -51,7 +51,14 @@
 				>
 					<v-icon name="file_download" />
 				</v-button>
-				<v-button v-tooltip.bottom="'Settings'" secondary rounded icon @click="drawer = 'settings'">
+				<v-button
+					v-if="installedExtension.secure"
+					v-tooltip.bottom="'Settings'"
+					secondary
+					rounded
+					icon
+					@click="drawer = 'settings'"
+				>
 					<v-icon name="settings" />
 				</v-button>
 				<v-button
@@ -108,7 +115,10 @@
 					</v-notice>
 
 					<div class="title">Required Permissions</div>
-					<v-list class="permissions required">
+					<v-list v-if="grantedPermissionsRequired.length === 0" class="permissions required">
+						<v-notice>{{ t('marketplace.extension.no_required') }}</v-notice>
+					</v-list>
+					<v-list v-else class="permissions required">
 						<Permission
 							v-for="(permission, index) in grantedPermissionsRequired"
 							:key="permission.permission"
@@ -117,7 +127,10 @@
 						/>
 					</v-list>
 					<div class="title">Optional Permissions</div>
-					<v-list class="permissions required">
+					<v-list v-if="grantedPermissionsOptional.length === 0" class="permissions">
+						<v-notice>{{ t('marketplace.extension.no_optional') }}</v-notice>
+					</v-list>
+					<v-list v-else class="permissions">
 						<Permission
 							v-for="(permission, index) in grantedPermissionsOptional"
 							:key="permission.permission"
@@ -194,7 +207,7 @@ provide('api', marketApi);
 const { t } = useI18n();
 
 const selectedVersion = computed(() => {
-	if (!marketExtension.value) return null;
+	if (!marketExtension.value) return installedExtension.value;
 
 	return marketExtension.value.versions.find(
 		(v: any) => v.version.split('#')[1] === (version.value ?? latestVersion.value)
@@ -202,7 +215,7 @@ const selectedVersion = computed(() => {
 });
 
 const installedVersion = computed(() => {
-	if (!marketExtension.value) return null;
+	if (!marketExtension.value) return installedExtension.value;
 
 	return marketExtension.value.versions.find((v: any) => v.version.split('#')[1] === installedExtension.value?.version);
 });
@@ -221,16 +234,8 @@ watch(drawer, (open) => {
 		return;
 	}
 
-	let permissions: Record<string, any>[];
-
-	if (marketExtension.value) {
-		permissions =
-			open === 'settings'
-				? installedVersion.value?.requested_permissions
-				: selectedVersion.value?.requested_permissions;
-	} else {
-		permissions = installedExtension.value?.requested_permissions ?? [];
-	}
+	const permissions: Record<string, any>[] =
+		open === 'settings' ? installedVersion.value?.requested_permissions : selectedVersion.value?.requested_permissions;
 
 	grantedPermissionsRequired.value = permissions.reduce<Permission[]>((acc, perm) => {
 		if (perm.optional) return acc;

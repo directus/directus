@@ -1547,6 +1547,8 @@ marketplace:
       install: You are installing a **non-secure** extension. This extension will have full access to the Directus Api and Database.
       update: You are updating to a **non-secure** extension. This extension will have full access to the Directus Api and Database.
     secure: This is a secure extension. You are able to restrict what the extension will be able to access.
+    no_required: This extension has no required permissions.
+    no_optional: This extension has no optional permissions.
     uninstall:
       title: Uninstall {name}
       action: Uninstall
