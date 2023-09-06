@@ -104,7 +104,7 @@ export class InstallationManager {
 			}
 
 			// make sure that if the npm manifest says it's a secure extension, the local package.json says the same
-			if (isEqual(localManifest, registryManifest) === false) {
+			if (localManifest['directus:extension'].secure !== registryManifest['directus:extension'].secure) {
 				throw new Error('');
 			}
 		} catch (error) {
