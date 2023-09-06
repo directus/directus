@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import { getJSType } from '@/utils/get-js-type';
+import { isValidJSON, parseJSON } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -69,7 +70,12 @@ watch(
 			}
 
 			if (type.value === 'object') {
-				internalValue.value = JSON.stringify(props.currentValue, null, '\t');
+				const valueToStringify =
+					typeof props.currentValue === 'string' && isValidJSON(String(props.currentValue))
+						? parseJSON(String(props.currentValue))
+						: props.currentValue;
+
+				internalValue.value = JSON.stringify(valueToStringify, null, '\t');
 			} else {
 				internalValue.value = String(props.currentValue);
 			}
