@@ -259,7 +259,8 @@ ecosystem and may not be available in all environments.
 
 #### The `fetch` API
 
-There are various reasons why you would want to overwrite or set fetch if not available. For example NodeJS versions 16 and below do not yet ship `fetch`.
+There are various reasons why you would want to overwrite or set fetch if not available. For example, NodeJS versions 16
+and below do not yet ship `fetch`.
 
 - [`node-fetch`](https://github.com/node-fetch/node-fetch)
 - [`ofetch`](https://github.com/unjs/ofetch)
