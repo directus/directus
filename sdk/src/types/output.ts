@@ -102,11 +102,15 @@ export type MapFlatFields<
 		: Item[F];
 };
 
+// Possible JSON types
+type JsonPrimitive = null | boolean | number | string;
+type JsonValue = JsonPrimitive | JsonPrimitive[] | { [key: string]: JsonValue };
+
 /**
  * Output map for specific literal types
  */
 export type FieldOutputMap = {
-	json: Record<string, any> | any[] | null;
+	json: JsonValue | null;
 	csv: string[];
 	datetime: string;
 };
