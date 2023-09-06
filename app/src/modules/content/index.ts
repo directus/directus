@@ -107,7 +107,8 @@ const checkForSystem: NavigationGuard = (to, from) => {
 		'bookmark' in to.query === false &&
 		to.params.collection === from.params.collection
 	) {
-		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
+		const newPath = `/content/${to.params.collection}/${encodeURIComponent(to.params.primaryKey as string)}`;
+		return addQueryToPath(newPath, { bookmark: from.query.bookmark });
 	}
 
 	return;
