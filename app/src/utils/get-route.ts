@@ -1,3 +1,37 @@
+const accessibleSystemCollections = {
+	directus_users: { route: '/users' },
+	directus_files: { route: '/files' },
+	directus_dashboards: { route: '/insights' },
+	directus_activity: { route: '/activity' },
+	directus_settings: { route: '/settings/project', singleton: true },
+	directus_collections: { route: '/settings/data-model' },
+	directus_roles: { route: '/settings/roles' },
+	directus_presets: { route: '/settings/presets' },
+	directus_translations: { route: '/settings/translations' },
+	directus_webhooks: { route: '/settings/webhooks' },
+	directus_flows: { route: '/settings/flows' },
+} as const;
+
+function isSystemCollection(collection: string) {
+	return collection.startsWith('directus_');
+}
+
+function isAccessibleSystemCollection(collection: string): collection is keyof typeof accessibleSystemCollections {
+	return collection in accessibleSystemCollections;
+}
+
+/**
+ * Get the route of an accessible system collection in the admin app for a given collection name
+ *
+ * @param collection - Collection name
+ * @returns - URL route for the system collection
+ */
+export function getSystemCollectionRoute(collection: string) {
+	if (isAccessibleSystemCollection(collection)) return accessibleSystemCollections[collection].route;
+
+	return '';
+}
+
 /**
  * Get the route of a collection in the admin app for a given collection name
  *
@@ -7,9 +41,9 @@
 export function getCollectionRoute(collection: string | null) {
 	if (collection === null) return '';
 
-	const route = collection.startsWith('directus_') ? collection.substring(9) : `content/${collection}`;
+	if (isSystemCollection(collection)) return getSystemCollectionRoute(collection);
 
-	return `/${route}`;
+	return `/content/${collection}`;
 }
 
 /**
@@ -24,5 +58,12 @@ export function getItemRoute(collection: string | null, primaryKey: string | num
 
 	const collectionRoute = getCollectionRoute(collection);
 
-	return `${collectionRoute}/${encodeURIComponent(primaryKey)}`;
+	if (collectionRoute === '') return '';
+
+	if (isAccessibleSystemCollection(collection) && 'singleton' in accessibleSystemCollections[collection])
+		return collectionRoute;
+
+	const itemRoute = primaryKey === '+' ? '+' : encodeURIComponent(primaryKey);
+
+	return `${collectionRoute}/${itemRoute}`;
 }

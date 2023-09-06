@@ -1,20 +1,41 @@
+import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import { describe, expect, it, vi } from 'vitest';
-import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+
+describe('getSystemCollectionRoute', () => {
+	it('Returns an empty string when collection is not a system collection', () => {
+		const collection = 'some_collection';
+
+		expect(getSystemCollectionRoute(collection)).toBe('');
+	});
+
+	it('Returns an empty string when collection is not an accessible system collection', () => {
+		const collection = 'directus_fields';
+
+		expect(getSystemCollectionRoute(collection)).toBe('');
+	});
+
+	it('Returns the expected route for an accessible system collection', () => {
+		const collection = 'directus_users';
+
+		expect(getSystemCollectionRoute(collection)).toBe('/users');
+	});
+});
 
 describe('getCollectionRoute', () => {
-	const collection = 'some_collection';
-	const systemCollection = 'directus_users';
-
 	it('Returns an empty string when collection is null', () => {
 		expect(getCollectionRoute(null)).toBe('');
 	});
 
 	it('Returns the expected route for collection', () => {
+		const collection = 'some_collection';
+
 		expect(getCollectionRoute(collection)).toBe(`/content/${collection}`);
 	});
 
 	it('Returns the expected route for system collection', () => {
-		expect(getCollectionRoute(systemCollection)).toBe(`/${systemCollection.substring(9)}`);
+		const systemCollection = 'directus_users';
+
+		expect(getCollectionRoute(systemCollection)).toBe(`/users`);
 	});
 });
 
@@ -52,5 +73,11 @@ describe('getItemRoute', async () => {
 		const encodedPrimaryKey = '%23abc';
 
 		expect(getItemRoute(collection, primaryKey)).toBe(`${collectionRoute}/${encodedPrimaryKey}`);
+	});
+
+	it('Returns the unencoded route when primary key is "+"', () => {
+		const primaryKey = '+';
+
+		expect(getItemRoute(collection, primaryKey)).toBe(`${collectionRoute}/${primaryKey}`);
 	});
 });
