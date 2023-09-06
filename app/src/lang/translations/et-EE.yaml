@@ -35,6 +35,7 @@ tile_size: Failisuurus
 edit_field: Muuda Välja
 conditions: Tingimused
 location: Asukoht
+collection_names_are_case_sensitive: Andmekogude nimed on tõstutundlikud
 condition_rules: Tingimuse Reeglid
 input: Sisend
 maps: Kaardid
@@ -64,6 +65,7 @@ leaf: Leht
 indeterminate: Määramatu
 edit_collection: Muuda Kogumikku
 exclusive: Eksklusiivne
+children: Tütred
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida'
 show_active_items: Näita Aktiivseid Kirjeid
 show_archived_items: Näita Arhiveeritud Üksuseid
