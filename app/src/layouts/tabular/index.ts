@@ -4,7 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { getItemRoute } from '@/utils/get-item-route';
+import { getItemRoute } from '@/utils/get-route';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';

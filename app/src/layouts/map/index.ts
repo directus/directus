@@ -1,6 +1,6 @@
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
-import { getItemRoute } from '@/utils/get-item-route';
+import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
