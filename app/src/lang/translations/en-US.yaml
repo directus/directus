@@ -347,6 +347,7 @@ clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
+archive_all: Archive All
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
 page_not_found_body: The page you are looking for doesn't seem to exist.

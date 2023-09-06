@@ -4,13 +4,18 @@ import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
 
+const defaultConfigValues: RestConfig = {
+	credentials: 'same-origin',
+};
+
 /**
  * Creates a client to communicate with the Directus REST API.
  *
  * @returns A Directus REST client.
  */
-export const rest = (config: RestConfig = {}) => {
+export const rest = (config: Partial<RestConfig> = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
+		const restConfig = { ...defaultConfigValues, ...config };
 		return {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
@@ -40,6 +45,7 @@ export const rest = (config: RestConfig = {}) => {
 				let fetchOptions: RequestInit = {
 					method: options.method ?? 'GET',
 					headers: options.headers ?? {},
+					credentials: restConfig.credentials,
 				};
 
 				if (options.body) {
@@ -52,8 +58,8 @@ export const rest = (config: RestConfig = {}) => {
 				}
 
 				// apply global onRequest hook
-				if (config.onRequest) {
-					fetchOptions = await config.onRequest(fetchOptions);
+				if (restConfig.onRequest) {
+					fetchOptions = await restConfig.onRequest(fetchOptions);
 				}
 
 				let result = await request<Output>(requestUrl.toString(), fetchOptions, client.globals.fetch);

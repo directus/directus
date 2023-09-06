@@ -5,7 +5,9 @@ document.body.classList.add('light');
 export default {
 	title: 'Components/VCheckboxTree',
 	component: VCheckboxTree,
-	argTypes: {},
+	argTypes: {
+		search: { control: 'text' },
+	},
 };
 
 const Template = (args) => ({
