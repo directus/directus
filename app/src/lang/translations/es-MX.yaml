@@ -81,6 +81,10 @@ create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
 create_webhook: Crear webhook
+create_custom_translation: Crear traducción personalizada
+edit_custom_translation: Editar traducción personalizada
+no_custom_translations: No hay traducciones personalizadas
+no_custom_translations_copy: Todavía no hay traducciones personalizadas.
 invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El email "{email}" ya ha sido invitado
@@ -142,6 +146,14 @@ validationError:
   required: El valor es requerido
   unique: El valor tiene que ser único
   regex: El valor no tiene el formato correcto
+  starts_with: El valor debe comenzar con {substring}
+  istarts_with: El valor debe comenzar con {substring}
+  nstarts_with: El valor no puede comenzar con {substring}
+  nistarts_with: El valor no puede comenzar con {substring}
+  ends_with: El valor debe terminar con {substring}
+  iends_with: El valor debe terminar con {substring}
+  nends_with: El valor no puede terminar con {substring}
+  niends_with: El valor no puede terminar con {substring}
 all_access: Todo el acceso
 no_access: Sin acceso
 use_custom: Personalizar
