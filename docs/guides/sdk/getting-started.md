@@ -254,7 +254,7 @@ All SDK composables can also be conveniently imported from the root package `@di
 
 ## Global APIs
 
-To keep the SDK dependency free it does rely on the API's mentioned below which originally came from the browser
+To keep the SDK dependency-free, it does rely on the APIs mentioned below, which originally came from the browser
 ecosystem and may not be available in all environments.
 
 #### The `fetch` API
