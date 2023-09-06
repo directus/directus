@@ -177,7 +177,7 @@ export default defineLayout<LayoutOptions>({
 					} else {
 						const primaryKey = info.event.id;
 
-						router.push(getItemRoute(collection.value, primaryKey));
+						router.push(router.resolve(getItemRoute(collection.value, primaryKey)));
 					}
 				},
 				async eventChange(info) {
