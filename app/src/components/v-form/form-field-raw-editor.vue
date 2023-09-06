@@ -95,7 +95,7 @@ const setRawValue = () => {
 			emit('setRawValue', internalValue.value === 'true');
 			break;
 		case 'object':
-			emit('setRawValue', JSON.parse(internalValue.value));
+			emit('setRawValue', isValidJSON(internalValue.value) ? JSON.parse(internalValue.value) : internalValue.value);
 			break;
 		default:
 			emit('setRawValue', internalValue.value);
