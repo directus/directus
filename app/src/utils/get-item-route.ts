@@ -10,5 +10,5 @@ export function getItemRoute(collection: string | null, primaryKey: string | num
 
 	const route = collection.startsWith('directus_') ? collection.substring(9) : `content/${collection}`;
 
-	return `/${route}/${primaryKey}`;
+	return `/${route}/${encodeURIComponent(primaryKey)}`;
 }
