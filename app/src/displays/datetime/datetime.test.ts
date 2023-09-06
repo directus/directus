@@ -1,10 +1,9 @@
 import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 
-const global: GlobalMountOptions = {
+const global = {
 	plugins: [i18n],
 };
 
