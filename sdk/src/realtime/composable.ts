@@ -36,7 +36,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
 export function realtime(config: WebSocketConfig = {}) {
 	return <Schema extends object>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
-		let socket: globalThis.WebSocket | null = null;
+		let socket: WebSocket | null = null;
 		let uid = generateUid();
 		let reconnectAttempts = 0;
 		let reconnecting = false;
@@ -53,7 +53,7 @@ export function realtime(config: WebSocketConfig = {}) {
 		};
 
 		const getSocketUrl = async (currentClient: AuthWSClient<Schema>) => {
-			if ('url' in config) return await withStrictAuth(new URL(config.url), currentClient);
+			if ('url' in config) return await withStrictAuth(new client.globals.URL(config.url), currentClient);
 
 			// if the main URL is a websocket URL use it directly!
 			if (['ws:', 'wss:'].includes(client.url.protocol)) {
@@ -61,7 +61,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			}
 
 			// try filling in the defaults based on the main URL
-			const newUrl = new URL(client.url.toString());
+			const newUrl = new client.globals.URL(client.url.toString());
 			newUrl.protocol = client.url.protocol === 'https:' ? 'wss:' : 'ws:';
 			newUrl.pathname = '/websocket';
 
@@ -138,7 +138,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				return new Promise<void>((resolve, reject) => {
 					let resolved = false;
-					const ws = new globalThis.WebSocket(url);
+					const ws = new client.globals.WebSocket(url);
 
 					ws.addEventListener('open', async (evt: Event) => {
 						if (config.authMode === 'handshake' && hasAuth(self)) {

@@ -1,4 +1,17 @@
-import type { DirectusClient } from './types/client.js';
+import type { ClientGlobals, DirectusClient } from './types/client.js';
+
+type ClientOptions = {
+	globals?: ClientGlobals
+};
+
+/**
+ * The default globals supplied to the client
+ */
+const defaultGlobals = {
+	fetch: globalThis.fetch,
+	WebSocket: globalThis.WebSocket,
+	URL: globalThis.URL,
+} as ClientGlobals;
 
 /**
  * Creates a client to communicate with a Directus app.
@@ -8,9 +21,11 @@ import type { DirectusClient } from './types/client.js';
  *
  * @returns A Directus client.
  */
-export const createDirectus = <Schema extends object = any>(url: string): DirectusClient<Schema> => {
+export const createDirectus = <Schema extends object = any>(url: string, options: ClientOptions = {}): DirectusClient<Schema> => {
+	const globals = options.globals ? { ...defaultGlobals, ...options.globals } : defaultGlobals
 	return {
-		url: new URL(url),
+		globals,
+		url: new globals.URL(url),
 		with(createExtension) {
 			return {
 				...this,

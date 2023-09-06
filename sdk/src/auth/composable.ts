@@ -99,7 +99,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), options);
+				const data = await request<AuthenticationData>(requestUrl.toString(), options, client.globals.fetch);
 
 				setCredentials(data);
 				return data;
@@ -131,7 +131,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify(authData),
-				});
+				}, client.globals.fetch);
 
 				setCredentials(data);
 				return data;
@@ -153,7 +153,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				}
 
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), options);
+				await request(requestUrl.toString(), options, client.globals.fetch);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();
