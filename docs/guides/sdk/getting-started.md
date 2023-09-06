@@ -300,7 +300,7 @@ const client = createDirectus('http://directus.example.com', {
 });
 ```
 
-2. Setting the new function directly on the `globalThis` object.
+2. Directly via the `globalThis` object.
 
 ```ts
 import { createDirectus } from '@directus/sdk';
