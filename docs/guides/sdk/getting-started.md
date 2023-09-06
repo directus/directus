@@ -275,7 +275,7 @@ This API is shipped in almost every runtime, but for example `react-native` does
 
 #### The `WebSocket` API
 
-This API is optional if you're not making use of the `realtime()` features in the SDK. Backend Javascript environments
+This API is optional if you're not making use of the `realtime()` features in the SDK. Backend JavaScript environments
 often do not ship with an implementation of WebSockets.
 
 - [`ws`](https://github.com/websockets/ws)
