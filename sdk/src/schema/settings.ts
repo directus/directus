@@ -16,15 +16,16 @@ export type DirectusSettings<Schema extends object> = MergeCoreCollection<
 		auth_login_attempts: number;
 		auth_password_policy: string | null;
 		storage_asset_transform: 'all' | 'none' | 'presets';
-		storage_asset_presets: | {
-			fit: string;
-			height: number;
-			width: number;
-			quality: number;
-			key: string;
-			withoutEnlargement: boolean;
-	  }[]
-	| null;
+		storage_asset_presets:
+			| {
+					fit: string;
+					height: number;
+					width: number;
+					quality: number;
+					key: string;
+					withoutEnlargement: boolean;
+			  }[]
+			| null;
 		custom_css: string | null;
 		storage_default_folder: DirectusFolder<Schema> | string | null;
 		basemaps: Record<string, any> | null;
