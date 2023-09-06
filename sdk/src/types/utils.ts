@@ -24,7 +24,8 @@ export type Merge<A, B, TypeA = NeverToUnknown<A>, TypeB = NeverToUnknown<B>> = 
 /**
  * Fallback never to unknown
  */
-export type NeverToUnknown<T> = [T] extends [never] ? unknown : T;
+export type NeverToUnknown<T> = IfNever<T, unknown>;
+export type IfNever<T, Y> = [T] extends [never] ? Y : T;
 
 /**
  * Test for any
