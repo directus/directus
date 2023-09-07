@@ -63,7 +63,7 @@ export function getItemRoute(collection: string | null, primaryKey: string | num
 	if (isAccessibleSystemCollection(collection) && 'singleton' in accessibleSystemCollections[collection])
 		return collectionRoute;
 
-	const itemRoute = primaryKey === '+' ? '+' : encodeURIComponent(primaryKey);
+	const itemRoute = primaryKey === '+' ? primaryKey : encodeURIComponent(primaryKey);
 
 	return `${collectionRoute}/${itemRoute}`;
 }
