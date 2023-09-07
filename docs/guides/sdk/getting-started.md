@@ -268,7 +268,8 @@ version 16 and below do not yet ship `fetch`.
 
 #### The `URL` API
 
-This API is shipped in almost every runtime, but for example `react-native` does require a polyfill for the SDK to work.
+This API is shipped with almost every modern runtime. However, there are exceptions, like `react-native`, that require a
+polyfill for the SDK to work.
 
 - [`url-polyfill`](https://github.com/lifaon74/url-polyfill)
 - [`react-native-url-polyfill`](https://www.npmjs.com/package/react-native-url-polyfill)
