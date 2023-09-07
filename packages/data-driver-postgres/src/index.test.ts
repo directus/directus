@@ -6,7 +6,7 @@ import DataDriverPostgres from './index.js';
 // @TODO mock a database response
 
 describe.todo('querying the driver', () => {
-	test('test', () => {
+	test('test', async () => {
 		const randomDataStore1 = randomIdentifier();
 		const randomDataStore2 = randomIdentifier();
 		const firstField = randomIdentifier();
@@ -56,7 +56,10 @@ describe.todo('querying the driver', () => {
 			connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 		});
 
-		const resultingStream = driver.query(query);
+		// @ts-ignore
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const resultingStream = await driver.query(query);
+
 
 		// @TODO receive all data from the stream
 		const actualResult = {};
