@@ -259,8 +259,9 @@ ecosystem and may not be available in all environments.
 
 #### The `fetch` API
 
-There are various reasons why you would want to overwrite or set `fetch` if it's not available. For example, Node.js
-version 16 and below do not yet ship `fetch`.
+This API is shipped with almost every modern runtime. Nevertheless, there might be reasons to overwrite or set the
+implementation, for example, if an alternative implementation is preferred or if you actually work with a special
+runtime where `fetch` is not available.
 
 - [`node-fetch`](https://github.com/node-fetch/node-fetch)
 - [`ofetch`](https://github.com/unjs/ofetch)
