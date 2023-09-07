@@ -60,7 +60,6 @@ describe.todo('querying the driver', () => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const resultingStream = await driver.query(query);
 
-
 		// @TODO receive all data from the stream
 		const actualResult = {};
 

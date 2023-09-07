@@ -72,7 +72,7 @@ test('alias map for primitive with user specified alias', () => {
 	expect(res).toEqual(new Map([['randomAlias1', ['userAlias1']]]));
 });
 
-test('alias map for one m2o', () => {
+test('alias map for one m2o with an user alias on one field', () => {
 	const abstractQueryNodes: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
@@ -94,6 +94,7 @@ test('alias map for one m2o', () => {
 				{
 					type: 'primitive',
 					field: 'joinNodeField1',
+					alias: 'userAlias',
 				},
 				{
 					type: 'primitive',
@@ -120,13 +121,14 @@ test('alias map for one m2o', () => {
 		},
 		{
 			type: 'primitive',
-			table: 'joinAlias',
+			table: 'generatedJoinAlias',
 			column: 'joinNodeField1',
 			as: 'alias2',
+			alias: 'userAlias',
 		},
 		{
 			type: 'primitive',
-			table: 'joinAlias',
+			table: 'generatedJoinAlias',
 			column: 'joinNodeField2',
 			as: 'alias3',
 		},
@@ -164,7 +166,7 @@ test('alias map for one m2o', () => {
 				},
 				negate: false,
 			},
-			as: 'joinAlias',
+			as: 'generatedJoinAlias',
 		},
 	];
 
@@ -173,7 +175,7 @@ test('alias map for one m2o', () => {
 	expect(res).toEqual(
 		new Map([
 			['alias1', ['primitiveField1']],
-			['alias2', ['externalCollection', 'joinNodeField1']],
+			['alias2', ['externalCollection', 'userAlias']],
 			['alias3', ['externalCollection', 'joinNodeField2']],
 		])
 	);
@@ -242,25 +244,25 @@ test('alias map for nested m2o', () => {
 		},
 		{
 			type: 'primitive',
-			table: 'joinAlias',
+			table: 'generatedJoinAlias',
 			column: 'joinNodeField1',
 			as: 'alias2',
 		},
 		{
 			type: 'primitive',
-			table: 'joinAlias',
+			table: 'generatedJoinAlias',
 			column: 'joinNodeField2',
 			as: 'alias3',
 		},
 		{
 			type: 'primitive',
-			table: 'nestedJoinAlias',
+			table: 'nestedgeneratedJoinAlias',
 			column: 'nestedJoinNodeField1',
 			as: 'alias4',
 		},
 		{
 			type: 'primitive',
-			table: 'nestedJoinAlias',
+			table: 'nestedgeneratedJoinAlias',
 			column: 'nestedJoinNodeField2',
 			as: 'alias5',
 		},
@@ -288,7 +290,7 @@ test('alias map for nested m2o', () => {
 				},
 				negate: false,
 			},
-			as: 'joinAlias',
+			as: 'generatedJoinAlias',
 		},
 		{
 			type: 'join',
@@ -311,7 +313,7 @@ test('alias map for nested m2o', () => {
 				},
 				negate: false,
 			},
-			as: 'nestedJoinAlias',
+			as: 'nestedgeneratedJoinAlias',
 		},
 	];
 

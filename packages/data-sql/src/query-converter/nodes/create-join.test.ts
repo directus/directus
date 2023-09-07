@@ -70,7 +70,8 @@ test('Convert m2o relation with composite keys', () => {
 	const randomExternalField = randomIdentifier();
 	const randomExternalField2 = randomIdentifier();
 	const randomExternalSelectField = randomIdentifier();
-	const randomAlias = randomIdentifier();
+	const randomGeneratedAlias = randomIdentifier();
+	const randomUserAlias = randomIdentifier();
 
 	const node: AbstractQueryFieldNodeRelatedManyToOne = {
 		type: 'm2o',
@@ -90,7 +91,7 @@ test('Convert m2o relation with composite keys', () => {
 				field: randomExternalSelectField,
 			},
 		],
-		alias: randomAlias,
+		alias: randomUserAlias,
 	};
 
 	const expected: AbstractSqlQueryJoinNode = {
@@ -113,7 +114,7 @@ test('Convert m2o relation with composite keys', () => {
 						operation: 'eq',
 						compareTo: {
 							type: 'primitive',
-							table: randomAlias,
+							table: randomGeneratedAlias,
 							column: randomExternalField,
 						},
 					},
@@ -131,7 +132,7 @@ test('Convert m2o relation with composite keys', () => {
 						operation: 'eq',
 						compareTo: {
 							type: 'primitive',
-							table: randomAlias,
+							table: randomGeneratedAlias,
 							column: randomExternalField2,
 						},
 					},
@@ -139,8 +140,9 @@ test('Convert m2o relation with composite keys', () => {
 				},
 			],
 		},
-		as: randomAlias,
+		as: randomGeneratedAlias,
+		alias: randomUserAlias,
 	};
 
-	expect(createJoin(randomCurrentCollection, node, randomAlias)).toStrictEqual(expected);
+	expect(createJoin(randomCurrentCollection, node, randomGeneratedAlias)).toStrictEqual(expected);
 });

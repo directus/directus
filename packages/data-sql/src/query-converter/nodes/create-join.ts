@@ -33,12 +33,18 @@ export const createJoin = (
 		);
 	}
 
-	return {
+	const result: AbstractSqlQueryJoinNode = {
 		type: 'join',
 		table: relationalField.join.external.collection,
 		as: externalCollectionAlias,
 		on,
 	};
+
+	if (relationalField.alias) {
+		result.alias = relationalField.alias;
+	}
+
+	return result;
 };
 
 function getJoinCondition(

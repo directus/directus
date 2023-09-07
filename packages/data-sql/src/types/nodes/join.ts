@@ -17,6 +17,9 @@ export interface AbstractSqlQueryJoinNode {
 	 */
 	on: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 
-	/* an alias for the table to which can be referred within the query */
+	/* the generated alias which will be part of the actual query */
 	as: string;
+
+	/* an alias provided by the user */
+	alias?: string;
 }
