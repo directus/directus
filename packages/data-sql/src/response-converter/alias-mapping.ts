@@ -1,4 +1,9 @@
 /**
+ * Here a map is created which maps the generated aliases used to query the database,
+ * to a path which defines how nested the resulting object should be, which the driver returns.
+ *
+ * Also the user specified alias is taken to account here, by replacing the generated alias with the user specified one.
+ *
  * @see https://app.excalidraw.com/s/DWVAUCmAav/XNAsaVlIY5
  * @module
  */
