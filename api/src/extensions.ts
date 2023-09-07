@@ -338,9 +338,9 @@ class ExtensionManager {
 					.flatMap((extension) =>
 						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
-								path.resolve(extension.path, extension.entrypoint.app),
-								path.resolve(extension.path, extension.entrypoint.api),
-							]
+									path.resolve(extension.path, extension.entrypoint.app),
+									path.resolve(extension.path, extension.entrypoint.api),
+							  ]
 							: path.resolve(extension.path, extension.entrypoint)
 					);
 
@@ -358,11 +358,15 @@ class ExtensionManager {
 		const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
 
 		if (localExtensions.length > 0) {
-			submitDeprecationWarning('Basic Extensions are being deprecated', `Due to the upcoming release of the extension marketplace, basic extension won't be loaded anymore.
+			submitDeprecationWarning(
+				'Basic Extensions are being deprecated',
+				`Due to the upcoming release of the extension marketplace, basic extension won't be loaded anymore.
 <br/><br/>
 Extensions affected: ${localExtensions.map((extension) => extension.name).join(', ')}
 <br/><br/>
-A guide on how to migrate these extensions to a supported loading method can be found [here](https://docs.directus.io/extensions/creating-extensions.html).`, 'basic-extensions')
+A guide on how to migrate these extensions to a supported loading method can be found [here](https://docs.directus.io/extensions/creating-extensions.html).`,
+				'basic-extensions'
+			);
 		}
 
 		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(

@@ -1,7 +1,7 @@
-import type { Notification } from "@directus/types";
-import { NotificationsService } from "../services/notifications.js";
-import { UsersService } from "../services/users.js";
-import { getSchema } from "./get-schema.js";
+import type { Notification } from '@directus/types';
+import { NotificationsService } from '../services/notifications.js';
+import { UsersService } from '../services/users.js';
+import { getSchema } from './get-schema.js';
 
 /**
  * Creates a new notification for all admin users
@@ -10,7 +10,7 @@ import { getSchema } from "./get-schema.js";
  * @param uid A unique identifier for the deprecation warning to not send it multiple times. Should not start with '/'.
  */
 export async function submitDeprecationWarning(title: string, message: string, uid: string) {
-	const schema = await getSchema()
+	const schema = await getSchema();
 	const notificationsService = new NotificationsService({ schema });
 
 	const usersService = new UsersService({ schema });
@@ -19,22 +19,24 @@ export async function submitDeprecationWarning(title: string, message: string, u
 		filter: {
 			role: {
 				admin_access: {
-					'_eq': true
-				}
-			}
-		}
+					_eq: true,
+				},
+			},
+		},
 	});
 
-	const receivedAdminUsers = (await notificationsService.readByQuery({
-		filter: {
-			recipient: {
-				'_in': adminUsers.map(user => user['id'])
+	const receivedAdminUsers = (
+		await notificationsService.readByQuery({
+			filter: {
+				recipient: {
+					_in: adminUsers.map((user) => user['id']),
+				},
+				item: {
+					_eq: uid,
+				},
 			},
-			item: {
-				'_eq': uid
-			}
-		}
-	})).map(notification => notification['recipient'])
+		})
+	).map((notification) => notification['recipient']);
 
 	const messages = adminUsers.reduce<Partial<Notification>[]>((acc, user) => {
 		if (receivedAdminUsers.includes(user['id']) === false) {
@@ -43,12 +45,12 @@ export async function submitDeprecationWarning(title: string, message: string, u
 				subject: title,
 				message,
 				status: 'inbox',
-				item: uid
-			})
+				item: uid,
+			});
 		}
 
-		return acc
-	}, [])
+		return acc;
+	}, []);
 
-	notificationsService.createMany(messages)
+	notificationsService.createMany(messages);
 }
