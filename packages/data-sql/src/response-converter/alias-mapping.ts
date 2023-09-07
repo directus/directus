@@ -20,8 +20,9 @@ export const mapAliasesToNestedPaths = (
 
 	for (const abstractField of fields) {
 		if (abstractField.type === 'primitive') {
-			const as = findGeneratedPrimitiveAlias(abstractField, collection, selects);
-			paths.set(as, [...path, abstractField.field]);
+			const generatedAlias = findGeneratedPrimitiveAlias(abstractField, collection, selects);
+			const fieldNameToBeReturned = abstractField.alias ?? abstractField.field;
+			paths.set(generatedAlias, [...path, fieldNameToBeReturned]);
 			continue;
 		}
 
@@ -31,9 +32,9 @@ export const mapAliasesToNestedPaths = (
 		}
 
 		if (abstractField.type === 'm2o') {
-			const joinAlias = findGeneratedJoinAlias(abstractField, joins);
+			const generatedJoinAlias = findGeneratedJoinAlias(abstractField, joins);
 
-			const nested = mapAliasesToNestedPaths(joinAlias, abstractField.nodes, selects, joins, [
+			const nested = mapAliasesToNestedPaths(generatedJoinAlias, abstractField.nodes, selects, joins, [
 				...path,
 				abstractField.join.external.collection,
 			]);

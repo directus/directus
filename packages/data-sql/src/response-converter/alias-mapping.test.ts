@@ -48,6 +48,30 @@ test('alias map for primitives only', () => {
 	);
 });
 
+test('alias map for primitive with user specified alias', () => {
+	const abstractQueryNodes: AbstractQueryFieldNode[] = [
+		{
+			type: 'primitive',
+			field: 'randomPrimitiveField1',
+			alias: 'userAlias1',
+		},
+	];
+
+	const abstractSqlQueryNodes: AbstractSqlQuerySelectNode[] = [
+		{
+			type: 'primitive',
+			table: 'randomTable1',
+			column: 'randomPrimitiveField1',
+			as: 'randomAlias1',
+			alias: 'userAlias1',
+		},
+	];
+
+	const res = mapAliasesToNestedPaths('randomTable1', abstractQueryNodes, abstractSqlQueryNodes, []);
+
+	expect(res).toEqual(new Map([['randomAlias1', ['userAlias1']]]));
+});
+
 test('alias map for one m2o', () => {
 	const abstractQueryNodes: AbstractQueryFieldNode[] = [
 		{

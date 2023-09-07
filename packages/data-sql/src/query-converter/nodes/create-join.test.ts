@@ -65,7 +65,6 @@ test('Convert m2o relation with composite keys', () => {
 	const randomCurrentCollection = randomIdentifier();
 	const randomCurrentField = randomIdentifier();
 	const randomCurrentField2 = randomIdentifier();
-
 	const randomExternalCollection = randomIdentifier();
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
