@@ -40,10 +40,8 @@ async function dropConstraint(knex: Knex) {
 				table.dropForeign('collection', constraintName);
 			});
 		} else {
-			logger.warn(
-				`Unexpected number of foreign key constraints on 'directus_shares.collection':`,
-				collectionForeignKeys
-			);
+			logger.warn(`Unexpected number of foreign key constraints on 'directus_shares.collection':`);
+			logger.warn(JSON.stringify(collectionForeignKeys, null, 4));
 		}
 	}
 }
