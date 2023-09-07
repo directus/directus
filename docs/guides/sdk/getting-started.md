@@ -285,7 +285,8 @@ often do not ship with an implementation of WebSockets.
 
 These can be overwritten in two ways:
 
-1. Via options parameter of the `createDirectus` function.
+1. Via options parameter of the `createDirectus` function.  
+   (Takes precedence over the second way)
 
 ```ts
 import { createDirectus } from '@directus/sdk';
