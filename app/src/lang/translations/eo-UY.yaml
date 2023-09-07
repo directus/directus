@@ -336,7 +336,6 @@ comments: Komentoj
 no_comments: Ankoraŭ neniu komento
 select_item: Elekti kampon
 no_items: Neniu ero
-search_items: Serĉi erojn...
 disabled: Malŝaltita
 information: Informoj
 report_bug: Raporti cimon
@@ -1226,6 +1225,10 @@ operations:
   item-update:
     key: Identigiloj
     payload: Enhavaj datumoj
+  json-web-token:
+    payload: Enhavaj datumoj
+    token: Ĵetono
+    options: Opcioj
   log:
     name: Protokoli al la konzolo
     message: Mesaĝo

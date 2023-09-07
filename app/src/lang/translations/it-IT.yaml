@@ -502,7 +502,6 @@ expand: Espandi
 collapse: Chiudi
 select_item: Seleziona Elemento
 no_items: Nessun elemento
-search_items: Ricerca elementi...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
@@ -1469,7 +1468,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -2141,6 +2139,10 @@ operations:
     key: ID
     payload: Payload
     query: Interrogazione
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opzioni
   log:
     name: Scrivi nella console
     description: Scrive qualcosa nella console

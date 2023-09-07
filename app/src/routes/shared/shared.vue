@@ -43,8 +43,9 @@
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
 import { hydrate } from '@/hydrate';
-import { useAppStore } from '@directus/stores';
+import { getItemRoute } from '@/utils/get-route';
 import { useCollection } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
 import { Share } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -141,7 +142,7 @@ async function handleAuth() {
 
 		// Logged in as regular user
 		if (currentUser.data.data?.id && !currentUser.data.data?.share) {
-			router.replace(`/content/${share.value!.collection}/${share.value!.item}`);
+			router.replace(getItemRoute(share.value!.collection, share.value!.item));
 			return;
 		}
 	}

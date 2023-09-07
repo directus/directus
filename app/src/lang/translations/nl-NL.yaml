@@ -35,6 +35,7 @@ tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
 location: Locatie
+collection_names_are_case_sensitive: Collectienamen zijn hoofdlettergevoelig
 condition_rules: Voorwaarde Regels
 input: Invoer
 maps: Kaarten
@@ -80,6 +81,10 @@ create_user: Gebruiker Aanmaken
 message: Bericht
 delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
+create_custom_translation: Aangepaste vertaling aanmaken
+edit_custom_translation: Aangepaste vertaling bewerken
+no_custom_translations: Geen aangepaste vertalingen
+no_custom_translations_copy: Er zijn nog geen aangepaste vertalingen.
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
@@ -140,6 +145,14 @@ validationError:
   required: Waarde is vereist
   unique: Waarde moet uniek zijn
   regex: Waarde heeft niet de juiste vorm
+  starts_with: Waarde moet beginnen met {substring}
+  istarts_with: Waarde moet beginnen met {substring}
+  nstarts_with: Waarde mag niet beginnen met {substring}
+  nistarts_with: Waarde mag niet beginnen met {substring}
+  ends_with: Waarde moet eindigen met {substring}
+  iends_with: Waarde moet eindigen met {substring}
+  nends_with: Waarde mag niet eindigen met {substring}
+  niends_with: Waarde mag niet eindigen met {substring}
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
@@ -221,6 +234,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Datumbereik
+translation_key_placeholder: Voer key in...
 datetime: DateTime
 dateTime: DateTime
 precision: Precisie
@@ -433,6 +447,7 @@ checksum: Checksum
 owner: Eigenaar
 edited_by: Aangepast door
 folder: Map
+folders: Mappen
 zoom: Zoom
 download: Downloaden
 open: Openen
@@ -452,6 +467,7 @@ open_file_in_tab: Openen in nieuw tabblad
 start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
 exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
+exporting_limited_items_in_collection: '{count} van {total} items in {collection} worden geëxporteerd.'
 collection_key: Collectie Key
 name: Naam
 primary_key_field: Primary Key veld
@@ -476,9 +492,10 @@ enable_select_button: Selecteerknop inschakelen
 allow_duplicates: Sta duplicaten toe
 comments: Reacties
 no_comments: Nog geen reacties
+expand: Uitklappen
+collapse: Inklappen
 select_item: Selecteer Item
 no_items: Geen items
-search_items: Zoek items...
 disabled: Uitgeschakeld
 information: Informatie
 report_bug: Bug melden
@@ -509,6 +526,7 @@ create_collection: Maak collectie
 no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
 no_collections_copy: Je hebt nog geen collecties. Neem contact op met je systeembeheerder.
 relationship_not_setup: De relatie is niet correct geconfigureerd
+no_singleton_relations: Relaties met Singletons worden niet ondersteund
 display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
@@ -602,6 +620,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Ongeldig bereik
   METHOD_NOT_ALLOWED: Methode niet toegestaan
   REQUESTS_EXCEEDED: Limiet aantal verzoeken bereikt
+  CONTENT_TOO_LARGE: Verstuurd item/bestand is te groot
 security: Beveiliging
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
@@ -690,8 +709,12 @@ operators:
   icontains: Bevat (ongevoelig)
   starts_with: Begint met
   nstarts_with: Begint niet met
+  istarts_with: Begint met (niet-hoofdlettergevoelig)
+  nistarts_with: Begint niet met (niet-hoofdlettergevoelig)
   ends_with: Eindigt met
   nends_with: Eindigt niet met
+  iends_with: Eindigt op (niet-hoofdlettergevoelig)
+  niends_with: Eindigt niet op (niet-hoofdlettergevoelig)
   between: Is tussen
   nbetween: Ligt niet tussen
   empty: Is leeg
@@ -1715,6 +1738,10 @@ operations:
     name: Data verwijderen
   item-update:
     payload: Payload
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opties
   log:
     message: Bericht
   mail:

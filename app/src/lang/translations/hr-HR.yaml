@@ -502,7 +502,6 @@ expand: Proširi
 collapse: Sažmi
 select_item: Odaberi stavku
 no_items: Nema stavki
-search_items: Pretraži stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
@@ -2138,6 +2137,10 @@ operations:
     key: IDevi
     payload: Payload
     query: Upit
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opcije
   log:
     name: Prijava na konzolu
     description: Pošaljite nešto na konzolu

@@ -1,9 +1,9 @@
-export { compress, decompress } from './compress.js';
 export * from './abbreviate-number.js';
 export * from './add-field-flag.js';
 export * from './adjust-date.js';
 export * from './apply-options-data.js';
 export * from './array-helpers.js';
+export { compress, decompress } from './compress.js';
 export * from './deep-map.js';
 export * from './defaults.js';
 export * from './define-extension.js';
@@ -15,6 +15,7 @@ export * from './get-fields-from-template.js';
 export * from './get-filter-operators-for-type.js';
 export * from './get-functions-for-type.js';
 export * from './get-output-type-for-function.js';
+export * from './get-redacted-string.js';
 export * from './get-relation-type.js';
 export * from './get-simple-hash.js';
 export * from './get-with-arrays.js';

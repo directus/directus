@@ -3,12 +3,11 @@
 		v-model="notificationsDrawerOpen"
 		icon="notifications"
 		:title="t('notifications')"
+		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 	>
 		<template #actions>
-			<v-button v-if="tab[0] === 'inbox'" :disabled="notifications.length === 0" small @click="archiveAll">
-				{{ t('mark_all_as_read') }}
-			</v-button>
+			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -18,6 +17,16 @@
 				@click="toggleArchive"
 			>
 				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
+			</v-button>
+			<v-button
+				v-if="tab[0] === 'inbox'"
+				v-tooltip.bottom="t('archive_all')"
+				icon
+				rounded
+				:disabled="notifications.length === 0"
+				@click="archiveAll"
+			>
+				<v-icon name="done_all" />
 			</v-button>
 		</template>
 
@@ -44,7 +53,7 @@
 
 		<div v-else class="content">
 			<v-list v-if="loading" class="notifications">
-				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalCount > 15 }" />
+				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
 			</v-list>
 
 			<v-list v-else class="notifications">
@@ -52,18 +61,25 @@
 					v-for="notification in notifications"
 					:key="notification.id"
 					block
-					:dense="totalCount > 15"
+					:dense="totalPages > 1"
 					:clickable="Boolean(notification.message)"
-					@click="toggleNotification(notification.id)"
+					@mousedown.left.self="({ target }: Event) => (mouseDownTarget = target)"
+					@mouseup.left.self="
+						({ target }: Event) => {
+							if (target === mouseDownTarget) toggleNotification(notification.id);
+							mouseDownTarget = null;
+						}
+					"
 				>
-					<div class="header">
+					<div class="header" @click="toggleNotification(notification.id)">
 						<v-checkbox
 							:model-value="selection.includes(notification.id)"
 							@update:model-value="toggleSelected(notification.id)"
 						/>
-						<div v-tooltip="notification.subject" class="title">{{ notification.subject }}</div>
-						<div class="spacer" />
-						<div class="time">{{ notification.time }}</div>
+						<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
+						<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
+							<v-text-overflow class="datetime" :text="datetime" />
+						</use-datetime>
 						<v-icon
 							v-if="notification.to"
 							v-tooltip="t('goto_collection_content')"
@@ -81,56 +97,61 @@
 						v-if="openNotifications.includes(notification.id) && notification.message"
 						v-md="notification.message"
 						class="message"
-						@click.stop
 					/>
 				</v-list-item>
 			</v-list>
-			<v-pagination
-				v-if="totalCount > limit"
-				v-model="page"
-				:total-visible="5"
-				:length="Math.ceil(totalCount / limit)"
-			/>
+			<v-pagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
 		</div>
 	</v-drawer>
 </template>
 
 <script setup lang="ts">
 import api from '@/api';
+import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
-import { Notification } from '@directus/types';
-import { parseISO } from 'date-fns';
+import { Filter, Notification } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 type LocalNotification = Notification & {
-	time: string;
 	to?: string;
 };
 
 const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
-const notificationsStore = useNotificationsStore();
 const collectionsStore = useCollectionsStore();
+const { setUnreadCount } = useNotificationsStore();
 
 const router = useRouter();
 
-const notifications = ref<LocalNotification[]>([]);
-const totalCount = ref(0);
-const loading = ref(false);
-const error = ref(null);
 const selection = ref<string[]>([]);
 const tab = ref(['inbox']);
 const openNotifications = ref<string[]>([]);
 const page = ref(1);
 const limit = ref(25);
+const search = ref<string | null>(null);
+const userFilter = ref<Filter>({});
+const mouseDownTarget = ref<EventTarget | null>(null);
+
+watch(tab, (newTab, oldTab) => {
+	if (newTab[0] !== oldTab[0]) {
+		page.value = 1;
+		selection.value = [];
+	}
+});
+
+watch([search, userFilter], () => {
+	page.value = 1;
+});
 
 function toggleSelected(id: string) {
 	if (selection.value.includes(id)) {
@@ -150,87 +171,53 @@ function toggleNotification(id: string) {
 
 const { notificationsDrawerOpen } = storeToRefs(appStore);
 
-fetchNotifications();
+const filter = computed(() => ({
+	_and: [
+		{
+			recipient: {
+				_eq: userStore.currentUser!.id,
+			},
+		},
+		{
+			status: {
+				_eq: tab.value[0],
+			},
+		},
+		userFilter.value,
+	],
+}));
 
-watch([tab, page], ([newTab], [oldTab]) => {
-	if (newTab !== oldTab) {
-		page.value = 1;
-	}
-
-	fetchNotifications();
+const { items, loading, getItems, totalPages, getItemCount } = useItems(ref('directus_notifications'), {
+	filter,
+	fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
+	sort: ref(['-timestamp']),
+	search,
+	limit,
+	page,
 });
 
-async function fetchNotifications() {
-	loading.value = true;
+const notifications = computed<LocalNotification[]>(() => {
+	return items.value.map((item) => {
+		let to: string | undefined = undefined;
 
-	try {
-		const filter = {
-			_and: [
-				{
-					recipient: {
-						_eq: userStore.currentUser!.id,
-					},
-				},
-				{
-					status: {
-						_eq: tab.value[0],
-					},
-				},
-			],
-		};
+		if (item.collection) {
+			const collection = collectionsStore.getCollection(item.collection);
 
-		const countResponse = await api.get('/notifications', {
-			params: {
-				filter,
-				'aggregate[count]': 'id',
-			},
-		});
-
-		totalCount.value = countResponse.data.data[0].count.id;
-
-		const response = await api.get('/notifications', {
-			params: {
-				filter,
-				fields: ['id', 'subject', 'message', 'collection', 'item', 'timestamp'],
-				sort: ['-timestamp'],
-				limit: limit.value,
-				page: page.value,
-			},
-		});
-
-		await notificationsStore.getUnreadCount();
-
-		const notificationsRaw = response.data.data as Notification[];
-
-		notifications.value = notificationsRaw.map((notification) => {
-			let to: string | undefined = undefined;
-
-			if (notification.collection) {
-				const collection = collectionsStore.getCollection(notification.collection);
-
-				if (collection?.meta?.singleton) {
-					to = `/content/${notification.collection}`;
-				} else {
-					to = `/content/${notification.collection}/${notification.item}`;
-				}
-			} else if (String(notification.item).startsWith('/')) {
-				to = String(notification.item);
+			if (collection?.meta?.singleton || !item.item) {
+				to = getCollectionRoute(item.collection);
+			} else {
+				to = getItemRoute(item.collection, item.item);
 			}
+		} else if (String(item.item).startsWith('/')) {
+			to = String(item.item);
+		}
 
-			return {
-				...notification,
-				time: localizedFormatDistance(parseISO(notification.timestamp), new Date(), {
-					addSuffix: true,
-				}),
-				to,
-			};
-		});
-	} catch (err: any) {
-		error.value = err;
-	} finally {
-		loading.value = false;
-	}
-}
+		return {
+			...item,
+			to,
+		} as LocalNotification;
+	});
+});
 
 async function archiveAll() {
 	await api.patch('/notifications', {
@@ -244,7 +231,10 @@ async function archiveAll() {
 		},
 	});
 
-	await fetchNotifications();
+	await getItemCount();
+	await getItems();
+
+	setUnreadCount(0);
 }
 
 async function toggleArchive() {
@@ -255,7 +245,8 @@ async function toggleArchive() {
 		},
 	});
 
-	await fetchNotifications();
+	await getItemCount();
+	await getItems();
 
 	selection.value = [];
 }
@@ -268,19 +259,6 @@ function onLinkClick(to: string) {
 </script>
 
 <style lang="scss" scoped>
-.v-table {
-	display: contents;
-
-	& > :deep(table) {
-		min-width: calc(100% - var(--content-padding)) !important;
-		margin-left: var(--content-padding);
-
-		tr {
-			margin-right: var(--content-padding);
-		}
-	}
-}
-
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
@@ -311,37 +289,29 @@ function onLinkClick(to: string) {
 		.header {
 			width: 100%;
 			display: flex;
+			align-items: center;
 			gap: 8px;
 
 			.title {
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				max-width: 55%;
+				flex-grow: 1;
 			}
-			.time {
+			.datetime {
 				color: var(--foreground-subdued);
 			}
 		}
 
-		.spacer {
-			flex-grow: 1;
-		}
-
 		.message {
 			width: 100%;
-			cursor: default;
 			margin-top: 8px;
+			user-select: text;
+			cursor: auto;
 
-			&:deep(blockquote) {
-				background-color: var(--background-normal);
-				padding: 4px 8px;
-				margin: 4px 0;
-				border-radius: var(--border-radius);
+			:deep(*) {
+				user-select: text;
 			}
 
-			&:deep(a) {
-				color: var(--primary);
+			:deep() {
+				@import '@/styles/markdown';
 			}
 		}
 	}

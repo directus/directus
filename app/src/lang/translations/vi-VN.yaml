@@ -417,7 +417,6 @@ comments: Bình luận
 no_comments: Chưa Có Bình Luận
 select_item: Chọn Bản Ghi
 no_items: Không có bản ghi nào
-search_items: Tìm kiếm...
 disabled: Đã tắt
 information: Thông tin
 report_bug: Báo Cáo Lỗi
@@ -1123,6 +1122,9 @@ triggers:
   webhook:
     method: Phương thức
 operations:
+  json-web-token:
+    token: Token
+    options: Tuỳ chọn
   log:
     message: Tin nhắn
   mail:

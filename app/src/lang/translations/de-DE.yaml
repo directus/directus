@@ -502,7 +502,6 @@ expand: Ausklappen
 collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
-search_items: Elemente suchen...
 disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
@@ -2138,6 +2137,10 @@ operations:
     key: IDs
     payload: Nutzdaten
     query: Abfrage
+  json-web-token:
+    payload: Nutzdaten
+    token: Token
+    options: Optionen
   log:
     name: Konsolenausgabe
     description: Etwas in die Konsole ausgeben

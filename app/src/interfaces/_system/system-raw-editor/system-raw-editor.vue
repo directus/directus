@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
-import { parseJSON } from '@directus/utils';
+import { isValidJSON, parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, unref, watch } from 'vue';
@@ -99,14 +99,10 @@ onMounted(async () => {
 
 			if (origin === 'setValue') return;
 
-			if (unref(isObjectLike)) {
-				try {
-					emit('input', content !== '' ? parseJSON(content) : null);
-				} catch {
-					// Skip emitting invalid JSON
-				}
+			if (content === '') {
+				emit('input', null);
 			} else {
-				emit('input', content !== '' ? content : null);
+				emit('input', unref(isObjectLike) && isValidJSON(content) ? parseJSON(content) : content);
 			}
 		});
 	}

@@ -341,6 +341,16 @@ describe('deep', () => {
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _sort: ['name'] } } });
 	});
+
+	test('should work in combination with query limit', () => {
+		factoryEnv = { QUERY_LIMIT_MAX: 100 };
+
+		const deep = { deep: { relational_field_a: { _sort: ['name'] } } };
+
+		const sanitizedQuery = sanitizeQuery({ deep });
+
+		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _limit: 100, _sort: ['name'] } } });
+	});
 });
 
 describe('alias', () => {

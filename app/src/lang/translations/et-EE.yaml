@@ -437,7 +437,6 @@ comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
 select_item: Vali kirje
 no_items: Kirjeid pole
-search_items: Otsi kirjeid...
 disabled: keelatud
 information: Teave
 report_bug: Teata veast
@@ -1419,6 +1418,9 @@ panels:
   label:
     name: Silt
 operations:
+  json-web-token:
+    token: Kontrollkood
+    options: Valikud
   log:
     message: Sõnum
   mail:

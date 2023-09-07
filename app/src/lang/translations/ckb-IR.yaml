@@ -471,7 +471,6 @@ comments: لێدوانەکان
 no_comments: هێشتا هیچ لێدوانێک نییە
 select_item: مادە دیاری بکە
 no_items: هیچ مادەیەک نییە
-search_items: گەڕانی مادەکان...
 disabled: ناکاراکراو
 information: زانیاری
 report_bug: ڕاپۆرتکردنی هەڵە
@@ -1930,6 +1929,10 @@ operations:
     payload: سودبار
   item-update:
     payload: سودبار
+  json-web-token:
+    payload: سودبار
+    token: تۆکن
+    options: بژاردەکان
   log:
     message: پەیام
   mail:

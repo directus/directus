@@ -480,7 +480,6 @@ comments: Komentar
 no_comments: Belum Ada Komentar
 select_item: Pilih Item
 no_items: Tidak Ada Item
-search_items: Cari item...
 disabled: Dinonaktifkan
 information: Informasi
 report_bug: Laporkan Bug
@@ -1538,6 +1537,10 @@ operations:
     payload: Muatan
   item-update:
     payload: Muatan
+  json-web-token:
+    payload: Muatan
+    token: Token
+    options: Pilihan
   log:
     message: Pesan
   mail:

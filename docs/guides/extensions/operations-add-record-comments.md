@@ -1,5 +1,5 @@
 ---
-description: 'Learn how to create an operation to insert comments within a workflow.'
+description: Learn how to create an operation to insert comments within a workflow.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
