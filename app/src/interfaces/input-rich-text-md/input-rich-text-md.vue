@@ -187,7 +187,7 @@
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="view[0] === 'preview' ? 'display:block' : 'display:none'"
+			:style="{ display: view[0] === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
