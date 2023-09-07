@@ -112,7 +112,7 @@ const stringValue = computed(() => {
 		return JSON.stringify(valueToStringify, null, 4);
 	}
 
-	return props.value as string;
+	return String(props.value);
 });
 
 watch(
