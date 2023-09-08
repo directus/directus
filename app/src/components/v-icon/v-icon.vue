@@ -178,7 +178,6 @@ body {
 
 		&.small {
 			margin-right: 4px;
-			margin-left: -2px;
 		}
 	}
 
@@ -187,7 +186,6 @@ body {
 
 		&.small {
 			margin-right: 4px;
-			margin-left: -2px;
 		}
 	}
 }
