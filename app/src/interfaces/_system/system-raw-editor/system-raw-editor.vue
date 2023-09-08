@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { isValidJSON, parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
@@ -55,7 +56,7 @@ onMounted(async () => {
 
 		codemirror = CodeMirror(codemirrorEl.value, {
 			mode: props.language,
-			value: getStringifiedValue(props.value),
+			value: getStringifiedValue(props.value, unref(isObjectLike)),
 			tabSize: 0,
 			autoRefresh: true,
 			indentUnit: 4,
@@ -133,20 +134,10 @@ watch(
 		const currentValue = codemirror?.getValue();
 
 		if (currentValue !== newValue) {
-			codemirror?.setValue(getStringifiedValue(newValue));
+			codemirror?.setValue(getStringifiedValue(newValue, unref(isObjectLike)));
 		}
 	}
 );
-
-function getStringifiedValue(value: string | object | undefined) {
-	if (unref(isObjectLike)) {
-		const valueToStringify = typeof value === 'string' && isValidJSON(String(value)) ? parseJSON(String(value)) : value;
-
-		return JSON.stringify(valueToStringify, null, 4);
-	} else {
-		return String(value ?? '');
-	}
-}
 </script>
 
 <style lang="scss" scoped>
