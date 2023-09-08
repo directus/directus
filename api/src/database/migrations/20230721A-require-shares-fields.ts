@@ -52,9 +52,7 @@ async function dropConstraint(knex: Knex) {
 async function recreateConstraint(knex: Knex) {
 	if (knex.client.constructor.name === 'Client_MySQL') {
 		return knex.schema.alterTable('directus_shares', async (table) => {
-			if (knex.client.constructor.name === 'Client_MySQL') {
-				table.foreign('collection').references('directus_collections.collection').onDelete('CASCADE');
-			}
+			table.foreign('collection').references('directus_collections.collection').onDelete('CASCADE');
 		});
 	}
 }
