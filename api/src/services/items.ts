@@ -181,7 +181,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// If a PK of type number was provided, although the PK is set the auto_increment,
 			// the sequence needs to be reset to protect future PK collisions.
-			// This is currently only done for PostgreSQL.
 			let autoIncrementSequenceNeedsToBeReset = false;
 
 			const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
