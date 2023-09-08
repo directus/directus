@@ -252,6 +252,74 @@ All SDK composables can also be conveniently imported from the root package `@di
 
 :::
 
+## Global APIs
+
+To keep the SDK dependency-free, it does rely on the APIs mentioned below, which originally came from the browser
+ecosystem and may not be available in all environments.
+
+#### The `fetch` API
+
+This API is shipped with almost every modern runtime. Nevertheless, there might be reasons to overwrite or set the
+implementation, for example, if an alternative implementation is preferred or if you actually work with a special
+runtime where `fetch` is not available.
+
+- [`node-fetch`](https://www.npmjs.com/package/node-fetch)
+- [`ofetch`](https://www.npmjs.com/package/ofetch)
+- [`whatwg-fetch`](https://www.npmjs.com/package/whatwg-fetch)
+
+#### The `URL` API
+
+This API is shipped with almost every modern runtime. However, there are exceptions, like `react-native`, that require a
+polyfill for the SDK to work.
+
+- [`url-polyfill`](https://www.npmjs.com/package/url-polyfill)
+- [`react-native-url-polyfill`](https://www.npmjs.com/package/react-native-url-polyfill)
+
+#### The `WebSocket` API
+
+This API is optional if you're not making use of the `realtime()` features in the SDK. Backend JavaScript environments
+often do not ship with an implementation of WebSockets.
+
+- [`ws`](https://www.npmjs.com/package/ws)
+- [`isomorphic-ws`](https://www.npmjs.com/package/isomorphic-ws)
+
+### Polyfilling
+
+These can be overwritten in two ways:
+
+1. Via options parameter of the `createDirectus` function.  
+   (Takes precedence over the second way)
+
+```ts
+import { createDirectus } from '@directus/sdk';
+import { ofetch } from 'ofetch';
+import WebSocket from 'ws';
+
+const client = createDirectus('http://directus.example.com', {
+  globals: {
+    WebSocket: WebSocket,
+    fetch: ofetch,
+  }
+});
+```
+
+2. Directly via the `globalThis` object.
+
+```ts
+import { createDirectus } from '@directus/sdk';
+import { ofetch } from 'ofetch';
+import WebSocket from 'ws';
+
+globalThis.WebSocket = WebSocket;
+globalThis.fetch = ofetch;
+
+// Polyfill libraries will often register itself to the globalThis object.
+// For example, the following URL polyfill for react-native.
+import 'react-native-url-polyfill/auto';
+
+const client = createDirectus('http://directus.example.com');
+```
+
 ## Next Steps
 
 You can find code examples using the Directus SDK throughout our [API reference](/reference/items).
