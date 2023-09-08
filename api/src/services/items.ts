@@ -174,7 +174,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
-			// The primary key can already exist in the object we're saving.
+			// The primary key can already exist in the payload.
 			// In case of manual string / UUID primary keys it's always provided at this point.
 			// In case of an integer primary key, it might be provided as the user can specify the value manually.
 			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
