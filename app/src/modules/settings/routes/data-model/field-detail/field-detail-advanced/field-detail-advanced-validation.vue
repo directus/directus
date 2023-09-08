@@ -6,9 +6,9 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
-import { computed } from 'vue';
 
 const fieldDetailStore = useFieldDetailStore();
 

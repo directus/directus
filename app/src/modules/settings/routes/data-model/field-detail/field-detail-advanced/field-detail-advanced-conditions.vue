@@ -30,11 +30,11 @@ const conditionsSync = computed({
 			return;
 		}
 
-		const conditionsWithDefaults = value.conditions.map((evt: any) => {
-			const conditionOptions = evt.options ?? {};
+		const conditionsWithDefaults = value.conditions.map((condition: any) => {
+			const conditionOptions = condition.options ?? {};
 			const defaultValues = unref(optionDefaults);
-			evt.options = { ...defaultValues, ...conditionOptions };
-			return evt;
+			condition.options = { ...defaultValues, ...conditionOptions };
+			return condition;
 		});
 
 		conditions.value = { conditions: conditionsWithDefaults };
