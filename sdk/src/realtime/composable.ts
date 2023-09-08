@@ -102,7 +102,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			message: new Set<WebSocketEventHandler>([]),
 		};
 
-		const handleMessages = async (ws: globalThis.WebSocket, currentClient: AuthWSClient<Schema>) => {
+		const handleMessages = async (ws: WebSocket, currentClient: AuthWSClient<Schema>) => {
 			while (ws.readyState !== WebSocket.CLOSED) {
 				const message = await messageCallback(ws).catch(() => {
 					/* ignore invalid messages */
