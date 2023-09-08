@@ -46,7 +46,7 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
 				const requestUrl = getRequestUrl(client.url, requestPath);
 
-				return await request<Output>(requestUrl.toString(), options);
+				return await request<Output>(requestUrl.toString(), options, client.globals.fetch);
 			},
 		};
 	};
