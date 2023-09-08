@@ -47,12 +47,12 @@ test('With a count', () => {
 	sample.statement.select = [
 		{
 			type: 'fn',
-			fn: 'count',
-			field: {
-				type: 'primitive',
-				table: randomTable,
-				column: '*',
+			fn: {
+				type: 'arrayFn',
+				fn: 'count',
 			},
+			table: randomTable,
+			column: '*',
 		},
 	];
 

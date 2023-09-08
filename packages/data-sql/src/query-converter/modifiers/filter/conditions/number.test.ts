@@ -54,11 +54,11 @@ test('convert number node with function', () => {
 		type: 'condition-number',
 		target: {
 			type: 'fn',
-			targetNode: {
-				type: 'primitive',
-				field: randomField,
+			field: randomField,
+			fn: {
+				type: 'extractFn',
+				fn: 'month',
 			},
-			fn: 'month',
 		},
 		operation: 'gt',
 		compareTo: randomValue,
@@ -70,12 +70,12 @@ test('convert number node with function', () => {
 			type: 'condition-number',
 			target: {
 				type: 'fn',
-				field: {
-					type: 'primitive',
-					table: randomCollection,
-					column: randomField,
+				table: randomCollection,
+				column: randomField,
+				fn: {
+					type: 'extractFn',
+					fn: 'month',
 				},
-				fn: 'month',
 			},
 			operation: 'gt',
 			compareTo: {

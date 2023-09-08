@@ -224,11 +224,11 @@ test('Convert a query with a function as field select', () => {
 
 	sample.query.nodes.push({
 		type: 'fn',
-		fn: 'count',
-		targetNode: {
-			type: 'primitive',
-			field: randomField,
+		fn: {
+			type: 'arrayFn',
+			fn: 'count',
 		},
+		field: randomField,
 	});
 
 	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
@@ -247,12 +247,12 @@ test('Convert a query with a function as field select', () => {
 			},
 			{
 				type: 'fn',
-				fn: 'count',
-				field: {
-					type: 'primitive',
-					table: sample.query.collection,
-					column: randomField,
+				fn: {
+					type: 'arrayFn',
+					fn: 'count',
 				},
+				table: sample.query.collection,
+				column: randomField,
 			},
 		],
 		from: sample.query.collection,

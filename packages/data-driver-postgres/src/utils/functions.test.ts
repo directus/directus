@@ -13,13 +13,13 @@ beforeEach(() => {
 
 	sample = {
 		type: 'fn',
-		field: {
-			type: 'primitive',
-			table: randomTable,
-			column: randomColumn,
+		table: randomTable,
+		column: randomColumn,
+		fn: {
+			type: 'extractFn',
+			fn: 'year',
+			isTimestampType: false,
 		},
-		fn: 'year',
-		isTimestampType: false,
 	};
 });
 
@@ -29,7 +29,8 @@ describe('Apply date time function', () => {
 	});
 
 	test('On non timestamp column', () => {
-		sample.isTimestampType = true;
+		// @ts-ignore
+		sample.fn.isTimestampType = true;
 
 		expect(applyFunction(sample)).toStrictEqual(
 			`EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}" AT TIME ZONE 'UTC')`
@@ -40,12 +41,12 @@ describe('Apply date time function', () => {
 test('Apply count', () => {
 	sample = {
 		type: 'fn',
-		fn: 'count',
-		field: {
-			type: 'primitive',
-			table: randomTable,
-			column: '*',
+		fn: {
+			type: 'arrayFn',
+			fn: 'count',
 		},
+		table: randomTable,
+		column: '*',
 	};
 
 	expect(applyFunction(sample)).toStrictEqual(`COUNT("${randomTable}"."*")`);

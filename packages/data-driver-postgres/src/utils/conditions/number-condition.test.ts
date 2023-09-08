@@ -37,12 +37,12 @@ test('number condition', () => {
 test('number condition with function', () => {
 	sampleCondition.target = {
 		type: 'fn',
-		fn: 'month',
-		field: {
-			type: 'primitive',
-			table: randomTable,
-			column: aColumn,
+		fn: {
+			type: 'extractFn',
+			fn: 'month',
 		},
+		table: randomTable,
+		column: aColumn,
 	};
 
 	expect(numberCondition(sampleCondition, false)).toStrictEqual(

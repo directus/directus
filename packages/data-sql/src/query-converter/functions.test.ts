@@ -1,9 +1,11 @@
 import type { AbstractQueryFieldNodeFn } from '@directus/data';
 import { randomAlpha, randomIdentifier } from '@directus/random';
 import { describe, expect, test } from 'vitest';
-import type { AbstractSqlQueryFnNode } from '../../types/nodes/fn.js';
-import { parameterIndexGenerator } from '../param-index-generator.js';
+import type { AbstractSqlQueryFnNode } from '../types/nodes/fn.js';
+import { parameterIndexGenerator } from './param-index-generator.js';
 import { convertFn } from './functions.js';
+
+const randomCollection = randomIdentifier();
 
 describe('Convert function', () => {
 	test('With no args', () => {
@@ -12,23 +14,23 @@ describe('Convert function', () => {
 
 		const sampleAbstractFn: AbstractQueryFieldNodeFn = {
 			type: 'fn',
-			fn: 'month',
-			targetNode: {
-				type: 'primitive',
-				field: sampleField,
+			fn: {
+				type: 'extractFn',
+				fn: 'month',
 			},
+			field: sampleField,
 		};
 
-		const res = convertFn('randomCollection', sampleAbstractFn, idGen);
+		const res = convertFn(randomCollection, sampleAbstractFn, idGen);
 
 		const expectedSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
-			fn: 'month',
-			field: {
-				type: 'primitive',
-				table: 'randomCollection',
-				column: sampleField,
+			fn: {
+				type: 'extractFn',
+				fn: 'month',
 			},
+			table: randomCollection,
+			column: sampleField,
 		};
 
 		expect(res).toStrictEqual({
@@ -37,30 +39,34 @@ describe('Convert function', () => {
 		});
 	});
 
-	test('With an as', () => {
+	test('With an generated alias and user alias', () => {
 		const sampleField = randomIdentifier();
 		const idGen = parameterIndexGenerator();
+		const uniqueId = randomIdentifier();
+		const randomUserAlias = randomIdentifier();
 
 		const sampleAbstractFn: AbstractQueryFieldNodeFn = {
 			type: 'fn',
-			fn: 'month',
-			targetNode: {
-				type: 'primitive',
-				field: sampleField,
+			fn: {
+				type: 'extractFn',
+				fn: 'month',
 			},
+			field: sampleField,
+			alias: randomUserAlias,
 		};
 
-		const res = convertFn('randomCollection', sampleAbstractFn, idGen, 'someUniqueId');
+		const res = convertFn(randomCollection, sampleAbstractFn, idGen, uniqueId);
 
 		const expectedSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
-			fn: 'month',
-			field: {
-				type: 'primitive',
-				table: 'randomCollection',
-				column: sampleField,
+			fn: {
+				type: 'extractFn',
+				fn: 'month',
 			},
-			as: 'someUniqueId',
+			table: randomCollection,
+			column: sampleField,
+			alias: randomUserAlias,
+			as: uniqueId,
 		};
 
 		expect(res).toStrictEqual({
@@ -77,24 +83,24 @@ describe('Convert function', () => {
 
 		const sampleFn: AbstractQueryFieldNodeFn = {
 			type: 'fn',
-			fn: 'month',
-			targetNode: {
-				type: 'primitive',
-				field: sampleField,
+			fn: {
+				type: 'extractFn',
+				fn: 'month',
 			},
+			field: sampleField,
 			args: [randomArgument1, randomArgument2],
 		};
 
-		const res = convertFn('sakjfhdl', sampleFn, idGen);
+		const res = convertFn(randomCollection, sampleFn, idGen);
 
 		const sampleSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
-			fn: 'month',
-			field: {
-				type: 'primitive',
-				table: 'sakjfhdl',
-				column: sampleField,
+			fn: {
+				type: 'extractFn',
+				fn: 'month',
 			},
+			table: randomCollection,
+			column: sampleField,
 			arguments: {
 				type: 'values',
 				parameterIndexes: [0, 1],

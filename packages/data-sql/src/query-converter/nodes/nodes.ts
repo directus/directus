@@ -3,7 +3,7 @@ import type { AbstractSqlQuery } from '../../types/index.js';
 import { createUniqueIdentifier } from './create-unique-identifier.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
-import { convertFn } from './functions.js';
+import { convertFn } from '../functions.js';
 
 export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'joins' | 'parameters'>;
 
@@ -55,7 +55,7 @@ export const convertNodes = (
 
 		if (abstractField.type === 'fn') {
 			const fnField = abstractField;
-			const id = createUniqueIdentifier(fnField.fn);
+			const id = createUniqueIdentifier(fnField.fn.fn);
 			const fn = convertFn(collection, fnField, idxGenerator, id);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);

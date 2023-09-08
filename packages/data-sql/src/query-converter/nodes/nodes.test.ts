@@ -48,11 +48,11 @@ test('Convert nodes', () => {
 		},
 		{
 			type: 'fn',
-			fn: 'count',
-			targetNode: {
-				type: 'primitive',
-				field: randomPrimitiveField,
+			fn: {
+				type: 'arrayFn',
+				fn: 'count',
 			},
+			field: randomPrimitiveField,
 		},
 	];
 
@@ -74,12 +74,12 @@ test('Convert nodes', () => {
 			},
 			{
 				type: 'fn',
-				fn: 'count',
-				field: {
-					type: 'primitive',
-					table: collection,
-					column: randomPrimitiveField,
+				fn: {
+					type: 'arrayFn',
+					fn: 'count',
 				},
+				table: collection,
+				column: randomPrimitiveField,
 				as: 'count_HASHVAL',
 			},
 		],

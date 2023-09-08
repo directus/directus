@@ -72,6 +72,36 @@ test('alias map for primitive with user specified alias', () => {
 	expect(res).toEqual(new Map([['randomAlias1', ['userAlias1']]]));
 });
 
+test('alias map for a function', () => {
+	const abstractQueryNodes: AbstractQueryFieldNode[] = [
+		{
+			type: 'fn',
+			field: 'randomPrimitiveField1',
+			fn: {
+				type: 'extractFn',
+				fn: 'year',
+			},
+		},
+	];
+
+	const abstractSqlQueryNodes: AbstractSqlQueryFnNode[] = [
+		{
+			type: 'fn',
+			fn: {
+				type: 'extractFn',
+				fn: 'year',
+			},
+			table: 'randomTable1',
+			column: 'randomPrimitiveField1',
+			as: 'randomAlias1',
+		},
+	];
+
+	const res = mapAliasesToNestedPaths('randomTable1', abstractQueryNodes, abstractSqlQueryNodes, []);
+
+	expect(res).toEqual(new Map([['randomAlias1', ['randomPrimitiveField1']]]));
+});
+
 test('alias map for one m2o with an user alias on one field', () => {
 	const abstractQueryNodes: AbstractQueryFieldNode[] = [
 		{
@@ -256,13 +286,13 @@ test('alias map for nested m2o', () => {
 		},
 		{
 			type: 'primitive',
-			table: 'nestedgeneratedJoinAlias',
+			table: 'nestedGeneratedJoinAlias',
 			column: 'nestedJoinNodeField1',
 			as: 'alias4',
 		},
 		{
 			type: 'primitive',
-			table: 'nestedgeneratedJoinAlias',
+			table: 'nestedGeneratedJoinAlias',
 			column: 'nestedJoinNodeField2',
 			as: 'alias5',
 		},
@@ -313,7 +343,7 @@ test('alias map for nested m2o', () => {
 				},
 				negate: false,
 			},
-			as: 'nestedgeneratedJoinAlias',
+			as: 'nestedGeneratedJoinAlias',
 		},
 	];
 

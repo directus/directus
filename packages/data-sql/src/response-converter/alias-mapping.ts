@@ -9,6 +9,7 @@
  */
 import type {
 	AbstractQueryFieldNode,
+	AbstractQueryFieldNodeFn,
 	AbstractQueryFieldNodePrimitive,
 	AbstractQueryFieldNodeRelatedManyToOne,
 } from '@directus/data';
@@ -24,15 +25,10 @@ export const mapAliasesToNestedPaths = (
 	const paths: Map<string, string[]> = new Map();
 
 	for (const abstractField of fields) {
-		if (abstractField.type === 'primitive') {
-			const generatedAlias = findGeneratedPrimitiveAlias(abstractField, collection, selects);
+		if (abstractField.type === 'primitive' || abstractField.type === 'fn') {
+			const generatedAlias = findGeneratedSelectAlias(abstractField, collection, selects);
 			const fieldNameToBeReturned = abstractField.alias ?? abstractField.field;
 			paths.set(generatedAlias, [...path, fieldNameToBeReturned]);
-			continue;
-		}
-
-		if (abstractField.type === 'fn') {
-			/* @TODO include function nodes in alias map */
 			continue;
 		}
 
@@ -53,24 +49,24 @@ export const mapAliasesToNestedPaths = (
 	return paths;
 };
 
-/*
- * Finds the corresponding node in the abstract sql query and returns the mandatory alias.
+/**
+ * Finds the corresponding sql node from all selects to get the generated alias.
+ *
+ * @param fieldNode - a field or a function node
+ * @param collection - the current collection of the traversal
+ * @param abstractSqlSelects - the list of all select nodes. Each of which has a generated alias.
  */
-function findGeneratedPrimitiveAlias(
-	abstractPrimitive: AbstractQueryFieldNodePrimitive,
+function findGeneratedSelectAlias(
+	fieldNode: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn,
 	collection: string,
 	abstractSqlSelects: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[]
 ): string {
 	const accordingPrimitiveInAbstractSQL = abstractSqlSelects.find((select) => {
-		if (select.type !== 'primitive') {
-			return false;
-		}
-
-		return abstractPrimitive.field === select.column && select.table === collection;
+		return fieldNode.field === select.column && select.table === collection;
 	}) as AbstractSqlQuerySelectNode;
 
 	if (accordingPrimitiveInAbstractSQL === undefined) {
-		throw new Error(`No primitive select node found for field ${abstractPrimitive.field}`);
+		throw new Error(`No primitive select node found for field ${fieldNode.field}`);
 	}
 
 	if (!accordingPrimitiveInAbstractSQL?.as) {
@@ -80,6 +76,13 @@ function findGeneratedPrimitiveAlias(
 	return accordingPrimitiveInAbstractSQL.as;
 }
 
+/**
+ * Finds the corresponding sql node from the join nodes to get the generated alias.
+ *
+ * @param relationalField - the m2o field node
+ * @param joins - all joins of the query
+ * @returns the alias of the joined table
+ */
 function findGeneratedJoinAlias(
 	relationalField: AbstractQueryFieldNodeRelatedManyToOne,
 	joins: AbstractSqlQueryJoinNode[]

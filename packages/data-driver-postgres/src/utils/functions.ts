@@ -1,5 +1,6 @@
 import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { wrapColumn } from './wrap-column.js';
+import type { ExtractFn } from '@directus/data';
 
 /**
  * Wraps a column with a function.
@@ -8,13 +9,14 @@ import { wrapColumn } from './wrap-column.js';
  * @returns	Basically FN("table"."column")
  */
 export function applyFunction(fnNode: AbstractSqlQueryFnNode) {
-	const wrappedColumn = wrapColumn(fnNode.field.table, fnNode.field.column);
+	const wrappedColumn = wrapColumn(fnNode.table, fnNode.column);
 
-	if (fnNode.fn === 'count') {
-		return convertCount(wrappedColumn);
-	} else {
-		return applyDataTimeFn(fnNode, wrappedColumn);
+	if (fnNode.fn.type === 'arrayFn') {
+		// count is the only array function we currently support
+		return `COUNT(${wrappedColumn})`;
 	}
+
+	return applyDateTimeFn(fnNode, wrappedColumn);
 }
 
 /**
@@ -28,39 +30,29 @@ export function applyFunction(fnNode: AbstractSqlQueryFnNode) {
  * @param column - The column which will be used as the argument for the function
  * @returns - F.e. EXTRACT(YEAR FROM "table"."column")
  */
-export const applyDataTimeFn = (fnNode: AbstractSqlQueryFnNode, col: string): string => {
-	function applyFn(functionName: string) {
-		return `EXTRACT(${functionName} FROM ${col}${fnNode.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
-	}
-
-	switch (fnNode.fn) {
+export const applyDateTimeFn = (fnNode: AbstractSqlQueryFnNode, col: string): string => {
+	switch (fnNode.fn.fn) {
 		case 'year':
-			return applyFn('YEAR');
+			return applyFn('YEAR', fnNode.fn);
 		case 'month':
-			return applyFn('MONTH');
+			return applyFn('MONTH', fnNode.fn);
 		case 'week':
-			return applyFn('WEEK');
+			return applyFn('WEEK', fnNode.fn);
 		case 'day':
-			return applyFn('DAY');
-		case 'dow':
-			return applyFn('DOW');
+			return applyFn('DAY', fnNode.fn);
+		case 'weekday':
+			return applyFn('DOW', fnNode.fn);
 		case 'hour':
-			return applyFn('HOUR');
+			return applyFn('HOUR', fnNode.fn);
 		case 'minute':
-			return applyFn('MINUTE');
+			return applyFn('MINUTE', fnNode.fn);
 		case 'second':
-			return applyFn('SECOND');
+			return applyFn('SECOND', fnNode.fn);
 		default:
 			throw new Error(`Function ${fnNode} is not supported.`);
 	}
-};
 
-/**
- * Applies a COUNT function to the column.
- *
- * @param col
- * @returns COUNT("table"."column")
- */
-export const convertCount = (col: string) => {
-	return `COUNT(${col})`;
+	function applyFn(functionName: string, fn: ExtractFn) {
+		return `EXTRACT(${functionName} FROM ${col}${fn.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
+	}
 };

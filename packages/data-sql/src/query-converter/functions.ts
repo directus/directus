@@ -1,10 +1,11 @@
 import type { AbstractQueryFieldNodeFn } from '@directus/data';
-import type { ParameterTypes, ValuesNode, AbstractSqlQueryFnNode } from '../../types/index.js';
+import type { ParameterTypes, ValuesNode, AbstractSqlQueryFnNode } from '../types/index.js';
 
 /**
  * @param collection
- * @param abstractFunction
- * @param idxGenerator
+ * @param abstractFunction - the function node to convert
+ * @param idxGenerator - the generator to get the next index in the parameter list
+ * @param as - a generated alias which needs to be specified when to function is used within the select clause
  */
 export function convertFn(
 	collection: string,
@@ -12,18 +13,11 @@ export function convertFn(
 	idxGenerator: Generator,
 	as?: string
 ): { fn: AbstractSqlQueryFnNode; parameters: ParameterTypes[] } {
-	if (abstractFunction.targetNode.type !== 'primitive') {
-		throw new Error('Nested functions are not yet supported.');
-	}
-
 	const fn: AbstractSqlQueryFnNode = {
 		type: 'fn',
 		fn: abstractFunction.fn,
-		field: {
-			type: 'primitive',
-			table: collection,
-			column: abstractFunction.targetNode.field,
-		},
+		table: collection,
+		column: abstractFunction.field,
 	};
 
 	if (abstractFunction.alias) {
