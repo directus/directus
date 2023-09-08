@@ -225,7 +225,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload[primaryKeyField] = primaryKey;
 			}
 
-			// at this point, the primary key is guaranteed to be set to the actual returned value or the best guest value
+			// at this point, the primary key is guaranteed to be set to the actual returned value or the best guessed value
 			primaryKey = primaryKey as PrimaryKey;
 
 			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
