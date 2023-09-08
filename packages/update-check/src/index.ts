@@ -1,30 +1,47 @@
+import type { Manifest } from '@npm/types';
 import boxen, { type Options as BoxenOptions } from 'boxen';
 import chalk from 'chalk';
-import type { Manifest } from '@npm/types';
 import findCacheDirectory from 'find-cache-dir';
 import { fetchBuilder, FileSystemCache } from 'node-fetch-cache';
+import { access, constants } from 'node:fs/promises';
 import { gte, prerelease } from 'semver';
 
 const cacheDirectory = findCacheDirectory({ name: 'directus' });
 
-const fetch = fetchBuilder.withCache(new FileSystemCache({ ttl: 60 * 60, ...(cacheDirectory && { cacheDirectory }) }));
+let fetch = fetchBuilder;
+
+if (cacheDirectory) {
+	try {
+		await access(cacheDirectory, constants.W_OK);
+		fetch = fetchBuilder.withCache(new FileSystemCache({ ttl: 60 * 60, cacheDirectory }));
+	} catch {
+		// Error can be ignored, fallback to fetch without cache
+	}
+}
 
 export async function updateCheck(currentVersion: string) {
 	let packageManifest: Manifest | undefined = undefined;
 
 	try {
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort(), 8_000);
+
 		const response = await fetch('https://registry.npmjs.org/directus', {
 			headers: { accept: 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*' },
+			// @ts-ignore
+			signal: controller.signal,
 		});
 
-		if (!response.ok) {
+		clearTimeout(timeout);
+
+		if (!response.ok && 'ejectFromCache' in response && typeof response.ejectFromCache === 'function') {
 			response.ejectFromCache();
 			return;
 		}
 
 		packageManifest = await response.json();
 	} catch (error) {
-		// Ignore
+		// Any errors are intentionally ignored & update message simply not printed
 	}
 
 	if (!packageManifest) {
