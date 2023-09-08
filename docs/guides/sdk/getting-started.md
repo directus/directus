@@ -263,16 +263,16 @@ This API is shipped with almost every modern runtime. Nevertheless, there might 
 implementation, for example, if an alternative implementation is preferred or if you actually work with a special
 runtime where `fetch` is not available.
 
-- [`node-fetch`](https://github.com/node-fetch/node-fetch)
-- [`ofetch`](https://github.com/unjs/ofetch)
-- [`whatwg-fetch`](https://github.com/JakeChampion/fetch)
+- [`node-fetch`](https://www.npmjs.com/package/node-fetch)
+- [`ofetch`](https://www.npmjs.com/package/ofetch)
+- [`whatwg-fetch`](https://www.npmjs.com/package/whatwg-fetch)
 
 #### The `URL` API
 
 This API is shipped with almost every modern runtime. However, there are exceptions, like `react-native`, that require a
 polyfill for the SDK to work.
 
-- [`url-polyfill`](https://github.com/lifaon74/url-polyfill)
+- [`url-polyfill`](https://www.npmjs.com/package/url-polyfill)
 - [`react-native-url-polyfill`](https://www.npmjs.com/package/react-native-url-polyfill)
 
 #### The `WebSocket` API
@@ -280,8 +280,8 @@ polyfill for the SDK to work.
 This API is optional if you're not making use of the `realtime()` features in the SDK. Backend JavaScript environments
 often do not ship with an implementation of WebSockets.
 
-- [`ws`](https://github.com/websockets/ws)
-- [`isomorphic-ws`](https://github.com/heineiuo/isomorphic-ws)
+- [`ws`](https://www.npmjs.com/package/ws)
+- [`isomorphic-ws`](https://www.npmjs.com/package/isomorphic-ws)
 
 ### Polyfilling
 
