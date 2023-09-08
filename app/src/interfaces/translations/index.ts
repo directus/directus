@@ -59,25 +59,9 @@ export default defineInterface({
 				name: '$t:interfaces.translations.default_language',
 				meta: {
 					interface: 'input',
-					width: 'half',
 					options: {
 						placeholder: '$t:primary_key',
 					},
-				},
-			},
-			{
-				field: 'userLanguage',
-				name: '$t:interfaces.translations.user_language',
-				type: 'string',
-				schema: {
-					default_value: false,
-				},
-				meta: {
-					interface: 'boolean',
-					options: {
-						label: '$t:interfaces.translations.enable',
-					},
-					width: 'half',
 				},
 			},
 		];

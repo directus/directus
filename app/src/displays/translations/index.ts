@@ -142,21 +142,6 @@ export default defineDisplay({
 					},
 				},
 			},
-			{
-				field: 'userLanguage',
-				name: '$t:displays.translations.user_language',
-				type: 'string',
-				schema: {
-					default_value: false,
-				},
-				meta: {
-					interface: 'boolean',
-					options: {
-						label: '$t:displays.translations.enable',
-					},
-					width: 'half',
-				},
-			},
 		];
 	},
 	types: ['alias'],
