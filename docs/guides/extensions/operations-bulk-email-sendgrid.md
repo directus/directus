@@ -1,6 +1,6 @@
 ---
-description: "Learn how to create an operation to send bulk email with SendGrid's Dynamic Templates."
-contributors: "Tim Butterfield, Kevin Lewis"
+description: Learn how to create an operation to send bulk email with SendGrid's Dynamic Templates.
+contributors: Tim Butterfield, Kevin Lewis
 ---
 
 # Use Custom Operations to Send Bulk Email With SendGrid

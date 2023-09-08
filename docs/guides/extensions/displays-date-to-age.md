@@ -1,5 +1,5 @@
 ---
-description: 'Learn how to create a display extension to format an item value.'
+description: Learn how to create a display extension to format an item value.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 

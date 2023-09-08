@@ -118,13 +118,13 @@ export default {
 
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
-import { getItemRoute } from '@/utils/get-item-route';
+import { getItemRoute } from '@/utils/get-route';
 import { getRootPath } from '@/utils/get-root-path';
-import { ref, computed } from 'vue';
+import type { Field } from '@directus/types';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
-import type { Field } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{
