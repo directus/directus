@@ -185,7 +185,7 @@ body {
 		margin-left: 6px;
 
 		&.small {
-			margin-right: 4px;
+			margin-left: 4px;
 		}
 	}
 }
