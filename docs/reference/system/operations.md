@@ -78,6 +78,10 @@ List all operations that exist in Directus.
 
 `SEARCH /operations`
 
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
 </template>
 <template #graphql>
 
@@ -93,18 +97,15 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, readOperations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(readOperations(query));
+const result = await client.request(readOperations(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -143,8 +144,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, readOperations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -182,12 +182,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, readOperation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readOperation('operation_id', query));
+const result = await client.request(readOperation(operation_id, query_object));
 ```
 
 </template>
@@ -229,8 +228,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, readOperation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -253,13 +251,7 @@ Create a new operation.
 
 `POST /operations`
 
-```json
-{
-	"operations_field_1": "value_1",
-	"operations_field_2": "value_2",
-	"operations_field_3": "value_3"
-}
-```
+Provide an [operation object](#the-operation-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -276,20 +268,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, createOperation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createOperation({
-		key: 'operation_key',
-		type: 'operation_log',
-		position_x: 'operation_x_pos',
-		position_y: 'operation_y_pos',
-		flow: '9flow_id',
-	})
-);
+const result = await client.request(createOperation(operation_object));
 ```
 
 </template>
@@ -343,8 +326,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, createOperation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -372,6 +354,8 @@ Create multiple new operations.
 <template #rest>
 
 `POST /operations`
+
+Provide an array of [operations objects](#the-operations-object) as the body of your request.
 
 ```json
 [
@@ -403,29 +387,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, createOperations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createOperations([
-		{
-			key: 'operation_key',
-			type: 'operation_log',
-			position_x: 'operation_x_pos',
-			position_y: 'operation_y_pos',
-			flow: 'flow_id',
-		},
-		{
-			key: 'operation_2_key',
-			type: 'operation_2_log',
-			position_x: 'operation_2_x_pos',
-			position_y: 'operation_2_y_pos',
-			flow: 'flow_id',
-		},
-	])
-);
+const result = await client.request(createOperations(operations_object_array));
 ```
 
 </template>
@@ -489,8 +455,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, createOperations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -528,11 +493,7 @@ Update an existing operation.
 
 `PATCH /operation/:id`
 
-```json
-{
-	"operation_object_field": "value_1"
-}
-```
+Provide a partial [operation object](#the-operation-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -549,16 +510,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, updateOperation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateOperation('operation_id', {
-		operation_field: 'value',
-	})
-);
+const result = await client.request(updateOperation(operation_id, partial_operation_object));
 ```
 
 </template>
@@ -607,8 +563,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, updateOperation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -633,10 +588,8 @@ Update multiple existing operations.
 
 ```json
 {
-	"keys": ["operation_1_key", "operation_2_key"],
-	"data": {
-		"operation_object_field": "value_1"
-	}
+	"keys": operation_id_array,
+	"data": partial_operation_object
 }
 ```
 
@@ -655,16 +608,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, updateOperations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateOperations(['operation_1_id', 'operation_2_id'], {
-		field: 'value',
-	})
-);
+const result = await client.request(updateOperations(operations_id_array, partial_operations_object));
 ```
 
 </template>
@@ -724,8 +672,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, updateOperations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -765,12 +712,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteOperation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteOperation('operation_id'));
+const result = await client.request(deleteOperation(operation_id));
 ```
 
 </template>
@@ -802,8 +748,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteOperation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -824,9 +769,7 @@ Delete multiple existing operations.
 
 `DELETE /operations`
 
-```json
-["operation_1_id", "operation_2_id", "operation_2_id"]
-```
+Provide an array of operation IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -843,14 +786,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteOperations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
-);
+const result = await client.request(deleteOperations(operations_id_array));
 ```
 
 </template>
@@ -898,8 +838,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteOperations } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteOperations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -926,16 +865,11 @@ Trigger an operation based on primary key.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, triggerOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, triggerOperation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	triggerOperation('operation_id', {
-		// Payload
-	})
-);
+const result = await client.request(triggerOperation(operation_id, webhook_payload_object));
 ```
 
 </template>
@@ -954,14 +888,17 @@ Result of the operation, if any.
 <SnippetToggler :choices="['REST', 'SDK']" label="API">
 <template #rest>
 
-`// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
+
+```json
+// Payload here
+```
 
 </template>
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, triggerOperation } from '@directus/sdk/rest';
+import { createDirectus, rest, triggerOperation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

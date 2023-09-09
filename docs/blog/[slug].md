@@ -1,6 +1,5 @@
 ---
 layout: doc
-# editLink: false
 prev: false
 next: false
 type: 'blog-post'

@@ -14,9 +14,11 @@
 		<template #item="{ element, index }">
 			<li class="row">
 				<div v-if="filterInfo[index].isField" block class="node field">
-					<div class="header" :class="{ inline }">
+					<div class="header" :class="{ inline, 'raw-field-names': rawFieldNames }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<span v-if="field || !isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
+						<span v-if="field || !isExistingField(element)" class="plain-name">
+							{{ getFieldPreview(element) }}
+						</span>
 						<v-menu v-else placement="bottom-start" show-arrow>
 							<template #activator="{ toggle }">
 								<button class="name" @click="toggle">
@@ -31,6 +33,7 @@
 								:include-relations="includeRelations"
 								:relational-field-selectable="relationalFieldSelectable"
 								:allow-select-all="false"
+								:raw-field-names="rawFieldNames"
 								@add="updateField(index, $event[0])"
 							/>
 						</v-menu>
@@ -89,6 +92,7 @@
 						:collection="collection"
 						:depth="depth + 1"
 						:inline="inline"
+						:raw-field-names="rawFieldNames"
 						@change="$emit('change')"
 						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
 						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
@@ -146,6 +150,7 @@ interface Props {
 	includeValidation?: boolean;
 	includeRelations?: boolean;
 	relationalFieldSelectable?: boolean;
+	rawFieldNames?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -155,6 +160,7 @@ const props = withDefaults(defineProps<Props>(), {
 	includeValidation: false,
 	includeRelations: true,
 	relationalFieldSelectable: true,
+	rawFieldNames: false,
 });
 
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);
@@ -211,7 +217,7 @@ function getFieldPreview(node: Record<string, any>) {
 		const pathPrefix = fieldParts.slice(0, index);
 		const field = fieldsStore.getField(props.collection, [...pathPrefix, key].join('.'));
 
-		const name = field?.name ?? key;
+		const name = (props.rawFieldNames ? field?.field : field?.name) ?? key;
 
 		if (hasFunction) {
 			return t(`functions.${functionName}`) + ` (${name})`;
@@ -426,6 +432,13 @@ function isExistingField(node: Record<string, any>): boolean {
 
 	.name {
 		white-space: nowrap;
+	}
+
+	&.raw-field-names {
+		.plain-name,
+		.name {
+			font-family: var(--family-monospace);
+		}
 	}
 
 	.name,

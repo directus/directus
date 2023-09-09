@@ -480,7 +480,6 @@ comments: Commentaires
 no_comments: Pas encore de commentaires
 select_item: Sélectionner un élément
 no_items: Aucun élément
-search_items: Rechercher des éléments...
 disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
@@ -1384,7 +1383,7 @@ colors:
   yellow: Jaune
   orange: Orange
   red: Rouge
-  black: Black
+  black: Noir
   gray: Gris
   white: Blanc
 junction_collection: Collection de jointure
@@ -2086,6 +2085,10 @@ operations:
     key: IDs
     payload: Données utiles
     query: Requête
+  json-web-token:
+    payload: Données utiles
+    token: Token
+    options: Paramètres
   log:
     name: Log dans la console
     description: Afficher quelque chose sur la console

@@ -473,7 +473,6 @@ comments: Comments
 no_comments: No Comments Yet
 select_item: Select Item
 no_items: No items
-search_items: Search items...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -2066,6 +2065,10 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Options
   log:
     name: Log to Console
     description: Output something to the console

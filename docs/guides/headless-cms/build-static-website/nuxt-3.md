@@ -1,9 +1,6 @@
 ---
 description: This guide shows you how build a website with Nuxt 3 and Directus as a Headless CMS.
-tags: []
-skill_level:
 directus_version: 9.21.4
-author_override:
 author: Kevin Lewis
 ---
 

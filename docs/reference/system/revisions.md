@@ -68,6 +68,10 @@ to a collection that the current user doesn't have access to are stripped out.
 
 `SEARCH /revisions`
 
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
 </template>
 <template #graphql>
 
@@ -83,22 +87,15 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevisions } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevisions } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRevisions({
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRevisions(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -137,8 +134,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevisions } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevisions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -178,16 +174,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevision } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevision } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readRevision('revision_id', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRevision(revision_id, query_object));
 ```
 
 </template>
@@ -227,8 +218,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRevision } from '@directus/sdk/rest';
+import { createDirectus, rest, readRevision } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

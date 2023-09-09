@@ -7,7 +7,7 @@
 <script setup lang="ts">
 withDefaults(
 	defineProps<{
-		as?: string;
+		as: string;
 	}>(),
 	{
 		as: 'p',

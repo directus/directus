@@ -1,6 +1,6 @@
 <template>
 	<div class="avatar">
-		<img :src="image" alt="" />
+		<img :src="image" :alt="name" />
 		<div>
 			<div class="avatar_name">{{ name }}</div>
 			<div>{{ title }}</div>

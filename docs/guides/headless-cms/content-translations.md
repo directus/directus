@@ -1,21 +1,12 @@
 ---
 description: This guide shows how to setup content translations for internationalization (i18n).
-tags: []
-skill_level:
 directus_version: 10.2.0
-author_override:
 author: Bryant Gillespie
 ---
 
 # Creating Content Translations
 
-> {{ $frontmatter.description }}
-
-::: tip Author: {{$frontmatter.author}}
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-:::
+<GuideMeta />
 
 Here's what the end result will look like for users when using the Data Studio to manage content.
 

@@ -133,10 +133,9 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readSettings } from '@directus/sdk/rest';
+import { createDirectus, rest, readSettings } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readSettings());
 ```
@@ -176,8 +175,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readSettings } from '@directus/sdk/rest';
+import { createDirectus, rest, readSettings } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -196,11 +194,7 @@ const result = await client.request(readSettings());
 
 `PATCH /settings`
 
-```json
-{
-	"settings_object_field": "value_1"
-}
-```
+Provide a partial [settings object](#the-settings-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -217,16 +211,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateSettings } from '@directus/sdk/rest';
+import { createDirectus, rest, updateSettings } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateSettings({
-		settings_field: 'value',
-	})
-);
+const result = await client.request(updateSettings(settings_object));
 ```
 
 </template>
@@ -275,8 +264,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateSettings } from '@directus/sdk/rest';
+import { createDirectus, rest, updateSettings } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

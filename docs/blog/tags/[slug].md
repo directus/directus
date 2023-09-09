@@ -5,10 +5,10 @@ description: Project tutorials, tips & tricks, and best practices from the Direc
 ---
 
 <script setup>
-import { useData } from 'vitepress'
-const { params } = useData()
 import TagsIndex from '../../.vitepress/components/blog/TagsIndex.vue'
 import BlogHero from '../../.vitepress/components/blog/BlogHero.vue'
+import { useData } from 'vitepress'
+const { params } = useData()
 </script>
 
 <BlogHero />

@@ -1,7 +1,8 @@
 /**
  * VitePress variables overrides
  *
- * See https://github.com/vuejs/vitepress/blob/e8cb73e065277ef9b09db1c5088b12307118da9b/src/client/theme-default/styles/vars.css for all available variables
+ * See https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css
+ * for all available variables
  * -------------------------------------------------------------------------- */
 
 /**
@@ -61,6 +62,8 @@
 	--vp-c-brand-lighter: var(--vp-c-purple-lighter);
 	--vp-c-brand-dark: var(--vp-c-purple-dark);
 	--vp-c-brand-darker: var(--vp-c-purple-darker);
+
+	--vp-c-divider: rgba(60, 60, 67, 0.12);
 }
 
 .dark {
@@ -68,6 +71,8 @@
 	--vp-c-purple-dimm-1: rgba(136, 102, 255, 0.5);
 	--vp-c-purple-dimm-2: rgba(136, 102, 255, 0.25);
 	--vp-c-purple-dimm-3: rgba(159, 132, 255, 0.1);
+
+	--vp-c-divider: rgba(82, 82, 89, 0.32);
 }
 
 /**

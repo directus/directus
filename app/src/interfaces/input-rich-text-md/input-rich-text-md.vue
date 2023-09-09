@@ -187,7 +187,7 @@
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="view[0] === 'preview' ? 'display:block' : 'display:none'"
+			:style="{ display: view[0] === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
@@ -235,6 +235,7 @@ const props = withDefaults(
 		imageToken?: string;
 		softLength?: number;
 		folder?: string;
+		direction?: string;
 	}>(),
 	{
 		editorFont: 'sans-serif',
@@ -292,6 +293,7 @@ onMounted(async () => {
 			configureMouse: () => ({ addNew: false }),
 			lineWrapping: true,
 			readOnly: readOnly.value,
+			direction: props.direction === 'rtl' ? props.direction : 'ltr',
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: props.placeholder,
 			value: props.value || '',
@@ -348,6 +350,13 @@ watch(
 		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 	},
 	{ immediate: true }
+);
+
+watch(
+	() => props.direction,
+	(direction) => {
+		codemirror?.setOption('direction', direction === 'rtl' ? direction : 'ltr');
+	}
 );
 
 const editFamily = computed(() => {
@@ -438,88 +447,11 @@ textarea {
 .preview-box {
 	display: none;
 	padding: 20px;
-}
-
-.preview-box :deep(h1) {
-	margin-top: 1em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 36px;
 	font-family: v-bind(previewFamily), serif;
-	line-height: 46px;
-}
 
-.preview-box :deep(h2) {
-	margin-top: 1.25em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 24px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 34px;
-}
-
-.preview-box :deep(h3) {
-	margin-top: 1.25em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 19px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 29px;
-}
-
-.preview-box :deep(h4) {
-	margin-top: 1.5em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 16px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 26px;
-}
-
-.preview-box :deep(h5) {
-	margin-top: 2em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 14px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
-}
-
-.preview-box :deep(h6) {
-	margin-top: 2em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 12px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 22px;
-}
-
-.preview-box :deep(p) {
-	margin: 1.5em 0;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
-}
-
-.preview-box :deep(a) {
-	color: var(--primary-125);
-	text-decoration: none;
-}
-
-.preview-box :deep(ul),
-.preview-box :deep(ol) {
-	margin: 1.5em 0;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
+	:deep() {
+		@import '@/styles/markdown';
+	}
 }
 
 .remaining {
@@ -539,95 +471,6 @@ textarea {
 
 .danger {
 	color: var(--danger);
-}
-
-.preview-box :deep(ul ul),
-.preview-box :deep(ol ol),
-.preview-box :deep(ul ol),
-.preview-box :deep(ol ul) {
-	margin: 0;
-}
-
-.preview-box :deep(b),
-.preview-box :deep(strong) {
-	font-weight: 700;
-}
-
-.preview-box :deep(code) {
-	padding: 2px 4px;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
-	line-height: 24px;
-	overflow-wrap: break-word;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
-}
-
-.preview-box :deep(pre) {
-	padding: 1em;
-	overflow: auto;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
-	line-height: 24px;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
-}
-
-.preview-box :deep(blockquote) {
-	margin-left: 0px;
-	padding-left: 1em;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
-	border-left: 2px solid var(--border-normal);
-}
-
-.preview-box :deep(blockquote blockquote) {
-	margin-left: 10px;
-}
-
-.preview-box :deep(video),
-.preview-box :deep(iframe),
-.preview-box :deep(img) {
-	max-width: 100%;
-	height: auto;
-	border-radius: var(--border-radius);
-}
-
-.preview-box :deep(hr) {
-	height: 1px;
-	margin-top: 2em;
-	margin-bottom: 2em;
-	background-color: var(--border-normal);
-	border: none;
-}
-
-.preview-box :deep(table) {
-	font-weight: 500;
-	font-size: 15px;
-	line-height: 24px;
-	border-collapse: collapse;
-}
-
-.preview-box :deep(table th),
-.preview-box :deep(table td) {
-	padding: 0.4rem;
-	border: 1px solid var(--border-normal);
-}
-
-.preview-box :deep(figure) {
-	display: table;
-	margin: 1rem auto;
-}
-
-.preview-box :deep(figure figcaption) {
-	display: block;
-	margin-top: 0.25rem;
-	color: #999;
-	text-align: center;
 }
 
 .interface-input-rich-text-md.disabled .preview-box {
