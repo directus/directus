@@ -1,7 +1,7 @@
 {
 	"name": "@directus/update-check",
 	"version": "11.0.2",
-	"description": "Check if an update is available for a given package",
+	"description": "Check if an update for Directus is available",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
@@ -27,15 +27,17 @@
 	"dependencies": {
 		"boxen": "7.1.1",
 		"chalk": "5.3.0",
+		"filenamify": "6.0.0",
 		"find-cache-dir": "5.0.0",
-		"node-fetch-cache": "3.1.3",
+		"got": "13.0.0",
 		"semver": "7.5.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@npm/types": "1.0.2",
-		"@types/node-fetch-cache": "3.0.0",
+		"@types/node": "18.16.12",
 		"@types/semver": "7.5.1",
+		"keyv": "4.5.2",
 		"typescript": "5.0.4"
 	}
 }
