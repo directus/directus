@@ -22,7 +22,8 @@
 	],
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch"
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
 	},
 	"dependencies": {
 		"boxen": "7.1.1",
@@ -37,7 +38,10 @@
 		"@npm/types": "1.0.2",
 		"@types/node": "18.16.12",
 		"@types/semver": "7.5.1",
+		"@vitest/coverage-c8": "0.31.1",
 		"keyv": "4.5.2",
-		"typescript": "5.0.4"
+		"strip-ansi": "7.1.0",
+		"typescript": "5.0.4",
+		"vitest": "0.31.1"
 	}
 }

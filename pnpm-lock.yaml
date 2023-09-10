@@ -1748,12 +1748,21 @@ importers:
       '@types/semver':
         specifier: 7.5.1
         version: 7.5.1
+      '@vitest/coverage-c8':
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
       keyv:
         specifier: 4.5.2
         version: 4.5.2
+      strip-ansi:
+        specifier: 7.1.0
+        version: 7.1.0
       typescript:
         specifier: 5.0.4
         version: 5.0.4
+      vitest:
+        specifier: 0.31.1
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/utils:
     dependencies:
@@ -9112,6 +9121,7 @@ packages:
 
   /@vitest/coverage-c8@0.31.1(vitest@0.31.1):
     resolution: {integrity: sha512-6TkjQpmgYez7e3dbAUoYdRXxWN81BojCmUILJwgCy39uZFG33DsQ0rSRSZC9beAEdCZTpxR63nOvd9hxDQcJ0g==}
+    deprecated: v8 coverage is moved to @vitest/coverage-v8 package
     peerDependencies:
       vitest: '>=0.30.0 <1'
     dependencies:
