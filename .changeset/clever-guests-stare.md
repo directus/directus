@@ -2,4 +2,4 @@
 "docs": patch
 ---
 
-Fixed broken link under the "Themes & Styling" page
+Fixed broken link under the "Themes & Styling" extension page
