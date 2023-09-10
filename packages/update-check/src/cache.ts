@@ -9,7 +9,8 @@ export async function getCache() {
 	if (!dir) return;
 
 	try {
-		await fs.access(dir, fs.constants.W_OK);
+		// Try to create directory, if it doesn't already exist
+		await fs.mkdir(dir, { recursive: true });
 	} catch {
 		return;
 	}
