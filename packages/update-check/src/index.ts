@@ -14,6 +14,9 @@ export async function updateCheck(currentVersion: string) {
 		packageManifest = await got('https://registry.npmjs.org/directus', {
 			headers: { accept: 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*' },
 			cache,
+			retry: {
+				limit: 0,
+			},
 			timeout: {
 				request: 8_000,
 			},
