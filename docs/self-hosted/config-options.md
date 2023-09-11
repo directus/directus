@@ -89,12 +89,16 @@ DB_PORT: 5432
 ### config.js
 
 Using a JavaScript file for your config allows you to dynamically generate the configuration of the project during
-startup. The JavaScript configuration supports two different formats, either an **Object Structure** where the key is
-the environment variable name:
+startup.
 
-```js
-// Object Syntax
+By default, the file is expected to be a ESM, while CommonJS is supported too by using `.cjs` as the file extension.
 
+The JavaScript configuration supports two different formats, either an **Object Structure** where the key is the
+environment variable name:
+
+::: code-group
+
+```js [config.js]
 export default {
 	HOST: '0.0.0.0',
 	PORT: 8055,
@@ -107,12 +111,27 @@ export default {
 };
 ```
 
+```js [config.cjs]
+module.exports = {
+	HOST: '0.0.0.0',
+	PORT: 8055,
+
+	DB_CLIENT: 'pg',
+	DB_HOST: 'localhost',
+	DB_PORT: 5432,
+
+	// etc
+};
+```
+
+:::
+
 Or a **Function Structure** that _returns_ the same object format as above. The function gets `process.env` as its
 parameter.
 
-```js
-// Function Syntax
+::: code-group
 
+```js [config.js]
 export default function (env) {
 	return {
 		HOST: '0.0.0.0',
@@ -126,6 +145,23 @@ export default function (env) {
 	};
 }
 ```
+
+```js [config.cjs]
+module.exports = function (env) {
+	return {
+		HOST: '0.0.0.0',
+		PORT: 8055,
+
+		DB_CLIENT: 'pg',
+		DB_HOST: 'localhost',
+		DB_PORT: 5432,
+
+		// etc
+	};
+};
+```
+
+:::
 
 ## Environment Variable Files
 
@@ -978,7 +1014,7 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | `WEBSOCKETS_HEARTBEAT_ENABLED`              | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
 | `WEBSOCKETS_HEARTBEAT_PERIOD`<sup>[1]</sup> | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
 
-sup>[1]</sup> It's recommended to keep this value between 30 and 120 seconds, otherwise the connections could be
+<sup>[1]</sup> It's recommended to keep this value between 30 and 120 seconds, otherwise the connections could be
 considered idle by other parties and therefore terminated. See
 https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 

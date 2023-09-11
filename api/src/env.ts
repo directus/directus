@@ -8,10 +8,11 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash-es';
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import path from 'path';
+import getModuleDefault from './utils/get-module-default.js';
 import { requireYAML } from './utils/require-yaml.js';
 import { toBoolean } from './utils/to-boolean.js';
-import { pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
@@ -400,8 +401,9 @@ async function processConfiguration() {
 
 	const fileExt = path.extname(configPath).toLowerCase();
 
-	if (fileExt === '.js') {
-		const { default: config } = await import(pathToFileURL(configPath).toString());
+	if (['.js', '.cjs', '.mjs'].includes(fileExt)) {
+		const data = await import(pathToFileURL(configPath).toString());
+		const config = getModuleDefault(data);
 
 		if (typeof config === 'function') {
 			return config(process.env);

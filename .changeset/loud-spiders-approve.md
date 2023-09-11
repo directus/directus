@@ -1,6 +1,6 @@
 ---
-"@directus/api": major
+"@directus/api": patch
 "docs": patch
 ---
 
-Switched the expected format of the config.js file to ESM in order to fix import incompatibilities
+Switched the default format of config.js to ESM in order to fix import incompatibilities

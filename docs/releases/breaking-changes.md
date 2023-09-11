@@ -13,43 +13,6 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ## Version 10.6.2
 
-### Switching Javascript Configuration File for API to ESM
-
-The JavaScript configuration file [`config.js`](https://docs.directus.io/self-hosted/config-options.html#config-js) was
-previously expected to be in the CommonJS format, but since the change of the API to ESM this no longer worked without
-workarounds. This has now been corrected, which means the configuration file is therefore also expected in the ESM
-format now.
-
-::: code-group
-
-```js [Before]
-module.exports = {
-	HOST: '0.0.0.0',
-	PORT: 8055,
-
-	DB_CLIENT: 'pg',
-	DB_HOST: 'localhost',
-	DB_PORT: 5432,
-
-	// etc
-};
-```
-
-```js [After]
-export default {
-	HOST: '0.0.0.0',
-	PORT: 8055,
-
-	DB_CLIENT: 'pg',
-	DB_HOST: 'localhost',
-	DB_PORT: 5432,
-
-	// etc
-};
-```
-
-:::
-
 ### Swapped Parameters and Auth Mode for Refresh Method in the SDK
 
 The parameter order for the `refresh` method and thus also the default auth mode have been swapped in order to work well
