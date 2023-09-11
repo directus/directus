@@ -1159,7 +1159,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// company b = count = 15
 					// company c = count = 25
 
-					const companiesCount = [25, 15, 10];
+					const companiesCount = [24, 15, 11];
 
 					for (let i = 0; i < count; i++) {
 						const artist = createArtist(pkType);
