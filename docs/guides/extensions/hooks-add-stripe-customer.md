@@ -44,8 +44,7 @@ Create an initial export. This hook will need to intercept the save function wit
 environment variables and `services` to write back to the record:
 
 ```js
-export default ({ action }, { env, services }) => {
-};
+export default ({ action }, { env, services }) => {};
 ```
 
 Inside the function, define the internal `ItemsService` Directus API function from the `services` scope. Also include
@@ -60,8 +59,7 @@ export default ({ action }, { env, services }) => {
 Next, capture the `items.create` stream using `action` and pull out the `key`, `collection`, and `payload`:
 
 ```js
-action('items.create', async ({ key, collection, payload }, { schema }) => {
-});
+action('items.create', async ({ key, collection, payload }, { schema }) => {});
 ```
 
 When using filters and actions, it’s important to remember this will capture **all** events so you should set some
@@ -85,12 +83,13 @@ variable must be added to your `.env` file. This can be found in the developers 
 Create a new customer with the customer's name and email as the input values.
 
 ```js
-stripe.customers.create({
-	name: `${payload.first_name} ${payload.last_name}`,
-	email: payload.email_address,
-}).then(customer => {
-}).catch(error => {
-});
+stripe.customers
+	.create({
+		name: `${payload.first_name} ${payload.last_name}`,
+		email: payload.email_address,
+	})
+	.then((customer) => {})
+	.catch((error) => {});
 ```
 
 If successful, update the record with the new customer id from stripe. The API call returns the customer object into the
@@ -99,12 +98,13 @@ If successful, update the record with the new customer id from stripe. The API c
 Use the `ItemService` to update the customer record. Initialize the service and perform the API query:
 
 ```js
-stripe.customers.create({
-}).then(customer => {
-	const customers = new ItemsService(collection, { schema: schema });  // [!code ++]
-	customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false }); // [!code ++]
-}).catch(error => {
-});
+stripe.customers
+	.create({})
+	.then((customer) => {
+		const customers = new ItemsService(collection, { schema: schema }); // [!code ++]
+		customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false }); // [!code ++]
+	})
+	.catch((error) => {});
 ```
 
 By setting `emitEvents` to `false`, the `items.update` event will not trigger, which prevents flows or hooks from
@@ -113,16 +113,17 @@ running as a result of this item update.
 Add an exception if the Stripe API fails.
 
 ```js
-stripe.customers.create({
-}).then(customer => {
-}).catch(error => {
-	mailService.send({  // [!code ++]
-		to: 'sharedmailbox@directus.io',  // [!code ++]
-		from: 'noreply@directus.io',  // [!code ++]
-		subject: `An error has occurred with Stripe API`,  // [!code ++]
-		text: "The following error occurred for "+payload.first_name+" "+payload.last_name+" when attempting to create an account in Stripe.\r\n\r\n"+error+"\r\n\r\nPlease investigate.\r\n\r\nID: "+key+"\r\nEmail: "+payload.email_address,  // [!code ++]
-	});  // [!code ++]
-});
+stripe.customers
+	.create({})
+	.then((customer) => {})
+	.catch((error) => {
+		mailService.send({ // [!code ++]
+			to: 'sharedmailbox@directus.io', // [!code ++]
+			from: 'noreply@directus.io', // [!code ++]
+			subject: `An error has occurred with Stripe API`, // [!code ++]
+			text: `The following error occurred for ${payload.first_name} ${payload.last_name} when attempting to create an account in Stripe.\r\n\r\n${error}\r\n\r\nPlease investigate.\r\n\r\nID: ${key}\r\nEmail: ${payload.email_address}`, // [!code ++]
+		}); // [!code ++]
+	});
 ```
 
 Build the hook with the latest changes.
@@ -166,23 +167,28 @@ import Stripe from 'stripe';
 
 export default ({ action }, { env, services }) => {
 	const { MailService, ItemService } = services;
+
 	action('items.create', async ({ key, collection, payload }, { schema }) => {
 		if (collection !== 'customers') return;
 		const stripe = new Stripe(env.STRIPE_TOKEN);
-		stripe.customers.create({
-			name: `${payload.first_name} ${payload.last_name}`,
-			email: payload.email_address,
-		}).then(customer => {
-			const customers = new ItemsService(collection, { schema: schema });
-			customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false });
-		}).catch(error => {
-			mailService.send({
-				to: 'sharedmailbox@directus.io',
-				from: 'noreply@directus.io',
-				subject: `An error has occurred with Stripe API`,
-				text: "The following error occurred for "+payload.first_name+" "+payload.last_name+" when attempting to create an account in Stripe.\r\n\r\n"+error+"\r\n\r\nPlease investigate.\r\n\r\nID: "+key+"\r\nEmail: "+payload.email_address,
+
+		stripe.customers
+			.create({
+				name: `${payload.first_name} ${payload.last_name}`,
+				email: payload.email_address,
+			})
+			.then((customer) => {
+				const customers = new ItemsService(collection, { schema: schema });
+				customers.updateByQuery({ filter: { id: key } }, { stripe_id: customer.id }, { emitEvents: false });
+			})
+			.catch((error) => {
+				mailService.send({
+					to: 'sharedmailbox@directus.io',
+					from: 'noreply@directus.io',
+					subject: `An error has occurred with Stripe API`,
+					text: `The following error occurred for ${payload.first_name} ${payload.last_name} when attempting to create an account in Stripe.\r\n\r\n${error}\r\n\r\nPlease investigate.\r\n\r\nID: ${key}\r\nEmail: ${payload.email_address}`,
+				});
 			});
-		});
 	});
 };
 ```
