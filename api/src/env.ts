@@ -409,7 +409,7 @@ async function processConfiguration() {
 		}
 
 		throw new Error(
-			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof exported}"`
+			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof config}"`
 		);
 	}
 
