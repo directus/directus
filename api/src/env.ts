@@ -11,6 +11,7 @@ import { createRequire } from 'node:module';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml.js';
 import { toBoolean } from './utils/to-boolean.js';
+import { pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
@@ -400,7 +401,7 @@ async function processConfiguration() {
 	const fileExt = path.extname(configPath).toLowerCase();
 
 	if (fileExt === '.js') {
-		const { default: config } = await import(configPath);
+		const { default: config } = await import(pathToFileURL(configPath).toString());
 
 		if (typeof config === 'function') {
 			return config(process.env);
