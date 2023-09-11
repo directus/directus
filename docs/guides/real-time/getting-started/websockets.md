@@ -51,7 +51,8 @@ At the top of the `<script>` tag, import the composables needed for the SDK
 <html>
 	<body>
 		<script>
-      import { staticToken, createDirectus, realtime } from '@directus/sdk'; // [!code ++]
+      import { createDirectus, staticToken, realtime } from "https://www.unpkg.com/@directus/sdk@11.0.3/dist/ index.js" // [!code ++]
+
 			const url = 'wss://your-directus-url/websocket';
 			const access_token = 'your-access-token';
 			const collection = 'messages';
@@ -193,7 +194,8 @@ operations over the connection. You have also created your first subscription.
 <html>
 	<body>
 		<script>
-      import { staticToken, createDirectus, realtime } from '@directus/sdk';
+
+      import { createDirectus, staticToken, realtime } from "https://www.unpkg.com/@directus/sdk@11.0.3/dist/index.js"
 
       const url = 'wss://your-directus-url/websocket';
       const access_token = 'your-access-token';
