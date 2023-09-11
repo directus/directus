@@ -1146,6 +1146,78 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[queryKey][0].count.id).toEqual(count);
 				});
 			});
+
+			describe('sorts grouped items correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 50;
+					const artistName = 'aggregate-sort-group';
+					const artists = [];
+					const companies = ['a', 'b', 'c'];
+
+					// company a = count = 10
+					// company b = count = 15
+					// company c = count = 25
+
+					const companiesCount = [25, 15, 10];
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						// first 1-10 company a; 11-25 company b; 26-50 company c
+						// eslint-disable-next-line no-nested-ternary
+						artist.company = companies[i <= 10 ? 0 : i <= 25 ? 1 : 2];
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: 'company',
+							filter: {
+								name: { _eq: artistName },
+							},
+							sort: '-count.id',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated_sort`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+								},
+								count: {
+									id: true,
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+
+					for (let i = 0; i < companies.length; i++) {s
+						expect(response.body.data[i].count.id).toEqual(companiesCount[i]);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+
+					for (let i = 0; i < companies.length; i++) {
+						expect(gqlResponse.body.data[queryKey][i].count.id).toEqual(companiesCount[i]);
+					}
+				});
+			});
 		});
 
 		describe('Offset Tests', () => {
