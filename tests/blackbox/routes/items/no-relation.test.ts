@@ -1207,7 +1207,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toBe(200);
 
-					for (let i = 0; i < companies.length; i++) {s
+					for (let i = 0; i < companies.length; i++) {
 						expect(response.body.data[i].count.id).toEqual(companiesCount[i]);
 					}
 
