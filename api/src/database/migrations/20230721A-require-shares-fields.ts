@@ -25,7 +25,7 @@ export async function down(knex: Knex): Promise<void> {
 }
 
 /**
- * Temporary drop foreign key constraint for MySQL instances, see https://github.com/directus/directus/issues/19399
+ * Temporarily drop foreign key constraint for MySQL instances, see https://github.com/directus/directus/issues/19399
  */
 async function dropConstraint(knex: Knex) {
 	if (knex.client.constructor.name === 'Client_MySQL') {
