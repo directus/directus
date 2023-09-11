@@ -972,11 +972,14 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 
 ## WebSockets
 
-| Variable                       | Description                                                                                                                      | Default Value |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `WEBSOCKETS_ENABLED`           | Whether or not to enable all WebSocket functionality.                                                                            | `false`       |
-| `WEBSOCKETS_HEARTBEAT_ENABLED` | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
-| `WEBSOCKETS_HEARTBEAT_PERIOD`  | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
+| Variable                                    | Description                                                                                                                      | Default Value |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_ENABLED`                        | Whether or not to enable all WebSocket functionality.                                                                            | `false`       |
+| `WEBSOCKETS_HEARTBEAT_ENABLED`              | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
+| `WEBSOCKETS_HEARTBEAT_PERIOD`<sup>[1]</sup> | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
+
+sup>[1]</sup> It's recommended to keep this value low, otherwise the connections could be considered idle by other
+parties and therefore terminated. See https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 
 ### REST
 
