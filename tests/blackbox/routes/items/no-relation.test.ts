@@ -1155,9 +1155,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists = [];
 					const companies = ['a', 'b', 'c'];
 
-					// company a = count = 10
+					// company a = count = 11
 					// company b = count = 15
-					// company c = count = 25
+					// company c = count = 24
 
 					const companiesCount = [24, 15, 11];
 
