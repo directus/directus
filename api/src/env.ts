@@ -362,7 +362,7 @@ const typeMap: Record<string, string> = {
 let env: Record<string, any> = {
 	...defaults,
 	...process.env,
-	...processConfiguration(),
+	...(await processConfiguration()),
 };
 
 process.env = env;
@@ -380,11 +380,11 @@ export const getEnv = () => env;
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
  * the newly created variables
  */
-export function refreshEnv(): void {
+export async function refreshEnv(): Promise<void> {
 	env = {
 		...defaults,
 		...process.env,
-		...processConfiguration(),
+		...(await processConfiguration()),
 	};
 
 	process.env = env;
@@ -392,7 +392,7 @@ export function refreshEnv(): void {
 	env = processValues(env);
 }
 
-function processConfiguration() {
+async function processConfiguration() {
 	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
@@ -400,13 +400,12 @@ function processConfiguration() {
 	const fileExt = path.extname(configPath).toLowerCase();
 
 	if (fileExt === '.js') {
-		const module = require(configPath);
-		const exported = module.default || module;
+		const { default: config } = await import(configPath);
 
-		if (typeof exported === 'function') {
-			return exported(process.env);
-		} else if (typeof exported === 'object') {
-			return exported;
+		if (typeof config === 'function') {
+			return config(process.env);
+		} else if (typeof config === 'object') {
+			return config;
 		}
 
 		throw new Error(

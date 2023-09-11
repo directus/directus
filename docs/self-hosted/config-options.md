@@ -95,7 +95,7 @@ the environment variable name:
 ```js
 // Object Syntax
 
-module.exports = {
+export default {
 	HOST: '0.0.0.0',
 	PORT: 8055,
 
@@ -113,7 +113,7 @@ parameter.
 ```js
 // Function Syntax
 
-module.exports = function (env) {
+export default function (env) {
 	return {
 		HOST: '0.0.0.0',
 		PORT: 8055,
@@ -124,7 +124,7 @@ module.exports = function (env) {
 
 		// etc
 	};
-};
+}
 ```
 
 ## Environment Variable Files
