@@ -198,6 +198,7 @@ Set up the SendGrid API and message object with the following code:
 ```js
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(env.SENDGRID_API_KEY);
+
 let msg = {
 	from: { email: from },
 	personalizations: [],
@@ -212,10 +213,10 @@ The `recipients` need to be added to the personalization list. Each item needs t
 
 ```json
 {
-	"to":[ { "email":"example@sendgrid.net" } ],
+	"to": [{ "email": "example@sendgrid.net" }],
 	"dynamic_template_data": {
 		"key": "value"
-	},
+	}
 }
 ```
 
@@ -226,19 +227,21 @@ Convert both the recipients and dynamic variables to objects if they are submitt
 parse values from the recipients and return the final value:
 
 ```js
-const rec = (Array.isArray(recipients))?recipients:JSON.parse(recipients);
-const dyn = (Array.isArray(template_data))?template_data:JSON.parse(template_data);
+const rec = Array.isArray(recipients) ? recipients : JSON.parse(recipients);
+const dyn = Array.isArray(template_data) ? template_data : JSON.parse(template_data);
 
-function parseValues(recipient, key){
-	if(key.includes(".")){
+function parseValues(recipient, key) {
+	if (key.includes('.')) {
 		let value = recipient;
 		let fields = key.split('.');
-		fields.forEach(f => {
-			if(value != null) value = value[f]
+
+		fields.forEach((f) => {
+			if (value != null) value = value[f];
 		});
+
 		return value;
 	} else {
-		return recipient[key]
+		return recipient[key];
 	}
 }
 ```
@@ -248,17 +251,20 @@ a dynamic variable. To use this, make sure to change the subject in SendGrid to 
 receive this value.
 
 ```js
-rec.forEach(recipient => {
+rec.forEach((recipient) => {
 	let email_address = parseValues(recipient, email_key);
+
 	let personalization = {
-		to: [ { email: email_address } ],
+		to: [{ email: email_address }],
 		dynamic_template_data: {
 			subject: subject,
 		},
 	};
-	dyn.forEach(s => {
+
+	dyn.forEach((s) => {
 		personalization.dynamic_template_data[s.var] = parseValues(recipient, s.key);
 	});
+
 	msg.personalizations.push(personalization);
 });
 ```
@@ -394,9 +400,9 @@ export default {
 			meta: {
 				width: 'full',
 				interface: 'list',
-				options:  {
+				options: {
 					template: '{{var}}: {{key}}',
-					fields:  [
+					fields: [
 						{
 							field: 'var',
 							name: 'Email Variable',
@@ -455,35 +461,37 @@ export default {
 			template_id: template_id,
 		};
 
-		const rec = (Array.isArray(recipients))?recipients:JSON.parse(recipients);
-		const dyn = (Array.isArray(template_data))?template_data:JSON.parse(template_data);
+		const rec = Array.isArray(recipients) ? recipients : JSON.parse(recipients);
+		const dyn = Array.isArray(template_data) ? template_data : JSON.parse(template_data);
 
-		function parseValues(recipient, key){
-			if(key.includes(".")){
+		function parseValues(recipient, key) {
+			if (key.includes('.')) {
 				let value = recipient;
 				let fields = key.split('.');
 
-				fields.forEach(f => {
-					if(value != null){
+				fields.forEach((f) => {
+					if (value != null) {
 						value = value[f];
 					}
 				});
 
 				return value;
 			} else {
-				return recipient[key]
+				return recipient[key];
 			}
 		}
 
-		rec.forEach(recipient => {
+		rec.forEach((recipient) => {
 			let email_address = parseValues(recipient, email_key);
+
 			let personalization = {
-				to: [ { email: email_address } ],
+				to: [{ email: email_address }],
 				dynamic_template_data: {
 					subject: subject,
 				},
 			};
-			dyn.forEach(s => {
+
+			dyn.forEach((s) => {
 				personalization.dynamic_template_data[s.var] = parseValues(recipient, s.key);
 			});
 

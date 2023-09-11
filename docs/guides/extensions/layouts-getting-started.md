@@ -60,6 +60,7 @@ the current collection and uses the built-in search and filters from the Directu
 ```js
 const { collection, filter, search } = toRefs(props);
 const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
 const { items, loading, error } = useItems(collection, {
 	sort: primaryKeyField.field,
 	limit: '-1',
@@ -116,7 +117,7 @@ search: {
 
 Update the `template`:
 
-```html
+```vue
 <template>
 	<div v-if="!loading">
 		<p>Collection: {{ collection }}</p>
@@ -213,6 +214,7 @@ export default {
 	setup(props) {
 		const { collection, filter, search } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
 		const { items, loading, error } = useItems(collection, {
 			sort: primaryKeyField.field,
 			limit: '-1',
@@ -237,7 +239,7 @@ export default {
 
 `layout.vue`
 
-```html
+```vue
 <template>
 	<div v-if="!loading">
 		<p>Collection: {{ collection }}</p>
@@ -276,9 +278,6 @@ export default {
 			type: String,
 			default: null,
 		},
-	},
-	setup(props) {
-
 	}
 };
 </script>
