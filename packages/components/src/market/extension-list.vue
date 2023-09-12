@@ -54,7 +54,7 @@
 		>
 			<div class="icon">
 				<div class="box">
-					<img v-if="extension.icon?.startsWith('img:')" :src="extension.icon.substring(4)" />
+					<img v-if="extension?.logo?.id" :src="`/market/assets/${extension.logo.filename_disk}`" />
 					<v-icon v-else :name="extension.icon ? extension.icon : 'extension'" />
 				</div>
 				<v-badge
@@ -124,6 +124,10 @@ interface Props {
 export interface Extension {
 	id: string;
 	icon?: string;
+	logo: {
+		id: string;
+		filename_disk: string;
+	};
 	description?: string;
 	latest_version?: {
 		types?: {
@@ -180,7 +184,7 @@ const query = computed<Query>(() => {
 
 	query.fields =
 		(query.fields ? query.fields + ',' : '') +
-		'id,icon,description,latest_version.types.extension_types_type,author.name,author.email,updated,downloads_last_month,registry';
+		'id,icon,logo.*,description,latest_version.types.extension_types_type,author.name,author.email,updated,downloads_last_month,registry';
 
 	const filterList: Record<string, any>[] = [];
 
@@ -310,10 +314,16 @@ async function loadExtensions() {
 			color: var(--primary);
 			display: grid;
 			place-items: center;
+			overflow: hidden;
 
 			@media screen and (max-width: 600px) {
 				width: 50px;
 				height: 50px;
+			}
+
+			img {
+				width: 100%;
+				height: 100%;
 			}
 		}
 

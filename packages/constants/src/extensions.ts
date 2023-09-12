@@ -119,6 +119,7 @@ export const ExtensionManifest = z.object({
 	type: z.union([z.literal('module'), z.literal('commonjs')]).optional(),
 	description: z.string().optional(),
 	icon: z.string().optional(),
+	logo: z.string().optional(),
 	dependencies: z.record(z.string()).optional(),
 	[EXTENSION_PKG_KEY]: ExtensionOptions,
 });

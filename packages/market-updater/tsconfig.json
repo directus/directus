@@ -1,0 +1,15 @@
+{
+	"extends": "@directus/tsconfig/node18-esm",
+	"compilerOptions": {
+		"outDir": "dist",
+		"module": "NodeNext",
+	},
+	"include": [
+		"src"
+	],
+	"typedocOptions": {
+		"entryPoints": [
+			"./src"
+		]
+	}
+}

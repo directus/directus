@@ -120,6 +120,7 @@ type Props = {
 interface Extension {
 	id: string;
 	icon?: string;
+	logo?: Record<string, string>;
 	description?: string;
 	latest_version?: string;
 	versions?: {
@@ -268,7 +269,7 @@ async function loadExtension() {
 		const response = await api.get(`/items/extensions/${encodeURIComponent(props.name)}`, {
 			params: {
 				fields:
-					'*,author.email,author.name,author.avatar,maintainers.users_email.email,maintainers.users_email.name,maintainers.users_email.avatar,downloads.date,downloads.downloads,latest_version,tags.tags_tag.tag,' +
+					'*,logo.*,author.email,author.name,author.avatar,maintainers.users_email.email,maintainers.users_email.name,maintainers.users_email.avatar,downloads.date,downloads.downloads,latest_version,tags.tags_tag.tag,' +
 					versionFields,
 				deep: {
 					downloads: {
