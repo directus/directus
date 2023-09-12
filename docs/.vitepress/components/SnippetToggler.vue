@@ -95,11 +95,13 @@ onBeforeMount(() => {
 	border-radius: var(--rounded-lg);
 }
 
-html.dark .snippet-toggler .button {
+html.dark .snippet-toggler .button,
+.snippet-toggler.dark .button {
 	color: var(--vp-c-gray-light-2);
 }
 
-html.dark .snippet-toggler .button.active {
+html.dark .snippet-toggler .button.active,
+.snippet-toggler.dark .button.active {
 	color: var(--vp-c-gray-light-4);
 }
 
