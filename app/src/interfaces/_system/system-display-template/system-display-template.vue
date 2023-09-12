@@ -59,7 +59,7 @@ const collection = computed(() => {
 const injectValue = computed(() => {
 	if (!props.injectBranchField) return null;
 
-	const branchesEnabled = values.value['branches_enabled'];
+	const branchesEnabled = values.value['versioning'];
 
 	if (!branchesEnabled) return null;
 

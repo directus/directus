@@ -52,7 +52,7 @@ export class BranchesService extends ItemsService {
 		// will throw an error if the collection does not exist or the accountability does not have permission to read it
 		const existingCollection = await this.collectionsService.readOne(data['collection']);
 
-		if (!existingCollection.meta?.branches_enabled) {
+		if (!existingCollection.meta?.versioning) {
 			throw new UnprocessableContentError({
 				reason: `Branch feature is not enabled for collection "${data['collection']}"`,
 			});

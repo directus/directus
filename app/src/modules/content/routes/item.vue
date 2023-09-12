@@ -60,7 +60,7 @@
 			<branch-menu
 				v-if="
 					collectionInfo.meta &&
-					collectionInfo.meta.branches_enabled &&
+					collectionInfo.meta.versioning &&
 					!isNew &&
 					internalPrimaryKey !== '+' &&
 					readBranchesAllowed &&
