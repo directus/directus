@@ -18,14 +18,15 @@ export async function createTags(extensions: ExtensionInfo[]) {
 	}
 
 	for (const tag of Array.from(tags)) {
-		// eslint-disable-next-line no-console
-		console.log(`Creating tag ${tag}`)
-
 		const existingTag = await client.request(readItems('tags', { filter: { tag: { _eq: tag } }, fields: ['*'] }))
 
 		if (existingTag && existingTag.length > 0) {
+			// eslint-disable-next-line no-console
+			console.log(`Updating tag ${tag}`)
 			await client.request(updateItem('tags', tag, { tag }))
 		} else {
+			// eslint-disable-next-line no-console
+			console.log(`Creating tag ${tag}`)
 			await client.request(createItem('tags', { tag }))
 		}
 	}

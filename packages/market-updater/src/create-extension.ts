@@ -4,9 +4,6 @@ import type { Extension, ExtensionInfo, Permission, Version } from "./types.js"
 import { client } from "./directus-sdk.js"
 
 export async function createExtension(extensionInfo: ExtensionInfo, registry: string, emailIDMap: Record<string, string>) {
-	// eslint-disable-next-line no-console
-	console.log(`Creating extension ${extensionInfo.npm.name}`)
-
 	const { npm, github, downloads, latestVersion, ignoreVersions, readmes } = extensionInfo
 
 	const latestPack = npm.versions[latestVersion]!
@@ -100,14 +97,20 @@ export async function createExtension(extensionInfo: ExtensionInfo, registry: st
 		registry
 	}
 
-	const existingExtension = await client.request(readItems('extensions', { filter: { id: { _eq: encodeURIComponent(latestPack.name) } }, fields: ['*'] }))
+	const existingExtension = await client.request(readItems('extensions', { filter: { id: { _eq: latestPack.name } }, fields: ['*'] }))
 
 	if (existingExtension && existingExtension.length > 0) {
+		// eslint-disable-next-line no-console
+		console.log(`Update extension ${extensionInfo.npm.name}`)
 		await client.request(updateItem('extensions', encodeURIComponent(latestPack.name), extension))
 	} else {
+		// eslint-disable-next-line no-console
+		console.log(`Creating extension ${extensionInfo.npm.name}`)
 		await client.request(createItem('extensions', extension))
 	}
 
+	// eslint-disable-next-line no-console
+	console.log(`Update extension ${extensionInfo.npm.name} latest version`)
 	await client.request(updateItem('extensions', encodeURIComponent(latestPack.name), { latest_version: `${latestPack.name}#${latestVersion}` }))
 
 	// logo: package.logo || null, logo_title: package.name + "-logo"

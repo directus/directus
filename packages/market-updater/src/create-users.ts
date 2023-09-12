@@ -28,16 +28,19 @@ export async function createUsers(extensions: ExtensionInfo[]) {
 	}
 
 	for (const user of Object.values(users)) {
-		// eslint-disable-next-line no-console
-		console.log(`Creating user ${user.email}`)
+
 
 		const existingUser = await client.request(readItems('users', { filter: { email: { _eq: user.email } }, fields: ['*'] }))
 
 		if (existingUser && existingUser.length > 0) {
+			// eslint-disable-next-line no-console
+			console.log(`Update user ${user.email}`)
 			await client.request(updateItem('users', existingUser[0]!.id, user))
 
 			emailIDMap[user.email] = existingUser[0]!.id
 		} else {
+			// eslint-disable-next-line no-console
+			console.log(`Creating user ${user.email}`)
 			const resultingUser = await client.request(createItem('users', user))
 
 			emailIDMap[resultingUser.email] = resultingUser.id
