@@ -1,22 +1,22 @@
-import request from 'supertest';
 import config, { getUrl } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import { v4 as uuid } from 'uuid';
 import { CreateItem, ReadItem } from '@common/functions';
-import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
+import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
+import { requestGraphQL } from '@common/index';
+import { CachedTestsSchema, CheckQueryFilters, TestsSchemaVendorValues } from '@query/filter';
+import { findIndex } from 'lodash';
+import request from 'supertest';
+import { v4 as uuid } from 'uuid';
 import {
+	Food,
+	Ingredient,
+	Supplier,
 	collectionFoods,
 	collectionIngredients,
 	collectionSuppliers,
-	Food,
-	Ingredient,
 	getTestsSchema,
 	seedDBValues,
 } from './m2m.seed';
-import { CheckQueryFilters } from '@query/filter';
-import { findIndex } from 'lodash';
-import { requestGraphQL } from '@common/index';
 
 function createFood(pkType: common.PrimaryKeyType) {
 	const item: Food = {
@@ -38,6 +38,18 @@ function createIngredient(pkType: common.PrimaryKeyType) {
 
 	if (pkType === 'string') {
 		item.id = 'ingredient-' + uuid();
+	}
+
+	return item;
+}
+
+function createSupplier(pkType: common.PrimaryKeyType) {
+	const item: Supplier = {
+		name: 'supplier-' + uuid(),
+	};
+
+	if (pkType === 'string') {
+		item.id = 'supplier-' + uuid();
 	}
 
 	return item;
@@ -2862,6 +2874,141 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					for (const item of response.body.data) {
 						expect(item.ingredients.length).toBe(2);
 					}
+				});
+			});
+		});
+
+		describe('Auto Increment Tests', () => {
+			if (pkType !== 'integer') return;
+
+			describe('updates the auto increment value correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
+
+					// Setup
+					const name = 'test-auto-increment-m2m';
+					const largeIdFood = 108888;
+					const largeIdIngredient = 109999;
+					const largeIdSupplier = 111111;
+					const food = createFood(pkType);
+					const food2 = createFood(pkType);
+					const ingredients = [];
+					const ingredients2 = [];
+					const suppliers = [];
+					const suppliers2 = [];
+
+					food.id = largeIdFood;
+					food.name = name;
+					food2.name = name;
+
+					for (let count = 0; count < 2; count++) {
+						const ingredient = createIngredient(pkType);
+						const ingredient2 = createIngredient(pkType);
+						const supplier = createSupplier(pkType);
+						const supplier2 = createSupplier(pkType);
+
+						if (count === 0) {
+							ingredient.id = largeIdIngredient;
+							supplier.id = largeIdSupplier;
+						}
+
+						ingredient.name = name;
+						ingredient2.name = name;
+						ingredients.push(ingredient);
+						ingredients2.push(ingredient2);
+
+						supplier.name = name;
+						supplier2.name = name;
+						suppliers.push(supplier);
+						suppliers2.push(supplier2);
+					}
+
+					for (let count = 0; count < 2; count++) {
+						ingredients[count].suppliers = {
+							create: [
+								{ [`${localCollectionSuppliers}_id`]: count === 0 ? suppliers[0] : suppliers2[0] },
+								{ [`${localCollectionSuppliers}_id`]: suppliers[1] },
+							],
+							update: [],
+							delete: [],
+						} as any;
+
+						ingredients2[count].suppliers = {
+							create: [
+								{ [`${localCollectionSuppliers}_id`]: suppliers2[0] },
+								{ [`${localCollectionSuppliers}_id`]: suppliers2[1] },
+							],
+							update: [],
+							delete: [],
+						} as any;
+					}
+
+					await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: [
+							{
+								...food,
+								ingredients: {
+									create: [
+										{ [`${localCollectionIngredients}_id`]: ingredients[0] },
+										{ [`${localCollectionIngredients}_id`]: ingredients[1] },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+							{
+								...food2,
+								ingredients: {
+									create: [
+										{ [`${localCollectionIngredients}_id`]: ingredients2[0] },
+										{ [`${localCollectionIngredients}_id`]: ingredients2[1] },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+							}),
+							fields: [
+								'id',
+								`ingredients.${localCollectionIngredients}_id.id`,
+								`ingredients.${localCollectionIngredients}_id.suppliers.${localCollectionSuppliers}_id.id`,
+							],
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(2);
+
+					expect(response.body.data.map((food: any) => food.id)).toEqual(
+						Array.from({ length: 2 }, (_, index) => largeIdFood + index)
+					);
+
+					expect(
+						response.body.data.flatMap((food: any) =>
+							food.ingredients.flatMap((ingredient: any) => ingredient[`${localCollectionIngredients}_id`].id)
+						)
+					).toEqual(Array.from({ length: 4 }, (_, index) => largeIdIngredient + index));
+
+					expect(
+						response.body.data.flatMap((food: any) =>
+							food.ingredients.flatMap((ingredient: any) =>
+								ingredient[`${localCollectionIngredients}_id`].suppliers.map(
+									(supplier: any) => supplier[`${localCollectionSuppliers}_id`].id
+								)
+							)
+						)
+					).toEqual(Array.from({ length: 8 }, (_, index) => largeIdSupplier + index));
 				});
 			});
 		});

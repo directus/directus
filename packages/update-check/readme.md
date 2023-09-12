@@ -1,10 +1,10 @@
 # `@directus/update-check`
 
-Check if an update is available for a given package
+Check if an update for Directus is available
 
 ## Description
 
-This package is a utility to determine if there is an update available for a given package.
+This package is a utility to determine if there is an update available for Directus.
 
 For more information about Directus, visit the [official website](https://directus.io).
 

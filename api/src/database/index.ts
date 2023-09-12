@@ -1,5 +1,5 @@
-import { createInspector } from '@directus/schema';
 import type { SchemaInspector } from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -58,6 +58,14 @@ export default function getDatabase(): Knex {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
 			} else {
 				requiredEnvVars.push('DB_CONNECTION_STRING');
+			}
+
+			break;
+		case 'mysql':
+			if (!env['DB_SOCKET_PATH']) {
+				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+			} else {
+				requiredEnvVars.push('DB_DATABASE', 'DB_USER', 'DB_PASSWORD', 'DB_SOCKET_PATH');
 			}
 
 			break;
