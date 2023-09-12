@@ -18,7 +18,7 @@ and overwrite what needed.
 
 For the base template, start with the raw essentials:
 
-```html
+```liquid
 <!doctype html>
 <html lang="en">
 <head>
@@ -41,7 +41,7 @@ public and you use the full URL in the template.
 Once you have your base template, you can create smaller templates with a specific purpose that reference your base
 template.
 
-```html
+```liquid
 {% layout "my-custom-base" %}
 {% block content %}
     <p>Content Here</p>
@@ -83,7 +83,7 @@ If you are using Flows, you can also inject data into emails:
 
 In your template, you can use the `firstname` variable like this:
 
-```html
+```liquid
 {% layout "my-custom-base" %}
 {% block content %}
     <p>Hi {{ firstname }},</p>
@@ -92,7 +92,7 @@ In your template, you can use the `firstname` variable like this:
 
 You may also provide a fallback if this variable is not provided.
 
-```html
+```liquid
 {% layout "my-custom-base" %}
 {% block content %}
     <p>Hi{% if firstname %}{{ firstname }}{% endif %},</p>
@@ -103,7 +103,7 @@ You may also provide a fallback if this variable is not provided.
 
 You can provide an array of data to a template and use a for loop to render the items.
 
-```html
+```liquid
 {% layout "my-custom-base" %}
 {% block content %}
     <div>
@@ -128,31 +128,33 @@ Data operation with the following filters:
 
 The response may look like this:
 
-```js
-{
-	"subscription": {
-		"name": "Premium"
+```json
+[
+	{
+		"subscription": {
+			"name": "Premium"
+		},
+		"count": {
+			"customer_id": 10
+		}
 	},
-	"count": {
-		"customer_id": 10
-	}
-},
-{
-	"subscription": {
-		"name": "Standard"
+	{
+		"subscription": {
+			"name": "Standard"
+		},
+		"count": {
+			"customer_id": 23
+		}
 	},
-	"count": {
-		"customer_id": 23
+	{
+		"subscription": {
+			"name": "Free"
+		},
+		"count": {
+			"customer_id": 143
+		}
 	}
-},
-{
-	"subscription": {
-		"name": "Free"
-	},
-	"count": {
-		"customer_id": 143
-	}
-}
+]
 ```
 
 Create an operation to Send an Email and change the type to Template. In the Data field, add the results of `{{$last}}`
@@ -163,7 +165,7 @@ to a variable such as `report`.
 For this report, the template uses a for loop to generate a table of results and capitalize the name for better
 appearance:
 
-```html
+```liquid
 {% layout "example-base" %}
 {% block header %}
     <h1>Weekly Subscription Report</h1>
