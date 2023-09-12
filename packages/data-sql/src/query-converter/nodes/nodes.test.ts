@@ -1,5 +1,5 @@
 import { expect, test, vi, afterEach } from 'vitest';
-import { convertNodes, type ConvertSelectOutput } from './nodes.js';
+import { convertNodesAndGenerateAliases, type ConvertSelectOutput } from './nodes.js';
 import { randomIdentifier } from '@directus/random';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
@@ -16,7 +16,6 @@ test('Convert nodes', () => {
 	const collection = randomIdentifier();
 	const randomPrimitiveField = randomIdentifier();
 	const randomJoinCurrentField = randomIdentifier();
-
 	const randomExternalCollection = randomIdentifier();
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
@@ -111,5 +110,5 @@ test('Convert nodes', () => {
 		parameters: [],
 	};
 
-	expect(convertNodes(collection, nodes, idGen)).toMatchObject(expected);
+	expect(convertNodesAndGenerateAliases(collection, nodes, idGen)).toMatchObject(expected);
 });

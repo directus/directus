@@ -13,13 +13,15 @@ export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'joins' | 'p
  * Any m2o node will be added to the list of joins, but the field will also be added to the list of selects.
  *
  * Each select node will get an auto generated alias. This alias will be used later on to convert the response to a nested object.
+ * @TODO This module should ONLY convert the query, without doing anything extra. The creation of the aliases should therefore be moved to a separate module.
+ * This is currently a technical dept which should be fixed soon.
  *
  * @param collection - the current collection, will be an alias when called recursively
  * @param abstractFields - all nodes from the abstract query
  * @param idxGenerator - the generator used to increase the parameter indices
  * @returns Select, join and parameters
  */
-export const convertNodes = (
+export const convertNodesAndGenerateAliases = (
 	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
 	idxGenerator: Generator<number, number, number>
@@ -48,7 +50,7 @@ export const convertNodes = (
 			const externalCollectionAlias = createUniqueIdentifier(m2oField.join.external.collection);
 			const sqlJoinNode = createJoin(collection, m2oField, externalCollectionAlias);
 			joins.push(sqlJoinNode);
-			const nestedOutput = convertNodes(externalCollectionAlias, m2oField.nodes, idxGenerator);
+			const nestedOutput = convertNodesAndGenerateAliases(externalCollectionAlias, m2oField.nodes, idxGenerator);
 			select.push(...nestedOutput.select);
 			continue;
 		}

@@ -1,25 +1,141 @@
 import type { AbstractQuery } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
-import { expect, test, describe } from 'vitest';
+import { expect, test, describe, vi, afterEach } from 'vitest';
 import DataDriverPostgres from './index.js';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 
-// @TODO mock a database response
+afterEach(() => {
+	vi.restoreAllMocks();
+});
 
-describe.todo('querying the driver', () => {
+const randomCollection = randomIdentifier();
+const randomCollectionToJoin = randomIdentifier();
+const firstField = randomIdentifier();
+const firstFieldId = randomIdentifier();
+const secondField = randomIdentifier();
+const secondFieldId = randomIdentifier();
+const secondFieldAlias = randomIdentifier();
+const joinField1 = randomIdentifier();
+const joinFieldId = randomIdentifier();
+const joinField1Alias = randomIdentifier();
+const joinField2 = randomIdentifier();
+const collectionToJoinId = randomIdentifier();
+const joinField2Id = randomIdentifier();
+const fk = randomIdentifier();
+const foreignPk = randomIdentifier();
+const joinAlias = randomIdentifier();
+
+describe('querying the driver', () => {
 	test('test', async () => {
-		const randomDataStore1 = randomIdentifier();
-		const randomDataStore2 = randomIdentifier();
-		const firstField = randomIdentifier();
-		const joinField1 = randomIdentifier();
-		const secondField = randomIdentifier();
-		const randomCollection = randomIdentifier();
-		const randomCollectionToJoin = randomIdentifier();
-		const randomAliasForJoinedCollection = randomIdentifier();
+		/**
+		 * the function 'convertToAbstractSqlQueryAndGenerateAliases' needs to me mocked.
+		 * Otherwise we wouldn't know the generated aliases and hence the db response.
+		 */
+		vi.mock('@directus/data-sql', async () => {
+			// import the actual package, but replace one function with a mock (partial mocking)
+			const actual: any = await vi.importActual('@directus/data-sql');
+
+			return {
+				...actual,
+				convertToAbstractSqlQueryAndGenerateAliases: vi.fn().mockImplementation(() => {
+					const sqlQuery: AbstractSqlQuery = {
+						select: [
+							{
+								type: 'primitive',
+								table: randomCollection,
+								column: firstField,
+								as: firstFieldId,
+							},
+							{
+								type: 'primitive',
+								table: randomCollection,
+								column: secondField,
+								as: secondFieldId,
+								alias: secondFieldAlias,
+							},
+							{
+								type: 'primitive',
+								table: collectionToJoinId,
+								column: joinField1,
+								as: joinFieldId,
+								alias: joinField1Alias,
+							},
+							{
+								type: 'primitive',
+								table: collectionToJoinId,
+								column: joinField2,
+								as: joinField2Id,
+							},
+						],
+						from: randomCollection,
+						joins: [
+							{
+								type: 'join',
+								table: randomCollectionToJoin,
+								as: collectionToJoinId,
+								on: {
+									type: 'condition',
+									negate: false,
+									condition: {
+										type: 'condition-field',
+										target: {
+											type: 'primitive',
+											table: randomCollection,
+											column: fk,
+										},
+										operation: 'eq',
+										compareTo: {
+											type: 'primitive',
+											table: collectionToJoinId,
+											column: foreignPk,
+										},
+									},
+								},
+								alias: joinAlias,
+							},
+						],
+						parameters: [],
+					};
+
+					return sqlQuery;
+				}),
+			};
+		});
+
+		vi.mock('./postgres-query.js', () => ({
+			queryPostgres: vi.fn().mockImplementation(() => {
+				const stream = new ReadableStream({
+					start(controller) {
+						const mockedData = [
+							{
+								[firstFieldId]: 937,
+								[secondFieldId]: 'lorem ipsum',
+								[joinFieldId]: 42,
+								[joinField2Id]: true,
+							},
+							{
+								[firstFieldId]: 1342,
+								[secondFieldId]: 'ipsum dapsum',
+								[joinFieldId]: 26,
+								[joinField2Id]: true,
+							},
+						];
+
+						mockedData.forEach((chunk) => controller.enqueue(chunk));
+					},
+				});
+
+				return {
+					client: null,
+					stream,
+				};
+			}),
+		}));
 
 		const query: AbstractQuery = {
 			root: true,
 			collection: randomCollection,
-			store: randomDataStore1,
+			store: 'randomDataStore1',
 			nodes: [
 				{
 					type: 'primitive',
@@ -28,6 +144,7 @@ describe.todo('querying the driver', () => {
 				{
 					type: 'primitive',
 					field: secondField,
+					alias: secondFieldAlias,
 				},
 				{
 					type: 'm2o',
@@ -35,19 +152,24 @@ describe.todo('querying the driver', () => {
 						{
 							type: 'primitive',
 							field: joinField1,
+							alias: joinField1Alias,
+						},
+						{
+							type: 'primitive',
+							field: joinField2,
 						},
 					],
-					alias: randomAliasForJoinedCollection,
 					join: {
 						current: {
-							fields: ['id'],
+							fields: [fk],
 						},
 						external: {
-							store: randomDataStore2,
+							store: 'randomDataStore1',
 							collection: randomCollectionToJoin,
-							fields: ['id'],
+							fields: [foreignPk],
 						},
 					},
+					alias: joinAlias,
 				},
 			],
 		};
@@ -56,20 +178,36 @@ describe.todo('querying the driver', () => {
 			connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 		});
 
-		// @ts-ignore
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const resultingStream = await driver.query(query);
+		const readableStream = await driver.query(query);
+		const actualResult: Record<string, any>[] = [];
 
-		// @TODO receive all data from the stream
-		const actualResult = {};
+		for await (const chunk of readableStream) {
+			actualResult.push(chunk);
 
-		const expectedResult = {
-			firstField: 12,
-			secondField: 'lorem ipsum',
-			randomCollectionToJoin: {
-				joinField1: 22,
+			// this is a hot fix. for some reason the mocked db response stream does not close properly
+			if (actualResult.length === 2) {
+				break;
+			}
+		}
+
+		const expectedResult = [
+			{
+				[firstField]: 937,
+				[secondFieldAlias]: 'lorem ipsum',
+				[randomCollectionToJoin]: {
+					[joinField1Alias]: 42,
+					[joinField2]: true,
+				},
 			},
-		};
+			{
+				[firstField]: 1342,
+				[secondFieldAlias]: 'ipsum dapsum',
+				[randomCollectionToJoin]: {
+					[joinField1Alias]: 26,
+					[joinField2]: true,
+				},
+			},
+		];
 
 		expect(actualResult).toEqual(expectedResult);
 	});

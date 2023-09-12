@@ -39,7 +39,7 @@ test('basic statement', () => {
 });
 
 test('statement with a limit', () => {
-	sample.statement.limit = { parameterIndex: 0 };
+	sample.statement.limit = { type: 'value', parameterIndex: 0 };
 	sample.statement.parameters = [randomInteger(1, 100)];
 
 	expect(constructSqlQuery(sample.statement)).toEqual({
@@ -49,8 +49,8 @@ test('statement with a limit', () => {
 });
 
 test('statement with limit and offset', () => {
-	sample.statement.limit = { parameterIndex: 0 };
-	sample.statement.offset = { parameterIndex: 1 };
+	sample.statement.limit = { type: 'value', parameterIndex: 0 };
+	sample.statement.offset = { type: 'value', parameterIndex: 1 };
 	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
 
 	expect(constructSqlQuery(sample.statement)).toEqual({
@@ -80,8 +80,8 @@ test('statement with order', () => {
 });
 
 test('statement with all possible modifiers', () => {
-	sample.statement.limit = { parameterIndex: 0 };
-	sample.statement.offset = { parameterIndex: 1 };
+	sample.statement.limit = { type: 'value', parameterIndex: 0 };
+	sample.statement.offset = { type: 'value', parameterIndex: 1 };
 
 	// variables to easily access the values from the expected statement
 	const firstConditionTable = randomIdentifier();

@@ -1,7 +1,7 @@
 import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types/index.js';
-import { convertAbstractQueryToAbstractSqlQuery } from './converter.js';
+import { convertToAbstractSqlQueryAndGenerateAliases } from './converter.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: {
@@ -29,7 +29,7 @@ beforeEach(() => {
 });
 
 test('Convert simple query', () => {
-	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
@@ -70,7 +70,7 @@ test('Convert query with filter', () => {
 		},
 	};
 
-	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
@@ -117,7 +117,7 @@ test('Convert query with a limit', () => {
 		},
 	};
 
-	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
@@ -152,7 +152,7 @@ test('Convert query with limit and offset', () => {
 		},
 	};
 
-	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
@@ -190,7 +190,7 @@ test('Convert query with a sort', () => {
 		],
 	};
 
-	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
@@ -231,7 +231,7 @@ test('Convert a query with a function as field select', () => {
 		field: randomField,
 	});
 
-	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
@@ -284,7 +284,7 @@ test('Convert a query with all possible modifiers', () => {
 		],
 	};
 
-	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
