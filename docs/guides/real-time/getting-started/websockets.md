@@ -51,7 +51,7 @@ At the top of the `<script>` tag, import the composables needed for the SDK
 <html>
 	<body>
 		<script>
-      import { createDirectus, staticToken, realtime } from "https://www.unpkg.com/@directus/sdk@11.0.3/dist/ index.js" // [!code ++]
+      import { createDirectus, staticToken, realtime } from "https://www.unpkg.com/@directus/sdk/dist/index.js" // [!code ++]
 
 			const url = 'wss://your-directus-url/websocket';
 			const access_token = 'your-access-token';
