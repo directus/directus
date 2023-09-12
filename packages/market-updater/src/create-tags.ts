@@ -1,4 +1,4 @@
-import { createItem, readItem, updateItem } from "@directus/sdk"
+import { createItem, readItems, updateItem } from "@directus/sdk"
 import type { ExtensionInfo } from "./types.js"
 import { client } from "./directus-sdk.js"
 
@@ -21,9 +21,9 @@ export async function createTags(extensions: ExtensionInfo[]) {
 		// eslint-disable-next-line no-console
 		console.log(`Creating tag ${tag}`)
 
-		const existingTag = await client.request(readItem('tags', tag))
+		const existingTag = await client.request(readItems('tags', { filter: { tag: { _eq: tag } }, fields: ['*'] }))
 
-		if (existingTag) {
+		if (existingTag && existingTag.length > 0) {
 			await client.request(updateItem('tags', tag, { tag }))
 		} else {
 			await client.request(createItem('tags', { tag }))

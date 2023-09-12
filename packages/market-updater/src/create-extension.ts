@@ -1,4 +1,4 @@
-import { createItem, readItem, updateItem } from "@directus/sdk"
+import { createItem, readItems, updateItem } from "@directus/sdk"
 import { getExtensionOptions } from "./get-extension.js"
 import type { Extension, ExtensionInfo, Permission, Version } from "./types.js"
 import { client } from "./directus-sdk.js"
@@ -100,9 +100,9 @@ export async function createExtension(extensionInfo: ExtensionInfo, registry: st
 		registry
 	}
 
-	const existingExtension = await client.request(readItem('extensions', latestPack.name))
+	const existingExtension = await client.request(readItems('extensions', { filter: { id: { _eq: encodeURIComponent(latestPack.name) } }, fields: ['*'] }))
 
-	if (existingExtension) {
+	if (existingExtension && existingExtension.length > 0) {
 		await client.request(updateItem('extensions', encodeURIComponent(latestPack.name), extension))
 	} else {
 		await client.request(createItem('extensions', extension))
