@@ -1183,7 +1183,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							filter: {
 								name: { _eq: artistName },
 							},
-							sort: ['-count.id'],
+							sort: '-count.id',
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -1196,7 +1196,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									filter: {
 										name: { _eq: artistName },
 									},
-									sort: ['-count.id'],
+									sort: '-count.id',
 									groupBy: ['company']
 								},
 								count: {
@@ -1208,21 +1208,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 
                     // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(response, null, 2))
+                    console.log(JSON.stringify(response.body, null, 2))
                     // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(gqlResponse, null, 2))
+                    console.log(JSON.stringify(gqlResponse.body, null, 2))
 
 					// Assert
 					expect(response.statusCode).toBe(200);
 
 					for (let i = 0; i < companies.length; i++) {
-						expect(response.body.data[i].count.id).toEqual(companiesCount[i]);
+						expect(parseInt(response.body.data[i].count.id)).toEqual(companiesCount[i]);
 					}
 
 					expect(gqlResponse.statusCode).toBe(200);
 
 					for (let i = 0; i < companies.length; i++) {
-						expect(gqlResponse.body.data[queryKey][i].count.id).toEqual(companiesCount[i]);
+						expect(parseInt(gqlResponse.body.data[queryKey][i].count.id)).toEqual(companiesCount[i]);
 					}
 				});
 			});
