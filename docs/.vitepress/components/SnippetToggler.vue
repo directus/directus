@@ -64,15 +64,24 @@ onBeforeMount(() => {
 
 <style scoped>
 .snippet-toggler {
+	--snippet-toggler-border-color: var(--vp-c-gray-light-4);
+}
+
+html.dark .snippet-toggler,
+.snippet-toggler.dark {
+	--snippet-toggler-border-color: transparent;
+}
+
+.snippet-toggler {
 	overflow: hidden;
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
-	border: 1px solid var(--vp-snippet-toggler-border);
+	border: 1px solid var(--snippet-toggler-border-color);
 }
 
 .snippet-toggler-header {
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 	color: var(--vp-c-gray-light-2);
-	border-bottom: 1px solid var(--vp-snippet-toggler-border);
+	border-bottom: 1px solid var(--snippet-toggler-border-color);
 	height: 40px;
 	display: flex;
 	align-items: center;
