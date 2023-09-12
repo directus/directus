@@ -5,9 +5,9 @@
 				<button
 					v-for="choice in choices"
 					:key="choice"
-					@click="selected = choice"
 					class="button"
 					:class="{ active: selected == choice }"
+					@click="selected = choice"
 				>
 					{{ choice }}
 				</button>
