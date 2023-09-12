@@ -1,4 +1,8 @@
-import { createExtension, createTags, createUsers, fetchExtensions, getExtension } from "./fetch-extensions.js"
+import { createExtension } from "./create-extension.js"
+import { createTags } from "./create-tags.js"
+import { createUsers } from "./create-users.js"
+import { fetchExtensions } from "./fetch-extensions.js"
+import { getExtension } from "./get-extension.js"
 import type { ExtensionInfo } from "./types.js"
 import 'dotenv/config'
 
@@ -24,6 +28,7 @@ for (const extension of extensions) {
 	await createExtension(extension, registry, emailIDMap)
 }
 
+// eslint-disable-next-line no-console
 console.log(errors.map(error => error.message))
 
 process.exit(0)
