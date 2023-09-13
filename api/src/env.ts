@@ -4,6 +4,7 @@
  */
 
 import { parseJSON, toArray } from '@directus/utils';
+import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash-es';
@@ -15,6 +16,9 @@ import { requireYAML } from './utils/require-yaml.js';
 import { toBoolean } from './utils/to-boolean.js';
 
 const require = createRequire(import.meta.url);
+
+// casting as string[] so we can use .includes() properly
+const configFileExtensions = JAVASCRIPT_FILE_EXTS as unknown as string[];
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
@@ -399,9 +403,9 @@ async function processConfiguration() {
 
 	if (fs.existsSync(configPath) === false) return {};
 
-	const fileExt = path.extname(configPath).toLowerCase();
+	const fileExt = path.extname(configPath).toLowerCase().substring(1);
 
-	if (['.js', '.cjs', '.mjs'].includes(fileExt)) {
+	if (configFileExtensions.includes(fileExt)) {
 		const data = await import(pathToFileURL(configPath).toString());
 		const config = getModuleDefault(data);
 
