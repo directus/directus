@@ -76,8 +76,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-An array of up to [limit](/reference/query#limit) [version objects](#the-version-object). If no items are available, data
-will be an empty array.
+An array of up to [limit](/reference/query#limit) [version objects](#the-version-object). If no items are available,
+data will be an empty array.
 
 ### Example
 
@@ -667,8 +667,8 @@ Promote an existing version into the main item.
 
 `POST /versions/:id/promote`
 
-Pass the current hash of the main item (usually obtained from the `compare` endpoint) along with an array of field
-names of which the values are to be promoted from the current version into the main item.
+Pass the current hash of the main item (usually obtained from the `compare` endpoint) along with an array of field names
+of which the values are to be promoted from the current version into the main item.
 
 ```json
 {
