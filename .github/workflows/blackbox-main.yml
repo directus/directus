@@ -1,9 +1,6 @@
 name: Blackbox Tests
 
 on:
-  pull_request: # Remember to remove when all tests pass
-    branches:
-      - main
   push:
     branches:
       - main

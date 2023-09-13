@@ -1197,20 +1197,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										name: { _eq: artistName },
 									},
 									sort: '-count.id',
-									groupBy: ['company']
+									groupBy: ['company'],
 								},
 								count: {
 									id: true,
 								},
-								group: true
+								group: true,
 							},
 						},
 					});
-
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(response.body, null, 2))
-                    // eslint-disable-next-line no-console
-                    console.log(JSON.stringify(gqlResponse.body, null, 2))
 
 					// Assert
 					expect(response.statusCode).toBe(200);
