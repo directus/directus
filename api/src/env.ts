@@ -17,9 +17,6 @@ import { toBoolean } from './utils/to-boolean.js';
 
 const require = createRequire(import.meta.url);
 
-// casting as string[] so we can use .includes() properly
-const configFileExtensions = JAVASCRIPT_FILE_EXTS as unknown as string[];
-
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
 	// general
@@ -405,7 +402,7 @@ async function processConfiguration() {
 
 	const fileExt = path.extname(configPath).toLowerCase().substring(1);
 
-	if (configFileExtensions.includes(fileExt)) {
+	if ((JAVASCRIPT_FILE_EXTS as readonly string[]).includes(fileExt)) {
 		const data = await import(pathToFileURL(configPath).toString());
 		const config = getModuleDefault(data);
 
