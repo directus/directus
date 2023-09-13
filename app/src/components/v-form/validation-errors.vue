@@ -4,40 +4,43 @@
 			<p>{{ t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
 				<li v-for="(validationError, index) of validationErrorsWithNames" :key="index">
-					<strong class="field" @click="$emit('scroll-to-field', validationError.group || validationError.field)">
-						<template v-if="validationError.field && validationError.hidden && validationError.group">
-							{{
-								`${validationError.fieldName} (${t('hidden_in_group', {
-									group: validationError.groupName,
-								})})`
-							}}
-						</template>
-						<template v-else-if="validationError.field && validationError.hidden">
-							{{ `${validationError.fieldName} (${t('hidden')})` }}
-						</template>
-						<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
-					</strong>
-					<span>:&nbsp;</span>
-					<template v-if="validationError.customValidationMessage">
-						{{ validationError.customValidationMessage }}
-						<v-icon
-							v-tooltip="
-								validationError.code === 'RECORD_NOT_UNIQUE'
-									? t('validationError.unique', validationError)
-									: t(`validationError.${validationError.type}`, validationError)
-							"
-							small
-							name="help"
-						/>
-					</template>
-					<template v-else>
-						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
-							{{ t('validationError.unique', validationError) }}
+					<span class="validation-error">
+						<strong class="field" @click="$emit('scroll-to-field', validationError.group || validationError.field)">
+							<template v-if="validationError.field && validationError.hidden && validationError.group">
+								{{
+									`${validationError.fieldName} (${t('hidden_in_group', {
+										group: validationError.groupName,
+									})})`
+								}}
+							</template>
+							<template v-else-if="validationError.field && validationError.hidden">
+								{{ `${validationError.fieldName} (${t('hidden')})` }}
+							</template>
+							<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
+						</strong>
+						<span>:&nbsp;</span>
+						<template v-if="validationError.customValidationMessage">
+							{{ validationError.customValidationMessage }}
+							<v-icon
+								v-tooltip="
+									validationError.code === 'RECORD_NOT_UNIQUE'
+										? t('validationError.unique', validationError)
+										: t(`validationError.${validationError.type}`, validationError)
+								"
+								small
+								right
+								name="help"
+							/>
 						</template>
 						<template v-else>
-							{{ t(`validationError.${validationError.type}`, validationError) }}
+							<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
+								{{ t('validationError.unique', validationError) }}
+							</template>
+							<template v-else>
+								{{ t(`validationError.${validationError.type}`, validationError) }}
+							</template>
 						</template>
-					</template>
+					</span>
 				</li>
 			</ul>
 		</div>
@@ -97,6 +100,11 @@ const validationErrorsWithNames = computed<
 		&:hover {
 			text-decoration: underline;
 		}
+	}
+
+	.validation-error {
+		display: inline-flex;
+		align-items: center;
 	}
 
 	li:not(:last-child) {

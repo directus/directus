@@ -1,25 +1,16 @@
 <template>
 	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
 		<div class="snippet-toggler-header">
-			<span class="snippet-toggler-header-label">{{ label }}</span>
-
-			<span class="spacer" />
-
-			<div class="snippet-toggler-header-lang-container">
-				<select v-model="selected" class="snippet-toggler-header-lang">
-					<option v-for="choice in choices" :key="choice" :value="choice">
-						{{ choice }}
-					</option>
-				</select>
-				<svg
-					class="snippet-toggler-header-lang-arrow"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 48 48"
-					height="18"
-					width="18"
+			<div class="buttons">
+				<button
+					v-for="choice in choices"
+					:key="choice"
+					class="button"
+					:class="{ active: selected == choice }"
+					@click="selected = choice"
 				>
-					<path d="m24 30.75-12-12 2.15-2.15L24 26.5l9.85-9.85L36 18.8Z" />
-				</svg>
+					{{ choice }}
+				</button>
 			</div>
 		</div>
 
@@ -73,68 +64,54 @@ onBeforeMount(() => {
 
 <style scoped>
 .snippet-toggler {
+	--snippet-toggler-border-color: var(--vp-c-gray-light-4);
+}
+
+html.dark .snippet-toggler,
+.snippet-toggler.dark {
+	--snippet-toggler-border-color: transparent;
+}
+
+.snippet-toggler {
 	overflow: hidden;
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
-	border: 1px solid var(--vp-snippet-toggler-border);
+	border: 1px solid var(--snippet-toggler-border-color);
 }
 
 .snippet-toggler-header {
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 	color: var(--vp-c-gray-light-2);
-	border-bottom: 1px solid var(--vp-snippet-toggler-border);
+	border-bottom: 1px solid var(--snippet-toggler-border-color);
 	height: 40px;
 	display: flex;
 	align-items: center;
-	padding: 0 24px;
+	padding: 24px;
 }
 
-.spacer {
-	flex-grow: 1;
-}
-
-.snippet-toggler-header-label {
-	text-transform: uppercase;
-	font-size: 12px;
-	font-weight: 600;
-}
-
-.snippet-toggler-header-lang-container {
+.buttons {
 	display: flex;
-	align-items: center;
+	gap: 0.5em;
 }
 
-.snippet-toggler-header-lang-container:hover {
-	color: var(--vp-snippet-toggler-lang-hover);
+.button {
+	padding: 0.25em 0.75em;
+	color: var(--vp-c-gray);
 }
 
-.snippet-toggler-header-lang {
-	background-color: transparent;
-	text-align: right;
-	border: 0;
-	border-color: transparent;
-	padding: 0;
-	font-family: inherit;
-	color: inherit;
-	appearance: none;
-	line-height: inherit;
-	position: relative;
-	font-size: 12px;
-	padding-inline-end: 20px;
-}
-.snippet-toggler-header-lang option {
+.button.active {
 	color: var(--vp-c-black);
+	background: var(--vp-c-mute);
+	border-radius: var(--rounded-lg);
 }
 
-.snippet-toggler-header-lang:focus {
-	outline: none;
+html.dark .snippet-toggler .button,
+.snippet-toggler.dark .button {
+	color: var(--vp-c-gray-light-2);
 }
 
-.snippet-toggler-header-lang-arrow {
-	position: absolute;
-	right: 24px;
-	fill: currentColor;
-	user-select: none;
-	pointer-events: none;
+html.dark .snippet-toggler .button.active,
+.snippet-toggler.dark .button.active {
+	color: var(--vp-c-gray-light-4);
 }
 
 .snippet-toggler .content-area :deep(.lang) {

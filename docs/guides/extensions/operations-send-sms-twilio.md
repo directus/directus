@@ -144,15 +144,18 @@ will use the message variable from our handler, `to` will use the `phone_number`
 `TWILIO_PHONE_NUMBER`.
 
 ```js
-client.messages.create({
-	body: message,
-	to: toNumber,
-	from: fromNumber,
-}).then((response) => {
-	return response;
-}).catch((error) => {
-	return error;
-});
+client.messages
+	.create({
+		body: message,
+		to: toNumber,
+		from: fromNumber,
+	})
+	.then((response) => {
+		return response;
+	})
+	.catch((error) => {
+		return error;
+	});
 ```
 
 Make sure the return the `response` and `error` so they can be included in the Flow’s log.
@@ -262,15 +265,18 @@ export default {
 		const fromNumber = env.TWILIO_PHONE_NUMBER;
 		const client = new twilio(accountSid, authToken);
 
-		client.messages.create({
-			body: message,
-			to: toNumber,
-			from: fromNumber,
-		}).then((response) => {
-			return response;
-		}).catch((error) => {
-			return error;
-		});
+		client.messages
+			.create({
+				body: message,
+				to: toNumber,
+				from: fromNumber,
+			})
+			.then((response) => {
+				return response;
+			})
+			.catch((error) => {
+				return error;
+			});
 	},
 };
 ```
