@@ -5,20 +5,20 @@ import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { BranchesService } from '../services/branches.js';
 import { MetaService } from '../services/meta.js';
+import { VersionsService } from '../services/versions.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
-router.use(useCollection('directus_branches'));
+router.use(useCollection('directus_versions'));
 
 router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -55,7 +55,7 @@ router.post(
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	const service = new BranchesService({
+	const service = new VersionsService({
 		accountability: req.accountability,
 		schema: req.schema,
 	});
@@ -87,7 +87,7 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -104,7 +104,7 @@ router.patch(
 	'/',
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -139,7 +139,7 @@ router.patch(
 router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -166,7 +166,7 @@ router.delete(
 	'/',
 	validateBatch('delete'),
 	asyncHandler(async (req, _res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -188,7 +188,7 @@ router.delete(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, _res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -203,28 +203,28 @@ router.delete(
 router.get(
 	'/:pk/compare',
 	asyncHandler(async (req, res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const branch = await service.readOne(req.params['pk']!);
+		const version = await service.readOne(req.params['pk']!);
 
-		const { outdated, mainHash } = await service.verifyHash(branch['collection'], branch['item'], branch['hash']);
+		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
 
-		const commits = await service.getBranchCommits(branch['id']);
+		const saves = await service.getVersionSaves(version['id']);
 
-		const current = assign({}, ...commits);
+		const current = assign({}, ...saves);
 
 		const fields = Object.keys(current);
 
-		const mainBranchItem = await service.getMainBranchItem(
-			branch['collection'],
-			branch['item'],
+		const main = await service.getMainItem(
+			version['collection'],
+			version['item'],
 			fields.length > 0 ? { fields } : undefined
 		);
 
-		res.locals['payload'] = { data: { outdated, mainHash, current, main: mainBranchItem } };
+		res.locals['payload'] = { data: { outdated, mainHash, current, main } };
 
 		return next();
 	}),
@@ -232,22 +232,22 @@ router.get(
 );
 
 router.post(
-	'/:pk/commit',
+	'/:pk/save',
 	asyncHandler(async (req, res, next) => {
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const branch = await service.readOne(req.params['pk']!);
+		const version = await service.readOne(req.params['pk']!);
 
-		const mainBranchItem = await service.getMainBranchItem(branch['collection'], branch['item']);
+		const mainItem = await service.getMainItem(version['collection'], version['item']);
 
-		await service.commit(req.params['pk']!, req.body);
+		await service.save(req.params['pk']!, req.body);
 
-		const commits = await service.getBranchCommits(req.params['pk']!);
+		const saves = await service.getVersionSaves(req.params['pk']!);
 
-		const result = assign(mainBranchItem, ...commits);
+		const result = assign(mainItem, ...saves);
 
 		res.locals['payload'] = { data: result || null };
 
@@ -257,18 +257,18 @@ router.post(
 );
 
 router.post(
-	'/:pk/merge',
+	'/:pk/promote',
 	asyncHandler(async (req, res, next) => {
 		if (typeof req.body.mainHash !== 'string') {
 			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
 		}
 
-		const service = new BranchesService({
+		const service = new VersionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const updatedItemKey = await service.merge(req.params['pk']!, req.body.mainHash, req.body?.['fields']);
+		const updatedItemKey = await service.promote(req.params['pk']!, req.body.mainHash, req.body?.['fields']);
 
 		res.locals['payload'] = { data: updatedItemKey || null };
 

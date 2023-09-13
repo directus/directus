@@ -62,8 +62,8 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.search = rawQuery['search'];
 	}
 
-	if (rawQuery['branch']) {
-		query.branch = rawQuery['branch'];
+	if (rawQuery['version']) {
+		query.version = rawQuery['version'];
 	}
 
 	if (rawQuery['export']) {

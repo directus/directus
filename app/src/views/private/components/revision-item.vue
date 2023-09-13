@@ -50,8 +50,8 @@ const headerMessage = computed(() => {
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
-		case 'commit':
-			return t('revision_delta_commited', revisionCount.value);
+		case 'version_saved':
+			return t('revision_delta_version_saved', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -102,7 +102,7 @@ const user = computed(() => {
 				background-color: var(--primary);
 			}
 
-			&.commit {
+			&.version_save {
 				background-color: var(--primary);
 			}
 

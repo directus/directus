@@ -1,4 +1,5 @@
-import type { Branch, Item, PrimaryKey, Query } from '@directus/types';
+import { Action } from '@directus/constants';
+import type { Item, PrimaryKey, Query, Version } from '@directus/types';
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -13,16 +14,16 @@ import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 
-const branchUpdateSchema = Joi.object({
+const versionUpdateSchema = Joi.object({
 	name: Joi.string(),
 });
 
-export class BranchesService extends ItemsService {
+export class VersionsService extends ItemsService {
 	authorizationService: AuthorizationService;
 	collectionsService: CollectionsService;
 
 	constructor(options: AbstractServiceOptions) {
-		super('directus_branches', options);
+		super('directus_versions', options);
 
 		this.authorizationService = new AuthorizationService({
 			accountability: this.accountability,
@@ -40,8 +41,8 @@ export class BranchesService extends ItemsService {
 	private async validateCreateData(data: Partial<Item>): Promise<void> {
 		if (!data['name']) throw new InvalidPayloadError({ reason: `"name" is required` });
 
-		// Reserves the "main" branch name for the branch query parameter
-		if (data['name'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved branch name` });
+		// Reserves the "main" version name for the version query parameter
+		if (data['name'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version name` });
 
 		if (!data['collection']) {
 			throw new InvalidPayloadError({ reason: `"collection" is required` });
@@ -54,18 +55,18 @@ export class BranchesService extends ItemsService {
 
 		if (!existingCollection.meta?.versioning) {
 			throw new UnprocessableContentError({
-				reason: `Branch feature is not enabled for collection "${data['collection']}"`,
+				reason: `Versioning feature is not enabled for collection "${data['collection']}"`,
 			});
 		}
 
-		const existingBranches = await super.readByQuery({
+		const existingVersions = await super.readByQuery({
 			fields: ['name', 'collection', 'item'],
 			filter: { name: { _eq: data['name'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
 		});
 
-		if (existingBranches.length > 0) {
+		if (existingVersions.length > 0) {
 			throw new UnprocessableContentError({
-				reason: `Branch "${data['name']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
+				reason: `Version "${data['name']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
 		}
 
@@ -75,16 +76,16 @@ export class BranchesService extends ItemsService {
 
 	private async validateUpdateData(data: Partial<Item>): Promise<void> {
 		// Only allow updates on "name" field
-		const { error } = branchUpdateSchema.validate(data);
+		const { error } = versionUpdateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		// Reserves the "main" branch name for the branch query parameter
+		// Reserves the "main" version name for the version query parameter
 		if ('name' in data && data['name'] === 'main') {
-			throw new InvalidPayloadError({ reason: `"main" is a reserved branch name` });
+			throw new InvalidPayloadError({ reason: `"main" is a reserved version name` });
 		}
 	}
 
-	async getMainBranchItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
+	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
 		// will throw an error if the accountability does not have permission to read the item
 		await this.authorizationService.checkAccess('read', collection, item);
 
@@ -102,21 +103,21 @@ export class BranchesService extends ItemsService {
 		item: PrimaryKey,
 		hash: string
 	): Promise<{ outdated: boolean; mainHash: string }> {
-		const mainBranchItem = await this.getMainBranchItem(collection, item);
+		const mainItem = await this.getMainItem(collection, item);
 
-		const mainHash = objectHash(mainBranchItem);
+		const mainHash = objectHash(mainItem);
 
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getBranchCommits(key: PrimaryKey): Promise<Partial<Item>[]> {
+	async getVersionSaves(key: PrimaryKey): Promise<Partial<Item>[]> {
 		const revisionsService = new RevisionsService({
 			knex: this.knex,
 			schema: this.schema,
 		});
 
 		const result = await revisionsService.readByQuery({
-			filter: { branch: { _eq: key } },
+			filter: { version: { _eq: key } },
 		});
 
 		return result.map((revision) => revision['delta']);
@@ -125,9 +126,9 @@ export class BranchesService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.validateCreateData(data);
 
-		const mainBranchItem = await this.getMainBranchItem(data['collection'], data['item']);
+		const mainItem = await this.getMainItem(data['collection'], data['item']);
 
-		data['hash'] = objectHash(mainBranchItem);
+		data['hash'] = objectHash(mainItem);
 
 		return super.createOne(data, opts);
 	}
@@ -140,9 +141,9 @@ export class BranchesService extends ItemsService {
 		for (const item of data) {
 			await this.validateCreateData(item);
 
-			const mainBranchItem = await this.getMainBranchItem(item['collection'], item['item']);
+			const mainItem = await this.getMainItem(item['collection'], item['item']);
 
-			item['hash'] = objectHash(mainBranchItem);
+			item['hash'] = objectHash(mainItem);
 		}
 
 		return super.createMany(data, opts);
@@ -172,8 +173,8 @@ export class BranchesService extends ItemsService {
 		return super.updateByQuery(query, data, opts);
 	}
 
-	async commit(key: PrimaryKey, data: Partial<Item>) {
-		const branch = await super.readOne(key);
+	async save(key: PrimaryKey, data: Partial<Item>) {
+		const version = await super.readOne(key);
 
 		const payloadService = new PayloadService(this.collection, {
 			accountability: this.accountability,
@@ -192,22 +193,22 @@ export class BranchesService extends ItemsService {
 		});
 
 		const activity = await activityService.createOne({
-			action: 'commit',
+			action: Action.VERSION_SAVE,
 			user: this.accountability?.user ?? null,
-			collection: branch['collection'],
+			collection: version['collection'],
 			ip: this.accountability?.ip ?? null,
 			user_agent: this.accountability?.userAgent ?? null,
 			origin: this.accountability?.origin ?? null,
-			item: branch['item'],
+			item: version['item'],
 		});
 
 		const revisionDelta = await payloadService.prepareDelta(data);
 
 		await revisionsService.createOne({
 			activity,
-			branch: key,
-			collection: branch['collection'],
-			item: branch['item'],
+			version: key,
+			collection: version['collection'],
+			item: version['item'],
 			data: revisionDelta,
 			delta: revisionDelta,
 		});
@@ -215,8 +216,8 @@ export class BranchesService extends ItemsService {
 		return data;
 	}
 
-	async merge(branch: PrimaryKey, mainHash: string, fields?: string[]) {
-		const { id, collection, item } = (await this.readOne(branch)) as Branch;
+	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {
+		const { id, collection, item } = (await this.readOne(version)) as Version;
 
 		// will throw an error if the accountability does not have permission to update the item
 		await this.authorizationService.checkAccess('update', collection, item);
@@ -225,15 +226,15 @@ export class BranchesService extends ItemsService {
 
 		if (outdated) {
 			throw new UnprocessableContentError({
-				reason: `Main branch has changed since this branch was last updated`,
+				reason: `Main item has changed since this version was last updated`,
 			});
 		}
 
-		const commits = await this.getBranchCommits(id);
+		const saves = await this.getVersionSaves(id);
 
-		const branchResult = assign({}, ...commits);
+		const versionResult = assign({}, ...saves);
 
-		const payloadToUpdate = fields ? pick(branchResult, fields) : branchResult;
+		const payloadToUpdate = fields ? pick(versionResult, fields) : versionResult;
 
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
@@ -241,12 +242,12 @@ export class BranchesService extends ItemsService {
 		});
 
 		const payloadAfterHooks = await emitter.emitFilter(
-			['items.merge', `${collection}.items.merge`],
+			['items.promote', `${collection}.items.promote`],
 			payloadToUpdate,
 			{
 				collection,
 				item,
-				branch,
+				version,
 			},
 			{
 				database: getDatabase(),
@@ -258,12 +259,12 @@ export class BranchesService extends ItemsService {
 		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
 
 		emitter.emitAction(
-			['items.merge', `${collection}.items.merge`],
+			['items.promote', `${collection}.items.promote`],
 			{
 				payload: payloadAfterHooks,
 				collection,
 				item: updatedItemKey,
-				branch,
+				version,
 			},
 			{
 				database: getDatabase(),
