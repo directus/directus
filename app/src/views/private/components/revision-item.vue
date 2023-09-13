@@ -50,7 +50,7 @@ const headerMessage = computed(() => {
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
-		case 'version_saved':
+		case 'version_save':
 			return t('revision_delta_version_saved', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
