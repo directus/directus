@@ -27,8 +27,8 @@ const validationSync = computed({
 		};
 	},
 	set(value) {
-		validation.value = value.validation;
-		validationMessage.value = value.validationMessage;
+		validation.value = value.validation ?? null;
+		validationMessage.value = value.validationMessage ?? null;
 	},
 });
 
