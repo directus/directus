@@ -4,12 +4,18 @@
  *  @packageDocumentation
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
-import { convertToAbstractSqlQueryAndGenerateAliases, expand, mapAliasesToNestedPaths } from '@directus/data-sql';
+import {
+	convertToAbstractSqlQueryAndGenerateAliases,
+	expand,
+	mapAliasesToNestedPaths,
+	type ParameterizedSqlStatement,
+} from '@directus/data-sql';
 import type { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
 import { constructSqlQuery } from './query/index.js';
-import { queryPostgres } from './postgres-query.js';
+import QueryStream from 'pg-query-stream';
+import { Readable } from 'node:stream';
 
 export interface DataDriverPostgresConfig {
 	connectionString: string;
@@ -31,6 +37,19 @@ export default class DataDriverPostgres implements DataDriver {
 		await this.#pool.end();
 	}
 
+	async getDataFromSource(pool: pg.Pool, sql: ParameterizedSqlStatement): Promise<{ poolClient: any; stream: any }> {
+		const poolClient: PoolClient = await pool.connect();
+		const queryStream = new QueryStream(sql.statement, sql.parameters);
+		const stream = poolClient.query(queryStream);
+		stream.on('end', () => poolClient?.release());
+		const webStream = Readable.toWeb(stream);
+
+		return {
+			poolClient,
+			stream: webStream,
+		};
+	}
+
 	async query(query: AbstractQuery): Promise<ReadableStream> {
 		let client: PoolClient | null = null;
 
@@ -38,7 +57,7 @@ export default class DataDriverPostgres implements DataDriver {
 			const abstractSqlQuery = convertToAbstractSqlQueryAndGenerateAliases(query);
 			const sql = constructSqlQuery(abstractSqlQuery);
 
-			const { poolClient, stream } = await queryPostgres(this.#pool, sql);
+			const { poolClient, stream } = await this.getDataFromSource(this.#pool, sql);
 			client = poolClient;
 
 			const aliasMap = mapAliasesToNestedPaths(

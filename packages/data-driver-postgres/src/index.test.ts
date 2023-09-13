@@ -102,36 +102,6 @@ describe('querying the driver', () => {
 			};
 		});
 
-		vi.mock('./postgres-query.js', () => ({
-			queryPostgres: vi.fn().mockImplementation(() => {
-				const stream = new ReadableStream({
-					start(controller) {
-						const mockedData = [
-							{
-								[firstFieldId]: 937,
-								[secondFieldId]: 'lorem ipsum',
-								[joinFieldId]: 42,
-								[joinField2Id]: true,
-							},
-							{
-								[firstFieldId]: 1342,
-								[secondFieldId]: 'ipsum dapsum',
-								[joinFieldId]: 26,
-								[joinField2Id]: true,
-							},
-						];
-
-						mockedData.forEach((chunk) => controller.enqueue(chunk));
-					},
-				});
-
-				return {
-					client: null,
-					stream,
-				};
-			}),
-		}));
-
 		const query: AbstractQuery = {
 			root: true,
 			collection: randomCollection,
@@ -176,6 +146,31 @@ describe('querying the driver', () => {
 
 		const driver = new DataDriverPostgres({
 			connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+		});
+
+		vi.spyOn(driver, 'getDataFromSource').mockReturnValue({
+			// @ts-ignore a promise is normally been returned
+			client: null,
+			stream: new ReadableStream({
+				start(controller) {
+					const mockedData = [
+						{
+							[firstFieldId]: 937,
+							[secondFieldId]: 'lorem ipsum',
+							[joinFieldId]: 42,
+							[joinField2Id]: true,
+						},
+						{
+							[firstFieldId]: 1342,
+							[secondFieldId]: 'ipsum dapsum',
+							[joinFieldId]: 26,
+							[joinField2Id]: true,
+						},
+					];
+
+					mockedData.forEach((chunk) => controller.enqueue(chunk));
+				},
+			}),
 		});
 
 		const readableStream = await driver.query(query);
