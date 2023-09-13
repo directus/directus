@@ -29,15 +29,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import api, { addTokenToURL } from '@/api';
-import EditorJS from '@editorjs/editorjs';
-import { isEqual, cloneDeep } from 'lodash';
-import { useFileHandler } from './use-file-handler';
-import getTools from './tools';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
+import EditorJS from '@editorjs/editorjs';
+import { cloneDeep, isEqual } from 'lodash';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import getTools from './tools';
+import { useFileHandler } from './use-file-handler';
 
 const props = withDefaults(
 	defineProps<{
@@ -53,14 +53,14 @@ const props = withDefaults(
 	{
 		disabled: false,
 		autofocus: false,
-		value: () => null,
+		value: null,
 		bordered: true,
 		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
 		font: 'sans-serif',
 	}
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
 
 const { t } = useI18n();
 
@@ -70,10 +70,11 @@ const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFil
 	useFileHandler();
 
 const editorjsRef = ref<EditorJS>();
+const editorjsIsReady = ref(false);
 const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
-const haveValuesChanged = ref<boolean>(false);
+const haveValuesChanged = ref(false);
 
 const tools = getTools(
 	{
@@ -88,20 +89,20 @@ const tools = getTools(
 );
 
 onMounted(async () => {
-	const sanitizedValue = sanitizeValue(props.value);
-
 	editorjsRef.value = new EditorJS({
 		logLevel: 'ERROR' as EditorJS.LogLevels,
 		holder: editorElement.value,
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
-		onChange: (api: any, event: any) => emitValue(api, event),
+		onChange: (api) => emitValue(api),
 		tools: tools,
 	});
 
-	// we have initial data, so we render it once the editor is ready...
 	await editorjsRef.value.isReady;
+	editorjsIsReady.value = true;
+
+	const sanitizedValue = sanitizeValue(props.value);
 
 	if (sanitizedValue) {
 		await editorjsRef.value.render(sanitizedValue);
@@ -113,22 +114,23 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-	if (!editorjsRef.value) return;
-
-	editorjsRef.value.destroy();
+	editorjsRef.value?.destroy();
 });
 
 watch(
 	() => props.value,
-	async (newVal: any, oldVal: any) => {
-		if (!editorjsRef.value || !editorjsRef.value.isReady || haveValuesChanged.value) return;
+	async (newVal, oldVal) => {
+		// First value will be set in 'onMounted'
+		if (!editorjsRef.value || !editorjsIsReady.value) return;
 
-		if (fileHandler.value !== null) return;
+		if (haveValuesChanged.value) {
+			haveValuesChanged.value = false;
+			return;
+		}
 
 		if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
 
 		try {
-			await editorjsRef.value.isReady;
 			const sanitizedValue = sanitizeValue(newVal);
 
 			if (sanitizedValue) {
@@ -139,17 +141,16 @@ watch(
 		} catch (err: any) {
 			unexpectedError(err);
 		}
-
-		haveValuesChanged.value = false;
 	}
 );
 
-async function emitValue(context: EditorJS.API, _event: CustomEvent) {
+async function emitValue(context: EditorJS.API) {
 	if (props.disabled || !context || !context.saver) return;
-	haveValuesChanged.value = true;
 
 	try {
-		const result: EditorJS.OutputData = await context.saver.save();
+		const result = await context.saver.save();
+
+		haveValuesChanged.value = true;
 
 		if (!result || result.blocks.length < 1) {
 			emit('input', null);
@@ -167,7 +168,6 @@ async function emitValue(context: EditorJS.API, _event: CustomEvent) {
 function sanitizeValue(value: any): EditorJS.OutputData | null {
 	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
 
-	// we use cloneDeep to recursively clone the object
 	return cloneDeep({
 		time: value?.time || Date.now(),
 		version: value?.version || '0.0.0',
