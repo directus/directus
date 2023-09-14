@@ -59,18 +59,18 @@ following object:
 
 ```js
 options: [
-    {
-        field: 'show_months',
-        type: 'boolean',
-        name: 'Show months as well',
-        meta: {
-            interface: 'boolean',
-            options: {
-                label: 'Yes',
-            },
-            width: 'half',
-        },
-    },
+	{
+		field: 'show_months',
+		type: 'boolean',
+		name: 'Show months as well',
+		meta: {
+			interface: 'boolean',
+			options: {
+				label: 'Yes',
+			},
+			width: 'half',
+		},
+	},
 ],
 ```
 
