@@ -16,7 +16,6 @@ import {
 	IllegalAssetTransformationError,
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
-	RequestTimeoutError,
 } from '../errors/index.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
@@ -24,7 +23,6 @@ import type { AbstractServiceOptions, File, Transformation, TransformationSet } 
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
-import { RequestTimeoutCause } from '../errors/request-timeout.js';
 
 export class AssetsService {
 	knex: Knex;
@@ -167,8 +165,10 @@ export class AssetsService {
 				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'],
 			});
 
+			const timeoutSeconds = clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600);
+
 			transformer.timeout({
-				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
+				seconds: timeoutSeconds,
 			});
 
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
@@ -186,7 +186,10 @@ export class AssetsService {
 				await storage.location(file.storage).delete(assetFilename);
 
 				if ((error as Error)?.message?.includes('timeout')) {
-					throw new RequestTimeoutError({ cause: RequestTimeoutCause.AssetTransformation });
+					throw new ServiceUnavailableError({
+						service: 'asset',
+						reason: `Transformation timed out after ${timeoutSeconds} seconds`,
+					});
 				} else {
 					throw error;
 				}

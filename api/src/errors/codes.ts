@@ -17,7 +17,6 @@ export enum ErrorCode {
 	RangeNotSatisfiable = 'RANGE_NOT_SATISFIABLE',
 	RecordNotUnique = 'RECORD_NOT_UNIQUE',
 	RequestsExceeded = 'REQUESTS_EXCEEDED',
-	RequestTimeout = 'REQUEST_TIMEOUT',
 	RouteNotFound = 'ROUTE_NOT_FOUND',
 	ServiceUnavailable = 'SERVICE_UNAVAILABLE',
 	TokenExpired = 'TOKEN_EXPIRED',
