@@ -1348,6 +1348,9 @@ importers:
 
   packages/market-updater:
     dependencies:
+      '@directus/constants':
+        specifier: workspace:*
+        version: link:../constants
       '@directus/sdk':
         specifier: workspace:^
         version: link:../../sdk
@@ -1366,19 +1369,34 @@ importers:
       dotenv:
         specifier: 16.0.3
         version: 16.0.3
+      fs-extra:
+        specifier: 11.1.1
+        version: 11.1.1
       node-fetch:
         specifier: 3.3.2
         version: 3.3.2
       octokit:
         specifier: ^3.1.0
         version: 3.1.0
+      tar:
+        specifier: 6.1.13
+        version: 6.1.13
       tsx:
         specifier: 3.12.7
         version: 3.12.7
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/fs-extra':
+        specifier: 11.0.1
+        version: 11.0.1
+      '@types/tar':
+        specifier: 6.1.4
+        version: 6.1.4
       typescript:
         specifier: 5.0.4
         version: 5.0.4

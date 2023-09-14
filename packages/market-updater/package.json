@@ -26,18 +26,24 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
+		"@directus/constants": "workspace:*",
 		"@directus/sdk": "workspace:^",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@npm/types": "1.0.2",
 		"@octokit/types": "^11.1.0",
 		"dotenv": "16.0.3",
+		"fs-extra": "11.1.1",
 		"node-fetch": "3.3.2",
 		"octokit": "^3.1.0",
-		"tsx": "3.12.7"
+		"tar": "6.1.13",
+		"tsx": "3.12.7",
+		"zod": "3.21.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@types/fs-extra": "11.0.1",
+		"@types/tar": "6.1.4",
 		"typescript": "5.0.4"
 	}
 }

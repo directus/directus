@@ -1,6 +1,7 @@
 import { createItem, readItems, updateItem } from "@directus/sdk"
 import { client } from "./directus-sdk.js"
 import type { ExtensionInfo } from "./types.js"
+import { batchPromise } from "./batch-promise.js"
 
 export async function createUsers(extensions: ExtensionInfo[]) {
 
@@ -9,26 +10,19 @@ export async function createUsers(extensions: ExtensionInfo[]) {
 	const emailIDMap: Record<string, string> = {}
 
 	for (const extension of extensions) {
-		if (extension['npm'] === undefined || extension['latestVersion'] === undefined) continue
+		const { latestVersion, versions } = extension
 
-		const { latestVersion, npm } = extension
-
-		const author = npm.versions[latestVersion]?.author
-		const maintainers = npm.versions[latestVersion]?.maintainers ?? []
-
-		if (typeof author === 'string') continue
+		const author = versions[latestVersion]?.author
+		const maintainers = versions[latestVersion]?.maintainers ?? []
 
 		if (author) users[author.email!] = author
 
 		for (const maintainer of maintainers) {
-			if (typeof maintainer === 'string') continue
-
 			users[maintainer.email!] = maintainer
 		}
 	}
 
-	for (const user of Object.values(users)) {
-
+	await batchPromise(Object.values(users), 2, async (user) => {
 
 		const existingUser = await client.request(readItems('users', { filter: { email: { _eq: user.email } }, fields: ['*'] }))
 
@@ -45,7 +39,7 @@ export async function createUsers(extensions: ExtensionInfo[]) {
 
 			emailIDMap[resultingUser.email] = resultingUser.id
 		}
-	}
+	})
 
 	return emailIDMap
 }

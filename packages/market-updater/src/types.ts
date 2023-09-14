@@ -1,5 +1,7 @@
 import type { Packument } from '@npm/types'
 import type { Endpoints } from '@octokit/types'
+import type { z } from 'zod'
+import type { MarketExtensionManifest } from './validate-package.js'
 
 type Relation<T> = Partial<T> | string
 
@@ -126,13 +128,17 @@ export interface Schema {
 	directus_files: DirectusFile[],
 }
 
+export type MarketExtensionManifestType = z.infer<typeof MarketExtensionManifest>
+
+
 export type ExtensionInfo = {
-	npm: Packument,
-	github: Endpoints["GET /repos/{owner}/{repo}"]['response']['data'],
+	npm: Omit<Packument, 'versions'>,
+	versions: Record<string, MarketExtensionManifestType>,
+	github?: Endpoints["GET /repos/{owner}/{repo}"]['response']['data'] | undefined,
 	downloads: NPMDownloads['downloads'],
 	ignoreVersions: string[],
 	latestVersion: string,
-	readmes: Record<string, string>,
+	readmes?: Record<string, string> | undefined,
 }
 
 export type NPMDownloads = {

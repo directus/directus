@@ -1,23 +1,22 @@
 import { createItem, readItems, updateItem } from "@directus/sdk"
 import type { ExtensionInfo } from "./types.js"
 import { client } from "./directus-sdk.js"
+import { batchPromise } from "./batch-promise.js"
 
 export async function createTags(extensions: ExtensionInfo[]) {
 	const tags = new Set<string>()
 
 	for (const extension of extensions) {
-		if (extension['npm'] === undefined || extension['latestVersion'] === undefined) continue
+		const { latestVersion, versions } = extension
 
-		const { latestVersion, npm } = extension
-
-		const keywords = npm.versions[latestVersion]!.keywords ?? []
+		const keywords = versions[latestVersion]?.keywords ?? []
 
 		for (const keyword of keywords) {
 			tags.add(keyword)
 		}
 	}
 
-	for (const tag of Array.from(tags)) {
+	await batchPromise(Array.from(tags), 2, async (tag) => {
 		const existingTag = await client.request(readItems('tags', { filter: { tag: { _eq: tag } }, fields: ['*'] }))
 
 		if (existingTag && existingTag.length > 0) {
@@ -29,5 +28,5 @@ export async function createTags(extensions: ExtensionInfo[]) {
 			console.log(`Creating tag ${tag}`)
 			await client.request(createItem('tags', { tag }))
 		}
-	}
+	})
 }
