@@ -16,6 +16,7 @@ import {
 	IllegalAssetTransformationError,
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
+	RequestTimeoutError,
 } from '../errors/index.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
@@ -23,6 +24,7 @@ import type { AbstractServiceOptions, File, Transformation, TransformationSet } 
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
+import { RequestTimeoutCause } from '../errors/request-timeout.js';
 
 export class AssetsService {
 	knex: Knex;
@@ -178,7 +180,15 @@ export class AssetsService {
 				readStream.unpipe(transformer);
 			});
 
-			await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			try {
+				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			} catch (error) {
+				if ((error as Error)?.message?.includes('timeout')) {
+					throw new RequestTimeoutError({ cause: RequestTimeoutCause.AssetTransformation });
+				} else {
+					throw error;
+				}
+			}
 
 			return {
 				stream: await storage.location(file.storage).read(assetFilename, range),
