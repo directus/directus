@@ -41,6 +41,12 @@ import { createDirectus } from '@directus/sdk';
 const client = createDirectus('http://directus.example.com');
 ```
 
+::: tip TypeScript Version
+
+The SDK requires a minimum TypeScript version of 5.0 but it is recommended to keep up to date with the latest version.
+
+:::
+
 ## Creating a Composable Client
 
 The Directus SDK is a "Composable Client" that allows you to customize and build a client with the specific features you
