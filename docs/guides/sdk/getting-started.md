@@ -41,7 +41,7 @@ import { createDirectus } from '@directus/sdk';
 const client = createDirectus('http://directus.example.com');
 ```
 
-:::tip TypeScript version
+::: tip TypeScript Version
 
 The SDK requires a minimum TypeScript version of 5.0 but it is recommended to keep up to date with the latest version.
 
