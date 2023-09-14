@@ -185,7 +185,7 @@ const query = computed<Query>(() => {
 
 	query.fields =
 		(query.fields ? query.fields + ',' : '') +
-		'id,icon,logo.*,description,latest_version.types.extension_types_type,author.name,author.email,updated,downloads_last_month,registry';
+		'id,icon,logo.*,description,latest_version.types.extension_types_type,author.id,author.name,author.email,updated,downloads_last_month,registry';
 
 	const filterList: Record<string, any>[] = [];
 
