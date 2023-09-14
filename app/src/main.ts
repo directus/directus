@@ -35,7 +35,6 @@ async function init() {
 
 	const app = createApp(App);
 
-	app.use(router);
 	app.use(i18n);
 	app.use(createPinia());
 	app.use(createHead());
@@ -52,8 +51,10 @@ async function init() {
 	registerViews(app);
 
 	await loadExtensions();
-
 	registerExtensions(app);
+
+	// Add router here to ensure that all extension routes are added
+	app.use(router);
 
 	app.mount('#app');
 
