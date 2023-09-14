@@ -25,7 +25,8 @@ For server-side CLI, all functionality can be accessed by running `npx directus 
 npm init directus-project <project-folder>
 ```
 
-Will setup a new Directus project based on the provided configuration values. The script installs the required database driver, creates a `.env` file and installs the required dependencies.
+Will setup a new Directus project based on the provided configuration values. The script installs the required database
+driver, creates a `.env` file and installs the required dependencies.
 
 ### Bootstrap a Project
 
