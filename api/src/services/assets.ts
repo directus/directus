@@ -183,6 +183,8 @@ export class AssetsService {
 			try {
 				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
 			} catch (error) {
+				await storage.location(file.storage).delete(assetFilename);
+
 				if ((error as Error)?.message?.includes('timeout')) {
 					throw new RequestTimeoutError({ cause: RequestTimeoutCause.AssetTransformation });
 				} else {
