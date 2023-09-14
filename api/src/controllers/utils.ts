@@ -1,12 +1,16 @@
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
+import { Worker } from 'node:worker_threads';
+import { file as createTmpFile } from 'tmp-promise';
+import fs from 'node:fs';
+
 import Joi from 'joi';
 import { flushCaches } from '../cache.js';
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
-import { ExportService, ImportService } from '../services/import-export.js';
+import { ExportService } from '../services/import-export.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -105,11 +109,6 @@ router.post(
 			throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
 		}
 
-		const service = new ImportService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
 		let headers;
 
 		if (req.headers['content-type']) {
@@ -124,13 +123,35 @@ router.post(
 		const busboy = Busboy({ headers });
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			try {
-				await service.import(req.params['collection']!, mimeType, fileStream);
-			} catch (err: any) {
-				return next(err);
-			}
+			const { path: filePath, cleanup } = await createTmpFile();
 
-			return res.status(200).end();
+			fileStream.pipe(fs.createWriteStream(filePath));
+
+			fileStream.on('end', async () => {
+				const workerPath = new URL('../utils/import-worker', import.meta.url);
+
+				const worker = new Worker(workerPath, {
+					workerData: {
+						collection: req.params['collection']!,
+						mimeType,
+						filePath,
+						accountability: req.accountability,
+						schema: req.schema,
+					},
+				});
+
+				worker.on('message', async (message) => {
+					if (message.type === 'finish') {
+						await cleanup();
+						res.status(200).end();
+					}
+				});
+
+				worker.on('error', async (err) => {
+					await cleanup();
+					next(err);
+				});
+			});
 		});
 
 		busboy.on('error', (err: Error) => next(err));
