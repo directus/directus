@@ -38,7 +38,7 @@
 		</div>
 		<div class="profile">
 			<div class="avatar">
-				<img v-if="user?.avatar" :src="user.avatar" />
+				<img v-if="user?.avatar?.filename_disk" :src="'/market/assets/' + user.avatar.filename_disk" />
 				<svg v-else width="40" height="25" viewBox="0 0 40 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path
 						fill-rule="evenodd"
@@ -72,7 +72,7 @@
 		<ExtensionList
 			v-if="user"
 			type="all"
-			:query="{ filter: { author: { _eq: user.email } } }"
+			:query="{ filter: { author: { _eq: user.id } } }"
 			:app="app"
 			:existing-extensions="existingExtensions"
 		/>
@@ -94,10 +94,13 @@ type Props = {
 };
 
 type User = {
+	id: string;
 	name: string;
 	email: string;
 	url: string;
-	avatar: string;
+	avatar?: {
+		filename_disk: string;
+	};
 	trusted: boolean;
 	core_contributor: boolean;
 	readme: string;
@@ -129,7 +132,7 @@ async function loadUser() {
 
 	const response = await api.get(`/items/users/${encodeURIComponent(props.name)}`, {
 		params: {
-			fields: '*,author_of.*',
+			fields: '*,avatar.filename_disk,author_of.*',
 		},
 	});
 

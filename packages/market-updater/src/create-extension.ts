@@ -1,6 +1,7 @@
 import { createItem, readItems, updateItem } from "@directus/sdk"
 import type { Extension, ExtensionInfo, Permission, Version } from "./types.js"
 import { client } from "./directus-sdk.js"
+import { fetchFile } from "./fetch-file.js"
 
 export async function createExtension(extensionInfo: ExtensionInfo, registry: string, emailIDMap: Record<string, string>) {
 	const { npm, github, downloads, latestVersion, ignoreVersions, readmes, versions: fetchedVersions } = extensionInfo
@@ -87,13 +88,17 @@ export async function createExtension(extensionInfo: ExtensionInfo, registry: st
 		homepage: (latestPack as any)['homepage'],
 		tags: (latestPack.keywords ?? []).map(keyword => ({ tags_tag: keyword })),
 		author: emailIDMap[(latestPack.author as any)?.email]! ?? null,
-		maintainers: latestPack.maintainers?.map(maintainer => ({ users_email: emailIDMap[(maintainer as any).email]! })) ?? [],
+		maintainers: latestPack.maintainers?.map(maintainer => ({ users_id: emailIDMap[(maintainer as any).email]! })) ?? [],
 		versions: versions,
 		downloads: downloadsMapped,
 		stars: github?.stargazers_count ?? 0,
 		downloads_last_year,
 		downloads_last_month,
 		registry
+	}
+
+	if (latestPack.logo) {
+		extension.logo = await fetchFile(latestPack.name + '-logo', latestPack.logo)
 	}
 
 	process.stdout.write(`Checking ${latestPack.name}`)
@@ -114,8 +119,8 @@ export async function createExtension(extensionInfo: ExtensionInfo, registry: st
 
 	process.stdout.write(` updating latest version`)
 
-
 	await client.request(updateItem('extensions', encodeURIComponent(latestPack.name), { latest_version: `${latestPack.name}#${latestVersion}` }))
+
 
 	process.stdout.write(` done\n`)
 

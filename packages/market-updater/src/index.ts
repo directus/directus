@@ -36,7 +36,7 @@ if (hasCache && CACHE) {
 
 	extensions = await fse.readJSON(path.join(CACHE_FOLDER, 'extensions.json'))
 } else {
-	await batchPromise(extensionNames, batch, async (name) => {
+	await batchPromise(extensionNames, 10, async (name) => {
 		try {
 			const extension = await getExtension(registry, name)
 			extensions.push(extension)
@@ -57,5 +57,6 @@ const emailIDMap = await createUsers(extensions)
 await createTags(extensions)
 
 await batchPromise(extensions, 1, async (extension) => {
+	// if (extension.npm.name.includes('nitwel'))
 	await createExtension(extension, registry, emailIDMap)
 })

@@ -13,7 +13,7 @@
 			>
 				<td class="icon">
 					<div class="box">
-						<img v-if="extension.icon?.startsWith('img:')" :src="extension.icon.substring(4)" />
+						<img v-if="extension?.logo?.filename_disk" :src="`/market/assets/${extension.logo.filename_disk}`" />
 						<v-icon v-else :name="extension.icon ? extension.icon : 'extension'" />
 					</div>
 					<v-badge
@@ -54,7 +54,7 @@
 		>
 			<div class="icon">
 				<div class="box">
-					<img v-if="extension?.logo?.id" :src="`/market/assets/${extension.logo.filename_disk}`" />
+					<img v-if="extension?.logo?.filename_disk" :src="`/market/assets/${extension.logo.filename_disk}`" />
 					<v-icon v-else :name="extension.icon ? extension.icon : 'extension'" />
 				</div>
 				<v-badge
@@ -79,7 +79,7 @@
 					</div>
 					<div v-if="extension.author?.name" class="stat author">
 						by
-						<RouterLink :to="(app ? '/settings/market/users/' : '/users/') + extension.author.email">
+						<RouterLink :to="(app ? '/settings/market/users/' : '/users/') + extension.author.id">
 							{{ extension.author.name }}
 						</RouterLink>
 					</div>
@@ -135,6 +135,7 @@ export interface Extension {
 		};
 	};
 	author?: {
+		id: string;
 		name?: string;
 		email?: string;
 	};

@@ -47,7 +47,7 @@ export type ExtensionsTags = {
 export type ExtensionsUsers = {
 	id: string,
 	extensions_id: Relation<Extension>,
-	users_email: Relation<User>
+	users_id: Relation<User>
 }
 
 export type Featured = {
@@ -75,7 +75,7 @@ export type Tag = {
 export type User = {
 	id: string,
 	email: string,
-	avatar: Relation<DirectusFile>,
+	avatar?: Relation<DirectusFile>,
 	name: string,
 	url: string,
 	readme: string,

@@ -5,10 +5,13 @@
 			<RouterLink
 				v-if="extension.author"
 				class="author"
-				:to="(app ? '/settings/market/users/' : '/users/') + extension.author.email"
+				:to="(app ? '/settings/market/users/' : '/users/') + extension.author.id"
 			>
 				<div class="avatar">
-					<img v-if="extension.author.avatar" :src="extension.author.avatar" />
+					<img
+						v-if="extension.author.avatar?.filename_disk"
+						:src="'/market/assets/' + extension.author.avatar.filename_disk"
+					/>
 					<svg v-else width="40" height="25" viewBox="0 0 40 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path
 							fill-rule="evenodd"
@@ -28,9 +31,9 @@
 					:key="maintainer.email"
 					v-tooltip="`Maintained By ${maintainer.name}`"
 					class="maintainer avatar"
-					:to="(app ? '/settings/market/users/' : '/users/') + maintainer.email"
+					:to="(app ? '/settings/market/users/' : '/users/') + maintainer.id"
 				>
-					<img v-if="maintainer.avatar" :src="maintainer.avatar" />
+					<img v-if="maintainer.avatar?.filename_disk" :src="'/market/assets/' + maintainer.avatar.filename_disk" />
 					<svg v-else width="40" height="25" viewBox="0 0 40 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path
 							fill-rule="evenodd"
@@ -131,15 +134,21 @@ interface Extension {
 		license?: string;
 	}[];
 	author?: {
+		id: string;
 		name: string;
 		email: string;
-		avatar?: string;
+		avatar?: {
+			filename_disk: string;
+		};
 	};
 	maintainers?: {
-		users_email: {
+		users_id: {
+			id: string;
 			name: string;
 			email: string;
-			avatar?: string;
+			avatar?: {
+				filename_disk: string;
+			};
 		};
 	}[];
 	created?: string;
@@ -269,7 +278,7 @@ async function loadExtension() {
 		const response = await api.get(`/items/extensions/${encodeURIComponent(props.name)}`, {
 			params: {
 				fields:
-					'*,logo.*,author.email,author.name,author.avatar,maintainers.users_email.email,maintainers.users_email.name,maintainers.users_email.avatar,downloads.date,downloads.downloads,latest_version,tags.tags_tag.tag,' +
+					'*,logo.*,author.email,author.id,author.name,author.avatar.filename_disk,maintainers.users_id.id,maintainers.users_id.email,maintainers.users_id.name,maintainers.users_id.avatar.filename_disk,downloads.date,downloads.downloads,latest_version,tags.tags_tag.tag,' +
 					versionFields,
 				deep: {
 					downloads: {
@@ -298,7 +307,7 @@ const maintainers = computed(() => {
 	const maintainers = extension.value?.maintainers;
 	if (!maintainers) return [];
 
-	return maintainers.map((m: any) => m.users_email).filter((m: any) => m.email !== extension.value?.author?.email);
+	return maintainers.map((m: any) => m.users_id).filter((m: any) => m.email !== extension.value?.author?.email);
 });
 
 const downloadsRef = ref<HTMLElement | null>(null);
