@@ -1,4 +1,3 @@
-import type { ExtensionOptions } from "@directus/types";
 import type { Packument } from "@npm/types";
 import type { ExtensionInfo, MarketExtensionManifestType, NPMDownloads } from "./types.js";
 import { octokit } from "./octokit.js";
@@ -7,11 +6,12 @@ import { MarketExtensionManifest } from "./validate-package.js";
 import { batchPromise } from "./batch-promise.js";
 
 export async function getExtension(registry: string, name: string): Promise<ExtensionInfo> {
-	// eslint-disable-next-line no-console
-	console.log(`Fetching ${name}`)
+	process.stdout.write(`Fetching ${name}`)
 
 	const response = await fetch(`https://${registry}/${name}`)
 	const npmInfo = await response.json() as Packument;
+
+	process.stdout.write(` loaded ${Object.keys(npmInfo.versions).length} versions`)
 
 	const ignoreVersions: string[] = []
 	const latestVersion = npmInfo['dist-tags']?.latest
@@ -28,7 +28,7 @@ export async function getExtension(registry: string, name: string): Promise<Exte
 		} catch (error: any) {
 
 			if (version === latestVersion) {
-				throw new Error(`${name}#${version}: ${error}`)
+				throw new Error(`${error}, ${JSON.stringify(pack, null, 2)}`)
 			} else {
 				ignoreVersions.push(version)
 			}
@@ -48,24 +48,28 @@ export async function getExtension(registry: string, name: string): Promise<Exte
 
 			github = (await octokit.request('GET /repos/{owner}/{repo}', { owner, repo })).data
 
-			// eslint-disable-next-line no-console
-			console.log(`Fetching readmes for ${name}}`)
+			process.stdout.write(` github`)
 
 			const fetchedReadmes = await batchPromise(Object.values(versions), 10, async (version) => {
 				const options: Endpoints['GET /repos/{owner}/{repo}/readme']['parameters'] = { owner, repo }
 
 				if (version.version !== latestVersion) options.ref = version.version
 
+
 				const { data: { content } } = await octokit.request('GET /repos/{owner}/{repo}/readme', options)
 
 				return [version.version, content]
 			})
+
+			process.stdout.write(` readmes`)
 
 			readmes = Object.fromEntries(fetchedReadmes)
 		}
 	}
 
 	const downloads = await fetchDownloads(registry, name)
+
+	process.stdout.write(` downloads\n`)
 
 	return {
 		npm: npmInfo,
@@ -79,9 +83,6 @@ export async function getExtension(registry: string, name: string): Promise<Exte
 }
 
 export async function fetchDownloads(registry: string, name: string) {
-	// eslint-disable-next-line no-console
-	console.log(`Fetching downloads for ${name}`)
-
 	if (registry !== 'registry.npmjs.org') return []
 
 	const response = await fetch(`https://api.npmjs.org/downloads/range/last-year/${name}`)

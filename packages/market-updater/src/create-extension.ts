@@ -96,22 +96,29 @@ export async function createExtension(extensionInfo: ExtensionInfo, registry: st
 		registry
 	}
 
+	process.stdout.write(`Checking ${latestPack.name}`)
+
 	const existingExtension = await client.request(readItems('extensions', { filter: { id: { _eq: latestPack.name } }, fields: ['*'] }))
 
+
 	if (existingExtension && existingExtension.length > 0) {
-		// eslint-disable-next-line no-console
-		console.log(`Update extension ${extensionInfo.npm.name}`)
+		process.stdout.write(` updating`)
+
 		await client.request(updateItem('extensions', encodeURIComponent(latestPack.name), extension))
 	} else {
-		// eslint-disable-next-line no-console
-		console.log(`Creating extension ${extensionInfo.npm.name}`)
+		process.stdout.write(` creating`)
+
 		await client.request(createItem('extensions', extension))
 
 	}
 
-	// eslint-disable-next-line no-console
-	console.log(`Update extension ${extensionInfo.npm.name} latest version`)
+	process.stdout.write(` updating latest version`)
+
+
 	await client.request(updateItem('extensions', encodeURIComponent(latestPack.name), { latest_version: `${latestPack.name}#${latestVersion}` }))
+
+	process.stdout.write(` done\n`)
+
 
 	// logo: package.logo || null, logo_title: package.name + "-logo"
 }

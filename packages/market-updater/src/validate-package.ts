@@ -40,7 +40,7 @@ const Person = z.union([
 ])
 
 export const MarketExtensionManifest = ExtensionManifest.extend({
-	author: Person,
+	author: Person.optional(),
 	maintainers: z.array(Person).optional(),
 	repository: z.union([z.string(), z.object({
 		type: z.literal('git'),

@@ -30,8 +30,6 @@ export async function fetchExtensions(registry: string) {
 
 	// eslint-disable-next-line no-console
 	console.log(`Found ${extensions.size} extensions.`)
-	// eslint-disable-next-line no-console
-	console.log(Array.from(extensions).join(', '))
 
 	return Array.from(extensions);
 }

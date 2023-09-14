@@ -13,12 +13,18 @@ import * as url from 'url';
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const registry = process.env['REGISTRY'] ?? 'registry.npmjs.org'
-const CACHE = process.env['CACHE'] ?? true
+const CACHE = process.env['CACHE'] === 'true'
 const CACHE_FOLDER = path.join(__dirname, '..', process.env['CACHE_FOLDER'] ?? 'cache')
 const extensionNames = await fetchExtensions(registry)
-const errors: Error[] = []
 
 const batch = Number(process.env['BATCH'] ?? 1)
+const errorFile = path.join(__dirname, '..', process.env['ERROR_FILE'] ?? 'errors.txt')
+
+if (!fse.existsSync(errorFile)) {
+	fse.createFileSync(errorFile)
+} else {
+	fse.writeFileSync(errorFile, '')
+}
 
 let extensions: ExtensionInfo[] = []
 
@@ -30,15 +36,13 @@ if (hasCache && CACHE) {
 
 	extensions = await fse.readJSON(path.join(CACHE_FOLDER, 'extensions.json'))
 } else {
-	// eslint-disable-next-line no-console
-	console.log('Fetching extensions')
-
 	await batchPromise(extensionNames, batch, async (name) => {
 		try {
 			const extension = await getExtension(registry, name)
 			extensions.push(extension)
 		} catch (error: any) {
-			errors.push(error)
+			process.stdout.write(` failed\n`)
+			await fse.appendFile(errorFile, `${name}: ${error}\n\n`)
 		}
 	})
 
@@ -55,10 +59,3 @@ await createTags(extensions)
 await batchPromise(extensions, 1, async (extension) => {
 	await createExtension(extension, registry, emailIDMap)
 })
-
-for (const error of errors) {
-	// eslint-disable-next-line no-console
-	console.error(error.message)
-}
-
-process.exit(0)

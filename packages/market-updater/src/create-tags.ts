@@ -16,16 +16,16 @@ export async function createTags(extensions: ExtensionInfo[]) {
 		}
 	}
 
+	process.stdout.write(`Checking ${tags.size} tags\n`)
+
 	await batchPromise(Array.from(tags), 2, async (tag) => {
 		const existingTag = await client.request(readItems('tags', { filter: { tag: { _eq: tag } }, fields: ['*'] }))
 
 		if (existingTag && existingTag.length > 0) {
-			// eslint-disable-next-line no-console
-			console.log(`Updating tag ${tag}`)
+			process.stdout.write(`\tupdated ${tag}\n`)
 			await client.request(updateItem('tags', tag, { tag }))
 		} else {
-			// eslint-disable-next-line no-console
-			console.log(`Creating tag ${tag}`)
+			process.stdout.write(`\tcreated ${tag}\n`)
 			await client.request(createItem('tags', { tag }))
 		}
 	})
