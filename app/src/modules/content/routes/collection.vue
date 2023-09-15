@@ -87,7 +87,8 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<!-- <search-input v-model="search" v-model:filter="filter" :collection="collection" /> -->
+				<custom-search-input v-model="search" v-model:filter="filter" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -295,6 +296,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
+
+import CustomSearchInput from './custom-search-input.vue'
 
 type Item = {
 	[field: string]: any;
