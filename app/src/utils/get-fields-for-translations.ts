@@ -1,5 +1,5 @@
-import { useFieldsStore } from "@/stores/fields";
-import { useRelationsStore } from "@/stores/relations";
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 /**
  * Returns a list of the language code fields for a given collection
@@ -17,10 +17,10 @@ export function getFieldsForTranslations(fields: readonly string[], parentCollec
 	for (const field of fields) {
 		const fieldParts = field.split('.');
 
-		const fieldCombinations = []
+		const fieldCombinations = [];
 
 		for (let i = 0; i < fieldParts.length; i++) {
-			fieldCombinations.push(fieldParts.slice(0, i + 1).join('.'))
+			fieldCombinations.push(fieldParts.slice(0, i + 1).join('.'));
 		}
 
 		for (const fieldCombination of fieldCombinations) {
@@ -43,10 +43,9 @@ export function getFieldsForTranslations(fields: readonly string[], parentCollec
 
 			if (!languagesPrimaryKeyField) continue;
 
-			translationFields.push(`${fieldCombination}.${languagesRelation.field}.${languagesPrimaryKeyField.field}`)
+			translationFields.push(`${fieldCombination}.${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
 		}
 	}
 
 	return translationFields;
-
 }
