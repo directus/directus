@@ -184,7 +184,7 @@ export class AssetsService {
 				try {
 					await storage.location(file.storage).delete(assetFilename);
 				} catch {
-					// If an error occurs here, it will be ignored to prevent the original error from being overwritten
+					// Ignored to prevent original error from being overwritten
 				}
 
 				if ((error as Error)?.message?.includes('timeout')) {
