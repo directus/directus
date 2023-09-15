@@ -165,10 +165,8 @@ export class AssetsService {
 				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'],
 			});
 
-			const timeoutSeconds = clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600);
-
 			transformer.timeout({
-				seconds: timeoutSeconds,
+				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
 			});
 
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
@@ -186,10 +184,7 @@ export class AssetsService {
 				await storage.location(file.storage).delete(assetFilename);
 
 				if ((error as Error)?.message?.includes('timeout')) {
-					throw new ServiceUnavailableError({
-						service: 'assets',
-						reason: `Transformation timed out after ${timeoutSeconds}s`,
-					});
+					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
 				} else {
 					throw error;
 				}
