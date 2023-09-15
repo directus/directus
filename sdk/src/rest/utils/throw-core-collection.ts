@@ -1,4 +1,3 @@
-
 /**
  *
  * @param value
@@ -9,4 +8,4 @@ export const throwIfCoreCollection = (value: string | number | symbol, message: 
 	if (String(value).startsWith('directus_')) {
 		throw new Error(message);
 	}
-}
+};

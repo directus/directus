@@ -1,4 +1,3 @@
-
 /**
  *
  * @param value
@@ -9,4 +8,4 @@ export const throwIfEmpty = (value: string | (string | number)[], message: strin
 	if (value.length === 0) {
 		throw new Error(message);
 	}
-}
+};
