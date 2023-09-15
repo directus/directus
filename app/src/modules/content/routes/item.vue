@@ -190,7 +190,7 @@
 				:disabled="!isSavable"
 				@click="saveVersionAndQuit"
 			>
-				<v-icon name="commit" />
+				<v-icon name="beenhere" />
 
 				<template #append-outer>
 					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
