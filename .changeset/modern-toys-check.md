@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fixes asset transformation timeout error
+Handled asset transformation timeout error
