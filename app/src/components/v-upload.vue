@@ -60,7 +60,6 @@
 					:active="activeDialog === 'choose'"
 					:multiple="multiple"
 					:folder="folder"
-					:show-navigation="showNavigation"
 					@update:active="activeDialog = null"
 					@input="setSelection"
 				/>
@@ -110,18 +109,11 @@ interface Props {
 	fromUrl?: boolean;
 	fromLibrary?: boolean;
 	folder?: string;
-	showNavigation?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	multiple: false,
 	preset: () => ({}),
-	fileId: undefined,
 	fromUser: true,
-	fromUrl: false,
-	fromLibrary: false,
-	folder: undefined,
-	showNavigation: true,
 });
 
 const emit = defineEmits(['input']);

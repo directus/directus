@@ -22,18 +22,16 @@ import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 
-interface Props {
-	mime: string;
+const props = defineProps<{
+	mime: string | null;
 	width?: number | null;
 	height?: number | null;
 	src: string;
-	title: string;
+	title: string | null;
 	inModal?: boolean;
-}
+}>();
 
 defineEmits(['click']);
-
-const props = withDefaults(defineProps<Props>(), { width: undefined, height: undefined, inModal: false });
 
 const imgError = ref(false);
 
@@ -55,7 +53,7 @@ const type = computed<'image' | 'video' | 'audio' | string>(() => {
 	return readableMimeType(props.mime, true) ?? 'unknown';
 });
 
-const isSVG = computed(() => props.mime.includes('svg'));
+const isSVG = computed(() => props.mime?.includes('svg'));
 
 const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
 const isSmall = computed(() => props.height && props.height < 528);

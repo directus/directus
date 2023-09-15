@@ -38,21 +38,6 @@ export default defineInterface({
 				default_value: true,
 			},
 		},
-		{
-			field: 'showNavigation',
-			name: '$t:interfaces.system-folder.show_navigation',
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'checkbox',
-				options: {
-					label: '$t:interfaces.system-folder.show_navigation_label',
-				},
-			},
-			schema: {
-				default_value: true,
-			},
-		},
 	],
 	recommendedDisplays: ['image'],
 	preview: PreviewSVG,

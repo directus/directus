@@ -1,5 +1,6 @@
 import { fetchAll } from '@/utils/fetch-all';
-import { MaybeRef, ref, Ref, toRef, watch } from 'vue';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Ref, computed, ref, watch } from 'vue';
 
 export type FolderRaw = {
 	id: string;
@@ -8,7 +9,7 @@ export type FolderRaw = {
 };
 
 export type Folder = {
-	id: string | null;
+	id: string;
 	name: string;
 	parent: string | null;
 	children?: Folder[];
@@ -18,47 +19,52 @@ type UsableFolders = {
 	loading: Ref<boolean>;
 	folders: Ref<Folder[] | null>;
 	nestedFolders: Ref<Folder[] | null>;
-	error: Ref<any>;
 	fetchFolders: () => Promise<void>;
 	openFolders: Ref<string[] | null>;
 };
 
-export const openFoldersInitial = ['root'];
+const OPEN_FOLDERS_INITIAL = ['root'];
 
-export function useFolders(rootFolder?: MaybeRef<string | undefined>): UsableFolders {
-	const _rootFolder = toRef(rootFolder);
+const loading = ref(false);
+const folders = ref<Folder[] | null>(null);
+const globalNestedFolders = ref<Folder[] | null>(null);
+const globalOpenFolders = ref(OPEN_FOLDERS_INITIAL);
 
-	const loading = ref(false);
-	const folders = ref<Folder[] | null>(null);
-	const nestedFolders = ref<Folder[] | null>(null);
-	const error = ref(null);
-	let openFolders: Ref<string[] | null> | null = null;
+export function useFolders(rootFolder?: Ref<string | undefined>, local?: Ref<boolean>): UsableFolders {
+	const nestedFolders = computed(() => {
+		return findFolder(globalNestedFolders.value, rootFolder?.value);
+	});
 
-	if (openFolders === null) {
-		if (_rootFolder.value === undefined) {
-			openFolders = ref(openFoldersInitial);
-		} else {
-			openFolders = ref([_rootFolder.value]);
-		}
+	const localOpenFolders = ref(getRootFolderOpenFolders(rootFolder?.value));
+
+	const openFolders = computed({
+		get() {
+			if (!rootFolder?.value && !local?.value) return globalOpenFolders.value;
+
+			return localOpenFolders.value;
+		},
+		set(value) {
+			if (!rootFolder?.value && !local?.value) {
+				globalOpenFolders.value = value;
+			} else {
+				localOpenFolders.value = value;
+			}
+		},
+	});
+
+	if (rootFolder) {
+		watch(rootFolder, (newValue, oldValue) => {
+			if (newValue && oldValue === undefined) localOpenFolders.value = getRootFolderOpenFolders(newValue);
+		});
 	}
 
-	if (folders.value === null && loading.value === false) {
-		if (_rootFolder.value === undefined) {
-			fetchFolders();
-		} else {
-			watch(
-				_rootFolder,
-				(newRootFolder) => {
-					fetchFolders(newRootFolder);
-				},
-				{ immediate: true }
-			);
-		}
+	if (folders.value === null) {
+		fetchFolders();
 	}
 
-	return { loading, folders, nestedFolders, error, fetchFolders, openFolders };
+	return { loading, folders, nestedFolders, fetchFolders, openFolders };
 
-	async function fetchFolders(rootFolder?: string) {
+	async function fetchFolders() {
 		if (loading.value === true) return;
 
 		loading.value = true;
@@ -71,23 +77,17 @@ export function useFolders(rootFolder?: MaybeRef<string | undefined>): UsableFol
 			});
 
 			folders.value = response;
-			nestedFolders.value = nestFolders(response as FolderRaw[], rootFolder);
+			globalNestedFolders.value = nestFolders(response as FolderRaw[]);
 		} catch (err: any) {
-			error.value = err;
+			unexpectedError(err);
 		} finally {
 			loading.value = false;
 		}
 	}
 }
 
-export function nestFolders(rawFolders: FolderRaw[], rootFolder?: string): FolderRaw[] {
-	return rawFolders.reduce<FolderRaw[]>((acc, rawFolder) => {
-		if (rawFolder.parent === (rootFolder ?? null)) {
-			acc.push(nestChildren(rawFolder, rawFolders));
-		}
-
-		return acc;
-	}, []);
+export function nestFolders(rawFolders: FolderRaw[]): FolderRaw[] {
+	return rawFolders.map((rawFolder) => nestChildren(rawFolder, rawFolders)).filter((folder) => folder.parent === null);
 }
 
 export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]): FolderRaw & Folder {
@@ -106,4 +106,24 @@ export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]): Fol
 	}
 
 	return folder;
+}
+
+function findFolder(folders: Folder[] | null, id: string | undefined): Folder[] | null {
+	if (!folders) return null;
+	if (!id) return folders;
+
+	for (const folder of folders) {
+		if (folder.id === id) return folder.children ?? null;
+
+		if (folder.children) {
+			const result = findFolder(folder.children, id);
+			if (result) return result;
+		}
+	}
+
+	return null;
+}
+
+function getRootFolderOpenFolders(rootFolder: string | undefined) {
+	return rootFolder ? [rootFolder] : OPEN_FOLDERS_INITIAL;
 }

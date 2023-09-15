@@ -108,7 +108,6 @@
 			:collection="relationInfo.relatedCollection.collection"
 			:folder="folder"
 			:filter="customFilter"
-			:show-navigation="showNavigation"
 			multiple
 			@input="onSelect"
 		/>
@@ -144,7 +143,7 @@ import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{
-		value?: (number | string | Record<string, any>)[] | Record<string, any>;
+		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		primaryKey: string | number;
 		collection: string;
 		field: string;
@@ -157,18 +156,17 @@ const props = withDefaults(
 		limit?: number;
 	}>(),
 	{
-		value: () => [],
-		template: () => null,
-		disabled: false,
+		template: null,
 		enableCreate: true,
 		enableSelect: true,
-		folder: undefined,
-		showNavigation: true,
 		limit: 15,
 	}
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: (number | string | Record<string, any>)[] | Record<string, any> | null];
+}>();
+
 const { t } = useI18n();
 const { collection, field, primaryKey, limit } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);

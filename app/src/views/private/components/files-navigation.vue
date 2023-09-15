@@ -10,13 +10,13 @@
 			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
 				<v-list-group
 					clickable
-					:active="!currentFolder && !currentSpecial"
-					value="root"
+					:active="(!currentFolder && !currentSpecial) || (currentFolder !== undefined && currentFolder === rootFolder)"
+					:value="rootFolder ?? 'root'"
 					scope="files-navigation"
 					exact
 					disable-groupable-parent
 					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
-					@click="onClick({})"
+					@click="onClick(rootFolder ? { folder: rootFolder } : {})"
 				>
 					<template #activator>
 						<v-list-item-icon>
@@ -67,14 +67,12 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, watch } from 'vue';
-import { useFolders, openFoldersInitial } from '@/composables/use-folders';
+import { watch, computed, toRefs } from 'vue';
+import { useFolders } from '@/composables/use-folders';
 import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
 import { useRouter } from 'vue-router';
 import { SpecialFolder, FolderTarget } from '@/types/folders';
-import { toRefs } from 'vue';
-import { computed } from 'vue';
 
 const router = useRouter();
 
@@ -88,10 +86,9 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { rootFolder } = toRefs(props);
+const { rootFolder, localOpenFolders } = toRefs(props);
 
-const { nestedFolders, folders, loading, openFolders: sharedOpenFolders } = useFolders(rootFolder);
-const openFolders = props.localOpenFolders ? ref(openFoldersInitial) : sharedOpenFolders;
+const { nestedFolders, folders, loading, openFolders } = useFolders(rootFolder, localOpenFolders);
 
 watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
 

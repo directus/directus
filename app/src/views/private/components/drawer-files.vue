@@ -5,7 +5,7 @@
 		:drawer-props="drawerProps"
 		:filter="mergeFilters(filter, folderFilter)"
 	>
-		<template v-if="showNavigation" #sidebar>
+		<template #sidebar>
 			<files-navigation
 				:custom-target-handler="onFolderChange"
 				:current-folder="currentFolder"
@@ -29,10 +29,13 @@ import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 
 const props = withDefaults(
-	defineProps<{ collection?: string; folder?: string; filter?: Filter; showNavigation?: boolean }>(),
+	defineProps<{
+		collection?: string;
+		folder?: string;
+		filter?: Filter;
+	}>(),
 	{
 		collection: 'directus_files',
-		showNavigation: true,
 	}
 );
 

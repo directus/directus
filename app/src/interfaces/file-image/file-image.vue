@@ -82,15 +82,7 @@
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload
-			v-else
-			from-library
-			from-url
-			:from-user="createAllowed"
-			:folder="folder"
-			:show-navigation="showNavigation"
-			@input="onUpload"
-		/>
+		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
 	</div>
 </template>
 
@@ -110,28 +102,25 @@ import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | Record<string, any> | null;
+		value: string | Record<string, any> | null;
 		disabled?: boolean;
 		folder?: string;
 		collection: string;
 		field: string;
 		width: string;
 		crop?: boolean;
-		showNavigation?: boolean;
 	}>(),
 	{
-		value: null,
-		disabled: false,
 		crop: true,
-		folder: undefined,
-		showNavigation: true,
 	}
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: string | Record<string, any> | null];
+}>();
 
 const value = computed({
-	get: () => props.value ?? null,
+	get: () => props.value,
 	set: (value) => {
 		emit('input', value);
 	},
