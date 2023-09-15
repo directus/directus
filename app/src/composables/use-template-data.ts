@@ -35,7 +35,7 @@ export function useTemplateData(
 	const translationsFields = computed(() => {
 		if (!collection.value) return [];
 
-		return getFieldsForTranslations(templateFields.value, collection.value?.collection)
+		return getFieldsForTranslations(templateFields.value, collection.value?.collection);
 	});
 
 	const fields = computed(() => {
@@ -63,20 +63,20 @@ export function useTemplateData(
 	const isSingleton = computed(() => !!collection.value?.meta?.singleton);
 
 	const languageOptions = computed(() => {
-		const options = new Set<string>()
+		const options = new Set<string>();
 
 		if (!_templateData.value) return [];
 
 		for (const translationField of translationsFields.value) {
-			const keys = get(_templateData.value, translationField, [])
+			const keys = get(_templateData.value, translationField, []);
 
 			for (const key of keys) {
-				options.add(key)
+				options.add(key);
 			}
 		}
 
 		return Array.from(options);
-	})
+	});
 
 	watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
 
@@ -146,10 +146,13 @@ export function useTemplateData(
 
 			if (!translationFieldData || !Array.isArray(translationFieldData)) continue;
 
-			set(data, translationFieldRoot, translationFieldData.find((item: any) => get(item, translationFieldTail) === language));
+			set(
+				data,
+				translationFieldRoot,
+				translationFieldData.find((item: any) => get(item, translationFieldTail) === language)
+			);
 		}
 
 		return data;
-
 	}
 }
