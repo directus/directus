@@ -1,19 +1,8 @@
 <template>
-	<component
-		:is="layoutWrapper"
-		v-slot="{ layoutState }"
-		v-model:layout-options="layoutOptions"
-		v-model:layout-query="layoutQuery"
-		:filter="layoutFilter"
-		:search="search"
-		:collection="values.collection"
-		readonly
-	>
-		<private-view
-			:title="t('editing_preset')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
+	<component :is="layoutWrapper" v-slot="{ layoutState }" v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery" :filter="layoutFilter" :search="search" :collection="values.collection" readonly>
+		<private-view :title="t('editing_preset')" :small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow">
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
@@ -30,15 +19,8 @@
 			<template #actions>
 				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
-						<v-button
-							v-tooltip.bottom="t('delete_label')"
-							rounded
-							icon
-							class="action-delete"
-							secondary
-							:disabled="preset === null || id === '+'"
-							@click="on"
-						>
+						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary
+							:disabled="preset === null || id === '+'" @click="on">
 							<v-icon name="delete" />
 						</v-button>
 					</template>
@@ -57,15 +39,14 @@
 					</v-card>
 				</v-dialog>
 
-				<v-button
-					v-tooltip.bottom="t('save')"
-					icon
-					rounded
-					:disabled="hasEdits === false"
-					:loading="saving"
-					@click="save"
-				>
+				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="hasEdits === false"
+					:loading="saving || isCopySaving" @click="save">
 					<v-icon name="check" />
+
+					<template #append-outer>
+						<save-options v-if="hasEdits" :disabled-options="disabledOptions" @save-as-copy="saveAsCopyAndNavigate" />
+					</template>
+
 				</v-button>
 			</template>
 
@@ -99,19 +80,13 @@
 				</sidebar-detail>
 
 				<div class="layout-sidebar">
-					<component
-						:is="`layout-sidebar-${values.layout}`"
-						v-if="values.layout && values.collection"
-						v-bind="layoutState"
-					/>
+					<component :is="`layout-sidebar-${values.layout}`" v-if="values.layout && values.collection"
+						v-bind="layoutState" />
 
 					<sidebar-detail icon="layers" :title="t('layout_options')">
 						<div class="layout-options">
-							<component
-								:is="`layout-options-${values.layout}`"
-								v-if="values.layout && values.collection"
-								v-bind="layoutState"
-							/>
+							<component :is="`layout-options-${values.layout}`" v-if="values.layout && values.collection"
+								v-bind="layoutState" />
 						</div>
 					</sidebar-detail>
 				</div>
@@ -151,6 +126,8 @@ import { isEqual } from 'lodash';
 import { useExtensions } from '@/extensions';
 import { useExtension } from '@/composables/use-extension';
 
+import SaveOptions from '@/views/private/components/save-options.vue';
+
 type FormattedPreset = {
 	id: number;
 	scope: string;
@@ -187,6 +164,7 @@ const { loading, preset } = usePreset();
 const { fields } = useForm();
 const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters, search } = useValues();
 const { save, saving } = useSave();
+
 const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
 const layoutFilter = computed<any>({
@@ -209,6 +187,77 @@ useShortcut('meta+s', () => {
 });
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+
+// CUSTOM ADDITIONAL SETTINGS
+const disabledOptions = ['save-and-stay', 'save-and-add-new', 'discard-and-stay']
+
+const { saveAsCopyAndNavigate, isCopySaving } = useSaveAsCopy();
+
+
+function useSaveAsCopy() {
+	const isCopySaving = ref(false);
+
+	return { saveAsCopyAndNavigate, isCopySaving };
+
+	async function saveAsCopyAndNavigate() {
+		isCopySaving.value = true;
+
+		const editsParsed: Partial<Preset> = {};
+
+		const keys = [
+			'icon',
+			'color',
+			'collection',
+			'layout',
+			'layout_query',
+			'layout_options',
+			'filter',
+			'search',
+		] as (keyof Preset)[];
+
+		// initial values + the edits fields that overrode the initial values
+		const newEdits = {
+			...initialValues.value,
+			...edits.value,
+		} as FormattedPreset;
+
+		if ('name' in newEdits) editsParsed.bookmark = newEdits.name;
+
+		for (const key of keys) {
+			if (key in newEdits) editsParsed[key] = newEdits[key];
+		}
+
+		if (newEdits.scope as any) {
+			if (newEdits.scope.startsWith('role_')) {
+				editsParsed.role = newEdits.scope.substring(5);
+				editsParsed.user = null;
+			} else if (newEdits.scope.startsWith('user_')) {
+				editsParsed.user = newEdits.scope.substring(5);
+				editsParsed.role = null;
+			} else {
+				editsParsed.role = null;
+				editsParsed.user = null;
+			}
+		}
+
+		try {
+			// const { data: { data: { id: newPresetId } } } = await api.post(`/presets`, editsParsed);
+			await api.post(`/presets`, editsParsed);
+			await presetsStore.hydrate();
+			edits.value = {};
+
+			// if (newPresetId) router.push(`/settings/presets/${newPresetId}`);
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			isCopySaving.value = false;
+			router.push(`/settings/presets`);
+		}
+	}
+}
+// -------------------------------------------------------------
+
 
 function useSave() {
 	const saving = ref(false);
