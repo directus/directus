@@ -1,4 +1,5 @@
 import type { DirectusFile } from '../../../schema/file.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
@@ -10,9 +11,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteFiles =
 	<Schema extends object>(keys: DirectusFile<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => {
-		if (keys.length === 0) {
-			throw new Error('Keys cannot be empty');
-		}
+		throwIfEmpty(keys, 'Keys cannot be empty');
 
 		return {
 			path: `/files`,
@@ -30,9 +29,7 @@ export const deleteFiles =
 export const deleteFile =
 	<Schema extends object>(key: DirectusFile<Schema>['id']): RestCommand<void, Schema> =>
 	() => {
-		if (key.length === 0) {
-			throw new Error('Key cannot be empty');
-		}
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/files/${key}`,

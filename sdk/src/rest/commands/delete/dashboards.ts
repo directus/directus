@@ -1,4 +1,5 @@
 import type { DirectusDashboard } from '../../../schema/dashboard.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
@@ -10,9 +11,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteDashboards =
 	<Schema extends object>(keys: DirectusDashboard<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => {
-		if (keys.length === 0) {
-			throw new Error('Keys cannot be empty');
-		}
+		throwIfEmpty(keys, 'Keys cannot be empty');
 
 		return {
 			path: `/dashboards`,
@@ -30,9 +29,7 @@ export const deleteDashboards =
 export const deleteDashboard =
 	<Schema extends object>(key: DirectusDashboard<Schema>['id']): RestCommand<void, Schema> =>
 	() => {
-		if (key.length === 0) {
-			throw new Error('Key cannot be empty');
-		}
+		throwIfEmpty(key, 'Key cannot be empty');
 
 		return {
 			path: `/dashboards/${key}`,

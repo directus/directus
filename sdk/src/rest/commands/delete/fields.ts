@@ -1,4 +1,5 @@
 import type { DirectusField } from '../../../schema/field.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
@@ -15,13 +16,8 @@ export const deleteField =
 		field: DirectusField<Schema>['field']
 	): RestCommand<void, Schema> =>
 	() => {
-		if (collection.length === 0) {
-			throw new Error('Collection cannot be empty');
-		}
-
-		if (field.length === 0) {
-			throw new Error('Field cannot be empty');
-		}
+		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(field, 'Field cannot be empty');
 
 		return {
 			path: `/fields/${collection}/${field}`,
