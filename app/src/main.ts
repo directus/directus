@@ -53,7 +53,7 @@ async function init() {
 	await loadExtensions();
 	registerExtensions(app);
 
-	// Add router here to ensure that all extension routes are added
+	// Add router after loading of extensions to ensure all routes are registered
 	app.use(router);
 
 	app.mount('#app');
