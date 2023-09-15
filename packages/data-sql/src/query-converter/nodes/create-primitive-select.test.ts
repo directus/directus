@@ -1,10 +1,6 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test } from 'vitest';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-
-vi.mock('./create-unique-identifier.js', () => ({
-	createUniqueIdentifier: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
-}));
 
 test('createPrimitiveSelect', () => {
 	const samplePrimitiveNode: AbstractQueryFieldNodePrimitive = {
@@ -12,7 +8,7 @@ test('createPrimitiveSelect', () => {
 		field: 'randomPrimitiveField',
 	};
 
-	const result = createPrimitiveSelect('collection', samplePrimitiveNode);
+	const result = createPrimitiveSelect('collection', samplePrimitiveNode, 'randomPrimitiveField_RANDOM');
 
 	expect(result).toStrictEqual({
 		type: 'primitive',
@@ -29,7 +25,7 @@ test('createPrimitiveSelect with user specified alias', () => {
 		alias: 'randomPrimitiveField_ALIAS',
 	};
 
-	const result = createPrimitiveSelect('collection', samplePrimitiveNode);
+	const result = createPrimitiveSelect('collection', samplePrimitiveNode, 'randomPrimitiveField_RANDOM');
 
 	expect(result).toStrictEqual({
 		type: 'primitive',

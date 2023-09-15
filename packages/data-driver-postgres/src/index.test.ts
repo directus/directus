@@ -97,7 +97,15 @@ describe('querying the driver', () => {
 						parameters: [],
 					};
 
-					return sqlQuery;
+					return {
+						sql: sqlQuery,
+						aliasMapping: new Map([
+							[firstFieldId, [firstField]],
+							[secondFieldId, [secondFieldAlias]],
+							[joinFieldId, [randomCollectionToJoin, joinField1Alias]],
+							[joinField2Id, [randomCollectionToJoin, joinField2]],
+						]),
+					};
 				}),
 			};
 		});

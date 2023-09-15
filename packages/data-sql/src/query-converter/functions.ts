@@ -5,13 +5,13 @@ import type { ParameterTypes, ValuesNode, AbstractSqlQueryFnNode } from '../type
  * @param collection
  * @param abstractFunction - the function node to convert
  * @param idxGenerator - the generator to get the next index in the parameter list
- * @param as - a generated alias which needs to be specified when to function is used within the select clause
+ * @param generatedAlias - a generated alias which needs to be specified when to function is used within the select clause
  */
 export function convertFn(
 	collection: string,
 	abstractFunction: AbstractQueryFieldNodeFn,
 	idxGenerator: Generator,
-	as?: string
+	generatedAlias?: string
 ): { fn: AbstractSqlQueryFnNode; parameters: ParameterTypes[] } {
 	const fn: AbstractSqlQueryFnNode = {
 		type: 'fn',
@@ -24,8 +24,8 @@ export function convertFn(
 		fn.alias = abstractFunction.alias;
 	}
 
-	if (as) {
-		fn.as = as;
+	if (generatedAlias) {
+		fn.as = generatedAlias;
 	}
 
 	if (abstractFunction.args && abstractFunction.args?.length > 0) {

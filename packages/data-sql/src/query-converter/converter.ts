@@ -11,19 +11,21 @@ import { convertFilter, convertSort } from './modifiers/index.js';
 import { convertNodesAndGenerateAliases } from './nodes/index.js';
 
 /**
- * The starting point of a query conversion.
+ * Here the abstract query gets converted into the abstract SQL query.
  * It calls all related conversion functions and takes care of the parameter index.
+ * This process, is also part of the ORM since here the aliases get generated and the mapping of aliases to the original fields is created.
  *
  * @param abstractQuery the abstract query to convert
  * @returns the abstract sql query
  */
-export const convertToAbstractSqlQueryAndGenerateAliases = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
+export const convertToAbstractSqlQueryAndGenerateAliases = (
+	abstractQuery: AbstractQuery
+): { sql: AbstractSqlQuery; aliasMapping: Map<string, string[]> } => {
 	const idGen = parameterIndexGenerator();
 
-	const statement: AbstractSqlQuery = {
-		...convertNodesAndGenerateAliases(abstractQuery.collection, abstractQuery.nodes, idGen),
-		from: abstractQuery.collection,
-	};
+	const convertedSqlAndAliasMap = convertNodesAndGenerateAliases(abstractQuery.collection, abstractQuery.nodes, idGen);
+
+	const statement: AbstractSqlQuery = { ...convertedSqlAndAliasMap.sql, from: abstractQuery.collection };
 
 	if (abstractQuery.modifiers?.filter) {
 		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, abstractQuery.collection, idGen);
@@ -46,5 +48,8 @@ export const convertToAbstractSqlQueryAndGenerateAliases = (abstractQuery: Abstr
 		statement.order = convertSort(abstractQuery.modifiers.sort);
 	}
 
-	return statement;
+	return {
+		sql: statement,
+		aliasMapping: convertedSqlAndAliasMap.aliasMapping,
+	};
 };

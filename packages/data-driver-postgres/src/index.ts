@@ -7,7 +7,6 @@ import type { AbstractQuery, DataDriver } from '@directus/data';
 import {
 	convertToAbstractSqlQueryAndGenerateAliases,
 	expand,
-	mapAliasesToNestedPaths,
 	type ParameterizedSqlStatement,
 } from '@directus/data-sql';
 import type { ReadableStream } from 'node:stream/web';
@@ -54,20 +53,13 @@ export default class DataDriverPostgres implements DataDriver {
 		let client: PoolClient | null = null;
 
 		try {
-			const abstractSqlQuery = convertToAbstractSqlQueryAndGenerateAliases(query);
-			const sql = constructSqlQuery(abstractSqlQuery);
+			const conversionResult = convertToAbstractSqlQueryAndGenerateAliases(query);
+			const sql = constructSqlQuery(conversionResult.sql);
 
 			const { poolClient, stream } = await this.getDataFromSource(this.#pool, sql);
 			client = poolClient;
 
-			const aliasMap = mapAliasesToNestedPaths(
-				query.collection,
-				query.nodes,
-				abstractSqlQuery.select,
-				abstractSqlQuery.joins ?? []
-			);
-
-			return stream.pipeThrough(expand(aliasMap));
+			return stream.pipeThrough(expand(conversionResult.aliasMapping));
 		} catch (err) {
 			client?.release();
 			throw new Error('Failed to perform the query: ' + err);

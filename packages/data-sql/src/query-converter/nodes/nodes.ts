@@ -1,38 +1,47 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../../types/index.js';
-import { createUniqueIdentifier } from './create-unique-identifier.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
+import { createUniqueIdentifier } from './create-unique-identifier.js';
 
 export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'joins' | 'parameters'>;
 
 /**
- * Splits up the nodes into the different parts of the query.
+ * Converts nodes into the abstract sql clauses.
  * Any primitive nodes and function nodes will be added to the list of selects.
- * Any m2o node will be added to the list of joins, but the field will also be added to the list of selects.
+ * Any m2o node will be added to the list of joins and the desired column will also be added to the list of selects.
  *
- * Each select node will get an auto generated alias. This alias will be used later on to convert the response to a nested object.
- * @TODO This module should ONLY convert the query, without doing anything extra. The creation of the aliases should therefore be moved to a separate module.
- * This is currently a technical dept which should be fixed soon.
+ * Also some preparation work is done here regarding the ORM.
+ * For this, each select node and the joined tables will get an auto generated alias.
+ * While iterating over the nodes, the mapping of the auto generated alias to the original (related) field is created and returned separately.
+ * This map of aliases to the relational "path" will be used later on to convert the response to a nested object - the second part of the ORM.
  *
  * @param collection - the current collection, will be an alias when called recursively
  * @param abstractFields - all nodes from the abstract query
  * @param idxGenerator - the generator used to increase the parameter indices
+ * @param currentPath - the path which the recursion made for the ORM map
  * @returns Select, join and parameters
  */
 export const convertNodesAndGenerateAliases = (
 	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
-	idxGenerator: Generator<number, number, number>
-): ConvertSelectOutput => {
+	idxGenerator: Generator<number, number, number>,
+	currentPath: string[] = []
+): { sql: ConvertSelectOutput; aliasMapping: Map<string, string[]> } => {
 	const select: ConvertSelectOutput['select'] = [];
 	const joins: ConvertSelectOutput['joins'] = [];
 	const parameters: AbstractSqlQuery['parameters'] = [];
+	const aliasRelationalMapping: Map<string, string[]> = new Map();
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
-			const selectNode = createPrimitiveSelect(collection, abstractField);
+			// ORM aliasing and mapping
+			const generatedAlias = createUniqueIdentifier(abstractField.field);
+			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
+
+			// query conversion
+			const selectNode = createPrimitiveSelect(collection, abstractField, generatedAlias);
 			select.push(selectNode);
 			continue;
 		}
@@ -49,23 +58,32 @@ export const convertNodesAndGenerateAliases = (
 			const m2oField = abstractField;
 			const externalCollectionAlias = createUniqueIdentifier(m2oField.join.external.collection);
 			const sqlJoinNode = createJoin(collection, m2oField, externalCollectionAlias);
+
+			const nestedOutput = convertNodesAndGenerateAliases(externalCollectionAlias, abstractField.nodes, idxGenerator, [
+				...currentPath,
+				abstractField.join.external.collection,
+			]);
+
+			nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
 			joins.push(sqlJoinNode);
-			const nestedOutput = convertNodesAndGenerateAliases(externalCollectionAlias, m2oField.nodes, idxGenerator);
-			select.push(...nestedOutput.select);
+			select.push(...nestedOutput.sql.select);
 			continue;
 		}
 
 		if (abstractField.type === 'fn') {
 			const fnField = abstractField;
-			const id = createUniqueIdentifier(fnField.fn.fn);
-			const fn = convertFn(collection, fnField, idxGenerator, id);
+
+			// ORM aliasing and mapping
+			const generatedAlias = createUniqueIdentifier(`${fnField.fn.fn}_${fnField.field}`);
+			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
+
+			// query conversion
+			const fn = convertFn(collection, fnField, idxGenerator, generatedAlias);
 			select.push(fn.fn);
 			parameters.push(...fn.parameters);
 			continue;
 		}
-
-		throw new Error(`Node type ${abstractField.type} is not supported`);
 	}
 
-	return { select, joins, parameters };
+	return { sql: { select, joins, parameters }, aliasMapping: aliasRelationalMapping };
 };

@@ -39,5 +39,4 @@
  * @module
  * @packageDocumentation
  */
-export * from './alias-mapping.js';
 export * from './expand.js';
