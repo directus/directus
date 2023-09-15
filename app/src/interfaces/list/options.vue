@@ -178,6 +178,32 @@ const repeaterFields: DeepPartial<Field>[] = [
 			},
 		},
 	},
+	{
+		name: t('display_label'),
+		field: 'display',
+		type: 'string',
+		meta: {
+			interface: 'system-display',
+			width: 'half',
+			sort: 9,
+			options: {
+				typeField: 'type',
+			},
+		},
+	},
+	{
+		name: t('display_options'),
+		field: 'display_options',
+		type: 'string',
+		meta: {
+			interface: 'system-display-options',
+			width: 'full',
+			sort: 10,
+			options: {
+				displayField: 'display',
+			},
+		},
+	},
 ];
 
 const template = computed({
