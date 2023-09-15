@@ -183,7 +183,8 @@ Now, the overview of the operation looks like this:
 
 ## Build the API Function
 
-Open the `api.js` file, update the `id` to match the one used in the `app.js` file, and import the SendGrid package at the very top:
+Open the `api.js` file, update the `id` to match the one used in the `app.js` file, and import the SendGrid package at
+the very top:
 
 ```js
 import sgMail from '@sendgrid/mail'
