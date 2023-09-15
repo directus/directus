@@ -46,7 +46,6 @@ watch(
 );
 
 const items = computed(() => {
-	console.log(displays.value.map((display) => display.localTypes));
 	return displays.value
 		.filter((display: DisplayConfig) => (display.localTypes?.length ?? 0) === 0)
 		.filter((display: DisplayConfig) => selectedType.value === undefined || display.types.includes(selectedType.value))
