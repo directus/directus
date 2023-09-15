@@ -1,4 +1,5 @@
 import type { ApplyQueryFields, CollectionType, Query, SingletonCollections } from '../../../types/index.js';
+import { throwIfCoreCollection } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadSingletonOutput<
@@ -25,14 +26,10 @@ export const readSingleton =
 		query?: TQuery
 	): RestCommand<ReadSingletonOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
-		const _collection = String(collection);
-
-		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readSingleton for core collections');
-		}
+		throwIfCoreCollection(collection, 'Cannot use readSingleton for core collections');
 
 		return {
-			path: `/items/${_collection}`,
+			path: `/items/${collection as string}`,
 			params: query ?? {},
 			method: 'GET',
 		};

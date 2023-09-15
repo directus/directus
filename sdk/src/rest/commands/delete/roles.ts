@@ -24,6 +24,7 @@ export const deleteRoles =
  * Delete an existing role.
  * @param key
  * @returns
+ * @throws Will throw if key is empty
  */
 export const deleteRole =
 	<Schema extends object>(key: DirectusRole<Schema>['id']): RestCommand<void, Schema> =>

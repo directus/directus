@@ -1,5 +1,6 @@
 import type { DirectusShare } from '../../../schema/share.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadShareOutput<
@@ -28,14 +29,19 @@ export const readShares =
  * @param key The primary key of the dashboard
  * @param query The query parameters
  * @returns Returns a Share object if a valid primary key was provided.
+ * @throws Will throw if key is empty
  */
 export const readShare =
 	<Schema extends object, TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		key: DirectusShare<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadShareOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/shares/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/shares/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};

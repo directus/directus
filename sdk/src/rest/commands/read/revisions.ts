@@ -1,5 +1,6 @@
 import type { DirectusRevision } from '../../../schema/revision.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadRevisionOutput<
@@ -28,14 +29,19 @@ export const readRevisions =
  * @param key The primary key of the dashboard
  * @param query The query parameters
  * @returns Returns a Revision object if a valid primary key was provided.
+ * @throws Will throw if key is empty
  */
 export const readRevision =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRevision<Schema>>>(
 		key: DirectusRevision<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadRevisionOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/revisions/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/revisions/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};
