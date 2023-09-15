@@ -181,7 +181,11 @@ export class AssetsService {
 			try {
 				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
 			} catch (error) {
-				await storage.location(file.storage).delete(assetFilename);
+				try {
+					await storage.location(file.storage).delete(assetFilename);
+				} catch {
+					// If an error occurs here, it will be ignored to prevent the original error from being overwritten
+				}
 
 				if ((error as Error)?.message?.includes('timeout')) {
 					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
