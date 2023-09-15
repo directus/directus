@@ -187,7 +187,7 @@ export class AssetsService {
 
 				if ((error as Error)?.message?.includes('timeout')) {
 					throw new ServiceUnavailableError({
-						service: 'asset',
+						service: 'assets',
 						reason: `Transformation timed out after ${timeoutSeconds} seconds`,
 					});
 				} else {
