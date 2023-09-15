@@ -27,6 +27,14 @@
 				<v-text-overflow :text="url" placement="bottom" />
 			</span>
 			<div class="spacer" />
+			<div class="language">
+				<v-select
+					v-if="languageOptions?.length ?? 0 > 0"
+					v-model="languageSync"
+					inline
+					:items="languageOptions?.map((option) => ({ text: option, value: option }))"
+				/>
+			</div>
 			<div class="dimensions" :class="{ disabled: fullscreen }">
 				<input
 					:value="displayWidth"
@@ -87,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { useElementSize } from '@directus/composables';
+import { useElementSize, useSync } from '@directus/composables';
 import { CSSProperties, computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -97,13 +105,16 @@ declare global {
 	}
 }
 
-defineProps<{
+const props = defineProps<{
 	url: string;
 	inPopup?: boolean;
+	languageOptions?: string[];
+	language: string;
 }>();
 
 const emit = defineEmits<{
 	'new-window': [];
+	'update:language': [string];
 }>();
 
 const { t } = useI18n();
@@ -114,6 +125,7 @@ const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
+const languageSync = useSync(props, 'language', emit);
 
 const resizeHandle = ref<HTMLDivElement>();
 const livePreviewEl = ref<HTMLElement>();

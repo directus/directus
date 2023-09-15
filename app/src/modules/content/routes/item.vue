@@ -186,7 +186,13 @@
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
+			<LivePreview
+				v-if="previewURL"
+				v-model:language="language"
+				:url="previewURL"
+				:language-options="languageOptions"
+				@new-window="livePreviewMode = 'popup'"
+			/>
 		</template>
 
 		<template #sidebar>
@@ -371,7 +377,13 @@ const disabledOptions = computed(() => {
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
+const language = ref('en-US');
+
+const {
+	templateData: previewData,
+	fetchTemplateValues,
+	languageOptions,
+} = useTemplateData(collectionInfo, primaryKey, previewTemplate, language);
 
 const previewURL = computed(() => {
 	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData);
