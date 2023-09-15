@@ -268,6 +268,7 @@
 					:allowed="shareAllowed"
 				/>
 				<flow-sidebar-detail
+					v-if="currentVersion === null"
 					location="item"
 					:collection="collection"
 					:primary-key="internalPrimaryKey"
