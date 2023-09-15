@@ -9,6 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @param keysOrQuery The primary keys or a query
  *
  * @returns Nothing
+ * @throws Will throw if collection is empty
  * @throws Will throw if collection is a core collection
  * @throws Will throw if keysOrQuery is empty
  */
@@ -20,6 +21,7 @@ export const deleteItems =
 	() => {
 		let payload: Record<string, any> = {};
 
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use deleteItems for core collections');
 
 		if (Array.isArray(keysOrQuery)) {
@@ -44,6 +46,7 @@ export const deleteItems =
  * @param key The primary key of the item
  *
  * @returns Nothing
+ * @throws Will throw if collection is empty
  * @throws Will throw if collection is a core collection
  * @throws Will throw if key is empty
  */
@@ -53,6 +56,7 @@ export const deleteItem =
 		key: string | number
 	): RestCommand<void, Schema> =>
 	() => {
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use deleteItem for core collections');
 		throwIfEmpty(String(key), 'Key cannot be empty');
 

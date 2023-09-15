@@ -1,5 +1,6 @@
 import type { DirectusRole } from '../../../schema/role.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateRoleOutput<
@@ -14,6 +15,7 @@ export type UpdateRoleOutput<
  * @param item
  * @param query
  * @returns Returns the role objects for the updated roles.
+ * @throws Will throw if keys is empty
  */
 export const updateRoles =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
@@ -21,12 +23,16 @@ export const updateRoles =
 		item: Partial<DirectusRole<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateRoleOutput<Schema, TQuery>[], Schema> =>
-	() => ({
-		path: `/roles`,
-		params: query ?? {},
-		body: JSON.stringify({ keys, data: item }),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(keys, 'Keys cannot be empty');
+
+		return {
+			path: `/roles`,
+			params: query ?? {},
+			body: JSON.stringify({ keys, data: item }),
+			method: 'PATCH',
+		};
+	};
 
 /**
  * Update an existing role.
@@ -34,6 +40,7 @@ export const updateRoles =
  * @param item
  * @param query
  * @returns Returns the role object for the updated role.
+ * @throws Will throw if key is empty
  */
 export const updateRole =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
@@ -41,9 +48,13 @@ export const updateRole =
 		item: Partial<DirectusRole<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateRoleOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/roles/${key}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(key, 'Key cannot be empty');
+
+		return {
+			path: `/roles/${key}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};

@@ -1,5 +1,5 @@
 import type { ApplyQueryFields, CollectionType, Query, SingletonCollections } from '../../../types/index.js';
-import { throwIfCoreCollection } from '../../utils/index.js';
+import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadSingletonOutput<
@@ -15,6 +15,8 @@ export type ReadSingletonOutput<
  * @param query The query parameters
  *
  * @returns An array of up to limit item objects. If no items are available, data will be an empty array.
+ * @throws Will throw if collection is a core collection
+ * @throws Will throw if collection is empty
  */
 export const readSingleton =
 	<
@@ -26,6 +28,7 @@ export const readSingleton =
 		query?: TQuery
 	): RestCommand<ReadSingletonOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use readSingleton for core collections');
 
 		return {

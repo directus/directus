@@ -16,6 +16,7 @@ export type ReadItemOutput<
  *
  * @returns An array of up to limit item objects. If no items are available, data will be an empty array.
  * @throws Will throw if collection is a core collection
+ * @throws Will throw if collection is empty
  */
 export const readItems =
 	<
@@ -27,6 +28,7 @@ export const readItems =
 		query?: TQuery
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use readItems for core collections');
 
 		return {
@@ -45,6 +47,7 @@ export const readItems =
  *
  * @returns Returns an item object if a valid primary key was provided.
  * @throws Will throw if collection is a core collection
+ * @throws Will throw if collection is empty
  * @throws Will throw if key is empty
  */
 export const readItem =
@@ -58,6 +61,7 @@ export const readItem =
 		query?: TQuery
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use readItem for core collections');
 		throwIfEmpty(String(key), 'Key cannot be empty');
 
