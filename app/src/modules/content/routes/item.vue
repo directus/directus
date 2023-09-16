@@ -238,6 +238,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
+import { usePreset } from '@/composables/use-preset';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
@@ -285,6 +286,13 @@ const {
 	refresh,
 	validationErrors,
 } = useItem(collection, primaryKey);
+
+const { filter } = usePreset(collection);
+
+// UPDATE FILTER VALUE
+window.updateFilter = (newFilter: any) => {
+	filter.value = newFilter
+}
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
