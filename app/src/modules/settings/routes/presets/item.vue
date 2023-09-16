@@ -43,9 +43,9 @@
 					:loading="saving || isCopySaving" @click="save">
 					<v-icon name="check" />
 
-					<template #append-outer>
-						<save-options v-if="hasEdits" :disabled-options="disabledOptions" @save-as-copy="saveAsCopyAndNavigate" />
-					</template>
+						<template #append-outer>
+								<save-options v-if="hasEdits === true" :disabled-options="disabledOptions" @save-as-copy="saveAsCopyAndNavigate" />
+							</template>
 
 				</v-button>
 			</template>
