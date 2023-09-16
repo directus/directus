@@ -50,12 +50,12 @@ export async function processPackages(): Promise<{
 	const { mainVersion, manualMainVersion, isPrerelease, prereleaseId } = getVersionInfo();
 
 	if (manualMainVersion) {
-		await bumpPackage(config.mainPackage, mainVersion);
+		await bumpPackage(config.mainPackage, mainVersion, true);
 	}
 
 	for (const [trigger, target] of config.linkedPackages) {
 		if (packageVersions.has(trigger) && !packageVersions.has(target)) {
-			await bumpPackage(target);
+			await bumpPackage(target, null, true);
 		}
 	}
 
@@ -107,7 +107,7 @@ export async function processPackages(): Promise<{
 		return { mainVersion: mainVersion.version, manualMainVersion, isPrerelease, prereleaseId };
 	}
 
-	async function bumpPackage(packageName: string, version?: string) {
+	async function bumpPackage(packageName: string, version?: string | null, bumpDependents?: boolean) {
 		const workspacePackage = workspacePackages.find((p) => p.manifest.name === packageName);
 
 		if (!workspacePackage) return;
@@ -126,10 +126,12 @@ export async function processPackages(): Promise<{
 		await workspacePackage.writeProjectManifest(workspacePackage.manifest);
 		packageVersions.set(packageName, newVersion);
 
-		const dependents = findDependents(packageName);
+		if (bumpDependents) {
+			const dependents = findDependents(packageName);
 
-		for (const dependent of dependents) {
-			if (!packageVersions.has(dependent)) await bumpPackage(dependent);
+			for (const dependent of dependents) {
+				if (!packageVersions.has(dependent)) await bumpPackage(dependent);
+			}
 		}
 	}
 
