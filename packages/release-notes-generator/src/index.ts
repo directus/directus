@@ -15,15 +15,10 @@ process.on('beforeExit', async () => {
 async function run() {
 	const { mainVersion, isPrerelease, prereleaseId, packageVersions } = await processPackages();
 
-	// Run after `processPackages` to allow package clean-up
-	if (changesets.size === 0) {
-		earlyExit();
-	}
-
 	const { types, untypedPackages, notices } = await getInfo(changesets);
 
 	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
-		earlyExit();
+		process.stderr.write('WARN: No (processable) changesets found\n');
 	}
 
 	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
@@ -33,7 +28,7 @@ async function run() {
 
 	const githubOutput = process.env['GITHUB_OUTPUT'];
 
-	// Set output if running inside a GitHub workflow
+	// Set outputs if running inside a GitHub workflow
 	if (githubOutput) {
 		const outputs = [
 			`DIRECTUS_VERSION=${mainVersion}`,
@@ -44,11 +39,6 @@ async function run() {
 
 		appendFileSync(githubOutput, `${outputs.join('\n')}\n`);
 	}
-}
-
-function earlyExit(): never {
-	process.stdout.write('No (processable) changesets found: Skipping generation of release notes\n');
-	process.exit();
 }
 
 export default defaultChangelogFunctions;
