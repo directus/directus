@@ -32,7 +32,13 @@
 
 			<template #append>
 				<template v-if="displayItem">
-					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click="editModalActive = true" />
+					<v-icon
+						v-if="enableSelect && !disabled"
+						v-tooltip="t('select_an_item')"
+						name="swap_horiz"
+						class="select"
+						@click="selectModalActive = true"
+					/>
 					<v-icon
 						v-if="!disabled"
 						v-tooltip="t('deselect')"
@@ -193,13 +199,15 @@ function onPreviewClick() {
 	if (props.disabled) return;
 
 	// Prevent double dialog in case the edit dialog is already open
-	if (editModalActive.value === true) return;
+	if (selectModalActive.value === true) return;
 
-	if (props.enableSelect) {
+	// if select is enabled, and there's no value, open the select dialog
+	if (props.enableSelect && !displayItem.value) {
 		selectModalActive.value = true;
 		return;
 	}
 
+	// else open the edit dialog
 	editModalActive.value = true;
 }
 
