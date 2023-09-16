@@ -1,5 +1,6 @@
 import type { DirectusTranslation } from '../../../schema/translation.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadTranslationOutput<
@@ -28,14 +29,19 @@ export const readTranslations =
  * @param key The primary key of the dashboard
  * @param query The query parameters
  * @returns Returns a Translation object if a valid primary key was provided.
+ * @throws Will throw if key is empty
  */
 export const readTranslation =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		key: DirectusTranslation<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadTranslationOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/translations/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/translations/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};
