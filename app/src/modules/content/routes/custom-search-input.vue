@@ -9,7 +9,7 @@
 				@click="active = true">
 			<span class="icon-group">
 				<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
-				<v-icon v-if="activeFilterCount" @click.stop="clearAllFilters" v-tooltip.bottom="active ? null : t('Clear all filters')" name="close" class="icon-clear-filters" clickable />
+				<v-icon v-if="activeFilterCount" @click.stop="clearAllFilters" v-tooltip.bottom="t('Clear all filters')" name="close" class="icon-clear-filters" clickable />
 			</span>
 			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
 			<v-icon v-if="modelValue" clickable class="icon-empty" name="close"
@@ -303,7 +303,7 @@ function clearAllFilters() {
 }
 
 .icon-clear-filters {
-	--v-icon-color-hover: var(--primary);
+	--v-icon-color-hover: var(--danger);
 }
 
 .has-filters {

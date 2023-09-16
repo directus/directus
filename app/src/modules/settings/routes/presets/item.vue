@@ -43,10 +43,10 @@
 					:loading="saving || isCopySaving" @click="save">
 					<v-icon name="check" />
 
-						<template #append-outer>
-								<save-options v-if="hasEdits === true" :disabled-options="disabledOptions" @save-as-copy="saveAsCopyAndNavigate" />
-							</template>
-
+					<template #append-outer>
+						<save-options v-if="hasEdits === true" :disabled-options="disabledOptions"
+							@save-as-copy="saveAsCopyAndNavigate" />
+					</template>
 				</v-button>
 			</template>
 
@@ -188,12 +188,10 @@ useShortcut('meta+s', () => {
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
-
 // CUSTOM ADDITIONAL SETTINGS
-const disabledOptions = ['save-and-stay', 'save-and-add-new', 'discard-and-stay']
+const disabledOptions = ['save-and-stay', 'save-and-add-new', 'discard-and-stay'];
 
 const { saveAsCopyAndNavigate, isCopySaving } = useSaveAsCopy();
-
 
 function useSaveAsCopy() {
 	const isCopySaving = ref(false);
@@ -257,7 +255,6 @@ function useSaveAsCopy() {
 	}
 }
 // -------------------------------------------------------------
-
 
 function useSave() {
 	const saving = ref(false);
