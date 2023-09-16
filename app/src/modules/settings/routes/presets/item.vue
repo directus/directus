@@ -191,12 +191,12 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 // CUSTOM ADDITIONAL SETTINGS
 const disabledOptions = ['save-and-stay', 'save-and-add-new', 'discard-and-stay'];
 
-const { saveAsCopyAndNavigate, isCopySaving } = useSaveAsCopy();
+const { isCopySaving, saveAsCopyAndNavigate } = useSaveAsCopy();
 
 function useSaveAsCopy() {
 	const isCopySaving = ref(false);
 
-	return { saveAsCopyAndNavigate, isCopySaving };
+	return { isCopySaving, saveAsCopyAndNavigate };
 
 	async function saveAsCopyAndNavigate() {
 		isCopySaving.value = true;
@@ -240,17 +240,23 @@ function useSaveAsCopy() {
 		}
 
 		try {
-			// const { data: { data: { id: newPresetId } } } = await api.post(`/presets`, editsParsed);
-			await api.post(`/presets`, editsParsed);
-			await presetsStore.hydrate();
+			const { data: { data: { id: newPresetId } } } = await api.post(`/presets`, editsParsed);
+			// await api.post(`/presets`, editsParsed);
 			edits.value = {};
+			await presetsStore.hydrate();
 
-			// if (newPresetId) router.push(`/settings/presets/${newPresetId}`);
+			router.push(`/settings/presets`);
+
+			let timeout = null;
+
+			timeout = setTimeout(() => {
+				if (newPresetId) router.push(`/settings/presets/${newPresetId}`);
+				clearTimeout(timeout)
+			}, 200);
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			isCopySaving.value = false;
-			router.push(`/settings/presets`);
 		}
 	}
 }
