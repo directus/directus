@@ -169,7 +169,7 @@ export async function processPackages(): Promise<{
 	}
 
 	function transformGraph(graph: Record<string, PackageNode<Project>>) {
-		const dependentMap: Record<string, string[]> = {};
+		const dependentsMap: Record<string, string[]> = {};
 
 		for (const dependentNodeId of Object.keys(graph)) {
 			const dependentPackage = graph[dependentNodeId];
@@ -183,14 +183,14 @@ export async function processPackages(): Promise<{
 
 				if (!dependencyPackageName) continue;
 
-				if (!dependentMap[dependencyPackageName]) {
-					dependentMap[dependencyPackageName] = [dependentPackageName];
+				if (!dependentsMap[dependencyPackageName]) {
+					dependentsMap[dependencyPackageName] = [dependentPackageName];
 				} else {
-					dependentMap[dependencyPackageName]?.push(dependentPackageName);
+					dependentsMap[dependencyPackageName]?.push(dependentPackageName);
 				}
 			}
 		}
 
-		return dependentMap;
+		return dependentsMap;
 	}
 }
