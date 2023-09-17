@@ -198,10 +198,10 @@ const edits = computed(() => {
 function onPreviewClick() {
 	if (props.disabled) return;
 
-	// Prevent double dialog in case the edit dialog is already open
-	if (selectModalActive.value === true) return;
+	// Prevent double dialog in case it has already been opened by click on nested icon
+	if (selectModalActive.value || editModalActive.value) return;
 
-	// if select is enabled, and there's no value, open the select dialog
+	// If select is enabled, and there's no value, open the select dialog
 	if (props.enableSelect && !displayItem.value) {
 		selectModalActive.value = true;
 		return;
