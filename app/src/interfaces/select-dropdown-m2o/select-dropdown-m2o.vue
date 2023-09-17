@@ -34,7 +34,7 @@
 				<template v-if="displayItem">
 					<v-icon
 						v-if="enableSelect && !disabled"
-						v-tooltip="t('select_an_item')"
+						v-tooltip="t('change_item')"
 						name="swap_horiz"
 						class="select"
 						@click="selectModalActive = true"

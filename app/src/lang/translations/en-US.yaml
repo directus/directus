@@ -589,6 +589,7 @@ bookmark_doesnt_exist: Bookmark Doesn't Exist
 bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found.
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
+change_item: Change Item
 edit: Edit
 enabled: Enabled
 disable_tfa: Disable 2FA
