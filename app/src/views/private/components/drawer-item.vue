@@ -114,17 +114,17 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	active: undefined,
 	primaryKey: null,
-	edits: undefined,
 	junctionField: null,
-	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
 	junctionFieldLocation: 'bottom',
 });
 
-const emit = defineEmits(['update:active', 'input']);
+const emit = defineEmits<{
+	'update:active': [value: boolean];
+	input: [value: Record<string, any>];
+}>();
 
 const { t, te } = useI18n();
 
