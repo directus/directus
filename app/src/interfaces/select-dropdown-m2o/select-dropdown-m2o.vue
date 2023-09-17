@@ -268,7 +268,7 @@ function onSelection(selection: (number | string)[] | null) {
 	}
 }
 
-.edit {
+.select {
 	margin-right: 4px;
 
 	&:hover {
