@@ -237,7 +237,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`                     |
 | `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `1mb`                        |
 | `ROOT_REDIRECT`            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                | A boolean that enables/disables your Directus applivation entirely.                                                      | `true`                       |
+| `SERVE_APP`                | A boolean that enables/disables your Directus application entirely.                                                      | `true`                       |
 | `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`                       |
 | `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                      | `Infinity`                   |
 | `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`                         |
