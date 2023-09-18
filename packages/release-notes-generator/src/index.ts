@@ -18,7 +18,7 @@ async function run() {
 	const { types, untypedPackages, notices } = await getInfo(changesets);
 
 	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
-		process.stderr.write('WARN: No (processable) changesets found\n');
+		process.stderr.write('WARN: No processable changesets found\n');
 	}
 
 	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
