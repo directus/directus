@@ -1,5 +1,6 @@
 import type { DirectusRole } from '../../../schema/role.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadRoleOutput<
@@ -28,14 +29,19 @@ export const readRoles =
  * @param key The primary key of the dashboard
  * @param query The query parameters
  * @returns Returns a Role object if a valid primary key was provided.
+ * @throws Will throw if key is empty
  */
 export const readRole =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		key: DirectusRole<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadRoleOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/roles/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/roles/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};

@@ -214,7 +214,7 @@
 						{{ t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<v-button :to="`/content/${collection}/+`">{{ t('create_item') }}</v-button>
+							<v-button :to="getItemRoute(collection, '+')">{{ t('create_item') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -277,6 +277,7 @@ import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
 import BookmarkAdd from '@/views/private/components/bookmark-add.vue';
@@ -421,7 +422,7 @@ function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
 			name: currentCollection.value?.name,
-			to: `/content/${props.collection}`,
+			to: getCollectionRoute(props.collection),
 		},
 	]);
 
@@ -504,11 +505,11 @@ function useBatch() {
 
 function useLinks() {
 	const addNewLink = computed<string>(() => {
-		return `/content/${props.collection}/+`;
+		return getItemRoute(props.collection, '+');
 	});
 
 	const currentCollectionLink = computed<string>(() => {
-		return `/content/${props.collection}`;
+		return getCollectionRoute(props.collection);
 	});
 
 	return { addNewLink, currentCollectionLink };
@@ -534,7 +535,7 @@ function useBookmarks() {
 				color: bookmark.color,
 			});
 
-			router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
+			router.push(`${getCollectionRoute(newBookmark.collection)}?bookmark=${newBookmark.id}`);
 
 			bookmarkDialogActive.value = false;
 		} catch (err: any) {

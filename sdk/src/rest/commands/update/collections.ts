@@ -1,5 +1,6 @@
 import type { DirectusCollection } from '../../../schema/collection.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateCollectionOutput<
@@ -14,6 +15,7 @@ export type UpdateCollectionOutput<
  * @param item
  * @param query
  * @returns The collection object for the updated collection in this request.
+ * @throws Will throw if collection is empty
  */
 export const updateCollection =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
@@ -21,9 +23,13 @@ export const updateCollection =
 		item: NestedPartial<DirectusCollection<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateCollectionOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/collections/${collection}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(collection, 'Collection cannot be empty');
+
+		return {
+			path: `/collections/${collection}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};

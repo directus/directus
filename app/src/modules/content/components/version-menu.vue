@@ -55,7 +55,7 @@
 			:active="isVersionPromoteDrawerOpen"
 			:current-version="currentVersion"
 			@cancel="isVersionPromoteDrawerOpen = false"
-			@merge="onMergeComplete"
+			@promote="onPromoteComplete"
 		/>
 
 		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">
@@ -290,7 +290,7 @@ function useDeleteDialog() {
 	}
 }
 
-function onMergeComplete() {
+function onPromoteComplete() {
 	isVersionPromoteDrawerOpen.value = false;
 
 	emit('switch', null);

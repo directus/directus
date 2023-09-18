@@ -1,5 +1,5 @@
 ---
-description: 'Learn how to create an operation to insert comments within a workflow.'
+description: Learn how to create an operation to insert comments within a workflow.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
@@ -136,6 +136,7 @@ Inside the handler, set the following constants:
 ```js
 const { ActivityService } = services;
 const schema = await getSchema({ database });
+
 const activityService = new ActivityService({
 	schema: schema,
 	accountability: accountability,
@@ -148,10 +149,11 @@ convert a single ID to an array then add them to the `keys` constant. Note the u
 into the field.
 
 ```js
-if(!Array.isArray(comment_key) && comment_key.includes("[") === false){
-  comment_key = [comment_key];
+if (!Array.isArray(comment_key) && comment_key.includes('[') === false) {
+	comment_key = [comment_key];
 }
-const keys = (Array.isArray(comment_key))?comment_key:JSON.parse(Array.isArray(comment_key));
+
+const keys = Array.isArray(comment_key) ? comment_key : JSON.parse(Array.isArray(comment_key));
 ```
 
 The final part of the script is to loop through all the keys and write the comment to them. Also it will be useful to
@@ -178,7 +180,6 @@ for await (const key of keys) {
 		});
 		results.push(activity);
 	} catch (error) {
-		console.log(error);
 		return error;
 	}
 };
@@ -331,7 +332,6 @@ export default {
 export default {
 	id: 'your-extension-id',
 	handler: async ({ collection, comment_key, comment }, { services, database, accountability, getSchema }) => {
-
 		const { ActivityService } = services;
 		const schema = await getSchema({ database });
 
@@ -341,10 +341,11 @@ export default {
 			knex: database,
 		});
 
-		if(!Array.isArray(comment_key) && comment_key.includes("[") === false){
+		if (!Array.isArray(comment_key) && comment_key.includes('[') === false) {
 			comment_key = [comment_key];
 		}
-		const keys = (Array.isArray(comment_key))?comment_key:JSON.parse(Array.isArray(comment_key));
+
+		const keys = Array.isArray(comment_key) ? comment_key : JSON.parse(Array.isArray(comment_key));
 
 		console.log(`Converted ${keys}`);
 
@@ -366,10 +367,9 @@ export default {
 
 				results.push(activity);
 			} catch (error) {
-				console.log(error);
 				return error;
 			}
-		};
+		}
 
 		return results;
 	},

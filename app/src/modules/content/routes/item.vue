@@ -292,6 +292,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { usePermissionsStore } from '@/stores/permissions';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
@@ -553,14 +554,14 @@ function navigateBack() {
 		return;
 	}
 
-	router.push(`/content/${props.collection}`);
+	router.push(getCollectionRoute(props.collection));
 }
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
 			name: collectionInfo.value?.name,
-			to: `/content/${props.collection}`,
+			to: getCollectionRoute(props.collection),
 		},
 	]);
 
@@ -596,7 +597,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		if (props.singleton === false) router.push(`/content/${props.collection}`);
+		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -615,7 +616,8 @@ async function saveAndStay() {
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-			router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+
+			router.replace(getItemRoute(props.collection, newPrimaryKey));
 		} else {
 			revisionsDrawerDetailRef.value?.refresh?.();
 			refresh();
@@ -635,7 +637,7 @@ async function saveAndAddNew() {
 		if (isNew.value === true) {
 			refresh();
 		} else {
-			router.push(`/content/${props.collection}/+`);
+			router.push(getItemRoute(props.collection, '+'));
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -645,7 +647,8 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+
+		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -655,7 +658,7 @@ async function deleteAndQuit() {
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(`/content/${props.collection}`);
+		router.replace(getCollectionRoute(props.collection));
 	} catch {
 		// `remove` will show the unexpected error dialog
 	} finally {
@@ -668,7 +671,7 @@ async function toggleArchive() {
 		await archive();
 
 		if (isArchived.value === true) {
-			router.push(`/content/${props.collection}`);
+			router.push(getCollectionRoute(props.collection));
 		} else {
 			confirmArchive.value = false;
 		}
