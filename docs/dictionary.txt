@@ -306,8 +306,12 @@ Pino
 Plesk
 PNG
 pnpm
+PokéAPI
+Pokémon
 Postgres
 Postgres13
+(P|p)olyfill
+Polyfilling
 PR
 pre
 pre-configured

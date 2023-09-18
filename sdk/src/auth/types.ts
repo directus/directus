@@ -1,4 +1,4 @@
-import type { loginOptions } from '../index.js';
+import type { LoginOptions } from '../index.js';
 
 export type AuthenticationMode = 'json' | 'cookie';
 
@@ -15,13 +15,14 @@ export interface AuthenticationStorage {
 }
 
 export interface AuthenticationConfig {
-	autoRefresh?: boolean;
-	msRefreshBeforeExpires?: number;
+	autoRefresh: boolean;
+	msRefreshBeforeExpires: number;
+	credentials: RequestCredentials;
 	storage?: AuthenticationStorage;
 }
 
 export interface AuthenticationClient<_Schema extends object> {
-	login(email: string, password: string, options: loginOptions): Promise<AuthenticationData>;
+	login(email: string, password: string, options?: LoginOptions): Promise<AuthenticationData>;
 	refresh(): Promise<AuthenticationData>;
 	logout(): Promise<void>;
 

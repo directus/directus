@@ -49,6 +49,7 @@
 import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
+import { getItemRoute } from '@/utils/get-route';
 import { userName } from '@/utils/user-name';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -87,7 +88,8 @@ const error = ref<any>(null);
 
 const openItemLink = computed(() => {
 	if (!item.value || item.value.collection.startsWith('directus_') || item.value.action === 'delete') return;
-	return `/content/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
+
+	return getItemRoute(item.value.collection, item.value.item);
 });
 
 watch(() => props.primaryKey, loadActivity, { immediate: true });

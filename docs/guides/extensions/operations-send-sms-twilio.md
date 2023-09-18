@@ -1,6 +1,6 @@
 ---
-description: "Learn how to create an operation to send an SMS using Twilio."
-contributors: "Tim Butterfield, Kevin Lewis"
+description: Learn how to create an operation to send an SMS using Twilio.
+contributors: Tim Butterfield, Kevin Lewis
 ---
 
 # Use Custom Operations to Send SMS Notifications With Twilio
@@ -24,7 +24,7 @@ npx create-directus-extension
 A list of options will appear (choose operation), and type a name for your extension (for example,
 `directus-operation-twilio-sms`). For this guide, select JavaScript.
 
-Now the boilerplate has been created, install the twilio package, and then open the directory in your code editor.
+Now the boilerplate has been created, install the Twilio library, and then open the directory in your code editor.
 
 ```
 cd directus-operation-twilio-sms
@@ -108,41 +108,54 @@ Now, the overview of the operation looks like this:
 
 ## Build the API Function
 
-Open the `api.js` file and update the `id` to match the one used in the `app.js` file.
+Open the `api.js` file, import the Twilio library and update the `id` to match the one used in the `app.js` file:
+
+```js
+import twilio from 'twilio';
+
+export default {
+	id: 'operation-twilio-sms',
+	handler: () => {
+		// ...
+	},
+};
+```
 
 The handler needs to include the fields from the `app.js` options and the environment variables from Directus. Replace
 the handler definition with the following:
 
 ```js
-handler: ({ phone_number, message }, { env }) => {
+handler: ({ phone_number: toNumber, message }, { env }) => {
 ```
 
 Set up the Twilio API and environment variables with the following code. These environment variables will need to be
 added to the project when installing this extension.
 
 ```js
-const twilio = require('twilio');
 const accountSid = env.TWILIO_ACCOUNT_SID;
 const authToken = env.TWILIO_AUTH_TOKEN;
-const from_number = env.TWILIO_PHONE_NUMBER;
+const fromNumber = env.TWILIO_PHONE_NUMBER;
 const client = new twilio(accountSid, authToken);
 ```
 
 Use the Twilio `messages` endpoint and create a new message, setting the `body`, `to`, and `from` parameters. `body`
-will use the message variable from our handler, `to` will use the `phone_number` variable from our handler and `from`
-will use the `from_number` constant from the environment variable `TWILIO_PHONE_NUMBER`.
+will use the message variable from our handler, `to` will use the `phone_number` variable from our handler, aliased as
+`toNumber` for clarity, and `from` will use the `fromNumber` constant from the environment variable
+`TWILIO_PHONE_NUMBER`.
 
 ```js
-client.messages.create({
-	body: message,
-	to: phone_number,
-	from: from_number,
-}).then((rsp) => {
-	return rsp;
-}).catch((error) => {
-	console.error(error);
-	return error;
-});
+client.messages
+	.create({
+		body: message,
+		to: toNumber,
+		from: fromNumber,
+	})
+	.then((response) => {
+		return response;
+	})
+	.catch((error) => {
+		return error;
+	});
 ```
 
 Make sure the return the `response` and `error` so they can be included in the Flow’s log.
@@ -242,25 +255,28 @@ export default {
 `api.js`
 
 ```js
+import twilio from 'twilio';
+
 export default {
 	id: 'operation-twilio-sms',
-	handler: ({ phone_number, message }, { env }) => {
-		const twilio = require('twilio');
+	handler: ({ phone_number: toNumber, message }, { env }) => {
 		const accountSid = env.TWILIO_ACCOUNT_SID;
 		const authToken = env.TWILIO_AUTH_TOKEN;
-		const from_number = env.TWILIO_PHONE_NUMBER;
+		const fromNumber = env.TWILIO_PHONE_NUMBER;
 		const client = new twilio(accountSid, authToken);
 
-		client.messages.create({
-			body: message,
-			to: phone_number,
-			from: from_number,
-		}).then((rsp) => {
-			return rsp;
-		}).catch((error) => {
-			console.error(error);
-			return error;
-		});
+		client.messages
+			.create({
+				body: message,
+				to: toNumber,
+				from: fromNumber,
+			})
+			.then((response) => {
+				return response;
+			})
+			.catch((error) => {
+				return error;
+			});
 	},
 };
 ```

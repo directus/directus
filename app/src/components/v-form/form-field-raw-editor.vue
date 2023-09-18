@@ -33,6 +33,8 @@
 
 <script setup lang="ts">
 import { getJSType } from '@/utils/get-js-type';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
+import { isValidJSON, parseJSON } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -68,11 +70,7 @@ watch(
 				return;
 			}
 
-			if (type.value === 'object') {
-				internalValue.value = JSON.stringify(props.currentValue, null, '\t');
-			} else {
-				internalValue.value = String(props.currentValue);
-			}
+			internalValue.value = getStringifiedValue(props.currentValue, type.value === 'object');
 		}
 	}
 );
@@ -89,7 +87,7 @@ const setRawValue = () => {
 			emit('setRawValue', internalValue.value === 'true');
 			break;
 		case 'object':
-			emit('setRawValue', JSON.parse(internalValue.value));
+			emit('setRawValue', isValidJSON(internalValue.value) ? parseJSON(internalValue.value) : internalValue.value);
 			break;
 		default:
 			emit('setRawValue', internalValue.value);

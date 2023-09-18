@@ -21,7 +21,7 @@
 				:max-width="maxWidthNav"
 				:options="navResizeOptions"
 				@dragging="(value) => (isDraggingNav = value)"
-				@transition-end="resetContentOverflowX"
+				@transition-end="onNavTransitionEnd"
 			>
 				<div class="module-nav alt-colors">
 					<project-info />
@@ -156,41 +156,30 @@ const headerBarEl = ref();
 const sidebarEl = ref<Element>();
 
 let navTransitionTimer: ReturnType<typeof setTimeout>;
-let previousContentOverflowX: string | null = null;
 
-const resetContentOverflowX = () => {
-	if (previousContentOverflowX !== null && contentEl.value) {
-		contentEl.value.style.overflowY = previousContentOverflowX;
-		previousContentOverflowX = null;
-	}
-
+const onNavTransitionEnd = () => {
 	clearTimeout(navTransitionTimer);
+	contentEl.value?.classList.remove('hide-overflow-x');
 };
 
 watch(splitViewWritable, () => {
-	if (!headerBarEl.value || !contentEl.value) return;
+	if (!contentEl.value || !headerBarEl.value) return;
 
-	previousContentOverflowX = contentEl.value.style.overflowX;
-	contentEl.value.style.overflowX = 'hidden';
-	navTransitionTimer = setTimeout(resetContentOverflowX, 1500);
+	contentEl.value.classList.add('hide-overflow-x', 'hide-overflow-y');
 
-	const previousContentOverflowY = contentEl.value.style.overflowY;
-	contentEl.value.style.overflowY = 'hidden';
+	navTransitionTimer = setTimeout(onNavTransitionEnd, 1500);
 
 	let headerBarTransitionTimer: ReturnType<typeof setTimeout> | undefined = undefined;
 	let cleanupListener: (() => void) | undefined = undefined;
 
-	const resetContentOverflowY = () => {
-		if (contentEl.value) {
-			contentEl.value.style.overflowY = previousContentOverflowY;
-		}
-
+	const onHeaderBarTransitionEnd = () => {
 		clearTimeout(headerBarTransitionTimer);
 		cleanupListener?.();
+		contentEl.value?.classList.remove('hide-overflow-y');
 	};
 
-	headerBarTransitionTimer = setTimeout(resetContentOverflowY, 1500);
-	cleanupListener = useEventListener(headerBarEl.value, 'transitionend', resetContentOverflowY);
+	headerBarTransitionTimer = setTimeout(onHeaderBarTransitionEnd, 1500);
+	cleanupListener = useEventListener(headerBarEl.value, 'transitionend', onHeaderBarTransitionEnd);
 });
 
 const { width: windowWidth } = useWindowSize();
@@ -458,6 +447,14 @@ function getWidth(input: unknown, fallback: number): number {
 
 		@media (min-width: 1260px) {
 			margin-right: 0;
+		}
+
+		&.hide-overflow-x {
+			overflow-x: hidden;
+		}
+
+		&.hide-overflow-y {
+			overflow-y: hidden;
 		}
 	}
 
