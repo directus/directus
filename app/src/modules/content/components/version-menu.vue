@@ -2,7 +2,7 @@
 	<div>
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
-				<button class="version-button" @click="toggle">
+				<button class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
 					<span class="version-name">{{ currentVersion ? currentVersion.name : t('main_version') }}</span>
 					<v-icon name="arrow_drop_down" />
 				</button>
@@ -318,12 +318,26 @@ function onPromoteComplete() {
 .version-button {
 	display: flex;
 	margin-left: 16px;
-	background-color: var(--primary-25);
-	color: var(--primary);
+	padding: 2px;
+	background-color: var(--background-normal);
+	color: var(--foreground-normal);
 	border-radius: 24px;
 
 	.version-name {
 		padding-left: 8px;
+	}
+
+	&:hover {
+		background-color: var(--background-normal-alt);
+	}
+
+	&.main {
+		background-color: var(--primary);
+		color: var(--white);
+
+		&:hover {
+			background-color: var(--primary-125);
+		}
 	}
 }
 

@@ -123,7 +123,7 @@ fields:
       - no-data
     interface: presentation-divider
     options:
-      icon: update
+      icon: published_with_changes
       title: $t:field_options.directus_collections.content_versioning_divider
     width: full
 

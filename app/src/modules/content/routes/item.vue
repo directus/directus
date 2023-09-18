@@ -190,7 +190,7 @@
 				:disabled="!isSavable"
 				@click="saveVersionAndQuit"
 			>
-				<v-icon name="commit" />
+				<v-icon name="beenhere" />
 
 				<template #append-outer>
 					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
@@ -268,6 +268,7 @@
 					:allowed="shareAllowed"
 				/>
 				<flow-sidebar-detail
+					v-if="currentVersion === null"
 					location="item"
 					:collection="collection"
 					:primary-key="internalPrimaryKey"

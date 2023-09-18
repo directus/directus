@@ -21,8 +21,6 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.dropTable('directus_versions');
-
 	await knex.schema.alterTable('directus_collections', (table) => {
 		table.dropColumn('versioning');
 	});
@@ -30,4 +28,6 @@ export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_revisions', (table) => {
 		table.dropColumn('version');
 	});
+
+	await knex.schema.dropTable('directus_versions');
 }
