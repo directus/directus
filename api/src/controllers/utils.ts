@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import { Worker } from 'node:worker_threads';
-import { file as createTmpFile } from 'tmp-promise';
+import * as tmp from '@directus/tmp-fs';
 import fs from 'node:fs';
 
 import Joi from 'joi';
@@ -123,9 +123,11 @@ router.post(
 		const busboy = Busboy({ headers });
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			const { path: filePath, cleanup } = await createTmpFile();
+			const tmpFile = await tmp.createFile().catch(() => null);
 
-			fileStream.pipe(fs.createWriteStream(filePath));
+			if (!tmpFile) throw new Error('It was not possible to create a temporary file');
+
+			fileStream.pipe(fs.createWriteStream(tmpFile.path));
 
 			fileStream.on('end', async () => {
 				const workerPath = new URL('../utils/import-worker', import.meta.url);
@@ -134,7 +136,7 @@ router.post(
 					workerData: {
 						collection: req.params['collection']!,
 						mimeType,
-						filePath,
+						filePath: tmpFile.path,
 						accountability: req.accountability,
 						schema: req.schema,
 					},
@@ -142,13 +144,13 @@ router.post(
 
 				worker.on('message', async (message) => {
 					if (message.type === 'finish') {
-						await cleanup();
+						await tmpFile.cleanup();
 						res.status(200).end();
 					}
 				});
 
 				worker.on('error', async (err) => {
-					await cleanup();
+					await tmpFile.cleanup();
 					next(err);
 				});
 			});

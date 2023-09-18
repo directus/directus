@@ -13,7 +13,7 @@ import { appendFile } from 'node:fs/promises';
 import type { Readable } from 'node:stream';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import stripBomStream from 'strip-bom-stream';
-import { file as createTmpFile } from 'tmp-promise';
+import * as tmp from '@directus/tmp-fs';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
@@ -203,7 +203,11 @@ export class ExportService {
 			file?: Partial<File>;
 		}
 	) {
+		const tmpFile = await tmp.createFile().catch(() => null);
+
 		try {
+			if (!tmpFile) throw new Error('It was not possible to create a temporary file');
+
 			const mimeTypes = {
 				csv: 'text/csv',
 				json: 'application/json',
@@ -212,8 +216,6 @@ export class ExportService {
 			};
 
 			const database = getDatabase();
-
-			const { path, cleanup } = await createTmpFile();
 
 			await database.transaction(async (trx) => {
 				const service = new ItemsService(collection, {
@@ -264,7 +266,7 @@ export class ExportService {
 
 					if (result.length) {
 						await appendFile(
-							path,
+							tmpFile.path,
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
@@ -292,7 +294,7 @@ export class ExportService {
 				type: mimeTypes[format],
 			};
 
-			const savedFile = await filesService.uploadOne(createReadStream(path), fileWithDefaults);
+			const savedFile = await filesService.uploadOne(createReadStream(tmpFile.path), fileWithDefaults);
 
 			if (this.accountability?.user) {
 				const notificationsService = new NotificationsService({
@@ -325,8 +327,6 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 					item: savedFile,
 				});
 			}
-
-			await cleanup();
 		} catch (err: any) {
 			logger.error(err, `Couldn't export ${collection}: ${err.message}`);
 
@@ -343,6 +343,8 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 					message: `Please contact your system administrator for more information.`,
 				});
 			}
+		} finally {
+			await tmpFile?.cleanup();
 		}
 	}
 
