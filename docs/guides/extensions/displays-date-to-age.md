@@ -1,5 +1,5 @@
 ---
-description: 'Learn how to create a display extension to format an item value.'
+description: Learn how to create a display extension to format an item value.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
@@ -59,18 +59,18 @@ following object:
 
 ```js
 options: [
-    {
-        field: 'show_months',
-        type: 'boolean',
-        name: 'Show months as well',
-        meta: {
-            interface: 'boolean',
-            options: {
-                label: 'Yes',
-            },
-            width: 'half',
-        },
-    },
+	{
+		field: 'show_months',
+		type: 'boolean',
+		name: 'Show months as well',
+		meta: {
+			interface: 'boolean',
+			options: {
+				label: 'Yes',
+			},
+			width: 'half',
+		},
+	},
 ],
 ```
 
@@ -79,7 +79,7 @@ options: [
 The `display.vue` file contains the barebones code required for a display to work. The value is imported in the `props`
 section, then output in the template:
 
-```html
+```vue
 <template>
 	<div>Value: {{ value }}</div>
 </template>
@@ -121,16 +121,17 @@ Create a function to change the date of birth into the person's age and make it 
 `setup` section after the `props` and include the following code:
 
 ```js
-setup(props){
-	function calculateAge(){
-		if(props.show_months){
-			const { years, months } = intervalToDuration({ start: parseISO(props.value), end: new Date()});
+setup(props) {
+	function calculateAge() {
+		if (props.show_months) {
+			const { years, months } = intervalToDuration({ start: parseISO(props.value), end: new Date() });
 			return `${years} years ${months} months`;
 		} else {
 			const age = differenceInYears(new Date(), parseISO(props.value));
 			return `${age} years`;
 		}
 	}
+
 	return calculateAge;
 },
 ```
@@ -140,9 +141,9 @@ formatted into a string with the suffix years (and months if enabled).
 
 Update the template to use the `calculateAge` function instead of the direct value:
 
-```html
+```vue
 <template>
-    <div>Value: {{ value }}</div> // [!code --]
+	<div>Value: {{ value }}</div> // [!code --]
 	<div>{{ calculateAge() }}</div> // [!code ++]
 </template>
 ```
@@ -220,7 +221,7 @@ export default {
 
 `display.vue`
 
-```html
+```vue
 <template>
 	<div>{{ calculateAge() }}</div>
 </template>

@@ -131,6 +131,8 @@ export function getTriggers() {
 									'database.error',
 									'auth.login',
 									'auth.jwt',
+									'auth.create',
+									'auth.update',
 									'authenticate',
 								],
 								font: 'monospace',
