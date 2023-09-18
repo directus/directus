@@ -3,7 +3,7 @@ import type { AbstractSqlQuery } from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
-import { createUniqueIdentifier } from './create-unique-identifier.js';
+import { createUniqueIdentifier } from '../../orm/create-unique-identifier.js';
 
 export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'joins' | 'parameters'>;
 

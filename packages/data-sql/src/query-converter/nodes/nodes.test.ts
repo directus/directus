@@ -8,7 +8,7 @@ afterAll(() => {
 	vi.restoreAllMocks();
 });
 
-vi.mock('./create-unique-identifier.js', () => ({
+vi.mock('../../orm/create-unique-identifier.js', () => ({
 	createUniqueIdentifier: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
