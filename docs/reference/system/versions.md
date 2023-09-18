@@ -1,37 +1,37 @@
 ---
-description: REST and GraphQL API documentation on the Branches collection in Directus.
+description: REST and GraphQL API documentation on the Versions collection in Directus.
 readTime: 5 min read
 pageClass: page-reference
 ---
 
-# Branches
+# Versions
 
 > TBD
 
-## The Branch Object
+## The Version Object
 
 `id` **uuid**\
-Primary key of the branch.
+Primary key of the version.
 
 `name` **string**\
-Name of the branch.
+Name of the version.
 
 `collection` **string**\
-Name of the collection the branch is created on.
+Name of the collection the version is created on.
 
 `item` **many-to-one**\
-The item the branch is created on.
+The item the version is created on.
 
 `date_created` **Date**\
-When the branch was created.
+When the version was created.
 
 `user_created` **many-to-one**\
-User that created the branch. Many-to-one to [users](/reference/system/users).
+User that created the version. Many-to-one to [users](/reference/system/users).
 
 ```json
  {
 	"id": "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5",
-	"name": "My Branch",
+	"name": "My Version",
 	"collection": "my-collection",
 	"item": "1",
 	"hash": "aaafc0db8fb60e82e634903523e1fa2144c58520",
@@ -40,18 +40,18 @@ User that created the branch. Many-to-one to [users](/reference/system/users).
 }
 ```
 
-## List Branches
+## List Versions
 
-List all branches that exist in Directus.
+List all versions that exist in Directus.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /branches`
+`GET /versions`
 
-`SEARCH /branches`
+`SEARCH /versions`
 
 If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
 
@@ -76,17 +76,17 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-An array of up to [limit](/reference/query#limit) [branch objects](#the-branch-object). If no items are available, data
-will be an empty array.
+An array of up to [limit](/reference/query#limit) [version objects](#the-version-object). If no items are available,
+data will be an empty array.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /branches`
+`GET /versions`
 
-`SEARCH /branches`
+`SEARCH /versions`
 
 </template>
 <template #graphql>
@@ -101,16 +101,16 @@ TBD
 </template>
 </SnippetToggler>
 
-## Retrieve a Branch
+## Retrieve a Version
 
-List an existing branch by primary key.
+List an existing version by primary key.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /branches/:id`
+`GET /versions/:id`
 
 </template>
 <template #graphql>
@@ -131,7 +131,7 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-Returns the requested [branch object](#the-branch-object).
+Returns the requested [version object](#the-version-object).
 
 ### Example
 
@@ -153,18 +153,18 @@ TBD
 </template>
 </SnippetToggler>
 
-## Create a Branch
+## Create a Version
 
-Create a new branch.
+Create a new version.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /branch`
+`POST /version`
 
-Provide a [branch object](#the-branch-object) as the body of your request.
+Provide a [version object](#the-version-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -185,22 +185,22 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-A partial [branch object](#the-branch-object).
+A partial [version object](#the-version-object).
 
 ### Response
 
-Returns the [branch object](#the-branch-object) for the created branch.
+Returns the [version object](#the-version-object) for the created version.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /branches`
+`POST /versions`
 
 ```json
 {
-	"name": "My Branch",
+	"name": "My Version",
 	"collection": "my-collection",
 	"item": "1"
 }
@@ -219,18 +219,18 @@ TBD
 </template>
 </SnippetToggler>
 
-## Create Multiple Branches
+## Create Multiple Versions
 
-Create multiple new branches.
+Create multiple new versions.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /branches`
+`POST /versions`
 
-Provide an array of [branch objects](#the-branch-object) as the body of your request.
+Provide an array of [version objects](#the-version-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -251,11 +251,11 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-An array of partial [branch objects](#the-branch-object).
+An array of partial [version objects](#the-version-object).
 
 ### Response
 
-Returns an array of [branch objects](#the-branch-object) for the created branches.
+Returns an array of [version objects](#the-version-object) for the created versions.
 
 ### Example
 
@@ -267,12 +267,12 @@ Returns an array of [branch objects](#the-branch-object) for the created branche
 ```json
 [
 	{
-		"name": "My Branch",
+		"name": "My Version",
 		"collection": "my-collection",
 		"item": "1"
 	},
 	{
-		"name": "Another Branch",
+		"name": "Another Version",
 		"collection": "another-collection",
 		"item": "2"
 	}
@@ -292,18 +292,18 @@ TBD
 </template>
 </SnippetToggler>
 
-## Rename a Branch
+## Rename a Version
 
-Rename an existing branch.
+Rename an existing version.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /branches/:id`
+`PATCH /versions/:id`
 
-Provide a partial [branch object](#the-branch-object) as the body of your request.
+Provide a partial [version object](#the-version-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -324,22 +324,22 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-A partial [branch object](#the-branch-object).
+A partial [version object](#the-version-object).
 
 ### Response
 
-Returns the [branch object](#the-branch-object) for the updated branch.
+Returns the [version object](#the-version-object) for the updated version.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
+`PATCH /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
 
 ```json
 {
-	"name": "My Updated Branch"
+	"name": "My Updated Version"
 }
 ```
 
@@ -356,21 +356,21 @@ TBD
 </template>
 </SnippetToggler>
 
-## Rename Multiple Branches
+## Rename Multiple Versions
 
-Rename multiple existing branches.
+Rename multiple existing versions.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /branches`
+`PATCH /versions`
 
 ```json
 {
-	"keys": branch_id_array,
-	"data": partial_branch_object
+	"keys": version_id_array,
+	"data": partial_version_object
 }
 ```
 
@@ -394,27 +394,27 @@ Supports all [global query parameters](/reference/query).
 #### Request Body
 
 `keys` **Required**\
-Array of primary keys of the branches you'd like to update.
+Array of primary keys of the versions you'd like to update.
 
 `data` **Required**\
-The name property of the [branch object](#the-branch-object).
+The name property of the [version object](#the-version-object).
 
 ### Response
 
-Returns the [branch objects](#the-branch-object) for the updated branches.
+Returns the [version objects](#the-version-object) for the updated versions.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /branches`
+`PATCH /versions`
 
 ```json
 {
 	"keys": ["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631"],
 	"data": {
-		"name": "My Updated Branch"
+		"name": "My Updated Version"
 	}
 }
 ```
@@ -432,16 +432,16 @@ TBD
 </template>
 </SnippetToggler>
 
-## Delete a Branch
+## Delete a Version
 
-Delete an existing branch.
+Delete an existing version.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /branches/:id`
+`DELETE /versions/:id`
 
 </template>
 <template #graphql>
@@ -465,7 +465,7 @@ Empty body.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
+`DELETE /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
 
 </template>
 <template #graphql>
@@ -480,18 +480,18 @@ TBD
 </template>
 </SnippetToggler>
 
-## Delete Multiple Branches
+## Delete Multiple Versions
 
-Delete multiple existing branches.
+Delete multiple existing versions.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /branches`
+`DELETE /versions`
 
-Provide an array of branch IDs as the body of your request.
+Provide an array of version IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -508,7 +508,7 @@ TBD
 
 #### Request Body
 
-An array of branch primary keys
+An array of version primary keys
 
 ### Response
 
@@ -519,7 +519,7 @@ Empty body.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /branches`
+`DELETE /versions`
 
 ```json
 ["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631", "5fd4a4be-a3ad-4544-9a27-d62b2c897056"]
@@ -538,16 +538,16 @@ TBD
 </template>
 </SnippetToggler>
 
-## Commit to a Branch
+## Save to a Version
 
-Commit changes to an existing branch.
+Save changes to an existing version.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /branches/:id/commit`
+`POST /versions/:id/save`
 
 Provide a partial [item object](/reference/items#the-item-object) as the body of your request.
 
@@ -566,14 +566,14 @@ TBD
 
 ### Response
 
-Returns the [item object](/reference/items#the-item-object) of the item state after the commit.
+Returns the [item object](/reference/items#the-item-object) of the item state after the save.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/commit`
+`POST /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/save`
 
 ```json
 {
@@ -594,16 +594,16 @@ TBD
 </template>
 </SnippetToggler>
 
-## Compare a Branch
+## Compare a Version
 
-Compare an existing branch with the main item.
+Compare an existing version with the main item.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /branches/:id/compare`
+`GET /versions/:id/compare`
 
 </template>
 <template #graphql>
@@ -620,8 +620,8 @@ TBD
 
 ### Response
 
-Returns all fields with different values, along with the hash of the main branch and the information whether the current
-branch is outdated (main branch has been updated since the creation of the current branch):
+Returns all fields with different values, along with the hash of the main item and the information whether the current
+version is outdated (main item has been updated since the creation of the current version):
 
 ```json
 {
@@ -641,7 +641,7 @@ branch is outdated (main branch has been updated since the creation of the curre
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/compare`
+`GET /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/compare`
 
 </template>
 <template #graphql>
@@ -656,19 +656,19 @@ TBD
 </template>
 </SnippetToggler>
 
-## Merge a Branch
+## Promote a Version
 
-Merge an existing branch into the item's main branch.
+Promote an existing version into the main item.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /branches/:id/merge`
+`POST /versions/:id/promote`
 
-Pass the current hash of the main branch (usually obtained from the `compare` endpoint) along with an array of field
-names of which the values are to be merged from the current branch into the main branch.
+Pass the current hash of the main item (usually obtained from the `compare` endpoint) along with an array of field names
+of which the values are to be promoted from the current version into the main item.
 
 ```json
 {
@@ -699,7 +699,7 @@ The primary key of the updated item.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/merge`
+`POST /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/promote`
 
 ```json
 {

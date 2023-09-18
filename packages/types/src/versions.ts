@@ -1,4 +1,4 @@
-export type Branch = {
+export type Version = {
 	id: string;
 	name: string;
 	collection: string;

@@ -4,7 +4,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { Branch, Filter } from '@directus/types';
+import { Filter, Version } from '@directus/types';
 import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { ref, Ref, unref, watch } from 'vue';
@@ -18,7 +18,7 @@ type UseRevisionsOptions = {
 export function useRevisions(
 	collection: Ref<string>,
 	primaryKey: Ref<number | string>,
-	branch: Ref<Branch | null>,
+	version: Ref<Version | null>,
 	options?: UseRevisionsOptions
 ) {
 	const { t } = useI18n();
@@ -31,7 +31,7 @@ export function useRevisions(
 	const created = ref<Revision>();
 	const pagesCount = ref(0);
 
-	watch([collection, primaryKey, branch], () => getRevisions(), { immediate: true });
+	watch([collection, primaryKey, version], () => getRevisions(), { immediate: true });
 
 	return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
 
@@ -55,9 +55,9 @@ export function useRevisions(
 						},
 					},
 					{
-						branch: branch.value
+						version: version.value
 							? {
-									_eq: branch.value.id,
+									_eq: version.value.id,
 							  }
 							: { _null: true },
 					},
@@ -110,10 +110,10 @@ export function useRevisions(
 							item: {
 								_eq: unref(primaryKey),
 							},
-							branch: { _null: true },
+							version: { _null: true },
 							activity: {
 								action: {
-									_eq: unref(branch) ? Action.COMMIT : Action.CREATE,
+									_eq: unref(version) ? Action.VERSION_SAVE : Action.CREATE,
 								},
 							},
 						},

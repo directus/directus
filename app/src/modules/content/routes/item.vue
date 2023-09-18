@@ -57,23 +57,23 @@
 		</template>
 
 		<template #title-outer:append>
-			<branch-menu
+			<version-menu
 				v-if="
 					collectionInfo.meta &&
-					collectionInfo.meta.branches_enabled &&
+					collectionInfo.meta.versioning &&
 					!isNew &&
 					internalPrimaryKey !== '+' &&
-					readBranchesAllowed &&
-					!branchesLoading
+					readVersionsAllowed &&
+					!versionsLoading
 				"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
-				:current-branch="currentBranch"
-				:branches="branches"
-				@add="addBranch"
-				@rename="renameBranch"
-				@delete="deleteBranch"
-				@switch="currentBranch = $event"
+				:current-version="currentVersion"
+				:versions="versions"
+				@add="addVersion"
+				@rename="renameVersion"
+				@delete="deleteVersion"
+				@switch="currentVersion = $event"
 			/>
 		</template>
 
@@ -91,7 +91,7 @@
 			</v-button>
 
 			<v-dialog
-				v-if="!isNew && currentBranch === null"
+				v-if="!isNew && currentVersion === null"
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
@@ -160,7 +160,7 @@
 			</v-dialog>
 
 			<v-button
-				v-if="currentBranch === null"
+				v-if="currentVersion === null"
 				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
@@ -183,12 +183,12 @@
 			</v-button>
 			<v-button
 				v-else
-				v-tooltip.bottom="t('commit')"
+				v-tooltip.bottom="t('save_version')"
 				rounded
 				icon
-				:loading="commitLoading"
+				:loading="saveVersionLoading"
 				:disabled="!isSavable"
-				@click="commitToBranchAndQuit"
+				@click="saveVersionAndQuit"
 			>
 				<v-icon name="commit" />
 
@@ -252,17 +252,17 @@
 					ref="revisionsDrawerDetailRef"
 					:collection="collection"
 					:primary-key="internalPrimaryKey"
-					:branch="currentBranch"
+					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
 				<comments-sidebar-detail
-					v-if="currentBranch === null"
+					v-if="currentVersion === null"
 					:collection="collection"
 					:primary-key="internalPrimaryKey"
 				/>
 				<shares-sidebar-detail
-					v-if="currentBranch === null"
+					v-if="currentVersion === null"
 					:collection="collection"
 					:primary-key="internalPrimaryKey"
 					:allowed="shareAllowed"
@@ -283,13 +283,13 @@
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useBranches } from '@/composables/use-branches';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
+import { useVersions } from '@/composables/use-versions';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -301,9 +301,9 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import { useCollection } from '@directus/composables';
 import { useHead } from '@unhead/vue';
 import { useRouter } from 'vue-router';
-import BranchMenu from '../components/branch-menu.vue';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
+import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
 
 interface Props {
@@ -331,19 +331,19 @@ const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> 
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
-const readBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'read'));
+const readVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'read'));
 
 const {
-	currentBranch,
-	branches,
-	loading: branchesLoading,
+	currentVersion,
+	versions,
+	loading: versionsLoading,
 	query,
-	addBranch,
-	renameBranch,
-	deleteBranch,
-	commitLoading,
-	commit,
-} = useBranches(collection, isSingleton, primaryKey);
+	addVersion,
+	renameVersion,
+	deleteVersion,
+	saveVersionLoading,
+	saveVersion,
+} = useVersions(collection, isSingleton, primaryKey);
 
 const {
 	isNew,
@@ -457,7 +457,7 @@ const { templateData: previewData, fetchTemplateValues } = useTemplateData(colle
 const previewURL = computed(() => {
 	const enrichedPreviewData = {
 		...unref(previewData),
-		$branch: currentBranch.value ? currentBranch.value.name : 'main',
+		$version: currentVersion.value ? currentVersion.value.name : 'main',
 	};
 
 	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
@@ -535,7 +535,7 @@ watch(saving, async (newVal, oldVal) => {
 	await refreshLivePreview();
 });
 
-watch(commitLoading, async (newVal, oldVal) => {
+watch(saveVersionLoading, async (newVal, oldVal) => {
 	if (newVal === true || oldVal === false) return;
 
 	await refreshLivePreview();
@@ -567,27 +567,27 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function commitToBranchAndQuit() {
+async function saveVersionAndQuit() {
 	if (isSavable.value === false) return;
 
 	try {
-		await commit(edits);
+		await saveVersion(edits);
 		edits.value = {};
 		if (props.singleton === false) router.push(`/content/${props.collection}`);
 	} catch {
-		// Commit shows unexpected error dialog
+		// Save version shows unexpected error dialog
 	}
 }
 
-async function commitToBranchAndStay() {
+async function saveVersionAndStay() {
 	if (isSavable.value === false) return;
 
 	try {
-		await commit(edits);
+		await saveVersion(edits);
 		edits.value = {};
 		refresh();
 	} catch {
-		// Commit shows unexpected error dialog
+		// Save version shows unexpected error dialog
 	}
 }
 
@@ -605,8 +605,8 @@ async function saveAndQuit() {
 async function saveAndStay() {
 	if (isSavable.value === false) return;
 
-	if (unref(currentBranch) !== null) {
-		commitToBranchAndStay();
+	if (unref(currentVersion) !== null) {
+		saveVersionAndStay();
 		return;
 	}
 
@@ -628,7 +628,7 @@ async function saveAndStay() {
 
 async function saveAndAddNew() {
 	if (isSavable.value === false) return;
-	if (unref(currentBranch) !== null) return;
+	if (unref(currentVersion) !== null) return;
 
 	try {
 		await save();
