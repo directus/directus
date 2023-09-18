@@ -36,6 +36,7 @@
 <script setup lang="ts">
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
+import { getItemRoute } from '@/utils/get-route';
 import { useCollection } from '@directus/composables';
 import { get } from 'lodash';
 import { computed } from 'vue';
@@ -102,7 +103,7 @@ function getLinkForItem(item: any) {
 	if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
 	const primaryKey = get(item, primaryKeyFieldPath.value);
 
-	return `/content/${relatedCollection.value}/${encodeURIComponent(primaryKey)}`;
+	return getItemRoute(relatedCollection.value, primaryKey);
 }
 </script>
 

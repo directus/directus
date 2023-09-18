@@ -4,11 +4,14 @@
  */
 
 import { parseJSON, toArray } from '@directus/utils';
+import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash-es';
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import path from 'path';
+import getModuleDefault from './utils/get-module-default.js';
 import { requireYAML } from './utils/require-yaml.js';
 import { toBoolean } from './utils/to-boolean.js';
 
@@ -362,7 +365,7 @@ const typeMap: Record<string, string> = {
 let env: Record<string, any> = {
 	...defaults,
 	...process.env,
-	...processConfiguration(),
+	...(await processConfiguration()),
 };
 
 process.env = env;
@@ -380,11 +383,11 @@ export const getEnv = () => env;
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
  * the newly created variables
  */
-export function refreshEnv(): void {
+export async function refreshEnv(): Promise<void> {
 	env = {
 		...defaults,
 		...process.env,
-		...processConfiguration(),
+		...(await processConfiguration()),
 	};
 
 	process.env = env;
@@ -392,25 +395,25 @@ export function refreshEnv(): void {
 	env = processValues(env);
 }
 
-function processConfiguration() {
+async function processConfiguration() {
 	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
 
-	const fileExt = path.extname(configPath).toLowerCase();
+	const fileExt = path.extname(configPath).toLowerCase().substring(1);
 
-	if (fileExt === '.js') {
-		const module = require(configPath);
-		const exported = module.default || module;
+	if ((JAVASCRIPT_FILE_EXTS as readonly string[]).includes(fileExt)) {
+		const data = await import(pathToFileURL(configPath).toString());
+		const config = getModuleDefault(data);
 
-		if (typeof exported === 'function') {
-			return exported(process.env);
-		} else if (typeof exported === 'object') {
-			return exported;
+		if (typeof config === 'function') {
+			return config(process.env);
+		} else if (typeof config === 'object') {
+			return config;
 		}
 
 		throw new Error(
-			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof exported}"`
+			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof config}"`
 		);
 	}
 

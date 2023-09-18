@@ -178,7 +178,21 @@ export class AssetsService {
 				readStream.unpipe(transformer);
 			});
 
-			await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			try {
+				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			} catch (error) {
+				try {
+					await storage.location(file.storage).delete(assetFilename);
+				} catch {
+					// Ignored to prevent original error from being overwritten
+				}
+
+				if ((error as Error)?.message?.includes('timeout')) {
+					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
+				} else {
+					throw error;
+				}
+			}
 
 			return {
 				stream: await storage.location(file.storage).read(assetFilename, range),

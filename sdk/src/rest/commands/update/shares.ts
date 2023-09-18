@@ -1,5 +1,6 @@
 import type { DirectusShare } from '../../../schema/share.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateShareOutput<
@@ -14,6 +15,7 @@ export type UpdateShareOutput<
  * @param item
  * @param query
  * @returns Returns the share objects for the updated shares.
+ * @throws Will throw if keys is empty
  */
 export const updateShares =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
@@ -21,12 +23,16 @@ export const updateShares =
 		item: Partial<DirectusShare<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateShareOutput<Schema, TQuery>[], Schema> =>
-	() => ({
-		path: `/shares`,
-		params: query ?? {},
-		body: JSON.stringify({ keys, data: item }),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(keys, 'Keys cannot be empty');
+
+		return {
+			path: `/shares`,
+			params: query ?? {},
+			body: JSON.stringify({ keys, data: item }),
+			method: 'PATCH',
+		};
+	};
 
 /**
  * Update an existing share.
@@ -34,6 +40,7 @@ export const updateShares =
  * @param item
  * @param query
  * @returns Returns the share object for the updated share.
+ * @throws Will throw if key is empty
  */
 export const updateShare =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
@@ -41,9 +48,13 @@ export const updateShare =
 		item: Partial<DirectusShare<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateShareOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/shares/${key}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(key, 'Key cannot be empty');
+
+		return {
+			path: `/shares/${key}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};

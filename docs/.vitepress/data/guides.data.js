@@ -122,11 +122,15 @@ export default {
 						title: 'Endpoints',
 						items: [
 							{
-								display: 'Use Custom Endpoints to Create an API Proxy',
+								display: 'Create a Public API Proxy',
+								path: '/guides/extensions/endpoints-api-proxy',
+							},
+							{
+								display: 'Create an Authenticated API Proxy (Twilio)',
 								path: '/guides/extensions/endpoints-api-proxy-twilio',
 							},
 							{
-								display: 'Use Custom Endpoints to Create Privileged API Endpoints',
+								display: 'Create a Permissions-Based API Proxy (Stripe)',
 								path: '/guides/extensions/endpoints-privileged-endpoint-stripe',
 							},
 						],

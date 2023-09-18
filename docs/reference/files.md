@@ -487,6 +487,56 @@ Supports all [global query parameters](/reference/query).
 Returns the [file object](#the-file-object) for the uploaded file, or an array of [file objects](#the-file-object) if
 multiple files were uploaded at once.
 
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /files`
+
+```http
+
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+example
+--boundary
+Content-Disposition: form-data; name="file"; filename="example.txt"
+
+< ./example.txt
+
+--boundary
+```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, uploadFiles } from '@directus/sdk';
+import { readFileSync } from 'node:fs';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const title = 'example';
+const file = new Blob([readFileSync('example.txt')]);
+
+const formData = new FormData();
+formData.append('title', title);
+formData.append('file', file);
+
+const result = await client.request(uploadFiles(formData));
+```
+
+</template>
+</SnippetToggler>
+
 ## Import a File
 
 Import a file from the web

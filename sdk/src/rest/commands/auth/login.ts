@@ -1,7 +1,7 @@
 import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
 
-export interface loginOptions {
+export interface LoginOptions {
 	otp?: string;
 	mode?: AuthenticationMode;
 }
@@ -19,7 +19,7 @@ export const login =
 	<Schema extends object>(
 		email: string,
 		password: string,
-		options: loginOptions = {}
+		options: LoginOptions = {}
 	): RestCommand<AuthenticationData, Schema> =>
 	() => {
 		const data: Record<string, string> = { email, password };
