@@ -24,8 +24,11 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup browser/index.ts node/index.ts shared/index.ts --format=esm --dts",
-		"dev": "tsup browser/index.ts node/index.ts shared/index.ts --format=esm --dts --watch",
+		"build": "concurrently --group 'pnpm:build:*'",
+		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
+		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
+		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
+		"dev": "concurrently 'pnpm:build:* --watch'",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -46,6 +49,7 @@
 		"@types/node": "18.16.12",
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-c8": "0.31.1",
+		"concurrently": "8.2.1",
 		"tsup": "7.1.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
