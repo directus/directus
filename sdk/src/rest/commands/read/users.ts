@@ -1,5 +1,6 @@
 import type { DirectusUser } from '../../../schema/user.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadUserOutput<
@@ -32,17 +33,22 @@ export const readUsers =
  * @param query The query parameters
  *
  * @returns Returns the requested user object.
+ * @throws Will throw if key is empty
  */
 export const readUser =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		key: DirectusUser<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadUserOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/users/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/users/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};
 
 /**
  * Retrieve the currently authenticated user.

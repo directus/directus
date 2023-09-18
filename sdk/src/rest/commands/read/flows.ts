@@ -1,5 +1,6 @@
 import type { DirectusFlow } from '../../../schema/flow.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadFlowOutput<
@@ -28,14 +29,19 @@ export const readFlows =
  * @param key The primary key of the dashboard
  * @param query The query parameters
  * @returns Returns the requested flow object.
+ * @throws Will throw if key is empty
  */
 export const readFlow =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		key: DirectusFlow<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadFlowOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/flows/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/flows/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};

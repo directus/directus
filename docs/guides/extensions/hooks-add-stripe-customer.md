@@ -52,7 +52,7 @@ the `MailService` to send yourself an email if the Stripe API fails.
 
 ```js
 export default ({ action }, { env, services }) => {
-	const { MailService, ItemService } = services; // [!code ++]
+	const { MailService, ItemsService } = services; // [!code ++]
 };
 ```
 
