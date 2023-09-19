@@ -34,7 +34,7 @@
 					{{ t('replace_file') }}
 				</button>
 
-				<replace-file v-model="replaceFileDialogActive" :file="file" @replaced="refresh"/>
+				<replace-file v-model="replaceFileDialogActive" :file="file" @replaced="refresh" />
 			</div>
 			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
 				{{ t('no_visible_fields_copy') }}
@@ -254,7 +254,10 @@ function useFile() {
 		if (!fileData) return null;
 
 		if (fileData.modified_on) {
-			return { ...fileData, src: `assets/${props.primaryKey}?cache-buster=${fileData.modified_on}&key=system-large-contain` };
+			return {
+				...fileData,
+				src: `assets/${props.primaryKey}?cache-buster=${fileData.modified_on}&key=system-large-contain`,
+			};
 		}
 
 		return { ...fileData, src: `assets/${fileData.id}?key=system-large-contain` };
