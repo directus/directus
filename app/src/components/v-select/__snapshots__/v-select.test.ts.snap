@@ -54,46 +54,6 @@ exports[`should hide items not matching search value > object items 1`] = `
       <!--v-if-->
       <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 11</span></div>
     </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item12\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 12</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item13\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 13</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item14\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 14</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item15\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 15</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item16\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 16</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item17\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 17</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item18\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 18</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item19\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 19</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item20\\" style=\\"display: none;\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 20</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item21\\" style=\\"display: none;\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 21</span></div>
-    </div>
     <!--v-if-->
     <!--v-if-->
   </ul>
@@ -153,46 +113,6 @@ exports[`should hide items not matching search value > string items 1`] = `
     <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 11\\">
       <!--v-if-->
       <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 11</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 12\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 12</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 13\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 13</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 14\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 14</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 15\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 15</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 16\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 16</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 17\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 17</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 18\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 18</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 19\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 19</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 20\\" style=\\"display: none;\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 20</span></div>
-    </div>
-    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 21\\" style=\\"display: none;\\">
-      <!--v-if-->
-      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 21</span></div>
     </div>
     <!--v-if-->
     <!--v-if-->
