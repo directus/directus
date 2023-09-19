@@ -111,6 +111,7 @@ import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
@@ -203,9 +204,9 @@ const notifications = computed<LocalNotification[]>(() => {
 			const collection = collectionsStore.getCollection(item.collection);
 
 			if (collection?.meta?.singleton || !item.item) {
-				to = `/content/${item.collection}`;
+				to = getCollectionRoute(item.collection);
 			} else {
-				to = `/content/${item.collection}/${item.item}`;
+				to = getItemRoute(item.collection, item.item);
 			}
 		} else if (String(item.item).startsWith('/')) {
 			to = String(item.item);

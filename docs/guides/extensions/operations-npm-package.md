@@ -81,10 +81,10 @@ import { camelCase } from 'lodash'; // [!code ++]
 export default defineOperationApi({
 	id: 'operation-lodash-camelcase',
 	handler: ({ text }) => {
-		console.log(text) // [!code --]
+		console.log(text); // [!code --]
 		return { // [!code ++]
 			text: camelCase(text) // [!code ++]
-		} // [!code ++]
+		}; // [!code ++]
 	},
 });
 ```
@@ -169,8 +169,8 @@ export default defineOperationApi({
 	id: 'operation-lodash-camelcase',
 	handler: ({ text }) => {
 		return {
-			text: camelCase(text)
-		}
+			text: camelCase(text),
+		};
 	},
 });
 ```

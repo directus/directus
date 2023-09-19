@@ -94,7 +94,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), options);
+				const data = await request<AuthenticationData>(requestUrl.toString(), options, client.globals.fetch);
 
 				setCredentials(data);
 				return data;
@@ -113,21 +113,24 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const authPath = options.provider ? `/auth/login/${options.provider}` : '/auth/login';
-				const requestUrl = getRequestUrl(client.url, authPath);
+				const requestUrl = getRequestUrl(client.url, '/auth/login');
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
 				if ('mode' in options) authData['mode'] = options.mode;
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
+				const data = await request<AuthenticationData>(
+					requestUrl.toString(),
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(authData),
+						credentials: authConfig.credentials,
 					},
-					body: JSON.stringify(authData),
-					credentials: authConfig.credentials,
-				});
+					client.globals.fetch
+				);
 
 				setCredentials(data);
 				return data;
@@ -150,7 +153,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				}
 
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), options);
+				await request(requestUrl.toString(), options, client.globals.fetch);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();

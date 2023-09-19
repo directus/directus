@@ -1,5 +1,6 @@
 import type { DirectusWebhook } from '../../../schema/webhook.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateWebhookOutput<
@@ -14,6 +15,7 @@ export type UpdateWebhookOutput<
  * @param item
  * @param query
  * @returns Returns the webhook objects for the updated webhooks.
+ * @throws Will throw if keys is empty
  */
 export const updateWebhooks =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
@@ -21,12 +23,16 @@ export const updateWebhooks =
 		item: Partial<DirectusWebhook<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateWebhookOutput<Schema, TQuery>[], Schema> =>
-	() => ({
-		path: `/webhooks`,
-		params: query ?? {},
-		body: JSON.stringify({ keys, data: item }),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(keys, 'Keys cannot be empty');
+
+		return {
+			path: `/webhooks`,
+			params: query ?? {},
+			body: JSON.stringify({ keys, data: item }),
+			method: 'PATCH',
+		};
+	};
 
 /**
  * Update an existing webhook.
@@ -34,6 +40,7 @@ export const updateWebhooks =
  * @param item
  * @param query
  * @returns Returns the webhook object for the updated webhook.
+ * @throws Will throw if key is empty
  */
 export const updateWebhook =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
@@ -41,9 +48,13 @@ export const updateWebhook =
 		item: Partial<DirectusWebhook<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateWebhookOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/webhooks/${key}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/webhooks/${key}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};
