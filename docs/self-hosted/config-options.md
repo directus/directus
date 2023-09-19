@@ -619,7 +619,7 @@ Directus _won't_ rely on Cloudinary's asset transformations in the `/assets` end
 | `STORAGE_<LOCATION>_SERVICE_ROLE` | The admin service role JWT | --            |
 | `STORAGE_<LOCATION>_BUCKET`       | Storage bucket             | --            |
 | `STORAGE_<LOCATION>_PROJECT_ID`   | Project id                 | --            |
-| `STORAGE_<LOCATION>_ENDPOINT`     | Custom endpoint            | --            |
+| `STORAGE_<LOCATION>_ENDPOINT`     | Optional custom endpoint   | --            |
 
 ::: warning Endpoint
 
