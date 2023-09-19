@@ -90,6 +90,10 @@ exports[`should hide items not matching search value > object items 1`] = `
       <!--v-if-->
       <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 20</span></div>
     </div>
+    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"item21\\" style=\\"display: none;\\">
+      <!--v-if-->
+      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 21</span></div>
+    </div>
     <!--v-if-->
     <!--v-if-->
   </ul>
@@ -185,6 +189,10 @@ exports[`should hide items not matching search value > string items 1`] = `
     <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 20\\" style=\\"display: none;\\">
       <!--v-if-->
       <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 20</span></div>
+    </div>
+    <div data-v-e8b3360c=\\"\\" data-v-cdcb6889=\\"\\" data-v-ff20e609-s=\\"\\" id=\\"v-list-item-stub\\" active=\\"false\\" clickable=\\"\\" value=\\"Item 21\\" style=\\"display: none;\\">
+      <!--v-if-->
+      <div data-v-e8b3360c=\\"\\" id=\\"v-list-item-content-stub\\"><span data-v-e8b3360c=\\"\\" class=\\"item-text\\">Item 21</span></div>
     </div>
     <!--v-if-->
     <!--v-if-->
