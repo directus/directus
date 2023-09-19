@@ -1,4 +1,5 @@
 import type { AllCollections } from '../../../index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { AggregationOptions, AggregationOutput } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
 
@@ -7,6 +8,7 @@ import type { RestCommand } from '../../types.js';
  * @param collection The collection to aggregate
  * @param options The aggregation options
  * @returns Aggregated data
+ * @throws Will throw if collection is empty
  */
 export const aggregate =
 	<
@@ -18,9 +20,12 @@ export const aggregate =
 		options: Options
 	): RestCommand<AggregationOutput<Schema, Collection, Options>, Schema> =>
 	() => {
-		const _collection = collection as string;
+		const collectionName = String(collection);
+		throwIfEmpty(collectionName, 'Collection cannot be empty');
 
-		const path = _collection.startsWith('directus_') ? `/${_collection.substring(9)}` : `/items/${_collection}`;
+		const path = collectionName.startsWith('directus_')
+			? `/${collectionName.substring(9)}`
+			: `/items/${collectionName}`;
 
 		return {
 			path,
