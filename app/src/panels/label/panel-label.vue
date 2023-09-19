@@ -143,7 +143,4 @@ export default defineComponent({
 	}
 }
 
-.label.has-header {
-	// height: calc(100% - 24px);
-}
 </style>
