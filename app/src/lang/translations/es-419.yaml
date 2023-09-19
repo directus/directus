@@ -35,6 +35,7 @@ tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
+collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Reglas de Condición
 input: Input
 maps: Mapas
@@ -80,6 +81,10 @@ create_user: Crear Usuario
 message: Mensaje
 delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
+create_custom_translation: Crear traducción personalizada
+edit_custom_translation: Editar traducción personalizada
+no_custom_translations: No hay traducciones personalizadas
+no_custom_translations_copy: Todavía no hay traducciones personalizadas.
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
@@ -116,6 +121,7 @@ archive_confirm_count: >-
   Ningún registro seleccionado | ¿Estas seguro de querer archivar este registro? | ¿Estas seguro de querer archivar estos {count} registros?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
+the_following_are_minimum_permissions: Los siguientes permisos mínimos se aplican automáticamente a "Acceso a aplicaciones" cuando está habilitado. Puedes conceder permisos adicionales si es necesario, pero no puedes restringir permisos por debajo de este nivel.
 app_access_minimum: Minimo Acceso a la Aplicación
 recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
@@ -140,6 +146,14 @@ validationError:
   required: Valor requerido
   unique: El valor debe de ser único
   regex: El valor no cuenta con el formato correcto
+  starts_with: El valor debe comenzar con {substring}
+  istarts_with: El valor debe comenzar con {substring}
+  nstarts_with: El valor no puede comenzar con {substring}
+  nistarts_with: El valor no puede comenzar con {substring}
+  ends_with: El valor debe terminar con {substring}
+  iends_with: El valor debe terminar con {substring}
+  nends_with: El valor no puede terminar con {substring}
+  niends_with: El valor no puede terminar con {substring}
 all_access: Acceso total
 no_access: Sin acceso
 use_custom: Usar personalizado
