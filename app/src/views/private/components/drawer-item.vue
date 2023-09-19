@@ -255,14 +255,11 @@ function useFile() {
 		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
 		if (!fileData) return null;
 
-		if (fileData.modified_on) {
-			return {
-				...fileData,
-				src: `assets/${props.primaryKey}?cache-buster=${fileData.modified_on}&key=system-large-contain`,
-			};
-		}
+		const src = fileData.modified_on
+			? `assets/${fileData.id}?cache-buster=${fileData.modified_on}&key=system-large-contain`
+			: `assets/${fileData.id}?key=system-large-contain`;
 
-		return { ...fileData, src: `assets/${fileData.id}?key=system-large-contain` };
+		return { ...fileData, src };
 	});
 
 	return { file, isDirectusFiles };
