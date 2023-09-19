@@ -1,18 +1,16 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
-import csv from 'csv-parser';
 import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { set, transform } from 'lodash-es';
 import { createReadStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
 import type { Readable } from 'node:stream';
+import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
-import stripBomStream from 'strip-bom-stream';
 import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
@@ -26,12 +24,12 @@ import {
 import logger from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
-import { Url } from '../utils/url.js';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
@@ -132,29 +130,20 @@ export class ImportService {
 				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
 			});
 
+			const transform = (value: any, _field: string) => {
+				if (value === 'NULL') return null;
+
+				try {
+					return parseJSON(value);
+				} catch {
+					return value;
+				}
+			};
+
 			return new Promise<void>((resolve, reject) => {
 				stream
-					.pipe(stripBomStream())
-					.pipe(csv())
-					.on('data', (value: Record<string, string>) => {
-						const obj = transform(value, (result: Record<string, string>, value, key) => {
-							if (value.length === 0) {
-								delete result[key];
-							} else {
-								try {
-									const parsedJson = parseJSON(value);
-
-									if (typeof parsedJson === 'number') {
-										set(result, key, value);
-									} else {
-										set(result, key, parsedJson);
-									}
-								} catch {
-									set(result, key, value);
-								}
-							}
-						});
-
+					.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, { header: true, transform }))
+					.on('data', (obj: Record<string, string>) => {
 						saveQueue.push(obj);
 					})
 					.on('error', (err: any) => {
