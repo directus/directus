@@ -538,6 +538,10 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
+					link: '/extensions/installing-extensions',
+					text: 'Installing Extensions',
+				},
+				{
 					text: 'Extension Types',
 					collapsed: true,
 					items: [
