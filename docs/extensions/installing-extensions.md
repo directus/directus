@@ -1,6 +1,6 @@
 ---
 contributors: Esther Agbaje
-description: Discover how to install extensions into your Directus project
+description: Discover how to install extensions into your Directus project.
 ---
 
 # Installing Extensions
@@ -13,11 +13,12 @@ There are 3 possible ways to install extensions to your Directus instance:
 
 ## Installing through NPM
 
-Before you begin, ensure you have a selfhosted version of Directus via Docker installed on your system.
+Before you begin, ensure you have a [selfhosted instance of Directus](/self-hosted/quickstart) via Docker installed on
+your system.
 
-1. Modify docker-compose.yml
+**1. Modify docker-compose.yml**
 
-Open the `docker-compose.yml` file of your Directus project and modify the build section:
+Open the `docker-compose.yml` file of your project and modify the build section:
 
 ```yaml
 build:
@@ -26,9 +27,9 @@ build:
 
 This modification allows Docker to build your project with the necessary dependencies.
 
-2. Create a Dockerfile
+**2. Create a Dockerfile**
 
-At the root of your project, create a Dockerfile if one doesn't already exist. Open the `Dockerfile` and add the
+At the root of your project, create a Dockerfile if one doesn't already exist. Inside this `Dockerfile`, add the
 following:
 
 ```Dockerfile
@@ -42,28 +43,33 @@ USER node
 RUN pnpm install directus-extension-package-name
 ```
 
-Replace directus-extension-package-name with the name of the extension you want to install. You can install multiple
-extensions by adding them to the pnpm install command, separated by spaces.
+::: tip Extension Name
 
-3. Building the Docker Image
+Replace `directus-extension-package-name` with the name of the extension you want to install. For example,
+`directus-extension-myextension`.
 
-To apply the changes and install the extensions, you need to build the Docker image. Open your terminal and navigate to
-the root directory of your Directus project that contains the Dockerfile. Run the following command to build the Docker
-image:
+:::
+
+**3. Building the Docker Image**
+
+To apply the changes whenever changes are made in the Dockerfile, build the Docker image by running the following
+command:
 
 ```bash
 docker-compose up --build
 ```
 
-This command will rebuild your Directus Docker container with the specified extensions installed.
+::: tip Reloading Extensions
 
-Once the Docker image is built successfully, you can start your Directus instance by running:
+To automatically reload extensions every time you make a change, without having to restart Directus, in your
+`docker-compose.yml` file, set `EXTENSIONS_AUTO_RELOAD=true`.
+
+:::
+
+Start up your Directus instance to run the extensions you specified:
 
 ```bash
 docker-compose up
 ```
 
-Your Directus instance will now run with the extensions you specified in the Dockerfile.
-
-You could set EXTENSIONS_AUTO_RELOAD=true in order reload the extensions every time you change them without having to
-restart Directus.
+## Installing Through the Extensions Folder
