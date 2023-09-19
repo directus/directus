@@ -154,7 +154,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, unref } from 'vue';
-import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
