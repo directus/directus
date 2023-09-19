@@ -54,7 +54,7 @@
 				<v-divider />
 			</template>
 
-			<v-list-item v-if="internalItemsCount > 20 || search">
+			<v-list-item v-if="internalItemsCount > 10 || search">
 				<v-list-item-content>
 					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
 						<template #append>
