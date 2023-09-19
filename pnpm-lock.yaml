@@ -86,9 +86,6 @@ importers:
       '@directus/storage-driver-supabase':
         specifier: workspace:*
         version: link:../packages/storage-driver-supabase
-      '@directus/tmp-fs':
-        specifier: workspace:*
-        version: link:../packages/tmp-fs
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -1672,18 +1669,6 @@ importers:
       vitest:
         specifier: 0.31.1
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
-
-  packages/tmp-fs:
-    devDependencies:
-      '@directus/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/node':
-        specifier: 18.16.12
-        version: 18.16.12
-      typescript:
-        specifier: 5.0.4
-        version: 5.0.4
 
   packages/tsconfig: {}
 

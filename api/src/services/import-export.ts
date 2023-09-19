@@ -13,7 +13,6 @@ import { appendFile } from 'node:fs/promises';
 import type { Readable } from 'node:stream';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import stripBomStream from 'strip-bom-stream';
-import * as tmp from '@directus/tmp-fs';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
@@ -203,6 +202,7 @@ export class ExportService {
 			file?: Partial<File>;
 		}
 	) {
+		const { tmp } = await import('@directus/utils/node');
 		const tmpFile = await tmp.createFile().catch(() => null);
 
 		try {

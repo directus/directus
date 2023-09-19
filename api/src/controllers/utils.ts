@@ -2,7 +2,6 @@ import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import { Worker } from 'node:worker_threads';
-import * as tmp from '@directus/tmp-fs';
 import fs from 'node:fs';
 
 import Joi from 'joi';
@@ -123,6 +122,8 @@ router.post(
 		const busboy = Busboy({ headers });
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
+			const { tmp } = await import('@directus/utils/node');
+
 			const tmpFile = await tmp.createFile().catch(() => null);
 
 			if (!tmpFile) throw new Error('It was not possible to create a temporary file');

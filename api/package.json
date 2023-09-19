@@ -81,7 +81,6 @@
 		"@directus/storage-driver-local": "workspace:*",
 		"@directus/storage-driver-s3": "workspace:*",
 		"@directus/storage-driver-supabase": "workspace:*",
-		"@directus/tmp-fs": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "4.12.0",
