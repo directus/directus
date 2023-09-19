@@ -44,7 +44,7 @@
 					:fields="relatedCollectionFields"
 					:validation-errors="junctionField ? validationErrors : undefined"
 					:autofocus="!swapFormOrder"
-					:show-divider="!swapFormOrder"
+					:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 					@update:model-value="setRelationEdits"
 				/>
 
@@ -55,7 +55,7 @@
 					:show-no-visible-fields="false"
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
-					:show-divider="swapFormOrder"
+					:show-divider="swapFormOrder && hasVisibleFieldsRelated"
 					:primary-key="primaryKey"
 					:fields="fields"
 					:validation-errors="!junctionField ? validationErrors : undefined"
@@ -114,17 +114,17 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	active: undefined,
 	primaryKey: null,
-	edits: undefined,
 	junctionField: null,
-	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
 	junctionFieldLocation: 'bottom',
 });
 
-const emit = defineEmits(['update:active', 'input']);
+const emit = defineEmits<{
+	'update:active': [value: boolean];
+	input: [value: Record<string, any>];
+}>();
 
 const { t, te } = useI18n();
 
@@ -216,11 +216,13 @@ const fieldsWithoutCircular = computed(() => {
 	}
 });
 
-const emptyForm = computed(() => {
-	const visibleFieldsRelated = relatedCollectionFields.value.filter((field: Field) => !field.meta?.hidden);
-	const visibleFieldsJunction = fields.value.filter((field: Field) => !field.meta?.hidden);
-	return visibleFieldsRelated.length + visibleFieldsJunction.length === 0;
-});
+const hasVisibleFieldsRelated = computed(() =>
+	relatedCollectionFields.value.some((field: Field) => !field.meta?.hidden)
+);
+
+const hasVisibleFieldsJunction = computed(() => fields.value.some((field: Field) => !field.meta?.hidden));
+
+const emptyForm = computed(() => !hasVisibleFieldsRelated.value && !hasVisibleFieldsJunction.value);
 
 const templatePrimaryKey = computed(() =>
 	junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
