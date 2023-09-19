@@ -20,15 +20,22 @@
 		</template>
 
 		<div class="drawer-item-content">
-			<file-preview
-				v-if="file"
-				:src="file.src"
-				:mime="file.type"
-				:width="file.width"
-				:height="file.height"
-				:title="file.title"
-				:in-modal="true"
-			/>
+			<div v-if="file" class="preview">
+				<file-preview
+					:src="file.src"
+					:mime="file.type"
+					:width="file.width"
+					:height="file.height"
+					:title="file.title"
+					:in-modal="true"
+				/>
+
+				<button class="replace-toggle" @click="replaceFileDialogActive = true">
+					{{ t('replace_file') }}
+				</button>
+
+				<replace-file v-model="replaceFileDialogActive" :file="file" @replaced="refresh"/>
+			</div>
 			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
 				{{ t('no_visible_fields_copy') }}
 			</v-info>
@@ -88,6 +95,7 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import FilePreview from '@/views/private/components/file-preview.vue';
+import ReplaceFile from '@/modules/files/components/replace-file.vue';
 import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -138,7 +146,7 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField } =
 	useRelation();
 
-const { internalEdits, loading, initialValues } = useItem();
+const { internalEdits, loading, initialValues, refresh } = useItem();
 const { save, cancel } = useActions();
 
 const { collection } = toRefs(props);
@@ -245,12 +253,17 @@ function useFile() {
 		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
 		if (!fileData) return null;
 
-		const src = `assets/${fileData.id}?key=system-large-contain`;
-		return { ...fileData, src };
+		if (fileData.modified_on) {
+			return { ...fileData, src: `assets/${props.primaryKey}?cache-buster=${fileData.modified_on}&key=system-large-contain` };
+		}
+
+		return { ...fileData, src: `assets/${fileData.id}?key=system-large-contain` };
 	});
 
 	return { file, isDirectusFiles };
 }
+
+const replaceFileDialogActive = ref(false);
 
 function useActiveState() {
 	const localActive = ref(false);
@@ -289,7 +302,15 @@ function useItem() {
 		{ immediate: true }
 	);
 
-	return { internalEdits, loading, initialValues, fetchItem };
+	return { internalEdits, loading, initialValues, refresh };
+
+	async function refresh() {
+		if (props.active) {
+			loading.value = false;
+			if (props.primaryKey !== '+') fetchItem();
+			if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
+		}
+	}
 
 	async function fetchItem() {
 		if (!props.primaryKey) return;
@@ -446,9 +467,17 @@ function useActions() {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 
-	.file-preview {
+	.preview {
 		margin-bottom: var(--form-vertical-gap);
+
+		.replace-toggle {
+			color: var(--primary);
+			cursor: pointer;
+			font-weight: 600;
+			margin-top: 12px;
+		}
 	}
+
 	.drawer-item-order {
 		&.swap {
 			display: flex;
