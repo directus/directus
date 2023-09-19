@@ -102,14 +102,14 @@ test('should render with string items', () => {
 });
 
 describe('should hide items not matching search value', () => {
-	// Needs to be > 20 elements to enable search
+	// There have to be >10 items to enable search
 
-	const objectItems = Array.from({ length: 21 }, (_, index) => {
+	const objectItems = Array.from({ length: 11 }, (_, index) => {
 		const number = index + 1;
 		return { text: `Item ${number}`, value: `item${number}` };
 	});
 
-	const stringItems = Array.from({ length: 21 }, (_, index) => `Item ${index + 1}`);
+	const stringItems = Array.from({ length: 11 }, (_, index) => `Item ${index + 1}`);
 
 	test.each([
 		['object items', objectItems],
