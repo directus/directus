@@ -458,7 +458,7 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       '@types/papaparse':
-        specifier: ^5.3.8
+        specifier: 5.3.8
         version: 5.3.8
       '@types/qs':
         specifier: 6.9.7

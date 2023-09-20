@@ -199,7 +199,7 @@
 		"@types/node-schedule": "2.1.0",
 		"@types/nodemailer": "6.4.7",
 		"@types/object-hash": "3.0.2",
-		"@types/papaparse": "^5.3.8",
+		"@types/papaparse": "5.3.8",
 		"@types/qs": "6.9.7",
 		"@types/sanitize-html": "2.9.0",
 		"@types/stream-json": "1.7.3",
