@@ -1,7 +1,7 @@
-import { REDACTED_TEXT } from '@directus/constants';
+import { getRedactedString, REDACTED_TEXT } from '@directus/utils';
 import { merge } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
-import { errorReplacer, redact } from './redact.js';
+import { getReplacer, redactObject } from './redact-object.js';
 
 const input = {
 	$trigger: {
@@ -42,13 +42,13 @@ const input = {
 };
 
 test('should not mutate input', () => {
-	const result = redact(input, [['$trigger']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['$trigger']] }, getRedactedString);
 
 	expect(result).not.toBe(input);
 });
 
 test('should support single level path', () => {
-	const result = redact(input, [['$trigger']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['$trigger']] }, getRedactedString);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -58,7 +58,7 @@ test('should support single level path', () => {
 });
 
 test('should support multi level path', () => {
-	const result = redact(input, [['$trigger', 'payload', 'password']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['$trigger', 'payload', 'password']] }, getRedactedString);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -70,7 +70,7 @@ test('should support multi level path', () => {
 });
 
 test('should support wildcard path', () => {
-	const result = redact(input, [['*', 'payload']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['*', 'payload']] }, getRedactedString);
 
 	expect(result).toEqual(
 		merge({}, input, {
@@ -82,7 +82,7 @@ test('should support wildcard path', () => {
 });
 
 test('should support deep path', () => {
-	const result = redact(input, [['**', 'password']], REDACTED_TEXT);
+	const result = redactObject(input, { keys: [['**', 'password']] }, getRedactedString);
 
 	expect(result).toMatchObject(
 		merge({}, input, {
@@ -108,14 +108,16 @@ test('should support deep path', () => {
 });
 
 test('should support multiple paths', () => {
-	const result = redact(
+	const result = redactObject(
 		input,
-		[
-			['$trigger', 'key'],
-			['*', 'payload', 'email'],
-			['**', 'password'],
-		],
-		REDACTED_TEXT
+		{
+			keys: [
+				['$trigger', 'key'],
+				['*', 'payload', 'email'],
+				['**', 'password'],
+			],
+		},
+		getRedactedString
 	);
 
 	expect(result).toEqual(
@@ -143,11 +145,12 @@ test('should support multiple paths', () => {
 	);
 });
 
-describe('errorReplacer tests', () => {
+describe('getReplacer tests', () => {
 	test('Returns parsed error object', () => {
 		const errorMessage = 'Error Message';
 		const errorCause = 'Error Cause';
-		const result = errorReplacer('', new Error(errorMessage, { cause: errorCause }));
+		const replacer = getReplacer(getRedactedString);
+		const result: any = replacer('', new Error(errorMessage, { cause: errorCause }));
 		expect(result.name).toBe('Error');
 		expect(result.message).toBe(errorMessage);
 		expect(result.stack).toBeDefined();
@@ -173,8 +176,10 @@ describe('errorReplacer tests', () => {
 			},
 		];
 
+		const replacer = getReplacer(getRedactedString);
+
 		for (const value of values) {
-			expect(errorReplacer('', value)).toBe(value);
+			expect(replacer('', value)).toBe(value);
 		}
 	});
 
@@ -199,7 +204,60 @@ describe('errorReplacer tests', () => {
 			error: { name: 'Error', message: errorMessage, cause: errorCause },
 		};
 
-		const result = JSON.parse(JSON.stringify(objWithError, errorReplacer));
+		const result = JSON.parse(JSON.stringify(objWithError, getReplacer(getRedactedString)));
+
+		// Stack changes depending on env
+		expect(result.error.stack).toBeDefined();
+		delete result.error.stack;
+
+		expect(result).toStrictEqual(expectedResult);
+	});
+
+	test('Correctly redacts values when used with JSON.stringify()', () => {
+		const baseValue = {
+			num: 123,
+			bool: true,
+			null: null,
+			string_ignore: `No error Cause it's case sensitive~~`,
+		};
+
+		const objWithError = {
+			...baseValue,
+			string: `Replace cause case matches Errors~~`,
+			nested: { another_str: 'just because of safety 123456' },
+			nested_array: [{ str_a: 'cause surely' }, { str_b: 'not an Error' }, { str_ignore: 'nothing here' }],
+			array: ['something', 'no Error', 'just because', 'all is good'],
+			error: new Error('This is an Error message.', { cause: 'Here is an Error cause!' }),
+		};
+
+		const expectedResult = {
+			...baseValue,
+			string: `Replace ${getRedactedString('cause')} case matches ${getRedactedString('ERROR')}s~~`,
+			nested: { another_str: `just be${getRedactedString('cause')} of safety 123456` },
+			nested_array: [
+				{ str_a: `${getRedactedString('cause')} surely` },
+				{ str_b: `not an ${getRedactedString('ERROR')}` },
+				{ str_ignore: 'nothing here' },
+			],
+			array: ['something', `no ${getRedactedString('ERROR')}`, `just be${getRedactedString('cause')}`, 'all is good'],
+			error: {
+				name: getRedactedString('ERROR'),
+				message: `This is an ${getRedactedString('ERROR')} message.`,
+				cause: `Here is an ${getRedactedString('ERROR')} ${getRedactedString('cause')}!`,
+			},
+		};
+
+		const result = JSON.parse(
+			JSON.stringify(
+				objWithError,
+				getReplacer(getRedactedString, {
+					empty: '',
+					ERROR: 'Error',
+					cause: 'cause',
+					number: 123456,
+				})
+			)
+		);
 
 		// Stack changes depending on env
 		expect(result.error.stack).toBeDefined();

@@ -1,5 +1,4 @@
-import { appendFileSync } from 'node:fs';
-import { MAIN_PACKAGE } from './constants.js';
+import { appendFile } from 'node:fs/promises';
 import { generateMarkdown } from './utils/generate-markdown.js';
 import { getInfo } from './utils/get-info.js';
 import { processPackages } from './utils/process-packages.js';
@@ -7,49 +6,41 @@ import { processReleaseLines } from './utils/process-release-lines.js';
 
 const { defaultChangelogFunctions, changesets } = processReleaseLines();
 
+// Take over control after `changesets` has finished
 process.on('beforeExit', async () => {
 	await run();
 	process.exit();
 });
 
 async function run() {
-	const { mainVersion, packageVersions } = await processPackages();
-
-	if (changesets.size === 0) {
-		earlyExit();
-	}
-
-	if (!mainVersion) {
-		throw new Error(`Couldn't get main version ('${MAIN_PACKAGE}' package)`);
-	}
+	const { mainVersion, isPrerelease, prereleaseId, packageVersions } = await processPackages();
 
 	const { types, untypedPackages, notices } = await getInfo(changesets);
 
 	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
-		earlyExit();
+		// eslint-disable-next-line no-console
+		console.warn('WARN: No processable changesets found');
 	}
 
 	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
 
 	const divider = '==============================================================';
-	process.stdout.write(`${divider}\n${markdown}\n${divider}\n`);
+	// eslint-disable-next-line no-console
+	console.log(`${divider}\nDirectus v${mainVersion}\n${divider}\n${markdown}\n${divider}`);
 
 	const githubOutput = process.env['GITHUB_OUTPUT'];
 
-	// Set output if running inside a GitHub workflow
+	// Set outputs if running inside a GitHub workflow
 	if (githubOutput) {
 		const outputs = [
-			`DIRECTUS_MAIN_VERSION=${mainVersion}`,
+			`DIRECTUS_VERSION=${mainVersion}`,
+			`DIRECTUS_PRERELEASE=${isPrerelease}`,
+			...(prereleaseId ? [`DIRECTUS_PRERELEASE_ID=${prereleaseId}`] : []),
 			`DIRECTUS_RELEASE_NOTES<<EOF_RELEASE_NOTES\n${markdown}\nEOF_RELEASE_NOTES`,
 		];
 
-		appendFileSync(githubOutput, `${outputs.join('\n')}\n`);
+		await appendFile(githubOutput, `${outputs.join('\n')}\n`);
 	}
-}
-
-function earlyExit(): never {
-	process.stdout.write('No (processable) changesets found: Skipping generation of release notes\n');
-	process.exit();
 }
 
 export default defaultChangelogFunctions;

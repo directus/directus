@@ -375,7 +375,6 @@ comments: Komentari
 no_comments: Nema komentara
 select_item: Odaberi Stavku
 no_items: Nema stavki
-search_items: Pretraži Stavke...
 disabled: Isključeno
 information: Informacija
 report_bug: Prijavi Propust
@@ -1276,6 +1275,9 @@ panels:
   label:
     name: Oznaka
 operations:
+  json-web-token:
+    token: Token
+    options: Opcije
   log:
     message: Poruka
   mail:

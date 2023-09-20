@@ -4,11 +4,14 @@
  */
 
 import { parseJSON, toArray } from '@directus/utils';
+import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash-es';
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import path from 'path';
+import getModuleDefault from './utils/get-module-default.js';
 import { requireYAML } from './utils/require-yaml.js';
 import { toBoolean } from './utils/to-boolean.js';
 
@@ -199,8 +202,9 @@ const allowedEnvironmentVars = [
 	'RELATIONAL_BATCH_SIZE',
 	'EXPORT_BATCH_SIZE',
 	// flows
-	'FLOWS_EXEC_ALLOWED_MODULES',
 	'FLOWS_ENV_ALLOW_LIST',
+	'FLOWS_RUN_SCRIPT_MAX_MEMORY',
+	'FLOWS_RUN_SCRIPT_TIMEOUT',
 	// websockets
 	'WEBSOCKETS_.+',
 ].map((name) => new RegExp(`^${name}$`));
@@ -315,8 +319,9 @@ const defaults: Record<string, any> = {
 	WEBSOCKETS_HEARTBEAT_ENABLED: true,
 	WEBSOCKETS_HEARTBEAT_PERIOD: 30,
 
-	FLOWS_EXEC_ALLOWED_MODULES: false,
 	FLOWS_ENV_ALLOW_LIST: false,
+	FLOWS_RUN_SCRIPT_MAX_MEMORY: 32,
+	FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 
 	PRESSURE_LIMITER_ENABLED: true,
 	PRESSURE_LIMITER_SAMPLE_INTERVAL: 250,
@@ -360,7 +365,7 @@ const typeMap: Record<string, string> = {
 let env: Record<string, any> = {
 	...defaults,
 	...process.env,
-	...processConfiguration(),
+	...(await processConfiguration()),
 };
 
 process.env = env;
@@ -378,11 +383,11 @@ export const getEnv = () => env;
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
  * the newly created variables
  */
-export function refreshEnv(): void {
+export async function refreshEnv(): Promise<void> {
 	env = {
 		...defaults,
 		...process.env,
-		...processConfiguration(),
+		...(await processConfiguration()),
 	};
 
 	process.env = env;
@@ -390,25 +395,25 @@ export function refreshEnv(): void {
 	env = processValues(env);
 }
 
-function processConfiguration() {
+async function processConfiguration() {
 	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
 
-	const fileExt = path.extname(configPath).toLowerCase();
+	const fileExt = path.extname(configPath).toLowerCase().substring(1);
 
-	if (fileExt === '.js') {
-		const module = require(configPath);
-		const exported = module.default || module;
+	if ((JAVASCRIPT_FILE_EXTS as readonly string[]).includes(fileExt)) {
+		const data = await import(pathToFileURL(configPath).toString());
+		const config = getModuleDefault(data);
 
-		if (typeof exported === 'function') {
-			return exported(process.env);
-		} else if (typeof exported === 'object') {
-			return exported;
+		if (typeof config === 'function') {
+			return config(process.env);
+		} else if (typeof config === 'object') {
+			return config;
 		}
 
 		throw new Error(
-			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof exported}"`
+			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof config}"`
 		);
 	}
 

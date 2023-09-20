@@ -184,10 +184,13 @@ setup(props, { emit }) {
 	const fieldsStore = useFieldsStore();
 	const { relatedCollection } = useRelation();
 	const displayField = props.template.replace('{{','').replace('}}','');
+
 	const primaryKey = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value.collection);
+
+	let awaitingSearch = false;
 	const results = ref([]);
 	const searchQuery = ref('');
-	const awaitingSearch = ref(false);
+
 	// Further code here
 },
 ```
@@ -199,19 +202,19 @@ If a value is already saved to this field, this will also query the related coll
 the user.
 
 ```js
-async function fetchResults(){
+async function fetchResults() {
 	try {
-		const response = await api.get(
-			`/items/${relatedCollection.value.collection}`, {
-				params: {
-					limit: -1,
-					filter: props.filter,
-					search: (searchQuery.value && searchQuery.value != props.value?searchQuery.value:''),
-				},
-			}
-		);
+		const response = await api.get(`/items/${relatedCollection.value.collection}`, {
+			params: {
+				limit: -1,
+				filter: props.filter,
+				search: searchQuery.value && searchQuery.value != props.value ? searchQuery.value : '',
+			},
+		});
+
 		results.value = response.data.data;
-		if(props.value != null && searchQuery.value == ''){
+
+		if (props.value != null && searchQuery.value == '') {
 			const fetchName = await api.get(`/items/${relatedCollection.value.collection}/${props.value}`);
 			searchQuery.value = outputFields(fetchName.data.data);
 		}
@@ -239,13 +242,15 @@ Below the return statement, add the following functions:
 
 ```js
 // Iterates over keys and values inside provided item, then replaces the template with the corresponding values.
-function outputFields(item){
+function outputFields(item) {
 	var displayTemplate = props.template;
 	var replace = '';
-	Object.keys(item).forEach(key => {
-		replace = '{{'+key+'}}';
-		displayTemplate = displayTemplate.replace(replace,item[key]);
+
+	Object.keys(item).forEach((key) => {
+		replace = '{{' + key + '}}';
+		displayTemplate = displayTemplate.replace(replace, item[key]);
 	});
+
 	return displayTemplate;
 }
 
@@ -257,12 +262,13 @@ function onInput() {
 			awaitingSearch.value = false;
 		}, 500); // 0.5 sec delay
 	}
+
 	awaitingSearch.value = true;
 }
 
 // Saves the selected item to the field and change the value inside the dropdown to the selected item. Call fetchResults again to rebuild the dropdown and allow a different selection.
 function setDropdown(item) {
-	if(item == null){
+	if (item == null) {
 		searchQuery.value = item;
 		props.value = item;
 		emit('input', item);
@@ -271,6 +277,7 @@ function setDropdown(item) {
 		props.value = item[primaryKey.field];
 		emit('input', item[primaryKey.field]);
 	}
+
 	fetchResults();
 }
 
@@ -279,10 +286,12 @@ function useRelation() {
 	const relation = computed(() => {
 		return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
 	});
+
 	const relatedCollection = computed(() => {
 		if (!relation.value?.related_collection) return null;
 		return collectionsStore.getCollection(relation.value.related_collection);
 	});
+
 	return { relatedCollection };
 }
 ```
@@ -295,12 +304,8 @@ event.
 
 There is also a `v-icon` to prompt the user to dropdown the field and close the dropdown when open.
 
-```html
-<v-menu
-	attached
-	:disabled="disabled"
-	:close-on-content-click="true"
->
+```vue
+<v-menu attached :disabled="disabled" :close-on-content-click="true">
 	<template #activator="{ active, activate }">
 		<v-input
 			v-model="searchQuery"
@@ -332,7 +337,7 @@ There is also a `v-icon` to prompt the user to dropdown the field and close the 
 Replace the comment inside the `v-menu` with the following content. This uses built-in components called `v-list` and
 `v-list-item`.
 
-```html
+```vue
 <div class="content" :class="width">
 	<v-list class="list">
 		<template>
@@ -458,7 +463,6 @@ export default {
 					},
 				},
 			},
-
 		];
 	},
 	recommendedDisplays: ['related-values'],
@@ -467,13 +471,9 @@ export default {
 
 `interface.vue`
 
-```html
+```vue
 <template>
-	<v-menu
-		attached
-		:disabled="disabled"
-		:close-on-content-click="true"
-	>
+	<v-menu attached :disabled="disabled" :close-on-content-click="true">
 		<template #activator="{ active, activate }">
 			<v-input
 				v-model="searchQuery"
@@ -500,15 +500,13 @@ export default {
 
 		<div class="content" :class="width">
 			<v-list class="list">
-				<template>
-					<v-list-item @click="$emit('input', null)" :disabled="value === null">
-						<v-list-item-content>Deselect</v-list-item-content>
-						<v-list-item-icon>
-							<v-icon name="close" />
-						</v-list-item-icon>
-					</v-list-item>
-					<v-divider />
-				</template>
+				<v-list-item :disabled="value === null" @click="$emit('input', null)">
+					<v-list-item-content>Deselect</v-list-item-content>
+					<v-list-item-icon>
+						<v-icon name="close" />
+					</v-list-item-icon>
+				</v-list-item>
+				<v-divider />
 
 				<v-list-item
 					v-for="(item, index) in results"
@@ -576,7 +574,7 @@ export default {
 
 		const primaryKey = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value.collection);
 
-		var awaitingSearch = false;
+		let awaitingSearch = false;
 		const results = ref([]);
 		const searchQuery = ref('');
 
@@ -591,6 +589,7 @@ export default {
 						},
 					}
 				);
+
 				results.value = response.data.data;
 
 				if(props.value != null && searchQuery.value == ''){
@@ -607,12 +606,14 @@ export default {
 		return { results, setDropdown, searchQuery, displayField, onInput, primaryKey, outputFields };
 
 		function outputFields(item){
-			var displayTemplate = props.template;
-			var replace = '';
+			let displayTemplate = props.template;
+			let replace = '';
+
 			Object.keys(item).forEach(key => {
 				replace = '{{'+key+'}}';
 				displayTemplate = displayTemplate.replace(replace,item[key]);
 			});
+
 			return displayTemplate;
 		}
 
@@ -623,6 +624,7 @@ export default {
 					awaitingSearch = false;
 				}, 500); // 0.5 sec delay
 			}
+
 			awaitingSearch = true;
 		}
 
@@ -634,6 +636,7 @@ export default {
 				searchQuery.value = outputFields(item);
 				emit('input', item[primaryKey.field]);
 			}
+
 			fetchResults();
 		}
 
@@ -641,10 +644,12 @@ export default {
 			const relation = computed(() => {
 				return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
 			});
+
 			const relatedCollection = computed(() => {
 				if (!relation.value?.related_collection) return null;
 				return collectionsStore.getCollection(relation.value.related_collection);
 			});
+
 			return { relatedCollection };
 		}
 	},

@@ -149,51 +149,6 @@ docker compose up
 The specified image will be pulled and the containers recreated. Migrations will happen automatically so once the
 containers have started you will be on the latest version (or the version you specified).
 
-### Adding Packages to Use in Flows Scripts
-
-If you need third-party packages in a script of one of your flows, the recommended way is to create a new Docker image
-extending from the official image and installing the packages there.
-
-First create a file called `Dockerfile` with a content like this:
-
-```docker
-FROM directus/directus:10.0.0
-
-USER root
-RUN corepack enable \
-  && corepack prepare pnpm@8.3.1 --activate
-
-USER node
-RUN pnpm install moment uuid
-```
-
-Then build the image based on that file:
-
-```bash
-docker build -t my-custom-directus-image .
-```
-
-And update the image reference in the `docker-compose.yml` file:
-
-```diff
--    image: directus/directus:latest
-+    image: my-custom-directus-image:latest
-```
-
-::: tip Don't forget to provide `FLOWS_EXEC_ALLOWED_MODULES` variable
-
-In your `docker-compose.yml` file, you will need to add:
-
-```diff
-    environment:
-+     FLOWS_EXEC_ALLOWED_MODULES=array:moment,uuid
-```
-
-For more information, please see the config section on
-[Flows](https://docs.directus.io/self-hosted/config-options.html#flows)
-
-:::
-
 ## Supported Databases
 
 The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be

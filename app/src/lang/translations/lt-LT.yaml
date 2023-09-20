@@ -304,7 +304,6 @@ comments: Komentarai
 no_comments: Dar nėra komentarų
 select_item: Pasirinkti elementą
 no_items: Nėra elementų
-search_items: Ieškoti elementų...
 disabled: Išjungta
 information: Informacija
 report_bug: Pranešti apie klaidą
@@ -985,6 +984,8 @@ panels:
   label:
     name: Žyma
 operations:
+  json-web-token:
+    options: Parinktys
   mail:
     template: Šablonas
   notification:
