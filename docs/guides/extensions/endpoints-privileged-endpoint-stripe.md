@@ -1,9 +1,9 @@
 ---
-description: 'Learn how to use Directus permissions in custom endpoints.'
+description: Learn how to use Directus permissions in custom endpoints.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
-# Use Custom Endpoints to Create Privileged API Endpoints
+# Use Custom Endpoints to Create a Permissions-Based API Proxy
 
 Endpoints are used in the API to perform certain functions. In this guide, you will use internal Directus permissions
 when creating a custom endpoint.
@@ -22,7 +22,7 @@ npx create-directus-extension
 A list of options will appear (choose endpoint), and type a name for your extension (for example,
 `directus-endpoint-stripe`). For this guide, select JavaScript.
 
-Now the boilerplate has been created, install the stripe package, and then open the directory in your code editor.
+Now the boilerplate has been created, install the `stripe` package, and then open the directory in your code editor.
 
 ```
 cd directus-endpoint-stripe
@@ -38,7 +38,8 @@ In the `src` directory open `index.js`. By default, the endpoint root will be th
 would be `/directus-endpoint-stripe/`. To change this, replace the code with the following:
 
 ```js
-import Stripe from 'stripe'
+import Stripe from 'stripe';
+
 export default {
 	id: 'stripe',
 	handler: (router) => {
@@ -68,8 +69,9 @@ handler: (router, { env, services }) => { // [!code ++]
 Initialize the `stripe` library and grab the Directus `PermissionsService`:
 
 ```js
-const secret_key = env.STRIPE_LIVE_SECRET_KEY;
-const stripe = require('stripe')(secret_key);
+const secretKey = env.STRIPE_LIVE_SECRET_KEY;
+const stripe = new Stripe(secretKey);
+
 const { PermissionsService } = services;
 ```
 
@@ -99,14 +101,18 @@ router.get('/payments', (req, res) => {
 	});
 
 	let output = []; // [!code ++]
-	if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)) { // [!code ++]
-		stripe.paymentIntents.list({ limit: 100 }).autoPagingEach((payments) => { // [!code ++]
-			output.push(payments); // [!code ++]
-		}).then(() => { // [!code ++]
-			res.json(output); // [!code ++]
-		}); // [!code ++]
+
+	if (permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)) { // [!code ++]
+		stripe.paymentIntents // [!code ++]
+			.list({ limit: 100 }) // [!code ++]
+			.autoPagingEach((payments) => { // [!code ++]
+				output.push(payments); // [!code ++]
+			}) // [!code ++]
+			.then(() => { // [!code ++]
+				res.json(output); // [!code ++]
+			}); // [!code ++]
 	} else { // [!code ++]
-		res.send(401); // [!code ++]
+		res.sendStatus(401); // [!code ++]
 	} // [!code ++]
 });
 ```
@@ -123,6 +129,7 @@ router.get('/customers', (req, res) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	let output = [];
 	if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)){
 		stripe.customers.list({limit: 100}).autoPagingEach((customer) => {
@@ -131,7 +138,7 @@ router.get('/customers', (req, res) => {
 			res.json(output);
 		});
 	} else {
-		res.send(401);
+		res.sendStatus(401);
 	}
 });
 ```
@@ -145,6 +152,7 @@ router.get('/payments/:customer_id', (req, res) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	let output = [];
 	if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)){
 		stripe.paymentIntents.list({
@@ -156,7 +164,7 @@ router.get('/payments/:customer_id', (req, res) => {
 			res.json(output);
 		});
 	} else {
-		res.send(401);
+		res.sendStatus(401);
 	}
 });
 ```
@@ -171,22 +179,25 @@ router.post('/customers', (req, res) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
-	if(permission.getAllowedFields('create', env.STRIPE_CUSTOMERS_COLLECTION)){
-		if(req.body.email){
+
+	if (permission.getAllowedFields('create', env.STRIPE_CUSTOMERS_COLLECTION)) {
+		if (req.body.email) {
 			const customer = {
 				email: req.body.email,
 			};
-			if(req.body.name) {
+
+			if (req.body.name) {
 				customer.name = req.body.name;
 			}
+
 			stripe.customers.create(customer).then((response) => {
 				res.json(response);
 			});
 		} else {
-			res.send(400); // Bad Request
+			res.sendStatus(400); // Bad Request
 		}
 	} else {
-		res.send(401);
+		res.sendStatus(401);
 	}
 });
 ```
@@ -230,7 +241,7 @@ sure that you change the URL for your project's URL)
 - To view all payments for a customer: https://example.directus.app/stripe/payments/CUS_XXX
 - To create a customer: POST to https://example.directus.app/stripe/customer with the following payload:
 
-```js
+```json
 {
 	"email": "your-email@example.com",
 	"name": "Joe Bloggs"
@@ -253,8 +264,8 @@ import Stripe from 'stripe';
 export default {
 	id: 'stripe',
 	handler: (router, { env, services }) => {
-		const secret_key = env.STRIPE_LIVE_SECRET_KEY;
-		const stripe = new Stripe(secret_key);
+		const secretKey = env.STRIPE_LIVE_SECRET_KEY;
+		const stripe = new Stripe(secretKey);
 
 		const { PermissionsService } = services;
 
@@ -265,14 +276,18 @@ export default {
 			});
 
 			let output = [];
-			if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)){
-				stripe.paymentIntents.list({ limit: 100 }).autoPagingEach((payments) => {
-					output.push(payments);
-				}).then(() => {
-					res.json(output);
-				});
+
+			if (permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)) {
+				stripe.paymentIntents
+					.list({ limit: 100 })
+					.autoPagingEach((payments) => {
+						output.push(payments);
+					})
+					.then(() => {
+						res.json(output);
+					});
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 
@@ -283,17 +298,21 @@ export default {
 			});
 
 			let output = [];
-			if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)){
-				stripe.paymentIntents.list({
-					customer: req.params.customer_id,
-					limit: 100
-				}).autoPagingEach((payments) => {
-					output.push(payments);
-				}).then(() => {
-					res.json(output);
-				});
+
+			if (permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)) {
+				stripe.paymentIntents
+					.list({
+						customer: req.params.customer_id,
+						limit: 100,
+					})
+					.autoPagingEach((payments) => {
+						output.push(payments);
+					})
+					.then(() => {
+						res.json(output);
+					});
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 
@@ -304,14 +323,18 @@ export default {
 			});
 
 			let output = [];
-			if(permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)){
-				stripe.customers.list({ limit: 100 }).autoPagingEach((customer) => {
-					output.push(customer);
-				}).then(() => {
-					res.json(output);
-				});
+
+			if (permission.getAllowedFields('read', env.STRIPE_CUSTOMERS_COLLECTION)) {
+				stripe.customers
+					.list({ limit: 100 })
+					.autoPagingEach((customer) => {
+						output.push(customer);
+					})
+					.then(() => {
+						res.json(output);
+					});
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 
@@ -321,24 +344,24 @@ export default {
 				schema: req.schema,
 			});
 
-			if(permission.getAllowedFields('create', env.STRIPE_CUSTOMERS_COLLECTION)){
-
-				if(req.body.email){
+			if (permission.getAllowedFields('create', env.STRIPE_CUSTOMERS_COLLECTION)) {
+				if (req.body.email) {
 					const customer = {
 						email: req.body.email,
 					};
-					if(req.body.name){
+
+					if (req.body.name) {
 						customer.name = req.body.name;
 					}
+
 					stripe.customers.create(customer).then((response) => {
 						res.json(response);
 					});
 				} else {
-					res.send(400); // Bad Request
+					res.sendStatus(400); // Bad Request
 				}
-
 			} else {
-				res.send(401);
+				res.sendStatus(401);
 			}
 		});
 	},

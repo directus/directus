@@ -950,6 +950,7 @@ wysiwyg_options:
   source_code: Quellcode bearbeiten
   fullscreen: Vollbild
   directionality: Richtung
+  lazy_loading: Bilderer nachladen
 dropdown: Dropdown
 choices: Optionen
 choices_option_configured_incorrectly: Auswahl falsch konfiguriert
@@ -2138,6 +2139,10 @@ operations:
     key: IDs
     payload: Nutzdaten
     query: Abfrage
+  json-web-token:
+    payload: Nutzdaten
+    token: Token
+    options: Optionen
   log:
     name: Konsolenausgabe
     description: Etwas in die Konsole ausgeben

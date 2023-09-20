@@ -1,5 +1,6 @@
 import type { DirectusNotification } from '../../../schema/notification.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadNotificationOutput<
@@ -28,14 +29,19 @@ export const readNotifications =
  * @param key The primary key of the dashboard
  * @param query The query parameters
  * @returns Returns the requested notification object.
+ * @throws Will throw if key is empty
  */
 export const readNotification =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		key: DirectusNotification<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadNotificationOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/notifications/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/notifications/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};
