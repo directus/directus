@@ -1,0 +1,25 @@
+{
+	"name": "directus-monorepo",
+	"private": true,
+	"scripts": {
+		"build": "pnpm --recursive --filter '!docs' run build",
+		"format": "prettier --cache --check .",
+		"lint": "eslint --cache .",
+		"test": "pnpm --recursive --filter '!tests-blackbox' test",
+		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
+	},
+	"devDependencies": {
+		"@changesets/cli": "2.26.1",
+		"@typescript-eslint/eslint-plugin": "5.59.6",
+		"@typescript-eslint/parser": "5.59.6",
+		"eslint": "8.40.0",
+		"eslint-config-prettier": "8.8.0",
+		"eslint-plugin-vue": "9.13.0",
+		"prettier": "2.8.8"
+	},
+	"packageManager": "pnpm@8.7.4",
+	"engines": {
+		"node": ">=16.20.0",
+		"pnpm": "~8.6.10"
+	}
+}
