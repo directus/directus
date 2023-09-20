@@ -107,6 +107,9 @@ importers:
       argon2:
         specifier: 0.30.3
         version: 0.30.3
+      argon2-wasm:
+        specifier: ^0.9.0
+        version: 0.9.0
       async:
         specifier: 3.2.4
         version: 3.2.4
@@ -1870,6 +1873,9 @@ importers:
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
+      xterm:
+        specifier: ^5.3.0
+        version: 5.3.0
     devDependencies:
       typescript:
         specifier: ^5.0.2
@@ -9983,6 +9989,10 @@ packages:
       delegates: 1.0.0
       readable-stream: 3.6.2
     optional: true
+
+  /argon2-wasm@0.9.0:
+    resolution: {integrity: sha512-bt5xqrDt5FnA1gdLLouOwi2NN1h9BeML8DmKth7CCYhygoXUEDeIxEMB++q+CUPQ8U5gju065Z0MjI+hVSXX7A==}
+    dev: false
 
   /argon2@0.30.3:
     resolution: {integrity: sha512-DoH/kv8c9127ueJSBxAVJXinW9+EuPA3EMUxoV2sAY1qDE5H9BjTyVF/aD2XyHqbqUWabgBkIfcP3ZZuGhbJdg==}
@@ -23368,6 +23378,10 @@ packages:
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
+
+  /xterm@5.3.0:
+    resolution: {integrity: sha512-8QqjlekLUFTrU6x7xck1MsPzPA571K5zNqWm0M0oroYEWVOptZ0+ubQSkQ3uxIEhcIHRujJy6emDWX4A7qyFzg==}
+    dev: false
 
   /y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}

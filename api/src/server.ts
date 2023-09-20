@@ -24,7 +24,11 @@ import { toBoolean } from './utils/to-boolean.js';
 export let SERVER_ONLINE = true;
 
 export async function createServer(): Promise<http.Server> {
+	console.log("Creating server...")
+
 	const server = http.createServer(await createApp());
+
+	console.log("Server created")
 
 	Object.assign(server, getConfigFromEnv('SERVER_'));
 
@@ -108,6 +112,8 @@ export async function createServer(): Promise<http.Server> {
 	};
 
 	createTerminus(server, terminusOptions);
+
+	console.log("Server created")
 
 	return server;
 

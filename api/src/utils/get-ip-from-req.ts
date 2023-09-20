@@ -11,11 +11,12 @@ export function getIPFromReq(req: Request): string {
 
 		if (typeof customIPHeaderValue === 'string' && isIP(customIPHeaderValue) !== 0) {
 			ip = customIPHeaderValue;
+			console.log("")
 		} else {
 			logger.warn(`Custom IP header didn't return valid IP address: ${JSON.stringify(customIPHeaderValue)}`);
 		}
 	}
 
 	// IP addresses starting with ::ffff: are IPv4 addresses in IPv6 format. We can strip the prefix to get back to IPv4
-	return ip.startsWith('::ffff:') ? ip.substring(7) : ip;
+	return ip?.startsWith('::ffff:') ? ip.substring(7) : ip;
 }

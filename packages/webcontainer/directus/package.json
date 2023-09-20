@@ -4,6 +4,8 @@
 	"scripts": {
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --cache --check .",
+		"dev": "NODE_ENV=development tsx ./api/src/start.ts",
+		"init": "NODE_ENV=development tsx ./api/src/cli/run.ts bootstrap",
 		"lint": "eslint --cache .",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
@@ -15,7 +17,8 @@
 		"eslint": "8.40.0",
 		"eslint-config-prettier": "8.8.0",
 		"eslint-plugin-vue": "9.13.0",
-		"prettier": "2.8.8"
+		"prettier": "2.8.8",
+		"tsx": "3.12.7"
 	},
 	"packageManager": "pnpm@8.7.4",
 	"engines": {

@@ -4,6 +4,8 @@ import path from 'path';
 import { searchForWorkspaceRoot } from 'vite';
 import { set } from 'lodash-es'
 
+const workspaceRoot = searchForWorkspaceRoot(process.cwd())
+
 export default defineConfig({
 	server: {
 		headers: {
@@ -11,7 +13,7 @@ export default defineConfig({
 			'Cross-Origin-Opener-Policy': 'same-origin',
 		},
 		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd())],
+			allow: [workspaceRoot],
 		},
 	},
 	plugins: [
@@ -77,37 +79,55 @@ function loadFiles() {
 		path.join('.github')
 	]
 
-	loadFolder(path.join(searchForWorkspaceRoot(process.cwd()), 'api'), path.join('api'))
-	loadFolder(path.join('directus'))
+	loadFolder(path.join(workspaceRoot, 'api'), workspaceRoot)
+	loadFolder(path.join('directus'), 'directus')
 
-	function loadFolder(folder, prefix) {
-		const relativeFolder = folder.substring(searchForWorkspaceRoot(process.cwd()).length)
+	function loadFolder(folder, replace = workspaceRoot, prefix = "") {
 
 		console.log(folder)
 
 		for (const s of skip) {
-			if (folder.substring(searchForWorkspaceRoot(process.cwd()).length).includes(path.join(s))) return
+			if (folder.substring(workspaceRoot.length).includes(path.join(s))) return
 		}
 
 		const fileUrls = fs.readdirSync(folder);
 
 		for (const file of fileUrls) {
 			if (fs.lstatSync(path.join(folder, file)).isDirectory()) {
-				loadFolder(path.join(folder, file));
+				loadFolder(path.join(folder, file), replace, prefix);
 				continue;
 			}
 
-			const filePath = prefix ? path.join(prefix, file) : file;
+			path.join(folder, file)
 
-			files[filePath] = {
-				file: {
-					contents: fs.readFileSync(path.join(folder, file), 'utf-8')
-				}
+			const filePath = urlToPath(path.join(prefix, path.join(folder, file).replace(replace, "")))
+
+			console.log("file://", filePath.join('/'))
+
+			if (file.endsWith('.db')) {
+				set(files, filePath, {
+					file: {
+						contents: fs.readFileSync(path.join(folder, file))
+					}
+				})
+			} else {
+				set(files, filePath, {
+					file: {
+						contents: fs.readFileSync(path.join(folder, file), 'utf-8')
+					}
+				})
 			}
+
+
 		}
+
 	}
 
 	return files;
 }
 
+function urlToPath(url) {
+	const parts = url.split(/[/\\]/g).filter(Boolean)
 
+	return [...parts.slice(0, -1).map(p => [p, 'directory']).flat(), parts.at(-1)]
+}

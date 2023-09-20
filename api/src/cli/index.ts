@@ -19,9 +19,9 @@ import * as pkg from '../utils/package.js';
 export async function createCli(): Promise<Command> {
 	const program = new Command();
 
-	const extensionManager = getExtensionManager();
+	// const extensionManager = getExtensionManager();
 
-	await extensionManager.initialize({ schedule: false, watch: false });
+	// await extensionManager.initialize({ schedule: false, watch: false });
 
 	await emitter.emitInit('cli.before', { program });
 

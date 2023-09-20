@@ -1,19 +1,19 @@
 {
-  "name": "webcontainer",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
-  },
-  "dependencies": {
-    "@webcontainer/api": "^1.1.5",
-    "lodash-es": "4.17.21"
-  }
+	"name": "webcontainer",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"typescript": "^5.0.2",
+		"vite": "^4.4.5"
+	},
+	"dependencies": {
+		"@webcontainer/api": "^1.1.5",
+		"lodash-es": "4.17.21",
+		"xterm": "^5.3.0"
+	}
 }

@@ -71,6 +71,7 @@ import { init as initWebhooks } from './webhooks.js';
 const require = createRequire(import.meta.url);
 
 export default async function createApp(): Promise<express.Application> {
+	console.log('createApp')
 	const helmet = await import('helmet');
 
 	validateEnv(['KEY', 'SECRET']);
@@ -79,10 +80,18 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
+	console.log('validateStorage')
+
 	await validateStorage();
 
+	console.log('validateDatabaseConnection')
+
 	await validateDatabaseConnection();
+
+	console.log('validateDatabaseExtensions')
 	await validateDatabaseExtensions();
+
+	console.log('isInstalled', await isInstalled())
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Database doesn't have Directus tables installed.`);
@@ -93,19 +102,26 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn(`Database migrations have not all been run`);
 	}
 
+	console.log('registerAuthProviders')
 	await registerAuthProviders();
 
-	const extensionManager = getExtensionManager();
+	// const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
 
-	await extensionManager.initialize();
+	console.log('extensionManager.initialize')
+	// await extensionManager.initialize();
+
+	console.log('flowManager.initialize')
 	await flowManager.initialize();
 
+	console.log('express()')
 	const app = express();
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
+
+	console.log('PRESSURE_LIMITER_ENABLED', env['PRESSURE_LIMITER_ENABLED'])
 
 	if (env['PRESSURE_LIMITER_ENABLED']) {
 		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
@@ -126,6 +142,8 @@ export default async function createApp(): Promise<express.Application> {
 			})
 		);
 	}
+
+	console.log('helmet stuff')
 
 	app.use(
 		helmet.contentSecurityPolicy(
@@ -158,10 +176,12 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
 	}
 
+	console.log('emitter.emitInit')
 	await emitter.emitInit('app.before', { app });
 
 	await emitter.emitInit('middlewares.before', { app });
 
+	console.log('expressLogger')
 	app.use(expressLogger);
 
 	app.use((_req, res, next) => {
@@ -187,8 +207,10 @@ export default async function createApp(): Promise<express.Application> {
 		});
 	});
 
+	console.log('cookieParser')
 	app.use(cookieParser());
 
+	console.log('extractToken')
 	app.use(extractToken);
 
 	app.get('/', (_req, res, next) => {
@@ -199,25 +221,29 @@ export default async function createApp(): Promise<express.Application> {
 		}
 	});
 
+	console.log('robots.txt')
+
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');
 		res.status(200);
 		res.send(env['ROBOTS_TXT']);
 	});
 
+	console.log('serveApp', env['SERVE_APP'])
+
 	if (env['SERVE_APP']) {
 		const adminPath = require.resolve('@directus/app');
 		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 
-		const embeds = extensionManager.getEmbeds();
+		// const embeds = extensionManager.getEmbeds();
 
 		// Set the App's base path according to the APIs public URL
 		const html = await readFile(adminPath, 'utf8');
 
 		const htmlWithVars = html
 			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
-			.replace(/<embed-head \/>/, embeds.head)
-			.replace(/<embed-body \/>/, embeds.body);
+		// .replace(/<embed-head \/>/, embeds.head)
+		// .replace(/<embed-body \/>/, embeds.body);
 
 		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
@@ -244,24 +270,32 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(rateLimiter);
 	}
 
+	console.log('ping')
 	app.get('/server/ping', (_req, res) => res.send('pong'));
 
+	console.log('authenticate')
 	app.use(authenticate);
 
+	console.log('checkIP')
 	app.use(checkIP);
 
+	console.log('sanitizeQuery')
 	app.use(sanitizeQuery);
 
+	console.log('cache')
 	app.use(cache);
 
+	console.log('schema')
 	app.use(schema);
 
+	console.log('getPermissions')
 	app.use(getPermissions);
 
 	await emitter.emitInit('middlewares.after', { app });
 
 	await emitter.emitInit('routes.before', { app });
 
+	console.log("register routes")
 	app.use('/auth', authRouter);
 
 	app.use('/graphql', graphqlRouter);
@@ -294,8 +328,10 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints
+	console.log('Register custom endpoints')
+
 	await emitter.emitInit('routes.custom.before', { app });
-	app.use(extensionManager.getEndpointRouter());
+	// app.use(extensionManager.getEndpointRouter());
 	await emitter.emitInit('routes.custom.after', { app });
 
 	app.use(notFoundHandler);
@@ -306,6 +342,7 @@ export default async function createApp(): Promise<express.Application> {
 	// Register all webhooks
 	await initWebhooks();
 
+	console.log('collectTelemetry')
 	collectTelemetry();
 
 	await emitter.emitInit('app.after', { app });

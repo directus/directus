@@ -88,6 +88,7 @@
 		"@rollup/plugin-node-resolve": "15.0.2",
 		"@rollup/plugin-virtual": "3.0.1",
 		"argon2": "0.30.3",
+		"argon2-wasm": "^0.9.0",
 		"async": "3.2.4",
 		"axios": "1.4.0",
 		"busboy": "1.6.0",

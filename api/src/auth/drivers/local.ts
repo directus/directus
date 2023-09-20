@@ -1,5 +1,5 @@
 import type { Accountability } from '@directus/types';
-import argon2 from 'argon2';
+import argon2 from 'argon2-wasm';
 import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';

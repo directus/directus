@@ -20,10 +20,16 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 	const database = getDatabase();
 
+	const version = await database.raw('select sqlite_version();')
+
+	console.log(version);
+
 	await waitForDatabase(database);
 
 	if ((await isInstalled()) === false) {
 		logger.info('Installing Directus system tables...');
+
+
 
 		await installDatabase(database);
 

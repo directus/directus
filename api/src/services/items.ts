@@ -136,19 +136,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadAfterHooks =
 				opts.emitEvents !== false
 					? await emitter.emitFilter(
-							this.eventScope === 'items'
-								? ['items.create', `${this.collection}.items.create`]
-								: `${this.eventScope}.create`,
-							payload,
-							{
-								collection: this.collection,
-							},
-							{
-								database: trx,
-								schema: this.schema,
-								accountability: this.accountability,
-							}
-					  )
+						this.eventScope === 'items'
+							? ['items.create', `${this.collection}.items.create`]
+							: `${this.eventScope}.create`,
+						payload,
+						{
+							collection: this.collection,
+						},
+						{
+							database: trx,
+							schema: this.schema,
+							accountability: this.accountability,
+						}
+					)
 					: payload;
 
 			const payloadWithPresets = this.accountability
@@ -198,7 +198,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const result = await trx
 					.insert(payloadWithoutAliases)
 					.into(this.collection)
-					.returning(primaryKeyField)
+					// .returning(primaryKeyField)
 					.then((result) => result[0]);
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
@@ -396,19 +396,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-						this.eventScope === 'items'
-							? ['items.query', `${this.collection}.items.query`]
-							: `${this.eventScope}.query`,
-						query,
-						{
-							collection: this.collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						}
-				  )
+					this.eventScope === 'items'
+						? ['items.query', `${this.collection}.items.query`]
+						: `${this.eventScope}.query`,
+					query,
+					{
+						collection: this.collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				)
 				: query;
 
 		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema, {
@@ -443,18 +443,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const filteredRecords =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-						this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
-						records,
-						{
-							query: updatedQuery,
-							collection: this.collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						}
-				  )
+					this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+					records,
+					{
+						query: updatedQuery,
+						collection: this.collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				)
 				: records;
 
 		if (opts?.emitEvents !== false) {
@@ -611,20 +611,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const payloadAfterHooks =
 			opts.emitEvents !== false
 				? await emitter.emitFilter(
-						this.eventScope === 'items'
-							? ['items.update', `${this.collection}.items.update`]
-							: `${this.eventScope}.update`,
-						payload,
-						{
-							keys,
-							collection: this.collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						}
-				  )
+					this.eventScope === 'items'
+						? ['items.update', `${this.collection}.items.update`]
+						: `${this.eventScope}.update`,
+					payload,
+					{
+						keys,
+						collection: this.collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					}
+				)
 				: payload;
 
 		// Sort keys to ensure that the order is maintained

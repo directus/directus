@@ -66,23 +66,17 @@
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
 		"@aws-sdk/client-ses": "3.332.0",
-		"@directus/app": "10.6.2",
-		"@directus/constants": "10.6.2",
-		"@directus/errors": "10.6.2",
-		"@directus/extensions-sdk": "10.6.2",
-		"@directus/format-title": "10.0.0",
-		"@directus/pressure": "10.6.2",
-		"@directus/schema": "10.6.2",
-		"@directus/specs": "10.6.2",
-		"@directus/storage": "10.6.2",
-		"@directus/storage-driver-azure": "10.6.2",
-		"@directus/storage-driver-cloudinary": "10.6.2",
-		"@directus/storage-driver-gcs": "10.6.2",
-		"@directus/storage-driver-local": "10.6.2",
-		"@directus/storage-driver-s3": "10.6.2",
-		"@directus/storage-driver-supabase": "10.6.2",
-		"@directus/utils": "10.6.2",
-		"@directus/validation": "10.6.2",
+		"@directus/app": "10.8.0",
+		"@directus/constants": "10.2.3",
+		"@directus/errors": "0.0.2",
+		"@directus/extensions-sdk": "10.1.10",
+		"@directus/format-title": "10.1.0",
+		"@directus/pressure": "1.0.9",
+		"@directus/schema": "10.0.2",
+		"@directus/specs": "10.2.0",
+		"@directus/storage": "10.0.5",
+		"@directus/utils": "10.0.10",
+		"@directus/validation": "0.0.5",
 		"@godaddy/terminus": "4.12.0",
 		"@rollup/plugin-alias": "5.0.0",
 		"@rollup/plugin-node-resolve": "15.0.2",
@@ -94,6 +88,7 @@
 		"bytes": "3.1.2",
 		"camelcase": "7.0.1",
 		"chalk": "5.2.0",
+		"argon2-wasm": "^0.9.0",
 		"chokidar": "3.5.3",
 		"commander": "10.0.1",
 		"content-disposition": "0.5.4",
@@ -167,9 +162,9 @@
 		"zod-validation-error": "1.0.1"
 	},
 	"devDependencies": {
-		"@directus/random": "10.6.2",
-		"@directus/tsconfig": "10.6.2",
-		"@directus/types": "10.6.2",
+		"@directus/random": "0.2.2",
+		"@directus/tsconfig": "1.0.0",
+		"@directus/types": "10.1.6",
 		"@ngneat/falso": "6.4.0",
 		"@types/async": "3.2.20",
 		"@types/busboy": "1.5.0",
@@ -225,6 +220,6 @@
 		"tedious": "16.1.0"
 	},
 	"engines": {
-		"node": ">=18.0.0"
+		"node": ">=16.20.0"
 	}
 }
