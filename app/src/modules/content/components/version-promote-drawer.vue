@@ -26,10 +26,8 @@
 					>
 						<v-icon name="looks_one" />
 						<version-promote-field class="field-content" :value="comparedData?.main[field.field]" />
-						<template v-if="!selectedFields.includes(field.field)">
-							<v-chip class="version" x-small>{{ t('main_version') }}</v-chip>
-							<v-icon name="check" />
-						</template>
+						<v-chip class="version" x-small>{{ t('main_version') }}</v-chip>
+						<v-icon :name="!selectedFields.includes(field.field) ? 'check' : 'close'" />
 					</div>
 					<div
 						class="compare current"
@@ -38,10 +36,8 @@
 					>
 						<v-icon name="looks_two" />
 						<version-promote-field class="field-content" :value="comparedData?.current[field.field]" />
-						<template v-if="selectedFields.includes(field.field)">
-							<v-chip class="version" x-small>{{ currentVersion.name }}</v-chip>
-							<v-icon name="check" />
-						</template>
+						<v-chip class="version" x-small>{{ currentVersion.name }}</v-chip>
+						<v-icon :name="selectedFields.includes(field.field) ? 'check' : 'close'" />
 					</div>
 				</div>
 			</div>
