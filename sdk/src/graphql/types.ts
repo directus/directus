@@ -7,7 +7,7 @@ export interface GraphqlClient<_Schema extends object> {
 }
 
 export interface GraphqlConfig {
-	credentials: RequestCredentials;
+	credentials?: RequestCredentials;
 }
 
 export type GqlResult<Schema extends object, Collection extends keyof Schema> = {
