@@ -113,8 +113,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const authPath = options.provider ? `/auth/login/${options.provider}` : '/auth/login';
-				const requestUrl = getRequestUrl(client.url, authPath);
+				const requestUrl = getRequestUrl(client.url, '/auth/login');
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
