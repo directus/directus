@@ -131,7 +131,7 @@ const parts = computed<HighlightPart[]>(() => {
 
 <style scoped>
 mark {
-	background-color: var(--primary-25);
+	background-color: var(--background-mark);
 	border-radius: 2px;
 }
 </style>
