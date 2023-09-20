@@ -48,7 +48,14 @@
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('promote_version')" :loading="promoting" icon rounded @click="promote">
+			<v-button
+				v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
+				:loading="promoting"
+				:disabled="selectedFields.length === 0"
+				icon
+				rounded
+				@click="promote"
+			>
 				<v-icon name="check" />
 			</v-button>
 		</template>
