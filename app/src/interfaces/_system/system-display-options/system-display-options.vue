@@ -1,6 +1,6 @@
 <template>
 	<v-notice v-if="!selectedDisplay">
-		{{ t('select_interface') }}
+		{{ t('select_display') }}
 	</v-notice>
 
 	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
