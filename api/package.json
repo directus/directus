@@ -143,7 +143,7 @@
 		"openid-client": "5.4.2",
 		"ora": "6.3.1",
 		"otplib": "12.0.1",
-		"papaparse": "^5.4.1",
+		"papaparse": "5.4.1",
 		"pino": "8.14.1",
 		"pino-http": "8.3.3",
 		"pino-http-print": "3.1.0",

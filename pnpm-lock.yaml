@@ -273,7 +273,7 @@ importers:
         specifier: 12.0.1
         version: 12.0.1
       papaparse:
-        specifier: ^5.4.1
+        specifier: 5.4.1
         version: 5.4.1
       pino:
         specifier: 8.14.1
