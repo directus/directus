@@ -1,8 +1,8 @@
-import { vi, afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { Filter } from '@directus/types';
+import type { Filter, User } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parseFilter } from './parse-filter.js';
 
-describe('', () => {
+describe('#parseFilter', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date(1632431505992));
@@ -218,5 +218,87 @@ describe('', () => {
 
 		const mockAccountability = { role: 'admin', user: 'user' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('replaces field from user using the $CURRENT_USER variable', () => {
+		const mockFilter = {
+			_and: [
+				{
+					field: {
+						_eq: '$CURRENT_USER.additional_field',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					field: {
+						_eq: 'example-value',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin', user: 'user' };
+		const mockContext = { $CURRENT_USER: { additional_field: 'example-value' } as unknown as User };
+		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
+	});
+
+	it('replaces nested field from user using the $CURRENT_USER variable', () => {
+		const mockFilter = {
+			_and: [
+				{
+					field: {
+						_eq: '$CURRENT_USER.additional_relation.field',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					field: {
+						_eq: 'example-value',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin', user: 'user' };
+		const mockContext = { $CURRENT_USER: { additional_relation: { field: 'example-value' } } as unknown as User };
+		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
+	});
+
+	it('replaces nested field from user using the $CURRENT_USER variable', () => {
+		const mockFilter = {
+			_and: [
+				{
+					field: {
+						_in: ['$CURRENT_USER.o2m.nested_o2m.field'],
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					field: {
+						_in: ['example-value'],
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin', user: 'user' };
+
+		const mockContext = {
+			$CURRENT_USER: { o2m: [{ nested_o2m: [{ field: 'example-value' }] }] } as unknown as User,
+		};
+
+		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
 	});
 });

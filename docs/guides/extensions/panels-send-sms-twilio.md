@@ -235,7 +235,7 @@ props: {
 After the `props`, create a `setup(props)` section and create the variables needed:
 
 ```js
-setup(props){
+setup(props) {
 	const api = useApi();
 	const custom_message = ref('');
 	const smsConfirmation = ref(false);
@@ -258,37 +258,39 @@ fields in the display template to construct the query, then use the display temp
 the contacts constant.
 
 ```js
-async function fetchResults(){
+async function fetchResults() {
 	fields.value = [`${props.phone_number_field}`];
+
 	if (props.displayTemplate != null) {
 		template_fields.value = props.displayTemplate.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
 	}
 
 	if (template_fields.value != null) {
-		template_fields.value.forEach(field => {
-			field = field.replace('{{ ','').replace(' }}','');
+		template_fields.value.forEach((field) => {
+			field = field.replace('{{ ', '').replace(' }}', '');
 			fields.value.push(field);
 		});
 	}
 
 	try {
 		contacts.value = [];
-		const query = await api.get(
-			`/items/${props.collection}`,
-			{
-				params: {
-					fields: fields.value,
-					limit: -1,
-					filter: props.filter,
-				},
-			}
-		);
+
+		const query = await api.get(`/items/${props.collection}`, {
+			params: {
+				fields: fields.value,
+				limit: -1,
+				filter: props.filter,
+			},
+		});
+
 		const res = query.data.data;
-		res.forEach(item => {
+
+		res.forEach((item) => {
 			contacts.value.push({
 				text: displayOutput(item),
 				value: item[props.phone_number_field],
 			});
+
 			if (props.batch_send) {
 				recipients.value.push(item[props.phone_number_field]);
 			}
@@ -306,17 +308,9 @@ After the function, `fetchResults` is called which will build the contact list w
 If any of these vital properties are changed, the function will need to update the contact list. Use the following code:
 
 ```js
-watch(
-	[
-		() => props.collection,
-		() => props.filter,
-		() => props.phone_number_field,
-		() => props.displayTemplate
-	],
-	() => {
-		fetchResults();
-	},
-);
+watch([() => props.collection, () => props.filter, () => props.phone_number_field, () => props.displayTemplate], () => {
+	fetchResults();
+});
 ```
 
 At this point, return the required variables and functions to the Vue template for use later:
@@ -332,36 +326,40 @@ Split it into 2 functions. The first function will loop through all the placehol
 and replace them with the results from the second function `parseValue`.
 
 ```js
-function displayOutput(item){
+function displayOutput(item) {
 	let output = props.displayTemplate;
-	if(template_fields.value != null){
-		template_fields.value.forEach(field => {
-			const clean = field.replace('{{ ','').replace(' }}','');
+
+	if (template_fields.value != null) {
+		template_fields.value.forEach((field) => {
+			const clean = field.replace('{{ ', '').replace(' }}', '');
 			output = output.replace(field, parseValue(item, clean));
 		});
 	}
+
 	return output;
-};
+}
 ```
 
 The `parseValue` function splits the key on the period (`.`) separator, then finds the value for each field from the
 supplied item object. The value is returned:
 
 ```js
-function parseValue(item, key){
-	if(key.includes(".")){
+function parseValue(item, key) {
+	if (key.includes('.')) {
 		let value = item;
 		let fields = key.split('.');
-		fields.forEach(f => {
-			if(value != null){
+
+		fields.forEach((f) => {
+			if (value != null) {
 				value = value[f];
 			}
 		});
+
 		return value;
 	} else {
-		return item[key]
+		return item[key];
 	}
-};
+}
 ```
 
 The outcome of the above functions will change "<span v-pre>{{ name }}</span>, <span v-pre>{{ phone_number }}</span>" to
@@ -372,10 +370,10 @@ contacts. Directus has an interface called `v-select`. When items are selected, 
 `recipients` variable with the following function:
 
 ```js
-function updateNumbers(value){
+function updateNumbers(value) {
 	recipients.value = value;
 	return;
-};
+}
 ```
 
 When the SMS is ready to be sent, the recipients and message must be collected and posted to the API. This requires the
@@ -386,58 +384,63 @@ The responses update the constants `sms_sent` and `sms_error`. This can be used 
 user.
 
 ```js
-function sendSMS(){
+function sendSMS() {
 	sms_sent.value = 0;
 	sms_error.value = [];
-	const sms_body = props.message?props.message:custom_message.value;
+	const sms_body = props.message ? props.message : custom_message.value;
 	const sms_recpients = recipients.value;
-	if(recipient.value != ''){
+
+	if (recipient.value != '') {
 		sms_recpients.push(recipient.value);
 	}
-	sms_recpients.forEach(sms_to => {
-		api.post(
-			`/twilio/2010-04-01/Accounts/${twilio_sid}/Messages.json`,
-			{
+
+	sms_recpients.forEach((sms_to) => {
+		api
+			.post(`/twilio/2010-04-01/Accounts/${twilio_sid}/Messages.json`, {
 				From: twilio_from,
 				Body: sms_body,
 				To: sms_to,
-			}
-		).then((rsp) => {
-			if(rsp.data.status == "queued"){
+			})
+			.then((rsp) => {
+				if (rsp.data.status == 'queued') {
 					sms_sent.value += 1;
-			} else {
+				} else {
+					sms_error.value.push({
+						recipient: sms_to,
+						error: {
+							code: rsp.data.code,
+							message: rsp.data.message,
+						},
+					});
+				}
+			})
+			.catch((error) => {
 				sms_error.value.push({
 					recipient: sms_to,
-					error: {
-						code: rsp.data.code,
-						message: rsp.data.message,
-					},
+					error: error,
 				});
-			}
-		}).catch((error) => {
-			sms_error.value.push({
-				recipient: sms_to,
-				error: error,
+
+				console.log(error);
 			});
-			console.log(error);
-		});
 	});
+
 	return;
-};
+}
 ```
 
 After a successful send, it’s good practice to clear the form. This function resets the `recipient`, `recipients` (if
 needed) and `custom_message` constants back to their initial state:
 
 ```js
-function SMSReset(){
-	if(!props.batch_send){
+function SMSReset() {
+	if (!props.batch_send) {
 		recipients.value = [];
 	}
+
 	recipient.value = '';
 	custom_message.value = '';
 	return;
-};
+}
 ```
 
 Update the returned constants and functions with the new ones:
@@ -451,11 +454,17 @@ return { contacts, recipient, recipients, custom_message, smsConfirmation, sendS
 Remove all boilerplate code in the `<template>`, and then add a fallback notice if some essential information is
 missing. Start with this:
 
-```html
+```vue
 <template>
-	<v-notice type="danger" icon="warning" class="sms-notice" v-if="TWILIO_ACCOUNT_SID === undefined || TWILIO_PHONE_NUMBER === undefined">Twilio API Details Missing</v-notice> // [!code ++]
-	<div v-else class="twilio-sms" :class="{ 'has-header': showHeader }"> // [!code ++]
-	</div> // [!code ++]
+	<v-notice // [!code ++]
+		v-if="TWILIO_ACCOUNT_SID === undefined || TWILIO_PHONE_NUMBER === undefined" // [!code ++]
+		type="danger" // [!code ++]
+		icon="warning" // [!code ++]
+		class="sms-notice" // [!code ++]
+	> // [!code ++]
+		Twilio API Details Missing // [!code ++]
+	</v-notice> // [!code ++]
+	<div v-else class="twilio-sms" :class="{ 'has-header': showHeader }"></div> // [!code ++]
 </template>
 ```
 
@@ -464,7 +473,7 @@ missing. Start with this:
 There are 3 ways to receive recipients. If no phone number field is supplied, the panel doesn’t know where to find the
 numbers. In this case, an input field is required so the user can type a phone number directly into the panel.
 
-```html
+```vue
 <div v-else class="twilio-sms" :class="{ 'has-header': showHeader }">
 	<v-input v-model="recipient" placeholder="+0000000000" v-if="phone_number_field == ''"/> // [!code ++]
 </div>
@@ -474,7 +483,7 @@ If a phone number field is supplied, a multi-select interface is supplied. Howev
 always send to that list of recipients, `batch_send` can be enabled. With this in mind, the select field is rendered
 when `batch_send` is disabled.
 
-```html
+```vue
 <div v-else class="twilio-sms" :class="{ 'has-header': showHeader }">
 	<v-input v-model="recipient" placeholder="+0000000000" v-if="phone_number_field == ''"/>
 	<v-select // [!code ++]
@@ -516,7 +525,7 @@ If no message is supplied in the configuration, a plain multi-line input field i
 To prevent accidental clicks, it’s a good idea to create a confirmation dialog. Use the following code for the send
 button:
 
-```html
+```vue
 <v-dialog v-model="smsConfirmation" @esc="smsConfirmation = false; refresh()">
 	<template #activator="{ on }">
 		<v-button @click="on" v-if="recipients != undefined && recipients.length > 0 && (message || custom_message != '')">
@@ -536,7 +545,7 @@ are the buttons. Cancel will dismiss the confirmation by setting the `smsConfirm
 Confirm button will run the function `sendSMS`. Lastly the Done button will also dismiss the confirmation but also run
 the function `SMSReset` which will empty all the fields.
 
-```html
+```vue
 <v-sheet v-if="recipients != undefined">
 	<h2 v-if="sms_sent === 0" class="sms-confirm">Send the following message to {{ recipients.length }} recipients?</h2>
 	<blockquote v-if="sms_sent === 0" class="sms-message" v-html="message?message:custom_message"></blockquote>
@@ -555,16 +564,25 @@ exist inside `sms_error`. Then use the `v-notice` type `success` when `sms_sent`
 show both if an error occurred, so the user knows that some messages have been sent and can view the activity in Twilio
 for more information.
 
-```html
-<v-notice type="danger" icon="warning" v-if="sms_error.length > 0">There was an issue sending {{ sms_error.length }} message{{ sms_error.length > 1?'s':'' }}.</v-notice>
-<v-notice type="success" icon="done" v-if="sms_sent > 0">{{ sms_sent }} message{{ sms_sent > 1?'s':'' }} successfully.</v-notice>
+```vue
+<v-notice
+	type="danger"
+	icon="warning"
+	v-if="sms_error.length > 0"
+>There was an issue sending {{ sms_error.length }} message{{ sms_error.length > 1?'s':'' }}.</v-notice>
+
+<v-notice
+	type="success"
+	icon="done"
+	v-if="sms_sent > 0"
+>{{ sms_sent }} message{{ sms_sent > 1?'s':'' }} successfully.</v-notice>
 ```
 
 ### Styling
 
 Add the following CSS:
 
-```css
+```vue
 <style scoped>
 .twilio-sms {
 	height: 100%;
@@ -714,7 +732,7 @@ export default {
 				interface: 'system-field',
 				options: {
 					collectionField: 'collection',
-					typeAllowList: ['string','integer'],
+					typeAllowList: ['string', 'integer'],
 				},
 				width: 'half',
 			},
@@ -783,12 +801,19 @@ export default {
 
 `panel.vue`
 
-```html
+```vue
 <template>
-	<v-notice type="danger" icon="warning" class="sms-notice" v-if="TWILIO_ACCOUNT_SID === undefined || TWILIO_PHONE_NUMBER === undefined">Twilio API Details Missing</v-notice>
+	<v-notice
+		v-if="TWILIO_ACCOUNT_SID === undefined || TWILIO_PHONE_NUMBER === undefined"
+		type="danger"
+		icon="warning"
+		class="sms-notice"
+	>
+		Twilio API Details Missing
+	</v-notice>
 	<div v-else class="twilio-sms" :class="{ 'has-header': showHeader }">
 		<!-- Content goes here -->
-		<v-input v-model="recipient" placeholder="+0000000000" v-if="phone_number_field == ''"/>
+		<v-input v-if="phone_number_field == ''" v-model="recipient" placeholder="+0000000000" />
 		<v-select
 			v-else-if="!batch_send"
 			multiple
@@ -802,22 +827,32 @@ export default {
 			:value="recipients"
 			@update:model-value="updateNumbers($event)"
 		></v-select>
-		<v-textarea class="custom-message" v-model="custom_message" v-if="message == null"></v-textarea>
+		<v-textarea v-if="message == null" v-model="custom_message" class="custom-message"></v-textarea>
 		<v-dialog v-model="smsConfirmation" @esc="smsConfirmation = false;refresh()">
 			<template #activator="{ on }">
-				<v-button @click="on" v-if="recipients != undefined && recipients.length > 0 && (message || custom_message != '')">
+				<v-button
+					v-if="recipients != undefined && recipients.length > 0 && (message || custom_message != '')"
+					@click="on"
+				>
 					{{ button_label }}
 				</v-button>
 				<v-button v-else secondary disabled>{{ button_label }}</v-button>
 			</template>
 			<v-sheet v-if="recipients != undefined">
-				<h2 v-if="sms_sent === 0" class="sms-confirm">Send the following message to {{ recipients.length }} recipients?</h2>
+				<h2 v-if="sms_sent === 0" class="sms-confirm">
+					Send the following message to {{ recipients.length }} recipients?
+				</h2>
 				<blockquote v-if="sms_sent === 0" class="sms-message" v-html="message?message:custom_message"></blockquote>
-				<v-notice type="danger" icon="warning" v-if="sms_error.length > 0">There was an issue sending {{ sms_error.length }} message{{ sms_error.length > 1?'s':'' }}.</v-notice>
-				<v-notice type="success" icon="done" v-if="sms_sent > 0">{{ sms_sent }} message{{ sms_sent > 1?'s':'' }} successfully.</v-notice>
-				<div class="sms-actions" >
-					<v-button v-if="sms_sent === 0" secondary @click="smsConfirmation = false">Cancel</v-button> <v-button v-if="sms_sent === 0" @click="sendSMS()">Confirm</v-button>
-					<v-button v-if="sms_sent > 0"  @click="smsConfirmation = false;SMSReset()">Done</v-button>
+				<v-notice v-if="sms_error.length > 0" type="danger" icon="warning">
+					There was an issue sending {{ sms_error.length }} message{{ sms_error.length > 1?'s':'' }}.
+				</v-notice>
+				<v-notice v-if="sms_sent > 0" type="success" icon="done">
+					{{ sms_sent }} message{{ sms_sent > 1?'s':'' }} successfully.
+				</v-notice>
+				<div class="sms-actions">
+					<v-button v-if="sms_sent === 0" secondary @click="smsConfirmation = false">Cancel</v-button>
+					<v-button v-if="sms_sent === 0" @click="sendSMS()">Confirm</v-button>
+					<v-button v-if="sms_sent > 0" @click="smsConfirmation = false;SMSReset()">Done</v-button>
 				</div>
 			</v-sheet>
 		</v-dialog>
@@ -865,7 +900,7 @@ export default {
 		TWILIO_AUTH_TOKEN: String,
 		TWILIO_PHONE_NUMBER: String,
 	},
-	setup(props){
+	setup(props) {
 		const api = useApi();
 		const custom_message = ref('');
 		const smsConfirmation = ref(false);
@@ -881,6 +916,7 @@ export default {
 
 		async function fetchResults(){
 			fields.value = [`${props.phone_number_field}`];
+
 			if(props.displayTemplate != null){
 				template_fields.value = props.displayTemplate.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
 			}
@@ -894,6 +930,7 @@ export default {
 
 			try {
 				contacts.value = [];
+
 				const query = await api.get(
 					`/items/${props.collection}`, {
 						params: {
@@ -904,7 +941,7 @@ export default {
 					}
 				);
 
-				var res = query.data.data;
+				const res = query.data.data;
 
 				res.forEach(item => {
 					contacts.value.push({
@@ -933,19 +970,21 @@ export default {
 
 		function displayOutput(item){
 			let output = props.displayTemplate;
+
 			if(template_fields.value != null){
 				template_fields.value.forEach(field => {
-					var clean = field.replace('{{ ','').replace(' }}','');
+					const clean = field.replace('{{ ','').replace(' }}','');
 					output = output.replace(field, parseValue(item, clean));
 				});
 			}
+
 			return output;
 		}
 
 		function parseValue(item, key){
 			if(key.includes(".")){
 				let value = item;
-				let fields = key.split('.');
+				const fields = key.split('.');
 
 				fields.forEach(f => {
 					if(value != null){
@@ -967,8 +1006,9 @@ export default {
 		function sendSMS(){
 			sms_sent.value = 0;
 			sms_error.value = [];
-			let sms_body = props.message?props.message:custom_message.value;
-			let sms_recpients = recipients.value;
+			const sms_body = props.message?props.message:custom_message.value;
+			const sms_recpients = recipients.value;
+
 			if(recipient.value != ''){
 				sms_recpients.push(recipient.value);
 			}
@@ -990,12 +1030,14 @@ export default {
 							},
 						});
 					}
+
 					console.log(rsp.data);
 				}).catch((error) => {
 					sms_error.value.push({
 						recipient: sms_to,
 						error: error,
 					});
+
 					console.log(error);
 				});
 			});
@@ -1007,6 +1049,7 @@ export default {
 			if(!props.batch_send){
 				recipients.value = [];
 			}
+
 			recipient.value = '';
 			custom_message.value = '';
 			return;

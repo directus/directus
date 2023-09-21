@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "13.0.0",
+	"version": "13.1.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -153,7 +153,7 @@
 		"rollup": "3.22.0",
 		"samlify": "2.8.10",
 		"sanitize-html": "2.10.0",
-		"sharp": "0.32.1",
+		"sharp": "0.32.5",
 		"snappy": "7.2.2",
 		"stream-json": "1.7.5",
 		"strip-bom-stream": "5.0.0",

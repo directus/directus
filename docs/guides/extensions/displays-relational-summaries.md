@@ -73,7 +73,9 @@ Before the `options` `return` value, add the following constants to retrieve the
 and determine if the related collection uses a junction table:
 
 ```js
-const relatedCollection = relations.o2m?.meta.junction_field != null ? relations.m2o?.related_collection : relations.o2m?.collection;
+const relatedCollection =
+	relations.o2m?.meta.junction_field != null ? relations.m2o?.related_collection : relations.o2m?.collection;
+
 const junction_table = relations.o2m?.meta.junction_field != null ? relations.o2m?.collection : null;
 const { useFieldsStore } = useStores();
 const fieldsStore = useFieldsStore();
@@ -91,7 +93,7 @@ if (editing === '+') {
 			text: 'Please complete the field before attempting to configure the display.',
 		},
 		width: 'full',
-  	};
+	};
 } else {
 }
 ```
@@ -104,14 +106,14 @@ if (editing === '+') {
 } else {
 	const fields = fieldsStore.getFieldsForCollection(relatedCollection); // [!code ++]
 	const field_choices = []; // [!code ++]
- // [!code ++]
-	fields.forEach(field => { // [!code ++]
+// [!code ++]
+	fields.forEach((field) => { // [!code ++]
 		field_choices.push({ // [!code ++]
 			text: field.meta.field, // [!code ++]
-			value: junction_table?`${relations.o2m.meta.junction_field}.${field.meta.field}`:field.meta.field, // [!code ++],
+			value: junction_table ? `${relations.o2m.meta.junction_field}.${field.meta.field}` : field.meta.field, // [!code ++],
 		}); // [!code ++]
 	}); // [!code ++]
- // [!code ++]
+// [!code ++]
 	const fieldSelection = { // [!code ++]
 		interface: 'select-dropdown', // [!code ++]
 		options: { // [!code ++]
@@ -194,7 +196,7 @@ Here is a preview of how this appears in Directus:
 The `display.vue` file contains the barebones code required for a display to work. The value is imported in the `props`
 section, then output in the template:
 
-```html
+```vue
 <template>
 	<div>Value: {{ value }}</div>
 </template>
@@ -248,21 +250,23 @@ Create a `setup` section after the `props` and include the following code:
 
 ```js
 setup(props) {
-    const calculatedValue = ref(0);
+	const calculatedValue = ref(0);
 
-    if(props.sum){
-        props.value.forEach(item => {
-            let columns = props.column.split('.');
-            columns.forEach(col => {
-                item = item[col];
-            });
-            calculatedValue.value = calculatedValue.value + parseFloat(item);
-        });
-    } else {
-        calculatedValue.value = props.value.length;
-    }
+	if(props.sum){
+		props.value.forEach(item => {
+			const columns = props.column.split('.');
 
-    return { calculatedValue };
+			columns.forEach(col => {
+				item = item[col];
+			});
+
+			calculatedValue.value = calculatedValue.value + parseFloat(item);
+		});
+	} else {
+		calculatedValue.value = props.value.length;
+	}
+
+	return { calculatedValue };
 },
 ```
 
@@ -271,9 +275,9 @@ fields defined in the scope. Make sure to return the constant at the bottom.
 
 Update the template to use the `calculateValue` constant, `prefix` and `suffix` instead of the direct value.
 
-```html
+```vue
 <template>
-    <div>Value: {{ value }}</div> // [!code --]
+	<div>Value: {{ value }}</div> // [!code --]
 	<div v-if="calculatedValue">{{ prefix }}{{ calculateValue }}{{ suffix }}</div> // [!code ++]
 	<value-null v-else /> // [!code ++]
 </template>
@@ -335,27 +339,32 @@ export default {
 	description: 'Count the related records or display the sum of the select column',
 	component: DisplayComponent,
 	options: ({ editing, relations }) => {
-		const relatedCollection = relations.o2m?.meta.junction_field != null?relations.m2o?.related_collection:relations.o2m?.collection;
-		const junction_table = relations.o2m?.meta.junction_field != null?relations.o2m?.collection:null;
+		const relatedCollection =
+			relations.o2m?.meta.junction_field != null ? relations.m2o?.related_collection : relations.o2m?.collection;
+
+		const junction_table = relations.o2m?.meta.junction_field != null ? relations.o2m?.collection : null;
 		const { useFieldsStore } = useStores();
 		const fieldsStore = useFieldsStore();
-		if(editing === '+'){
+
+		if (editing === '+') {
 			const displayTemplateMeta = {
 				interface: 'presentation-notice',
 				options: {
 					text: 'Please complete the field before attempting to configure the display.',
 				},
 				width: 'full',
-		  	};
+			};
 		} else {
 			const fields = fieldsStore.getFieldsForCollection(relatedCollection);
 			const field_choices = [];
-			fields.forEach(field => {
+
+			fields.forEach((field) => {
 				field_choices.push({
 					text: field.meta.field,
-					value: junction_table?`${relations.o2m.meta.junction_field}.${field.meta.field}`:field.meta.field,
+					value: junction_table ? `${relations.o2m.meta.junction_field}.${field.meta.field}` : field.meta.field,
 				});
 			});
+
 			const displayTemplateMeta = {
 				interface: 'select-dropdown',
 				options: {
@@ -419,11 +428,9 @@ export default {
 
 `display.vue`
 
-```html
+```vue
 <template>
-	<div v-if="calculatedValue">
-		{{ prefix }}{{ calculatedValue }}{{ suffix }}
-	</div>
+	<div v-if="calculatedValue">{{ prefix }}{{ calculatedValue }}{{ suffix }}</div>
 	<value-null v-else />
 </template>
 
@@ -457,10 +464,12 @@ export default {
 
 		if(props.sum){
 			props.value.forEach(item => {
-				let columns = props.column.split('.');
+				const columns = props.column.split('.');
+
 				columns.forEach(col => {
 					item = item[col];
 				});
+
 				calculatedValue.value = calculatedValue.value + parseFloat(item);
 			});
 		} else {
