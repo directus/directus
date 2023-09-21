@@ -80,12 +80,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function addVersion(version: Version, switchToVersion: boolean) {
+	async function addVersion(version: Version) {
 		versions.value = [...(versions.value ? versions.value : []), version];
 
-		if (switchToVersion) {
-			currentVersion.value = version;
-		}
+		currentVersion.value = version;
 	}
 
 	async function renameVersion(name: string) {

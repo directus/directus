@@ -74,9 +74,6 @@
 								@keyup.enter="createVersion"
 							/>
 						</div>
-						<div class="field">
-							<v-checkbox v-model="switchToVersion" :label="t('switch_to_version_after_creation')" />
-						</div>
 					</div>
 				</v-card-text>
 
@@ -149,7 +146,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-	add: [version: Version, switchToVersion: boolean];
+	add: [version: Version];
 	rename: [name: string];
 	delete: [];
 	switch: [version: Version | null];
@@ -162,7 +159,6 @@ const { hasPermission } = usePermissionsStore();
 const { collection, primaryKey, currentVersion } = toRefs(props);
 
 const newVersionName = ref<string | null>(null);
-const switchToVersion = ref(true);
 const isVersionPromoteDrawerOpen = ref(false);
 
 const createVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'create'));
@@ -199,7 +195,7 @@ function useCreateDialog() {
 				item: unref(primaryKey),
 			});
 
-			emit('add', version, unref(switchToVersion));
+			emit('add', version);
 
 			closeCreateDialog();
 		} catch (err: any) {
@@ -212,7 +208,6 @@ function useCreateDialog() {
 	function closeCreateDialog() {
 		createDialogActive.value = false;
 		newVersionName.value = null;
-		switchToVersion.value = true;
 	}
 }
 
