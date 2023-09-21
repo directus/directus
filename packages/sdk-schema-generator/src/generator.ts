@@ -1,5 +1,5 @@
 import { fieldTypeMap } from "./constants.js";
-import type { DataModel, RelationDefinition, SchemaDefinition } from "./types.js";
+import type { DataModel, NameTransformer, RelationDefinition, SchemaDefinition } from "./types.js";
 
 export interface Relation {
 	collection: string;
@@ -7,7 +7,7 @@ export interface Relation {
 	related_collection: string;
 }
 
-export function buildSchema(data: DataModel) {
+export function buildSchema(data: DataModel, nameFn: NameTransformer) {
 	const result: SchemaDefinition = new Map();
 
 	// setup the collections
@@ -17,7 +17,7 @@ export function buildSchema(data: DataModel) {
 		}
 
 		result.set(collection.collection, {
-			name: collection.collection,
+			name: nameFn(collection.collection),
 			system: Boolean(collection.meta?.system),
 			singleton: Boolean(collection.meta?.singleton),
 			fields: [],

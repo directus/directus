@@ -3,13 +3,22 @@ import { fetchDataModel } from './api.js';
 import { buildSchema } from './generator.js';
 import type { CliOptions } from './types.js';
 import { renderSchemaTypes } from './render.js';
+import { writeFileSync } from 'fs';
+import { getNamingFn } from './naming.js';
 
 async function generateSchema(args: CliOptions) {
 	const model = await fetchDataModel(args['host'], args['accessToken']);
 
-	const schema = await buildSchema(model);
+	const schema = await buildSchema(model, getNamingFn(args.naming));
 
-	console.log(renderSchemaTypes(schema))
+	const schemaDefinition = renderSchemaTypes(schema);
+
+	if (args.file) {
+		writeFileSync(args.file, schemaDefinition);
+	} else {
+		/* eslint-disable no-console */
+		console.log(schemaDefinition);
+	}
 }
 
 const program = new Command();
