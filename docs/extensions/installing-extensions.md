@@ -7,9 +7,9 @@ description: Discover how to install extensions into your Directus project.
 
 There are 3 possible ways to install extensions to your Directus instance:
 
-1. Installing through npm
-2. Installing through the extensions folder
-3. Installing through the marketplace
+1. Installing through NPM
+2. Installing through the Extensions Folder
+3. Installing through the Marketplace
 
 ## Installing through NPM
 
@@ -25,12 +25,11 @@ build:
   context: ./
 ```
 
-This modification allows Docker to build your project with the necessary dependencies.
+This allows Docker to build your project with the necessary dependencies.
 
 **2. Create a Dockerfile**
 
-At the root of your project, create a Dockerfile if one doesn't already exist. Inside this `Dockerfile`, add the
-following:
+At the root of your project, create a `Dockerfile` if one doesn't already exist and add the following:
 
 ```Dockerfile
 FROM directus/directus:latest
@@ -45,31 +44,108 @@ RUN pnpm install directus-extension-package-name
 
 ::: tip Extension Name
 
-Replace `directus-extension-package-name` with the name of the extension you want to install. For example,
+Remember to replace `directus-extension-package-name` with the name of the extension you want to install. For example,
 `directus-extension-myextension`.
 
 :::
 
-**3. Building the Docker Image**
+**3. Build the Docker Image**
 
-To apply the changes whenever changes are made in the Dockerfile, build the Docker image by running the following
-command:
+Build your Docker image by running the following command:
 
 ```bash
 docker-compose up --build
 ```
 
-::: tip Reloading Extensions
+**4. Start the Docker Container**
+
+Start your Docker container by running:
+
+```bash
+docker-compose up
+```
+
+You should see that your extension has been successfully loaded into the Docker container.
+
+::: tip Automatically Reload Extensions
 
 To automatically reload extensions every time you make a change, without having to restart Directus, in your
 `docker-compose.yml` file, set `EXTENSIONS_AUTO_RELOAD=true`.
 
 :::
 
-Start up your Directus instance to run the extensions you specified:
+## Installing Through the Extensions Folder
+
+Before you begin, ensure you have a [selfhosted instance of Directus](/self-hosted/quickstart) via Docker installed on
+your system.
+
+**1. Create an Extension Folder**
+
+At the root of your project, create an "extensions" folder if one doesn't already exist to house your extension.
+
+**2. Add your new extension into the extensions folder**
+
+Paste the extension your created (and have built) into the extensions folder you created earlier.
+
+Your folder structure should look like this:
+
+```yaml
+extensions/
+	<extension-name>/
+			dist/
+        index.js
+      src
+        index.js
+        interface.vue
+	displays/
+	hooks/
+	endpoints/
+  ...
+```
+
+::: tip Extension Name Format
+
+Ensure your extension is prefixed with `directus-extension`. For example, `directus-extension-myextension`.
+
+:::
+
+**3. Update Docker Compose File**
+
+Open your `docker-compose.yml` file with the following to mount your extension into the Docker container:
+
+```yaml
+volumes:
+
+  - ./extensions:/directus/extensions/
+```
+
+**4. Start the Docker Container**
+
+Start your Docker container by running:
 
 ```bash
 docker-compose up
 ```
 
-## Installing Through the Extensions Folder
+You should see that your extension has been successfully loaded into the Docker container. Now, go ahead to customize
+your extension by making changes to the src folder within your extension directory.
+
+## Installing through the Marketplace
+
+Within your [Directus Cloud account](https://directus.cloud), you can conveniently install extensions from the Directus
+Marketplace.
+
+**1. Access the Marketplace**
+
+Log in to your Directus cloud account. Once logged in, navigate to the "Marketplace" menu from the Module Bar.
+
+**2. Install Extensions**
+
+Within the Directus Marketplace, you'll notice a list of extensions that can be integrated into your account. Search for
+an extension that suits your needs and install it.
+
+::: tip Admin Access
+
+Only Administrators of a Directus instance can install extensions.
+
+:::
