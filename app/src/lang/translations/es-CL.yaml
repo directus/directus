@@ -35,6 +35,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
+collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Regla de condición
 input: Entrada
 maps: Mapas
@@ -80,6 +81,10 @@ create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
 create_webhook: Crear un webhook(conección)
+create_custom_translation: Crear traducción personalizada
+edit_custom_translation: Editar traducción personalizada
+no_custom_translations: No hay traducciones personalizadas
+no_custom_translations_copy: Todavía no hay traducciones personalizadas.
 invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
@@ -116,6 +121,7 @@ archive_confirm_count: >-
   No hay elementos seleccionados | ¿Estás seguro de archivar este ítem? | ¿Estás seguro de archivar estos {count} ítems?
 reset_system_permissions_to: 'Restablecer permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que hayas aplicado a las colecciones de Directus. ¿Estás seguro?
+the_following_are_minimum_permissions: Los siguientes permisos mínimos se aplican automáticamente a "Acceso a aplicaciones" cuando está habilitado. Puedes conceder permisos adicionales si es necesario, pero no puedes restringir permisos por debajo de este nivel.
 app_access_minimum: Acceso mínimo a la app
 recommended_defaults: Valores recomendados
 unarchive: Desarchivar
@@ -140,6 +146,14 @@ validationError:
   required: El valor es requerido
   unique: El Valor tiene que ser único
   regex: El valor no tiene el formato correcto
+  starts_with: El valor debe comenzar con {substring}
+  istarts_with: El valor debe comenzar con {substring}
+  nstarts_with: El valor no puede comenzar con {substring}
+  nistarts_with: El valor no puede comenzar con {substring}
+  ends_with: El valor debe terminar con {substring}
+  iends_with: El valor debe terminar con {substring}
+  nends_with: El valor no puede terminar con {substring}
+  niends_with: El valor no puede terminar con {substring}
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar uso

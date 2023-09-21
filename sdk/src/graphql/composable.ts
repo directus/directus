@@ -4,9 +4,7 @@ import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import type { AuthenticationClient } from '../auth/types.js';
 
-const defaultConfigValues: GraphqlConfig = {
-	credentials: 'same-origin',
-};
+const defaultConfigValues: GraphqlConfig = {};
 
 /**
  * Creates a client to communicate with Directus GraphQL.
@@ -22,11 +20,14 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 				variables?: Record<string, unknown>,
 				scope: 'items' | 'system' = 'items'
 			): Promise<Output> {
-				const options: RequestInit = {
+				const fetchOptions: RequestInit = {
 					method: 'POST',
 					body: JSON.stringify({ query, variables }),
-					credentials: gqlConfig.credentials,
 				};
+
+				if ('credentials' in gqlConfig) {
+					fetchOptions.credentials = gqlConfig.credentials;
+				}
 
 				const headers: Record<string, string> = {};
 
@@ -42,11 +43,11 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 					headers['Content-Type'] = 'application/json';
 				}
 
-				options.headers = headers;
+				fetchOptions.headers = headers;
 				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
 				const requestUrl = getRequestUrl(client.url, requestPath);
 
-				return await request<Output>(requestUrl.toString(), options, client.globals.fetch);
+				return await request<Output>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 			},
 		};
 	};

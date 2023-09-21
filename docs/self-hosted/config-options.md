@@ -227,23 +227,23 @@ prefixing the value with `{type}:`. The following types are available:
 
 ## General
 
-| Variable                   | Description                                                                                                | Default Value                |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`                       |
-| `HOST`                     | IP or host the API listens on.                                                                             | `0.0.0.0`                    |
-| `PORT`                     | What port to run the API under.                                                                            | `8055`                       |
-| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`                          |
-| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`                       |
-| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`                     |
-| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `1mb`                        |
-| `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`                       |
-| `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`                       |
-| `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                      | `Infinity`                   |
-| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`                         |
-| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                          | `100`                        |
-| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                          | `-1`                         |
-| `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                              | `User-agent: *\nDisallow: /` |
+| Variable                   | Description                                                                                                                 | Default Value                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
+| `HOST`                     | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
+| `PORT`                     | What port to run the API under.                                                                                             | `8055`                       |
+| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                                               | `/`                          |
+| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
+| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
+| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
+| `ROOT_REDIRECT`            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
+| `SERVE_APP`                | Whether or not to serve the Admin application                                                                               | `true`                       |
+| `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
+| `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
+| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
+| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                                           | `100`                        |
+| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
+| `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -619,7 +619,7 @@ Directus _won't_ rely on Cloudinary's asset transformations in the `/assets` end
 | `STORAGE_<LOCATION>_SERVICE_ROLE` | The admin service role JWT | --            |
 | `STORAGE_<LOCATION>_BUCKET`       | Storage bucket             | --            |
 | `STORAGE_<LOCATION>_PROJECT_ID`   | Project id                 | --            |
-| `STORAGE_<LOCATION>_ENDPOINT`     | Custom endpoint            | --            |
+| `STORAGE_<LOCATION>_ENDPOINT`     | Optional custom endpoint   | --            |
 
 ::: warning Endpoint
 
