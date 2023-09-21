@@ -175,7 +175,7 @@ gtag('config', 'UA-24637628-7');
 		},
 	},
 	sitemap: {
-		hostname: 'https://docs.directus.io'
+		hostname: 'https://docs.directus.io',
 	},
 	transformPageData(pageData) {
 		function setOGImage(asset) {
