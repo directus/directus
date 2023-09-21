@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
-import { Branch } from '@directus/types';
+import { Version } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -47,7 +47,7 @@ import RevisionsDrawer from './revisions-drawer.vue';
 interface Props {
 	collection: string;
 	primaryKey: string | number;
-	branch: Branch | null;
+	version: Version | null;
 }
 
 const props = defineProps<Props>();
@@ -56,12 +56,12 @@ defineEmits(['revert']);
 
 const { t } = useI18n();
 
-const { collection, primaryKey, branch } = toRefs(props);
+const { collection, primaryKey, version } = toRefs(props);
 
 const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
 	collection,
 	primaryKey,
-	branch
+	version
 );
 
 const modalActive = ref(false);

@@ -4,8 +4,8 @@ import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
 import env from '../env.js';
 import logger from '../logger.js';
-import { BranchesService } from '../services/branches.js';
 import { ExportService } from '../services/import-export.js';
+import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
@@ -51,15 +51,15 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	}
 
 	if (
-		req.sanitizedQuery.branch &&
+		req.sanitizedQuery.version &&
 		req.collection &&
 		(req.singleton || req.params['pk']) &&
 		'data' in res.locals['payload']
 	) {
-		const branchesService = new BranchesService({ accountability: req.accountability ?? null, schema: req.schema });
+		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
 
 		const filter: Filter = {
-			name: { _eq: req.sanitizedQuery.branch },
+			name: { _eq: req.sanitizedQuery.version },
 			collection: { _eq: req.collection },
 		};
 
@@ -67,12 +67,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			filter['item'] = { _eq: req.params['pk'] };
 		}
 
-		const branch = await branchesService.readByQuery({ filter });
+		const versions = await versionsService.readByQuery({ filter });
 
-		if (branch[0]) {
-			const commits = await branchesService.getBranchCommits(branch[0]['id']);
+		if (versions[0]) {
+			const saves = await versionsService.getVersionSaves(versions[0]['id']);
 
-			assign(res.locals['payload'].data, ...commits);
+			assign(res.locals['payload'].data, ...saves);
 		}
 	}
 

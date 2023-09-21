@@ -25,7 +25,7 @@ no limit to customization. Below are several code resources for key SCSS files.
 
 ## Project Styling
 
-See [Adjusting Project Settings](/user-guide/cloud/project-settings)
+See [Project Settings - Branding & Style](/user-guide/settings/project-settings#branding-style).
 
 ## Custom CSS
 

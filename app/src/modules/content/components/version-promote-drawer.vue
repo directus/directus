@@ -1,7 +1,7 @@
 <template>
 	<v-drawer
-		:title="t('merge_branch_drawer_title', { branch: currentBranch.name })"
-		class="branch-drawer"
+		:title="t('promote_version_drawer_title', { version: currentVersion.name })"
+		class="version-drawer"
 		persistent
 		:model-value="active"
 		@cancel="$emit('cancel')"
@@ -13,7 +13,7 @@
 					{{ t('outdated_notice') }}
 				</v-notice>
 				<v-notice v-else type="info" class="field full">
-					{{ t('merge_notice') }}
+					{{ t('promote_notice') }}
 				</v-notice>
 				<div v-for="field in comparedFields" :key="field.field" class="field full">
 					<div class="type-label">
@@ -25,9 +25,9 @@
 						@click="removeField(field.field)"
 					>
 						<v-icon name="looks_one" />
-						<branch-merge-field class="field-content" :value="comparedData?.main[field.field]" />
+						<version-promote-field class="field-content" :value="comparedData?.main[field.field]" />
 						<template v-if="!selectedFields.includes(field.field)">
-							<v-chip class="branch" x-small>{{ t('main_branch') }}</v-chip>
+							<v-chip class="version" x-small>{{ t('main_version') }}</v-chip>
 							<v-icon name="check" />
 						</template>
 					</div>
@@ -37,9 +37,9 @@
 						@click="addField(field.field)"
 					>
 						<v-icon name="looks_two" />
-						<branch-merge-field class="field-content" :value="comparedData?.current[field.field]" />
+						<version-promote-field class="field-content" :value="comparedData?.current[field.field]" />
 						<template v-if="selectedFields.includes(field.field)">
-							<v-chip class="branch" x-small>{{ currentBranch.name }}</v-chip>
+							<v-chip class="version" x-small>{{ currentVersion.name }}</v-chip>
 							<v-icon name="check" />
 						</template>
 					</div>
@@ -48,7 +48,7 @@
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('merge_branch')" :loading="merging" icon rounded @click="merge">
+			<v-button v-tooltip.bottom="t('promote_version')" :loading="promoting" icon rounded @click="promote">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -59,10 +59,10 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Branch, Field } from '@directus/types';
+import { Field, Version } from '@directus/types';
 import { ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import BranchMergeField from './branch-merge-field.vue';
+import VersionPromoteField from './version-promote-field.vue';
 
 type Comparison = {
 	outdated: boolean;
@@ -73,7 +73,7 @@ type Comparison = {
 
 interface Props {
 	active: boolean;
-	currentBranch: Branch;
+	currentVersion: Version;
 }
 
 const { t } = useI18n();
@@ -82,7 +82,7 @@ const fieldsStore = useFieldsStore();
 
 const props = defineProps<Props>();
 
-const { active, currentBranch } = toRefs(props);
+const { active, currentVersion } = toRefs(props);
 
 const isOutdated = ref<boolean>(false);
 
@@ -98,7 +98,7 @@ const loading = ref(false);
 
 const emit = defineEmits<{
 	cancel: [];
-	merge: [];
+	promote: [];
 }>();
 
 watch(
@@ -122,7 +122,7 @@ async function getComparison() {
 
 	try {
 		const result: Comparison = await api
-			.get(`/branches/${unref(currentBranch).id}/compare`)
+			.get(`/versions/${unref(currentVersion).id}/compare`)
 			.then((res) => res.data.data);
 
 		isOutdated.value = result.outdated;
@@ -130,7 +130,7 @@ async function getComparison() {
 		mainHash.value = result.mainHash;
 
 		comparedFields.value = Object.keys(result.main)
-			.map((fieldKey) => fieldsStore.getField(unref(currentBranch).collection, fieldKey))
+			.map((fieldKey) => fieldsStore.getField(unref(currentVersion).collection, fieldKey))
 			.filter((field): field is Field => !!field);
 
 		selectedFields.value = comparedFields.value.map((field) => field.field);
@@ -143,24 +143,24 @@ async function getComparison() {
 	}
 }
 
-const merging = ref(false);
+const promoting = ref(false);
 
-async function merge() {
-	merging.value = true;
+async function promote() {
+	promoting.value = true;
 
 	try {
 		await api.post(
-			`/branches/${unref(currentBranch).id}/merge`,
+			`/versions/${unref(currentVersion).id}/promote`,
 			unref(selectedFields).length > 0
 				? { mainHash: unref(mainHash), fields: unref(selectedFields) }
 				: { mainHash: unref(mainHash) }
 		);
 
-		emit('merge');
+		emit('promote');
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
-		merging.value = false;
+		promoting.value = false;
 	}
 }
 </script>
@@ -192,7 +192,7 @@ async function merge() {
 		flex-grow: 1;
 	}
 
-	.branch {
+	.version {
 		text-transform: uppercase;
 	}
 
@@ -202,7 +202,7 @@ async function merge() {
 			color: var(--secondary);
 			background-color: var(--secondary-alt);
 
-			.branch {
+			.version {
 				color: var(--secondary);
 				border-color: var(--secondary);
 				background-color: var(--secondary-25);
@@ -216,7 +216,7 @@ async function merge() {
 			color: var(--primary);
 			background-color: var(--primary-alt);
 
-			.branch {
+			.version {
 				color: var(--primary);
 				border-color: var(--primary);
 				background-color: var(--primary-25);

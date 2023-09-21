@@ -1,5 +1,4 @@
 export * from './accountability.js';
-export * from './branches.js';
 export * from './collection.js';
 export * from './displays.js';
 export * from './endpoints.js';
@@ -26,5 +25,6 @@ export * from './schema.js';
 export * from './settings.js';
 export * from './shares.js';
 export * from './users.js';
+export * from './versions.js';
 export * from './vue.js';
 export * from './secure-extensions/index.js'

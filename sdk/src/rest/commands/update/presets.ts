@@ -1,5 +1,6 @@
 import type { DirectusPreset } from '../../../schema/preset.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdatePresetOutput<
@@ -14,6 +15,7 @@ export type UpdatePresetOutput<
  * @param item
  * @param query
  * @returns Returns the preset objects for the updated presets.
+ * @throws Will throw if keys is empty
  */
 export const updatePresets =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
@@ -21,12 +23,16 @@ export const updatePresets =
 		item: Partial<DirectusPreset<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>[], Schema> =>
-	() => ({
-		path: `/presets`,
-		params: query ?? {},
-		body: JSON.stringify({ keys, data: item }),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(keys, 'Keys cannot be empty');
+
+		return {
+			path: `/presets`,
+			params: query ?? {},
+			body: JSON.stringify({ keys, data: item }),
+			method: 'PATCH',
+		};
+	};
 
 /**
  * Update an existing preset.
@@ -34,6 +40,7 @@ export const updatePresets =
  * @param item
  * @param query
  * @returns Returns the preset object for the updated preset.
+ * @throws Will throw if key is empty
  */
 export const updatePreset =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
@@ -41,9 +48,13 @@ export const updatePreset =
 		item: Partial<DirectusPreset<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/presets/${key}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/presets/${key}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};
