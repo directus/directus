@@ -24,8 +24,7 @@ program
 	.addOption(new Option('-t, --access-token <token>').makeOptionMandatory(true))
 	.addOption(new Option('-f, --file <file>', 'Write the output to a file'))
 	.addOption(new Option('-n, --naming <naming>', 'Select naming strategy')
-		.choices(['database', 'camelcase', 'pascalcase', 'snakecase'])
-		.default('database'))
+		.choices(['database', 'camelcase', 'pascalcase']).default('database'))
 	.action(generateSchema);
 
 program.parse(process.argv);
