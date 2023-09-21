@@ -7,8 +7,16 @@
 		@cancel="$emit('cancel')"
 		@esc="$emit('cancel')"
 	>
+		<template #sidebar>
+			<v-tabs v-model="currentTab" vertical>
+				<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
+					{{ tab.text }}
+				</v-tab>
+			</v-tabs>
+		</template>
+
 		<div class="content">
-			<div class="grid">
+			<div v-if="currentTab[0] === 'changes'" class="grid">
 				<v-notice v-if="isOutdated" type="warning" class="field full">
 					{{ t('outdated_notice') }}
 				</v-notice>
@@ -41,6 +49,14 @@
 					</div>
 				</div>
 			</div>
+			<div v-if="currentTab[0] === 'preview'">
+				<v-form
+					disabled
+					:collection="currentVersion.collection"
+					:primary-key="currentVersion.item"
+					:initial-values="previewData"
+				/>
+			</div>
 		</div>
 
 		<template #actions>
@@ -66,6 +82,7 @@ import { Field, Version } from '@directus/types';
 import { ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VersionPromoteField from './version-promote-field.vue';
+import { computed } from 'vue';
 
 type Comparison = {
 	outdated: boolean;
@@ -87,22 +104,51 @@ const props = defineProps<Props>();
 
 const { active, currentVersion } = toRefs(props);
 
-const isOutdated = ref<boolean>(false);
-
-const mainHash = ref<string>('');
-
-const comparedFields = ref<Field[]>([]);
-
 const selectedFields = ref<string[]>([]);
 
 const comparedData = ref<Comparison | null>(null);
 
 const loading = ref(false);
 
+const { tabs, currentTab } = useTab();
+
 const emit = defineEmits<{
 	cancel: [];
 	promote: [];
 }>();
+
+const isOutdated = computed(() => comparedData.value?.outdated ?? false);
+
+const mainHash = computed(() => comparedData.value?.mainHash ?? '');
+
+const comparedFields = computed<Field[]>(() => {
+	if (comparedData.value === null) return [];
+
+	return Object.keys(comparedData.value.current)
+		.map((fieldKey) => fieldsStore.getField(unref(currentVersion).collection, fieldKey))
+		.filter((field) => !!field && !isPrimaryKey(field)) as Field[];
+
+	function isPrimaryKey(field: Field) {
+		return (
+			field.schema?.is_primary_key === true &&
+			(field.schema?.has_auto_increment === true || field.meta?.special?.includes('uuid'))
+		);
+	}
+});
+
+const previewData = computed(() => {
+	if (!comparedData.value) return null;
+
+	const data: Record<string, any> = {};
+
+	for (const fieldKey of Object.keys(comparedData.value.main)) {
+		data[fieldKey] = selectedFields.value.includes(fieldKey)
+			? comparedData.value.current[fieldKey]
+			: comparedData.value.main[fieldKey];
+	}
+
+	return data;
+});
 
 watch(
 	active,
@@ -128,17 +174,11 @@ async function getComparison() {
 			.get(`/versions/${unref(currentVersion).id}/compare`)
 			.then((res) => res.data.data);
 
-		isOutdated.value = result.outdated;
-
-		mainHash.value = result.mainHash;
-
-		comparedFields.value = Object.keys(result.main)
-			.map((fieldKey) => fieldsStore.getField(unref(currentVersion).collection, fieldKey))
-			.filter((field): field is Field => !!field);
-
-		selectedFields.value = comparedFields.value.map((field) => field.field);
-
 		comparedData.value = result;
+
+		const comparedFieldsKeys = comparedFields.value.map((field) => field.field);
+
+		selectedFields.value = Object.keys(result.current).filter((fieldKey) => comparedFieldsKeys.includes(fieldKey));
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
@@ -165,6 +205,23 @@ async function promote() {
 	} finally {
 		promoting.value = false;
 	}
+}
+
+function useTab() {
+	const tabs = [
+		{
+			text: t('promote_version_changes'),
+			value: 'changes',
+		},
+		{
+			text: t('promote_version_preview'),
+			value: 'preview',
+		},
+	];
+
+	const currentTab = ref([tabs[0]!.value]);
+
+	return { tabs, currentTab };
 }
 </script>
 

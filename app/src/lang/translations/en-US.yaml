@@ -112,6 +112,8 @@ save_version: Save Version
 promote_version: Promote Version
 promote_version_disabled: No changes selected
 promote_version_drawer_title: Promote {version} into Main
+promote_version_changes: Changes
+promote_version_preview: Preview
 outdated_notice: >-
   The main item has been updated since this version was created. Please review all the field values below, and confirm
   which version should be used when promoting this version into the main item.
