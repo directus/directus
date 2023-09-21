@@ -80,7 +80,7 @@ exist, it is dynamically generated and immediately returned.
 
 ### Preset Transformations
 
-- **`key`** — This **key** of the [Storage Asset Preset](/user-guide/cloud/project-settings#files-thumbnails), a
+- **`key`** — This **key** of the [Storage Asset Preset](/user-guide/settings/project-settings#files-storage), a
   shortcut for the below parameters
 
 ### Custom Transformations
@@ -260,7 +260,13 @@ List all files that exist in Directus.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /files` `SEARCH /files`
+`GET /files`
+
+`SEARCH /files`
+
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 </template>
 <template #graphql>
@@ -277,28 +283,15 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, readFiles } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readFiles({
-		query: {
-			query_type: {
-				field: {
-					query_operator: 'value',
-				},
-			},
-		},
-	})
-);
+const result = await client.request(readFiles(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -314,7 +307,9 @@ be an empty array.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /files` `SEARCH /files`
+`GET /files`
+
+`SEARCH /files`
 
 </template>
 <template #graphql>
@@ -332,8 +327,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, readFiles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -379,12 +373,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, readFiles } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFile('file_id', query));
+const result = await client.request(readFile(file_id, query_object));
 ```
 
 </template>
@@ -423,8 +416,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, readFiles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -460,8 +452,7 @@ Not supported by GraphQL
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, uploadFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, uploadFiles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -496,6 +487,56 @@ Supports all [global query parameters](/reference/query).
 Returns the [file object](#the-file-object) for the uploaded file, or an array of [file objects](#the-file-object) if
 multiple files were uploaded at once.
 
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /files`
+
+```http
+
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+example
+--boundary
+Content-Disposition: form-data; name="file"; filename="example.txt"
+
+< ./example.txt
+
+--boundary
+```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, uploadFiles } from '@directus/sdk';
+import { readFileSync } from 'node:fs';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const title = 'example';
+const file = new Blob([readFileSync('example.txt')]);
+
+const formData = new FormData();
+formData.append('title', title);
+formData.append('file', file);
+
+const result = await client.request(uploadFiles(formData));
+```
+
+</template>
+</SnippetToggler>
+
 ## Import a File
 
 Import a file from the web
@@ -509,10 +550,8 @@ Import a file from the web
 
 ```json
 {
-	"url": "file_url",
-	"data": {
-		"file_field": "value_1"
-	}
+	"url": file_url,
+	"data": file_object
 }
 ```
 
@@ -531,16 +570,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, importFile } from '@directus/sdk/rest';
+import { createDirectus, rest, importFile } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	importFile('file_url', {
-		file_field: 'value',
-	})
-);
+const result = await client.request(importFile(file_url, file_object));
 ```
 
 </template>
@@ -595,8 +629,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, importFile } from '@directus/sdk/rest';
+import { createDirectus, rest, importFile } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -621,11 +654,7 @@ Update an existing file, and/or replace it's file contents.
 
 `PATCH /files/:id`
 
-```json
-{
-	"field": "value"
-}
-```
+Provide a partial [file object](#the-file-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -642,16 +671,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFile } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFile } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFile('file_id', {
-		file_field: 'value',
-	})
-);
+const result = await client.request(updateFile(file_id, partial_file_object));
 ```
 
 </template>
@@ -702,8 +726,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFile } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFile } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -730,10 +753,8 @@ Update multiple files at the same time.
 
 ```json
 {
-	"keys": ["file_id", "file_id_2"],
-	"data": {
-		"item_field": ["value"]
-	}
+	"keys": file_id_array ,
+	"data": partial_file_object
 }
 ```
 
@@ -752,16 +773,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFiles } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateFiles(['file_id', 'file_id_2'], {
-		item_field: ['value'],
-	})
-);
+const result = await client.request(updateFiles(file_id_array, partial_file_object));
 ```
 
 </template>
@@ -817,8 +833,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFiles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -864,12 +879,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFile } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFile } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFile('file_id'));
+const result = await client.request(deleteFile(file_id));
 ```
 
 </template>
@@ -907,8 +921,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFile } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFile } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -935,9 +948,7 @@ This will also delete the files from disk.
 
 `DELETE /files`
 
-```json
-["file_id", "file_id"]
-```
+Provide an array of file IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -954,24 +965,15 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFiles } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFiles(['file_id_1', 'file_id_2']));
+const result = await client.request(deleteFiles(file_id_array));
 
 //or
 
-const result = await client.request(
-	deleteFiles({
-		query_type: {
-			field: {
-				query_operator: 'value',
-			},
-		},
-	})
-);
+const result = await client.request(deleteFiles(query_object));
 ```
 
 </template>
@@ -1017,8 +1019,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFiles } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFiles } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

@@ -470,7 +470,6 @@ comments: تعليقات
 no_comments: لا توجد تعليقات بعد
 select_item: تحديد عنصر
 no_items: لا يوجد عناصر
-search_items: البحث عن عناصر...
 disabled: مُعطل
 information: معلومات
 report_bug: تبليغ عن خطأ
@@ -1633,6 +1632,9 @@ operations:
     key: المعرفات
     payload: حمولة
     query: الاستعلام
+  json-web-token:
+    token: الرمز المميز
+    options: خيارات
   log:
     message: الرسالة
   mail:

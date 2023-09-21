@@ -35,6 +35,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar campo
 conditions: Condiciones
 location: Ubicación
+collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Reglas condicionales
 input: Entrada
 maps: Mapas
@@ -479,7 +480,6 @@ comments: Comentarios
 no_comments: Aún Sin Comentarios
 select_item: Seleccionar elemento
 no_items: Sin elementos
-search_items: Buscar elementos...
 disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
@@ -2085,6 +2085,10 @@ operations:
     key: IDs
     payload: Payload
     query: Consulta
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opciones
   log:
     name: Registrar en la consola
     description: Envía algo a la consola

@@ -12,8 +12,7 @@ readTime: 8 min read
 
 ::: tip Directus
 
-Directus ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is Latin for: _laid straight, arranged in
-lines_.\
+Directus (_duh REKT iss_) is Latin for: _laid straight, arranged in lines_.\
 The broadest goal of our platform is to present data in a simple, orderly, and intuitive way.
 
 :::

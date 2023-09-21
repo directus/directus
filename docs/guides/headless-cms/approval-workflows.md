@@ -1,27 +1,12 @@
 ---
-description:
-tags: []
-skill_level:
+description: Workflows are the use of custom access permissions to add structured stages to the flow of content creation or data generation. Workflows enable you to do things like pass off work in progress between multiple roles, build decision trees, _and beyond!_
 directus_version: 9.18.1
-author_override:
 author: Eron Powell
 ---
 
 # Building Content Approval Workflows
 
-> Workflows are the use of custom access permissions to add structured stages to the flow of content creation or data
-> generation. Workflows enable you to do things like pass off work in progress between multiple roles, build decision
-> trees, _and beyond!_
-
-::: tip Author: {{$frontmatter.author}}
-
-<!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-<!-- **Tags:** {{$frontmatter.tags.join(", ")}} -->
-
-:::
+<GuideMeta />
 
 ## Explanation
 

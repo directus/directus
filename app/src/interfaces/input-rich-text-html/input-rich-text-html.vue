@@ -4,7 +4,7 @@
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"
-			:disabled="disabled"
+			:disabled="editorDisabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
@@ -96,6 +96,10 @@
 								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
 							</div>
 						</template>
+						<div class="field half">
+							<div class="type-label">{{ t('wysiwyg_options.lazy_loading') }}</div>
+							<v-checkbox v-model="imageSelection.lazy" block :label="t('wysiwyg_options.lazy_loading_label')" />
+						</div>
 						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
 							<div class="type-label">{{ t('transformation_preset_key') }}</div>
 							<v-select
@@ -305,6 +309,14 @@ const internalValue = computed({
 	},
 });
 
+const editorInitialized = ref(false);
+
+const editorDisabled = computed(() => {
+	if (!editorInitialized.value) return false;
+
+	return props.disabled;
+});
+
 watch(
 	() => [props.direction, editorRef],
 	() => {
@@ -429,6 +441,8 @@ function setup(editor: any) {
 		});
 
 		setCount();
+
+		editorInitialized.value = true;
 	});
 
 	editor.on('OpenWindow', function (e: any) {

@@ -41,10 +41,9 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readOpenApiSpec } from '@directus/sdk/rest';
+import { createDirectus, rest, readOpenApiSpec } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readOpenApiSpec());
 ```
@@ -76,8 +75,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readOpenApiSpec } from '@directus/sdk/rest';
+import { createDirectus, rest, readOpenApiSpec } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -121,12 +119,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readGraphqlSdl } from '@directus/sdk/rest';
+import { createDirectus, rest, readGraphqlSdl } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readGraphqlSdl('scope'));
+const result = await client.request(readGraphqlSdl(scope));
 ```
 
 </template>
@@ -182,8 +179,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readGraphqlSdl } from '@directus/sdk/rest';
+import { createDirectus, rest, readGraphqlSdl } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -219,10 +215,9 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, serverPing } from '@directus/sdk/rest';
+import { createDirectus, rest, serverPing } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(serverPing());
 ```
@@ -256,8 +251,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, serverPing } from '@directus/sdk/rest';
+import { createDirectus, rest, serverPing } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -299,10 +293,9 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, serverInfo } from '@directus/sdk/rest';
+import { createDirectus, rest, serverInfo } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(serverInfo());
 ```
@@ -361,8 +354,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, serverInfo } from '@directus/sdk/rest';
+import { createDirectus, rest, serverInfo } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -466,10 +458,9 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, serverHealth } from '@directus/sdk/rest';
+import { createDirectus, rest, serverHealth } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(serverHealth());
 ```
@@ -515,8 +506,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, serverHealth } from '@directus/sdk/rest';
+import { createDirectus, rest, serverHealth } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

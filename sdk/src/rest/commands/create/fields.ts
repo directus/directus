@@ -12,7 +12,7 @@ export type CreateFieldOutput<
  * Create a new field in the given collection.
  *
  * @param collection The collection to create a field for
- * @param item The user to create
+ * @param item The field to create
  * @param query Optional return data query
  *
  * @returns The field object for the created field.

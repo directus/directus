@@ -74,6 +74,10 @@ other than the current user's role won't be returned.
 
 `SEARCH /permissions`
 
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
 </template>
 <template #graphql>
 
@@ -89,22 +93,15 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, readPermissions } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPermissions({
-		fields: ['*'],
-	})
-);
+const result = await client.request(readPermissions(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -143,8 +140,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, readPermissions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -184,16 +180,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPermission } from '@directus/sdk/rest';
+import { createDirectus, rest, readPermission } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readPermission('41', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readPermission(permission_id, query_object));
 ```
 
 </template>
@@ -233,8 +224,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readPermission } from '@directus/sdk/rest';
+import { createDirectus, rest, readPermission } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -259,14 +249,7 @@ Create a new permission rule
 
 `POST /permissions`
 
-```json
-{
-	"permission_field_1": "value_1",
-	"permission_field_2": "value_2",
-	"permission_field_3": "value_3",
-	"permission_field_4": ["value_4", "value_5"]
-}
-```
+Provide a [permission object](#the-permission-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -283,18 +266,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPermission } from '@directus/sdk/rest';
+import { createDirectus, rest, createPermission } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPermission({
-		role: 'role_id',
-		collection: 'collection_name',
-		action: 'action_name',
-	})
-);
+const result = await client.request(createPermission(permission_object));
 ```
 
 </template>
@@ -349,8 +325,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPermission } from '@directus/sdk/rest';
+import { createDirectus, rest, createPermission } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -378,22 +353,7 @@ Create multiple new permission rules
 
 `POST /permissions`
 
-```json
-[
-	{
-		"permission_object_1_field_1": "value_1",
-		"permission_object_1_field_2": "value_2",
-		"permission_object_1_field_3": "value_3",
-		"permission_object_1_field_4": ["value_4", "value_5"]
-	},
-	{
-		"permission_object_2_field_1": "value_6",
-		"permission_object_2_field_2": "value_7",
-		"permission_object_2_field_3": "value_8",
-		"permission_object_2_field_4": ["value_9", "value_10"]
-	}
-]
-```
+Provide an array of [permission objects](#the-permission-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -410,25 +370,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, createPermissions } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createPermissions([
-		{
-			role: 'role_id',
-			collection: 'collection_name',
-			action: 'action_name',
-		},
-		{
-			role: 'role_id',
-			collection: 'collection_name',
-			action: 'action_name',
-		},
-	])
-);
+const result = await client.request(createPermissions(permission_object_array));
 ```
 
 </template>
@@ -494,8 +440,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createPermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, createPermissions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -531,11 +476,7 @@ Update an existing permissions rule.
 
 `PATCH /permissions/:id`
 
-```json
-{
-	"permissions_object_fields": ["value_1", "value_2", "value_3"]
-}
-```
+Provide a partial [permissions object](#the-permissions-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -552,16 +493,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePermission } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePermission } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePermission('permission_id', {
-		permission_field: ['value_1', 'value_2'],
-	})
-);
+const result = await client.request(updatePermission(permission_id, partial_permission_object));
 ```
 
 </template>
@@ -609,8 +545,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePermission } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePermission } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -637,10 +572,8 @@ Update multiple existing permissions rules.
 
 ```json
 {
-	"keys": ["permission_1_key", "permission_2_key"],
-	"data": {
-		"permissions_object_fields": ["value_1", "value_2", "value_3"]
-	}
+	"keys": permission_id_array,
+	"data": partial_permission_object
 }
 ```
 
@@ -659,16 +592,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePermissions } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updatePermissions(['permission_1_id', 'permission_2_id'], {
-		permission_field: ['value_1', 'value_2'],
-	})
-);
+const result = await client.request(updatePermissions(permission_id_array, permission_object_panel));
 ```
 
 </template>
@@ -723,8 +651,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updatePermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, updatePermissions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -764,12 +691,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePermission } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePermission } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePermission('permission_1_id'));
+const result = await client.request(deletePermission(permission_id));
 ```
 
 </template>
@@ -803,8 +729,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePermission } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePermission } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -825,9 +750,7 @@ Delete multiple existing permissions rules
 
 `DELETE /permissions`
 
-```json
-["key_1", "key_2", "key_3"]
-```
+Provide an array of permissions IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -844,12 +767,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePermissions } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deletePermissions(['permission_1_id', 'permission_2_id']));
+const result = await client.request(deletePermissions(permission_id_array));
 ```
 
 </template>
@@ -889,8 +811,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deletePermissions } from '@directus/sdk/rest';
+import { createDirectus, rest, deletePermissions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

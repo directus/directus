@@ -97,12 +97,12 @@ const simple = ref(props.type === null);
 
 const title = computed(() => {
 	const existingField = fieldsStore.getField(props.collection, props.field);
-	const fieldName = existingField?.name || formatTitle(fieldDetail.field.name || '');
+	const fieldName = formatTitle(existingField?.field || fieldDetail.field.field || '');
 
 	if (props.field === '+' && fieldName === '') {
-		return t('creating_new_field', { collection: collectionInfo.value?.name });
+		return t('creating_new_field', { collection: collectionInfo.value?.collection });
 	} else {
-		return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
+		return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.collection });
 	}
 });
 

@@ -1,19 +1,28 @@
 /**
- * Make logo size of the sidebar
- * -------------------------------------------------------------------------- */
-@media only screen and (min-width: 370px) {
+- * Make logo size of the sidebar
++ * Switch to mobile navbar earlier to prevent overlapping page
+  * -------------------------------------------------------------------------- */
+@media only screen and (min-width: 390px) {
 	.VPNav .VPNavBar .VPNavBarTitle .logo {
 		height: unset;
 	}
 }
 
 /**
- * Workaround for navbar getting collapsed too late and overlapping page
+ * Switch to mobile navbar earlier to prevent overlapping page
  * -------------------------------------------------------------------------- */
-@media only screen and (min-width: 768px) and (max-width: 940px) {
-	.VPNav .VPNavBar .container {
-		overflow-x: auto;
-		overflow-y: hidden;
+@media (max-width: 959px) {
+	.VPNav .VPNavBar .VPNavBarMenu,
+	.VPNav .VPNavBar .VPNavBarExtra {
+		display: none;
+	}
+
+	.VPNav .VPNavBar .VPNavBarHamburger {
+		display: flex;
+	}
+
+	.VPNav .VPNavScreen {
+		display: unset;
 	}
 }
 
@@ -47,35 +56,53 @@
 }
 
 /**
- * Spacing in notices
+ * Fix spacing of lists in custom blocks
  * -------------------------------------------------------------------------- */
 .vp-doc .custom-block li + li {
 	margin: 0;
 }
 
+/**
+ * Same font weight for links inside custom blocks as outside
+ * -------------------------------------------------------------------------- */
 .vp-doc .custom-block a {
 	font-weight: 500;
-	text-decoration: underline;
 }
 
 /**
- * Homepage container
+ * Remove padding on bottom of homepage
  * -------------------------------------------------------------------------- */
 .VPHome {
 	padding-bottom: 0 !important;
 }
 
 /**
- * Prevent flash effect in navbar on home page when scrolling down
- * -------------------------------------------------------------------------- */
-.isHome .VPNavBar {
-	background-color: var(--vp-nav-bg-color);
-}
-
-/**
- * Add spacing between h3 and snippet toggler for api ref pages
+ * Add spacing between h3 and snippet toggler for "API Reference" pages
  * -------------------------------------------------------------------------- */
 .vp-doc h3 + .snippet-toggler {
 	margin-top: 1em;
 	margin-bottom: 1em;
+}
+
+/**
+* Reduce spacing at bottom of sidebar section
+* -------------------------------------------------------------------------- */
+.VPSidebarItem.level-0 {
+	padding-bottom: 10px !important;
+}
+
+/**
+* Light theme for tabs component
+* -------------------------------------------------------------------------- */
+:root {
+	--vp-plugin-tabs-tab-bg: transparent;
+}
+.plugin-tabs {
+	border: 1px solid var(--vp-plugin-tabs-tab-divider);
+}
+.plugin-tabs--tab-list::after {
+	height: 1px;
+}
+.plugin-tabs--tab {
+	border-width: 1px;
 }

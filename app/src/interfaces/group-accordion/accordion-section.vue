@@ -1,5 +1,5 @@
 <template>
-	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
+	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
 			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
 				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>

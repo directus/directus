@@ -2,26 +2,13 @@
 description:
   This recipe explains how to trigger a new build of your static website (hosted at Vercel) whenever a new article is
   published.
-tags: []
-skill_level:
 directus_version: 9.21.2
-author_override:
 author: Bryant Gillespie
 ---
 
 # Triggering Static Site Builds with Vercel
 
-> {{ $frontmatter.description }}
-
-::: tip Author: {{$frontmatter.author}}
-
-<!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-<!-- **Tags:** {{$frontmatter.tags.join(", ")}} -->
-
-:::
+<GuideMeta />
 
 ## Explanation
 
@@ -34,10 +21,6 @@ requested.
 
 This recipe will show you how to trigger a new deployment or build for your site when new content is published or when
 existing content changes.
-
-<!-- ## Video -->
-<!-- Todo -->
-<!-- Need access to upload videos first -->
 
 ## How-To Guide
 

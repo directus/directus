@@ -36,10 +36,9 @@ GET /schema/snapshot?export=yaml
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, schemaSnapshot } from '@directus/sdk/rest';
+import { createDirectus, rest, schemaSnapshot } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(schemaSnapshot());
 ```
@@ -78,8 +77,7 @@ GET /schema/snapshot?export=yaml
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, schemaSnapshot } from '@directus/sdk/rest';
+import { createDirectus, rest, schemaSnapshot } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -170,8 +168,7 @@ relations: []
 ::: details **Toggle Open to See Request**
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, schemaDiff } from '@directus/sdk/rest';
+import { createDirectus, rest, schemaDiff } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -547,8 +544,7 @@ relations: []
 ::: details **Toggle Open to See Example Request**
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, schemaDiff } from '@directus/sdk/rest';
+import { createDirectus, rest, schemaDiff } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -882,8 +878,7 @@ POST /schema/apply
 ::: details **Toggle Open to See Example Request**
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, schemaApply } from '@directus/sdk/rest';
+import { createDirectus, rest, schemaApply } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

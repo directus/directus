@@ -79,6 +79,10 @@ create_user: Loo Kasutaja
 message: Sõnum
 delete_panel: Kustutamise Paneel
 create_webhook: Loo Veebikonks
+create_custom_translation: Loo Uus Tõlge
+edit_custom_translation: Muuda Tõlget
+no_custom_translations: Tõlked Puuduvad
+no_custom_translations_copy: Hetkel puuduvad tõlked.
 invite_users: Kutsu Kasutajaid
 invite: Kutsu
 email_already_invited: Meilile "{email}" on kutse juba saadetud
@@ -115,6 +119,7 @@ archive_confirm_count: >-
   Kirjeid pole valitud | Oled kindel, et soovid arhiveerida selle kirje? | Oled kindel, et soovid arhiveerida {count} kirjet?
 reset_system_permissions_to: 'Lähtesta Süsteemi Load:'
 reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
+the_following_are_minimum_permissions: Järgmised minimaalsed kasutajaõigused rakenduvad automaatselt, kui "Äpi Juurdepääs" on sisse lülitatud. Vajadusel saate anda täiendavaid õigusi, kuid siinsed õigused on minimaalselt rakenduvad õigused.
 app_access_minimum: Rakenduse Ligipääsu Miinimum
 recommended_defaults: Soovituslikud Vaikeväärtused
 unarchive: Eemalda arhiivist
@@ -139,6 +144,14 @@ validationError:
   required: Väärtus on nõutud
   unique: Väärtus peab olema unikaalne
   regex: Väärtuse vorming on vigane
+  starts_with: Väärtuse alguses peab olema {substring}
+  istarts_with: Väärtuse alguses peab olema {substring}
+  nstarts_with: Väärtuse alguses ei tohi olla {substring}
+  nistarts_with: Väärtuse alguses ei tohi olla {substring}
+  ends_with: Väärtuse lõpus peab olema {substring}
+  iends_with: Väärtuse lõpus peab olema {substring}
+  nends_with: Väärtuse lõpus ei tohi olla {substring}
+  niends_with: Väärtuse lõpus ei tohi olla {substring}
 all_access: Ligipääs Kõigele
 no_access: Ei Ole Ligipääsu
 use_custom: Kasuta Kohandatud
@@ -424,7 +437,6 @@ comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
 select_item: Vali kirje
 no_items: Kirjeid pole
-search_items: Otsi kirjeid...
 disabled: keelatud
 information: Teave
 report_bug: Teata veast
@@ -1406,6 +1418,9 @@ panels:
   label:
     name: Silt
 operations:
+  json-web-token:
+    token: Kontrollkood
+    options: Valikud
   log:
     message: Sõnum
   mail:
