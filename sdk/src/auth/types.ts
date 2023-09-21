@@ -17,7 +17,7 @@ export interface AuthenticationStorage {
 export interface AuthenticationConfig {
 	autoRefresh: boolean;
 	msRefreshBeforeExpires: number;
-	credentials: RequestCredentials;
+	credentials?: RequestCredentials;
 	storage?: AuthenticationStorage;
 }
 

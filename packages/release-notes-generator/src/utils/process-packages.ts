@@ -1,4 +1,5 @@
-import { findWorkspacePackagesNoCheck } from '@pnpm/find-workspace-packages';
+import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/find-workspace-packages';
+import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import semver from 'semver';
@@ -14,6 +15,7 @@ export async function processPackages(): Promise<{
 }> {
 	const workspacePackages = await findWorkspacePackagesNoCheck(process.cwd());
 	const packageVersions = new Map<string, string>();
+	let dependentsMap: Record<string, string[]> | undefined;
 
 	for (const localPackage of workspacePackages) {
 		const { name, version } = localPackage.manifest;
@@ -48,32 +50,12 @@ export async function processPackages(): Promise<{
 	const { mainVersion, manualMainVersion, isPrerelease, prereleaseId } = getVersionInfo();
 
 	if (manualMainVersion) {
-		const workspacePackage = workspacePackages.find((p) => p.manifest.name === config.mainPackage);
-
-		if (workspacePackage) {
-			workspacePackage.manifest.version = mainVersion;
-			await workspacePackage.writeProjectManifest(workspacePackage.manifest);
-			packageVersions.set(config.mainPackage, mainVersion);
-		}
+		await bumpPackage(config.mainPackage, mainVersion, true);
 	}
 
 	for (const [trigger, target] of config.linkedPackages) {
 		if (packageVersions.has(trigger) && !packageVersions.has(target)) {
-			const workspacePackage = workspacePackages.find((p) => p.manifest.name === target);
-
-			if (workspacePackage && workspacePackage.manifest.version) {
-				const bumpedVersion = semver.inc(
-					workspacePackage.manifest.version,
-					isPrerelease ? 'prerelease' : 'patch',
-					prereleaseId
-				);
-
-				if (bumpedVersion) {
-					workspacePackage.manifest.version = bumpedVersion;
-					await workspacePackage.writeProjectManifest(workspacePackage.manifest);
-					packageVersions.set(target, bumpedVersion);
-				}
-			}
+			await bumpPackage(target, null, true);
 		}
 	}
 
@@ -123,5 +105,92 @@ export async function processPackages(): Promise<{
 		}
 
 		return { mainVersion: mainVersion.version, manualMainVersion, isPrerelease, prereleaseId };
+	}
+
+	async function bumpPackage(packageName: string, version?: string | null, bumpDependents?: boolean) {
+		const workspacePackage = workspacePackages.find((p) => p.manifest.name === packageName);
+
+		if (!workspacePackage) return;
+
+		let newVersion: string | null = null;
+
+		if (version) {
+			newVersion = version;
+		} else if (workspacePackage.manifest.version) {
+			newVersion = semver.inc(workspacePackage.manifest.version, isPrerelease ? 'prerelease' : 'patch', prereleaseId);
+		}
+
+		if (!newVersion) return;
+
+		workspacePackage.manifest.version = newVersion;
+		await workspacePackage.writeProjectManifest(workspacePackage.manifest);
+		packageVersions.set(packageName, newVersion);
+
+		if (bumpDependents) {
+			const dependents = findDependents(packageName);
+
+			for (const dependent of dependents) {
+				if (!packageVersions.has(dependent)) await bumpPackage(dependent);
+			}
+		}
+	}
+
+	function getDependentsMap() {
+		if (!dependentsMap) {
+			const { graph } = createPkgGraph(workspacePackages);
+			dependentsMap = transformGraph(graph);
+		}
+
+		return dependentsMap;
+	}
+
+	function findDependents(
+		packageName: string,
+		dependentsMap = getDependentsMap(),
+		dependents: string[] = [],
+		visited = new Set<string>()
+	) {
+		if (visited.has(packageName)) return dependents;
+		visited.add(packageName);
+
+		const packageDependents = dependentsMap[packageName];
+
+		if (!packageDependents || packageDependents.length === 0) return dependents;
+
+		for (const dependent of packageDependents) {
+			if (visited.has(dependent)) continue;
+
+			dependents.push(dependent);
+
+			findDependents(dependent, dependentsMap, dependents, visited);
+		}
+
+		return dependents;
+	}
+
+	function transformGraph(graph: Record<string, PackageNode<Project>>) {
+		const dependentsMap: Record<string, string[]> = {};
+
+		for (const dependentNodeId of Object.keys(graph)) {
+			const dependentPackage = graph[dependentNodeId];
+			const dependentPackageName = dependentPackage?.package.manifest.name;
+
+			if (!dependentPackageName) continue;
+
+			for (const dependencyNodeId of dependentPackage.dependencies) {
+				const dependencyPackage = workspacePackages.find((p) => p.dir === dependencyNodeId);
+				const dependencyPackageName = dependencyPackage?.manifest.name;
+
+				if (!dependencyPackageName) continue;
+
+				if (!dependentsMap[dependencyPackageName]) {
+					dependentsMap[dependencyPackageName] = [dependentPackageName];
+				} else {
+					dependentsMap[dependencyPackageName]?.push(dependentPackageName);
+				}
+			}
+		}
+
+		return dependentsMap;
 	}
 }

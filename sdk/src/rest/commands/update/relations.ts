@@ -1,5 +1,6 @@
 import type { DirectusRelation } from '../../../schema/relation.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateRelationOutput<
@@ -23,9 +24,14 @@ export const updateRelation =
 		item: NestedPartial<DirectusRelation<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateRelationOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/relations/${collection}/${field}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(collection, 'Collection cannot be empty');
+		throwIfEmpty(field, 'Field cannot be empty');
+
+		return {
+			path: `/relations/${collection}/${field}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};
