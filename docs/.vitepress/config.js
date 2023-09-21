@@ -546,7 +546,7 @@ function sidebar() {
 					text: 'Installing Extensions',
 				},
 				{
-					text: 'Extension Types',
+					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
 						{

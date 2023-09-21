@@ -5,7 +5,7 @@ description: Discover how to install extensions into your Directus project.
 
 # Installing Extensions
 
-There are 3 possible ways to install extensions to your Directus instance:
+There are three possible ways to install extensions to your Directus instance:
 
 1. Installing through NPM
 2. Installing through the Extensions Folder

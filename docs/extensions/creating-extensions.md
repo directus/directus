@@ -6,7 +6,7 @@ contributors: Rijk Van Zanten, Esther Agbaje
 
 # Creating Extensions
 
-The easiest way to start developing extensions is to use the `create-directus-extension` utility:
+The easiest way to create an extensions is to use the `create-directus-extension` utility:
 
 ```bash
 npx create-directus-extension@latest
@@ -108,7 +108,7 @@ Displays, Modules, Layouts, and Panels.
 
 ## Developing your Extension
 
-To learn more about building extensions of a specific type, refer to one of the individual guides:
+To learn more about how to build extensions of a specific type, refer to the individual guides:
 
 ### App Extensions
 
