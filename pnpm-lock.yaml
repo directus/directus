@@ -1107,8 +1107,8 @@ importers:
         specifier: ^13.1.4
         version: 13.1.5
       tsup:
-        specifier: 6.7.0
-        version: 6.7.0(typescript@5.0.4)
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1156,8 +1156,8 @@ importers:
         specifier: ^13.1.4
         version: 13.1.5
       tsup:
-        specifier: 6.7.0
-        version: 6.7.0(typescript@5.0.4)
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1199,8 +1199,8 @@ importers:
         specifier: ^13.1.4
         version: 13.1.5
       tsup:
-        specifier: 6.7.0
-        version: 6.7.0(typescript@5.0.4)
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
