@@ -1,18 +1,27 @@
 import type { NameTransformer } from "./types.js";
 
+function splitWords(str: string): string[] {
+	return str
+		.replace(/[-_]/g, ' ')
+		.split(/(\s+|[A-Z][a-z0-9]+)/g)
+		.filter(str => str.trim().length > 0)
+		.map(str => str.toLocaleLowerCase());
+}
+
+function upperFirst(str: string): string {
+	return str[0]?.toUpperCase() + str.slice(1);
+}
 
 export function camelcase(str: string): string {
-	return str.replace(
-		/(?:^\w|[A-Z]|\b\w)/g,
-		(word, index) => index === 0 ? word.toLowerCase() : word.toUpperCase()
-	).replace(/\s+/g, '');
+	return splitWords(str)
+		.map((word, index) => !index ? word : upperFirst(word))
+		.join('');
 }
 
 export function pascalcase(str: string): string {
-	return str.replace(
-		/(\w)(\w*)/g,
-		(_, g1, g2) => g1.toUpperCase() + g2.toLowerCase()
-	);
+	return splitWords(str)
+		.map((word) => upperFirst(word))
+		.join('');
 }
 
 export function notransform(str: string): string {
@@ -24,3 +33,11 @@ export const NamingFunctions: Record<string, NameTransformer> = {
 	camelcase,
 	pascalcase,
 };
+
+export function getNamingFn(name: string) {
+	if (name in NamingFunctions) {
+		return NamingFunctions[name]!;
+	}
+
+	return notransform;
+}
