@@ -385,6 +385,7 @@ SVGs?
 TablePlus
 tfa
 TFA
+Theming
 TileJSON
 (T|t)imeseries
 TinyMCE
@@ -415,6 +416,7 @@ UUIDv4
 UX
 v[0-9]{1,2}
 varchar
+validator
 vCPU
 Vercel
 viewability

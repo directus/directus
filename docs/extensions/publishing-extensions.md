@@ -32,7 +32,7 @@ npm publish
 ## Publishing to the Marketplace
 
 Before you publish your extension to the Marketplace, you may want to add an icon to your extension. Add the key “icon”
-to your `package.json` with a url to a png/jpeg/webm file.
+to your `package.json` with a url to a PNG/JPEG file.
 
 ```json
 {

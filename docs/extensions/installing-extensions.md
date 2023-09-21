@@ -14,7 +14,7 @@ There are three possible ways to install extensions to your Directus instance:
 ## Installing through NPM
 
 Package extensions are essentially npm packages that can be installed from the npm registry. Before you begin, ensure
-you have a [selfhosted instance of Directus](/self-hosted/quickstart) via Docker installed on your system.
+you have a [self-hosted instance of Directus](/self-hosted/quickstart) via Docker installed on your system.
 
 **1. Modify docker-compose.yml**
 
@@ -86,7 +86,7 @@ The path to the built extension as well as the extensions directory are configur
 
 :::
 
-Before you begin, ensure you have a [selfhosted instance of Directus](/self-hosted/quickstart) via Docker installed on
+Before you begin, ensure you have a [self-hosted instance of Directus](/self-hosted/quickstart) via Docker installed on
 your system.
 
 **1. Create an Extension Folder**
