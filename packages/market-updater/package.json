@@ -21,7 +21,6 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsx ./src/index.ts",
 		"test": "vitest --watch=false"
 	},

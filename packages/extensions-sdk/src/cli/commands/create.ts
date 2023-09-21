@@ -30,7 +30,7 @@ import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 type CreateOptions = { language?: string, secure?: boolean };
 
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
-	const targetDir = name.substring(name.lastIndexOf('/') + 1);
+	const targetDir = 'directus-extension-' + name.substring(name.lastIndexOf('/') + 1);
 	const targetPath = path.resolve(targetDir);
 
 	if (!isIn(type, EXTENSION_TYPES)) {
