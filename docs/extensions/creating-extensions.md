@@ -106,15 +106,15 @@ To learn more about developing extensions of a specific type, you can refer to o
 #### App Extensions
 
 - [Interfaces](/extensions/interfaces)
-- [Displays](/extensions/displays)
 - [Layouts](/extensions/layouts)
-- [Modules](/extensions/modules)
+- [Displays](/extensions/displays)
 - [Panels](/extensions/panels)
+- [Modules](/extensions/modules)
 
 #### API Extensions
 
-- [Hooks](/extensions/hooks)
 - [Endpoints](/extensions/endpoints)
+- [Hooks](/extensions/hooks)
 
 #### Hybrid Extensions
 
@@ -136,13 +136,6 @@ use to enrich your extensions. These components can be used in any of the "app e
 Displays, Modules, Layouts, and Panels.
 
 :::
-
-## Publishing your Extension
-
-To make an extension available to all Directus users, you can publish the npm package created by
-`@directus/extensions-sdk` to the npm registry. Make sure the name of the package follows the naming convention for
-package extensions: `directus-extension-<extension-name>` or `@<scope>/directus-extension-<extension-name>`.
-`<extension-name>` has to be replaced with the name of your extension.
 
 ## Installing an Extension
 
