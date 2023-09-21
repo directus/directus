@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Made search value in data model page case-insensitive
+Made search in data model page case-insensitive
