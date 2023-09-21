@@ -3,7 +3,7 @@ import type { DirectusError } from '@directus/errors';
 import { isDirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
-import argon2 from 'argon2-wasm';
+import argon2 from 'argon2';
 import type {
 	ArgumentNode,
 	ExecutionResult,

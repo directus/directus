@@ -6,11 +6,9 @@ import 'xterm/css/xterm.css';
 
 document.querySelector('#app')!.innerHTML = `
   <div class="container">
-    <div class="preview">
-      <iframe src="loading.html"></iframe>
-    </div>
+  	<iframe src="http://localhost:8055/"></iframe>
+	<div class="terminal"></div>
   </div>
-  <div class="terminal"></div>
 `
 
 const iframeEl = document.querySelector('iframe');
@@ -21,14 +19,14 @@ let webcontainerInstance;
 window.addEventListener('load', async () => {
 
 	files['data.db']['file']['contents'] = bufferToUint8Array(files['data.db']['file']['contents'].data)
-	files['api']['directory']['data.db']['file']['contents'] = bufferToUint8Array(files['api']['directory']['data.db']['file']['contents'].data)
+	// files['api']['directory']['data.db']['file']['contents'] = bufferToUint8Array(files['api']['directory']['data.db']['file']['contents'].data)
 
 
 	const terminal = new Terminal({
 		convertEol: true,
 	});
 
-	terminal.resize(200, 30);
+	terminal.resize(200, 55);
 
 	terminal.open(terminalEl!);
 

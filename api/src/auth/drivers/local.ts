@@ -1,5 +1,5 @@
 import type { Accountability } from '@directus/types';
-import argon2 from 'argon2-wasm';
+import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
@@ -34,6 +34,8 @@ export class LocalAuthDriver extends AuthDriver {
 	}
 
 	async verify(user: User, password?: string): Promise<void> {
+		console.log(argon2, argon2.default)
+
 		if (!user.password || !(await argon2.verify(user.password, password as string))) {
 			throw new InvalidCredentialsError();
 		}

@@ -1,4 +1,4 @@
-import argon2 from 'argon2-wasm';
+import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';

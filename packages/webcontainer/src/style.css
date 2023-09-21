@@ -4,25 +4,31 @@
 
 body {
 	margin: 0;
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+}
+
+#app {
+	height: 100%;
+	width: 100%;
 }
 
 .container {
-	margin-bottom: 30px;
-	width: 100%;
-}
-
-textarea {
 	width: 100%;
 	height: 100%;
-	resize: none;
-	border-radius: 0.5rem;
-	background: black;
-	color: white;
-	padding: 0.5rem 1rem;
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	overflow: hidden;
 }
 
 iframe {
-	height: 40vh;
+	height: 100%;
 	width: 100%;
-	border-radius: 0.5rem;
+	border: none;
+}
+
+.terminal {
+	overflow: auto;
+	background-color: black;
 }

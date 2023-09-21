@@ -1,4 +1,4 @@
-import argon2 from 'argon2-wasm';
+import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import env from '../env.js';
 import { ForbiddenError, InvalidCredentialsError } from '../errors/index.js';

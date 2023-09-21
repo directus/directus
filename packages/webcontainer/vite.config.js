@@ -79,10 +79,19 @@ function loadFiles() {
 		path.join('.github')
 	]
 
-	loadFolder(path.join(workspaceRoot, 'api'), workspaceRoot)
+	loadFolder(path.join(workspaceRoot, 'api'), workspaceRoot, undefined, mapArgon2)
 	loadFolder(path.join('directus'), 'directus')
 
-	function loadFolder(folder, replace = workspaceRoot, prefix = "") {
+
+	function mapArgon2(contents, filePath) {
+		if (filePath.at(-1).endsWith('.ts') === false) return contents
+
+		contents = contents.replace(/import argon2 from 'argon2'/g, `import argon2 from '${"../".repeat((filePath.length - 1) / 2)}argon2.ts'`)
+		if (contents.includes("argon2")) console.log(contents)
+		return contents
+	}
+
+	function loadFolder(folder, replace = workspaceRoot, prefix = "", mapfile = (e) => e) {
 
 		console.log(folder)
 
@@ -94,7 +103,7 @@ function loadFiles() {
 
 		for (const file of fileUrls) {
 			if (fs.lstatSync(path.join(folder, file)).isDirectory()) {
-				loadFolder(path.join(folder, file), replace, prefix);
+				loadFolder(path.join(folder, file), replace, prefix, mapfile);
 				continue;
 			}
 
@@ -102,22 +111,15 @@ function loadFiles() {
 
 			const filePath = urlToPath(path.join(prefix, path.join(folder, file).replace(replace, "")))
 
-			console.log("file://", filePath.join('/'))
+			let contents = fs.readFileSync(path.join(folder, file), file.endsWith('.db') ? undefined : 'utf-8')
 
-			if (file.endsWith('.db')) {
-				set(files, filePath, {
-					file: {
-						contents: fs.readFileSync(path.join(folder, file))
-					}
-				})
-			} else {
-				set(files, filePath, {
-					file: {
-						contents: fs.readFileSync(path.join(folder, file), 'utf-8')
-					}
-				})
-			}
+			contents = mapfile(contents, filePath)
 
+			set(files, filePath, {
+				file: {
+					contents
+				}
+			})
 
 		}
 
