@@ -131,7 +131,7 @@ export class ImportService {
 			});
 
 			const transform = (value: any, _field: string) => {
-				if (value === 'NULL') return null;
+				if (value === '' || value === 'NULL') return null;
 
 				try {
 					return parseJSON(value);
