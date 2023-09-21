@@ -5,7 +5,7 @@ description: Discover how to make your Directus extensions available to other us
 
 # Publishing your Extension
 
-To make an extension available to all Directus users, follow the steps below:
+To publish an extension and make it available to all Directus users, follow the steps below:
 
 **1. Ensure the extension is secure**
 
