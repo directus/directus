@@ -189,9 +189,11 @@ const visibilityTree = computed(() => {
 	function makeTree(parent: string | null = null): CollectionTree[] {
 		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
 
+		const normalizedSearch = search.value?.toLowerCase();
+
 		return children.map((collection) => ({
 			collection: collection.collection,
-			visible: collection.collection.includes(search.value ?? ''),
+			visible: normalizedSearch ? collection.collection.toLowerCase().includes(normalizedSearch) : true,
 			search: search.value,
 			children: makeTree(collection.collection),
 			findChild(collection: string) {
