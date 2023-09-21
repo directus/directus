@@ -1,5 +1,6 @@
 import type { DirectusPermission } from '../../../schema/permission.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdatePermissionOutput<
@@ -14,6 +15,7 @@ export type UpdatePermissionOutput<
  * @param item
  * @param query
  * @returns Returns the permission object for the updated permissions.
+ * @throws Will throw if keys is empty
  */
 export const updatePermissions =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
@@ -21,12 +23,16 @@ export const updatePermissions =
 		item: Partial<DirectusPermission<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdatePermissionOutput<Schema, TQuery>[], Schema> =>
-	() => ({
-		path: `/permissions`,
-		params: query ?? {},
-		body: JSON.stringify({ keys, data: item }),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(keys, 'Keys cannot be empty');
+
+		return {
+			path: `/permissions`,
+			params: query ?? {},
+			body: JSON.stringify({ keys, data: item }),
+			method: 'PATCH',
+		};
+	};
 
 /**
  * Update an existing permissions rule.
@@ -34,6 +40,7 @@ export const updatePermissions =
  * @param item
  * @param query
  * @returns Returns the permission object for the updated permission.
+ * @throws Will throw if key is empty
  */
 export const updatePermission =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
@@ -41,9 +48,13 @@ export const updatePermission =
 		item: Partial<DirectusPermission<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdatePermissionOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/permissions/${key}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/permissions/${key}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};

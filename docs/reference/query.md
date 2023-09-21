@@ -266,7 +266,7 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Branch
+## Version
 
 TBD
 
@@ -275,7 +275,7 @@ TBD
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`?branch=Example`
+`?version=draft`
 
 </template>
 <template #graphql>

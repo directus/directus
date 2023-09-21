@@ -58,6 +58,7 @@ const twilioSid = env.TWILIO_ACCOUNT_SID;
 const twilioToken = env.TWILIO_AUTH_TOKEN;
 
 const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
+
 const headers = {
 	Authorization: `Basic ${token}`,
 };
@@ -123,6 +124,7 @@ At the top of your file, import the `createError` function and create a new erro
 
 ```js
 import { createError } from '@directus/errors';
+
 const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
 ```
 
@@ -130,7 +132,7 @@ Throw the function if `req.accountability` is `null`:
 
 ```js
 router.get('/*', async (req, res) => {
-	if(req.accountability == null) { // [!code ++]
+	if (req.accountability == null) { // [!code ++]
 		throw new ForbiddenError(); // [!code ++]
 	} // [!code ++]
 
@@ -150,7 +152,7 @@ router.get('/*', async (req, res) => {
 });
 
 router.post('/*', async (req, res) => {
-	if(req.accountability == null) { // [!code ++]
+	if (req.accountability == null) { // [!code ++]
 		throw new ForbiddenError(); // [!code ++]
 	} // [!code ++]
 
@@ -220,7 +222,7 @@ It will look something like:
 
 Change the method to as required (in this case POST) and add the following json to the body:
 
-```js
+```json
 {
 	"From": "+0123456789",
 	"Body": "Hi from Directus",
@@ -245,10 +247,8 @@ simplify your other extensions.
 
 ```js
 import { createError } from '@directus/errors';
-const ForbiddenError = createError(
-	'TWILIO_FORBIDDEN',
-	'You need to be authenticated to access this endpoint'
-);
+
+const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
 
 export default {
 	id: 'twilio',
@@ -257,7 +257,8 @@ export default {
 		const twilioSid = env.TWILIO_ACCOUNT_SID;
 		const twilioToken = env.TWILIO_AUTH_TOKEN;
 
-        const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
+		const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
+
 		const headers = {
 			Authorization: `Basic ${token}`,
 		};

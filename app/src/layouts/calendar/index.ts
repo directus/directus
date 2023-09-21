@@ -2,7 +2,7 @@ import api from '@/api';
 import { router } from '@/router';
 import { useServerStore } from '@/stores/server';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
-import { getItemRoute } from '@/utils/get-item-route';
+import { getItemRoute } from '@/utils/get-route';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';

@@ -1,23 +1,22 @@
-import request from 'supertest';
 import config, { getUrl } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import { v4 as uuid } from 'uuid';
 import { CreateItem, ReadItem } from '@common/functions';
-import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
+import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
+import { requestGraphQL } from '@common/index';
+import { CachedTestsSchema, CheckQueryFilters, TestsSchemaVendorValues } from '@query/filter';
+import { findIndex } from 'lodash';
+import request from 'supertest';
+import { v4 as uuid } from 'uuid';
 import {
-	collectionCountries,
-	collectionStates,
-	collectionCities,
+	City,
 	Country,
 	State,
-	City,
+	collectionCities,
+	collectionCountries,
+	collectionStates,
 	getTestsSchema,
 	seedDBValues,
 } from './o2m.seed';
-import { CheckQueryFilters } from '@query/filter';
-import { findIndex } from 'lodash';
-import { requestGraphQL } from '@common/index';
 
 function createCountry(pkType: common.PrimaryKeyType) {
 	const item: Country = {
@@ -2768,6 +2767,123 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					for (const item of response.body.data) {
 						expect(item.states.length).toBe(2);
 					}
+				});
+			});
+		});
+
+		describe('Auto Increment Tests', () => {
+			if (pkType !== 'integer') return;
+
+			describe('updates the auto increment value correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
+
+					// Setup
+					const name = 'test-auto-increment-o2m';
+					const largeIdCountry = 105555;
+					const largeIdState = 106666;
+					const largeIdCity = 107777;
+					const country = createCountry(pkType);
+					const country2 = createCountry(pkType);
+					const states: State[] = [];
+					const states2: State[] = [];
+					const cities: City[] = [];
+					const cities2: City[] = [];
+
+					country.id = largeIdCountry;
+					country.name = name;
+					country2.name = name;
+
+					for (let count = 0; count < 2; count++) {
+						const state = createState(pkType);
+						const state2 = createState(pkType);
+						const city = createCity(pkType);
+						const city2 = createCity(pkType);
+
+						if (count === 0) {
+							state.id = largeIdState;
+							city.id = largeIdCity;
+						}
+
+						state.name = name;
+						state2.name = name;
+						states.push(state);
+						states2.push(state2);
+
+						city.name = name;
+						city2.name = name;
+						cities.push(city);
+						cities2.push(city2);
+					}
+
+					await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: [
+							{
+								...country,
+								states: {
+									create: states.map((state, index) => {
+										return {
+											...state,
+											cities: {
+												create: index === 0 ? cities : cities2,
+												update: [],
+												delete: [],
+											},
+										};
+									}),
+									update: [],
+									delete: [],
+								},
+							},
+							{
+								...country2,
+								states: {
+									create: states2.map((state) => {
+										return {
+											...state,
+											cities: {
+												create: cities2,
+												update: [],
+												delete: [],
+											},
+										};
+									}),
+									update: [],
+									delete: [],
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCountries}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+							}),
+							fields: 'id,states.id,states.cities.id',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(2);
+
+					expect(response.body.data.map((country: any) => country.id)).toEqual(
+						Array.from({ length: 2 }, (_, index) => largeIdCountry + index)
+					);
+
+					expect(
+						response.body.data.flatMap((country: any) => country.states.flatMap((state: any) => state.id))
+					).toEqual(Array.from({ length: 4 }, (_, index) => largeIdState + index));
+
+					expect(
+						response.body.data.flatMap((country: any) =>
+							country.states.flatMap((state: any) => state.cities.map((city: any) => city.id))
+						)
+					).toEqual(Array.from({ length: 8 }, (_, index) => largeIdCity + index));
 				});
 			});
 		});

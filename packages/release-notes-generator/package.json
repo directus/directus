@@ -1,6 +1,6 @@
 {
 	"name": "@directus/release-notes-generator",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Directus tailored release notes generator for changesets",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,6 +28,7 @@
 		"@changesets/get-github-info": "0.5.2",
 		"@pnpm/find-workspace-dir": "6.0.0",
 		"@pnpm/find-workspace-packages": "6.0.8",
+		"@pnpm/workspace.pkgs-graph": "2.0.6",
 		"semver": "7.5.1"
 	},
 	"devDependencies": {

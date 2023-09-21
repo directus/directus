@@ -26,7 +26,7 @@ const props = defineProps<{
 	disabled?: boolean;
 	collectionField?: string;
 	collectionName?: string;
-	injectBranchField?: boolean;
+	injectVersionField?: boolean;
 }>();
 
 defineEmits<{
@@ -57,22 +57,22 @@ const collection = computed(() => {
 
 // TODO Initial version, probably needs polishing
 const injectValue = computed(() => {
-	if (!props.injectBranchField) return null;
+	if (!props.injectVersionField) return null;
 
-	const branchesEnabled = values.value['branches_enabled'];
+	const versioningEnabled = values.value['versioning'];
 
-	if (!branchesEnabled) return null;
+	if (!versioningEnabled) return null;
 
-	const fakeBranchField: Field = {
+	const fakeVersionField: Field = {
 		collection: unref(collection),
-		field: '$branch',
+		field: '$version',
 		schema: null,
-		name: 'Branch',
+		name: '$t:version',
 		type: 'integer',
 		meta: {
 			id: -1,
 			collection: unref(collection),
-			field: '$branch',
+			field: '$version',
 			sort: null,
 			special: null,
 			interface: null,
@@ -92,6 +92,6 @@ const injectValue = computed(() => {
 		},
 	};
 
-	return { fields: [fakeBranchField] };
+	return { fields: [fakeVersionField] };
 });
 </script>
