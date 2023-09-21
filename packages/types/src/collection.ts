@@ -8,6 +8,7 @@ type Translations = {
 };
 
 export type CollectionMeta = {
+	system?: boolean;
 	collection: string;
 	note: string | null;
 	hidden: boolean;
