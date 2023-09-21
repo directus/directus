@@ -590,10 +590,6 @@ function sidebar() {
 							text: 'Panels',
 						},
 						{
-							link: '/extensions/themes',
-							text: 'Themes',
-						},
-						{
 							link: '/extensions/bundles',
 							text: 'Bundles',
 						},
@@ -831,6 +827,10 @@ function sidebarUserGuide() {
 			text: 'General Settings',
 			collapsed: true,
 			items: [
+				{
+					text: 'Theming',
+					link: '/user-guide/settings/theming',
+				},
 				{
 					text: 'Project Settings',
 					link: '/user-guide/settings/project-settings',
