@@ -11,13 +11,15 @@ export default {
 				indexPath: 'sdk',
 				summary: 'Learn how to leverage our composable TypeScript SDK in your projects.',
 				cols: 1,
-				blocks: [{
-					title: 'Getting Started',
-					items: [
-						{ display: 'SDK Quickstart', path: '/guides/sdk/getting-started' },
-						{ display: 'SDK Authentication', path: '/guides/sdk/authentication' },
-					]
-				}]
+				blocks: [
+					{
+						title: 'Getting Started',
+						items: [
+							{ display: 'SDK Quickstart', path: '/guides/sdk/getting-started' },
+							{ display: 'SDK Authentication', path: '/guides/sdk/authentication' },
+						],
+					},
+				],
 			},
 			{
 				title: 'Framework Guides',

@@ -5,7 +5,8 @@ description: Learn about all of the ways to control authentication with the Dire
 
 # Directus SDK Authentication
 
-The Directus SDK provides multiple ways to [authenticate your requests](/reference/authentication), by either generating an access/refresh tokens through login, or by setting a static token. 
+The Directus SDK provides multiple ways to [authenticate your requests](/reference/authentication), by either generating
+an access/refresh tokens through login, or by setting a static token.
 
 ## Generate, Use, and Refresh Access Tokens
 
@@ -19,7 +20,7 @@ await client.refresh();
 await client.logout();
 ```
 
-This approach will handle token refreshing automatically. The current token is stored inside of the initialized client. 
+This approach will handle token refreshing automatically. The current token is stored inside of the initialized client.
 
 ### Using the `rest()` Composable
 
@@ -31,7 +32,8 @@ await client.request(refresh('REFRESH TOKEN'));
 await client.request(logout('REFRESH TOKEN'));
 ```
 
-Note that each of the authentication methods must be imported from the SDK. The refresh token must be stored manually and used when refreshing or invalidating a token.
+Note that each of the authentication methods must be imported from the SDK. The refresh token must be stored manually
+and used when refreshing or invalidating a token.
 
 ### Using the `realtime()` Composable
 
@@ -41,7 +43,9 @@ const client = createDirectus('http://directus.example.com').with(realtime());
 client.send(JSON.stringify({ type: 'auth', email: email, password: password}));
 ```
 
-When using Directus Realtime's [default 'handshake' authentication strategy](/guides/real-time/authentication), the first message sent must include authentication details - either an `email` and `password`, or an `access_token` (shown below).
+When using Directus Realtime's [default 'handshake' authentication strategy](/guides/real-time/authentication), the
+first message sent must include authentication details - either an `email` and `password`, or an `access_token` (shown
+below).
 
 ## Set a Token
 
@@ -64,7 +68,7 @@ const request = await client.request(
 );
 ```
 
-### Set a Client Token Manually 
+### Set a Client Token Manually
 
 ```js
 import { createDirectus, authentication } from '@directus/sdk';
@@ -102,11 +106,13 @@ const token = await client.getToken();
 
 ## Configure Custom Storage
 
-Internally, the `getToken()` and `setToken()` implement an overwritable storage mechanism, which can be customized for your environment's needs. There must be a `get()` and `set()` method exposed, and the `AuthData` type returned. 
+Internally, the `getToken()` and `setToken()` implement an overwritable storage mechanism, which can be customized for
+your environment's needs. There must be a `get()` and `set()` method exposed, and the `AuthData` type returned.
 
 ### Example
 
-Instead of storing `AuthData` in an object in the browser, this custom storage implementation stores and retreives data in `localStorage`:
+Instead of storing `AuthData` in an object in the browser, this custom storage implementation stores and retrieves data
+in `localStorage`:
 
 ```js
 import { createDirectus, authentication } from '@directus/sdk';
@@ -126,13 +132,13 @@ const client = createDirectus('http://directus.example.com')
 client.setToken('TOKEN');
 ```
 
-Note that an instance of the `LocalStorage` was created in the options of the `authentication()` composable. 
+Note that an instance of the `LocalStorage` was created in the options of the `authentication()` composable.
 
 ## Cross-Domain Cookies
 
 A common situation is for the Directus backend and frontend to be hosted on different domains, requiring extra
-configuration to make sure cookies are passed correctly. This can be set globally for each composable. This will then apply to all
-requests made using that composable:
+configuration to make sure cookies are passed correctly. This can be set globally for each composable. This will then
+apply to all requests made using that composable:
 
 ```js
 const client = createDirectus('http://directus.example.com')

@@ -114,7 +114,8 @@ const client = createDirectus('http://directus.example.com').with(authentication
 await client.login(email, password);
 ```
 
-There are many ways to create authenticated requests with the Directus SDK. [Read our SDK Authentication guide](/guides/sdk/authentication) for more.
+There are many ways to create authenticated requests with the Directus SDK.
+[Read our SDK Authentication guide](/guides/sdk/authentication) for more.
 
 ## Making Requests
 
