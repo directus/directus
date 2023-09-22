@@ -1,19 +1,25 @@
 {
-	"name": "webcontainer",
+	"name": "webcontainers",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
+		"build": "vue-tsc && vite build",
 		"preview": "vite preview"
-	},
-	"devDependencies": {
-		"typescript": "^5.0.2",
-		"vite": "^4.4.5"
 	},
 	"dependencies": {
 		"@webcontainer/api": "^1.1.5",
 		"lodash-es": "4.17.21",
-		"xterm": "^5.3.0"
+		"sass": "^1.56.1",
+		"vue": "^3.3.4",
+		"xterm": "^5.3.0",
+		"xterm-addon-fit": "^0.8.0"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^4.2.3",
+		"typescript": "^5.0.2",
+		"vite": "^4.4.5",
+		"vue-tsc": "^1.8.5"
 	}
 }

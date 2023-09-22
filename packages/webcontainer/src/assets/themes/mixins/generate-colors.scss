@@ -1,0 +1,22 @@
+@mixin generate-colors($color-map, $mix-color-low, $mix-color-high) {
+	// Loop through palette in $color-map list
+	@each $identifier, $color in $color-map {
+		// Loop through pre-defined steps in $step-mapping list
+		@each $suffix, $step in $step-mapping {
+			// Default suffix to nothing
+			$resolved-suffix: '';
+			// Default mixing color
+			$mixing-color: $mix-color-low;
+			// Set suffix if not equal to none
+			@if $suffix != 'none' {
+				$resolved-suffix: '-#{$suffix}';
+			}
+			// If our step is negative, change to dark mixing color
+			@if $step < 0 {
+				$mixing-color: $mix-color-high;
+			}
+			// This is the CSS variable that will be output
+			--#{$identifier}#{$resolved-suffix}: #{mix($mixing-color, $color, 100% - abs($step))};
+		}
+	}
+}

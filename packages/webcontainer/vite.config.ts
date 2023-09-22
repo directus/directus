@@ -1,8 +1,9 @@
-import { defineConfig } from 'vite';
+import { PluginOption, defineConfig } from 'vite';
 import fs from 'fs';
 import path from 'path';
 import { searchForWorkspaceRoot } from 'vite';
 import { set } from 'lodash-es'
+import vue from '@vitejs/plugin-vue'
 
 const workspaceRoot = searchForWorkspaceRoot(process.cwd())
 
@@ -17,12 +18,13 @@ export default defineConfig({
 		},
 	},
 	plugins: [
+		vue(),
 		directusFilesPlugin()
 	],
 
 });
 
-function directusFilesPlugin() {
+function directusFilesPlugin(): PluginOption {
 	const virtualExtensionsId = 'directus-files';
 
 	let directusFiles = {}
@@ -79,19 +81,23 @@ function loadFiles() {
 		path.join('.github')
 	]
 
-	loadFolder(path.join(workspaceRoot, 'api'), workspaceRoot, undefined, mapArgon2)
-	loadFolder(path.join('directus'), 'directus')
+	loadFolder(path.join(workspaceRoot, 'api'), skip, workspaceRoot, undefined, mapArgon2)
+	loadFolder(path.join('directus'), [], 'directus')
 
 
 	function mapArgon2(contents, filePath) {
-		if (filePath.at(-1).endsWith('.ts') === false) return contents
+		if (filePath.at(-1).endsWith('.ts')) {
+			contents = contents.replace(/import argon2 from 'argon2'/g, `import argon2 from '${"../".repeat((filePath.length - 1) / 2)}argon2.ts'`)
 
-		contents = contents.replace(/import argon2 from 'argon2'/g, `import argon2 from '${"../".repeat((filePath.length - 1) / 2)}argon2.ts'`)
+		} else if (filePath.at(-1).endsWith('.js')) {
+			contents = contents.replace(/import argon2 from 'argon2'/g, `import argon2 from '${"../".repeat((filePath.length - 1) / 2)}argon2.mjs'`)
+		}
+
 		if (contents.includes("argon2")) console.log(contents)
 		return contents
 	}
 
-	function loadFolder(folder, replace = workspaceRoot, prefix = "", mapfile = (e) => e) {
+	function loadFolder(folder: string, skip: string[], replace = workspaceRoot, prefix = "", mapfile: (contents: string, filePath: string[]) => string = (e) => e) {
 
 		console.log(folder)
 
@@ -103,7 +109,7 @@ function loadFiles() {
 
 		for (const file of fileUrls) {
 			if (fs.lstatSync(path.join(folder, file)).isDirectory()) {
-				loadFolder(path.join(folder, file), replace, prefix, mapfile);
+				loadFolder(path.join(folder, file), skip, replace, prefix, mapfile);
 				continue;
 			}
 
@@ -128,7 +134,7 @@ function loadFiles() {
 	return files;
 }
 
-function urlToPath(url) {
+function urlToPath(url: string) {
 	const parts = url.split(/[/\\]/g).filter(Boolean)
 
 	return [...parts.slice(0, -1).map(p => [p, 'directory']).flat(), parts.at(-1)]

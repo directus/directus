@@ -201,7 +201,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					// .returning(primaryKeyField)
 					.then((result) => result[0]);
 
-				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
+				const returnedKey: any = typeof result === 'object' ? result[primaryKeyField] : result;
 
 				if (pkField!.type === 'uuid') {
 					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);

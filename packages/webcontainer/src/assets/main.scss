@@ -1,0 +1,113 @@
+@import 'colors';
+@import 'fonts';
+@import 'themes/dark';
+@import 'themes/light';
+@import 'tooltip';
+
+:root {
+	--family-monospace: 'Fira Mono', monospace, sans-serif;
+	--family-serif: 'Merriweather', serif;
+	--family-sans-serif: 'Inter', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial',
+		sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+	--border-radius: 6px;
+	--fast: 150ms;
+	--slow: 300ms;
+	--transition: cubic-bezier(0.4,0,0.2,1);
+	--transition-in: cubic-bezier(0,0,0.2,1);
+	--transition-out: cubic-bezier(0.4,0,1,1);
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+	min-height: 100vh;
+	color: var(--foreground-normal);
+	font-weight: 500;
+	font-size: 14px;
+	font-family: var(--family-sans-serif);
+	font-style: normal;
+	line-height: 22px;
+	background-color: var(--background-page);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
+
+	&:not(.user-is-tabbing) * {
+		outline: none;
+
+		&::-moz-focus-inner,
+		&::-moz-focus-outer {
+			border: none;
+			outline: none;
+		}
+
+		&:focus,
+		&:focus-within {
+			outline: none;
+		}
+	}
+}
+
+button {
+	font-family: var(--family-sans-serif);
+}
+
+* {
+	box-sizing: border-box;
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0px 2.5px var(--primary-50);
+	}
+}
+
+body.light {
+	@include light;
+}
+
+body.dark {
+	@include dark;
+}
+
+body.auto {
+	@media (prefers-color-scheme: dark) {
+		@include dark;
+	}
+
+	@media (prefers-color-scheme: light) {
+		@include light;
+	}
+}
+
+#app {
+	min-height: 100vh;
+	min-width: 100%;
+}
+
+
+body .content {
+		width: 100%;
+		height: 100%;
+		z-index: 101;
+		background-color: var(--background-page);
+
+		&.fullscreen {
+			width: 100vw;
+			height: 100vh;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+
+		.close-fullscreen {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			width: 10px;
+			height: 10px;
+			z-index: 102;
+			cursor: pointer;
+			border-radius: 50%;
+			background-color: var(--warning);
+		}
+	}

@@ -1,6 +1,6 @@
 import { Command, Option } from 'commander';
 import emitter from '../emitter.js';
-import { getExtensionManager } from '../extensions.js';
+// import { getExtensionManager } from '../extensions.js';
 import { startServer } from '../server.js';
 import bootstrap from './commands/bootstrap/index.js';
 import count from './commands/count/index.js';
