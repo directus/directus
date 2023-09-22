@@ -94,7 +94,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					body['refresh_token'] = authData.refresh_token;
 				}
 
-				options.body = JSON.stringify(body);
+				fetchOptions.body = JSON.stringify(body);
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
