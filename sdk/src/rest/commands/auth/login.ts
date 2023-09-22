@@ -3,7 +3,6 @@ import type { RestCommand } from '../../types.js';
 
 export interface LoginOptions {
 	otp?: string;
-	provider?: string;
 	mode?: AuthenticationMode;
 }
 
@@ -23,9 +22,8 @@ export const login =
 		options: LoginOptions = {}
 	): RestCommand<AuthenticationData, Schema> =>
 	() => {
-		const path = options.provider ? `/auth/login/${options.provider}` : '/auth/login';
 		const data: Record<string, string> = { email, password };
 		if ('otp' in options) data['otp'] = options.otp;
 		data['mode'] = options.mode ?? 'cookie';
-		return { path, method: 'POST', body: JSON.stringify(data) };
+		return { path: '/auth/login', method: 'POST', body: JSON.stringify(data) };
 	};

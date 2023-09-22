@@ -1,5 +1,6 @@
 import type { DirectusDashboard } from '../../../schema/dashboard.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type UpdateDashboardOutput<
@@ -14,6 +15,7 @@ export type UpdateDashboardOutput<
  * @param item
  * @param query
  * @returns Returns the dashboard objects for the updated dashboards.
+ * @throws Will throw if keys is empty
  */
 export const updateDashboards =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
@@ -21,12 +23,16 @@ export const updateDashboards =
 		item: Partial<DirectusDashboard<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateDashboardOutput<Schema, TQuery>[], Schema> =>
-	() => ({
-		path: `/dashboards`,
-		params: query ?? {},
-		body: JSON.stringify({ keys, data: item }),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(keys, 'Keys cannot be empty');
+
+		return {
+			path: `/dashboards`,
+			params: query ?? {},
+			body: JSON.stringify({ keys, data: item }),
+			method: 'PATCH',
+		};
+	};
 
 /**
  * Update an existing dashboard.
@@ -34,6 +40,7 @@ export const updateDashboards =
  * @param item
  * @param query
  * @returns Returns the dashboard object for the updated dashboard.
+ * @throws Will throw if key is empty
  */
 export const updateDashboard =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
@@ -41,9 +48,13 @@ export const updateDashboard =
 		item: Partial<DirectusDashboard<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateDashboardOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/dashboards/${key}`,
-		params: query ?? {},
-		body: JSON.stringify(item),
-		method: 'PATCH',
-	});
+	() => {
+		throwIfEmpty(key, 'Key cannot be empty');
+
+		return {
+			path: `/dashboards/${key}`,
+			params: query ?? {},
+			body: JSON.stringify(item),
+			method: 'PATCH',
+		};
+	};

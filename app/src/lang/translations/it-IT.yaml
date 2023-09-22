@@ -341,6 +341,7 @@ clear_items: Rimuovi gli elementi
 reset_to_default: Reimposta al valore predefinito
 undo_changes: Annulla le modifiche
 notifications: Notifiche
+archive_all: Archivia tutto
 show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
 page_not_found_body: La pagina che stai cercando non sembra esistere.
@@ -502,6 +503,7 @@ expand: Espandi
 collapse: Chiudi
 select_item: Seleziona Elemento
 no_items: Nessun elemento
+search_items: Cerca Elementi...
 disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
@@ -1468,6 +1470,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1481,6 +1484,8 @@ undo_removed_item: Annulla la rimozione dell'elemento
 remove_item: Rimuovi l'elemento
 delete_item: Elimina l'elemento
 interfaces:
+  list-m2a:
+    prefix_note: Usa il nome della raccolta dell'elemento correlato come predefinito.
   filter:
     name: Filtro
     description: Configura un oggetto filtro.
@@ -2140,9 +2145,19 @@ operations:
     payload: Payload
     query: Interrogazione
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Firma e verifica JSON Web Token
+    operation: Operazione
+    secret: Segreto
+    secret_placeholder: Inserisci un segreto...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opzioni
+    options_placeholder: 'Fai riferimento a https://www.npmjs.com/package/jsonwebtoken#usage per le opzioni possibili'
+    sign: Firma il Token
+    verify: Verifica il Token
+    decode: Decodifica il Token
   log:
     name: Scrivi nella console
     description: Scrive qualcosa nella console

@@ -8,7 +8,6 @@ import { memoryStorage } from './utils/memory-storage.js';
 const defaultConfigValues: AuthenticationConfig = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
 	autoRefresh: true,
-	credentials: 'same-origin',
 };
 
 /**
@@ -78,13 +77,16 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				const authData = await storage.get();
 				resetStorage();
 
-				const options = {
+				const fetchOptions: RequestInit = {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					credentials: authConfig.credentials,
-				} as RequestInit;
+				};
+
+				if ('credentials' in authConfig) {
+					fetchOptions.credentials = authConfig.credentials;
+				}
 
 				const body: Record<string, any> = { mode };
 
@@ -96,7 +98,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), options, client.globals.fetch);
+				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				setCredentials(data);
 				return data;
@@ -115,25 +117,25 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const authPath = options.provider ? `/auth/login/${options.provider}` : '/auth/login';
-				const requestUrl = getRequestUrl(client.url, authPath);
+				const requestUrl = getRequestUrl(client.url, '/auth/login');
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
 				authData['mode'] = options.mode ?? mode;
 
-				const data = await request<AuthenticationData>(
-					requestUrl.toString(),
-					{
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify(authData),
-						credentials: authConfig.credentials,
+				const fetchOptions: RequestInit = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
 					},
-					client.globals.fetch
-				);
+					body: JSON.stringify(authData),
+				};
+
+				if ('credentials' in authConfig) {
+					fetchOptions.credentials = authConfig.credentials;
+				}
+
+				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				setCredentials(data);
 				return data;
@@ -141,23 +143,26 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			async logout() {
 				const authData = await storage.get();
 
-				const options: RequestInit = {
+				const fetchOptions: RequestInit = {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					credentials: authConfig.credentials,
 				};
 
+				if ('credentials' in authConfig) {
+					fetchOptions.credentials = authConfig.credentials;
+				}
+
 				if (mode === 'json' && authData?.refresh_token) {
-					options.body = JSON.stringify({
-						'refresh_token': authData.refresh_token
+					fetchOptions.body = JSON.stringify({
+						refresh_token: authData.refresh_token,
 					});
 				}
 
 
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), options, client.globals.fetch);
+				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();
