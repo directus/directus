@@ -20,7 +20,7 @@ Examples include:
 ### Interfaces
 
 [Interfaces](/extensions/interfaces) allow you to customize how a user will interact with the data of an item in a
-collecion. For example, you could create an interface extension that allows users to draw some vector graphic as an item
+collection. For example, you could create an interface extension that allows users to draw some vector graphic as an item
 in a collection.
 
 ### Layouts
