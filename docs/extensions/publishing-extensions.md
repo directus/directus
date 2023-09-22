@@ -5,25 +5,10 @@ description: Discover how to make your Directus extensions available to other us
 
 # Publishing your Extension
 
-To publish an extension and make it available to all Directus users, follow the steps below:
+Publishing an extension makes it available to all Directus users. Before publishing, first make sure the extension is
+[secure](/extensions/creating-extensions.html#secure-extensions).
 
-**1. Ensure the extension is secure**
-
-Inside the `package.json` file of your extension, make the extension secure by setting secure to `true`.
-
-```json
-{
-  ...
-  "directus:extension": {
-    "secure": true,
-  },
-  ...
-}
-```
-
-**2. Publish the NPM package**
-
-Publish the npm package created by `@directus/extensions-sdk` to the npm registry by running the command:
+Next, publish the npm package created by `@directus/extensions-sdk` to the npm registry by running the command:
 
 ```bash
 npm publish
@@ -31,7 +16,7 @@ npm publish
 
 ## Publishing to the Marketplace
 
-Before you publish your extension to the Marketplace, you may want to add an icon to your extension. Add the key “icon”
+Before publishing your extension to the Marketplace, you may want to add an icon to your extension. Add the key “icon”
 to your `package.json` with a url to a PNG/JPEG file.
 
 ```json
@@ -39,13 +24,14 @@ to your `package.json` with a url to a PNG/JPEG file.
   ...
   "directus:extension": {
     "secure": true,
-    "key": "PUT_URL_HERE"
+    "icon": "PUT_URL_HERE"
   },
   ...
 }
 ```
 
-You could also configure your extension to only support a set version of Directus. This would look something like this:
+You could also configure your extension to only support a particular version of Directus. This would look something like
+this:
 
 ```json
 {

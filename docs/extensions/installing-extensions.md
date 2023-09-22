@@ -51,7 +51,7 @@ Remember to replace `directus-extension-package-name` with the name of the exten
 
 **3. Build the Docker Image**
 
-Build your Docker image by running the following command:
+Build your Docker image:
 
 ```bash
 docker-compose up --build
@@ -59,7 +59,7 @@ docker-compose up --build
 
 **4. Start the Docker Container**
 
-Start your Docker container by running:
+Start your Docker container:
 
 ```bash
 docker-compose up
@@ -100,16 +100,16 @@ Move the output from the `dist/` folder into the extensions folder you created e
 Your folder structure should look like this:
 
 ```yaml
-extensions/
-	<extension-name>/
-			dist/
-        index.js
-      src
-        index.js
-        interface.vue
-	displays/
-	hooks/
-	endpoints/
+extensions
+  <extension-name>/
+    dist/
+      index.js
+    src
+      index.js
+      interface.vue
+  displays/
+  hooks/
+  endpoints/
   ...
 ```
 
@@ -121,7 +121,7 @@ Ensure your extension is prefixed with `directus-extension`. For example, `direc
 
 **3. Update Docker Compose File**
 
-Open your `docker-compose.yml` file with the following to mount your extension into the Docker container:
+Open your `docker-compose.yml` file and add the following to mount your extension into the Docker container:
 
 ```yaml
 volumes:
@@ -131,23 +131,23 @@ volumes:
 
 **4. Start the Docker Container**
 
-Start your Docker container by running:
+Start your Docker container:
 
 ```bash
 docker-compose up
 ```
 
 You should see that your extension has been successfully loaded into the Docker container. Now, go ahead to customize
-your extension by making changes to the src folder within your extension directory.
+your extension by making changes to the `src` folder within your extension directory.
 
 ## Installing through the Marketplace
 
-Within your [Directus Cloud account](https://directus.cloud), you can conveniently install extensions from the Directus
-Marketplace.
+Within your Directus Cloud account, you can conveniently install extensions from the Directus Marketplace.
 
 **1. Access the Marketplace**
 
-Log in to your Directus cloud account. Once logged in, navigate to the "Marketplace" menu from the Module Bar.
+Log in to your [Directus Cloud account](https://directus.cloud). Once logged in, navigate to the "Marketplace" menu from
+the Module Bar.
 
 **2. Install Extensions**
 

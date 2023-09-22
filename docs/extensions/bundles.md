@@ -5,7 +5,8 @@ readTime: 5 min read
 
 # Extension Bundles
 
-> Extension bundles allow you to combine and share dependencies between one or more extensions.
+> Extension bundles allow you to combine and share dependencies between one or more extensions. They are developed using
+> JavaScript / Node.js.
 
 ## Create a Bundle
 
