@@ -160,7 +160,6 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					});
 				}
 
-
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
 				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
