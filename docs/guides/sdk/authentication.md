@@ -40,7 +40,7 @@ and used when refreshing or invalidating a token.
 ```js
 import { createDirectus, realtime } from '@directus/sdk';
 const client = createDirectus('http://directus.example.com').with(realtime());
-client.send(JSON.stringify({ type: 'auth', email: email, password: password}));
+client.send(JSON.stringify({ type: 'auth', email: email, password: password }));
 ```
 
 When using Directus Realtime's [default 'handshake' authentication strategy](/guides/real-time/authentication), the
