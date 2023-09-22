@@ -32,8 +32,8 @@ Snapshot of the changes made in this revision.
 `parent` **many-to-one**\
 Parent revision that triggered this revision. Many-to-one to revisions (recursive).
 
-`branch` **many-to-one**\
-Branch of the changes made in this revision. Many-to-one to [branches](/reference/system/branches).
+`version` **many-to-one**\
+Version of the changes made in this revision. Many-to-one to [versions](/reference/system/versions).
 
 ```json
 {
