@@ -26,6 +26,6 @@ export const login =
 		const path = options.provider ? `/auth/login/${options.provider}` : '/auth/login';
 		const data: Record<string, string> = { email, password };
 		if ('otp' in options) data['otp'] = options.otp;
-		if ('mode' in options) data['mode'] = options.mode;
+		data['mode'] = options.mode ?? 'cookie';
 		return { path, method: 'POST', body: JSON.stringify(data) };
 	};

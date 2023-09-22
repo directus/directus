@@ -86,11 +86,13 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					credentials: authConfig.credentials,
 				} as RequestInit;
 
+				const body: Record<string, any> = { mode };
+
 				if (mode === 'json' && authData?.refresh_token) {
-					options.body = JSON.stringify({
-						refresh_token: authData.refresh_token,
-					});
+					body['refresh_token'] = authData.refresh_token;
 				}
+
+				options.body = JSON.stringify(body);
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
@@ -118,7 +120,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
-				if ('mode' in options) authData['mode'] = options.mode;
+				authData['mode'] = options.mode ?? mode;
 
 				const data = await request<AuthenticationData>(
 					requestUrl.toString(),
@@ -149,9 +151,10 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				if (mode === 'json' && authData?.refresh_token) {
 					options.body = JSON.stringify({
-						refresh_token: authData.refresh_token,
+						'refresh_token': authData.refresh_token
 					});
 				}
+
 
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
 				await request(requestUrl.toString(), options, client.globals.fetch);
