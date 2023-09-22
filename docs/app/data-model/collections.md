@@ -4,13 +4,13 @@
 > They come with all the same power and functionality of data tables, despite the less technical name.
 
 <!--
-:::tip Before You Begin
+::: tip Before You Begin
 
 Quickstart Guide
 Read Data Model Introduction
 
 :::
-:::tip Learn more
+::: tip Learn more
 
 API documentation
 
@@ -98,14 +98,14 @@ displayed with [Collection Naming Translations](#collection-setup).
 
 :::
 
-:::warning Composite Keys
+::: warning Composite Keys
 
 Directus does not currently support composite keys. If your project uses composite keys, you will need to make an
 adjustment to the data model.
 
 :::
 
-:::warning SQL Views
+::: warning SQL Views
 
 Directus does not currently support creation of virtual tables via SQL Views.
 
@@ -131,7 +131,7 @@ To toggle whether a collection is hidden by default in the Content Module, follo
 2. Click <span mi icon>more_vert</span> to open the collection's Context Menu.
 3. Select **View Content** or **Make Collection Hidden** to adjust visibility as desired.
 
-:::tip
+::: tip
 
 Assuming a user has [access permissions](/user-guide/user-management/users-roles-permissions), hidden collections can
 still be viewed. They must right-click on the Navigation Bar and choose <span mi icon>visibility</span> **Show Hidden
@@ -234,14 +234,14 @@ These controls allow you to modify how the collection is displayed within the Co
   [User Details Page](/user-guide/user-management/user-directory#user-details-page), the relevant translation, if any
   exists, will be used throughout the app.
 
-:::tip Collection Naming Translations
+::: tip Collection Naming Translations
 
 By default, Directus uses the [Title Formatter](/user-guide/overview/glossary#title-formatter) to display collection
 keys as human readable names, but you can also use translations to explicitly rename more technical table keys.
 
 :::
 
-:::tip What's a Singleton?
+::: tip What's a Singleton?
 
 A collection that only contains one single item. For example, a website's **About Us** page.
 
@@ -265,20 +265,20 @@ archive field, set the following four input fields as desired.
 - **Unarchive Value** — A value that is assigned to the field when an item is
   [unarchived](/user-guide/content-module/content/items#archive-an-item).
 
-:::tip Automatic Setup
+::: tip Automatic Setup
 
 When you [create a collection](#create-a-collection), you have the option to create an optional Status Field. If you
 choose to include this field, the collection's archive settings will be automatically configured for you.
 
 :::
 
-:::tip Archive Field Values
+::: tip Archive Field Values
 
 The archive fields can contain any number of additional values besides the archived and unarchived values defined above.
 
 :::
 
-:::tip Archived Item Management via API
+::: tip Archived Item Management via API
 
 Archived items are hidden in the app by default, but they are still returned normally via the API unless explicitly
 filtered out. This gives you the flexibility to manage archived items however you want when working with the API.
@@ -324,7 +324,7 @@ To configure manual sorting within a relational Interface (e.g., M2M, O2M, or M2
 
 :::
 
-:::tip Configure to Hidden
+::: tip Configure to Hidden
 
 You can also set this field to be **Hidden** so it doesn't show up within the Item Details Page.
 
@@ -345,7 +345,7 @@ tracked.
   - **Only Track Activity**
   - **Do Not Track Anything**
 
-:::tip Accountability vs. Telemetry
+::: tip Accountability vs. Telemetry
 
 Accountability is a log of _who does what_ in your project. It is for your team's own use. This is different from
 [telemetry](/self-hosted/config-options#telemetry), which is configured under
@@ -398,7 +398,7 @@ posts collection running on localhost:3000 will be `http://localhost:3000/posts/
 	<source src="https://marketing.directus.app/assets/6d6bc718-ceb9-4e55-9a2d-d377156da7f9.mp4" type="video/mp4" />
 </video>
 
-:::tip Preview URL
+::: tip Preview URL
 
 You can set up any URL pattern with dynamic values derived from the specific items you wish to preview
 

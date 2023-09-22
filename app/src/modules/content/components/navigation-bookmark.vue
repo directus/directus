@@ -1,6 +1,6 @@
 <template>
 	<v-list-item
-		:to="`/content/${bookmark.collection}?bookmark=${bookmark.id}`"
+		:to="`${getCollectionRoute(bookmark.collection)}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"
 		clickable
@@ -88,6 +88,7 @@
 <script setup lang="ts">
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
+import { getCollectionRoute } from '@/utils/get-route';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Preset } from '@directus/types';
@@ -177,7 +178,7 @@ function useDeleteBookmark() {
 			let navigateTo: string | null = null;
 
 			if (route.query?.bookmark && +route.query.bookmark === props.bookmark.id) {
-				navigateTo = `/content/${props.bookmark.collection}`;
+				navigateTo = getCollectionRoute(props.bookmark.collection);
 			}
 
 			await presetsStore.delete([props.bookmark.id!]);

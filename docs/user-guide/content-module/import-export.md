@@ -10,7 +10,7 @@ readTime: 4 min read
 > This makes it quick and easy to handle tasks like uploading and downloading new customer information; pulling down
 > sales data for transformation, reports, analysis, and beyond.
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 To use this utility, you will need to be familiar with [Collections](/user-guide/overview/glossary#collections),
 [Items](/user-guide/overview/glossary#items), and [Fields](/user-guide/overview/glossary#fields).
@@ -22,7 +22,7 @@ Link when ready
 
 :::
 
-:::tip Import / Export via the API
+::: tip Import / Export via the API
 
 This page details Importing and Exporting of Items as files via the no-code app. However, you can also
 [Import](/reference/system/utilities#import-data-from-file) and
@@ -47,7 +47,7 @@ To import Items from a file, follow the steps below.
 
 The Items will now be in the Collection. The file itself will not be stored in the Directus Project.
 
-:::tip Importing Relational Files
+::: tip Importing Relational Files
 
 It is possible to import relational Field values as well. For this task, the User performing the import will need access
 permissions for the related Collection and a firm understanding of the relational data model.
@@ -77,20 +77,20 @@ Fields are exported, how they are exported, and where they are exported. To expo
 5. **Optional:** Configure any other export details as desired.
 6. Click <span mi btn>download</span> to download the file.
 
-:::tip Opening the file in Excel?
+::: tip Opening the file in Excel?
 
 Export your file to CSV to seamlessly open in excel.
 
 :::
 
-:::tip Exporting to File Library
+::: tip Exporting to File Library
 
 When downloading 2,500 or more Items, you will be required to download into the Directus Project's File Library. After
 exporting, go to the File Library to download your file locally.
 
 :::
 
-:::tip Exporting Relational Files
+::: tip Exporting Relational Files
 
 It is possible to export relational Field values. For this task, the User performing the export will need access
 permissions for the related Collection and a firm understanding of the relational data model.
@@ -125,7 +125,7 @@ possible to import or export files with this utility.
 
 To import and export files, please see the [File Library Module](/user-guide/file-library/files).
 
-:::tip What does Import/Export do in the File Library?!
+::: tip What does Import/Export do in the File Library?!
 
 Import/Export handles Field Values associated with the file _(e.g. id, title, description, etc.)_.
 

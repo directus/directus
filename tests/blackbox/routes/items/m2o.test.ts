@@ -1,21 +1,21 @@
-import request from 'supertest';
 import config, { getUrl } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import { v4 as uuid } from 'uuid';
 import { CreateItem, ReadItem } from '@common/functions';
-import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
+import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
+import { requestGraphQL } from '@common/index';
+import { CachedTestsSchema, CheckQueryFilters, TestsSchemaVendorValues } from '@query/filter';
+import request from 'supertest';
+import { v4 as uuid } from 'uuid';
 import {
-	collectionCountries,
-	collectionStates,
-	collectionCities,
+	City,
 	Country,
 	State,
+	collectionCities,
+	collectionCountries,
+	collectionStates,
 	getTestsSchema,
 	seedDBValues,
 } from './m2o.seed';
-import { CheckQueryFilters } from '@query/filter';
-import { requestGraphQL } from '@common/index';
 
 function createCountry(pkType: common.PrimaryKeyType) {
 	const item: Country = {
@@ -36,6 +36,18 @@ function createState(pkType: common.PrimaryKeyType) {
 
 	if (pkType === 'string') {
 		item.id = 'state-' + uuid();
+	}
+
+	return item;
+}
+
+function createCity(pkType: common.PrimaryKeyType) {
+	const item: City = {
+		name: 'city-' + uuid(),
+	};
+
+	if (pkType === 'string') {
+		item.id = 'city-' + uuid();
 	}
 
 	return item;
@@ -1957,6 +1969,143 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				getTestsSchema(pkType)[localCollectionCities],
 				vendorSchemaValues
 			);
+		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const country = createCountry(pkType);
+					const country2 = createCountry(pkType);
+
+					country.name = name;
+					country2.name = name;
+
+					const insertedCountry = await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: country,
+					});
+
+					const insertedCountry2 = await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: country2,
+					});
+
+					const state = createState(pkType);
+					const state2 = createState(pkType);
+
+					state.name = name;
+					state2.name = name;
+					state.country_id = insertedCountry.id;
+					state2.country_id = insertedCountry2.id;
+
+					await CreateItem(vendor, {
+						collection: localCollectionStates,
+						item: [state, state2],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionStates}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+								country_id: {
+									name: {
+										_eq: name,
+									},
+								},
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
+				});
+			});
+		});
+
+		describe('Auto Increment Tests', () => {
+			if (pkType !== 'integer') return;
+
+			describe('updates the auto increment value correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
+
+					// Setup
+					const name = 'test-auto-increment-m2o';
+					const largeIdCity = 102222;
+					const largeIdState = 103333;
+					const largeIdCountry = 104444;
+					const city = createCity(pkType);
+					const city2 = createCity(pkType);
+					const state = createState(pkType);
+					const state2 = createState(pkType);
+					const country = createCountry(pkType);
+					const country2 = createCountry(pkType);
+
+					city.id = largeIdCity;
+					state.id = largeIdState;
+					country.id = largeIdCountry;
+					city.name = name;
+					city2.name = name;
+					state.name = name;
+					state2.name = name;
+					country.name = name;
+					country2.name = name;
+
+					await CreateItem(vendor, {
+						collection: localCollectionCities,
+						item: [
+							{
+								...city,
+								state_id: {
+									...state,
+									country_id: country,
+								},
+							},
+							{
+								...city2,
+								state_id: {
+									...state2,
+									country_id: country2,
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCities}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+							}),
+							fields: 'id,state_id.id,state_id.country_id.id',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(2);
+
+					expect(response.body.data.map((city: any) => city.id)).toEqual(
+						Array.from({ length: 2 }, (_, index) => largeIdCity + index)
+					);
+
+					expect(response.body.data.map((city: any) => city.state_id.id)).toEqual(
+						Array.from({ length: 2 }, (_, index) => largeIdState + index)
+					);
+
+					expect(response.body.data.map((city: any) => city.state_id.country_id.id)).toEqual(
+						Array.from({ length: 2 }, (_, index) => largeIdCountry + index)
+					);
+				});
+			});
 		});
 	});
 });

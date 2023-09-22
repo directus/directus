@@ -10,8 +10,6 @@ pageClass: page-reference
 > data based on department, objective, business process or anything you choose.
 > [Learn more about Dashboards](/user-guide/insights/dashboards).
 
----
-
 ## The Dashboard Object
 
 `id` **uuid**\
@@ -51,35 +49,27 @@ Panels that are in this dashboard. One-to-may to [panels](/reference/system/pane
 }
 ```
 
----
-
 ## List Dashboards
 
 List all dashboards that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /dashboards`
 
-An array of up to [limit](/reference/query#limit) [dashboard objects](#the-dashboard-object). If no items are available,
-data will be an empty array.
+`SEARCH /dashboards`
 
-### REST API
-
-```
-GET /dashboards
-SEARCH /dashboards
-```
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -87,7 +77,42 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readDashboards } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readDashboards(query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [dashboard objects](#the-dashboard-object). If no items are available,
+data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /dashboards`
+
+`SEARCH /dashboards`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -98,37 +123,39 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readDashboards } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readDashboards({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a Dashboard
 
 List an existing dashboard by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /dashboards/:id`
 
-Returns the requested [dashboard object](#the-dashboard-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /dashboards/:id
-```
-
-##### Example
-
-```
-GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -136,7 +163,37 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readDashboard } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readDashboard(dashboard_id, query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [dashboard object](#the-dashboard-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -147,46 +204,41 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readDashboard } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readDashboard('751a81de-9e00-4ffe-a2c1-6e04619b859f', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Dashboard
 
 Create a new dashboard.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
+`POST /dashboards`
 
-A partial [dashboard object](#the-dashboard-object).
+Provide a [dashboard object](#the-dashboard-object) as the body of your request.
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
-
-### REST API
-
-```
-POST /dashboards
-```
-
-##### Example
-
-```json
-// POST /dashboards
-
-{
-	"name": "My Dashboard",
-	"icon": "dashboard"
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -194,7 +246,50 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createDashboard } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createDashboard(dashboard_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [dashboard object](#the-dashboard-object).
+
+### Response
+
+Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /dashboards`
+
+```json
+{
+	"name": "My Dashboard",
+	"icon": "dashboard"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -205,35 +300,83 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createDashboard } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createDashboard({
+		name: 'User Retention',
+		note: 'Some insights on our users activity',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Dashboards
 
 Create multiple new dashboards.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /dashboards`
+
+Provide an array of [dashboard objects](#the-dashboard-object) as the body of your request.
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_dashboards_items(data: [create_directus_dashboards_input!]!): [directus_dashboards]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createDashboards } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createDashboards(dashboard_object_array));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [dashboard objects](#the-dashboard-object).
 
-### Returns
+### Response
 
 Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 
-### REST API
+### Example
 
-```
-POST /dashboards
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /dashboards`
 
 ```json
-// POST /dashboards
-
 [
 	{
 		"name": "My Dashboard",
@@ -246,19 +389,10 @@ POST /dashboards
 ]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_dashboards_items(data: [create_directus_dashboards_input!]!): [directus_dashboards]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -271,45 +405,48 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createDashboards } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createDashboards([
+		{
+			name: 'User Retention',
+			note: 'Some insights on our users activity',
+		},
+		{
+			name: 'Publishing report',
+			note: 'Some charts to track our outputs',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a Dashboard
 
 Update an existing dashboard.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
+`PATCH /dashboards/:id`
 
-A partial [dashboard object](#the-dashboard-object).
+Provide a partial [dashboard object](#the-dashboard-object) as the body of your request.
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
-
-### REST API
-
-```
-PATCH /dashboards/:id
-```
-
-##### Example
-
-```json
-// PATCH /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-
-{
-	"name": "My Updated Dashboard"
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -317,7 +454,49 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateDashboard } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateDashboard(dashboard_id, partial_dashboard_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [dashboard object](#the-dashboard-object).
+
+### Response
+
+Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+```json
+{
+	"name": "My Updated Dashboard"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -328,17 +507,72 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateDashboard } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9', {
+		color: '#6644FF',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Dashboards
 
 Update multiple existing dashboards.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /dashboards`
+
+```json
+{
+	"keys": dashboard_id_array,
+	"data": partial_dashboard_object
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_dashboards_items(ids: [ID!]!, data: update_directus_dashboards_input): [directus_dashboards]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateDashboards } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateDashboards(dashboard_id_array, partial_dashboard_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the dashboards you'd like to update.
@@ -346,21 +580,18 @@ Array of primary keys of the dashboards you'd like to update.
 `data` **Required**\
 Any of [the dashboard](#the-dashboard-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [dashboard objects](#the-dashboard-object) for the updated dashboards.
 
-### REST API
+### Example
 
-```
-PATCH /dashboards
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`PATCH /dashboards`
 
 ```json
-// PATCH /dashboards
-
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
 	"data": {
@@ -369,19 +600,10 @@ PATCH /dashboards
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_dashboards_items(ids: [ID!]!, data: update_directus_dashboards_input): [directus_dashboards]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -395,33 +617,39 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateDashboards } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateDashboards(['cfcc3702-33bd-4616-865c-99b59dc1cdc9', '782c80a0-ad61-488d-b9e2-7d688f029421'], {
+		color: '#81D4FA',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a Dashboard
 
 Delete an existing dashboard.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`DELETE /dashboards/:id`
 
-```
-DELETE /dashboards/:id
-```
+</template>
+<template #graphql>
 
-##### Example
-
-```
-DELETE /dashboards/12204ee2-2c82-4d9a-b044-2f4842a11dba
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -429,7 +657,35 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteDashboard } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteDashboard(dashboard_id));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /dashboards/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -439,38 +695,37 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteDashboard } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Dashboards
 
 Delete multiple existing dashboards.
 
-### Request Body
+### Request
 
-An array of dashboards primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`DELETE /dashboards`
 
-Empty body.
+Provide an array of dashboard IDs as the body of your request.
 
-### REST API
+</template>
+<template #graphql>
 
-```
-DELETE /dashboards
-```
-
-##### Example
-
-```json
-// DELETE /dashboards
-["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -478,7 +733,43 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteDashboards } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteDashboards(dashboard_id_array));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of dashboards primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /dashboards`
+
+```json
+["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -493,3 +784,20 @@ mutation {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteDashboards(['751a81de-9e00-4ffe-a2c1-6e04619b859f', '782c80a0-ad61-488d-b9e2-7d688f029421'])
+);
+```
+
+</template>
+</SnippetToggler>

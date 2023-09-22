@@ -8,7 +8,7 @@ readTime:
 
 > Roles are essentially a bundle of pre-configured access permissions which you can (re)assign to any number of users.
 
-:::tip Learn More
+::: tip Learn More
 
 To configure roles programmatically, see our API documentation on [roles](/reference/system/roles).
 
@@ -38,7 +38,7 @@ To create a role, follow these steps.
    To learn more, see [configure role details](#configure-role-details).
 5. Click **Save** to confirm.
 
-:::tip
+::: tip
 
 Next, you will likely need to [configure the role's details](#configure-role-details) and
 [configure the role's permissions](#configure-role-permissions).
@@ -69,7 +69,7 @@ details, follow these steps.
    - **Users in Role** — Lists all users within this role.
 3. Click <span mi btn>check</span> in the page header to confirm.
 
-:::tip App Access vs Admin Access
+::: tip App Access vs Admin Access
 
 Roles with _App Access_ enabled are created with the minimum permissions required to login to the app and access their
 own profile information. Roles that have neither _Admin_ nor _App Access_ enabled are created with public permissions.
@@ -97,7 +97,7 @@ permissions. However, you can always
 
 :::
 
-:::tip Built-in Roles
+::: tip Built-in Roles
 
 Directus does not allow you to delete the built-in public role or administrator role. To learn more, please see the
 introductory section on [Directus Roles](/user-guide/user-management/users-roles-permissions#directus-roles).

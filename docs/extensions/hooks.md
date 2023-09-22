@@ -191,24 +191,25 @@ export default ({ embed }, { env }) => {
 
 ### Filter Events
 
-| Name                          | Payload                              | Meta                                        |
-| ----------------------------- | ------------------------------------ | ------------------------------------------- |
-| `request.not_found`           | `false`                              | `request`, `response`                       |
-| `request.error`               | The request errors                   | --                                          |
-| `database.error`              | The database error                   | `client`                                    |
-| `auth.login`                  | The login payload                    | `status`, `user`, `provider`                |
-| `auth.jwt`                    | The auth token                       | `status`, `user`, `provider`, `type`        |
-| `auth.create`<sup>[1]</sup>   | The created user                     | `identifier`, `provider`, `providerPayload` |
-| `auth.update`<sup>[2]</sup>   | The updated auth token<sup>[3]</sup> | `identifier`, `provider`, `providerPayload` |
-| `authenticate`                | The empty accountability object      | `req`                                       |
-| `(<collection>.)items.query`  | The items query                      | `collection`                                |
-| `(<collection>.)items.read`   | The read item                        | `query`, `collection`                       |
-| `(<collection>.)items.create` | The new item                         | `collection`                                |
-| `(<collection>.)items.update` | The updated item                     | `keys`, `collection`                        |
-| `(<collection>.)items.delete` | The keys of the item                 | `collection`                                |
-| `<system-collection>.create`  | The new item                         | `collection`                                |
-| `<system-collection>.update`  | The updated item                     | `keys`, `collection`                        |
-| `<system-collection>.delete`  | The keys of the item                 | `collection`                                |
+| Name                           | Payload                              | Meta                                        |
+| ------------------------------ | ------------------------------------ | ------------------------------------------- |
+| `request.not_found`            | `false`                              | `request`, `response`                       |
+| `request.error`                | The request errors                   | --                                          |
+| `database.error`               | The database error                   | `client`                                    |
+| `auth.login`                   | The login payload                    | `status`, `user`, `provider`                |
+| `auth.jwt`                     | The auth token                       | `status`, `user`, `provider`, `type`        |
+| `auth.create`<sup>[1]</sup>    | The created user                     | `identifier`, `provider`, `providerPayload` |
+| `auth.update`<sup>[2]</sup>    | The updated auth token<sup>[3]</sup> | `identifier`, `provider`, `providerPayload` |
+| `authenticate`                 | The empty accountability object      | `req`                                       |
+| `(<collection>.)items.query`   | The items query                      | `collection`                                |
+| `(<collection>.)items.read`    | The read item                        | `query`, `collection`                       |
+| `(<collection>.)items.create`  | The new item                         | `collection`                                |
+| `(<collection>.)items.update`  | The updated item                     | `keys`, `collection`                        |
+| `(<collection>.)items.promote` | The promoted item                    | `collection`, `item`, `version`             |
+| `(<collection>.)items.delete`  | The keys of the item                 | `collection`                                |
+| `<system-collection>.create`   | The new item                         | `collection`                                |
+| `<system-collection>.update`   | The updated item                     | `keys`, `collection`                        |
+| `<system-collection>.delete`   | The keys of the item                 | `collection`                                |
 
 <sup>[1]</sup> Available for `ldap`, `oauth2`, `openid` and `saml` driver.
 
@@ -226,21 +227,22 @@ export default ({ embed }, { env }) => {
 
 ### Action Events
 
-| Name                          | Meta                                                |
-| ----------------------------- | --------------------------------------------------- |
-| `server.start`                | `server`                                            |
-| `server.stop`                 | `server`                                            |
-| `response`                    | `request`, `response`, `ip`, `duration`, `finished` |
-| `auth.login`                  | `payload`, `status`, `user`, `provider`             |
-| `files.upload`                | `payload`, `key`, `collection`                      |
-| `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
-| `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
-| `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
-| `(<collection>.)items.delete` | `keys`, `collection`                                |
-| `(<collection>.)items.sort`   | `collection`, `item`, `to`                          |
-| `<system-collection>.create`  | `payload`, `key`, `collection`                      |
-| `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
-| `<system-collection>.delete`  | `keys`, `collection`                                |
+| Name                           | Meta                                                |
+| ------------------------------ | --------------------------------------------------- |
+| `server.start`                 | `server`                                            |
+| `server.stop`                  | `server`                                            |
+| `response`                     | `request`, `response`, `ip`, `duration`, `finished` |
+| `auth.login`                   | `payload`, `status`, `user`, `provider`             |
+| `files.upload`                 | `payload`, `key`, `collection`                      |
+| `(<collection>.)items.read`    | `payload`, `query`, `collection`                    |
+| `(<collection>.)items.create`  | `payload`, `key`, `collection`                      |
+| `(<collection>.)items.update`  | `payload`, `keys`, `collection`                     |
+| `(<collection>.)items.promote` | `payload`, `collection`, `item`, `version`          |
+| `(<collection>.)items.delete`  | `keys`, `collection`                                |
+| `(<collection>.)items.sort`    | `collection`, `item`, `to`                          |
+| `<system-collection>.create`   | `payload`, `key`, `collection`                      |
+| `<system-collection>.update`   | `payload`, `keys`, `collection`                     |
+| `<system-collection>.delete`   | `keys`, `collection`                                |
 
 ::: tip System Collections
 
@@ -292,70 +294,12 @@ hook is currently handling as that would result in an infinite loop!
 
 :::
 
-## Examples:
+## Guides
 
-### Sync with External
+Learn how to build hooks with our official guides:
 
-```js
-import axios from 'axios';
-import { createError } from '@directus/errors';
+<GuidesListExtensions type="Hooks" />
 
-const MyExtensionError = createError('MY_EXTENSION_ERROR', 'Something went wrong...', 500);
-
-export default ({ filter }, { services }) => {
-	const { MailService } = services;
-
-	// Sync with external recipes service, cancel creation on failure
-	filter('items.create', async (input, { collection }, { schema, database }) => {
-		if (collection !== 'recipes') return input;
-
-		const mailService = new MailService({ schema, knex: database });
-
-		try {
-			await axios.post('https://example.com/recipes', input);
-
-			await mailService.send({
-				to: 'person@example.com',
-				template: {
-					name: 'item-created',
-					data: {
-						collection: collection,
-					},
-				},
-			});
-		} catch (error) {
-			throw new MyExtensionError();
-		}
-
-		input.syncedWithExample = true;
-
-		return input;
-	});
-};
-```
-
-### Add Sentry monitoring
-
-```js
-import { defineHook } from '@directus/extensions-sdk';
-import * as Sentry from '@sentry/node';
-import '@sentry/tracing';
-
-export default defineHook(({ init }, { env }) => {
-	const { SENTRY_DSN } = env;
-
-	Sentry.init({
-		dsn: SENTRY_DSN,
-	});
-
-	init('routes.before', ({ app }) => {
-		app.use(Sentry.Handlers.requestHandler());
-		console.log('-- Sentry Request Handler Added --');
-	});
-
-	init('routes.custom.after', ({ app }) => {
-		app.use(Sentry.Handlers.errorHandler());
-		console.log('-- Sentry Error Handler Added --');
-	});
-});
-```
+<script setup>
+import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+</script>

@@ -89,12 +89,29 @@ DB_PORT: 5432
 ### config.js
 
 Using a JavaScript file for your config allows you to dynamically generate the configuration of the project during
-startup. The JavaScript configuration supports two different formats, either an **Object Structure** where the key is
-the environment variable name:
+startup.
 
-```js
-// Object Syntax
+By default, the file is expected to be a ESM, while CommonJS is supported too by using `.cjs` as the file extension.
 
+The JavaScript configuration supports two different formats, either an **Object Structure** where the key is the
+environment variable name:
+
+::: code-group
+
+```js [config.js]
+export default {
+	HOST: '0.0.0.0',
+	PORT: 8055,
+
+	DB_CLIENT: 'pg',
+	DB_HOST: 'localhost',
+	DB_PORT: 5432,
+
+	// etc
+};
+```
+
+```js [config.cjs]
 module.exports = {
 	HOST: '0.0.0.0',
 	PORT: 8055,
@@ -107,12 +124,29 @@ module.exports = {
 };
 ```
 
+:::
+
 Or a **Function Structure** that _returns_ the same object format as above. The function gets `process.env` as its
 parameter.
 
-```js
-// Function Syntax
+::: code-group
 
+```js [config.js]
+export default function (env) {
+	return {
+		HOST: '0.0.0.0',
+		PORT: 8055,
+
+		DB_CLIENT: 'pg',
+		DB_HOST: 'localhost',
+		DB_PORT: 5432,
+
+		// etc
+	};
+}
+```
+
+```js [config.cjs]
 module.exports = function (env) {
 	return {
 		HOST: '0.0.0.0',
@@ -126,6 +160,8 @@ module.exports = function (env) {
 	};
 };
 ```
+
+:::
 
 ## Environment Variable Files
 
@@ -191,23 +227,23 @@ prefixing the value with `{type}:`. The following types are available:
 
 ## General
 
-| Variable                   | Description                                                                                                | Default Value                |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`                       |
-| `HOST`                     | IP or host the API listens on.                                                                             | `0.0.0.0`                    |
-| `PORT`                     | What port to run the API under.                                                                            | `8055`                       |
-| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`                          |
-| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`                       |
-| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`                     |
-| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `1mb`                        |
-| `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`                       |
-| `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`                       |
-| `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                      | `Infinity`                   |
-| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`                         |
-| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                          | `100`                        |
-| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                          | `-1`                         |
-| `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                              | `User-agent: *\nDisallow: /` |
+| Variable                   | Description                                                                                                                 | Default Value                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
+| `HOST`                     | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
+| `PORT`                     | What port to run the API under.                                                                                             | `8055`                       |
+| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                                               | `/`                          |
+| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
+| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
+| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
+| `ROOT_REDIRECT`            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
+| `SERVE_APP`                | Whether or not to serve the Admin application                                                                               | `true`                       |
+| `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
+| `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
+| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
+| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                                           | `100`                        |
+| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
+| `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -313,7 +349,6 @@ Redis is required when you run Directus load balanced across multiple containers
 | `CONTENT_SECURITY_POLICY_*`      | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
 | `HSTS_ENABLED`                   | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
 | `HSTS_*`                         | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
-| `FLOWS_EXEC_ALLOWED_MODULES`     | CSV allowlist of node modules that are allowed to be used in the _run script_ operation in flows                                                                                                     | --                        |
 
 ::: tip Cookie Strictness
 
@@ -361,7 +396,7 @@ multiplied. This may cause out of memory errors, especially when running in cont
 | `CORS_CREDENTIALS`     | Whether or not to send the `Access-Control-Allow-Credentials` header.                                                                                  | `true`                       |
 | `CORS_MAX_AGE`         | Value for the `Access-Control-Max-Age` header.                                                                                                         | `18000`                      |
 
-:::tip More Details
+::: tip More Details
 
 For more details about each configuration variable, please see the
 [CORS package documentation](https://www.npmjs.com/package/cors#configuration-options).
@@ -424,7 +459,7 @@ subsequent requests are served straight from this cache. Enabling cache will als
 cache-control headers. Depending on your setup, this will further improve performance by caching the request in
 middleman servers (like CDNs) and even the browser.
 
-:::tip Internal Caching
+::: tip Internal Caching
 
 In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` and `CACHE_PERMISSIONS` which
 are enabled by default. These speed up the overall performance of Directus, as we don't want to introspect the whole
@@ -450,7 +485,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
 | `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
-| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `directus-cache`                     |
+| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `system-cache`                       |
 | `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
 | `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |
@@ -477,10 +512,10 @@ Instead, you can use the above `CACHE_STORE` environment variable to use `redis`
 ## File Storage
 
 By default, Directus stores all uploaded files locally on disk. However, you can also configure Directus to use S3,
-Google Cloud Storage, Azure, or Cloudinary. You can also configure _multiple_ storage adapters at the same time. This
-allows you to choose where files are being uploaded on a file-by-file basis. In the Admin App, files will automatically
-be uploaded to the first configured storage location (in this case `local`). The used storage location is saved under
-`storage` in `directus_files`.
+Google Cloud Storage, Azure, Cloudinary or Supabase. You can also configure _multiple_ storage adapters at the same
+time. This allows you to choose where files are being uploaded on a file-by-file basis. In the Admin App, files will
+automatically be uploaded to the first configured storage location (in this case `local`). The used storage location is
+saved under `storage` in `directus_files`.
 
 ::: tip File Storage Default
 
@@ -518,11 +553,11 @@ STORAGE_S3_DRIVER="s3" # Will work, "s3" is uppercased ✅
 
 For each of the storage locations listed, you must provide the following configuration:
 
-| Variable                                   | Description                                                             | Default Value |
-| ------------------------------------------ | ----------------------------------------------------------------------- | ------------- |
-| `STORAGE_<LOCATION>_DRIVER`                | Which driver to use, either `local`, `s3`, `gcs`, `azure`, `cloudinary` |               |
-| `STORAGE_<LOCATION>_ROOT`                  | Where to store the files on disk                                        | `''`          |
-| `STORAGE_<LOCATION>_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                    | `750`         |
+| Variable                                   | Description                                                                         | Default Value |
+| ------------------------------------------ | ----------------------------------------------------------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_DRIVER`                | Which driver to use, either `local`, `s3`, `gcs`, `azure`, `cloudinary`, `supabase` |               |
+| `STORAGE_<LOCATION>_ROOT`                  | Where to store the files on disk                                                    | `''`          |
+| `STORAGE_<LOCATION>_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                                | `750`         |
 
 Based on your configured driver, you must also provide the following configurations:
 
@@ -574,6 +609,21 @@ Based on your configured driver, you must also provide the following configurati
 
 Cloudinary is supported as a _storage_ driver. Changes made on Cloudinary are _not_ synced back to Directus, and
 Directus _won't_ rely on Cloudinary's asset transformations in the `/assets` endpoint.
+
+:::
+
+### Supabase (`supabase`)
+
+| Variable                          | Description                | Default Value |
+| --------------------------------- | -------------------------- | ------------- |
+| `STORAGE_<LOCATION>_SERVICE_ROLE` | The admin service role JWT | --            |
+| `STORAGE_<LOCATION>_BUCKET`       | Storage bucket             | --            |
+| `STORAGE_<LOCATION>_PROJECT_ID`   | Project id                 | --            |
+| `STORAGE_<LOCATION>_ENDPOINT`     | Optional custom endpoint   | --            |
+
+::: warning Endpoint
+
+Using a custom endpoint will overwrite the project id, so you need to provide the full endpoint url.
 
 :::
 
@@ -826,18 +876,13 @@ AUTH_FACEBOOK_LABEL="Facebook"
 
 ## Flows
 
-| Variable                     | Description                                      | Default Value |
-| ---------------------------- | ------------------------------------------------ | ------------- |
-| `FLOWS_ENV_ALLOW_LIST`       | A comma-separated list of environment variables. | `false`       |
-| `FLOWS_EXEC_ALLOWED_MODULES` | A comma-separated list of node modules.          | `false`       |
+| Variable                      | Description                                                                                                      | Default Value |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
+| `FLOWS_ENV_ALLOW_LIST`        | A comma-separated list of environment variables.                                                                 | `false`       |
+| `FLOWS_RUN_SCRIPT_MAX_MEMORY` | The maximum amount of memory the 'Run Script'-Operation can allocate in megabytes. A minimum of 8MB is required. | `32`          |
+| `FLOWS_RUN_SCRIPT_TIMEOUT`    | The maximum duration the 'Run Script'-Operation can run for in milliseconds.                                     | `10000`       |
 
 ::: tip Usage in Flows Run Script Operation
-
-Allowed modules can be accessed using `require()`.
-
-```js
-const axios = require('axios');
-```
 
 Allowed environment variables can be accessed through the `$env` within the passed `data` or through `process.env`.
 
@@ -963,28 +1008,32 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 
 ## WebSockets
 
-| Variable                       | Description                                                                                                                      | Default Value |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `WEBSOCKETS_ENABLED`           | Whether or not to enable all WebSocket functionality.                                                                            | `false`       |
-| `WEBSOCKETS_HEARTBEAT_ENABLED` | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
-| `WEBSOCKETS_HEARTBEAT_PERIOD`  | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
+| Variable                                    | Description                                                                                                                      | Default Value |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_ENABLED`                        | Whether or not to enable all WebSocket functionality.                                                                            | `false`       |
+| `WEBSOCKETS_HEARTBEAT_ENABLED`              | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
+| `WEBSOCKETS_HEARTBEAT_PERIOD`<sup>[1]</sup> | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
+
+<sup>[1]</sup> It's recommended to keep this value between 30 and 120 seconds, otherwise the connections could be
+considered idle by other parties and therefore terminated. See
+https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 
 ### REST
 
-| Variable                       | Description                                                                         | Default Value |
-| ------------------------------ | ----------------------------------------------------------------------------------- | ------------- |
-| `WEBSOCKETS_REST_ENABLED`      | Whether or not to enable the REST message handlers.                                 | `true`        |
-| `WEBSOCKETS_REST_PATH`         | The URL path at which the WebSocket REST endpoint will be available.                | `/websocket`  |
-| `WEBSOCKETS_REST_CONN_LIMIT`   | How many simultaneous connections are allowed.                                      | `Infinity`    |
-| `WEBSOCKETS_REST_AUTH`         | What method of authentication to require for this connection.                       | `handshake`   |
-| `WEBSOCKETS_REST_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30            |
+| Variable                       | Description                                                                                                                                                                                             | Default Value |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_REST_ENABLED`      | Whether or not to enable the REST message handlers.                                                                                                                                                     | `true`        |
+| `WEBSOCKETS_REST_PATH`         | The URL path at which the WebSocket REST endpoint will be available.                                                                                                                                    | `/websocket`  |
+| `WEBSOCKETS_REST_CONN_LIMIT`   | How many simultaneous connections are allowed.                                                                                                                                                          | `Infinity`    |
+| `WEBSOCKETS_REST_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
+| `WEBSOCKETS_REST_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
 
 ### GraphQL
 
-| Variable                          | Description                                                                         | Default Value |
-| --------------------------------- | ----------------------------------------------------------------------------------- | ------------- |
-| `WEBSOCKETS_GRAPHQL_ENABLED`      | Whether or not to enable the GraphQL Subscriptions.                                 | `true`        |
-| `WEBSOCKETS_GRAPHQL_PATH`         | The URL path at which the WebSocket GraphQL endpoint will be available.             | `/graphql`    |
-| `WEBSOCKETS_GRAPHQL_CONN_LIMIT`   | How many simultaneous connections are allowed.                                      | `Infinity`    |
-| `WEBSOCKETS_GRAPHQL_AUTH`         | What method of authentication to require for this connection.                       | `handshake`   |
-| `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30            |
+| Variable                          | Description                                                                                                                                                                                             | Default Value |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_GRAPHQL_ENABLED`      | Whether or not to enable the GraphQL Subscriptions.                                                                                                                                                     | `true`        |
+| `WEBSOCKETS_GRAPHQL_PATH`         | The URL path at which the WebSocket GraphQL endpoint will be available.                                                                                                                                 | `/graphql`    |
+| `WEBSOCKETS_GRAPHQL_CONN_LIMIT`   | How many simultaneous connections are allowed.                                                                                                                                                          | `Infinity`    |
+| `WEBSOCKETS_GRAPHQL_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
+| `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |

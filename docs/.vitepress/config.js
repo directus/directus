@@ -1,17 +1,28 @@
 import { formatTitle } from '@directus/format-title';
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
+import guidesData from './data/guides.data.js';
+
+const { guides } = await guidesData.load();
 
 export default defineConfig({
 	base: '/',
 	lang: 'en-US',
 	title: 'Directus Docs',
-	description: 'Directus. An Instant App & API for your SQL Database.',
+	description: 'Explore our resources and powerful data engine to build your projects confidently.',
 	ignoreDeadLinks: true,
 	markdown: {
-		theme: 'material-theme-palenight',
+		theme: {
+			light: 'github-light',
+			dark: 'github-dark',
+		},
 		toc: {
 			level: [2],
+		},
+		config(md) {
+			md.use(tabsMarkdownPlugin);
 		},
 	},
 	head: [
@@ -127,17 +138,21 @@ gtag('config', 'UA-24637628-7');
 			light: '/logo-light.svg',
 			dark: '/logo-dark.svg',
 		},
+		socialLinks: [{ icon: 'github', link: 'https://github.com/directus/directus' }],
 		nav: [
-			{ text: 'Docs', link: '/getting-started/quickstart' },
+			{
+				text: 'Developer Reference',
+				link: '/getting-started/quickstart',
+				// Active on every path except for '/', '/user-guide', '/packages'
+				activeMatch: '^\\/(?!$|user-guide|packages).*',
+			},
 			{
 				text: 'User Guide',
 				link: '/user-guide/overview/data-studio-app',
 				activeMatch: '/user-guide',
 			},
-			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
-			{ text: 'GitHub', link: 'https://github.com/directus/directus' },
 		],
 		algolia: {
 			appId: 'T5BDNEU205',
@@ -145,13 +160,51 @@ gtag('config', 'UA-24637628-7');
 			indexName: 'directus',
 		},
 		sidebar: {
-			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
 			'/user-guide/': sidebarUserGuide(),
 			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
-			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
+			pattern: ({ filePath }) => {
+				if (filePath.includes('blog/')) {
+					return '/blog/guest-author';
+				} else {
+					return `https://github.com/directus/directus/edit/main/docs/${filePath}`;
+				}
+			},
+		},
+	},
+	transformPageData(pageData) {
+		function setOGImage(asset) {
+			return [
+				['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+			];
+		}
+
+		switch (pageData.frontmatter.type) {
+			case 'blog-post':
+				pageData.title = pageData.params.title;
+				pageData.description = pageData.params.summary;
+				pageData.frontmatter.head = setOGImage(pageData.params.image);
+				break;
+			case 'guides-index':
+				pageData.title = pageData.params.title;
+				pageData.description = pageData.params.summary;
+				break;
+			default:
+				pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
+		}
+	},
+	vite: {
+		resolve: {
+			alias: [
+				{
+					find: /^.*\/VPSidebarItem\.vue$/,
+					replacement: fileURLToPath(new URL('./theme/components/VPSidebarItem.vue', import.meta.url)),
+				},
+			],
 		},
 	},
 });
@@ -201,6 +254,15 @@ function sidebarTypedocs() {
 	return sidebar;
 }
 
+function sidebarGuides() {
+	const guideSections = guides.sections.map((section) => ({
+		text: section.title,
+		link: `/guides/${section.indexPath}`,
+	}));
+
+	return guideSections;
+}
+
 function sidebar() {
 	return [
 		{
@@ -229,8 +291,13 @@ function sidebar() {
 			],
 		},
 		{
+			text: 'Developer Blog',
+			link: '/blog/',
+			activeMatch: '/blog/.*',
+			items: [],
+		},
+		{
 			text: 'Data Studio App',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -244,7 +311,6 @@ function sidebar() {
 						{
 							link: '/app/data-model/fields',
 							text: 'Fields',
-							collapsible: true,
 							collapsed: true,
 							items: [
 								{
@@ -286,7 +352,6 @@ function sidebar() {
 				{
 					link: '/app/flows',
 					text: 'Flows',
-					collapsible: false,
 					items: [
 						{
 							link: '/app/flows/triggers',
@@ -302,7 +367,6 @@ function sidebar() {
 		},
 		{
 			text: 'API Reference',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -328,10 +392,6 @@ function sidebar() {
 				{
 					link: '/reference/files',
 					text: 'Files',
-				},
-				{
-					link: '/reference/sdk',
-					text: 'JS-SDK',
 				},
 				{
 					link: '/reference/system/activity',
@@ -422,6 +482,10 @@ function sidebar() {
 					text: 'Utilities',
 				},
 				{
+					link: '/reference/system/versions',
+					text: 'Versions',
+				},
+				{
 					link: '/reference/system/webhooks',
 					text: 'Webhooks',
 				},
@@ -429,66 +493,21 @@ function sidebar() {
 		},
 		{
 			text: 'Guides',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
-					text: 'Flows',
-					items: [
-						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
-						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
-					],
+					text: 'All Guides',
+					link: '/guides/index.html',
 				},
 				{
-					text: 'Headless CMS',
-					items: [
-						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
-						{
-							text: 'Re-Usable Page Components',
-							link: '/guides/headless-cms/reusable-components',
-						},
-						{
-							link: '/guides/headless-cms/schedule-content/',
-							text: 'Scheduling Future Content',
-						},
-						{
-							link: '/guides/headless-cms/trigger-static-builds/',
-							text: 'Trigger Static Site Builds',
-						},
-						{
-							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/',
-						},
-						{
-							text: 'Set Up Live Preview',
-							link: '/guides/headless-cms/live-preview/',
-						},
-						{
-							text: 'Content Translations (i18n)',
-							link: '/guides/headless-cms/content-translations',
-						},
-					],
+					text: 'SDK Quickstart',
+					link: '/guides/sdk/getting-started',
 				},
-				{
-					link: '/guides/migration/index.html',
-					text: 'Schema Migration',
-				},
-				{
-					text: 'Real-Time',
-					items: [
-						{ text: 'Getting Started', link: '/guides/real-time/getting-started/index.html' },
-						{ text: 'Authentication', link: '/guides/real-time/authentication' },
-						{ text: 'Operations', link: '/guides/real-time/operations' },
-						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
-						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
-						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
-					],
-				},
+				...sidebarGuides(),
 			],
 		},
 		{
 			text: 'Use Cases',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -512,7 +531,6 @@ function sidebar() {
 		},
 		{
 			text: 'Extensions',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -585,7 +603,6 @@ function sidebar() {
 		},
 		{
 			text: 'Contributing',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{ link: '/contributing/introduction', text: 'Introduction' },
@@ -605,7 +622,6 @@ function sidebar() {
 		},
 		{
 			text: 'Self-Hosted',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -625,13 +641,30 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-					link: '/self-hosted/sso',
 					text: 'Single Sign-On (SSO)',
+					items: [
+						{ link: '/self-hosted/sso', text: 'Quickstart' },
+						{ link: '/self-hosted/sso-examples', text: 'Examples' },
+					],
 				},
 				{
-					type: 'page',
 					link: '/self-hosted/upgrades-migrations',
 					text: 'Upgrades & Migrations',
+				},
+			],
+		},
+		{
+			text: 'Releases',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					link: 'https://github.com/directus/directus/releases',
+					text: 'Release Notes',
+				},
+				{
+					link: '/releases/breaking-changes',
+					text: 'Breaking Changes',
 				},
 			],
 		},
@@ -659,7 +692,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'Content Module',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -706,7 +738,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'User Management',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -736,7 +767,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'File Library',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -751,7 +781,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'Insights',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -770,7 +799,6 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'Directus Cloud',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
@@ -790,10 +818,6 @@ function sidebarUserGuide() {
 					link: '/user-guide/cloud/accounts',
 				},
 				{
-					text: 'Project Settings',
-					link: '/user-guide/cloud/project-settings',
-				},
-				{
 					text: 'Glossary',
 					link: '/user-guide/cloud/glossary',
 				},
@@ -801,12 +825,11 @@ function sidebarUserGuide() {
 		},
 		{
 			text: 'General Settings',
-			collapsible: true,
 			collapsed: true,
 			items: [
 				{
-					text: 'Settings',
-					link: '/user-guide/settings/settings',
+					text: 'Project Settings',
+					link: '/user-guide/settings/project-settings',
 				},
 				{
 					text: 'Preset and Bookmarks',

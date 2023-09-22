@@ -98,13 +98,13 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="(item && item.role) || role" />
+			<users-navigation :current-role="item?.role?.id ?? role" />
 		</template>
 
 		<div class="user-item">
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
-					<v-skeleton-loader v-if="loading || previewLoading" />
+					<v-skeleton-loader v-if="loading" />
 					<v-image
 						v-else-if="avatarSrc && !avatarError"
 						:src="avatarSrc"
@@ -132,7 +132,7 @@
 							<v-icon name="place" small />
 							{{ item.location }}
 						</div>
-						<v-chip v-if="roleName" :class="item.status" small>{{ roleName }}</v-chip>
+						<v-chip v-if="item.role?.name" :class="item.status" small>{{ item.role.name }}</v-chip>
 					</template>
 				</div>
 			</div>
@@ -143,7 +143,7 @@
 				:disabled="isNew ? false : updateAllowed === false"
 				:fields="formFields"
 				:loading="loading"
-				:initial-values="item"
+				:initial-values="user"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
 			/>
@@ -177,7 +177,6 @@
 </template>
 
 <script setup lang="ts">
-import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFormFields } from '@/composables/use-form-fields';
 import { useItem } from '@/composables/use-item';
@@ -188,14 +187,13 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
-import { Field } from '@directus/types';
-import { computed, ref, toRefs, watch } from 'vue';
+import type { Field, User } from '@directus/types';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -239,7 +237,17 @@ const {
 	isArchived,
 	validationErrors,
 	refresh,
-} = useItem(ref('directus_users'), primaryKey);
+} = useItem<User>(
+	ref('directus_users'),
+	primaryKey,
+	props.primaryKey !== '+'
+		? {
+				fields: ['*', 'role.*'],
+		  }
+		: undefined
+);
+
+const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
 
 if (props.role) {
 	edits.value = {
@@ -255,6 +263,8 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
+const avatarSrc = computed(() => (item.value?.avatar ? `/assets/${item.value.avatar}?key=system-medium-cover` : null));
+
 const avatarError = ref(null);
 
 const title = computed(() => {
@@ -267,8 +277,6 @@ const title = computed(() => {
 
 	return t('adding_user');
 });
-
-const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
 
 const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
 	usePermissions(ref('directus_users'), item, isNew);
@@ -394,40 +402,6 @@ async function setLang(user: Record<string, any>) {
 async function refreshCurrentUser() {
 	if (userStore.currentUser!.id === item.value?.id) {
 		await userStore.hydrate();
-	}
-}
-
-function useUserPreview() {
-	const loading = ref(false);
-	const avatarSrc = ref<string | null>(null);
-	const roleName = ref<string | null>(null);
-
-	watch(() => props.primaryKey, getUserPreviewData, { immediate: true });
-
-	return { loading, avatarSrc, roleName };
-
-	async function getUserPreviewData() {
-		if (props.primaryKey === '+') return;
-
-		loading.value = true;
-
-		try {
-			const response = await api.get(`/users/${props.primaryKey}`, {
-				params: {
-					fields: ['role.name', 'avatar.id'],
-				},
-			});
-
-			avatarSrc.value = response.data.data.avatar?.id
-				? `/assets/${response.data.data.avatar.id}?key=system-medium-cover`
-				: null;
-
-			roleName.value = response.data.data?.role?.name;
-		} catch (err: any) {
-			unexpectedError(err);
-		} finally {
-			loading.value = false;
-		}
 	}
 }
 

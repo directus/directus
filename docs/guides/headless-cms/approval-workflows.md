@@ -1,27 +1,12 @@
 ---
-description:
-tags: []
-skill_level:
+description: Workflows are the use of custom access permissions to add structured stages to the flow of content creation or data generation. Workflows enable you to do things like pass off work in progress between multiple roles, build decision trees, _and beyond!_
 directus_version: 9.18.1
-author_override:
 author: Eron Powell
 ---
 
 # Building Content Approval Workflows
 
-> Workflows are the use of custom access permissions to add structured stages to the flow of content creation or data
-> generation. Workflows enable you to do things like pass off work in progress between multiple roles, build decision
-> trees, _and beyond!_
-
-:::tip Author: {{$frontmatter.author}}
-
-<!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-<!-- **Tags:** {{$frontmatter.tags.join(", ")}} -->
-
-:::
+<GuideMeta />
 
 ## Explanation
 
@@ -57,7 +42,7 @@ This whole workflow is created with permissions. All we need to do to create the
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 To implement a workflow, you'll need:
 
@@ -132,7 +117,7 @@ A minor misconfiguration here could ruin academic integrity. Here's a few potent
 When creating your own workflow, its a good idea to define each role involved, each stage in the workflow, and the
 explicit set of permissions each role has at each stage.
 
-:::tip Next Steps
+::: tip Next Steps
 
 Workflows can be further enhanced with custom [Interfaces](/extensions/interfaces) as well as [flows](/app/flows).
 

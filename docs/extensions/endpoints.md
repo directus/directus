@@ -68,25 +68,12 @@ hook is currently handling as that would result in an infinite loop!
 
 :::
 
-## Example: Recipes
+## Guides
 
-```js
-import { createError } from '@directus/errors';
+Learn how to build endpoints with our official guides:
 
-const MyExtensionError = createError('MY_EXTENSION_ERROR', 'Something went wrong...', 500);
+<GuidesListExtensions type="Endpoints" />
 
-export default (router, { services }) => {
-	const { ItemsService } = services;
-
-	router.get('/', (req, res, next) => {
-		const recipeService = new ItemsService('recipes', { schema: req.schema, accountability: req.accountability });
-
-		recipeService
-			.readByQuery({ sort: ['name'], fields: ['*'] })
-			.then((results) => res.json(results))
-			.catch((error) => {
-				return next(new MyExtensionError());
-			});
-	});
-};
-```
+<script setup>
+import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+</script>

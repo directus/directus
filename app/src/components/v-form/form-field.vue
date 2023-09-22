@@ -252,7 +252,8 @@ function useComputedValues() {
 }
 
 .validation-error {
-	display: block;
+	display: flex;
+	align-items: center;
 	margin-top: 4px;
 	color: var(--danger);
 	font-style: italic;

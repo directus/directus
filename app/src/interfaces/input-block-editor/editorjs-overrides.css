@@ -465,6 +465,22 @@
 	margin-left: 34px;
 }
 
+.codex-editor .ce-align-left {
+	text-align: left;
+}
+
+.codex-editor .ce-align-center {
+	text-align: center;
+}
+
+.codex-editor .ce-align-right {
+	text-align: right;
+}
+
+.codex-editor .ce-align-buttons svg path {
+	stroke: none;
+}
+
 .codex-editor .ce-header {
 	padding: 0.4em 0;
 }

@@ -469,6 +469,11 @@ open_file_in_tab: Otvori datoteku u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
+exporting_limited_items_in_collection: '{count} od {total} stavki unutar {collection} bit će izvezeno.'
+exporting_no_items_to_export: Nema stavki za izvoz. Prilagodite postavke izvoza i/ili dodajte stavke u kolekciju.
+exporting_download_hint: Nakon što se datoteka {format} stvori, preuzet će se na vaš uređaj.
+exporting_library_hint: Nakon što se datoteka {format} stvori, bit će spremljena u biblioteku datoteka.
+exporting_library_hint_forced: Ovaj izvoz mora biti obrađen u serijama. Nakon završetka, datoteka {format} bit će spremljena u biblioteku datoteka.
 collection_key: Ključ zbirke
 name: Naziv
 primary_key_field: Polje primarnog ključa
@@ -497,7 +502,7 @@ expand: Proširi
 collapse: Sažmi
 select_item: Odaberi stavku
 no_items: Nema stavki
-search_items: Pretraži stavke...
+search_items: Pretraži Stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
@@ -945,6 +950,8 @@ wysiwyg_options:
   source_code: Uredi izvorni kod
   fullscreen: Puni zaslon
   directionality: Usmjerenost
+  lazy_loading: Odgodeno Učitavanje Slike
+  lazy_loading_label: Omogući Odgodeno Učitavanje Slike
 dropdown: Padajući izbornik
 choices: Izbori
 choices_option_configured_incorrectly: Izbori su pogrešno konfigurirani
@@ -968,6 +975,7 @@ settings_flows: Tokovi
 settings_presets: Zadane postavke i oznake
 settings_translations: Prilagođeni Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
+configure_field_key_to_continue: Uredi ključ polja za nastavak
 scope: Opseg
 actions: Radnje
 select: Odaberite...
@@ -1359,6 +1367,7 @@ share: Podijeli
 share_item: Podijeli stavku
 shared_with_you: Stavka je podijeljena s vama
 shared_enter_passcode: Unesite šifru za nastavak...
+shared_leave_blank_for_passwordless_access: Ostavi prazno za pristup bez Lozinke
 shared_leave_blank_for_unlimited: Ostavite prazno za neograničeno
 shared_times_remaining: Ova se poveznica može koristiti samo {n} puta
 shared_last_remaining: Ova se poveznica može koristiti samo jednom
@@ -1473,6 +1482,8 @@ undo_removed_item: Poništi uklanjanje stavke
 remove_item: Ukloni stavku
 delete_item: Obriši stavku
 interfaces:
+  list-m2a:
+    prefix_note: Koristi ime kolekcije povezane stavke kao zadano.
   filter:
     name: Filter
     description: Konfiguriraj objekt filtera.
@@ -2131,6 +2142,20 @@ operations:
     key: IDevi
     payload: Payload
     query: Upit
+  json-web-token:
+    name: JSON Web Token (JWT)
+    description: Prijava i provjera JSON Web Tokena
+    operation: Operacija
+    secret: Tajna
+    secret_placeholder: Unesite tajnu...
+    payload: Payload
+    token: Token
+    token_placeholder: eyJhbGciOi......
+    options: Opcije
+    options_placeholder: 'Pogledajte https://www.npmjs.com/package/jsonwebtoken#usage za dostupne opcije'
+    sign: Prijava Tokena
+    verify: Verificiraj Token
+    decode: Dekodirajte token
   log:
     name: Prijava na konzolu
     description: Pošaljite nešto na konzolu
@@ -2150,6 +2175,7 @@ operations:
     recipient: Korisnik
     recipient_placeholder: Unesite UUID...
     recipient_note: Dodajte UUID korisnika i pritisnite Enter...
+    item_note: Ključ Stavke ili Relativni URL
     message: Poruka
     subject: Predmet
   request:

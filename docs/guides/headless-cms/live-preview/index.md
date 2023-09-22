@@ -14,6 +14,6 @@
   h="2"
   text="Set Up Live Preview with Nuxt 3"
   url="/guides/headless-cms/live-preview/nuxt-3"
-  icon="/icons/nuxtjs.svg"
+  icon="/icons/nuxt.svg"
   add-margin
 />

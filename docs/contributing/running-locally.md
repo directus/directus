@@ -13,8 +13,8 @@ readTime: 4 min read
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest version of Node](https://nodejs.org/en/download/current) to _build_ a Development
-version of Directus.
+You will need to have [the latest LTS version of Node](https://nodejs.org/en/download) to _build_ a Development version
+of Directus.
 
 You will also need to have the package manager [pnpm](https://pnpm.io) installed.
 

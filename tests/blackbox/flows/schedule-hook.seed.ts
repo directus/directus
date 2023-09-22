@@ -1,39 +1,11 @@
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
-import { CreateCollection, CreateField, DeleteCollection } from '@common/index';
 import request from 'supertest';
 
-export const collection = 'test_flows_schedule_hook';
-export const fieldData = 'field_data';
 export const flowName = 'Schedule Hook Test';
+export const logPrefix = 'flow-executed-on-';
 export const envTargetVariable = 'FLOWS_SCHEDULE_HOOK_NAME';
-
-export const seedDBStructure = () => {
-	it.each(vendors)(
-		'%s',
-		async (vendor) => {
-			try {
-				await DeleteCollection(vendor, { collection });
-
-				await CreateCollection(vendor, {
-					collection,
-				});
-
-				await CreateField(vendor, {
-					collection,
-					field: fieldData,
-					type: 'string',
-				});
-
-				expect(true).toBeTruthy();
-			} catch (error) {
-				expect(error).toBeFalsy();
-			}
-		},
-		300000
-	);
-};
 
 export const seedDBValues = async () => {
 	let isSeeded = true;
@@ -54,14 +26,10 @@ export const seedDBValues = async () => {
 			const payloadOperationCreate = {
 				position_x: 19,
 				position_y: 1,
-				name: 'Create Record',
-				key: 'op_create',
-				type: 'item-create',
-				options: {
-					payload: { [fieldData]: `{{ $env.${envTargetVariable} }}` },
-					collection,
-					permissions: '$full',
-				},
+				name: 'Log to Console',
+				key: 'log_to_console',
+				type: 'log',
+				options: { message: `${logPrefix}{{ $env.${envTargetVariable} }}` },
 			};
 
 			const flowId = (

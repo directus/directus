@@ -469,7 +469,6 @@ comments: Kommentarer
 no_comments: Inga kommentarer ännu
 select_item: Välj objekt
 no_items: Inga objekt
-search_items: Sök objekt...
 disabled: Inaktiverad
 information: Information
 report_bug: Rapportera bugg
@@ -1731,6 +1730,9 @@ triggers:
 operations:
   condition:
     name: Villkor
+  json-web-token:
+    token: Token
+    options: Alternativ
   log:
     message: Meddelande
   mail:

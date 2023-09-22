@@ -11,7 +11,7 @@ readTime: 15 min read
 > well as how users view and interact with data inside the data studio.
 
 <!--
-:::tip Before You Begin
+::: tip Before You Begin
 
 Learn Directus
 Please see the [Quickstart Guide]().
@@ -20,7 +20,7 @@ Configuration > Overview
 :::
 -->
 
-:::tip Learn More
+::: tip Learn More
 
 Remember, you will have full access to manage your database using SQL. Directus will mirror any changes. You can also
 configure your data model programmatically via the API. To learn more, see our API documentation on

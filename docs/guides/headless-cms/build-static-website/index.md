@@ -10,10 +10,10 @@
 />
 
 <Card
-  title="Nuxt.js"
+  title="Nuxt"
   h="2"
-  text="Build a website with dynamic content, pages, and posts with Nuxt.js 3."
+  text="Build a website with dynamic content, pages, and posts with Nuxt 3."
   url="/guides/headless-cms/build-static-website/nuxt-3"
-  icon="/icons/nuxtjs.svg"
+  icon="/icons/nuxt.svg"
   add-margin
 />

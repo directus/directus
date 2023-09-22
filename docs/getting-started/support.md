@@ -37,7 +37,7 @@ resource for others developers with similar questions.
 Our [Discord Community](https://directus.chat) is another great way to get assistance. Please keep all questions in the
 help channels, be considerate, and remember that you are getting free help from the community.
 
-:::warning No Guaranteed Response Time
+::: warning No Guaranteed Response Time
 
 While the Directus Core Team plays an active and engaged role in community discussions, there is no guaranteed response
 time for Community Support.

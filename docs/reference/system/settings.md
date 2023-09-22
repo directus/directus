@@ -9,8 +9,6 @@ pageClass: page-reference
 > Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only
 > administrators have access to manage Settings.
 
----
-
 ## The Settings Object
 
 `id` **uuid**\
@@ -111,29 +109,19 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 }
 ```
 
----
-
 ## Retrieve Settings
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /settings`
 
-Returns the [settings object](#the-settings-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /settings
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -141,7 +129,39 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readSettings } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readSettings());
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the [settings object](#the-settings-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /settings`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -151,43 +171,35 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readSettings } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readSettings());
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Settings
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
+`PATCH /settings`
 
-A partial [settings object](#the-settings-object).
+Provide a partial [settings object](#the-settings-object) as the body of your request.
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the [settings object](#the-setting-object).
-
-### REST API
-
-```
-PATCH /settings
-```
-
-##### Example
-
-```json
-// PATCH /settings
-
-{
-	"project_url": "https://example.com/"
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -195,7 +207,49 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateSettings } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateSettings(settings_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [settings object](#the-settings-object).
+
+### Response
+
+Returns the [settings object](#the-setting-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /settings`
+
+```json
+{
+	"project_url": "https://example.com/"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -205,3 +259,21 @@ mutation {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateSettings } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateSettings({
+		project_url: 'https://example.com/',
+	})
+);
+```
+
+</template>
+</SnippetToggler>

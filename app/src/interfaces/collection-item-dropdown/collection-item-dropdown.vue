@@ -140,6 +140,9 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 <style lang="scss" scoped>
 .preview {
+	display: block;
 	flex-grow: 1;
+	height: calc(100% - 16px);
+	overflow: hidden;
 }
 </style>

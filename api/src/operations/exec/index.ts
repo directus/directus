@@ -1,49 +1,66 @@
-import { defineOperationApi, toArray } from '@directus/utils';
-import { isBuiltin } from 'node:module';
-import type { NodeVMOptions } from 'vm2';
-import { NodeVM, VMScript } from 'vm2';
+import { defineOperationApi } from '@directus/utils';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const ivm = require('isolated-vm');
 
 type Options = {
 	code: string;
 };
 
+/**
+ * A helper for making the logs prettier.
+ * The logger prints arrays with their indices but this looks "bad" when you have only one argument.
+ */
+function unpackArgs(args: any[]) {
+	return args.length === 1 ? args[0] : args;
+}
+
 export default defineOperationApi<Options>({
 	id: 'exec',
-	handler: async ({ code }, { data, env }) => {
-		const allowedModules = env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [];
-		const allowedModulesBuiltIn: string[] = [];
-		const allowedModulesExternal: string[] = [];
+	handler: async ({ code }, { data, env, logger }) => {
 		const allowedEnv = data['$env'] ?? {};
+		const isolateSizeMb = env['FLOWS_RUN_SCRIPT_MAX_MEMORY'];
+		const scriptTimeoutMs = env['FLOWS_RUN_SCRIPT_TIMEOUT'];
 
-		const opts: NodeVMOptions = {
-			eval: false,
-			wasm: false,
-			env: allowedEnv,
-		};
+		const isolate = new ivm.Isolate({ memoryLimit: isolateSizeMb });
+		const context = isolate.createContextSync();
+		const jail = context.global;
+		jail.setSync('global', jail.derefInto());
+		jail.setSync('process', { env: allowedEnv }, { copy: true });
+		jail.setSync('module', { exports: null }, { copy: true });
 
-		for (const module of allowedModules) {
-			if (isBuiltin(module)) {
-				allowedModulesBuiltIn.push(module);
-			} else {
-				allowedModulesExternal.push(module);
-			}
-		}
+		jail.setSync(
+			'console',
+			{
+				log: new ivm.Callback((...args: any[]) => logger.info(unpackArgs(args)), { sync: true }),
+				info: new ivm.Callback((...args: any[]) => logger.info(unpackArgs(args)), { sync: true }),
+				warn: new ivm.Callback((...args: any[]) => logger.warn(unpackArgs(args)), { sync: true }),
+				error: new ivm.Callback((...args: any[]) => logger.error(unpackArgs(args)), { sync: true }),
+				trace: new ivm.Callback((...args: any[]) => logger.trace(unpackArgs(args)), { sync: true }),
+				debug: new ivm.Callback((...args: any[]) => logger.debug(unpackArgs(args)), { sync: true }),
+			},
+			{ copy: true }
+		);
 
-		if (allowedModules.length > 0) {
-			opts.require = {
-				builtin: allowedModulesBuiltIn,
-				external: {
-					modules: allowedModulesExternal,
-					transitive: false,
-				},
-			};
-		}
+		// Run the operation once to define the module.exports function
+		await context.eval(code, { timeout: scriptTimeoutMs });
 
-		const vm = new NodeVM(opts);
+		const inputData = new ivm.ExternalCopy({ data });
 
-		const script = new VMScript(code).compile();
-		const fn = await vm.run(script);
+		const resultRef = await context.evalClosure(`return module.exports($0.data)`, [inputData.copyInto()], {
+			result: { reference: true, promise: true },
+			timeout: scriptTimeoutMs,
+		});
 
-		return await fn(data);
+		const result = await resultRef.copy();
+
+		// Memory cleanup
+		resultRef.release();
+		inputData.release();
+		context.release();
+		isolate.dispose();
+
+		return result;
 	},
 });

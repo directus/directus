@@ -18,7 +18,7 @@ logic. Cloud Projects are updated every two weeks in rolling releases _(i.e. don
 your Project on the latest version and fully up to date with all [Cloud Exclusives](#cloud-exclusives), dependencies and
 security patches.
 
-:::tip Version-locking
+::: tip Version-locking
 
 Version-locking is available on Enterprise Projects.
 
@@ -42,7 +42,7 @@ well.
 Directus Core is totally detached from the database. Data can be cleanly imported and exported on Projects with the API
 via the schema endpoints.
 
-:::tip Enterprise Clients
+::: tip Enterprise Clients
 
 The Directus Team will help you work through this process on all [Enterprise Projects](https://directus.io/contact).
 
@@ -163,7 +163,7 @@ are 19 regions available for Enterprise Projects, and 3 for Standard Projects:
 rest remains encrypted, and HTTPS/TLS protocols are enabled on all in-transit data. Cloud Projects are created with
 secure and safe [tenancy architectures](#multi-tenancy).
 
-:::tip Directus Core Security Features
+::: tip Directus Core Security Features
 
 Directus core comes with even more security features out-of-the-box, including IP address whitelabeling, MFA enabling,
 SSO options, customization for Password Rule requirements and the flexibility to use any access token paradigm desired.
@@ -200,7 +200,7 @@ following API request limits:
 | Standard   | 50 requests per second per IP  |
 | Enterprise | 100 requests per second per IP |
 
-:::tip Learn More
+::: tip Learn More
 
 For details on other limitations, please see [Cloud Policies](https://directus.io/cloud-policies/#).
 
@@ -217,7 +217,7 @@ of course help others as well_. Find us on [GitHub](https://github.com/directus/
 [Discord](https://directus.chat) to join the thousands of other developers all discussing and guiding the future of the
 Directus platform. Most common questions have already been asked and answered and can be easily searched.
 
-:::warning No Guaranteed Response Time
+::: warning No Guaranteed Response Time
 
 While the Directus Core Team plays an active and engaged role in community discussions and aims to answer questions
 within a few days, there is no guaranteed response time for Community Support.
@@ -229,7 +229,7 @@ within a few days, there is no guaranteed response time for Community Support.
 Basic and Premium Support offer direct communication with the Directus Core Team. Basic support is included on all
 Enterprise Projects, and Premium Support adds 24/7 response times for critical software issues only.
 
-:::tip Add-on Support
+::: tip Add-on Support
 
 Looking for Basic or Premium Support on a self-hosted Project? [Contact Sales](https://directus.io/contact).
 
@@ -263,7 +263,7 @@ basis. For end-to-end, single-tenant infrastructure with fully dedicated resourc
 Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project - no neighbors! Ready to upgrade to Enterprise?
 [Contact us](https://directus.io/contact)
 
-:::tip
+::: tip
 
 This section refers to how your Cloud Project is stored alongside other Cloud Projects and has nothing to do with how
 you design your Project's data model. You can implement single or multi-tenant architecture within any Directus Cloud
