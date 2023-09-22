@@ -35,6 +35,7 @@ tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
 location: Konum
+collection_names_are_case_sensitive: Koleksiyon adları büyük/küçük harfe duyarlıdır
 condition_rules: Durum Kuralları
 input: Girdi
 maps: Haritalar
@@ -80,6 +81,10 @@ create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
+create_custom_translation: Özel Çeviri Oluştur
+edit_custom_translation: Özel Çeviriyi Düzenle
+no_custom_translations: Özel Çeviri Yok
+no_custom_translations_copy: Henüz bir özel çeviri bulunmamakta.
 invite_users: Kullanıcıları Davet Et
 invite: Davet Et
 email_already_invited: E-posta "{email}" zaten davet edildi
@@ -116,6 +121,7 @@ archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | Seçilen {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinlerin üstüne yazacaktır. Emin misiniz?
+the_following_are_minimum_permissions: '"Uygulama Erişimi" etkinleştirildiğinde aşağıdaki minimum izinler otomatik olarak uygulanır. Gerekirse ek izinler verebilirsiniz, ancak izinleri bu seviyenin altına düşüremezsiniz.'
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Varsayılanlar
 unarchive: Arşivden Çıkar
@@ -140,6 +146,14 @@ validationError:
   required: Değer gereklidir
   unique: Değer benzersiz olmalı
   regex: Değer doğru biçime sahip değil
+  starts_with: Değer {substring} ile başlamalıdır
+  istarts_with: Değer {substring} ile başlamalıdır
+  nstarts_with: Değer {substring} ile başlayamaz
+  nistarts_with: Değer {substring} ile başlayamaz
+  ends_with: Değer {substring} ile bitmelidir
+  iends_with: Değer {substring} ile bitmelidir
+  nends_with: Değer {substring} ile bitemez
+  niends_with: Değer {substring} ile bitemez
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş
@@ -166,6 +180,7 @@ permissions_for_role: '{role} rolünün, {action} yapabileceği öğeler.'
 fields_for_role: '{role} rolünün, {action} yapabileceği alanlar.'
 validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
 presets_for_role: '{role} rolü için varsayılan alan değeri.'
+presets_field_warning: '"{field}" alanı için ilişkisel ön ayarlar "ayrıntılı" sözdizimiyle yapılandırılmalıdır.'
 presentation_and_aliases: Sunumlar
 revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
@@ -221,6 +236,7 @@ bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
 date_range: Tarih Aralığı
+translation_key_placeholder: Bir anahtar girin...
 datetime: Tarih ve Zaman
 dateTime: Tarih ve Zaman
 precision: Hassasiyet
@@ -281,7 +297,9 @@ m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bire İlişki
 invalid_item: Geçersiz Öğe
 require_confirmation: Doğrulama Gerekiyor
+dialog: Diyalog
 modal: Açılır Pencere
+confirmation_description: Onay Açıklaması
 next: Sonraki
 field_name: Alan Adı
 translations: Çeviriler
@@ -447,6 +465,8 @@ open_file_in_tab: Dosyayı yeni sekmede aç
 start_export: Dışa Aktarmayı Başlat
 not_available_for_local_downloads: Yerel indirmeler için mevcut değil
 exporting_all_items_in_collection: '{collection} içindeki tüm {total} öğe dışa aktarılıyor.'
+exporting_download_hint: '{format} dosyası oluşturulduktan sonra cihazınıza indirilecektir.'
+exporting_library_hint: '{format} dosyası oluşturulduktan sonra Dosya Kitaplığına kaydedilecektir.'
 collection_key: Koleksiyon Anahtarı
 name: İsim
 primary_key_field: Birincil Anahtar Alanı

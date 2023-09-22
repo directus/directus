@@ -35,6 +35,7 @@ tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 location: الموقع
+collection_names_are_case_sensitive: Collection names are case sensitive
 condition_rules: قوانين الشرط
 input: إدخال
 maps: الخرائط
@@ -80,6 +81,10 @@ create_user: إضافة مستخدم
 message: الرسالة
 delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
+create_custom_translation: إنشاء ترجمة مخصصة
+edit_custom_translation: إنشاء ترجمة مخصصة
+no_custom_translations: ترجمات مخصصة
+no_custom_translations_copy: There are no custom translations yet.
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
@@ -141,6 +146,14 @@ validationError:
   required: هذه القيمة مطلوبة
   unique: القيمة يجب أن تكون
   regex: القيمة لا تحتوي على التنسيق الصحيح
+  starts_with: 'https://crowdin. com/translate/directus/70/en-ar? filter=basic&value=0#'
+  istarts_with: Arabic Translations
+  nstarts_with: يجب أن لا تحتوي القيمة على {substring}
+  nistarts_with: Arabic Translations
+  ends_with: يجب أن لا تحتوي القيمة على {substring}
+  iends_with: Value has to end with {substring}
+  nends_with: Translations
+  niends_with: Translations
 all_access: دخول كامل للترجمات
 no_access: ممنوع الدخول
 use_custom: تخصيص
@@ -222,6 +235,7 @@ bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
 date_range: فترة التاريخ
+translation_key_placeholder: ARABIC TRANSLATIONS
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
 precision: الدقة

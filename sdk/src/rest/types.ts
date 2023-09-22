@@ -9,7 +9,7 @@ export interface RestClient<Schema extends object> {
 }
 
 export interface RestConfig {
-	credentials: RequestCredentials;
+	credentials?: RequestCredentials;
 	onRequest?: RequestTransformer;
 	onResponse?: ResponseTransformer;
 }
