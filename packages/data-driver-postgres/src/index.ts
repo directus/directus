@@ -1,14 +1,10 @@
 /**
  * The driver for PostgreSQL which can be registered by using @directus/data.
  *
- *  @packageDocumentation
+ * @packageDocumentation
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
-import {
-	convertToAbstractSqlQueryAndGenerateAliases,
-	expand,
-	type ParameterizedSqlStatement,
-} from '@directus/data-sql';
+import { convertQueryAndGenerateAliases, expand, type ParameterizedSqlStatement } from '@directus/data-sql';
 import type { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
@@ -53,7 +49,7 @@ export default class DataDriverPostgres implements DataDriver {
 		let client: PoolClient | null = null;
 
 		try {
-			const conversionResult = convertToAbstractSqlQueryAndGenerateAliases(query);
+			const conversionResult = convertQueryAndGenerateAliases(query);
 			const sql = constructSqlQuery(conversionResult.sql);
 
 			const { poolClient, stream } = await this.getDataFromSource(this.#pool, sql);

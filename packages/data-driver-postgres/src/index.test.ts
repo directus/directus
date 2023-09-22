@@ -37,7 +37,7 @@ describe('querying the driver', () => {
 
 			return {
 				...actual,
-				convertToAbstractSqlQueryAndGenerateAliases: vi.fn().mockImplementation(() => {
+				convertQueryAndGenerateAliases: vi.fn().mockImplementation(() => {
 					const sqlQuery: AbstractSqlQuery = {
 						select: [
 							{
@@ -114,7 +114,7 @@ describe('querying the driver', () => {
 			root: true,
 			collection: randomCollection,
 			store: 'randomDataStore1',
-			nodes: [
+			fields: [
 				{
 					type: 'primitive',
 					field: firstField,

@@ -1,7 +1,7 @@
 import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types/index.js';
-import { convertToAbstractSqlQueryAndGenerateAliases } from './converter.js';
+import { convertQueryAndGenerateAliases } from './converter.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: {
@@ -14,7 +14,7 @@ beforeEach(() => {
 			root: true,
 			store: randomIdentifier(),
 			collection: randomIdentifier(),
-			nodes: [
+			fields: [
 				{
 					type: 'primitive',
 					field: randomIdentifier(),
@@ -29,19 +29,19 @@ beforeEach(() => {
 });
 
 test('Convert simple query', () => {
-	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
+	const res = convertQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 		],
 		from: sample.query.collection,
@@ -70,19 +70,19 @@ test('Convert query with filter', () => {
 		},
 	};
 
-	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
+	const res = convertQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 		],
 		from: sample.query.collection,
@@ -117,19 +117,19 @@ test('Convert query with a limit', () => {
 		},
 	};
 
-	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
+	const res = convertQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 		],
 		from: sample.query.collection,
@@ -152,19 +152,19 @@ test('Convert query with limit and offset', () => {
 		},
 	};
 
-	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
+	const res = convertQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 		],
 		from: sample.query.collection,
@@ -190,19 +190,19 @@ test('Convert query with a sort', () => {
 		],
 	};
 
-	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
+	const res = convertQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 		],
 		from: sample.query.collection,
@@ -222,7 +222,7 @@ test('Convert query with a sort', () => {
 test('Convert a query with a function as field select', () => {
 	const randomField = randomIdentifier();
 
-	sample.query.nodes.push({
+	sample.query.fields.push({
 		type: 'fn',
 		fn: {
 			type: 'arrayFn',
@@ -231,19 +231,19 @@ test('Convert a query with a function as field select', () => {
 		field: randomField,
 	});
 
-	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
+	const res = convertQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'fn',
@@ -284,19 +284,19 @@ test('Convert a query with all possible modifiers', () => {
 		],
 	};
 
-	const res = convertToAbstractSqlQueryAndGenerateAliases(sample.query);
+	const res = convertQueryAndGenerateAliases(sample.query);
 
 	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
 				table: sample.query.collection,
-				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 		],
 		from: sample.query.collection,

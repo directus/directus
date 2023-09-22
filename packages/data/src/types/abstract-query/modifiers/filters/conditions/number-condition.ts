@@ -1,5 +1,5 @@
-import type { AbstractQueryFieldNodeFn } from '../../../nodes/function.js';
-import type { AbstractQueryFieldNodePrimitive } from '../../../nodes/primitive.js';
+import type { AbstractQueryFieldNodeFn } from '../../../fields/function.js';
+import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
 
 /**
  * Used to compare a number or date time field with a number value.

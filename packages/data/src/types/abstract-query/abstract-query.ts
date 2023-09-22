@@ -5,7 +5,7 @@
  * @module abstract-query
  */
 import type { AbstractQueryModifiers } from './modifiers/index.js';
-import type { AbstractQueryFieldNode } from './nodes/fieldNodes.js';
+import type { AbstractQueryFieldNode } from './fields/fieldNodes.js';
 
 /**
  * The abstract root query
@@ -20,8 +20,8 @@ export interface AbstractQuery {
 	/** Name of the collection entrypoint within the store */
 	collection: string;
 
-	/** All fields to select in the query */
-	nodes: AbstractQueryFieldNode[];
+	/** All fields to select in the query*/
+	fields: AbstractQueryFieldNode[];
 
 	/** Optional attributes to perform a fine granular query */
 	modifiers?: AbstractQueryModifiers;
@@ -36,7 +36,7 @@ export interface AbstractQuery {
  */
 
 export * from './modifiers/index.js';
-export * from './nodes/function.js';
-export * from './nodes/primitive.js';
-export * from './nodes/related.js';
-export * from './nodes/fieldNodes.js';
+export * from './fields/function.js';
+export * from './fields/primitive.js';
+export * from './fields/related.js';
+export * from './fields/fieldNodes.js';

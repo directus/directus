@@ -10,13 +10,13 @@ import { applyFunction } from '../utils/functions.js';
  * @returns the `SELECT x, y` part of a SQL statement
  */
 export const select = ({ select }: AbstractSqlQuery): string => {
-	const escapedColumns = select.map((node) => {
-		if (node.type === 'primitive') {
-			return wrapColumn(node.table, node.column, node.as);
+	const escapedColumns = select.map((selectNode) => {
+		if (selectNode.type === 'primitive') {
+			return wrapColumn(selectNode.table, selectNode.column, selectNode.as);
 		}
 
-		if (node.type === 'fn') {
-			return applyFunction(node);
+		if (selectNode.type === 'fn') {
+			return applyFunction(selectNode);
 		}
 
 		throw Error(`Unknown node type`);

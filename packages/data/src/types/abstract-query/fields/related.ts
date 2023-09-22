@@ -19,7 +19,7 @@ export interface AbstractQueryFieldNodeRelatedBase {
 }
 
 /**
- * With those Used to build a relational query for m2o and o2m relations.
+ * Used to build a relational query for m2o and o2m relations.
  */
 export type AbstractQueryFieldNodeRelated =
 	| AbstractQueryFieldNodeRelatedManyToOne

@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodePrimitive } from '../../../nodes/primitive.js';
+import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
 
 /**
  * Used to compare a string field with a string value.

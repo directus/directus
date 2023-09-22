@@ -1,5 +1,5 @@
 import { expect, test, vi, afterAll } from 'vitest';
-import { convertNodesAndGenerateAliases, type ConvertSelectOutput } from './nodes.js';
+import { convertNodesAndGenerateAliases, type ConvertSelectOutput } from './fields.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';

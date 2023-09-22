@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodePrimitive } from '../../../nodes/primitive.js';
+import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
 
 /**
  * It's mainly used to compare two fields for relational queries.
