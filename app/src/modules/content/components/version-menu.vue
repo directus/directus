@@ -9,7 +9,7 @@
 			</template>
 
 			<v-list>
-				<v-list-item class="version-item" clickable :active="currentVersion === null" @click="$emit('switch', null)">
+				<v-list-item class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
 					{{ t('main_version') }}
 				</v-list-item>
 
@@ -19,7 +19,7 @@
 					class="version-item"
 					clickable
 					:active="versionItem.id === currentVersion?.id"
-					@click="$emit('switch', versionItem)"
+					@click="switchVersion(versionItem)"
 				>
 					{{ versionItem.name }}
 				</v-list-item>
@@ -57,6 +57,21 @@
 			@cancel="isVersionPromoteDrawerOpen = false"
 			@promote="onPromoteComplete"
 		/>
+
+		<v-dialog v-model="switchDialogActive" @esc="switchDialogActive = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>
+					{{ t('switch_version_copy', { version: switchTarget ? switchTarget.name : t('main_version') }) }}
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="switchVersion()">
+						{{ t('switch_version') }}
+					</v-button>
+					<v-button @click="switchDialogActive = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 
 		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">
 			<v-card>
@@ -139,6 +154,7 @@ import VersionPromoteDrawer from './version-promote-drawer.vue';
 interface Props {
 	collection: string;
 	primaryKey: string | number;
+	hasEdits: boolean;
 	currentVersion: Version | null;
 	versions: Version[] | null;
 }
@@ -156,7 +172,7 @@ const { t } = useI18n();
 
 const { hasPermission } = usePermissionsStore();
 
-const { collection, primaryKey, currentVersion } = toRefs(props);
+const { collection, primaryKey, hasEdits, currentVersion } = toRefs(props);
 
 const newVersionName = ref<string | null>(null);
 const isVersionPromoteDrawerOpen = ref(false);
@@ -165,9 +181,32 @@ const createVersionsAllowed = computed<boolean>(() => hasPermission('directus_ve
 const updateVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'update'));
 const deleteVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'delete'));
 
+const { switchDialogActive, switchTarget, switchVersion } = useSwitchDialog();
 const { createDialogActive, closeCreateDialog, creating, createVersion } = useCreateDialog();
 const { updateDialogActive, openUpdateDialog, closeUpdateDialog, updating, updateVersion } = useUpdateDialog();
 const { deleteDialogActive, deleting, deleteVersion } = useDeleteDialog();
+
+function useSwitchDialog() {
+	const switchDialogActive = ref(false);
+	const switchTarget = ref<Version | null>(null);
+
+	return {
+		switchDialogActive,
+		switchTarget,
+		switchVersion,
+	};
+
+	function switchVersion(version?: Version | null) {
+		switchTarget.value = version ?? null;
+
+		if (hasEdits.value && !switchDialogActive.value) {
+			switchDialogActive.value = true;
+		} else {
+			switchDialogActive.value = false;
+			emit('switch', switchTarget.value);
+		}
+	}
+}
 
 function useCreateDialog() {
 	const createDialogActive = ref(false);

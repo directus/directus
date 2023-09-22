@@ -68,6 +68,7 @@
 				"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:has-edits="hasEdits"
 				:current-version="currentVersion"
 				:versions="versions"
 				@add="addVersion"
@@ -446,6 +447,10 @@ const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
 	return [];
+});
+
+watch(currentVersion, () => {
+	edits.value = {};
 });
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
