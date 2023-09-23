@@ -140,9 +140,16 @@ export class ImportService {
 				}
 			};
 
+			const PapaOptions: Papa.ParseConfig = {
+				dynamicTyping: true,
+				header: true,
+				skipEmptyLines: 'greedy',
+				transform,
+			}
+
 			return new Promise<void>((resolve, reject) => {
 				stream
-					.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, { header: true, transform }))
+					.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
 					.on('data', (obj: Record<string, string>) => {
 						saveQueue.push(obj);
 					})
