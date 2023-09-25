@@ -157,7 +157,7 @@ const client = createDirectus('http://directus.example.com')
 client.setToken('TOKEN');
 ```
 
-Note that an instance of the `LocalStorage` was created in the options of the `authentication()` composable.
+Note that the `LocalStorage` class is for demonstration purposes only, in production it is not recommended to store credentials in the localStorage of browsers.
 
 ## Cross-Domain Cookies
 
