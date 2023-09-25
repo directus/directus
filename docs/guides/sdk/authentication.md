@@ -23,7 +23,8 @@ await client.refresh();
 await client.logout();
 ```
 
-This approach will handle refreshing of the token automatically. The current token is stored inside the initialized client.
+This approach will handle refreshing of the token automatically. The current token is stored inside the initialized
+client.
 
 ### Using the `rest()` Composable
 
@@ -47,7 +48,8 @@ client.send(JSON.stringify({ type: 'auth', email: email, password: password }));
 ```
 
 When using Directus Realtime's [default 'handshake' authentication strategy](/guides/real-time/authentication), the
-first message sent must include authentication details - either an `email` and `password`, an `access_token`, or a `refresh_token`.
+first message sent must include authentication details - either an `email` and `password`, an `access_token`, or a
+`refresh_token`.
 
 ## Set a Token
 
