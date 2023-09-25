@@ -3,4 +3,4 @@
 "@directus/api": patch
 ---
 
-Fixed replacing an asset by importing via URL
+Fixed replacing an asset when importing a file via URL
