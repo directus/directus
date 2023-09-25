@@ -228,7 +228,8 @@ functionality within the App can be bucketed into one of the following modules:
 - [Insights](/user-guide/insights/dashboards) — Access to infinitely customizable data dashboards
 - [App Guide](/user-guide/overview/data-studio-app) — A tailored, in-app portal for the platform's concepts, guides, and
   reference
-- [Settings](/user-guide/settings/settings) — An admin-only section for configuring the project and system settings
+- [Project Settings](/user-guide/settings/project-settings) — An admin-only section for configuring the project and
+  system settings
 
 ![Modules](https://marketing.directus.app/assets/f761a496-f49b-4fcc-a09e-d074b6cbf8a5.png)
 
