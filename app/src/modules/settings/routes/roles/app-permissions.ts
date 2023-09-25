@@ -183,7 +183,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 				_eq: 'manual',
 			},
 		},
-		fields: ['id', 'name', 'icon', 'color', 'options', 'trigger'],
+		fields: ['id', 'status', 'name', 'icon', 'color', 'options', 'trigger'],
 	},
 ];
 

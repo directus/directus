@@ -6,8 +6,8 @@ import '../types/express.d.ts';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { InvalidCredentialsException } from '../exceptions/invalid-credentials.js';
 import { handler } from './authenticate.js';
+import { InvalidCredentialsError } from '../errors/index.js';
 
 vi.mock('../database/index');
 
@@ -174,7 +174,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	expect(next).toHaveBeenCalledTimes(1);
 });
 
-test('Throws InvalidCredentialsException when static token is used, but user does not exist', async () => {
+test('Throws InvalidCredentialsError when static token is used, but user does not exist', async () => {
 	vi.mocked(getDatabase).mockReturnValue({
 		select: vi.fn().mockReturnThis(),
 		from: vi.fn().mockReturnThis(),
@@ -201,7 +201,7 @@ test('Throws InvalidCredentialsException when static token is used, but user doe
 	const res = {} as Response;
 	const next = vi.fn();
 
-	expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsException());
+	expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
 	expect(next).toHaveBeenCalledTimes(0);
 });
 

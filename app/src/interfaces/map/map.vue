@@ -125,7 +125,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const container: Ref<HTMLElement | null> = ref(null);
 let map: Map;
-let mapLoading = ref(true);
+const mapLoading = ref(true);
 let currentGeometry: Geometry | null | undefined;
 
 const geometryOptionsError = ref<string | null>();

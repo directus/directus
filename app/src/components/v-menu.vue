@@ -382,6 +382,14 @@ function usePopper(
 					callback();
 				},
 			},
+			{
+				name: 'minWidth',
+				enabled: true,
+				phase: 'beforeWrite',
+				fn({ state }) {
+					state.styles.popper.minWidth = `${state.rects.reference.width}px`;
+				},
+			},
 		];
 
 		if (options.value.arrow === true) {

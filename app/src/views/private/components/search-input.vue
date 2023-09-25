@@ -111,7 +111,7 @@ watch(active, (newActive: boolean) => {
 const activeFilterCount = computed(() => {
 	if (!props.filter) return 0;
 
-	let filterOperators: string[] = [];
+	const filterOperators: string[] = [];
 
 	parseLevel(props.filter);
 

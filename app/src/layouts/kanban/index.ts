@@ -279,7 +279,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					const before = group.items[event.added.newIndex - 1] as Item | undefined;
 					const after = group.items[event.added.newIndex] as Item | undefined;
 
-					if (item.sort !== undefined) {
+					if (item.sort !== undefined && sortField.value) {
 						if (after?.sort !== undefined && after.sort < item.sort) {
 							await changeManualSort({ item: item.id, to: after.id });
 						} else if (before?.sort !== undefined && before.sort > item.sort) {

@@ -1,21 +1,12 @@
 ---
 description: Learn how to migrate your data model to a new Directus project using Node.js.
-tags: []
-skill_level:
 directus_version: 9.23.0
-author_override:
 author: Kevin Lewis
 ---
 
 # Migrate Your Data Model with Node.js
 
-> {{ $frontmatter.description }}
-
-:::tip Author: {{$frontmatter.author}}
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-:::
+<GuideMeta />
 
 ## Explanation
 
@@ -90,6 +81,7 @@ At the bottom of `index.js`, create a `getDiff()` function which accepts a `snap
 ```js
 async function getDiff(snapshot) {
 	const URL = `${TARGET_DIRECTUS_URL}/schema/diff?access_token=${TARGET_ACCESS_TOKEN}`;
+
 	const { data } = await fetch(URL, {
 		method: 'POST',
 		body: JSON.stringify(snapshot),
@@ -97,6 +89,7 @@ async function getDiff(snapshot) {
 			'Content-Type': 'application/json',
 		},
 	}).then((r) => r.json());
+
 	return data;
 }
 ```
@@ -121,6 +114,7 @@ At the bottom of `index.js`, create a `applyDiff()` function which accepts a `di
 ```js
 async function applyDiff(diff) {
 	const URL = `${TARGET_DIRECTUS_URL}/schema/apply?access_token=${TARGET_ACCESS_TOKEN}`;
+
 	await fetch(URL, {
 		method: 'POST',
 		body: JSON.stringify(diff),
@@ -182,6 +176,7 @@ async function getSnapshot() {
 
 async function getDiff(snapshot) {
 	const URL = `${TARGET_DIRECTUS_URL}/schema/diff?access_token=${TARGET_ACCESS_TOKEN}`;
+
 	const { data } = await fetch(URL, {
 		method: 'POST',
 		body: JSON.stringify(snapshot),
@@ -189,11 +184,13 @@ async function getDiff(snapshot) {
 			'Content-Type': 'application/json',
 		},
 	}).then((r) => r.json());
+
 	return data;
 }
 
 async function applyDiff(diff) {
 	const URL = `${TARGET_DIRECTUS_URL}/schema/apply?access_token=${TARGET_ACCESS_TOKEN}`;
+
 	await fetch(URL, {
 		method: 'POST',
 		body: JSON.stringify(diff),

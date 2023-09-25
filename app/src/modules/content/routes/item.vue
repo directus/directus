@@ -230,7 +230,7 @@ import { useLocalStorage } from '@/composables/use-local-storage';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
-import { useTitle } from '@/composables/use-title';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
@@ -238,6 +238,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
+import { useHead } from '@unhead/vue';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
@@ -319,23 +320,23 @@ const title = computed(() => {
 		: t('editing_in', { collection: collectionInfo.value?.name });
 });
 
-const tabTitle = computed(() => {
-	let tabTitle = (collectionInfo.value?.name || '') + ' | ';
+useHead({
+	title: () => {
+		const tabTitle = (collectionInfo.value?.name || '') + ' | ';
 
-	if (collectionInfo.value && collectionInfo.value.meta) {
-		if (collectionInfo.value.meta.singleton === true) {
-			return tabTitle + collectionInfo.value.name;
-		} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
-			const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
+		if (collectionInfo.value && collectionInfo.value.meta) {
+			if (collectionInfo.value.meta.singleton === true) {
+				return tabTitle + collectionInfo.value.name;
+			} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
+				const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
 
-			if (displayValue.value !== undefined) return tabTitle + displayValue.value;
+				if (displayValue.value !== undefined) return tabTitle + displayValue.value;
+			}
 		}
-	}
 
-	return tabTitle + title.value;
+		return tabTitle + title.value;
+	},
 });
-
-useTitle(tabTitle);
 
 const archiveTooltip = computed(() => {
 	if (archiveAllowed.value === false) return t('not_allowed');
@@ -387,6 +388,7 @@ const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-previ
 const splitView = computed({
 	get() {
 		if (!collectionInfo.value?.meta?.preview_url) return false;
+		if (unref(isNew)) return false;
 
 		return livePreviewMode.value === 'split';
 	},
@@ -459,14 +461,14 @@ function navigateBack() {
 		return;
 	}
 
-	router.push(`/content/${props.collection}`);
+	router.push(getCollectionRoute(props.collection));
 }
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
 			name: collectionInfo.value?.name,
-			to: `/content/${props.collection}`,
+			to: getCollectionRoute(props.collection),
 		},
 	]);
 
@@ -478,7 +480,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		if (props.singleton === false) router.push(`/content/${props.collection}`);
+		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -490,11 +492,13 @@ async function saveAndStay() {
 	try {
 		const savedItem: Record<string, any> = await save();
 
-		revisionsDrawerDetailRef.value?.refresh?.();
-
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-			router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+
+			router.replace(getItemRoute(props.collection, newPrimaryKey));
+		} else {
+			revisionsDrawerDetailRef.value?.refresh?.();
+			refresh();
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -510,7 +514,7 @@ async function saveAndAddNew() {
 		if (isNew.value === true) {
 			refresh();
 		} else {
-			router.push(`/content/${props.collection}/+`);
+			router.push(getItemRoute(props.collection, '+'));
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -520,7 +524,8 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+
+		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -530,9 +535,11 @@ async function deleteAndQuit() {
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(`/content/${props.collection}`);
+		router.replace(getCollectionRoute(props.collection));
 	} catch {
 		// `remove` will show the unexpected error dialog
+	} finally {
+		confirmDelete.value = false;
 	}
 }
 
@@ -541,7 +548,7 @@ async function toggleArchive() {
 		await archive();
 
 		if (isArchived.value === true) {
-			router.push(`/content/${props.collection}`);
+			router.push(getCollectionRoute(props.collection));
 		} else {
 			confirmArchive.value = false;
 		}

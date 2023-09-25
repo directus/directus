@@ -1,6 +1,6 @@
+import { createError } from '@directus/errors';
 import { describe, expect, test } from 'vitest';
 import { sanitizeError } from './sanitize-error.js';
-import { BaseException } from '@directus/exceptions';
 
 describe('sanitizeError', () => {
 	test('removes stack trace from Error', () => {
@@ -15,8 +15,9 @@ describe('sanitizeError', () => {
 		expect(result.cause).toBe(error.cause);
 	});
 
-	test('removes stack trace from BaseException', () => {
-		const error = new BaseException('test message', 418, 'TEAPOT', { more: 'info' });
+	test('removes stack trace from DirectusError', () => {
+		const DummyError = createError<{ more: string }>('TEAPOT', 'test message', 418);
+		const error = new DummyError({ more: 'info' });
 
 		const result = sanitizeError(error);
 

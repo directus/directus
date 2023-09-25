@@ -1,5 +1,5 @@
 <template>
-	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
+	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
 			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
 				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
@@ -70,7 +70,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const fieldsInSection = computed(() => {
-	let fields: Field[] = [merge({}, props.field, { hideLabel: true })];
+	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
 
 	if (props.field.meta?.special?.includes('group')) {
 		fields.push(...getFieldsForGroup(props.field.meta?.field));

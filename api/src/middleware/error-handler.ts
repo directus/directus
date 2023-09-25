@@ -1,10 +1,10 @@
-import { BaseException } from '@directus/exceptions';
+import { isDirectusError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { MethodNotAllowedException } from '../exceptions/index.js';
+import { ErrorCode, MethodNotAllowedError } from '../errors/index.js';
 import logger from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
@@ -16,21 +16,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 
 	const errors = toArray(err);
 
-	if (errors.some((err) => err instanceof BaseException === false)) {
-		res.status(500);
-	} else {
-		let status = errors[0].status;
-
-		for (const err of errors) {
-			if (status !== err.status) {
-				// If there's multiple different status codes in the errors, use 500
-				status = 500;
-				break;
-			}
-		}
-
-		res.status(status);
-	}
+	let status: number | null = null;
 
 	for (const err of errors) {
 		if (env['NODE_ENV'] === 'development') {
@@ -40,26 +26,30 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 			};
 		}
 
-		if (err instanceof BaseException) {
+		if (isDirectusError(err)) {
 			logger.debug(err);
 
-			res.status(err.status);
+			if (!status) {
+				status = err.status;
+			} else if (status !== err.status) {
+				status = 500;
+			}
 
 			payload.errors.push({
 				message: err.message,
 				extensions: {
 					code: err.code,
-					...err.extensions,
+					...(err.extensions ?? {}),
 				},
 			});
 
-			if (err instanceof MethodNotAllowedException) {
-				res.header('Allow', err.extensions['allow'].join(', '));
+			if (isDirectusError(err, ErrorCode.MethodNotAllowed)) {
+				res.header('Allow', (err as InstanceType<typeof MethodNotAllowedError>).extensions.allowed.join(', '));
 			}
 		} else {
 			logger.error(err);
 
-			res.status(500);
+			status = 500;
 
 			if (req.accountability?.admin === true) {
 				payload = {
@@ -87,6 +77,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 			}
 		}
 	}
+
+	res.status(status ?? 500);
 
 	emitter
 		.emitFilter(

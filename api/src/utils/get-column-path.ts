@@ -1,5 +1,5 @@
 import type { Relation, SchemaOverview } from '@directus/types';
-import { InvalidQueryException } from '../exceptions/index.js';
+import { InvalidQueryError } from '../errors/index.js';
 import { getRelationInfo } from './get-relation-info.js';
 
 export type AliasMap = { [key: string]: { alias: string; collection: string } };
@@ -40,7 +40,7 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 		const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot!);
 
 		if (!relation) {
-			throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
+			throw new InvalidQueryError({ reason: `"${parentCollection}.${pathRoot}" is not a relational field` });
 		}
 
 		const alias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias : aliasMap[pathParts[0]!]?.alias;
@@ -52,7 +52,9 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 			const pathScope = pathParts[0]!.split(':')[1];
 
 			if (!pathScope) {
-				throw new InvalidQueryException(`You have to provide a collection scope when sorting on a many-to-any item`);
+				throw new InvalidQueryError({
+					reason: `You have to provide a collection scope when sorting on a many-to-any item`,
+				});
 			}
 
 			parent = pathScope;

@@ -1,9 +1,9 @@
 import type { Item, PrimaryKey } from '@directus/types';
 import getDatabase from '../database/index.js';
-import { ItemsService } from './items.js';
-import { InvalidPayloadException } from '../index.js';
-import type { AbstractServiceOptions } from '../types/services.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import type { MutationOptions } from '../types/items.js';
+import type { AbstractServiceOptions } from '../types/services.js';
+import { ItemsService } from './items.js';
 
 export class TranslationsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -21,7 +21,7 @@ export class TranslationsService extends ItemsService {
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (await this.translationKeyExists(data['key'], data['language'])) {
-			throw new InvalidPayloadException('Duplicate key and language combination.');
+			throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
 		}
 
 		return await super.createOne(data, opts);
@@ -29,7 +29,7 @@ export class TranslationsService extends ItemsService {
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (keys.length > 0 && 'key' in data && 'language' in data) {
-			throw new InvalidPayloadException('Duplicate key and language combination.');
+			throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
 		} else if ('key' in data || 'language' in data) {
 			const items = await this.readMany(keys);
 
@@ -37,7 +37,7 @@ export class TranslationsService extends ItemsService {
 				const updatedData = { ...item, ...data };
 
 				if (await this.translationKeyExists(updatedData['key'], updatedData['language'])) {
-					throw new InvalidPayloadException('Duplicate key and language combination.');
+					throw new InvalidPayloadError({ reason: 'Duplicate key and language combination' });
 				}
 			}
 		}

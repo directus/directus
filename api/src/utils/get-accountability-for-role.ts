@@ -1,6 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { InvalidConfigException } from '../exceptions/index.js';
 import { getPermissions } from './get-permissions.js';
 
 export async function getAccountabilityForRole(
@@ -38,7 +37,7 @@ export async function getAccountabilityForRole(
 			.first();
 
 		if (!roleInfo) {
-			throw new InvalidConfigException(`Configured role "${role}" isn't a valid role ID or doesn't exist.`);
+			throw new Error(`Configured role "${role}" isn't a valid role ID or doesn't exist.`);
 		}
 
 		generatedAccountability = {

@@ -52,7 +52,7 @@ describe('/files', () => {
 					expect(response.body).toMatchObject({
 						errors: [
 							{
-								message: '"storage" is required',
+								message: 'Validation failed for field "storage". Value is required.',
 								extensions: {
 									code: 'FAILED_VALIDATION',
 								},

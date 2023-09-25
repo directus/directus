@@ -42,11 +42,11 @@ export class MessengerRedis implements Messenger {
 	sub: Redis;
 
 	constructor() {
-		const config = getConfigFromEnv('MESSENGER_REDIS');
+		const config = getConfigFromEnv('REDIS');
 		const env = getEnv();
-		this.pub = new Redis(env['MESSENGER_REDIS'] ?? config);
-		this.sub = new Redis(env['MESSENGER_REDIS'] ?? config);
-		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus';
+		this.pub = new Redis(env['REDIS'] ?? config);
+		this.sub = new Redis(env['REDIS'] ?? config);
+		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus-messenger';
 	}
 
 	publish(channel: string, payload: Record<string, any>) {

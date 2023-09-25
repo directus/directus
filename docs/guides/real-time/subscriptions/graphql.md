@@ -46,19 +46,20 @@ When a change happens to an item in a collection with an active subscription, it
 		"event": "create",
 		"data": {
 			"id": "1",
-			"text": "Hello world!",
+			"text": "Hello world!"
 		}
 	}
 }
 ```
 
-An event will be either `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will
-contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `key` will be filled the other requested fields will be `null`.
+An event will be either `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will contain
+the full item objects (or specific fields, if specified). If the event is `delete`, just the `key` will be filled the
+other requested fields will be `null`.
 
 ## Working With Specific CRUD Operations
 
-Using the `event` argument you can filter for specific `create`,
-`update`, and `delete` events. Here's an example of how to do this:
+Using the `event` argument you can filter for specific `create`, `update`, and `delete` events. Here's an example of how
+to do this:
 
 ```graphql
 subscription {

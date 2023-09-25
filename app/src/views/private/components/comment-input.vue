@@ -136,7 +136,7 @@ watch(
 );
 
 let triggerCaretPosition = 0;
-let selectedKeyboardIndex = ref<number>(0);
+const selectedKeyboardIndex = ref<number>(0);
 
 let cancelToken: CancelTokenSource | null = null;
 

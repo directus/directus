@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import env from '../env.js';
-import { ForbiddenException, InvalidCredentialsException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidCredentialsError } from '../errors/index.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
@@ -67,11 +67,11 @@ export class SharesService extends ItemsService {
 			.first();
 
 		if (!record) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (record.share_password && !(await argon2.verify(record.share_password, payload['password']))) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		await this.knex('directus_shares')
@@ -120,7 +120,7 @@ export class SharesService extends ItemsService {
 	 * if you have read access to that particular share
 	 */
 	async invite(payload: { emails: string[]; share: PrimaryKey }) {
-		if (!this.accountability?.user) throw new ForbiddenException();
+		if (!this.accountability?.user) throw new ForbiddenError();
 
 		const share = await this.readOne(payload.share, { fields: ['collection'] });
 

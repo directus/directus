@@ -5,7 +5,6 @@ import {
 	JAVASCRIPT_FILE_EXTS,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
-import * as sharedExceptions from '@directus/exceptions';
 import type {
 	ActionHandler,
 	ApiExtension,
@@ -48,7 +47,6 @@ import { rollup } from 'rollup';
 import getDatabase from './database/index.js';
 import emitter, { Emitter } from './emitter.js';
 import env from './env.js';
-import * as exceptions from './exceptions/index.js';
 import { getFlowManager } from './flows.js';
 import logger from './logger.js';
 import * as services from './services/index.js';
@@ -610,7 +608,6 @@ class ExtensionManager {
 
 		register(registerFunctions, {
 			services,
-			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
 			emitter: this.apiEmitter,
@@ -628,7 +625,6 @@ class ExtensionManager {
 
 		register(scopedRouter, {
 			services,
-			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
 			emitter: this.apiEmitter,

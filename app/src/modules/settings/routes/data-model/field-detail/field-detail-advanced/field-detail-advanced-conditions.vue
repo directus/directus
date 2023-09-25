@@ -1,26 +1,45 @@
 <template>
-	<div>
-		<interface-list :fields="repeaterFields" template="{{ name }}" :value="conditions" @input="onInput($event)" />
-	</div>
+	<v-form v-model="conditionsSync" :fields="fields" :loading="loading" />
 </template>
 
 <script setup lang="ts">
-import { computed, unref } from 'vue';
-import { Field, DeepPartial } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
 import { useExtension } from '@/composables/use-extension';
+import { DeepPartial, Field } from '@directus/types';
 import { isVueComponent } from '@directus/utils';
+import { storeToRefs } from 'pinia';
+import { computed, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 const { t } = useI18n();
 
 const fieldDetailStore = useFieldDetailStore();
 
-const { field, collection } = storeToRefs(fieldDetailStore);
+const { loading, field, collection } = storeToRefs(fieldDetailStore);
 
 const conditions = syncFieldDetailStoreProperty('field.meta.conditions');
 const interfaceId = computed(() => field.value.meta?.interface ?? null);
+
+const conditionsSync = computed({
+	get() {
+		return conditions.value;
+	},
+	set(value) {
+		if (!value.conditions || value.conditions.length === 0) {
+			conditions.value = null;
+			return;
+		}
+
+		const conditionsWithDefaults = value.conditions.map((condition: any) => {
+			const conditionOptions = condition.options ?? {};
+			const defaultValues = unref(optionDefaults);
+			condition.options = { ...defaultValues, ...conditionOptions };
+			return condition;
+		});
+
+		conditions.value = { conditions: conditionsWithDefaults };
+	},
+});
 
 const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 	{
@@ -92,6 +111,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 			interface: 'system-interface-options',
 			options: {
 				interface: interfaceId.value,
+				context: useFieldDetailStore,
 			},
 		},
 	},
@@ -144,12 +164,18 @@ const optionDefaults = computed(() => {
 		.reduce((result, option) => ({ ...result, [option.field]: option.schema.default_value }), {});
 });
 
-function onInput(event: Array<any>) {
-	conditions.value = (event ?? []).map((evt) => {
-		const conditionOptions = evt.options ?? {};
-		const defaultValues = unref(optionDefaults);
-		evt.options = { ...defaultValues, ...conditionOptions };
-		return evt;
-	});
-}
+const fields = computed(() => [
+	{
+		field: 'conditions',
+		name: t('conditions'),
+		type: 'json',
+		meta: {
+			interface: 'list',
+			options: {
+				fields: repeaterFields,
+				template: '{{ name }}',
+			},
+		},
+	},
+]);
 </script>

@@ -16,7 +16,7 @@ import {
 	SharesService,
 	UsersService,
 	WebhooksService,
-} from '../index.js';
+} from '../services/index.js';
 import type { AbstractServiceOptions } from '../types/services.js';
 
 /**

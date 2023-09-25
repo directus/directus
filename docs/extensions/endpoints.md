@@ -54,7 +54,6 @@ The register function receives the two parameters `router` and `context`. `route
 `context` is an object with the following properties:
 
 - `services` — All API internal services.
-- `exceptions` — API exception objects that can be used to throw "proper" errors.
 - `database` — Knex instance that is connected to the current database.
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables.
@@ -69,22 +68,12 @@ hook is currently handling as that would result in an infinite loop!
 
 :::
 
-## Example: Recipes
+## Guides
 
-```js
-export default (router, { services, exceptions }) => {
-	const { ItemsService } = services;
-	const { ServiceUnavailableException } = exceptions;
+Learn how to build endpoints with our official guides:
 
-	router.get('/', (req, res, next) => {
-		const recipeService = new ItemsService('recipes', { schema: req.schema, accountability: req.accountability });
+<GuidesListExtensions type="Endpoints" />
 
-		recipeService
-			.readByQuery({ sort: ['name'], fields: ['*'] })
-			.then((results) => res.json(results))
-			.catch((error) => {
-				return next(new ServiceUnavailableException(error.message));
-			});
-	});
-};
-```
+<script setup>
+import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+</script>

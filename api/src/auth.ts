@@ -10,7 +10,7 @@ import {
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
 import env from './env.js';
-import { InvalidConfigException } from './exceptions/invalid-config.js';
+import { InvalidProviderConfigError } from './errors/index.js';
 import logger from './logger.js';
 import type { AuthDriverOptions } from './types/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
@@ -22,7 +22,8 @@ const providers: Map<string, AuthDriver> = new Map();
 
 export function getAuthProvider(provider: string): AuthDriver {
 	if (!providers.has(provider)) {
-		throw new InvalidConfigException('Auth provider not configured', { provider });
+		logger.error('Auth provider not configured');
+		throw new InvalidProviderConfigError({ provider });
 	}
 
 	return providers.get(provider)!;
