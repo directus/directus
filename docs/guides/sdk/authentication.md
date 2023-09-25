@@ -100,7 +100,10 @@ import { createDirectus, realtime } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(realtime());
 
+// with access token or static token
 client.send(JSON.stringify({ type: 'auth', access_token: 'TOKEN' }));
+// with refresh token
+client.send(JSON.stringify({ type: 'auth', refresh_token: 'TOKEN' }));
 ```
 
 While the property may be called `access_token`, you can also pass a static or refresh token as a value.
