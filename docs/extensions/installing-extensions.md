@@ -134,7 +134,7 @@ volumes:
 Start your Docker container:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 You should see that your extension has been successfully loaded into the Docker container. Now, go ahead to customize
