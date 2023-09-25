@@ -169,7 +169,7 @@ router.post(
 		const service = new UsersService({ accountability, schema: req.schema });
 
 		try {
-			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
+			await service.requestPasswordReset(req.body.email, req.body.reset_url || null, req.body.subject || null);
 			return next();
 		} catch (err: any) {
 			if (isDirectusError(err, ErrorCode.InvalidPayload)) {
