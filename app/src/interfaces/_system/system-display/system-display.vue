@@ -24,7 +24,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'input', value: string | null): void;
+	input: [value: string | null];
 }>();
 
 const { t } = useI18n();

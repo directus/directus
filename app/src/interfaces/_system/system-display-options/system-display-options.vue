@@ -44,7 +44,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'input', value: Record<string, unknown> | null): void;
+	input: [value: Record<string, unknown> | null];
 }>();
 
 const { t } = useI18n();
