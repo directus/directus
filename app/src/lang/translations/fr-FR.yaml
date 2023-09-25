@@ -381,6 +381,7 @@ move: Déplacer
 system: Système
 add_field_related: Ajouter le champ à la collection associée
 interface_label: Interface
+display_label: Affichage
 today: Aujourd'hui
 yesterday: Hier
 delete_comment: Supprimer le commentaire
@@ -1575,6 +1576,8 @@ interfaces:
   system-interface-options:
     interface-options: Options d'interface
     description: Une popup pour sélectionner les options d'une interface
+  system-display:
+    display: Affichage
   list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
@@ -1643,6 +1646,7 @@ interfaces:
     sort_placeholder: Manuel
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
+    interface_group: Options d'interface
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
