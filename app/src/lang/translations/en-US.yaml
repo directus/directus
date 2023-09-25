@@ -150,6 +150,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  email: Value has to be a valid email address
   regex: Value doesn't have the correct format
   starts_with: Value has to start with {substring}
   istarts_with: Value has to start with {substring}

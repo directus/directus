@@ -1,10 +1,10 @@
+import { createError } from '@directus/errors';
 import type { ClientFilterOperator } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { createError } from '@directus/errors';
 
 export interface FailedValidationErrorExtensions {
 	field: string;
-	type: ClientFilterOperator | 'required';
+	type: ClientFilterOperator | 'required' | 'email';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
@@ -83,6 +83,9 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 			break;
 		case 'regex':
 			message += ` Value doesn't have the correct format.`;
+			break;
+		case 'email':
+			message += ` Value has to be a valid email address.`;
 			break;
 	}
 
