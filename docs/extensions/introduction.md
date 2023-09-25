@@ -35,8 +35,9 @@ value.
 
 ### Panels
 
-[Panels](/extensions/panels) are similar to displays in that they display data in a certain way. However, panels are
-specifically designed to visualize data within Directus Insights.
+[Panels](/extensions/panels) are like widgets designed specifically for visualizing and interacting with data within
+Directus Insights. They are similar to displays but can show multiple data points, contain interfaces and allow user
+input.
 
 ### Modules
 
@@ -47,7 +48,7 @@ new modules are added, they appear as new icons in the main module side bar.
 ## API Extensions
 
 API extensions (also known as backend extensions) modify Directus server-side related functionalities such as APIs, data
-sources and custom workflows. Examples include:
+sources and custom workflows.
 
 ### Endpoints
 
