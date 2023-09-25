@@ -36,7 +36,7 @@ import { createDirectus, rest, login, refresh, logout } from '@directus/sdk';
 const client = createDirectus('http://directus.example.com').with(rest());
 
 const user = await client.request(login(email, password));
-await client.request(refresh(mode, refresh_token));
+const authData = await client.request(refresh(mode, refresh_token));
 await client.request(logout(refresh_token));
 ```
 
