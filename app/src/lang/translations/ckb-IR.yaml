@@ -372,6 +372,7 @@ move: گواستنەوە
 system: سیستەم
 add_field_related: زیادکردنی خانە بۆ کۆمەڵەی پەیوەندی دار
 interface_label: ڕوکار
+display_label: پیشاندان
 today: ئەمڕۆ
 yesterday: دوێنێ
 delete_comment: سڕینەوەی لێدوان
@@ -1555,6 +1556,8 @@ interfaces:
   system-interface-options:
     interface-options: بژاردەکانی ڕوکار
     description: مۆداڵێک بۆ دیاریکردنی بژاردەکانی ڕوکارێک
+  system-display:
+    display: پیشاندان
   list-m2m:
     many-to-many: زۆر بۆ زۆر
     description: چەند ماددەی پەیوەندیداری یەکگرتوو دیاری بکە
@@ -1619,6 +1622,7 @@ interfaces:
     sort_placeholder: دەستی
     field_note_placeholder: تێبینی خانە تۆماربکە...
     incompatible_data: داتاکانی ئێستا لەگەڵ ڕووکاری دووبارەکەرەوەدا ناگونجێت و لە کاتی زیادکردنی ماددەکان بۆ دووبارەکەرەوەکە دەسڕدرێنەوە
+    interface_group: بژاردەکانی ڕوکار
   slider:
     slider: سڵایدەر
     description: ژمارەیەک دیاریبکە بەبەکارهێنانی سڵایدەر
