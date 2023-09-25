@@ -18,58 +18,6 @@ utility will create a folder with the recommended file structure to create an ex
 If you want to combine and share dependencies between one or more extensions, use the
 [bundle extension type](/extensions/bundles).
 
-## Secure Extensions
-
-While building extensions, it's crucial to prioritize security to ensure that the extension is protected from potential
-vulnerabilities.
-
-In the `package.json` file of that extension, add a key, "secure" and set it to true.
-
-```json
-{
-  ...
-  "directus:extension": {
-    "secure": true,
-  },
-  ...
-}
-```
-
-### Configure Permissions
-
-Permissions prevent unauthorized access or misuse of your extension. To build a secure extension, you should also
-configure permissions by specifying what the extension will access (e.g. fetch).
-
-In your `package.json` file, the permissions object must follow this structure:
-
-```json
-{
-    "permission": "fetch",
-    "optional": true,
-    "options": {
-      "allowed_urls": [
-        "https://api.github.com/.*"
-      ]
-    }
-  }
-```
-
-- "permission": Sets the specific action your extension will perform. In this example, we use "fetch".
-- "optional": If set to `true`, it indicates that this permission is optional.
-- "options": Contains configuration options for the permission. For example, `allowed_urls` define the URLs that your
-  extension is allowed to access.
-
-::: tip Optional Keys
-
-Both the `optional` and `options` keys are not mandatory.
-
-:::
-
-When an admin
-[installs a secure extension from the Marketplace](/extensions/installing-extensions.html#installing-through-the-marketplace)
-they will be able to configure optional permissions where as required permissions are read only and cannot be
-configured.
-
 ## Building your Extension
 
 Before your extension can be used by Directus, it has to be built. If you used the `create-directus-extension` utility
