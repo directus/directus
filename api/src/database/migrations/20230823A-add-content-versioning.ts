@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_versions', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.string('key').notNullable();
-		table.string('name').notNullable();
+		table.string('name');
 		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
 		table.string('item');
 		table.string('hash').notNullable();
