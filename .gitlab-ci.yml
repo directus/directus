@@ -1,6 +1,7 @@
 stages:
 #  - crawless-directus-tests
   - crawless-directus-api2
+  - crawless-directus-api2-v10
   - crawless-directus
 
 variables:
@@ -93,3 +94,21 @@ docker_api2_build:
     - crawless
   only:
     - main
+
+docker_api2_v10_build:
+  stage: crawless-directus-api2-v10
+  variables:
+    CI_DEBUG_TRACE: 'false'
+    IMAGE_NAME: $CI_REGISTRY_IMAGE
+  retry: 2
+  script:
+    - export IMAGE_TAG=${CI_COMMIT_TAG:-api2v10}
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg
+      GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg CUSTOM_EXTENSION=1 --build-arg CHAT_EXTENSION=1 --build-arg COLAB_EXTENSION=1 --build-arg PAYMENT_EXTENSION=1 -f DockerfileExtensions .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+#    - doctl kubernetes cluster kubeconfig save k8s-stage-fra1
+#    - kubectl rollout restart deployment crawless-api-directus-directus-next -n default
+  tags:
+    - crawless
+  only:
+    - v10
