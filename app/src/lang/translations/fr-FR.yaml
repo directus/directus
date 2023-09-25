@@ -1647,6 +1647,7 @@ interfaces:
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
     interface_group: Options d'interface
+    display_group: Options d'affichage
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
