@@ -62,7 +62,7 @@ docker compose up --build
 Start your Docker container:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 On startup, you'd see that Directus will automatically load any package extension installed into your Directus project
