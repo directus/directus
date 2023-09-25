@@ -5,11 +5,10 @@ description: Discover how to install extensions into your Directus project.
 
 # Installing Extensions
 
-There are three possible ways to install extensions to your Directus instance:
+There are two possible ways to install extensions to your Directus instance:
 
 1. Installing through NPM
 2. Installing through the Extensions Folder
-3. Installing through the Marketplace
 
 ## Installing through NPM
 
@@ -125,7 +124,6 @@ Open your `docker-compose.yml` file and add the following to mount your extensio
 
 ```yaml
 volumes:
-
   - ./extensions:/directus/extensions/
 ```
 
@@ -139,23 +137,3 @@ docker-compose up
 
 You should see that your extension has been successfully loaded into the Docker container. Now, go ahead to customize
 your extension by making changes to the `src` folder within your extension directory.
-
-## Installing through the Marketplace
-
-Within your Directus Cloud account, you can conveniently install extensions from the Directus Marketplace.
-
-**1. Access the Marketplace**
-
-Log in to your [Directus Cloud account](https://directus.cloud). Once logged in, navigate to the "Marketplace" menu from
-the Module Bar.
-
-**2. Install Extensions**
-
-Within the Directus Marketplace, you'll notice a list of extensions that can be integrated into your account. Search for
-an extension that suits your needs and install it.
-
-::: tip Admin Access
-
-Only Administrators of a Directus instance can install extensions.
-
-:::
