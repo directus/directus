@@ -152,7 +152,7 @@ class LocalStorage {
 }
 
 const client = createDirectus('http://directus.example.com')
-  .with(authentication({ storage: new LocalStorage() }));
+  .with(authentication('json', { storage: new LocalStorage() }));
 
 client.setToken('TOKEN');
 ```
