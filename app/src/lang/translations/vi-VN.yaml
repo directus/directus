@@ -350,6 +350,7 @@ move: Di Chuyển
 system: Hệ thống
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
 interface_label: Giao diện
+display_label: Hiển thị
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
@@ -1053,6 +1054,8 @@ interfaces:
     icon: Biểu tượng
   system-interface:
     interface: Giao diện
+  system-display:
+    display: Hiển thị
   list-m2m:
     many-to-many: Quan hệ nhiều - nhiều
   select-dropdown-m2o:

@@ -396,6 +396,7 @@ move: Sposta
 system: Sistema
 add_field_related: Crea campo corrispondente
 interface_label: Interfaccia
+display_label: Mostra
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
@@ -1470,7 +1471,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1621,6 +1621,8 @@ interfaces:
   system-interface-options:
     interface-options: Opzioni interfaccia
     description: Una modale per selezionare le opzioni di un'interfaccia
+  system-display:
+    display: Mostra
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
@@ -1690,6 +1692,7 @@ interfaces:
     sort_placeholder: Manuale
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
+    interface_group: Opzioni interfaccia
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore

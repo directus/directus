@@ -346,6 +346,7 @@ move: Flytt
 system: System
 add_field_related: Legg til felt til relatert kolleksjon
 interface_label: Grensesnitt
+display_label: Visning
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
@@ -799,6 +800,8 @@ interfaces:
     icon: Ikon
   system-interface:
     interface: Grensesnitt
+  system-display:
+    display: Visning
   input-rich-text-md:
     edit: Rediger
   map:
