@@ -43,7 +43,8 @@ await client.request(logout(refresh_token));
 The `mode` will either be `'json'` or `'cookie'`. If cookies are used, you don't need to set the second parameter, as
 the token in your cookie will automatically be used.
 
-This approach is manually sending API requests, the SDK does not store the returned tokens. You must store the access token and provide it to following requests and the same for the refresh token if using authentication mode `'json'`.
+This approach is manually sending API requests, the SDK does not store the returned tokens. You must store the access
+token and provide it to following requests and the same for the refresh token if using authentication mode `'json'`.
 
 ### Using the `realtime()` Composable
 
@@ -132,8 +133,8 @@ const token = await client.getToken();
 
 ## Configure Custom Storage
 
-Internally, the `getToken()` and `setToken()` make use of the configurable storage, which can be customized for
-your environment's needs. There must be a `get()` and `set()` method exposed, and the `AuthData` type returned.
+Internally, the `getToken()` and `setToken()` make use of the configurable storage, which can be customized for your
+environment's needs. There must be a `get()` and `set()` method exposed, and the `AuthData` type returned.
 
 ### Example
 
@@ -158,13 +159,15 @@ const client = createDirectus('http://directus.example.com')
 client.setToken('TOKEN');
 ```
 
-Note that the `LocalStorage` class is for demonstration purposes only, in production it is not recommended to store credentials in the localStorage of browsers.
+Note that the `LocalStorage` class is for demonstration purposes only, in production it is not recommended to store
+credentials in the localStorage of browsers.
 
 ## Cross-Domain Cookies
 
 A common situation is for the Directus backend and frontend to be hosted on different domains, requiring extra
-configuration to make sure cookies are passed correctly. Usually this is only required for authentication with cookies but this can be set globally for each composable that does requests. 
-This will then apply to all requests made using that composable:
+configuration to make sure cookies are passed correctly. Usually this is only required for authentication with cookies
+but this can be set globally for each composable that does requests. This will then apply to all requests made using
+that composable:
 
 ```js
 const client = createDirectus('http://directus.example.com')
