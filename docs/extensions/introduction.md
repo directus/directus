@@ -5,7 +5,7 @@ description: Discover how Directus extensions enable you to expand its features 
 
 # Extensions
 
-Extensions provide a way to build, modify or expand Directus' functionality beyond the default suite, for your specific
+Extensions provide a way to build, modify or expand Directus' functionality beyond the default, for your specific
 needs. There are three main categories of extensions:
 
 1. App Extensions
