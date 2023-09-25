@@ -55,8 +55,7 @@ sources and custom workflows. Examples include:
 
 ### Hooks
 
-[Hooks](/extensions/hooks) are the code only variant to Flows. So you can wait for changes within Directus and then
-execute custom code when that event triggers.
+[Hooks](/extensions/hooks) are similar to Flows, but do not have a UI in the Directus Data Studio. Hooks can be triggered during Directus' startup, when data is changes, or on schedules. 
 
 ## Hybrid Extensions
 
