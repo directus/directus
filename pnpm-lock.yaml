@@ -1677,6 +1677,9 @@ importers:
 
   packages/types:
     dependencies:
+      '@directus/api':
+        specifier: workspace:*
+        version: link:../../api
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants

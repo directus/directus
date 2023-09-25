@@ -12,6 +12,7 @@ import type {
 	NESTED_EXTENSION_TYPES,
 	SplitEntrypoint,
 } from '@directus/constants';
+import type { Services } from '@directus/api';
 import type { Knex } from 'knex';
 import type { Logger } from 'pino';
 import type { z } from 'zod';
@@ -85,7 +86,7 @@ export type AppExtensionConfigs = {
 };
 
 export type ApiExtensionContext = {
-	services: any;
+	services: Services;
 	database: Knex;
 	env: Record<string, any>;
 	logger: Logger;
