@@ -7,7 +7,7 @@ contributors: Tim Butterfield, Kevin Lewis
 
 Panels are used in dashboards as part of the Insights module, and typically allow users to better-understand data held
 in their Directus collections. In this guide, you will instead fetch data from an external API and display it in a table
-as part of an panel.
+as part of a panel.
 
 <img src="https://marketing.directus.app/assets/31ac7437-99ed-44fe-9b75-b21c92198fda.png" alt="Table with header Messages shows several items with status, sent delative date, a recipient ID, and a provider">
 
@@ -244,7 +244,7 @@ The output of these options will look like this:
 
 ## Prepare the View
 
-Open the `panel.vue` file and you will see the barebone template and script. Skip to the script section and import the
+Open the `panel.vue` file and you will see the starter template and script. Skip to the script section and import the
 following packages:
 
 ```js
@@ -468,7 +468,7 @@ Fill in the configuration fields as needed:
 
 1. Choose the Product Type (Messages or SMS)
 2. Choose the Direction (inbound or outbound messages)
-3. Choose a timeframe to fetch the data
+3. Choose a time frame to fetch the data
 4. Include or Exclude the message itself
 5. (SMS only) Only show messages with a status.
 
