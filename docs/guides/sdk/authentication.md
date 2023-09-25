@@ -17,7 +17,9 @@ manages token storage and refreshing on your behalf.
 
 ```js
 import { createDirectus, authentication } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(authentication());
+
 await client.login(email, password);
 await client.refresh();
 await client.logout();
@@ -30,7 +32,9 @@ client.
 
 ```js
 import { createDirectus, rest, login, refresh, logout } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(rest());
+
 const user = await client.request(login(email, password));
 await client.request(refresh('REFRESH TOKEN'));
 await client.request(logout('REFRESH TOKEN'));
@@ -43,7 +47,9 @@ and used when refreshing or invalidating a token.
 
 ```js
 import { createDirectus, realtime } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(realtime());
+
 client.send(JSON.stringify({ type: 'auth', email: email, password: password }));
 ```
 
@@ -57,7 +63,8 @@ first message sent must include authentication details - either an `email` and `
 
 ```js
 import { createDirectus, staticToken, rest } from '@directus/sdk';
-const client = const client = createDirectus('http://directus.example.com')
+
+const client = createDirectus('http://directus.example.com')
   .with(staticToken('TOKEN'))
   .with(rest());
 ```
@@ -66,7 +73,9 @@ const client = const client = createDirectus('http://directus.example.com')
 
 ```js
 import { createDirectus, rest, withToken, readItems } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(rest());
+
 const request = await client.request(
   withToken('TOKEN', readItems('collection'))
 );
@@ -76,7 +85,9 @@ const request = await client.request(
 
 ```js
 import { createDirectus, authentication } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(authentication());
+
 await client.setToken('TOKEN');
 ```
 
@@ -84,7 +95,9 @@ await client.setToken('TOKEN');
 
 ```js
 import { createDirectus, realtime } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(realtime());
+
 client.send(JSON.stringify({ type: 'auth', access_token: 'TOKEN' }));
 ```
 
@@ -96,7 +109,9 @@ While the property may be called `access_token`, you can also pass a static or r
 
 ```js
 import { createDirectus, authentication } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(authentication());
+
 const token = await client.getToken();
 ```
 
@@ -104,7 +119,9 @@ const token = await client.getToken();
 
 ```js
 import { createDirectus, staticToken } from '@directus/sdk';
+
 const client = createDirectus('http://directus.example.com').with(staticToken('TOKEN'));
+
 const token = await client.getToken();
 ```
 
