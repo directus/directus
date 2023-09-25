@@ -162,8 +162,8 @@ Note that an instance of the `LocalStorage` was created in the options of the `a
 ## Cross-Domain Cookies
 
 A common situation is for the Directus backend and frontend to be hosted on different domains, requiring extra
-configuration to make sure cookies are passed correctly. This can be set globally for each composable. This will then
-apply to all requests made using that composable:
+configuration to make sure cookies are passed correctly. Usually this is only required for authentication with cookies but this can be set globally for each composable that does requests. 
+This will then apply to all requests made using that composable:
 
 ```js
 const client = createDirectus('http://directus.example.com')
