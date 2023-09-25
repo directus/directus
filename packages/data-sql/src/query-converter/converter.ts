@@ -8,8 +8,8 @@ import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQuery } from '../types/index.js';
 import type { ParameterTypes } from '../types/parameterized-statement.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
-import { convertFilter, convertSort } from './modifiers/index.js';
 import { convertFieldNodes } from './fields/index.js';
+import { convertModifiers } from './modifiers/modifiers.js';
 
 /**
  * Here the abstract query gets converted into the abstract SQL query.
@@ -25,28 +25,13 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 
 	// fields
 	const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, idGen);
-	const clauses: AbstractSqlClauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
+	let clauses: AbstractSqlClauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
+	parameters.push(...convertedFieldNodes.parameters);
 
 	// modifiers
-	if (abstractQuery.modifiers?.filter) {
-		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, abstractQuery.collection, idGen);
-		clauses.where = convertedFilter.where;
-		parameters.push(...convertedFilter.parameters);
-	}
-
-	if (abstractQuery.modifiers?.limit) {
-		clauses.limit = { type: 'value', parameterIndex: idGen.next().value };
-		parameters.push(abstractQuery.modifiers.limit.value);
-	}
-
-	if (abstractQuery.modifiers?.offset) {
-		clauses.offset = { type: 'value', parameterIndex: idGen.next().value };
-		parameters.push(abstractQuery.modifiers.offset.value);
-	}
-
-	if (abstractQuery.modifiers?.sort) {
-		clauses.order = convertSort(abstractQuery.modifiers.sort);
-	}
+	const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
+	clauses = Object.assign(clauses, convertedModifiers.clauses);
+	parameters.push(...convertedModifiers.parameters);
 
 	return {
 		clauses,
