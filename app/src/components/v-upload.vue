@@ -302,6 +302,7 @@ function useURLImport() {
 				url: url.value,
 				data: {
 					folder: props.folder,
+					id: props.fileId,
 				},
 			});
 
