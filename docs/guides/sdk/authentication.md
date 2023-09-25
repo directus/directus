@@ -159,7 +159,7 @@ client.setToken('TOKEN');
 ```
 
 Note that the `LocalStorage` class is for demonstration purposes only, in production it is not recommended to store
-credentials in the localStorage of browsers.
+credentials in the `localStorage` of browsers.
 
 ## Cross-Domain Cookies
 
