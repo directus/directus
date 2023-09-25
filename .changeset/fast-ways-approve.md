@@ -5,7 +5,7 @@
 ::: notice
 
 Due to a bug introduced in v10.6.2, Field Conditions were saved incorrectly. This has been corrected and works again as expected.
-If you have edited Field Conditions under this version, please refer to https://github.com/directus/directus/issues/19757#issuecomment-1734162756 for instructions to fix the Conditions.
+However, if Field Conditions have been edited under this version, they need to be corrected. Please refer to https://github.com/directus/directus/issues/19757#issuecomment-1734162756 for instructions on how to do so.
 Note that no other versions are affected by this!
 
 :::
