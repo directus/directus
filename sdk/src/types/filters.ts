@@ -11,27 +11,28 @@ export type QueryFilter<Schema extends object, Item> = WrapLogicalFilters<Nested
  * Query filters without logical filters
  */
 export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
-? Merge<
-{
-	[Field in keyof FlatItem]?:
-		| (Field extends RelationalFields<Schema, FlatItem>
-				? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
-				: never)
-		| FilterOperators<FlatItem[Field]>;
-},MappedFieldNames<Schema, Item> extends infer Funcs
-? {
-		[Func in keyof Funcs]?: Funcs[Func] extends infer Field
-			? Field extends keyof FlatItem
-				?
-						| (Field extends RelationalFields<Schema, FlatItem>
-								? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
-								: never)
-						| FilterOperators<FlatItem[Field]>
+	? Merge<
+			{
+				[Field in keyof FlatItem]?:
+					| (Field extends RelationalFields<Schema, FlatItem>
+							? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
+							: never)
+					| FilterOperators<FlatItem[Field]>;
+			},
+			MappedFieldNames<Schema, Item> extends infer Funcs
+				? {
+						[Func in keyof Funcs]?: Funcs[Func] extends infer Field
+							? Field extends keyof FlatItem
+								?
+										| (Field extends RelationalFields<Schema, FlatItem>
+												? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
+												: never)
+										| FilterOperators<FlatItem[Field]>
+								: never
+							: never;
+				  }
 				: never
-			: never;
-  }
-: never
->
+	  >
 	: never;
 
 /**

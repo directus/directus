@@ -79,18 +79,18 @@ export type AggregationOutput<
 	Options extends AggregationOptions<Schema, Collection>
 > = ((Options['groupBy'] extends string[]
 	? UnpackList<GetCollection<Schema, Collection>> extends infer Item
-	? Item extends object
-	? MappedFunctionFields<Schema, Item> extends infer FieldMap
-		? MappedFieldNames<Schema, Item> extends infer NamesMap
-			? {
-					[Field in UnpackList<Options['groupBy']> as TranslateFunctionField<
-						FieldMap,
-						Field
-					>]: TranslateFunctionField<NamesMap, Field> extends keyof Item
-						? Item[TranslateFunctionField<NamesMap, Field>]
-						: never;
-			  }
-			: never
+		? Item extends object
+			? MappedFunctionFields<Schema, Item> extends infer FieldMap
+				? MappedFieldNames<Schema, Item> extends infer NamesMap
+					? {
+							[Field in UnpackList<Options['groupBy']> as TranslateFunctionField<
+								FieldMap,
+								Field
+							>]: TranslateFunctionField<NamesMap, Field> extends keyof Item
+								? Item[TranslateFunctionField<NamesMap, Field>]
+								: never;
+					  }
+					: never
 				: never
 			: never
 		: never

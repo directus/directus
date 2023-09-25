@@ -7,7 +7,7 @@ import type { UnpackList } from './utils.js';
  * Fields querying, including nested relational fields
  */
 export type QueryFields<Schema extends object, Item> = WrapQueryFields<
-Schema,
+	Schema,
 	Item,
 	QueryFieldsRelational<Schema, UnpackList<Item>>
 >;
@@ -43,7 +43,7 @@ export type ManyToAnyFields<Schema extends object, Item> = ExtractItem<Schema, I
 		? 'collection' extends keyof TItem
 			? 'item' extends keyof TItem
 				? WrapQueryFields<
-				Schema,
+						Schema,
 						TItem,
 						Omit<QueryFieldsRelational<Schema, UnpackList<Item>>, 'item'> & {
 							item?: {
