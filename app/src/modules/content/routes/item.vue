@@ -68,6 +68,7 @@
 				"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:has-edits="hasEdits"
 				:current-version="currentVersion"
 				:versions="versions"
 				@add="addVersion"
@@ -291,7 +292,6 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
-import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -321,7 +321,6 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
-const { hasPermission } = usePermissionsStore();
 
 const form = ref<HTMLElement>();
 
@@ -332,9 +331,8 @@ const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> 
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
-const readVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'read'));
-
 const {
+	readVersionsAllowed,
 	currentVersion,
 	versions,
 	loading: versionsLoading,
@@ -449,6 +447,10 @@ const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
 	return [];
+});
+
+watch(currentVersion, () => {
+	edits.value = {};
 });
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
