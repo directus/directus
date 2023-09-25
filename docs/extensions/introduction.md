@@ -70,7 +70,7 @@ validator for a given string.
 
 ### Bundles
 
-[Bundles](/extensions/bundles) allow you to combine many small extensions into one large extension. The benefit of this
+[Bundles](/extensions/bundles) allow you to combine many extensions into one large extension. The benefit of this
 is that if your extensions share a lot of dependencies, bundles allow to share those between all you extensions inside
 the bundle and reduce the file size considerably when building.
 
