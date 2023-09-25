@@ -4,13 +4,14 @@
  * @packageDocumentation
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
-import { convertQueryAndGenerateAliases, expand, type ParameterizedSqlStatement } from '@directus/data-sql';
+import { convertQuery, expand, type ParameterizedSqlStatement } from '@directus/data-sql';
 import type { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
-import { constructSqlQuery } from './query/index.js';
+import { convertToActualStatement } from './query/index.js';
 import QueryStream from 'pg-query-stream';
 import { Readable } from 'node:stream';
+import { convertParameters } from './query/parameters.js';
 
 export interface DataDriverPostgresConfig {
 	connectionString: string;
@@ -49,10 +50,11 @@ export default class DataDriverPostgres implements DataDriver {
 		let client: PoolClient | null = null;
 
 		try {
-			const conversionResult = convertQueryAndGenerateAliases(query);
-			const sql = constructSqlQuery(conversionResult.sql);
+			const conversionResult = convertQuery(query);
+			const statement = convertToActualStatement(conversionResult.clauses);
+			const parameters = convertParameters(conversionResult.parameters);
 
-			const { poolClient, stream } = await this.getDataFromSource(this.#pool, sql);
+			const { poolClient, stream } = await this.getDataFromSource(this.#pool, { statement, parameters });
 			client = poolClient;
 
 			return stream.pipeThrough(expand(conversionResult.aliasMapping));

@@ -1,4 +1,4 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
 import { applyFunction } from '../utils/functions.js';
 
@@ -9,7 +9,7 @@ import { applyFunction } from '../utils/functions.js';
  * @param AbstractSqlQuery the whole query object
  * @returns the `SELECT x, y` part of a SQL statement
  */
-export const select = ({ select }: AbstractSqlQuery): string => {
+export const select = ({ select }: AbstractSqlClauses): string => {
 	const escapedColumns = select.map((selectNode) => {
 		if (selectNode.type === 'primitive') {
 			return wrapColumn(selectNode.table, selectNode.column, selectNode.as);

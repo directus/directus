@@ -1,14 +1,15 @@
 /**
- * Converts an abstract query to the abstract SQL query ({@link AbstractSqlQuery}).
+ * Converts an abstract query to the abstract SQL query ({@link AbstractSqlClauses}).
  * This converter is used as the first action within the SQL drivers.
  *
  * @module
  */
 import type { AbstractQuery } from '@directus/data';
-import type { AbstractSqlQuery } from '../types/index.js';
+import type { AbstractSqlClauses, AbstractSqlQuery } from '../types/index.js';
+import type { ParameterTypes } from '../types/parameterized-statement.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
 import { convertFilter, convertSort } from './modifiers/index.js';
-import { convertNodesAndGenerateAliases } from './fields/index.js';
+import { convertFieldNodes } from './fields/index.js';
 
 /**
  * Here the abstract query gets converted into the abstract SQL query.
@@ -18,38 +19,38 @@ import { convertNodesAndGenerateAliases } from './fields/index.js';
  * @param abstractQuery the abstract query to convert
  * @returns the abstract sql query
  */
-export const convertQueryAndGenerateAliases = (
-	abstractQuery: AbstractQuery
-): { sql: AbstractSqlQuery; aliasMapping: Map<string, string[]> } => {
+export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
 	const idGen = parameterIndexGenerator();
+	const parameters: ParameterTypes[] = [];
 
-	const convertedSqlAndAliasMap = convertNodesAndGenerateAliases(abstractQuery.collection, abstractQuery.fields, idGen);
+	// fields
+	const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, idGen);
+	const clauses: AbstractSqlClauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
 
-	const statement: AbstractSqlQuery = { ...convertedSqlAndAliasMap.sql, from: abstractQuery.collection };
-
+	// modifiers
 	if (abstractQuery.modifiers?.filter) {
 		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, abstractQuery.collection, idGen);
-
-		statement.where = convertedFilter.where;
-		statement.parameters.push(...convertedFilter.parameters);
+		clauses.where = convertedFilter.where;
+		parameters.push(...convertedFilter.parameters);
 	}
 
 	if (abstractQuery.modifiers?.limit) {
-		statement.limit = { type: 'value', parameterIndex: idGen.next().value };
-		statement.parameters.push(abstractQuery.modifiers.limit.value);
+		clauses.limit = { type: 'value', parameterIndex: idGen.next().value };
+		parameters.push(abstractQuery.modifiers.limit.value);
 	}
 
 	if (abstractQuery.modifiers?.offset) {
-		statement.offset = { type: 'value', parameterIndex: idGen.next().value };
-		statement.parameters.push(abstractQuery.modifiers.offset.value);
+		clauses.offset = { type: 'value', parameterIndex: idGen.next().value };
+		parameters.push(abstractQuery.modifiers.offset.value);
 	}
 
 	if (abstractQuery.modifiers?.sort) {
-		statement.order = convertSort(abstractQuery.modifiers.sort);
+		clauses.order = convertSort(abstractQuery.modifiers.sort);
 	}
 
 	return {
-		sql: statement,
-		aliasMapping: convertedSqlAndAliasMap.aliasMapping,
+		clauses,
+		parameters,
+		aliasMapping: convertedFieldNodes.aliasMapping,
 	};
 };

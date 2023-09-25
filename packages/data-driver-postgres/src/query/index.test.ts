@@ -1,11 +1,11 @@
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-import type { AbstractSqlQuery } from '@directus/data-sql';
-import { randomIdentifier, randomInteger } from '@directus/random';
+import type { AbstractSqlClauses } from '@directus/data-sql';
+import { randomIdentifier } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
-import { constructSqlQuery } from './index.js';
+import { convertToActualStatement } from './index.js';
 
 let sample: {
-	statement: AbstractSqlQuery;
+	clauses: AbstractSqlClauses;
 };
 
 let firstSelectTable: string;
@@ -20,47 +20,41 @@ beforeEach(() => {
 	secondSelectColumn = randomIdentifier();
 
 	sample = {
-		statement: {
+		clauses: {
 			select: [
 				{ type: 'primitive', column: firstSelectColumn, table: firstSelectTable },
 				{ type: 'primitive', column: secondSelectColumn, table: secondSelectTable },
 			],
 			from: randomIdentifier(),
-			parameters: [],
 		},
 	};
 });
 
 test('basic statement', () => {
-	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.statement.from}";`,
-		parameters: [],
-	});
+	expect(convertToActualStatement(sample.clauses)).toEqual(
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}";`
+	);
 });
 
 test('statement with a limit', () => {
-	sample.statement.limit = { type: 'value', parameterIndex: 0 };
-	sample.statement.parameters = [randomInteger(1, 100)];
+	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
 
-	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.statement.from}" LIMIT $1;`,
-		parameters: sample.statement.parameters,
-	});
+	expect(convertToActualStatement(sample.clauses)).toEqual(
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1;`
+	);
 });
 
 test('statement with limit and offset', () => {
-	sample.statement.limit = { type: 'value', parameterIndex: 0 };
-	sample.statement.offset = { type: 'value', parameterIndex: 1 };
-	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
+	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
+	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
 
-	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.statement.from}" LIMIT $1 OFFSET $2;`,
-		parameters: sample.statement.parameters,
-	});
+	expect(convertToActualStatement(sample.clauses)).toEqual(
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1 OFFSET $2;`
+	);
 });
 
 test('statement with order', () => {
-	sample.statement.order = [
+	sample.clauses.order = [
 		{
 			type: 'order',
 			orderBy: {
@@ -71,19 +65,17 @@ test('statement with order', () => {
 		},
 	];
 
-	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
-			sample.statement.from
-		}" ORDER BY "${(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field}" ASC;`,
-		parameters: sample.statement.parameters,
-	});
+	expect(convertToActualStatement(sample.clauses)).toEqual(
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
+			sample.clauses.from
+		}" ORDER BY "${(sample.clauses.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field}" ASC;`
+	);
 });
 
 test('statement with all possible modifiers', () => {
-	sample.statement.limit = { type: 'value', parameterIndex: 0 };
-	sample.statement.offset = { type: 'value', parameterIndex: 1 };
+	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
+	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
 
-	// variables to easily access the values from the expected statement
 	const firstConditionTable = randomIdentifier();
 	const firstConditionColumn = randomIdentifier();
 	const firstConditionParameterIndex = 2;
@@ -92,7 +84,7 @@ test('statement with all possible modifiers', () => {
 	const secondConditionParameterIndex = 3;
 	const orderField = randomIdentifier();
 
-	sample.statement.where = {
+	sample.clauses.where = {
 		type: 'logical',
 		operator: 'and',
 		negate: false,
@@ -134,7 +126,7 @@ test('statement with all possible modifiers', () => {
 		],
 	};
 
-	sample.statement.order = [
+	sample.clauses.order = [
 		{
 			type: 'order',
 			orderBy: {
@@ -145,21 +137,13 @@ test('statement with all possible modifiers', () => {
 		},
 	];
 
-	sample.statement.parameters = [
-		randomInteger(1, 100),
-		randomInteger(1, 100),
-		randomInteger(1, 100),
-		randomInteger(1, 100),
-	];
-
-	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
-			sample.statement.from
+	expect(convertToActualStatement(sample.clauses)).toEqual(
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
+			sample.clauses.from
 		}" WHERE "${firstConditionTable}"."${firstConditionColumn}" > $${
 			firstConditionParameterIndex + 1
 		} AND "${secondConditionTable}"."${secondConditionColumn}" < $${
 			secondConditionParameterIndex + 1
-		} ORDER BY "${orderField}" ASC LIMIT $1 OFFSET $2;`,
-		parameters: sample.statement.parameters,
-	});
+		} ORDER BY "${orderField}" ASC LIMIT $1 OFFSET $2;`
+	);
 });

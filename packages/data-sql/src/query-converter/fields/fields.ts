@@ -1,11 +1,15 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../../types/index.js';
+import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueIdentifier } from '../../orm/create-unique-identifier.js';
 
-export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'joins' | 'parameters'>;
+export type Result = {
+	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
+	parameters: AbstractSqlQuery['parameters'];
+	aliasMapping: AbstractSqlQuery['aliasMapping'];
+};
 
 /**
  * Converts nodes into the abstract sql clauses.
@@ -23,15 +27,15 @@ export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'joins' | 'p
  * @param currentPath - the path which the recursion made for the ORM map
  * @returns Select, join and parameters
  */
-export const convertNodesAndGenerateAliases = (
+export const convertFieldNodes = (
 	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
 	idxGenerator: Generator<number, number, number>,
 	currentPath: string[] = []
-): { sql: ConvertSelectOutput; aliasMapping: Map<string, string[]> } => {
-	const select: ConvertSelectOutput['select'] = [];
-	const joins: ConvertSelectOutput['joins'] = [];
-	const parameters: AbstractSqlQuery['parameters'] = [];
+): Result => {
+	const select: AbstractSqlClauses['select'] = [];
+	const joins: AbstractSqlClauses['joins'] = [];
+	const parameters: ParameterTypes[] = [];
 	const aliasRelationalMapping: Map<string, string[]> = new Map();
 
 	for (const abstractField of abstractFields) {
@@ -59,14 +63,14 @@ export const convertNodesAndGenerateAliases = (
 			const externalCollectionAlias = createUniqueIdentifier(m2oField.join.external.collection);
 			const sqlJoinNode = createJoin(collection, m2oField, externalCollectionAlias);
 
-			const nestedOutput = convertNodesAndGenerateAliases(externalCollectionAlias, abstractField.nodes, idxGenerator, [
+			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.nodes, idxGenerator, [
 				...currentPath,
 				abstractField.join.external.collection,
 			]);
 
 			nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
 			joins.push(sqlJoinNode);
-			select.push(...nestedOutput.sql.select);
+			select.push(...nestedOutput.clauses.select);
 			continue;
 		}
 
@@ -85,5 +89,5 @@ export const convertNodesAndGenerateAliases = (
 		}
 	}
 
-	return { sql: { select, joins, parameters }, aliasMapping: aliasRelationalMapping };
+	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping };
 };

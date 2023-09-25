@@ -1,7 +1,7 @@
 import type { AbstractSqlQueryJoinNode } from './fields/join.js';
 import type { AbstractSqlQueryFnNode } from './fields/fn.js';
 import type { AbstractSqlQuerySelectNode } from './fields/primitive.js';
-import type { ValueNode, ParameterTypes } from './parameterized-statement.js';
+import type { ParameterTypes, ValueNode } from './parameterized-statement.js';
 import type { AbstractSqlQueryOrderNode } from './modifiers/order.js';
 import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from './modifiers/filter/index.js';
 
@@ -19,18 +19,29 @@ import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from 
  * };
  * ```
  */
+
 export interface AbstractSqlQuery {
+	clauses: AbstractSqlClauses;
+	parameters: ParameterTypes[];
+	aliasMapping: Map<string, string[]>;
+}
+
+export interface AbstractSqlClauses {
 	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 	from: string;
 	joins?: AbstractSqlQueryJoinNode[];
 	limit?: ValueNode;
 	offset?: ValueNode;
 	order?: AbstractSqlQueryOrderNode[];
-	where?: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
-	parameters: ParameterTypes[];
+	where?: AbstractSqlQueryWhereNode;
 }
 
-export type WhereUnion = Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>>;
+export type WhereUnion = {
+	where: AbstractSqlQueryWhereNode;
+	parameters: ParameterTypes[];
+};
+
+export type AbstractSqlQueryWhereNode = AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 
 export * from './modifiers/order.js';
 export * from './modifiers/filter/index.js';

@@ -1,7 +1,7 @@
 import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types/index.js';
-import { convertQueryAndGenerateAliases } from './converter.js';
+import { convertQuery } from './converter.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: {
@@ -29,26 +29,29 @@ beforeEach(() => {
 });
 
 test('Convert simple query', () => {
-	const res = convertQueryAndGenerateAliases(sample.query);
+	const res = convertQuery(sample.query);
 
-	const expected: AbstractSqlQuery = {
-		select: [
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
-			},
-		],
-		from: sample.query.collection,
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
+				},
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
+				},
+			],
+			from: sample.query.collection,
+		},
 		parameters: [],
 	};
 
-	expect(res.sql).toMatchObject(expected);
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with filter', () => {
@@ -70,43 +73,46 @@ test('Convert query with filter', () => {
 		},
 	};
 
-	const res = convertQueryAndGenerateAliases(sample.query);
+	const res = convertQuery(sample.query);
 
-	const expected: AbstractSqlQuery = {
-		select: [
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
-			},
-		],
-		from: sample.query.collection,
-		where: {
-			type: 'condition',
-			negate: false,
-			condition: {
-				type: 'condition-number',
-				target: {
-					column: randomField,
-					table: sample.query.collection,
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
 					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 				},
-				operation: 'gt',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 0,
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
+				},
+			],
+			from: sample.query.collection,
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-number',
+					target: {
+						column: randomField,
+						table: sample.query.collection,
+						type: 'primitive',
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
 				},
 			},
 		},
 		parameters: [compareToValue],
 	};
 
-	expect(res.sql).toMatchObject(expected);
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with a limit', () => {
@@ -117,27 +123,30 @@ test('Convert query with a limit', () => {
 		},
 	};
 
-	const res = convertQueryAndGenerateAliases(sample.query);
+	const res = convertQuery(sample.query);
 
-	const expected: AbstractSqlQuery = {
-		select: [
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
-			},
-		],
-		from: sample.query.collection,
-		limit: { type: 'value', parameterIndex: 0 },
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
+				},
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
+				},
+			],
+			from: sample.query.collection,
+			limit: { type: 'value', parameterIndex: 0 },
+		},
 		parameters: [sample.query.modifiers.limit!.value],
 	};
 
-	expect(res.sql).toMatchObject(expected);
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with limit and offset', () => {
@@ -152,28 +161,31 @@ test('Convert query with limit and offset', () => {
 		},
 	};
 
-	const res = convertQueryAndGenerateAliases(sample.query);
+	const res = convertQuery(sample.query);
 
-	const expected: AbstractSqlQuery = {
-		select: [
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
-			},
-		],
-		from: sample.query.collection,
-		limit: { type: 'value', parameterIndex: 0 },
-		offset: { type: 'value', parameterIndex: 1 },
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
+				},
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
+				},
+			],
+			from: sample.query.collection,
+			limit: { type: 'value', parameterIndex: 0 },
+			offset: { type: 'value', parameterIndex: 1 },
+		},
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
 	};
 
-	expect(res.sql).toMatchObject(expected);
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert query with a sort', () => {
@@ -190,33 +202,36 @@ test('Convert query with a sort', () => {
 		],
 	};
 
-	const res = convertQueryAndGenerateAliases(sample.query);
+	const res = convertQuery(sample.query);
 
-	const expected: AbstractSqlQuery = {
-		select: [
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
-			},
-		],
-		from: sample.query.collection,
-		order: [
-			{
-				type: 'order',
-				orderBy: sample.query.modifiers.sort![0]!.target,
-				direction: 'ASC',
-			},
-		],
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
+				},
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
+				},
+			],
+			from: sample.query.collection,
+			order: [
+				{
+					type: 'order',
+					orderBy: sample.query.modifiers.sort![0]!.target,
+					direction: 'ASC',
+				},
+			],
+		},
 		parameters: [],
 	};
 
-	expect(res.sql).toMatchObject(expected);
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert a query with a function as field select', () => {
@@ -231,35 +246,38 @@ test('Convert a query with a function as field select', () => {
 		field: randomField,
 	});
 
-	const res = convertQueryAndGenerateAliases(sample.query);
+	const res = convertQuery(sample.query);
 
-	const expected: AbstractSqlQuery = {
-		select: [
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'fn',
-				fn: {
-					type: 'arrayFn',
-					fn: 'count',
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
 				},
-				table: sample.query.collection,
-				column: randomField,
-			},
-		],
-		from: sample.query.collection,
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
+				},
+				{
+					type: 'fn',
+					fn: {
+						type: 'arrayFn',
+						fn: 'count',
+					},
+					table: sample.query.collection,
+					column: randomField,
+				},
+			],
+			from: sample.query.collection,
+		},
 		parameters: [],
 	};
 
-	expect(res.sql).toMatchObject(expected);
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
 });
 
 test('Convert a query with all possible modifiers', () => {
@@ -284,33 +302,36 @@ test('Convert a query with all possible modifiers', () => {
 		],
 	};
 
-	const res = convertQueryAndGenerateAliases(sample.query);
+	const res = convertQuery(sample.query);
 
-	const expected: AbstractSqlQuery = {
-		select: [
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
-			},
-			{
-				type: 'primitive',
-				table: sample.query.collection,
-				column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
-			},
-		],
-		from: sample.query.collection,
-		order: [
-			{
-				type: 'order',
-				orderBy: sample.query.modifiers.sort![0]!.target,
-				direction: 'ASC',
-			},
-		],
-		limit: { type: 'value', parameterIndex: 0 },
-		offset: { type: 'value', parameterIndex: 1 },
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[0] as AbstractQueryFieldNodePrimitive).field,
+				},
+				{
+					type: 'primitive',
+					table: sample.query.collection,
+					column: (sample.query.fields[1] as AbstractQueryFieldNodePrimitive).field,
+				},
+			],
+			from: sample.query.collection,
+			order: [
+				{
+					type: 'order',
+					orderBy: sample.query.modifiers.sort![0]!.target,
+					direction: 'ASC',
+				},
+			],
+			limit: { type: 'value', parameterIndex: 0 },
+			offset: { type: 'value', parameterIndex: 1 },
+		},
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
 	};
 
-	expect(res.sql).toMatchObject(expected);
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
 });

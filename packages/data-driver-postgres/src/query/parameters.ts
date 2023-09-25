@@ -1,10 +1,14 @@
 /**
- * Due to the decision of always passing the query and only the query to the converter functions,
- * the conversion cannot of the parameters cannot be done within those, and hence will be done here.
+ * Here the list of parameters created in data-sql are converted here.
+ * Currently this only includes the conversion of GeoJSON objects to WKT.
  * @module
  */
 import { stringify, type GeoJSONGeometry } from 'wellknown';
 import type { ParameterTypes } from '@directus/data-sql';
+
+export function convertParameters(params: ParameterTypes[]) {
+	return convertGeoJsonParameterToWKT(params);
+}
 
 /**
  * Goes through the list of parameters and converts all GeoJson objects to a WKT representation.

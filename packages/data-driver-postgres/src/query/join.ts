@@ -1,4 +1,4 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { conditionString } from '../utils/conditions/index.js';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
 
@@ -7,7 +7,7 @@ import { escapeIdentifier } from '../utils/escape-identifier.js';
  * @param query the whole abstract query
  * @returns the JOIN part or null if there are no joins in the query
  */
-export const join = ({ joins }: AbstractSqlQuery): string | null => {
+export const join = ({ joins }: AbstractSqlClauses): string | null => {
 	if (joins === undefined || joins.length === 0) return null;
 
 	let joinString = '';

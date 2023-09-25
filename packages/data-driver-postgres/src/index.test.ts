@@ -37,68 +37,66 @@ describe('querying the driver', () => {
 
 			return {
 				...actual,
-				convertQueryAndGenerateAliases: vi.fn().mockImplementation(() => {
+				convertQuery: vi.fn().mockImplementation(() => {
 					const sqlQuery: AbstractSqlQuery = {
-						select: [
-							{
-								type: 'primitive',
-								table: randomCollection,
-								column: firstField,
-								as: firstFieldId,
-							},
-							{
-								type: 'primitive',
-								table: randomCollection,
-								column: secondField,
-								as: secondFieldId,
-								alias: secondFieldAlias,
-							},
-							{
-								type: 'primitive',
-								table: collectionToJoinId,
-								column: joinField1,
-								as: joinFieldId,
-								alias: joinField1Alias,
-							},
-							{
-								type: 'primitive',
-								table: collectionToJoinId,
-								column: joinField2,
-								as: joinField2Id,
-							},
-						],
-						from: randomCollection,
-						joins: [
-							{
-								type: 'join',
-								table: randomCollectionToJoin,
-								as: collectionToJoinId,
-								on: {
-									type: 'condition',
-									negate: false,
-									condition: {
-										type: 'condition-field',
-										target: {
-											type: 'primitive',
-											table: randomCollection,
-											column: fk,
-										},
-										operation: 'eq',
-										compareTo: {
-											type: 'primitive',
-											table: collectionToJoinId,
-											column: foreignPk,
+						clauses: {
+							select: [
+								{
+									type: 'primitive',
+									table: randomCollection,
+									column: firstField,
+									as: firstFieldId,
+								},
+								{
+									type: 'primitive',
+									table: randomCollection,
+									column: secondField,
+									as: secondFieldId,
+									alias: secondFieldAlias,
+								},
+								{
+									type: 'primitive',
+									table: collectionToJoinId,
+									column: joinField1,
+									as: joinFieldId,
+									alias: joinField1Alias,
+								},
+								{
+									type: 'primitive',
+									table: collectionToJoinId,
+									column: joinField2,
+									as: joinField2Id,
+								},
+							],
+							from: randomCollection,
+							joins: [
+								{
+									type: 'join',
+									table: randomCollectionToJoin,
+									as: collectionToJoinId,
+									on: {
+										type: 'condition',
+										negate: false,
+										condition: {
+											type: 'condition-field',
+											target: {
+												type: 'primitive',
+												table: randomCollection,
+												column: fk,
+											},
+											operation: 'eq',
+											compareTo: {
+												type: 'primitive',
+												table: collectionToJoinId,
+												column: foreignPk,
+											},
 										},
 									},
+									alias: joinAlias,
 								},
-								alias: joinAlias,
-							},
-						],
+							],
+						},
 						parameters: [],
-					};
-
-					return {
-						sql: sqlQuery,
 						aliasMapping: new Map([
 							[firstFieldId, [firstField]],
 							[secondFieldId, [secondFieldAlias]],
@@ -106,6 +104,8 @@ describe('querying the driver', () => {
 							[joinField2Id, [randomCollectionToJoin, joinField2]],
 						]),
 					};
+
+					return sqlQuery;
 				}),
 			};
 		});
