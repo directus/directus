@@ -395,6 +395,7 @@ move: 移动
 system: 系统
 add_field_related: 将字段添加到关联的模型
 interface_label: 接口
+display_label: 显示
 today: 今天
 yesterday: 昨天
 delete_comment: 删除注释
@@ -1619,6 +1620,8 @@ interfaces:
   system-interface-options:
     interface-options: 接口选项
     description: 选择接口选项的模式
+  system-display:
+    display: 显示
   list-m2m:
     many-to-many: 多对多
     description: 选择多个相关项目
@@ -1688,6 +1691,7 @@ interfaces:
     sort_placeholder: 手动
     field_note_placeholder: 输入字段备注...
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
+    interface_group: 接口选项
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字

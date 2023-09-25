@@ -296,6 +296,7 @@ move: Premjesti
 system: Sistem
 add_field_related: Dodaj Polje u Povezanu Kolekciju
 interface_label: Interfejs
+display_label: Prikaz
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -1036,6 +1037,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcije Interfejsa
     description: Modalni prozor za odabir opcija interfejsa
+  system-display:
+    display: Prikaz
   list-m2m:
     many-to-many: Many to Many
     description: Odaberi više povezanih stavki
@@ -1073,6 +1076,7 @@ interfaces:
     add_label: '"Napravi Novi" Labela'
     sort: Sortiranje
     field_note_placeholder: Unesi napomenu polja...
+    interface_group: Opcije Interfejsa
   slider:
     slider: Slajder
     description: Odaberi broj uz pomoć slajdera
