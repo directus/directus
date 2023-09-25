@@ -9,7 +9,7 @@ Panels are used in dashboards as part of the Insights module, and typically allo
 in their Directus collections. In this guide, you will instead fetch data from an external API and display it in a table
 as part of an panel.
 
-<!-- IMG -->
+<img src="https://marketing.directus.app/assets/31ac7437-99ed-44fe-9b75-b21c92198fda.png" alt="Table with header Messages shows several items with status, sent delative date, a recipient ID, and a provider">
 
 Panels can only talk to internal Directus services, and can't reliably make external web requests. To create a panel
 that can interact with external APIs, this guide will create a bundle of an endpoint (that can make external requests)
@@ -110,10 +110,6 @@ description: 'View recent Vonage SMS activity.',
 
 Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
 include a professional prefix. You can choose an icon from the library [here].
-
-With the information above, the panel will appear in the list like this:
-
-<!-- IMG -->
 
 The Panel will accept configuration options. The Vonage API supports `date_start`, `date_end`, `status`, `direction`
 (incoming/outgoing), and `product` type (SMS/Messages).
@@ -244,7 +240,7 @@ minHeight: 18,
 
 The output of these options will look like this:
 
-<!-- IMG -->
+<img src="https://marketing.directus.app/assets/053298df-a5ff-4fd5-85ec-ff0f78bb64ca.png" alt="Form shows product type dropdown, direction dropdown, date range dropdown, included message checkbox, and status dropdown." style="padding: 2px 12px;">
 
 ## Prepare the View
 
@@ -478,7 +474,7 @@ Fill in the configuration fields as needed:
 
 Save the panel and dashboard. It will look something like this:
 
-<!-- IMG -->
+<img src="https://marketing.directus.app/assets/31ac7437-99ed-44fe-9b75-b21c92198fda.png" alt="Table with header Messages shows several items with status, sent delative date, a recipient ID, and a provider">
 
 ## Summary
 
