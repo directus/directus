@@ -30,7 +30,7 @@ Now the boilerplate has been created, open the directory in your code editor.
 
 ## Specify Configuration
 
-Panels have two parts - the `index.js` configuration file, and the `pane.vue` view. The first part is defining what
+Panels have two parts - the `index.js` configuration file, and the `panel.vue` view. The first part is defining what
 information you need to render the panel in the configuration.
 
 Open `index.js` and change the `id`, `name`, `icon`, and `description`.
