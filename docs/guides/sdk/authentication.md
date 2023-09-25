@@ -6,11 +6,14 @@ description: Learn about all of the ways to control authentication with the Dire
 # Directus SDK Authentication
 
 The Directus SDK provides multiple ways to [authenticate your requests](/reference/authentication), by either generating
-an access/refresh tokens through login, or by setting a static token.
+an access and refresh tokens through login, or by setting a static token.
 
 ## Generate, Use, and Refresh Access Tokens
 
 ### Using the `authentication()` Composable
+
+The `authentication()` composable provides the Directus client with new methods related to authentication. It also
+manages token storage and refreshing on your behalf.
 
 ```js
 import { createDirectus, authentication } from '@directus/sdk';
@@ -20,7 +23,7 @@ await client.refresh();
 await client.logout();
 ```
 
-This approach will handle token refreshing automatically. The current token is stored inside of the initialized client.
+This approach will handle refreshing of the token automatically. The current token is stored inside the initialized client.
 
 ### Using the `rest()` Composable
 
@@ -44,8 +47,7 @@ client.send(JSON.stringify({ type: 'auth', email: email, password: password }));
 ```
 
 When using Directus Realtime's [default 'handshake' authentication strategy](/guides/real-time/authentication), the
-first message sent must include authentication details - either an `email` and `password`, or an `access_token` (shown
-below).
+first message sent must include authentication details - either an `email` and `password`, an `access_token`, or a `refresh_token`.
 
 ## Set a Token
 
