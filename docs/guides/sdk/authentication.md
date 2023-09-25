@@ -37,7 +37,7 @@ const client = createDirectus('http://directus.example.com').with(rest());
 
 const user = await client.request(login(email, password));
 await client.request(refresh(mode, refresh_token));
-await client.request(logout(mode, refresh_token));
+await client.request(logout(refresh_token));
 ```
 
 Note that each of the authentication methods must be imported from the SDK.
@@ -144,7 +144,7 @@ import { createDirectus, authentication } from '@directus/sdk';
 
 class LocalStorage {
   get() {
-    return localStorage.getItem("directus-data");
+    return JSON.parse(localStorage.getItem("directus-data"));
   }
   set(data) {
     localStorage.setItem("directus-data", JSON.stringify(data));
@@ -176,6 +176,6 @@ Or you can enable this only for specific REST requests using the following helpe
 
 ```js
 const result = await client.request(
-  withOptions(login(email, password), { credentials: 'include' })
+  withOptions(refresh(), { credentials: 'include' })
 );
 ```
