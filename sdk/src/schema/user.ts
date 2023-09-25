@@ -24,7 +24,7 @@ export type DirectusUser<Schema extends object> = MergeCoreCollection<
 		status: string;
 		role: string | null;
 		token: string | null;
-		last_access: string | null;
+		last_access: 'datetime' | null;
 		last_page: string | null;
 		provider: string;
 		external_identifier: string | null;
