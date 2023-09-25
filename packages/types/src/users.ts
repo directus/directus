@@ -14,27 +14,27 @@ export type Avatar = {
 	id: string;
 };
 
-// There's more data returned in thumbnails and the avatar data, but we
-// only care about the thumbnails in this context
-
 export type User = {
 	id: string;
-	status: string;
-	first_name: string;
-	last_name: string;
-	email: string;
-	token: string;
-	last_login: string;
-	last_page: string;
-	external_id: string;
-	tfa_secret: string;
-	theme: 'auto' | 'dark' | 'light';
-	role: Role;
-	password_reset_token: string | null;
-	timezone: string;
+	status: 'draft' | 'invited' | 'active' | 'suspended' | 'archived';
+	first_name: string | null;
+	last_name: string | null;
+	email: string | null;
+	password: string | null;
+	token: string | null;
+	last_access: string | null;
+	last_page: string | null;
+	external_identifier: string | null;
+	tfa_secret: string | null;
+	auth_data: Record<string, any> | null;
+	provider: string;
+	theme: string | null;
+	role: Role | null;
 	language: string | null;
-	avatar: null | Avatar;
-	company: string | null;
+	avatar: Avatar | null;
 	title: string | null;
+	description: string | null;
+	location: string | null;
+	tags: string[] | null;
 	email_notifications: boolean;
 };

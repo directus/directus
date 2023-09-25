@@ -8,7 +8,7 @@ readTime:
 > Users represent the distinct people _(and entities)_ that interact with your project. Each user can be assigned a
 > role, which defines a user's access permissions.
 
-:::tip Learn More
+::: tip Learn More
 
 To configure users programmatically, see our API documentation on [users](/reference/system/users).
 
@@ -31,7 +31,7 @@ To invite people to become users via email and automatically assign them a role 
 3. Enter one or more email addresses, separated by a comma and a space.
 4. Click **Invite** to confirm.
 
-:::tip
+::: tip
 
 Instead of comma-separated emails, you can also add new emails line-by-line.
 

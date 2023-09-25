@@ -6,7 +6,8 @@
 
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
-import { parseJSON } from '@directus/utils';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
+import { isValidJSON, parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, unref, watch } from 'vue';
@@ -55,7 +56,7 @@ onMounted(async () => {
 
 		codemirror = CodeMirror(codemirrorEl.value, {
 			mode: props.language,
-			value: unref(isObjectLike) ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
+			value: getStringifiedValue(props.value, unref(isObjectLike)),
 			tabSize: 0,
 			autoRefresh: true,
 			indentUnit: 4,
@@ -99,14 +100,10 @@ onMounted(async () => {
 
 			if (origin === 'setValue') return;
 
-			if (unref(isObjectLike)) {
-				try {
-					emit('input', content !== '' ? parseJSON(content) : null);
-				} catch {
-					// Skip emitting invalid JSON
-				}
+			if (content === '') {
+				emit('input', null);
 			} else {
-				emit('input', content !== '' ? content : null);
+				emit('input', unref(isObjectLike) && isValidJSON(content) ? parseJSON(content) : content);
 			}
 		});
 	}
@@ -137,7 +134,7 @@ watch(
 		const currentValue = codemirror?.getValue();
 
 		if (currentValue !== newValue) {
-			codemirror?.setValue(unref(isObjectLike) ? JSON.stringify(newValue, null, 4) : String(newValue ?? ''));
+			codemirror?.setValue(getStringifiedValue(newValue, unref(isObjectLike)));
 		}
 	}
 );

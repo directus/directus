@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
+      - next
     paths-ignore:
       - docs/**
   pull_request:
     branches:
       - main
+      - next
 
 concurrency:
   group: check-${{ github.ref }}

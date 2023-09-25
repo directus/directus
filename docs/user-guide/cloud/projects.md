@@ -53,7 +53,7 @@ To create a Standard Project:
 8. Click **"Proceed to Checkout"**. You will be taken to a checkout page.
 9. Enter payment information and hit **"Subscribe"**.
 
-:::tip Enterprise Tier
+::: tip Enterprise Tier
 
 Need even more power, scale, customization and support?\
 Upgrade to an [Enterprise Project](#create-an-enterprise-project).
@@ -66,7 +66,7 @@ Enterprise tier offers power and scale to meet any Project's needs and offers 19
 [Datacenter regions](/user-guide/cloud/glossary#datacenter-regions), upgraded
 [support options](/user-guide/cloud/glossary#support-options), and much more.
 
-:::tip Ready to go Enterprise?
+::: tip Ready to go Enterprise?
 
 [Contact Sales](https://directus.io/contact)
 
@@ -130,7 +130,7 @@ On Standard Projects, it's possible to change the Project Name.
 Each Enterprise Project is customized, so it can't be managed from the Cloud Dashboard. The Project will be managed in
 tandem with the Directus Core Team.
 
-:::tip Ready to go Enterprise?
+::: tip Ready to go Enterprise?
 
 [Contact Sales](https://directus.io/contact)
 
@@ -149,7 +149,7 @@ destroy a Directus Cloud Project, follow these steps:
 6. Type in the Project Name.
 7. Click **"Destroy Project"**.
 
-:::tip
+::: tip
 
 This action will break any external apps connecting to the Project's API or linking to Project files, and is permanent
 and irreversible. **Directus Cloud is not responsible for data or files lost due to this action!**

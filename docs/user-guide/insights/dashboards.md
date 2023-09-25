@@ -42,7 +42,7 @@ large as the screen they will be viewing on. You are able to create as many Dash
 Dashboard view, edit, and create permissions are
 [fully configurable](/user-guide/user-management/users-roles-permissions) by User Role.
 
-:::tip Auto Refresh
+::: tip Auto Refresh
 
 The Auto Refresh menu in the [Sidebar](/user-guide/overview/data-studio-app#_4-sidebar) lets you select an interval to
 refresh dashboard data.

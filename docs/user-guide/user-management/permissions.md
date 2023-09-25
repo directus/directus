@@ -11,7 +11,7 @@ readTime:
 > permissions are turned off by default. From here, you explicitly reconfigure its permissions for each collection as
 > desired.
 
-:::tip Learn More
+::: tip Learn More
 
 To configure permissions programmatically, see our API documentation on [permissions](/reference/system/permissions).
 
@@ -104,7 +104,7 @@ configurations to system collections, these will be reverted. To reset system pe
    - **Recommended Defaults** — Reconfigures permissions on system collections to the recommended defaults.
 4. Click **Reset** to confirm.
 
-:::tip
+::: tip
 
 You may notice that when you toggle on **App Access Minimum** permissions will be hard-coded so they cannot be
 restricted. However, you are free to reconfigure the **Recommended Defaults**.

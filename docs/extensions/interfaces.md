@@ -131,3 +131,13 @@ export default {
 If you prefer to use the Vue Options API, you can inject the `api` and `stores` properties directly.
 
 :::
+
+## Guides
+
+Learn how to build interfaces with our official guides:
+
+<GuidesListExtensions type="Interfaces" />
+
+<script setup>
+import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+</script>

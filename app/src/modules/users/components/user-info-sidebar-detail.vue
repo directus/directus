@@ -23,18 +23,6 @@
 				<dt>{{ t('last_access') }}</dt>
 				<dd>{{ lastAccessDate }}</dd>
 			</div>
-			<div v-if="user.created_on">
-				<dt>{{ t('created_on') }}</dt>
-				<dd>{{ user.created_on }}</dd>
-			</div>
-			<div v-if="user.created_by">
-				<dt>{{ t('created_by') }}</dt>
-				<dd>{{ user.created_by }}</dd>
-			</div>
-			<div v-if="user.modified_on">
-				<dt>{{ t('modified_on') }}</dt>
-				<dd>{{ user.modified_on }}</dd>
-			</div>
 		</dl>
 
 		<v-divider />
@@ -46,11 +34,12 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { localizedFormat } from '@/utils/localized-format';
+import type { User } from '@directus/types';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-	user?: Record<string, any>;
+	user: User | null;
 	isNew?: boolean;
 }>();
 

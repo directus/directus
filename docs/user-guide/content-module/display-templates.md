@@ -24,7 +24,7 @@ Insights. Display Templates are easy to setup, just follow these steps:
 - Type in any custom text as desired.
 - Click the Field inline or hit `backspace` to remove it.
 
-:::tip Keep it Short and Simple
+::: tip Keep it Short and Simple
 
 Display Templates will let you represent Items with custom inline text, image thumbnails, dates, numbers, or pretty
 anything else. However, it may look funky or run off the page if you attempt to display things like long blog posts,

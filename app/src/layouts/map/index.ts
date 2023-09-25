@@ -1,12 +1,13 @@
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
+import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { Field, Filter, GeometryOptions } from '@directus/types';
 import { defineLayout, getFieldsFromTemplate } from '@directus/utils';
 import { cloneDeep, merge } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import MapActions from './actions.vue';
 import MapLayout from './map.vue';
@@ -229,7 +230,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (props.selectMode) {
 				handleSelect({ ids: [id], replace });
 			} else {
-				router.push(`/content/${collection.value}/${id}`);
+				router.push(getItemRoute(unref(collection), id));
 			}
 		}
 

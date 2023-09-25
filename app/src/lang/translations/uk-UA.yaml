@@ -473,7 +473,6 @@ comments: Коментарі
 no_comments: Коментарів ще немає
 select_item: Обрати об'єкт
 no_items: Об'єктів немає
-search_items: Пошук об'єктів...
 disabled: Вимкнено
 information: Інформація
 report_bug: Звіт про помилку
@@ -2002,6 +2001,10 @@ operations:
     key: Ідентифікатори
     payload: Вміст
     query: Запит
+  json-web-token:
+    payload: Вміст
+    token: Ключ
+    options: Параметри
   log:
     name: Увійти в консоль
     description: Вивести щось в консоль

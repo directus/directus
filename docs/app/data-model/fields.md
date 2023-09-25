@@ -119,13 +119,13 @@ To duplicate a field, follow these steps.
 3. Click the <span mi icon>content_copy</span> **Duplicate Field** option.
 4. Choose the collection you'd like to create the field in and set the Field Name.
 
-:::warning Relational and Primary Key Fields
+::: warning Relational and Primary Key Fields
 
 Currently, it is not possible to duplicate relational fields or a collection's primary key.
 
 :::
 
-:::tip Duplicates Configurations Only
+::: tip Duplicates Configurations Only
 
 When you duplicate a field, all of its configuration settings will be copied as well. However, values stored within that
 field will not be copied.

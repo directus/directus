@@ -342,7 +342,7 @@ export default function App() {
 		event.preventDefault();
 		connectionRef.current = new WebSocket(url);
 		connectionRef.current.addEventListener('open', authenticate(formValue));
-		connectionRef.current.addEventListener('message', (message) => receiveMessage)(message);
+		connectionRef.current.addEventListener('message', (message) => receiveMessage(message));
 	};
 
 	const receiveMessage = (message) => {

@@ -9,8 +9,6 @@ pageClass: page-reference
 > Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a
 > previous state at will. [Learn more about Revisions](/user-guide/overview/glossary#revisions).
 
----
-
 ## The Revision Object
 
 `id` **integer**\
@@ -50,8 +48,6 @@ Parent revision that triggered this revision. Many-to-one to revisions (recursiv
 }
 ```
 
----
-
 ## List revisions
 
 List all revisions that exist in Directus.
@@ -63,29 +59,23 @@ to a collection that the current user doesn't have access to are stripped out.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /revisions`
 
-An array of up to [limit](/reference/query#limit) [revision objects](#the-revision-object). If no items are available,
-data will be an empty array.
+`SEARCH /revisions`
 
-### REST API
-
-```
-GET /revisions
-SEARCH /revisions
-```
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -93,7 +83,42 @@ type Query {
 }
 ```
 
-##### Examples
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readRevisions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readRevisions(query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [revision objects](#the-revision-object). If no items are available,
+data will be an empty array.
+
+### Examples
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /revisions`
+
+`SEARCH /revisions`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -105,37 +130,39 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readRevisions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readRevisions({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a revision
 
 List an existing revision by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /revisions/:id`
 
-Returns the requested [revision object](#the-revision-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /revisions/:id
-```
-
-##### Example
-
-```
-GET /revisions/322
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -143,7 +170,39 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readRevision } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readRevision(revision_id, query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [revision object](#the-revision-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /revisions/322`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -154,3 +213,21 @@ query {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readRevision } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readRevision('53201', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>

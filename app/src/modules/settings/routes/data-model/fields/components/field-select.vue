@@ -118,7 +118,7 @@
 						<div class="form-grid">
 							<div class="field">
 								<span class="type-label">{{ t('collection', 0) }}</span>
-								<v-select v-model="duplicateTo" class="monospace" :items="collections" />
+								<interface-system-collection :value="duplicateTo" class="monospace" @input="duplicateTo = $event" />
 							</div>
 
 							<div class="field">
@@ -154,7 +154,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, unref } from 'vue';
-import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
@@ -187,11 +186,10 @@ const { t } = useI18n();
 
 const router = useRouter();
 
-const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 
 const { deleteActive, deleting, deleteField } = useDeleteField();
-const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
+const { duplicateActive, duplicateName, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
 const inter = useExtension(
 	'interface',
@@ -247,18 +245,11 @@ function useDuplicate() {
 	const duplicateName = ref(props.field.field + '_copy');
 	const duplicating = ref(false);
 
-	const collections = computed(() =>
-		collectionsStore.collections
-			.map(({ collection }) => collection)
-			.filter((collection) => collection.startsWith('directus_') === false)
-	);
-
 	const duplicateTo = ref(props.field.collection);
 
 	return {
 		duplicateActive,
 		duplicateName,
-		collections,
 		duplicateTo,
 		saveDuplicate,
 		duplicating,

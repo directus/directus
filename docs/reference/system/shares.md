@@ -8,8 +8,6 @@ pageClass: page-reference
 
 > Shares are a way to publicly share an otherwise private item.
 
----
-
 ## The Share Object
 
 `id` **uuid**\
@@ -69,29 +67,23 @@ The maximum number of times the shared item can be viewed.
 
 List all shares that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /shares`
 
-An array of up to [limit](/reference/query#limit) [share objects](#the-share-object). If no items are available, data
-will be an empty array.
+`SEARCH /shares`
 
-### REST API
-
-```
-GET /shares
-SEARCH /shares
-```
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
 POST /graphql/system
-```
 
 ```graphql
 type Query {
@@ -99,7 +91,42 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readShares } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readShares(query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [share objects](#the-share-object). If no items are available, data
+will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /shares`
+
+`SEARCH /shares`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -112,37 +139,37 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readShares } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readShares({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a Share
 
 List an existing share by primary key.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-Supports all [global query parameters](/reference/query).
+`GET /shares/:id`
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the requested [share object](#the-share-object).
-
-### REST API
-
-```
-GET /shares/:id
-```
-
-##### Example
-
-```
-GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -150,7 +177,39 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readShare } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readShare(share_id, query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [share object](#the-share-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -163,35 +222,82 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readShare('2f8c03c3-4988-4869-a1b3-318e0a4b9b9d', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Share
 
 Create a new share.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /shares`
+
+Provide a [share object](#the-share-object) as the body of your request.
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_shares_item(data: create_directus_shares_input!): directus_shares
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createShare } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createShare(share_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [share object](#the-share-object).
 
-### Returns
+### Response
 
 Returns the [share object](#the-share-object) for the created share.
 
-### REST API
+### Example
 
-```
-POST /shares
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /shares`
 
 ```json
-// POST /shares
-
 {
 	"name": "External Review",
 	"collection": "articles",
@@ -200,19 +306,10 @@ POST /shares
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_shares_item(data: create_directus_shares_input!): directus_shares
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -225,35 +322,85 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createShare({
+		name: 'External Review',
+		collection: 'articles',
+		item: '22',
+		max_uses: '5',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Shares
 
 Create multiple new shares.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /shares`
+
+Provide an array of [share objects](#the-share-object) as the body of your request.
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createShares } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createShares(share_object_array));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [share objects](#the-share-object).
 
-### Returns
+### Response
 
 Returns the [share objects](#the-share-object) for the created shares.
 
-### REST API
+### Example
 
-```
-POST /shares
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /shares`
 
 ```json
-// POST /shares
-
 [
 	{
 		"name": "External Review",
@@ -270,19 +417,10 @@ POST /shares
 ]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -305,45 +443,52 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, createShares } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createShares([
+		{
+			name: 'External Review',
+			collection: 'articles',
+			item: '25',
+			max_uses: '5',
+		},
+		{
+			name: 'Early Access',
+			collection: 'articles',
+			item: '26',
+			password: 'EARLYACCESS2023',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a Share
 
 Update an existing share.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
+`PATCH /shares/:id`
 
-A partial [share object](#the-share-object).
+Provide a partial [share objects](#the-share-object) as the body of your request.
 
-### Returns
+</template>
+<template #graphql>
 
-Returns the [share object](#the-share-object) for the updated share.
-
-### REST API
-
-```
-PATCH /shares/:id
-```
-
-##### Example
-
-```json
-// PATCH /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
-
-{
-	"max_uses": "30"
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -351,7 +496,49 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateShare } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateShare(share_id, partial_share_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [share object](#the-share-object).
+
+### Response
+
+Returns the [share object](#the-share-object) for the updated share.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+
+```json
+{
+	"max_uses": "30"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -364,17 +551,72 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateShare('2f8c03c3-4988-4869-a1b3-318e0a4b9b9d', {
+		max_uses: 10,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Shares
 
 Update multiple existing shares.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /shares`
+
+```json
+{
+	"keys": share_id_array,
+	"data": partial_share_object
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_shares_items(ids: [ID!]!, data: update_directus_shares_input): [directus_shares]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateShares } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateShares(share_id_array, partial_share_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the shares you'd like to update.
@@ -382,21 +624,18 @@ Array of primary keys of the shares you'd like to update.
 `data` **Required**\
 Any of [the share object](#the-share-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [share objects](#the-share-object) for the updated shares.
 
-### REST API
+### Example
 
-```
-PATCH /shares
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`PATCH /shares`
 
 ```json
-// PATCH /shares
-
 {
 	"keys": ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"],
 	"data": {
@@ -405,19 +644,10 @@ PATCH /shares
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_shares_items(ids: [ID!]!, data: update_directus_shares_input): [directus_shares]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -433,33 +663,39 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateShares(['2f8c03c3-4988-4869-a1b3-318e0a4b9b9d', '153cdb59-7868-4187-8696-372aa07537f4'], {
+		max_uses: 10,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a Share
 
 Delete an existing share.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`DELETE /shares/:id`
 
-```
-DELETE /shares/:id
-```
+</template>
+<template #graphql>
 
-##### Example
-
-```
-DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -467,7 +703,35 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteShare } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteShare(share_id));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -477,38 +741,37 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(staticToken()).with(rest());
+
+const result = await client.request(deleteShare('0375bb1d-5cbb-48cf-bfac-476a3440a104'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Shares
 
 Delete multiple existing shares.
 
-### Request Body
+### Request
 
-An array of share primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`DELETE /shares`
 
-Empty body.
+Provide an array of share IDs as the body of your request.
 
-### REST API
+</template>
+<template #graphql>
 
-```
-DELETE /shares
-```
-
-##### Example
-
-```json
-// DELETE /shares
-["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -516,7 +779,43 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteShares } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteShares(share_id_array));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of share primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /shares`
+
+```json
+["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -526,7 +825,21 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteShares } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteShares(['2f8c03c3-4988-4869-a1b3-318e0a4b9b9d', '153cdb59-7868-4187-8696-372aa07537f4'])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Authenticate a Share
 
@@ -535,7 +848,40 @@ endpoints). These tokens are limited to a permissions set that only allows acces
 relationally linked items that that associated role has access to. This means that all regular endpoints can be used
 with the credentials set returned by this endpoint.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /shares/auth`
+
+```json
+{
+	"share": share_id,
+	"password": password
+}
+```
+
+</template>
+<template #graphql>
+
+`// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, authenticateShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(authenticateShare('share_key', 'password'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `share` **Required**\
 Primary key of the share you're authenticating against.
@@ -543,7 +889,7 @@ Primary key of the share you're authenticating against.
 `password` **string**\
 Password for the share, if one is configured.
 
-### Returns
+### Response
 
 `access_token` **string**\
 Temporary access token to be used in follow-up requests.
@@ -555,17 +901,12 @@ How long before the access token will expire. Value is in milliseconds.
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
 as the mode in the request, the refresh token won't be returned in the JSON.
 
-### REST API
+### Example
 
-```
-POST /shares/auth
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
-
-```
-POST /shares/auth
-```
+`POST /shares/auth`
 
 ```json
 {
@@ -574,19 +915,63 @@ POST /shares/auth
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-# Not currently available in GraphQL
+`// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, authenticateShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us'));
 ```
 
----
+</template>
+</SnippetToggler>
 
 ## Send a Share by Email
 
 Sends an email to the provided email addresses with a link to the share.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /shares/invite`
+
+```json
+{
+	"share": share_key,
+	"emails": email_address_array
+}
+```
+
+</template>
+<template #graphql>
+
+`// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, inviteShare } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(inviteShare(share_id, email_address_array));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `share` **Required**\
 Primary key of the share you're inviting people to.
@@ -594,76 +979,99 @@ Primary key of the share you're inviting people to.
 `emails` **array**\
 Array of email strings to send the share link to.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-POST /shares/invite
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /shares/invite`
 
 ```json
-// POST /shares/invite
 {
 	"share": "653925a9-970e-487a-bfc0-ab6c96affcdc",
 	"emails": ["allison@example.com", "mike@example.com"]
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
+`// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, inviteShare } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	inviteShare('653925a9-970e-487a-bfc0-ab6c96affcdc', ['allison@example.com', 'mike@example.com'])
+);
 ```
 
-```
-# Not currently available in GraphQL
-```
-
----
+</template>
+</SnippetToggler>
 
 ## Get Share Public Info
 
 Allows unauthenticated users to retrieve information about the share.
 
-### Returns
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /shares/info/:id`
+
+</template>
+<template #graphql>
+
+`// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readShareInfo } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readShareInfo(share_id));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
 
 The [share objects](#the-share-object) for the given UUID, if it's still valid.
 
-### REST API
+### Example
 
-```
-GET /shares/info/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc`
 
-```json
-// GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc
-{
-	"id": "653925a9-970e-487a-bfc0-ab6c96affcdc",
-	"collection": "authors",
-	"item": "1",
-	"password": "**********",
-	"max_uses": 15,
-	"times_used": 0,
-	"date_start": "2023-01-26T17:00:00.000Z",
-	"date_end": "2023-01-28T17:00:00.000Z"
-}
-```
+</template>
+<template #graphql>
 
-### GraphQL
+`// Not currently available in GraphQL`
 
-```
-POST /graphql/system
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readShareInfo } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readShareInfo('653925a9-970e-487a-bfc0-ab6c96affcdc'));
 ```
 
-```
-# Not currently available in GraphQL
-```
-
----
+</template>
+</SnippetToggler>

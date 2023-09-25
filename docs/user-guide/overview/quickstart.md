@@ -43,7 +43,7 @@ in!_
 7. You can access a Project from within the Cloud Dashboard or type the URL into your browser.
 8. Log in with your username and password from the email.
 
-:::tip Check All Inbox Folders
+::: tip Check All Inbox Folders
 
 Due to the algorithms used by some email providers, it is possible the email containing your Project login information
 will end up in another folder like "Social" or "Promotions".
@@ -64,7 +64,7 @@ Once logged in, you're greeted with the option to create your first
    Keep the values in this menu at the default, toggled off, for now. You can adjust them later.
 5. Click <span mi btn>check</span> in the menu header.
 
-:::tip Learn More About Collections
+::: tip Learn More About Collections
 
 - [The Content Module](/user-guide/content-module/content)
 - [Create and Manage a Collection](/app/data-model/collections)
@@ -97,7 +97,7 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 3. Fill in the Field Value(s) as desired.
 4. Click <span mi btn>check</span> in the top-right to save your Item.
 
-:::tip Learn More About Items
+::: tip Learn More About Items
 
 - [The Content Module](/user-guide/content-module/content)
 - [The Item Page](/user-guide/content-module/content/items)

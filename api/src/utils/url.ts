@@ -53,6 +53,12 @@ export class Url {
 			}
 		}
 
+		const lastPath = paths.at(-1);
+
+		if (pathToAdd.length > 0 && lastPath !== '.' && lastPath !== '..') {
+			this.hasTrailingSlash = typeof lastPath === 'string' && lastPath.endsWith('/');
+		}
+
 		return this;
 	}
 

@@ -473,7 +473,6 @@ comments: コメント
 no_comments: コメントがありません
 select_item: アイテムの選択
 no_items: アイテムがありません
-search_items: アイテムを検索...
 disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
@@ -1453,6 +1452,9 @@ panels:
   label:
     name: ラベル
 operations:
+  json-web-token:
+    token: トークン
+    options: オプション
   log:
     message: メッセージ
   notification:

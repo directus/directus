@@ -31,7 +31,7 @@ pnpm --filter api test -- app.test.ts
 pnpm --filter api test -- utils
 ```
 
-:::tip Relative Commands
+::: tip Relative Commands
 
 If you are already in a directory of a specific package, you may omit the `--filter` flag in `pnpm` commands since the
 commands will be executed relative to the current directory.

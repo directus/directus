@@ -146,7 +146,7 @@ In order to use this Panel, your Collection will need a datetime Field.
 
 :::
 
-:::tip Custom Date Range
+::: tip Custom Date Range
 
 Note that `Past` is not prefixed to a custom range as it is on the default ranges. When selecting **"Other"**, simply
 type in `3 years`, `1 month`, `2 weeks`, `5 days`, etc.
@@ -178,7 +178,7 @@ Panels:
 You will notice that the Global Variable Panel is an interface in the Dashboard, allowing you to modify the value of
 this variable. If you change its value, all panels referencing the variable will update automatically.
 
-:::warning Must be Valid Data Type
+::: warning Must be Valid Data Type
 
 Your variable's data type will need to be a valid match to wherever you are using it. For example, do not apply a string
 or JSON variable in a place that requires Datetime data.
@@ -209,7 +209,7 @@ other Insights Panels:
 You will notice that the Global Relational Variable Panel is an interface in the Dashboard, allowing you to modify the
 value of this variable. If you change its value, all panels referencing the variable will update automatically.
 
-:::warning Must be Valid Data Type
+::: warning Must be Valid Data Type
 
 Your variable's data type will need to be a valid match to wherever you are using it. For example, do not apply a string
 or JSON variable in a place that requires Datetime data.

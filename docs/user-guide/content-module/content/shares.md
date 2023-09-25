@@ -10,7 +10,7 @@
 
 <!--
 @TODO
-Create a :::tip Before You Begin
+Create a ::: tip Before You Begin
 getting-started > intro-tutorial
 configuration > users-roles-permissions
 -->

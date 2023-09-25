@@ -479,7 +479,6 @@ comments: 코멘트
 no_comments: 아직 코멘트가 없습니다
 select_item: 항목 선택
 no_items: 항목 없음
-search_items: 검색
 disabled: 비활성화 됨
 information: 정보
 report_bug: 버그 제보
@@ -2085,6 +2084,10 @@ operations:
     key: ID
     payload: 유효 탑재량
     query: 질문
+  json-web-token:
+    payload: 유효 탑재량
+    token: 접속 인증 토큰
+    options: 옵션
   log:
     name: 콘솔에 로그인
     description: 콘솔에 출력
