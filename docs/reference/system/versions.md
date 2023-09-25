@@ -13,6 +13,9 @@ pageClass: page-reference
 `id` **uuid**\
 Primary key of the version.
 
+`key` **string**\
+Key of the version, used as the value for the `version` query parameter.
+
 `name` **string**\
 Name of the version.
 
@@ -31,8 +34,9 @@ User that created the version. Many-to-one to [users](/reference/system/users).
 ```json
  {
 	"id": "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5",
+	"key": "my_version",
 	"name": "My Version",
-	"collection": "my-collection",
+	"collection": "my_collection",
 	"item": "1",
 	"hash": "aaafc0db8fb60e82e634903523e1fa2144c58520",
 	"date_created": "2023-08-23T10:38:20.686Z",
