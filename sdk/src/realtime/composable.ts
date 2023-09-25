@@ -26,6 +26,9 @@ const defaultRealTimeConfig: WebSocketConfig = {
 	},
 };
 
+const WS_OPEN = 1;
+const WS_CLOSED = 3;
+
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
  *
@@ -103,7 +106,7 @@ export function realtime(config: WebSocketConfig = {}) {
 		};
 
 		const handleMessages = async (ws: WebSocket, currentClient: AuthWSClient<Schema>) => {
-			while (ws.readyState !== WebSocket.CLOSED) {
+			while (ws.readyState !== WS_CLOSED) {
 				const message = await messageCallback(ws).catch(() => {
 					/* ignore invalid messages */
 				});
@@ -183,7 +186,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				});
 			},
 			disconnect() {
-				if (socket && socket?.readyState === WebSocket.OPEN) {
+				if (socket && socket?.readyState === WS_OPEN) {
 					socket.close();
 				}
 
@@ -210,7 +213,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				return () => eventHandlers[event].delete(callback);
 			},
 			sendMessage(message: string | Record<string, any>) {
-				if (!socket || socket?.readyState !== WebSocket.OPEN) {
+				if (!socket || socket?.readyState !== WS_OPEN) {
 					// TODO use directus error
 					throw new Error('websocket connection not OPEN');
 				}
@@ -230,7 +233,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				collection: Collection,
 				options = {} as Options
 			) {
-				if (!socket || socket.readyState !== WebSocket.OPEN) await this.connect();
+				if (!socket || socket.readyState !== WS_OPEN) await this.connect();
 				if ('uid' in options === false) options.uid = uid.next().value;
 
 				let subscribed = true;
@@ -244,7 +247,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					void,
 					unknown
 				> {
-					while (subscribed && ws && ws.readyState === WebSocket.OPEN) {
+					while (subscribed && ws && ws.readyState === WS_OPEN) {
 						const message = await messageCallback(ws).catch(() => {
 							/* let the loop continue */
 						});
@@ -273,7 +276,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					if (config.reconnect && reconnecting) {
 						while (reconnecting) await sleep(10);
 
-						if (socket && socket.readyState === WebSocket.OPEN) {
+						if (socket && socket.readyState === WS_OPEN) {
 							// re-subscribe on the new connection
 							socket.send(JSON.stringify({ ...options, collection, type: 'subscribe' }));
 
