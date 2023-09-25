@@ -383,6 +383,7 @@ move: Mover
 system: Sistema
 add_field_related: Adicionar Campo à Coleção Relacionada
 interface_label: Interface
+display_label: Exibir
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
@@ -1578,6 +1579,8 @@ interfaces:
   system-interface-options:
     interface-options: Opções de Interface
     description: Um modal para selecionar opções de uma interface
+  system-display:
+    display: Exibir
   list-m2m:
     many-to-many: Muitos para muitos
     description: Selecione vários itens de junção relacionados
@@ -1642,6 +1645,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Insira a nota de campo...
     incompatible_data: Os dados atuais não são compatíveis com a interface de repetição e serão substituídos ao adicionar novos itens
+    interface_group: Opções de Interface
   slider:
     slider: Slider
     description: Selecione um número usando um controle deslizante

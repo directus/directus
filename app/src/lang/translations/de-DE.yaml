@@ -395,6 +395,7 @@ move: Verschieben
 system: System
 add_field_related: Feld zur abhängigen Sammlung hinzufügen
 interface_label: Benutzeroberfläche
+display_label: Anzeige
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
@@ -1616,6 +1617,8 @@ interfaces:
   system-interface-options:
     interface-options: Schnittstellenoptionen
     description: Ein Popup zum Auswählen der Schnittstellenoptionen
+  system-display:
+    display: Anzeige
   list-m2m:
     many-to-many: n:n
     description: Mehrere verwandte Elemente auswählen
@@ -1685,6 +1688,7 @@ interfaces:
     sort_placeholder: Manuell
     field_note_placeholder: Feldnotiz eingeben...
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
+    interface_group: Schnittstellenoptionen
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen

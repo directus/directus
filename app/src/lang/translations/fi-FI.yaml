@@ -371,6 +371,7 @@ move: Siirrä
 system: Järjestelmä
 add_field_related: Lisää kenttä liittyvään kokoelmaan
 interface_label: Käyttöliittymä
+display_label: Näyttö
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
@@ -1432,6 +1433,8 @@ interfaces:
   system-interface-options:
     interface-options: Liittymän asetukset
     description: Modaali-ikkuna liittymän asetusten valintaan
+  system-display:
+    display: Näyttö
   list-m2m:
     many-to-many: Monet monelle
     description: Valitse useita liittyviä risteyskohteita
@@ -1488,6 +1491,7 @@ interfaces:
     add_label: '"Luo uusi"-tunniste'
     sort: Järjestä
     field_note_placeholder: Syötä kentän muistiinpano...
+    interface_group: Liittymän asetukset
   slider:
     slider: Liukusäädin
     description: Valitse numero käyttäen liukusäädintä
