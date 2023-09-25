@@ -115,6 +115,8 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
    - via SDK
 
      ```js
+     import { createDirectus, authentication } from '@directus/sdk';
+
      const sdk = new Directus('https://directus.myserver.com')
           .with(authentication('cookie', { credentials: 'include' }));
 
