@@ -2,4 +2,4 @@
 "@directus/sdk": patch
 ---
 
-Fixes websocket subscription output typing in the SDK
+Fixed WebSocket subscription output typing in the SDK
