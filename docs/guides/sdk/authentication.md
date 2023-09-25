@@ -40,8 +40,6 @@ await client.request(refresh(mode, refresh_token));
 await client.request(logout(refresh_token));
 ```
 
-Note that each of the authentication methods must be imported from the SDK.
-
 The `mode` will either be `'json'` or `'cookie'`. If cookies are used, you don't need to set the second parameter, as
 the token in your cookie will automatically be used.
 
