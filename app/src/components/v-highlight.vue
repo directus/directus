@@ -1,8 +1,10 @@
 <template>
-	<template v-for="(part, index) in parts" :key="index">
-		<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
-		<template v-else>{{ part.text }}</template>
-	</template>
+	<span class="v-highlight">
+		<template v-for="(part, index) in parts" :key="index">
+			<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
+			<template v-else>{{ part.text }}</template>
+		</template>
+	</span>
 </template>
 
 <script setup lang="ts">
