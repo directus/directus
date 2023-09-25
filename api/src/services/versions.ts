@@ -128,6 +128,7 @@ export class VersionsService extends ItemsService {
 
 		const mainItem = await this.getMainItem(data['collection'], data['item']);
 
+		data['key'] = data['name'];
 		data['hash'] = objectHash(mainItem);
 
 		return super.createOne(data, opts);
