@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-AssetsService.getAsset() no longer require transformation argument.
+Made the `transformation` argument of `AssetsService.getAsset()` optional
