@@ -1,6 +1,7 @@
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
@@ -160,6 +161,26 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Validate array of emails. Intended to be used with create/update users
+	 */
+	private validateEmail(input: string | string[]) {
+		const emails = Array.isArray(input) ? input : [input];
+
+		const schema = Joi.string().email().required();
+
+		for (const email of emails) {
+			const { error } = schema.validate(email);
+
+			if (error) {
+				throw new FailedValidationError({
+					field: 'email',
+					type: 'email',
+				});
+			}
+		}
+	}
+
+	/**
 	 * Create a new user
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -176,6 +197,7 @@ export class UsersService extends ItemsService {
 
 		try {
 			if (emails.length) {
+				this.validateEmail(emails);
 				await this.checkUniqueEmails(emails);
 			}
 
@@ -256,6 +278,7 @@ export class UsersService extends ItemsService {
 					});
 				}
 
+				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 

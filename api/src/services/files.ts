@@ -298,7 +298,7 @@ export class FilesService extends ItemsService {
 			...(body || {}),
 		};
 
-		return await this.uploadOne(decompressResponse(fileResponse.data, fileResponse.headers), payload);
+		return await this.uploadOne(decompressResponse(fileResponse.data, fileResponse.headers), payload, payload.id);
 	}
 
 	/**
