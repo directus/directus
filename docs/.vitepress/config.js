@@ -541,10 +541,6 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
-					link: '/extensions/publishing-extensions',
-					text: 'Publishing Extensions',
-				},
-				{
 					link: '/extensions/installing-extensions',
 					text: 'Installing Extensions',
 				},
