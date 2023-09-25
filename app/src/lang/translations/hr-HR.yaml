@@ -395,6 +395,7 @@ move: Premjesti
 system: Sustav
 add_field_related: Dodaj polje povezanoj zbirci
 interface_label: Sučelje
+display_label: Prikaz
 today: Danas
 yesterday: Jučer
 delete_comment: Obriši komentar
@@ -1619,6 +1620,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcije sučelja
     description: Modal za odabir opcija sučelja
+  system-display:
+    display: Prikaz
   list-m2m:
     many-to-many: Many to Many
     description: Odaberite više povezanih spojnih stavki
@@ -1688,6 +1691,7 @@ interfaces:
     sort_placeholder: Ručno
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutačni podaci nisu kompatibilni sa sučeljem repetitora i bit će nadjačani prilikom dodavanja stavki u repetitor
+    interface_group: Opcije sučelja
   slider:
     slider: Klizač
     description: Odaberite broj pomoću klizača
