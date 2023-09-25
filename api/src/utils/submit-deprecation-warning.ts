@@ -1,4 +1,5 @@
 import type { Notification } from '@directus/types';
+import { isInstalled } from '../database/index.js';
 import { NotificationsService } from '../services/notifications.js';
 import { UsersService } from '../services/users.js';
 import { getSchema } from './get-schema.js';
@@ -10,7 +11,10 @@ import { getSchema } from './get-schema.js';
  * @param uid A unique identifier for the deprecation warning to not send it multiple times. Should not start with '/'.
  */
 export async function submitDeprecationWarning(title: string, message: string, uid: string) {
+	if ((await isInstalled()) === false) return;
+
 	const schema = await getSchema();
+
 	const notificationsService = new NotificationsService({ schema });
 
 	const usersService = new UsersService({ schema });
