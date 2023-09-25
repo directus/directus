@@ -57,8 +57,9 @@ client.send(JSON.stringify({ type: 'auth', email: email, password: password }));
 ```
 
 When using Directus Realtime's [default 'handshake' authentication strategy](/guides/real-time/authentication), the
-first message sent must include authentication details - either an `email` and `password`, an `access_token`, or a
-`refresh_token`.
+first message sent must include authentication details. This example uses the `email` & `password` combination, but
+tokens can be used as well (see
+[Authenticate Realtime Connection with a Token](#authenticate-realtime-connection-with-a-token)).
 
 ## Set a Token
 
@@ -106,8 +107,6 @@ client.send(JSON.stringify({ type: 'auth', access_token: 'TOKEN' }));
 // with refresh token
 client.send(JSON.stringify({ type: 'auth', refresh_token: 'TOKEN' }));
 ```
-
-While the property may be called `access_token`, you can also pass a static or refresh token as a value.
 
 ## Get a Token
 
