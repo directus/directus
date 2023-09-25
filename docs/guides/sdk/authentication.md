@@ -43,7 +43,7 @@ await client.request(logout(refresh_token));
 The `mode` will either be `'json'` or `'cookie'`. If cookies are used, you don't need to set the second parameter, as
 the token in your cookie will automatically be used.
 
-If using `'json'`, you must manually store the refresh token for the next refresh.
+This approach is manually sending API requests, the SDK does not store the returned tokens. You must store the access token and provide it to following requests and the same for the refresh token if using authentication mode `'json'`.
 
 ### Using the `realtime()` Composable
 
