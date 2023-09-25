@@ -131,7 +131,7 @@ const token = await client.getToken();
 
 ## Configure Custom Storage
 
-Internally, the `getToken()` and `setToken()` implement an overwriteable storage mechanism, which can be customized for
+Internally, the `getToken()` and `setToken()` make use of the configurable storage, which can be customized for
 your environment's needs. There must be a `get()` and `set()` method exposed, and the `AuthData` type returned.
 
 ### Example
