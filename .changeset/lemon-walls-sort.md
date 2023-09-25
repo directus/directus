@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Updated asset file name after replacing it
+Fixed updating filename and file-extension after replacing asset
