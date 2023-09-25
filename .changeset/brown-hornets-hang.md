@@ -6,7 +6,7 @@
 "@directus/data": patch
 "@directus/pressure": patch
 "@directus/random": patch
-"@directus/schema": patch
+"@directus/schema": major
 "@directus/storage-driver-azure": patch
 "@directus/storage-driver-cloudinary": patch
 "@directus/storage-driver-gcs": patch
