@@ -117,10 +117,10 @@ REFRESH_TOKEN_COOKIE_SAME_SITE="None"
      ```js
      import { createDirectus, authentication } from '@directus/sdk';
 
-     const sdk = new Directus('https://directus.myserver.com')
+     const client = new createDirectus('https://directus.example.com')
           .with(authentication('cookie', { credentials: 'include' }));
 
-     await sdk.refresh();
+     await client.refresh();
      ```
 
 ### Testing Seamless SSO locally
