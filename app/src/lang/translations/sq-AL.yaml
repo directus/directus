@@ -396,6 +396,7 @@ move: Zhvendos
 system: Sistemi
 add_field_related: Shto Fushë në Koleksionin e Lidhur
 interface_label: Ndërfaqe
+display_label: Shfaq
 today: Sot
 yesterday: Dje
 delete_comment: Fshi Komentin
@@ -1470,7 +1471,6 @@ translation: Përkthim
 translation_placeholder: Shkruani një përkthim...
 value: Vlerë
 view_project: Shiko Projektin
-weeks: { }
 report_error: Raporto Gabimin
 start: Fillim
 table: Tabela
@@ -1621,6 +1621,8 @@ interfaces:
   system-interface-options:
     interface-options: Opsionet e Ndërfaqes
     description: Një modal për zgjedhjen e opsioneve të një ndërfaqeje
+  system-display:
+    display: Shfaq
   list-m2m:
     many-to-many: Shumë me Shumë
     description: Zgjidh artikuj të shumtë të lidhur në një udhëkryq
@@ -1690,6 +1692,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Fut shënim fushe...
     incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
+    interface_group: Opsionet e Ndërfaqes
   slider:
     slider: Rrëshqitës
     description: Zgjidh një numër përmes një rrëshqitësi
