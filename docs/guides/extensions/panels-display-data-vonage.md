@@ -5,40 +5,52 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Create A Panel To Display External API Data With Vonage
 
-Panels are used in dashboards as part of the Insights module, and typically allow users to better-understand data held in their Directus collections. In this guide, you will instead fetch data from an external API and display it in a table as part of an panel.
+Panels are used in dashboards as part of the Insights module, and typically allow users to better-understand data held
+in their Directus collections. In this guide, you will instead fetch data from an external API and display it in a table
+as part of an panel.
 
 <!-- IMG -->
 
-Panels can only talk to internal Directus services, and can't reliably make external web requests. To create a panel that can interact with external APIs, this guide will create a bundle of an endpoint (that can make external requests) and a panel (that uses the endpoint). 
+Panels can only talk to internal Directus services, and can't reliably make external web requests. To create a panel
+that can interact with external APIs, this guide will create a bundle of an endpoint (that can make external requests)
+and a panel (that uses the endpoint).
 
-## Before You Start 
+## Before You Start
 
-You will need a Directus project - check out our [quickstart guide](https://docs.directus.io/getting-started/quickstart) if you don't already have one. You will also need a [Vonage Developer API account](https://developer.vonage.com/sign-up), taking note of your API Key and Secret.
-
+You will need a Directus project - check out our [quickstart guide](https://docs.directus.io/getting-started/quickstart)
+if you don't already have one. You will also need a
+[Vonage Developer API account](https://developer.vonage.com/sign-up), taking note of your API Key and Secret.
 
 ## Create Bundle
 
-Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate code for your operation.
+Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
+code for your operation.
 
 ```
 npx create-directus-extension
 ```
 
-A list of options will appear (choose bundle), and type a name for your extension (for example, `directus-extension-bundle-vonage-activity`). 
+A list of options will appear (choose bundle), and type a name for your extension (for example,
+`directus-extension-bundle-vonage-activity`).
 
-Now the boilerplate bundle has been created, navigate to the directory with `cd directus-extension-bundle-vonage-activity` and open the directory in your code editor.
+Now the boilerplate bundle has been created, navigate to the directory with
+`cd directus-extension-bundle-vonage-activity` and open the directory in your code editor.
 
 ## Add an Endpoint to the Bundle
 
-In your terminal, run `npm run add` to create a new extension in this bundle. A list of options will appear (choose endpoint), and type a name for your extension (for example, `directus-endpoint-vonage`). For this guide, select JavaScript.
+In your terminal, run `npm run add` to create a new extension in this bundle. A list of options will appear (choose
+endpoint), and type a name for your extension (for example, `directus-endpoint-vonage`). For this guide, select
+JavaScript.
 
 This will add an entry to the `directus:extension` metadata in your `package.json` file.
 
 ## Build the Endpoint
 
-As there is a more detailed guide on [building an authenticated custom endpoint to proxy external APIs](/guides/extensions/endpoints-api-proxy-twilio), this guide will be more brief in this section. 
+As there is a more detailed guide on
+[building an authenticated custom endpoint to proxy external APIs](/guides/extensions/endpoints-api-proxy-twilio), this
+guide will be more brief in this section.
 
-Open the `src/directus-endpoint-vonage/index.js` file and replace it with the following: 
+Open the `src/directus-endpoint-vonage/index.js` file and replace it with the following:
 
 ```js
 import { createError } from '@directus/errors';
@@ -71,11 +83,14 @@ export default {
 };
 ```
 
-This extension introduces the `/vonage/records` endpoint to your application. Make sure to add the `VONAGE_API_KEY` and `VONAGE_API_SECRET` to your environment variables. 
+This extension introduces the `/vonage/records` endpoint to your application. Make sure to add the `VONAGE_API_KEY` and
+`VONAGE_API_SECRET` to your environment variables.
 
-## Add a View to the Bundle 
+## Add a View to the Bundle
 
-In your terminal, run `npm run add` to create a new extension in this bundle. A list of options will appear (choose panel), and type a name for your extension (for example, `directus-panel-vonage-activity`). For this guide, select JavaScript.
+In your terminal, run `npm run add` to create a new extension in this bundle. A list of options will appear (choose
+panel), and type a name for your extension (for example, `directus-panel-vonage-activity`). For this guide, select
+JavaScript.
 
 This will add an entry to the `directus:extension` metadata in your `package.json` file.
 
@@ -100,7 +115,8 @@ With the information above, the panel will appear in the list like this:
 
 <!-- IMG -->
 
-The Panel will accept configuration options. The Vonage API supports `date_start`, `date_end`, `status`, `direction` (incoming/outgoing), and `product` type (SMS/Messages).
+The Panel will accept configuration options. The Vonage API supports `date_start`, `date_end`, `status`, `direction`
+(incoming/outgoing), and `product` type (SMS/Messages).
 
 For the product type, add a selection field with the options `SMS` and `MESSAGES`:
 
@@ -142,7 +158,8 @@ Add another selection field for the ‘direction’ of the messages, inbound and
 },
 ```
 
-It would be useful to control the scope of data for those who transact larger amounts of messages. Add the following option for the user to select a range:
+It would be useful to control the scope of data for those who transact larger amounts of messages. Add the following
+option for the user to select a range:
 
 ```js
 {
@@ -168,7 +185,8 @@ It would be useful to control the scope of data for those who transact larger am
 },
 ```
 
-Vonage has the ability to include the message in the response. This will be useful to provide as a preview upon click but for larger datasets may impact the performance of the API. Create an option to toggle this on/off:
+Vonage has the ability to include the message in the response. This will be useful to provide as a preview upon click
+but for larger datasets may impact the performance of the API. Create an option to toggle this on/off:
 
 ```js
 {
@@ -185,7 +203,8 @@ Vonage has the ability to include the message in the response. This will be usef
 },
 ```
 
-Lastly, add the option to limit the messages to a specific state such as delivered or failed. The default option is `Any`:
+Lastly, add the option to limit the messages to a specific state such as delivered or failed. The default option is
+`Any`:
 
 ```js
 {
@@ -215,7 +234,8 @@ Lastly, add the option to limit the messages to a specific state such as deliver
 },
 ```
 
-After the `options` section, there is the ability to limit the width and height of the panel. Since this panel will hold a lot of data, set these to `24` for the width and `18` for the height:
+After the `options` section, there is the ability to limit the width and height of the panel. Since this panel will hold
+a lot of data, set these to `24` for the width and `18` for the height:
 
 ```js
 minWidth: 24,
@@ -226,9 +246,10 @@ The output of these options will look like this:
 
 <!-- IMG -->
 
-## Prepare the View 
+## Prepare the View
 
-Open the `panel.vue` file and you will see the barebone template and script. Skip to the script section and import the following packages:
+Open the `panel.vue` file and you will see the barebone template and script. Skip to the script section and import the
+following packages:
 
 ```js
 import { useApi } from '@directus/extensions-sdk';
@@ -237,7 +258,8 @@ import { formatISO, formatDistanceToNow, parseISO } from 'date-fns';
 import { ref, watch } from 'vue';
 ```
 
-In the `props`, `showHeader` is one of the built-in properties which you can use to alter your panel if a header is showing. Remove the text property and add all the options that were created in the previous file:
+In the `props`, `showHeader` is one of the built-in properties which you can use to alter your panel if a header is
+showing. Remove the text property and add all the options that were created in the previous file:
 
 ```js
 props: {
@@ -282,7 +304,8 @@ setup(props){
 
 ```
 
-Create a `fetchData` function that will use the information provided to construct the query parameters and perform the API query. The response is written to the `activity_data` constant.
+Create a `fetchData` function that will use the information provided to construct the query parameters and perform the
+API query. The response is written to the `activity_data` constant.
 
 Use the `is_loading` constant to hide or show the progress spinner to indicate that the query is running:
 
@@ -319,7 +342,8 @@ async function fetchData(){
 fetchData();
 ```
 
-The endpoint `/vonage/records` comes from the custom extension created in an earlier step. When `fetchData()` is called, the `activity_data` variable is updated with the result. 
+The endpoint `/vonage/records` comes from the custom extension created in an earlier step. When `fetchData()` is called,
+the `activity_data` variable is updated with the result.
 
 If any of the properties are changed, the function will need to update the activity data again. Use the following code:
 
@@ -346,7 +370,8 @@ return { activity_data, is_loading, has_error, formatDistanceToNow, parseISO };
 
 ## Build the View
 
-Back to the template section, remove all the content between the template tags, then add a fallback notice if some essential information is missing. Start with this:
+Back to the template section, remove all the content between the template tags, then add a fallback notice if some
+essential information is missing. Start with this:
 
 ```vue
 <template>
@@ -359,7 +384,8 @@ Back to the template section, remove all the content between the template tags, 
 </template>
 ```
 
-The `v-progress-circular` is a loading spinner that is active while the `is_loading` constant is true. After that, there is a `danger` notice if `has_error` contains a value, then an `info` notice if there aren't any messages in the data.
+The `v-progress-circular` is a loading spinner that is active while the `is_loading` constant is true. After that, there
+is a `danger` notice if `has_error` contains a value, then an `info` notice if there aren't any messages in the data.
 
 Next, build a table to present the data:
 
@@ -391,9 +417,11 @@ Next, build a table to present the data:
 </table>
 ```
 
-The `inbound` and `outbound` structure is a little different and needs different headings. Use `v-if` with the `direction` property to change the headers as needed.
+The `inbound` and `outbound` structure is a little different and needs different headings. Use `v-if` with the
+`direction` property to change the headers as needed.
 
-Using `date-fns`, the date can be formatted into a user-friendly way. For an activity stream, showing the distance from now is more helpful.
+Using `date-fns`, the date can be formatted into a user-friendly way. For an activity stream, showing the distance from
+now is more helpful.
 
 Lastly, replace the CSS at the bottom with this:
 
@@ -420,9 +448,12 @@ npm run build
 
 ## Add Extensions to Directus
 
-When Directus starts, it will look in the `extensions` directory for any subdirectory starting with `directus-extension-`, and attempt to load them.
+When Directus starts, it will look in the `extensions` directory for any subdirectory starting with
+`directus-extension-`, and attempt to load them.
 
-To install an extension, copy the entire directory with all source code, the `package.json` file, and the `dist` directory into the Directus extensions `directory`. Make sure the directory with your bundle has a name that starts with `directus-extension`. In this case, you may choose to use `directus-extension-bundle-vonage-activity`.
+To install an extension, copy the entire directory with all source code, the `package.json` file, and the `dist`
+directory into the Directus extensions `directory`. Make sure the directory with your bundle has a name that starts with
+`directus-extension`. In this case, you may choose to use `directus-extension-bundle-vonage-activity`.
 
 Restart Directus to load the extensions.
 
@@ -438,6 +469,7 @@ code has no negative effect.
 From an Insights dashboard, choose **Vonage Reports** from the list.
 
 Fill in the configuration fields as needed:
+
 1. Choose the Product Type (Messages or SMS)
 2. Choose the Direction (inbound or outbound messages)
 3. Choose a timeframe to fetch the data
@@ -450,7 +482,8 @@ Save the panel and dashboard. It will look something like this:
 
 ## Summary
 
-With this panel, Messages and SMS recently sent through Vonage are listed on your dashboards. You can alter your custom endpoint extension to create more panels for other Vonage APIs.
+With this panel, Messages and SMS recently sent through Vonage are listed on your dashboards. You can alter your custom
+endpoint extension to create more panels for other Vonage APIs.
 
 ## Complete Code
 
@@ -685,7 +718,7 @@ export default {
 			if(props.status) params.status = props.status;
 
 			let url_params = new URLSearchParams(params);
-			
+
 			try {
 				api.get(
 					`/vonage/records?${url_params.toString()}`
@@ -738,4 +771,3 @@ export default {
 .is_loading { position: absolute; left: calc(50% - 14px); top: calc(50% - 28px); }
 </style>
 ```
-
