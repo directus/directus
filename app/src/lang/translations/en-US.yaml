@@ -104,13 +104,17 @@ suffix: Suffix
 version: Version
 version_name: Version Name
 main_version: Main
+switch_version: Switch Version
+switch_version_copy: Are you sure you want to switch to the "{version}" version?
 create_version: Create Version
-switch_to_version_after_creation: Switch to Version After Creation
 rename_version: Rename Version
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
+promote_version_disabled: No changes selected
 promote_version_drawer_title: Promote {version} into Main
+promote_version_changes: Changes
+promote_version_preview: Preview
 outdated_notice: >-
   The main item has been updated since this version was created. Please review all the field values below, and confirm
   which version should be used when promoting this version into the main item.

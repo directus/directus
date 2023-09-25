@@ -1,9 +1,14 @@
 import api from '@/api';
+import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Query, Version } from '@directus/types';
-import { computed, ref, Ref, unref, watch } from 'vue';
+import { Ref, computed, ref, unref, watch } from 'vue';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
+	const { hasPermission } = usePermissionsStore();
+
+	const readVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'read'));
+
 	const currentVersion = ref<Version | null>(null);
 	const versions = ref<Version[] | null>(null);
 	const loading = ref(false);
@@ -27,6 +32,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	);
 
 	return {
+		readVersionsAllowed,
 		currentVersion,
 		versions,
 		loading,
@@ -40,6 +46,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	};
 
 	async function getVersions() {
+		if (!readVersionsAllowed.value) return;
+
 		if ((!isSingleton && !primaryKey.value) || primaryKey.value === '+') return;
 
 		loading.value = true;
@@ -80,12 +88,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function addVersion(version: Version, switchToVersion: boolean) {
+	async function addVersion(version: Version) {
 		versions.value = [...(versions.value ? versions.value : []), version];
 
-		if (switchToVersion) {
-			currentVersion.value = version;
-		}
+		currentVersion.value = version;
 	}
 
 	async function renameVersion(name: string) {
