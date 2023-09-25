@@ -23,10 +23,9 @@ elements.
 
 ### Layouts
 
-[Layouts](/extensions/layouts) give you control over how data inside a collection gets presented. Out of the box,
+[Layouts](/extensions/layouts) give you control over how multiple items inside a collection are presented. Out of the box,
 Directus provides data layouts such as _table_, _cards_, _calendar_ and _map_. However, with layout extensions, you can
-implement a custom layout extension to present your data. For example, a layout that renders your data in a 4
-dimensional sphere.
+implement a custom layout extension to present your data. For example, a layout that renders your data in a sphere.
 
 ### Displays
 
