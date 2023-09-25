@@ -6,7 +6,7 @@ contributors: Rijk Van Zanten, Esther Agbaje
 
 # Creating Extensions
 
-The easiest way to create an extension is to use the `create-directus-extension` utility:
+To create an extension, use the `create-directus-extension` utility:
 
 ```bash
 npx create-directus-extension@latest
