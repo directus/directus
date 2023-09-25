@@ -12,6 +12,7 @@
 "@directus/storage-driver-gcs": patch
 "@directus/storage-driver-local": patch
 "@directus/storage-driver-s3": patch
+"@directus/storage-driver-supabase": patch
 "@directus/storage": patch
 ---
 
