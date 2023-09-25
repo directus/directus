@@ -3,7 +3,9 @@
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
 				<button class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
-					<span class="version-name">{{ currentVersion ? currentVersion.name : t('main_version') }}</span>
+					<span class="version-name">
+						{{ currentVersion ? getVersionDisplayName(currentVersion) : t('main_version') }}
+					</span>
 					<v-icon name="arrow_drop_down" />
 				</button>
 			</template>
@@ -21,7 +23,7 @@
 					:active="versionItem.id === currentVersion?.id"
 					@click="switchVersion(versionItem)"
 				>
-					{{ versionItem.name }}
+					{{ getVersionDisplayName(versionItem) }}
 				</v-list-item>
 
 				<template v-if="createVersionsAllowed">
@@ -81,8 +83,20 @@
 					<div class="grid">
 						<div class="field">
 							<v-input
-								v-model="newVersionName"
+								v-model="newVersionKey"
+								class="full"
+								:placeholder="t('version_key')"
 								autofocus
+								db-safe
+								trim
+								@input="newVersionKey = $event"
+								@keyup.enter="createVersion"
+							/>
+						</div>
+						<div class="field">
+							<v-input
+								v-model="newVersionName"
+								class="full"
 								:placeholder="t('version_name')"
 								trim
 								@input="newVersionName = $event"
@@ -94,7 +108,7 @@
 
 				<v-card-actions>
 					<v-button secondary @click="closeCreateDialog">{{ t('cancel') }}</v-button>
-					<v-button :disabled="newVersionName === null" :loading="creating" @click="createVersion">
+					<v-button :disabled="newVersionKey === null" :loading="creating" @click="createVersion">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -147,6 +161,7 @@ import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Version } from '@directus/types';
+import { isNil } from 'lodash';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VersionPromoteDrawer from './version-promote-drawer.vue';
@@ -174,7 +189,6 @@ const { hasPermission } = usePermissionsStore();
 
 const { collection, primaryKey, hasEdits, currentVersion } = toRefs(props);
 
-const newVersionName = ref<string | null>(null);
 const isVersionPromoteDrawerOpen = ref(false);
 
 const createVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'create'));
@@ -182,7 +196,10 @@ const updateVersionsAllowed = computed<boolean>(() => hasPermission('directus_ve
 const deleteVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'delete'));
 
 const { switchDialogActive, switchTarget, switchVersion } = useSwitchDialog();
-const { createDialogActive, closeCreateDialog, creating, createVersion } = useCreateDialog();
+
+const { createDialogActive, newVersionKey, newVersionName, closeCreateDialog, creating, createVersion } =
+	useCreateDialog();
+
 const { updateDialogActive, openUpdateDialog, closeUpdateDialog, updating, updateVersion } = useUpdateDialog();
 const { deleteDialogActive, deleting, deleteVersion } = useDeleteDialog();
 
@@ -211,8 +228,11 @@ function useSwitchDialog() {
 function useCreateDialog() {
 	const createDialogActive = ref(false);
 	const creating = ref(false);
+	const newVersionKey = ref<string | null>(null);
+	const newVersionName = ref<string | null>(null);
 
 	return {
+		newVersionKey,
 		newVersionName,
 		createDialogActive,
 		creating,
@@ -229,7 +249,8 @@ function useCreateDialog() {
 			const {
 				data: { data: version },
 			} = await api.post(`/versions`, {
-				name: unref(newVersionName),
+				key: unref(newVersionKey),
+				...(unref(newVersionName) ? { name: unref(newVersionName) } : {}),
 				collection: unref(collection),
 				item: unref(primaryKey),
 			});
@@ -246,6 +267,7 @@ function useCreateDialog() {
 
 	function closeCreateDialog() {
 		createDialogActive.value = false;
+		newVersionKey.value = null;
 		newVersionName.value = null;
 	}
 }
@@ -255,7 +277,6 @@ function useUpdateDialog() {
 	const updating = ref(false);
 
 	return {
-		newVersionName,
 		updateDialogActive,
 		updating,
 		updateVersion,
@@ -322,6 +343,10 @@ function useDeleteDialog() {
 			deleting.value = false;
 		}
 	}
+}
+
+function getVersionDisplayName(version: Version) {
+	return isNil(version.name) ? version.key : version.name;
 }
 
 function onPromoteComplete() {

@@ -18,7 +18,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		if (!currentVersion.value) return {};
 
 		return {
-			version: currentVersion.value.name,
+			version: currentVersion.value.key,
 		};
 	});
 

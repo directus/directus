@@ -102,6 +102,7 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 version: Version
+version_key: Version Key
 version_name: Version Name
 main_version: Main
 switch_version: Switch Version
