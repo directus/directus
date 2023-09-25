@@ -36,12 +36,16 @@ import { createDirectus, rest, login, refresh, logout } from '@directus/sdk';
 const client = createDirectus('http://directus.example.com').with(rest());
 
 const user = await client.request(login(email, password));
-await client.request(refresh('REFRESH TOKEN'));
-await client.request(logout('REFRESH TOKEN'));
+await client.request(refresh(mode, refresh_token));
+await client.request(logout(mode, refresh_token));
 ```
 
-Note that each of the authentication methods must be imported from the SDK. The refresh token must be stored manually
-and used when refreshing or invalidating a token.
+Note that each of the authentication methods must be imported from the SDK.
+
+The `mode` will either be `'json'` or `'cookie'`. If cookies are used, you don't need to set the second parameter, as
+the token in your cookie will automatically be used.
+
+If using `'json'`, you must manually store the refresh token for the next refresh.
 
 ### Using the `realtime()` Composable
 
