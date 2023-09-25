@@ -10,7 +10,6 @@ export type ArrayFunctions = 'count';
 
 export type QueryFunctions = {
 	datetime: DateTimeFunctions;
-	array: 'count';
 	json: ArrayFunctions;
 	csv: ArrayFunctions;
 };
