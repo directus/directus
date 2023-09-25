@@ -2,16 +2,17 @@
 .DS_Store
 
 # Dependencies
-node_modules
+node_modules/
 
 # Builds / Caches
-dist
-storybook-static
-coverage
+dist/
+storybook-static/
+coverage/
 *.tsbuildinfo
-**/.vitepress/cache
-**/.vitepress/.temp
-.thumbsmith
+**/.vitepress/cache/
+**/.vitepress/.temp/
+.thumbsmith/
+.eslintcache
 
 # Dotenv configs
 .env
@@ -23,10 +24,11 @@ debug
 .clinic
 
 # IDEs / Editors
-.vscode
+.vscode/*
+!.vscode/extensions.json
+.idea/
 *.code-workspace
-.history
-.idea
+.history/
 *.sublime-settings
 .*.swp
 
@@ -38,12 +40,12 @@ debug
 TODO
 
 # Directus
+*.db
 /schema.yaml
 /schema.json
-/api/uploads
-/api/extensions
-/tests/blackbox/uploads
+/api/uploads/
+/api/extensions/
+/tests/blackbox/uploads/
 /tests/blackbox/server-log-*
-/packages/extensions-sdk/temp-extension-*
-*.db
-ts-errors.yaml
+/packages/extensions-sdk/temp-extension-*/
+/docs/packages/

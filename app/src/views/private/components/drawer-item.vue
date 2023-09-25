@@ -21,7 +21,7 @@
 
 		<div class="drawer-item-content">
 			<file-preview
-				v-if="junctionField && file"
+				v-if="file"
 				:src="file.src"
 				:mime="file.type"
 				:width="file.width"
@@ -44,7 +44,7 @@
 					:fields="relatedCollectionFields"
 					:validation-errors="junctionField ? validationErrors : undefined"
 					:autofocus="!swapFormOrder"
-					:show-divider="!swapFormOrder"
+					:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 					@update:model-value="setRelationEdits"
 				/>
 
@@ -55,7 +55,7 @@
 					:show-no-visible-fields="false"
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
-					:show-divider="swapFormOrder"
+					:show-divider="swapFormOrder && hasVisibleFieldsRelated"
 					:primary-key="primaryKey"
 					:fields="fields"
 					:validation-errors="!junctionField ? validationErrors : undefined"
@@ -114,17 +114,17 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	active: undefined,
 	primaryKey: null,
-	edits: undefined,
 	junctionField: null,
-	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
 	junctionFieldLocation: 'bottom',
 });
 
-const emit = defineEmits(['update:active', 'input']);
+const emit = defineEmits<{
+	'update:active': [value: boolean];
+	input: [value: Record<string, any>];
+}>();
 
 const { t, te } = useI18n();
 
@@ -216,11 +216,13 @@ const fieldsWithoutCircular = computed(() => {
 	}
 });
 
-const emptyForm = computed(() => {
-	const visibleFieldsRelated = relatedCollectionFields.value.filter((field: Field) => !field.meta?.hidden);
-	const visibleFieldsJunction = fields.value.filter((field: Field) => !field.meta?.hidden);
-	return visibleFieldsRelated.length + visibleFieldsJunction.length === 0;
-});
+const hasVisibleFieldsRelated = computed(() =>
+	relatedCollectionFields.value.some((field: Field) => !field.meta?.hidden)
+);
+
+const hasVisibleFieldsJunction = computed(() => fields.value.some((field: Field) => !field.meta?.hidden));
+
+const emptyForm = computed(() => !hasVisibleFieldsRelated.value && !hasVisibleFieldsJunction.value);
 
 const templatePrimaryKey = computed(() =>
 	junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
@@ -237,12 +239,12 @@ const { file } = useFile();
 
 function useFile() {
 	const isDirectusFiles = computed(() => {
-		return relatedCollection.value === 'directus_files';
+		return props.collection === 'directus_files' || relatedCollection.value === 'directus_files';
 	});
 
 	const file = computed(() => {
-		if (isDirectusFiles.value === false || !initialValues.value || !props.junctionField) return null;
-		const fileData = initialValues.value?.[props.junctionField];
+		if (isDirectusFiles.value === false || !initialValues.value) return null;
+		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
 		if (!fileData) return null;
 
 		const src = `assets/${fileData.id}?key=system-large-contain`;
@@ -398,7 +400,7 @@ function useActions() {
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
 		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
 
-		let errors = validateItem(
+		const errors = validateItem(
 			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,
 			isNew.value

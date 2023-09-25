@@ -207,6 +207,7 @@ import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -563,7 +564,8 @@ const customFilter = computed(() => {
 function getLinkForItem(item: DisplayItem) {
 	if (relationInfo.value) {
 		const primaryKey = get(item, relationInfo.value.relatedPrimaryKeyField.field);
-		return `/content/${relationInfo.value.relatedCollection.collection}/${encodeURIComponent(primaryKey)}`;
+
+		return getItemRoute(relationInfo.value.relatedCollection.collection, primaryKey);
 	}
 
 	return null;

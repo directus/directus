@@ -58,7 +58,8 @@
 				:placeholder="t('collection') + '...'"
 				:items="availableCollections"
 				item-value="collection"
-				item-text="name"
+				item-text="collection"
+				item-label-font-family="var(--family-monospace)"
 				item-disabled="meta.singleton"
 				multiple
 				:multiple-preview-threshold="0"
@@ -90,21 +91,17 @@ const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
 const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
 
 const availableCollections = computed(() => {
-	return orderBy(
-		[
-			...collectionsStore.databaseCollections,
-			{
-				divider: true,
-			},
-			{
-				name: t('system'),
-				selectable: false,
-				children: collectionsStore.crudSafeSystemCollections,
-			},
-		],
-		['collection'],
-		['asc']
-	);
+	return [
+		...orderBy(collectionsStore.databaseCollections, ['collection'], ['asc']),
+		{
+			divider: true,
+		},
+		{
+			collection: t('system'),
+			selectable: false,
+			children: orderBy(collectionsStore.crudSafeSystemCollections, ['collection'], ['asc']),
+		},
+	];
 });
 </script>
 

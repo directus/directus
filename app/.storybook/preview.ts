@@ -8,7 +8,6 @@ import { register } from './register';
 import { fix } from './fix-actions';
 
 setup((app) => {
-
 	const router = createRouter({
 		history: createWebHistory(),
 		routes: [
@@ -19,16 +18,16 @@ setup((app) => {
 			} as any,
 		],
 	});
-	
+
 	const i18n = createI18n({
 		locale: 'en-US',
 		legacy: false,
 		messages: {
 			'en-US': {
-				'edit': 'Edit',
-				'copy_to': 'Copy to...',
-				'delete': 'Delete',
-				'duplicate': 'Duplicate',
+				edit: 'Edit',
+				copy_to: 'Copy to...',
+				delete: 'Delete',
+				duplicate: 'Duplicate',
 			},
 		},
 	});
@@ -36,10 +35,9 @@ setup((app) => {
 	app.use(router);
 	app.use(i18n);
 	register(app);
-})
+});
 
 const preview: Preview = {
-	
 	decorators: [
 		(_, { args, argTypes }) => {
 			const [__, update] = useArgs();
@@ -58,7 +56,7 @@ const preview: Preview = {
 				date: /Date$/,
 			},
 		},
-	}
-}
+	},
+};
 
 export default preview;

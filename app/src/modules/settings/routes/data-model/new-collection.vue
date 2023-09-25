@@ -33,6 +33,7 @@
 							db-safe
 							:placeholder="t('a_unique_table_name')"
 						/>
+						<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('singleton') }}</div>
@@ -535,5 +536,12 @@ function getSystemRelations() {
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.type-note {
+	position: relative;
+	display: block;
+	max-width: 520px;
+	margin-top: 4px;
 }
 </style>

@@ -56,7 +56,6 @@
 			:loading="loading"
 			:initial-values="item"
 			collection="directus_webhooks"
-			:batch-mode="isBatch"
 			:primary-key="primaryKey"
 			:validation-errors="validationErrors"
 		/>
@@ -111,8 +110,10 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, isBatch, validationErrors } =
-	useItem(ref('directus_webhooks'), primaryKey);
+const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, validationErrors } = useItem(
+	ref('directus_webhooks'),
+	primaryKey
+);
 
 const confirmDelete = ref(false);
 

@@ -42,6 +42,10 @@ const items = [
 
 const active = computed(() => !!unref(selectedItem));
 
+watch(props, () => {
+	selectedItem.value = props.archive;
+});
+
 watch(selectedItem, () => {
 	const url = new URL(unref(router.currentRoute).fullPath, window.location.origin);
 

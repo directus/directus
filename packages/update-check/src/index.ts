@@ -1,30 +1,29 @@
+import type { Manifest } from '@npm/types';
 import boxen, { type Options as BoxenOptions } from 'boxen';
 import chalk from 'chalk';
-import type { Manifest } from '@npm/types';
-import findCacheDirectory from 'find-cache-dir';
-import { fetchBuilder, FileSystemCache } from 'node-fetch-cache';
+import got from 'got';
 import { gte, prerelease } from 'semver';
+import { getCache } from './cache.js';
 
-const cacheDirectory = findCacheDirectory({ name: 'directus' });
-
-const fetch = fetchBuilder.withCache(new FileSystemCache({ ttl: 60 * 60, ...(cacheDirectory && { cacheDirectory }) }));
+const cache = await getCache();
 
 export async function updateCheck(currentVersion: string) {
-	let packageManifest: Manifest | undefined = undefined;
+	let packageManifest: Manifest | undefined;
 
 	try {
-		const response = await fetch('https://registry.npmjs.org/directus', {
+		packageManifest = await got('https://registry.npmjs.org/directus', {
 			headers: { accept: 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*' },
-		});
-
-		if (!response.ok) {
-			response.ejectFromCache();
-			return;
-		}
-
-		packageManifest = await response.json();
+			cache,
+			retry: {
+				limit: 0,
+			},
+			timeout: {
+				request: 8_000,
+			},
+		}).json<Manifest>();
 	} catch (error) {
-		// Ignore
+		// Any errors are intentionally ignored & update message simply not printed
+		return;
 	}
 
 	if (!packageManifest) {

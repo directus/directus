@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'vitest';
-import { NOTICE_TYPE, TYPE_MAP, UNTYPED_PACKAGES } from '../constants';
-import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types';
-import { generateMarkdown } from './generate-markdown';
+import config from '../config.js';
+import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types.js';
+import { generateMarkdown } from './generate-markdown.js';
 
 const change1: Change = {
-	summary: 'Made Directus even more magical',
+	summary: "Made Directus even more magical\nAnd here's some additional context",
 	commit: 'abcd123',
 	githubInfo: {
-		user: '@directus',
+		user: 'directus',
 		pull: 1,
 		links: {
 			commit: '[`abcd123`](https://github.com/directus/directus/commit/abcd123)',
@@ -21,8 +21,8 @@ const change2: Change = {
 	summary: 'Improved some things a little',
 	commit: 'efgh456',
 	githubInfo: {
-		user: '@directus',
-		pull: 1,
+		user: 'directus',
+		pull: 2,
 		links: {
 			commit: '[`efgh456`](https://github.com/directus/directus/commit/efgh456)',
 			pull: '[#2](https://github.com/directus/directus/pull/2)',
@@ -32,11 +32,9 @@ const change2: Change = {
 };
 
 test('should generate basic release notes', () => {
-	const notices: Notice[] = [];
-
 	const types: Type[] = [
 		{
-			title: TYPE_MAP.minor,
+			title: config.typedTitles.minor,
 			packages: [
 				{
 					name: '@directus/api',
@@ -45,7 +43,7 @@ test('should generate basic release notes', () => {
 			],
 		},
 		{
-			title: TYPE_MAP.patch,
+			title: config.typedTitles.patch,
 			packages: [
 				{
 					name: '@directus/app',
@@ -56,8 +54,8 @@ test('should generate basic release notes', () => {
 	];
 
 	const untypedPackages: UntypedPackage[] = [
-		{ name: UNTYPED_PACKAGES.docs, changes: [change1, change2] },
-		{ name: UNTYPED_PACKAGES['tests-blackbox'], changes: [change1] },
+		{ name: config.untypedPackageTitles['docs']!, changes: [change1, change2] },
+		{ name: config.untypedPackageTitles['tests-blackbox']!, changes: [change1] },
 	];
 
 	const packageVersions: PackageVersion[] = [
@@ -65,28 +63,32 @@ test('should generate basic release notes', () => {
 		{ name: '@directus/app', version: '10.0.0' },
 	];
 
-	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown([], types, untypedPackages, packageVersions);
 
 	expect(markdown).toMatchInlineSnapshot(`
 		"### ✨ New Features & Improvements
 
 		- **@directus/api**
-		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
+		    And here's some additional context
 
 		### 🐛 Bug Fixes & Optimizations
 
 		- **@directus/app**
-		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @@directus)
-		  - Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @@directus)
+		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
+		    And here's some additional context
+		  - Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @directus)
 
 		### 📝 Documentation
 
-		- Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @@directus)
-		- Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @@directus)
+		- Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
+		  And here's some additional context
+		- Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @directus)
 
 		### 🧪 Blackbox Tests
 
-		- Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+		- Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
+		  And here's some additional context
 
 		### 📦 Published Versions
 
@@ -107,7 +109,7 @@ describe('notices', () => {
 		expect(markdown).toMatchInlineSnapshot(`
 			"### ⚠️ Potential Breaking Changes
 
-			**Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1))**
+			**Made Directus even more magical... ([#1](https://github.com/directus/directus/pull/1))**
 			This is an example notice.
 
 			**Improved some things a little ([#2](https://github.com/directus/directus/pull/2))**
@@ -118,7 +120,7 @@ describe('notices', () => {
 	test('should show notices along with changes', () => {
 		const types: Type[] = [
 			{
-				title: NOTICE_TYPE,
+				title: config.typedTitles[config.noticeType],
 				packages: [
 					{
 						name: '@directus/api',
@@ -133,14 +135,15 @@ describe('notices', () => {
 		expect(markdown).toMatchInlineSnapshot(`
 			"### ⚠️ Potential Breaking Changes
 
-			**Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1))**
+			**Made Directus even more magical... ([#1](https://github.com/directus/directus/pull/1))**
 			This is an example notice.
 
 			**Improved some things a little ([#2](https://github.com/directus/directus/pull/2))**
 			This is another notice.
 
 			- **@directus/api**
-			  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @@directus)"
+			  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
+			    And here's some additional context"
 		`);
 	});
 });

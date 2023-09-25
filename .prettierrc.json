@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json.schemastore.org/prettierrc",
+	"printWidth": 120,
+	"singleQuote": true,
+	"proseWrap": "always",
+	"htmlWhitespaceSensitivity": "ignore",
+	"overrides": [
+		{
+			"files": "docs/**/*.md",
+			"options": {
+				"embeddedLanguageFormatting": "off"
+			}
+		}
+	]
+}

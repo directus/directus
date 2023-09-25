@@ -1,6 +1,7 @@
 {
 	"name": "tests-blackbox",
 	"private": true,
+	"version": "0.0.0",
 	"scripts": {
 		"test": "jest"
 	},
@@ -26,9 +27,9 @@
 		"lodash": "4.17.21",
 		"seedrandom": "3.0.5",
 		"supertest": "6.3.3",
-		"ws": "8.12.1",
 		"ts-jest": "29.1.0",
 		"typescript": "5.0.4",
-		"uuid": "9.0.0"
+		"uuid": "9.0.0",
+		"ws": "8.12.1"
 	}
 }

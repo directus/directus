@@ -5,7 +5,7 @@ import emitter from '../../emitter.js';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import { refreshAccountability } from '../authenticate.js';
-import { WebSocketException, handleWebSocketException } from '../exceptions.js';
+import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
@@ -28,7 +28,7 @@ export class WebSocketController extends SocketController {
 				client.accountability = await refreshAccountability(client.accountability);
 				emitter.emitAction('websocket.message', { message, client });
 			} catch (error) {
-				handleWebSocketException(client, error, 'server');
+				handleWebSocketError(client, error, 'server');
 				return;
 			}
 		});
@@ -50,7 +50,7 @@ export class WebSocketController extends SocketController {
 		try {
 			message = parseJSON(data);
 		} catch (err: any) {
-			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
+			throw new WebSocketError('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
 
 		return message;

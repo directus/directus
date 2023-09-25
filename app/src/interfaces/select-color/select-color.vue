@@ -230,7 +230,7 @@ const valueWithoutVariables = computed(() => {
 const htmlColorInput = ref<ComponentPublicInstance | null>(null);
 type ColorType = 'RGB' | 'HSL' | 'RGBA' | 'HSLA';
 
-let colorTypes = props.opacity ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
+const colorTypes = props.opacity ? ref<ColorType[]>(['RGBA', 'HSLA']) : ref<ColorType[]>(['RGB', 'HSL']);
 const colorType = ref<ColorType>(props.opacity ? 'RGBA' : 'RGB');
 
 const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutVariables.value !== null);

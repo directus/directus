@@ -35,16 +35,16 @@ export default defineDisplay({
 		} else {
 			let format;
 
-			if (options?.format === 'long') {
+			if (options?.format === undefined || options.format === 'long') {
 				format = `${i18n.global.t('date-fns_date')} ${i18n.global.t('date-fns_time')}`;
 				if (field?.type === 'date') format = String(i18n.global.t('date-fns_date'));
 				if (field?.type === 'time') format = String(i18n.global.t('date-fns_time'));
-			} else if (options?.format === 'short') {
+			} else if (options.format === 'short') {
 				format = `${i18n.global.t('date-fns_date_short')} ${i18n.global.t('date-fns_time_short')}`;
 				if (field?.type === 'date') format = String(i18n.global.t('date-fns_date_short'));
 				if (field?.type === 'time') format = String(i18n.global.t('date-fns_time_short'));
 			} else {
-				format = options?.format;
+				format = options.format;
 			}
 
 			return localizedFormat(value, format);

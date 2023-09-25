@@ -27,19 +27,22 @@ export type UsableItems = {
 
 export type ComputedQuery = {
 	fields: Ref<Query['fields']> | ComputedRef<Query['fields']> | WritableComputedRef<Query['fields']>;
-	alias?: Ref<Query['alias']> | ComputedRef<Query['alias']> | WritableComputedRef<Query['alias']>;
 	limit: Ref<Query['limit']> | ComputedRef<Query['limit']> | WritableComputedRef<Query['limit']>;
 	sort: Ref<Query['sort']> | ComputedRef<Query['sort']> | WritableComputedRef<Query['sort']>;
 	search: Ref<Query['search']> | ComputedRef<Query['search']> | WritableComputedRef<Query['search']>;
 	filter: Ref<Query['filter']> | ComputedRef<Query['filter']> | WritableComputedRef<Query['filter']>;
 	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
+	alias?: Ref<Query['alias']> | ComputedRef<Query['alias']> | WritableComputedRef<Query['alias']>;
+	deep?: Ref<Query['deep']> | ComputedRef<Query['deep']> | WritableComputedRef<Query['deep']>;
 };
 
 export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
-	const { fields, alias, limit, sort, search, filter, page } = query;
+	const { fields, limit, sort, search, filter, page, alias: queryAlias, deep: queryDeep } = query;
+	const alias = queryAlias ?? ref();
+	const deep = queryDeep ?? ref();
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
@@ -70,12 +73,12 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	const fetchItems = throttle(getItems, 500);
 
 	watch(
-		[collection, limit, sort, search, filter, fields, page],
+		[collection, limit, sort, search, filter, fields, page, alias, deep],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
-			const [newCollection, newLimit, newSort, newSearch, newFilter, _newFields, _newPage] = after;
-			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, _oldFields, _oldPage] = before;
+			const [newCollection, newLimit, newSort, newSearch, newFilter] = after;
+			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter] = before;
 
 			if (!newCollection || !query) return;
 
@@ -163,6 +166,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					page: unref(page),
 					search: unref(search),
 					filter: unref(filter),
+					deep: unref(deep),
 				},
 				signal: existingRequests.items.signal,
 			});

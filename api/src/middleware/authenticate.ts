@@ -4,8 +4,8 @@ import { isEqual } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import asyncHandler from '../utils/async-handler.js';
-import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`

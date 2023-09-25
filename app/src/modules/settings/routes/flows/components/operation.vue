@@ -212,7 +212,7 @@ const currentOperation = computed(() => {
 
 let down: Target | 'parent' | undefined = undefined;
 let rafId: number | null = null;
-let moving = ref(false);
+const moving = ref(false);
 let workspaceOffset: Vector2 = new Vector2(0, 0);
 
 const isReject = computed(() => props.parent?.type === 'reject');

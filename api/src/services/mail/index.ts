@@ -4,14 +4,14 @@ import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
 import type { SendMailOptions, Transporter } from 'nodemailer';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { InvalidPayloadException } from '../../exceptions/index.js';
+import { InvalidPayloadError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
-import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -87,7 +87,7 @@ export class MailService {
 		const templatePath = (await fse.pathExists(customTemplatePath)) ? customTemplatePath : systemTemplatePath;
 
 		if ((await fse.pathExists(templatePath)) === false) {
-			throw new InvalidPayloadException(`Template "${template}" doesn't exist.`);
+			throw new InvalidPayloadError({ reason: `Template "${template}" doesn't exist` });
 		}
 
 		const templateString = await fse.readFile(templatePath, 'utf8');

@@ -58,16 +58,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Collection } from '@/types/collections';
-import { Preset } from '@directus/types';
-import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
-import NavigationItemContent from './navigation-item-content.vue';
-import NavigationBookmark from './navigation-bookmark.vue';
-import { useI18n } from 'vue-i18n';
+import { useUserStore } from '@/stores/user';
+import { Collection } from '@/types/collections';
+import { getCollectionRoute } from '@/utils/get-route';
+import { Preset } from '@directus/types';
 import { orderBy } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import NavigationBookmark from './navigation-bookmark.vue';
+import NavigationItemContent from './navigation-item-content.vue';
 
 const props = defineProps<{
 	collection: Collection;
@@ -87,7 +88,7 @@ const childBookmarks = computed(() => getChildBookmarks(props.collection));
 
 const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
 
-const to = computed(() => (props.collection.schema ? `/content/${props.collection.collection}` : ''));
+const to = computed(() => (props.collection.schema ? getCollectionRoute(props.collection.collection) : ''));
 
 const matchesSearch = computed(() => {
 	if (!props.search || props.search.length < 3) return true;

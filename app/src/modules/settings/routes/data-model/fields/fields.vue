@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="collectionInfo && collectionInfo.name">
+	<private-view :title="collectionInfo && formatTitle(collectionInfo.collection)">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
@@ -72,7 +72,6 @@
 				collection="directus_collections"
 				:loading="loading"
 				:initial-values="item && item.meta"
-				:batch-mode="isBatch"
 				:primary-key="collection"
 				:disabled="item && item.collection.startsWith('directus_')"
 			/>
@@ -111,6 +110,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
+import formatTitle from '@directus/format-title';
 
 const props = defineProps<{
 	collection: string;
@@ -128,10 +128,7 @@ const { info: collectionInfo } = useCollection(collection);
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 
-const { edits, item, saving, loading, save, remove, deleting, isBatch } = useItem(
-	ref('directus_collections'),
-	collection
-);
+const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
 
 const hasEdits = computed<boolean>(() => {
 	if (!edits.value.meta) return false;

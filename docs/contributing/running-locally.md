@@ -13,8 +13,8 @@ readTime: 4 min read
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest version of Node](https://nodejs.org/en/download/current) to _build_ a Development
-version of Directus.
+You will need to have [the latest LTS version of Node](https://nodejs.org/en/download) to _build_ a Development version
+of Directus.
 
 You will also need to have the package manager [pnpm](https://pnpm.io) installed.
 
@@ -158,12 +158,11 @@ introduction to [Contributing](/contributing/introduction).
 ### Debugging The App
 
 There are several ways to debug the app but the easiest way to do it is with the
-[Vue Devtools](https://devtools.vuejs.org/). It's
-recommended to use the Vue Devtools with Chrome.
+[Vue Devtools](https://devtools.vuejs.org/). It's recommended to use the Vue Devtools with Chrome.
 
 ::: tip Computed Debugging
 
- To debug computed properties, it can be helpful to have a look at this
+To debug computed properties, it can be helpful to have a look at this
 [Vue Guide](https://vuejs.org/guide/extras/reactivity-in-depth.html#reactivity-debugging).
 
 :::

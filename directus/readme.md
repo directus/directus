@@ -1,6 +1,6 @@
 <p>&nbsp;</p>
 
-<a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img width="250" alt="Logo" src="https://user-images.githubusercontent.com/9141017/88821768-0dc99800-d191-11ea-8c66-09c55ab451a2.png"></a>
+---
 
 <p>&nbsp;</p>
 
@@ -11,10 +11,7 @@ new or existing SQL database, instantly providing a dynamic API (REST+GraphQL) a
 content. Built entirely in TypeScript (in Node and Vue), Directus is completely modular and end-to-end extensible...
 with absolutely no paywalls or artificial limitations.
 
-Modern and intuitive, the Directus App enables no-code data discovery, allowing for even the most non-technical users to
-view, author, and manage your raw database content. Our performant and flexible API is able to adapt to any relational
-schema, and includes rule-based permissions, event/web hooks, custom endpoints, numerous auth options, configurable
-storage adapters, and much more.
+**[Learn more about Directus](https://directus.io)** • **[Documentation](https://docs.directus.io)**
 
 Current database support includes: PostgreSQL, MySQL, SQLite, MS-SQL Server, OracleDB, MariaDB, and variants such as AWS
 Aurora/Redshift or Google Cloud Platform SQL.

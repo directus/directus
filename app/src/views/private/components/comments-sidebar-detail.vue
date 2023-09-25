@@ -152,7 +152,7 @@ function useActivity(collection: string, primaryKey: string | number) {
 }
 
 async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
-	let userPreviews: any[] = [];
+	const userPreviews: any[] = [];
 
 	comments.forEach((comment: Record<string, any>) => {
 		userPreviews.push(comment.comment.match(regex));

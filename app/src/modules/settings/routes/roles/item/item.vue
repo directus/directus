@@ -81,7 +81,6 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:initial-values="item"
-				:batch-mode="isBatch"
 			/>
 		</div>
 
@@ -139,11 +138,9 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { edits, hasEdits, item, saving, loading, save, remove, deleting, isBatch } = useItem(
-	ref('directus_roles'),
-	primaryKey,
-	{ deep: { users: { _limit: 0 } } }
-);
+const { edits, hasEdits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_roles'), primaryKey, {
+	deep: { users: { _limit: 0 } },
+});
 
 const confirmDelete = ref(false);
 

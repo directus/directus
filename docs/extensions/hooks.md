@@ -46,15 +46,17 @@ the event.
 
 Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
 
-Below is an example of canceling a `create` event by throwing a standard Directus exception.
+Below is an example of canceling a `create` event by throwing a Directus error.
 
 ```js
-export default ({ filter }, { exceptions }) => {
-	const { InvalidPayloadException } = exceptions;
+import { createError } from '@directus/errors';
 
+const InvalidPayloadError = createError('INVALID_PAYLOAD_ERROR', 'Something went wrong...', 500);
+
+export default ({ filter }) => {
 	filter('items.create', async (input) => {
 		if (LOGIC_TO_CANCEL_EVENT) {
-			throw new InvalidPayloadException(WHAT_IS_WRONG);
+			throw new InvalidPayloadError();
 		}
 
 		return input;
@@ -167,6 +169,7 @@ export default ({ embed }, { env }) => {
 		'head',
 		'<script src="https://browser.sentry-cdn.com/7.21.1/bundle.min.js" integrity="sha384-xOL2QebDu7YNMtC6jW2i5RpQ5RcWOyQMTwrWBiEDezpjjXM7mXhYGz3vze77V91Q" crossorigin="anonymous"></script>'
 	);
+
 	embed(
 		'body',
 		() => `<script>
@@ -275,7 +278,6 @@ The register function receives an object containing the type-specific register f
 The second parameter is a context object with the following properties:
 
 - `services` — All API internal services
-- `exceptions` — API exception objects that can be used for throwing "proper" errors
 - `database` — Knex instance that is connected to the current database
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
@@ -290,66 +292,12 @@ hook is currently handling as that would result in an infinite loop!
 
 :::
 
-## Examples:
+## Guides
 
-### Sync with External
+Learn how to build hooks with our official guides:
 
-```js
-import axios from 'axios';
+<GuidesListExtensions type="Hooks" />
 
-export default ({ filter }, { services, exceptions }) => {
-	const { MailService } = services;
-	const { ServiceUnavailableException, ForbiddenException } = exceptions;
-
-	// Sync with external recipes service, cancel creation on failure
-	filter('items.create', async (input, { collection }, { schema, database }) => {
-		if (collection !== 'recipes') return input;
-
-		const mailService = new MailService({ schema, knex: database });
-
-		try {
-			await axios.post('https://example.com/recipes', input);
-			await mailService.send({
-				to: 'person@example.com',
-				template: {
-					name: 'item-created',
-					data: {
-						collection: collection,
-					},
-				},
-			});
-		} catch (error) {
-			throw new ServiceUnavailableException(error);
-		}
-
-		input.syncedWithExample = true;
-
-		return input;
-	});
-};
-```
-
-### Add Sentry monitoring
-
-```js
-import { defineHook } from '@directus/extensions-sdk';
-import * as Sentry from '@sentry/node';
-import '@sentry/tracing';
-
-export default defineHook(({ init }, { env }) => {
-	const { SENTRY_DSN } = env;
-	Sentry.init({
-		dsn: SENTRY_DSN,
-	});
-
-	init('routes.before', ({ app }) => {
-		app.use(Sentry.Handlers.requestHandler());
-		console.log('-- Sentry Request Handler Added --');
-	});
-
-	init('routes.custom.after', ({ app }) => {
-		app.use(Sentry.Handlers.errorHandler());
-		console.log('-- Sentry Error Handler Added --');
-	});
-});
-```
+<script setup>
+import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+</script>
