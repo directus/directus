@@ -5,8 +5,8 @@ description: Discover how Directus extensions enable you to expand its features 
 
 # Extensions
 
-Extensions provide a way to build, modify or expand Directus' functionality beyond the default, for your specific
-needs. There are three main categories of extensions:
+Extensions provide a way to build, modify or expand Directus' functionality beyond the default, for your specific needs.
+There are three main categories of extensions:
 
 1. App Extensions
 2. API Extensions
@@ -15,13 +15,11 @@ needs. There are three main categories of extensions:
 ## App Extensions
 
 App extensions (also known as frontend extensions) provide visual and client-side modifications to the Directus App.
-Examples include:
 
 ### Interfaces
 
-[Interfaces](/extensions/interfaces) allow you to customize how a user will interact with the data of an item in a
-collection. For example, you could create an interface extension that allows users to draw some vector graphic as an
-item in a collection.
+[Interfaces](/extensions/interfaces) provide the user with ways to create and edit items through forms and other
+elements.
 
 ### Layouts
 
