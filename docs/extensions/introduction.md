@@ -56,7 +56,8 @@ sources and custom workflows.
 
 ### Hooks
 
-[Hooks](/extensions/hooks) are similar to Flows, but do not have a UI in the Directus Data Studio. Hooks can be triggered during Directus' startup, when data is changes, or on schedules. 
+[Hooks](/extensions/hooks) are similar to Flows, but do not have a UI in the Directus Data Studio. Hooks can be
+triggered during Directus' startup, when data is changes, or on schedules.
 
 ## Hybrid Extensions
 
@@ -71,9 +72,9 @@ validator for a given string.
 
 ### Bundles
 
-[Bundles](/extensions/bundles) allow you to combine many extensions into one large extension. The benefit of this
-is that if your extensions share a lot of dependencies, bundles allow to share those between all you extensions inside
-the bundle and reduce the file size considerably when building.
+[Bundles](/extensions/bundles) allow you to combine many extensions into one large extension. The benefit of this is
+that if your extensions share a lot of dependencies, bundles allow to share those between all you extensions inside the
+bundle and reduce the file size considerably when building.
 
 ::: tip Extensions Library
 
