@@ -3,7 +3,7 @@ import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../..
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
-import { createUniqueIdentifier } from '../../orm/create-unique-identifier.js';
+import { createUniqueIdentifier } from '../../response-converter/orm/create-unique-identifier.js';
 
 export type Result = {
 	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
