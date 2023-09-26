@@ -381,6 +381,7 @@ move: Pindah
 system: Sistem
 add_field_related: Tambah Baris ke Koleksi Terkait
 interface_label: Antarmuka
+display_label: Tampilkan
 today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
@@ -1432,6 +1433,8 @@ interfaces:
     image: Gambar
   system-interface:
     interface: Antarmuka
+  system-display:
+    display: Tampilkan
   select-dropdown-m2o:
     display_template: Tampilan Template
   input-rich-text-md:
