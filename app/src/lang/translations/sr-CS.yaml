@@ -334,7 +334,6 @@ dimensions: Dimenzije
 size: Veličina
 created: Kreiran
 modified: Izmijenjeno
-checksum: Kontrolni zbir
 owner: Vlasnik
 edited_by: Izmijenjeno od
 folder: Fascikla
@@ -1064,8 +1063,6 @@ interfaces:
     one-to-many: One to Many
     description: Odaberi više povezanih stavki
     no_collection: Kolekciju nije moguće pronaći
-  system-folder:
-    folder: Fascikla
   select-radio:
     radio-buttons: Radio dugmići
     description: Odaberi jednu od više ponuđenih opcija
