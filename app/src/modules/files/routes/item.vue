@@ -77,7 +77,7 @@
 			</v-button>
 
 			<v-button
-				v-if="item && item.type.includes('image')"
+				v-if="item?.type?.includes('image')"
 				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
@@ -110,7 +110,7 @@
 		</template>
 
 		<template #navigation>
-			<files-navigation :current-folder="item && item.folder" />
+			<files-navigation :current-folder="item?.folder ?? undefined" />
 		</template>
 
 		<div class="file-item">
@@ -122,12 +122,7 @@
 				</button>
 			</div>
 
-			<image-editor
-				v-if="item && item.type.startsWith('image')"
-				:id="item.id"
-				v-model="editActive"
-				@refresh="refresh"
-			/>
+			<image-editor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
 
 			<v-form
 				ref="form"
@@ -155,7 +150,7 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<file-info-sidebar-detail :file="item" />
+			<file-info-sidebar-detail :file="item" :is-new="isNew" />
 			<revisions-drawer-detail
 				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsDrawerDetailRef"
@@ -185,7 +180,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { Field } from '@directus/types';
+import type { Field, File } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -193,11 +188,9 @@ import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import ReplaceFile from '../components/replace-file.vue';
 import FilesNotFound from './not-found.vue';
 
-interface Props {
+const props = defineProps<{
 	primaryKey: string;
-}
-
-const props = defineProps<Props>();
+}>();
 
 const { t } = useI18n();
 
@@ -211,7 +204,7 @@ const replaceFileDialogActive = ref(false);
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, refresh, validationErrors } =
-	useItem(ref('directus_files'), primaryKey);
+	useItem<File>(ref('directus_files'), primaryKey);
 
 const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
@@ -234,7 +227,6 @@ const fieldsDenyList: string[] = [
 	'width',
 	'height',
 	'filesize',
-	'checksum',
 	'uploaded_by',
 	'uploaded_on',
 	'modified_by',
@@ -351,7 +343,7 @@ function discardAndStay() {
 function useMovetoFolder() {
 	const moveToDialogActive = ref(false);
 	const moving = ref(false);
-	const selectedFolder = ref<number | null>();
+	const selectedFolder = ref<string | null>(null);
 
 	watch(item, () => {
 		selectedFolder.value = item.value?.folder || null;
@@ -375,7 +367,7 @@ function useMovetoFolder() {
 				}
 			);
 
-			await refresh();
+			refresh();
 			const folder = response.data.data.folder?.name || t('file_library');
 
 			notify({
