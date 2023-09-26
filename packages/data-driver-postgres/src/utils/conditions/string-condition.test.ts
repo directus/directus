@@ -29,23 +29,21 @@ beforeEach(() => {
 });
 
 test('letter condition starts_with', () => {
-	expect(stringCondition(sampleCondition, false)).toStrictEqual(
-		`"${randomTable}"."${randomColumn}" LIKE '$${parameterIndex + 1}%'`
-	);
+	const res = stringCondition(sampleCondition, false);
+	const expected = `"${randomTable}"."${randomColumn}" LIKE '$${parameterIndex + 1}%'`;
+	expect(res).toStrictEqual(expected);
 });
 
 test('letter condition contains', () => {
 	sampleCondition.operation = 'contains';
-
-	expect(stringCondition(sampleCondition, false)).toStrictEqual(
-		`"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}%'`
-	);
+	const res = stringCondition(sampleCondition, false);
+	const expected = `"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}%'`;
+	expect(res).toStrictEqual(expected);
 });
 
 test('letter condition contains', () => {
 	sampleCondition.operation = 'ends_with';
-
-	expect(stringCondition(sampleCondition, false)).toStrictEqual(
-		`"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}'`
-	);
+	const res = stringCondition(sampleCondition, false);
+	const expected = `"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}'`;
+	expect(res).toStrictEqual(expected);
 });

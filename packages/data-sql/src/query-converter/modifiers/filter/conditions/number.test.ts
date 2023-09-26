@@ -1,15 +1,23 @@
 import type { ConditionNumberNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { expect, test } from 'vitest';
+import { expect, test, beforeEach } from 'vitest';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertNumberNode } from './number.js';
 import type { AbstractSqlQueryConditionNode } from '../../../../index.js';
 
-test('convert number node', () => {
-	const idGen = parameterIndexGenerator();
-	const randomCollection = randomIdentifier();
-	const randomField = randomIdentifier();
+let idGen: Generator<number, number, number>;
+let randomCollection: string;
+let randomField: string;
+let randomValue: number;
 
+beforeEach(() => {
+	idGen = parameterIndexGenerator();
+	randomCollection = randomIdentifier();
+	randomField = randomIdentifier();
+	randomValue = randomInteger(1, 100);
+});
+
+test('convert number condition', () => {
 	const con: ConditionNumberNode = {
 		type: 'condition-number',
 		target: {
@@ -17,7 +25,7 @@ test('convert number node', () => {
 			field: randomField,
 		},
 		operation: 'gt',
-		compareTo: 6,
+		compareTo: randomValue,
 	};
 
 	const expectedWhere: AbstractSqlQueryConditionNode = {
@@ -40,16 +48,11 @@ test('convert number node', () => {
 
 	expect(convertNumberNode(con, randomCollection, idGen, false)).toStrictEqual({
 		where: expectedWhere,
-		parameters: [con.compareTo],
+		parameters: [randomValue],
 	});
 });
 
-test('convert number node with function', () => {
-	const idGen = parameterIndexGenerator();
-	const randomCollection = randomIdentifier();
-	const randomField = randomIdentifier();
-	const randomValue = randomInteger(1, 100);
-
+test('convert number condition with function', () => {
 	const con: ConditionNumberNode = {
 		type: 'condition-number',
 		target: {

@@ -25,16 +25,17 @@ beforeEach(() => {
 
 describe('Apply date time function', () => {
 	test('On timestamp column', () => {
-		expect(applyFunction(sample)).toStrictEqual(`EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}")`);
+		const res = applyFunction(sample);
+		const expected = `EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}")`;
+		expect(res).toStrictEqual(expected);
 	});
 
 	test('On non timestamp column', () => {
 		// @ts-ignore
 		sample.fn.isTimestampType = true;
-
-		expect(applyFunction(sample)).toStrictEqual(
-			`EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}" AT TIME ZONE 'UTC')`
-		);
+		const res = applyFunction(sample);
+		const expected = `EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}" AT TIME ZONE 'UTC')`;
+		expect(res).toStrictEqual(expected);
 	});
 });
 
@@ -49,5 +50,7 @@ test('Apply count', () => {
 		column: '*',
 	};
 
-	expect(applyFunction(sample)).toStrictEqual(`COUNT("${randomTable}"."*")`);
+	const res = applyFunction(sample);
+	const expected = `COUNT("${randomTable}"."*")`;
+	expect(res).toStrictEqual(expected);
 });

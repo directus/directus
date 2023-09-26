@@ -1,12 +1,9 @@
 import { test, expect, beforeEach } from 'vitest';
 import { join } from './join.js';
 import { randomIdentifier } from '@directus/random';
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 
-let sample: {
-	statement: AbstractSqlQuery;
-};
-
+let sample: AbstractSqlClauses;
 let targetTable: string;
 let targetColumn: string;
 let compareToTable: string;
@@ -21,48 +18,45 @@ beforeEach(() => {
 	alias = randomIdentifier();
 
 	sample = {
-		statement: {
-			select: [
-				{
-					type: 'primitive',
-					column: randomIdentifier(),
-					table: randomIdentifier(),
-					as: randomIdentifier(),
-				},
-			],
-			from: randomIdentifier(),
-			joins: [
-				{
-					type: 'join',
-					table: targetTable,
-					as: alias,
-					on: {
-						type: 'condition',
-						condition: {
-							type: 'condition-field',
-							target: {
-								type: 'primitive',
-								table: targetTable,
-								column: targetColumn,
-							},
-							operation: 'eq',
-							compareTo: {
-								type: 'primitive',
-								table: compareToTable,
-								column: compareToColumn,
-							},
+		select: [
+			{
+				type: 'primitive',
+				column: randomIdentifier(),
+				table: randomIdentifier(),
+				as: randomIdentifier(),
+			},
+		],
+		from: randomIdentifier(),
+		joins: [
+			{
+				type: 'join',
+				table: targetTable,
+				as: alias,
+				on: {
+					type: 'condition',
+					condition: {
+						type: 'condition-field',
+						target: {
+							type: 'primitive',
+							table: targetTable,
+							column: targetColumn,
 						},
-						negate: false,
+						operation: 'eq',
+						compareTo: {
+							type: 'primitive',
+							table: compareToTable,
+							column: compareToColumn,
+						},
 					},
+					negate: false,
 				},
-			],
-			parameters: [],
-		},
+			},
+		],
 	};
 });
 
 test('With an alias', () => {
-	expect(join(sample.statement)).toStrictEqual(
+	expect(join(sample)).toStrictEqual(
 		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}"`
 	);
 });
@@ -73,7 +67,7 @@ test('With an alias', () => {
 	const compareToTable2 = randomIdentifier();
 	const compareToColumn2 = randomIdentifier();
 
-	sample.statement.joins = [
+	sample.joins = [
 		{
 			type: 'join',
 			table: targetTable,
@@ -124,7 +118,7 @@ test('With an alias', () => {
 		},
 	];
 
-	expect(join(sample.statement)).toStrictEqual(
+	expect(join(sample)).toStrictEqual(
 		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}" AND "${targetTable2}"."${targetColumn2}" = "${compareToTable2}"."${compareToColumn2}"`
 	);
 });

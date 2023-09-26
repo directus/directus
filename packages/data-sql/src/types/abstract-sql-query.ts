@@ -30,10 +30,10 @@ export interface AbstractSqlClauses {
 	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 	from: string;
 	joins?: AbstractSqlQueryJoinNode[];
+	where?: AbstractSqlQueryWhereNode;
 	limit?: ValueNode;
 	offset?: ValueNode;
 	order?: AbstractSqlQueryOrderNode[];
-	where?: AbstractSqlQueryWhereNode;
 }
 
 export type WhereUnion = {

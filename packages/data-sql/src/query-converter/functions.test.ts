@@ -1,17 +1,22 @@
 import type { AbstractQueryFieldNodeFn } from '@directus/data';
 import { randomAlpha, randomIdentifier } from '@directus/random';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, beforeEach } from 'vitest';
 import type { AbstractSqlQueryFnNode } from '../types/fields/fn.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
 import { convertFn } from './functions.js';
 
-const randomCollection = randomIdentifier();
+let randomCollection: string;
+let idGen: Generator<number, number, number>;
+let sampleField: string;
+
+beforeEach(() => {
+	randomCollection = randomIdentifier();
+	idGen = parameterIndexGenerator();
+	sampleField = randomIdentifier();
+});
 
 describe('Convert function', () => {
 	test('With no args', () => {
-		const sampleField = randomIdentifier();
-		const idGen = parameterIndexGenerator();
-
 		const sampleAbstractFn: AbstractQueryFieldNodeFn = {
 			type: 'fn',
 			fn: {
@@ -40,8 +45,6 @@ describe('Convert function', () => {
 	});
 
 	test('With an generated alias and user alias', () => {
-		const sampleField = randomIdentifier();
-		const idGen = parameterIndexGenerator();
 		const uniqueId = randomIdentifier();
 		const randomUserAlias = randomIdentifier();
 
@@ -76,8 +79,6 @@ describe('Convert function', () => {
 	});
 
 	test('With args', () => {
-		const sampleField = randomIdentifier();
-		const idGen = parameterIndexGenerator();
 		const randomArgument1 = randomAlpha(5);
 		const randomArgument2 = randomAlpha(5);
 

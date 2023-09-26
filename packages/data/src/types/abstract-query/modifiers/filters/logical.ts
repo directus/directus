@@ -57,5 +57,5 @@ export interface AbstractQueryNodeLogical {
 	operator: 'and' | 'or';
 
 	/** the values for the operation. */
-	childNodes: AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate[];
+	childNodes: (AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate)[];
 }

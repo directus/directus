@@ -27,9 +27,13 @@ beforeEach(() => {
 });
 
 test('set', () => {
-	expect(setCondition(sampleCondition, false)).toStrictEqual(`"${randomTable}"."${randomColumn}" IN ($3, $4, $5)`);
+	const res = setCondition(sampleCondition, false);
+	const expected = `"${randomTable}"."${randomColumn}" IN ($3, $4, $5)`;
+	expect(res).toStrictEqual(expected);
 });
 
 test('negated set', () => {
-	expect(setCondition(sampleCondition, true)).toStrictEqual(`"${randomTable}"."${randomColumn}" NOT IN ($3, $4, $5)`);
+	const res = setCondition(sampleCondition, true);
+	const expected = `"${randomTable}"."${randomColumn}" NOT IN ($3, $4, $5)`;
+	expect(res).toStrictEqual(expected);
 });

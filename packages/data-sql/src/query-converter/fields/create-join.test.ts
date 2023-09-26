@@ -7,7 +7,6 @@ import type { AbstractSqlQueryJoinNode } from '../../types/fields/join.js';
 test('Convert m2o relation on single field ', () => {
 	const randomCurrentCollection = randomIdentifier();
 	const randomCurrentField = randomIdentifier();
-
 	const randomExternalCollection = randomIdentifier();
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();

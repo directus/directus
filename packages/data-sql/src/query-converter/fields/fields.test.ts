@@ -1,4 +1,4 @@
-import { expect, test, vi, afterAll } from 'vitest';
+import { expect, test, vi, afterAll, beforeEach } from 'vitest';
 import { convertFieldNodes, type Result } from './fields.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
@@ -12,15 +12,25 @@ vi.mock('../../response-converter/orm/create-unique-identifier.js', () => ({
 	createUniqueIdentifier: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
+let randomPrimitiveField1: string;
+let randomPrimitiveField2: string;
+let randomCollection: string;
+
+beforeEach(() => {
+	randomPrimitiveField1 = randomIdentifier();
+	randomPrimitiveField2 = randomIdentifier();
+	randomCollection = randomIdentifier();
+});
+
 test('convert primitives', () => {
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: 'randomPrimitiveField1',
+			field: randomPrimitiveField1,
 		},
 		{
 			type: 'primitive',
-			field: 'randomPrimitiveField2',
+			field: randomPrimitiveField2,
 		},
 	];
 
@@ -29,28 +39,28 @@ test('convert primitives', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: 'collection',
-					column: 'randomPrimitiveField1',
-					as: `${'randomPrimitiveField1'}_RANDOM`,
+					table: randomCollection,
+					column: randomPrimitiveField1,
+					as: `${randomPrimitiveField1}_RANDOM`,
 				},
 				{
 					type: 'primitive',
-					table: 'collection',
-					column: 'randomPrimitiveField2',
-					as: `${'randomPrimitiveField2'}_RANDOM`,
+					table: randomCollection,
+					column: randomPrimitiveField2,
+					as: `${randomPrimitiveField2}_RANDOM`,
 				},
 			],
 			joins: [],
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${'randomPrimitiveField1'}_RANDOM`, ['randomPrimitiveField1']],
-			[`${'randomPrimitiveField2'}_RANDOM`, ['randomPrimitiveField2']],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
+			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
 		]),
 	};
 
 	const idGen = parameterIndexGenerator();
-	const result = convertFieldNodes('collection', fields, idGen);
+	const result = convertFieldNodes(randomCollection, fields, idGen);
 	expect(result.clauses).toMatchObject(expected.clauses);
 	expect(result.parameters).toMatchObject(expected.parameters);
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
@@ -60,7 +70,7 @@ test('convert primitive and fn nodes', () => {
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: 'randomPrimitiveField1',
+			field: randomPrimitiveField1,
 		},
 		{
 			type: 'fn',
@@ -68,7 +78,7 @@ test('convert primitive and fn nodes', () => {
 				type: 'extractFn',
 				fn: 'month',
 			},
-			field: 'randomPrimitiveField2',
+			field: randomPrimitiveField2,
 		},
 	];
 
@@ -77,9 +87,9 @@ test('convert primitive and fn nodes', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: 'collection',
-					column: 'randomPrimitiveField1',
-					as: 'randomPrimitiveField1_RANDOM',
+					table: randomCollection,
+					column: randomPrimitiveField1,
+					as: `${randomPrimitiveField1}_RANDOM`,
 				},
 				{
 					type: 'fn',
@@ -87,30 +97,28 @@ test('convert primitive and fn nodes', () => {
 						type: 'extractFn',
 						fn: 'month',
 					},
-					table: 'collection',
-					column: 'randomPrimitiveField2',
-					as: 'month_randomPrimitiveField2_RANDOM',
+					table: randomCollection,
+					column: randomPrimitiveField2,
+					as: `month_${randomPrimitiveField2}_RANDOM`,
 				},
 			],
 			joins: [],
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			['randomPrimitiveField1_RANDOM', ['randomPrimitiveField1']],
-			['month_randomPrimitiveField2_RANDOM', ['randomPrimitiveField2']],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
+			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
 		]),
 	};
 
 	const idGen = parameterIndexGenerator();
-	const result = convertFieldNodes('collection', fields, idGen);
+	const result = convertFieldNodes(randomCollection, fields, idGen);
 	expect(result.clauses).toMatchObject(expected.clauses);
 	expect(result.parameters).toMatchObject(expected.parameters);
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
 });
 
 test('Convert nodes', () => {
-	const collection = randomIdentifier();
-	const randomPrimitiveField = randomIdentifier();
 	const randomJoinCurrentField = randomIdentifier();
 	const randomExternalCollection = randomIdentifier();
 	const randomExternalStore = randomIdentifier();
@@ -121,7 +129,7 @@ test('Convert nodes', () => {
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
-			field: randomPrimitiveField,
+			field: randomPrimitiveField1,
 		},
 		{
 			type: 'm2o',
@@ -159,9 +167,9 @@ test('Convert nodes', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: collection,
-					column: randomPrimitiveField,
-					as: `${randomPrimitiveField}_RANDOM`,
+					table: randomCollection,
+					column: randomPrimitiveField1,
+					as: `${randomPrimitiveField1}_RANDOM`,
 				},
 				{
 					type: 'primitive',
@@ -175,7 +183,7 @@ test('Convert nodes', () => {
 						type: 'extractFn',
 						fn: 'month',
 					},
-					table: collection,
+					table: randomCollection,
 					column: `${randomPrimitiveFieldFn}`,
 					as: `month_${randomPrimitiveFieldFn}_RANDOM`,
 				},
@@ -190,7 +198,7 @@ test('Convert nodes', () => {
 							type: 'condition-field',
 							target: {
 								type: 'primitive',
-								table: collection,
+								table: randomCollection,
 								column: randomJoinCurrentField,
 							},
 							operation: 'eq',
@@ -208,13 +216,13 @@ test('Convert nodes', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${randomPrimitiveField}_RANDOM`, [randomPrimitiveField]],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
 			[`${randomJoinNodeField}_RANDOM`, [randomExternalCollection, randomJoinNodeField]],
 			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFn]],
 		]),
 	};
 
-	const result = convertFieldNodes(collection, fields, idGen);
+	const result = convertFieldNodes(randomCollection, fields, idGen);
 	expect(result.clauses).toMatchObject(expected.clauses);
 	expect(result.parameters).toMatchObject(expected.parameters);
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);

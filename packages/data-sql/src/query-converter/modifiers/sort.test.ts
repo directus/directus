@@ -3,52 +3,48 @@ import { beforeEach, expect, test } from 'vitest';
 import { randomIdentifier } from '@directus/random';
 import { convertSort } from './sort.js';
 
-let sample: {
-	sort: AbstractQueryNodeSort[];
-};
+let sample: AbstractQueryNodeSort[];
 
 beforeEach(() => {
-	sample = {
-		sort: [
-			{
-				type: 'sort',
-				direction: 'ascending',
-				target: {
-					type: 'primitive',
-					field: randomIdentifier(),
-				},
+	sample = [
+		{
+			type: 'sort',
+			direction: 'ascending',
+			target: {
+				type: 'primitive',
+				field: randomIdentifier(),
 			},
-		],
-	};
+		},
+	];
 });
 
 test('convert ascending sort with a single field', () => {
-	const res = convertSort(sample.sort);
+	const res = convertSort(sample);
 
 	expect(res).toStrictEqual([
 		{
 			type: 'order',
-			orderBy: sample.sort[0]!.target,
+			orderBy: sample[0]!.target,
 			direction: 'ASC',
 		},
 	]);
 });
 
 test('convert descending sort with a single field', () => {
-	sample.sort[0]!.direction = 'descending';
-	const res = convertSort(sample.sort);
+	sample[0]!.direction = 'descending';
+	const res = convertSort(sample);
 
 	expect(res).toStrictEqual([
 		{
 			type: 'order',
-			orderBy: sample.sort[0]!.target,
+			orderBy: sample[0]!.target,
 			direction: 'DESC',
 		},
 	]);
 });
 
 test('convert ascending sort with multiple fields', () => {
-	sample.sort.push({
+	sample.push({
 		type: 'sort',
 		direction: 'ascending',
 		target: {
@@ -57,17 +53,17 @@ test('convert ascending sort with multiple fields', () => {
 		},
 	});
 
-	const res = convertSort(sample.sort);
+	const res = convertSort(sample);
 
 	expect(res).toStrictEqual([
 		{
 			type: 'order',
-			orderBy: sample.sort[0]!.target,
+			orderBy: sample[0]!.target,
 			direction: 'ASC',
 		},
 		{
 			type: 'order',
-			orderBy: sample.sort[1]!.target,
+			orderBy: sample[1]!.target,
 			direction: 'ASC',
 		},
 	]);

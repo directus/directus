@@ -1,14 +1,11 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { where } from './where.js';
-import { randomIdentifier, randomInteger } from '@directus/random';
+import { randomIdentifier } from '@directus/random';
 
-let sample: {
-	statement: AbstractSqlQuery;
-};
-
-let conditionTargetTable = '';
-let conditionTargetColumn = '';
+let sample: AbstractSqlClauses;
+let conditionTargetTable: string;
+let conditionTargetColumn: string;
 
 describe('Where clause:', () => {
 	beforeEach(() => {
@@ -16,45 +13,35 @@ describe('Where clause:', () => {
 		conditionTargetColumn = randomIdentifier();
 
 		sample = {
-			statement: {
-				select: [
-					{
+			select: [],
+			from: randomIdentifier(),
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-number',
+					operation: 'gt',
+					target: {
 						type: 'primitive',
-						column: randomIdentifier(),
-						table: randomIdentifier(),
-						as: randomIdentifier(),
+						table: conditionTargetTable,
+						column: conditionTargetColumn,
 					},
-				],
-				from: randomIdentifier(),
-				where: {
-					type: 'condition',
-					negate: false,
-					condition: {
-						type: 'condition-number',
-						operation: 'gt',
-						target: {
-							type: 'primitive',
-							table: conditionTargetTable,
-							column: conditionTargetColumn,
-						},
-						compareTo: {
-							type: 'value',
-							parameterIndex: 0,
-						},
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
 					},
 				},
-				parameters: [randomInteger(1, 10)],
 			},
 		};
 	});
 
 	test('Where clause', () => {
-		expect(where(sample.statement)).toStrictEqual(`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" > $1`);
+		expect(where(sample)).toStrictEqual(`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" > $1`);
 	});
 
 	test('Where clause with negation', () => {
-		sample.statement.where!.negate = true;
+		sample.where!.negate = true;
 
-		expect(where(sample.statement)).toStrictEqual(`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" <= $1`);
+		expect(where(sample)).toStrictEqual(`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" <= $1`);
 	});
 });

@@ -9,6 +9,7 @@ test('number', () => {
 	const idGen = parameterIndexGenerator();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
+	const randomCompareValue = randomIdentifier();
 
 	const con: ConditionStringNode = {
 		type: 'condition-string',
@@ -17,7 +18,7 @@ test('number', () => {
 			field: randomField,
 		},
 		operation: 'contains',
-		compareTo: 'something',
+		compareTo: randomCompareValue,
 	};
 
 	const expectedWhere: AbstractSqlQueryConditionNode = {
@@ -40,6 +41,6 @@ test('number', () => {
 
 	expect(convertStringNode(con, randomCollection, idGen, false)).toStrictEqual({
 		where: expectedWhere,
-		parameters: [con.compareTo],
+		parameters: [randomCompareValue],
 	});
 });

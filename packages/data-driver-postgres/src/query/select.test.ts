@@ -1,64 +1,61 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { beforeEach, expect, test } from 'vitest';
 import { select } from './select.js';
 import { randomIdentifier } from '@directus/random';
 
-let sample: {
-	statement: AbstractSqlQuery;
-};
-
-const randomTable1 = randomIdentifier();
-const randomTable2 = randomIdentifier();
-const randomColumn1 = randomIdentifier();
-const randomColumn2 = randomIdentifier();
-const randomAlias = randomIdentifier();
+let randomTable: string;
 
 beforeEach(() => {
-	sample = {
-		statement: {
-			select: [
-				{
-					type: 'primitive',
-					table: randomTable1,
-					column: randomColumn1,
-					as: randomAlias,
-				},
-				{
-					type: 'primitive',
-					table: randomTable2,
-					column: randomColumn2,
-				},
-			],
-			from: randomIdentifier(),
-			parameters: [],
-		},
-	};
+	randomTable = randomIdentifier();
 });
 
 test('With multiple provided fields and an alias', () => {
-	const res = select(sample.statement);
-	const expected = `SELECT "${randomTable1}"."${randomColumn1}" AS "${randomAlias}", "${randomTable2}"."${randomColumn2}"`;
+	const randomTable2 = randomIdentifier();
+	const randomColumn1 = randomIdentifier();
+	const randomColumn2 = randomIdentifier();
+	const randomAlias = randomIdentifier();
+
+	const sample: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'primitive',
+				table: randomTable,
+				column: randomColumn1,
+				as: randomAlias,
+			},
+			{
+				type: 'primitive',
+				table: randomTable2,
+				column: randomColumn2,
+			},
+		],
+		from: randomTable,
+	};
+
+	const res = select(sample);
+	const expected = `SELECT "${randomTable}"."${randomColumn1}" AS "${randomAlias}", "${randomTable2}"."${randomColumn2}"`;
 	expect(res).toStrictEqual(expected);
 });
 
 test('With a count', () => {
 	const randomTable = randomIdentifier();
 
-	sample.statement.select = [
-		{
-			type: 'fn',
-			fn: {
-				type: 'arrayFn',
-				fn: 'count',
+	const sample: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'fn',
+				fn: {
+					type: 'arrayFn',
+					fn: 'count',
+				},
+				table: randomTable,
+				column: '*',
 			},
-			table: randomTable,
-			column: '*',
-		},
-	];
+		],
+		from: randomTable,
+	};
 
-	const res = select(sample.statement);
-
+	const res = select(sample);
 	const expected = `SELECT COUNT("${randomTable}"."*")`;
-
 	expect(res).toStrictEqual(expected);
 });

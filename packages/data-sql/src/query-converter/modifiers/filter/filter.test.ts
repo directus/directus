@@ -1,23 +1,23 @@
 import type { AbstractQueryFilterNode } from '@directus/data';
 import { randomIdentifier, randomInteger, randomAlpha } from '@directus/random';
 import { beforeEach, expect, test, describe } from 'vitest';
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../../types/modifiers/index.js';
 import { parameterIndexGenerator } from '../../param-index-generator.js';
 import { convertFilter } from './filter.js';
+import type {
+	AbstractSqlQueryLogicalNode,
+	AbstractSqlQueryConditionNode,
+} from '../../../types/modifiers/filter/index.js';
 
-let sample: AbstractQueryFilterNode;
 let randomCollection: string;
 let randomField1: string;
 let randomField2: string;
 let randomNumber1: number;
 let randomString1: string;
 let idxGen: Generator<number, number, number>;
-
 let randomCompareTo: number;
 
 beforeEach(() => {
 	randomCompareTo = randomInteger(1, 100);
-
 	randomCollection = randomIdentifier();
 	randomField1 = randomIdentifier();
 	randomField2 = randomIdentifier();
@@ -27,7 +27,7 @@ beforeEach(() => {
 });
 
 test('Convert single filter', () => {
-	sample = {
+	const sampleFilter: AbstractQueryFilterNode = {
 		type: 'condition',
 		condition: {
 			type: 'condition-number',
@@ -58,7 +58,7 @@ test('Convert single filter', () => {
 		},
 	};
 
-	expect(convertFilter(sample, randomCollection, idxGen, true)).toStrictEqual({
+	expect(convertFilter(sampleFilter, randomCollection, idxGen, true)).toStrictEqual({
 		where: expectedWhere,
 		parameters: [randomCompareTo],
 	});
@@ -66,7 +66,7 @@ test('Convert single filter', () => {
 
 describe('convert multiple conditions', () => {
 	test('Convert logical node with two conditions', () => {
-		sample = {
+		const sampleFilter: AbstractQueryFilterNode = {
 			type: 'logical',
 			operator: 'and',
 			childNodes: [
@@ -139,7 +139,7 @@ describe('convert multiple conditions', () => {
 			],
 		};
 
-		expect(convertFilter(sample, randomCollection, idxGen)).toStrictEqual({
+		expect(convertFilter(sampleFilter, randomCollection, idxGen)).toStrictEqual({
 			where: expectedWhere,
 			parameters: [randomNumber1, randomString1],
 		});

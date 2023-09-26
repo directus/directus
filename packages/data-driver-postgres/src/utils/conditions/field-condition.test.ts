@@ -8,23 +8,23 @@ test('field condition', () => {
 	const column1 = randomIdentifier();
 	const column2 = randomIdentifier();
 
-	expect(
-		fieldCondition(
-			{
-				type: 'condition-field',
-				target: {
-					type: 'primitive',
-					table: table1,
-					column: column1,
-				},
-				operation: 'eq',
-				compareTo: {
-					type: 'primitive',
-					table: table2,
-					column: column2,
-				},
+	const res = fieldCondition(
+		{
+			type: 'condition-field',
+			target: {
+				type: 'primitive',
+				table: table1,
+				column: column1,
 			},
-			false
-		)
-	).toStrictEqual(`"${table1}"."${column1}" = "${table2}"."${column2}"`);
+			operation: 'eq',
+			compareTo: {
+				type: 'primitive',
+				table: table2,
+				column: column2,
+			},
+		},
+		false
+	);
+
+	expect(res).toStrictEqual(`"${table1}"."${column1}" = "${table2}"."${column2}"`);
 });
