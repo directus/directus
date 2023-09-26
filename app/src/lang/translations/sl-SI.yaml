@@ -341,7 +341,6 @@ dimensions: Mere
 size: Velikost
 created: Ustvarjeno
 modified: Spremenjeno
-checksum: Kontrolna vsota
 owner: Lastnik
 edited_by: Uredil/a
 folder: Mapa
@@ -1205,7 +1204,6 @@ interfaces:
     description: Izberite več povezanih zapisov
     no_collection: Zbirke ni mogoče najti
   system-folder:
-    folder: Mapa
     description: Izberi mapo
     root_name: Korenska mapa knjižnjice
     system_default: Sistemske privzete vrednosti
