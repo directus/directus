@@ -35,7 +35,7 @@ FROM directus/directus:latest
 
 USER root
 RUN corepack enable \
- && corepack prepare pnpm@8.3.1 --activate
+ && corepack prepare pnpm@8.7.6 --activate
 
 USER node
 RUN pnpm install directus-extension-package-name
