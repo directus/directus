@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "10.0.10",
+	"version": "10.0.11",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -14,18 +14,9 @@
 	"sideEffects": false,
 	"type": "module",
 	"exports": {
-		".": {
-			"types": "./dist/shared/index.d.ts",
-			"import": "./dist/shared/index.js"
-		},
-		"./node": {
-			"types": "./dist/node/index.d.ts",
-			"import": "./dist/node/index.js"
-		},
-		"./browser": {
-			"types": "./dist/browser/index.d.ts",
-			"import": "./dist/browser/index.js"
-		},
+		".": "./dist/shared/index.js",
+		"./node": "./dist/node/index.js",
+		"./browser": "./dist/browser/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/shared/index.js",
@@ -33,8 +24,11 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project browser/tsconfig.prod.json && tsc --project node/tsconfig.prod.json && tsc --project shared/tsconfig.prod.json",
-		"dev": "concurrently \"tsc --watch --project browser/tsconfig.json\" \"tsc --watch --project node/tsconfig.json\" \"tsc --watch --project shared/tsconfig.json\"",
+		"build": "concurrently --group 'pnpm:build:*'",
+		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
+		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
+		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
+		"dev": "concurrently 'pnpm:build:* --watch'",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -48,7 +42,6 @@
 		"vue": "3.3.4"
 	},
 	"devDependencies": {
-		"@directus/errors": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.1",
@@ -56,7 +49,8 @@
 		"@types/node": "18.16.12",
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-c8": "0.31.1",
-		"concurrently": "8.0.1",
+		"concurrently": "8.2.1",
+		"tsup": "7.1.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	}

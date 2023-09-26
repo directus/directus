@@ -24,6 +24,6 @@ export const login =
 	() => {
 		const data: Record<string, string> = { email, password };
 		if ('otp' in options) data['otp'] = options.otp;
-		if ('mode' in options) data['mode'] = options.mode;
+		data['mode'] = options.mode ?? 'cookie';
 		return { path: '/auth/login', method: 'POST', body: JSON.stringify(data) };
 	};

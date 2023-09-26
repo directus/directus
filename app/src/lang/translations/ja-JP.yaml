@@ -374,6 +374,7 @@ move: 移動
 system: システム
 add_field_related: 関連するコレクションにフィールドを追加
 interface_label: インターフェイス
+display_label: ディスプレイ
 today: 今日
 yesterday: 昨日
 delete_comment: コメントの削除
@@ -1333,6 +1334,8 @@ interfaces:
     description: 画像を選択またはアップロード
     crop: 合わせて切り抜き
     crop_label: 必要に応じて画像を切り抜き
+  system-display:
+    display: ディスプレイ
   select-dropdown-m2o:
     display_template: テンプレートを表示
   input-rich-text-md:
