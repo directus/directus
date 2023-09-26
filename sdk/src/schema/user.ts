@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { DirectusRole, MergeCoreCollection } from '../index.js';
 import type { DirectusFile } from './file.js';
 
 /**
@@ -22,7 +22,7 @@ export type DirectusUser<Schema extends object> = MergeCoreCollection<
 		theme: string | null;
 		tfa_secret: string | null;
 		status: string;
-		role: string | null;
+		role: DirectusRole<Schema> | string | null;
 		token: string | null;
 		last_access: 'datetime' | null;
 		last_page: string | null;
