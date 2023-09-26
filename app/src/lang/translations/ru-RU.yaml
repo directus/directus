@@ -437,7 +437,6 @@ dimensions: Размеры
 size: Размер
 created: Создано
 modified: Изменено
-checksum: Контрольная сумма
 owner: Владелец
 edited_by: Изменено
 folder: Папка
@@ -1650,7 +1649,6 @@ interfaces:
     description: Выберите связанные элементы
     no_collection: Коллекция не найдена
   system-folder:
-    folder: Папка
     description: Выбрать папку
     field_hint: Папка по умолчанию для загруженных файлов без указания папки. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
