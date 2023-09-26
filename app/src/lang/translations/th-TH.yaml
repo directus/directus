@@ -376,7 +376,6 @@ dimensions: ขนาด
 size: ขนาด
 created: สร้างแล้ว
 modified: ถูกแก้ไข
-checksum: Checksum
 owner: เจ้าของ
 edited_by: แก้ไขโดย
 folder: โฟลเดอร์
@@ -1225,7 +1224,6 @@ interfaces:
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
     no_collection: ไม่พบตาราง
   system-folder:
-    folder: โฟลเดอร์
     description: เลือกแฟ้ม
   select-radio:
     radio-buttons: ปุ่มตัวเลือก
