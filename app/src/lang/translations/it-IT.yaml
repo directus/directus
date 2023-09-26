@@ -447,7 +447,6 @@ dimensions: Dimensioni
 size: Dimensione
 created: Creato
 modified: Modificato
-checksum: Checksum
 owner: Proprietario
 edited_by: Modificato da
 folder: Cartella
@@ -1675,7 +1674,6 @@ interfaces:
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta
   system-folder:
-    folder: Cartella
     description: Seleziona una cartella
     field_hint: Cartella predefinita per i file caricati senza una cartella specificata. Non influisce sui file esistenti.
     root_name: Radice libreria file
