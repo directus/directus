@@ -392,6 +392,7 @@ move: Taşı
 system: Sistem
 add_field_related: İlişkili Koleksiyona Alan Ekle
 interface_label: Arayüz
+display_label: Göster
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu Sil
@@ -1578,6 +1579,8 @@ interfaces:
   system-interface-options:
     interface-options: Arayüz Seçenekleri
     description: Arayüz seçeneklerini seçmek için açılır pencere
+  system-display:
+    display: Göster
   list-m2m:
     many-to-many: Çoktan Çoka
     description: Birden fazla ilişkili kesişim öğesi seçin
@@ -1642,6 +1645,7 @@ interfaces:
     sort_placeholder: Elle
     field_note_placeholder: Alan notu girin...
     incompatible_data: Mevcut veriler tekrarlayıcı ile uyumlu değildir ve tekrarlayıcıya veri eklenirken üzerine yazılacaktır
+    interface_group: Arayüz Seçenekleri
   slider:
     slider: Kaydırgaç
     description: Kaydırgaçı kullanarak bir sayı seçin
