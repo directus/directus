@@ -446,7 +446,6 @@ dimensions: Dimenzije
 size: Veličina
 created: Kreirano
 modified: Izmijenjeno
-checksum: Kontrolni broj
 owner: Vlasnik
 edited_by: Uredio/la
 folder: Mapa
@@ -1674,7 +1673,6 @@ interfaces:
     description: Odaberite više povezanih stavki
     no_collection: Zbirka nije pronađena
   system-folder:
-    folder: Mapa
     description: Odaberite mapu
     field_hint: Zadani direktorij za prenesene datoteke bez navedenog direktorija. Ne utječe na postojeće datoteke.
     root_name: Korijen biblioteke datoteka
