@@ -5,7 +5,14 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').primary().notNullable();
 		table.string('key').notNullable();
 		table.string('name');
-		table.string('collection', 64).notNullable().references('collection').inTable('directus_collections').onDelete('CASCADE');
+
+		table
+			.string('collection', 64)
+			.notNullable()
+			.references('collection')
+			.inTable('directus_collections')
+			.onDelete('CASCADE');
+
 		table.string('item').notNullable();
 		table.string('hash').notNullable();
 		table.timestamp('date_created').defaultTo(knex.fn.now());
