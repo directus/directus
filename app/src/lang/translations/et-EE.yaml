@@ -348,6 +348,7 @@ move: Liiguta
 system: Süsteem
 add_field_related: Lisa väli seotud andmekogusse
 interface_label: Kasutajaliides
+display_label: Vaade
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
@@ -1169,6 +1170,8 @@ interfaces:
   system-interface-options:
     interface-options: Kasutajaliidese valikud
     description: Kasutajaliidese valikute tegemise hüpikaken
+  system-display:
+    display: Vaade
   list-m2m:
     many-to-many: Mitu mitmele
     description: Vali mitu seotud kirjet
@@ -1214,6 +1217,7 @@ interfaces:
     add_label: '"Lisa uus" nimetus'
     sort: Sorteeri
     field_note_placeholder: Sisesta välja märkus...
+    interface_group: Kasutajaliidese valikud
   slider:
     slider: Liugur
     description: Vali number slaiderilt

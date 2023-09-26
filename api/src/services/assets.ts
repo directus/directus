@@ -37,7 +37,7 @@ export class AssetsService {
 
 	async getAsset(
 		id: string,
-		transformation: TransformationSet,
+		transformation?: TransformationSet,
 		range?: Range
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
@@ -109,7 +109,7 @@ export class AssetsService {
 		}
 
 		const type = file.type;
-		const transforms = TransformationUtils.resolvePreset(transformation, file);
+		const transforms = transformation ? TransformationUtils.resolvePreset(transformation, file) : [];
 
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);

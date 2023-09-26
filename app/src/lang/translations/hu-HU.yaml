@@ -373,6 +373,7 @@ move: Áthelyezés
 system: Rendszer
 add_field_related: Mező hozzáadása kapcsolódó gyűjteményhez
 interface_label: Kezelőfelület
+display_label: Megjelenés
 today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
@@ -1560,6 +1561,8 @@ interfaces:
   system-interface-options:
     interface-options: Interfész opciók
     description: Egy modál egy interfész opcióinak kiválasztásához
+  system-display:
+    display: Megjelenés
   list-m2m:
     many-to-many: Sok a sokhoz
     description: Több kapcsolódó csomóponti elem kiválasztása
@@ -1624,6 +1627,7 @@ interfaces:
     sort_placeholder: Manuális
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
     incompatible_data: Az aktuális adatok nem kompatibilisek az átjátszó interfésszel, és felülbírálásra kerülnek, amikor elemeket adunk az átjátszóhoz
+    interface_group: Interfész opciók
   slider:
     slider: Csúszka
     description: Válasszon számot csúszka segítségével
