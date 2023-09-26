@@ -418,7 +418,6 @@ dimensions: Dimensiuni
 size: Mărime
 created: Creat
 modified: Modificat
-checksum: Sumă de control
 owner: Proprietar
 edited_by: Editat de
 folder: Dosar
@@ -1490,7 +1489,6 @@ interfaces:
     description: Selectați mai multe elemente asociate
     no_collection: Colecția nu a putut fi găsită
   system-folder:
-    folder: Dosar
     description: Selectați un dosar
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
