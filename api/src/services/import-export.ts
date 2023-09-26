@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
@@ -24,14 +24,14 @@ import {
 	UnsupportedMediaTypeError,
 } from '../errors/index.js';
 import logger from '../logger.js';
-import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
-import { Url } from '../utils/url.js';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 

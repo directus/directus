@@ -135,7 +135,7 @@ technique for other packages to extend on the features of Directus Flows.
 
 ```js
 export default {
-	id: 'operation-lodash',
+	id: 'operation-lodash-camelcase',
 	name: 'Lodash Camel Case',
 	icon: 'electric_bolt',
 	description: 'Use Lodash Camel Case Function.',

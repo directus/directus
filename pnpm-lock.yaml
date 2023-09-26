@@ -1054,6 +1054,9 @@ importers:
       '@vue/test-utils':
         specifier: 2.3.2
         version: 2.3.2(vue@3.3.4)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1070,6 +1073,9 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1319,6 +1325,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1396,6 +1405,9 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1430,6 +1442,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1458,6 +1473,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1489,6 +1507,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1517,6 +1538,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1539,9 +1563,15 @@ importers:
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
+      '@types/node':
+        specifier: 18.16.12
+        version: 18.16.12
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1579,6 +1609,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1610,6 +1643,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1760,6 +1796,9 @@ importers:
       strip-ansi:
         specifier: 7.1.0
         version: 7.1.0
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4

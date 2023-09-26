@@ -36,11 +36,6 @@
 				<dd>{{ creationDate }}</dd>
 			</div>
 
-			<div v-if="file.checksum" class="checksum">
-				<dt>{{ t('checksum') }}</dt>
-				<dd>{{ file.checksum }}</dd>
-			</div>
-
 			<div v-if="userCreated">
 				<dt>{{ t('owner') }}</dt>
 				<dd>
@@ -64,7 +59,7 @@
 				</dd>
 			</div>
 
-			<div>
+			<div v-if="fileLink">
 				<dt>{{ t('file') }}</dt>
 				<dd>
 					<a :href="fileLink" target="_blank">{{ t('open_in_new_window') }}</a>
@@ -134,74 +129,60 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import { userName } from '@/utils/user-name';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { File } from '@directus/types';
 
-const props = withDefaults(
-	defineProps<{
-		file?: Record<string, any>;
-		isNew?: boolean;
-	}>(),
-	{
-		file: () => ({}),
-	}
-);
+const props = defineProps<{
+	file: File | null;
+	isNew: boolean;
+}>();
 
 const { t, n } = useI18n();
-
-const size = computed(() => {
-	if (props.isNew) return null;
-	if (!props.file) return null;
-	if (!props.file.filesize) return null;
-
-	return formatFilesize(props.file.filesize); // { locale: locale.value.split('-')[0] }
-});
-
-const { creationDate, modificationDate } = useDates();
 const { userCreated, userModified } = useUser();
 const { folder, folderLink } = useFolder();
 
+const size = computed(() => {
+	if (props.isNew) return;
+	if (!props.file?.filesize) return;
+
+	return formatFilesize(props.file.filesize);
+});
+
 const fileLink = computed(() => {
+	if (!props.file?.id) return;
+
 	return addTokenToURL(`${getRootPath()}assets/${props.file.id}`);
 });
 
-function useDates() {
-	const creationDate = ref<string | null>(null);
-	const modificationDate = ref<string | null>(null);
+const creationDate = computed(() => {
+	if (!props.file?.uploaded_on) return;
 
-	watch(
-		() => props.file,
-		async () => {
-			if (!props.file) return null;
+	return localizedFormat(new Date(props.file.uploaded_on), String(t('date-fns_date_short')));
+});
 
-			creationDate.value = localizedFormat(new Date(props.file.uploaded_on), String(t('date-fns_date_short')));
+const modificationDate = computed(() => {
+	if (!props.file?.modified_on) return;
 
-			if (props.file.modified_on) {
-				modificationDate.value = localizedFormat(new Date(props.file.modified_on), String(t('date-fns_date_short')));
-			}
-		},
-		{ immediate: true }
-	);
-
-	return { creationDate, modificationDate };
-}
+	return localizedFormat(new Date(props.file.modified_on), String(t('date-fns_date_short')));
+});
 
 function useUser() {
 	type User = {
-		id: number;
+		id: string;
 		name: string;
 		link: string;
 	};
 
 	const loading = ref(false);
-	const userCreated = ref<User | null>(null);
-	const userModified = ref<User | null>(null);
+	const userCreated = ref<User>();
+	const userModified = ref<User>();
 
 	watch(() => props.file, fetchUser, { immediate: true });
 
 	return { userCreated, userModified };
 
 	async function fetchUser() {
-		if (!props.file) return null;
-		if (!props.file.uploaded_by) return null;
+		if (!props.file) return;
+		if (!props.file.uploaded_by) return;
 
 		loading.value = true;
 
@@ -263,7 +244,7 @@ function useFolder() {
 	return { folder, folderLink };
 
 	async function fetchFolder() {
-		if (!props.file) return null;
+		if (!props.file) return;
 		if (!props.file.folder) return;
 		loading.value = true;
 
@@ -288,12 +269,6 @@ function useFolder() {
 </script>
 
 <style lang="scss" scoped>
-.checksum {
-	dd {
-		font-family: var(--family-monospace);
-	}
-}
-
 button {
 	color: var(--primary);
 }

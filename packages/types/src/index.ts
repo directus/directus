@@ -5,6 +5,7 @@ export * from './endpoints.js';
 export * from './events.js';
 export * from './extensions.js';
 export * from './fields.js';
+export * from './files.js';
 export * from './filter.js';
 export * from './flows.js';
 export * from './geometry.js';

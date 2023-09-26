@@ -10,20 +10,21 @@
 			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
 				<v-list-group
 					clickable
-					:active="!currentFolder && !currentSpecial"
-					value="root"
+					:active="(!currentFolder && !currentSpecial) || (currentFolder !== undefined && currentFolder === rootFolder)"
+					:value="rootFolder ?? 'root'"
 					scope="files-navigation"
 					exact
 					disable-groupable-parent
 					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
-					@click="onClick({})"
+					@click="onClick(rootFolder ? { folder: rootFolder } : {})"
 				>
 					<template #activator>
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
 						<v-list-item-content>
-							<v-text-overflow :text="t('file_library')" />
+							<v-text-overflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
+							<v-text-overflow v-else :text="t('file_library')" />
 						</v-list-item-content>
 					</template>
 
@@ -66,8 +67,8 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, watch } from 'vue';
-import { useFolders, openFoldersInitial } from '@/composables/use-folders';
+import { watch, computed, toRefs } from 'vue';
+import { useFolders } from '@/composables/use-folders';
 import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
 import { useRouter } from 'vue-router';
@@ -76,6 +77,7 @@ import { SpecialFolder, FolderTarget } from '@/types/folders';
 const router = useRouter();
 
 const props = defineProps<{
+	rootFolder?: string;
 	currentFolder?: string;
 	currentSpecial?: SpecialFolder;
 	customTargetHandler?: (target: FolderTarget) => void;
@@ -84,11 +86,17 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const { rootFolder, localOpenFolders } = toRefs(props);
 
-const { nestedFolders, folders, loading, openFolders: sharedOpenFolders } = useFolders();
-const openFolders = props.localOpenFolders ? ref(openFoldersInitial) : sharedOpenFolders;
+const { nestedFolders, folders, loading, openFolders } = useFolders(rootFolder, localOpenFolders);
 
 watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
+
+const rootFolderInfo = computed(() => {
+	if (!folders.value || !rootFolder?.value) return;
+
+	return folders.value.find((folder) => folder.id === rootFolder.value);
+});
 
 function onClick(target: FolderTarget) {
 	if (props.customTargetHandler) {
