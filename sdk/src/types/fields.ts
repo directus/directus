@@ -84,7 +84,7 @@ export type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field
 /**
  * Return all keys if Fields is undefined or contains '*'
  */
-export type FieldsWildcard<Item extends object, Fields> = Fields extends unknown
+export type FieldsWildcard<Item extends object, Fields> = unknown extends Fields
 	? keyof Item
 	: UnpackList<Fields> extends infer Field
 	? Field extends undefined

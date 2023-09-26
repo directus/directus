@@ -89,7 +89,10 @@ export type MapFlatFields<
 	Fields extends keyof Item,
 	FunctionMap extends Record<string, string>
 > = {
-	[F in Fields as F extends keyof FunctionMap ? FunctionMap[F] : F]: Extract<
+	[F in Fields as F extends keyof FunctionMap ? FunctionMap[F] : F]:
+		F extends keyof FunctionMap
+		? FunctionOutputType
+		: Extract<
 		Item[F],
 		keyof FieldOutputMap
 	> extends infer A
@@ -113,3 +116,6 @@ export type FieldOutputMap = {
 	csv: string[];
 	datetime: string;
 };
+
+// all functions return a numeric type
+type FunctionOutputType = number;
