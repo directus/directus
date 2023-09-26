@@ -437,7 +437,6 @@ dimensions: Dimensiones
 size: Tamaño
 created: Creado
 modified: Modificado
-checksum: Checksum
 owner: Propietario
 edited_by: Editado por
 folder: Directorio
@@ -1620,7 +1619,6 @@ interfaces:
     description: Seleccionar varios elementos relacionados
     no_collection: No se encontró la colección
   system-folder:
-    folder: Directorio
     description: Seleccione una carpeta
     root_name: Raíz de la Biblioteca de Archivos
     system_default: Valores por defecto del sistema
