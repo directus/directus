@@ -89,13 +89,9 @@ export type MapFlatFields<
 	Fields extends keyof Item,
 	FunctionMap extends Record<string, string>
 > = {
-	[F in Fields as F extends keyof FunctionMap ? FunctionMap[F] : F]:
-		F extends keyof FunctionMap
+	[F in Fields as F extends keyof FunctionMap ? FunctionMap[F] : F]: F extends keyof FunctionMap
 		? FunctionOutputType
-		: Extract<
-		Item[F],
-		keyof FieldOutputMap
-	> extends infer A
+		: Extract<Item[F], keyof FieldOutputMap> extends infer A
 		? A[] extends never[]
 			? Item[F]
 			: A extends keyof FieldOutputMap
