@@ -109,7 +109,7 @@ type JsonValue = JsonPrimitive | JsonPrimitive[] | { [key: string]: JsonValue };
  * Output map for specific literal types
  */
 export type FieldOutputMap = {
-	json: JsonValue | null;
+	json: JsonValue;
 	csv: string[];
 	datetime: string;
 };
