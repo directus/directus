@@ -444,7 +444,6 @@ dimensions: Afmetingen
 size: Grootte
 created: Aangemaakt
 modified: Aangepast
-checksum: Checksum
 owner: Eigenaar
 edited_by: Aangepast door
 folder: Map
@@ -1484,8 +1483,6 @@ interfaces:
     description: Een korte melding weergeven
   list-o2m:
     no_collection: Deze collectie is niet vindbaar
-  system-folder:
-    folder: Map
   select-radio:
     radio-buttons: Keuzerondjes
   list:
