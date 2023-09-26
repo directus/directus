@@ -432,7 +432,6 @@ dimensions: Dimensions
 size: Taille
 created: Créé
 modified: Modifié
-checksum: Code de vérification
 owner: Propriétaire
 edited_by: Modifié par
 folder: Dossier
@@ -1629,7 +1628,6 @@ interfaces:
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
   system-folder:
-    folder: Dossier
     description: Sélectionner un dossier
     field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
@@ -1647,6 +1645,7 @@ interfaces:
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
     interface_group: Options d'interface
+    display_group: Options d'affichage
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
