@@ -83,7 +83,7 @@ Displays, Modules, Layouts, and Panels.
 ## Extension Folder Structure
 
 The folder created by the utility is in fact an npm package. It comes with a few pre-installed packages depending on the
-extension type and the language you chose. The most important one is `@directus/extensions-sdk`. This package includes a
+extension type and the programming language you chose. The most important one is `@directus/extensions-sdk`. This package includes a
 CLI, which allows you to build your extension and to scaffold additional extensions, Typescript helpers, and other
 utilities.
 
