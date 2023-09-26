@@ -222,7 +222,8 @@ functionality within the App can be bucketed into one of the following modules:
 - [Insights](/user-guide/insights/dashboards) — Access to infinitely customizable data dashboards
 - [App Guide](/user-guide/overview/data-studio-app) — A tailored, in-app portal for the platform's concepts, guides, and
   reference
-- [Settings](/user-guide/settings/settings) — An admin-only section for configuring the project and system settings
+- [Project Settings](/user-guide/settings/project-settings) — An admin-only section for configuring the project and
+  system settings
 
 In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
 experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (e.g., a
