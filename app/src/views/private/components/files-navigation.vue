@@ -93,9 +93,9 @@ const { nestedFolders, folders, loading, openFolders } = useFolders(rootFolder, 
 watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
 
 const rootFolderInfo = computed(() => {
-	if (!folders.value || !props.rootFolder) return;
+	if (!folders.value || !rootFolder?.value) return;
 
-	return folders.value.find((folder) => folder.id === rootFolder!.value);
+	return folders.value.find((folder) => folder.id === rootFolder.value);
 });
 
 function onClick(target: FolderTarget) {
