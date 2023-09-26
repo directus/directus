@@ -102,12 +102,13 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 version: Version
+version_key: Version Key
 version_name: Version Name
 main_version: Main
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version?
 create_version: Create Version
-rename_version: Rename Version
+update_version: Update Version
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version

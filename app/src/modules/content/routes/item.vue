@@ -72,7 +72,7 @@
 				:current-version="currentVersion"
 				:versions="versions"
 				@add="addVersion"
-				@rename="renameVersion"
+				@update="updateVersion"
 				@delete="deleteVersion"
 				@switch="currentVersion = $event"
 			/>
@@ -338,7 +338,7 @@ const {
 	loading: versionsLoading,
 	query,
 	addVersion,
-	renameVersion,
+	updateVersion,
 	deleteVersion,
 	saveVersionLoading,
 	saveVersion,

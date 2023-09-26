@@ -18,7 +18,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		if (!currentVersion.value) return {};
 
 		return {
-			version: currentVersion.value.name,
+			version: currentVersion.value.key,
 		};
 	});
 
@@ -39,7 +39,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		query,
 		getVersions,
 		addVersion,
-		renameVersion,
+		updateVersion,
 		deleteVersion,
 		saveVersionLoading,
 		saveVersion,
@@ -94,16 +94,17 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		currentVersion.value = version;
 	}
 
-	async function renameVersion(name: string) {
+	async function updateVersion(updates: { key: string; name?: string }) {
 		if (!currentVersion.value || !versions.value) return;
 
 		const currentVersionId = currentVersion.value.id;
 
-		const versionToRename = versions.value.find((version) => version.id === currentVersionId);
+		const versionToUpdate = versions.value.find((version) => version.id === currentVersionId);
 
-		if (versionToRename) {
-			versionToRename.name = name;
-			currentVersion.value = versionToRename;
+		if (versionToUpdate) {
+			versionToUpdate.key = updates.key;
+			if (updates?.name) versionToUpdate.name = updates.name;
+			currentVersion.value = versionToUpdate;
 		}
 	}
 

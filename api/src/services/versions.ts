@@ -15,6 +15,7 @@ import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 
 const versionUpdateSchema = Joi.object({
+	key: Joi.string(),
 	name: Joi.string(),
 });
 
@@ -39,10 +40,10 @@ export class VersionsService extends ItemsService {
 	}
 
 	private async validateCreateData(data: Partial<Item>): Promise<void> {
-		if (!data['name']) throw new InvalidPayloadError({ reason: `"name" is required` });
+		if (!data['key']) throw new InvalidPayloadError({ reason: `"key" is required` });
 
-		// Reserves the "main" version name for the version query parameter
-		if (data['name'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version name` });
+		// Reserves the "main" version key for the version query parameter
+		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
 
 		if (!data['collection']) {
 			throw new InvalidPayloadError({ reason: `"collection" is required` });
@@ -60,13 +61,13 @@ export class VersionsService extends ItemsService {
 		}
 
 		const existingVersions = await super.readByQuery({
-			fields: ['name', 'collection', 'item'],
-			filter: { name: { _eq: data['name'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
+			fields: ['key', 'collection', 'item'],
+			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
 		});
 
 		if (existingVersions.length > 0) {
 			throw new UnprocessableContentError({
-				reason: `Version "${data['name']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
+				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
 		}
 
@@ -75,13 +76,13 @@ export class VersionsService extends ItemsService {
 	}
 
 	private async validateUpdateData(data: Partial<Item>): Promise<void> {
-		// Only allow updates on "name" field
+		// Only allow updates on "key" and "name" fields
 		const { error } = versionUpdateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		// Reserves the "main" version name for the version query parameter
-		if ('name' in data && data['name'] === 'main') {
-			throw new InvalidPayloadError({ reason: `"main" is a reserved version name` });
+		// Reserves the "main" version key for the version query parameter
+		if ('key' in data && data['key'] === 'main') {
+			throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
 		}
 	}
 
@@ -128,7 +129,6 @@ export class VersionsService extends ItemsService {
 
 		const mainItem = await this.getMainItem(data['collection'], data['item']);
 
-		data['key'] = data['name'];
 		data['hash'] = objectHash(mainItem);
 
 		return super.createOne(data, opts);
