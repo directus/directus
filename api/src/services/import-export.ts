@@ -239,7 +239,7 @@ export class ExportService {
 					})
 					.then((result) => Number(result?.[0]?.['count'] ?? 0));
 
-				const count = query.limit ? Math.min(totalCount, query.limit) : totalCount;
+				const count = query.limit && query.limit > -1 ? Math.min(totalCount, query.limit) : totalCount;
 
 				const requestedLimit = query.limit ?? -1;
 				const batchesRequired = Math.ceil(count / env['EXPORT_BATCH_SIZE']);
