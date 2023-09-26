@@ -447,7 +447,6 @@ dimensions: Dimensionet
 size: Madhësia
 created: U krijua
 modified: Modifikuar
-checksum: Checksum
 owner: Pronari
 edited_by: Redaktuar nga
 folder: Dosje
@@ -1675,7 +1674,6 @@ interfaces:
     description: Zgjidh artikuj të shumtë të lidhur
     no_collection: Koleksioni nuk mund të gjendet
   system-folder:
-    folder: Dosje
     description: Zgjidh një dosje
     field_hint: Dosja e paracaktuar për skedarët e ngarkuar pa një dosje të specifikuar. Nuk ndikon në skedarët ekzistues.
     root_name: Rrënja e Bibliotekës së Skedarëve
