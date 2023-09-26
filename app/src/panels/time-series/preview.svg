@@ -1,0 +1,42 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_879_20901)">
+        <rect x="18" y="14" width="120" height="68" rx="6" fill="var(--background-page)" class="glow" />
+        <path
+            d="M114 39H98C96.8954 39 96 39.8954 96 41V43C96 44.1046 96.8954 45 98 45H114C115.105 45 116 44.1046 116 43V41C116 39.8954 115.105 39 114 39Z"
+            fill="#D1C7FF" />
+        <g filter="url(#filter0_d_879_20901)">
+            <rect x="18" y="14" width="120" height="68" rx="6" fill="#FAFCFD" />
+            <rect x="19" y="15" width="118" height="66" rx="5" stroke="var(--primary)" stroke-width="2" />
+        </g>
+        <rect x="24" y="35" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="24" y="25" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="24" y="45" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="24" y="55" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="24" y="65" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="33" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="44" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="55" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="66" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="77" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="88" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="99" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="110" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <rect x="121" y="72" width="6" height="4" rx="2" fill="var(--primary-alt)" />
+        <path opacity="0.45"
+            d="M39.203 54.6667L33 68H127L122.228 65.4603L116.503 48.9524L111.254 40.0635L109.345 33.0794L100.756 28L91.6904 31.1746L82.1472 42.6032L78.3299 50.2222L71.1726 46.4127L69.7411 42.6032H63.0609L60.198 34.9841L53.0406 40.0635L47.3147 50.2222L44.4518 59.746L39.203 54.6667Z"
+            fill="url(#paint0_linear_879_20901)" />
+        <path
+            d="M33 68L39.203 54.6667L44.4518 59.746L47.3147 50.2222L53.0406 40.0635L60.198 34.9841L63.0609 42.6032H69.7411L71.1726 46.4127L78.3299 50.2222L82.1472 42.6032L91.6904 31.1746L100.756 28L109.345 33.0794L111.254 40.0635L116.503 48.9524L122.228 65.4603L127 68"
+            stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" />
+    </g>
+    <defs>
+        <linearGradient id="paint0_linear_879_20901" x1="80" y1="28" x2="80" y2="68"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="var(--primary)" stop-opacity="0.3" />
+            <stop offset="1" stop-color="#FAFCFD" stop-opacity="0" />
+        </linearGradient>
+        <clipPath id="clip0_879_20901">
+            <rect width="156" height="96" fill="white" />
+        </clipPath>
+    </defs>
+</svg>

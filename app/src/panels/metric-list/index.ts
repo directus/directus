@@ -3,6 +3,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { definePanel } from '@directus/utils';
 import { computed } from 'vue';
 import PanelMetricList from './panel-metric-list.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'metric-list',
@@ -416,4 +417,5 @@ export default definePanel({
 	},
 	minWidth: 12,
 	minHeight: 6,
+	preview: PreviewSVG,
 });

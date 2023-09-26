@@ -12,42 +12,28 @@
 				<v-icon name="check" />
 			</v-button>
 		</template>
+
 		<div class="content">
-			<div class="panel-grid">
-				<button
-					v-for="pan of panelTypes"
-					:key="pan.id"
-					class="interface"
-					:class="{ active: panel.type === pan.id, gray: panel.type && panel.type !== pan.id }"
-					@click="togglePanel(pan.id)"
-				>
-					<div class="preview">
-						<template v-if="pan.preview">
-							<!-- eslint-disable-next-line vue/no-v-html -->
-							<span v-if="isSVG(pan.preview)" class="svg" v-html="pan.preview" />
-							<img v-else :src="pan.preview" alt="" />
-						</template>
+			<p class="type-label panel-type-label">{{ t('type') }}</p>
 
-						<span v-else class="fallback">
-							<v-icon large :name="pan.icon" />
-						</span>
-					</div>
-					<v-text-overflow :text="pan.name" class="name" />
-				</button>
+			<v-fancy-select
+				:model-value="panel.type"
+				class="select"
+				:items="selectItems"
+				@update:model-value="edits.type = $event"
+			/>
 
-				<transition-expand>
-					<div v-if="panel.type" class="field-configuration" :style="configRow ? { 'grid-row': configRow } : {}">
-						<div class="setup">
-							<extension-options
-								:model-value="panel.options"
-								:options="customOptionsFields"
-								type="panel"
-								:extension="panel.type"
-								raw-editor-enabled
-								style="{'grid-template-columns': 'unset'}"
-								@update:model-value="edits.options = $event"
-							/>
-							<v-divider :inline-title="false" large>
+			<extension-options
+				v-if="panel.type"
+				:model-value="panel.options"
+				:options="customOptionsFields"
+				type="panel"
+				:extension="panel.type"
+				raw-editor-enabled
+				@update:model-value="edits.options = $event"
+			/>
+
+			<v-divider :inline-title="false" large>
 				<template #icon><v-icon name="info" /></template>
 				<template #default>{{ t('panel_header') }}</template>
 			</v-divider>
@@ -103,10 +89,6 @@
 					/>
 				</div>
 			</div>
-						</div>
-					</div>
-				</transition-expand>
-			</div>
 		</div>
 	</v-drawer>
 </template>
@@ -125,7 +107,6 @@ import { computed, reactive, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { ref } from 'vue';
 
 interface Props {
 	dashboardKey: string;
@@ -165,6 +146,19 @@ const panel = computed<Partial<Panel>>(() => {
 	return assign({}, existing, omitBy(edits, isUndefined));
 });
 
+const selectItems = computed<FancySelectItem[]>(() => {
+	return panelTypes.value.map((panelType) => {
+		const item: FancySelectItem = {
+			text: panelType.name,
+			icon: panelType.icon,
+			description: panelType.description,
+			value: panelType.id,
+		};
+
+		return item;
+	});
+});
+
 const currentTypeInfo = useExtension(
 	'panel',
 	computed(() => panel.value.type ?? null)
@@ -177,47 +171,6 @@ const customOptionsFields = computed(() => {
 
 	return null;
 });
-
-function isSVG(path: string) {
-	return path.startsWith('<svg');
-}
-
-const configRow = computed(() => {
-	if (!panel.value.type) return null;
-
-	let indexInGroup: number | null = null;
-
-	const index = panelTypes.value.findIndex((pan) => pan.id === panel.value.type);
-	if (index !== -1) indexInGroup = index;
-
-	if (indexInGroup === null) return null;
-
-	const windowWidth = window.innerWidth;
-
-	let columns = 1;
-
-	if (windowWidth > 400) {
-		columns = 2;
-	}
-
-	if (windowWidth > 600) {
-		columns = 3;
-	}
-
-	if (windowWidth > 840) {
-		columns = 4;
-	}
-
-	return Math.ceil((indexInGroup + 1) / columns) + 1;
-});
-
-function togglePanel(id: string) {
-	if (edits.type === id) {
-		edits.type = undefined;
-	} else {
-		edits.type = id;
-	}
-}
 
 const stageChanges = () => {
 	if (props.panelKey === '+') {
@@ -240,146 +193,22 @@ const stageChanges = () => {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .content {
 	padding: var(--content-padding);
 	padding-top: 0;
 	padding-bottom: var(--content-padding-bottom);
 }
 
+.select {
+	margin-bottom: 32px;
+}
+
+.panel-type-label {
+	margin-bottom: 16px;
+}
+
 .v-divider {
 	margin: 68px 0 48px;
-}
-
-.group h2 {
-	margin-bottom: 40px;
-	padding-bottom: 2px;
-	font-weight: 700;
-	border-bottom: var(--border-width) solid var(--border-subdued);
-}
-
-.group + .group {
-	margin-top: 80px;
-}
-
-.panel-grid {
-	--columns: 1;
-
-	display: grid;
-	grid-template-columns: repeat(var(--columns), 1fr);
-	gap: 32px;
-
-	@media (min-width: 400px) {
-		--columns: 2;
-	}
-
-	@media (min-width: 600px) {
-		--columns: 3;
-	}
-
-	@media (min-width: 840px) {
-		--columns: 4;
-	}
-}
-
-.interface {
-	min-height: 100px;
-	overflow: hidden;
-	text-align: left;
-}
-
-.preview {
-	--v-icon-color: var(--background-page);
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 160px;
-	height: 100px;
-	margin-bottom: 8px;
-	border: var(--border-width) solid var(--border-subdued);
-	border-radius: var(--border-radius);
-	transition: var(--fast) var(--transition);
-	transition-property: background-color, border-color;
-}
-
-.preview img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
-
-.preview .svg {
-	display: contents;
-}
-
-.preview :deep(svg) {
-	width: 100%;
-	height: 100%;
-}
-
-.preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
-}
-
-.preview .fallback {
-	--v-icon-color: var(--primary-75);
-
-	display: block;
-	padding: 8px 16px;
-	background-color: var(--background-page);
-	border: 2px solid var(--primary);
-	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
-}
-
-.interface:hover .preview {
-	border-color: var(--border-normal);
-}
-
-.interface.active .preview {
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
-}
-
-.interface.gray .preview {
-	--primary: var(--foreground-subdued);
-	--primary-50: var(--foreground-subdued);
-
-	background-color: var(--background-subdued);
-}
-
-.interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
-
-	box-shadow: 0 0 8px var(--foreground-subdued);
-}
-
-.field-configuration {
-	--v-button-background-color-disabled: var(--background-normal);
-	--columns: 1;
-
-	@media (min-width: 400px) {
-		--columns: 2;
-	}
-
-	@media (min-width: 600px) {
-		--columns: 3;
-	}
-
-	@media (min-width: 840px) {
-		--columns: 4;
-	}
-
-	grid-column: 1 / span var(--columns);
-	background-color: var(--background-subdued);
-	border-top: var(--border-width) solid var(--border-normal);
-	border-bottom: var(--border-width) solid var(--border-normal);
-}
-
-.setup {
-	--form-vertical-gap: 20px;
-
-	margin: 34px;
 }
 </style>
