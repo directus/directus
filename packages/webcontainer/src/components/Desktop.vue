@@ -1,89 +1,60 @@
 <template>
 	<div id="desktop">
 		<div class="main-view">
-			<Window v-show="openWindows.includes('Terminal')" v-model:window="windows[0]" @focus="focus">
-				<Terminal :terminal="terminal" />
-			</Window>
-			<Window v-show="openWindows.includes('Browser')" v-model:window="windows[1]" @focus="focus">
-				<Browser :url="browserURL" />
-			</Window>
-			<Window v-show="openWindows.includes('Explorer')" v-model:window="windows[2]" @focus="focus">
-				<Explorer :webcontainer="webcontainerInstance" />
-			</Window>
-			<Window v-show="openWindows.includes('Website')" v-model:window="windows[3]" @focus="focus">
-				<Website :url="browserURL" />
-			</Window>
+			<template v-for="window in windows" :key="window.id">
+				<Transition name="window">
+					<Window v-show="window.open" :window="window" @minimize="toggle" @focus="focus" @close="remove">
+						<component :is="window.component" :webcontainer="webcontainerInstance" v-bind="window.options" />
+					</Window>
+				</Transition>
+			</template>
 		</div>
-		<Taskbar v-model:windows="windows" @focus="focus" />
+		<Taskbar :windows="windows" @select="selectTaskbar" @add="add" />
 	</div>
 </template>
 
 <script setup lang="ts">
-import Taskbar, { Task } from './Taskbar.vue';
-import { computed, ref } from 'vue';
+import Taskbar from './Taskbar.vue';
+import { ref, watch } from 'vue';
 import Window from './Window.vue';
-import Terminal from './Terminal.vue';
-import Browser from './Browser.vue';
 import { useOS } from '../composables/useOS';
-import Explorer from './Explorer.vue';
-import Website from './Website.vue';
+import { useWindows } from '../composables/useWindows';
 
 export interface Window {
+	id: number;
 	name: string;
 	icon: string;
-	active: boolean;
+	open: boolean;
 	focus: number;
+	component: string;
 }
 
 const browserURL = ref<string>('loading.html');
 
-const windows = ref<Window[]>([
-	{
-		name: 'Terminal',
-		icon: 'terminal',
-		active: true,
-		focus: 1,
-	},
-	{
-		name: 'Browser',
-		icon: 'browser',
-		active: true,
-		focus: 2,
-	},
-	{
-		name: 'Explorer',
-		icon: 'explorer',
-		active: false,
-		focus: 3,
-	},
-	{
-		name: 'Website',
-		icon: 'website',
-		active: false,
-		focus: 4,
-	},
-]);
+const { webcontainerInstance } = useOS(browserURL);
+const { add, remove, focus, toggle, windows } = useWindows();
 
-const openWindows = computed(() =>
-	windows.value.reduce((acc, window) => {
-		if (window.active) acc.push(window.name);
-		return acc;
-	}, [] as string[])
-);
+watch(webcontainerInstance, (webcontainer) => {
+	if (!webcontainer) return;
 
-const { terminal, webcontainerInstance } = useOS(browserURL);
+	webcontainer.on('server-ready', (port, newURL) => {
+		console.log('server-ready', port, newURL);
 
-function focus(window: string) {
-	windows.value = windows.value.map((w) => {
-		w.focus += 1;
-
-		if (w.name === window) {
-			w.active = true;
-			w.focus = 1;
-		}
-
-		return w;
+		add('Browser', {
+			initialUrl: newURL,
+		});
 	});
+});
+
+function selectTaskbar(window: string) {
+	const existing = windows.value.find((w) => w.name === window);
+
+	if (existing) {
+		toggle(existing.id);
+		return;
+	}
+
+	add(window);
 }
 </script>
 
@@ -105,6 +76,22 @@ function focus(window: string) {
 		background-repeat: no-repeat;
 
 		position: relative;
+
+		.window {
+			transition: opacity var(--fast) var(--transition), top var(--fast) var(--transition);
+
+			&-enter-active,
+			&-leave-active {
+				opacity: 1;
+				top: 0px;
+			}
+
+			&-enter-from,
+			&-leave-to {
+				opacity: 0;
+				top: 20px;
+			}
+		}
 	}
 }
 </style>

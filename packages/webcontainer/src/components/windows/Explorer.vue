@@ -3,14 +3,11 @@
 		<div class="path">
 			{{ filePath }}
 		</div>
-		<div class="files">
-			<div v-if="filePath !== '/'" class="file" @click="up()">..</div>
-			<div v-for="file in files" :key="file.name" class="file" @click="onClick(file)">
-				{{ file.name }}
-			</div>
-		</div>
+		<v-files v-model:root="filePath" :webcontainer="webcontainer" flat @file="onFile" />
 		<div v-if="fileContents" class="file-preview">
-			<div>
+			<div v-if="fileExtension === 'svg'" v-html="fileContents"></div>
+			<img v-else-if="images.includes(fileExtension ?? '')" :src="fileContents" />
+			<div v-else>
 				<pre>{{ fileContents }}</pre>
 			</div>
 		</div>
@@ -18,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import { DirEnt, WebContainer } from '@webcontainer/api';
-import { ref, watch } from 'vue';
+import { WebContainer } from '@webcontainer/api';
+import { ref } from 'vue';
 
 const props = defineProps<{
 	webcontainer: WebContainer | null;
@@ -27,37 +24,25 @@ const props = defineProps<{
 
 const filePath = ref<string>('/');
 
-const files = ref<DirEnt<string>[]>([]);
+const fileExtension = ref<string | null>(null);
 const fileContents = ref<string | null>(null);
+const images = ['png', 'jpg', 'jpeg', 'gif'];
 
-watch(
-	[() => props.webcontainer, () => filePath.value],
-	async () => {
-		if (!props.webcontainer) return;
-
-		files.value = await props.webcontainer.fs.readdir(filePath.value, {
-			withFileTypes: true,
-		});
-	},
-	{ immediate: true }
-);
-
-function up() {
-	const path = filePath.value.split('/');
-	if (filePath.value.endsWith('/')) path.pop();
-	path.pop();
-
-	filePath.value = path.join('/') + '/';
-}
-
-async function onClick(file: DirEnt<string>) {
+async function onFile(file: string) {
 	if (!props.webcontainer) return;
 
-	if (file.isDirectory()) {
-		filePath.value = `${filePath.value}${file.name}/`;
-	} else {
-		fileContents.value = await props.webcontainer.fs.readFile(`${filePath.value}${file.name}`, 'utf-8');
+	fileExtension.value = file.split('.').pop() ?? null;
+
+	if (images.includes(fileExtension.value ?? '')) {
+		// convert to base64
+		const raw = await props.webcontainer.fs.readFile(file, 'binary');
+		// convert utf-8 to base64
+		fileContents.value = `data:image/${fileExtension.value};base64,${btoa(raw)}`;
+
+		return;
 	}
+
+	fileContents.value = await props.webcontainer.fs.readFile(file, 'utf-8');
 }
 </script>
 

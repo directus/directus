@@ -1,0 +1,11 @@
+/* BASICS */
+
+.v-codemirror {
+	font-family: var(--family-monospace);
+
+	.cm-gutters {
+		background-color: var(--background-page);
+		border-right: none;
+		color: var(--foreground-subdued);
+	}
+}

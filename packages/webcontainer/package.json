@@ -4,15 +4,17 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"dev": "vite --host",
 		"build": "vue-tsc && vite build",
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@codemirror/lang-javascript": "^6.2.1",
 		"@webcontainer/api": "^1.1.5",
 		"lodash-es": "4.17.21",
 		"sass": "^1.56.1",
 		"vue": "^3.3.4",
+		"vue-codemirror": "^6.1.1",
 		"xterm": "^5.3.0",
 		"xterm-addon-fit": "^0.8.0"
 	},

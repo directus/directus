@@ -1,50 +1,41 @@
 import { files } from 'directus-files';
-import { WebContainer } from '@webcontainer/api';
+import { WebContainer, FileSystemTree } from '@webcontainer/api';
 import { Terminal } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
 import 'xterm/css/xterm.css';
 import { Ref, ref } from 'vue';
 
 export function useOS(browserURL: Ref<string>) {
 	const webcontainerInstance = ref<WebContainer | null>(null);
-	const terminal = ref<Terminal | null>(null)
+
 
 	window.addEventListener('load', async () => {
-		files['data.db']['file']['contents'] = bufferToUint8Array(files['data.db']['file']['contents'].data);
-
 		// Call only once
 		webcontainerInstance.value = await WebContainer.boot();
-		await webcontainerInstance.value.mount(files);
-
-		const fitAddon = new FitAddon();
-
-		terminal.value = new Terminal({
-			convertEol: true,
-		});
-
-		terminal.value.loadAddon(fitAddon);
-
-		terminal.value.onRender(() => {
-			fitAddon.fit();
-		})
-
-		window.addEventListener('resize', () => {
-			fitAddon.fit();
-		});
-
-
-		const exitCode = await installDependencies(terminal.value);
-
-		if (exitCode !== 0) {
-			throw new Error('Installation failed');
-		}
-
-		startDevServer(terminal.value);
+		await webcontainerInstance.value.mount(parseFileTree(files));
 	});
 
 	return {
 		webcontainerInstance,
-		terminal,
+	}
+
+	function parseFileTree(files: FileSystemTree): FileSystemTree {
+		return Object.fromEntries(Object.entries(files).map(([file, data]) => {
+			if ('directory' in data) {
+				return [file, {
+					directory: parseFileTree(data.directory),
+				}];
+			}
+
+			if (typeof data.file.contents === 'object') {
+				return [file, {
+					file: {
+						contents: bufferToUint8Array((data.file.contents as any).data),
+					},
+				}];
+			}
+
+			return [file, data]
+		}))
 	}
 
 	function bufferToUint8Array(buffer: any) {
@@ -57,14 +48,14 @@ export function useOS(browserURL: Ref<string>) {
 		return uint8Array;
 	}
 
-	async function installDependencies(terminal: Terminal) {
+	async function installDependencies() {
 		// Install dependencies
 		const installProcess = await webcontainerInstance.value!.spawn('pnpm', ['install']);
 
 		installProcess.output.pipeTo(
 			new WritableStream({
 				write(data) {
-					terminal.write(data);
+					console.log(data)
 				},
 			})
 		);

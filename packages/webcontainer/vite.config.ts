@@ -19,7 +19,7 @@ export default defineConfig({
 	},
 	plugins: [
 		vue(),
-		directusFilesPlugin()
+		directusFilesPlugin(),
 	],
 
 });
@@ -81,6 +81,8 @@ function loadFiles() {
 		path.join('.github')
 	]
 
+	const binaryFiles = ['.png', '.jpg', '.jpeg', '.gif', '.ico', '.db']
+
 	loadFolder(path.join(workspaceRoot, 'api'), skip, workspaceRoot, undefined, mapArgon2)
 	loadFolder(path.join('directus'), [], 'directus')
 
@@ -117,7 +119,7 @@ function loadFiles() {
 
 			const filePath = urlToPath(path.join(prefix, path.join(folder, file).replace(replace, "")))
 
-			let contents = fs.readFileSync(path.join(folder, file), file.endsWith('.db') ? undefined : 'utf-8')
+			let contents = fs.readFileSync(path.join(folder, file), binaryFiles.some(extension => file.endsWith(extension)) ? undefined : 'utf-8')
 
 			contents = mapfile(contents, filePath)
 

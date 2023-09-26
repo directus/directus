@@ -10,47 +10,84 @@
 			</svg>
 		</div>
 		<div
-			v-for="window in windows"
-			:key="window.name"
+			v-for="task in tasks"
+			:key="task.name"
 			class="task"
-			:class="{ active: window.active }"
-			@click="toggleWindow(window)"
+			:class="{ open: 'id' in task }"
+			@click="onClick($event, task.name)"
 		>
-			<v-icon :name="window.icon" />
-			{{ window.name }}
+			<v-icon :name="task.icon" />
+			{{ task.name }}
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Window } from './Desktop.vue';
 
 const props = defineProps<{
-	windows: Window[];
+	windows: readonly Window[];
 }>();
 
 const emit = defineEmits<{
-	(event: 'update:windows', windows: Window[]): void;
-	(event: 'focus', window: string): void;
+	(event: 'select', window: string): void;
+	(event: 'add', window: string): void;
 }>();
 
-function toggleWindow(window: Window) {
-	const isFocused = window.focus === 1;
+const baseWindows: Pick<Window, 'name' | 'icon' | 'open'>[] = [
+	{
+		name: 'Terminal',
+		icon: 'terminal',
+		open: false,
+	},
+	{
+		name: 'Editor',
+		icon: 'folder',
+		open: false,
+	},
+	{
+		name: 'Explorer',
+		icon: 'folder',
+		open: false,
+	},
+	{
+		name: 'Browser',
+		icon: 'folder',
+		open: false,
+	},
+	{
+		name: 'Directus-O-S',
+		icon: 'folder',
+		open: false,
+	},
+	{
+		name: 'Website',
+		icon: 'website',
+		open: false,
+	},
+];
 
-	const windows = props.windows.map((w) => {
-		if (w.name === window.name) {
-			if (!isFocused) {
-				emit('focus', window.name);
-				w.active = true;
-			} else {
-				w.active = !w.active;
-			}
+const tasks = computed(() => {
+	return baseWindows.map((window) => {
+		const existing = props.windows.find((w) => w.name === window.name);
+
+		if (existing) {
+			return existing;
 		}
 
-		return w;
+		return window;
 	});
+});
 
-	emit('update:windows', windows);
+function onClick(event: MouseEvent, task: string) {
+	// if shift is held, open a new window
+	if (event?.shiftKey) {
+		emit('add', task);
+		return;
+	}
+
+	emit('select', task);
 }
 </script>
 
@@ -100,7 +137,7 @@ function toggleWindow(window: Window) {
 			background: var(--background-subdued);
 		}
 
-		&.active {
+		&.open {
 			background: var(--background-subdued);
 		}
 	}

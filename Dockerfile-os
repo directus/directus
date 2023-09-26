@@ -1,0 +1,18 @@
+# syntax=docker/dockerfile:1.4
+
+####################################################################################################
+## Build Packages
+
+FROM node:18-alpine
+WORKDIR /directus
+
+COPY . .
+RUN npm install -g pnpm
+RUN pnpm install
+
+EXPOSE 8055
+
+CMD : \
+	&& cd /directus/packages/webcontainer \
+	&& pnpm run dev \
+	;
