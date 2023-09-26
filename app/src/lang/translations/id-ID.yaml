@@ -432,7 +432,6 @@ dimensions: Dimensi
 size: Ukuran
 created: Dibuat
 modified: Telah dimodifikasi
-checksum: Checksum
 owner: Pemilik
 edited_by: Diedit oleh
 folder: Direktori
@@ -1449,7 +1448,6 @@ interfaces:
     map: Peta
     zoom: Perbesar
   system-folder:
-    folder: Direktori
     description: Pilih folder
   list:
     sort: Sortir
