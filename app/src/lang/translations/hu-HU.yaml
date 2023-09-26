@@ -424,7 +424,6 @@ dimensions: Méretek
 size: Méret
 created: Létrehozva
 modified: Módosítva
-checksum: Ellenőrző
 owner: Tulajdonos
 edited_by: Módosította
 folder: Könyvtár
@@ -1611,7 +1610,6 @@ interfaces:
     description: Több kapcsolódó elem választása
     no_collection: A gyűjtemény nem található
   system-folder:
-    folder: Könyvtár
     description: Válasszon egy mappát
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
