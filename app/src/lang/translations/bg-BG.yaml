@@ -423,7 +423,6 @@ dimensions: Размери
 size: Големина
 created: Създаден
 modified: Променен
-checksum: Контролна сума
 owner: Собственик
 edited_by: Променен от
 folder: Папка
@@ -1606,7 +1605,6 @@ interfaces:
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена
   system-folder:
-    folder: Папка
     description: Избор на папка
     root_name: Главна папка
     system_default: По подразбиране
