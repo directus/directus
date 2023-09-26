@@ -174,6 +174,9 @@ gtag('config', 'UA-24637628-7');
 			},
 		},
 	},
+	sitemap: {
+		hostname: 'https://docs.directus.io',
+	},
 	transformPageData(pageData) {
 		function setOGImage(asset) {
 			return [
@@ -494,10 +497,6 @@ function sidebar() {
 				{
 					text: 'All Guides',
 					link: '/guides/index.html',
-				},
-				{
-					text: 'SDK Quickstart',
-					link: '/guides/sdk/getting-started',
 				},
 				...sidebarGuides(),
 			],

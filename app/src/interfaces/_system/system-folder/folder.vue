@@ -35,7 +35,7 @@
 				clickable
 				:folder="folder"
 				:current-folder="value"
-				:disabled="disabledFolders.includes(folder.id!)"
+				:disabled="disabledFolders?.includes(folder.id!)"
 				:disabled-folders="disabledFolders"
 				@click="emitValue"
 			/>
@@ -49,20 +49,15 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FolderListItem from './folder-list-item.vue';
 
-const props = withDefaults(
-	defineProps<{
-		value: string | null;
-		disabledFolders: string[];
-		disabled?: boolean;
-		placeholder?: string;
-	}>(),
-	{
-		disabledFolders: () => [],
-	}
-);
+const props = defineProps<{
+	value: string | null;
+	disabledFolders?: string[];
+	disabled?: boolean;
+	placeholder?: string;
+}>();
 
 const emit = defineEmits<{
-	(e: 'input', value: string | null): void;
+	input: [value: string | null];
 }>();
 
 const { t } = useI18n();

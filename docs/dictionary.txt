@@ -292,6 +292,7 @@ OracleDB
 OracleDB's
 OSS
 OTP
+overwriteable
 pageClass
 param
 paywalled
@@ -332,6 +333,7 @@ reactively
 readonly
 readTime
 (R|r)ealtime
+(R|r)ealtime's
 (R|r)eal-(T|t)ime
 rebase
 reconfigurations

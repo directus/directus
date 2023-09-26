@@ -385,6 +385,7 @@ move: انتقال
 system: سیستم
 add_field_related: افزودن فیلد به مجموعه مرتبط
 interface_label: رابط کاربری
+display_label: نحوه نمایش
 today: امروز
 yesterday: دیروز
 delete_comment: حذف دیدگاه
@@ -1591,6 +1592,8 @@ interfaces:
   system-interface-options:
     interface-options: تنظیمات رابط
     description: A modal for selecting options of an interface
+  system-display:
+    display: نحوه نمایش
   list-m2m:
     many-to-many: چندتا به چندتا
     description: انتخاب چندین آیتم تقاطعی مرتبط
@@ -1660,6 +1663,7 @@ interfaces:
     sort_placeholder: دستی
     field_note_placeholder: Enter field note...
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
+    interface_group: تنظیمات رابط
   slider:
     slider: اسلایدر
     description: یک عدد را با استفاده از نوار متحرک انتخاب کنید
