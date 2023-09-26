@@ -806,8 +806,6 @@ interfaces:
     edit: Rediger
   map:
     zoom: Zoom
-  system-folder:
-    folder: Mappe
   list:
     sort: Sorter
   tags:
