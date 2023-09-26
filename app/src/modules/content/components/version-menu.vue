@@ -38,7 +38,7 @@
 					<v-divider />
 
 					<v-list-item v-if="updateVersionsAllowed" clickable @click="openUpdateDialog">
-						{{ t('rename_version') }}
+						{{ t('update_version') }}
 					</v-list-item>
 
 					<v-list-item clickable @click="isVersionPromoteDrawerOpen = true">
@@ -89,7 +89,6 @@
 								autofocus
 								db-safe
 								trim
-								@input="newVersionKey = $event"
 								@keyup.enter="createVersion"
 							/>
 						</div>
@@ -99,7 +98,6 @@
 								class="full"
 								:placeholder="t('version_name')"
 								trim
-								@input="newVersionName = $event"
 								@keyup.enter="createVersion"
 							/>
 						</div>
@@ -117,25 +115,36 @@
 
 		<v-dialog :model-value="updateDialogActive" persistent @esc="closeUpdateDialog">
 			<v-card>
-				<v-card-title>{{ t('rename_version') }}</v-card-title>
+				<v-card-title>{{ t('update_version') }}</v-card-title>
 
 				<v-card-text>
-					<div class="fields">
-						<interface-input
-							:value="newVersionName"
-							class="full"
-							autofocus
-							trim
-							:placeholder="t('version_name')"
-							@input="newVersionName = $event"
-							@keyup.enter="updateVersion"
-						/>
+					<div class="grid">
+						<div class="field">
+							<v-input
+								v-model="newVersionKey"
+								class="full"
+								:placeholder="t('version_key')"
+								autofocus
+								db-safe
+								trim
+								@keyup.enter="updateVersion"
+							/>
+						</div>
+						<div class="field">
+							<v-input
+								v-model="newVersionName"
+								class="full"
+								trim
+								:placeholder="t('version_name')"
+								@keyup.enter="updateVersion"
+							/>
+						</div>
 					</div>
 				</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="closeUpdateDialog">{{ t('cancel') }}</v-button>
-					<v-button :disabled="newVersionName === null" :loading="updating" @click="updateVersion">
+					<v-button :disabled="newVersionKey === null" :loading="updating" @click="updateVersion">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -178,7 +187,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
 	add: [version: Version];
-	rename: [name: string];
+	update: [updates: { key: string; name?: string }];
 	delete: [];
 	switch: [version: Version | null];
 }>();
@@ -285,16 +294,19 @@ function useUpdateDialog() {
 	};
 
 	async function updateVersion() {
-		if (!unref(primaryKey) || unref(primaryKey) === '+' || !newVersionName.value) return;
+		if (!unref(primaryKey) || unref(primaryKey) === '+' || !newVersionKey.value) return;
 
 		updating.value = true;
 
 		try {
-			await api.patch(`/versions/${unref(currentVersion)!.id}`, {
-				name: newVersionName.value,
-			});
+			const updates = {
+				key: newVersionKey.value,
+				...(newVersionName.value ? { name: newVersionName.value } : {}),
+			};
 
-			emit('rename', newVersionName.value);
+			await api.patch(`/versions/${unref(currentVersion)!.id}`, updates);
+
+			emit('update', updates);
 
 			closeUpdateDialog();
 		} catch (err: any) {
@@ -306,12 +318,14 @@ function useUpdateDialog() {
 
 	function openUpdateDialog() {
 		if (!currentVersion.value) return;
+		newVersionKey.value = currentVersion.value.key;
 		newVersionName.value = currentVersion.value.name;
 		updateDialogActive.value = true;
 	}
 
 	function closeUpdateDialog() {
 		updateDialogActive.value = false;
+		newVersionKey.value = null;
 		newVersionName.value = null;
 	}
 }
