@@ -436,7 +436,6 @@ dimensions: ابعاد
 size: سایز
 created: ایجاد شد
 modified: دستکاری شده
-checksum: Checksum
 owner: مالک
 edited_by: ویرایش شده توسط
 folder: پوشه
@@ -1646,7 +1645,6 @@ interfaces:
     description: انتخاب چندین آیتم مرتبط
     no_collection: گزینه مورد نظر یافت نشد.
   system-folder:
-    folder: پوشه
     description: یک پوشه انتخاب کنید
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: پوشه اصلی مجموعه فایلها
