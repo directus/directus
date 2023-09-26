@@ -6,7 +6,7 @@ description: Learn about all of the ways to control authentication with the Dire
 # Directus SDK Authentication
 
 The Directus SDK provides multiple ways to [authenticate your requests](/reference/authentication), by either generating
-an access and refresh tokens through login, or by setting a static token.
+access and refresh tokens through login, or by setting a static token.
 
 ## Generate, Use, and Refresh Access Tokens
 
