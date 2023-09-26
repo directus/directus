@@ -22,7 +22,7 @@ const interfaceId = computed(() => field.value.meta?.interface ?? null);
 
 const conditionsSync = computed({
 	get() {
-		return conditions.value;
+		return { conditions: conditions.value };
 	},
 	set(value) {
 		if (!value.conditions || value.conditions.length === 0) {
@@ -37,7 +37,7 @@ const conditionsSync = computed({
 			return condition;
 		});
 
-		conditions.value = { conditions: conditionsWithDefaults };
+		conditions.value = conditionsWithDefaults;
 	},
 });
 

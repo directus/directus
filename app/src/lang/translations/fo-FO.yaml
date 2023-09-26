@@ -157,6 +157,8 @@ interfaces:
     description: Vel ein faldara
     root_name: Fílasavns Rót
     system_default: Grundkervi
+  list:
+    interface_group: Takførisflatastillingar
   input-rich-text-html:
     folder_note: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
 displays:

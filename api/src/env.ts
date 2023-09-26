@@ -417,11 +417,11 @@ async function processConfiguration() {
 		);
 	}
 
-	if (fileExt === '.json') {
+	if (fileExt === 'json') {
 		return require(configPath);
 	}
 
-	if (fileExt === '.yaml' || fileExt === '.yml') {
+	if (fileExt === 'yaml' || fileExt === 'yml') {
 		const data = requireYAML(configPath);
 
 		if (typeof data === 'object') {

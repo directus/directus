@@ -302,6 +302,7 @@ move: Premakni
 system: Sistem
 add_field_related: Dodaj polje v povezano zbirko
 interface_label: Vmesnik
+display_label: Prikaz
 today: Danes
 yesterday: Včeraj
 delete_comment: Izbriši komentar
@@ -1165,6 +1166,8 @@ interfaces:
   system-interface-options:
     interface-options: Možnosti vmesnika
     description: Modalno okno za izbor opcij vmesnika
+  system-display:
+    display: Prikaz
   list-m2m:
     many-to-many: Mnogo na mnogo
     description: Izberi več povezanih zapisov
@@ -1216,6 +1219,7 @@ interfaces:
     add_label: 'Oznaka za "Ustvari novo"'
     sort: Razvrsti
     field_note_placeholder: Vnesite opis polja ...
+    interface_group: Možnosti vmesnika
   slider:
     slider: Drsnik
     description: Z drsnikom izberite vrednost
