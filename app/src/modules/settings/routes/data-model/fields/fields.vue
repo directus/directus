@@ -1,5 +1,5 @@
 <template>
-	<private-view :title="collectionInfo && collectionInfo.name">
+	<private-view :title="collectionInfo && formatTitle(collectionInfo.collection)">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
@@ -110,6 +110,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
+import formatTitle from '@directus/format-title';
 
 const props = defineProps<{
 	collection: string;

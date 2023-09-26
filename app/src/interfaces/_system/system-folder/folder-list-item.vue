@@ -29,7 +29,7 @@
 			:key="childFolder.id!"
 			:folder="childFolder"
 			:current-folder="currentFolder"
-			:disabled="disabledFolders.includes(childFolder.id!)"
+			:disabled="disabledFolders?.includes(childFolder.id!)"
 			:disabled-folders="disabledFolders"
 			@click="$emit('click', $event)"
 		/>
@@ -39,15 +39,12 @@
 <script setup lang="ts">
 import type { Folder } from '@/composables/use-folders';
 
-withDefaults(
-	defineProps<{
-		folder: Folder;
-		currentFolder: string | null;
-		disabled?: boolean;
-		disabledFolders?: string[];
-	}>(),
-	{ disabledFolders: () => [] }
-);
+defineProps<{
+	folder: Folder;
+	currentFolder: string | null;
+	disabled?: boolean;
+	disabledFolders?: string[];
+}>();
 
 defineEmits<{
 	(e: 'click', folderId: Folder['id']): void;

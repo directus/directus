@@ -44,26 +44,23 @@ List all translations that exist in Directus.
 
 `SEARCH /translations`
 
+If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
 </template>
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, readTranslations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readTranslations({
-		fields: ['*'],
-	})
-);
+const result = await client.request(readTranslations(query_object));
 ```
 
 </template>
 </SnippetToggler>
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 #### Query Parameters
 
@@ -87,8 +84,7 @@ available, data will be an empty array.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, readTranslations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -117,16 +113,11 @@ List an existing translation by primary key.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, readTranslation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	readTranslation('translation_id', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readTranslation(translation_id, query_object));
 ```
 
 </template>
@@ -151,8 +142,7 @@ Returns the requested [translation object](#the-translations-object).
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, readTranslation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -177,30 +167,17 @@ Create a new translation.
 
 `POST /translations`
 
-```json
-{
-	"translation_field_1": "value_1",
-	"translation_field_2": "value_2",
-	"translation_field_3": "value_3"
-}
-```
+Provide a [translation object](#the-translation-object) as the body of your request.
 
 </template>
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, createTranslation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createTranslation({
-		translation_field_1: 'value_1',
-		translation_field_2: 'value_2',
-		translation_field_3: 'value_3',
-	})
-);
+const result = await client.request(createTranslation(translation_object));
 ```
 
 </template>
@@ -237,8 +214,7 @@ Returns the [translation object](#the-translations-object) for the created trans
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, createTranslation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -265,44 +241,17 @@ Create multiple new translation.
 
 `POST /translations`
 
-```json
-[
-	{
-		"translation_1_field_1": "value_1",
-		"translation_1_field_2": "value_2",
-		"translation_1_field_3": "value_3"
-	},
-	{
-		"translation_2_field_1": "value_4",
-		"translation_2_field_2": "value_5",
-		"translation_2_field_3": "value_6"
-	}
-]
-```
+Provide an array of [translation objects](#the-translation-object) as the body of your request.
 
 </template>
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, createTranslations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	createTranslations([
-		{
-			translation_1_field_1: 'value_1',
-			translation_1_field_2: 'value_2',
-			translation_1_field_3: 'value_3',
-		},
-		{
-			translation_2_field_1: 'value_4',
-			translation_2_field_2: 'value_5',
-			translation_2_field_3: 'value_6',
-		},
-	])
-);
+const result = await client.request(createTranslations(translation_object_array));
 ```
 
 </template>
@@ -346,8 +295,7 @@ Returns the [translation object](#the-translations-object) for the created trans
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, createTranslations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -381,26 +329,17 @@ Update an existing translation.
 
 `PATCH /translations/:id`
 
-```json
-{
-	"translation_object_field": "value_1"
-}
-```
+Provide a partial [translation object](#the-translation-object) as the body of your request.
 
 </template>
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, updateTranslation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateTranslation('translation_id', {
-		translation_field: 'value',
-	})
-);
+const result = await client.request(updateTranslation(translation_id, partial_translation_object));
 ```
 
 </template>
@@ -435,8 +374,7 @@ Returns the [translation object](#the-translations-object) for the updated trans
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, updateTranslation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -463,10 +401,8 @@ Update multiple existing translations.
 
 ```json
 {
-	"keys": ["translation_1_key", "translation_2_key"],
-	"data": {
-		"field": "value"
-	}
+	"keys": translation_id_array,
+	"data": partial_translation_object
 }
 ```
 
@@ -474,16 +410,11 @@ Update multiple existing translations.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, updateTranslations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	updateTranslations(['translation_1_id', 'translation_2_id'], {
-		field: 'value',
-	})
-);
+const result = await client.request(updateTranslations(translation_id_array, partial_translation_object));
 ```
 
 </template>
@@ -525,8 +456,7 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, updateTranslations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -555,12 +485,11 @@ Delete an existing translation.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteTranslation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteTranslation('id'));
+const result = await client.request(deleteTranslation(translation_id));
 ```
 
 </template>
@@ -581,8 +510,7 @@ Empty body.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteTranslation } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteTranslation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -603,22 +531,17 @@ Delete multiple existing translations.
 
 `DELETE /translations`
 
-```json
-["translation_1_key", "translation_2_key", "translation_3_key"]
-```
+Provide an array of translation IDs as the body of your request.
 
 </template>
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteTranslations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(
-	deleteTranslations(['translation_1_key', 'translation_2_key', 'translation_3_key'])
-);
+const result = await client.request(deleteTranslations(translation_id_array));
 ```
 
 </template>
@@ -647,8 +570,7 @@ Empty body.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteTranslations } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteTranslations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

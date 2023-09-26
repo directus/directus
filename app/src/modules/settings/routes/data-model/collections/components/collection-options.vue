@@ -5,7 +5,7 @@
 				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<v-list>
-				<v-list-item v-if="collection.schema" clickable :to="`/content/${collection.collection}`">
+				<v-list-item v-if="collection.schema" clickable :to="getCollectionRoute(collection.collection)">
 					<v-list-item-icon>
 						<v-icon name="box" />
 					</v-list-item-icon>
@@ -124,6 +124,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
+import { getCollectionRoute } from '@/utils/get-route';
 import type { DeepPartial } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

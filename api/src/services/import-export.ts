@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
@@ -24,11 +24,14 @@ import {
 	UnsupportedMediaTypeError,
 } from '../errors/index.js';
 import logger from '../logger.js';
-import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { Url } from '../utils/url.js';
+import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
+import { UsersService } from './users.js';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
@@ -297,10 +300,27 @@ export class ExportService {
 					schema: this.schema,
 				});
 
+				const usersService = new UsersService({
+					schema: this.schema,
+				});
+
+				const user = await usersService.readOne(this.accountability.user, {
+					fields: ['first_name', 'last_name', 'email'],
+				});
+
+				const href = new Url(env['PUBLIC_URL']).addPath('admin', 'files', savedFile).toString();
+
+				const message = `
+Hello ${userName(user)},
+
+Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
+`;
+
 				await notificationsService.createOne({
 					recipient: this.accountability.user,
 					sender: this.accountability.user,
 					subject: `Your export of ${collection} is ready`,
+					message,
 					collection: `directus_files`,
 					item: savedFile,
 				});

@@ -6,13 +6,7 @@ directus_version: 10.2.0
 
 # Set Up Live Preview With Nuxt 3
 
-> {{ $frontmatter.description }}
-
-::: tip Author: {{$frontmatter.author}}
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-:::
+<GuideMeta />
 
 Directus' Live Preview feature allows you to show changes in your website collection before publishing and without the
 need to refresh the browser.

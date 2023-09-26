@@ -149,82 +149,13 @@ docker compose up
 The specified image will be pulled and the containers recreated. Migrations will happen automatically so once the
 containers have started you will be on the latest version (or the version you specified).
 
-### Adding Packages to Use in Flows Scripts
-
-If you need third-party packages in a script of one of your flows, the recommended way is to create a new Docker image
-extending from the official image and installing the packages there.
-
-First create a file called `Dockerfile` with a content like this:
-
-```docker
-FROM directus/directus:10.0.0
-
-USER root
-RUN corepack enable \
-  && corepack prepare pnpm@8.3.1 --activate
-
-USER node
-RUN pnpm install moment uuid
-```
-
-Then build the image based on that file:
-
-```bash
-docker build -t my-custom-directus-image .
-```
-
-And update the image reference in the `docker-compose.yml` file:
-
-```diff
--    image: directus/directus:latest
-+    image: my-custom-directus-image:latest
-```
-
-::: tip Don't forget to provide `FLOWS_EXEC_ALLOWED_MODULES` variable
-
-In your `docker-compose.yml` file, you will need to add:
-
-```diff
-    environment:
-+     FLOWS_EXEC_ALLOWED_MODULES=array:moment,uuid
-```
-
-For more information, please see the config section on
-[Flows](https://docs.directus.io/self-hosted/config-options.html#flows)
-
-:::
-
 ## Supported Databases
 
 The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be
 used with most of the supported databases and storage adapters without having to create a custom image.
 
-To run Directus, you currently need one of the following databases:
-
-| Database                              | Version     |
-| ------------------------------------- | ----------- |
-| PostgreSQL                            | 10+         |
-| MySQL <sup>[1]</sup>                  | 5.7.8+ / 8+ |
-| SQLite                                | 3+          |
-| MS SQL Server                         | 13+         |
-| MariaDB <sup>[2]</sup>                | 10.2.7+     |
-| CockroachDB <sup>[2]</sup>            | 21.1.13+    |
-| OracleDB<sup>[2]</sup> <sup>[3]</sup> | 19+         |
-
-<sup>[1]</sup> MySQL 8+ requires
-[mysql_native_password](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors)
-to be enabled\
-<sup>[2]</sup> Older versions may work, but aren't officially supported. Use at your own risk. \
-<sup>[3]</sup> Make sure to install `node-oracledb` and it's system dependencies when using OracleDB
-
-::: warning OracleDB
-
-OracleDB's Node client (`node-oracledb`) requires a couple more native dependencies, and specific configurations in
-order to run. The official Directus Docker image does not include these dependencies. See
-[https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple](https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple)
-for more information on what to include for OracleDB.
-
-:::
+Directus supports the LTS versions of PostgreSQL, MySQL, SQLite, MS SQL Server, MariaDB, CockroachDB, and OracleDB.
+Please see https://endoflife.date/ to make sure your database version is still supported.
 
 ## Requirements
 

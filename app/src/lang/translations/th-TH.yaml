@@ -325,6 +325,7 @@ move: ย้าย
 system: ระบบ
 add_field_related: เพิ่มฟิลด์ไปยังคอลเลกชันที่เกี่ยวข้อง
 interface_label: อินเทอร์เฟซ
+display_label: การแสดงผล
 today: วันนี้
 yesterday: เมื่อวาน
 delete_comment: ลบความคิดเห็น
@@ -418,7 +419,6 @@ comments: ความคิดเห็น
 no_comments: ยังไม่มีความเห็น
 select_item: เลือกรายการ
 no_items: ไม่มีรายการ
-search_items: ค้นหารายการ
 disabled: ปิดใช้งาน
 information: ข้อมูล
 report_bug: รายงานข้อบกพร่อง
@@ -1192,6 +1192,8 @@ interfaces:
   system-interface-options:
     interface-options: ตัวเลือกอินเทอร์เฟส
     description: กล่องข้อความสำหรับเลือกตัวเลือกของอินเทอร์เฟส
+  system-display:
+    display: การแสดงผล
   list-m2m:
     many-to-many: Many to Many
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
@@ -1235,6 +1237,7 @@ interfaces:
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
     sort: เรียง
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
+    interface_group: ตัวเลือกอินเทอร์เฟส
   slider:
     slider: แถบเลื่อน
     description: เลือกตัวเลขโดยใช้แถบเลื่อน
@@ -1475,6 +1478,9 @@ triggers:
   webhook:
     method: เมธอด
 operations:
+  json-web-token:
+    token: โทเค็น
+    options: ตัวเลือก
   log:
     message: ข้อความ
   mail:

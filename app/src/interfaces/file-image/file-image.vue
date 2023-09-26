@@ -11,7 +11,7 @@
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
-					{{ t(`errors.${imageError}`) }}
+					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 
@@ -102,7 +102,7 @@ import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | Record<string, any> | null;
+		value: string | Record<string, any> | null;
 		disabled?: boolean;
 		folder?: string;
 		collection: string;
@@ -111,17 +111,16 @@ const props = withDefaults(
 		crop?: boolean;
 	}>(),
 	{
-		value: () => null,
-		disabled: false,
 		crop: true,
-		folder: undefined,
 	}
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: string | Record<string, any> | null];
+}>();
 
 const value = computed({
-	get: () => props.value ?? null,
+	get: () => props.value,
 	set: (value) => {
 		emit('input', value);
 	},

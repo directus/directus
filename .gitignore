@@ -24,6 +24,7 @@ debug
 .clinic
 
 # IDEs / Editors
+.devcontainer/
 .vscode/*
 !.vscode/extensions.json
 .idea/

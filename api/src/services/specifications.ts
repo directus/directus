@@ -249,6 +249,7 @@ class OASSpecsService implements SpecificationSubService {
 										  },
 									responses: {
 										'200': {
+											description: 'Successful request',
 											content:
 												method === 'delete'
 													? undefined
@@ -487,9 +488,9 @@ class OASSpecsService implements SpecificationSubService {
 						{
 							type: 'string',
 						},
-						relatedTags.map((tag) => ({
+						...(relatedTags.map((tag) => ({
 							$ref: `#/components/schemas/${tag.name}`,
-						})) as any,
+						})) as any),
 					],
 				};
 			}

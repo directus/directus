@@ -370,6 +370,7 @@ move: Flyt
 system: System
 add_field_related: Tilføj felt til relateret samling
 interface_label: Grænseflade
+display_label: Vis
 today: Idag
 yesterday: Igår
 delete_comment: Slet kommentar
@@ -469,7 +470,6 @@ comments: Kommentarer
 no_comments: Ingen kommentarer endnu
 select_item: Vælg element
 no_items: Ingen elementer
-search_items: Søg efter emner...
 disabled: Deaktiveret
 information: Information
 report_bug: Rapportér fejl
@@ -1542,6 +1542,8 @@ interfaces:
   system-interface-options:
     interface-options: Grænsefladeindstillinger
     description: En modal til valg af indstillinger for en grænseflade
+  system-display:
+    display: Vis
   list-m2m:
     many-to-many: Mange til mange
     description: Vælg flere relaterede forbindelseselementer
@@ -1605,6 +1607,7 @@ interfaces:
     sort_placeholder: Manuel
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
+    interface_group: Grænsefladeindstillinger
   slider:
     slider: Skyder
     description: Vælg et nummer ved hjælp af en skyder
@@ -2016,6 +2019,10 @@ operations:
     emit_events: Udsende begivenheder
     key: ID
     payload: Nyttelast
+  json-web-token:
+    payload: Nyttelast
+    token: Nøgle
+    options: Valgmuligheder
   log:
     name: Log på konsol
     description: Output noget til konsollen

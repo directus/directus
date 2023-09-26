@@ -150,6 +150,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  email: Value has to be a valid email address
   regex: Value doesn't have the correct format
   starts_with: Value has to start with {substring}
   istarts_with: Value has to start with {substring}
@@ -347,6 +348,7 @@ clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
+archive_all: Archive All
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
 page_not_found_body: The page you are looking for doesn't seem to exist.
@@ -401,6 +403,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -451,7 +454,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -509,7 +511,7 @@ expand: Expand
 collapse: Collapse
 select_item: Select Item
 no_items: No items
-search_items: Search items...
+search_items: Search Items...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -759,6 +761,7 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 interface_options: Interface Options
+display_options: Display Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
@@ -961,6 +964,8 @@ wysiwyg_options:
   source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
+  lazy_loading: Lazy Load Image
+  lazy_loading_label: Enable Lazy Loading
 dropdown: Dropdown
 choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
@@ -1472,6 +1477,7 @@ search: Search
 select_existing: Select Existing
 select_field_type: Select a field type
 select_interface: Select an interface
+select_display: Select a display
 settings: Settings
 sign_in: Sign In
 sign_out: Sign Out
@@ -1504,6 +1510,8 @@ undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
 interfaces:
+  list-m2a:
+    prefix_note: Uses the related item's collection name by default.
   filter:
     name: Filter
     description: Configure a filter object.
@@ -1639,6 +1647,13 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
+    description: Select an existing display
+    placeholder: Select an display...
+  system-display-options:
+    display-options: Display Options
+    description: A modal for selecting options of a display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1691,7 +1706,7 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
+    folder: Root Folder
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root
@@ -1710,6 +1725,9 @@ interfaces:
     incompatible_data:
       The current data is not compatible with the repeater interface and will be overridden when adding items to the
       repeater
+    interface_group: Interface Options
+    display_group: Display Options
+
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -2172,6 +2190,20 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  json-web-token:
+    name: JSON Web Token (JWT)
+    description: Sign and verify JSON Web Tokens
+    operation: Operation
+    secret: Secret
+    secret_placeholder: Enter a secret...
+    payload: Payload
+    token: Token
+    token_placeholder: eyJhbGciOi......
+    options: Options
+    options_placeholder: Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options
+    sign: Sign Token
+    verify: Verify Token
+    decode: Decode Token
   log:
     name: Log to Console
     description: Output something to the console

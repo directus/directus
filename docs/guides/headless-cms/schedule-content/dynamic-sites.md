@@ -1,26 +1,13 @@
 ---
 description:
   This recipe explains how to schedule content to be published for a future date depending on your front-end approach.
-tags: []
-skill_level:
 directus_version: 9.21.2
-author_override:
 author: Bryant Gillespie
 ---
 
 # Schedule Future Content for Dynamic Sites
 
-> {{ $frontmatter.description }}
-
-::: tip Author: {{$frontmatter.author}}
-
-<!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-<!-- **Tags:** {{$frontmatter.tags.join(", ")}} -->
-
-:::
+<GuideMeta />
 
 ## Explanation
 
@@ -35,10 +22,6 @@ If your site is statically generated and your content fetched at build time, ple
 [follow the guide for static sites](/guides/headless-cms/schedule-content/static-sites).
 
 :::
-
-<!-- ## Video -->
-<!-- Todo -->
-<!-- Need access to upload videos first -->
 
 ## How-To Guide
 

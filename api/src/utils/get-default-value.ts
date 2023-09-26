@@ -1,14 +1,15 @@
-import type { SchemaOverview } from '@directus/schema/types/overview';
+import type { Column, SchemaOverview } from '@directus/schema';
+import type { FieldMeta } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import type { Column } from '@directus/schema';
 import env from '../env.js';
 import logger from '../logger.js';
 import getLocalType from './get-local-type.js';
 
 export default function getDefaultValue(
-	column: SchemaOverview[string]['columns'][string] | Column
+	column: SchemaOverview[string]['columns'][string] | Column,
+	field?: { special?: FieldMeta['special'] }
 ): string | boolean | number | Record<string, any> | any[] | null {
-	const type = getLocalType(column);
+	const type = getLocalType(column, field);
 
 	const defaultValue = column.default_value ?? null;
 	if (defaultValue === null) return null;

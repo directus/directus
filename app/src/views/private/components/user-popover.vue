@@ -22,7 +22,10 @@
 			</v-avatar>
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
-				<div class="status-role" :class="data!.status">{{ t(data.status) }} {{ data.role.name }}</div>
+				<v-chip class="status" :class="data.status" small>
+					{{ t(`fields.directus_users.status_${data.status}`) }}
+				</v-chip>
+				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
@@ -112,21 +115,32 @@ function navigateToUser() {
 		margin-right: 16px;
 	}
 
-	.status-role {
-		&.invited {
-			color: var(--primary);
-		}
+	.status {
+		margin-right: 4px;
 
 		&.active {
-			color: var(--success);
+			--v-chip-color: var(--success);
+			--v-chip-background-color: var(--success-25);
+		}
+
+		&.draft {
+			--v-chip-color: var(--pink);
+			--v-chip-background-color: var(--pink-25);
+		}
+
+		&.invited {
+			--v-chip-color: var(--primary);
+			--v-chip-background-color: var(--primary-25);
 		}
 
 		&.suspended {
-			color: var(--warning);
+			--v-chip-color: var(--warning);
+			--v-chip-background-color: var(--warning-25);
 		}
 
-		&.deleted {
-			color: var(--danger);
+		&.archived {
+			--v-chip-color: var(--danger);
+			--v-chip-background-color: var(--danger-25);
 		}
 	}
 

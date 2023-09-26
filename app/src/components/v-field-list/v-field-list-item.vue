@@ -3,11 +3,15 @@
 		v-if="field.children || supportedFunctions.length > 0"
 		:clickable="!field.disabled && (relationalFieldSelectable || !field.relatedCollection)"
 		:value="field.path"
+		:class="{ 'raw-field-names': rawFieldNames }"
 		@click="$emit('add', [field.key])"
 	>
 		<template #activator>
 			<v-list-item-content>
-				<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
+				<v-text-overflow
+					:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
+					:highlight="search"
+				/>
 			</v-list-item-content>
 		</template>
 
@@ -24,7 +28,7 @@
 				</v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow
-						:text="`${t(`functions.${fn}`)} (${field.name || formatTitle(field.field)})`"
+						:text="`${t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
 						:highlight="search"
 					/>
 				</v-list-item-content>
@@ -50,13 +54,23 @@
 			:relational-field-selectable="relationalFieldSelectable"
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"
+			:raw-field-names="rawFieldNames"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
 
-	<v-list-item v-else :disabled="field.disabled" clickable @click="$emit('add', [field.key])">
+	<v-list-item
+		v-else
+		:disabled="field.disabled"
+		:class="{ 'raw-field-names': rawFieldNames }"
+		clickable
+		@click="$emit('add', [field.key])"
+	>
 		<v-list-item-content>
-			<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
+			<v-text-overflow
+				:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
+				:highlight="search"
+			/>
 		</v-list-item-content>
 	</v-list-item>
 </template>
@@ -86,6 +100,7 @@ interface Props {
 	relationalFieldSelectable?: boolean;
 	allowSelectAll?: boolean;
 	parent?: string | null;
+	rawFieldNames?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -94,6 +109,7 @@ const props = withDefaults(defineProps<Props>(), {
 	relationalFieldSelectable: true,
 	allowSelectAll: false,
 	parent: null,
+	rawFieldNames: false,
 });
 
 const emit = defineEmits(['add']);
@@ -128,5 +144,9 @@ const addAll = () => {
 .functions {
 	--v-icon-color: var(--primary);
 	--v-list-item-color: var(--primary);
+}
+
+.raw-field-names {
+	--v-list-item-content-font-family: var(--family-monospace);
 }
 </style>

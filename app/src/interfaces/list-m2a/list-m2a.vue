@@ -31,7 +31,7 @@
 						@click="editItem(element)"
 					>
 						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
-						<span class="collection">{{ getCollectionName(element) }}:</span>
+						<span class="collection">{{ getPrefix(element) }}:</span>
 						<render-template
 							:collection="element[relationInfo.collectionField.field]"
 							:template="templates[element[relationInfo.collectionField.field]]"
@@ -144,6 +144,7 @@ import { useRelationPermissionsM2A } from '@/composables/use-relation-permission
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
+import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
@@ -163,6 +164,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		limit?: number;
+		prefix?: string;
 		allowDuplicates?: boolean;
 	}>(),
 	{
@@ -215,6 +217,10 @@ const fields = computed(() => {
 		).map((field) => `${relationInfo.value?.junctionField.field}:${collection.collection}.${field}`);
 
 		fields.push(...addRelatedPrimaryKeyToFields(collection.collection, displayFields));
+	}
+
+	if (props.prefix) {
+		fields.push(...getFieldsFromTemplate(props.prefix));
 	}
 
 	return fields;
@@ -375,7 +381,9 @@ function hasAllowedCollection(item: DisplayItem) {
 	);
 }
 
-function getCollectionName(item: DisplayItem) {
+function getPrefix(item: DisplayItem) {
+	if (props.prefix) return renderStringTemplate(props.prefix, item).displayValue.value;
+
 	const info = relationInfo.value;
 	if (!info) return false;
 

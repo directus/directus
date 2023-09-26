@@ -81,9 +81,9 @@ message: پیام
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک
 create_custom_translation: ایجاد ترجمه جدید
-edit_custom_translation: ویرایش ترجمه
-no_custom_translations: بدون ترجمه
-no_custom_translations_copy: هنوز هیچ ترجمه ای وجود ندارد
+edit_custom_translation: نگارش ترجمه سفارشی
+no_custom_translations: بدون ترجمه سفارشی
+no_custom_translations_copy: هنوز هیچ ترجمه سفارشی وجود ندارد.
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: قبلاً برای ایمیل {email}، دعوت نامه ارسال شده است
@@ -226,7 +226,7 @@ bigInteger: عدد صحیح بزرگ
 boolean: بولین
 date: تاریخ
 date_range: بازه تاریخ
-translation_key_placeholder: ورود یک کلید...
+translation_key_placeholder: یک کلید وارد کنید...
 datetime: تاریخ و ساعت
 dateTime: تاریخ و ساعت
 precision: دقت
@@ -385,6 +385,7 @@ move: انتقال
 system: سیستم
 add_field_related: افزودن فیلد به مجموعه مرتبط
 interface_label: رابط کاربری
+display_label: نحوه نمایش
 today: امروز
 yesterday: دیروز
 delete_comment: حذف دیدگاه
@@ -439,7 +440,7 @@ checksum: Checksum
 owner: مالک
 edited_by: ویرایش شده توسط
 folder: پوشه
-folders: پوشه ها
+folders: پوشه‌ها
 zoom: بزرگنمايی
 download: دانلود
 open: باز
@@ -487,7 +488,6 @@ expand: گسترش
 collapse: جمع کردن
 select_item: انتخاب آیتم
 no_items: آیتمی وجود ندارد
-search_items: جستجوی آیتمها...
 disabled: غیرفعال شده
 information: اطلاعات
 report_bug: گزارش باگ
@@ -1592,6 +1592,8 @@ interfaces:
   system-interface-options:
     interface-options: تنظیمات رابط
     description: A modal for selecting options of an interface
+  system-display:
+    display: نحوه نمایش
   list-m2m:
     many-to-many: چندتا به چندتا
     description: انتخاب چندین آیتم تقاطعی مرتبط
@@ -1661,6 +1663,7 @@ interfaces:
     sort_placeholder: دستی
     field_note_placeholder: Enter field note...
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
+    interface_group: تنظیمات رابط
   slider:
     slider: اسلایدر
     description: یک عدد را با استفاده از نوار متحرک انتخاب کنید
@@ -2104,6 +2107,10 @@ operations:
     key: ID ها
     payload: ظرفیت یا Payload
     query: کوئری
+  json-web-token:
+    payload: ظرفیت یا Payload
+    token: توکن
+    options: گزینه‌ها
   log:
     name: ذخیره رخداد در کنسول
     description: خروجی چیزی به کنسول

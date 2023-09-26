@@ -381,6 +381,7 @@ move: Pindah
 system: Sistem
 add_field_related: Tambah Baris ke Koleksi Terkait
 interface_label: Antarmuka
+display_label: Tampilkan
 today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
@@ -480,7 +481,6 @@ comments: Komentar
 no_comments: Belum Ada Komentar
 select_item: Pilih Item
 no_items: Tidak Ada Item
-search_items: Cari item...
 disabled: Dinonaktifkan
 information: Informasi
 report_bug: Laporkan Bug
@@ -1433,6 +1433,8 @@ interfaces:
     image: Gambar
   system-interface:
     interface: Antarmuka
+  system-display:
+    display: Tampilkan
   select-dropdown-m2o:
     display_template: Tampilan Template
   input-rich-text-md:
@@ -1538,6 +1540,10 @@ operations:
     payload: Muatan
   item-update:
     payload: Muatan
+  json-web-token:
+    payload: Muatan
+    token: Token
+    options: Pilihan
   log:
     message: Pesan
   mail:

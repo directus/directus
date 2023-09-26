@@ -21,7 +21,8 @@
 					:placeholder="t('collection') + '...'"
 					:items="availableCollections"
 					item-value="collection"
-					item-text="name"
+					item-text="collection"
+					item-label-font-family="var(--family-monospace)"
 					item-disabled="meta.singleton"
 					multiple
 					:is-menu-same-width="false"
@@ -188,21 +189,17 @@ const isExisting = computed(() => editing.value !== '+');
 const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
 const availableCollections = computed(() => {
-	return orderBy(
-		[
-			...collectionsStore.databaseCollections,
-			{
-				divider: true,
-			},
-			{
-				name: t('system'),
-				selectable: false,
-				children: collectionsStore.crudSafeSystemCollections,
-			},
-		],
-		['collection'],
-		['asc']
-	);
+	return [
+		...orderBy(collectionsStore.databaseCollections, ['collection'], ['asc']),
+		{
+			divider: true,
+		},
+		{
+			collection: t('system'),
+			selectable: false,
+			children: orderBy(collectionsStore.crudSafeSystemCollections, ['collection'], ['asc']),
+		},
+	];
 });
 
 const unsortableJunctionFields = computed(() => {

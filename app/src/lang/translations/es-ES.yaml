@@ -35,6 +35,7 @@ tile_size: Tamaño del mosaico
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
+collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Regla de condición
 input: Entrada
 maps: Mapas
@@ -80,6 +81,10 @@ create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
 create_webhook: Crear webhook
+create_custom_translation: Crear traducción personalizada
+edit_custom_translation: Editar traducción personalizada
+no_custom_translations: No hay traducciones personalizadas
+no_custom_translations_copy: Todavía no hay traducciones personalizadas.
 invite_users: Invitar Usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
@@ -116,6 +121,7 @@ archive_confirm_count: >-
   Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
+the_following_are_minimum_permissions: Los siguientes permisos mínimos se aplican automáticamente a "Acceso a aplicaciones" cuando está habilitado. Puedes conceder permisos adicionales si es necesario, pero no puedes restringir permisos por debajo de este nivel.
 app_access_minimum: Mínimo acceso a App
 recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar
@@ -140,6 +146,14 @@ validationError:
   required: El valor es requerido
   unique: El Valor tiene que ser único
   regex: El valor no tiene el formato correcto
+  starts_with: El valor debe comenzar con {substring}
+  istarts_with: El valor debe comenzar con {substring}
+  nstarts_with: El valor no puede comenzar con {substring}
+  nistarts_with: El valor no puede comenzar con {substring}
+  ends_with: El valor debe terminar con {substring}
+  iends_with: El valor debe terminar con {substring}
+  nends_with: El valor no puede terminar con {substring}
+  niends_with: El valor no puede terminar con {substring}
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar uso
@@ -372,6 +386,7 @@ move: Mover
 system: Sistema
 add_field_related: Agregar Campo a Colección Relacionada
 interface_label: Interfaz
+display_label: Mostrar
 today: Hoy
 yesterday: Ayer
 delete_comment: Eliminar Comentario
@@ -471,7 +486,6 @@ comments: Comentarios
 no_comments: Aún Sin Comentarios
 select_item: Seleccionar Elemento
 no_items: Sin Elementos
-search_items: Buscar elementos...
 disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
@@ -1556,6 +1570,8 @@ interfaces:
   system-interface-options:
     interface-options: Opciones de Interfaz
     description: Una ventana modal para seleccionar opciones de una interfaz
+  system-display:
+    display: Mostrar
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
@@ -1620,6 +1636,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Introducir nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
+    interface_group: Opciones de Interfaz
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -2018,6 +2035,10 @@ operations:
     key: IDs
     payload: Payload
     query: Consulta
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opciones
   log:
     name: Registrar en la consola
     description: Envía algo a la consola

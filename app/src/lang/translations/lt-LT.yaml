@@ -235,6 +235,7 @@ move: Perkelti
 system: Sistema
 add_field_related: Pridėti lauką į susijusią kolekciją
 interface_label: Sąsaja
+display_label: Rodymas
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
@@ -304,7 +305,6 @@ comments: Komentarai
 no_comments: Dar nėra komentarų
 select_item: Pasirinkti elementą
 no_items: Nėra elementų
-search_items: Ieškoti elementų...
 disabled: Išjungta
 information: Informacija
 report_bug: Pranešti apie klaidą
@@ -847,6 +847,8 @@ interfaces:
     image: Paveikslėlis
   system-interface:
     interface: Sąsaja
+  system-display:
+    display: Rodymas
   select-dropdown-m2o:
     display_template: Rodymo šablonas
   input-rich-text-md:
@@ -985,6 +987,8 @@ panels:
   label:
     name: Žyma
 operations:
+  json-web-token:
+    options: Parinktys
   mail:
     template: Šablonas
   notification:

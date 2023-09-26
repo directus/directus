@@ -403,6 +403,8 @@ layouts:
     cozy: Κανονικό
 both: Και τα δύο
 operations:
+  json-web-token:
+    options: Επιλογές
   log:
     message: Μήνυμα
   notification:
