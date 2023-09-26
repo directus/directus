@@ -198,6 +198,7 @@ const allowedEnvironmentVars = [
 	'ADMIN_PASSWORD',
 	// telemetry
 	'TELEMETRY',
+	'SHOW_ADMIN_ONBOARDING',
 	// limits & optimization
 	'RELATIONAL_BATCH_SIZE',
 	'EXPORT_BATCH_SIZE',
@@ -284,6 +285,7 @@ const defaults: Record<string, any> = {
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
 	TELEMETRY: true,
+	SHOW_ADMIN_ONBOARDING: true,
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,
