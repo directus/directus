@@ -94,6 +94,12 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 		border-radius: var(--border-radius);
 	}
 
+	.image,
+	.video {
+		background-color: var(--background-normal);
+		border-radius: var(--border-radius);
+	}
+
 	.image {
 		img {
 			z-index: 1;
