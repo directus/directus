@@ -241,11 +241,7 @@ function useFile() {
 		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
 		if (!fileData) return null;
 
-		const src = fileData.modified_on
-			? `assets/${fileData.id}?cache-buster=${fileData.modified_on}&key=system-large-contain`
-			: `assets/${fileData.id}?key=system-large-contain`;
-
-		return { ...fileData, src };
+		return fileData;
 	});
 
 	return { file, isDirectusFiles };
