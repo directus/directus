@@ -238,10 +238,10 @@ function useFile() {
 
 	const file = computed(() => {
 		if (isDirectusFiles.value === false || !initialValues.value) return null;
-		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
-		if (!fileData) return null;
 
-		return fileData;
+		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
+
+		return fileData || null;
 	});
 
 	return { file, isDirectusFiles };
