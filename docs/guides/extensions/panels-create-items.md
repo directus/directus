@@ -9,7 +9,7 @@ Panels are used in dashboards as part of the Insights module. As well as read-on
 with form inputs. In this guide, you will create a panel that automatically generates a form based on a collection's
 fields, and allows item creation from an Insights dashboard.
 
-<!-- IMG -->
+![A panel shows a form called Add Customer. It has a name, surname, and phone number text input.](https://marketing.directus.app/assets/5385ebc9-e3d9-4f75-9ec8-86bd54589d56.png)
 
 ## Install Dependencies
 
@@ -41,10 +41,6 @@ description: 'Output a form to insert data into a collection.',
 
 Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
 include a professional prefix. You can choose an icon from the library [here].
-
-With the information above, the panel will appear in the list like this:
-
-<!-- IMG -->
 
 The Panel will need some configuration options so the user can choose the collection and fields from that collection to
 include on the panel.
@@ -104,7 +100,7 @@ skipUndefinedKeys: ['response_format'],
 
 The output of these options will look like this:
 
-<!-- IMG -->
+<img src="https://marketing.directus.app/assets/840bb61a-46ff-4474-a026-da5191f1272b.png" alt="Form with collections and fields selection." style="padding: 0 8px 8px 10px">
 
 ## Prepare the View
 
@@ -166,9 +162,9 @@ The `FieldsStore` fetches all of the collection’s fields, the `PermissionsStor
 collection, and the `Collection` store for fetching information about the selected collection and the API for performing
 the final POST request.
 
-You will also need to capture a response to present to the user. The `response_format` contains a string where
-the user can create their own response with data from the API. A `v-dialog` can show an important message to the user.
-This requires a boolean value (here `responseDialoge`) to control the visibility of the dialog box.
+You will also need to capture a response to present to the user. The `response_format` contains a string where the user
+can create their own response with data from the API. A `v-dialog` can show an important message to the user. This
+requires a boolean value (here `responseDialoge`) to control the visibility of the dialog box.
 
 Create a `getFields` function to fetch the detailed information for each selected field then call the function
 afterwards so it populates the variable when the panel loads:
@@ -200,9 +196,8 @@ watch(
 );
 ```
 
-Create a `submitForm` function. This will send the contents of `formData` to the selected collection and capture
-the response, resetting the form once successful. If an error occurs, the response is captured in the `formError`
-variable:
+Create a `submitForm` function. This will send the contents of `formData` to the selected collection and capture the
+response, resetting the form once successful. If an error occurs, the response is captured in the `formError` variable:
 
 ```js
 function submitForm() {
@@ -274,8 +269,8 @@ validation.
 :::
 
 Under the submit button, create the `v-dialog` component. This uses the `responseDialog` variable for visibility. Inside
-the dialog, create some notices for various situations such as Success (primary key field exists), Error (`formError` has
-value) and Empty:
+the dialog, create some notices for various situations such as Success (primary key field exists), Error (`formError`
+has value) and Empty:
 
 ```vue
 <v-dialog v-model="responseDialog" @esc="responseDialog = false">
@@ -325,11 +320,11 @@ Lastly, replace the CSS at the bottom with this:
 
 When it's all put together, the panel looks like this:
 
-<!-- IMG -->
+![A panel shows a form called Add Customer. It has a name, surname, and phone number text input.](https://marketing.directus.app/assets/5385ebc9-e3d9-4f75-9ec8-86bd54589d56.png)
 
 And the response looks like this:
 
-<!-- IMG -->
+![A popup reads 'Saved - User Added!' with a link to the user and a but purple Done button.](https://marketing.directus.app/assets/182dfa12-e236-41f2-97cf-ec6a983f0d7c.png)
 
 Both files are now complete. Build the panel with the latest changes.
 
@@ -365,7 +360,7 @@ Fill in the configuration fields as needed:
 - Select all the fields to include from that collection.
 - Create a custom response message.
 
-<!-- IMG -->
+<img src="https://marketing.directus.app/assets/082d5150-fde8-4268-b79a-df444e6efe20.png" alt="Form showing a collection is selected, 3 items are included, and a response is formed as a string with two dynamic variables." style="padding: 0 0 0 10px">
 
 ## Summary
 
