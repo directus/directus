@@ -8,9 +8,9 @@ import { getSchema } from './get-schema.js';
  * Creates a new notification for all admin users
  * @param title The subject of the notification
  * @param message The message of the notification
- * @param uid A unique identifier for the deprecation warning to not send it multiple times. Should not start with '/'.
+ * @param uid A unique identifier for the notification to not send it multiple times. Should not start with '/'.
  */
-export async function submitDeprecationWarning(title: string, message: string, uid: string) {
+export async function notifyAdmins(title: string, message: string, uid: string) {
 	if ((await isInstalled()) === false) return;
 
 	const schema = await getSchema();

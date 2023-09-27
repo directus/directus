@@ -56,7 +56,6 @@ import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 import { Url } from './utils/url.js';
-import { submitDeprecationWarning } from './utils/submit-deprecation-warning.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -356,18 +355,6 @@ class ExtensionManager {
 		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION']);
 		const localPackageExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
 		const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
-
-		if (localExtensions.length > 0) {
-			submitDeprecationWarning(
-				'Basic Extensions are being deprecated',
-				`Due to the upcoming release of the extension marketplace, basic extension won't be loaded anymore.
-<br/><br/>
-Extensions affected: ${localExtensions.map((extension) => extension.name).join(', ')}
-<br/><br/>
-A guide on how to migrate these extensions to a supported loading method can be found [here](https://docs.directus.io/extensions/creating-extensions.html).`,
-				'basic-extensions'
-			);
-		}
 
 		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
 			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
