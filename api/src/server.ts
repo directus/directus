@@ -122,6 +122,7 @@ export async function createServer(): Promise<http.Server> {
 	async function onSignal() {
 		getSubscriptionController()?.terminate();
 		getWebSocketController()?.terminate();
+
 		const database = getDatabase();
 		await database.destroy();
 
