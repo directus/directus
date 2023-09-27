@@ -21,7 +21,7 @@ export async function getFullcalendarLocale(lang: string): Promise<LocaleInput> 
 }
 
 export function importCalendarLocale(locale: string): Promise<any> {
-	switch (locale) {
+	switch (locale.toLowerCase()) {
 		case 'af':
 			return import('@fullcalendar/core/locales/af');
 		case 'ar-dz':
