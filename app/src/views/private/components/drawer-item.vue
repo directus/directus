@@ -20,25 +20,12 @@
 		</template>
 
 		<div class="drawer-item-content">
-			<div v-if="file" class="preview">
-				<file-preview
-					:src="file.src"
-					:mime="file.type"
-					:width="file.width"
-					:height="file.height"
-					:title="file.title"
-					:in-modal="true"
-				/>
+			<file-preview-replace v-if="file" class="preview" :file="file" :in-modal="true" @replace="refresh" />
 
-				<button class="replace-toggle" @click="replaceFileDialogActive = true">
-					{{ t('replace_file') }}
-				</button>
-
-				<replace-file v-model="replaceFileDialogActive" :file="file" @replaced="refresh" />
-			</div>
 			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
 				{{ t('no_visible_fields_copy') }}
 			</v-info>
+
 			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
 				<v-form
 					v-if="junctionField"
@@ -94,8 +81,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import FilePreview from '@/views/private/components/file-preview.vue';
-import ReplaceFile from '@/modules/files/components/replace-file.vue';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -264,8 +250,6 @@ function useFile() {
 
 	return { file, isDirectusFiles };
 }
-
-const replaceFileDialogActive = ref(false);
 
 function useActiveState() {
 	const localActive = ref(false);
@@ -471,13 +455,6 @@ function useActions() {
 
 	.preview {
 		margin-bottom: var(--form-vertical-gap);
-
-		.replace-toggle {
-			color: var(--primary);
-			cursor: pointer;
-			font-weight: 600;
-			margin-top: 12px;
-		}
 	}
 
 	.drawer-item-order {
