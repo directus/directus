@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Added ability to replace files in the item details drawer
+Added ability to replace files from within item details drawer
