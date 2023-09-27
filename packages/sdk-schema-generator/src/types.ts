@@ -24,10 +24,10 @@ export interface CollectionDefinition {
 
 export interface FieldDefinition {
 	name: string;
-	type: string;
+	type: MaybeArray<string>;
 	nullable: boolean;
 	primary_key: boolean;
-	relation: RelationDefinition | null;
+	relation: MaybeArray<RelationDefinition> | null;
 }
 
 export interface RelationDefinition {
@@ -36,3 +36,7 @@ export interface RelationDefinition {
 }
 
 export type NameTransformer = (str: string) => string;
+
+export type MaybeArray<T> = T | T[];
+
+export type Nullable<T> = T | null | undefined;

@@ -1,11 +1,6 @@
 import { fieldTypeMap } from "./constants.js";
-import type { DataModel, NameTransformer, RelationDefinition, SchemaDefinition } from "./types.js";
+import type { DataModel, FieldDefinition, NameTransformer, SchemaDefinition } from "./types.js";
 
-export interface Relation {
-	collection: string;
-	field: string;
-	related_collection: string;
-}
 
 export function buildSchema(data: DataModel, nameFn: NameTransformer) {
 	const result: SchemaDefinition = new Map();
@@ -24,21 +19,6 @@ export function buildSchema(data: DataModel, nameFn: NameTransformer) {
 		});
 	}
 
-	// setup a relations lookup table
-	const relationMap: Relation[] = []
-
-	for (const relation of data.relations) {
-		if (relation.meta?.system) {
-			continue;
-		}
-
-		const { collection, field, related_collection } = relation;
-
-		if (related_collection) {
-			relationMap.push({ collection, field, related_collection });
-		}
-	}
-
 	// fill in the fields
 	for (const field of data.fields) {
 		const collection = result.get(field.collection);
@@ -47,18 +27,27 @@ export function buildSchema(data: DataModel, nameFn: NameTransformer) {
 			continue;
 		}
 
-		let mappedType = fieldTypeMap.get(field.type);
-		let fieldRelation: RelationDefinition | null = null;
+		let mappedType: string[] | string | undefined = fieldTypeMap.get(field.type);
+		let fieldRelation: FieldDefinition['relation'] = null;
 
 		// check many to any relations
 		if (field.type === 'alias') {
-			const relation = relationMap
-				.find(({ related_collection }) => related_collection === field.collection);
+			if (field.meta?.special?.includes('o2m') || field.meta?.special?.includes('m2m') || field.meta?.special?.includes('m2a')) {
+				const rel = data.relations.find((r) =>
+					r.meta?.one_collection === field.collection
+					&& r.meta.one_field === field.field
+				);
 
-			if (relation) {
-				const relatedCollection = result.get(relation.related_collection);
-				fieldRelation = { collection: relation.related_collection, mutliple: true };
-				mappedType = relatedCollection!.fields.find((f) => f.primary_key)!.type;
+				if (rel) {
+					fieldRelation = {
+						collection: rel.collection,
+						mutliple: true
+					};
+
+					// @ts-ignore
+					mappedType = fieldTypeMap.get(data.fields.find((f) => f.collection === field.collection && f.schema?.is_primary_key)?.type)!;
+				}
+
 			}
 		}
 
@@ -68,13 +57,38 @@ export function buildSchema(data: DataModel, nameFn: NameTransformer) {
 
 		// check one to any relations
 		if (fieldRelation == null) {
-			const relation = relationMap
-				.find((relation) => relation.collection === field.collection && relation.field === field.field);
+			const rel = data.relations.find((r) =>
+				r.field === field.field && r.collection === field.collection
+			)
 
-			if (relation) {
-				fieldRelation = { collection: relation.related_collection, mutliple: false };
+			if (rel) {
+				// m2o relations
+				if (rel.related_collection) {
+					fieldRelation = {
+						collection: rel.related_collection,
+						mutliple: false,
+					};
+				}
+
+				// m2a relations
+				if (rel.meta?.one_allowed_collections) {
+					fieldRelation = rel.meta.one_allowed_collections.map((collectionName) => ({
+						collection: collectionName,
+						mutliple: false,
+					}));
+				}
 			}
 		}
+
+		// check for m2a collection fields
+		if (field.field === 'collection') {
+			const rel = data.relations.find((r) => r.collection === field.collection && r.field === 'item');
+
+			if (rel && rel.meta?.one_allowed_collections) {
+				mappedType = rel.meta.one_allowed_collections.map(c => `'${c}'`);
+			}
+		}
+
 
 		collection.fields.push({
 			name: field.field,

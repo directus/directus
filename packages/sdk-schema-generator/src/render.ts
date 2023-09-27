@@ -1,5 +1,5 @@
 import { pascalcase } from "./naming.js";
-import type { SchemaDefinition } from "./types.js";
+import type { Nullable, SchemaDefinition } from "./types.js";
 
 export type RenderOptions = {
 	rootName: string;
@@ -19,6 +19,11 @@ export const defaultOptions: RenderOptions = {
 
 function fmtArray(isArray: boolean) {
 	return isArray ? '[]' : '';
+}
+
+function makeArray<T>(item: Nullable<T | T[]>): T[] {
+	if (!item) return [];
+	return Array.isArray(item) ? item : [item];
 }
 
 export function renderSchemaTypes(schema: SchemaDefinition, options = defaultOptions) {
@@ -47,26 +52,26 @@ export function renderSchemaTypes(schema: SchemaDefinition, options = defaultOpt
 
 		if (pk) {
 			// pull the primary key to the top
-			collectionType += `${indentation}${pk.name}: ${pk.type};\n`;
+			collectionType += `${indentation}${pk.name}: ${makeArray(pk.type).join(' | ')};\n`;
 		}
 
 		for (const field of sortedFields) {
 			if (field.primary_key) continue;
 
-			const fieldTypes = [field.type];
+			const fieldTypes = makeArray(field.type);
 
-			if (field.relation) {
+			for (const relation of makeArray(field.relation)) {
 				let relationName = '';
 
-				if (field.relation.collection.startsWith('directus_')) {
-					const SystemName = pascalcase(field.relation.collection);
+				if (relation?.collection.startsWith('directus_')) {
+					const SystemName = pascalcase(relation.collection);
 					relationName = `${SystemName}<${options.rootName}>`;
 					systemImports.add(SystemName);
-				} else if (schema.has(field.relation.collection)) {
-					relationName = schema.get(field.relation.collection)!.name;
+				} else if (schema.has(relation?.collection)) {
+					relationName = schema.get(relation.collection)!.name;
 				}
 
-				fieldTypes.unshift(`${relationName}${fmtArray(field.relation.mutliple)}`);
+				fieldTypes.unshift(`${relationName}${fmtArray(relation.mutliple)}`);
 			}
 
 			if (field.nullable) {
