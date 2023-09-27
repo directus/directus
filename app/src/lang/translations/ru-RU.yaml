@@ -386,6 +386,7 @@ move: Переместить
 system: Система
 add_field_related: Добавить поле в связанную коллекцию
 interface_label: Интерфейс
+display_label: Отображение
 today: Сегодня
 yesterday: Вчера
 delete_comment: Удалить комментарий
@@ -1595,6 +1596,8 @@ interfaces:
   system-interface-options:
     interface-options: Параметры интерфейса
     description: Окно выбора параметров интерфейса
+  system-display:
+    display: Отображение
   list-m2m:
     many-to-many: Многие ко Многим
     description: Выберите несколько связанных элементов
@@ -1664,6 +1667,7 @@ interfaces:
     sort_placeholder: Вручную
     field_note_placeholder: Примечание к полю...
     incompatible_data: Текущие данные не совместимы с интерфейсом репитера и будут переопределены при добавлении элементов в репитер
+    interface_group: Параметры интерфейса
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
