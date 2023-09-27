@@ -1037,3 +1037,22 @@ https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 | `WEBSOCKETS_GRAPHQL_CONN_LIMIT`   | How many simultaneous connections are allowed.                                                                                                                                                          | `Infinity`    |
 | `WEBSOCKETS_GRAPHQL_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
 | `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
+
+---
+
+## PM2
+
+::: warning Requirements
+
+These environment variables only exist when you're using the official Docker Container, or are using the provided
+[`ecosystem.config.cjs`](https://github.com/directus/directus/blob/main/ecosystem.config.cjs) file with `pm2` directly.
+
+:::
+
+| Variable                 | Description                                                        | Default |
+| ------------------------ | ------------------------------------------------------------------ | ------- |
+| `PM2_KILL_TIMEOUT`       | Time in milliseconds before sending a final SIGKILL                | `10000` |
+| `PM2_MAX_MEMORY_RESTART` | App will be restarted if it exceeds the amount of memory specified | `1G`    |
+| `PM2_INSTANCES`          | Number of app instance to be launched                              | `'max'` |
+| `PM2_MIN_UPTIME`         | Min uptime of the app to be considered started                     | `1000`  |
+| `PM2_LISTEN_TIMEOUT`     | Time in ms before forcing a reload if app not listening            | `8000`  |
