@@ -1049,10 +1049,17 @@ These environment variables only exist when you're using the official Docker Con
 
 :::
 
-| Variable                 | Description                                                        | Default |
-| ------------------------ | ------------------------------------------------------------------ | ------- |
-| `PM2_KILL_TIMEOUT`       | Time in milliseconds before sending a final SIGKILL                | `10000` |
-| `PM2_MAX_MEMORY_RESTART` | App will be restarted if it exceeds the amount of memory specified | `1G`    |
-| `PM2_INSTANCES`          | Number of app instance to be launched                              | `'max'` |
-| `PM2_MIN_UPTIME`         | Min uptime of the app to be considered started                     | `1000`  |
-| `PM2_LISTEN_TIMEOUT`     | Time in ms before forcing a reload if app not listening            | `8000`  |
+For more information on what these options do, please refer to
+[the `pm2` documentation](https://pm2.keymetrics.io/docs/usage/application-declaration/).
+
+| Variable                 | Description                                                        | Default     |
+| ------------------------ | ------------------------------------------------------------------ | ----------- |
+| `PM2_INSTANCES`          | Number of app instance to be launched                              | `'max'`     |
+| `PM2_EXEC_MODE`          | One of `fork`, `cluster`                                           | `'cluster'` |
+| `PM2_MAX_MEMORY_RESTART` | App will be restarted if it exceeds the amount of memory specified | `1G`        |
+| `PM2_MIN_UPTIME`         | Min uptime of the app to be considered started                     | `1000`      |
+| `PM2_LISTEN_TIMEOUT`     | Time in ms before forcing a reload if app not listening            | `8000`      |
+| `PM2_KILL_TIMEOUT`       | Time in milliseconds before sending a final SIGKILL                | `10000`     |
+| `PM2_MAX_RESTARTS`       | Number of failed restarts before the process is killed             | `5`         |
+| `PM2_RESTART_DELAY`      | Time to wait before restarting a crashed app                       | `0`         |
+| `PM2_AUTO_RESTART`       | Automatically restart Directus if it crashes unexpectedly          | `true`      |
