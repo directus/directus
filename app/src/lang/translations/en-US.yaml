@@ -101,6 +101,7 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+keep: Keep
 version: Version
 version_key: Version Key
 version_name: Version Name
@@ -125,6 +126,8 @@ promote_notice: >-
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
+delete_on_promote_copy: >-
+  Do you want to delete or keep the "{version}" version after promoting?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark

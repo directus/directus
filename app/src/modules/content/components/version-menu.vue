@@ -57,7 +57,7 @@
 			:active="isVersionPromoteDrawerOpen"
 			:current-version="currentVersion"
 			@cancel="isVersionPromoteDrawerOpen = false"
-			@promote="onPromoteComplete"
+			@promote="onPromoteComplete($event)"
 		/>
 
 		<v-dialog v-model="switchDialogActive" @esc="switchDialogActive = false">
@@ -363,10 +363,14 @@ function getVersionDisplayName(version: Version) {
 	return isNil(version.name) ? version.key : version.name;
 }
 
-function onPromoteComplete() {
+function onPromoteComplete(deleteOnPromote: boolean) {
 	isVersionPromoteDrawerOpen.value = false;
 
-	emit('switch', null);
+	if (deleteOnPromote) {
+		emit('delete');
+	} else {
+		emit('switch', null);
+	}
 }
 </script>
 
