@@ -172,10 +172,7 @@ const result = await client.request(readItem(collection_name, item_id));
 
 #### Query Parameters
 
-Supports all [global query parameters](/reference/query) and the following query parameters:
-
-`version` **string**\
-Key of the version. Requires the [Enable Versioning field](/app/data-model/collections#versioning) to be enabled.
+Supports all [global query parameters](/reference/query).
 
 ### Response
 
