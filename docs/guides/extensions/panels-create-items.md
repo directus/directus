@@ -6,7 +6,8 @@ contributors: Tim Butterfield, Kevin Lewis
 # Create An Interactive Panel To Create Items
 
 Panels are used in dashboards as part of the Insights module. As well as read-only data panels, they can be interactive
-with form inputs. In this guide, you will create a panel that automatically generates a form based on a collection's fields, and allows item creation from an Insights dashboard.
+with form inputs. In this guide, you will create a panel that automatically generates a form based on a collection's
+fields, and allows item creation from an Insights dashboard.
 
 <!-- IMG -->
 
@@ -45,7 +46,8 @@ With the information above, the panel will appear in the list like this:
 
 <!-- IMG -->
 
-The Panel will need some configuration options so the user can choose the collection and fields from that collection to include on the panel.
+The Panel will need some configuration options so the user can choose the collection and fields from that collection to
+include on the panel.
 
 Replace the existing text field with the following fields inside the `options` array:
 
@@ -115,7 +117,8 @@ import { ref, watch } from 'vue';
 ```
 
 In the `props`, `showHeader` is one of the built-in properties which you can use to alter your panel if a header is
-showing. Remove the text property and add the collection and fields properties as well as the width and height which is useful for styling:
+showing. Remove the text property and add the collection and fields properties as well as the width and height which is
+useful for styling:
 
 ```js
 props: {
@@ -159,11 +162,16 @@ setup(props) {
 }
 ```
 
-The `FieldsStore` fetches all of the collection’s fields, the `PermissionsStore` checks the current user’s access to the collection, and the `Collection` store for fetching information about the selected collection and the API for performing the final POST request.
+The `FieldsStore` fetches all of the collection’s fields, the `PermissionsStore` checks the current user’s access to the
+collection, and the `Collection` store for fetching information about the selected collection and the API for performing
+the final POST request.
 
-You will also need to capture a response to present to the user. The `response_format` contains a templated string where the user can create their own response with data from the API. A `v-dialog` can show an important message to the user. This requires a boolean value (here `responseDialoge`) to control the visibility of the dialog box.
+You will also need to capture a response to present to the user. The `response_format` contains a string where
+the user can create their own response with data from the API. A `v-dialog` can show an important message to the user.
+This requires a boolean value (here `responseDialoge`) to control the visibility of the dialog box.
 
-Create a `getFields` function to fetch the detailed information for each selected field then call the function afterwards so it populates the variable when the panel loads:
+Create a `getFields` function to fetch the detailed information for each selected field then call the function
+afterwards so it populates the variable when the panel loads:
 
 ```js
 function getFields() {
@@ -176,7 +184,8 @@ function getFields() {
 fetchData();
 ```
 
-If the fields, collection, or response format is changed, the `getFields` function will need to be called again. Use the following code:
+If the fields, collection, or response format is changed, the `getFields` function will need to be called again. Use the
+following code:
 
 ```js
 watch(
@@ -191,7 +200,9 @@ watch(
 );
 ```
 
-Create a `submitForm` function. This will will send the contents of `formData` to the selected collection and capture the response, resetting the form once successful. If an error occurs, the response is captured in the `formError` variable:
+Create a `submitForm` function. This will send the contents of `formData` to the selected collection and capture
+the response, resetting the form once successful. If an error occurs, the response is captured in the `formError`
+variable:
 
 ```js
 function submitForm() {
@@ -207,9 +218,10 @@ function submitForm() {
 }
 ```
 
-To show the repsonse, the `responseDialog` variable is changed to `true`.
+To show the response, the `responseDialog` variable is changed to `true`.
 
-In the successful response, it will be useful to have a link to the new record. Create the following function to build the URL for the newly created item:
+In the successful response, it will be useful to have a link to the new record. Create the following function to build
+the URL for the newly created item:
 
 ```js
 function getLinkForItem(item) {
@@ -227,7 +239,8 @@ return { hasPermission, primaryKeyField, formData, fieldData, submitForm, formRe
 
 ## Build the View
 
-Back to the template section, remove all the content between the template tags, then add the following code to handle the permissions:
+Back to the template section, remove all the content between the template tags, then add the following code to handle
+the permissions:
 
 ```vue
 <template>
@@ -240,9 +253,12 @@ Back to the template section, remove all the content between the template tags, 
 </template>
 ```
 
-To help with small and large panel layouts, add the class `small` when the width is less than `30`, otherwise add the class `large`. This allows you to use CSS to style the form.
+To help with small and large panel layouts, add the class `small` when the width is less than `30`, otherwise add the
+class `large`. This allows you to use CSS to style the form.
 
-Add the following inside the panel - it will send the `fields` inside `fieldData` to the form component. This will render the form and capture the outputs into the `formData` model. Below that add a button to submit the data to the API.
+Add the following inside the panel - it will send the `fields` inside `fieldData` to the form component. This will
+render the form and capture the outputs into the `formData` model. Below that add a button to submit the data to the
+API.
 
 ```vue
 <v-form v-if="fieldData" :fields="fieldData" v-model="formData" />
@@ -252,11 +268,14 @@ Add the following inside the panel - it will send the `fields` inside `fieldData
 
 :::info Secondary Button
 
-The secondary button shows an inactive button when the form is not ready to submit. Use this conditional for any further validation.
+The secondary button shows an inactive button when the form is not ready to submit. Use this conditional for any further
+validation.
 
 :::
 
-Under the submit button, create the `v-dialog` component. This uses the `responseDialog` variable for visibility. Inside the dialog, create some notices for various situations such as Success (primary key field exists), Error (formError has value) and Empty:
+Under the submit button, create the `v-dialog` component. This uses the `responseDialog` variable for visibility. Inside
+the dialog, create some notices for various situations such as Success (primary key field exists), Error (`formError` has
+value) and Empty:
 
 ```vue
 <v-dialog v-model="responseDialog" @esc="responseDialog = false">
@@ -282,7 +301,8 @@ Under the submit button, create the `v-dialog` component. This uses the `respons
 </v-dialog>
 ```
 
-Use a `blockquote` to output a response using the `response_format` value and the `render-template` component. When you supply the `collection`, `template`, and `formResponse` to this component, it will replace all placeholder variables.
+Use a `blockquote` to output a response using the `response_format` value and the `render-template` component. When you
+supply the `collection`, `template`, and `formResponse` to this component, it will replace all placeholder variables.
 
 If the form response is empty, output `formError` which contains the details of the error.
 
@@ -303,11 +323,11 @@ Lastly, replace the CSS at the bottom with this:
 </style>
 ```
 
-When it's all put together, the panel looks like this: 
+When it's all put together, the panel looks like this:
 
 <!-- IMG -->
 
-And the response looks like this: 
+And the response looks like this:
 
 <!-- IMG -->
 
@@ -349,7 +369,8 @@ Fill in the configuration fields as needed:
 
 ## Summary
 
-With this panel, you can create forms to create items in your collections. You have worked with the `FieldsStore` and `PermissionsStore`, and can further expand on this example for other changes to your database. 
+With this panel, you can create forms to create items in your collections. You have worked with the `FieldsStore` and
+`PermissionsStore`, and can further expand on this example for other changes to your database.
 
 ## Complete Code
 
@@ -447,7 +468,7 @@ export default {
 				<blockquote v-else-if="formError" class="">
 					{{ formError }}
 				</blockquote>
-				
+
 				<v-button  @click="responseDialog = false">Done</v-button>
 			</v-sheet>
 		</v-dialog>
@@ -485,7 +506,7 @@ export default {
 		const hasPermission = permissionsStore(props.collection, 'create');
 		const api = useApi();
 		const { primaryKeyField } = useCollection(props.collection);
-		
+
 		const formData = ref({});
 		const fieldData = ref([]);
 

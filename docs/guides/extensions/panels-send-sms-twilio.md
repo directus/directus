@@ -50,8 +50,8 @@ With the information above, the panel will appear in the list like this:
 <img alt="Twilio SMS - Send a SMS from a panel. A chat icon is shown in the box." src="https://marketing.directus.app/assets/c2863cc4-2e66-44b0-81bd-e9a3f25d22c1.png" style="padding: 6px 7px 8px 8px;">
 
 The Panel will need some configuration to be able to send messages such as the Twilio account, the sending number, where
-to find the contacts and some visual customization. In the `options` section, add two fields to collect the Twilio
-Phone Number and Account SID:
+to find the contacts and some visual customization. In the `options` section, add two fields to collect the Twilio Phone
+Number and Account SID:
 
 ```js
 {
