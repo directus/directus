@@ -111,7 +111,18 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 		? Object.entries(values).filter(([_k, v]) => typeof v === 'string' && v.length > 0)
 		: [];
 
+	const seen = new WeakSet();
+
 	return (_key: string, value: unknown) => {
+		// Skip circular values
+		if (typeof value === 'object' && value !== null) {
+			if (seen.has(value)) {
+				return;
+			}
+
+			seen.add(value);
+		}
+
 		if (value instanceof Error) {
 			return {
 				name: value.name,
