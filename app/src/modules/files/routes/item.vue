@@ -114,13 +114,7 @@
 		</template>
 
 		<div class="file-item">
-			<div v-if="item" class="preview">
-				<file-preview :src="fileSrc" :mime="item.type" :width="item.width" :height="item.height" :title="item.title" />
-
-				<button class="replace-toggle" @click="replaceFileDialogActive = true">
-					{{ t('replace_file') }}
-				</button>
-			</div>
+			<file-preview-replace v-if="item" class="preview" :file="item" @replace="refresh" />
 
 			<image-editor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
 
@@ -159,8 +153,6 @@
 			/>
 			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
-
-		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
 	</private-view>
 </template>
 
@@ -174,7 +166,7 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import FilePreview from '@/views/private/components/file-preview.vue';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
@@ -185,7 +177,6 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import ReplaceFile from '../components/replace-file.vue';
 import FilesNotFound from './not-found.vue';
 
 const props = defineProps<{
@@ -199,7 +190,6 @@ const router = useRouter();
 const form = ref<HTMLElement>();
 const { primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
-const replaceFileDialogActive = ref(false);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
@@ -212,14 +202,6 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const editActive = ref(false);
-
-const fileSrc = computed(() => {
-	if (item.value && item.value.modified_on) {
-		return `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`;
-	}
-
-	return `assets/${props.primaryKey}?key=system-large-contain`;
-});
 
 // These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
 const fieldsDenyList: string[] = [
@@ -401,12 +383,5 @@ function useMovetoFolder() {
 
 .preview {
 	margin-bottom: var(--form-vertical-gap);
-}
-
-.replace-toggle {
-	color: var(--primary);
-	cursor: pointer;
-	font-weight: 600;
-	margin-top: 12px;
 }
 </style>
