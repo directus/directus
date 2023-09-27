@@ -1,6 +1,6 @@
 <template>
 	<v-drawer
-		:title="t('promote_version_drawer_title', { version: currentVersion.name })"
+		:title="t('promote_version_drawer_title', { version: currentVersionDisplayName })"
 		class="version-drawer"
 		persistent
 		:model-value="active"
@@ -44,7 +44,7 @@
 					>
 						<v-icon name="looks_two" />
 						<version-promote-field class="field-content" :value="comparedData?.current[field.field]" />
-						<v-chip class="version" x-small>{{ currentVersion.name }}</v-chip>
+						<v-chip class="version" x-small>{{ currentVersionDisplayName }}</v-chip>
 						<v-icon :name="selectedFields.includes(field.field) ? 'check' : 'close'" />
 					</div>
 				</div>
@@ -62,7 +62,7 @@
 		<v-dialog v-model="confirmDeleteOnPromoteDialogActive" @esc="confirmDeleteOnPromoteDialogActive = false">
 			<v-card>
 				<v-card-title>
-					{{ t('delete_on_promote_copy', { version: getVersionDisplayName(currentVersion) }) }}
+					{{ t('delete_on_promote_copy', { version: currentVersionDisplayName }) }}
 				</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="promote(false)">{{ t('keep') }}</v-button>
@@ -131,6 +131,10 @@ const emit = defineEmits<{
 	cancel: [];
 	promote: [deleteOnPromote: boolean];
 }>();
+
+const currentVersionDisplayName = computed(() =>
+	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name
+);
 
 const isOutdated = computed(() => comparedData.value?.outdated ?? false);
 
@@ -244,10 +248,6 @@ function useTab() {
 	const currentTab = ref([tabs[0]!.value]);
 
 	return { tabs, currentTab };
-}
-
-function getVersionDisplayName(version: Version) {
-	return isNil(version.name) ? version.key : version.name;
 }
 </script>
 
