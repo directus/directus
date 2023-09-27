@@ -53,12 +53,12 @@ type Folder = {
 };
 
 const props = defineProps<{
-	disabledFolders?: string[];
 	modelValue: string | null;
+	disabledFolders?: string[];
 }>();
 
 defineEmits<{
-	(e: 'update:modelValue', value: string | null): void;
+	'update:modelValue': [value: string | null];
 }>();
 
 const { t } = useI18n();

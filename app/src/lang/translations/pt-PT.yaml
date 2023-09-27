@@ -322,6 +322,7 @@ move: Mover
 system: Sistema
 add_field_related: Adicionar Campo à Coleção Relacionada
 interface_label: Interface
+display_label: Visualização
 today: Hoje
 yesterday: Ontem
 delete_comment: Remover comentário
@@ -889,6 +890,8 @@ interfaces:
     hash: Hash
   system-interface:
     interface: Interface
+  system-display:
+    display: Visualização
   select-dropdown-m2o:
     display_template: Templates de Exibição
   input-rich-text-md:

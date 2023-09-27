@@ -152,6 +152,7 @@ item_create_success: Kreirana stavka
 item_update_success: Postavka kreirana
 item_delete_success: Stavka je izbrisana
 this_collection: Ova zbirka
+display_label: Pokazatelj
 functions:
   count: Zbir
 months:
@@ -286,6 +287,8 @@ interfaces:
     files: Фајлови
   input-hash:
     hash: Isečak
+  system-display:
+    display: Pokazatelj
   tags:
     tags: Ознаке
   input-block-editor:

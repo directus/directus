@@ -360,6 +360,7 @@ move: सार्नुहोस्
 system: प्रणाली
 add_field_related: सम्बन्धित संग्रहमा फिल्ड थप्नुहोस्
 interface_label: इन्टरफेस
+display_label: डिस्प्ले
 today: आज
 yesterday: हिजो
 delete_comment: टिप्पणी मेटाउनुहोस्
@@ -1453,6 +1454,8 @@ interfaces:
     placeholder: इन्टरफेस चयन गर्नुहोस्...
   system-interface-options:
     interface-options: इन्टरफेस विकल्प
+  system-display:
+    display: डिस्प्ले
   list-m2m:
     many-to-many: धेरै देखि धेरै
   select-dropdown-m2o:
@@ -1494,6 +1497,7 @@ interfaces:
     sort: क्रमबद्ध
     sort_placeholder: म्यानुअल
     incompatible_data: "हालको डाटा रिपीटर इन्टरफेससँग उपयुक्त छैन र रिपीटरमा वस्तुहरू थप्दा ओभरराइड गरिनेछ।\n"
+    interface_group: इन्टरफेस विकल्प
   slider:
     slider: स्लाइडर
   tags:

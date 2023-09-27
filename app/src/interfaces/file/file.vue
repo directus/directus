@@ -163,25 +163,20 @@ type FileInfo = {
 	type: string;
 };
 
-const props = withDefaults(
-	defineProps<{
-		value?: string | Record<string, any> | null;
-		disabled?: boolean;
-		folder?: string;
-		collection: string;
-		field: string;
-	}>(),
-	{
-		value: () => null,
-		disabled: false,
-		folder: undefined,
-	}
-);
+const props = defineProps<{
+	value: string | Record<string, any> | null;
+	disabled?: boolean;
+	folder?: string;
+	collection: string;
+	field: string;
+}>();
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: string | Record<string, any> | null];
+}>();
 
 const value = computed({
-	get: () => props.value ?? null,
+	get: () => props.value,
 	set: (value) => {
 		emit('input', value);
 	},

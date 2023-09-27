@@ -367,6 +367,7 @@ move: Mutare
 system: Sistem
 add_field_related: Adaugă câmp la colecția conexă
 interface_label: Interfață
+display_label: Afişare
 today: Azi
 yesterday: Ieri
 delete_comment: Ștergere comentariu
@@ -1440,6 +1441,8 @@ interfaces:
   system-interface-options:
     interface-options: Opțiuni interfață
     description: Un modal pentru selectarea opțiunilor unei interfețe
+  system-display:
+    display: Afişare
   list-m2m:
     many-to-many: Multe la multe
     description: Selectaţi mai multe elemente de joncţiune asociate
@@ -1502,6 +1505,7 @@ interfaces:
     sort: Sortează
     field_note_placeholder: Introduceți nota câmpului...
     incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
+    interface_group: Opțiuni interfață
   slider:
     slider: Glisor
     description: Selectați un număr folosind un glisor
