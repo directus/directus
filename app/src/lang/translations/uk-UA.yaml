@@ -374,6 +374,7 @@ move: Перемістити
 system: Система
 add_field_related: Додати поле до пов'язаної колекції
 interface_label: Інтерфейс
+display_label: Відображати
 today: Сьогодні
 yesterday: Вчора
 delete_comment: Видалити коментар
@@ -1557,6 +1558,8 @@ interfaces:
   system-interface-options:
     interface-options: Опції інтерфейсу
     description: Плагін для вибору опцій інтерфейсу
+  system-display:
+    display: Відображати
   list-m2m:
     many-to-many: Багато до багатьох
     description: Вибрати кілька пов'язаних об'єктів
@@ -1621,6 +1624,7 @@ interfaces:
     sort_placeholder: Ручний режим
     field_note_placeholder: Примітка до поля...
     incompatible_data: Поточні дані не сумісні з інтерфейсом ретранслятора і будуть замінені під час додавання елементів до ретранслятора
+    interface_group: Опції інтерфейсу
   slider:
     slider: Слайдер
     description: Виберіть номер за допомогою слайдера

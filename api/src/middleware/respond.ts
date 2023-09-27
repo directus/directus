@@ -59,7 +59,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
 
 		const filter: Filter = {
-			name: { _eq: req.sanitizedQuery.version },
+			key: { _eq: req.sanitizedQuery.version },
 			collection: { _eq: req.collection },
 		};
 

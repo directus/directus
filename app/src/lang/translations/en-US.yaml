@@ -102,15 +102,20 @@ delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
 version: Version
+version_key: Version Key
 version_name: Version Name
 main_version: Main
+switch_version: Switch Version
+switch_version_copy: Are you sure you want to switch to the "{version}" version?
 create_version: Create Version
-switch_to_version_after_creation: Switch to Version After Creation
-rename_version: Rename Version
+update_version: Update Version
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
+promote_version_disabled: No changes selected
 promote_version_drawer_title: Promote {version} into Main
+promote_version_changes: Changes
+promote_version_preview: Preview
 outdated_notice: >-
   The main item has been updated since this version was created. Please review all the field values below, and confirm
   which version should be used when promoting this version into the main item.
@@ -169,6 +174,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  email: Value has to be a valid email address
   regex: Value doesn't have the correct format
   starts_with: Value has to start with {substring}
   istarts_with: Value has to start with {substring}
@@ -422,6 +428,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -780,6 +787,7 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 interface_options: Interface Options
+display_options: Display Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
@@ -1498,6 +1506,7 @@ search: Search
 select_existing: Select Existing
 select_field_type: Select a field type
 select_interface: Select an interface
+select_display: Select a display
 settings: Settings
 sign_in: Sign In
 sign_out: Sign Out
@@ -1667,6 +1676,13 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
+    description: Select an existing display
+    placeholder: Select an display...
+  system-display-options:
+    display-options: Display Options
+    description: A modal for selecting options of a display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1738,6 +1754,9 @@ interfaces:
     incompatible_data:
       The current data is not compatible with the repeater interface and will be overridden when adding items to the
       repeater
+    interface_group: Interface Options
+    display_group: Display Options
+
   slider:
     slider: Slider
     description: Select a number using a slider

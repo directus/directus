@@ -216,13 +216,7 @@ router.get(
 
 		const current = assign({}, ...saves);
 
-		const fields = Object.keys(current);
-
-		const main = await service.getMainItem(
-			version['collection'],
-			version['item'],
-			fields.length > 0 ? { fields } : undefined
-		);
+		const main = await service.getMainItem(version['collection'], version['item']);
 
 		res.locals['payload'] = { data: { outdated, mainHash, current, main } };
 
