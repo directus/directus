@@ -45,16 +45,18 @@ export const updateFiles =
 export const updateFile =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		key: DirectusFile<Schema>['id'],
-		item: Partial<DirectusFile<Schema>>,
+		item: Partial<DirectusFile<Schema>> | FormData,
 		query?: TQuery
 	): RestCommand<UpdateFileOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');
 
+		const data = item instanceof FormData ? item : JSON.stringify(item);
+
 		return {
 			path: `/files/${key}`,
 			params: query ?? {},
-			body: JSON.stringify(item),
+			body: data,
 			method: 'PATCH',
 		};
 	};
