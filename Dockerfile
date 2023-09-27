@@ -42,7 +42,7 @@ RUN : \
 
 FROM node:18-alpine AS runtime
 
-RUN npm install --global pm2
+RUN npm install --global pm2@5
 
 USER node
 
