@@ -51,12 +51,20 @@ export const updateFile =
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');
 
-		const data = item instanceof FormData ? item : JSON.stringify(item);
+		if (item instanceof FormData) {
+			return {
+				path: `/files/${key}`,
+				params: query ?? {},
+				body: item,
+				method: 'PATCH',
+				headers: { 'Content-Type': 'multipart/form-data' },
+			};
+		}
 
 		return {
 			path: `/files/${key}`,
 			params: query ?? {},
-			body: data,
+			body: JSON.stringify(item),
 			method: 'PATCH',
 		};
 	};
