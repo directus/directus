@@ -121,7 +121,14 @@ export async function createServer(): Promise<http.Server> {
 
 	async function onSignal() {
 		getSubscriptionController()?.terminate();
-		getWebSocketController()?.terminate();
+
+		try {
+			const websocketController = getWebSocketController();
+			websocketController.terminate();
+		} catch {
+			// WebSocket is disabled, its termination can be skipped
+		}
+
 		const database = getDatabase();
 		await database.destroy();
 
