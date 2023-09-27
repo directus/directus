@@ -286,7 +286,7 @@ props: {
 },
 ```
 
-After the `props`, create a `setup(props)` section ad create the variables needed:
+After the `props`, create a `setup(props)` section and create the variables needed:
 
 ```js
 
