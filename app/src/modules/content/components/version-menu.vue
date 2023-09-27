@@ -223,7 +223,7 @@ function useSwitchDialog() {
 	};
 
 	function switchVersion(version?: Version | null) {
-		switchTarget.value = version ?? null;
+		if (version !== undefined) switchTarget.value = version;
 
 		if (hasEdits.value && !switchDialogActive.value) {
 			switchDialogActive.value = true;
