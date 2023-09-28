@@ -20,18 +20,12 @@
 		</template>
 
 		<div class="drawer-item-content">
-			<file-preview
-				v-if="file"
-				:src="file.src"
-				:mime="file.type"
-				:width="file.width"
-				:height="file.height"
-				:title="file.title"
-				:in-modal="true"
-			/>
+			<file-preview-replace v-if="file" class="preview" :file="file" :in-modal="true" @replace="refresh" />
+
 			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
 				{{ t('no_visible_fields_copy') }}
 			</v-info>
+
 			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
 				<v-form
 					v-if="junctionField"
@@ -87,7 +81,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import FilePreview from '@/views/private/components/file-preview.vue';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -138,7 +132,7 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField } =
 	useRelation();
 
-const { internalEdits, loading, initialValues } = useItem();
+const { internalEdits, loading, initialValues, refresh } = useItem();
 const { save, cancel } = useActions();
 
 const { collection } = toRefs(props);
@@ -244,11 +238,10 @@ function useFile() {
 
 	const file = computed(() => {
 		if (isDirectusFiles.value === false || !initialValues.value) return null;
-		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
-		if (!fileData) return null;
 
-		const src = `assets/${fileData.id}?key=system-large-contain`;
-		return { ...fileData, src };
+		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
+
+		return fileData || null;
 	});
 
 	return { file, isDirectusFiles };
@@ -291,7 +284,15 @@ function useItem() {
 		{ immediate: true }
 	);
 
-	return { internalEdits, loading, initialValues, fetchItem };
+	return { internalEdits, loading, initialValues, refresh };
+
+	async function refresh() {
+		if (props.active) {
+			loading.value = false;
+			if (props.primaryKey !== '+') fetchItem();
+			if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
+		}
+	}
 
 	async function fetchItem() {
 		if (!props.primaryKey) return;
@@ -448,9 +449,10 @@ function useActions() {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 
-	.file-preview {
+	.preview {
 		margin-bottom: var(--form-vertical-gap);
 	}
+
 	.drawer-item-order {
 		&.swap {
 			display: flex;

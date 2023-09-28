@@ -349,7 +349,7 @@ function useBreadcrumb() {
 function useMovetoFolder() {
 	const moveToDialogActive = ref(false);
 	const moving = ref(false);
-	const selectedFolder = ref<number | null>();
+	const selectedFolder = ref<string | null>(null);
 
 	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 

@@ -8,7 +8,7 @@ contributors: Rijk Van Zanten, Esther Agbaje
 
 To create an extension, use the `create-directus-extension` utility:
 
-```bash
+```shell
 npx create-directus-extension@latest
 ```
 
