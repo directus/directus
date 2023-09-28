@@ -1,14 +1,3 @@
-<template>
-	<div class="v-info" :class="[type, { center }]">
-		<div v-if="icon !== false" class="icon">
-			<v-icon large :name="icon" />
-		</div>
-		<h2 class="title type-title">{{ title }}</h2>
-		<p class="content"><slot /></p>
-		<slot name="append" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import VIcon from './v-icon/v-icon.vue';
 
@@ -29,6 +18,17 @@ withDefaults(defineProps<Props>(), {
 	center: false,
 });
 </script>
+
+<template>
+	<div class="v-info" :class="[type, { center }]">
+		<div v-if="icon !== false" class="icon">
+			<v-icon large :name="icon" />
+		</div>
+		<h2 class="title type-title">{{ title }}</h2>
+		<p class="content"><slot /></p>
+		<slot name="append" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-info {

@@ -1,7 +1,3 @@
-<template>
-	<v-form v-model="conditionsSync" :fields="fields" :loading="loading" />
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { DeepPartial, Field } from '@directus/types';
@@ -179,3 +175,7 @@ const fields = computed(() => [
 	},
 ]);
 </script>
+
+<template>
+	<v-form v-model="conditionsSync" :fields="fields" :loading="loading" />
+</template>

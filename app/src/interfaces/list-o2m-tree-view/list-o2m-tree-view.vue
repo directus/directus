@@ -1,29 +1,3 @@
-<template>
-	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
-		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
-	</v-notice>
-	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
-	</v-notice>
-	<div v-else class="tree-view">
-		<nested-draggable
-			v-model="_value"
-			:template="template"
-			:collection="collection"
-			:field="field"
-			:primary-key="primaryKey"
-			:relation-info="relationInfo"
-			:disabled="disabled"
-			:fields="fields"
-			:enable-create="enableCreate"
-			:enable-select="enableSelect"
-			:custom-filter="customFilter"
-			:items-moved="itemsMoved"
-			root
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
@@ -139,6 +113,32 @@ const fields = computed(() => {
 	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
 });
 </script>
+
+<template>
+	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
+		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
+	</v-notice>
+	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ t('no_singleton_relations') }}
+	</v-notice>
+	<div v-else class="tree-view">
+		<nested-draggable
+			v-model="_value"
+			:template="template"
+			:collection="collection"
+			:field="field"
+			:primary-key="primaryKey"
+			:relation-info="relationInfo"
+			:disabled="disabled"
+			:fields="fields"
+			:enable-create="enableCreate"
+			:enable-select="enableSelect"
+			:custom-filter="customFilter"
+			:items-moved="itemsMoved"
+			root
+		/>
+	</div>
+</template>
 
 <style scoped>
 :deep(ul),

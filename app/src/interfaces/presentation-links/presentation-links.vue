@@ -1,21 +1,3 @@
-<template>
-	<div class="presentation-links">
-		<v-button
-			v-for="(link, index) in linksParsed"
-			:key="index"
-			class="action"
-			:class="[link.type]"
-			:secondary="link.type !== 'primary'"
-			:icon="!link.label"
-			:href="link.href"
-			:to="link.to"
-		>
-			<v-icon v-if="link.icon" left :name="link.icon" />
-			<span v-if="link.label">{{ link.label }}</span>
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useItem } from '@/composables/use-item';
 import { useCollection } from '@directus/composables';
@@ -93,6 +75,24 @@ const linksParsed = computed(() => {
 	});
 });
 </script>
+
+<template>
+	<div class="presentation-links">
+		<v-button
+			v-for="(link, index) in linksParsed"
+			:key="index"
+			class="action"
+			:class="[link.type]"
+			:secondary="link.type !== 'primary'"
+			:icon="!link.label"
+			:href="link.href"
+			:to="link.to"
+		>
+			<v-icon v-if="link.icon" left :name="link.icon" />
+			<span v-if="link.label">{{ link.label }}</span>
+		</v-button>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .presentation-links {

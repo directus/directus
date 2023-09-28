@@ -1,70 +1,3 @@
-<template>
-	<v-list nav>
-		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
-			<v-list-item v-for="n in 4" :key="n">
-				<v-skeleton-loader type="list-item-icon" />
-			</v-list-item>
-		</template>
-
-		<div class="folders">
-			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
-				<v-list-group
-					clickable
-					:active="(!currentFolder && !currentSpecial) || (currentFolder !== undefined && currentFolder === rootFolder)"
-					:value="rootFolder ?? 'root'"
-					scope="files-navigation"
-					exact
-					disable-groupable-parent
-					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
-					@click="onClick(rootFolder ? { folder: rootFolder } : {})"
-				>
-					<template #activator>
-						<v-list-item-icon>
-							<v-icon name="folder_special" outline />
-						</v-list-item-icon>
-						<v-list-item-content>
-							<v-text-overflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
-							<v-text-overflow v-else :text="t('file_library')" />
-						</v-list-item-content>
-					</template>
-
-					<navigation-folder
-						v-for="folder in nestedFolders"
-						:key="folder.id"
-						:click-handler="onClick"
-						:folder="folder"
-						:current-folder="currentFolder"
-						:actions-disabled="actionsDisabled"
-					/>
-				</v-list-group>
-			</v-item-group>
-		</div>
-
-		<v-divider />
-
-		<v-list-item clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
-			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="t('all_files')" />
-			</v-list-item-content>
-		</v-list-item>
-
-		<v-list-item clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
-			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="t('my_files')" />
-			</v-list-item-content>
-		</v-list-item>
-
-		<v-list-item clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
-			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="t('recent_files')" />
-			</v-list-item-content>
-		</v-list-item>
-	</v-list>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { watch, computed, toRefs } from 'vue';
@@ -146,6 +79,73 @@ function setOpenFolders() {
 	}
 }
 </script>
+
+<template>
+	<v-list nav>
+		<template v-if="loading && (nestedFolders === null || nestedFolders.length === 0)">
+			<v-list-item v-for="n in 4" :key="n">
+				<v-skeleton-loader type="list-item-icon" />
+			</v-list-item>
+		</template>
+
+		<div class="folders">
+			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
+				<v-list-group
+					clickable
+					:active="(!currentFolder && !currentSpecial) || (currentFolder !== undefined && currentFolder === rootFolder)"
+					:value="rootFolder ?? 'root'"
+					scope="files-navigation"
+					exact
+					disable-groupable-parent
+					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
+					@click="onClick(rootFolder ? { folder: rootFolder } : {})"
+				>
+					<template #activator>
+						<v-list-item-icon>
+							<v-icon name="folder_special" outline />
+						</v-list-item-icon>
+						<v-list-item-content>
+							<v-text-overflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
+							<v-text-overflow v-else :text="t('file_library')" />
+						</v-list-item-content>
+					</template>
+
+					<navigation-folder
+						v-for="folder in nestedFolders"
+						:key="folder.id"
+						:click-handler="onClick"
+						:folder="folder"
+						:current-folder="currentFolder"
+						:actions-disabled="actionsDisabled"
+					/>
+				</v-list-group>
+			</v-item-group>
+		</div>
+
+		<v-divider />
+
+		<v-list-item clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
+			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="t('all_files')" />
+			</v-list-item-content>
+		</v-list-item>
+
+		<v-list-item clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
+			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="t('my_files')" />
+			</v-list-item-content>
+		</v-list-item>
+
+		<v-list-item clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
+			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="t('recent_files')" />
+			</v-list-item-content>
+		</v-list-item>
+	</v-list>
+</template>
 
 <style lang="scss" scoped>
 .v-skeleton-loader {

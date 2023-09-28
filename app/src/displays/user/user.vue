@@ -1,25 +1,3 @@
-<template>
-	<user-popover v-if="value" :user="value.id">
-		<div class="user" :class="display">
-			<v-image
-				v-if="(display === 'avatar' || display === 'both') && src"
-				:src="src"
-				role="presentation"
-				:alt="value && userName(value)"
-				:class="{ circle }"
-			/>
-			<img
-				v-else-if="(display === 'avatar' || display === 'both') && src === null"
-				src="../../assets/avatar-placeholder.svg"
-				role="presentation"
-				:alt="value && userName(value)"
-				:class="{ circle }"
-			/>
-			<span v-if="display === 'name' || display === 'both'">{{ userName(value) }}</span>
-		</div>
-	</user-popover>
-</template>
-
 <script setup lang="ts">
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
@@ -46,6 +24,28 @@ const src = computed(() => {
 	return null;
 });
 </script>
+
+<template>
+	<user-popover v-if="value" :user="value.id">
+		<div class="user" :class="display">
+			<v-image
+				v-if="(display === 'avatar' || display === 'both') && src"
+				:src="src"
+				role="presentation"
+				:alt="value && userName(value)"
+				:class="{ circle }"
+			/>
+			<img
+				v-else-if="(display === 'avatar' || display === 'both') && src === null"
+				src="../../assets/avatar-placeholder.svg"
+				role="presentation"
+				:alt="value && userName(value)"
+				:class="{ circle }"
+			/>
+			<span v-if="display === 'name' || display === 'both'">{{ userName(value) }}</span>
+		</div>
+	</user-popover>
+</template>
 
 <style lang="scss" scoped>
 .user {
