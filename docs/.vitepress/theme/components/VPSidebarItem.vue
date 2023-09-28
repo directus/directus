@@ -84,8 +84,10 @@ function onCaretClick() {
 			<div class="indicator" />
 
 			<VPLink v-if="item.link" :tag="linkTag" class="link" :href="item.link">
+				<!-- eslint-disable-next-line vue/no-v-text-v-html-on-component vue/no-v-html -->
 				<component :is="textTag" class="text" v-html="item.text" />
 			</VPLink>
+			<!-- eslint-disable-next-line vue/no-v-text-v-html-on-component vue/no-v-html -->
 			<component :is="textTag" v-else class="text" v-html="item.text" />
 
 			<div
