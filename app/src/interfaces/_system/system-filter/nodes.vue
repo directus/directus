@@ -167,7 +167,9 @@ const filterSync = computed({
 		return props.filter.all_filters;
 	},
 	set(newVal) {
-		emit(`update:filter`, { ...props.filter, all_filters: newVal });
+		console.log(newVal);
+
+		emit('update:filter', { ...props.filter, all_filters: newVal });
 	},
 });
 

@@ -171,16 +171,13 @@ const innerValue = computed<Filter[]>({
 const innerValueCopy = computed<FilterLayoutOptions>({
 	get() {
 		if (!props.layout_opts || isEmpty(props.layout_opts.all_filters)) return { all_filters: [], disabled_filters: [] }
-
-		// console.log(props.layout_opts);
-
-		// ?
 		return cloneDeep({ all_filters: props.layout_opts.all_filters, disabled_filters: props.layout_opts.disabled_filters })
 	},
 	set(lo) {
 		console.log(lo);
+
 		if (lo.all_filters.length === 0) {
-			emit('inputLO', { all_filters: [], disabled_filters: [] });
+			emit('inputLO', null);
 		} else {
 			emit('inputLO', { all_filters: lo.all_filters, disabled_filters: lo.disabled_filters });
 		}
@@ -193,28 +190,34 @@ const innerValueCopy = computed<FilterLayoutOptions>({
 // }
 // innerValue.value = []
 
+watch(() => innerValueCopy.value, () => {
+	console.log('on innerValueCopy change', innerValueCopy)
+	updateInnerValue()
+}, { deep: true })
+
 watch([innerValueCopy, innerValue], () => {
 	console.log('innerValueCopy', innerValueCopy.value);
 	console.log('innerValue', innerValue.value);
 }, { deep: true, immediate: true })
 
 function emitValue() {
-	if (innerValue.value.length === 0) {
-		emit('input', null);
+	if (innerValueCopy.value.all_filters.length === 0) {
+		emit('inputLO', null);
 	} else {
-		emit('input', { _and: innerValue.value });
+		emit('inputLO', { all_filters: innerValueCopy.value.all_filters, disabled_filters: innerValueCopy.value.disabled_filters });
 	}
 }
 
 function addNode(key: string) {
 	if (key === '$group') {
-		innerValue.value = innerValue.value.concat({ _and: [] });
-		// innerValueCopy.value.all_filters.concat({ _and: [] });
+		// innerValue.value = innerValue.value.concat({ _and: [] });
 
 		innerValueCopy.value = {
 			...innerValueCopy.value,
 			all_filters: innerValueCopy.value.all_filters.concat({ _and: [] })
 		}
+
+		updateInnerValue()
 	} else {
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);
@@ -239,37 +242,38 @@ function addNode(key: string) {
 		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
-		innerValue.value = innerValue.value.concat(node);
-		// innerValueCopy.value.all_filters.concat(node);
+		// innerValue.value = innerValue.value.concat(node);
 
 		innerValueCopy.value = {
 			...innerValueCopy.value,
 			all_filters: innerValueCopy.value.all_filters.concat(node)
 		}
 
+		updateInnerValue()
 	}
 }
 
 function removeNode(ids: string[], filter: Filter) {
 	const id = ids.pop();
-	const isFieldDisabled = innerValueCopy.value.disabled_filters.includes(Number(id))
+	// const isFieldDisabled = innerValueCopy.value.disabled_filters.includes(Number(id))
 
 	if (ids.length === 0) {
 
+		// if(!isFieldDisabled) {
 
-		if(!isFieldDisabled) {
+		// 	const deleteInd = getInnerValueDeleteInd(Number(id), filter)
 
-			const deleteInd = getInnerValueDeleteInd(Number(id), filter)
-
-			innerValue.value = innerValue.value.filter((node, index) => index !== deleteInd);
-		}
+		// 	innerValue.value = innerValue.value.filter((node, index) => index !== deleteInd);
+		// }
 
 
 		innerValueCopy.value = {
 			...innerValueCopy.value,
-			all_filters: innerValueCopy.value.all_filters.filter((node, index) => index !== Number(id)),
 			disabled_filters: innerValueCopy.value.disabled_filters.filter(ind => ind !== Number(id)),
+			all_filters: innerValueCopy.value.all_filters.filter((node, index) => index !== Number(id)),
 		}
+
+		updateInnerValue()
 
 		return;
 	}
@@ -289,6 +293,10 @@ function removeNode(ids: string[], filter: Filter) {
 		return deleteAtIndex
 	}
 
+}
+
+function updateInnerValue() {
+	innerValue.value = innerValueCopy.value.all_filters.filter((f, ind) => !innerValueCopy.value.disabled_filters.includes(ind))
 }
 
 // For adding any new fields (eg. flow Validate operation rule)
