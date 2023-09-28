@@ -1,0 +1,15 @@
+{
+	"$schema": "../../../schema.json",
+	"name": "Directus Light (Default)",
+	"appearance": "light",
+	"variables": {
+		"$red": "red"
+	},
+	"rules": {
+		"foreground": "$red",
+		"moduleBar": {
+			"background": "#000",
+			"foreground": "#fff"
+		}
+	}
+}

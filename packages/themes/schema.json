@@ -1,0 +1,74 @@
+{
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"appearance": {
+			"anyOf": [
+				{
+					"const": "light",
+					"type": "string"
+				},
+				{
+					"const": "dark",
+					"type": "string"
+				}
+			]
+		},
+		"variables": {
+			"type": "object",
+			"patternProperties": {
+				"^(.*)$": {
+					"anyOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "string"
+						},
+						{
+							"type": "integer"
+						},
+						{
+							"type": "string"
+						}
+					]
+				}
+			}
+		},
+		"rules": {
+			"type": "object",
+			"properties": {
+				"foreground": {
+					"type": "string"
+				},
+				"moduleBar": {
+					"type": "object",
+					"properties": {
+						"foreground": {
+							"type": "string"
+						},
+						"background": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"foreground",
+						"background"
+					]
+				}
+			},
+			"required": [
+				"foreground",
+				"moduleBar"
+			]
+		}
+	},
+	"required": [
+		"name",
+		"appearance",
+		"variables",
+		"rules"
+	]
+}

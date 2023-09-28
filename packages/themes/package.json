@@ -19,7 +19,8 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist"
+		"dist",
+		"schema.json"
 	],
 	"scripts": {
 		"build": "vite build",
