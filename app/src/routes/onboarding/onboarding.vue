@@ -57,15 +57,15 @@ import UserSlide from './slides/user.vue';
 import WelcomeSlide from './slides/welcome.vue';
 
 const { t } = useI18n();
+const router = useRouter();
+
 const currentSlideIndex = ref(0);
 const slides = [WelcomeSlide, ProjectSlide, UserSlide];
-// const slides = [ 1, 2, 3 ];
 const slideCount = slides.length;
 const progressPercent = computed(() => (currentSlideIndex.value / slideCount) * 100);
 const isFirstSlide = computed(() => currentSlideIndex.value === 0);
 const isLastSlide = computed(() => currentSlideIndex.value === slideCount - 1);
 const isLoading = ref(false);
-const router = useRouter();
 
 function prevSlide() {
 	currentSlideIndex.value = Math.max(currentSlideIndex.value - 1, 0);
