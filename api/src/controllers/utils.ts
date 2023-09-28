@@ -13,6 +13,7 @@ import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
+import type { WorkerData } from '../utils/import-worker.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
@@ -132,15 +133,15 @@ router.post(
 			fileStream.on('end', async () => {
 				const workerPath = new URL('../utils/import-worker', import.meta.url);
 
-				const worker = new Worker(workerPath, {
-					workerData: {
-						collection: req.params['collection']!,
-						mimeType,
-						filePath: tmpFile.path,
-						accountability: req.accountability,
-						schema: req.schema,
-					},
-				});
+				const workerData: WorkerData = {
+					collection: req.params['collection']!,
+					mimeType,
+					filePath: tmpFile.path,
+					accountability: req.accountability,
+					schema: req.schema,
+				};
+
+				const worker = new Worker(workerPath, { workerData });
 
 				worker.on('message', async (message) => {
 					if (message.type === 'finish') {

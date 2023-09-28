@@ -206,7 +206,7 @@ export class ExportService {
 		const tmpFile = await createTmpFile().catch(() => null);
 
 		try {
-			if (!tmpFile) throw new Error('Failed to create a temporary file for export');
+			if (!tmpFile) throw new Error('Failed to create temporary file for export');
 
 			const mimeTypes = {
 				csv: 'text/csv',
