@@ -16,8 +16,8 @@ fields, and allows item creation from an Insights dashboard.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose panel), and type a name for your extension (for example,
@@ -326,7 +326,7 @@ And the response looks like this:
 
 Both files are now complete. Build the panel with the latest changes.
 
-```
+```shell
 npm run build
 ```
 
