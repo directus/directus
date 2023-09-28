@@ -225,7 +225,10 @@ export default defineLayout<LayoutOptions>({
 			async () => {
 				if (calendar.value) {
 					const calendarLocale = await getFullcalendarLocale(locale.value);
-					calendar.value.setOption('locale', calendarLocale);
+
+					if (calendarLocale) {
+						calendar.value.setOption('locale', calendarLocale);
+					}
 				}
 			},
 			{ immediate: true }
