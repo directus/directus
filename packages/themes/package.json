@@ -15,11 +15,13 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
+		"./.": "./themes/",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
 	"files": [
 		"dist",
+		"themes",
 		"schema.json"
 	],
 	"scripts": {
@@ -29,18 +31,22 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
 		"@rollup/plugin-node-resolve": "15.0.2",
+		"@types/lodash-es": "4.17.7",
 		"@vitejs/plugin-vue": "4.2.3",
 		"@vitest/coverage-c8": "0.31.1",
 		"rollup-plugin-node-externals": "6.1.1",
 		"typescript": "5.0.4",
-		"vite-plugin-dts": "2.3.0",
 		"vite": "4.3.7",
+		"vite-plugin-dts": "2.3.0",
 		"vitest": "0.31.1"
 	},
 	"dependencies": {
 		"@sinclair/typebox": "0.28.13",
 		"defu": "6.1.2",
+		"flat": "6.0.1",
+		"lodash-es": "4.17.21",
 		"pinia": "2.1.1",
 		"vue": "3.3.4"
 	}

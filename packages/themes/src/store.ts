@@ -1,41 +1,24 @@
-// import { defu } from 'defu';
-// import { defineStore } from 'pinia';
-// import { computed, reactive, ref, unref } from 'vue';
-// import type { Theme } from './schema.js';
-// // import darkDefault from './themes/dark/default.js';
-// import lightDefault from './themes/light/default.js';
+import { defineStore } from 'pinia';
+import { reactive } from 'vue';
+import type { Theme } from './schema.js';
+import { theme as themeDirectusLight } from './themes/directus-light-default.js';
 
-// export const useThemeStore = defineStore('themes', () => {
-// 	const currentAppearance = ref<'light' | 'dark'>('light');
+const defaultLightThemes: Theme[] = [themeDirectusLight];
+const defaultDarkThemes: Theme[] = [];
 
-// 	const currentTheme = reactive({
-// 		dark: lightDefault.name,
-// 		light: lightDefault.name,
-// 	});
+export const useThemeStore = defineStore('themes', () => {
+	const themes = reactive({
+		light: Object.fromEntries(defaultLightThemes.map((theme) => [theme.name, theme])),
+		dark: Object.fromEntries(defaultDarkThemes.map((theme) => [theme.name, theme])),
+	});
 
-// 	const themes = reactive({
-// 		dark: [lightDefault] as Theme[],
-// 		light: [lightDefault] as Theme[],
-// 	});
+	const registerTheme = (theme: Theme) => {
+		if (theme.appearance === 'light') {
+			themes.light[theme.name] = theme;
+		} else {
+			themes.dark[theme.name] = theme;
+		}
+	};
 
-// 	const registerTheme = (theme: Theme) => {
-// 		if (theme.appearance === 'dark') {
-// 			themes.dark.push(theme);
-// 		} else {
-// 			themes.light.push(theme);
-// 		}
-// 	};
-
-// 	const defaultTheme = computed(() => {
-// 		if (unref(currentAppearance) === 'dark') return lightDefault;
-// 		return lightDefault;
-// 	});
-
-// 	const rules = computed(() => {
-// 		const appearance = unref(currentAppearance);
-// 		const theme = themes[appearance].find(({ name }) => name === currentTheme[unref(currentAppearance)]);
-// 		return defu(theme?.rules, unref(defaultTheme).rules);
-// 	});
-
-// 	return { themes, registerTheme, currentTheme, currentAppearance, rules };
-// });
+	return { themes, registerTheme };
+});

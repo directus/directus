@@ -1,27 +1,18 @@
 import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 
-/** CSS color value, f.e. hex, rgba, hsl */
-const Color = Type.String();
-
-/** CSS size, f.e. px, em, % */
-const Size = Type.String();
-
-/** CSS font weight, f.e. 700, bold */
-const FontWeight = Type.Integer();
-
-/** CSS font family, f.e. 'Comic Sans, MS', 'Roboto' */
-const FontFamily = Type.String();
-
 const Appearance = Type.Union([Type.Literal('light'), Type.Literal('dark')]);
 
-const Variables = Type.Record(Type.String(), Type.Union([Color, Size, FontWeight, FontFamily]));
+const Variables = Type.Record(Type.String(), Type.Union([Type.String(), Type.Integer()]));
+
+const Value = Type.Union([Type.String(), Type.Integer(), Type.KeyOf(Variables)]);
 
 const Rules = Type.Object({
-	foreground: Type.Union([Color, Type.KeyOf(Variables)]),
+	foreground: Value,
+	background: Value,
 	moduleBar: Type.Object({
-		foreground: Type.Union([Color, Type.KeyOf(Variables)]),
-		background: Type.Union([Color, Type.KeyOf(Variables)]),
+		foreground: Value,
+		background: Value,
 	}),
 });
 

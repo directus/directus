@@ -260,7 +260,7 @@ function getWidth(input: unknown, fallback: number): number {
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
+	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
 		<aside
 			id="navigation"
 			role="navigation"

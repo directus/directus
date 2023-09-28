@@ -9,6 +9,7 @@ import { useHead } from '@unhead/vue';
 import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { ThemeProvider } from '@directus/themes';
 
 const { t } = useI18n();
 
@@ -88,7 +89,7 @@ useSystem();
 </script>
 
 <template>
-	<div id="directus" :style="brandStyle">
+	<ThemeProvider id="directus">
 		<transition name="fade">
 			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />
@@ -106,7 +107,7 @@ useSystem();
 		<router-view v-else-if="!hydrating" />
 
 		<teleport to="#custom-css">{{ customCSS }}</teleport>
-	</div>
+	</ThemeProvider>
 </template>
 
 <style lang="scss" scoped>

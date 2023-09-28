@@ -1,3 +1,3 @@
-// export * from './define-theme.js';
-export * from './schema.js';
-// export * from './store.js';
+export { ThemeSchema, type Theme } from './schema.js';
+export { useThemeStore } from './store.js';
+export { default as ThemeProvider } from './theme-provider.vue';

@@ -25,13 +25,7 @@
 							"type": "string"
 						},
 						{
-							"type": "string"
-						},
-						{
 							"type": "integer"
-						},
-						{
-							"type": "string"
 						}
 					]
 				}
@@ -41,16 +35,59 @@
 			"type": "object",
 			"properties": {
 				"foreground": {
-					"type": "string"
+					"anyOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "integer"
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"background": {
+					"anyOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "integer"
+						},
+						{
+							"type": "string"
+						}
+					]
 				},
 				"moduleBar": {
 					"type": "object",
 					"properties": {
 						"foreground": {
-							"type": "string"
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "integer"
+								},
+								{
+									"type": "string"
+								}
+							]
 						},
 						"background": {
-							"type": "string"
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "integer"
+								},
+								{
+									"type": "string"
+								}
+							]
 						}
 					},
 					"required": [
@@ -61,6 +98,7 @@
 			},
 			"required": [
 				"foreground",
+				"background",
 				"moduleBar"
 			]
 		}
