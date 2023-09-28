@@ -591,6 +591,7 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
+edit_item: Edit Item
 enabled: Enabled
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
