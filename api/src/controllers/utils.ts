@@ -3,17 +3,16 @@ import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import fs from 'node:fs';
-import { Worker } from 'node:worker_threads';
 import { flushCaches } from '../cache.js';
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
-import { ExportService } from '../services/import-export.js';
+import { ExportService } from '../services/import-export/index.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
-import type { WorkerData } from '../utils/import-worker.js';
+import type { WorkerData } from '../services/import-export/import-worker.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
@@ -123,6 +122,7 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			const { createTmpFile } = await import('@directus/utils/node');
+			const { getImportWorker } = await import('../services/import-export/get-import-worker.js');
 
 			const tmpFile = await createTmpFile().catch(() => null);
 
@@ -131,7 +131,7 @@ router.post(
 			fileStream.pipe(fs.createWriteStream(tmpFile.path));
 
 			fileStream.on('end', async () => {
-				const workerPath = new URL('../utils/import-worker', import.meta.url);
+				const worker = getImportWorker();
 
 				const workerData: WorkerData = {
 					collection: req.params['collection']!,
@@ -141,19 +141,14 @@ router.post(
 					schema: req.schema,
 				};
 
-				const worker = new Worker(workerPath, { workerData });
-
-				worker.on('message', async (message) => {
-					if (message.type === 'finish') {
-						await tmpFile.cleanup();
-						res.status(200).end();
-					}
-				});
-
-				worker.on('error', async (err) => {
+				try {
+					await worker.run(workerData);
+					res.status(200).end();
+				} catch (error) {
+					next(error);
+				} finally {
 					await tmpFile.cleanup();
-					next(err);
-				});
+				}
 			});
 		});
 

@@ -1,7 +1,6 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { createReadStream } from 'node:fs';
-import { isMainThread, parentPort, workerData } from 'node:worker_threads';
-import { ImportService } from '../services/import-export.js';
+import { ImportService } from './index.js';
 
 export type WorkerData = {
 	collection: string;
@@ -11,19 +10,11 @@ export type WorkerData = {
 	schema: SchemaOverview;
 };
 
-async function importWorker() {
-	const { collection, mimeType, filePath, accountability, schema }: WorkerData = workerData;
-
+export default async function ({ collection, mimeType, filePath, accountability, schema }: WorkerData) {
 	const service = new ImportService({
 		accountability: accountability,
 		schema: schema,
 	});
 
 	await service.import(collection, mimeType, createReadStream(filePath));
-
-	parentPort?.postMessage({ type: 'finish' });
-}
-
-if (!isMainThread) {
-	importWorker();
 }
