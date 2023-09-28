@@ -385,6 +385,7 @@ move: نقل
 system: نظام
 add_field_related: إضافة حقل إلى مجموعة ذات صلة
 interface_label: الواجهة
+display_label: عرض
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
@@ -1454,6 +1455,8 @@ interfaces:
     description: حدد أو ارفع صورة
   system-interface:
     interface: الواجهة
+  system-display:
+    display: عرض
   list-m2m:
     many-to-many: كثير لكثير
   select-dropdown-m2o:

@@ -395,6 +395,7 @@ move: Przenieś
 system: System
 add_field_related: Dodaj pole do powiązanej kolekcji
 interface_label: Interfejs
+display_label: Pokaż
 today: Dziś
 yesterday: Wczoraj
 delete_comment: Usuń komentarz
@@ -1616,6 +1617,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcje interfejsu
     description: Okno do wyboru opcji interfejsu
+  system-display:
+    display: Pokaż
   list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
@@ -1685,6 +1688,7 @@ interfaces:
     sort_placeholder: Ręcznie
     field_note_placeholder: Wprowadź opis pola...
     incompatible_data: Bieżące dane nie są kompatybilne z interfejsem iteratora i zostaną nadpisane podczas dodawania elementów do iteratora
+    interface_group: Opcje interfejsu
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka

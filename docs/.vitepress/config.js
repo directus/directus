@@ -498,10 +498,6 @@ function sidebar() {
 					text: 'All Guides',
 					link: '/guides/index.html',
 				},
-				{
-					text: 'SDK Quickstart',
-					link: '/guides/sdk/getting-started',
-				},
 				...sidebarGuides(),
 			],
 		},

@@ -395,6 +395,7 @@ move: Presunúť
 system: Systém
 add_field_related: Pridať pole to súvisiacej zbierky
 interface_label: Rozhranie
+display_label: Zobrazenie
 today: Dnes
 yesterday: Včera
 delete_comment: Odstrániť komentár
@@ -1613,6 +1614,8 @@ interfaces:
   system-interface-options:
     interface-options: Možnosti rozhrania
     description: Modal pre vybratie možností rozhrania
+  system-display:
+    display: Zobrazenie
   list-m2m:
     many-to-many: Veľa na veľa
     description: Vyberie viacej súvisiacich položiek
@@ -1682,6 +1685,7 @@ interfaces:
     sort_placeholder: Ručne
     field_note_placeholder: Zadajte poznámku poľa...
     incompatible_data: Aktuálne údaje nie sú kompatibilné s rozhraním opakovača a prepíšu sa pri pridaní položiek do opakovača
+    interface_group: Možnosti rozhrania
   slider:
     slider: Posuvník
     description: Vyberie číslo pomocou posuvníka
