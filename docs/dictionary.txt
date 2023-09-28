@@ -421,7 +421,7 @@ vCPU
 Vercel
 viewability
 VitePress
-(V|v)onage
+(V|v)onage[.]?
 volta
 VPC
 Vue
@@ -436,3 +436,5 @@ XSS
 yaml
 YAML
 Zeet
+
+Butterfield

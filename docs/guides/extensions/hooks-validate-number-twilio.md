@@ -13,8 +13,8 @@ a record from saving if a phone number is not valid using the Twilio Lookup API.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your display.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose hook), and type a name for your extension (for example,
