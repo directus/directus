@@ -5,5 +5,9 @@ export default defineTheme({
 	appearance: 'light',
 	rules: {
 		foreground: '#000',
+		moduleBar: {
+			foreground: '#fff',
+			background: '#1a222e',
+		}
 	},
 });

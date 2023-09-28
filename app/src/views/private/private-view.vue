@@ -7,7 +7,7 @@
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
+	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
 		<aside
 			id="navigation"
 			role="navigation"
@@ -322,8 +322,8 @@ const notificationsPreviewActive = ref(false);
 
 const { sidebarOpen, fullScreen } = storeToRefs(appStore);
 
-const theme = computed(() => {
-	return userStore.currentUser && 'theme' in userStore.currentUser ? userStore.currentUser.theme : 'auto';
+const appearance = computed(() => {
+	return userStore.currentUser && 'appearance' in userStore.currentUser ? userStore.currentUser.appearance : 'auto';
 });
 
 provide('main-element', contentEl);

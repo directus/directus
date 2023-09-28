@@ -18,6 +18,10 @@ export const ThemeSchema = Type.Object({
 	appearance: Type.Union([Type.Literal('light'), Type.Literal('dark')]),
 	rules: Type.Object({
 		foreground: Color,
+		moduleBar: Type.Object({
+			foreground: Color,
+			background: Color,
+		}),
 	}),
 });
 

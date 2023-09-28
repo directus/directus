@@ -37,6 +37,7 @@
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/stores": "workspace:*",
+		"@directus/themes": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",

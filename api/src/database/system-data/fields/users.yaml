@@ -78,7 +78,7 @@ fields:
     options:
       includeProjectDefault: true
 
-  - field: theme
+  - field: appearance
     interface: select-dropdown
     options:
       choices:
@@ -88,6 +88,14 @@ fields:
           text: $t:fields.directus_users.theme_light
         - value: dark
           text: $t:fields.directus_users.theme_dark
+    width: half
+
+  - field: theme_light
+    interface: input
+    width: half
+
+  - field: theme_dark
+    interface: input
     width: half
 
   - field: tfa_secret

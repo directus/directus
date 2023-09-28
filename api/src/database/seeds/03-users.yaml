@@ -35,10 +35,16 @@ columns:
     type: string
     length: 8
     default: 'en-US'
-  theme:
+  appearance:
     type: string
     length: 20
     default: auto
+  theme_dark:
+    type: string
+    default: default
+  theme_light:
+    type: string
+    default: default
   tfa_secret:
     type: string
     length: 255

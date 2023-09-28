@@ -529,6 +529,9 @@ importers:
       '@directus/stores':
         specifier: workspace:*
         version: link:../packages/stores
+      '@directus/themes':
+        specifier: workspace:*
+        version: link:../packages/themes
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
@@ -1696,15 +1699,27 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@rollup/plugin-node-resolve':
+        specifier: 15.0.2
+        version: 15.0.2(rollup@3.22.0)
+      '@vitejs/plugin-vue':
+        specifier: 4.2.3
+        version: 4.2.3(vite@4.3.7)(vue@3.3.4)
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
-      tsup:
-        specifier: 6.7.0
-        version: 6.7.0(typescript@5.0.4)
+      rollup-plugin-node-externals:
+        specifier: 6.1.1
+        version: 6.1.1(rollup@3.22.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
+      vite:
+        specifier: 4.3.7
+        version: 4.3.7(@types/node@18.16.12)(sass@1.62.1)
+      vite-plugin-dts:
+        specifier: 2.3.0
+        version: 2.3.0(rollup@3.22.0)(vite@4.3.7)
       vitest:
         specifier: 0.31.1
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
@@ -4729,7 +4744,7 @@ packages:
       '@babel/helper-function-name': 7.22.5
       '@babel/helper-hoist-variables': 7.22.5
       '@babel/helper-split-export-declaration': 7.22.6
-      '@babel/parser': 7.21.9
+      '@babel/parser': 7.22.10
       '@babel/types': 7.21.5
       debug: 4.3.4
       globals: 11.12.0

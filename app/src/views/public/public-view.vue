@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
-import { getTheme } from '@/utils/get-theme';
+import { getAppearance } from '@/utils/get-appearance';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';
 import { storeToRefs } from 'pinia';
@@ -90,7 +90,7 @@ const { info } = storeToRefs(serverStore);
 const colors = computed(() => {
 	const primary = info.value?.project?.project_color || 'var(--primary)';
 	const primaryHex = primary.startsWith('var(--') ? cssVar(primary.substring(4, primary.length - 1)) : primary;
-	const isDark = getTheme() === 'dark';
+	const isDark = getAppearance() === 'dark';
 	const primaryColor = Color(primaryHex);
 
 	const primaryColorHSL = primaryColor.hsl() as unknown as {
@@ -346,3 +346,4 @@ const logoURL = computed<string | null>(() => {
 	opacity: 0;
 }
 </style>
+@/utils/get-appearance

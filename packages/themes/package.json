@@ -22,15 +22,19 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "vite build",
+		"dev": "vite",
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@rollup/plugin-node-resolve": "15.0.2",
+		"@vitejs/plugin-vue": "4.2.3",
 		"@vitest/coverage-c8": "0.31.1",
-		"tsup": "6.7.0",
+		"rollup-plugin-node-externals": "6.1.1",
 		"typescript": "5.0.4",
+		"vite-plugin-dts": "2.3.0",
+		"vite": "4.3.7",
 		"vitest": "0.31.1"
 	},
 	"dependencies": {
