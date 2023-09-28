@@ -18,7 +18,7 @@ utility will create a folder with the recommended file structure to create an ex
 If you want to combine and share dependencies between one or more extensions, use the
 [bundle extension type](/extensions/bundles).
 
-## Building your Extension
+## Building Your Extension
 
 Before your extension can be used by Directus, it has to be built. If you used the `create-directus-extension` utility
 to scaffold your extension, building your extension is as easy as running:
