@@ -26,7 +26,6 @@ export function redactObject(
 	const wildcardChars = ['*', '**'];
 
 	const clone = JSON.parse(JSON.stringify(input, getReplacer(replacement, redact.values)));
-	const visited = new WeakSet<UnknownObject>();
 
 	if (redact.keys) {
 		traverse(clone, redact.keys);
@@ -38,8 +37,6 @@ export function redactObject(
 		if (checkKeyPaths.length === 0) {
 			return;
 		}
-
-		visited.add(object);
 
 		const REDACTED_TEXT = replacement();
 		const globalCheckPaths = [];
@@ -96,7 +93,7 @@ export function redactObject(
 
 			const value = object[key];
 
-			if (isObject(value) && !visited.has(value)) {
+			if (isObject(value)) {
 				traverse(value, [...globalCheckPaths, ...localCheckPaths]);
 			}
 		}
@@ -115,7 +112,7 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 
 	return (_key: string, value: unknown) => {
 		// Skip circular values
-		if (typeof value === 'object' && value !== null) {
+		if (isObject(value)) {
 			if (seen.has(value)) {
 				return;
 			}
