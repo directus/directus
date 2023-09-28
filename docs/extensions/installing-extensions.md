@@ -88,21 +88,16 @@ At the root of your project, create an "extensions" folder if one doesn't alread
 
 **2. Add your new extension into the extensions folder**
 
-Move the output from the `dist/` folder into the extensions folder you created earlier.
+Move the `package.json` file along with the output from the `dist/` folder into a new folder in the extensions folder you created earlier.
 
 Your folder structure should look like this:
 
 ```yaml
-extensions
+extensions/
   <extension-name>/
     dist/
       index.js
-    src
-      index.js
-      interface.vue
-  displays/
-  hooks/
-  endpoints/
+    package.json
   ...
 ```
 
@@ -114,7 +109,7 @@ Ensure your extension is prefixed with `directus-extension`. For example, `direc
 
 **3. Update Docker Compose File**
 
-Open your `docker-compose.yml` file and add the following to mount your extension into the Docker container:
+Open your `docker-compose.yml` file and add a volume to mount your extensions folder into the Docker container:
 
 ```yaml
 volumes:
