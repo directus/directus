@@ -60,7 +60,7 @@ const vueRules = {
 	'vue/component-tags-order': [
 		'error',
 		{
-			order: ['template', 'script', 'style'],
+			order: ['script', 'template', 'style'],
 		},
 	],
 	// Require empty line between component tags

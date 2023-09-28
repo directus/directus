@@ -1,40 +1,3 @@
-<template>
-	<sidebar-detail
-		:title="t('revisions')"
-		icon="change_history"
-		:badge="!loading && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
-	>
-		<v-progress-linear v-if="!revisions && loading" indeterminate />
-
-		<div v-else-if="revisionsCount === 0" class="empty">
-			<div class="content">{{ t('no_revisions') }}</div>
-		</div>
-
-		<template v-else>
-			<template v-for="group in revisionsByDate" :key="group.date.toString()">
-				<revisions-date-group :group="group" @click="openModal" />
-			</template>
-
-			<template v-if="page == pagesCount && !created">
-				<v-divider v-if="revisionsByDate!.length > 0" />
-
-				<div class="external">
-					{{ t('revision_delta_created_externally') }}
-				</div>
-			</template>
-			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
-		</template>
-
-		<revisions-drawer
-			v-if="revisions"
-			v-model:current="modalCurrentRevision"
-			v-model:active="modalActive"
-			:revisions="revisions"
-			@revert="$emit('revert', $event)"
-		/>
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
 import { abbreviateNumber } from '@directus/utils';
@@ -81,6 +44,43 @@ defineExpose({
 	refresh,
 });
 </script>
+
+<template>
+	<sidebar-detail
+		:title="t('revisions')"
+		icon="change_history"
+		:badge="!loading && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+	>
+		<v-progress-linear v-if="!revisions && loading" indeterminate />
+
+		<div v-else-if="revisionsCount === 0" class="empty">
+			<div class="content">{{ t('no_revisions') }}</div>
+		</div>
+
+		<template v-else>
+			<template v-for="group in revisionsByDate" :key="group.date.toString()">
+				<revisions-date-group :group="group" @click="openModal" />
+			</template>
+
+			<template v-if="page == pagesCount && !created">
+				<v-divider v-if="revisionsByDate!.length > 0" />
+
+				<div class="external">
+					{{ t('revision_delta_created_externally') }}
+				</div>
+			</template>
+			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
+		</template>
+
+		<revisions-drawer
+			v-if="revisions"
+			v-model:current="modalCurrentRevision"
+			v-model:active="modalActive"
+			:revisions="revisions"
+			@revert="$emit('revert', $event)"
+		/>
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 .v-progress-linear {

@@ -209,6 +209,14 @@ export default {
 						title: 'Panels',
 						items: [
 							{
+								display: 'Create An Interactive Panel To Create Items',
+								path: '/guides/extensions/panels-create-items',
+							},
+							{
+								display: 'Create A Panel To Display External API Data With Vonage',
+								path: '/guides/extensions/panels-display-data-vonage',
+							},
+							{
 								display: 'Create An Interactive Panel To Send SMS With Twilio',
 								path: '/guides/extensions/panels-send-sms-twilio',
 							},

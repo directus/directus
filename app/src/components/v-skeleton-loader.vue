@@ -1,12 +1,3 @@
-<template>
-	<div :class="type" class="v-skeleton-loader">
-		<template v-if="type === 'list-item-icon'">
-			<div class="icon" />
-			<div class="text" />
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** Name of another component to mirror */
@@ -17,6 +8,15 @@ withDefaults(defineProps<Props>(), {
 	type: 'input',
 });
 </script>
+
+<template>
+	<div :class="type" class="v-skeleton-loader">
+		<template v-if="type === 'list-item-icon'">
+			<div class="icon" />
+			<div class="text" />
+		</template>
+	</div>
+</template>
 
 <style>
 body {

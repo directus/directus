@@ -1,13 +1,3 @@
-<template>
-	<div class="metric type-title selectable" :class="{ 'has-header': showHeader }">
-		<div :style="{ color }">
-			<span class="prefix">{{ prefix }}</span>
-			<span class="value">{{ displayValue }}</span>
-			<span class="suffix">{{ suffix }}</span>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Filter } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
@@ -126,6 +116,16 @@ const color = computed(() => {
 	}
 });
 </script>
+
+<template>
+	<div class="metric type-title selectable" :class="{ 'has-header': showHeader }">
+		<div :style="{ color }">
+			<span class="prefix">{{ prefix }}</span>
+			<span class="value">{{ displayValue }}</span>
+			<span class="suffix">{{ suffix }}</span>
+		</div>
+	</div>
+</template>
 
 <style scoped>
 .metric {

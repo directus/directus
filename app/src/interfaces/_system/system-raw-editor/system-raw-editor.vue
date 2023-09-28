@@ -1,9 +1,3 @@
-<template>
-	<div class="system-raw-editor" :class="{ disabled, 'multi-line': isMultiLine }">
-		<div ref="codemirrorEl"></div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
@@ -139,6 +133,12 @@ watch(
 	}
 );
 </script>
+
+<template>
+	<div class="system-raw-editor" :class="{ disabled, 'multi-line': isMultiLine }">
+		<div ref="codemirrorEl"></div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .system-raw-editor {

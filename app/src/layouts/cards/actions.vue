@@ -1,11 +1,3 @@
-<template>
-	<transition name="fade">
-		<span v-if="itemCount" class="item-count">
-			{{ showingCount }}
-		</span>
-	</transition>
-</template>
-
 <script setup lang="ts">
 defineProps<{
 	itemCount?: number;
@@ -20,6 +12,14 @@ export default defineComponent({
 	inheritAttrs: false,
 });
 </script>
+
+<template>
+	<transition name="fade">
+		<span v-if="itemCount" class="item-count">
+			{{ showingCount }}
+		</span>
+	</transition>
+</template>
 
 <style lang="scss" scoped>
 .item-count {

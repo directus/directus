@@ -1,33 +1,3 @@
-<template>
-	<div class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
-
-		<v-drawer
-			v-if="haveFilesAccess && !disabled"
-			:model-value="fileHandler !== null"
-			icon="image"
-			:title="t('upload_from_device')"
-			:cancelable="true"
-			@update:model-value="unsetFileHandler"
-			@cancel="unsetFileHandler"
-		>
-			<div class="uploader-drawer-content">
-				<div v-if="currentPreview" class="uploader-preview-image">
-					<img :src="currentPreview" />
-				</div>
-				<v-upload
-					:ref="uploaderComponentElement"
-					:multiple="false"
-					:folder="folder"
-					from-library
-					from-url
-					@input="handleFile"
-				/>
-			</div>
-		</v-drawer>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
@@ -175,6 +145,36 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	});
 }
 </script>
+
+<template>
+	<div class="input-block-editor">
+		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+
+		<v-drawer
+			v-if="haveFilesAccess && !disabled"
+			:model-value="fileHandler !== null"
+			icon="image"
+			:title="t('upload_from_device')"
+			:cancelable="true"
+			@update:model-value="unsetFileHandler"
+			@cancel="unsetFileHandler"
+		>
+			<div class="uploader-drawer-content">
+				<div v-if="currentPreview" class="uploader-preview-image">
+					<img :src="currentPreview" />
+				</div>
+				<v-upload
+					:ref="uploaderComponentElement"
+					:multiple="false"
+					:folder="folder"
+					from-library
+					from-url
+					@input="handleFile"
+				/>
+			</div>
+		</v-drawer>
+	</div>
+</template>
 
 <style lang="scss">
 @import './editorjs-overrides.css';
