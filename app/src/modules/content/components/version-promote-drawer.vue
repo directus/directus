@@ -3,10 +3,10 @@ import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Field, Version } from '@directus/types';
-import { ref, toRefs, unref, watch } from 'vue';
+import { isNil } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VersionPromoteField from './version-promote-field.vue';
-import { computed } from 'vue';
 
 type Comparison = {
 	outdated: boolean;
@@ -36,10 +36,16 @@ const loading = ref(false);
 
 const { tabs, currentTab } = useTab();
 
+const { confirmDeleteOnPromoteDialogActive, promoting, promote } = usePromoteDialog();
+
 const emit = defineEmits<{
 	cancel: [];
-	promote: [];
+	promote: [deleteOnPromote: boolean];
 }>();
+
+const currentVersionDisplayName = computed(() =>
+	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name
+);
 
 const isOutdated = computed(() => comparedData.value?.outdated ?? false);
 
@@ -110,24 +116,31 @@ async function getComparison() {
 	}
 }
 
-const promoting = ref(false);
+function usePromoteDialog() {
+	const confirmDeleteOnPromoteDialogActive = ref(false);
+	const promoting = ref(false);
 
-async function promote() {
-	promoting.value = true;
+	return { confirmDeleteOnPromoteDialogActive, promoting, promote };
 
-	try {
-		await api.post(
-			`/versions/${unref(currentVersion).id}/promote`,
-			unref(selectedFields).length > 0
-				? { mainHash: unref(mainHash), fields: unref(selectedFields) }
-				: { mainHash: unref(mainHash) }
-		);
+	async function promote(deleteOnPromote: boolean) {
+		promoting.value = true;
 
-		emit('promote');
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		promoting.value = false;
+		try {
+			await api.post(
+				`/versions/${unref(currentVersion).id}/promote`,
+				unref(selectedFields).length > 0
+					? { mainHash: unref(mainHash), fields: unref(selectedFields) }
+					: { mainHash: unref(mainHash) }
+			);
+
+			confirmDeleteOnPromoteDialogActive.value = false;
+
+			emit('promote', deleteOnPromote);
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			promoting.value = false;
+		}
 	}
 }
 
@@ -151,7 +164,7 @@ function useTab() {
 
 <template>
 	<v-drawer
-		:title="t('promote_version_drawer_title', { version: currentVersion.name })"
+		:title="t('promote_version_drawer_title', { version: currentVersionDisplayName })"
 		class="version-drawer"
 		persistent
 		:model-value="active"
@@ -195,7 +208,7 @@ function useTab() {
 					>
 						<v-icon name="looks_two" />
 						<version-promote-field class="field-content" :value="comparedData?.current[field.field]" />
-						<v-chip class="version" x-small>{{ currentVersion.name }}</v-chip>
+						<v-chip class="version" x-small>{{ currentVersionDisplayName }}</v-chip>
 						<v-icon :name="selectedFields.includes(field.field) ? 'check' : 'close'" />
 					</div>
 				</div>
@@ -210,14 +223,27 @@ function useTab() {
 			</div>
 		</div>
 
+		<v-dialog v-model="confirmDeleteOnPromoteDialogActive" @esc="confirmDeleteOnPromoteDialogActive = false">
+			<v-card>
+				<v-card-title>
+					{{ t('delete_on_promote_copy', { version: currentVersionDisplayName }) }}
+				</v-card-title>
+				<v-card-actions>
+					<v-button secondary @click="promote(false)">{{ t('keep') }}</v-button>
+					<v-button :loading="promoting" kind="danger" @click="promote(true)">
+						{{ t('delete_label') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<template #actions>
 			<v-button
 				v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
-				:loading="promoting"
 				:disabled="selectedFields.length === 0"
 				icon
 				rounded
-				@click="promote"
+				@click="confirmDeleteOnPromoteDialogActive = true"
 			>
 				<v-icon name="check" />
 			</v-button>
