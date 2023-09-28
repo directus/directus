@@ -84,9 +84,9 @@ validator for a given string.
 
 ### Bundles
 
-[Bundles](/extensions/bundles) allow you to combine many extensions into one large extension. The benefit of this is
-that if your extensions share a lot of dependencies, bundles allow to share those between all you extensions inside the
-bundle and reduce the file size considerably when building.
+[Bundles](/extensions/bundles) enable you to combine multiple extensions into a single, larger extension. They are
+useful when an extension comprises several related sub-extensions that should be installed together. Bundles allow you
+to share dependencies among multiple extensions, significantly reducing file size.
 
 ::: tip Extensions Library
 

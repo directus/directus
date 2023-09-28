@@ -537,12 +537,12 @@ function sidebar() {
 					text: 'Introduction',
 				},
 				{
-					link: '/extensions/creating-extensions',
-					text: 'Creating Extensions',
-				},
-				{
 					link: '/extensions/installing-extensions',
 					text: 'Installing Extensions',
+				},
+				{
+					link: '/extensions/creating-extensions',
+					text: 'Creating Extensions',
 				},
 				{
 					text: 'Developing Extensions',
