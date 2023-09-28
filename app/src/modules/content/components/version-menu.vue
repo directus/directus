@@ -1,170 +1,3 @@
-<template>
-	<div>
-		<v-menu class="version-menu" placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
-				<button class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
-					<span class="version-name">
-						{{ currentVersion ? getVersionDisplayName(currentVersion) : t('main_version') }}
-					</span>
-					<v-icon name="arrow_drop_down" />
-				</button>
-			</template>
-
-			<v-list>
-				<v-list-item class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
-					{{ t('main_version') }}
-				</v-list-item>
-
-				<v-list-item
-					v-for="versionItem of versions"
-					:key="versionItem.id"
-					class="version-item"
-					clickable
-					:active="versionItem.id === currentVersion?.id"
-					@click="switchVersion(versionItem)"
-				>
-					{{ getVersionDisplayName(versionItem) }}
-				</v-list-item>
-
-				<template v-if="createVersionsAllowed">
-					<v-divider />
-
-					<v-list-item clickable @click="createDialogActive = true">
-						{{ t('create_version') }}
-					</v-list-item>
-				</template>
-
-				<template v-if="currentVersion !== null">
-					<v-divider />
-
-					<v-list-item v-if="updateVersionsAllowed" clickable @click="openUpdateDialog">
-						{{ t('update_version') }}
-					</v-list-item>
-
-					<v-list-item clickable @click="isVersionPromoteDrawerOpen = true">
-						{{ t('promote_version') }}
-					</v-list-item>
-
-					<v-list-item v-if="deleteVersionsAllowed" class="version-delete" clickable @click="deleteDialogActive = true">
-						{{ t('delete_version') }}
-					</v-list-item>
-				</template>
-			</v-list>
-		</v-menu>
-
-		<version-promote-drawer
-			v-if="currentVersion !== null"
-			:active="isVersionPromoteDrawerOpen"
-			:current-version="currentVersion"
-			@cancel="isVersionPromoteDrawerOpen = false"
-			@promote="onPromoteComplete"
-		/>
-
-		<v-dialog v-model="switchDialogActive" @esc="switchDialogActive = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>
-					{{ t('switch_version_copy', { version: switchTarget ? switchTarget.name : t('main_version') }) }}
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="switchVersion()">
-						{{ t('switch_version') }}
-					</v-button>
-					<v-button @click="switchDialogActive = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">
-			<v-card>
-				<v-card-title>{{ t('create_version') }}</v-card-title>
-
-				<v-card-text>
-					<div class="grid">
-						<div class="field">
-							<v-input
-								v-model="newVersionKey"
-								class="full"
-								:placeholder="t('version_key')"
-								autofocus
-								db-safe
-								trim
-								@keyup.enter="createVersion"
-							/>
-						</div>
-						<div class="field">
-							<v-input
-								v-model="newVersionName"
-								class="full"
-								:placeholder="t('version_name')"
-								trim
-								@keyup.enter="createVersion"
-							/>
-						</div>
-					</div>
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button secondary @click="closeCreateDialog">{{ t('cancel') }}</v-button>
-					<v-button :disabled="newVersionKey === null" :loading="creating" @click="createVersion">
-						{{ t('save') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog :model-value="updateDialogActive" persistent @esc="closeUpdateDialog">
-			<v-card>
-				<v-card-title>{{ t('update_version') }}</v-card-title>
-
-				<v-card-text>
-					<div class="grid">
-						<div class="field">
-							<v-input
-								v-model="newVersionKey"
-								class="full"
-								:placeholder="t('version_key')"
-								autofocus
-								db-safe
-								trim
-								@keyup.enter="updateVersion"
-							/>
-						</div>
-						<div class="field">
-							<v-input
-								v-model="newVersionName"
-								class="full"
-								trim
-								:placeholder="t('version_name')"
-								@keyup.enter="updateVersion"
-							/>
-						</div>
-					</div>
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button secondary @click="closeUpdateDialog">{{ t('cancel') }}</v-button>
-					<v-button :disabled="newVersionKey === null" :loading="updating" @click="updateVersion">
-						{{ t('save') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-if="currentVersion !== null" v-model="deleteDialogActive" @esc="deleteDialogActive = false">
-			<v-card>
-				<v-card-title>{{ t('delete_version_copy', { version: currentVersion!.name }) }}</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="deleteDialogActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleting" kind="danger" @click="deleteVersion">
-						{{ t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
@@ -369,6 +202,173 @@ function onPromoteComplete() {
 	emit('switch', null);
 }
 </script>
+
+<template>
+	<div>
+		<v-menu class="version-menu" placement="bottom-start" show-arrow>
+			<template #activator="{ toggle }">
+				<button class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
+					<span class="version-name">
+						{{ currentVersion ? getVersionDisplayName(currentVersion) : t('main_version') }}
+					</span>
+					<v-icon name="arrow_drop_down" />
+				</button>
+			</template>
+
+			<v-list>
+				<v-list-item class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
+					{{ t('main_version') }}
+				</v-list-item>
+
+				<v-list-item
+					v-for="versionItem of versions"
+					:key="versionItem.id"
+					class="version-item"
+					clickable
+					:active="versionItem.id === currentVersion?.id"
+					@click="switchVersion(versionItem)"
+				>
+					{{ getVersionDisplayName(versionItem) }}
+				</v-list-item>
+
+				<template v-if="createVersionsAllowed">
+					<v-divider />
+
+					<v-list-item clickable @click="createDialogActive = true">
+						{{ t('create_version') }}
+					</v-list-item>
+				</template>
+
+				<template v-if="currentVersion !== null">
+					<v-divider />
+
+					<v-list-item v-if="updateVersionsAllowed" clickable @click="openUpdateDialog">
+						{{ t('update_version') }}
+					</v-list-item>
+
+					<v-list-item clickable @click="isVersionPromoteDrawerOpen = true">
+						{{ t('promote_version') }}
+					</v-list-item>
+
+					<v-list-item v-if="deleteVersionsAllowed" class="version-delete" clickable @click="deleteDialogActive = true">
+						{{ t('delete_version') }}
+					</v-list-item>
+				</template>
+			</v-list>
+		</v-menu>
+
+		<version-promote-drawer
+			v-if="currentVersion !== null"
+			:active="isVersionPromoteDrawerOpen"
+			:current-version="currentVersion"
+			@cancel="isVersionPromoteDrawerOpen = false"
+			@promote="onPromoteComplete"
+		/>
+
+		<v-dialog v-model="switchDialogActive" @esc="switchDialogActive = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>
+					{{ t('switch_version_copy', { version: switchTarget ? switchTarget.name : t('main_version') }) }}
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="switchVersion()">
+						{{ t('switch_version') }}
+					</v-button>
+					<v-button @click="switchDialogActive = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">
+			<v-card>
+				<v-card-title>{{ t('create_version') }}</v-card-title>
+
+				<v-card-text>
+					<div class="grid">
+						<div class="field">
+							<v-input
+								v-model="newVersionKey"
+								class="full"
+								:placeholder="t('version_key')"
+								autofocus
+								db-safe
+								trim
+								@keyup.enter="createVersion"
+							/>
+						</div>
+						<div class="field">
+							<v-input
+								v-model="newVersionName"
+								class="full"
+								:placeholder="t('version_name')"
+								trim
+								@keyup.enter="createVersion"
+							/>
+						</div>
+					</div>
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="closeCreateDialog">{{ t('cancel') }}</v-button>
+					<v-button :disabled="newVersionKey === null" :loading="creating" @click="createVersion">
+						{{ t('save') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="updateDialogActive" persistent @esc="closeUpdateDialog">
+			<v-card>
+				<v-card-title>{{ t('update_version') }}</v-card-title>
+
+				<v-card-text>
+					<div class="grid">
+						<div class="field">
+							<v-input
+								v-model="newVersionKey"
+								class="full"
+								:placeholder="t('version_key')"
+								autofocus
+								db-safe
+								trim
+								@keyup.enter="updateVersion"
+							/>
+						</div>
+						<div class="field">
+							<v-input
+								v-model="newVersionName"
+								class="full"
+								trim
+								:placeholder="t('version_name')"
+								@keyup.enter="updateVersion"
+							/>
+						</div>
+					</div>
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="closeUpdateDialog">{{ t('cancel') }}</v-button>
+					<v-button :disabled="newVersionKey === null" :loading="updating" @click="updateVersion">
+						{{ t('save') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-if="currentVersion !== null" v-model="deleteDialogActive" @esc="deleteDialogActive = false">
+			<v-card>
+				<v-card-title>{{ t('delete_version_copy', { version: currentVersion!.name }) }}</v-card-title>
+				<v-card-actions>
+					<v-button secondary @click="deleteDialogActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="deleting" kind="danger" @click="deleteVersion">
+						{{ t('delete_label') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</div>
+</template>
 
 <style scoped lang="scss">
 @import '@/styles/mixins/form-grid';

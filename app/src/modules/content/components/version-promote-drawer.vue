@@ -1,79 +1,3 @@
-<template>
-	<v-drawer
-		:title="t('promote_version_drawer_title', { version: currentVersion.name })"
-		class="version-drawer"
-		persistent
-		:model-value="active"
-		@cancel="$emit('cancel')"
-		@esc="$emit('cancel')"
-	>
-		<template #sidebar>
-			<v-tabs v-model="currentTab" vertical>
-				<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
-					{{ tab.text }}
-				</v-tab>
-			</v-tabs>
-		</template>
-
-		<div class="content">
-			<div v-if="currentTab[0] === 'changes'" class="grid">
-				<v-notice v-if="isOutdated" type="warning" class="field full">
-					{{ t('outdated_notice') }}
-				</v-notice>
-				<v-notice v-else type="info" class="field full">
-					{{ t('promote_notice') }}
-				</v-notice>
-				<div v-for="field in comparedFields" :key="field.field" class="field full">
-					<div class="type-label">
-						{{ field.name }}
-					</div>
-					<div
-						class="compare main"
-						:class="{ active: !selectedFields.includes(field.field) }"
-						@click="removeField(field.field)"
-					>
-						<v-icon name="looks_one" />
-						<version-promote-field class="field-content" :value="comparedData?.main[field.field]" />
-						<v-chip class="version" x-small>{{ t('main_version') }}</v-chip>
-						<v-icon :name="!selectedFields.includes(field.field) ? 'check' : 'close'" />
-					</div>
-					<div
-						class="compare current"
-						:class="{ active: selectedFields.includes(field.field) }"
-						@click="addField(field.field)"
-					>
-						<v-icon name="looks_two" />
-						<version-promote-field class="field-content" :value="comparedData?.current[field.field]" />
-						<v-chip class="version" x-small>{{ currentVersion.name }}</v-chip>
-						<v-icon :name="selectedFields.includes(field.field) ? 'check' : 'close'" />
-					</div>
-				</div>
-			</div>
-			<div v-if="currentTab[0] === 'preview'">
-				<v-form
-					disabled
-					:collection="currentVersion.collection"
-					:primary-key="currentVersion.item"
-					:initial-values="previewData"
-				/>
-			</div>
-		</div>
-
-		<template #actions>
-			<v-button
-				v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
-				:loading="promoting"
-				:disabled="selectedFields.length === 0"
-				icon
-				rounded
-				@click="promote"
-			>
-				<v-icon name="check" />
-			</v-button>
-		</template>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
@@ -224,6 +148,82 @@ function useTab() {
 	return { tabs, currentTab };
 }
 </script>
+
+<template>
+	<v-drawer
+		:title="t('promote_version_drawer_title', { version: currentVersion.name })"
+		class="version-drawer"
+		persistent
+		:model-value="active"
+		@cancel="$emit('cancel')"
+		@esc="$emit('cancel')"
+	>
+		<template #sidebar>
+			<v-tabs v-model="currentTab" vertical>
+				<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
+					{{ tab.text }}
+				</v-tab>
+			</v-tabs>
+		</template>
+
+		<div class="content">
+			<div v-if="currentTab[0] === 'changes'" class="grid">
+				<v-notice v-if="isOutdated" type="warning" class="field full">
+					{{ t('outdated_notice') }}
+				</v-notice>
+				<v-notice v-else type="info" class="field full">
+					{{ t('promote_notice') }}
+				</v-notice>
+				<div v-for="field in comparedFields" :key="field.field" class="field full">
+					<div class="type-label">
+						{{ field.name }}
+					</div>
+					<div
+						class="compare main"
+						:class="{ active: !selectedFields.includes(field.field) }"
+						@click="removeField(field.field)"
+					>
+						<v-icon name="looks_one" />
+						<version-promote-field class="field-content" :value="comparedData?.main[field.field]" />
+						<v-chip class="version" x-small>{{ t('main_version') }}</v-chip>
+						<v-icon :name="!selectedFields.includes(field.field) ? 'check' : 'close'" />
+					</div>
+					<div
+						class="compare current"
+						:class="{ active: selectedFields.includes(field.field) }"
+						@click="addField(field.field)"
+					>
+						<v-icon name="looks_two" />
+						<version-promote-field class="field-content" :value="comparedData?.current[field.field]" />
+						<v-chip class="version" x-small>{{ currentVersion.name }}</v-chip>
+						<v-icon :name="selectedFields.includes(field.field) ? 'check' : 'close'" />
+					</div>
+				</div>
+			</div>
+			<div v-if="currentTab[0] === 'preview'">
+				<v-form
+					disabled
+					:collection="currentVersion.collection"
+					:primary-key="currentVersion.item"
+					:initial-values="previewData"
+				/>
+			</div>
+		</div>
+
+		<template #actions>
+			<v-button
+				v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
+				:loading="promoting"
+				:disabled="selectedFields.length === 0"
+				icon
+				rounded
+				@click="promote"
+			>
+				<v-icon name="check" />
+			</v-button>
+		</template>
+	</v-drawer>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
