@@ -10,7 +10,7 @@ There are two possible ways to install extensions to your Directus instance:
 1. Installing through NPM
 2. Installing through the Extensions Folder
 
-## Installing through NPM
+## Installing Through NPM
 
 If you wish to install an existing public extension, package extensions are essentially npm packages that can be
 installed from the npm registry. Before you begin, ensure you have a
