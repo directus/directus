@@ -1,5 +1,5 @@
 import type { AbstractQueryModifiers } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery } from '../../index.js';
+import type { AbstractSqlClauses, AbstractSqlQuery } from '../../types/index.js';
 import { convertFilter, convertSort } from './index.js';
 
 export type Result = {
