@@ -1,4 +1,5 @@
 import formatTitle from '@directus/format-title';
+import type { File } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
@@ -21,9 +22,11 @@ import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '..
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
+
+type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -155,11 +158,11 @@ export class FilesService extends ItemsService {
 					const metadata: Metadata = {};
 
 					if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
-						metadata.height = sharpMetadata.width;
-						metadata.width = sharpMetadata.height;
+						metadata.height = sharpMetadata.width ?? null;
+						metadata.width = sharpMetadata.height ?? null;
 					} else {
-						metadata.width = sharpMetadata.width;
-						metadata.height = sharpMetadata.height;
+						metadata.width = sharpMetadata.width ?? null;
+						metadata.height = sharpMetadata.height ?? null;
 					}
 
 					// Backward-compatible layout as it used to be with 'exifr'
@@ -233,7 +236,7 @@ export class FilesService extends ItemsService {
 					}
 
 					if (fullMetadata?.iptc?.['Keywords']) {
-						metadata.tags = fullMetadata.iptc['Keywords'];
+						metadata.tags = fullMetadata.iptc['Keywords'] as string;
 					}
 
 					if (allowList === '*' || allowList?.[0] === '*') {
@@ -298,7 +301,7 @@ export class FilesService extends ItemsService {
 			...(body || {}),
 		};
 
-		return await this.uploadOne(decompressResponse(fileResponse.data, fileResponse.headers), payload);
+		return await this.uploadOne(decompressResponse(fileResponse.data, fileResponse.headers), payload, payload.id);
 	}
 
 	/**

@@ -35,6 +35,7 @@ tile_size: Madhësia e Mozaikut
 edit_field: Modifiko Fushën
 conditions: Kushte
 location: Vendndodhja
+collection_names_are_case_sensitive: Emrat e koleksioneve janë të ndjeshëm ndaj madhësisë së shkronjave
 condition_rules: Rregullat e Kushteve
 input: Input
 maps: Harta
@@ -145,7 +146,14 @@ validationError:
   required: Vlera është e nevojshme
   unique: Vlera duhet të jetë unike
   regex: Vlera nuk ka formatin e duhur
+  starts_with: Vlera duhet të fillojë me {substring}
   istarts_with: Value has to start with {substring}
+  nstarts_with: Vlera nuk mund të fillojë me {substring}
+  nistarts_with: Vlera nuk mund të fillojë me {substring}
+  ends_with: Vlera duhet të mbarojë me {substring}
+  iends_with: Vlera duhet të mbarojë me {substring}
+  nends_with: Vlera nuk mund të mbarojë me {substring}
+  niends_with: Vlera nuk mund të mbarojë me {substring}
 all_access: Qasje e Plote
 no_access: Pa Qasje
 use_custom: Përdor të personalizuar
@@ -333,6 +341,7 @@ clear_items: Artikujt
 reset_to_default: Kthehu në Parametrat e Paracaktuar
 undo_changes: Anulo Ndryshimet
 notifications: Njoftimet
+archive_all: Arkivo të gjitha
 show_all_activity: Shfaq të Gjithë Aktivitetin
 page_not_found: Faqe nuk u Gjet
 page_not_found_body: Faqja që kërkoni nuk duket të ekzistojë.
@@ -387,6 +396,7 @@ move: Zhvendos
 system: Sistemi
 add_field_related: Shto Fushë në Koleksionin e Lidhur
 interface_label: Ndërfaqe
+display_label: Shfaq
 today: Sot
 yesterday: Dje
 delete_comment: Fshi Komentin
@@ -461,6 +471,11 @@ open_file_in_tab: Hap skedarin në skedë të re
 start_export: Filloni Eksportimin
 not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
 exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
+exporting_limited_items_in_collection: '{count} prej {total} artikujve brenda {collection} do të eksportohen.'
+exporting_no_items_to_export: Nuk ka artikuj për të eksportuar. Rregullo konfigurimin e eksportimit dhe/ose shto artikuj në koleksion.
+exporting_download_hint: Pasi skedari {format} të jetë krijuar, ai do të shkarkohet në pajisjen tuaj.
+exporting_library_hint: Pasi skedari {format} të jetë krijuar, ai do të ruhet në Bibliotekën e Skedareve.
+exporting_library_hint_forced: Ky eksport duhet të përpunohet në seritë. Pasi të jetë përfunduar, skedari {format} do të ruhet në Bibliotekën e Skedareve.
 collection_key: Kyçi i Koleksionit
 name: Emri
 primary_key_field: Fusha e Kyçit Primar
@@ -489,6 +504,7 @@ expand: Zgjero
 collapse: Tkurre
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
+search_items: Kërko artikuj...
 disabled: I Çaktivizuar
 information: Informacion
 report_bug: Raporto Defekt
@@ -703,8 +719,12 @@ operators:
   icontains: Përmban (insensitive)
   starts_with: Fillon me
   nstarts_with: Nuk fillon me
+  istarts_with: Fillon me (pa ndjeshmëri)
+  nistarts_with: Nuk fillon me (pa ndjeshmëri)
   ends_with: Mbaron me
   nends_with: Nuk mbaron me
+  iends_with: Mbaron me (pa ndjeshmëri)
+  niends_with: Nuk mbaron me (pa ndjeshmëri)
   between: Është midis
   nbetween: Nuk është midis
   empty: Është bosh
@@ -932,6 +952,8 @@ wysiwyg_options:
   source_code: Kodi Burimor
   fullscreen: Kodi Burimor
   directionality: Drejtimi
+  lazy_loading: Ngarkim të Përtypur të Imazhit
+  lazy_loading_label: Aktivizo Ngarkimin e Përtypur
 dropdown: Zbritëse
 choices: Zgjedhje
 choices_option_configured_incorrectly: Opsionet e zgjedhjeve janë konfiguruar gabim
@@ -955,6 +977,7 @@ settings_flows: Rrjedha
 settings_presets: Cilësimet e Paracaktuara dhe Faqerojtësit
 settings_translations: Përkthimet e Personalizuara
 one_or_more_options_are_missing: Mungon një ose më shumë opsione
+configure_field_key_to_continue: Konfiguro çelësin e fushës për të vazhduar
 scope: Shtrirje
 actions: Veprimet
 select: Zgjidh...
@@ -1346,6 +1369,7 @@ share: Ndaj
 share_item: Ndaj Artikull
 shared_with_you: Një artikull është ndarë me ju
 shared_enter_passcode: Shkruani kodin tuaj për të vazhduar...
+shared_leave_blank_for_passwordless_access: Lini të zbrazët për qasje pa fjalëkalim
 shared_leave_blank_for_unlimited: Lëreni bosh për të pakufizuar
 shared_times_remaining: Ky link mund të përdoret vetëm {n} herë
 shared_last_remaining: Ky link mund të përdoret vetëm një herë
@@ -1460,6 +1484,8 @@ undo_removed_item: Zhbëj Hiqjen e Artikullit
 remove_item: Hiq Artikullin
 delete_item: Fshi Artikullin
 interfaces:
+  list-m2a:
+    prefix_note: Përdor emrin e koleksionit të artikullit të lidhur si parazgjedhje.
   filter:
     name: Filtri
     description: Konfiguro një objekt filtrues.
@@ -1595,6 +1621,8 @@ interfaces:
   system-interface-options:
     interface-options: Opsionet e Ndërfaqes
     description: Një modal për zgjedhjen e opsioneve të një ndërfaqeje
+  system-display:
+    display: Shfaq
   list-m2m:
     many-to-many: Shumë me Shumë
     description: Zgjidh artikuj të shumtë të lidhur në një udhëkryq
@@ -1664,6 +1692,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Fut shënim fushe...
     incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
+    interface_group: Opsionet e Ndërfaqes
   slider:
     slider: Rrëshqitës
     description: Zgjidh një numër përmes një rrëshqitësi
@@ -2119,9 +2148,19 @@ operations:
     payload: Ngarkesa
     query: Query
   json-web-token:
+    name: Shenja e Uebit JSON (JWT)
+    description: Nënshkruaj dhe verifiko Shenjat e Uebit JSON
+    operation: Operacion
+    secret: Sekret
+    secret_placeholder: Fut një sekret...
     payload: Ngarkesa
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opsione
+    options_placeholder: 'Referohu te https://www.npmjs.com/package/jsonwebtoken#usage për opsionet e disponueshme'
+    sign: Nënshkruaj Shenjën
+    verify: Verifiko Shenjën
+    decode: Dekodo Shenjën
   log:
     name: Regjistro në Konsolë
     description: Shfaq diçka në konsolë
@@ -2141,6 +2180,7 @@ operations:
     recipient: Përdorues
     recipient_placeholder: Shkruaj një UUID...
     recipient_note: Shto UUID të përdoruesit dhe shtyp enter...
+    item_note: Çelësi i Artikullit ose URL e Lidhur
     message: Mesazh
     subject: Subjekt
   request:

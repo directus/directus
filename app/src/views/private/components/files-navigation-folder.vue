@@ -132,10 +132,10 @@ const props = withDefaults(
 		folder: Folder;
 		currentFolder?: string;
 		actionsDisabled?: boolean;
-		clickHandler: (target: FolderTarget) => void;
+		clickHandler?: (target: FolderTarget) => void;
 	}>(),
 	{
-		clickHandler: () => undefined,
+		clickHandler: () => () => undefined,
 	}
 );
 

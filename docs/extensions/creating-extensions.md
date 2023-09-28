@@ -9,7 +9,7 @@ readTime: 5 min read
 
 The easiest way to start developing extensions is to use the `create-directus-extension` utility:
 
-```bash
+```shell
 npx create-directus-extension@latest
 ```
 

@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['esc', 'update:modelValue']);
 
-useShortcut('escape', (event, cancelNext) => {
+useShortcut('escape', (_event, cancelNext) => {
 	if (internalActive.value) {
 		emit('esc');
 		cancelNext();

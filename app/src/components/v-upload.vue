@@ -112,13 +112,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	multiple: false,
 	preset: () => ({}),
-	fileId: undefined,
 	fromUser: true,
-	fromUrl: false,
-	fromLibrary: false,
-	folder: undefined,
 });
 
 const emit = defineEmits(['input']);
@@ -302,6 +297,7 @@ function useURLImport() {
 				url: url.value,
 				data: {
 					folder: props.folder,
+					id: props.fileId,
 				},
 			});
 

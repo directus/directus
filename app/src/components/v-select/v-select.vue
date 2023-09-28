@@ -54,7 +54,7 @@
 				<v-divider />
 			</template>
 
-			<v-list-item v-if="internalItemsCount > 20 || search">
+			<v-list-item v-if="internalItemsCount > 10 || search">
 				<v-list-item-content>
 					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
 						<template #append>
@@ -204,17 +204,10 @@ const props = withDefaults(defineProps<Props>(), {
 	itemSelectable: 'selectable',
 	itemChildren: 'children',
 	modelValue: null,
-	multiple: false,
-	groupSelectable: false,
 	mandatory: true,
 	placeholder: null,
 	fullWidth: true,
-	disabled: false,
-	showDeselect: false,
-	allowOther: false,
 	closeOnContentClick: true,
-	inline: false,
-	label: false,
 	multiplePreviewThreshold: 3,
 	placement: 'bottom',
 	isMenuSameWidth: true,
@@ -251,42 +244,57 @@ function useItems() {
 	const internalSearch = ref<string | null>(null);
 
 	const internalItems = computed(() => {
-		const parseItem = (item: Record<string, any>): Option => {
+		const parseItem = (item: Record<string, any> | string): Option => {
 			if (typeof item === 'string') {
 				return {
 					text: item,
 					value: item,
+					hidden: internalSearch.value ? !filterItem(item) : false,
 				};
 			}
 
 			if (item.divider === true) return { value: null, divider: true };
 
+			const text = get(item, props.itemText);
+			const value = get(item, props.itemValue);
 			const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
 
 			return {
-				text: get(item, props.itemText),
-				value: get(item, props.itemValue),
+				text,
+				value,
 				icon: props.itemIcon ? get(item, props.itemIcon) : undefined,
 				disabled: get(item, props.itemDisabled),
 				selectable: get(item, props.itemSelectable),
-				children: children ? children.filter(filterItem) : children,
-				hidden: internalSearch.value ? !filterItem(item) : false,
+				children: children
+					? children.filter((childItem: Record<string, any>) =>
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+					  )
+					: children,
+				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
 			};
 		};
 
-		const filterItem = (item: Record<string, any>): boolean => {
+		const filterItem = (
+			text: string | undefined,
+			value?: string | number | null,
+			children?: Record<string, any>[] | null
+		): boolean => {
 			if (!internalSearch.value) return true;
 
 			const searchValue = internalSearch.value.toLowerCase();
 
-			return item?.children
-				? isMatchingCurrentItem(item, searchValue) ||
-						item.children.some((item: Record<string, any>) => filterItem(item))
-				: isMatchingCurrentItem(item, searchValue);
+			return children
+				? isMatchingCurrentItem(text, value, searchValue) ||
+						children.some((childItem: Record<string, any>) =>
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+						)
+				: isMatchingCurrentItem(text, value, searchValue);
 
-			function isMatchingCurrentItem(item: Record<string, any>, searchValue: string): boolean {
-				const text = get(item, props.itemText);
-				const value = get(item, props.itemValue);
+			function isMatchingCurrentItem(
+				text: string | undefined,
+				value: string | number | null | undefined,
+				searchValue: string
+			): boolean {
 				return (
 					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
 					(value ? String(value).toLowerCase().includes(searchValue) : false)

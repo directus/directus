@@ -1,7 +1,7 @@
 <template>
-	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }">
-		<div v-if="type === 'image'" class="image" @click="$emit('click')">
-			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
+	<div class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }" @click="$emit('click')">
+		<div v-if="type === 'image' && !imgError" class="image">
+			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" @error="imgError = true" />
 		</div>
 
 		<div v-else-if="type === 'video'" class="video">
@@ -20,47 +20,54 @@
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { computed, ref } from 'vue';
+import type { File } from '@directus/types';
+import { computed, ref, toRef } from 'vue';
 
-interface Props {
-	mime: string;
-	width?: number | null;
-	height?: number | null;
-	src: string;
-	title: string;
+export interface Props {
+	file: Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'>;
+	preset?: string | null;
 	inModal?: boolean;
 }
 
-defineEmits(['click']);
+const props = withDefaults(defineProps<Props>(), { preset: 'system-large-contain' });
 
-const props = withDefaults(defineProps<Props>(), { width: undefined, height: undefined, inModal: false });
+defineEmits<{
+	click: [];
+}>();
 
+const file = toRef(props, 'file');
 const imgError = ref(false);
 
-const type = computed<'image' | 'video' | 'audio' | string>(() => {
-	if (props.mime === null) return 'unknown';
+const src = computed(
+	() => `assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`
+);
 
-	if (props.mime.startsWith('image')) {
+const type = computed<'image' | 'video' | 'audio' | string>(() => {
+	const mimeType = file.value.type;
+
+	if (mimeType === null) return 'unknown';
+
+	if (mimeType.startsWith('image')) {
 		return 'image';
 	}
 
-	if (props.mime.startsWith('video')) {
+	if (mimeType.startsWith('video')) {
 		return 'video';
 	}
 
-	if (props.mime.startsWith('audio')) {
+	if (mimeType.startsWith('audio')) {
 		return 'audio';
 	}
 
-	return readableMimeType(props.mime, true) ?? 'unknown';
+	return readableMimeType(mimeType, true) ?? 'unknown';
 });
 
-const isSVG = computed(() => props.mime.includes('svg'));
+const isSVG = computed(() => file.value.type?.includes('svg'));
 
-const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
-const isSmall = computed(() => props.height && props.height < 528);
+const maxHeight = computed(() => (props.inModal ? '85vh' : Math.min(file.value.height ?? 528, 528) + 'px'));
+const isSmall = computed(() => file.value.height && file.value.height < 528);
 
-const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src));
+const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value));
 </script>
 
 <style lang="scss" scoped>
@@ -128,7 +135,12 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src)
 	}
 
 	&.modal {
-		.image {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		img,
+		video {
 			background-color: transparent;
 			border-radius: 0;
 		}

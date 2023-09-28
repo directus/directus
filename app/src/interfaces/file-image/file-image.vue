@@ -16,7 +16,7 @@
 			</div>
 
 			<v-image
-				v-else-if="image.type.startsWith('image')"
+				v-else-if="image.type?.startsWith('image')"
 				:src="src"
 				:width="image.width"
 				:height="image.height"
@@ -45,7 +45,7 @@
 					<v-icon name="download" />
 				</v-button>
 				<template v-if="!disabled">
-					<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
+					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="open_in_new" />
 					</v-button>
 					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
@@ -78,9 +78,9 @@
 				</template>
 			</drawer-item>
 
-			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<image-editor v-if="!disabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
-			<file-lightbox :id="image.id" v-model="lightboxActive" />
+			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
 		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
 	</div>
@@ -97,12 +97,13 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
+import type { File } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | Record<string, any> | null;
+		value: string | Record<string, any> | null;
 		disabled?: boolean;
 		folder?: string;
 		collection: string;
@@ -111,17 +112,16 @@ const props = withDefaults(
 		crop?: boolean;
 	}>(),
 	{
-		value: null,
-		disabled: false,
 		crop: true,
-		folder: undefined,
 	}
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: string | Record<string, any> | null];
+}>();
 
 const value = computed({
-	get: () => props.value ?? null,
+	get: () => props.value,
 	set: (value) => {
 		emit('input', value);
 	},
@@ -133,7 +133,16 @@ const query = ref<RelationQuerySingle>({
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem: image, loading, update, remove, refresh } = useRelationSingle(value, query, relationInfo);
+
+const {
+	displayItem: image,
+	loading,
+	update,
+	remove,
+	refresh,
+} = useRelationSingle<
+	Pick<File, 'id' | 'title' | 'width' | 'height' | 'filesize' | 'type' | 'filename_download' | 'modified_on'>
+>(value, query, relationInfo);
 
 const { t, n, te } = useI18n();
 
@@ -142,7 +151,7 @@ const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
 
 const src = computed(() => {
-	if (!image.value) return null;
+	if (!image.value?.type) return null;
 
 	if (image.value.type.includes('svg')) {
 		return '/assets/' + image.value.id;
@@ -157,7 +166,7 @@ const src = computed(() => {
 	return null;
 });
 
-const ext = computed(() => (image.value ? readableMimeType(image.value.type, true) : 'unknown'));
+const ext = computed(() => (image.value?.type ? readableMimeType(image.value.type, true) : 'unknown'));
 
 const meta = computed(() => {
 	if (!image.value) return null;
