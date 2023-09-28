@@ -12,7 +12,9 @@ with form inputs.
 
 ## Install Dependencies
 
-This particular panel extension builds off of the
+Panels can only talk to internal Directus services, and can't reliably make external web requests because browser
+security protections prevent these cross-origin requests from being made. To create a panel that can interact with
+external APIs, you must interact with the API using an endpoint. This particular panel extension builds off of the
 [Twilio Custom Endpoint Extension guide](/guides/extensions/endpoints-api-proxy-twilio). Make sure you have access to
 these custom endpoints before starting this guide.
 
@@ -43,7 +45,7 @@ description: 'Send a SMS from a panel.',
 ```
 
 Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
-include a professional prefix. You can choose an icon from the library [here].
+include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
 With the information above, the panel will appear in the list like this:
 
@@ -245,9 +247,9 @@ setup(props) {
 	const sms_sent = ref(0);
 	const sms_error = ref([]);
 	const fields = ref([]);
-	const template_fields = ref([]);
-	const twilio_sid = props.TWILIO_ACCOUNT_SID;
-	const twilio_from = props.TWILIO_PHONE_NUMBER;
+	const templateFields = ref([]);
+	const twilioSid = props.TWILIO_ACCOUNT_SID;
+	const twilioFrom = props.TWILIO_PHONE_NUMBER;
 },
 ```
 
@@ -262,11 +264,11 @@ async function fetchResults() {
 	fields.value = [`${props.phone_number_field}`];
 
 	if (props.displayTemplate != null) {
-		template_fields.value = props.displayTemplate.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
+		templateFields.value = props.displayTemplate.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
 	}
 
-	if (template_fields.value != null) {
-		template_fields.value.forEach((field) => {
+	if (templateFields.value != null) {
+		templateFields.value.forEach((field) => {
 			field = field.replace('{{ ', '').replace(' }}', '');
 			fields.value.push(field);
 		});
@@ -329,8 +331,8 @@ and replace them with the results from the second function `parseValue`.
 function displayOutput(item) {
 	let output = props.displayTemplate;
 
-	if (template_fields.value != null) {
-		template_fields.value.forEach((field) => {
+	if (templateFields.value != null) {
+		templateFields.value.forEach((field) => {
 			const clean = field.replace('{{ ', '').replace(' }}', '');
 			output = output.replace(field, parseValue(item, clean));
 		});
@@ -396,8 +398,8 @@ function sendSMS() {
 
 	sms_recpients.forEach((sms_to) => {
 		api
-			.post(`/twilio/2010-04-01/Accounts/${twilio_sid}/Messages.json`, {
-				From: twilio_from,
+			.post(`/twilio/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+				From: twilioFrom,
 				Body: sms_body,
 				To: sms_to,
 			})
@@ -910,19 +912,19 @@ export default {
 		const sms_sent = ref(0);
 		const sms_error = ref([]);
 		const fields = ref([]);
-		const template_fields = ref([]);
-		const twilio_sid = props.TWILIO_ACCOUNT_SID;
-		const twilio_from = props.TWILIO_PHONE_NUMBER;
+		const templateFields = ref([]);
+		const twilioSid = props.TWILIO_ACCOUNT_SID;
+		const twilioFrom = props.TWILIO_PHONE_NUMBER;
 
 		async function fetchResults(){
 			fields.value = [`${props.phone_number_field}`];
 
 			if(props.displayTemplate != null){
-				template_fields.value = props.displayTemplate.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
+				templateFields.value = props.displayTemplate.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
 			}
 
-			if(template_fields.value != null){
-				template_fields.value.forEach(field => {
+			if(templateFields.value != null){
+				templateFields.value.forEach(field => {
 					field = field.replace('{{ ','').replace(' }}','');
 					fields.value.push(field);
 				});
@@ -971,8 +973,8 @@ export default {
 		function displayOutput(item){
 			let output = props.displayTemplate;
 
-			if(template_fields.value != null){
-				template_fields.value.forEach(field => {
+			if(templateFields.value != null){
+				templateFields.value.forEach(field => {
 					const clean = field.replace('{{ ','').replace(' }}','');
 					output = output.replace(field, parseValue(item, clean));
 				});
@@ -1014,8 +1016,8 @@ export default {
 			}
 
 			sms_recpients.forEach(sms_to => {
-				api.post(`/twilio/2010-04-01/Accounts/${twilio_sid}/Messages.json`, {
-					From: twilio_from,
+				api.post(`/twilio/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+					From: twilioFrom,
 					Body: sms_body,
 					To: sms_to,
 				}).then((rsp) => {

@@ -40,7 +40,7 @@ description: 'Output a form to insert data into a collection.',
 ```
 
 Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
-include a professional prefix. You can choose an icon from the library [here].
+include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
 The Panel will need some configuration options so the user can choose the collection and fields from that collection to
 include on the panel.
@@ -59,7 +59,7 @@ Replace the existing text field with the following fields inside the `options` a
 			includeSingleton: false,
 		},
 		width: 'half',
-},
+	},
 },
 {
 	field: 'fields',
@@ -177,7 +177,7 @@ function getFields() {
 	});
 }
 
-fetchData();
+getFields();
 ```
 
 If the fields, collection, or response format is changed, the `getFields` function will need to be called again. Use the
@@ -190,9 +190,7 @@ watch(
 		() => props.fields,
 		() => props.response_format
 	],
-	() => {
-		getFields();
-	},
+	getFields
 );
 ```
 
@@ -220,7 +218,7 @@ the URL for the newly created item:
 
 ```js
 function getLinkForItem(item) {
-	if(item === undefined) return;
+	if (item === undefined) return;
 	const primaryKey = item[primaryKeyField.value.field];
 	return `/content/${props.collection}/${encodeURIComponent(primaryKey)}`;
 }
@@ -239,10 +237,10 @@ the permissions:
 
 ```vue
 <template>
-	<div v-if="!hasPermission" :class="`panel-error`">
+	<div v-if="!hasPermission" class="panel-error">
 		<v-notice type="danger" icon="warning">You do not have permissions to {{ collection }}</v-notice>
 	</div>
-	<div v-else :class="`panel-internal-form ${(width<30?'small':'large')} ${showHeader?'has-header':''}`">
+	<div v-else :class="['panel-internal-form', { small: width < 30, large: width >= 30, 'has-header': showHeader }]">
 		<!-- Form goes here -->
 	</div>
 </template>
@@ -306,15 +304,15 @@ Use a button at the bottom to dismiss the dialog box. The click function needs t
 Lastly, replace the CSS at the bottom with this:
 
 ```css
-<style>
+<style scoped>
 .panel-internal-form { padding: 12px; }
 .panel-internal-form.has-header { padding: 0 12px; }
-.panel-internal-form.small .field { grid-column: start/fill; }
-.panel-internal-form .v-form { margin-bottom: var(--form-vertical-gap); }
+.panel-internal-form.small :deep(.field) { grid-column: start/fill; }
+.panel-internal-form :deep(.v-form) { margin-bottom: var(--form-vertical-gap); }
 .form-response { border-radius: var(--border-radius); border: var(--border-width) solid var(--border-normal); margin: 1em 0; min-width: 300px; }
 .form-response a { position: relative; display: block; padding: var(--input-padding); }
 .form-response a:hover { cursor: pointer; background-color: var(--v-list-item-background-color-hover); }
-.form-response a .v-icon { position: absolute; right: var(--input-padding); top: var(--input-padding); }
+.form-response a :deep(.v-icon) { position: absolute; right: var(--input-padding); top: var(--input-padding); }
 </style>
 ```
 
@@ -431,10 +429,11 @@ export default {
 
 ```vue
 <template>
-	<div v-if="!hasPermission" :class="`panel-error`">
+	<div v-if="!hasPermission" class="panel-error">
 		<v-notice type="danger" icon="warning">You do not have permissions to {{ collection }}</v-notice>
 	</div>
-	<div v-else :class="`panel-internal-form ${(width<30?'small':'large')} ${showHeader?'has-header':''}`">
+	<div v-else :class="['panel-internal-form', { small: width < 30, large: width >= 30, 'has-header': showHeader }]">
+
 		<!-- Form goes here -->
 		<v-form
 			v-if="fieldData"
@@ -464,7 +463,7 @@ export default {
 					{{ formError }}
 				</blockquote>
 
-				<v-button  @click="responseDialog = false">Done</v-button>
+				<v-button @click="responseDialog = false">Done</v-button>
 			</v-sheet>
 		</v-dialog>
 	</div>
@@ -473,6 +472,7 @@ export default {
 <script>
 import { useApi, useCollection, useStores } from '@directus/extensions-sdk';
 import { ref, watch } from 'vue';
+
 export default {
 	props: {
 		showHeader: {
@@ -536,15 +536,13 @@ export default {
 				() => props.fields,
 				() => props.response_format
 			],
-			() => {
-				getFields();
-			},
+			getFields
 		);
 
 		return { hasPermission, primaryKeyField, formData, fieldData, submitForm, formResponse, formError, responseDialog, getLinkForItem };
 
 		function getLinkForItem(item) {
-			if(item === undefined) return;
+			if (item === undefined) return;
 			const primaryKey = item[primaryKeyField.value.field];
 			return `/content/${props.collection}/${encodeURIComponent(primaryKey)}`;
 		}
@@ -553,14 +551,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .panel-internal-form { padding: 12px; }
 .panel-internal-form.has-header { padding: 0 12px; }
-.panel-internal-form.small .field { grid-column: start/fill; }
-.panel-internal-form .v-form { margin-bottom: var(--form-vertical-gap); }
+.panel-internal-form.small :deep(.field) { grid-column: start/fill; }
+.panel-internal-form :deep(.v-form) { margin-bottom: var(--form-vertical-gap); }
 .form-response { border-radius: var(--border-radius); border: var(--border-width) solid var(--border-normal); margin: 1em 0; min-width: 300px; }
 .form-response a { position: relative; display: block; padding: var(--input-padding); }
 .form-response a:hover { cursor: pointer; background-color: var(--v-list-item-background-color-hover); }
-.form-response a .v-icon { position: absolute; right: var(--input-padding); top: var(--input-padding); }
+.form-response a :deep(.v-icon) { position: absolute; right: var(--input-padding); top: var(--input-padding); }
 </style>
 ```

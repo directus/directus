@@ -1,5 +1,4 @@
----
-description: A guide on how you can create a panel to display data from an external API like Vonage.
+variable--- description: A guide on how you can create a panel to display data from an external API like Vonage.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
@@ -11,9 +10,10 @@ as part of a panel.
 
 <img src="https://marketing.directus.app/assets/31ac7437-99ed-44fe-9b75-b21c92198fda.png" alt="Table with header Messages shows several items with status, sent delative date, a recipient ID, and a provider">
 
-Panels can only talk to internal Directus services, and can't reliably make external web requests. To create a panel
-that can interact with external APIs, this guide will create a bundle of an endpoint (that can make external requests)
-and a panel (that uses the endpoint).
+Panels can only talk to internal Directus services, and can't reliably make external web requests because browser
+security protections prevent these cross-origin requests from being made. To create a panel that can interact with
+external APIs, this guide will create a bundle of an endpoint (that can make external requests) and a panel (that uses
+the endpoint).
 
 ## Before You Start
 
@@ -109,7 +109,7 @@ description: 'View recent Vonage SMS activity.',
 ```
 
 Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to
-include a professional prefix. You can choose an icon from the library [here].
+include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
 The Panel will accept configuration options. The Vonage API supports `date_start`, `date_end`, `status`, `direction`
 (incoming/outgoing), and `product` type (SMS/Messages).
@@ -292,23 +292,23 @@ After the `props`, create a `setup(props)` section and create the variables need
 
 setup(props){
 	const api = useApi();
-	const activity_data = ref([]);
+	const activityData = ref([]);
 	const now = ref(new Date());
-	const is_loading = ref(true);
-	const has_error = ref(false);
+	const isLoading = ref(true);
+	const hasError = ref(false);
 },
 
 ```
 
 Create a `fetchData` function that will use the information provided to construct the query parameters and perform the
-API query. The response is written to the `activity_data` constant.
+API query. The response is written to the `activityData` variable.
 
-Use the `is_loading` constant to hide or show the progress spinner to indicate that the query is running:
+Use the `isLoading` variable to hide or show the progress spinner to indicate that the query is running:
 
 ```js
 async function fetchData(){
-	is_loading.value = true;
-	activity_data.value = [];
+	isLoading.value = true;
+	activityData.value = [];
 
 	const params = {
 		product: props.type || 'SMS',
@@ -317,21 +317,17 @@ async function fetchData(){
 		date_start: formatISO(adjustDate(now.value, (props.range ? `-${props.range}` : '-1 day'))),
 		status: props.status || 'any'
 	};
-	if(props.status) params.status = props.status;
+	if (props.status) params.status = props.status;
 
-	let url_params = new URLSearchParams(params);
+	const url_params = new URLSearchParams(params);
 	try {
-		api.get(`/vonage/records?${url_params.toString()}`).then((rsp) => {
-			activity_data.value = rsp.data.records;
-			is_loading.value = false;
-		}).catch((error) => {
-			is_loading.value = false;
-			has_error.value = error.message;
-		});
+		const rsp = await api.get(`/vonage/records?${url_params.toString()}`)
+		activityData.value = rsp.data.records;
 	} catch (err) {
-		is_loading.value = false;
-		has_error.value = "Internal Server Error";
+		hasError.value = "Internal Server Error";
 		console.warn(err);
+	} finally {
+		isLoading.value = false;
 	}
 }
 
@@ -339,7 +335,7 @@ fetchData();
 ```
 
 The endpoint `/vonage/records` comes from the custom extension created in an earlier step. When `fetchData()` is called,
-the `activity_data` variable is updated with the result.
+the `activityData` variable is updated with the result.
 
 If any of the properties are changed, the function will need to update the activity data again. Use the following code:
 
@@ -352,16 +348,14 @@ watch(
 		() => props.include_message,
 		() => props.status
 	],
-	() => {
-		fetchData();
-	},
+	fetchData
 );
 ```
 
-At the end of the script, return the required constants and functions for use in the Vue template:
+At the end of the script, return the required variables and functions for use in the Vue template:
 
 ```js
-return { activity_data, is_loading, has_error, formatDistanceToNow, parseISO };
+return { activityData, isLoading, hasError, formatDistanceToNow, parseISO };
 ```
 
 ## Build the View
@@ -372,16 +366,16 @@ essential information is missing. Start with this:
 ```vue
 <template>
 	<div class="messages-table" :class="{ 'has-header': showHeader }">
-		<v-progress-circular v-if="is_loading" class="is_loading" indeterminate />
-		<v-notice v-else-if="has_error" type="danger">{{ has_error }}</v-notice>
-		<v-notice v-else-if="activity_data.length == 0" type="info">No Messages</v-notice>
+		<v-progress-circular v-if="isLoading" class="is-loading" indeterminate />
+		<v-notice v-else-if="hasError" type="danger">{{ hasError }}</v-notice>
+		<v-notice v-else-if="activityData.length == 0" type="info">No Messages</v-notice>
 		<!-- Table goes here -->
 	</div>
 </template>
 ```
 
-The `v-progress-circular` is a loading spinner that is active while the `is_loading` constant is true. After that, there
-is a `danger` notice if `has_error` contains a value, then an `info` notice if there aren't any messages in the data.
+The `v-progress-circular` is a loading spinner that is active while the `isLoading` variable is true. After that, there
+is a `danger` notice if `hasError` contains a value, then an `info` notice if there aren't any messages in the data.
 
 Next, build a table to present the data:
 
@@ -399,7 +393,7 @@ Next, build a table to present the data:
 		</tr>
 	</thead>
 	<tbody>
-		<tr v-for="message in activity_data" :key="message.message_id">
+		<tr v-for="message in activityData" :key="message.message_id">
 			<td v-if="direction == 'outbound'" class="ucwords">{{ message.status }}</td>
 			<td class="nowrap">
 				{{ formatDistanceToNow(parseISO(message.date_finalized ? message.date_finalized : message.date_received)) }} ago
@@ -432,7 +426,7 @@ Lastly, replace the CSS at the bottom with this:
 .message { min-width: 260px; }
 .messages-table table tr th { font-weight: bold; text-align: left; font-size: 0.8em; text-transform: uppercase; line-height: 1; padding: 8px 10px; }
 .text.has-header { padding: 0 12px; }
-.is_loading { position: absolute; left: calc(50% - 14px); top: calc(50% - 28px); }
+.is-loading { position: absolute; left: calc(50% - 14px); top: calc(50% - 28px); }
 </style>
 ```
 
@@ -633,9 +627,9 @@ export default {
 ```vue
 <template>
 	<div class="messages-table" :class="{ 'has-header': showHeader }">
-		<v-progress-circular v-if="is_loading" class="is_loading" indeterminate />
-		<v-notice v-else-if="has_error" type="danger">{{ has_error }}</v-notice>
-		<v-notice v-else-if="activity_data.length == 0" type="info">No Messages</v-notice>
+		<v-progress-circular v-if="isLoading" class="is-loading" indeterminate />
+		<v-notice v-else-if="hasError" type="danger">{{ hasError }}</v-notice>
+		<v-notice v-else-if="activityData.length == 0" type="info">No Messages</v-notice>
 		<table v-else cellpadding="0" cellspacing="0" border="0">
 			<thead>
 				<tr>
@@ -649,7 +643,7 @@ export default {
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="message in activity_data" :key="message.message_id">
+				<tr v-for="message in activityData" :key="message.message_id">
 					<td v-if="direction == 'outbound'" class="ucwords">{{ message.status }}</td>
 					<td class="nowrap">{{ formatDistanceToNow(parseISO(message.date_finalized?message.date_finalized:message.date_received)) }} ago</td>
 					<td v-if="include_message" class="message">{{ message.message_body }}</td>
@@ -696,14 +690,14 @@ export default {
 	},
 	setup(props){
 		const api = useApi();
-		const activity_data = ref([]);
+		const activityData = ref([]);
 		const now = ref(new Date());
-		const is_loading = ref(true);
-		const has_error = ref(false);
+		const isLoading = ref(true);
+		const hasError = ref(false);
 
 		async function fetchData(){
-			is_loading.value = true;
-			activity_data.value = [];
+			isLoading.value = true;
+			activityData.value = [];
 			const params = {
 				product: props.type || 'SMS',
 				direction: props.direction || 'outbound',
@@ -711,26 +705,18 @@ export default {
 				date_start: formatISO(adjustDate(now.value, (props.range ? `-${props.range}` : '-1 day'))),
 				status: props.status || 'any'
 			};
-			if(props.status) params.status = props.status;
+			if (props.status) params.status = props.status;
 
-			let url_params = new URLSearchParams(params);
+			const url_params = new URLSearchParams(params);
 
 			try {
-				api.get(
-					`/vonage/records?${url_params.toString()}`
-				).then((rsp) => {
-					console.log(rsp.data);
-					activity_data.value = rsp.data.records;
-					is_loading.value = false;
-				}).catch((error) => {
-					is_loading.value = false;
-					has_error.value = error.message;
-					console.log(error);
-				});
+				const rsp = await api.get(`/vonage/records?${url_params.toString()}`)
+				activityData.value = rsp.data.records;
 			} catch (err) {
-				is_loading.value = false;
-				has_error.value = "Internal Server Error";
+				hasError.value = "Internal Server Error";
 				console.warn(err);
+			} finally {
+				isLoading.value = false;
 			}
 		}
 
@@ -744,12 +730,10 @@ export default {
 				() => props.include_message,
 				() => props.status,
 			],
-			() => {
-				fetchData();
-			},
+			fetchData
 		);
 
-		return { activity_data, is_loading, has_error, formatDistanceToNow, parseISO };
+		return { activityData, isLoading, hasError, formatDistanceToNow, parseISO };
 	},
 };
 </script>
@@ -764,6 +748,6 @@ export default {
 .message { min-width: 260px; }
 .messages-table table tr th { font-weight: bold; text-align: left; font-size: 0.8em; text-transform: uppercase; line-height: 1; padding: 8px 10px; }
 .text.has-header { padding: 0 12px; }
-.is_loading { position: absolute; left: calc(50% - 14px); top: calc(50% - 28px); }
+.is-loading { position: absolute; left: calc(50% - 14px); top: calc(50% - 28px); }
 </style>
 ```
