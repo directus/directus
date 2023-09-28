@@ -7,7 +7,7 @@ export const theme: Theme = {
 		red: 'tomato',
 	},
 	rules: {
-		foreground: 'var(--red)',
+		foreground: '$red',
 		background: 'white',
 		moduleBar: {
 			background: '#000',
