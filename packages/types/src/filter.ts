@@ -33,14 +33,18 @@ export type ClientFilterOperator =
 	| 'niends_with'
 	| 'regex';
 
-export type Filter = LogicalFilter | FieldFilter;
+export type Filter<T = any> = LogicalFilter<Partial<T>> | FieldFilter<Partial<T>>;
 
-export type LogicalFilterOR = { _or: Filter[] };
-export type LogicalFilterAND = { _and: Filter[] };
-export type LogicalFilter = LogicalFilterOR | LogicalFilterAND;
+export type LogicalFilterOR<T = any> = {
+	_or: Filter<T>[];
+};
+export type LogicalFilterAND<T = any> = {
+	_and: Filter<T>[];
+};
+export type LogicalFilter<T = any> = LogicalFilterOR<T> | LogicalFilterAND<T>;
 
-export type FieldFilter = {
-	[field: string]: FieldFilterOperator | FieldValidationOperator | FieldFilter;
+export type FieldFilter<T = any> = {
+	[K in keyof T]?: FieldFilterOperator | FieldValidationOperator | FieldFilter<Partial<T[K]>>;
 };
 
 export type FieldFilterOperator = {
