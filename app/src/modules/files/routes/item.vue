@@ -1,161 +1,3 @@
-<template>
-	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? t('loading') : item.title">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="breadcrumb" />
-		</template>
-
-		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
-						:disabled="item === null || deleteAllowed === false"
-						@click="on"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
-				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon :disabled="item === null" secondary @click="on">
-						<v-icon name="folder_move" />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('move_to_folder') }}</v-card-title>
-
-					<v-card-text>
-						<folder-picker v-model="selectedFolder" />
-					</v-card-text>
-
-					<v-card-actions>
-						<v-button secondary @click="moveToDialogActive = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button :loading="moving" @click="moveToFolder">
-							{{ t('move') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-			<v-button
-				v-tooltip.bottom="t('download')"
-				secondary
-				icon
-				rounded
-				:download="item?.filename_download"
-				:href="getAssetUrl(props.primaryKey, true)"
-			>
-				<v-icon name="download" />
-			</v-button>
-
-			<v-button
-				v-if="item?.type?.includes('image')"
-				v-tooltip.bottom="t('edit')"
-				rounded
-				icon
-				secondary
-				@click="editActive = true"
-			>
-				<v-icon name="tune" />
-			</v-button>
-
-			<v-button
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="!isSavable"
-				@click="saveAndQuit"
-			>
-				<v-icon name="check" />
-
-				<template #append-outer>
-					<save-options
-						v-if="isSavable"
-						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
-						@save-and-stay="saveAndStay"
-						@save-as-copy="saveAsCopyAndNavigate"
-						@discard-and-stay="discardAndStay"
-					/>
-				</template>
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<files-navigation :current-folder="item?.folder ?? undefined" />
-		</template>
-
-		<div class="file-item">
-			<file-preview-replace v-if="item" class="preview" :file="item" @replace="refresh" />
-
-			<image-editor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
-
-			<v-form
-				ref="form"
-				v-model="edits"
-				:fields="fieldsFiltered"
-				:loading="loading"
-				:initial-values="item"
-				:primary-key="primaryKey"
-				:disabled="updateAllowed === false"
-				:validation-errors="validationErrors"
-			/>
-		</div>
-
-		<v-dialog v-model="confirmLeave" @esc="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<template #sidebar>
-			<file-info-sidebar-detail :file="item" :is-new="isNew" />
-			<revisions-drawer-detail
-				v-if="isNew === false && revisionsAllowed"
-				ref="revisionsDrawerDetailRef"
-				collection="directus_files"
-				:primary-key="primaryKey"
-			/>
-			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
-		</template>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -365,6 +207,164 @@ function useMovetoFolder() {
 	}
 }
 </script>
+
+<template>
+	<files-not-found v-if="!loading && !item" />
+	<private-view v-else :title="loading || !item ? t('loading') : item.title">
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+
+		<template #headline>
+			<v-breadcrumb :items="breadcrumb" />
+		</template>
+
+		<template #actions>
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+				<template #activator="{ on }">
+					<v-button
+						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
+						rounded
+						icon
+						class="action-delete"
+						secondary
+						:disabled="item === null || deleteAllowed === false"
+						@click="on"
+					>
+						<v-icon name="delete" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
+				<template #activator="{ on }">
+					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon :disabled="item === null" secondary @click="on">
+						<v-icon name="folder_move" />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('move_to_folder') }}</v-card-title>
+
+					<v-card-text>
+						<folder-picker v-model="selectedFolder" />
+					</v-card-text>
+
+					<v-card-actions>
+						<v-button secondary @click="moveToDialogActive = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button :loading="moving" @click="moveToFolder">
+							{{ t('move') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+			<v-button
+				v-tooltip.bottom="t('download')"
+				secondary
+				icon
+				rounded
+				:download="item?.filename_download"
+				:href="getAssetUrl(props.primaryKey, true)"
+			>
+				<v-icon name="download" />
+			</v-button>
+
+			<v-button
+				v-if="item?.type?.includes('image')"
+				v-tooltip.bottom="t('edit')"
+				rounded
+				icon
+				secondary
+				@click="editActive = true"
+			>
+				<v-icon name="tune" />
+			</v-button>
+
+			<v-button
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
+				rounded
+				icon
+				:loading="saving"
+				:disabled="!isSavable"
+				@click="saveAndQuit"
+			>
+				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						v-if="isSavable"
+						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
+						@save-and-stay="saveAndStay"
+						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<files-navigation :current-folder="item?.folder ?? undefined" />
+		</template>
+
+		<div class="file-item">
+			<file-preview-replace v-if="item" class="preview" :file="item" @replace="refresh" />
+
+			<image-editor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
+
+			<v-form
+				ref="form"
+				v-model="edits"
+				:fields="fieldsFiltered"
+				:loading="loading"
+				:initial-values="item"
+				:primary-key="primaryKey"
+				:disabled="updateAllowed === false"
+				:validation-errors="validationErrors"
+			/>
+		</div>
+
+		<v-dialog v-model="confirmLeave" @esc="discardAndLeave">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<template #sidebar>
+			<file-info-sidebar-detail :file="item" :is-new="isNew" />
+			<revisions-drawer-detail
+				v-if="isNew === false && revisionsAllowed"
+				ref="revisionsDrawerDetailRef"
+				collection="directus_files"
+				:primary-key="primaryKey"
+			/>
+			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
+		</template>
+	</private-view>
+</template>
 
 <style lang="scss" scoped>
 .action-delete {

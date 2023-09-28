@@ -10,6 +10,7 @@
 (B|b)asemap
 (B|b)lackbox
 (B|b)ugfixes
+Butterfield
 (C|)ancelling
 (C|c)ancelled
 (C|c)harset
@@ -424,6 +425,7 @@ vCPU
 Vercel
 viewability
 VitePress
+(V|v)onage[.]?
 volta
 VPC
 Vue

@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import { getFriendlyDate } from '../../lib/date.js';
+import type { DocsTag, DeveloperArticle } from '../../types/schema.js';
+import Badge from '../Badge.vue';
+
+defineProps<{ tag: DocsTag & { articles: DeveloperArticle[] } }>();
+</script>
+
 <template>
 	<section class="container">
 		<Badge>Posts tagged {{ tag.title }}</Badge>
@@ -14,14 +22,6 @@
 		</div>
 	</section>
 </template>
-
-<script setup lang="ts">
-import { getFriendlyDate } from '../../lib/date.js';
-import type { DocsTag, DeveloperArticle } from '../../types/schema.js';
-import Badge from '../Badge.vue';
-
-defineProps<{ tag: DocsTag & { articles: DeveloperArticle[] } }>();
-</script>
 
 <style scoped>
 .container {

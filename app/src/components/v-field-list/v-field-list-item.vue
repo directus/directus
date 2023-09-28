@@ -1,3 +1,68 @@
+<script lang="ts">
+export default {
+	name: 'VFieldListItem',
+};
+</script>
+
+<script setup lang="ts">
+import { FieldNode } from '@/composables/use-field-tree';
+import formatTitle from '@directus/format-title';
+import { getFunctionsForType } from '@directus/utils';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+type FieldInfo = FieldNode & {
+	disabled?: boolean;
+	children?: FieldInfo[];
+};
+
+interface Props {
+	field: FieldInfo;
+	search?: string;
+	includeFunctions?: boolean;
+	relationalFieldSelectable?: boolean;
+	allowSelectAll?: boolean;
+	parent?: string | null;
+	rawFieldNames?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	search: undefined,
+	includeFunctions: false,
+	relationalFieldSelectable: true,
+	allowSelectAll: false,
+	parent: null,
+	rawFieldNames: false,
+});
+
+const emit = defineEmits(['add']);
+
+const { t } = useI18n();
+
+const supportedFunctions = computed(() => {
+	if (!props.includeFunctions || props.field.group) return [];
+	return getFunctionsForType(props.field.type);
+});
+
+const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
+
+const addAll = () => {
+	if (!props.field.children) return;
+
+	const selectedFields = props.field.children.map((selectableField) => {
+		let res = `${props.field.field}.${selectableField.field}`;
+
+		if (props.parent) {
+			res = `${props.parent}.${res}`;
+		}
+
+		return res;
+	});
+
+	emit('add', selectedFields);
+};
+</script>
+
 <template>
 	<v-list-group
 		v-if="field.children || supportedFunctions.length > 0"
@@ -74,71 +139,6 @@
 		</v-list-item-content>
 	</v-list-item>
 </template>
-
-<script lang="ts">
-export default {
-	name: 'VFieldListItem',
-};
-</script>
-
-<script setup lang="ts">
-import { FieldNode } from '@/composables/use-field-tree';
-import formatTitle from '@directus/format-title';
-import { getFunctionsForType } from '@directus/utils';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-type FieldInfo = FieldNode & {
-	disabled?: boolean;
-	children?: FieldInfo[];
-};
-
-interface Props {
-	field: FieldInfo;
-	search?: string;
-	includeFunctions?: boolean;
-	relationalFieldSelectable?: boolean;
-	allowSelectAll?: boolean;
-	parent?: string | null;
-	rawFieldNames?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	search: undefined,
-	includeFunctions: false,
-	relationalFieldSelectable: true,
-	allowSelectAll: false,
-	parent: null,
-	rawFieldNames: false,
-});
-
-const emit = defineEmits(['add']);
-
-const { t } = useI18n();
-
-const supportedFunctions = computed(() => {
-	if (!props.includeFunctions || props.field.group) return [];
-	return getFunctionsForType(props.field.type);
-});
-
-const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
-
-const addAll = () => {
-	if (!props.field.children) return;
-
-	const selectedFields = props.field.children.map((selectableField) => {
-		let res = `${props.field.field}.${selectableField.field}`;
-
-		if (props.parent) {
-			res = `${props.parent}.${res}`;
-		}
-
-		return res;
-	});
-
-	emit('add', selectedFields);
-};
-</script>
 
 <style lang="scss" scoped>
 .functions {

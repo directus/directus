@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import InsightsNavigation from '../components/navigation.vue';
+
+const { t } = useI18n();
+</script>
+
 <template>
 	<private-view :title="t('insights')">
 		<template #navigation>
@@ -11,13 +18,6 @@
 		</div>
 	</private-view>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import InsightsNavigation from '../components/navigation.vue';
-
-const { t } = useI18n();
-</script>
 
 <style scoped>
 .not-found {

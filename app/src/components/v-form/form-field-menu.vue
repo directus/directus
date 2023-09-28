@@ -1,3 +1,45 @@
+<script setup lang="ts">
+import { useClipboard } from '@/composables/use-clipboard';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { FormField } from './types';
+
+interface Props {
+	field: FormField;
+	modelValue?: string | number | boolean | Record<string, any> | Array<any> | null;
+	initialValue?: string | number | boolean | Record<string, any> | Array<any> | null;
+	restricted?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	initialValue: null,
+	restricted: false,
+});
+
+defineEmits(['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw']);
+
+const { t } = useI18n();
+
+const { isCopySupported, isPasteSupported } = useClipboard();
+
+const defaultValue = computed(() => {
+	const savedValue = props.field?.schema?.default_value;
+	return savedValue !== undefined ? savedValue : null;
+});
+
+const isRequired = computed(() => {
+	return props.field?.schema?.is_nullable === false;
+});
+
+const relational = computed(
+	() =>
+		props.field.meta?.special?.find((type) =>
+			['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'].includes(type)
+		) !== undefined
+);
+</script>
+
 <template>
 	<v-list>
 		<v-list-item clickable @click="$emit('edit-raw')">
@@ -46,45 +88,3 @@
 		</v-list-item>
 	</v-list>
 </template>
-
-<script setup lang="ts">
-import { useClipboard } from '@/composables/use-clipboard';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
-
-interface Props {
-	field: FormField;
-	modelValue?: string | number | boolean | Record<string, any> | Array<any> | null;
-	initialValue?: string | number | boolean | Record<string, any> | Array<any> | null;
-	restricted?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: null,
-	initialValue: null,
-	restricted: false,
-});
-
-defineEmits(['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw']);
-
-const { t } = useI18n();
-
-const { isCopySupported, isPasteSupported } = useClipboard();
-
-const defaultValue = computed(() => {
-	const savedValue = props.field?.schema?.default_value;
-	return savedValue !== undefined ? savedValue : null;
-});
-
-const isRequired = computed(() => {
-	return props.field?.schema?.is_nullable === false;
-});
-
-const relational = computed(
-	() =>
-		props.field.meta?.special?.find((type) =>
-			['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'].includes(type)
-		) !== undefined
-);
-</script>

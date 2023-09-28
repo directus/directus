@@ -1,19 +1,3 @@
-<template>
-	<span
-		v-if="internalActive"
-		class="v-chip"
-		:class="[sizeClass, { outlined, label, disabled, close }]"
-		@click="onClick"
-	>
-		<span class="chip-content">
-			<slot />
-			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
-				<v-icon class="close" :name="closeIcon" x-small />
-			</span>
-		</span>
-	</span>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
@@ -78,6 +62,22 @@ function onCloseClick(event: MouseEvent) {
 	emit('close', event);
 }
 </script>
+
+<template>
+	<span
+		v-if="internalActive"
+		class="v-chip"
+		:class="[sizeClass, { outlined, label, disabled, close }]"
+		@click="onClick"
+	>
+		<span class="chip-content">
+			<slot />
+			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
+				<v-icon class="close" :name="closeIcon" x-small />
+			</span>
+		</span>
+	</span>
+</template>
 
 <style>
 body {

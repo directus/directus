@@ -1,142 +1,3 @@
-<template>
-	<v-workspace-tile
-		v-bind="panel"
-		:name="panel.panel_name"
-		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
-		class="block-container"
-		:class="[
-			type,
-			{
-				'edit-mode': editMode,
-				subdued: subdued || ((parent === undefined || parent.loner) && type === 'operation'),
-				reject: isReject,
-			},
-		]"
-		:edit-mode="editMode"
-		:resizable="false"
-		:show-options="type !== 'trigger'"
-		:style="styleVars"
-		always-update-position
-		@edit="$emit('edit', panel)"
-		@update="$emit('update', { edits: $event, id: panel.id })"
-		@move="$emit('move', panel.id)"
-		@delete="$emit('delete', panel.id)"
-		@duplicate="$emit('duplicate', panel)"
-		@pointerenter="pointerEnter"
-		@pointerleave="pointerLeave"
-	>
-		<template #body>
-			<div
-				v-if="editMode || panel?.resolve"
-				class="button add-resolve"
-				x-small
-				icon
-				rounded
-				@pointerdown.stop="pointerdown('resolve')"
-			>
-				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
-			</div>
-			<transition name="fade">
-				<div
-					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
-					class="hint resolve-hint"
-				>
-					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
-						<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
-					</div>
-				</div>
-			</transition>
-			<div
-				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
-				x-small
-				icon
-				rounded
-				class="button add-reject"
-				@pointerdown.stop="pointerdown('reject')"
-			>
-				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
-			</div>
-			<transition name="fade">
-				<div
-					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
-					class="hint reject-hint"
-				>
-					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
-						<v-icon v-tooltip="t('operation_handle_reject')" name="add_circle_outline" />
-					</div>
-				</div>
-			</transition>
-
-			<div
-				v-if="panel.id !== '$trigger'"
-				x-small
-				icon
-				rounded
-				class="button attachment"
-				:class="{ reject: parent?.type === 'reject' }"
-				@pointerdown.stop="pointerdown('parent')"
-			>
-				<v-icon name="adjust" />
-			</div>
-		</template>
-		<v-error-boundary
-			v-if="typeof currentOperation?.overview === 'function'"
-			:name="`operation-overview-${currentOperation.id}`"
-		>
-			<div class="block">
-				<options-overview :panel="panel" :current-operation="currentOperation" :flow="flow" />
-			</div>
-
-			<template #fallback="{ error: optionsOverviewError }">
-				<div class="options-overview-error">
-					<v-icon name="warning" />
-					{{ t('unexpected_error') }}
-					<v-error :error="optionsOverviewError" />
-				</div>
-			</template>
-		</v-error-boundary>
-		<v-error-boundary
-			v-else-if="currentOperation && 'id' in currentOperation"
-			:name="`operation-overview-${currentOperation.id}`"
-		>
-			<component :is="`operation-overview-${currentOperation.id}`" :options="currentOperation" />
-
-			<template #fallback="{ error: operationOverviewError }">
-				<div class="options-overview-error">
-					<v-icon name="warning" />
-					{{ t('unexpected_error') }}
-					<v-error :error="operationOverviewError" />
-				</div>
-			</template>
-		</v-error-boundary>
-		<template v-if="panel.id === '$trigger'" #footer>
-			<div class="status-footer" :class="flowStatus">
-				<display-color
-					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
-					class="status-dot"
-					:value="flowStatus === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
-				/>
-
-				<v-select
-					v-if="editMode"
-					class="flow-status-select"
-					inline
-					:model-value="flowStatus"
-					:items="[
-						{ text: t('active'), value: 'active' },
-						{ text: t('inactive'), value: 'inactive' },
-					]"
-					@update:model-value="flowStatus = $event"
-				/>
-
-				<span v-else>
-					{{ flowStatus === 'active' ? t('active') : t('inactive') }}
-				</span>
-			</div>
-		</template>
-	</v-workspace-tile>
-</template>
-
 <script setup lang="ts">
 import { useExtensions } from '@/extensions';
 import { Vector2 } from '@/utils/vector2';
@@ -299,6 +160,145 @@ function pointerLeave() {
 	emit('hide-hint');
 }
 </script>
+
+<template>
+	<v-workspace-tile
+		v-bind="panel"
+		:name="panel.panel_name"
+		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
+		class="block-container"
+		:class="[
+			type,
+			{
+				'edit-mode': editMode,
+				subdued: subdued || ((parent === undefined || parent.loner) && type === 'operation'),
+				reject: isReject,
+			},
+		]"
+		:edit-mode="editMode"
+		:resizable="false"
+		:show-options="type !== 'trigger'"
+		:style="styleVars"
+		always-update-position
+		@edit="$emit('edit', panel)"
+		@update="$emit('update', { edits: $event, id: panel.id })"
+		@move="$emit('move', panel.id)"
+		@delete="$emit('delete', panel.id)"
+		@duplicate="$emit('duplicate', panel)"
+		@pointerenter="pointerEnter"
+		@pointerleave="pointerLeave"
+	>
+		<template #body>
+			<div
+				v-if="editMode || panel?.resolve"
+				class="button add-resolve"
+				x-small
+				icon
+				rounded
+				@pointerdown.stop="pointerdown('resolve')"
+			>
+				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
+			</div>
+			<transition name="fade">
+				<div
+					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
+					class="hint resolve-hint"
+				>
+					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
+						<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
+					</div>
+				</div>
+			</transition>
+			<div
+				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
+				x-small
+				icon
+				rounded
+				class="button add-reject"
+				@pointerdown.stop="pointerdown('reject')"
+			>
+				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
+			</div>
+			<transition name="fade">
+				<div
+					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
+					class="hint reject-hint"
+				>
+					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
+						<v-icon v-tooltip="t('operation_handle_reject')" name="add_circle_outline" />
+					</div>
+				</div>
+			</transition>
+
+			<div
+				v-if="panel.id !== '$trigger'"
+				x-small
+				icon
+				rounded
+				class="button attachment"
+				:class="{ reject: parent?.type === 'reject' }"
+				@pointerdown.stop="pointerdown('parent')"
+			>
+				<v-icon name="adjust" />
+			</div>
+		</template>
+		<v-error-boundary
+			v-if="typeof currentOperation?.overview === 'function'"
+			:name="`operation-overview-${currentOperation.id}`"
+		>
+			<div class="block">
+				<options-overview :panel="panel" :current-operation="currentOperation" :flow="flow" />
+			</div>
+
+			<template #fallback="{ error: optionsOverviewError }">
+				<div class="options-overview-error">
+					<v-icon name="warning" />
+					{{ t('unexpected_error') }}
+					<v-error :error="optionsOverviewError" />
+				</div>
+			</template>
+		</v-error-boundary>
+		<v-error-boundary
+			v-else-if="currentOperation && 'id' in currentOperation"
+			:name="`operation-overview-${currentOperation.id}`"
+		>
+			<component :is="`operation-overview-${currentOperation.id}`" :options="currentOperation" />
+
+			<template #fallback="{ error: operationOverviewError }">
+				<div class="options-overview-error">
+					<v-icon name="warning" />
+					{{ t('unexpected_error') }}
+					<v-error :error="operationOverviewError" />
+				</div>
+			</template>
+		</v-error-boundary>
+		<template v-if="panel.id === '$trigger'" #footer>
+			<div class="status-footer" :class="flowStatus">
+				<display-color
+					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
+					class="status-dot"
+					:value="flowStatus === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+				/>
+
+				<v-select
+					v-if="editMode"
+					class="flow-status-select"
+					inline
+					:model-value="flowStatus"
+					:items="[
+						{ text: t('active'), value: 'active' },
+						{ text: t('inactive'), value: 'inactive' },
+					]"
+					@update:model-value="flowStatus = $event"
+				/>
+
+				<span v-else>
+					{{ flowStatus === 'active' ? t('active') : t('inactive') }}
+				</span>
+			</div>
+		</template>
+	</v-workspace-tile>
+</template>
 
 <style lang="scss" scoped>
 .v-workspace-tile.block-container {

@@ -1,10 +1,3 @@
-<template>
-	<div class="v-overlay" :class="{ active, absolute, 'has-click': clickable }" @click="onClick">
-		<div class="overlay" />
-		<div v-if="active" class="content"><slot /></div>
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** Show / hide the overlay */
@@ -27,6 +20,13 @@ function onClick(event: MouseEvent) {
 	emit('click', event);
 }
 </script>
+
+<template>
+	<div class="v-overlay" :class="{ active, absolute, 'has-click': clickable }" @click="onClick">
+		<div class="overlay" />
+		<div v-if="active" class="content"><slot /></div>
+	</div>
+</template>
 
 <style>
 body {
