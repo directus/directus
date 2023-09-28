@@ -180,3 +180,7 @@ fields:
 
   - field: auth_data
     hidden: true
+
+  - field: onboarding
+    readonly: true
+    hidden: true

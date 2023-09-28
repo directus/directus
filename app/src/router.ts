@@ -4,6 +4,7 @@ import AcceptInviteRoute from '@/routes/accept-invite.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
+import OnboardingRoute from '@/routes/onboarding/onboarding.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
@@ -74,6 +75,11 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		name: 'private-404',
 		path: '/:_(.+)+',
 		component: PrivateNotFoundRoute,
+	},
+	{
+		name: 'onboarding',
+		path: '/onboarding',
+		component: OnboardingRoute,
 	},
 ];
 

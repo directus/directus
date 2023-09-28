@@ -410,3 +410,6 @@ fields:
             required: true
             options:
               placeholder: $t:value
+  - field: onboarding
+    readonly: true
+    hidden: true
