@@ -75,7 +75,7 @@ Replace the existing text field with the following fields inside the `options` a
 	},
 },
 {
-	field: 'response_format',
+	field: 'responseFormat',
 	name: 'Response',
 	type: 'string',
 	meta: {
@@ -95,7 +95,7 @@ a lot of data, set these to `24` for the width and `18` for the height:
 ```js
 minWidth: 24,
 minHeight: 18,
-skipUndefinedKeys: ['response_format'],
+skipUndefinedKeys: ['responseFormat'],
 ```
 
 The output of these options will look like this:
@@ -130,7 +130,7 @@ props: {
 		type: Array,
 		default: [],
 	},
-	response_format: {
+	responseFormat: {
 		type: String,
 		default: '',
 	},
@@ -162,7 +162,7 @@ The `FieldsStore` fetches all of the collection’s fields, the `PermissionsStor
 collection, and the `Collection` store for fetching information about the selected collection and the API for performing
 the final POST request.
 
-You will also need to capture a response to present to the user. The `response_format` contains a string where the user
+You will also need to capture a response to present to the user. The `responseFormat` contains a string where the user
 can create their own response with data from the API. A `v-dialog` can show an important message to the user. This
 requires a boolean value (here `responseDialoge`) to control the visibility of the dialog box.
 
@@ -172,7 +172,8 @@ afterwards so it populates the variable when the panel loads:
 ```js
 function getFields() {
 	fieldData.value = [];
-	props.fields.forEach(field => {
+
+	props.fields.forEach((field) => {
 		fieldData.value.push(fieldsStore.getField(props.collection, field));
 	});
 }
@@ -184,14 +185,7 @@ If the fields, collection, or response format is changed, the `getFields` functi
 following code:
 
 ```js
-watch(
-	[
-		() => props.collection,
-		() => props.fields,
-		() => props.response_format
-	],
-	getFields
-);
+watch([() => props.collection, () => props.fields, () => props.responseFormat], getFields);
 ```
 
 Create a `submitForm` function. This will send the contents of `formData` to the selected collection and capture the
@@ -199,15 +193,17 @@ response, resetting the form once successful. If an error occurs, the response i
 
 ```js
 function submitForm() {
-	api.post(`/items/${props.collection}`, formData.value).then((response) => {
-		formResponse.value = response.data.data;
-		responseDialog.value = true;
-		formData.value = {};
-	}).catch((error) => {
-		console.error(error);
-		formError.value = error;
-		responseDialog.value = true;
-	});
+	api
+		.post(`/items/${props.collection}`, formData.value)
+		.then((response) => {
+			formResponse.value = response.data.data;
+			responseDialog.value = true;
+			formData.value = {};
+		})
+		.catch((error) => {
+			formError.value = error;
+			responseDialog.value = true;
+		});
 }
 ```
 
@@ -227,7 +223,17 @@ function getLinkForItem(item) {
 At the end of the script, return the required constants and functions for use in the Vue template:
 
 ```js
-return { hasPermission, primaryKeyField, formData, fieldData, submitForm, formResponse, formError, responseDialog, getLinkForItem };
+return {
+	hasPermission,
+	primaryKeyField,
+	formData,
+	fieldData,
+	submitForm,
+	formResponse,
+	formError,
+	responseDialog,
+	getLinkForItem,
+};
 ```
 
 ## Build the View
@@ -280,7 +286,7 @@ has value) and Empty:
 			<router-link :to="getLinkForItem(formResponse)">
 				<render-template
 					:collection="collection"
-					:template="response_format"
+					:template="responseFormat"
 					:item="formResponse"
 				/>
 				<v-icon name="launch" small />
@@ -294,7 +300,7 @@ has value) and Empty:
 </v-dialog>
 ```
 
-Use a `blockquote` to output a response using the `response_format` value and the `render-template` component. When you
+Use a `blockquote` to output a response using the `responseFormat` value and the `render-template` component. When you
 supply the `collection`, `template`, and `formResponse` to this component, it will replace all placeholder variables.
 
 If the form response is empty, output `formError` which contains the details of the error.
@@ -303,16 +309,40 @@ Use a button at the bottom to dismiss the dialog box. The click function needs t
 
 Lastly, replace the CSS at the bottom with this:
 
-```css
+```vue
 <style scoped>
-.panel-internal-form { padding: 12px; }
-.panel-internal-form.has-header { padding: 0 12px; }
-.panel-internal-form.small :deep(.field) { grid-column: start/fill; }
-.panel-internal-form :deep(.v-form) { margin-bottom: var(--form-vertical-gap); }
-.form-response { border-radius: var(--border-radius); border: var(--border-width) solid var(--border-normal); margin: 1em 0; min-width: 300px; }
-.form-response a { position: relative; display: block; padding: var(--input-padding); }
-.form-response a:hover { cursor: pointer; background-color: var(--v-list-item-background-color-hover); }
-.form-response a :deep(.v-icon) { position: absolute; right: var(--input-padding); top: var(--input-padding); }
+.panel-internal-form {
+	padding: 12px;
+}
+.panel-internal-form.has-header {
+	padding: 0 12px;
+}
+.panel-internal-form.small :deep(.field) {
+	grid-column: start/fill;
+}
+.panel-internal-form :deep(.v-form) {
+	margin-bottom: var(--form-vertical-gap);
+}
+.form-response {
+	border-radius: var(--border-radius);
+	border: var(--border-width) solid var(--border-normal);
+	margin: 1em 0;
+	min-width: 300px;
+}
+.form-response a {
+	position: relative;
+	display: block;
+	padding: var(--input-padding);
+}
+.form-response a:hover {
+	cursor: pointer;
+	background-color: var(--v-list-item-background-color-hover);
+}
+.form-response a :deep(.v-icon) {
+	position: absolute;
+	right: var(--input-padding);
+	top: var(--input-padding);
+}
 </style>
 ```
 
@@ -406,7 +436,7 @@ export default {
 			},
 		},
 		{
-			field: 'response_format',
+			field: 'responseFormat',
 			name: 'Response',
 			type: 'string',
 			meta: {
@@ -421,7 +451,7 @@ export default {
 	],
 	minWidth: 12,
 	minHeight: 8,
-	skipUndefinedKeys: ['response_format'],
+	skipUndefinedKeys: ['responseFormat'],
 };
 ```
 
@@ -433,29 +463,20 @@ export default {
 		<v-notice type="danger" icon="warning">You do not have permissions to {{ collection }}</v-notice>
 	</div>
 	<div v-else :class="['panel-internal-form', { small: width < 30, large: width >= 30, 'has-header': showHeader }]">
-
 		<!-- Form goes here -->
-		<v-form
-			v-if="fieldData"
-			:fields="fieldData"
-			v-model="formData"
-		/>
+		<v-form v-if="fieldData" v-model="formData" :fields="fieldData" />
 		<v-button v-if="Object.keys(formData).length > 0" @click="submitForm()">Save</v-button>
 		<v-button v-else secondary>Save</v-button>
 
 		<v-dialog v-model="responseDialog" @esc="responseDialog = false">
 			<v-sheet>
-				<v-notice type="success" icon="done" v-if="formResponse[primaryKeyField.field]">Saved</v-notice>
-				<v-notice type="danger" icon="warning" v-else-if="formError">An Error Occurred</v-notice>
-				<v-notice type="danger" icon="warning" v-else>No Response</v-notice>
+				<v-notice v-if="formResponse[primaryKeyField.field]" type="success" icon="done">Saved</v-notice>
+				<v-notice v-else-if="formError" type="danger" icon="warning">An Error Occurred</v-notice>
+				<v-notice v-else type="danger" icon="warning">No Response</v-notice>
 				<blockquote v-if="formResponse" class="form-response">
 					<!-- {{  formResponse }} -->
 					<router-link :to="getLinkForItem(formResponse)">
-						<render-template
-							:collection="collection"
-							:template="response_format"
-							:item="formResponse"
-						/>
+						<render-template :collection="collection" :template="responseFormat" :item="formResponse" />
 						<v-icon name="launch" small />
 					</router-link>
 				</blockquote>
@@ -485,16 +506,16 @@ export default {
 		},
 		fields: {
 			type: Array,
-			default: [],
+			default: () => [],
 		},
-		response_format: {
+		responseFormat: {
 			type: String,
 			default: '',
 		},
 		width: String,
 		height: String,
 	},
-	setup(props){
+	setup(props) {
 		const { useFieldsStore, usePermissionsStore } = useStores();
 		const fieldsStore = useFieldsStore();
 		const permissionsStore = usePermissionsStore();
@@ -509,56 +530,85 @@ export default {
 		const formError = ref({});
 		const responseDialog = ref(false);
 
-		function getFields(){
+		function getFields() {
 			fieldData.value = [];
-			props.fields.forEach(field => {
+
+			props.fields.forEach((field) => {
 				fieldData.value.push(fieldsStore.getField(props.collection, field));
 			});
 		}
 
 		getFields();
 
-		function submitForm(){
-			api.post(`/items/${props.collection}`, formData.value).then((response) => {
-				formResponse.value = response.data.data;
-				responseDialog.value = true;
-				formData.value = {};
-			}).catch((error) => {
-				console.error(error);
-				formError.value = error;
-				responseDialog.value = true;
-			});
+		function submitForm() {
+			api
+				.post(`/items/${props.collection}`, formData.value)
+				.then((response) => {
+					formResponse.value = response.data.data;
+					responseDialog.value = true;
+					formData.value = {};
+				})
+				.catch((error) => {
+					formError.value = error;
+					responseDialog.value = true;
+				});
 		}
 
-		watch(
-			[
-				() => props.collection,
-				() => props.fields,
-				() => props.response_format
-			],
-			getFields
-		);
+		watch([() => props.collection, () => props.fields, () => props.responseFormat], getFields);
 
-		return { hasPermission, primaryKeyField, formData, fieldData, submitForm, formResponse, formError, responseDialog, getLinkForItem };
+		return {
+			hasPermission,
+			primaryKeyField,
+			formData,
+			fieldData,
+			submitForm,
+			formResponse,
+			formError,
+			responseDialog,
+			getLinkForItem,
+		};
 
 		function getLinkForItem(item) {
 			if (item === undefined) return;
 			const primaryKey = item[primaryKeyField.value.field];
 			return `/content/${props.collection}/${encodeURIComponent(primaryKey)}`;
 		}
-
 	},
 };
 </script>
 
 <style scoped>
-.panel-internal-form { padding: 12px; }
-.panel-internal-form.has-header { padding: 0 12px; }
-.panel-internal-form.small :deep(.field) { grid-column: start/fill; }
-.panel-internal-form :deep(.v-form) { margin-bottom: var(--form-vertical-gap); }
-.form-response { border-radius: var(--border-radius); border: var(--border-width) solid var(--border-normal); margin: 1em 0; min-width: 300px; }
-.form-response a { position: relative; display: block; padding: var(--input-padding); }
-.form-response a:hover { cursor: pointer; background-color: var(--v-list-item-background-color-hover); }
-.form-response a :deep(.v-icon) { position: absolute; right: var(--input-padding); top: var(--input-padding); }
+.panel-internal-form {
+	padding: 12px;
+}
+.panel-internal-form.has-header {
+	padding: 0 12px;
+}
+.panel-internal-form.small :deep(.field) {
+	grid-column: start/fill;
+}
+.panel-internal-form :deep(.v-form) {
+	margin-bottom: var(--form-vertical-gap);
+}
+.form-response {
+	border-radius: var(--border-radius);
+	border: var(--border-width) solid var(--border-normal);
+	margin: 1em 0;
+	min-width: 300px;
+}
+.form-response a {
+	position: relative;
+	display: block;
+	padding: var(--input-padding);
+}
+.form-response a:hover {
+	cursor: pointer;
+	background-color: var(--v-list-item-background-color-hover);
+}
+.form-response a :deep(.v-icon) {
+	position: absolute;
+	right: var(--input-padding);
+	top: var(--input-padding);
+}
 </style>
 ```

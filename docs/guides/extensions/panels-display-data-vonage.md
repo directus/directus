@@ -61,16 +61,18 @@ const ForbiddenError = createError('VONAGE_FORBIDDEN', 'You need to be authentic
 export default {
 	id: 'vonage',
 	handler: (router, { env }) => {
-		const { VONAGE_API_KEY, VONAGE_API_SECRET } = env
-		const baseURL = "https://api.nexmo.com";
+		const { VONAGE_API_KEY, VONAGE_API_SECRET } = env;
+		const baseURL = 'https://api.nexmo.com';
 		const token = Buffer.from(`${VONAGE_API_KEY}:${VONAGE_API_SECRET}`).toString('base64');
 		const headers = { Authorization: `Basic ${token}` };
 
 		router.get('/records', async (req, res) => {
 			if (req.accountability == null) throw new ForbiddenError();
+
 			try {
 				const url = baseURL + `/v2/reports/records?account_id=${VONAGE_API_KEY}&${req._parsedUrl.query}`;
 				const response = await fetch(url, { headers });
+
 				if (response.ok) {
 					res.json(await response.json());
 				} else {
@@ -187,7 +189,7 @@ but for larger datasets may impact the performance of the API. Create an option 
 
 ```js
 {
-	field: 'include_message',
+	field: 'includeMessage',
 	name: 'Include Message',
 	type: 'boolean',
 	meta: {
@@ -276,7 +278,7 @@ props: {
 		type: String,
 		default: '',
 	},
-	include_message: {
+	includeMessage: {
 		type: Boolean,
 		default: false,
 	},
@@ -291,12 +293,12 @@ After the `props`, create a `setup(props)` section and create the variables need
 
 ```js
 
-setup(props){
+setup(props) {
 	const api = useApi();
 	const activityData = ref([]);
 	const now = ref(new Date());
 	const isLoading = ref(true);
-	const hasError = ref(false);
+	const errorMessage = ref();
 },
 
 ```
@@ -307,26 +309,29 @@ API query. The response is written to the `activityData` variable.
 Use the `isLoading` variable to hide or show the progress spinner to indicate that the query is running:
 
 ```js
-async function fetchData(){
+async function fetchData() {
 	isLoading.value = true;
 	activityData.value = [];
+
+	const dateStart = adjustDate(now.value, props.range ? `-${props.range}` : '-1 day');
 
 	const params = {
 		product: props.type || 'SMS',
 		direction: props.direction || 'outbound',
-		include_message: props.include_message || 'false',
-		date_start: formatISO(adjustDate(now.value, (props.range ? `-${props.range}` : '-1 day'))),
-		status: props.status || 'any'
+		include_message: props.includeMessage.toString(),
+		date_start: dateStart ? formatISO(dateStart) : '',
+		status: props.status || 'any',
 	};
+
 	if (props.status) params.status = props.status;
 
 	const url_params = new URLSearchParams(params);
+
 	try {
-		const rsp = await api.get(`/vonage/records?${url_params.toString()}`)
-		activityData.value = rsp.data.records;
-	} catch (err) {
-		hasError.value = "Internal Server Error";
-		console.warn(err);
+		const response = await api.get(`/vonage/records?${url_params.toString()}`);
+		activityData.value = response.data.records;
+	} catch {
+		errorMessage.value = 'Internal Server Error';
 	} finally {
 		isLoading.value = false;
 	}
@@ -342,13 +347,7 @@ If any of the properties are changed, the function will need to update the activ
 
 ```js
 watch(
-	[
-		() => props.type,
-		() => props.direction,
-		() => props.range,
-		() => props.include_message,
-		() => props.status
-	],
+	[() => props.type, () => props.direction, () => props.range, () => props.includeMessage, () => props.status],
 	fetchData
 );
 ```
@@ -356,7 +355,7 @@ watch(
 At the end of the script, return the required variables and functions for use in the Vue template:
 
 ```js
-return { activityData, isLoading, hasError, formatDistanceToNow, parseISO };
+return { activityData, isLoading, errorMessage, formatDistanceToNow, parseISO };
 ```
 
 ## Build the View
@@ -368,7 +367,7 @@ essential information is missing. Start with this:
 <template>
 	<div class="messages-table" :class="{ 'has-header': showHeader }">
 		<v-progress-circular v-if="isLoading" class="is-loading" indeterminate />
-		<v-notice v-else-if="hasError" type="danger">{{ hasError }}</v-notice>
+		<v-notice v-else-if="errorMessage" type="danger">{{ errorMessage }}</v-notice>
 		<v-notice v-else-if="activityData.length == 0" type="info">No Messages</v-notice>
 		<!-- Table goes here -->
 	</div>
@@ -376,7 +375,7 @@ essential information is missing. Start with this:
 ```
 
 The `v-progress-circular` is a loading spinner that is active while the `isLoading` variable is true. After that, there
-is a `danger` notice if `hasError` contains a value, then an `info` notice if there aren't any messages in the data.
+is a `danger` notice if `errorMessage` contains a value, then an `info` notice if there aren't any messages in the data.
 
 Next, build a table to present the data:
 
@@ -387,7 +386,7 @@ Next, build a table to present the data:
 			<th v-if="direction == 'outbound'">Status</th>
 			<th v-if="direction == 'outbound'">Sent</th>
 			<th v-else>Received</th>
-			<th v-if="include_message">Message</th>
+			<th v-if="includeMessage">Message</th>
 			<th v-if="direction == 'outbound'">Recipient</th>
 			<th v-else>From</th>
 			<th>Provider</th>
@@ -399,7 +398,7 @@ Next, build a table to present the data:
 			<td class="nowrap">
 				{{ formatDistanceToNow(parseISO(message.date_finalized ? message.date_finalized : message.date_received)) }} ago
 			</td>
-			<td v-if="include_message" class="message">{{ message.message_body }}</td>
+			<td v-if="includeMessage" class="message">{{ message.message_body }}</td>
 			<td v-if="direction == 'outbound'">{{ message.to }}</td>
 			<td v-else>{{ message.from }}</td>
 			<td class="ucwords">{{ type == 'MESSAGES' ? message.provider : message.network_name }}</td>
@@ -416,7 +415,7 @@ now is more helpful.
 
 Lastly, replace the CSS at the bottom with this:
 
-```css
+```vue
 <style scoped>
 .messages-table { padding: 12px; height: 100%; overflow: scroll; }
 .messages-table table { width: 100%; min-width: 600px; }
@@ -490,16 +489,18 @@ const ForbiddenError = createError('VONAGE_FORBIDDEN', 'You need to be authentic
 export default {
 	id: 'vonage',
 	handler: (router, { env }) => {
-		const { VONAGE_API_KEY, VONAGE_API_SECRET } = env
-		const baseURL = "https://api.nexmo.com";
+		const { VONAGE_API_KEY, VONAGE_API_SECRET } = env;
+		const baseURL = 'https://api.nexmo.com';
 		const token = Buffer.from(`${VONAGE_API_KEY}:${VONAGE_API_SECRET}`).toString('base64');
 		const headers = { Authorization: `Basic ${token}` };
 
 		router.get('/records', async (req, res) => {
 			if (req.accountability == null) throw new ForbiddenError();
+
 			try {
 				const url = baseURL + `/v2/reports/records?account_id=${VONAGE_API_KEY}&${req._parsedUrl.query}`;
 				const response = await fetch(url, { headers });
+
 				if (response.ok) {
 					res.json(await response.json());
 				} else {
@@ -536,8 +537,8 @@ export default {
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{ text: 'SMS', value: 'SMS', },
-						{ text: 'Messages', value: 'MESSAGES', },
+						{ text: 'SMS', value: 'SMS' },
+						{ text: 'Messages', value: 'MESSAGES' },
 					],
 				},
 			},
@@ -551,8 +552,8 @@ export default {
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{ text: 'Outbound', value: 'outbound', },
-						{ text: 'Inbound', value: 'inbound', },
+						{ text: 'Outbound', value: 'outbound' },
+						{ text: 'Inbound', value: 'inbound' },
 					],
 				},
 			},
@@ -569,19 +570,19 @@ export default {
 				width: 'half',
 				options: {
 					choices: [
-						{ text: 'Past 5 Minutes', value: '5 minutes', },
-						{ text: 'Past 15 Minutes', value: '15 minutes', },
-						{ text: 'Past 30 Minutes', value: '30 minutes', },
-						{ text: 'Past 1 Hour', value: '1 hour', },
-						{ text: 'Past 4 Hours', value: '4 hours', },
-						{ text: 'Past 1 Day', value: '1 day', },
-						{ text: 'Past 2 Days', value: '2 days', },
+						{ text: 'Past 5 Minutes', value: '5 minutes' },
+						{ text: 'Past 15 Minutes', value: '15 minutes' },
+						{ text: 'Past 30 Minutes', value: '30 minutes' },
+						{ text: 'Past 1 Hour', value: '1 hour' },
+						{ text: 'Past 4 Hours', value: '4 hours' },
+						{ text: 'Past 1 Day', value: '1 day' },
+						{ text: 'Past 2 Days', value: '2 days' },
 					],
 				},
 			},
 		},
 		{
-			field: 'include_message',
+			field: 'includeMessage',
 			name: 'Include Message',
 			type: 'boolean',
 			meta: {
@@ -604,15 +605,15 @@ export default {
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{ text: 'Any', value: 'any', },
-						{ text: 'Delivered', value: 'delivered', },
-						{ text: 'Expired', value: 'expired', },
-						{ text: 'Failed', value: 'failed', },
-						{ text: 'Rejected', value: 'rejected', },
-						{ text: 'Accepted', value: 'accepted', },
-						{ text: 'buffered', value: 'buffered', },
-						{ text: 'Unknown', value: 'unknown', },
-						{ text: 'Deleted', value: 'deleted', },
+						{ text: 'Any', value: 'any' },
+						{ text: 'Delivered', value: 'delivered' },
+						{ text: 'Expired', value: 'expired' },
+						{ text: 'Failed', value: 'failed' },
+						{ text: 'Rejected', value: 'rejected' },
+						{ text: 'Accepted', value: 'accepted' },
+						{ text: 'buffered', value: 'buffered' },
+						{ text: 'Unknown', value: 'unknown' },
+						{ text: 'Deleted', value: 'deleted' },
 					],
 				},
 			},
@@ -629,7 +630,7 @@ export default {
 <template>
 	<div class="messages-table" :class="{ 'has-header': showHeader }">
 		<v-progress-circular v-if="isLoading" class="is-loading" indeterminate />
-		<v-notice v-else-if="hasError" type="danger">{{ hasError }}</v-notice>
+		<v-notice v-else-if="errorMessage" type="danger">{{ errorMessage }}</v-notice>
 		<v-notice v-else-if="activityData.length == 0" type="info">No Messages</v-notice>
 		<table v-else cellpadding="0" cellspacing="0" border="0">
 			<thead>
@@ -637,7 +638,7 @@ export default {
 					<th v-if="direction == 'outbound'">Status</th>
 					<th v-if="direction == 'outbound'">Sent</th>
 					<th v-else>Received</th>
-					<th v-if="include_message">Message</th>
+					<th v-if="includeMessage">Message</th>
 					<th v-if="direction == 'outbound'">Recipient</th>
 					<th v-else>From</th>
 					<th>Provider</th>
@@ -646,11 +647,14 @@ export default {
 			<tbody>
 				<tr v-for="message in activityData" :key="message.message_id">
 					<td v-if="direction == 'outbound'" class="ucwords">{{ message.status }}</td>
-					<td class="nowrap">{{ formatDistanceToNow(parseISO(message.date_finalized?message.date_finalized:message.date_received)) }} ago</td>
-					<td v-if="include_message" class="message">{{ message.message_body }}</td>
+					<td class="nowrap">
+						{{ formatDistanceToNow(parseISO(message.date_finalized ? message.date_finalized : message.date_received)) }}
+						ago
+					</td>
+					<td v-if="includeMessage" class="message">{{ message.message_body }}</td>
 					<td v-if="direction == 'outbound'">{{ message.to }}</td>
 					<td v-else>{{ message.from }}</td>
-					<td class="ucwords">{{ type == 'MESSAGES'?message.provider:message.network_name }}</td>
+					<td class="ucwords">{{ type == 'MESSAGES' ? message.provider : message.network_name }}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -659,7 +663,7 @@ export default {
 
 <script>
 import { useApi } from '@directus/extensions-sdk';
-import { adjustDate } from '@directus/shared/utils';
+import { adjustDate } from '@directus/utils';
 import { formatISO, formatDistanceToNow, parseISO } from 'date-fns';
 import { ref, watch } from 'vue';
 export default {
@@ -680,7 +684,7 @@ export default {
 			type: String,
 			default: '',
 		},
-		include_message: {
+		includeMessage: {
 			type: Boolean,
 			default: false,
 		},
@@ -689,33 +693,36 @@ export default {
 			default: '',
 		},
 	},
-	setup(props){
+	setup(props) {
 		const api = useApi();
 		const activityData = ref([]);
 		const now = ref(new Date());
 		const isLoading = ref(true);
-		const hasError = ref(false);
+		const errorMessage = ref();
 
-		async function fetchData(){
+		async function fetchData() {
 			isLoading.value = true;
 			activityData.value = [];
+
+			const dateStart = adjustDate(now.value, props.range ? `-${props.range}` : '-1 day');
+
 			const params = {
 				product: props.type || 'SMS',
 				direction: props.direction || 'outbound',
-				include_message: props.include_message || 'false',
-				date_start: formatISO(adjustDate(now.value, (props.range ? `-${props.range}` : '-1 day'))),
-				status: props.status || 'any'
+				include_message: props.includeMessage.toString(),
+				date_start: dateStart ? formatISO(dateStart) : '',
+				status: props.status || 'any',
 			};
+
 			if (props.status) params.status = props.status;
 
 			const url_params = new URLSearchParams(params);
 
 			try {
-				const rsp = await api.get(`/vonage/records?${url_params.toString()}`)
-				activityData.value = rsp.data.records;
-			} catch (err) {
-				hasError.value = "Internal Server Error";
-				console.warn(err);
+				const response = await api.get(`/vonage/records?${url_params.toString()}`);
+				activityData.value = response.data.records;
+			} catch {
+				errorMessage.value = 'Internal Server Error';
 			} finally {
 				isLoading.value = false;
 			}
@@ -724,31 +731,55 @@ export default {
 		fetchData();
 
 		watch(
-			[
-				() => props.type,
-				() => props.direction,
-				() => props.range,
-				() => props.include_message,
-				() => props.status,
-			],
+			[() => props.type, () => props.direction, () => props.range, () => props.includeMessage, () => props.status],
 			fetchData
 		);
 
-		return { activityData, isLoading, hasError, formatDistanceToNow, parseISO };
+		return { activityData, isLoading, errorMessage, formatDistanceToNow, parseISO };
 	},
 };
 </script>
 
 <style scoped>
-.messages-table { padding: 12px; height: 100%; overflow: scroll; }
-.messages-table table { width: 100%; min-width: 600px; }
+.messages-table {
+	padding: 12px;
+	height: 100%;
+	overflow: scroll;
+}
+.messages-table table {
+	width: 100%;
+	min-width: 600px;
+}
 .messages-table table tr td,
-.messages-table table tr th { vertical-align: top; border-top: var(--border-width) solid var(--border-subdued); padding: 10px; }
-.ucwords { text-transform: capitalize; }
-.nowrap { white-space: nowrap; }
-.message { min-width: 260px; }
-.messages-table table tr th { font-weight: bold; text-align: left; font-size: 0.8em; text-transform: uppercase; line-height: 1; padding: 8px 10px; }
-.text.has-header { padding: 0 12px; }
-.is-loading { position: absolute; left: calc(50% - 14px); top: calc(50% - 28px); }
+.messages-table table tr th {
+	vertical-align: top;
+	border-top: var(--border-width) solid var(--border-subdued);
+	padding: 10px;
+}
+.ucwords {
+	text-transform: capitalize;
+}
+.nowrap {
+	white-space: nowrap;
+}
+.message {
+	min-width: 260px;
+}
+.messages-table table tr th {
+	font-weight: bold;
+	text-align: left;
+	font-size: 0.8em;
+	text-transform: uppercase;
+	line-height: 1;
+	padding: 8px 10px;
+}
+.text.has-header {
+	padding: 0 12px;
+}
+.is-loading {
+	position: absolute;
+	left: calc(50% - 14px);
+	top: calc(50% - 28px);
+}
 </style>
 ```
