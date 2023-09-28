@@ -1,13 +1,13 @@
-import * as fsp from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import fs from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { createHash } from 'node:crypto';
 
-export async function createDirectory({ prefix = 'tmp-' } = {}) {
-	const path = await fsp.mkdtemp(join(tmpdir(), prefix));
+async function createTmpDirectory() {
+	const path = await fs.mkdtemp(join(tmpdir(), 'directus-'));
 
 	async function cleanup() {
-		return await fsp.rmdir(path);
+		return await fs.rmdir(path);
 	}
 
 	return {
@@ -16,16 +16,16 @@ export async function createDirectory({ prefix = 'tmp-' } = {}) {
 	};
 }
 
-export async function createFile({ prefix = 'tmp-' } = {}) {
-	const dir = await createDirectory({ prefix });
+export async function createTmpFile() {
+	const dir = await createTmpDirectory();
 	const filename = createHash('sha1').update(new Date().toString()).digest('hex').substring(0, 8);
 	const path = join(dir.path, filename);
 
-	const fd = await fsp.open(path, 'w');
+	const fd = await fs.open(path, 'wx');
 	await fd.close();
 
 	async function cleanup() {
-		await fsp.unlink(path);
+		await fs.unlink(path);
 		await dir.cleanup();
 	}
 

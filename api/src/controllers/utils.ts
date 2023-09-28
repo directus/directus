@@ -1,10 +1,9 @@
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
-import { Worker } from 'node:worker_threads';
-import fs from 'node:fs';
-
 import Joi from 'joi';
+import fs from 'node:fs';
+import { Worker } from 'node:worker_threads';
 import { flushCaches } from '../cache.js';
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
@@ -122,11 +121,11 @@ router.post(
 		const busboy = Busboy({ headers });
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
-			const { tmp } = await import('@directus/utils/node');
+			const { createTmpFile } = await import('@directus/utils/node');
 
-			const tmpFile = await tmp.createFile().catch(() => null);
+			const tmpFile = await createTmpFile().catch(() => null);
 
-			if (!tmpFile) throw new Error('It was not possible to create a temporary file');
+			if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
 			fileStream.pipe(fs.createWriteStream(tmpFile.path));
 

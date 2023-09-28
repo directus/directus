@@ -202,11 +202,11 @@ export class ExportService {
 			file?: Partial<File>;
 		}
 	) {
-		const { tmp } = await import('@directus/utils/node');
-		const tmpFile = await tmp.createFile().catch(() => null);
+		const { createTmpFile } = await import('@directus/utils/node');
+		const tmpFile = await createTmpFile().catch(() => null);
 
 		try {
-			if (!tmpFile) throw new Error('It was not possible to create a temporary file');
+			if (!tmpFile) throw new Error('Failed to create a temporary file for export');
 
 			const mimeTypes = {
 				csv: 'text/csv',

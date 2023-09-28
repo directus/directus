@@ -1,5 +1,5 @@
-import { workerData, isMainThread, parentPort } from 'worker_threads';
-import fs from 'node:fs';
+import { createReadStream } from 'node:fs';
+import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { ImportService } from '../services/import-export.js';
 
 async function importWorker() {
@@ -10,11 +10,9 @@ async function importWorker() {
 		schema: schema,
 	});
 
-	await service.import(collection, mimeType, fs.createReadStream(filePath));
+	await service.import(collection, mimeType, createReadStream(filePath));
 
-	if (parentPort) {
-		parentPort.postMessage({ type: 'finish' });
-	}
+	parentPort?.postMessage({ type: 'finish' });
 }
 
 if (!isMainThread) {
