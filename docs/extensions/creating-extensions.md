@@ -106,7 +106,7 @@ The generated `package.json` file contains an additional `directus:extension` fi
 The CLI will use those fields by default to determine the input and output file paths and how the extension should be
 built.
 
-## Developing your Extension
+## Developing Your Extension
 
 To learn more about how to develop extensions of a specific type, refer to the individual guides:
 
