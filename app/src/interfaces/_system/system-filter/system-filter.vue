@@ -23,6 +23,7 @@
 				:relational-field-selectable="relationalFieldSelectable"
 				@remove-node="removeNode"
 				@change="emitValue"
+				@onDragMove="onDragMove"
 			/>
 		</v-list>
 
@@ -174,8 +175,6 @@ const innerValueCopy = computed<FilterLayoutOptions>({
 		return cloneDeep({ all_filters: props.layout_opts.all_filters, disabled_filters: props.layout_opts.disabled_filters })
 	},
 	set(lo) {
-		console.log(lo);
-
 		if (lo.all_filters.length === 0) {
 			emit('inputLO', null);
 		} else {
@@ -191,7 +190,7 @@ const innerValueCopy = computed<FilterLayoutOptions>({
 // innerValue.value = []
 
 watch(() => innerValueCopy.value, () => {
-	console.log('on innerValueCopy change', innerValueCopy)
+	// console.log('on innerValueCopy change', innerValueCopy)
 	updateInnerValue()
 }, { deep: true })
 
@@ -200,11 +199,37 @@ watch([innerValueCopy, innerValue], () => {
 	console.log('innerValue', innerValue.value);
 }, { deep: true, immediate: true })
 
-function emitValue() {
+interface DragEvent {
+	moved: {
+		element: Filter;
+		oldIndex: number;
+		newIndex: number;
+	};
+}
+
+function onDragMove(val, val1) {
+	console.log(val, val1);
+}
+
+function emitValue(e: DragEvent) {
+
+
 	if (innerValueCopy.value.all_filters.length === 0) {
 		emit('inputLO', null);
 	} else {
-		emit('inputLO', { all_filters: innerValueCopy.value.all_filters, disabled_filters: innerValueCopy.value.disabled_filters });
+		const oldIndex = e.moved.oldIndex
+		const newIndex = e.moved.newIndex
+
+		const grabedFilter = innerValueCopy.value.all_filters[oldIndex]
+		const replacedFilter = innerValueCopy.value.all_filters[newIndex]
+
+		const swappedArray = innerValueCopy.value.all_filters.map((f, ind) => {
+			if(ind === oldIndex) return grabedFilter
+			if(ind === newIndex) return replacedFilter
+			return f
+		})
+
+		emit('inputLO', { all_filters: swappedArray, disabled_filters: innerValueCopy.value.disabled_filters });
 	}
 }
 
@@ -217,7 +242,6 @@ function addNode(key: string) {
 			all_filters: innerValueCopy.value.all_filters.concat({ _and: [] })
 		}
 
-		updateInnerValue()
 	} else {
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);
@@ -249,7 +273,6 @@ function addNode(key: string) {
 			all_filters: innerValueCopy.value.all_filters.concat(node)
 		}
 
-		updateInnerValue()
 	}
 }
 
@@ -269,11 +292,9 @@ function removeNode(ids: string[], filter: Filter) {
 
 		innerValueCopy.value = {
 			...innerValueCopy.value,
-			disabled_filters: innerValueCopy.value.disabled_filters.filter(ind => ind !== Number(id)),
+			disabled_filters: innerValueCopy.value.disabled_filters.filter(ind => ind !== Number(id)).map(ind =>  ind > Number(id) ? ind - 1 : ind),
 			all_filters: innerValueCopy.value.all_filters.filter((node, index) => index !== Number(id)),
 		}
-
-		updateInnerValue()
 
 		return;
 	}
@@ -284,14 +305,14 @@ function removeNode(ids: string[], filter: Filter) {
 
 	innerValue.value = set(innerValue.value, ids.join('.'), list);
 
-	function getInnerValueDeleteInd(ind: number, filter: Filter) {
-		let deleteAtIndex = ind
-		while (JSON.stringify(innerValue.value[deleteAtIndex]) !== JSON.stringify(filter)) {
-			deleteAtIndex--;
-		}
+	// function getInnerValueDeleteInd(ind: number, filter: Filter) {
+	// 	let deleteAtIndex = ind
+	// 	while (JSON.stringify(innerValue.value[deleteAtIndex]) !== JSON.stringify(filter)) {
+	// 		deleteAtIndex--;
+	// 	}
 
-		return deleteAtIndex
-	}
+	// 	return deleteAtIndex
+	// }
 
 }
 
