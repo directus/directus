@@ -14,14 +14,14 @@
 
 			<nodes
 				v-else
-				v-model:filter="innerValueCopy.all_filters"
+				v-model:filter="innerValueCopy"
 				:collection="collection"
 				:field="fieldName"
 				:depth="1"
 				:include-validation="includeValidation"
 				:include-relations="includeRelations"
 				:relational-field-selectable="relationalFieldSelectable"
-				@remove-node="removeNode($event)"
+				@remove-node="removeNode"
 				@change="emitValue"
 			/>
 		</v-list>
@@ -172,7 +172,7 @@ const innerValueCopy = computed<FilterLayoutOptions>({
 	get() {
 		if (!props.layout_opts || isEmpty(props.layout_opts.all_filters)) return { all_filters: [], disabled_filters: [] }
 
-		console.log(props.layout_opts);
+		// console.log(props.layout_opts);
 
 		// ?
 		return cloneDeep({ all_filters: props.layout_opts.all_filters, disabled_filters: props.layout_opts.disabled_filters })
@@ -186,14 +186,17 @@ const innerValueCopy = computed<FilterLayoutOptions>({
 		}
 	},
 })
+
 // innerValueCopy.value = {
 // 	all_filters: [],
 // 	disabled_filters: []
 // }
-// watch([innerValueCopy, innerValue], () => {
-// 	console.log('innerValueCopy', innerValueCopy.value);
-// 	console.log('innerValue', innerValue.value);
-// }, { deep: true, immediate: true })
+// innerValue.value = []
+
+watch([innerValueCopy, innerValue], () => {
+	console.log('innerValueCopy', innerValueCopy.value);
+	console.log('innerValue', innerValue.value);
+}, { deep: true, immediate: true })
 
 function emitValue() {
 	if (innerValue.value.length === 0) {
@@ -247,11 +250,27 @@ function addNode(key: string) {
 	}
 }
 
-function removeNode(ids: string[]) {
+function removeNode(ids: string[], filter: Filter) {
 	const id = ids.pop();
+	const isFieldDisabled = innerValueCopy.value.disabled_filters.includes(Number(id))
 
 	if (ids.length === 0) {
-		innerValue.value = innerValue.value.filter((node, index) => index !== Number(id));
+
+
+		if(!isFieldDisabled) {
+
+			const deleteInd = getInnerValueDeleteInd(Number(id), filter)
+
+			innerValue.value = innerValue.value.filter((node, index) => index !== deleteInd);
+		}
+
+
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			all_filters: innerValueCopy.value.all_filters.filter((node, index) => index !== Number(id)),
+			disabled_filters: innerValueCopy.value.disabled_filters.filter(ind => ind !== Number(id)),
+		}
+
 		return;
 	}
 
@@ -260,6 +279,16 @@ function removeNode(ids: string[]) {
 	list = list.filter((_node, index) => index !== Number(id));
 
 	innerValue.value = set(innerValue.value, ids.join('.'), list);
+
+	function getInnerValueDeleteInd(ind: number, filter: Filter) {
+		let deleteAtIndex = ind
+		while (JSON.stringify(innerValue.value[deleteAtIndex]) !== JSON.stringify(filter)) {
+			deleteAtIndex--;
+		}
+
+		return deleteAtIndex
+	}
+
 }
 
 // For adding any new fields (eg. flow Validate operation rule)

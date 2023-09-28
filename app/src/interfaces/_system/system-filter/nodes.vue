@@ -49,7 +49,7 @@
 								name="close"
 								small
 								clickable
-								@click="$emit('remove-node', [index])"
+								@click="$emit('remove-node', [index], element)"
 							/>
 						</span>
 					</div>
@@ -80,7 +80,7 @@
 								name="close"
 								small
 								clickable
-								@click="$emit('remove-node', [index])"
+								@click="$emit('remove-node', [index], element)"
 							/>
 						</span>
 					</div>
@@ -115,7 +115,7 @@ import {
 } from '@directus/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
 import { get } from 'lodash';
-import { computed, toRefs } from 'vue';
+import { computed, toRefs, watch, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
@@ -160,14 +160,24 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);
 
 const { collection } = toRefs(props);
-const filterSync = useSync(props, 'filter', emit);
+// const filterSync = useSync(props, 'filter', emit);
+
+const filterSync = computed({
+	get() {
+		return props.filter.all_filters;
+	},
+	set(newVal) {
+		emit(`update:filter`, { ...props.filter, all_filters: newVal });
+	},
+});
+
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
 const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	get() {
-		return props.filter.map((node, id) => {
+		return props.filter.all_filters.map((node, id) => {
 			const name = getNodeName(node);
 			const isField = name.startsWith('_') === false;
 
@@ -224,7 +234,7 @@ function getFieldPreview(node: Record<string, any>) {
 }
 
 function getIndex(item: Filter) {
-	return props.filter.findIndex((filter) => filter === item);
+	return props.filter.all_filters.findIndex((filter) => filter === item);
 }
 
 function toggleLogic(index: number) {
