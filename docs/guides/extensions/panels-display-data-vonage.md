@@ -1,6 +1,6 @@
-variable--- description: A guide on how you can create a panel to display data from an external API like Vonage.
+---
+description: A guide on how you can create a panel to display data from an external API like Vonage.
 contributors: Tim Butterfield, Kevin Lewis
-
 ---
 
 # Create A Panel To Display External API Data With Vonage
