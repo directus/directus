@@ -120,7 +120,7 @@ Ensure your extension is prefixed with `directus-extension`. For example, `direc
 
 **3. Update Docker Compose File**
 
-Open your `docker-compose.yml` file and add the following to mount your extension into the Docker container:
+Open your `docker-compose.yml` file and add a volume to mount your extensions folder into the Docker container:
 
 ```yaml
 volumes:
