@@ -1,22 +1,3 @@
-<template>
-	<drawer-collection
-		v-bind="$attrs"
-		:collection="collection"
-		:drawer-props="drawerProps"
-		:filter="mergeFilters(filter, folderFilter)"
-	>
-		<template v-if="!folder" #sidebar>
-			<files-navigation
-				:custom-target-handler="onFolderChange"
-				:current-folder="currentFolder"
-				:current-special="currentSpecial"
-				local-open-folders
-				actions-disabled
-			/>
-		</template>
-	</drawer-collection>
-</template>
-
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
@@ -27,9 +8,16 @@ import { FolderTarget, SpecialFolder } from '@/types/folders';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 
-const props = withDefaults(defineProps<{ collection?: string; folder?: string; filter?: Filter }>(), {
-	collection: 'directus_files',
-});
+const props = withDefaults(
+	defineProps<{
+		collection?: string;
+		folder?: string;
+		filter?: Filter;
+	}>(),
+	{
+		collection: 'directus_files',
+	}
+);
 
 const { t } = useI18n();
 
@@ -56,3 +44,23 @@ function onFolderChange(target: FolderTarget) {
 	currentSpecial.value = target.special;
 }
 </script>
+
+<template>
+	<drawer-collection
+		v-bind="$attrs"
+		:collection="collection"
+		:drawer-props="drawerProps"
+		:filter="mergeFilters(filter, folderFilter)"
+	>
+		<template #sidebar>
+			<files-navigation
+				:custom-target-handler="onFolderChange"
+				:current-folder="currentFolder"
+				:current-special="currentSpecial"
+				:root-folder="folder"
+				local-open-folders
+				actions-disabled
+			/>
+		</template>
+	</drawer-collection>
+</template>

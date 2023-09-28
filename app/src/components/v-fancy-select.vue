@@ -1,38 +1,3 @@
-<template>
-	<div class="v-fancy-select">
-		<transition-group tag="div" name="option">
-			<template v-for="(item, index) in visibleItems" :key="index">
-				<v-divider v-if="item.divider === true" />
-				<div
-					v-else
-					class="v-fancy-select-option"
-					:class="{ active: item[itemValue] === modelValue, disabled }"
-					:style="{
-						'--index': index,
-					}"
-					@click="toggle(item)"
-				>
-					<div class="icon">
-						<v-icon :name="item.icon" />
-					</div>
-
-					<div class="content">
-						<div class="text">{{ item[itemText] }}</div>
-						<div class="description">{{ item[itemDescription] }}</div>
-					</div>
-
-					<v-icon
-						v-if="modelValue === item[itemValue] && disabled === false"
-						name="cancel"
-						@click.stop="toggle(item)"
-					/>
-					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
-				</div>
-			</template>
-		</transition-group>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -84,6 +49,41 @@ function toggle(item: Record<string, any>) {
 	else emit('update:modelValue', item[props.itemValue]);
 }
 </script>
+
+<template>
+	<div class="v-fancy-select">
+		<transition-group tag="div" name="option">
+			<template v-for="(item, index) in visibleItems" :key="index">
+				<v-divider v-if="item.divider === true" />
+				<div
+					v-else
+					class="v-fancy-select-option"
+					:class="{ active: item[itemValue] === modelValue, disabled }"
+					:style="{
+						'--index': index,
+					}"
+					@click="toggle(item)"
+				>
+					<div class="icon">
+						<v-icon :name="item.icon" />
+					</div>
+
+					<div class="content">
+						<div class="text">{{ item[itemText] }}</div>
+						<div class="description">{{ item[itemDescription] }}</div>
+					</div>
+
+					<v-icon
+						v-if="modelValue === item[itemValue] && disabled === false"
+						name="cancel"
+						@click.stop="toggle(item)"
+					/>
+					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
+				</div>
+			</template>
+		</transition-group>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-fancy-select {

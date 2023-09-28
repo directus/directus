@@ -22,14 +22,15 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch"
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
 		"zod": "3.21.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"tsup": "7.1.0",
 		"typescript": "5.0.4"
 	}
 }

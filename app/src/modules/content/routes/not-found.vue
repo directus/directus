@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import ContentNavigation from '../components/navigation.vue';
+
+const { t } = useI18n();
+</script>
+
 <template>
 	<private-view :title="t('page_not_found')">
 		<template #navigation>
@@ -11,13 +18,6 @@
 		</div>
 	</private-view>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import ContentNavigation from '../components/navigation.vue';
-
-const { t } = useI18n();
-</script>
 
 <style lang="scss" scoped>
 .not-found {

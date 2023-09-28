@@ -1,24 +1,3 @@
-<template>
-	<value-null v-if="displayValue === null || displayValue === undefined" />
-
-	<div
-		v-else
-		class="display-formatted"
-		:class="[
-			{ bold, italic },
-			font,
-			{ 'has-background': computedFormat.background, 'has-border': computedStyle.borderWidth !== 0 },
-		]"
-		:style="computedStyle"
-	>
-		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
-
-		<span class="value">
-			{{ displayValue }}
-		</span>
-	</div>
-</template>
-
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
@@ -169,6 +148,27 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 }
 </script>
+
+<template>
+	<value-null v-if="displayValue === null || displayValue === undefined" />
+
+	<div
+		v-else
+		class="display-formatted"
+		:class="[
+			{ bold, italic },
+			font,
+			{ 'has-background': computedFormat.background, 'has-border': computedStyle.borderWidth !== 0 },
+		]"
+		:style="computedStyle"
+	>
+		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
+
+		<span class="value">
+			{{ displayValue }}
+		</span>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .display-formatted {

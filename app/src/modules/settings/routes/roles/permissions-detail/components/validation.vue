@@ -1,18 +1,3 @@
-<template>
-	<div>
-		<v-notice type="info">
-			{{
-				t('validation_for_role', {
-					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public_label'),
-				})
-			}}
-		</v-notice>
-
-		<v-form v-model="permissionSync" :fields="fields" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { Permission, Role } from '@directus/types';
@@ -47,6 +32,21 @@ const fields = computed(() => [
 	},
 ]);
 </script>
+
+<template>
+	<div>
+		<v-notice type="info">
+			{{
+				t('validation_for_role', {
+					action: t(permission.action).toLowerCase(),
+					role: role ? role.name : t('public_label'),
+				})
+			}}
+		</v-notice>
+
+		<v-form v-model="permissionSync" :fields="fields" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-notice {

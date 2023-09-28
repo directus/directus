@@ -1,3 +1,42 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
+import { storeToRefs } from 'pinia';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+
+const { t } = useI18n();
+
+const fieldDetailStore = useFieldDetailStore();
+const relationsStore = useRelationsStore();
+const fieldsStore = useFieldsStore();
+
+const relatedCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const relatedField = syncFieldDetailStoreProperty('relations.o2m.field');
+const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
+const onDelete = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
+const onDeselect = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
+
+const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+
+const isExisting = computed(() => editing.value !== '+');
+const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
+
+const unsortableJunctionFields = computed(() => {
+	const fields = [];
+
+	if (relatedCollection.value) {
+		const relations = relationsStore.getRelationsForCollection(relatedCollection.value);
+		fields.push(...relations.map((field) => field.field));
+	}
+
+	return fields;
+});
+</script>
+
 <template>
 	<div>
 		<div class="grid">
@@ -111,45 +150,6 @@
 		</v-notice>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-
-const { t } = useI18n();
-
-const fieldDetailStore = useFieldDetailStore();
-const relationsStore = useRelationsStore();
-const fieldsStore = useFieldsStore();
-
-const relatedCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-const relatedField = syncFieldDetailStoreProperty('relations.o2m.field');
-const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
-const onDelete = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
-const onDeselect = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
-
-const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
-
-const isExisting = computed(() => editing.value !== '+');
-const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
-
-const unsortableJunctionFields = computed(() => {
-	const fields = [];
-
-	if (relatedCollection.value) {
-		const relations = relationsStore.getRelationsForCollection(relatedCollection.value);
-		fields.push(...relations.map((field) => field.field));
-	}
-
-	return fields;
-});
-</script>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

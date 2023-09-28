@@ -1,24 +1,3 @@
-<template>
-	<div class="sso-links">
-		<template v-if="ssoProviders.length > 0">
-			<v-divider />
-
-			<v-notice v-if="errorFormatted" type="warning">
-				{{ errorFormatted }}
-			</v-notice>
-
-			<a v-for="provider in ssoProviders" :key="provider.name" class="sso-link" :href="provider.link">
-				<div class="sso-icon">
-					<v-icon :name="provider.icon" />
-				</div>
-				<div class="sso-title">
-					{{ t('log_in_with', { provider: provider.label }) }}
-				</div>
-			</a>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
@@ -77,6 +56,27 @@ const errorFormatted = computed(() => {
 	return null;
 });
 </script>
+
+<template>
+	<div class="sso-links">
+		<template v-if="ssoProviders.length > 0">
+			<v-divider />
+
+			<v-notice v-if="errorFormatted" type="warning">
+				{{ errorFormatted }}
+			</v-notice>
+
+			<a v-for="provider in ssoProviders" :key="provider.name" class="sso-link" :href="provider.link">
+				<div class="sso-icon">
+					<v-icon :name="provider.icon" />
+				</div>
+				<div class="sso-title">
+					{{ t('log_in_with', { provider: provider.label }) }}
+				</div>
+			</a>
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-divider {
