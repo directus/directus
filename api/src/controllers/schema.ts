@@ -1,4 +1,5 @@
 import { parseJSON } from '@directus/utils';
+import { buildSchema, renderSchema, type DataModel } from '@directus/sdk-schema-generator';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
@@ -10,6 +11,11 @@ import { SchemaService } from '../services/schema.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
+import { CollectionsService } from '../services/collections.js';
+import { FieldsService } from '../services/fields.js';
+import { RelationsService } from '../services/relations.js';
+import { getSchema } from '../utils/get-schema.js';
+import type { Collection } from '@directus/types';
 
 const router = express.Router();
 
@@ -125,5 +131,37 @@ router.post(
 	}),
 	respond
 );
+
+router.get(
+	'/sdk',
+	asyncHandler(async (req, res) => {
+		const schema = await getSchema();
+		const accountability = req.accountability;
+		const collectionService = new CollectionsService({ accountability, schema });
+		const relationService = new RelationsService({ accountability, schema });
+		const fieldService = new FieldsService({ accountability, schema });
+
+		const dataModel = await Promise.all([
+			collectionService.readByQuery(),
+			relationService.readAll(),
+			fieldService.readAll(),
+		]).then(([_collections, relations, fields]) => ({
+			// Currently the CollectionsService doesnt return
+			// the Collection type from @directus/types
+			collections: _collections as Collection[],
+			fields, relations
+		} as DataModel));
+
+
+		const schemaObject = await buildSchema(dataModel, {
+			nameTransform: 'database'
+		});
+
+		const schemaString = renderSchema(schemaObject);
+
+		res.setHeader('Content-Type', 'text/plain'/*'application/typescript'*/);
+		res.send(schemaString);
+	})
+)
 
 export default router;

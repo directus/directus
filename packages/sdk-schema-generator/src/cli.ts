@@ -6,13 +6,13 @@ import { renderSchema } from './render.js';
 import { writeFileSync } from 'fs';
 
 async function generateSchema(args: CliOptions) {
-	const model = await fetchDataModel(args['host'], args['accessToken']);
+	const dataModel = await fetchDataModel(args['host'], args['accessToken']);
 
-	const schema = await buildSchema(model, {
+	const schemaObject = await buildSchema(dataModel, {
 		nameTransform: args.naming
 	});
 
-	const schemaDefinition = renderSchema(schema);
+	const schemaDefinition = renderSchema(schemaObject);
 
 	if (args.file) {
 		writeFileSync(args.file, schemaDefinition);
