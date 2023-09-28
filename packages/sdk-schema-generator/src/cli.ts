@@ -1,17 +1,18 @@
 import { Command, Option } from 'commander';
 import { fetchDataModel } from './api.js';
-import { buildSchema } from './generator.js';
+import { buildSchema } from './builder.js';
 import type { CliOptions } from './types.js';
-import { renderSchemaTypes } from './render.js';
+import { renderSchema } from './render.js';
 import { writeFileSync } from 'fs';
-import { getNamingFn } from './naming.js';
 
 async function generateSchema(args: CliOptions) {
 	const model = await fetchDataModel(args['host'], args['accessToken']);
 
-	const schema = await buildSchema(model, getNamingFn(args.naming));
+	const schema = await buildSchema(model, {
+		nameTransform: args.naming
+	});
 
-	const schemaDefinition = renderSchemaTypes(schema);
+	const schemaDefinition = renderSchema(schema);
 
 	if (args.file) {
 		writeFileSync(args.file, schemaDefinition);
@@ -32,8 +33,11 @@ program
 	.addOption(new Option('-h, --host <host>').makeOptionMandatory(true))
 	.addOption(new Option('-t, --access-token <token>').makeOptionMandatory(true))
 	.addOption(new Option('-f, --file <file>', 'Write the output to a file'))
-	.addOption(new Option('-n, --naming <naming>', 'Select naming strategy')
-		.choices(['database', 'camelcase', 'pascalcase']).default('database'))
+	.addOption(
+		new Option('-n, --naming <naming>', 'Select naming strategy')
+			.choices(['database', 'camelcase', 'pascalcase'])
+			.default('database')
+	)
 	.action(generateSchema);
 
 program.parse(process.argv);

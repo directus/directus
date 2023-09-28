@@ -7,6 +7,18 @@ export interface CliOptions {
 	naming: 'database' | 'camelcase' | 'pascalcase';
 }
 
+export interface BuilderOptions {
+	nameTransform: string;
+}
+
+export interface RenderOptions {
+	rootName: string;
+	indent: {
+		amount: number;
+		char: string;
+	};
+}
+
 export interface DataModel {
 	collections: Collection[];
 	fields: Field[];
@@ -35,7 +47,7 @@ export interface RelationDefinition {
 	mutliple: boolean;
 }
 
-export type NameTransformer = (str: string) => string;
+export type StringTransformer = (str: string) => string;
 
 export type MaybeArray<T> = T | T[];
 

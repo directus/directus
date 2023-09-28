@@ -1,15 +1,7 @@
-import { pascalcase } from "./naming.js";
-import type { Nullable, SchemaDefinition } from "./types.js";
+import { pascalcase } from './naming.js';
+import type { Nullable, RenderOptions, SchemaDefinition } from './types.js';
 
-export type RenderOptions = {
-	rootName: string;
-	indent: {
-		amount: number;
-		char: string;
-	};
-}
-
-export const defaultOptions: RenderOptions = {
+const defaultOptions: RenderOptions = {
 	rootName: 'MySchema',
 	indent: {
 		amount: 4,
@@ -17,16 +9,7 @@ export const defaultOptions: RenderOptions = {
 	},
 };
 
-function fmtArray(isArray: boolean) {
-	return isArray ? '[]' : '';
-}
-
-function makeArray<T>(item: Nullable<T | T[]>): T[] {
-	if (!item) return [];
-	return Array.isArray(item) ? item : [item];
-}
-
-export function renderSchemaTypes(schema: SchemaDefinition, options = defaultOptions) {
+export function renderSchema(schema: SchemaDefinition, options = defaultOptions) {
 	const sortedNames = [...schema.keys()].sort();
 	let rootType = `interface ${options.rootName} {\n`;
 	const indentation = options.indent.char.repeat(options.indent.amount);
@@ -44,11 +27,13 @@ export function renderSchemaTypes(schema: SchemaDefinition, options = defaultOpt
 	const systemImports = new Set<string>();
 
 	for (const name of sortedNames) {
-		const collection = schema.get(name)!;
+		const collection = schema.get(name);
+		if (!collection) continue;
+
 		let collectionType = `interface ${collection.name} {\n`;
 
 		const pk = collection.fields.find(({ primary_key }) => primary_key);
-		const sortedFields = collection.fields.sort((a, b) => (a.name > b.name) ? 1 : -1)
+		const sortedFields = collection.fields.sort((a, b) => (a.name > b.name ? 1 : -1));
 
 		if (pk) {
 			// pull the primary key to the top
@@ -75,7 +60,7 @@ export function renderSchemaTypes(schema: SchemaDefinition, options = defaultOpt
 			}
 
 			if (field.nullable) {
-				fieldTypes.push('null')
+				fieldTypes.push('null');
 			}
 
 			collectionType += `${indentation}${field.name}: ${fieldTypes.join(' | ')};\n`;
@@ -85,9 +70,18 @@ export function renderSchemaTypes(schema: SchemaDefinition, options = defaultOpt
 		collectionSchema.push(collectionType);
 	}
 
-	const importStr = systemImports.size > 0
-		? `import { ${[...systemImports].join(', ')} } from '@directus/sdk';\n\n`
-		: '';
+	const importStr =
+		systemImports.size > 0 ? `import { ${[...systemImports].join(', ')} } from '@directus/sdk';\n\n` : '';
 
 	return importStr + rootType + collectionSchema.join('\n\n');
+}
+
+
+function fmtArray(isArray: boolean) {
+	return isArray ? '[]' : '';
+}
+
+function makeArray<T>(item: Nullable<T | T[]>): T[] {
+	if (!item) return [];
+	return Array.isArray(item) ? item : [item];
 }
