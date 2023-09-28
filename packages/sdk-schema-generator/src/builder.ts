@@ -48,7 +48,7 @@ export function buildSchema(data: DataModel, options = defaultOptions) {
 
 			if (relation && primaryKey) {
 				fieldRelation = { collection: relation.collection, mutliple: true };
-				mappedType = fieldTypeMap[primaryKey.type];
+				mappedType = fieldTypeMap[primaryKey.type] + '[]';
 			}
 		}
 
