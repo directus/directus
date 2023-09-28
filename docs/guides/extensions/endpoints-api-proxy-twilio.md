@@ -120,20 +120,13 @@ be combined with the twilio host to perform an API query.
 As Twilio is an API that requires authentication and costs money to use, you should also require authentication for your
 endpoint. Without this, any person on the internet could use it.
 
-At the top of your file, import the `createError` function and create a new error:
-
-```js
-import { createError } from '@directus/errors';
-
-const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
-```
-
-Throw the function if `req.accountability` is `null`:
+A client is unauthenticated if `req.accountability.user` is `null`, use this check to protect both methods:
 
 ```js
 router.get('/*', async (req, res) => {
-	if (req.accountability == null) { // [!code ++]
-		throw new ForbiddenError(); // [!code ++]
+	if (req.accountability?.user == null) { // [!code ++]
+		res.status(403); // [!code ++]
+		return res.send(`You don't have permission to access this.`); // [!code ++]
 	} // [!code ++]
 
 	try {
@@ -152,8 +145,9 @@ router.get('/*', async (req, res) => {
 });
 
 router.post('/*', async (req, res) => {
-	if (req.accountability == null) { // [!code ++]
-		throw new ForbiddenError(); // [!code ++]
+	if (req.accountability?.user == null) { // [!code ++]
+		res.status(403); // [!code ++]
+		return res.send(`You don't have permission to access this.`); // [!code ++]
 	} // [!code ++]
 
 	try {
@@ -246,10 +240,6 @@ simplify your other extensions.
 `index.js`
 
 ```js
-import { createError } from '@directus/errors';
-
-const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
-
 export default {
 	id: 'twilio',
 	handler: (router, { env }) => {
@@ -264,8 +254,9 @@ export default {
 		};
 
 		router.get('/*', async (req, res) => {
-			if (req.accountability == null) {
-				throw new ForbiddenError();
+			if (req.accountability?.user == null) {
+				res.status(403);
+				return res.send(`You don't have permission to access this.`);
 			}
 
 			try {
@@ -284,8 +275,9 @@ export default {
 		});
 
 		router.post('/*', async (req, res) => {
-			if (req.accountability == null) {
-				throw new ForbiddenError();
+			if (req.accountability?.user == null) {
+				res.status(403);
+				return res.send(`You don't have permission to access this.`);
 			}
 
 			try {
