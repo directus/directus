@@ -81,7 +81,7 @@ const modules = computed(() => {
 	flex-direction: column;
 	width: 60px;
 	height: 100%;
-	background-color: var(--module-background)
+	background-color: var(--module-background);
 
 	.modules {
 		flex-grow: 1;
@@ -93,8 +93,8 @@ const modules = computed(() => {
 		--v-button-color: var(--module-icon);
 		--v-button-color-hover: var(--white);
 		--v-button-color-active: var(--module-icon-alt);
-		--v-button-background-color: var(--module-background)
-		--v-button-background-color-hover: var(--module-background)
+		--v-button-background-color: var(--module-background);
+		--v-button-background-color-hover: var(--module-background);
 		--v-button-background-color-active: var(--module-background-alt);
 	}
 }
