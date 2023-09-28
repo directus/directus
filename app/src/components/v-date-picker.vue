@@ -1,9 +1,3 @@
-<template>
-	<div ref="wrapper" class="v-date-picker">
-		<input class="input" type="text" data-input />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { getFlatpickrLocale } from '@/utils/get-flatpickr-locale';
 import { format, formatISO } from 'date-fns';
@@ -137,6 +131,12 @@ function enterToClose(e: any) {
 	emit('close');
 }
 </script>
+
+<template>
+	<div ref="wrapper" class="v-date-picker">
+		<input class="input" type="text" data-input />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-date-picker {

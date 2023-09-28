@@ -1,30 +1,3 @@
-<template>
-	<div
-		class="v-progress-linear"
-		:class="[
-			{
-				absolute,
-				bottom,
-				fixed,
-				indeterminate,
-				rounded,
-				top,
-				colorful,
-			},
-			color,
-		]"
-		@animationiteration="$emit('animationiteration', $event)"
-	>
-		<div
-			class="inner"
-			:style="{
-				width: value + '%',
-			}"
-		/>
-		<slot :value="value" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -66,6 +39,33 @@ const color = computed(() => {
 	return 'success';
 });
 </script>
+
+<template>
+	<div
+		class="v-progress-linear"
+		:class="[
+			{
+				absolute,
+				bottom,
+				fixed,
+				indeterminate,
+				rounded,
+				top,
+				colorful,
+			},
+			color,
+		]"
+		@animationiteration="$emit('animationiteration', $event)"
+	>
+		<div
+			class="inner"
+			:style="{
+				width: value + '%',
+			}"
+		/>
+		<slot :value="value" />
+	</div>
+</template>
 
 <style>
 body {

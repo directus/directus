@@ -1,19 +1,3 @@
-<template>
-	<v-input
-		:placeholder="internalPlaceholder"
-		:disabled="disabled"
-		:type="masked ? 'password' : 'text'"
-		:autocomplete="masked ? 'new-password' : 'off'"
-		:model-value="localValue"
-		:class="{ hashed: isHashed && !localValue }"
-		@update:model-value="emitValue"
-	>
-		<template #append>
-			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
-		</template>
-	</v-input>
-</template>
-
 <script lang="ts">
 import { defineComponent } from 'vue';
 
@@ -57,6 +41,22 @@ function emitValue(newValue: string) {
 	localValue.value = newValue;
 }
 </script>
+
+<template>
+	<v-input
+		:placeholder="internalPlaceholder"
+		:disabled="disabled"
+		:type="masked ? 'password' : 'text'"
+		:autocomplete="masked ? 'new-password' : 'off'"
+		:model-value="localValue"
+		:class="{ hashed: isHashed && !localValue }"
+		@update:model-value="emitValue"
+	>
+		<template #append>
+			<v-icon class="lock" :name="isHashed && !localValue ? 'lock' : 'lock_open'" />
+		</template>
+	</v-input>
+</template>
 
 <style lang="scss" scoped>
 .v-input {

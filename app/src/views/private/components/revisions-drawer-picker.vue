@@ -1,27 +1,3 @@
-<template>
-	<v-menu show-arrow>
-		<template #activator="{ toggle }">
-			<span class="picker" @click="toggle">
-				{{ selectedOption && selectedOption.text }}
-				<v-icon name="expand_more" small />
-			</span>
-		</template>
-
-		<v-list class="menu">
-			<v-list-item
-				v-for="option in options"
-				:key="option.value"
-				clickable
-				:active="internalCurrent === option.value"
-				@click="internalCurrent = option.value"
-			>
-				<v-icon name="commit_node" />
-				<v-list-item-content>{{ option.text }}</v-list-item-content>
-			</v-list-item>
-		</v-list>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
@@ -85,6 +61,30 @@ async function getFormattedDate(revision: Revision) {
 	return `${date} (${time})`;
 }
 </script>
+
+<template>
+	<v-menu show-arrow>
+		<template #activator="{ toggle }">
+			<span class="picker" @click="toggle">
+				{{ selectedOption && selectedOption.text }}
+				<v-icon name="expand_more" small />
+			</span>
+		</template>
+
+		<v-list class="menu">
+			<v-list-item
+				v-for="option in options"
+				:key="option.value"
+				clickable
+				:active="internalCurrent === option.value"
+				@click="internalCurrent = option.value"
+			>
+				<v-icon name="commit_node" />
+				<v-list-item-content>{{ option.text }}</v-list-item-content>
+			</v-list-item>
+		</v-list>
+	</v-menu>
+</template>
 
 <style lang="scss" scoped>
 .picker {

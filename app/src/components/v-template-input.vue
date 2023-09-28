@@ -1,15 +1,3 @@
-<template>
-	<div
-		ref="input"
-		class="v-template-input"
-		:class="{ multiline }"
-		contenteditable="true"
-		tabindex="1"
-		:placeholder="placeholder"
-		@input="processText"
-	/>
-</template>
-
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { position } from 'caret-pos';
@@ -301,6 +289,18 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	previousCaretPos = caretPos;
 }
 </script>
+
+<template>
+	<div
+		ref="input"
+		class="v-template-input"
+		:class="{ multiline }"
+		contenteditable="true"
+		tabindex="1"
+		:placeholder="placeholder"
+		@input="processText"
+	/>
+</template>
 
 <style scoped lang="scss">
 .v-template-input {

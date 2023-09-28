@@ -1,3 +1,27 @@
+<script setup lang="ts">
+import { useServerStore } from '@/stores/server';
+import { getRootPath } from '@/utils/get-root-path';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+defineProps<{
+	title?: string;
+	inline?: boolean;
+}>();
+
+const serverStore = useServerStore();
+
+const { info: serverInfo } = storeToRefs(serverStore);
+
+const { t } = useI18n();
+
+const logoURL = computed<string | null>(() => {
+	if (!serverStore.info?.project?.project_logo) return null;
+	return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
+});
+</script>
+
 <template>
 	<div class="shared" :class="{ inline }">
 		<div class="inline-container">
@@ -36,30 +60,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-defineProps<{
-	title?: string;
-	inline?: boolean;
-}>();
-
-const serverStore = useServerStore();
-
-const { info: serverInfo } = storeToRefs(serverStore);
-
-const { t } = useI18n();
-
-const logoURL = computed<string | null>(() => {
-	if (!serverStore.info?.project?.project_logo) return null;
-	return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
-});
-</script>
 
 <style scoped lang="scss">
 .shared {

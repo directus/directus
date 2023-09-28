@@ -1,43 +1,3 @@
-<template>
-	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
-			<v-icon :name="primaryActionIcon" />
-		</v-button>
-
-		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
-			<slot name="title-outer:prepend" />
-		</div>
-
-		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
-			<div class="headline">
-				<slot name="headline" />
-			</div>
-
-			<div class="title">
-				<slot name="title">
-					<slot name="title:prepend" />
-					<h1 class="type-title">
-						<v-text-overflow :text="title" placement="bottom">{{ title }}</v-text-overflow>
-					</h1>
-					<slot name="title:append" />
-				</slot>
-			</div>
-
-			<slot name="title-outer:append" />
-		</div>
-
-		<div class="spacer" />
-
-		<slot name="actions:prepend" />
-
-		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
-			<slot name="actions" />
-		</header-bar-actions>
-
-		<slot name="actions:append" />
-	</header>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
@@ -80,6 +40,46 @@ onUnmounted(() => {
 	observer.disconnect();
 });
 </script>
+
+<template>
+	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
+		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
+			<v-icon :name="primaryActionIcon" />
+		</v-button>
+
+		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
+			<slot name="title-outer:prepend" />
+		</div>
+
+		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
+			<div class="headline">
+				<slot name="headline" />
+			</div>
+
+			<div class="title">
+				<slot name="title">
+					<slot name="title:prepend" />
+					<h1 class="type-title">
+						<v-text-overflow :text="title" placement="bottom">{{ title }}</v-text-overflow>
+					</h1>
+					<slot name="title:append" />
+				</slot>
+			</div>
+
+			<slot name="title-outer:append" />
+		</div>
+
+		<div class="spacer" />
+
+		<slot name="actions:prepend" />
+
+		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
+			<slot name="actions" />
+		</header-bar-actions>
+
+		<slot name="actions:append" />
+	</header>
+</template>
 
 <style lang="scss" scoped>
 .header-bar {

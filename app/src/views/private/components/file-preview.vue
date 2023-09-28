@@ -1,21 +1,3 @@
-<template>
-	<div class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }" @click="$emit('click')">
-		<div v-if="type === 'image' && !imgError" class="image">
-			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" @error="imgError = true" />
-		</div>
-
-		<div v-else-if="type === 'video'" class="video">
-			<video controls :src="authenticatedSrc" />
-		</div>
-
-		<audio v-else-if="type === 'audio'" controls :src="authenticatedSrc" />
-
-		<div v-else class="fallback">
-			<v-icon-file :ext="type" />
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -69,6 +51,24 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 
 const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value));
 </script>
+
+<template>
+	<div class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }" @click="$emit('click')">
+		<div v-if="type === 'image' && !imgError" class="image">
+			<v-image :src="src" :width="file.width" :height="file.height" :alt="file.title" @error="imgError = true" />
+		</div>
+
+		<div v-else-if="type === 'video'" class="video">
+			<video controls :src="authenticatedSrc" />
+		</div>
+
+		<audio v-else-if="type === 'audio'" controls :src="authenticatedSrc" />
+
+		<div v-else class="fallback">
+			<v-icon-file :ext="type" />
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .file-preview {

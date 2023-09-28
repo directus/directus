@@ -1,18 +1,3 @@
-<template>
-	<v-list nav>
-		<v-button v-if="navItems.length === 0" full-width outlined dashed @click="$emit('create')">
-			{{ t('create_dashboard') }}
-		</v-button>
-
-		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
-			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="navItem.name" />
-			</v-list-item-content>
-		</v-list-item>
-	</v-list>
-</template>
-
 <script setup lang="ts">
 import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
@@ -33,3 +18,18 @@ const navItems = computed(() =>
 	}))
 );
 </script>
+
+<template>
+	<v-list nav>
+		<v-button v-if="navItems.length === 0" full-width outlined dashed @click="$emit('create')">
+			{{ t('create_dashboard') }}
+		</v-button>
+
+		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
+			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="navItem.name" />
+			</v-list-item-content>
+		</v-list-item>
+	</v-list>
+</template>

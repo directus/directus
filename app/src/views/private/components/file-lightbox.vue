@@ -1,17 +1,3 @@
-<template>
-	<v-dialog v-model="internalModelValue" @esc="internalModelValue = false">
-		<template #activator="activatorBinding">
-			<slot name="activator" v-bind="activatorBinding" />
-		</template>
-
-		<file-preview :file="file" :preset="null" in-modal @click="internalModelValue = false" />
-
-		<v-button class="close" icon rounded @click="internalModelValue = false">
-			<v-icon name="close" />
-		</v-button>
-	</v-dialog>
-</template>
-
 <script setup lang="ts">
 import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
 import { useSync } from '@directus/composables';
@@ -28,6 +14,20 @@ const emit = defineEmits<{
 
 const internalModelValue = useSync(props, 'modelValue', emit);
 </script>
+
+<template>
+	<v-dialog v-model="internalModelValue" @esc="internalModelValue = false">
+		<template #activator="activatorBinding">
+			<slot name="activator" v-bind="activatorBinding" />
+		</template>
+
+		<file-preview :file="file" :preset="null" in-modal @click="internalModelValue = false" />
+
+		<v-button class="close" icon rounded @click="internalModelValue = false">
+			<v-icon name="close" />
+		</v-button>
+	</v-dialog>
+</template>
 
 <style scoped>
 .file-preview {

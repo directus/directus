@@ -1,3 +1,66 @@
+<script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
+import { useSync } from '@directus/composables';
+import { GeometryOptions } from '@directus/types';
+import { useI18n } from 'vue-i18n';
+import MapComponent from './components/map.vue';
+
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		geojson: any;
+		directusSource: any;
+		directusLayers: any[];
+		handleClick: (event: { id: string | number; replace: boolean }) => void;
+		handleSelect: (event: { ids: Array<string | number>; replace: boolean }) => void;
+		resetPresetAndRefresh: () => Promise<void>;
+		fitDataBounds: () => void;
+		updateItemPopup: () => void;
+		geojsonLoading: boolean;
+		loading: boolean;
+		totalPages: number;
+		page: number;
+		toPage: (newPage: number) => void;
+		limit: number;
+		selection?: (string | number)[];
+		error?: any;
+		geojsonError?: string;
+		geometryOptions?: GeometryOptions;
+		featureId?: string;
+		geojsonBounds?: any;
+		cameraOptions?: any;
+		itemCount?: number;
+		autoLocationFilter?: boolean;
+		template?: string;
+		itemPopup?: { item?: any; position?: { x: number; y: number } };
+	}>(),
+	{
+		selection: () => [],
+	}
+);
+
+const emit = defineEmits(['update:cameraOptions', 'update:limit']);
+
+const { t, n } = useI18n();
+
+const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
+const limitWritable = useSync(props, 'limit', emit);
+
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
+	[100, 1000, 10000, 100000],
+	(value) => ({ text: n(value), value }),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
+</script>
+
 <template>
 	<div class="layout-map">
 		<map-component
@@ -69,69 +132,6 @@
 		</template>
 	</div>
 </template>
-
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
-<script setup lang="ts">
-import { usePageSize } from '@/composables/use-page-size';
-import { useSync } from '@directus/composables';
-import { GeometryOptions } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-import MapComponent from './components/map.vue';
-
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		geojson: any;
-		directusSource: any;
-		directusLayers: any[];
-		handleClick: (event: { id: string | number; replace: boolean }) => void;
-		handleSelect: (event: { ids: Array<string | number>; replace: boolean }) => void;
-		resetPresetAndRefresh: () => Promise<void>;
-		fitDataBounds: () => void;
-		updateItemPopup: () => void;
-		geojsonLoading: boolean;
-		loading: boolean;
-		totalPages: number;
-		page: number;
-		toPage: (newPage: number) => void;
-		limit: number;
-		selection?: (string | number)[];
-		error?: any;
-		geojsonError?: string;
-		geometryOptions?: GeometryOptions;
-		featureId?: string;
-		geojsonBounds?: any;
-		cameraOptions?: any;
-		itemCount?: number;
-		autoLocationFilter?: boolean;
-		template?: string;
-		itemPopup?: { item?: any; position?: { x: number; y: number } };
-	}>(),
-	{
-		selection: () => [],
-	}
-);
-
-const emit = defineEmits(['update:cameraOptions', 'update:limit']);
-
-const { t, n } = useI18n();
-
-const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
-const limitWritable = useSync(props, 'limit', emit);
-
-const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
-	[100, 1000, 10000, 100000],
-	(value) => ({ text: n(value), value }),
-	props.limit
-);
-
-limitWritable.value = selectedSize;
-</script>
 
 <style lang="scss" scoped>
 .v-info {

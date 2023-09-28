@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import { FieldTree } from './types';
+import formatTitle from '@directus/format-title';
+
+interface Props {
+	field: FieldTree;
+	depth?: number;
+}
+
+withDefaults(defineProps<Props>(), {
+	depth: undefined,
+});
+
+defineEmits(['add']);
+</script>
+
 <template>
 	<v-list-item
 		v-if="field.children === undefined || depth === 0"
@@ -18,19 +34,3 @@
 		/>
 	</v-list-group>
 </template>
-
-<script setup lang="ts">
-import { FieldTree } from './types';
-import formatTitle from '@directus/format-title';
-
-interface Props {
-	field: FieldTree;
-	depth?: number;
-}
-
-withDefaults(defineProps<Props>(), {
-	depth: undefined,
-});
-
-defineEmits(['add']);
-</script>
