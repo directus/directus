@@ -4,12 +4,13 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { setFavicon } from '@/utils/set-favicon';
 import { useAppStore } from '@directus/stores';
+import { ThemeProvider } from '@directus/themes';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { startIdleTracking, stopIdleTracking } from './idle';
-import { ThemeProvider } from '@directus/themes';
+import { getAppearance } from './utils/get-appearance';
 
 const { t } = useI18n();
 
@@ -59,21 +60,18 @@ watch(
 );
 
 watch(
-	() => (userStore.currentUser as User)?.theme,
-	(theme) => {
+	() => (userStore.currentUser as User)?.appearance,
+	(appearance) => {
 		document.body.classList.remove('dark');
 		document.body.classList.remove('light');
 		document.body.classList.remove('auto');
 
-		if (theme) {
-			document.body.classList.add(theme);
-
+		if (appearance) {
 			document
 				.querySelector('head meta[name="theme-color"]')
-				?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');
-		} else {
-			// Default to auto mode
-			document.body.classList.add('auto');
+				?.setAttribute('content', appearance === 'light' ? '#ffffff' : '#263238');
+
+			document.body.classList.add(appearance);
 		}
 	},
 	{ immediate: true }
@@ -89,7 +87,7 @@ useSystem();
 </script>
 
 <template>
-	<ThemeProvider id="directus">
+	<ThemeProvider id="directus" :dark="getAppearance() === 'dark'">
 		<transition name="fade">
 			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />

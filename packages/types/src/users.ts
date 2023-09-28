@@ -28,7 +28,7 @@ export type User = {
 	tfa_secret: string | null;
 	auth_data: Record<string, any> | null;
 	provider: string;
-	theme: string | null;
+	appearance: string | null;
 	role: Role | null;
 	language: string | null;
 	avatar: Avatar | null;

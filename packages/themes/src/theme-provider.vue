@@ -8,7 +8,8 @@ import { storeToRefs } from 'pinia';
 import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
 import { useThemeStore } from './store.js';
-import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/directus-light-default.js';
+import { theme as themeDefaultDark,  } from './themes/directus-dark-default.js';
+import { theme as themeDefaultLight } from './themes/directus-light-default.js';
 
 export interface ThemeProviderProps {
 	dark?: boolean;
