@@ -44,6 +44,7 @@
 	},
 	"dependencies": {
 		"@sinclair/typebox": "0.28.13",
+		"decamelize": "6.0.0",
 		"defu": "6.1.2",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21",

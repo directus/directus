@@ -8,6 +8,7 @@ import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
 import { useThemeStore } from './store.js';
 import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/directus-light-default.js';
+import decamelize from 'decamelize';
 
 export interface ThemeProviderProps {
 	dark?: boolean;
@@ -44,12 +45,12 @@ const theme = computed(() => {
 
 const cssVariables = computed(() => {
 	const variables = flatten<Theme['variables'], Record<string, string | number>>(unref(theme).variables, {
-		delimiter: '-',
+		delimiter: '--',
 	});
 
-	const rules = flatten<Theme['rules'], Record<string, string | number>>(unref(theme).rules, { delimiter: '-' });
+	const rules = flatten<Theme['rules'], Record<string, string | number>>(unref(theme).rules, { delimiter: '--' });
 
-	return mapKeys({ ...variables, ...rules }, (key) => `--${key}`);
+	return mapKeys({ ...variables, ...rules }, (_value, key) => `--theme-${decamelize(key, { separator: '-' })}`);
 });
 </script>
 
