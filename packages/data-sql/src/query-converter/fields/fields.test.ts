@@ -8,8 +8,8 @@ afterAll(() => {
 	vi.restoreAllMocks();
 });
 
-vi.mock('../../response-converter/orm/create-unique-identifier.js', () => ({
-	createUniqueIdentifier: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
+vi.mock('../../orm/create-unique-alias.js', () => ({
+	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
 let randomPrimitiveField1: string;

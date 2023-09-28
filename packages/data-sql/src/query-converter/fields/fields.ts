@@ -3,7 +3,7 @@ import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../..
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
-import { createUniqueIdentifier } from '../../response-converter/orm/create-unique-identifier.js';
+import { createUniqueAlias } from '../../orm/create-unique-alias.js';
 
 export type Result = {
 	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
@@ -41,7 +41,7 @@ export const convertFieldNodes = (
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
 			// ORM aliasing and mapping
-			const generatedAlias = createUniqueIdentifier(abstractField.field);
+			const generatedAlias = createUniqueAlias(abstractField.field);
 			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
 
 			// query conversion
@@ -60,7 +60,7 @@ export const convertFieldNodes = (
 			 */
 
 			const m2oField = abstractField;
-			const externalCollectionAlias = createUniqueIdentifier(m2oField.join.external.collection);
+			const externalCollectionAlias = createUniqueAlias(m2oField.join.external.collection);
 			const sqlJoinNode = createJoin(collection, m2oField, externalCollectionAlias);
 
 			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.nodes, idxGenerator, [
@@ -78,7 +78,7 @@ export const convertFieldNodes = (
 			const fnField = abstractField;
 
 			// ORM aliasing and mapping
-			const generatedAlias = createUniqueIdentifier(`${fnField.fn.fn}_${fnField.field}`);
+			const generatedAlias = createUniqueAlias(`${fnField.fn.fn}_${fnField.field}`);
 			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
 
 			// query conversion

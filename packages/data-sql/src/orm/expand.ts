@@ -1,11 +1,12 @@
 import { set } from 'lodash-es';
 import { TransformStream } from 'node:stream/web';
 
+
 /**
  * Converts the receiving chunks from the database into a nested structure
  * based on the result from the database.
  */
-export const expand = (paths: Map<string, string[]>): TransformStream => {
+export const getOrmTransformer = (paths: Map<string, string[]>): TransformStream => {
 	return new TransformStream({
 		transform(chunk, controller) {
 			if (chunk?.constructor !== Object) {

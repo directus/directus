@@ -40,3 +40,4 @@
  * @packageDocumentation
  */
 export * from './expand.js';
+export * from './create-unique-alias.js';

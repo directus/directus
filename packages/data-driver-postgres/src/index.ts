@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
-import { convertQuery, expand, type ParameterizedSqlStatement } from '@directus/data-sql';
+import { convertQuery, getOrmTransformer, type ParameterizedSqlStatement } from '@directus/data-sql';
 import type { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
@@ -57,7 +57,8 @@ export default class DataDriverPostgres implements DataDriver {
 			const { poolClient, stream } = await this.getDataFromSource(this.#pool, { statement, parameters });
 			client = poolClient;
 
-			return stream.pipeThrough(expand(conversionResult.aliasMapping));
+			const ormTransformer = getOrmTransformer(conversionResult.aliasMapping);
+			return stream.pipeThrough(ormTransformer);
 		} catch (err) {
 			client?.release();
 			throw new Error('Failed to perform the query: ' + err);
