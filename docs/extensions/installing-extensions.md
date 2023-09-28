@@ -54,7 +54,7 @@ Remember to replace `directus-extension-package-name` with the name of the exten
 Build your Docker image:
 
 ```bash
-docker compose --build
+docker compose build
 ```
 
 **4. Start the Docker Container**
