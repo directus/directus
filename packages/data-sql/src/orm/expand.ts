@@ -1,7 +1,6 @@
 import { set } from 'lodash-es';
 import { TransformStream } from 'node:stream/web';
 
-
 /**
  * Converts the receiving chunks from the database into a nested structure
  * based on the result from the database.
