@@ -1,24 +1,3 @@
-<template>
-	<div>
-		<v-notice type="info">
-			{{
-				t('presets_for_role', {
-					action: t(permission.action).toLowerCase(),
-					role: role ? role.name : t('public_label'),
-				})
-			}}
-		</v-notice>
-		<v-notice v-for="field in fieldWarnings" :key="field" type="warning">
-			{{
-				t('presets_field_warning', {
-					field,
-				})
-			}}
-		</v-notice>
-		<interface-input-code :value="presets" language="json" type="json" @input="presets = $event" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useRelationsStore } from '@/stores/relations';
 import { useSync } from '@directus/composables';
@@ -79,6 +58,27 @@ const fieldWarnings = computed(() => {
 	return warnings;
 });
 </script>
+
+<template>
+	<div>
+		<v-notice type="info">
+			{{
+				t('presets_for_role', {
+					action: t(permission.action).toLowerCase(),
+					role: role ? role.name : t('public_label'),
+				})
+			}}
+		</v-notice>
+		<v-notice v-for="field in fieldWarnings" :key="field" type="warning">
+			{{
+				t('presets_field_warning', {
+					field,
+				})
+			}}
+		</v-notice>
+		<interface-input-code :value="presets" language="json" type="json" @input="presets = $event" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-notice {

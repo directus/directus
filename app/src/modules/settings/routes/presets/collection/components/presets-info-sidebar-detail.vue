@@ -1,22 +1,3 @@
-<template>
-	<sidebar-detail icon="info" :title="t('information')" close>
-		<dl>
-			<div>
-				<dt>{{ t('bookmarks') }}</dt>
-				<dd>{{ bookmarksCount }}</dd>
-			</div>
-			<div>
-				<dt>{{ t('presets') }}</dt>
-				<dd>{{ presetsCount }}</dd>
-			</div>
-		</dl>
-
-		<v-divider />
-
-		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -52,6 +33,25 @@ async function fetchCounts() {
 	}
 }
 </script>
+
+<template>
+	<sidebar-detail icon="info" :title="t('information')" close>
+		<dl>
+			<div>
+				<dt>{{ t('bookmarks') }}</dt>
+				<dd>{{ bookmarksCount }}</dd>
+			</div>
+			<div>
+				<dt>{{ t('presets') }}</dt>
+				<dd>{{ presetsCount }}</dd>
+			</div>
+		</dl>
+
+		<v-divider />
+
+		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 .v-divider {

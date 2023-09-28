@@ -1,9 +1,3 @@
-<template>
-	<div class="bar-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -326,6 +320,12 @@ function setUpChart() {
 	}
 }
 </script>
+
+<template>
+	<div class="bar-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .bar-chart {

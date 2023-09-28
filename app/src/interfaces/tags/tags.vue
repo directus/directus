@@ -1,51 +1,3 @@
-<template>
-	<div class="interface-tags">
-		<v-input
-			v-if="allowCustom"
-			:placeholder="placeholder || t('interfaces.tags.add_tags')"
-			:disabled="disabled"
-			:dir="direction"
-			@keydown="onInput"
-		>
-			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-			<template #append><v-icon :name="iconRight" /></template>
-		</v-input>
-		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
-			<span v-if="presetVals.length > 0" class="presets tag-container">
-				<v-chip
-					v-for="preset in presetVals"
-					:key="preset"
-					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
-					:disabled="disabled"
-					:dir="direction"
-					small
-					label
-					clickable
-					@click="toggleTag(preset)"
-				>
-					{{ preset }}
-				</v-chip>
-			</span>
-			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
-				<v-chip
-					v-for="val in customVals"
-					:key="val"
-					:disabled="disabled"
-					:dir="direction"
-					class="tag"
-					small
-					label
-					clickable
-					@click="removeTag(val)"
-				>
-					{{ val }}
-				</v-chip>
-			</span>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
@@ -161,6 +113,54 @@ function emitValue() {
 	emit('input', selectedVals.value);
 }
 </script>
+
+<template>
+	<div class="interface-tags">
+		<v-input
+			v-if="allowCustom"
+			:placeholder="placeholder || t('interfaces.tags.add_tags')"
+			:disabled="disabled"
+			:dir="direction"
+			@keydown="onInput"
+		>
+			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
+			<template #append><v-icon :name="iconRight" /></template>
+		</v-input>
+		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
+			<span v-if="presetVals.length > 0" class="presets tag-container">
+				<v-chip
+					v-for="preset in presetVals"
+					:key="preset"
+					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
+					:disabled="disabled"
+					:dir="direction"
+					small
+					label
+					clickable
+					@click="toggleTag(preset)"
+				>
+					{{ preset }}
+				</v-chip>
+			</span>
+			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
+				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
+				<v-chip
+					v-for="val in customVals"
+					:key="val"
+					:disabled="disabled"
+					:dir="direction"
+					class="tag"
+					small
+					label
+					clickable
+					@click="removeTag(val)"
+				>
+					{{ val }}
+				</v-chip>
+			</span>
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .tags {

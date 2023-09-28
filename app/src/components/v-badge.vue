@@ -1,14 +1,3 @@
-<template>
-	<div class="v-badge" :class="{ dot, bordered }">
-		<span v-if="!disabled" class="badge" :class="{ dot, bordered, left, bottom }">
-			<v-icon v-if="icon" :name="icon" x-small />
-			<span v-else>{{ value }}</span>
-		</span>
-
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** The value that will be displayed inside the badge Only 2 characters allowed) */
@@ -37,6 +26,17 @@ withDefaults(defineProps<Props>(), {
 	disabled: false,
 });
 </script>
+
+<template>
+	<div class="v-badge" :class="{ dot, bordered }">
+		<span v-if="!disabled" class="badge" :class="{ dot, bordered, left, bottom }">
+			<v-icon v-if="icon" :name="icon" x-small />
+			<span v-else>{{ value }}</span>
+		</span>
+
+		<slot />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 :global(body) {

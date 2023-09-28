@@ -1,9 +1,3 @@
-<template>
-	<div class="pie-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -273,6 +267,12 @@ function checkMatchingConditionalFill(
 	}
 }
 </script>
+
+<template>
+	<div class="pie-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .pie-chart {

@@ -1,10 +1,3 @@
-<template>
-	<div class="v-notice" :class="[type, { center }]">
-		<v-icon v-if="icon !== false" :name="iconName" left />
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -41,6 +34,13 @@ const iconName = computed(() => {
 	}
 });
 </script>
+
+<template>
+	<div class="v-notice" :class="[type, { center }]">
+		<v-icon v-if="icon !== false" :name="iconName" left />
+		<slot />
+	</div>
+</template>
 
 <style scoped>
 :global(body) {

@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { getLocalTypeForField } from '@/utils/get-local-type';
+import { Field } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	field: Field;
+	noDelete?: boolean;
+}>();
+
+defineEmits(['toggleVisibility', 'duplicate', 'delete', 'setWidth']);
+
+const { t } = useI18n();
+
+const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
+const isPrimaryKey = computed(() => props.field.schema?.is_primary_key === true);
+
+const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey.value === false);
+</script>
+
 <template>
 	<v-menu show-arrow placement="bottom-end">
 		<template #activator="{ toggle }">
@@ -75,27 +96,6 @@
 		</v-list>
 	</v-menu>
 </template>
-
-<script setup lang="ts">
-import { getLocalTypeForField } from '@/utils/get-local-type';
-import { Field } from '@directus/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const props = defineProps<{
-	field: Field;
-	noDelete?: boolean;
-}>();
-
-defineEmits(['toggleVisibility', 'duplicate', 'delete', 'setWidth']);
-
-const { t } = useI18n();
-
-const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
-const isPrimaryKey = computed(() => props.field.schema?.is_primary_key === true);
-
-const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey.value === false);
-</script>
 
 <style scoped>
 .v-list-item.danger {

@@ -15,8 +15,8 @@ As an example, this guide will proxy the Stripe API, but the same approach can b
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose endpoint), and type a name for your extension (for example,
@@ -24,7 +24,7 @@ A list of options will appear (choose endpoint), and type a name for your extens
 
 Now the boilerplate has been created, install the `stripe` package, and then open the directory in your code editor.
 
-```
+```shell
 cd directus-endpoint-stripe
 npm install stripe
 ```

@@ -1,3 +1,11 @@
+<script setup lang="ts">
+defineProps<{
+	image: string;
+	name: string;
+	title: string;
+}>();
+</script>
+
 <template>
 	<div class="avatar">
 		<img :src="image" :alt="name" />
@@ -7,14 +15,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup lang="ts">
-defineProps<{
-	image: string;
-	name: string;
-	title: string;
-}>();
-</script>
 
 <style scoped>
 .avatar {

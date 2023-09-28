@@ -1,3 +1,72 @@
+<script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script setup lang="ts">
+import { useSync } from '@directus/extensions-sdk';
+import { useI18n } from 'vue-i18n';
+
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		fieldGroups: Record<string, Record<string, any>[]>;
+		groupTitleFields?: Record<string, any>[];
+		groupField?: string | null;
+		groupTitle?: string | null;
+		isRelational?: boolean;
+		imageSource?: string | null;
+		titleField?: string | null;
+		textField?: string | null;
+		crop: boolean;
+		dateField?: string | null;
+		tagsField?: string | null;
+		userField?: string | null;
+		showUngrouped: boolean;
+	}>(),
+	{
+		groupTitleFields: () => [],
+		groupField: null,
+		groupTitle: null,
+		isRelational: true,
+		imageSource: null,
+		titleField: null,
+		textField: null,
+		dateField: null,
+		tagsField: null,
+		userField: null,
+		showUngrouped: true,
+	}
+);
+
+const emit = defineEmits([
+	'update:imageSource',
+	'update:titleField',
+	'update:crop',
+	'update:textField',
+	'update:groupField',
+	'update:groupTitle',
+	'update:dateField',
+	'update:tagsField',
+	'update:userField',
+	'update:showUngrouped',
+]);
+
+const { t } = useI18n();
+
+const imageSourceSync = useSync(props, 'imageSource', emit);
+const titleFieldSync = useSync(props, 'titleField', emit);
+const cropSync = useSync(props, 'crop', emit);
+const textFieldSync = useSync(props, 'textField', emit);
+const showUngroupedSync = useSync(props, 'showUngrouped', emit);
+const groupFieldSync = useSync(props, 'groupField', emit);
+const groupTitleSync = useSync(props, 'groupTitle', emit);
+const dateFieldSync = useSync(props, 'dateField', emit);
+const tagsFieldSync = useSync(props, 'tagsField', emit);
+const userFieldSync = useSync(props, 'userField', emit);
+</script>
+
 <template>
 	<div class="field">
 		<div class="type-label">{{ t('layouts.kanban.group_field') }}</div>
@@ -109,75 +178,6 @@
 		</div>
 	</v-detail>
 </template>
-
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
-<script setup lang="ts">
-import { useSync } from '@directus/extensions-sdk';
-import { useI18n } from 'vue-i18n';
-
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		fieldGroups: Record<string, Record<string, any>[]>;
-		groupTitleFields?: Record<string, any>[];
-		groupField?: string | null;
-		groupTitle?: string | null;
-		isRelational?: boolean;
-		imageSource?: string | null;
-		titleField?: string | null;
-		textField?: string | null;
-		crop: boolean;
-		dateField?: string | null;
-		tagsField?: string | null;
-		userField?: string | null;
-		showUngrouped: boolean;
-	}>(),
-	{
-		groupTitleFields: () => [],
-		groupField: null,
-		groupTitle: null,
-		isRelational: true,
-		imageSource: null,
-		titleField: null,
-		textField: null,
-		dateField: null,
-		tagsField: null,
-		userField: null,
-		showUngrouped: true,
-	}
-);
-
-const emit = defineEmits([
-	'update:imageSource',
-	'update:titleField',
-	'update:crop',
-	'update:textField',
-	'update:groupField',
-	'update:groupTitle',
-	'update:dateField',
-	'update:tagsField',
-	'update:userField',
-	'update:showUngrouped',
-]);
-
-const { t } = useI18n();
-
-const imageSourceSync = useSync(props, 'imageSource', emit);
-const titleFieldSync = useSync(props, 'titleField', emit);
-const cropSync = useSync(props, 'crop', emit);
-const textFieldSync = useSync(props, 'textField', emit);
-const showUngroupedSync = useSync(props, 'showUngrouped', emit);
-const groupFieldSync = useSync(props, 'groupField', emit);
-const groupTitleSync = useSync(props, 'groupTitle', emit);
-const dateFieldSync = useSync(props, 'dateField', emit);
-const tagsFieldSync = useSync(props, 'tagsField', emit);
-const userFieldSync = useSync(props, 'userField', emit);
-</script>
 
 <style lang="scss" scoped>
 .nested-options {

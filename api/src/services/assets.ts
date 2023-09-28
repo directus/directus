@@ -1,5 +1,5 @@
 import type { Range, Stat } from '@directus/storage';
-import type { Accountability } from '@directus/types';
+import type { Accountability, File } from '@directus/types';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
@@ -19,7 +19,7 @@ import {
 } from '../errors/index.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, File, Transformation, TransformationSet } from '../types/index.js';
+import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';

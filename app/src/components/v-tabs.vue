@@ -1,12 +1,3 @@
-<template>
-	<v-list v-if="vertical" class="v-tabs vertical alt-colors" nav>
-		<slot />
-	</v-list>
-	<div v-else class="v-tabs horizontal">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { toRefs, provide, ref } from 'vue';
 import { useGroupableParent } from '@directus/composables';
@@ -45,6 +36,15 @@ function update(newSelection: readonly (string | number)[]) {
 	emit('update:modelValue', newSelection);
 }
 </script>
+
+<template>
+	<v-list v-if="vertical" class="v-tabs vertical alt-colors" nav>
+		<slot />
+	</v-list>
+	<div v-else class="v-tabs horizontal">
+		<slot />
+	</div>
+</template>
 
 <style scoped>
 :global(body) {
