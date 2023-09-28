@@ -88,7 +88,8 @@ At the root of your project, create an "extensions" folder if one doesn't alread
 
 **2. Add your new extension into the extensions folder**
 
-Move the `package.json` file along with the output from the `dist/` folder into a new folder in the extensions folder you created earlier.
+Move the `package.json` file along with the output from the `dist/` folder into a new folder in the extensions folder
+you created earlier.
 
 Your folder structure should look like this:
 
@@ -100,12 +101,6 @@ extensions/
     package.json
   ...
 ```
-
-::: tip Extension Name Format
-
-Ensure your extension is prefixed with `directus-extension`. For example, `directus-extension-myextension`.
-
-:::
 
 **3. Update Docker Compose File**
 
