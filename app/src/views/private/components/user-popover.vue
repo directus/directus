@@ -1,37 +1,3 @@
-<template>
-	<v-menu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
-		<template #activator><slot /></template>
-
-		<div v-if="loading" class="loading">
-			<v-skeleton-loader class="avatar" />
-			<div>
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
-				<v-skeleton-loader type="text" />
-			</div>
-		</div>
-
-		<div v-else-if="error" class="error">
-			{{ error }}
-		</div>
-
-		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
-			<v-avatar x-large class="avatar">
-				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
-				<v-icon v-else name="person" />
-			</v-avatar>
-			<div class="data">
-				<div class="name type-title">{{ userName(data) }}</div>
-				<v-chip class="status" :class="data.status" small>
-					{{ t(`fields.directus_users.status_${data.status}`) }}
-				</v-chip>
-				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
-				<div class="email">{{ data.email }}</div>
-			</div>
-		</div>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { userName } from '@/utils/user-name';
@@ -99,6 +65,40 @@ function navigateToUser() {
 	if (data.value) router.push(`/users/${data.value.id}`);
 }
 </script>
+
+<template>
+	<v-menu v-model="active" show-arrow placement="top" trigger="hover" :delay="300">
+		<template #activator><slot /></template>
+
+		<div v-if="loading" class="loading">
+			<v-skeleton-loader class="avatar" />
+			<div>
+				<v-skeleton-loader type="text" />
+				<v-skeleton-loader type="text" />
+				<v-skeleton-loader type="text" />
+			</div>
+		</div>
+
+		<div v-else-if="error" class="error">
+			{{ error }}
+		</div>
+
+		<div v-else-if="data" class="user-box" @click.stop="navigateToUser">
+			<v-avatar x-large class="avatar">
+				<v-image v-if="avatarSrc" :src="avatarSrc" :alt="data.first_name" />
+				<v-icon v-else name="person" />
+			</v-avatar>
+			<div class="data">
+				<div class="name type-title">{{ userName(data) }}</div>
+				<v-chip class="status" :class="data.status" small>
+					{{ t(`fields.directus_users.status_${data.status}`) }}
+				</v-chip>
+				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
+				<div class="email">{{ data.email }}</div>
+			</div>
+		</div>
+	</v-menu>
+</template>
 
 <style lang="scss" scoped>
 .hover-trigger {

@@ -1,33 +1,3 @@
-<template>
-	<v-menu v-model="menuActive" attached>
-		<template #activator="{ toggle }">
-			<v-input :disabled="disabled">
-				<template #input>
-					<span
-						ref="contentEl"
-						class="content"
-						:contenteditable="!disabled"
-						@keydown="onKeyDown"
-						@input="onInput"
-						@click="onClick"
-					>
-						<span class="text" />
-					</span>
-					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
-				</template>
-
-				<template #append>
-					<v-icon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
-				</template>
-			</v-input>
-		</template>
-
-		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value)">
-			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
-		</v-list>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import { useFieldTree } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
@@ -293,6 +263,36 @@ function setContent() {
 	}
 }
 </script>
+
+<template>
+	<v-menu v-model="menuActive" attached>
+		<template #activator="{ toggle }">
+			<v-input :disabled="disabled">
+				<template #input>
+					<span
+						ref="contentEl"
+						class="content"
+						:contenteditable="!disabled"
+						@keydown="onKeyDown"
+						@input="onInput"
+						@click="onClick"
+					>
+						<span class="text" />
+					</span>
+					<span v-if="placeholder && !modelValue" class="placeholder">{{ placeholder }}</span>
+				</template>
+
+				<template #append>
+					<v-icon name="add_box" outline clickable :disabled="disabled" @click="toggle" />
+				</template>
+			</v-input>
+		</template>
+
+		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value)">
+			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
+		</v-list>
+	</v-menu>
+</template>
 
 <style scoped lang="scss">
 .content {

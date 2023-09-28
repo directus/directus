@@ -1,41 +1,3 @@
-<template>
-	<div class="relational-variable" :class="{ 'show-header': showHeader, centered: !multiple }">
-		<v-notice v-if="!collection" type="warning">
-			{{ t('collection_field_not_setup') }}
-		</v-notice>
-
-		<multiple-relation
-			v-else-if="multiple"
-			:collection="collection"
-			:template="displayTemplate"
-			:filter="filter"
-			:value="value"
-			:limit="limit"
-			@input="value = $event"
-			@select="selectModalOpen = true"
-		/>
-		<single-relation
-			v-else
-			:collection="collection"
-			:template="displayTemplate"
-			:filter="filter"
-			:value="value"
-			@input="value = $event"
-			@select="selectModalOpen = true"
-		/>
-
-		<drawer-collection
-			:active="selectModalOpen"
-			:collection="collection"
-			:selection="value"
-			:filter="filter"
-			:multiple="multiple"
-			@input="onSelection"
-			@update:active="selectModalOpen = false"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -97,6 +59,44 @@ function onSelection(data: (number | string)[]) {
 	}
 }
 </script>
+
+<template>
+	<div class="relational-variable" :class="{ 'show-header': showHeader, centered: !multiple }">
+		<v-notice v-if="!collection" type="warning">
+			{{ t('collection_field_not_setup') }}
+		</v-notice>
+
+		<multiple-relation
+			v-else-if="multiple"
+			:collection="collection"
+			:template="displayTemplate"
+			:filter="filter"
+			:value="value"
+			:limit="limit"
+			@input="value = $event"
+			@select="selectModalOpen = true"
+		/>
+		<single-relation
+			v-else
+			:collection="collection"
+			:template="displayTemplate"
+			:filter="filter"
+			:value="value"
+			@input="value = $event"
+			@select="selectModalOpen = true"
+		/>
+
+		<drawer-collection
+			:active="selectModalOpen"
+			:collection="collection"
+			:selection="value"
+			:filter="filter"
+			:multiple="multiple"
+			@input="onSelection"
+			@update:active="selectModalOpen = false"
+		/>
+	</div>
+</template>
 
 <style lang="scss" scope>
 .relational-variable {

@@ -1,21 +1,3 @@
-<template>
-	<div class="comment-item">
-		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
-
-		<comment-input
-			v-if="editing"
-			:existing-comment="activity"
-			:primary-key="primaryKey"
-			:collection="collection"
-			:refresh="refresh"
-			:previews="userPreviews"
-			@cancel="cancelEditing"
-		/>
-
-		<div v-else v-md="{ value: activity.display, target: '_blank' }" class="content selectable" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { Activity } from '@/types/activity';
@@ -77,6 +59,24 @@ function useEdits() {
 	}
 }
 </script>
+
+<template>
+	<div class="comment-item">
+		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
+
+		<comment-input
+			v-if="editing"
+			:existing-comment="activity"
+			:primary-key="primaryKey"
+			:collection="collection"
+			:refresh="refresh"
+			:previews="userPreviews"
+			@cancel="cancelEditing"
+		/>
+
+		<div v-else v-md="{ value: activity.display, target: '_blank' }" class="content selectable" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .comment-item {

@@ -1,3 +1,18 @@
+<script setup lang="ts">
+import type { Folder } from '@/composables/use-folders';
+
+defineProps<{
+	folder: Folder;
+	currentFolder: string | null;
+	disabled?: boolean;
+	disabledFolders?: string[];
+}>();
+
+defineEmits<{
+	(e: 'click', folderId: Folder['id']): void;
+}>();
+</script>
+
 <template>
 	<v-list-item
 		v-if="!folder.children || folder.children.length === 0"
@@ -35,18 +50,3 @@
 		/>
 	</v-list-group>
 </template>
-
-<script setup lang="ts">
-import type { Folder } from '@/composables/use-folders';
-
-defineProps<{
-	folder: Folder;
-	currentFolder: string | null;
-	disabled?: boolean;
-	disabledFolders?: string[];
-}>();
-
-defineEmits<{
-	(e: 'click', folderId: Folder['id']): void;
-}>();
-</script>

@@ -1,23 +1,3 @@
-<template>
-	<div class="v-dialog">
-		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
-
-		<teleport to="#dialog-outlet">
-			<transition-dialog @after-leave="leave">
-				<component
-					:is="placement === 'right' ? 'div' : 'span'"
-					v-if="internalActive"
-					class="container"
-					:class="[className, placement]"
-				>
-					<v-overlay active absolute @click="emitToggle" />
-					<slot />
-				</component>
-			</transition-dialog>
-		</teleport>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -76,6 +56,26 @@ function nudge() {
 	}, 200);
 }
 </script>
+
+<template>
+	<div class="v-dialog">
+		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
+
+		<teleport to="#dialog-outlet">
+			<transition-dialog @after-leave="leave">
+				<component
+					:is="placement === 'right' ? 'div' : 'span'"
+					v-if="internalActive"
+					class="container"
+					:class="[className, placement]"
+				>
+					<v-overlay active absolute @click="emitToggle" />
+					<slot />
+				</component>
+			</transition-dialog>
+		</teleport>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-dialog {

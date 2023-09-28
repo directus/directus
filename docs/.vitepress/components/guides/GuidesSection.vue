@@ -1,3 +1,13 @@
+<script setup>
+import { toRaw } from 'vue';
+
+const props = defineProps({
+	section: Object,
+});
+
+const { section } = toRaw(props);
+</script>
+
 <template>
 	<div class="boxes" :style="`column-count: ${section.cols}`">
 		<div v-for="block of section.blocks" :key="block.title" class="box">
@@ -14,16 +24,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup>
-import { toRaw } from 'vue';
-
-const props = defineProps({
-	section: Object,
-});
-
-const { section } = toRaw(props);
-</script>
 
 <style scoped>
 .boxes {
