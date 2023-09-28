@@ -56,8 +56,13 @@ const tsRules = {
 };
 
 const vueRules = {
-	// Enforce recommended ordering of component tags
-	'vue/component-tags-order': 'error',
+	// Same ordering of component tags everywhere
+	'vue/component-tags-order': [
+		'error',
+		{
+			order: ['script', 'template', 'style'],
+		},
+	],
 	// Require empty line between component tags
 	'vue/padding-line-between-blocks': 'error',
 	// Allow single word component names ("Example" instead of "MyExample")
