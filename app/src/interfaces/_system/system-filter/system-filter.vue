@@ -6,15 +6,15 @@
 		{{ t('select_a_collection') }}
 	</v-notice>
 
-	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
+	<div v-else class="system-filter" :class="{ inline, empty: innerValueCopy.all_filters.length === 0, field: fieldName !== undefined }">
 		<v-list :mandatory="true">
-			<div v-if="innerValue.length === 0" class="no-rules">
+			<div v-if="innerValueCopy.all_filters.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
 
 			<nodes
 				v-else
-				v-model:filter="innerValue"
+				v-model:filter="innerValueCopy.all_filters"
 				:collection="collection"
 				:field="fieldName"
 				:depth="1"
@@ -93,13 +93,15 @@ import {
 	parseJSON,
 } from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
-import { computed, inject, ref } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
+import { FilterLayoutOptions } from '@/modules/content/routes/types';
 
 interface Props {
 	value?: Record<string, any> | string;
+	layout_opts: FilterLayoutOptions;
 	disabled?: boolean;
 	collectionName?: string;
 	collectionField?: string;
@@ -113,6 +115,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	value: undefined,
+	layout_opts: undefined,
 	disabled: false,
 	collectionName: undefined,
 	collectionField: undefined,
@@ -124,7 +127,7 @@ const props = withDefaults(defineProps<Props>(), {
 	relationalFieldSelectable: true,
 });
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'inputLO']);
 
 const { t } = useI18n();
 
@@ -163,6 +166,35 @@ const innerValue = computed<Filter[]>({
 	},
 });
 
+// CHANGED -----------------------------
+
+const innerValueCopy = computed<FilterLayoutOptions>({
+	get() {
+		if (!props.layout_opts || isEmpty(props.layout_opts.all_filters)) return { all_filters: [], disabled_filters: [] }
+
+		console.log(props.layout_opts);
+
+		// ?
+		return cloneDeep({ all_filters: props.layout_opts.all_filters, disabled_filters: props.layout_opts.disabled_filters })
+	},
+	set(lo) {
+		console.log(lo);
+		if (lo.all_filters.length === 0) {
+			emit('inputLO', { all_filters: [], disabled_filters: [] });
+		} else {
+			emit('inputLO', { all_filters: lo.all_filters, disabled_filters: lo.disabled_filters });
+		}
+	},
+})
+// innerValueCopy.value = {
+// 	all_filters: [],
+// 	disabled_filters: []
+// }
+// watch([innerValueCopy, innerValue], () => {
+// 	console.log('innerValueCopy', innerValueCopy.value);
+// 	console.log('innerValue', innerValue.value);
+// }, { deep: true, immediate: true })
+
 function emitValue() {
 	if (innerValue.value.length === 0) {
 		emit('input', null);
@@ -174,6 +206,12 @@ function emitValue() {
 function addNode(key: string) {
 	if (key === '$group') {
 		innerValue.value = innerValue.value.concat({ _and: [] });
+		// innerValueCopy.value.all_filters.concat({ _and: [] });
+
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			all_filters: innerValueCopy.value.all_filters.concat({ _and: [] })
+		}
 	} else {
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);
@@ -199,6 +237,13 @@ function addNode(key: string) {
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
 		innerValue.value = innerValue.value.concat(node);
+		// innerValueCopy.value.all_filters.concat(node);
+
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			all_filters: innerValueCopy.value.all_filters.concat(node)
+		}
+
 	}
 }
 

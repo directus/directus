@@ -20,8 +20,10 @@
 
 			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 				<div v-show="filterActive" ref="filterElement" class="filter">
-					<interface-system-filter class="filter-input" inline :value="filter" :collection-name="collection"
-						@input="$emit('update:filter', $event)" />
+					<interface-system-filter class="filter-input" inline :value="filter" :layout_opts="layout_options" :collection-name="collection"
+						@input="$emit('update:filter', $event)"
+						@inputLO="$emit('update:layout_options', $event)"
+						/>
 				</div>
 			</transition-expand>
 		</div>
@@ -34,16 +36,19 @@ import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
 import { Ref, computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { FilterLayoutOptions } from './types';
 
 const props = defineProps<{
 	modelValue: string | null;
 	collection: string;
 	filter?: Filter | null;
+	layout_options: FilterLayoutOptions | null;
 }>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | null): void;
 	(e: 'update:filter', value: Filter | null): void;
+	(e: 'update:layout_options', value: FilterLayoutOptions | null): void;
 }>();
 
 const { t } = useI18n();

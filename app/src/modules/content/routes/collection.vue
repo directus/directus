@@ -88,7 +88,7 @@
 
 			<template #actions>
 				<!-- <search-input v-model="search" v-model:filter="filter" :collection="collection" /> -->
-				<custom-search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<custom-search-input v-model="search" v-model:filter="filter" v-model:layout_options="layoutOptions" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
