@@ -2262,3 +2262,26 @@ operations:
     batch: Batch
     batch_size: Batch Size
     cache: Cache
+onboarding:
+  welcome:
+    title: Welcome to Directus!
+    text:
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ratione sed, voluptatem deleniti praesentium, iure
+      veniam unde quis architecto dolor tenetur repellat. Illum dignissimos minima corporis porro pariatur possimus
+      ratione blanditiis!
+  project:
+    title: Let's setup your project
+    text:
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam quidem deleniti asperiores rerum doloremque
+      consequuntur consequatur cum modi quam nobis qui exercitationem velit temporibus, ratione itaque voluptate
+      excepturi minus nesciunt?
+  user:
+    title: Let's setup your user
+    text:
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, laboriosam! Vero doloremque, veritatis dicta,
+      doloribus vitae perspiciatis reiciendis animi accusamus neque laborum at quis quae culpa quia tempora! Quasi, at.
+  loading:
+    title: Setting up your database...
+    text:
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, iusto ullam fugit quae qui rem assumenda magnam
+      odit, iure asperiores.
