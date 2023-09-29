@@ -1,32 +1,29 @@
 import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 
-const Appearance = Type.Union([Type.Literal('light'), Type.Literal('dark')]);
-
-const Variables = Type.Record(Type.String(), Type.Union([Type.String(), Type.Integer()]));
-
-const Value = Type.Union([Type.String(), Type.Integer(), Type.KeyOf(Variables)]);
-
-const Rules = Type.Object({
-	foreground: Value,
-	background: Value,
-	moduleBar: Type.Object({
-		background: Value,
-		button: Type.Object({
-			foreground: Value,
-			background: Value,
-			foregroundHover: Value,
-			backgroundHover: Value,
-			foregroundActive: Value,
-			backgroundActive: Value,
-		})
-	}),
-});
+const Rules = Type.Object(
+	{
+		fontFamilySansSerif: Type.String(),
+		foreground: Type.String(),
+		background: Type.String(),
+		moduleBar: Type.Object({
+			background: Type.String(),
+			button: Type.Object({
+				foreground: Type.String(),
+				background: Type.String(),
+				foregroundHover: Type.String(),
+				backgroundHover: Type.String(),
+				foregroundActive: Type.String(),
+				backgroundActive: Type.String(),
+			}),
+		}),
+	},
+);
 
 export const ThemeSchema = Type.Object({
 	name: Type.String(),
-	appearance: Appearance,
-	variables: Variables,
+	appearance: Type.Union([Type.Literal('light'), Type.Literal('dark')]),
+	fonts: Type.Array(Type.String()),
 	rules: Rules,
 });
 
