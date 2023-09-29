@@ -2,7 +2,7 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import { createReadStream } from 'node:fs';
 import { ImportService } from './index.js';
 
-export type WorkerData = {
+export type ImportWorkerData = {
 	collection: string;
 	mimeType: string;
 	filePath: string;
@@ -10,7 +10,7 @@ export type WorkerData = {
 	schema: SchemaOverview;
 };
 
-export default async function ({ collection, mimeType, filePath, accountability, schema }: WorkerData) {
+export default async function ({ collection, mimeType, filePath, accountability, schema }: ImportWorkerData) {
 	const service = new ImportService({
 		accountability: accountability,
 		schema: schema,

@@ -12,7 +12,7 @@ import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
-import type { WorkerData } from '../services/import-export/import-worker.js';
+import type { ImportWorkerData } from '../services/import-export/import-worker.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
@@ -133,7 +133,7 @@ router.post(
 			fileStream.on('end', async () => {
 				const worker = getImportWorker();
 
-				const workerData: WorkerData = {
+				const workerData: ImportWorkerData = {
 					collection: req.params['collection']!,
 					mimeType,
 					filePath: tmpFile.path,
