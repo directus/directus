@@ -76,7 +76,6 @@ export function renderSchema(schema: SchemaDefinition, options = defaultOptions)
 	return importStr + rootType + collectionSchema.join('\n\n');
 }
 
-
 function fmtArray(isArray: boolean) {
 	return isArray ? '[]' : '';
 }

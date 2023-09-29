@@ -9,7 +9,7 @@ async function generateSchema(args: CliOptions) {
 	const dataModel = await fetchDataModel(args['host'], args['accessToken']);
 
 	const schemaObject = await buildSchema(dataModel, {
-		nameTransform: args.naming
+		nameTransform: args.naming,
 	});
 
 	const schemaDefinition = renderSchema(schemaObject);

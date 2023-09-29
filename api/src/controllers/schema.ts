@@ -145,21 +145,25 @@ router.get(
 			collectionService.readByQuery(),
 			relationService.readAll(),
 			fieldService.readAll(),
-		]).then(([_collections, relations, fields]) => ({
-			// Currently the CollectionsService doesnt return
-			// the Collection type from @directus/types
-			collections: _collections as Collection[],
-			fields, relations
-		} as DataModel));
+		]).then(
+			([_collections, relations, fields]) =>
+				({
+					// Currently the CollectionsService doesnt return
+					// the Collection type from @directus/types
+					collections: _collections as Collection[],
+					fields,
+					relations,
+				} as DataModel)
+		);
 
 		const schemaObject = await buildSchema(dataModel, {
-			nameTransform: String(req.query['naming']) ?? 'database'
+			nameTransform: String(req.query['naming']) ?? 'database',
 		});
 
 		const schemaString = renderSchema(schemaObject, {
 			rootName: String(req.query['root_name']) ?? 'MySchema',
 			// TODO support indentation options
-			indent: { amount: 4, char: ' ' }
+			indent: { amount: 4, char: ' ' },
 		});
 
 		if (req.query['download']) {
@@ -172,6 +176,6 @@ router.get(
 
 		res.send(schemaString);
 	})
-)
+);
 
 export default router;
