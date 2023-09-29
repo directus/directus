@@ -3,13 +3,13 @@ import type { DeepPartial } from '@directus/types';
 import decamelize from 'decamelize';
 import { defu } from 'defu';
 import { flatten } from 'flat';
-import { mapKeys, mapValues } from 'lodash-es';
+import { mapKeys } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
 import { useThemeStore } from './store.js';
 // import { theme as themeDefaultDark } from './themes/dark-directus.js';
-import { theme as themeDefaultLight, theme as themeDefaultDark } from './themes/light-directus.js';
+import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/light-directus.js';
 
 export interface ThemeProviderProps {
 	dark?: boolean;
@@ -45,14 +45,19 @@ const theme = computed(() => {
 });
 
 const cssVariables = computed(() => {
-	const getRuleName = (name: string) => `--theme--${decamelize(name, { separator: '-' })}`;
-
 	const rules = flatten<Theme['rules'], Record<string, string | number>>(unref(theme).rules, { delimiter: '--' });
 
+	const getRuleName = (name: string) => `--theme--${decamelize(name, { separator: '-' })}`;
+
 	return mapKeys(rules, (_value, key) => getRuleName(key));
+});
+
+const cssString = computed(() => {
+	return `:root {${Object.entries(unref(cssVariables)).map(([key, value]) => `${key}: ${value};`).join(' ')}}`;
 });
 </script>
 
 <template>
-	<div class="theme-provider" :style="cssVariables"><slot /></div>
+	<teleport to="#theme">{{ cssString }}</teleport>
+	<slot />
 </template>
