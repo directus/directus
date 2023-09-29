@@ -18,11 +18,12 @@ What's changed:
 
 - Lorem ipsum dolor sit amet
 - Consectetur adipiscing elit
-- Sed do eiusmod tempor incididunt.
+- Sed do eiusmod tempor incididunt
 
 # Potential Risks
 
-- None because this package is not yet in use  
+- Lorem ipsum dolor sit amet
+- Consectetur adipiscing elit 
 
 # Review Questions
 
