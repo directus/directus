@@ -152,14 +152,24 @@ router.get(
 			fields, relations
 		} as DataModel));
 
-
 		const schemaObject = await buildSchema(dataModel, {
-			nameTransform: 'database'
+			nameTransform: String(req.query['naming']) ?? 'database'
 		});
 
-		const schemaString = renderSchema(schemaObject);
+		const schemaString = renderSchema(schemaObject, {
+			rootName: String(req.query['root_name']) ?? 'MySchema',
+			// TODO support indentation options
+			indent: { amount: 4, char: ' ' }
+		});
 
-		res.setHeader('Content-Type', 'text/plain'/*'application/typescript'*/);
+		if (req.query['download']) {
+			res.setHeader('Content-Disposition', `attachment; filename="${req.query['download']}"`);
+			res.setHeader('Content-Type', 'application/typescript');
+		} else {
+			// return plain tesxt so it renders in the browser
+			res.setHeader('Content-Type', 'text/plain');
+		}
+
 		res.send(schemaString);
 	})
 )
