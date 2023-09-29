@@ -14,7 +14,7 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
-		"./cli": "./dist/cli.js",
+		"./src/cli": "./dist/cli.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -25,8 +25,9 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch"
+		"build": "tsup src/index.ts src/cli.ts --format=esm --dts",
+		"dev": "tsup src/index.ts src/cli.ts --format=esm --dts --watch",
+		"cli": "node cli.js"
 	},
 	"dependencies": {
 		"commander": "10.0.1"

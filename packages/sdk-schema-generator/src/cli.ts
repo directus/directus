@@ -25,11 +25,12 @@ async function generateSchema(args: CliOptions) {
 const program = new Command();
 
 program.name('directus-sdk-schema').usage('[command] [options]');
-program.version('1.0.0' /** read from pkg */);
+// TODO read from package.json
+program.version('1.0.0');
 
 program
 	.command('generate')
-	.description('Generate a *.d.ts file')
+	.description('Generate a *.ts file')
 	.addOption(new Option('-h, --host <host>').makeOptionMandatory(true))
 	.addOption(new Option('-t, --access-token <token>').makeOptionMandatory(true))
 	.addOption(new Option('-f, --file <file>', 'Write the output to a file'))
