@@ -56,11 +56,12 @@
 						{{ t('back') }}
 					</v-button>
 				</Transition>
-				<Transition name="dialog">
+				<!-- ToDo: Figure out when and where to skip? Only at the end? -->
+				<!-- <Transition name="dialog">
 					<v-button v-if="!isLoading" secondary :disabled="isLoading" @click="skipSlide" class="btn-skip">
 						{{ t('skip') }}
 					</v-button>
-				</Transition>
+				</Transition> -->
 			</div>
 			<!-- Right Actions -->
 			<div>
@@ -275,7 +276,7 @@ const userFields: Field[] = [
 	},
 	{
 		collection: 'onboarding',
-		name: t('todo'),
+		name: t('onboarding.user.mailinglist_name'),
 		field: 'wants_emails',
 		type: 'boolean',
 		schema: {
@@ -305,7 +306,7 @@ const userFields: Field[] = [
 			special: ['cast-boolean'],
 			interface: 'boolean',
 			options: {
-				label: 'yes',
+				label: t('onboarding.user.mailinglist_label'),
 			},
 			display: null,
 			display_options: null,

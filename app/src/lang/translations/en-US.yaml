@@ -2284,6 +2284,8 @@ onboarding:
     text:
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, laboriosam! Vero doloremque, veritatis dicta,
       doloribus vitae perspiciatis reiciendis animi accusamus neque laborum at quis quae culpa quia tempora! Quasi, at.
+    mailinglist_name: Newsletter
+    mailinglist_label: Receive updates via email
     primary_skillset: What is your primary skillset?
     frontend: Frontend
     backend: Backend
