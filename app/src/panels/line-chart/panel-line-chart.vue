@@ -1,9 +1,3 @@
-<template>
-	<div class="line-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction } from '@/types/panels';
@@ -255,6 +249,12 @@ function setUpChart() {
 	chart.value.render();
 }
 </script>
+
+<template>
+	<div class="line-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .line-chart {

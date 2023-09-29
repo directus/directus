@@ -372,6 +372,7 @@ move: Преместване
 system: Система
 add_field_related: Добавяне на поле към релативната колекция
 interface_label: Интерфейс
+display_label: Изглед
 today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
@@ -1555,6 +1556,8 @@ interfaces:
   system-interface-options:
     interface-options: Настройки на интерфейса
     description: Диалог за избор на настройки за интерфейс
+  system-display:
+    display: Изглед
   list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързващи записи
@@ -1619,6 +1622,7 @@ interfaces:
     sort_placeholder: Ръчно
     field_note_placeholder: Въвеждане бележка към полето...
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
+    interface_group: Настройки на интерфейса
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач

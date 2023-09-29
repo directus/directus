@@ -15,8 +15,8 @@ queries another table and returns the `SUM` or `COUNT` of a column.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your display.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose display), and type a name for your extension (for example,

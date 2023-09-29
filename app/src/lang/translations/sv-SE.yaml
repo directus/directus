@@ -371,6 +371,7 @@ move: Flytta
 system: System
 add_field_related: Lägg till fält i relaterad kollektion
 interface_label: Gränssnitt
+display_label: Visa
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
@@ -1432,6 +1433,8 @@ interfaces:
   system-interface-options:
     interface-options: Alternativ för gränssnitt
     description: En popup för att välja alternativ för ett gränssnitt
+  system-display:
+    display: Visa
   list-m2m:
     many-to-many: Many to Many
     description: Välj flera relaterade kopplingsobjekt
@@ -1486,6 +1489,7 @@ interfaces:
     sort: Sortera
     sort_placeholder: Manuell
     field_note_placeholder: Ange fältanteckning...
+    interface_group: Alternativ för gränssnitt
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage

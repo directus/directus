@@ -1,33 +1,3 @@
-<template>
-	<div class="module-bar">
-		<module-bar-logo />
-
-		<div class="modules">
-			<v-button
-				v-for="modulePart in modules"
-				:key="modulePart.id"
-				v-tooltip.right="modulePart.name"
-				icon
-				x-large
-				:to="modulePart.to"
-				:href="modulePart.href"
-				tile
-				:style="
-					modulePart.color
-						? {
-								'--v-button-color-active': modulePart.color,
-						  }
-						: null
-				"
-			>
-				<v-icon :name="modulePart.icon" />
-			</v-button>
-		</div>
-
-		<module-bar-avatar />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import ModuleBarLogo from './module-bar-logo.vue';
@@ -74,6 +44,36 @@ const modules = computed(() => {
 		});
 });
 </script>
+
+<template>
+	<div class="module-bar">
+		<module-bar-logo />
+
+		<div class="modules">
+			<v-button
+				v-for="modulePart in modules"
+				:key="modulePart.id"
+				v-tooltip.right="modulePart.name"
+				icon
+				x-large
+				:to="modulePart.to"
+				:href="modulePart.href"
+				tile
+				:style="
+					modulePart.color
+						? {
+								'--v-button-color-active': modulePart.color,
+						  }
+						: null
+				"
+			>
+				<v-icon :name="modulePart.icon" />
+			</v-button>
+		</div>
+
+		<module-bar-avatar />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .module-bar {

@@ -1,19 +1,3 @@
-<template>
-	<form @submit.prevent="onSubmit">
-		<v-input v-model="identifier" autofocus autocomplete="username" :placeholder="t('identifier')" />
-		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
-
-		<transition-expand>
-			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
-		</transition-expand>
-
-		<v-notice v-if="error" type="warning">
-			{{ errorFormatted }}
-		</v-notice>
-		<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
-	</form>
-</template>
-
 <script setup lang="ts">
 import { RequestError } from '@/api';
 import { login } from '@/auth';
@@ -105,6 +89,22 @@ async function onSubmit() {
 	}
 }
 </script>
+
+<template>
+	<form @submit.prevent="onSubmit">
+		<v-input v-model="identifier" autofocus autocomplete="username" :placeholder="t('identifier')" />
+		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
+
+		<transition-expand>
+			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
+		</transition-expand>
+
+		<v-notice v-if="error" type="warning">
+			{{ errorFormatted }}
+		</v-notice>
+		<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
+	</form>
+</template>
 
 <style lang="scss" scoped>
 .v-input,

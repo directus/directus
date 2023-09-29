@@ -15,8 +15,8 @@ a date of birth to the current age in years and months.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your display.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose display), and type a name for your extension (for example,
@@ -59,18 +59,18 @@ following object:
 
 ```js
 options: [
-    {
-        field: 'show_months',
-        type: 'boolean',
-        name: 'Show months as well',
-        meta: {
-            interface: 'boolean',
-            options: {
-                label: 'Yes',
-            },
-            width: 'half',
-        },
-    },
+	{
+		field: 'show_months',
+		type: 'boolean',
+		name: 'Show months as well',
+		meta: {
+			interface: 'boolean',
+			options: {
+				label: 'Yes',
+			},
+			width: 'half',
+		},
+	},
 ],
 ```
 

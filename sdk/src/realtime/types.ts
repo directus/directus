@@ -34,7 +34,7 @@ export interface WebSocketClient<Schema extends object> {
 	onWebSocket(event: 'message', callback: (this: WebSocket, ev: any) => any): RemoveEventHandler;
 	onWebSocket(event: WebSocketEvents, callback: WebSocketEventHandler): RemoveEventHandler;
 	sendMessage(message: string | Record<string, any>): void;
-	subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
+	subscribe<Collection extends keyof Schema, const Options extends SubscribeOptions<Schema, Collection>>(
 		collection: Collection,
 		options?: Options
 	): Promise<{
@@ -64,9 +64,12 @@ export type SubscriptionOutput<
 	TItem = TQuery extends Query<Schema, Schema[Collection]>
 		? ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>
 		: Partial<Schema[Collection]>
-> = { type: 'subscription' } & {
-	[Event in Events]: SubscriptionPayload<TItem>[Event];
-}[Events];
+> = { type: 'subscription'; uid?: string } & (
+	| {
+			[Event in Events]: { event: Event; data: SubscriptionPayload<TItem>[Event] };
+	  }[Events]
+	| { event: 'error'; error: { code: string; message: string } }
+);
 
 export type SubscriptionPayload<Item> = {
 	init: Item[];
