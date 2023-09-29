@@ -160,8 +160,10 @@ router.get(
 			nameTransform: String(req.query['naming']) ?? 'database',
 		});
 
+		const schemaName = typeof req.query['root_name'] === 'string' ? req.query['root_name'] : 'MySchema';
+
 		const schemaString = renderSchema(schemaObject, {
-			rootName: String(req.query['root_name']) ?? 'MySchema',
+			rootName: schemaName,
 			// TODO support indentation options
 			indent: { amount: 4, char: ' ' },
 		});
