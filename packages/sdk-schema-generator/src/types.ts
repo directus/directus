@@ -5,6 +5,7 @@ export interface CliOptions {
 	accessToken: string;
 	file: string;
 	naming: 'database' | 'camelcase' | 'pascalcase';
+	rootName: string;
 }
 
 export interface BuilderOptions {

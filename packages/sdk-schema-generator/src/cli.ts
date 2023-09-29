@@ -6,13 +6,17 @@ import { renderSchema } from './render.js';
 import { writeFileSync } from 'fs';
 
 async function generateSchema(args: CliOptions) {
-	const dataModel = await fetchDataModel(args['host'], args['accessToken']);
+	const dataModel = await fetchDataModel(args.host, args.accessToken);
 
 	const schemaObject = await buildSchema(dataModel, {
 		nameTransform: args.naming,
 	});
 
-	const schemaDefinition = renderSchema(schemaObject);
+	const schemaDefinition = renderSchema(schemaObject, {
+		rootName: args.rootName,
+		// TODO support indentation options
+		indent: { amount: 4, char: ' ' },
+	});
 
 	if (args.file) {
 		writeFileSync(args.file, schemaDefinition);
@@ -39,6 +43,7 @@ program
 			.choices(['database', 'camelcase', 'pascalcase'])
 			.default('database')
 	)
+	.addOption(new Option('--root-name <name>', 'Change the root type name').default('MySchema'))
 	.action(generateSchema);
 
 program.parse(process.argv);
