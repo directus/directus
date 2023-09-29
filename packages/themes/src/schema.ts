@@ -1,24 +1,44 @@
 import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 
-const Rules = Type.Object(
-	{
-		fontFamilySansSerif: Type.String(),
-		foreground: Type.String(),
-		background: Type.String(),
-		moduleBar: Type.Object({
-			background: Type.String(),
+const Value = Type.Union([Type.String(), Type.Integer()]);
+
+const Rules = Type.Object({
+	foreground: Value,
+	background: Value,
+	navigation: Type.Object({
+		background: Value,
+
+		project: Type.Object({
+			background: Value,
+			foreground: Value,
+		}),
+
+		modules: Type.Object({
+			background: Value,
 			button: Type.Object({
-				foreground: Type.String(),
-				background: Type.String(),
-				foregroundHover: Type.String(),
-				backgroundHover: Type.String(),
-				foregroundActive: Type.String(),
-				backgroundActive: Type.String(),
+				foreground: Value,
+				background: Value,
+				foregroundHover: Value,
+				backgroundHover: Value,
+				foregroundActive: Value,
+				backgroundActive: Value,
 			}),
 		}),
-	},
-);
+
+		list: Type.Object({
+			icon: Value,
+			foreground: Value,
+			background: Value,
+			iconHover: Value,
+			foregroundHover: Value,
+			backgroundHover: Value,
+			iconActive: Value,
+			foregroundActive: Value,
+			backgroundActive: Value,
+		})
+	}),
+});
 
 export const ThemeSchema = Type.Object({
 	name: Type.String(),

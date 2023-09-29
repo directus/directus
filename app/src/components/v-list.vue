@@ -65,6 +65,7 @@ useGroupableParent(
 	--v-list-color: var(--foreground-normal-alt);
 	--v-list-color-hover: var(--foreground-normal-alt);
 	--v-list-color-active: var(--foreground-normal-alt);
+	--v-list-background-color: transparent;
 	--v-list-background-color-hover: var(--background-normal);
 	--v-list-background-color-active: var(--background-normal);
 }
@@ -86,7 +87,6 @@ useGroupableParent(
 
 .nav {
 	--v-list-padding: 12px;
-	--v-list-item-icon-color: var(--primary);
 }
 
 :slotted(.v-divider) {

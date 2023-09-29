@@ -81,7 +81,7 @@ const modules = computed(() => {
 	flex-direction: column;
 	width: 60px;
 	height: 100%;
-	background-color: var(--theme--module-bar--background);
+	background-color: var(--theme--navigation--modules--background);
 
 	.modules {
 		flex-grow: 1;
@@ -90,12 +90,12 @@ const modules = computed(() => {
 	}
 
 	.v-button {
-		--v-button-color: var(--theme--module-bar--button--foreground);
-		--v-button-color-hover: var(--theme--module-bar--button--foreground-hover);
-		--v-button-color-active: var(--theme--module-bar--button--foreground-active);
-		--v-button-background-color: var(--theme--module-bar--button--background);
-		--v-button-background-color-hover: var(--theme--module-bar--button--background-hover);
-		--v-button-background-color-active: var(--theme--module-bar--button--background-active);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
+		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
+		--v-button-background-color: var(--theme--navigation--modules--button--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
+		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 	}
 }
 </style>

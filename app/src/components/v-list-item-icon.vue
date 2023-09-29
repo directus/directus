@@ -14,13 +14,11 @@ withDefaults(defineProps<Props>(), {
 	</div>
 </template>
 
-<style>
-body {
+<style lang="scss" scoped>
+:global(body) {
 	--v-list-item-icon-color: var(--foreground-subdued);
 }
-</style>
 
-<style lang="scss" scoped>
 .v-list-item-icon {
 	$this: &;
 

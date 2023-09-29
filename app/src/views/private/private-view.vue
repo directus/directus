@@ -400,11 +400,18 @@ function getWidth(input: unknown, fallback: number): number {
 			width: 220px;
 			height: 100%;
 			font-size: 1rem;
-			background-color: var(--background-normal);
+			background: var(--theme--navigation--background);
 
 			&-content {
-				--v-list-item-background-color-hover: var(--background-normal-alt);
-				--v-list-item-background-color-active: var(--background-normal-alt);
+				--v-list-item-color: var(--theme--navigation--list--foreground);
+				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
+				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon-active);
+				--v-list-item-background-color: var(--theme--navigation--list--background);
+				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
+				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
 
 				height: calc(100% - 64px);
 				overflow-x: hidden;

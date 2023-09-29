@@ -97,9 +97,9 @@ const userFullName = userStore.fullName ?? undefined;
 	position: relative;
 
 	.v-avatar {
-		--v-button-color: var(--theme--module-bar--button--foreground);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
 		--v-button-color-hover: var(--white);
-		--v-avatar-color: var(--theme--module-bar--background);
+		--v-avatar-color: var(--theme--navigation--modules--background);
 
 		position: relative;
 		z-index: 3;
@@ -117,14 +117,14 @@ const userFullName = userStore.fullName ?? undefined;
 				right: 8px;
 				left: 8px;
 				height: 2px;
-				background-color: var(--theme--module-bar--button--foreground);
+				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
 				content: '';
 			}
 		}
 
 		.v-icon {
-			--v-icon-color: var(--theme--module-bar--button--foreground);
+			--v-icon-color: var(--theme--navigation--modules--button--foreground);
 		}
 
 		&:hover {
@@ -144,16 +144,16 @@ const userFullName = userStore.fullName ?? undefined;
 	}
 
 	.notifications {
-		--v-button-color: var(--theme--module-bar--button--foreground);
-		--v-button-color-hover: var(--theme--module-bar--button--foreground-hover);
-		--v-button-background-color: var(--theme--module-bar--background);
-		--v-button-background-color-hover: var(--theme--module-bar--background);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
+		--v-button-background-color: var(--theme--navigation--modules--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 	}
 
 	.sign-out {
-		--v-button-color: var(--theme--module-bar--button--foreground);
-		--v-button-background-color: var(--theme--module-bar--background);
-		--v-button-background-color-hover: var(--theme--module-bar--background);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-background-color: var(--theme--navigation--modules--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 
 		position: absolute;
 		top: 0;

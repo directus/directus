@@ -7,7 +7,7 @@ import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import { getAppearance } from './utils/get-appearance';
@@ -20,10 +20,8 @@ const serverStore = useServerStore();
 
 const { hydrating } = toRefs(appStore);
 
-const brandStyle = computed(() => {
-	return {
-		'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
-	} as StyleValue;
+const brandStyleCss = computed(() => {
+	return `:root { --brand: ${serverStore.info?.project?.project_color ?? 'var(--primary)'} }`;
 });
 
 useHead({
@@ -45,6 +43,9 @@ useHead({
 			},
 		];
 	}),
+	style: [
+		{ textContent: brandStyleCss }
+	]
 });
 
 onMounted(() => startIdleTracking());
@@ -89,7 +90,7 @@ useSystem();
 <template>
 	<ThemeProvider :dark="getAppearance() === 'dark'" />
 
-	<div id="directus" :style="brandStyle">
+	<div id="directus">
 		<transition name="fade">
 			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />

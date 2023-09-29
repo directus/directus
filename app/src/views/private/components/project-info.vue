@@ -27,9 +27,9 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	width: 100%;
 	height: 60px;
 	padding-left: 20px;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--navigation--project--foreground);
 	text-align: left;
-	background-color: var(--background-normal-alt);
+	background: var(--theme--navigation--project--background);
 
 	.name-container {
 		flex-grow: 1;
