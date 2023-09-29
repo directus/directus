@@ -1,20 +1,13 @@
 import type { ExtensionManager } from './extensions.js';
 import { createRequire } from 'node:module';
 import { readFile } from 'fs/promises';
-import { Isolate, Context } from 'isolated-vm';
+import { Isolate } from 'isolated-vm';
 import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from '@directus/types';
-import type { VMFunction } from './vm-functions/vm-function.js';
-import { FetchVMFunction } from './vm-functions/fetch/node.js';
-import { DefineEndpointVMFunction } from './vm-functions/defineEndpoint/node.js';
-import { DefineOperationVMFunction } from './vm-functions/defineOperation/node.js';
-import { DefineHookVMFunction } from './vm-functions/defineHook/node.js';
-import { ApiServiceVMFunction } from './vm-functions/apiServices/node.js';
-import { ConsoleVMFunction } from './vm-functions/console/node.js';
-import { LoggerVMFunction } from './vm-functions/logger/node.js';
 import type { EventHandler } from '../types/events.js';
 import emitter from '../emitter.js';
 import logger from '../logger.js';
 import env from '../env.js';
+import { createExec } from './exec/node.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -24,33 +17,20 @@ export type ApiExtensionInfo = (ApiExtension | BundleExtension | HybridExtension
 
 export class VmManager {
 	private extensionManager: ExtensionManager;
-	private vmFunctions: VMFunction[] = [];
-
-	private defineEndpoint: DefineEndpointVMFunction;
-	private defineHook: DefineHookVMFunction;
-	private defineOperation: DefineOperationVMFunction;
 	private debuggerPort = 10000;
 
 	constructor(extensionManager: ExtensionManager) {
 		this.extensionManager = extensionManager;
-
-		this.vmFunctions.push(new FetchVMFunction());
-		this.vmFunctions.push(new ApiServiceVMFunction());
-		this.vmFunctions.push(new ConsoleVMFunction());
-		this.vmFunctions.push(new LoggerVMFunction());
-		this.defineEndpoint = new DefineEndpointVMFunction(this.extensionManager);
-		this.defineHook = new DefineHookVMFunction(this.extensionManager);
-		this.defineOperation = new DefineOperationVMFunction();
 	}
 
 	async runExtension(extension: ApiExtensionInfo) {
 		if (extension.type === 'endpoint') {
-			return this.run(`import ext from 'extension.js'; defineEndpoint(ext)`, extension);
+			return this.run(`import ext from 'extension.js'; ext()`, extension);
 		} else if (extension.type === 'hook') {
-			return this.run(`import ext from 'extension.js'; defineHook(ext)`, extension);
+			return this.run(`import ext from 'extension.js'; ext()`, extension);
 		} else if (extension.type === 'operation') {
 			return this.run(
-				`import ext from 'extension.js'; defineOperationApi(ext)`,
+				`import ext from 'extension.js'; ext()`,
 				extension,
 			);
 		} else if (extension.type === 'bundle') {
@@ -59,21 +39,21 @@ export class VmManager {
 			for (const innerExtension of extension.entries) {
 				if (innerExtension.type === 'endpoint') {
 					const unregister = await this.run(
-						`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) defineEndpoint(endpoint)`,
+						`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) endpoint()`,
 						extension,
 					);
 
 					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'hook') {
 					const unregister = await this.run(
-						`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) defineHook(hook)`,
+						`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) hook()`,
 						extension,
 					);
 
 					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'operation') {
 					const unregister = await this.run(
-						`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) defineOperationApi(operation)`,
+						`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) operation()`,
 						extension,
 					);
 
@@ -105,17 +85,14 @@ export class VmManager {
 		if (enableDebugger) this.createInspector(isolate.createInspectorSession(), extension.name);
 		const context = await isolate.createContext({ inspector: enableDebugger });
 
-		await this.prepareGeneralContext(context, extension);
+		const jail = context.global;
+		jail.setSync('global', jail.derefInto());
+
+		jail.setSync('log', console.log)
+
+		await createExec(context, this.extensionManager, extension);
 
 		let hookEvents: EventHandler[] = [];
-
-		if (extension.type === 'endpoint') {
-			await this.defineEndpoint.prepareContext(context, extension);
-		} else if (extension.type === 'hook') {
-			hookEvents = await this.defineHook.prepareContext(context, extension);
-		} else if (extension.type === 'operation') {
-			await this.defineOperation.prepareContext(context, extension);
-		}
 
 		const runModule = await isolate.compileModule(startCode, { filename: 'extensionLoader.js' });
 
@@ -159,17 +136,6 @@ export class VmManager {
 		};
 
 		return unregister;
-	}
-
-	private async prepareGeneralContext(context: Context, extension: ApiExtensionInfo) {
-		const jail = context.global;
-		jail.setSync('global', jail.derefInto());
-
-		context.eval(`globalThis.API = {}`);
-
-		for (const vmFunction of this.vmFunctions) {
-			await vmFunction.prepareContext(context, extension);
-		}
 	}
 
 	private async createInspector(channel: any, extensionName: string) {

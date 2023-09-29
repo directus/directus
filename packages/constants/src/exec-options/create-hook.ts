@@ -1,10 +1,8 @@
 import { z } from "zod";
-import { Reference } from "isolated-vm";
+import type { Reference } from "isolated-vm";
 
 const callback = z.custom<Reference>((value) => {
-	if (!(value instanceof Reference)) {
-		throw new Error('Invalid reference');
-	}
+	// TODO: Check if this is a valid reference
 
 	return value;
 });

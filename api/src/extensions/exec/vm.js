@@ -11,21 +11,30 @@ const execBridgeSync = $2;
 function exec(type, options) {
 	return new Promise((resolve, reject) => {
 
+		log('exec', type, typeof options['callback'])
+
 		if (type === 'create-endpoint' && typeof options['callback'] === 'function') {
 			options['callback'] = new ivm.Reference(options['callback']);
 		}
 
-		execBridge.apply(null, [
-			type,
-			options,
-			new ivm.Reference((error, result) => {
-				if (error) {
-					reject(error);
-				} else {
-					resolve(result);
-				}
-			}),
-		]);
+		log('exec', type, options, execBridge)
+
+
+		try {
+			execBridge.applySync(null, [
+				type,
+				new ivm.ExternalCopy(options).copyInto(),
+				new ivm.Reference((error, result) => {
+					if (error) {
+						reject(error);
+					} else {
+						resolve(result);
+					}
+				}),
+			]);
+		} catch (error) {
+			log(error)
+		}
 	})
 }
 

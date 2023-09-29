@@ -12,7 +12,11 @@ export default addExecOptions(({ extensionManager, extension }) => {
 
 	async function createEndpoint(options: unknown) {
 
+		console.log("createEndpoint", options)
+
 		const validOptions = EXEC_CREATE_ENDPOINT.parse(options);
+
+		console.log("createEndpoint", validOptions)
 
 		scopedRouter[<Lowercase<typeof validOptions.method>>validOptions.method.toLocaleLowerCase()](validOptions.path, async (req, res) => {
 			const result = await validOptions.callback.apply(null, [{
@@ -23,7 +27,8 @@ export default addExecOptions(({ extensionManager, extension }) => {
 					copy: true
 				},
 				result: {
-					copy: true
+					copy: true,
+					promise: true
 				},
 			});
 

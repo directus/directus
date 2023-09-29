@@ -3,21 +3,18 @@ import type { ApiExtensionInfo } from '../vm.js';
 import { createRequire } from 'node:module';
 import env from '../../env.js';
 import { fileURLToPath } from 'node:url';
-import { readFileSync, readdirSync } from 'fs-extra';
 import { join } from 'node:path';
 import type { ExecFunction, ExecOptions } from '../add-exec-options.js';
 import type { ExtensionManager } from '../extensions.js';
+import { readFile, readdir } from 'node:fs/promises';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
-
-
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export async function createExec(context: Context, extensionManager: ExtensionManager, extension: ApiExtensionInfo) {
 
-	const __dirname = fileURLToPath(new URL('.', import.meta.url));
-
-	const isolateCode = readFileSync(join(__dirname, 'vm.js'), 'utf-8');
+	const isolateCode = await readFile(join(__dirname, 'vm.js'), 'utf-8');
 
 	const execOptions = await loadExecOptions(extensionManager, extension);
 
@@ -26,7 +23,11 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 	context.evalClosureSync(isolateCode, [
 		ivm,
 		new ivm.Reference(async function (type: unknown, options: unknown, callback: Reference<(error: Error, result: any) => void>) {
+			console.log("execOptions", type, options)
+
+
 			try {
+
 				if (typeof type !== 'string') {
 					throw new TypeError('type must be a string');
 				}
@@ -35,11 +36,13 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 					throw new Error(`Unknown exec option ${type}`);
 				}
 
-				const result = execOptions[type]!(options)
 
-				callback.applyIgnored(undefined, [null, await result], { timeout: scriptTimeoutMs });
+				const result = await execOptions[type]!(options)
+
+				callback.applyIgnored(null, [null, result], { timeout: scriptTimeoutMs, arguments: { copy: true } });
 			} catch (error: any) {
-				callback.applyIgnored(undefined, [error, null], { timeout: scriptTimeoutMs });
+				console.error(error);
+				callback.applyIgnored(null, [error, null], { timeout: scriptTimeoutMs, arguments: { copy: true } });
 			}
 		}),
 		new ivm.Reference(async function (type: unknown, options: unknown) {
@@ -64,10 +67,10 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 
 async function loadExecOptions(extensionManager: ExtensionManager, extension: ApiExtensionInfo) {
 	const options: ExecOptions = {}
-	const files = readdirSync(join(__dirname, '..', 'exec-options'));
+	const files = await readdir(join(__dirname, '..', 'exec-options'));
 
 	for (const file of files) {
-		const addExecOptions = await import(join(__dirname, '..', 'exec-options', file));
+		const addExecOptions = await import(`../exec-options/${file.substring(0, file.length - 3)}.js`);
 
 		const execOptions = addExecOptions.default({ extensionManager, extension })
 
