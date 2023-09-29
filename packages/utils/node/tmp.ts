@@ -21,8 +21,13 @@ export async function createTmpFile() {
 	const filename = createHash('sha1').update(new Date().toString()).digest('hex').substring(0, 8);
 	const path = join(dir.path, filename);
 
-	const fd = await fs.open(path, 'wx');
-	await fd.close();
+	try {
+		const fd = await fs.open(path, 'wx');
+		await fd.close();
+	} catch (err) {
+		await dir.cleanup();
+		throw err;
+	}
 
 	async function cleanup() {
 		await fs.unlink(path);
