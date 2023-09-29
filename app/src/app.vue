@@ -87,7 +87,9 @@ useSystem();
 </script>
 
 <template>
-	<ThemeProvider id="directus" :dark="getAppearance() === 'dark'">
+	<ThemeProvider :dark="getAppearance() === 'dark'" />
+
+	<div id="directus" :style="brandStyle">
 		<transition name="fade">
 			<div v-if="hydrating" class="hydrating">
 				<v-progress-circular indeterminate />
@@ -103,9 +105,9 @@ useSystem();
 		</v-info>
 
 		<router-view v-else-if="!hydrating" />
+	</div>
 
-		<teleport to="#custom-css">{{ customCSS }}</teleport>
-	</ThemeProvider>
+	<teleport to="#custom-css">{{ customCSS }}</teleport>
 </template>
 
 <style lang="scss" scoped>

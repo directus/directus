@@ -59,5 +59,4 @@ const cssString = computed(() => {
 
 <template>
 	<teleport to="#theme">{{ cssString }}</teleport>
-	<slot />
 </template>
