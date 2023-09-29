@@ -97,9 +97,9 @@ const userFullName = userStore.fullName ?? undefined;
 	position: relative;
 
 	.v-avatar {
-		--v-button-color: var(--module-icon);
+		--v-button-color: var(--theme--module-bar--button--foreground);
 		--v-button-color-hover: var(--white);
-		--v-avatar-color: var(--module-background);
+		--v-avatar-color: var(--theme--module-bar--background);
 
 		position: relative;
 		z-index: 3;
@@ -117,14 +117,14 @@ const userFullName = userStore.fullName ?? undefined;
 				right: 8px;
 				left: 8px;
 				height: 2px;
-				background-color: var(--module-icon);
+				background-color: var(--theme--module-bar--button--foreground);
 				opacity: 0.25;
 				content: '';
 			}
 		}
 
 		.v-icon {
-			--v-icon-color: var(--module-icon);
+			--v-icon-color: var(--theme--module-bar--button--foreground);
 		}
 
 		&:hover {
@@ -144,16 +144,16 @@ const userFullName = userStore.fullName ?? undefined;
 	}
 
 	.notifications {
-		--v-button-color: var(--module-icon);
-		--v-button-color-hover: var(--white);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
+		--v-button-color: var(--theme--module-bar--button--foreground);
+		--v-button-color-hover: var(--theme--module-bar--button--foreground-hover);
+		--v-button-background-color: var(--theme--module-bar--background);
+		--v-button-background-color-hover: var(--theme--module-bar--background);
 	}
 
 	.sign-out {
-		--v-button-color: var(--module-icon);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
+		--v-button-color: var(--theme--module-bar--button--foreground);
+		--v-button-background-color: var(--theme--module-bar--background);
+		--v-button-background-color-hover: var(--theme--module-bar--background);
 
 		position: absolute;
 		top: 0;
