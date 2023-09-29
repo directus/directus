@@ -212,7 +212,7 @@
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
 		"supertest": "6.3.3",
-		"typescript": "5.0.4",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	},
 	"optionalDependencies": {
