@@ -28,3 +28,4 @@ export * from './users.js';
 export * from './versions.js';
 export * from './vue.js';
 export * from './secure-extensions/index.js'
+export * from './exec-options/index.js'
