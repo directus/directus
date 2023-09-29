@@ -49,10 +49,6 @@ const tsRules = {
 	'@typescript-eslint/ban-ts-comment': 'off',
 	// Allow usage of the any type (consider enabling this rule later on)
 	'@typescript-eslint/no-explicit-any': 'off',
-	// Allow usage of require statements (consider enabling this rule later on)
-	'@typescript-eslint/no-var-requires': 'off',
-	// Allow non-null assertions (consider enabling this rule later on)
-	'@typescript-eslint/no-non-null-assertion': 'off',
 };
 
 const vueRules = {
