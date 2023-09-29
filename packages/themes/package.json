@@ -20,9 +20,7 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"themes",
-		"schema.json"
+		"dist"
 	],
 	"scripts": {
 		"build": "vite build && npm run generate-json-schema",
