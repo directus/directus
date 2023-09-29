@@ -8,8 +8,8 @@ import { storeToRefs } from 'pinia';
 import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
 import { useThemeStore } from './store.js';
-import { theme as themeDefaultDark,  } from './themes/directus-dark-default.js';
-import { theme as themeDefaultLight } from './themes/directus-light-default.js';
+// import { theme as themeDefaultDark } from './themes/dark-directus.js';
+import { theme as themeDefaultLight, theme as themeDefaultDark } from './themes/light-directus.js';
 
 export interface ThemeProviderProps {
 	dark?: boolean;
@@ -45,7 +45,7 @@ const theme = computed(() => {
 });
 
 const cssVariables = computed(() => {
-	const getVarName = (name: string) => `--tv--${decamelize(name, { separator: '-' })}`;
+	const getVarName = (name: string) => `--theme-var--${decamelize(name, { separator: '-' })}`;
 	const getRuleName = (name: string) => `--theme--${decamelize(name, { separator: '-' })}`;
 
 	let variables = unref(theme).variables;

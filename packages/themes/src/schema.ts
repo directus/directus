@@ -11,8 +11,15 @@ const Rules = Type.Object({
 	foreground: Value,
 	background: Value,
 	moduleBar: Type.Object({
-		foreground: Value,
 		background: Value,
+		button: Type.Object({
+			foreground: Value,
+			background: Value,
+			foregroundHover: Value,
+			backgroundHover: Value,
+			foregroundActive: Value,
+			backgroundActive: Value,
+		})
 	}),
 });
 

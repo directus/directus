@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
 import { reactive } from 'vue';
 import type { Theme } from './schema.js';
-import { theme as themeDirectusLight } from './themes/directus-light-default.js';
+import { theme as themeDirectusLight } from './themes/light-directus.js';
+// import { theme as themeDirectusDark } from './themes/dark-directus.js';
 
 const defaultLightThemes: Theme[] = [themeDirectusLight];
-const defaultDarkThemes: Theme[] = [];
+const defaultDarkThemes: Theme[] = [/*themeDirectusDark*/];
 
 export const useThemeStore = defineStore('themes', () => {
 	const themes = reactive({
