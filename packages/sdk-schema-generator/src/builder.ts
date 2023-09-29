@@ -17,8 +17,12 @@ export function buildSchema(data: DataModel, options = defaultOptions) {
 			continue;
 		}
 
+		const collectionName = collection.collection.startsWith('directus_')
+			? collection.collection
+			: nameFn(collection.collection);
+
 		result.set(collection.collection, {
-			name: nameFn(collection.collection),
+			name: collectionName,
 			system: Boolean(collection.meta?.system),
 			singleton: Boolean(collection.meta?.singleton),
 			fields: [],
