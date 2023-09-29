@@ -106,7 +106,7 @@
 
 .codex-editor .image-tool--loading .image-tool__image,
 .codex-editor .ce-block--selected .ce-block__content {
-	background: var(--module-background-alt);
+	background: var(--background-normal);
 }
 
 .codex-editor .image-tool--loading .image-tool__image {
