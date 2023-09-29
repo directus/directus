@@ -23,7 +23,7 @@ What's changed:
 # Potential Risks
 
 - Lorem ipsum dolor sit amet
-- Consectetur adipiscing elit 
+- Consectetur adipiscing elit
 
 # Review Questions
 
