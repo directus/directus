@@ -78,9 +78,6 @@ import { Ref, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import VForm from '../../components/v-form/v-form.vue';
-import ProjectSlide from './slides/project.vue';
-import UserSlide from './slides/user.vue';
-import WelcomeSlide from './slides/welcome.vue';
 
 type OnboardingPayload = {
 	version: 1;
@@ -101,7 +98,8 @@ const payload: Ref<OnboardingPayload> = ref({
 	},
 });
 
-const slides = [WelcomeSlide, ProjectSlide, UserSlide];
+// TODO remove slides..
+const slides = [0, 1, 2];
 const currentSlideIndex = ref(0);
 const slideCount = slides.length;
 const progressPercent = computed(() => (currentSlideIndex.value / slideCount) * 100);
@@ -326,7 +324,7 @@ const userFields: Field[] = [
 	},
 	{
 		collection: 'onboarding',
-		name: t('todo'),
+		name: t('onboarding.user.primary_skillset'),
 		field: 'questions_user',
 		type: 'string',
 		schema: {
@@ -357,11 +355,11 @@ const userFields: Field[] = [
 			interface: 'select-radio',
 			options: {
 				choices: [
-					{ text: 'Frontend', value: 'frontend' },
-					{ text: 'Backend', value: 'backend' },
-					{ text: 'Fullstack', value: 'fullstack' },
-					{ text: 'SQL queries & basic coding', value: 'sql queries and basic coding' },
-					{ text: 'Non technical', value: 'non technical' },
+					{ text: t('onboarding.user.frontend'), value: 'frontend' },
+					{ text: t('onboarding.user.backend'), value: 'backend' },
+					{ text: t('onboarding.user.fullstack'), value: 'fullstack' },
+					{ text: t('onboarding.user.sql_lowcode'), value: 'sql and basic coding' },
+					{ text: t('onboarding.user.nontechnical'), value: 'non technical' },
 				],
 			},
 			display: null,
@@ -572,7 +570,7 @@ const projectFields: Field[] = [
 	},
 	{
 		collection: 'onboarding',
-		name: t('todo'),
+		name: t('onboarding.project.use_case'),
 		field: 'questions_project',
 		type: 'string',
 		schema: {
@@ -603,10 +601,9 @@ const projectFields: Field[] = [
 			interface: 'select-radio',
 			options: {
 				choices: [
-					{ text: 'Personal project', value: 'personal project' },
-					{ text: 'Work project', value: 'work project' },
-					// Attention! Small hack: Make one option so long that <select-radio> renders with grid-1
-					{ text: 'Just exploring            ', value: 'just exploring' },
+					{ text: t('onboarding.project.personal'), value: 'personal' },
+					{ text: t('onboarding.project.work'), value: 'work' },
+					{ text: t('onboarding.project.exploring'), value: 'exploring' },
 				],
 			},
 			display: null,

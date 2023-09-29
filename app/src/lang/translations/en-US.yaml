@@ -2275,11 +2275,21 @@ onboarding:
       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam quidem deleniti asperiores rerum doloremque
       consequuntur consequatur cum modi quam nobis qui exercitationem velit temporibus, ratione itaque voluptate
       excepturi minus nesciunt?
+    use_case: What are you planning to use Directus for?
+    personal: Personal project
+    work: Work project
+    exploring: Just exploring
   user:
     title: Let's setup your user
     text:
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, laboriosam! Vero doloremque, veritatis dicta,
       doloribus vitae perspiciatis reiciendis animi accusamus neque laborum at quis quae culpa quia tempora! Quasi, at.
+    primary_skillset: What is your primary skillset?
+    frontend: Frontend
+    backend: Backend
+    fullstack: Fullstack
+    sql_lowcode: SQL and basic coding
+    nontechnical: Non technical
   loading:
     title: Setting up your database...
     text:
