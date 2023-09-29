@@ -244,6 +244,7 @@ import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 
+
 interface Props {
 	collection: string;
 	primaryKey?: string | null;
@@ -287,11 +288,40 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey);
 
-const { filter } = usePreset(collection);
+const { layoutOptions } = usePreset(collection);
+
+watch(() => layoutOptions.value, () => {
+	router.push(`/content/${collection.value}`)
+}, { deep: true })
 
 // UPDATE FILTER VALUE
-window.updateFilter = (newFilter: any) => {
-	filter.value = newFilter
+window.addFilterFromInterface = (newFilter: any) => {
+	console.log(newFilter)
+	const isFiltersInLayoutOptions = Boolean(layoutOptions.value?.all_filters)
+	const isFilterExists = layoutOptions.value?.all_filters.some(f => JSON.stringify(f) === JSON.stringify(newFilter))
+
+	if(!isFiltersInLayoutOptions) {
+		console.log('LAYOUT OPTIONS = null')
+		layoutOptions.value = {
+			...layoutOptions.value,
+			all_filters: [ newFilter ],
+			disabled_filters: []
+		}
+	} else {
+		console.log('LAYOUT OPTIONS != null')
+		if(!isFilterExists) {
+			console.log('FILTER NOT EXISTS')
+			layoutOptions.value = {
+				...layoutOptions.value,
+				all_filters: [ ...layoutOptions.value.all_filters, newFilter ]
+			}
+		} else {
+			console.log('FILTER EXISTS')
+			router.push(`/content/${collection.value}`)
+		}
+
+	}
+
 }
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);

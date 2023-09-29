@@ -344,11 +344,6 @@ const {
 	clearLocalSave,
 } = usePreset(collection, bookmarkID);
 
-// UPDATE FILTER VALUE
-window.updateFilter = (newFilter: any) => {
-	filter.value = newFilter
-}
-
 // Use a custom filter for the export sidebar detail
 const exportFilter = ref(null);
 const exportFiltersMerged = computed<Filter>(() => {

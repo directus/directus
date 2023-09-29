@@ -22,9 +22,7 @@
 				:include-relations="includeRelations"
 				:relational-field-selectable="relationalFieldSelectable"
 				@remove-node="removeNode"
-				@change="emitValue"
-				@onDragMove="onDragMove"
-			/>
+				/>
 		</v-list>
 
 		<div v-if="fieldName" class="buttons">
@@ -99,6 +97,7 @@ import { useI18n } from 'vue-i18n';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 import { FilterLayoutOptions } from '@/modules/content/routes/types';
+import { useDraggable } from './use-draggable';
 
 interface Props {
 	value?: Record<string, any> | string;
@@ -190,52 +189,36 @@ const innerValueCopy = computed<FilterLayoutOptions>({
 // innerValue.value = []
 
 watch(() => innerValueCopy.value, () => {
-	// console.log('on innerValueCopy change', innerValueCopy)
 	updateInnerValue()
 }, { deep: true })
 
-watch([innerValueCopy, innerValue], () => {
-	console.log('innerValueCopy', innerValueCopy.value);
-	console.log('innerValue', innerValue.value);
-}, { deep: true, immediate: true })
+// watch([innerValueCopy, innerValue], () => {
+// 	console.log('innerValueCopy', innerValueCopy.value);
+// 	console.log('innerValue', innerValue.value);
+// }, { deep: true, immediate: true })
 
-interface DragEvent {
-	moved: {
-		element: Filter;
-		oldIndex: number;
-		newIndex: number;
-	};
-}
+// function emitValue(e: DragEvent) {
+// 	if (innerValueCopy.value.all_filters.length === 0) {
+// 		emit('inputLO', null);
+// 	} else {
+// 		emit('inputLO', { all_filters: innerValueCopy.value.all_filters, disabled_filters: innerValueCopy.value.disabled_filters });
+// 	}
+// }
 
-function onDragMove(val, val1) {
-	console.log(val, val1);
-}
+window.addFilterFromDisplay = (newFilter: any) => {
+	const isFilterExists = innerValueCopy.value.all_filters.some(f => JSON.stringify(f) === JSON.stringify(newFilter))
 
-function emitValue(e: DragEvent) {
-
-
-	if (innerValueCopy.value.all_filters.length === 0) {
-		emit('inputLO', null);
-	} else {
-		const oldIndex = e.moved.oldIndex
-		const newIndex = e.moved.newIndex
-
-		const grabedFilter = innerValueCopy.value.all_filters[oldIndex]
-		const replacedFilter = innerValueCopy.value.all_filters[newIndex]
-
-		const swappedArray = innerValueCopy.value.all_filters.map((f, ind) => {
-			if(ind === oldIndex) return grabedFilter
-			if(ind === newIndex) return replacedFilter
-			return f
-		})
-
-		emit('inputLO', { all_filters: swappedArray, disabled_filters: innerValueCopy.value.disabled_filters });
+	if(!isFilterExists) {
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			all_filters: [ ...innerValueCopy.value.all_filters, newFilter ]
+		}
 	}
 }
 
+
 function addNode(key: string) {
 	if (key === '$group') {
-		// innerValue.value = innerValue.value.concat({ _and: [] });
 
 		innerValueCopy.value = {
 			...innerValueCopy.value,
@@ -266,7 +249,6 @@ function addNode(key: string) {
 		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
-		// innerValue.value = innerValue.value.concat(node);
 
 		innerValueCopy.value = {
 			...innerValueCopy.value,
@@ -278,18 +260,8 @@ function addNode(key: string) {
 
 function removeNode(ids: string[], filter: Filter) {
 	const id = ids.pop();
-	// const isFieldDisabled = innerValueCopy.value.disabled_filters.includes(Number(id))
 
 	if (ids.length === 0) {
-
-		// if(!isFieldDisabled) {
-
-		// 	const deleteInd = getInnerValueDeleteInd(Number(id), filter)
-
-		// 	innerValue.value = innerValue.value.filter((node, index) => index !== deleteInd);
-		// }
-
-
 		innerValueCopy.value = {
 			...innerValueCopy.value,
 			disabled_filters: innerValueCopy.value.disabled_filters.filter(ind => ind !== Number(id)).map(ind =>  ind > Number(id) ? ind - 1 : ind),
@@ -304,16 +276,6 @@ function removeNode(ids: string[], filter: Filter) {
 	list = list.filter((_node, index) => index !== Number(id));
 
 	innerValue.value = set(innerValue.value, ids.join('.'), list);
-
-	// function getInnerValueDeleteInd(ind: number, filter: Filter) {
-	// 	let deleteAtIndex = ind
-	// 	while (JSON.stringify(innerValue.value[deleteAtIndex]) !== JSON.stringify(filter)) {
-	// 		deleteAtIndex--;
-	// 	}
-
-	// 	return deleteAtIndex
-	// }
-
 }
 
 function updateInnerValue() {

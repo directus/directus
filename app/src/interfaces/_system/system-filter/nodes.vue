@@ -10,19 +10,19 @@
 		:item-key="getIndex"
 		:swap-threshold="0.3"
 		:force-fallback="true"
-		@change="$emit('change', $event)"
-		@start="$emit('onDragMove', $event)"
-
-
+		:move="onDragMove"
+		@end="onDragEnd"
 		>
-		<!-- :move="checkMove"
-        @start="dragging = true"
-        @end="dragging = false" -->
-		<template #item="{ element, index }">
+		<template #item="{ element, index }" >
 			<li class="row" @mousemove="onFieldHover(index)">
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline, 'header_disabled': isFieldDisabled(index) }">
-						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
+						<v-icon
+						name="drag_indicator"
+						class="drag-handle"
+						small
+						:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}"
+						/>
 						<span v-if="!isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
 						<v-menu v-else placement="bottom-start" show-arrow :style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}">
 							<template #activator="{ toggle }">
@@ -58,15 +58,14 @@
 						/>
 
 						<!-- CHANGED  -->
-						<!-- v-tooltip="t(isFieldDisabled(index) ? 'Enable' : 'Disable')" -->
-						<!-- :class="{ 'field_disabled': isFieldDisabled(index) }" -->
 						<p class="filter_field_icons">
 							<v-icon
 								name="filter_list_off"
 								small
 								clickable
 								class="disable-icon"
-								:class="{ 'field_disabled': filter.disabled_filters.includes(index) }"
+								:class="{ 'field_disabled': isFieldDisabled(index) }"
+								v-tooltip="t(isFieldDisabled(index) ? 'Enable' : 'Disable')"
 								@click="onEnableDisableField(index)"
 							/>
 
@@ -146,6 +145,7 @@ import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
 import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
 import { FilterLayoutOptions } from '@/modules/content/routes/types';
+import { useDraggable } from './use-draggable';
 
 type FilterInfo = {
 	id: number;
@@ -227,7 +227,9 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	},
 });
 
-// ADITIONAL LOGIC TO HANDLE FILTER FIELD DISABLING------------------------------------
+// CHANGED ------------------------------------
+const { onDragMove, onDragEnd } = useDraggable(filterSync);
+
 const isDragDisabled = ref(false)
 
 function onFieldHover(index: number) {
