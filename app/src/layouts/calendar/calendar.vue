@@ -1,12 +1,3 @@
-<template>
-	<div class="calendar-layout">
-		<v-notice v-if="atLimit" type="warning">
-			{{ t('dataset_too_large_currently_showing_n_items', { n: n(10000) }) }}
-		</v-notice>
-		<div ref="calendarElement" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -46,6 +37,15 @@ export default defineComponent({
 	inheritAttrs: false,
 });
 </script>
+
+<template>
+	<div class="calendar-layout">
+		<v-notice v-if="atLimit" type="warning">
+			{{ t('dataset_too_large_currently_showing_n_items', { n: n(10000) }) }}
+		</v-notice>
+		<div ref="calendarElement" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .calendar-layout {

@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import { useData, useRoute } from 'vitepress';
+import DefaultTheme from 'vitepress/theme';
+import { computed } from 'vue';
+import Feedback from '../components/Feedback.vue';
+
+const { Layout } = DefaultTheme;
+const { page } = useData();
+const route = useRoute();
+const title = computed(() => page.value.title);
+const contributors = computed(() => page.value.frontmatter['contributors']);
+const path = computed(() => route.path);
+</script>
+
 <template>
 	<Layout>
 		<template #doc-before>
@@ -24,20 +38,6 @@
 		</template>
 	</Layout>
 </template>
-
-<script setup lang="ts">
-import { useData, useRoute } from 'vitepress';
-import DefaultTheme from 'vitepress/theme';
-import { computed } from 'vue';
-import Feedback from '../components/Feedback.vue';
-
-const { Layout } = DefaultTheme;
-const { page } = useData();
-const route = useRoute();
-const title = computed(() => page.value.title);
-const contributors = computed(() => page.value.frontmatter['contributors']);
-const path = computed(() => route.path);
-</script>
 
 <style scoped>
 #contributors {

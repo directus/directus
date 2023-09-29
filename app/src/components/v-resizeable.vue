@@ -1,25 +1,3 @@
-<template>
-	<div
-		v-if="!disabled"
-		ref="wrapper"
-		class="resize-wrapper"
-		:class="{ transition: !dragging && !options?.disableTransition }"
-	>
-		<slot />
-
-		<div
-			v-if="targetIsVisible"
-			class="grab-bar"
-			:class="{ active, 'always-show': options?.alwaysShowHandle }"
-			@pointerenter="active = true"
-			@pointerleave="active = false"
-			@pointerdown.self="onPointerDown"
-			@dblclick="resetWidth"
-		/>
-	</div>
-	<slot v-else />
-</template>
-
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { useElementVisibility, useEventListener } from '@vueuse/core';
@@ -179,6 +157,28 @@ function onPointerUp() {
 	}
 }
 </script>
+
+<template>
+	<div
+		v-if="!disabled"
+		ref="wrapper"
+		class="resize-wrapper"
+		:class="{ transition: !dragging && !options?.disableTransition }"
+	>
+		<slot />
+
+		<div
+			v-if="targetIsVisible"
+			class="grab-bar"
+			:class="{ active, 'always-show': options?.alwaysShowHandle }"
+			@pointerenter="active = true"
+			@pointerleave="active = false"
+			@pointerdown.self="onPointerDown"
+			@dblclick="resetWidth"
+		/>
+	</div>
+	<slot v-else />
+</template>
 
 <style lang="scss" scoped>
 .resize-wrapper {

@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { data } from '../../data/blog.data.js';
+import { getFriendlyDate } from '../../lib/date.js';
+import Badge from '../Badge.vue';
+</script>
+
 <template>
 	<section class="container">
 		<Badge>All Articles</Badge>
@@ -14,12 +20,6 @@
 		</div>
 	</section>
 </template>
-
-<script setup lang="ts">
-import { data } from '../../data/blog.data.js';
-import { getFriendlyDate } from '../../lib/date.js';
-import Badge from '../Badge.vue';
-</script>
 
 <style scoped>
 .container {

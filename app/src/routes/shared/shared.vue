@@ -1,44 +1,3 @@
-<template>
-	<div v-if="loading" class="hydrating">
-		<v-progress-circular indeterminate />
-	</div>
-
-	<shared-view v-else :inline="!authenticated" :title="title">
-		<div v-if="notFound">
-			<strong>{{ t('share_access_not_found') }}</strong>
-			{{ t('share_access_not_found_desc') }}
-		</div>
-
-		<v-error v-else-if="error" :error="error" />
-
-		<template v-else-if="share">
-			<template v-if="!authenticated">
-				<v-notice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
-					{{ t('shared_uses_left', usesLeft) }}
-				</v-notice>
-
-				<template v-if="usesLeft !== 0">
-					<v-input
-						v-if="share.password"
-						class="password"
-						:class="{ invalid: passwordWrong }"
-						type="password"
-						:placeholder="t('shared_enter_passcode')"
-						@update:model-value="password = $event"
-					/>
-					<v-button :busy="authenticating" @click="authenticate">
-						{{ t('share_access_page') }}
-					</v-button>
-				</template>
-			</template>
-
-			<template v-else>
-				<share-item :collection="share.collection" :primary-key="share.item" />
-			</template>
-		</template>
-	</shared-view>
-</template>
-
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
@@ -174,6 +133,47 @@ async function authenticate() {
 	}
 }
 </script>
+
+<template>
+	<div v-if="loading" class="hydrating">
+		<v-progress-circular indeterminate />
+	</div>
+
+	<shared-view v-else :inline="!authenticated" :title="title">
+		<div v-if="notFound">
+			<strong>{{ t('share_access_not_found') }}</strong>
+			{{ t('share_access_not_found_desc') }}
+		</div>
+
+		<v-error v-else-if="error" :error="error" />
+
+		<template v-else-if="share">
+			<template v-if="!authenticated">
+				<v-notice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
+					{{ t('shared_uses_left', usesLeft) }}
+				</v-notice>
+
+				<template v-if="usesLeft !== 0">
+					<v-input
+						v-if="share.password"
+						class="password"
+						:class="{ invalid: passwordWrong }"
+						type="password"
+						:placeholder="t('shared_enter_passcode')"
+						@update:model-value="password = $event"
+					/>
+					<v-button :busy="authenticating" @click="authenticate">
+						{{ t('share_access_page') }}
+					</v-button>
+				</template>
+			</template>
+
+			<template v-else>
+				<share-item :collection="share.collection" :primary-key="share.item" />
+			</template>
+		</template>
+	</shared-view>
+</template>
 
 <style lang="scss" scoped>
 h2 {

@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+defineProps<FilePreviewProps>();
+
+const emit = defineEmits<{
+	click: [];
+	replace: [];
+}>();
+
+const { t } = useI18n();
+const replaceFileDialogActive = ref(false);
+
+function onInput() {
+	replaceFileDialogActive.value = false;
+	emit('replace');
+}
+</script>
+
 <template>
 	<div class="file-preview-replace">
 		<file-preview :file="file" />
@@ -19,27 +40,6 @@
 		</v-dialog>
 	</div>
 </template>
-
-<script setup lang="ts">
-import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-defineProps<FilePreviewProps>();
-
-const emit = defineEmits<{
-	click: [];
-	replace: [];
-}>();
-
-const { t } = useI18n();
-const replaceFileDialogActive = ref(false);
-
-function onInput() {
-	replaceFileDialogActive.value = false;
-	emit('replace');
-}
-</script>
 
 <style scoped>
 .replace-toggle {

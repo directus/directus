@@ -1,33 +1,3 @@
-<template>
-	<v-notice v-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ t('no_options_available') }}
-	</v-notice>
-
-	<v-form
-		v-else-if="usesCustomComponent === false"
-		v-model="optionsValues"
-		class="extension-options"
-		:fields="optionsFields"
-		:initial-values="disabled ? optionsValues : null"
-		:disabled="disabled"
-		:raw-editor-enabled="rawEditorEnabled"
-		primary-key="+"
-	/>
-
-	<v-error-boundary v-else :name="`${type}-options-${extensionInfo!.id}`">
-		<component
-			:is="`${type}-options-${extensionInfo!.id}`"
-			:value="optionsValues"
-			:collection="collection"
-			:field="field"
-			@input="optionsValues = $event"
-		/>
-		<template #fallback>
-			<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
-		</template>
-	</v-error-boundary>
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { isVueComponent } from '@directus/utils';
@@ -101,3 +71,33 @@ const optionsValues = computed({
 	},
 });
 </script>
+
+<template>
+	<v-notice v-if="usesCustomComponent === false && optionsFields.length === 0">
+		{{ t('no_options_available') }}
+	</v-notice>
+
+	<v-form
+		v-else-if="usesCustomComponent === false"
+		v-model="optionsValues"
+		class="extension-options"
+		:fields="optionsFields"
+		:initial-values="disabled ? optionsValues : null"
+		:disabled="disabled"
+		:raw-editor-enabled="rawEditorEnabled"
+		primary-key="+"
+	/>
+
+	<v-error-boundary v-else :name="`${type}-options-${extensionInfo!.id}`">
+		<component
+			:is="`${type}-options-${extensionInfo!.id}`"
+			:value="optionsValues"
+			:collection="collection"
+			:field="field"
+			@input="optionsValues = $event"
+		/>
+		<template #fallback>
+			<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
+		</template>
+	</v-error-boundary>
+</template>
