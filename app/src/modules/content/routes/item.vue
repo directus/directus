@@ -288,40 +288,51 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey);
 
-const { layoutOptions } = usePreset(collection);
+const { filter, layoutOptions } = usePreset(collection);
 
 watch(() => layoutOptions.value, () => {
-	router.push(`/content/${collection.value}`)
+	setTimeout(() => {
+		router.push(`/content/${collection.value}`)
+	}, 500)
 }, { deep: true })
+
+// layoutOptions === null then filter === null
+// layoutOptions !== null then filter === null or filter === []
+// layoutOptions[{filter}] => filter[{filter}] === true then filter[{filter}] === false
 
 // UPDATE FILTER VALUE
 window.addFilterFromInterface = (newFilter: any) => {
-	console.log(newFilter)
-	const isFiltersInLayoutOptions = Boolean(layoutOptions.value?.all_filters)
-	const isFilterExists = layoutOptions.value?.all_filters.some(f => JSON.stringify(f) === JSON.stringify(newFilter))
+	const is_layoutOptions = Boolean(layoutOptions.value?.all_filters)
+	const is_newFilter_in_layoutOptions = layoutOptions.value?.all_filters.some(f => JSON.stringify(f) === JSON.stringify(newFilter))
 
-	if(!isFiltersInLayoutOptions) {
-		console.log('LAYOUT OPTIONS = null')
-		layoutOptions.value = {
-			...layoutOptions.value,
-			all_filters: [ newFilter ],
-			disabled_filters: []
+	if(is_layoutOptions) {
+
+		if(is_newFilter_in_layoutOptions) {
+			return router.push(`/content/${collection.value}`)
 		}
-	} else {
-		console.log('LAYOUT OPTIONS != null')
-		if(!isFilterExists) {
-			console.log('FILTER NOT EXISTS')
+
+		if(!is_newFilter_in_layoutOptions) {
 			layoutOptions.value = {
 				...layoutOptions.value,
-				all_filters: [ ...layoutOptions.value.all_filters, newFilter ]
+				all_filters: [...layoutOptions.value.all_filters, newFilter],
 			}
-		} else {
-			console.log('FILTER EXISTS')
-			router.push(`/content/${collection.value}`)
+
+			if(filter.value && (filter.value?._and || filter.value?._or)) {
+				const operator = filter.value._and ? '_and' : '_or'
+
+				filter.value[operator].push(newFilter)
+			} else {
+				filter.value = { _and: [newFilter] };
+			}
 		}
 
+	} else {
+		filter.value = { _and: [newFilter] };
+		layoutOptions.value = {
+			all_filters: [newFilter],
+			disabled_filters: []
+		}
 	}
-
 }
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
