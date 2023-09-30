@@ -1,7 +1,7 @@
 {
 	"name": "@directus/sdk-schema-generator",
 	"version": "0.0.0",
-	"description": "TypeScript Schema Generator",
+	"description": "TypeScript Schema Generator for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
