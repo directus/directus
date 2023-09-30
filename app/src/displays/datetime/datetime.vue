@@ -1,9 +1,3 @@
-<template>
-	<use-datetime v-slot="{ datetime }" v-bind="$props">
-		<span class="datetime">{{ datetime }}</span>
-	</use-datetime>
-</template>
-
 <script setup lang="ts">
 import UseDatetime, { type Props } from '@/components/use-datetime.vue';
 
@@ -15,6 +9,12 @@ withDefaults(defineProps<Props>(), {
 	suffix: true,
 });
 </script>
+
+<template>
+	<use-datetime v-slot="{ datetime }" v-bind="$props">
+		<span class="datetime">{{ datetime }}</span>
+	</use-datetime>
+</template>
 
 <style lang="scss" scoped>
 .datetime {

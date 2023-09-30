@@ -1,23 +1,3 @@
-<template>
-	<v-notice v-if="!choices" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
-	<v-select
-		v-else
-		:model-value="value"
-		:items="choices"
-		:disabled="disabled"
-		:show-deselect="allowNone"
-		:placeholder="placeholder"
-		:allow-other="allowOther"
-		@update:model-value="$emit('input', $event)"
-	>
-		<template v-if="icon" #prepend>
-			<v-icon :name="icon" />
-		</template>
-	</v-select>
-</template>
-
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import { useI18n } from 'vue-i18n';
@@ -47,3 +27,23 @@ defineEmits(['input']);
 
 const { t } = useI18n();
 </script>
+
+<template>
+	<v-notice v-if="!choices" type="warning">
+		{{ t('choices_option_configured_incorrectly') }}
+	</v-notice>
+	<v-select
+		v-else
+		:model-value="value"
+		:items="choices"
+		:disabled="disabled"
+		:show-deselect="allowNone"
+		:placeholder="placeholder"
+		:allow-other="allowOther"
+		@update:model-value="$emit('input', $event)"
+	>
+		<template v-if="icon" #prepend>
+			<v-icon :name="icon" />
+		</template>
+	</v-select>
+</template>

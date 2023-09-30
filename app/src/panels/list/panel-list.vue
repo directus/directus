@@ -1,30 +1,3 @@
-<template>
-	<div class="list" :class="{ 'has-header': showHeader }">
-		<div>
-			<v-list>
-				<v-list-item
-					v-for="row in data"
-					:key="row[primaryKeyField]"
-					class="selectable"
-					:clickable="linkToItem === true"
-					@click="startEditing(row)"
-				>
-					<render-template :item="row" :collection="collection" :template="displayTemplate" />
-					<div class="spacer" />
-				</v-list-item>
-			</v-list>
-		</div>
-		<drawer-item
-			:active="!!currentlyEditing"
-			:collection="collection"
-			:primary-key="currentlyEditing ?? '+'"
-			:edits="editsAtStart"
-			@input="saveEdits"
-			@update:active="cancelEdit"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import api from '@/api';
@@ -79,6 +52,33 @@ async function saveEdits(item: Record<string, any>) {
 	await insightsStore.refresh(props.dashboard);
 }
 </script>
+
+<template>
+	<div class="list" :class="{ 'has-header': showHeader }">
+		<div>
+			<v-list>
+				<v-list-item
+					v-for="row in data"
+					:key="row[primaryKeyField]"
+					class="selectable"
+					:clickable="linkToItem === true"
+					@click="startEditing(row)"
+				>
+					<render-template :item="row" :collection="collection" :template="displayTemplate" />
+					<div class="spacer" />
+				</v-list-item>
+			</v-list>
+		</div>
+		<drawer-item
+			:active="!!currentlyEditing"
+			:collection="collection"
+			:primary-key="currentlyEditing ?? '+'"
+			:edits="editsAtStart"
+			@input="saveEdits"
+			@update:active="cancelEdit"
+		/>
+	</div>
+</template>
 
 <style scoped>
 .list {

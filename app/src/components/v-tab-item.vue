@@ -1,9 +1,3 @@
-<template>
-	<div v-if="active" class="v-tab-item">
-		<slot v-bind="{ active, toggle }" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useGroupable } from '@directus/composables';
 
@@ -18,3 +12,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { active, toggle } = useGroupable({ value: props.value, group: 'v-tabs-items' });
 </script>
+
+<template>
+	<div v-if="active" class="v-tab-item">
+		<slot v-bind="{ active, toggle }" />
+	</div>
+</template>

@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+</script>
+
 <template>
 	<div class="permissions-overview-header">
 		<span class="name">{{ t('collection') }}</span>
@@ -8,12 +14,6 @@
 		<v-icon v-tooltip="t('share')" name="share" />
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-</script>
 
 <style lang="scss" scoped>
 .permissions-overview-header {

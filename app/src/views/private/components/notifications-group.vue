@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { useNotificationsStore } from '@/stores/notifications';
+import { toRefs } from 'vue';
+import NotificationItem from './notification-item.vue';
+
+defineProps<{
+	sidebarOpen?: boolean;
+}>();
+
+const notificationsStore = useNotificationsStore();
+const queue = toRefs(notificationsStore).queue;
+</script>
+
 <template>
 	<transition-group class="notifications-group" :class="{ 'sidebar-open': sidebarOpen }" name="slide-fade" tag="div">
 		<slot />
@@ -16,19 +29,6 @@
 		/>
 	</transition-group>
 </template>
-
-<script setup lang="ts">
-import { useNotificationsStore } from '@/stores/notifications';
-import { toRefs } from 'vue';
-import NotificationItem from './notification-item.vue';
-
-defineProps<{
-	sidebarOpen?: boolean;
-}>();
-
-const notificationsStore = useNotificationsStore();
-const queue = toRefs(notificationsStore).queue;
-</script>
 
 <style lang="scss" scoped>
 .notifications-group {
