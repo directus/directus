@@ -108,6 +108,18 @@ async function copyValues() {
 		</template>
 
 		<v-list class="links">
+			<template v-if="show_copy">
+				<v-list-item clickable @click="copyValues">
+					<v-list-item-content>
+						<v-list-item-title>{{ t('copy') }}</v-list-item-title>
+					</v-list-item-content>
+					<v-list-item-icon>
+						<v-icon name="content_copy" small />
+					</v-list-item-icon>
+				</v-list-item>
+
+				<v-divider />
+			</template>
 			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath!]">
 				<v-list-item-content>
 					<render-template

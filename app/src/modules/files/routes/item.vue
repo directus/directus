@@ -362,6 +362,10 @@ function useMovetoFolder() {
 				:primary-key="primaryKey"
 			/>
 			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
+			<email-sidebar-detail
+				collection="directus_files"
+				:primary-key="primaryKey"
+			/>
 		</template>
 	</private-view>
 </template>

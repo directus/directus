@@ -47,6 +47,15 @@ const sideDrawerWritable = useSync(props, 'useSideDrawer', emit);
 			]"
 		/>
 	</div>
+	<div class="field">
+		<div class="type-label">Same Page Preview</div>
+		<v-checkbox
+			v-model="sideDrawerWritable"
+			label="Enabled"
+			:indeterminate="sideDrawerWritable === null"
+			block
+		/>
+	</div>
 </template>
 
 <style lang="scss" scoped>

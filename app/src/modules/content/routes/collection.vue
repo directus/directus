@@ -438,7 +438,7 @@ function usePermissions() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<search-input v-model="search" v-model:filter="filter" v-model:layout_options="layoutOptions" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -593,7 +593,7 @@ function usePermissions() {
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 				<export-sidebar-detail
 					:collection="collection"
-					:filter="mergeFilters(filter, archiveFilter)"
+					:filter="exportFiltersMerged"
 					:search="search"
 					:layout-query="layoutQuery"
 					@download="download"
