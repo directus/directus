@@ -1,9 +1,3 @@
-<template>
-	<component :is="as" class="badge">
-		<slot />
-	</component>
-</template>
-
 <script setup lang="ts">
 withDefaults(
 	defineProps<{
@@ -14,6 +8,12 @@ withDefaults(
 	}
 );
 </script>
+
+<template>
+	<component :is="as" class="badge">
+		<slot />
+	</component>
+</template>
 
 <style scoped>
 .badge {

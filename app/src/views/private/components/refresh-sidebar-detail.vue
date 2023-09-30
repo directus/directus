@@ -1,14 +1,3 @@
-<template>
-	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="t('auto_refresh')" :badge="active">
-		<div class="fields">
-			<div class="field full">
-				<p class="type-label">{{ t('refresh_interval') }}</p>
-				<v-select v-model="interval" :items="items" />
-			</div>
-		</div>
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref, watch } from 'vue';
@@ -76,6 +65,17 @@ const items = computed(() => {
 
 const active = computed(() => interval.value !== null);
 </script>
+
+<template>
+	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="t('auto_refresh')" :badge="active">
+		<div class="fields">
+			<div class="field full">
+				<p class="type-label">{{ t('refresh_interval') }}</p>
+				<v-select v-model="interval" :items="items" />
+			</div>
+		</div>
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

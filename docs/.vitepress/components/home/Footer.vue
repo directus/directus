@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import Divider from '../Divider.vue';
+import SocialIcon from './SocialIcon.vue';
+import Logo from './icons/Logo.vue';
+
+const currentYear = new Date().getFullYear();
+</script>
+
 <template>
 	<footer>
 		<div class="container">
@@ -49,14 +57,6 @@
 		</div>
 	</footer>
 </template>
-
-<script setup lang="ts">
-import Divider from '../Divider.vue';
-import SocialIcon from './SocialIcon.vue';
-import Logo from './icons/Logo.vue';
-
-const currentYear = new Date().getFullYear();
-</script>
 
 <style scoped>
 footer {

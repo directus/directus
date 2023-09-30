@@ -1,91 +1,3 @@
-<template>
-	<div ref="el" class="v-form" :class="gridClass">
-		<validation-errors
-			v-if="showValidationErrors && validationErrors.length > 0"
-			:validation-errors="validationErrors"
-			:fields="fields ? fields : []"
-			@scroll-to-field="scrollToField"
-		/>
-		<v-info
-			v-if="noVisibleFields && showNoVisibleFields && !loading"
-			:title="t('no_visible_fields')"
-			:icon="inline ? false : 'search'"
-			center
-		>
-			{{ t('no_visible_fields_copy') }}
-		</v-info>
-		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
-			<template v-if="fieldsMap[fieldName]">
-				<component
-					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group')"
-					v-show="!fieldsMap[fieldName]!.meta?.hidden"
-					:ref="
-					(el: Element) => {
-						formFieldEls[fieldName] = el;
-					}
-				"
-					:class="[
-						fieldsMap[fieldName]!.meta?.width || 'full',
-						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
-					]"
-					:field="fieldsMap[fieldName]"
-					:fields="fieldsForGroup[index] || []"
-					:values="modelValue || {}"
-					:initial-values="initialValues || {}"
-					:disabled="disabled"
-					:batch-mode="batchMode"
-					:batch-active-fields="batchActiveFields"
-					:primary-key="primaryKey"
-					:loading="loading"
-					:validation-errors="validationErrors"
-					:badge="badge"
-					:raw-editor-enabled="rawEditorEnabled"
-					:direction="direction"
-					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
-					@apply="apply"
-				/>
-
-				<form-field
-					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
-					:ref="
-						(el) => {
-							formFieldEls[fieldName] = el;
-						}
-					"
-					:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
-					:field="fieldsMap[fieldName]!"
-					:autofocus="index === firstEditableFieldIndex && autofocus"
-					:model-value="(values || {})[fieldName]"
-					:initial-value="(initialValues || {})[fieldName]"
-					:disabled="isDisabled(fieldsMap[fieldName]!)"
-					:batch-mode="batchMode"
-					:batch-active="batchActiveFields.includes(fieldName)"
-					:primary-key="primaryKey"
-					:loading="loading"
-					:validation-error="
-						validationErrors.find(
-							(err) =>
-								err.collection === fieldsMap[fieldName]!.collection &&
-								(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
-						)
-					"
-					:badge="badge"
-					:raw-editor-enabled="rawEditorEnabled"
-					:raw-editor-active="rawActiveFields.has(fieldName)"
-					:direction="direction"
-					@update:model-value="setValue(fieldName, $event)"
-					@set-field-value="setValue($event.field, $event.value, { force: true })"
-					@unset="unsetValue(fieldsMap[fieldName]!)"
-					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
-					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
-				/>
-			</template>
-		</template>
-		<v-divider v-if="showDivider && !noVisibleFields" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
@@ -421,6 +333,94 @@ function useRawEditor() {
 	}
 }
 </script>
+
+<template>
+	<div ref="el" class="v-form" :class="gridClass">
+		<validation-errors
+			v-if="showValidationErrors && validationErrors.length > 0"
+			:validation-errors="validationErrors"
+			:fields="fields ? fields : []"
+			@scroll-to-field="scrollToField"
+		/>
+		<v-info
+			v-if="noVisibleFields && showNoVisibleFields && !loading"
+			:title="t('no_visible_fields')"
+			:icon="inline ? false : 'search'"
+			center
+		>
+			{{ t('no_visible_fields_copy') }}
+		</v-info>
+		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
+			<template v-if="fieldsMap[fieldName]">
+				<component
+					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
+					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group')"
+					v-show="!fieldsMap[fieldName]!.meta?.hidden"
+					:ref="
+					(el: Element) => {
+						formFieldEls[fieldName] = el;
+					}
+				"
+					:class="[
+						fieldsMap[fieldName]!.meta?.width || 'full',
+						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+					]"
+					:field="fieldsMap[fieldName]"
+					:fields="fieldsForGroup[index] || []"
+					:values="modelValue || {}"
+					:initial-values="initialValues || {}"
+					:disabled="disabled"
+					:batch-mode="batchMode"
+					:batch-active-fields="batchActiveFields"
+					:primary-key="primaryKey"
+					:loading="loading"
+					:validation-errors="validationErrors"
+					:badge="badge"
+					:raw-editor-enabled="rawEditorEnabled"
+					:direction="direction"
+					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
+					@apply="apply"
+				/>
+
+				<form-field
+					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
+					:ref="
+						(el) => {
+							formFieldEls[fieldName] = el;
+						}
+					"
+					:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
+					:field="fieldsMap[fieldName]!"
+					:autofocus="index === firstEditableFieldIndex && autofocus"
+					:model-value="(values || {})[fieldName]"
+					:initial-value="(initialValues || {})[fieldName]"
+					:disabled="isDisabled(fieldsMap[fieldName]!)"
+					:batch-mode="batchMode"
+					:batch-active="batchActiveFields.includes(fieldName)"
+					:primary-key="primaryKey"
+					:loading="loading"
+					:validation-error="
+						validationErrors.find(
+							(err) =>
+								err.collection === fieldsMap[fieldName]!.collection &&
+								(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
+						)
+					"
+					:badge="badge"
+					:raw-editor-enabled="rawEditorEnabled"
+					:raw-editor-active="rawActiveFields.has(fieldName)"
+					:direction="direction"
+					@update:model-value="setValue(fieldName, $event)"
+					@set-field-value="setValue($event.field, $event.value, { force: true })"
+					@unset="unsetValue(fieldsMap[fieldName]!)"
+					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
+					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
+				/>
+			</template>
+		</template>
+		<v-divider v-if="showDivider && !noVisibleFields" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

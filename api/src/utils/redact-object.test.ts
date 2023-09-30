@@ -183,6 +183,24 @@ describe('getReplacer tests', () => {
 		}
 	});
 
+	test('Correctly parses object with circular structure when used with JSON.stringify()', () => {
+		const obj: Record<string, any> = {
+			a: 'foo',
+		};
+
+		obj['b'] = obj;
+		obj['c'] = { obj };
+
+		const expectedResult = {
+			a: 'foo',
+			c: {},
+		};
+
+		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));
+
+		expect(result).toStrictEqual(expectedResult);
+	});
+
 	test('Correctly parses error object when used with JSON.stringify()', () => {
 		const errorMessage = 'Error Message';
 		const errorCause = 'Error Cause';

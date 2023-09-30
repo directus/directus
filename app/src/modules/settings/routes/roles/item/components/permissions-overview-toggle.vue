@@ -1,68 +1,3 @@
-<template>
-	<div
-		v-tooltip="appMinimal && t('required_for_app_access')"
-		class="permissions-overview-toggle"
-		:class="[{ 'has-app-minimal': !!appMinimal }, permissionLevel, appMinimalLevel]"
-	>
-		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
-
-		<v-menu v-else show-arrow>
-			<template #activator="{ toggle }">
-				<div>
-					<v-progress-circular v-if="loading || saving" indeterminate small />
-					<v-icon v-else-if="permissionLevel === 'all'" clickable name="check" @click="toggle" />
-					<v-icon
-						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
-						clickable
-						name="rule"
-						@click="toggle"
-					/>
-					<v-icon v-else-if="permissionLevel === 'none'" clickable name="block" @click="toggle" />
-				</div>
-			</template>
-
-			<v-list>
-				<v-list-item :disabled="permissionLevel === 'all'" clickable @click="setFullAccess(action)">
-					<v-list-item-icon>
-						<v-icon name="check" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ t('all_access') }}
-					</v-list-item-content>
-				</v-list-item>
-
-				<v-list-item
-					v-if="!!appMinimalLevel === false"
-					:disabled="permissionLevel === 'none'"
-					clickable
-					@click="setNoAccess(action)"
-				>
-					<v-list-item-icon>
-						<v-icon name="block" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ t('no_access') }}
-					</v-list-item-content>
-				</v-list-item>
-
-				<v-divider />
-
-				<v-list-item clickable @click="openPermissions">
-					<v-list-item-icon>
-						<v-icon name="rule" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ t('use_custom') }}
-					</v-list-item-content>
-					<v-list-item-icon>
-						<v-icon name="launch" />
-					</v-list-item-icon>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { Collection, Permission } from '@directus/types';
@@ -140,6 +75,71 @@ async function openPermissions() {
 	}
 }
 </script>
+
+<template>
+	<div
+		v-tooltip="appMinimal && t('required_for_app_access')"
+		class="permissions-overview-toggle"
+		:class="[{ 'has-app-minimal': !!appMinimal }, permissionLevel, appMinimalLevel]"
+	>
+		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
+
+		<v-menu v-else show-arrow>
+			<template #activator="{ toggle }">
+				<div>
+					<v-progress-circular v-if="loading || saving" indeterminate small />
+					<v-icon v-else-if="permissionLevel === 'all'" clickable name="check" @click="toggle" />
+					<v-icon
+						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
+						clickable
+						name="rule"
+						@click="toggle"
+					/>
+					<v-icon v-else-if="permissionLevel === 'none'" clickable name="block" @click="toggle" />
+				</div>
+			</template>
+
+			<v-list>
+				<v-list-item :disabled="permissionLevel === 'all'" clickable @click="setFullAccess(action)">
+					<v-list-item-icon>
+						<v-icon name="check" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('all_access') }}
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-list-item
+					v-if="!!appMinimalLevel === false"
+					:disabled="permissionLevel === 'none'"
+					clickable
+					@click="setNoAccess(action)"
+				>
+					<v-list-item-icon>
+						<v-icon name="block" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('no_access') }}
+					</v-list-item-content>
+				</v-list-item>
+
+				<v-divider />
+
+				<v-list-item clickable @click="openPermissions">
+					<v-list-item-icon>
+						<v-icon name="rule" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('use_custom') }}
+					</v-list-item-content>
+					<v-list-item-icon>
+						<v-icon name="launch" />
+					</v-list-item-icon>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .permissions-overview-toggle {

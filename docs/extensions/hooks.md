@@ -6,7 +6,7 @@ readTime: 7 min read
 # Custom API Hooks <small></small>
 
 > Custom API Hooks allow running custom logic when a specified event occurs within your project. There are different
-> types of events to choose from.
+> types of events to choose from. They are developed using JavaScript / Node.js.
 
 ## Extension Entrypoint
 

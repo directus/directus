@@ -1,12 +1,3 @@
-<template>
-	<template v-if="hasError">
-		<template v-if="$slots.fallback">
-			<slot name="fallback" v-bind="{ error }" />
-		</template>
-	</template>
-	<slot v-else></slot>
-</template>
-
 <script setup lang="ts">
 import { getVueComponentName } from '@/utils/get-vue-component-name';
 import { kebabCase } from 'lodash';
@@ -38,3 +29,12 @@ onErrorCaptured((err, vm, info) => {
 	if (props.stopPropagation) return false;
 });
 </script>
+
+<template>
+	<template v-if="hasError">
+		<template v-if="$slots.fallback">
+			<slot name="fallback" v-bind="{ error }" />
+		</template>
+	</template>
+	<slot v-else></slot>
+</template>

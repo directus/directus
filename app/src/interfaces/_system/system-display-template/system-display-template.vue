@@ -1,19 +1,3 @@
-<template>
-	<div class="system-display-template">
-		<v-notice v-if="collection === null" type="info">
-			{{ t('interfaces.system-display-template.select_a_collection') }}
-		</v-notice>
-
-		<v-field-template
-			v-else
-			:collection="collection"
-			:model-value="value"
-			:disabled="disabled"
-			@update:model-value="$emit('input', $event)"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { computed, inject, ref } from 'vue';
@@ -52,3 +36,19 @@ const collection = computed(() => {
 	return collectionName;
 });
 </script>
+
+<template>
+	<div class="system-display-template">
+		<v-notice v-if="collection === null" type="info">
+			{{ t('interfaces.system-display-template.select_a_collection') }}
+		</v-notice>
+
+		<v-field-template
+			v-else
+			:collection="collection"
+			:model-value="value"
+			:disabled="disabled"
+			@update:model-value="$emit('input', $event)"
+		/>
+	</div>
+</template>

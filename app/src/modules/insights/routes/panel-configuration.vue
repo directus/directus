@@ -1,98 +1,3 @@
-<template>
-	<v-drawer
-		:model-value="isOpen"
-		:title="panel?.name || t('panel')"
-		:subtitle="t('panel_options')"
-		:icon="panel?.icon || 'insert_chart'"
-		persistent
-		@cancel="router.push(`/insights/${dashboardKey}`)"
-	>
-		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="content">
-			<p class="type-label panel-type-label">{{ t('type') }}</p>
-
-			<v-fancy-select
-				:model-value="panel.type"
-				class="select"
-				:items="selectItems"
-				@update:model-value="edits.type = $event"
-			/>
-
-			<extension-options
-				v-if="panel.type"
-				:model-value="panel.options"
-				:options="customOptionsFields"
-				type="panel"
-				:extension="panel.type"
-				raw-editor-enabled
-				@update:model-value="edits.options = $event"
-			/>
-
-			<v-divider :inline-title="false" large>
-				<template #icon><v-icon name="info" /></template>
-				<template #default>{{ t('panel_header') }}</template>
-			</v-divider>
-
-			<div class="form-grid">
-				<div class="field half-left">
-					<p class="type-label">{{ t('visible') }}</p>
-					<v-checkbox
-						:model-value="panel.show_header"
-						block
-						:label="t('show_header')"
-						@update:model-value="edits.show_header = $event"
-					/>
-				</div>
-
-				<div class="field half-right">
-					<p class="type-label">{{ t('name') }}</p>
-					<v-input
-						:model-value="panel.name"
-						:nullable="false"
-						:disabled="panel.show_header !== true"
-						:placeholder="t('panel_name_placeholder')"
-						@update:model-value="edits.name = $event"
-					/>
-				</div>
-
-				<div class="field half-left">
-					<p class="type-label">{{ t('icon') }}</p>
-					<interface-select-icon
-						:value="panel.icon"
-						:disabled="panel.show_header !== true"
-						@input="edits.icon = $event"
-					/>
-				</div>
-
-				<div class="field half-right">
-					<p class="type-label">{{ t('color') }}</p>
-					<interface-select-color
-						:value="panel.color"
-						:disabled="panel.show_header !== true"
-						width="half"
-						@input="edits.color = $event"
-					/>
-				</div>
-
-				<div class="field full">
-					<p class="type-label">{{ t('note') }}</p>
-					<v-input
-						:model-value="panel.note"
-						:disabled="panel.show_header !== true"
-						:placeholder="t('panel_note_placeholder')"
-						@update:model-value="edits.note = $event"
-					/>
-				</div>
-			</div>
-		</div>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
@@ -192,6 +97,101 @@ const stageChanges = () => {
 	}
 };
 </script>
+
+<template>
+	<v-drawer
+		:model-value="isOpen"
+		:title="panel?.name || t('panel')"
+		:subtitle="t('panel_options')"
+		:icon="panel?.icon || 'insert_chart'"
+		persistent
+		@cancel="router.push(`/insights/${dashboardKey}`)"
+	>
+		<template #actions>
+			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<div class="content">
+			<p class="type-label panel-type-label">{{ t('type') }}</p>
+
+			<v-fancy-select
+				:model-value="panel.type"
+				class="select"
+				:items="selectItems"
+				@update:model-value="edits.type = $event"
+			/>
+
+			<extension-options
+				v-if="panel.type"
+				:model-value="panel.options"
+				:options="customOptionsFields"
+				type="panel"
+				:extension="panel.type"
+				raw-editor-enabled
+				@update:model-value="edits.options = $event"
+			/>
+
+			<v-divider :inline-title="false" large>
+				<template #icon><v-icon name="info" /></template>
+				<template #default>{{ t('panel_header') }}</template>
+			</v-divider>
+
+			<div class="form-grid">
+				<div class="field half-left">
+					<p class="type-label">{{ t('visible') }}</p>
+					<v-checkbox
+						:model-value="panel.show_header"
+						block
+						:label="t('show_header')"
+						@update:model-value="edits.show_header = $event"
+					/>
+				</div>
+
+				<div class="field half-right">
+					<p class="type-label">{{ t('name') }}</p>
+					<v-input
+						:model-value="panel.name"
+						:nullable="false"
+						:disabled="panel.show_header !== true"
+						:placeholder="t('panel_name_placeholder')"
+						@update:model-value="edits.name = $event"
+					/>
+				</div>
+
+				<div class="field half-left">
+					<p class="type-label">{{ t('icon') }}</p>
+					<interface-select-icon
+						:value="panel.icon"
+						:disabled="panel.show_header !== true"
+						@input="edits.icon = $event"
+					/>
+				</div>
+
+				<div class="field half-right">
+					<p class="type-label">{{ t('color') }}</p>
+					<interface-select-color
+						:value="panel.color"
+						:disabled="panel.show_header !== true"
+						width="half"
+						@input="edits.color = $event"
+					/>
+				</div>
+
+				<div class="field full">
+					<p class="type-label">{{ t('note') }}</p>
+					<v-input
+						:model-value="panel.note"
+						:disabled="panel.show_header !== true"
+						:placeholder="t('panel_note_placeholder')"
+						@update:model-value="edits.note = $event"
+					/>
+				</div>
+			</div>
+		</div>
+	</v-drawer>
+</template>
 
 <style scoped>
 .content {

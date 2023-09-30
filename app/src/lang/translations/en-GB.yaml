@@ -374,6 +374,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -1558,6 +1559,8 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1623,6 +1626,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Enter field note...
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
+    interface_group: Interface Options
   slider:
     slider: Slider
     description: Select a number using a slider

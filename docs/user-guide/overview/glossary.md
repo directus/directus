@@ -95,6 +95,8 @@ out-of-the-box, below are the some key examples:
 - **Related Values** — Displays relational display titles
 - **User** — Avatar and name of a system user
 
+![Displays](https://marketing.directus.app/assets/533af564-7400-409f-a98c-19c4452b41db.png)
+
 In addition to the included core displays, custom displays allow for creating new and/or proprietary ways to view or
 represent field data. For example, you could create progress indicators, tooltips for relational data, specific
 formatting styles, or anything else.
@@ -156,6 +158,8 @@ Interfaces determine how you view or interact with a field. In most cases, they 
 managing data of a specific type, but can also be used exclusively for presentation. Examples include text inputs,
 toggles, WYSIWYG editors, dropdowns, sliders, image galleries, and more.
 
+![Interfaces](https://marketing.directus.app/assets/8c8d1da9-9e8a-4698-91c3-02d4a3cdefef.png)
+
 In addition to the many core interfaces included out-of-the-box, _custom_ interfaces allow for creating more tailored or
 proprietary options, such as seating charts, QR codes, or Stripe customer info.
 
@@ -200,6 +204,8 @@ out-of-the-box, each with different features and configuration options.
 - **Calendar** — Ideal for "temporal" data that is sorted by date or datetime.
 - **Map** — Ideal for "geospatial" data that is shown on a world map.
 
+![Layouts](https://marketing.directus.app/assets/75900b67-a908-42fa-9bd3-de259c797cac.png)
+
 In addition to these core layouts, custom layouts allow for creating more tailored or proprietary ways to experience
 data within the App, such as Gantt charts, seating maps, or spreadsheets.
 
@@ -225,6 +231,8 @@ functionality within the App can be bucketed into one of the following modules:
 - [Project Settings](/user-guide/settings/project-settings) — An admin-only section for configuring the project and
   system settings
 
+![Modules](https://marketing.directus.app/assets/f761a496-f49b-4fcc-a09e-d074b6cbf8a5.png)
+
 In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
 experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (e.g., a
 Stripe Payments Console).
@@ -249,6 +257,8 @@ two main ways to achieve multitenancy:
 
 Panels are modular units of data visualization that exist within the [Insights module](/user-guide/insights/dashboards).
 Each panel exists within a [Dashboard](#dashboards) and can be positioned and resized as needed.
+
+![Panels](https://marketing.directus.app/assets/2af5a9ce-ddfb-44ca-a8fc-afa18018841f.png)
 
 ### Relevant Guides
 

@@ -1,24 +1,3 @@
-<template>
-	<div class="group-raw">
-		<v-form
-			:initial-values="initialValues"
-			:fields="fields"
-			:model-value="values"
-			:primary-key="primaryKey"
-			:group="field.meta?.field"
-			:validation-errors="validationErrors"
-			:loading="loading"
-			:disabled="disabled"
-			:badge="badge"
-			:raw-editor-enabled="rawEditorEnabled"
-			:direction="direction"
-			:show-no-visible-fields="false"
-			:show-validation-errors="false"
-			@update:model-value="$emit('apply', $event)"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 
@@ -46,3 +25,24 @@ withDefaults(
 
 defineEmits(['apply']);
 </script>
+
+<template>
+	<div class="group-raw">
+		<v-form
+			:initial-values="initialValues"
+			:fields="fields"
+			:model-value="values"
+			:primary-key="primaryKey"
+			:group="field.meta?.field"
+			:validation-errors="validationErrors"
+			:loading="loading"
+			:disabled="disabled"
+			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
+			:direction="direction"
+			:show-no-visible-fields="false"
+			:show-validation-errors="false"
+			@update:model-value="$emit('apply', $event)"
+		/>
+	</div>
+</template>

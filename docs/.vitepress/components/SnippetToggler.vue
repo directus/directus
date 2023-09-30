@@ -1,29 +1,3 @@
-<template>
-	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
-		<div class="snippet-toggler-header">
-			<div class="buttons">
-				<button
-					v-for="choice in choices"
-					:key="choice"
-					class="button"
-					:class="{ active: selected == choice }"
-					@click="selected = choice"
-				>
-					{{ choice }}
-				</button>
-			</div>
-		</div>
-
-		<div class="content-area">
-			<template v-for="choice in choices" :key="choice">
-				<div v-if="choice === selected">
-					<slot :name="choice.toLowerCase()"></slot>
-				</div>
-			</template>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue';
 
@@ -61,6 +35,32 @@ onBeforeMount(() => {
 	});
 });
 </script>
+
+<template>
+	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
+		<div class="snippet-toggler-header">
+			<div class="buttons">
+				<button
+					v-for="choice in choices"
+					:key="choice"
+					class="button"
+					:class="{ active: selected == choice }"
+					@click="selected = choice"
+				>
+					{{ choice }}
+				</button>
+			</div>
+		</div>
+
+		<div class="content-area">
+			<template v-for="choice in choices" :key="choice">
+				<div v-if="choice === selected">
+					<slot :name="choice.toLowerCase()"></slot>
+				</div>
+			</template>
+		</div>
+	</div>
+</template>
 
 <style scoped>
 .snippet-toggler {
