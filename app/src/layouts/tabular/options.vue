@@ -1,38 +1,3 @@
-<<<<<<< HEAD
-<template>
-	<div class="field">
-		<div class="type-label">{{ t('layouts.tabular.spacing') }}</div>
-		<v-select
-			v-model="tableSpacingWritable"
-			:items="[
-				{
-					text: t('layouts.tabular.compact'),
-					value: 'compact',
-				},
-				{
-					text: t('layouts.tabular.cozy'),
-					value: 'cozy',
-				},
-				{
-					text: t('layouts.tabular.comfortable'),
-					value: 'comfortable',
-				},
-			]"
-		/>
-	</div>
-	<div class="field">
-		<div class="type-label">Same Page Preview</div>
-		<v-checkbox
-			v-model="sideDrawerWritable"
-			label="Enabled"
-			:indeterminate="sideDrawerWritable === null"
-			block
-		/>
-	</div>
-</template>
-
-=======
->>>>>>> 9ae877bb9e55ffe1507a5ab00e6aae2eaa32d43d
 <script lang="ts">
 export default {
 	inheritAttrs: false,

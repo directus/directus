@@ -16,11 +16,8 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
-<<<<<<< HEAD
 import { usePreset } from '@/composables/use-preset';
-=======
 import { useHead } from '@unhead/vue';
->>>>>>> 9ae877bb9e55ffe1507a5ab00e6aae2eaa32d43d
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';

@@ -59,12 +59,9 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField } =
 	useRelation();
 
-<<<<<<< HEAD
-const { internalEdits, loading, initialValues, fetchItem } = useItem();
-=======
-const { internalEdits, loading, initialValues, refresh } = useItem();
->>>>>>> 9ae877bb9e55ffe1507a5ab00e6aae2eaa32d43d
+const { internalEdits, loading, initialValues, refresh, fetchItem } = useItem();
 const { save, cancel } = useActions();
+
 defineExpose({
 	save,
 	cancel,
@@ -220,7 +217,7 @@ function useItem() {
 		{ immediate: true }
 	);
 
-	return { internalEdits, loading, initialValues, refresh };
+	return { internalEdits, loading, initialValues, refresh, fetchItem };
 
 	async function refresh() {
 		if (props.active) {

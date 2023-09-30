@@ -19,6 +19,7 @@ const modules = computed(() => {
 	return (settingsStore.settings.module_bar ?? MODULE_BAR_DEFAULT)
 		.filter((modulePart) => {
 			if (modulePart.type === 'link') return true;
+			console.log(modulePart)
 			return modulePart.enabled && registeredModuleIDs.value.includes(modulePart.id);
 		})
 		.map((modulePart) => {
