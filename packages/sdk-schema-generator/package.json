@@ -37,6 +37,6 @@
 		"@directus/types": "workspace:*",
 		"@types/node": "18.16.12",
 		"typescript": "5.2.2",
-		"tsup": "7.1.0"
+		"tsup": "7.2.0"
 	}
 }
