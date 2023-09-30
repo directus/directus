@@ -1,20 +1,20 @@
 ---
 description:
-  This guide explains how to install the _Development_ version of Directus locally so that you can work on the
+  This guide explains how to setup and run a _Development_ environment for Directus so that you can work on the
   platform's source code.
 readTime: 4 min read
 ---
 
-# Running Locally
+# Running Dev Environment
 
-> This guide explains how to install the _Development_ version of Directus locally so that you can work on the
-> platform's source code. To install the _Production_ version locally, please follow to our
+> This guide explains how to setup and run a _Development_ environment for Directus so that you can work on the
+> platform's source code. To install the _Production_ version, please follow to our
 > [Docker Guide](/self-hosted/docker-guide).
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest version of Node](https://nodejs.org/en/download/current) to _build_ a Development
-version of Directus.
+You will need to have [the latest LTS version of Node](https://nodejs.org/en/download) to _build_ a Development version
+of Directus.
 
 You will also need to have the package manager [pnpm](https://pnpm.io) installed.
 
@@ -158,12 +158,11 @@ introduction to [Contributing](/contributing/introduction).
 ### Debugging The App
 
 There are several ways to debug the app but the easiest way to do it is with the
-[Vue Devtools](https://devtools.vuejs.org/). It's
-recommended to use the Vue Devtools with Chrome.
+[Vue Devtools](https://devtools.vuejs.org/). It's recommended to use the Vue Devtools with Chrome.
 
 ::: tip Computed Debugging
 
- To debug computed properties, it can be helpful to have a look at this
+To debug computed properties, it can be helpful to have a look at this
 [Vue Guide](https://vuejs.org/guide/extras/reactivity-in-depth.html#reactivity-debugging).
 
 :::

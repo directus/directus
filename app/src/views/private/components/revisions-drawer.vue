@@ -1,45 +1,3 @@
-<template>
-	<div>
-		<v-drawer
-			v-model="internalActive"
-			:title="title"
-			icon="change_history"
-			:sidebar-label="t(currentTab[0])"
-			@cancel="internalActive = false"
-		>
-			<template #subtitle>
-				<revisions-drawer-picker v-model:current="internalCurrent" :revisions="revisions" />
-			</template>
-
-			<template #sidebar>
-				<v-tabs v-model="currentTab" vertical>
-					<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
-						{{ tab.text }}
-					</v-tab>
-				</v-tabs>
-			</template>
-
-			<div class="content">
-				<revisions-drawer-updates
-					v-if="currentTab[0] === 'updates_made'"
-					:revision="currentRevision"
-					:revisions="revisions"
-				/>
-				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
-			</div>
-
-			<template #actions>
-				<v-button v-if="hasPastRevision" v-tooltip.bottom="t('revert')" secondary icon rounded @click="revert">
-					<v-icon name="restore" />
-				</v-button>
-				<v-button v-tooltip.bottom="t('done')" icon rounded @click="internalActive = false">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-		</v-drawer>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { useSync } from '@directus/composables';
@@ -126,6 +84,48 @@ function revert() {
 	internalActive.value = false;
 }
 </script>
+
+<template>
+	<div>
+		<v-drawer
+			v-model="internalActive"
+			:title="title"
+			icon="change_history"
+			:sidebar-label="t(currentTab[0])"
+			@cancel="internalActive = false"
+		>
+			<template #subtitle>
+				<revisions-drawer-picker v-model:current="internalCurrent" :revisions="revisions" />
+			</template>
+
+			<template #sidebar>
+				<v-tabs v-model="currentTab" vertical>
+					<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
+						{{ tab.text }}
+					</v-tab>
+				</v-tabs>
+			</template>
+
+			<div class="content">
+				<revisions-drawer-updates
+					v-if="currentTab[0] === 'updates_made'"
+					:revision="currentRevision"
+					:revisions="revisions"
+				/>
+				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
+			</div>
+
+			<template #actions>
+				<v-button v-if="hasPastRevision" v-tooltip.bottom="t('revert')" secondary icon rounded @click="revert">
+					<v-icon name="restore" />
+				</v-button>
+				<v-button v-tooltip.bottom="t('done')" icon rounded @click="internalActive = false">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+		</v-drawer>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .content {

@@ -1,24 +1,3 @@
-<template>
-	<div>
-		<v-notice type="info">
-			{{
-				t('permissions_for_role', {
-					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
-					role: role ? role.name : t('public_label'),
-				})
-			}}
-		</v-notice>
-
-		<v-form v-model="permissionSync" :fields="fields" />
-
-		<div v-if="appMinimal" class="app-minimal">
-			<v-divider />
-			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
-			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { Permission, Role } from '@directus/types';
@@ -46,11 +25,33 @@ const fields = computed(() => [
 			interface: 'system-filter',
 			options: {
 				collectionName: permissionSync.value.collection,
+				rawFieldNames: true,
 			},
 		},
 	},
 ]);
 </script>
+
+<template>
+	<div>
+		<v-notice type="info">
+			{{
+				t('permissions_for_role', {
+					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
+					role: role ? role.name : t('public_label'),
+				})
+			}}
+		</v-notice>
+
+		<v-form v-model="permissionSync" :fields="fields" />
+
+		<div v-if="appMinimal" class="app-minimal">
+			<v-divider />
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
+			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-notice {

@@ -35,6 +35,7 @@ tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
 location: Locatie
+collection_names_are_case_sensitive: Collectienamen zijn hoofdlettergevoelig
 condition_rules: Voorwaarde Regels
 input: Invoer
 maps: Kaarten
@@ -80,14 +81,10 @@ create_user: Gebruiker Aanmaken
 message: Bericht
 delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
-create_translation_string: Vertalingen aanmaken
-no_translation_string: Vertaalde Strings
-no_translation_string_copy: Er zijn nog geen vertaling reeksen.
-translation_string_key_placeholder: Tekenreeks van vertalingen...
-translation_string_translations_placeholder: Voeg nieuwe vertaling toe
-edit_translation_string: Vertaalstring bewerken
-delete_translation_string_copy: >-
-  Weet je zeker dat je het {key} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+create_custom_translation: Aangepaste vertaling aanmaken
+edit_custom_translation: Aangepaste vertaling bewerken
+no_custom_translations: Geen aangepaste vertalingen
+no_custom_translations_copy: Er zijn nog geen aangepaste vertalingen.
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
@@ -118,13 +115,6 @@ public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
 not_allowed: Niet toegestaan
-directus_version: Directus Versie
-node_version: Node Versie
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Versie
-os_uptime: OS Uptime
-os_totalmem: OS Geheugen
 archive: Archiveren
 archive_confirm: Weet je zeker dat je dit item wilt archiveren?
 archive_confirm_count: >-
@@ -155,6 +145,14 @@ validationError:
   required: Waarde is vereist
   unique: Waarde moet uniek zijn
   regex: Waarde heeft niet de juiste vorm
+  starts_with: Waarde moet beginnen met {substring}
+  istarts_with: Waarde moet beginnen met {substring}
+  nstarts_with: Waarde mag niet beginnen met {substring}
+  nistarts_with: Waarde mag niet beginnen met {substring}
+  ends_with: Waarde moet eindigen met {substring}
+  iends_with: Waarde moet eindigen met {substring}
+  nends_with: Waarde mag niet eindigen met {substring}
+  niends_with: Waarde mag niet eindigen met {substring}
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
@@ -236,6 +234,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Datumbereik
+translation_key_placeholder: Voer key in...
 datetime: DateTime
 dateTime: DateTime
 precision: Precisie
@@ -356,7 +355,7 @@ revision_delta_reverted: Teruggedraaid
 revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
-presentation_text_values_cannot_be_reimported: "Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd."
+presentation_text_values_cannot_be_reimported: 'Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd.'
 download_page_as_csv: 'Download Pagina als CSV'
 private_user: Privé gebruiker
 creation_preview: Creatie voorbeeld
@@ -394,6 +393,7 @@ move: Verplaatsen
 system: Systeem
 add_field_related: Veld toevoegen aan gerelateerde collectie
 interface_label: Interface
+display_label: Toon
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
@@ -448,6 +448,7 @@ checksum: Checksum
 owner: Eigenaar
 edited_by: Aangepast door
 folder: Map
+folders: Mappen
 zoom: Zoom
 download: Downloaden
 open: Openen
@@ -467,11 +468,7 @@ open_file_in_tab: Openen in nieuw tabblad
 start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
 exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
-exporting_limited_items_in_collection: '{limit} van de {total} items uit {collection} aan het exporteren.'
-exporting_no_items_to_export: Geen items om te exporteren. Pas de exportconfiguratie hieronder aan.
-exporting_download_hint: Eenmaal voltooid, zal dit {format}-bestand automatisch worden gedownload naar je apparaat.
-exporting_batch_hint: Deze export zal worden verwerkt in batches, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
-exporting_batch_hint_forced: Vanwege het grote aantal items moet deze export in batches worden verwerkt, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
+exporting_limited_items_in_collection: '{count} van {total} items in {collection} worden geëxporteerd.'
 collection_key: Collectie Key
 name: Naam
 primary_key_field: Primary Key veld
@@ -496,10 +493,10 @@ enable_select_button: Selecteerknop inschakelen
 allow_duplicates: Sta duplicaten toe
 comments: Reacties
 no_comments: Nog geen reacties
-click_to_expand: Klik om uit te breiden
+expand: Uitklappen
+collapse: Inklappen
 select_item: Selecteer Item
 no_items: Geen items
-search_items: Zoek items...
 disabled: Uitgeschakeld
 information: Informatie
 report_bug: Bug melden
@@ -530,6 +527,7 @@ create_collection: Maak collectie
 no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
 no_collections_copy: Je hebt nog geen collecties. Neem contact op met je systeembeheerder.
 relationship_not_setup: De relatie is niet correct geconfigureerd
+no_singleton_relations: Relaties met Singletons worden niet ondersteund
 display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
@@ -623,6 +621,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Ongeldig bereik
   METHOD_NOT_ALLOWED: Methode niet toegestaan
   REQUESTS_EXCEEDED: Limiet aantal verzoeken bereikt
+  CONTENT_TOO_LARGE: Verstuurd item/bestand is te groot
 security: Beveiliging
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
@@ -711,8 +710,12 @@ operators:
   icontains: Bevat (ongevoelig)
   starts_with: Begint met
   nstarts_with: Begint niet met
+  istarts_with: Begint met (niet-hoofdlettergevoelig)
+  nistarts_with: Begint niet met (niet-hoofdlettergevoelig)
   ends_with: Eindigt met
   nends_with: Eindigt niet met
+  iends_with: Eindigt op (niet-hoofdlettergevoelig)
+  niends_with: Eindigt niet op (niet-hoofdlettergevoelig)
   between: Is tussen
   nbetween: Ligt niet tussen
   empty: Is leeg
@@ -954,7 +957,6 @@ settings_project: Projectinstellingen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Voorkeuren & Bladwijzers
-settings_translation_strings: Schermtekst vertalingen
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
 actions: Acties
@@ -1004,7 +1006,6 @@ page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webh
 page_help_settings_webhooks_item: '**Webhook Detail** - Een formulier voor het maken en beheren van project webhooks.'
 page_help_settings_flows_collection: '**Blader door Flows** — Toon alle Flows in het project.'
 page_help_settings_flows_item: '**Flow details** — Werkruimte voor het beheren van één of meerdere operaties.'
-page_help_settings_translation_strings_collection: '**Blader door vertaling reeksen** — Toont alle vertaling reeksen in het project.'
 page_help_users_collection: '**User Directory** — Laat alle gebruikers in dit project zien.'
 page_help_users_item: >-
   **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
@@ -1273,6 +1274,8 @@ start_collapsed: Start gesloten
 block: Blok
 inline: Doorlopend
 comment: Reactie
+live_preview:
+  new_window: Openen in nieuw venster
 unlimited_usage: Onbeperkt gebruik
 new_share: Delen
 expired: Verlopen
@@ -1457,6 +1460,8 @@ interfaces:
   system-interface-options:
     interface-options: Interface-opties
     description: Een modal voor het selecteren van een interface
+  system-display:
+    display: Toon
   list-m2m:
     description: Selecteer meerdere gerelateerde items
   select-dropdown-m2o:
@@ -1488,6 +1493,7 @@ interfaces:
     edit_fields: Velden bewerken
     sort: Sorteren
     sort_placeholder: Handmatig
+    interface_group: Interface-opties
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
@@ -1541,6 +1547,16 @@ interfaces:
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
     imageToken: Statische toegangstoken
+  input-block-editor:
+    tools: Werkbalk
+    tools_options:
+      header: Header
+      nestedlist: Lijst
+      embed: Insluiten
+      code: Code
+      image: Afbeelding
+      table: Tabel
+      underline: Onderstreept
   system-token:
     system-token: Token
 displays:
@@ -1726,6 +1742,10 @@ operations:
     name: Data verwijderen
   item-update:
     payload: Payload
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opties
   log:
     message: Bericht
   mail:
@@ -1735,6 +1755,7 @@ operations:
   notification:
     recipient: Gebruiker
     message: Bericht
+    subject: Onderwerp
   request:
     url: URL
     url_placeholder: https://example.com/voorbeeld

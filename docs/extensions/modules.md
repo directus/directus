@@ -6,7 +6,7 @@ readTime: 5 min read
 # Custom Modules <small></small>
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
-> platform. [Learn more about Modules](/getting-started/glossary#modules).
+> platform. They are developed using Vue.js. [Learn more about Modules](/user-guide/overview/glossary#modules).
 
 ## Extension Entrypoint
 
@@ -36,8 +36,8 @@ export default {
 
 - `id` — The unique key for this module. It is good practice to scope proprietary modules with an author prefix.
 - `name` — The human-readable name for this module.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `color` — A color associated with the module.
 - `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
   serving as the base path.
@@ -120,60 +120,3 @@ export default {
 If you prefer to use the Vue Options API, you can inject the `api` and `stores` properties directly.
 
 :::
-
-## Example: Accessing the API from within your extension
-
-The Directus App's Vue app instance provides a field called `api`, which can be injected into Vue components using
-[Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `api` field contains a property
-called `api`, which is an authenticated Axios instance. Here's an example of how to use it:
-
-```vue
-<template>
-	<private-view title="Example Collection List">
-		<v-list>
-			<v-list-item v-for="col in collections" v-bind:key="col.collection">
-				{{ col.collection }}
-			</v-list-item>
-		</v-list>
-		<v-button v-on:click="logToConsole">Log collections to console</v-button>
-	</private-view>
-</template>
-
-<script>
-export default {
-	data() {
-		return {
-			collections: null,
-		};
-	},
-	methods: {
-		logToConsole: function () {
-			console.log(this.collections);
-		},
-	},
-	inject: ['api'],
-	mounted() {
-		// log the system field so you can see what attributes are available under it
-		// remove this line when you're done.
-		console.log(this.api);
-
-		// Get a list of all available collections to use with this module
-		this.api.get('/collections?limit=-1').then((res) => {
-			this.collections = res.data.data;
-		});
-	},
-};
-</script>
-```
-
-In the above example, you can see that:
-
-- The `api` field gets injected into the component and becomes available as an attribute of the component (i.e.,
-  `this.api`)
-- When the component is mounted, it uses `this.api.get` to request a list of all available collections
-- The names of the collections are rendered into a list in the component's template
-- a button is added with a method that logs all the data for the collections to the console
-
-This is just a basic example. A more efficient way to access and work with the list of collections would be to get an
-instance of the `collectionsStore` using the provided `stores` and accessing `stores.useCollectionsStore()`, but that's
-beyond the scope of this guide.

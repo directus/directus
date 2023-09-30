@@ -1,9 +1,7 @@
 {
-	"extends": "../tsconfig.json",
+	"extends": "@directus/tsconfig/node18-esm",
 	"compilerOptions": {
-		"types": ["node"],
-		"outDir": "../dist/node",
-		"composite": true
+		"types": ["node"]
 	},
 	"include": ["."]
 }

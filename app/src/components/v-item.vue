@@ -1,9 +1,3 @@
-<template>
-	<div class="v-item">
-		<slot v-bind="{ active: isActive, toggle }" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { toRefs } from 'vue';
 import { useGroupable } from '@directus/composables';
@@ -35,3 +29,9 @@ const { active: isActive, toggle } = useGroupable({
 	active,
 });
 </script>
+
+<template>
+	<div class="v-item">
+		<slot v-bind="{ active: isActive, toggle }" />
+	</div>
+</template>

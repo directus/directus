@@ -1,5 +1,7 @@
 import formatTitle from '@directus/format-title';
+import type { File } from '@directus/types';
 import { toArray } from '@directus/utils';
+import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
 import type { IccProfile } from 'icc';
@@ -7,20 +9,24 @@ import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
+import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import zlib from 'node:zlib';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '../errors/index.js';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
+
+type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -90,7 +96,7 @@ export class FilesService extends ItemsService {
 
 			await this.deleteOne(primaryKey);
 
-			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
+			throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
 		}
 
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
@@ -152,11 +158,11 @@ export class FilesService extends ItemsService {
 					const metadata: Metadata = {};
 
 					if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
-						metadata.height = sharpMetadata.width;
-						metadata.width = sharpMetadata.height;
+						metadata.height = sharpMetadata.width ?? null;
+						metadata.width = sharpMetadata.height ?? null;
 					} else {
-						metadata.width = sharpMetadata.width;
-						metadata.height = sharpMetadata.height;
+						metadata.width = sharpMetadata.width ?? null;
+						metadata.height = sharpMetadata.height ?? null;
 					}
 
 					// Backward-compatible layout as it used to be with 'exifr'
@@ -230,7 +236,7 @@ export class FilesService extends ItemsService {
 					}
 
 					if (fullMetadata?.iptc?.['Keywords']) {
-						metadata.tags = fullMetadata.iptc['Keywords'];
+						metadata.tags = fullMetadata.iptc['Keywords'] as string;
 					}
 
 					if (allowList === '*' || allowList?.[0] === '*') {
@@ -264,7 +270,7 @@ export class FilesService extends ItemsService {
 		);
 
 		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		let fileResponse;
@@ -274,11 +280,13 @@ export class FilesService extends ItemsService {
 
 			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
+				decompress: false,
 			});
 		} catch (err: any) {
 			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
-			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+			throw new ServiceUnavailableError({
 				service: 'external-file',
+				reason: `Couldn't fetch file from url "${importURL}"`,
 			});
 		}
 
@@ -293,7 +301,7 @@ export class FilesService extends ItemsService {
 			...(body || {}),
 		};
 
-		return await this.uploadOne(fileResponse.data, payload);
+		return await this.uploadOne(decompressResponse(fileResponse.data, fileResponse.headers), payload, payload.id);
 	}
 
 	/**
@@ -302,7 +310,7 @@ export class FilesService extends ItemsService {
 	 */
 	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
-			throw new InvalidPayloadException(`"type" is required`);
+			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
 		const key = await super.createOne(data, opts);
@@ -325,7 +333,7 @@ export class FilesService extends ItemsService {
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		await super.deleteMany(keys);
@@ -340,5 +348,76 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
+	}
+}
+
+function decompressResponse(stream: Readable, headers: AxiosResponse['headers']) {
+	const contentEncoding = (headers['content-encoding'] || '').toLowerCase();
+
+	if (!['gzip', 'deflate', 'br'].includes(contentEncoding)) {
+		return stream;
+	}
+
+	let isEmpty = true;
+
+	const checker = new TransformStream({
+		transform(data, _encoding, callback) {
+			if (isEmpty === false) {
+				callback(null, data);
+				return;
+			}
+
+			isEmpty = false;
+
+			handleContentEncoding(data);
+
+			callback(null, data);
+		},
+
+		flush(callback) {
+			callback();
+		},
+	});
+
+	const finalStream = new PassThroughStream({
+		autoDestroy: false,
+		destroy(error, callback) {
+			stream.destroy();
+
+			callback(error);
+		},
+	});
+
+	stream.pipe(checker);
+
+	return finalStream;
+
+	function handleContentEncoding(data: any) {
+		let decompressStream;
+
+		if (contentEncoding === 'br') {
+			decompressStream = zlib.createBrotliDecompress();
+		} else if (contentEncoding === 'deflate' && isDeflateAlgorithm(data)) {
+			decompressStream = zlib.createInflateRaw();
+		} else {
+			decompressStream = zlib.createUnzip();
+		}
+
+		decompressStream.once('error', (error) => {
+			if (isEmpty && !stream.readable) {
+				finalStream.end();
+				return;
+			}
+
+			finalStream.destroy(error);
+		});
+
+		checker.pipe(decompressStream).pipe(finalStream);
+	}
+
+	function isDeflateAlgorithm(data: any) {
+		const DEFLATE_ALGORITHM_HEADER = 0x08;
+
+		return data.length > 0 && (data[0] & DEFLATE_ALGORITHM_HEADER) === 0;
 	}
 }

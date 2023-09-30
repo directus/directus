@@ -35,6 +35,7 @@ tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
+collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Reglas de Condición
 input: Input
 maps: Mapas
@@ -80,14 +81,10 @@ create_user: Crear Usuario
 message: Mensaje
 delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
-create_translation_string: Crear Traducciones
-no_translation_string: No hay cadenas de traducción
-no_translation_string_copy: Todavía no hay traducciones.
-translation_string_key_placeholder: Identificador de la traducción...
-translation_string_translations_placeholder: Agregar una nueva traducción
-edit_translation_string: Editar Texto de Traducción
-delete_translation_string_copy: >-
-  ¿Está seguro de que desea eliminar la traducción "{key}"? Esta acción no se puede deshacer.
+create_custom_translation: Crear traducción personalizada
+edit_custom_translation: Editar traducción personalizada
+no_custom_translations: No hay traducciones personalizadas
+no_custom_translations_copy: Todavía no hay traducciones personalizadas.
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
@@ -118,19 +115,13 @@ public_label: Público
 public_description: Control de datos disponibles por API sin autentificación.
 admin_description: Descripción_administrador.
 not_allowed: No permitido
-directus_version: Versión de Directus
-node_version: Versión Node
-node_uptime: Tiempo de actividad de Node
-os_type: Tipo de SO
-os_version: Versión del sistema operativo
-os_uptime: Tiempo de actividad del SO
-os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Está seguro de querer archivar este registro?'
 archive_confirm_count: >-
   Ningún registro seleccionado | ¿Estas seguro de querer archivar este registro? | ¿Estas seguro de querer archivar estos {count} registros?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
+the_following_are_minimum_permissions: Los siguientes permisos mínimos se aplican automáticamente a "Acceso a aplicaciones" cuando está habilitado. Puedes conceder permisos adicionales si es necesario, pero no puedes restringir permisos por debajo de este nivel.
 app_access_minimum: Minimo Acceso a la Aplicación
 recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
@@ -155,6 +146,14 @@ validationError:
   required: Valor requerido
   unique: El valor debe de ser único
   regex: El valor no cuenta con el formato correcto
+  starts_with: El valor debe comenzar con {substring}
+  istarts_with: El valor debe comenzar con {substring}
+  nstarts_with: El valor no puede comenzar con {substring}
+  nistarts_with: El valor no puede comenzar con {substring}
+  ends_with: El valor debe terminar con {substring}
+  iends_with: El valor debe terminar con {substring}
+  nends_with: El valor no puede terminar con {substring}
+  niends_with: El valor no puede terminar con {substring}
 all_access: Acceso total
 no_access: Sin acceso
 use_custom: Usar personalizado
@@ -349,7 +348,7 @@ revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
-presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
+presentation_text_values_cannot_be_reimported: 'Utiliza texto de presentación, los valores no pueden ser reimportados.'
 download_page_as_csv: 'Descargar Página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista Previa de Creación
@@ -387,6 +386,7 @@ move: Mover
 system: Sistema
 add_field_related: Agregar Campo a la Colección Relacionada
 interface_label: Conexión
+display_label: Exhibir
 today: Hoy
 yesterday: Ayer
 delete_comment: Borrar Comentario
@@ -460,11 +460,6 @@ open_file_in_tab: Abrir archivo en nueva pestaña
 start_export: Iniciar Exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando todos los {total} elementos de {collection}.
-exporting_limited_items_in_collection: Exportando {limit} de los {total} elementos en {collection}.
-exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación a continuación.
-exporting_download_hint: Una vez completado, este archivo {format} se descargará automáticamente a tu dispositivo.
-exporting_batch_hint: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
-exporting_batch_hint_forced: Debido al gran número de artículos, esta exportación debe ser procesada en lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
 primary_key_field: Campo de la Llave Principal
@@ -489,10 +484,8 @@ enable_select_button: Habilitar el botón Seleccionar
 allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún sin comentarios
-click_to_expand: Haga Clic para Expandir
 select_item: Seleccionar Elemento
 no_items: Sin Registros
-search_items: Buscar elementos...
 disabled: Deshabilitado
 information: Información
 report_bug: Reportar Error
@@ -947,7 +940,6 @@ settings_project: Configuración del Proyecto
 settings_webhooks: Webhooks
 settings_flows: Flujos
 settings_presets: Predefinidos y Marcadores
-settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
 actions: Acciones
@@ -997,7 +989,6 @@ page_help_settings_webhooks_collection: '**Examinar webhooks** — Enumera todos
 page_help_settings_webhooks_item: '**Detalles de webhook** — Un formulario para crear y administrar webhooks de proyectos.'
 page_help_settings_flows_collection: '**Navegar flujos** — Lista de todos los flujos dentro del proyecto.'
 page_help_settings_flows_item: '**Detalle de flujo** — Espacio de trabajo para gestionar una o más operaciones.'
-page_help_settings_translation_strings_collection: '**Examinar cadenas de traducción** — Lista todas las cadenas de traducción dentro del proyecto.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
@@ -1260,6 +1251,7 @@ field_options:
     sort_field: Elija un campo...
     accountability_divider: Responsabilidad
     duplication_divider: Duplicación
+    preview_divider: Vista previa
   directus_files:
     title: Un título único...
     description: Una descripción opcional...
@@ -1317,6 +1309,8 @@ start_collapsed: Iniciar colapsado
 block: Bloque
 inline: Alineado
 comment: Comentar
+live_preview:
+  new_window: Abrir en una ventana nueva
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: No hay usos restantes | 1 uso restante | {n} usos restantes
@@ -1576,6 +1570,8 @@ interfaces:
   system-interface-options:
     interface-options: Opciones de Interfaz
     description: Una ventana modal para seleccionar opciones de una interfaz
+  system-display:
+    display: Exhibir
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
@@ -1640,6 +1636,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Introducir nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
+    interface_group: Opciones de Interfaz
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -1679,7 +1676,6 @@ interfaces:
     input-translated-string: Cadenas traducidas
     description: Seleccionar o añadir cadena de traducción
     search_placeholder: Buscar...
-    new_translation_string: Nueva cadena de traducción
   boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
@@ -1716,6 +1712,16 @@ interfaces:
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
     imageToken_label: Token de acceso estático a añadir la URL de los recursos
+  input-block-editor:
+    tools: Barra de Herramientas
+    tools_options:
+      header: Cabecera
+      nestedlist: Lista
+      embed: Incrustado
+      code: Código
+      image: Imagen
+      table: Tabla
+      underline: Subrayado
   input-autocomplete-api:
     input-autocomplete-api: Campo de Autocompletado (API)
     description: Búsqueda autocompletada para valores de API externos.
@@ -2029,6 +2035,10 @@ operations:
     key: IDs
     payload: Payload
     query: Consulta
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Opciones
   log:
     name: Registrar en la consola
     description: Envía algo a la consola
@@ -2047,9 +2057,10 @@ operations:
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
     message: Mensaje
+    subject: Sujeto
   request:
     name: Webhook / Solicitud de URL
-    description: "Haz una solicitud a una URL"
+    description: 'Haz una solicitud a una URL'
     url: URL
     url_placeholder: https://ejemplo.com/ejemplo
     method: Método

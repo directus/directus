@@ -1,9 +1,3 @@
-<template>
-	<div class="bar-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -168,9 +162,6 @@ function setUpChart() {
 		dataLabels: {
 			enabled: props.showDataLabel,
 			formatter: formatNumericValue,
-			// style: {
-			// 	colors: ['var(--foreground-normal-alt'],
-			// },
 		},
 		tooltip: {
 			marker: {
@@ -294,9 +285,33 @@ function setUpChart() {
 					return typeof compareValue === 'string' && typeof value === 'string'
 						? (compareValue as string).startsWith(value)
 						: false;
+				case 'nstarts_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).startsWith(value)
+						: false;
+				case 'istarts_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? (compareValue as string).toLocaleLowerCase().startsWith(value.toLocaleLowerCase())
+						: false;
+				case 'nistarts_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).toLocaleLowerCase().startsWith(value.toLocaleLowerCase())
+						: false;
 				case 'ends_with':
 					return typeof compareValue === 'string' && typeof value === 'string'
 						? (compareValue as string).endsWith(value)
+						: false;
+				case 'nends_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).endsWith(value)
+						: false;
+				case 'iends_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? (compareValue as string).toLocaleLowerCase().endsWith(value.toLocaleLowerCase())
+						: false;
+				case 'niends_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).toLocaleLowerCase().endsWith(value.toLocaleLowerCase())
 						: false;
 				default:
 					return false;
@@ -305,6 +320,12 @@ function setUpChart() {
 	}
 }
 </script>
+
+<template>
+	<div class="bar-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .bar-chart {

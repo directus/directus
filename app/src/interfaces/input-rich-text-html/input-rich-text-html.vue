@@ -1,178 +1,3 @@
-<template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
-		<editor
-			ref="editorElement"
-			v-model="internalValue"
-			:init="editorOptions"
-			:disabled="disabled"
-			model-events="change keydown blur focus paste ExecCommand SetContent"
-			@focusin="setFocus(true)"
-			@focusout="setFocus(false)"
-			@focus="setupContentWatcher"
-			@set-content="contentUpdated"
-		/>
-		<template v-if="softLength">
-			<span
-				class="remaining"
-				:class="{
-					warning: percRemaining < 10,
-					danger: percRemaining < 5,
-				}"
-			>
-				{{ softLength - count }}
-			</span>
-		</template>
-		<v-dialog v-model="linkDrawerOpen">
-			<v-card>
-				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
-				<v-card-text>
-					<div class="grid">
-						<div class="field">
-							<div class="type-label">{{ t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')"></v-input>
-						</div>
-						<div class="field">
-							<div class="type-label">{{ t('display_text') }}</div>
-							<v-input v-model="linkSelection.displayText" :placeholder="t('display_text_placeholder')"></v-input>
-						</div>
-						<div class="field half">
-							<div class="type-label">{{ t('tooltip') }}</div>
-							<v-input v-model="linkSelection.title" :placeholder="t('tooltip_placeholder')"></v-input>
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ t('open_link_in') }}</div>
-							<v-checkbox
-								v-model="linkSelection.newTab"
-								block
-								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
-							></v-checkbox>
-						</div>
-					</div>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
-			<div class="content">
-				<interface-input-code
-					:value="code"
-					language="htmlmixed"
-					:line-wrapping="true"
-					@input="code = $event"
-				></interface-input-code>
-			</div>
-
-			<template #actions>
-				<v-button icon rounded @click="saveCode">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-		</v-drawer>
-
-		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
-			<div class="content">
-				<template v-if="imageSelection">
-					<img class="image-preview" :src="imageSelection.previewUrl" />
-					<div class="grid">
-						<div class="field half">
-							<div class="type-label">{{ t('image_url') }}</div>
-							<v-input v-model="imageSelection.imageUrl" />
-						</div>
-						<div class="field half-right">
-							<div class="type-label">{{ t('alt_text') }}</div>
-							<v-input v-model="imageSelection.alt" :nullable="false" />
-						</div>
-						<template v-if="storageAssetTransform === 'all'">
-							<div class="field half">
-								<div class="type-label">{{ t('width') }}</div>
-								<v-input v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
-							</div>
-							<div class="field half-right">
-								<div class="type-label">{{ t('height') }}</div>
-								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
-							</div>
-						</template>
-						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
-							<div class="type-label">{{ t('transformation_preset_key') }}</div>
-							<v-select
-								v-model="imageSelection.transformationKey"
-								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
-								:show-deselect="true"
-							/>
-						</div>
-					</div>
-				</template>
-				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
-			</div>
-
-			<template #actions>
-				<v-button v-tooltip.bottom="t('save_image')" icon rounded @click="saveImage">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-		</v-drawer>
-
-		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" icon="slideshow" @cancel="closeMediaDrawer">
-			<template #sidebar>
-				<v-tabs v-model="openMediaTab" vertical>
-					<v-tab value="video">{{ t('media') }}</v-tab>
-					<v-tab value="embed">{{ t('embed') }}</v-tab>
-				</v-tabs>
-			</template>
-
-			<div class="content">
-				<v-tabs-items v-model="openMediaTab">
-					<v-tab-item value="video">
-						<template v-if="mediaSelection">
-							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
-								<source :src="mediaSelection.previewUrl" />
-							</video>
-							<iframe
-								v-if="mediaSelection.tag === 'iframe'"
-								class="media-preview"
-								:src="mediaSelection.previewUrl"
-							></iframe>
-							<div class="grid">
-								<div class="field">
-									<div class="type-label">{{ t('source') }}</div>
-									<v-input v-model="mediaSource" />
-								</div>
-								<div class="field half">
-									<div class="type-label">{{ t('width') }}</div>
-									<v-input v-model="mediaWidth" />
-								</div>
-								<div class="field half-right">
-									<div class="type-label">{{ t('height') }}</div>
-									<v-input v-model="mediaHeight" />
-								</div>
-							</div>
-						</template>
-						<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
-					</v-tab-item>
-					<v-tab-item value="embed">
-						<div class="grid">
-							<div class="field">
-								<div class="type-label">{{ t('embed') }}</div>
-								<v-textarea v-model="embed" :nullable="false" />
-							</div>
-						</div>
-					</v-tab-item>
-				</v-tabs-items>
-			</div>
-
-			<template #actions>
-				<v-button v-tooltip.bottom="t('save_media')" icon rounded @click="saveMedia">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-		</v-drawer>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
@@ -246,7 +71,6 @@ const props = withDefaults(
 		],
 		font: 'sans-serif',
 		customFormats: () => [],
-		disabled: true,
 	}
 );
 
@@ -258,15 +82,15 @@ const editorElement = ref<ComponentPublicInstance | null>(null);
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
 
-let storageAssetTransform = ref('all');
-let storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+const storageAssetTransform = ref('all');
+const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
 
 if (settingsStore.settings?.storage_asset_transform) {
 	storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
 	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
 }
 
-let count = ref(0);
+const count = ref(0);
 
 const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 	editorRef,
@@ -304,6 +128,14 @@ const internalValue = computed({
 			contentUpdated();
 		}
 	},
+});
+
+const editorInitialized = ref(false);
+
+const editorDisabled = computed(() => {
+	if (!editorInitialized.value) return false;
+
+	return props.disabled;
 });
 
 watch(
@@ -430,6 +262,8 @@ function setup(editor: any) {
 		});
 
 		setCount();
+
+		editorInitialized.value = true;
 	});
 
 	editor.on('OpenWindow', function (e: any) {
@@ -464,6 +298,185 @@ function setFocus(val: boolean) {
 	}
 }
 </script>
+
+<template>
+	<div :id="field" class="wysiwyg" :class="{ disabled }">
+		<editor
+			ref="editorElement"
+			v-model="internalValue"
+			:init="editorOptions"
+			:disabled="editorDisabled"
+			model-events="change keydown blur focus paste ExecCommand SetContent"
+			@focusin="setFocus(true)"
+			@focusout="setFocus(false)"
+			@focus="setupContentWatcher"
+			@set-content="contentUpdated"
+		/>
+		<template v-if="softLength">
+			<span
+				class="remaining"
+				:class="{
+					warning: percRemaining < 10,
+					danger: percRemaining < 5,
+				}"
+			>
+				{{ softLength - count }}
+			</span>
+		</template>
+		<v-dialog v-model="linkDrawerOpen">
+			<v-card>
+				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
+				<v-card-text>
+					<div class="grid">
+						<div class="field">
+							<div class="type-label">{{ t('url') }}</div>
+							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')" autofocus></v-input>
+						</div>
+						<div class="field">
+							<div class="type-label">{{ t('display_text') }}</div>
+							<v-input v-model="linkSelection.displayText" :placeholder="t('display_text_placeholder')"></v-input>
+						</div>
+						<div class="field half">
+							<div class="type-label">{{ t('tooltip') }}</div>
+							<v-input v-model="linkSelection.title" :placeholder="t('tooltip_placeholder')"></v-input>
+						</div>
+						<div class="field half-right">
+							<div class="type-label">{{ t('open_link_in') }}</div>
+							<v-checkbox
+								v-model="linkSelection.newTab"
+								block
+								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
+							></v-checkbox>
+						</div>
+					</div>
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
+					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
+			<div class="content">
+				<interface-input-code
+					:value="code"
+					language="htmlmixed"
+					:line-wrapping="true"
+					@input="code = $event"
+				></interface-input-code>
+			</div>
+
+			<template #actions>
+				<v-button icon rounded @click="saveCode">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+		</v-drawer>
+
+		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
+			<div class="content">
+				<template v-if="imageSelection">
+					<img class="image-preview" :src="imageSelection.previewUrl" />
+					<div class="grid">
+						<div class="field half">
+							<div class="type-label">{{ t('image_url') }}</div>
+							<v-input v-model="imageSelection.imageUrl" />
+						</div>
+						<div class="field half-right">
+							<div class="type-label">{{ t('alt_text') }}</div>
+							<v-input v-model="imageSelection.alt" :nullable="false" />
+						</div>
+						<template v-if="storageAssetTransform === 'all'">
+							<div class="field half">
+								<div class="type-label">{{ t('width') }}</div>
+								<v-input v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
+							</div>
+							<div class="field half-right">
+								<div class="type-label">{{ t('height') }}</div>
+								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
+							</div>
+						</template>
+						<div class="field half">
+							<div class="type-label">{{ t('wysiwyg_options.lazy_loading') }}</div>
+							<v-checkbox v-model="imageSelection.lazy" block :label="t('wysiwyg_options.lazy_loading_label')" />
+						</div>
+						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
+							<div class="type-label">{{ t('transformation_preset_key') }}</div>
+							<v-select
+								v-model="imageSelection.transformationKey"
+								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
+								:show-deselect="true"
+							/>
+						</div>
+					</div>
+				</template>
+				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
+			</div>
+
+			<template #actions>
+				<v-button v-tooltip.bottom="t('save_image')" icon rounded @click="saveImage">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+		</v-drawer>
+
+		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" icon="slideshow" @cancel="closeMediaDrawer">
+			<template #sidebar>
+				<v-tabs v-model="openMediaTab" vertical>
+					<v-tab value="video">{{ t('media') }}</v-tab>
+					<v-tab value="embed">{{ t('embed') }}</v-tab>
+				</v-tabs>
+			</template>
+
+			<div class="content">
+				<v-tabs-items v-model="openMediaTab">
+					<v-tab-item value="video">
+						<template v-if="mediaSelection">
+							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
+								<source :src="mediaSelection.previewUrl" />
+							</video>
+							<iframe
+								v-if="mediaSelection.tag === 'iframe'"
+								class="media-preview"
+								:src="mediaSelection.previewUrl"
+							></iframe>
+							<div class="grid">
+								<div class="field">
+									<div class="type-label">{{ t('source') }}</div>
+									<v-input v-model="mediaSource" />
+								</div>
+								<div class="field half">
+									<div class="type-label">{{ t('width') }}</div>
+									<v-input v-model="mediaWidth" />
+								</div>
+								<div class="field half-right">
+									<div class="type-label">{{ t('height') }}</div>
+									<v-input v-model="mediaHeight" />
+								</div>
+							</div>
+						</template>
+						<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
+					</v-tab-item>
+					<v-tab-item value="embed">
+						<div class="grid">
+							<div class="field">
+								<div class="type-label">{{ t('embed') }}</div>
+								<v-textarea v-model="embed" :nullable="false" />
+							</div>
+						</div>
+					</v-tab-item>
+				</v-tabs-items>
+			</div>
+
+			<template #actions>
+				<v-button v-tooltip.bottom="t('save_media')" icon rounded @click="saveMedia">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+		</v-drawer>
+	</div>
+</template>
 
 <style lang="scss">
 @import 'tinymce/skins/ui/oxide/skin.css';

@@ -1,42 +1,3 @@
-<template>
-	<div class="grid">
-		<div class="grid-element half">
-			<p class="type-label">{{ t('template') }}</p>
-			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
-		</div>
-
-		<div class="grid-element half">
-			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
-			<interface-system-input-translated-string
-				:value="addLabel"
-				class="input"
-				:placeholder="t('create_new')"
-				@input="addLabel = $event"
-			/>
-		</div>
-		<div class="grid-element half-left">
-			<p class="type-label">{{ t('interfaces.list.sort') }}</p>
-			<v-select
-				v-model="sort"
-				class="input"
-				:items="sortFields"
-				show-deselect
-				:placeholder="t('interfaces.list.sort_placeholder')"
-			/>
-		</div>
-
-		<div class="grid-element full">
-			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
-			<repeater
-				:value="repeaterValue"
-				template="{{ field }} — {{ interface }}"
-				:fields="repeaterFields"
-				@input="repeaterValue = $event"
-			/>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
@@ -47,6 +8,7 @@ import Repeater from './list.vue';
 
 const props = defineProps<{
 	value: Record<string, any> | null;
+	collection: string;
 }>();
 
 const emit = defineEmits<{
@@ -127,16 +89,16 @@ const repeaterFields: DeepPartial<Field>[] = [
 		},
 	},
 	{
-		name: t('interface_label'),
-		field: 'interface',
-		type: 'string',
+		name: t('required'),
+		field: 'required',
+		type: 'boolean',
 		meta: {
-			interface: 'system-interface',
-			width: 'half',
+			interface: 'boolean',
 			sort: 5,
 			options: {
-				typeField: 'type',
+				label: t('requires_value'),
 			},
+			width: 'half',
 		},
 	},
 	{
@@ -153,28 +115,90 @@ const repeaterFields: DeepPartial<Field>[] = [
 		},
 	},
 	{
-		name: t('required'),
-		field: 'required',
-		type: 'boolean',
+		name: t('interfaces.list.interface_group'),
+		field: 'group-interface',
+		type: 'alias',
 		meta: {
-			interface: 'boolean',
+			interface: 'group-detail',
+			field: 'group-interface',
+			width: 'full',
 			sort: 7,
 			options: {
-				label: t('requires_value'),
+				start: 'open',
 			},
-			width: 'half',
+			collection: props.collection,
+			special: ['group', 'no-data', 'alias'],
 		},
 	},
 	{
-		name: t('options'),
+		name: t('interface_label'),
+		field: 'interface',
+		type: 'string',
+		meta: {
+			interface: 'system-interface',
+			width: 'half',
+			sort: 8,
+			group: 'group-interface',
+			options: {
+				typeField: 'type',
+			},
+		},
+	},
+	{
+		name: t('interface_options'),
 		field: 'options',
 		type: 'string',
 		meta: {
 			interface: 'system-interface-options',
 			width: 'full',
-			sort: 8,
+			sort: 9,
+			group: 'group-interface',
 			options: {
 				interfaceField: 'interface',
+			},
+		},
+	},
+	{
+		name: t('interfaces.list.display_group'),
+		field: 'group-display',
+		type: 'alias',
+		meta: {
+			interface: 'group-detail',
+			field: 'group-display',
+			width: 'full',
+			sort: 10,
+			options: {
+				start: 'closed',
+			},
+			collection: props.collection,
+			special: ['group', 'no-data', 'alias'],
+		},
+	},
+	{
+		name: t('display_label'),
+		field: 'display',
+		type: 'string',
+		meta: {
+			interface: 'system-display',
+			width: 'half',
+			group: 'group-display',
+			sort: 11,
+			options: {
+				typeField: 'type',
+			},
+		},
+	},
+	{
+		name: t('display_options'),
+		field: 'display_options',
+		type: 'string',
+		meta: {
+			interface: 'system-display-options',
+			width: 'full',
+			group: 'group-display',
+			sort: 12,
+			options: {
+				displayField: 'display',
 			},
 		},
 	},
@@ -224,6 +248,45 @@ const sortFields = computed(() => {
 	});
 });
 </script>
+
+<template>
+	<div class="grid">
+		<div class="grid-element half">
+			<p class="type-label">{{ t('template') }}</p>
+			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
+		</div>
+
+		<div class="grid-element half">
+			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
+			<interface-system-input-translated-string
+				:value="addLabel"
+				class="input"
+				:placeholder="t('create_new')"
+				@input="addLabel = $event"
+			/>
+		</div>
+		<div class="grid-element half-left">
+			<p class="type-label">{{ t('interfaces.list.sort') }}</p>
+			<v-select
+				v-model="sort"
+				class="input"
+				:items="sortFields"
+				show-deselect
+				:placeholder="t('interfaces.list.sort_placeholder')"
+			/>
+		</div>
+
+		<div class="grid-element full">
+			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
+			<repeater
+				:value="repeaterValue"
+				template="{{ field }} — {{ interface }}"
+				:fields="repeaterFields"
+				@input="repeaterValue = $event"
+			/>
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

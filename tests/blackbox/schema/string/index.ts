@@ -17,9 +17,13 @@ export const generateFilterForDataType = (filter: ClientFilterOperator, possible
 		case 'icontains':
 		case 'ncontains':
 		case 'starts_with':
+		case 'istarts_with':
 		case 'nstarts_with':
+		case 'nistarts_with':
 		case 'ends_with':
+		case 'iends_with':
 		case 'nends_with':
+		case 'niends_with':
 		case 'eq':
 		case 'neq':
 			if (Array.isArray(possibleValues)) {
@@ -110,16 +114,22 @@ export const getValidatorFunction = (filter: ClientFilterOperator): FilterValida
 			return _ncontains;
 		case 'icontains':
 			return _icontains;
-		// case 'nicontains':
-		// 	return _nicontains;
 		case 'starts_with':
 			return _starts_with;
+		case 'istarts_with':
+			return _istarts_with;
 		case 'nstarts_with':
 			return _nstarts_with;
+		case 'nistarts_with':
+			return _nistarts_with;
 		case 'ends_with':
 			return _ends_with;
+		case 'iends_with':
+			return _iends_with;
 		case 'nends_with':
 			return _nends_with;
+		case 'niends_with':
+			return _niends_with;
 		case 'eq':
 			return _eq;
 		case 'neq':
@@ -165,16 +175,16 @@ const _icontains = (inputValue: any, possibleValues: any): boolean => {
 	return false;
 };
 
-const _nicontains = (inputValue: any, possibleValues: any): boolean => {
-	if (!inputValue.toLowerCase().includes(possibleValues.toLowerCase())) {
+const _starts_with = (inputValue: any, possibleValues: any): boolean => {
+	if (inputValue.startsWith(possibleValues)) {
 		return true;
 	}
 
 	return false;
 };
 
-const _starts_with = (inputValue: any, possibleValues: any): boolean => {
-	if (inputValue.startsWith(possibleValues)) {
+const _istarts_with = (inputValue: any, possibleValues: any): boolean => {
+	if (inputValue.toLowerCase().startsWith(possibleValues.toLowerCase())) {
 		return true;
 	}
 
@@ -189,6 +199,14 @@ const _nstarts_with = (inputValue: any, possibleValues: any): boolean => {
 	return false;
 };
 
+const _nistarts_with = (inputValue: any, possibleValues: any): boolean => {
+	if (!inputValue.toLowerCase().startsWith(possibleValues.toLowerCase())) {
+		return true;
+	}
+
+	return false;
+};
+
 const _ends_with = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue.endsWith(possibleValues)) {
 		return true;
@@ -197,8 +215,24 @@ const _ends_with = (inputValue: any, possibleValues: any): boolean => {
 	return false;
 };
 
+const _iends_with = (inputValue: any, possibleValues: any): boolean => {
+	if (inputValue.toLowerCase().endsWith(possibleValues.toLowerCase())) {
+		return true;
+	}
+
+	return false;
+};
+
 const _nends_with = (inputValue: any, possibleValues: any): boolean => {
 	if (!inputValue.endsWith(possibleValues)) {
+		return true;
+	}
+
+	return false;
+};
+
+const _niends_with = (inputValue: any, possibleValues: any): boolean => {
+	if (!inputValue.toLowerCase().endsWith(possibleValues.toLowerCase())) {
 		return true;
 	}
 

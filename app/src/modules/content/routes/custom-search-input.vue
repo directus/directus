@@ -131,7 +131,7 @@ watch(active, (newActive: boolean) => {
 // CHANGED
 
 const activeFilterCount = computed(() => {
-	if (!props.layout_options) return 0;
+	if (!props.layout_options || !props.layout_options?.all_filters) return 0;
 
 	const filterOperators: string[] = [];
 

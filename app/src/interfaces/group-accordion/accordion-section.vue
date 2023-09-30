@@ -1,38 +1,3 @@
-<template>
-	<v-item :value="field.field" scope="group-accordion" class="accordion-section">
-		<template #default="{ active, toggle }">
-			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
-				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				<span class="field-name">{{ field.name }}</span>
-				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
-			</div>
-
-			<transition-expand>
-				<div v-if="active" class="fields">
-					<v-form
-						:initial-values="initialValues"
-						:fields="fieldsInSection"
-						:model-value="values"
-						:primary-key="primaryKey"
-						:group="group"
-						:validation-errors="validationErrors"
-						:loading="loading"
-						:batch-mode="batchMode"
-						:disabled="disabled"
-						:direction="direction"
-						:show-no-visible-fields="false"
-						:show-validation-errors="false"
-						@update:model-value="$emit('apply', $event)"
-					/>
-				</div>
-			</transition-expand>
-		</template>
-	</v-item>
-</template>
-
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { isNil, merge } from 'lodash';
@@ -70,7 +35,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const fieldsInSection = computed(() => {
-	let fields: Field[] = [merge({}, props.field, { hideLabel: true })];
+	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
 
 	if (props.field.meta?.special?.includes('group')) {
 		fields.push(...getFieldsForGroup(props.field.meta?.field));
@@ -125,6 +90,41 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	return fieldsInGroup;
 }
 </script>
+
+<template>
+	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
+		<template #default="{ active, toggle }">
+			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
+				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+				<v-icon class="icon" :class="{ active }" name="expand_more" />
+				<span class="field-name">{{ field.name }}</span>
+				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
+				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
+			</div>
+
+			<transition-expand>
+				<div v-if="active" class="fields">
+					<v-form
+						:initial-values="initialValues"
+						:fields="fieldsInSection"
+						:model-value="values"
+						:primary-key="primaryKey"
+						:group="group"
+						:validation-errors="validationErrors"
+						:loading="loading"
+						:batch-mode="batchMode"
+						:disabled="disabled"
+						:direction="direction"
+						:show-no-visible-fields="false"
+						:show-validation-errors="false"
+						@update:model-value="$emit('apply', $event)"
+					/>
+				</div>
+			</transition-expand>
+		</template>
+	</v-item>
+</template>
 
 <style lang="scss" scoped>
 .accordion-section {

@@ -1,23 +1,22 @@
-import request from 'supertest';
 import config, { getUrl } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import { v4 as uuid } from 'uuid';
 import { CreateItem, ReadItem } from '@common/functions';
-import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
+import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
+import { requestGraphQL } from '@common/index';
+import { CachedTestsSchema, CheckQueryFilters, TestsSchemaVendorValues } from '@query/filter';
+import { findIndex } from 'lodash';
+import request from 'supertest';
+import { v4 as uuid } from 'uuid';
 import {
-	collectionShapes,
-	collectionCircles,
-	collectionSquares,
-	Shape,
 	Circle,
+	Shape,
 	Square,
+	collectionCircles,
+	collectionShapes,
+	collectionSquares,
 	getTestsSchema,
 	seedDBValues,
 } from './m2a.seed';
-import { CheckQueryFilters } from '@query/filter';
-import { findIndex } from 'lodash';
-import { requestGraphQL } from '@common/index';
 
 function createShape(pkType: common.PrimaryKeyType) {
 	const item: Shape = {
@@ -1812,7 +1811,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect(response.body.errors).toBeDefined();
 
 								expect(response.body.errors[0].message).toBe(
-									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
 							},
 							120000
@@ -1898,7 +1897,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect(response.body.errors).toBeDefined();
 
 								expect(response.body.errors[0].message).toBe(
-									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
 							},
 							120000
@@ -2040,7 +2039,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect(response.body.errors).toBeDefined();
 
 								expect(response.body.errors[0].message).toBe(
-									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
 							},
 							120000
@@ -2081,6 +2080,196 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				cachedSchema[pkType][localCollectionSquares],
 				vendorSchemaValues
 			);
+		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const shape = createShape(pkType);
+					const shape2 = createShape(pkType);
+					const shapes = [];
+					const shapes2 = [];
+					const circle = createCircle(pkType);
+					const circle2 = createCircle(pkType);
+					const square = createSquare(pkType);
+					const square2 = createSquare(pkType);
+
+					shape.name = name;
+					shape2.name = name;
+					circle.name = name;
+					circle2.name = name;
+					square.name = name;
+					square2.name = name;
+					shapes.push(circle);
+					shapes2.push(circle2);
+					shapes.push(square);
+					shapes2.push(square2);
+
+					await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: [
+							{
+								...shape,
+								children: {
+									create: [
+										{ collection: localCollectionCircles, item: circle },
+										{ collection: localCollectionSquares, item: square },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+							{
+								...shape2,
+								children: {
+									create: [
+										{ collection: localCollectionCircles, item: circle2 },
+										{ collection: localCollectionSquares, item: square2 },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+								children: {
+									[`item:${localCollectionCircles}`]: {
+										name: {
+											_eq: name,
+										},
+									},
+								},
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
+
+					for (const item of response.body.data) {
+						expect(item.children.length).toBe(2);
+					}
+				});
+			});
+		});
+
+		describe('Auto Increment Tests', () => {
+			if (pkType !== 'integer') return;
+
+			describe('updates the auto increment value correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
+
+					// Setup
+					const name = 'test-auto-increment-m2a';
+					const largeIdShape = 112222;
+					const largeIdCircle = 113333;
+					const largeIdSquare = 114444;
+					const shape = createShape(pkType);
+					const shape2 = createShape(pkType);
+					const shapes = [];
+					const shapes2 = [];
+					const circle = createCircle(pkType);
+					const circle2 = createCircle(pkType);
+					const square = createSquare(pkType);
+					const square2 = createSquare(pkType);
+
+					shape.name = name;
+					shape2.name = name;
+					circle.name = name;
+					circle2.name = name;
+					square.name = name;
+					square2.name = name;
+					shape.id = largeIdShape;
+					circle.id = largeIdCircle;
+					square.id = largeIdSquare;
+
+					shapes.push(circle);
+					shapes2.push(circle2);
+					shapes.push(square);
+					shapes2.push(square2);
+
+					await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: [
+							{
+								...shape,
+								children: {
+									create: [
+										{ collection: localCollectionCircles, item: circle },
+										{ collection: localCollectionSquares, item: square },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+							{
+								...shape2,
+								children: {
+									create: [
+										{ collection: localCollectionCircles, item: circle2 },
+										{ collection: localCollectionSquares, item: square2 },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+							}),
+							fields: [
+								'id',
+								`children.item:${localCollectionCircles}.id`,
+								`children.item:${localCollectionSquares}.id`,
+								`children.collection`,
+							],
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(2);
+
+					expect(response.body.data.map((shape: any) => shape.id)).toEqual(
+						Array.from({ length: 2 }, (_, index) => largeIdShape + index)
+					);
+
+					expect(
+						response.body.data.flatMap((shape: any) =>
+							shape.children
+								.filter((child: any) => child.collection === localCollectionCircles)
+								.map((circle: any) => circle.item.id)
+						)
+					).toEqual(Array.from({ length: 2 }, (_, index) => largeIdCircle + index));
+
+					expect(
+						response.body.data.flatMap((shape: any) =>
+							shape.children
+								.filter((child: any) => child.collection === localCollectionSquares)
+								.map((circle: any) => circle.item.id)
+						)
+					).toEqual(Array.from({ length: 2 }, (_, index) => largeIdSquare + index));
+				});
+			});
 		});
 	});
 });

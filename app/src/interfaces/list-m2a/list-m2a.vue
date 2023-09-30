@@ -1,142 +1,3 @@
-<template>
-	<v-notice v-if="!relationInfo" type="warning">{{ t('relationship_not_setup') }}</v-notice>
-	<v-notice v-else-if="allowedCollections.length === 0" type="warning">{{ t('no_singleton_relations') }}</v-notice>
-	<div v-else class="m2a-builder">
-		<template v-if="loading">
-			<v-skeleton-loader
-				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
-				:key="n"
-				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
-			/>
-		</template>
-
-		<v-list v-else>
-			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
-
-			<draggable
-				:force-fallback="true"
-				:model-value="displayItems"
-				item-key="$index"
-				:set-data="hideDragImage"
-				:disabled="!allowDrag"
-				@update:model-value="sortItems"
-			>
-				<template #item="{ element }">
-					<v-list-item
-						v-if="hasAllowedCollection(element)"
-						block
-						:dense="totalItemCount > 4"
-						:class="{ deleted: element.$type === 'deleted' }"
-						clickable
-						@click="editItem(element)"
-					>
-						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
-						<span class="collection">{{ getCollectionName(element) }}:</span>
-						<render-template
-							:collection="element[relationInfo.collectionField.field]"
-							:template="templates[element[relationInfo.collectionField.field]]"
-							:item="element[relationInfo.junctionField.field]"
-						/>
-						<div class="spacer" />
-						<v-icon
-							v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
-							class="clear-icon"
-							:name="getDeselectIcon(element)"
-							@click.stop="deleteItem(element)"
-						/>
-					</v-list-item>
-
-					<v-list-item v-else block :class="{ deleted: element.$type === 'deleted' }">
-						<v-icon class="invalid-icon" name="warning" left />
-						<span>{{ t('invalid_item') }}</span>
-						<div class="spacer" />
-						<v-icon
-							v-if="!disabled"
-							class="clear-icon"
-							:name="getDeselectIcon(element)"
-							@click.stop="deleteItem(element)"
-						/>
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
-
-		<div class="actions">
-			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
-				<template #activator="{ toggle }">
-					<v-button :disabled="disabled" @click="toggle">
-						{{ t('create_new') }}
-						<v-icon name="arrow_drop_down" right />
-					</v-button>
-				</template>
-
-				<v-list>
-					<v-list-item
-						v-for="availableCollection of allowedCollections"
-						:key="availableCollection.collection"
-						clickable
-						@click="createItem(availableCollection.collection)"
-					>
-						<v-list-item-icon>
-							<v-icon :name="availableCollection.icon" />
-						</v-list-item-icon>
-						<v-text-overflow :text="availableCollection.name" />
-					</v-list-item>
-				</v-list>
-			</v-menu>
-
-			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
-				<template #activator="{ toggle }">
-					<v-button class="existing" :disabled="disabled" @click="toggle">
-						{{ t('add_existing') }}
-						<v-icon name="arrow_drop_down" right />
-					</v-button>
-				</template>
-
-				<v-list>
-					<v-list-item
-						v-for="availableCollection of allowedCollections"
-						:key="availableCollection.collection"
-						clickable
-						@click="selectingFrom = availableCollection.collection"
-					>
-						<v-list-item-icon>
-							<v-icon :name="availableCollection.icon" />
-						</v-list-item-icon>
-						<v-text-overflow :text="availableCollection.name" />
-					</v-list-item>
-				</v-list>
-			</v-menu>
-
-			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
-		</div>
-
-		<drawer-collection
-			v-if="!disabled && selectingFrom"
-			multiple
-			:active="!!selectingFrom"
-			:collection="selectingFrom"
-			:filter="customFilter"
-			@input="select($event!, selectingFrom ?? undefined)"
-			@update:active="selectingFrom = null"
-		/>
-
-		<drawer-item
-			v-model:active="editModalActive"
-			:disabled="
-				disabled || (editingCollection !== null && !updateAllowed[editingCollection] && currentlyEditing !== null)
-			"
-			:collection="relationInfo.junctionCollection.collection"
-			:primary-key="currentlyEditing || '+'"
-			:related-primary-key="relatedPrimaryKey || '+'"
-			:junction-field="relationInfo.junctionField.field"
-			:edits="editsAtStart"
-			:circular-field="relationInfo.reverseJunctionField.field"
-			@input="stageEdits"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
@@ -144,6 +5,7 @@ import { useRelationPermissionsM2A } from '@/composables/use-relation-permission
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
+import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
@@ -163,6 +25,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		limit?: number;
+		prefix?: string;
 		allowDuplicates?: boolean;
 	}>(),
 	{
@@ -215,6 +78,10 @@ const fields = computed(() => {
 		).map((field) => `${relationInfo.value?.junctionField.field}:${collection.collection}.${field}`);
 
 		fields.push(...addRelatedPrimaryKeyToFields(collection.collection, displayFields));
+	}
+
+	if (props.prefix) {
+		fields.push(...getFieldsFromTemplate(props.prefix));
 	}
 
 	return fields;
@@ -375,7 +242,9 @@ function hasAllowedCollection(item: DisplayItem) {
 	);
 }
 
-function getCollectionName(item: DisplayItem) {
+function getPrefix(item: DisplayItem) {
+	if (props.prefix) return renderStringTemplate(props.prefix, item).displayValue.value;
+
 	const info = relationInfo.value;
 	if (!info) return false;
 
@@ -462,6 +331,145 @@ const allowDrag = computed(
 		updateAllowed.value
 );
 </script>
+
+<template>
+	<v-notice v-if="!relationInfo" type="warning">{{ t('relationship_not_setup') }}</v-notice>
+	<v-notice v-else-if="allowedCollections.length === 0" type="warning">{{ t('no_singleton_relations') }}</v-notice>
+	<div v-else class="m2a-builder">
+		<template v-if="loading">
+			<v-skeleton-loader
+				v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
+				:key="n"
+				:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
+			/>
+		</template>
+
+		<v-list v-else>
+			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
+
+			<draggable
+				:force-fallback="true"
+				:model-value="displayItems"
+				item-key="$index"
+				:set-data="hideDragImage"
+				:disabled="!allowDrag"
+				@update:model-value="sortItems"
+			>
+				<template #item="{ element }">
+					<v-list-item
+						v-if="hasAllowedCollection(element)"
+						block
+						:dense="totalItemCount > 4"
+						:class="{ deleted: element.$type === 'deleted' }"
+						clickable
+						@click="editItem(element)"
+					>
+						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
+						<span class="collection">{{ getPrefix(element) }}:</span>
+						<render-template
+							:collection="element[relationInfo.collectionField.field]"
+							:template="templates[element[relationInfo.collectionField.field]]"
+							:item="element[relationInfo.junctionField.field]"
+						/>
+						<div class="spacer" />
+						<v-icon
+							v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
+							class="clear-icon"
+							:name="getDeselectIcon(element)"
+							@click.stop="deleteItem(element)"
+						/>
+					</v-list-item>
+
+					<v-list-item v-else block :class="{ deleted: element.$type === 'deleted' }">
+						<v-icon class="invalid-icon" name="warning" left />
+						<span>{{ t('invalid_item') }}</span>
+						<div class="spacer" />
+						<v-icon
+							v-if="!disabled"
+							class="clear-icon"
+							:name="getDeselectIcon(element)"
+							@click.stop="deleteItem(element)"
+						/>
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
+
+		<div class="actions">
+			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
+				<template #activator="{ toggle }">
+					<v-button :disabled="disabled" @click="toggle">
+						{{ t('create_new') }}
+						<v-icon name="arrow_drop_down" right />
+					</v-button>
+				</template>
+
+				<v-list>
+					<v-list-item
+						v-for="availableCollection of allowedCollections"
+						:key="availableCollection.collection"
+						clickable
+						@click="createItem(availableCollection.collection)"
+					>
+						<v-list-item-icon>
+							<v-icon :name="availableCollection.icon" />
+						</v-list-item-icon>
+						<v-text-overflow :text="availableCollection.name" />
+					</v-list-item>
+				</v-list>
+			</v-menu>
+
+			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
+				<template #activator="{ toggle }">
+					<v-button class="existing" :disabled="disabled" @click="toggle">
+						{{ t('add_existing') }}
+						<v-icon name="arrow_drop_down" right />
+					</v-button>
+				</template>
+
+				<v-list>
+					<v-list-item
+						v-for="availableCollection of allowedCollections"
+						:key="availableCollection.collection"
+						clickable
+						@click="selectingFrom = availableCollection.collection"
+					>
+						<v-list-item-icon>
+							<v-icon :name="availableCollection.icon" />
+						</v-list-item-icon>
+						<v-text-overflow :text="availableCollection.name" />
+					</v-list-item>
+				</v-list>
+			</v-menu>
+
+			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+		</div>
+
+		<drawer-collection
+			v-if="!disabled && selectingFrom"
+			multiple
+			:active="!!selectingFrom"
+			:collection="selectingFrom"
+			:filter="customFilter"
+			@input="select($event!, selectingFrom ?? undefined)"
+			@update:active="selectingFrom = null"
+		/>
+
+		<drawer-item
+			v-model:active="editModalActive"
+			:disabled="
+				disabled || (editingCollection !== null && !updateAllowed[editingCollection] && currentlyEditing !== null)
+			"
+			:collection="relationInfo.junctionCollection.collection"
+			:primary-key="currentlyEditing || '+'"
+			:related-primary-key="relatedPrimaryKey || '+'"
+			:junction-field="relationInfo.junctionField.field"
+			:edits="editsAtStart"
+			:circular-field="relationInfo.reverseJunctionField.field"
+			@input="stageEdits"
+		/>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-list {

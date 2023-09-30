@@ -1,80 +1,3 @@
-<template>
-	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
-		<template #activator="{ on }">
-			<slot name="activator" v-bind="{ on }" />
-		</template>
-
-		<article class="v-drawer">
-			<v-button
-				v-if="cancelable"
-				v-tooltip.bottom="t('cancel')"
-				class="cancel"
-				icon
-				rounded
-				secondary
-				@click="$emit('cancel')"
-			>
-				<v-icon name="close" />
-			</v-button>
-
-			<div class="content">
-				<v-overlay v-if="$slots.sidebar" absolute />
-
-				<v-resizeable
-					v-if="$slots.sidebar"
-					:disabled="!sidebarResizeable"
-					:width="sidebarWidth"
-					:max-width="sidebarMaxWidth"
-				>
-					<nav class="sidebar">
-						<div class="sidebar-content">
-							<slot name="sidebar" />
-						</div>
-					</nav>
-				</v-resizeable>
-
-				<main ref="mainEl" class="main">
-					<header-bar
-						:title="title"
-						primary-action-icon="close"
-						:small="smallHeader"
-						:shadow="headerShadow"
-						@primary="$emit('cancel')"
-					>
-						<template #title><slot name="title" /></template>
-						<template #headline>
-							<slot name="subtitle">
-								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-							</slot>
-						</template>
-
-						<template #title-outer:prepend>
-							<slot name="title-outer:prepend">
-								<v-button class="header-icon" rounded icon secondary disabled>
-									<v-icon :name="icon" />
-								</v-button>
-							</slot>
-						</template>
-
-						<template #actions:prepend><slot name="actions:prepend" /></template>
-						<template #actions><slot name="actions" /></template>
-
-						<template #title:append><slot name="header:append" /></template>
-					</header-bar>
-
-					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
-						<nav>
-							<slot name="sidebar" />
-						</nav>
-					</v-detail>
-
-					<slot />
-				</main>
-			</div>
-		</article>
-	</v-dialog>
-</template>
-
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import HeaderBar from '@/views/private/components/header-bar.vue';
@@ -130,6 +53,83 @@ const internalActive = computed({
 	},
 });
 </script>
+
+<template>
+	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
+		<template #activator="{ on }">
+			<slot name="activator" v-bind="{ on }" />
+		</template>
+
+		<article class="v-drawer">
+			<v-button
+				v-if="cancelable"
+				v-tooltip.bottom="t('cancel')"
+				class="cancel"
+				icon
+				rounded
+				secondary
+				@click="$emit('cancel')"
+			>
+				<v-icon name="close" />
+			</v-button>
+
+			<div class="content">
+				<v-overlay v-if="$slots.sidebar" absolute />
+
+				<v-resizeable
+					v-if="$slots.sidebar"
+					:disabled="!sidebarResizeable"
+					:width="sidebarWidth"
+					:max-width="sidebarMaxWidth"
+				>
+					<nav class="sidebar">
+						<div class="sidebar-content">
+							<slot name="sidebar" />
+						</div>
+					</nav>
+				</v-resizeable>
+
+				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
+					<header-bar
+						:title="title"
+						primary-action-icon="close"
+						:small="smallHeader"
+						:shadow="headerShadow"
+						@primary="$emit('cancel')"
+					>
+						<template #title><slot name="title" /></template>
+						<template #headline>
+							<slot name="subtitle">
+								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
+							</slot>
+						</template>
+
+						<template #title-outer:prepend>
+							<slot name="title-outer:prepend">
+								<v-button class="header-icon" rounded icon secondary disabled>
+									<v-icon :name="icon" />
+								</v-button>
+							</slot>
+						</template>
+
+						<template #actions:prepend><slot name="actions:prepend" /></template>
+						<template #actions><slot name="actions" /></template>
+
+						<template #title:append><slot name="header:append" /></template>
+					</header-bar>
+
+					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
+						<nav>
+							<slot name="sidebar" />
+						</nav>
+					</v-detail>
+
+					<slot />
+				</main>
+			</div>
+		</article>
+	</v-dialog>
+</template>
 
 <style>
 body {
@@ -228,6 +228,10 @@ body {
 				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}
+		}
+
+		.main.small-search-input:deep(.search-input.filter-active) {
+			width: 300px !important;
 		}
 	}
 

@@ -1,29 +1,3 @@
-<template>
-	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
-		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
-
-		<v-progress-linear v-if="loading" indeterminate />
-
-		<div v-else-if="!activity || activity.length === 0" class="empty">
-			<div class="content">{{ t('no_comments') }}</div>
-		</div>
-
-		<template v-for="group in activity" v-else :key="group.date.toString()">
-			<v-divider>{{ group.dateFormatted }}</v-divider>
-
-			<template v-for="item in group.activity" :key="item.id">
-				<comment-item
-					:refresh="refresh"
-					:activity="item"
-					:user-previews="userPreviews"
-					:primary-key="primaryKey"
-					:collection="collection"
-				/>
-			</template>
-		</template>
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
@@ -152,7 +126,7 @@ function useActivity(collection: string, primaryKey: string | number) {
 }
 
 async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
-	let userPreviews: any[] = [];
+	const userPreviews: any[] = [];
 
 	comments.forEach((comment: Record<string, any>) => {
 		userPreviews.push(comment.comment.match(regex));
@@ -182,6 +156,32 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	return {};
 }
 </script>
+
+<template>
+	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
+		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
+
+		<v-progress-linear v-if="loading" indeterminate />
+
+		<div v-else-if="!activity || activity.length === 0" class="empty">
+			<div class="content">{{ t('no_comments') }}</div>
+		</div>
+
+		<template v-for="group in activity" v-else :key="group.date.toString()">
+			<v-divider>{{ group.dateFormatted }}</v-divider>
+
+			<template v-for="item in group.activity" :key="item.id">
+				<comment-item
+					:refresh="refresh"
+					:activity="item"
+					:user-previews="userPreviews"
+					:primary-key="primaryKey"
+					:collection="collection"
+				/>
+			</template>
+		</template>
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 .sidebar-detail {

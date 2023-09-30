@@ -1,45 +1,9 @@
-<template>
-	<div class="select-multiple-checkbox-tree">
-		<div v-if="choices.length > 10" class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
-				<template #prepend>
-					<v-icon name="search" />
-				</template>
-
-				<template v-if="search" #append>
-					<v-icon name="clear" clickable @click="search = ''" />
-				</template>
-			</v-input>
-		</div>
-
-		<v-checkbox-tree
-			:model-value="value"
-			:search="searchDebounced"
-			:disabled="disabled"
-			:choices="choices"
-			:value-combining="valueCombining"
-			:show-selection-only="showSelectionOnly"
-			@update:model-value="$emit('input', $event)"
-		/>
-
-		<div class="footer">
-			<span :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
-				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
-			</span>
-			/
-			<span :class="{ active: showSelectionOnly === true }" @click="showSelectionOnly = true">
-				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
-			</span>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { debounce } from 'lodash';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-type Choice = {
+export type Choice = {
 	text: string;
 	value: string | number;
 	children?: Choice[];
@@ -75,6 +39,46 @@ watch(search, setSearchDebounced);
 const searchDebounced = ref('');
 </script>
 
+<template>
+	<div class="select-multiple-checkbox-tree">
+		<div v-if="choices.length > 10" class="search">
+			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
+				<template #prepend>
+					<v-icon name="search" />
+				</template>
+
+				<template v-if="search" #append>
+					<v-icon name="clear" clickable @click="search = ''" />
+				</template>
+			</v-input>
+		</div>
+
+		<v-checkbox-tree
+			:model-value="value"
+			:search="searchDebounced"
+			:disabled="disabled"
+			:choices="choices"
+			:value-combining="valueCombining"
+			:show-selection-only="showSelectionOnly"
+			@update:model-value="$emit('input', $event)"
+		/>
+
+		<div class="footer">
+			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
+				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
+			</button>
+			/
+			<button
+				:class="{ active: showSelectionOnly === true }"
+				:disabled="value == null || value.length === 0"
+				@click="showSelectionOnly = true"
+			>
+				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
+			</button>
+		</div>
+	</div>
+</template>
+
 <style scoped>
 .select-multiple-checkbox-tree {
 	max-height: var(--input-height-max);
@@ -109,17 +113,22 @@ const searchDebounced = ref('');
 	border-top-left-radius: var(--border-radius);
 }
 
-.footer > span {
+.footer > button {
 	color: var(--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
 
-.footer > span:hover {
+.footer > button:hover {
 	color: var(--foreground-normal);
 }
 
-.footer > span.active {
+.footer > button.active {
 	color: var(--primary);
+}
+
+.footer > button:disabled {
+	color: var(--foreground-subdued);
+	cursor: not-allowed;
 }
 </style>

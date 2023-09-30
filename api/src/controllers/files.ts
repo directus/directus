@@ -1,3 +1,4 @@
+import { isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import { toArray, getFieldsFromTemplate } from '@directus/utils';
 import Busboy from 'busboy';
@@ -8,8 +9,7 @@ import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
 import env from '../env.js';
-import { ContentTooLargeException } from '../exceptions/content-too-large.js';
-import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import { ContentTooLargeError, ErrorCode, InvalidPayloadError, ServiceUnavailableError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -79,14 +79,14 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 	busboy.on('file', async (_fieldname, fileStream, { filename, mimeType }) => {
 		if (!filename) {
-			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
+			return busboy.emit('error', new InvalidPayloadError({ reason: `File is missing filename` }));
 		}
 
 		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
 		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
 
 		if (mimeTypeAllowed === false) {
-			return busboy.emit('error', new InvalidPayloadException(`File is of invalid content type`));
+			return busboy.emit('error', new InvalidPayloadError({ reason: `File is of invalid content type` }));
 		}
 
 		fileCount++;
@@ -95,9 +95,9 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			if (!payload.title) {
 				payload.title = formatTitle(path.parse(filename).name);
 			}
-
-			payload.filename_download = filename;
 		}
+
+		payload.filename_download = filename;
 
 		const payloadWithRequiredFields = {
 			...payload,
@@ -109,7 +109,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		payload = {};
 
 		fileStream.on('limit', () => {
-			const error = new ContentTooLargeException(`Uploaded file is too large`);
+			const error = new ContentTooLargeError();
 			next(error);
 		});
 
@@ -137,7 +137,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	function tryDone() {
 		if (savedFiles.length === fileCount) {
 			if (fileCount === 0) {
-				return next(new InvalidPayloadException(`No files were included in the body`));
+				return next(new InvalidPayloadError({ reason: `No files were included in the body` }));
 			}
 
 			res.locals['savedFiles'] = savedFiles;
@@ -179,7 +179,7 @@ router.post(
 				};
 			}
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -202,7 +202,7 @@ router.post(
 		const { error } = importSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		const service = new FilesService({
@@ -216,7 +216,7 @@ router.post(
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -240,7 +240,7 @@ router.post(
 	asyncHandler(async (req, res, _next) => {
 		const { error } = sendSchema.validate(req.body);
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError(error.message);
 		}
 
 		// Obtain the required fields from the template strings
@@ -270,7 +270,7 @@ router.post(
 		const storage = await getStorage();
 		const exists = await storage.location(values['storage']).exists(values['filename_disk']);
 		if (!exists) {
-			throw new InvalidPayloadException(`File does not exist`);
+			throw new InvalidPayloadError(`File does not exist`);
 		}
 		const fileStream = await storage.location(values['storage']).read(values['filename_disk']);
 
@@ -294,7 +294,7 @@ router.post(
 				rejected: result.rejected?.length ?? (req.body.emails.length - (result.accepted?.length ?? 0)),
 			});
 		} catch (error: any) {
-			throw new ServiceUnavailableException('Error sending email', { service: 'files', error });
+			throw new ServiceUnavailableError('Error sending email', { service: 'files', error });
 		}
 	})
 );
@@ -368,7 +368,7 @@ router.patch(
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -395,7 +395,7 @@ router.patch(
 			const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

@@ -3,7 +3,7 @@ import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { load as loadYaml } from 'js-yaml';
-import { InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions/index.js';
+import { InvalidPayloadError, UnsupportedMediaTypeError } from '../errors/index.js';
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
@@ -27,7 +27,7 @@ router.get(
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('application/json')) {
 		if (Object.keys(req.body).length === 0) {
-			throw new InvalidPayloadException(`No data was included in the body`);
+			throw new InvalidPayloadError({ reason: `No data was included in the body` });
 		}
 
 		res.locals['upload'] = req.body;
@@ -35,7 +35,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	}
 
 	if (!req.is('multipart/form-data')) {
-		throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+		throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
 	}
 
 	const headers = req.headers['content-type']
@@ -51,7 +51,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	let upload: any | null = null;
 
 	busboy.on('file', async (_, fileStream, { mimeType }) => {
-		if (isFileIncluded) return next(new InvalidPayloadException(`More than one file was included in the body`));
+		if (isFileIncluded) return next(new InvalidPayloadError({ reason: `More than one file was included in the body` }));
 
 		isFileIncluded = true;
 
@@ -65,19 +65,19 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 					upload = parseJSON(uploadedString);
 				} catch (err: any) {
 					logger.warn(err);
-					throw new InvalidPayloadException('The provided JSON is invalid.');
+					throw new InvalidPayloadError({ reason: 'The provided JSON is invalid' });
 				}
 			} else {
 				try {
 					upload = await loadYaml(uploadedString);
 				} catch (err: any) {
 					logger.warn(err);
-					throw new InvalidPayloadException('The provided YAML is invalid.');
+					throw new InvalidPayloadError({ reason: 'The provided YAML is invalid' });
 				}
 			}
 
 			if (!upload) {
-				throw new InvalidPayloadException(`No file was included in the body`);
+				throw new InvalidPayloadError({ reason: `No file was included in the body` });
 			}
 
 			res.locals['upload'] = upload;
@@ -91,7 +91,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	busboy.on('error', (error: Error) => next(error));
 
 	busboy.on('close', () => {
-		if (!isFileIncluded) return next(new InvalidPayloadException(`No file was included in the body`));
+		if (!isFileIncluded) return next(new InvalidPayloadError({ reason: `No file was included in the body` }));
 	});
 
 	req.pipe(busboy);

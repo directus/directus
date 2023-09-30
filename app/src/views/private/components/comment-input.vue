@@ -1,70 +1,3 @@
-<template>
-	<div class="input-container" :class="{ collapsed }">
-		<v-menu v-model="showMentionDropDown" attached>
-			<template #activator>
-				<v-template-input
-					ref="commentElement"
-					v-model="newCommentContent"
-					capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
-					multiline
-					trigger-character="@"
-					:items="userPreviews"
-					:placeholder="t('leave_comment')"
-					@trigger="triggerSearch"
-					@deactivate="showMentionDropDown = false"
-					@up="pressedUp"
-					@down="pressedDown"
-					@enter="pressedEnter"
-					@focus="focused = true"
-				/>
-			</template>
-
-			<v-list>
-				<v-list-item
-					v-for="(user, index) in searchResult"
-					id="suggestions"
-					:key="user.id"
-					clickable
-					:active="index === selectedKeyboardIndex"
-					@click="insertUser(user)"
-				>
-					<v-list-item-icon>
-						<v-avatar x-small>
-							<v-image v-if="user.avatar" :src="avatarSource(user.avatar.id)" />
-							<v-icon v-else name="person_outline" />
-						</v-avatar>
-					</v-list-item-icon>
-
-					<v-list-item-content>{{ userName(user) }}</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-
-		<div class="buttons">
-			<v-button x-small secondary icon class="mention" @click="insertAt">
-				<v-icon name="alternate_email" />
-			</v-button>
-
-			<v-emoji-picker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
-
-			<div class="spacer"></div>
-
-			<v-button class="cancel" x-small secondary @click="cancel">
-				{{ t('cancel') }}
-			</v-button>
-			<v-button
-				:disabled="!newCommentContent || newCommentContent.length === 0 || newCommentContent.trim() === ''"
-				:loading="saving"
-				class="post-comment"
-				x-small
-				@click="postComment"
-			>
-				{{ t('submit') }}
-			</v-button>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -136,7 +69,7 @@ watch(
 );
 
 let triggerCaretPosition = 0;
-let selectedKeyboardIndex = ref<number>(0);
+const selectedKeyboardIndex = ref<number>(0);
 
 let cancelToken: CancelTokenSource | null = null;
 
@@ -337,6 +270,73 @@ function pressedEnter() {
 	showMentionDropDown.value = false;
 }
 </script>
+
+<template>
+	<div class="input-container" :class="{ collapsed }">
+		<v-menu v-model="showMentionDropDown" attached>
+			<template #activator>
+				<v-template-input
+					ref="commentElement"
+					v-model="newCommentContent"
+					capture-group="(@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12})"
+					multiline
+					trigger-character="@"
+					:items="userPreviews"
+					:placeholder="t('leave_comment')"
+					@trigger="triggerSearch"
+					@deactivate="showMentionDropDown = false"
+					@up="pressedUp"
+					@down="pressedDown"
+					@enter="pressedEnter"
+					@focus="focused = true"
+				/>
+			</template>
+
+			<v-list>
+				<v-list-item
+					v-for="(user, index) in searchResult"
+					id="suggestions"
+					:key="user.id"
+					clickable
+					:active="index === selectedKeyboardIndex"
+					@click="insertUser(user)"
+				>
+					<v-list-item-icon>
+						<v-avatar x-small>
+							<v-image v-if="user.avatar" :src="avatarSource(user.avatar.id)" />
+							<v-icon v-else name="person_outline" />
+						</v-avatar>
+					</v-list-item-icon>
+
+					<v-list-item-content>{{ userName(user) }}</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+
+		<div class="buttons">
+			<v-button x-small secondary icon class="mention" @click="insertAt">
+				<v-icon name="alternate_email" />
+			</v-button>
+
+			<v-emoji-picker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
+
+			<div class="spacer"></div>
+
+			<v-button class="cancel" x-small secondary @click="cancel">
+				{{ t('cancel') }}
+			</v-button>
+			<v-button
+				:disabled="!newCommentContent || newCommentContent.length === 0 || newCommentContent.trim() === ''"
+				:loading="saving"
+				class="post-comment"
+				x-small
+				@click="postComment"
+			>
+				{{ t('submit') }}
+			</v-button>
+		</div>
+	</div>
+</template>
 
 <style scoped lang="scss">
 .input-container {

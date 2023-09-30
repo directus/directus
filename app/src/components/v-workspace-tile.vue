@@ -1,87 +1,3 @@
-<template>
-	<div
-		class="v-workspace-tile"
-		:style="positionStyling"
-		:class="{
-			editing: editMode,
-			draggable,
-			dragging,
-			'br-tl': dragging || borderRadius[0],
-			'br-tr': dragging || borderRadius[1],
-			'br-br': dragging || borderRadius[2],
-			'br-bl': dragging || borderRadius[3],
-		}"
-		data-move
-		@pointerdown="onPointerDown('move', $event)"
-	>
-		<div v-if="showHeader" class="header">
-			<v-icon class="icon" :style="iconColor" :name="icon" small />
-			<v-text-overflow class="name" :text="name || ''" />
-			<div class="spacer" />
-			<v-icon v-if="note" v-tooltip="note" class="note" name="info" />
-		</div>
-
-		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click.stop="$emit('edit')" />
-
-			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
-				<template #activator="{ toggle }">
-					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
-				</template>
-
-				<v-list>
-					<v-list-item clickable :disabled="id.startsWith('_')" @click="$emit('move')">
-						<v-list-item-icon>
-							<v-icon class="move-icon" name="input" />
-						</v-list-item-icon>
-						<v-list-item-content>
-							{{ t('copy_to') }}
-						</v-list-item-content>
-					</v-list-item>
-
-					<v-list-item clickable @click="$emit('duplicate')">
-						<v-list-item-icon>
-							<v-icon name="control_point_duplicate" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ t('duplicate') }}</v-list-item-content>
-					</v-list-item>
-
-					<v-list-item class="delete-action" clickable @click="$emit('delete')">
-						<v-list-item-icon>
-							<v-icon name="delete" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-		</div>
-
-		<div class="resize-details">
-			({{ positioning.x - 1 }}:{{ positioning.y - 1 }})
-			<template v-if="resizable">{{ positioning.width }}×{{ positioning.height }}</template>
-		</div>
-
-		<div v-if="editMode && resizable" class="resize-handlers">
-			<div class="top" @pointerdown.stop="onPointerDown('resize-top', $event)" />
-			<div class="right" @pointerdown.stop="onPointerDown('resize-right', $event)" />
-			<div class="bottom" @pointerdown.stop="onPointerDown('resize-bottom', $event)" />
-			<div class="left" @pointerdown.stop="onPointerDown('resize-left', $event)" />
-			<div class="top-left" @pointerdown.stop="onPointerDown('resize-top-left', $event)" />
-			<div class="top-right" @pointerdown.stop="onPointerDown('resize-top-right', $event)" />
-			<div class="bottom-right" @pointerdown.stop="onPointerDown('resize-bottom-right', $event)" />
-			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
-		</div>
-
-		<div class="tile-content" :class="{ 'has-header': showHeader }">
-			<slot></slot>
-			<div v-if="$slots.footer" class="footer">
-				<slot name="footer"></slot>
-			</div>
-		</div>
-		<slot name="body"></slot>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Panel } from '@directus/types';
 import { computed, ref, reactive, StyleValue } from 'vue';
@@ -326,6 +242,90 @@ function useDragDrop() {
 	}
 }
 </script>
+
+<template>
+	<div
+		class="v-workspace-tile"
+		:style="positionStyling"
+		:class="{
+			editing: editMode,
+			draggable,
+			dragging,
+			'br-tl': dragging || borderRadius[0],
+			'br-tr': dragging || borderRadius[1],
+			'br-br': dragging || borderRadius[2],
+			'br-bl': dragging || borderRadius[3],
+		}"
+		data-move
+		@pointerdown="onPointerDown('move', $event)"
+	>
+		<div v-if="showHeader" class="header">
+			<v-icon class="icon" :style="iconColor" :name="icon" small />
+			<v-text-overflow class="name" :text="name || ''" />
+			<div class="spacer" />
+			<v-icon v-if="note" v-tooltip="note" class="note" name="info" />
+		</div>
+
+		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
+			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
+
+			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
+				<template #activator="{ toggle }">
+					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
+				</template>
+
+				<v-list>
+					<v-list-item clickable :disabled="id.startsWith('_')" @click="$emit('move')">
+						<v-list-item-icon>
+							<v-icon class="move-icon" name="input" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('copy_to') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item clickable @click="$emit('duplicate')">
+						<v-list-item-icon>
+							<v-icon name="control_point_duplicate" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ t('duplicate') }}</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item class="delete-action" clickable @click="$emit('delete')">
+						<v-list-item-icon>
+							<v-icon name="delete" />
+						</v-list-item-icon>
+						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		</div>
+
+		<div class="resize-details">
+			({{ positioning.x - 1 }}:{{ positioning.y - 1 }})
+			<template v-if="resizable">{{ positioning.width }}×{{ positioning.height }}</template>
+		</div>
+
+		<div v-if="editMode && resizable" class="resize-handlers">
+			<div class="top" @pointerdown.stop="onPointerDown('resize-top', $event)" />
+			<div class="right" @pointerdown.stop="onPointerDown('resize-right', $event)" />
+			<div class="bottom" @pointerdown.stop="onPointerDown('resize-bottom', $event)" />
+			<div class="left" @pointerdown.stop="onPointerDown('resize-left', $event)" />
+			<div class="top-left" @pointerdown.stop="onPointerDown('resize-top-left', $event)" />
+			<div class="top-right" @pointerdown.stop="onPointerDown('resize-top-right', $event)" />
+			<div class="bottom-right" @pointerdown.stop="onPointerDown('resize-bottom-right', $event)" />
+			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
+		</div>
+
+		<div class="tile-content" :class="{ 'has-header': showHeader }">
+			<slot></slot>
+			<div v-if="$slots.footer" class="footer">
+				<slot name="footer"></slot>
+			</div>
+		</div>
+		<slot name="body"></slot>
+	</div>
+</template>
 
 <style scoped lang="scss">
 .v-workspace-tile {

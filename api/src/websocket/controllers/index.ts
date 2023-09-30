@@ -1,6 +1,5 @@
 import type { Server as httpServer } from 'http';
 import env from '../../env.js';
-import { ServiceUnavailableException } from '../../index.js';
 import { toBoolean } from '../../utils/to-boolean.js';
 import { GraphQLSubscriptionController } from './graphql.js';
 import { WebSocketController } from './rest.js';
@@ -15,18 +14,6 @@ export function createWebSocketController(server: httpServer) {
 }
 
 export function getWebSocketController() {
-	if (!toBoolean(env['WEBSOCKETS_ENABLED']) || !toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
-		throw new ServiceUnavailableException('WebSocket server is disabled', {
-			service: 'get-websocket-controller',
-		});
-	}
-
-	if (!websocketController) {
-		throw new ServiceUnavailableException('WebSocket server is not initialized', {
-			service: 'get-websocket-controller',
-		});
-	}
-
 	return websocketController;
 }
 

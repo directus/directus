@@ -1,53 +1,6 @@
-<template>
-	<v-drawer
-		:title="modalTitle"
-		:model-value="isOpen"
-		class="new-collection"
-		persistent
-		:sidebar-label="currentTabInfo && currentTabInfo.text"
-		@cancel="close"
-	>
-		<template v-if="!loading" #sidebar>
-			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
-		</template>
-
-		<div v-if="!loading" class="content">
-			<permissions
-				v-if="currentTab[0] === 'permissions'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.permissions"
-			/>
-			<fields
-				v-if="currentTab[0] === 'fields'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.fields"
-			/>
-			<validation
-				v-if="currentTab[0] === 'validation'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.validation"
-			/>
-			<presets
-				v-if="currentTab[0] === 'presets'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.presets"
-			/>
-		</div>
-
-		<template v-if="!loading" #actions>
-			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
-		</template>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { useCollectionsStore } from '@/stores/collections';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission, Role } from '@directus/types';
@@ -73,28 +26,20 @@ const { t } = useI18n();
 
 const router = useRouter();
 
-const collectionsStore = useCollectionsStore();
-
 const isOpen = useDialogRoute();
 
 const permission = ref<Permission>();
 const role = ref<Role>();
 const loading = ref(false);
 
-const collectionName = computed(() => {
-	if (!permission.value) return null;
-	return collectionsStore.collections.find((collection) => collection.collection === permission.value!.collection)
-		?.name;
-});
-
 const modalTitle = computed(() => {
 	if (loading.value || !permission.value) return t('loading');
 
 	if (props.roleKey) {
-		return role.value!.name + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
+		return role.value!.name + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
 	}
 
-	return t('public_label') + ' -> ' + collectionName.value + ' -> ' + t(permission.value.action);
+	return t('public_label') + ' -> ' + permission.value!.collection + ' -> ' + t(permission.value.action);
 });
 
 watch(() => props.permissionKey, load, { immediate: true });
@@ -201,6 +146,52 @@ async function load() {
 	}
 }
 </script>
+
+<template>
+	<v-drawer
+		:title="modalTitle"
+		:model-value="isOpen"
+		class="new-collection"
+		persistent
+		:sidebar-label="currentTabInfo && currentTabInfo.text"
+		@cancel="close"
+	>
+		<template v-if="!loading" #sidebar>
+			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
+		</template>
+
+		<div v-if="!loading" class="content">
+			<permissions
+				v-if="currentTab[0] === 'permissions'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.permissions"
+			/>
+			<fields
+				v-if="currentTab[0] === 'fields'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.fields"
+			/>
+			<validation
+				v-if="currentTab[0] === 'validation'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.validation"
+			/>
+			<presets
+				v-if="currentTab[0] === 'presets'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.presets"
+			/>
+		</div>
+
+		<template v-if="!loading" #actions>
+			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
+		</template>
+	</v-drawer>
+</template>
 
 <style lang="scss" scoped>
 .content {

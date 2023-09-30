@@ -1,67 +1,32 @@
-import { defineModule } from '@directus/utils';
+import { useLocalStorage } from '@/composables/use-local-storage';
+import { useCollectionsStore } from '@/stores/collections';
 import { addQueryToPath } from '@/utils/add-query-to-path';
+import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import RouterPass from '@/utils/router-passthrough';
+import { Collection } from '@directus/types';
+import { defineModule } from '@directus/utils';
+import { isNil, orderBy } from 'lodash';
+import { ref } from 'vue';
 import { LocationQuery, NavigationGuard } from 'vue-router';
+import { useNavigation } from './composables/use-navigation';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
-import Preview from './routes/preview.vue';
-import ItemNotFound from './routes/not-found.vue';
 import NoCollections from './routes/no-collections.vue';
-import { useCollectionsStore } from '@/stores/collections';
-import { Collection } from '@directus/types';
-import { orderBy, isNil } from 'lodash';
-import { useNavigation } from './composables/use-navigation';
-import { useLocalStorage } from '@/composables/use-local-storage';
-import { ref } from 'vue';
+import ItemNotFound from './routes/not-found.vue';
+import Preview from './routes/preview.vue';
 
 const checkForSystem: NavigationGuard = (to, from) => {
 	if (!to.params?.collection) return;
 
-	if (to.params.collection === 'directus_users') {
-		if (to.params.primaryKey) {
-			return `/users/${to.params.primaryKey}`;
-		} else {
-			return '/users';
-		}
-	}
+	if (typeof to.params.collection === 'string') {
+		const route = getSystemCollectionRoute(to.params.collection);
 
-	if (to.params.collection === 'directus_files') {
-		if (to.params.primaryKey) {
-			return `/files/${to.params.primaryKey}`;
-		} else {
-			return '/files';
-		}
-	}
-
-	if (to.params.collection === 'directus_activity') {
-		if (to.params.primaryKey) {
-			return `/activity/${to.params.primaryKey}`;
-		} else {
-			return '/activity';
-		}
-	}
-
-	if (to.params.collection === 'directus_webhooks') {
-		if (to.params.primaryKey) {
-			return `/settings/webhooks/${to.params.primaryKey}`;
-		} else {
-			return '/settings/webhooks';
-		}
-	}
-
-	if (to.params.collection === 'directus_presets') {
-		if (to.params.primaryKey) {
-			return `/settings/presets/${to.params.primaryKey}`;
-		} else {
-			return '/settings/presets';
-		}
-	}
-
-	if (to.params.collection === 'directus_translations') {
-		if (to.params.primaryKey) {
-			return `/settings/translations/${to.params.primaryKey}`;
-		} else {
-			return '/settings/translations';
+		if (route) {
+			if (typeof to.params.primaryKey === 'string') {
+				return getItemRoute(to.params.collection, to.params.primaryKey);
+			} else {
+				return route;
+			}
 		}
 	}
 
@@ -73,6 +38,8 @@ const checkForSystem: NavigationGuard = (to, from) => {
 	) {
 		return addQueryToPath(to.fullPath, { bookmark: from.query.bookmark });
 	}
+
+	return;
 };
 
 const getArchiveValue = (query: LocationQuery) => {
@@ -110,10 +77,10 @@ export default defineModule({
 				const { data } = useLocalStorage('last-accessed-collection');
 
 				if (
-					data.value &&
+					typeof data.value === 'string' &&
 					collectionsStore.visibleCollections.find((visibleCollection) => visibleCollection.collection === data.value)
 				) {
-					return `/content/${data.value}`;
+					return getCollectionRoute(data.value);
 				}
 
 				let firstCollection = findFirst(rootCollections);
@@ -123,7 +90,7 @@ export default defineModule({
 
 				if (!firstCollection) return;
 
-				return `/content/${firstCollection.collection}`;
+				return getCollectionRoute(firstCollection.collection);
 
 				function findFirst(collections: Collection[], { skipClosed } = { skipClosed: true }): Collection | void {
 					for (const collection of collections) {

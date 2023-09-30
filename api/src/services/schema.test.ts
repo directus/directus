@@ -1,14 +1,14 @@
 import type { Diff } from 'deep-diff';
-import knex from 'knex';
 import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import { SchemaService } from './schema.js';
-import { ForbiddenException } from '../exceptions/forbidden.js';
+import { ForbiddenError } from '../errors/index.js';
 import type { Collection } from '../types/collection.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot.js';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
+import { SchemaService } from './schema.js';
 
 vi.mock('../utils/package.js', () => ({ version: '0.0.0' }));
 
@@ -74,12 +74,12 @@ afterEach(() => {
 
 describe('Services / Schema', () => {
 	describe('snapshot', () => {
-		it('should throw ForbiddenException for non-admin user', async () => {
+		it('should throw ForbiddenError for non-admin user', async () => {
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
 
-			expect(service.snapshot()).rejects.toThrowError(ForbiddenException);
+			expect(service.snapshot()).rejects.toThrowError(ForbiddenError);
 		});
 
 		it('should return snapshot for admin user', async () => {
@@ -101,12 +101,12 @@ describe('Services / Schema', () => {
 			},
 		} satisfies SnapshotDiffWithHash;
 
-		it('should throw ForbiddenException for non-admin user', async () => {
+		it('should throw ForbiddenError for non-admin user', async () => {
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
 
-			expect(service.apply(snapshotDiffWithHash)).rejects.toThrowError(ForbiddenException);
+			expect(service.apply(snapshotDiffWithHash)).rejects.toThrowError(ForbiddenError);
 			expect(vi.mocked(applyDiff)).not.toHaveBeenCalledOnce();
 		});
 
@@ -149,11 +149,11 @@ describe('Services / Schema', () => {
 			relations: [],
 		} satisfies Snapshot;
 
-		it('should throw ForbiddenException for non-admin user', async () => {
+		it('should throw ForbiddenError for non-admin user', async () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
 
 			expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).rejects.toThrowError(
-				ForbiddenException
+				ForbiddenError
 			);
 		});
 

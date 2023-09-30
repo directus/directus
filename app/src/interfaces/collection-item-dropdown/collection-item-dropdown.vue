@@ -1,34 +1,3 @@
-<template>
-	<div class="collection-item-dropdown">
-		<v-skeleton-loader v-if="loading" type="input" />
-		<v-input v-else clickable :placeholder="t('select_an_item')" :disabled="disabled" @click="selectDrawerOpen = true">
-			<template v-if="displayItem" #input>
-				<div class="preview">
-					<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
-				</div>
-			</template>
-
-			<template #append>
-				<template v-if="displayItem">
-					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', undefined)" />
-				</template>
-				<template v-else>
-					<v-icon class="expand" name="expand_more" />
-				</template>
-			</template>
-		</v-input>
-
-		<drawer-collection
-			v-model:active="selectDrawerOpen"
-			:collection="selectedCollection"
-			:selection="value?.key ? [value.key] : []"
-			:filter="filter!"
-			@input="onSelection"
-			@update:active="selectDrawerOpen = false"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
@@ -138,8 +107,42 @@ function onSelection(selectedIds: (number | string)[] | null) {
 }
 </script>
 
+<template>
+	<div class="collection-item-dropdown">
+		<v-skeleton-loader v-if="loading" type="input" />
+		<v-input v-else clickable :placeholder="t('select_an_item')" :disabled="disabled" @click="selectDrawerOpen = true">
+			<template v-if="displayItem" #input>
+				<div class="preview">
+					<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
+				</div>
+			</template>
+
+			<template #append>
+				<template v-if="displayItem">
+					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', undefined)" />
+				</template>
+				<template v-else>
+					<v-icon class="expand" name="expand_more" />
+				</template>
+			</template>
+		</v-input>
+
+		<drawer-collection
+			v-model:active="selectDrawerOpen"
+			:collection="selectedCollection"
+			:selection="value?.key ? [value.key] : []"
+			:filter="filter!"
+			@input="onSelection"
+			@update:active="selectDrawerOpen = false"
+		/>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .preview {
+	display: block;
 	flex-grow: 1;
+	height: calc(100% - 16px);
+	overflow: hidden;
 }
 </style>

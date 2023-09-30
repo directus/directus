@@ -35,6 +35,7 @@ tile_size: Failisuurus
 edit_field: Muuda Välja
 conditions: Tingimused
 location: Asukoht
+collection_names_are_case_sensitive: Andmekogude nimed on tõstutundlikud
 condition_rules: Tingimuse Reeglid
 input: Sisend
 maps: Kaardid
@@ -64,6 +65,7 @@ leaf: Leht
 indeterminate: Määramatu
 edit_collection: Muuda Kogumikku
 exclusive: Eksklusiivne
+children: Tütred
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida'
 show_active_items: Näita Aktiivseid Kirjeid
 show_archived_items: Näita Arhiveeritud Üksuseid
@@ -79,14 +81,10 @@ create_user: Loo Kasutaja
 message: Sõnum
 delete_panel: Kustutamise Paneel
 create_webhook: Loo Veebikonks
-create_translation_string: Loo Tõlkestring
-no_translation_string: Puuduvad Tõlkestringid
-no_translation_string_copy: Tõlkestringe veel pole.
-translation_string_key_placeholder: Tõlkestringi võti...
-translation_string_translations_placeholder: Loo uus tõlge
-edit_translation_string: Muuda Tõlkestringi
-delete_translation_string_copy: >-
-  Oled kindel, et soovid tõlkestringi "{key}" kustutada? Seda toimingut ei saa tagasi võtta.
+create_custom_translation: Loo Uus Tõlge
+edit_custom_translation: Muuda Tõlget
+no_custom_translations: Tõlked Puuduvad
+no_custom_translations_copy: Hetkel puuduvad tõlked.
 invite_users: Kutsu Kasutajaid
 invite: Kutsu
 email_already_invited: Meilile "{email}" on kutse juba saadetud
@@ -117,19 +115,13 @@ public_label: Avalik
 public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 admin_description: Esialgne administraatoriroll. Administraatoril on piiramatu juurdepääs rakendusele ja API-le.
 not_allowed: Ei ole lubatud
-directus_version: Directuse Versioon
-node_version: Node Versioon
-node_uptime: Node ülevaloleku aeg
-os_type: OS Tüüp
-os_version: OS Versioon
-os_uptime: OS Ülevaloleku Aeg
-os_totalmem: OS Mälu
 archive: Arhiiv
 archive_confirm: Oled kindel, et soovid arhiveerida selle kirje?
 archive_confirm_count: >-
   Kirjeid pole valitud | Oled kindel, et soovid arhiveerida selle kirje? | Oled kindel, et soovid arhiveerida {count} kirjet?
 reset_system_permissions_to: 'Lähtesta Süsteemi Load:'
 reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
+the_following_are_minimum_permissions: Järgmised minimaalsed kasutajaõigused rakenduvad automaatselt, kui "Äpi Juurdepääs" on sisse lülitatud. Vajadusel saate anda täiendavaid õigusi, kuid siinsed õigused on minimaalselt rakenduvad õigused.
 app_access_minimum: Rakenduse Ligipääsu Miinimum
 recommended_defaults: Soovituslikud Vaikeväärtused
 unarchive: Eemalda arhiivist
@@ -154,6 +146,14 @@ validationError:
   required: Väärtus on nõutud
   unique: Väärtus peab olema unikaalne
   regex: Väärtuse vorming on vigane
+  starts_with: Väärtuse alguses peab olema {substring}
+  istarts_with: Väärtuse alguses peab olema {substring}
+  nstarts_with: Väärtuse alguses ei tohi olla {substring}
+  nistarts_with: Väärtuse alguses ei tohi olla {substring}
+  ends_with: Väärtuse lõpus peab olema {substring}
+  iends_with: Väärtuse lõpus peab olema {substring}
+  nends_with: Väärtuse lõpus ei tohi olla {substring}
+  niends_with: Väärtuse lõpus ei tohi olla {substring}
 all_access: Ligipääs Kõigele
 no_access: Ei Ole Ligipääsu
 use_custom: Kasuta Kohandatud
@@ -201,8 +201,11 @@ aggregate_function: Koondfunktsioon
 global: Üldine
 admins_have_all_permissions: Adminnidel on kõik õigused
 camera: Kaamera
+create_in_advanced_field_creation_mode: Loo Väli Täpsemas Režiimis
+continue_in_advanced_field_creation_mode: Jätkake Täpsemas Välja Loomises
 validation: Valideerimine
 sum: Summa
+sum_distinct: Summeerige Ainulaadsed
 avg: Keskmine
 count: Arv
 min: Miinimum
@@ -345,6 +348,7 @@ move: Liiguta
 system: Süsteem
 add_field_related: Lisa väli seotud andmekogusse
 interface_label: Kasutajaliides
+display_label: Vaade
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
@@ -437,10 +441,8 @@ enable_select_button: Luba valimise nupp
 allow_duplicates: Luba duplikaadid
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
-click_to_expand: Kliki suurendamiseks
 select_item: Vali kirje
 no_items: Kirjeid pole
-search_items: Otsi kirjeid...
 disabled: keelatud
 information: Teave
 report_bug: Teata veast
@@ -963,6 +965,7 @@ field_options:
     collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
     sort_divider: Sorteeri
+    preview_divider: Eelvaade
   directus_roles:
     fields:
       icon_name: Ikoon
@@ -989,6 +992,8 @@ save_current_datetime: Salvesta hetke kuupäev/kellaaeg
 block: Blokeeri
 inline: Tekstisisene
 comment: Kommentaar
+live_preview:
+  new_window: Ava Uues Aknas
 relational_triggers: Suhtelised lülitid
 referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
 referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...
@@ -1165,6 +1170,8 @@ interfaces:
   system-interface-options:
     interface-options: Kasutajaliidese valikud
     description: Kasutajaliidese valikute tegemise hüpikaken
+  system-display:
+    display: Vaade
   list-m2m:
     many-to-many: Mitu mitmele
     description: Vali mitu seotud kirjet
@@ -1210,6 +1217,7 @@ interfaces:
     add_label: '"Lisa uus" nimetus'
     sort: Sorteeri
     field_note_placeholder: Sisesta välja märkus...
+    interface_group: Kasutajaliidese valikud
   slider:
     slider: Liugur
     description: Vali number slaiderilt
@@ -1274,6 +1282,14 @@ interfaces:
     custom_formats: Kohandatud vormingud
     options_override: Valikute ülekirjutamine
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
+  input-block-editor:
+    tools: Tööriistariba
+    tools_options:
+      embed: Põimitud
+      code: Kood
+      image: Pilt
+      table: Tabel
+      underline: Allajoonitud
   input-autocomplete-api:
     input-autocomplete-api: Automaatselt täidetav väli (API)
     description: Otsingutulemused välisest APIst.
@@ -1411,6 +1427,9 @@ panels:
   label:
     name: Silt
 operations:
+  json-web-token:
+    token: Kontrollkood
+    options: Valikud
   log:
     message: Sõnum
   mail:
@@ -1418,5 +1437,6 @@ operations:
   notification:
     recipient: Kasutaja
     message: Sõnum
+    subject: Teema
   request:
     url: URL

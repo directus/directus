@@ -1,138 +1,3 @@
-<template>
-	<v-menu
-		class="v-select"
-		:disabled="disabled"
-		:attached="inline === false"
-		:is-same-width="isMenuSameWidth"
-		:show-arrow="inline === true"
-		:close-on-content-click="closeOnContentClick"
-		:placement="placement"
-	>
-		<template #activator="{ toggle, active }">
-			<div
-				v-if="inline"
-				class="inline-display"
-				:class="{ placeholder: !displayValue, label, active, disabled }"
-				@click="toggle"
-			>
-				<slot name="preview">{{ displayValue || placeholder }}</slot>
-				<v-icon name="expand_more" :class="{ active }" />
-			</div>
-			<slot v-else name="preview">
-				<v-input
-					:full-width="fullWidth"
-					readonly
-					:model-value="displayValue"
-					clickable
-					:placeholder="placeholder"
-					:disabled="disabled"
-					:active="active"
-					@click="toggle"
-				>
-					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
-					<template #append>
-						<v-icon name="expand_more" :class="{ active }" />
-						<slot name="append" />
-					</template>
-				</v-input>
-			</slot>
-		</template>
-
-		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
-			<template v-if="showDeselect">
-				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
-					<v-list-item-icon v-if="multiple === true">
-						<v-icon name="close" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ multiple ? t('deselect_all') : t('deselect') }}
-					</v-list-item-content>
-					<v-list-item-icon v-if="multiple === false">
-						<v-icon name="close" />
-					</v-list-item-icon>
-				</v-list-item>
-				<v-divider />
-			</template>
-
-			<v-list-item v-if="internalItemsCount > 20 || search">
-				<v-list-item-content>
-					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
-						<template #append>
-							<v-icon small name="search" />
-						</template>
-					</v-input>
-				</v-list-item-content>
-			</v-list-item>
-
-			<template v-for="(item, index) in internalItems" :key="index">
-				<select-list-item-group
-					v-if="item.children"
-					:item="item"
-					:model-value="modelValue"
-					:multiple="multiple"
-					:allow-other="allowOther"
-					:group-selectable="groupSelectable"
-					@update:model-value="$emit('update:modelValue', $event)"
-				/>
-				<select-list-item
-					v-else
-					:model-value="modelValue"
-					:item="item"
-					:multiple="multiple"
-					:allow-other="allowOther"
-					@update:model-value="$emit('update:modelValue', $event)"
-				/>
-			</template>
-
-			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
-				<v-list-item-content>
-					<input
-						v-model="otherValue"
-						class="other-input"
-						:placeholder="t('other')"
-						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
-					/>
-				</v-list-item-content>
-			</v-list-item>
-
-			<template v-if="allowOther && multiple === true">
-				<v-list-item
-					v-for="otherVal in otherValues"
-					:key="otherVal.key"
-					:active="(modelValue || []).includes(otherVal.value)"
-					@click.stop
-				>
-					<v-list-item-icon>
-						<v-checkbox
-							:model-value="modelValue || []"
-							:value="otherVal.value"
-							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
-						/>
-					</v-list-item-icon>
-					<v-list-item-content>
-						<input
-							v-focus
-							class="other-input"
-							:value="otherVal.value"
-							:placeholder="t('other')"
-							@input="setOtherValue(otherVal.key, ($event.target as any)?.value)"
-							@blur="otherVal.value.length === 0 && setOtherValue(otherVal.key, null)"
-						/>
-					</v-list-item-content>
-					<v-list-item-icon>
-						<v-icon name="close" clickable @click="setOtherValue(otherVal.key, null)" />
-					</v-list-item-icon>
-				</v-list-item>
-
-				<v-list-item @click.stop="addOtherValue()">
-					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-					<v-list-item-content>{{ t('other') }}</v-list-item-content>
-				</v-list-item>
-			</template>
-		</v-list>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import { useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
 import { Placement } from '@popperjs/core';
@@ -155,6 +20,8 @@ interface Props {
 	itemValue?: string;
 	/** Which key in items is used to show an icon */
 	itemIcon?: string | null;
+	/** Which font family to use for checkbox item label */
+	itemLabelFontFamily?: string;
 	/** Which key in items is used to model the disabled state */
 	itemDisabled?: string;
 	/** Which key in items is used to model the selectable state */
@@ -200,17 +67,10 @@ const props = withDefaults(defineProps<Props>(), {
 	itemSelectable: 'selectable',
 	itemChildren: 'children',
 	modelValue: null,
-	multiple: false,
-	groupSelectable: false,
 	mandatory: true,
 	placeholder: null,
 	fullWidth: true,
-	disabled: false,
-	showDeselect: false,
-	allowOther: false,
 	closeOnContentClick: true,
-	inline: false,
-	label: false,
 	multiplePreviewThreshold: 3,
 	placement: 'bottom',
 	isMenuSameWidth: true,
@@ -247,42 +107,57 @@ function useItems() {
 	const internalSearch = ref<string | null>(null);
 
 	const internalItems = computed(() => {
-		const parseItem = (item: Record<string, any>): Option => {
+		const parseItem = (item: Record<string, any> | string): Option => {
 			if (typeof item === 'string') {
 				return {
 					text: item,
 					value: item,
+					hidden: internalSearch.value ? !filterItem(item) : false,
 				};
 			}
 
 			if (item.divider === true) return { value: null, divider: true };
 
+			const text = get(item, props.itemText);
+			const value = get(item, props.itemValue);
 			const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
 
 			return {
-				text: get(item, props.itemText),
-				value: get(item, props.itemValue),
+				text,
+				value,
 				icon: props.itemIcon ? get(item, props.itemIcon) : undefined,
 				disabled: get(item, props.itemDisabled),
 				selectable: get(item, props.itemSelectable),
-				children: children ? children.filter(filterItem) : children,
-				hidden: internalSearch.value ? !filterItem(item) : false,
+				children: children
+					? children.filter((childItem: Record<string, any>) =>
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+					  )
+					: children,
+				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
 			};
 		};
 
-		const filterItem = (item: Record<string, any>): boolean => {
+		const filterItem = (
+			text: string | undefined,
+			value?: string | number | null,
+			children?: Record<string, any>[] | null
+		): boolean => {
 			if (!internalSearch.value) return true;
 
 			const searchValue = internalSearch.value.toLowerCase();
 
-			return item?.children
-				? isMatchingCurrentItem(item, searchValue) ||
-						item.children.some((item: Record<string, any>) => filterItem(item))
-				: isMatchingCurrentItem(item, searchValue);
+			return children
+				? isMatchingCurrentItem(text, value, searchValue) ||
+						children.some((childItem: Record<string, any>) =>
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+						)
+				: isMatchingCurrentItem(text, value, searchValue);
 
-			function isMatchingCurrentItem(item: Record<string, any>, searchValue: string): boolean {
-				const text = get(item, props.itemText);
-				const value = get(item, props.itemValue);
+			function isMatchingCurrentItem(
+				text: string | undefined,
+				value: string | number | null | undefined,
+				searchValue: string
+			): boolean {
 				return (
 					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
 					(value ? String(value).toLowerCase().includes(searchValue) : false)
@@ -358,6 +233,143 @@ function useDisplayValue() {
 }
 </script>
 
+<template>
+	<v-menu
+		class="v-select"
+		:disabled="disabled"
+		:attached="inline === false"
+		:is-same-width="isMenuSameWidth"
+		:show-arrow="inline === true"
+		:close-on-content-click="closeOnContentClick"
+		:placement="placement"
+	>
+		<template #activator="{ toggle, active }">
+			<div
+				v-if="inline"
+				class="inline-display"
+				:class="{ placeholder: !displayValue, label, active, disabled }"
+				@click="toggle"
+			>
+				<slot name="preview">{{ displayValue || placeholder }}</slot>
+				<v-icon name="expand_more" :class="{ active }" />
+			</div>
+			<slot v-else name="preview">
+				<v-input
+					:full-width="fullWidth"
+					readonly
+					:model-value="displayValue"
+					clickable
+					:placeholder="placeholder"
+					:disabled="disabled"
+					:active="active"
+					@click="toggle"
+				>
+					<template v-if="$slots.prepend" #prepend><slot name="prepend" /></template>
+					<template #append>
+						<v-icon name="expand_more" :class="{ active }" />
+						<slot name="append" />
+					</template>
+				</v-input>
+			</slot>
+		</template>
+
+		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
+			<template v-if="showDeselect">
+				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
+					<v-list-item-icon v-if="multiple === true">
+						<v-icon name="close" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ multiple ? t('deselect_all') : t('deselect') }}
+					</v-list-item-content>
+					<v-list-item-icon v-if="multiple === false">
+						<v-icon name="close" />
+					</v-list-item-icon>
+				</v-list-item>
+				<v-divider />
+			</template>
+
+			<v-list-item v-if="internalItemsCount > 10 || search">
+				<v-list-item-content>
+					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
+						<template #append>
+							<v-icon small name="search" />
+						</template>
+					</v-input>
+				</v-list-item-content>
+			</v-list-item>
+
+			<template v-for="(item, index) in internalItems" :key="index">
+				<select-list-item-group
+					v-if="item.children"
+					:item="item"
+					:item-label-font-family="itemLabelFontFamily"
+					:model-value="modelValue"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					:group-selectable="groupSelectable"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
+				<select-list-item
+					v-else
+					:model-value="modelValue"
+					:item="item"
+					:item-label-font-family="itemLabelFontFamily"
+					:multiple="multiple"
+					:allow-other="allowOther"
+					@update:model-value="$emit('update:modelValue', $event)"
+				/>
+			</template>
+
+			<v-list-item v-if="allowOther && multiple === false" :active="usesOtherValue" @click.stop>
+				<v-list-item-content>
+					<input
+						v-model="otherValue"
+						class="other-input"
+						:placeholder="t('other')"
+						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
+					/>
+				</v-list-item-content>
+			</v-list-item>
+
+			<template v-if="allowOther && multiple === true">
+				<v-list-item
+					v-for="otherVal in otherValues"
+					:key="otherVal.key"
+					:active="(modelValue || []).includes(otherVal.value)"
+					@click.stop
+				>
+					<v-list-item-icon>
+						<v-checkbox
+							:model-value="modelValue || []"
+							:value="otherVal.value"
+							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
+						/>
+					</v-list-item-icon>
+					<v-list-item-content>
+						<input
+							v-focus
+							class="other-input"
+							:value="otherVal.value"
+							:placeholder="t('other')"
+							@input="setOtherValue(otherVal.key, ($event.target as any)?.value)"
+							@blur="otherVal.value.length === 0 && setOtherValue(otherVal.key, null)"
+						/>
+					</v-list-item-content>
+					<v-list-item-icon>
+						<v-icon name="close" clickable @click="setOtherValue(otherVal.key, null)" />
+					</v-list-item-icon>
+				</v-list-item>
+
+				<v-list-item @click.stop="addOtherValue()">
+					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
+					<v-list-item-content>{{ t('other') }}</v-list-item-content>
+				</v-list-item>
+			</template>
+		</v-list>
+	</v-menu>
+</template>
+
 <style scoped lang="scss">
 :global(body) {
 	--v-select-font-family: var(--family-sans-serif);
@@ -366,10 +378,6 @@ function useDisplayValue() {
 
 .list {
 	--v-list-min-width: 0;
-}
-
-.item-text {
-	font-family: var(--v-select-font-family);
 }
 
 .v-input {

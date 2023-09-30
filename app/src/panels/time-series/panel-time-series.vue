@@ -1,9 +1,3 @@
-<template>
-	<div class="time-series">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction } from '@/types/panels';
@@ -334,6 +328,12 @@ function setupChart() {
 	}
 }
 </script>
+
+<template>
+	<div class="time-series">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .time-series {

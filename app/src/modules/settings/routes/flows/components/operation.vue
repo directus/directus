@@ -1,3 +1,166 @@
+<script setup lang="ts">
+import { useExtensions } from '@/extensions';
+import { Vector2 } from '@/utils/vector2';
+import { FlowRaw } from '@directus/types';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+import { getTriggers } from '../triggers';
+import OptionsOverview from './options-overview.vue';
+
+export type Target = 'resolve' | 'reject';
+export type ArrowInfo = {
+	id: string;
+	pos: Vector2;
+	type: Target;
+};
+
+const props = withDefaults(
+	defineProps<{
+		panel: Record<string, any>;
+		type?: 'trigger' | 'operation';
+		editMode?: boolean;
+		parent?: { id: string; type: Target; loner: boolean };
+		flow: FlowRaw;
+		panelsToBeDeleted: string[];
+		isHovered: boolean;
+		subdued?: boolean;
+	}>(),
+	{
+		type: 'operation',
+		editMode: false,
+		parent: undefined,
+		isHovered: false,
+		subdued: false,
+	}
+);
+
+const { panelsToBeDeleted } = toRefs(props);
+
+const { operations } = useExtensions();
+const { triggers } = getTriggers();
+
+const emit = defineEmits([
+	'create',
+	'preview',
+	'edit',
+	'update',
+	'delete',
+	'move',
+	'duplicate',
+	'arrow-move',
+	'arrow-stop',
+	'show-hint',
+	'hide-hint',
+	'flow-status',
+]);
+
+const { t } = useI18n();
+
+const styleVars = {
+	'--reject-left': REJECT_OFFSET.x + 'px',
+	'--reject-top': REJECT_OFFSET.y + 'px',
+	'--resolve-left': RESOLVE_OFFSET.x + 'px',
+	'--resolve-top': RESOLVE_OFFSET.y + 'px',
+	'--attachment-x': ATTACHMENT_OFFSET.x + 'px',
+	'--attachment-y': ATTACHMENT_OFFSET.y + 'px',
+};
+
+const currentOperation = computed(() => {
+	if (props.type === 'operation') return operations.value.find((operation) => operation.id === props.panel.type);
+	else return triggers.find((trigger) => trigger.id === props.panel.type);
+});
+
+let down: Target | 'parent' | undefined = undefined;
+let rafId: number | null = null;
+const moving = ref(false);
+let workspaceOffset: Vector2 = new Vector2(0, 0);
+
+const isReject = computed(() => props.parent?.type === 'reject');
+
+function pointerdown(target: Target | 'parent') {
+	if (!props.editMode || (target === 'parent' && props.parent === undefined)) return;
+
+	down = target;
+
+	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
+
+	if (rect) {
+		workspaceOffset = new Vector2(rect.left, rect.top);
+	}
+
+	window.addEventListener('pointermove', pointermove);
+	window.addEventListener('pointerup', pointerup);
+}
+
+const pointermove = (event: PointerEvent) => {
+	rafId = window.requestAnimationFrame(() => {
+		moving.value = true;
+		if (!down) return;
+
+		const arrowInfo: ArrowInfo =
+			down === 'parent'
+				? {
+						id: props.parent?.id,
+						type: props.parent?.type as Target,
+						pos: new Vector2(
+							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+						),
+				  }
+				: {
+						id: props.panel.id,
+						type: down,
+						pos: new Vector2(
+							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+						),
+				  };
+
+		emit('arrow-move', arrowInfo);
+	});
+};
+
+function pointerup() {
+	if (
+		!moving.value &&
+		((down === 'reject' && (!props.panel.reject || panelsToBeDeleted.value.includes(props.panel.reject))) ||
+			(down === 'resolve' && (!props.panel.resolve || panelsToBeDeleted.value.includes(props.panel.resolve))))
+	) {
+		emit('create', props.panel.id, down);
+	}
+
+	moving.value = false;
+	down = undefined;
+	if (rafId) window.cancelAnimationFrame(rafId);
+
+	emit('arrow-stop');
+
+	window.removeEventListener('pointermove', pointermove);
+	window.removeEventListener('pointerup', pointerup);
+}
+
+const flowStatus = computed({
+	get() {
+		return props.flow.status;
+	},
+	set(newVal: string) {
+		emit('flow-status', newVal);
+	},
+});
+
+/* show hint buttons */
+function pointerEnter() {
+	if (!props.editMode) return;
+	emit('show-hint', props.panel.id);
+}
+
+function pointerLeave() {
+	if (!props.editMode) return;
+	emit('hide-hint');
+}
+</script>
+
 <template>
 	<v-workspace-tile
 		v-bind="panel"
@@ -136,169 +299,6 @@
 		</template>
 	</v-workspace-tile>
 </template>
-
-<script setup lang="ts">
-import { useExtensions } from '@/extensions';
-import { Vector2 } from '@/utils/vector2';
-import { FlowRaw } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
-import { getTriggers } from '../triggers';
-import OptionsOverview from './options-overview.vue';
-
-export type Target = 'resolve' | 'reject';
-export type ArrowInfo = {
-	id: string;
-	pos: Vector2;
-	type: Target;
-};
-
-const props = withDefaults(
-	defineProps<{
-		panel: Record<string, any>;
-		type?: 'trigger' | 'operation';
-		editMode?: boolean;
-		parent?: { id: string; type: Target; loner: boolean };
-		flow: FlowRaw;
-		panelsToBeDeleted: string[];
-		isHovered: boolean;
-		subdued?: boolean;
-	}>(),
-	{
-		type: 'operation',
-		editMode: false,
-		parent: undefined,
-		isHovered: false,
-		subdued: false,
-	}
-);
-
-const { panelsToBeDeleted } = toRefs(props);
-
-const { operations } = useExtensions();
-const { triggers } = getTriggers();
-
-const emit = defineEmits([
-	'create',
-	'preview',
-	'edit',
-	'update',
-	'delete',
-	'move',
-	'duplicate',
-	'arrow-move',
-	'arrow-stop',
-	'show-hint',
-	'hide-hint',
-	'flow-status',
-]);
-
-const { t } = useI18n();
-
-const styleVars = {
-	'--reject-left': REJECT_OFFSET.x + 'px',
-	'--reject-top': REJECT_OFFSET.y + 'px',
-	'--resolve-left': RESOLVE_OFFSET.x + 'px',
-	'--resolve-top': RESOLVE_OFFSET.y + 'px',
-	'--attachment-x': ATTACHMENT_OFFSET.x + 'px',
-	'--attachment-y': ATTACHMENT_OFFSET.y + 'px',
-};
-
-const currentOperation = computed(() => {
-	if (props.type === 'operation') return operations.value.find((operation) => operation.id === props.panel.type);
-	else return triggers.find((trigger) => trigger.id === props.panel.type);
-});
-
-let down: Target | 'parent' | undefined = undefined;
-let rafId: number | null = null;
-let moving = ref(false);
-let workspaceOffset: Vector2 = new Vector2(0, 0);
-
-const isReject = computed(() => props.parent?.type === 'reject');
-
-function pointerdown(target: Target | 'parent') {
-	if (!props.editMode || (target === 'parent' && props.parent === undefined)) return;
-
-	down = target;
-
-	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
-
-	if (rect) {
-		workspaceOffset = new Vector2(rect.left, rect.top);
-	}
-
-	window.addEventListener('pointermove', pointermove);
-	window.addEventListener('pointerup', pointerup);
-}
-
-const pointermove = (event: PointerEvent) => {
-	rafId = window.requestAnimationFrame(() => {
-		moving.value = true;
-		if (!down) return;
-
-		const arrowInfo: ArrowInfo =
-			down === 'parent'
-				? {
-						id: props.parent?.id,
-						type: props.parent?.type as Target,
-						pos: new Vector2(
-							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
-						),
-				  }
-				: {
-						id: props.panel.id,
-						type: down,
-						pos: new Vector2(
-							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
-						),
-				  };
-
-		emit('arrow-move', arrowInfo);
-	});
-};
-
-function pointerup() {
-	if (
-		!moving.value &&
-		((down === 'reject' && (!props.panel.reject || panelsToBeDeleted.value.includes(props.panel.reject))) ||
-			(down === 'resolve' && (!props.panel.resolve || panelsToBeDeleted.value.includes(props.panel.resolve))))
-	) {
-		emit('create', props.panel.id, down);
-	}
-
-	moving.value = false;
-	down = undefined;
-	if (rafId) window.cancelAnimationFrame(rafId);
-
-	emit('arrow-stop');
-
-	window.removeEventListener('pointermove', pointermove);
-	window.removeEventListener('pointerup', pointerup);
-}
-
-const flowStatus = computed({
-	get() {
-		return props.flow.status;
-	},
-	set(newVal: string) {
-		emit('flow-status', newVal);
-	},
-});
-
-/* show hint buttons */
-function pointerEnter() {
-	if (!props.editMode) return;
-	emit('show-hint', props.panel.id);
-}
-
-function pointerLeave() {
-	if (!props.editMode) return;
-	emit('hide-hint');
-}
-</script>
 
 <style lang="scss" scoped>
 .v-workspace-tile.block-container {

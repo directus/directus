@@ -1,66 +1,3 @@
-<template>
-	<div class="interface-map">
-		<div
-			class="map"
-			:class="{
-				loading: mapLoading,
-				error: geometryParsingError || geometryOptionsError,
-				'has-selection': selection.length > 0,
-			}"
-		>
-			<div ref="container" />
-		</div>
-		<div
-			v-if="location"
-			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
-			:style="`transform: translate(${projection!.x}px, ${projection!.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
-		></div>
-		<transition name="fade">
-			<div
-				v-if="tooltipVisible"
-				class="tooltip top"
-				:style="`display: block; transform: translate(${tooltipPosition.x}px, ${tooltipPosition.y}px) translate(-50%, -150%) rotateX(0deg) rotateZ(0deg)`"
-			>
-				{{ tooltipMessage }}
-			</div>
-		</transition>
-		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
-			<v-icon name="map" />
-			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
-		</div>
-		<transition name="fade">
-			<v-info
-				v-if="geometryOptionsError"
-				icon="error"
-				center
-				type="danger"
-				:title="t('interfaces.map.invalid_options')"
-			>
-				<v-notice type="danger" :icon="false">
-					{{ geometryOptionsError }}
-				</v-notice>
-			</v-info>
-			<v-info
-				v-else-if="geometryParsingError"
-				icon="error"
-				center
-				type="warning"
-				:title="t('layouts.map.invalid_geometry')"
-			>
-				<v-notice type="warning" :icon="false">
-					{{ geometryParsingError }}
-				</v-notice>
-				<template #append>
-					<v-card-actions>
-						<v-button small secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
-						<v-button small kind="danger" @click="resetValue(true)">{{ t('reset') }}</v-button>
-					</v-card-actions>
-				</template>
-			</v-info>
-		</transition>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/settings';
 import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
@@ -125,7 +62,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const container: Ref<HTMLElement | null> = ref(null);
 let map: Map;
-let mapLoading = ref(true);
+const mapLoading = ref(true);
 let currentGeometry: Geometry | null | undefined;
 
 const geometryOptionsError = ref<string | null>();
@@ -461,6 +398,69 @@ function handleKeyDown(event: any) {
 	}
 }
 </script>
+
+<template>
+	<div class="interface-map">
+		<div
+			class="map"
+			:class="{
+				loading: mapLoading,
+				error: geometryParsingError || geometryOptionsError,
+				'has-selection': selection.length > 0,
+			}"
+		>
+			<div ref="container" />
+		</div>
+		<div
+			v-if="location"
+			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
+			:style="`transform: translate(${projection!.x}px, ${projection!.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
+		></div>
+		<transition name="fade">
+			<div
+				v-if="tooltipVisible"
+				class="tooltip top"
+				:style="`display: block; transform: translate(${tooltipPosition.x}px, ${tooltipPosition.y}px) translate(-50%, -150%) rotateX(0deg) rotateZ(0deg)`"
+			>
+				{{ tooltipMessage }}
+			</div>
+		</transition>
+		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
+			<v-icon name="map" />
+			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+		</div>
+		<transition name="fade">
+			<v-info
+				v-if="geometryOptionsError"
+				icon="error"
+				center
+				type="danger"
+				:title="t('interfaces.map.invalid_options')"
+			>
+				<v-notice type="danger" :icon="false">
+					{{ geometryOptionsError }}
+				</v-notice>
+			</v-info>
+			<v-info
+				v-else-if="geometryParsingError"
+				icon="error"
+				center
+				type="warning"
+				:title="t('layouts.map.invalid_geometry')"
+			>
+				<v-notice type="warning" :icon="false">
+					{{ geometryParsingError }}
+				</v-notice>
+				<template #append>
+					<v-card-actions>
+						<v-button small secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
+						<v-button small kind="danger" @click="resetValue(true)">{{ t('reset') }}</v-button>
+					</v-card-actions>
+				</template>
+			</v-info>
+		</transition>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .interface-map {

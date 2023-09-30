@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
 	<sidebar-detail icon="import_export" :title="t('import_export')">
 		<div class="fields">
@@ -236,9 +237,12 @@
 	</sidebar-detail>
 </template>
 
+=======
+>>>>>>> 9ae877bb9e55ffe1507a5ab00e6aae2eaa32d43d
 <script setup lang="ts">
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -258,18 +262,12 @@ type LayoutQuery = {
 	limit?: number;
 };
 
-interface Props {
+const props = defineProps<{
 	collection: string;
 	layoutQuery?: LayoutQuery;
 	filter?: Filter;
 	search?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	layoutQuery: undefined,
-	filter: undefined,
-	search: undefined,
-});
+}>();
 
 const emit = defineEmits(['refresh', 'download']);
 
@@ -291,8 +289,13 @@ const fileExtension = computed(() => {
 
 const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
 
+const { info } = useServerStore();
+
+const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
+const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
+
 const exportSettings = reactive({
-	limit: props.layoutQuery?.limit ?? 25,
+	limit: props.layoutQuery?.limit ?? defaultLimit,
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
@@ -312,7 +315,7 @@ watch(
 watch(
 	() => props.layoutQuery,
 	() => {
-		exportSettings.limit = props.layoutQuery?.limit ?? 25;
+		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
 
 		if (props.layoutQuery?.fields) {
 			exportSettings.fields = props.layoutQuery?.fields;
@@ -342,24 +345,13 @@ const format = ref('csv');
 const location = ref('download');
 const folder = ref<string | null>(null);
 
-const lockedToFiles = computed(() => {
-	const toBeDownloaded = exportSettings.limit ?? itemCount.value;
-	return toBeDownloaded >= 2500;
-});
+const lockedToFiles = ref<{ previousLocation: string } | null>(null);
 
-watch(
-	() => exportSettings.limit,
-	() => {
-		if (lockedToFiles.value) {
-			location.value = 'files';
-		}
-	}
-);
-
+const itemCountTotal = ref<number>();
 const itemCount = ref<number>();
 const itemCountLoading = ref(false);
 
-const getItemCount = debounce(async () => {
+const getItemCount = async () => {
 	itemCountLoading.value = true;
 
 	try {
@@ -389,16 +381,55 @@ const getItemCount = debounce(async () => {
 		}
 
 		itemCount.value = count;
+		return count;
 	} finally {
 		itemCountLoading.value = false;
 	}
-}, 250);
+};
 
-watch(exportSettings, () => {
-	if (exportDialogActive.value) {
-		getItemCount();
+watch([() => exportSettings.search, () => exportSettings.filter], debounce(getItemCount, 250));
+
+watch(
+	() => exportSettings.limit,
+	() => {
+		if (exportSettings.limit < -1) {
+			exportSettings.limit = -1;
+		}
+
+		if (
+			exportSettings.limit !== null &&
+			!Number.isNaN(exportSettings.limit) &&
+			!Number.isInteger(exportSettings.limit)
+		) {
+			exportSettings.limit = Math.round(exportSettings.limit);
+		}
 	}
+);
+
+const exportCount = computed(() => {
+	const limit = exportSettings.limit === null || exportSettings.limit === -1 ? Infinity : exportSettings.limit;
+	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
 });
+
+watch(
+	exportCount,
+	() => {
+		const queryLimitThreshold = exportCount.value > queryLimitMax;
+		const batchThreshold = exportCount.value >= 2500;
+
+		if (queryLimitThreshold || batchThreshold) {
+			lockedToFiles.value = {
+				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
+			};
+
+			location.value = 'files';
+		} else if (lockedToFiles.value) {
+			location.value = lockedToFiles.value.previousLocation;
+			lockedToFiles.value = null;
+		}
+	},
+	{ immediate: true }
+);
 
 watch(primaryKeyField, (newVal) => {
 	exportSettings.sort = newVal?.field ?? '';
@@ -433,8 +464,8 @@ const sortField = computed({
 
 const exporting = ref(false);
 
-function openExportDialog() {
-	getItemCount();
+async function openExportDialog() {
+	itemCountTotal.value = await getItemCount();
 	exportDialogActive.value = true;
 }
 
@@ -519,7 +550,7 @@ function exportDataLocal() {
 	// usually getEndpoint contains leading slash, but here we need to remove it
 	const url = getPublicURL() + endpoint.substring(1);
 
-	let params: Record<string, unknown> = {
+	const params: Record<string, unknown> = {
 		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: format.value,
 	};
@@ -531,7 +562,7 @@ function exportDataLocal() {
 	if (exportSettings.search) params.search = exportSettings.search;
 	if (exportSettings.use_display_values) params.use_display_values = exportSettings.use_display_values;
 
-	params.limit = exportSettings.limit ?? -1;
+	params.limit = exportSettings.limit ? Math.min(exportSettings.limit, queryLimitMax) : -1;
 
 	const exportUrl = api.getUri({
 		url,
@@ -575,6 +606,234 @@ const { hasPermission } = usePermissionsStore();
 
 const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
 </script>
+
+<template>
+	<sidebar-detail icon="import_export" :title="t('import_export')">
+		<div class="fields">
+			<template v-if="createAllowed">
+				<div class="field full">
+					<div v-if="uploading || importing" class="uploading">
+						<div class="type-text">
+							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
+							<span v-if="!importing">{{ progress }}%</span>
+						</div>
+						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
+					</div>
+					<template v-else>
+						<p class="type-label">{{ t('label_import') }}</p>
+						<v-input clickable>
+							<template #prepend>
+								<div class="preview" :class="{ 'has-file': file }">
+									<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
+									<v-icon v-else name="folder_open" />
+								</div>
+							</template>
+							<template #input>
+								<input
+									id="import-file"
+									ref="fileInput"
+									type="file"
+									accept="text/csv, application/json"
+									hidden
+									@change="onChange"
+								/>
+								<label v-tooltip="file && file.name" for="import-file" class="import-file-label"></label>
+								<span class="import-file-text" :class="{ 'no-file': !file }">
+									{{ file ? file.name : t('import_data_input_placeholder') }}
+								</span>
+							</template>
+							<template #append>
+								<template v-if="file">
+									<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
+								</template>
+								<v-icon v-else name="attach_file" />
+							</template>
+						</v-input>
+					</template>
+				</div>
+
+				<div class="field full">
+					<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
+						{{ t('import_data_button') }}
+					</v-button>
+				</div>
+
+				<v-divider />
+			</template>
+
+			<div class="field full">
+				<v-button small full-width @click="openExportDialog">
+					{{ t('export_items') }}
+				</v-button>
+
+				<button
+					v-tooltip.bottom="t('presentation_text_values_cannot_be_reimported')"
+					class="download-local"
+					@click="$emit('download')"
+				>
+					{{ t('download_page_as_csv') }}
+				</button>
+			</div>
+		</div>
+
+		<v-drawer
+			v-model="exportDialogActive"
+			:title="t('export_items')"
+			icon="import_export"
+			persistent
+			@esc="exportDialogActive = false"
+			@cancel="exportDialogActive = false"
+		>
+			<template #actions>
+				<v-button
+					v-tooltip.bottom="location === 'download' ? t('download_file') : t('start_export')"
+					rounded
+					icon
+					:loading="exporting"
+					@click="startExport"
+				>
+					<v-icon :name="location === 'download' ? 'download' : 'start'" />
+				</v-button>
+			</template>
+			<div class="export-fields">
+				<div class="field half-left">
+					<p class="type-label">{{ t('format') }}</p>
+					<v-select
+						v-model="format"
+						:items="[
+							{
+								text: t('csv'),
+								value: 'csv',
+							},
+							{
+								text: t('json'),
+								value: 'json',
+							},
+							{
+								text: t('xml'),
+								value: 'xml',
+							},
+							{
+								text: t('yaml'),
+								value: 'yaml',
+							},
+						]"
+					/>
+				</div>
+
+				<div class="field half-right">
+					<p class="type-label">{{ t('limit') }}</p>
+					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
+				</div>
+
+				<div class="field half-left">
+					<p class="type-label">{{ t('export_location') }}</p>
+					<v-select
+						v-model="location"
+						:disabled="lockedToFiles !== null"
+						:items="[
+							{ value: 'download', text: t('download_file') },
+							{ value: 'files', text: t('file_library') },
+						]"
+					/>
+				</div>
+
+				<div class="field half-right">
+					<p class="type-label">{{ t('folder') }}</p>
+					<folder-picker v-if="location === 'files'" v-model="folder" />
+					<v-notice v-else>{{ t('not_available_for_local_downloads') }}</v-notice>
+				</div>
+
+				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
+					<div>
+						<p v-if="itemCountLoading">
+							{{ t('loading') }}
+						</p>
+
+						<p v-else-if="exportCount === 0">
+							{{ t('exporting_no_items_to_export') }}
+						</p>
+
+						<p v-else-if="itemCountTotal && exportCount >= itemCountTotal">
+							{{
+								t('exporting_all_items_in_collection', {
+									total: itemCountTotal ? n(itemCountTotal) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
+						</p>
+
+						<p v-else-if="itemCountTotal && exportCount < itemCountTotal">
+							{{
+								t('exporting_limited_items_in_collection', {
+									count: n(exportCount),
+									total: itemCountTotal ? n(itemCountTotal) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
+						</p>
+
+						<p v-if="lockedToFiles">
+							{{ t('exporting_library_hint_forced', { format: t(format) }) }}
+						</p>
+
+						<p v-else-if="location === 'files'">
+							{{ t('exporting_library_hint', { format: t(format) }) }}
+						</p>
+
+						<p v-else>
+							{{ t('exporting_download_hint', { format: t(format) }) }}
+						</p>
+					</div>
+				</v-notice>
+
+				<v-divider />
+
+				<div class="field half-left">
+					<p class="type-label">{{ t('sort_field') }}</p>
+					<interface-system-field
+						:value="sortField"
+						:collection-name="collection"
+						allow-primary-key
+						@input="sortField = $event"
+					/>
+				</div>
+				<div class="field half-right">
+					<p class="type-label">{{ t('sort_direction') }}</p>
+					<v-select
+						v-model="sortDirection"
+						:items="[
+							{ value: 'ASC', text: t('sort_asc') },
+							{ value: 'DESC', text: t('sort_desc') },
+						]"
+					/>
+				</div>
+
+				<div class="field full">
+					<p class="type-label">{{ t('full_text_search') }}</p>
+					<v-input v-model="exportSettings.search" :placeholder="t('search')" />
+				</div>
+				<div class="field full">
+					<p class="type-label">{{ t('filter') }}</p>
+					<interface-system-filter
+						:value="exportSettings.filter"
+						:collection-name="collection"
+						@input="exportSettings.filter = $event"
+					/>
+				</div>
+				<div class="field full">
+					<p class="type-label">{{ t('field', 2) }}</p>
+					<interface-system-fields
+						:value="exportSettings.fields"
+						:collection-name="collection"
+						allow-select-all
+						@input="exportSettings.fields = $event"
+					/>
+				</div>
+			</div>
+		</v-drawer>
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

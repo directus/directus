@@ -1,95 +1,3 @@
-<template>
-	<div class="v-table" :class="{ loading, inline, disabled }">
-		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
-			<table-header
-				v-model:headers="internalHeaders"
-				v-model:reordering="reordering"
-				:sort="internalSort"
-				:show-select="showSelect"
-				:show-resize="showResize"
-				:some-items-selected="someItemsSelected"
-				:all-items-selected="allItemsSelected"
-				:fixed="fixedHeader"
-				:show-manual-sort="showManualSort"
-				:must-sort="mustSort"
-				:has-item-append-slot="hasItemAppendSlot"
-				:manual-sort-key="manualSortKey"
-				:allow-header-reorder="allowHeaderReorder"
-				@toggle-select-all="onToggleSelectAll"
-				@update:sort="updateSort"
-			>
-				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
-					<slot :header="header" :name="`header.${header.value}`" />
-				</template>
-
-				<template v-if="hasHeaderAppendSlot" #header-append>
-					<slot name="header-append" />
-				</template>
-
-				<template v-if="hasHeaderContextMenuSlot" #header-context-menu="{ header }">
-					<slot name="header-context-menu" v-bind="{ header }" />
-				</template>
-			</table-header>
-			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
-				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
-					<v-progress-linear v-if="loading" indeterminate />
-				</th>
-			</thead>
-			<tbody v-if="loading && items.length === 0">
-				<tr class="loading-text">
-					<td :style="{ gridColumn: fullColSpan }">{{ loadingText }}</td>
-				</tr>
-			</tbody>
-			<tbody v-if="!loading && items.length === 0">
-				<tr class="no-items-text">
-					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText }}</td>
-				</tr>
-			</tbody>
-			<draggable
-				v-else
-				v-model="internalItems"
-				:force-fallback="true"
-				:item-key="itemKey"
-				tag="tbody"
-				handle=".drag-handle"
-				:disabled="disabled || internalSort.by !== manualSortKey"
-				:set-data="hideDragImage"
-				@end="onSortChange"
-			>
-				<template #item="{ element }">
-					<table-row
-						:headers="internalHeaders"
-						:item="element"
-						:show-select="disabled ? 'none' : showSelect"
-						:show-manual-sort="!disabled && showManualSort"
-						:is-selected="getSelectedState(element)"
-						:subdued="loading || reordering"
-						:sorted-manually="internalSort.by === manualSortKey"
-						:has-click-listener="!disabled && clickable"
-						:height="rowHeight"
-						@click="!disabled && clickable ? $emit('click:row', { item: element, event: $event }) : null"
-						@item-selected="
-							onItemSelected({
-								item: element,
-								value: !getSelectedState(element),
-							})
-						"
-					>
-						<template v-for="header in internalHeaders" #[`item.${header.value}`]>
-							<slot :item="element" :name="`item.${header.value}`" />
-						</template>
-
-						<template v-if="hasItemAppendSlot" #item-append>
-							<slot name="item-append" :item="element" />
-						</template>
-					</table-row>
-				</template>
-			</draggable>
-		</table>
-		<slot name="footer" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { i18n } from '@/lang/';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -292,6 +200,10 @@ function onItemSelected(event: ItemSelectEvent) {
 		});
 	}
 
+	if (props.showSelect === 'one') {
+		selection = selection.slice(-1);
+	}
+
 	emit('update:modelValue', selection);
 }
 
@@ -338,6 +250,98 @@ function updateSort(newSort: Sort) {
 	emit('update:sort', newSort?.by ? newSort : null);
 }
 </script>
+
+<template>
+	<div class="v-table" :class="{ loading, inline, disabled }">
+		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
+			<table-header
+				v-model:headers="internalHeaders"
+				v-model:reordering="reordering"
+				:sort="internalSort"
+				:show-select="showSelect"
+				:show-resize="showResize"
+				:some-items-selected="someItemsSelected"
+				:all-items-selected="allItemsSelected"
+				:fixed="fixedHeader"
+				:show-manual-sort="showManualSort"
+				:must-sort="mustSort"
+				:has-item-append-slot="hasItemAppendSlot"
+				:manual-sort-key="manualSortKey"
+				:allow-header-reorder="allowHeaderReorder"
+				@toggle-select-all="onToggleSelectAll"
+				@update:sort="updateSort"
+			>
+				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
+					<slot :header="header" :name="`header.${header.value}`" />
+				</template>
+
+				<template v-if="hasHeaderAppendSlot" #header-append>
+					<slot name="header-append" />
+				</template>
+
+				<template v-if="hasHeaderContextMenuSlot" #header-context-menu="{ header }">
+					<slot name="header-context-menu" v-bind="{ header }" />
+				</template>
+			</table-header>
+			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
+				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
+					<v-progress-linear v-if="loading" indeterminate />
+				</th>
+			</thead>
+			<tbody v-if="loading && items.length === 0">
+				<tr class="loading-text">
+					<td :style="{ gridColumn: fullColSpan }">{{ loadingText }}</td>
+				</tr>
+			</tbody>
+			<tbody v-if="!loading && items.length === 0">
+				<tr class="no-items-text">
+					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText }}</td>
+				</tr>
+			</tbody>
+			<draggable
+				v-else
+				v-model="internalItems"
+				:force-fallback="true"
+				:item-key="itemKey"
+				tag="tbody"
+				handle=".drag-handle"
+				:disabled="disabled || internalSort.by !== manualSortKey"
+				:set-data="hideDragImage"
+				@end="onSortChange"
+			>
+				<template #item="{ element }">
+					<table-row
+						:headers="internalHeaders"
+						:item="element"
+						:show-select="disabled ? 'none' : showSelect"
+						:show-manual-sort="!disabled && showManualSort"
+						:is-selected="getSelectedState(element)"
+						:subdued="loading || reordering"
+						:sorted-manually="internalSort.by === manualSortKey"
+						:has-click-listener="!disabled && clickable"
+						:height="rowHeight"
+						@click="!disabled && clickable ? $emit('click:row', { item: element, event: $event }) : null"
+						@item-selected="
+							onItemSelected({
+								item: element,
+								value: !getSelectedState(element),
+							})
+						"
+					>
+						<template v-for="header in internalHeaders" #[`item.${header.value}`]>
+							<slot :item="element" :name="`item.${header.value}`" />
+						</template>
+
+						<template v-if="hasItemAppendSlot" #item-append>
+							<slot name="item-append" :item="element" />
+						</template>
+					</table-row>
+				</template>
+			</draggable>
+		</table>
+		<slot name="footer" />
+	</div>
+</template>
 
 <style scoped>
 :global(body) {

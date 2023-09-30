@@ -1,43 +1,3 @@
-<template>
-	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @update:model-value="cancel">
-		<field-detail-simple
-			v-if="!showAdvanced"
-			:collection="collectionInfo"
-			:search="search"
-			@save="save"
-			@toggle-advanced="simple = false"
-		/>
-
-		<template v-if="showAdvanced" #sidebar>
-			<field-detail-advanced-tabs v-model:current-tab="currentTab" />
-		</template>
-
-		<template v-if="showAdvanced" #actions>
-			<field-detail-advanced-actions @save="save" />
-		</template>
-		<template v-else #actions>
-			<v-input
-				v-model="search"
-				class="search"
-				small
-				autofocus
-				type="search"
-				:placeholder="t('search_field')"
-				:full-width="false"
-			>
-				<template #prepend>
-					<v-icon name="search" outline />
-				</template>
-				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
-				</template>
-			</v-input>
-		</template>
-
-		<field-detail-advanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import { ref, computed, toRefs, watch } from 'vue';
 import { LocalType } from '@directus/types';
@@ -97,12 +57,12 @@ const simple = ref(props.type === null);
 
 const title = computed(() => {
 	const existingField = fieldsStore.getField(props.collection, props.field);
-	const fieldName = existingField?.name || formatTitle(fieldDetail.field.name || '');
+	const fieldName = formatTitle(existingField?.field || fieldDetail.field.field || '');
 
 	if (props.field === '+' && fieldName === '') {
-		return t('creating_new_field', { collection: collectionInfo.value?.name });
+		return t('creating_new_field', { collection: collectionInfo.value?.collection });
 	} else {
-		return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
+		return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.collection });
 	}
 });
 
@@ -129,6 +89,46 @@ async function save() {
 	fieldDetail.$reset();
 }
 </script>
+
+<template>
+	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @update:model-value="cancel">
+		<field-detail-simple
+			v-if="!showAdvanced"
+			:collection="collectionInfo"
+			:search="search"
+			@save="save"
+			@toggle-advanced="simple = false"
+		/>
+
+		<template v-if="showAdvanced" #sidebar>
+			<field-detail-advanced-tabs v-model:current-tab="currentTab" />
+		</template>
+
+		<template v-if="showAdvanced" #actions>
+			<field-detail-advanced-actions @save="save" />
+		</template>
+		<template v-else #actions>
+			<v-input
+				v-model="search"
+				class="search"
+				small
+				autofocus
+				type="search"
+				:placeholder="t('search_field')"
+				:full-width="false"
+			>
+				<template #prepend>
+					<v-icon name="search" outline />
+				</template>
+				<template #append>
+					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+				</template>
+			</v-input>
+		</template>
+
+		<field-detail-advanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
+	</v-drawer>
+</template>
 
 <style lang="scss" scoped>
 :deep(.required-mark) {

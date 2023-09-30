@@ -4,14 +4,14 @@
 
 import type { RequestHandler } from 'express';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
-import { ForbiddenException } from '../exceptions/index.js';
+import { ForbiddenError } from '../errors/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
 const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) => {
 	if (!req.params['collection']) return next();
 
 	if (req.params['collection'] in req.schema.collections === false) {
-		throw new ForbiddenException();
+		throw new ForbiddenError();
 	}
 
 	req.collection = req.params['collection'];

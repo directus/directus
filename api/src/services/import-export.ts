@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
@@ -18,17 +18,20 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import {
-	ForbiddenException,
-	InvalidPayloadException,
-	ServiceUnavailableException,
-	UnsupportedMediaTypeException,
-} from '../exceptions/index.js';
+	ForbiddenError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+	UnsupportedMediaTypeError,
+} from '../errors/index.js';
 import logger from '../logger.js';
-import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { Url } from '../utils/url.js';
+import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
+import { UsersService } from './users.js';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
@@ -44,7 +47,7 @@ export class ImportService {
 	}
 
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
-		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
+		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenError();
 
 		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create'
@@ -55,7 +58,7 @@ export class ImportService {
 		);
 
 		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		switch (mimetype) {
@@ -65,7 +68,7 @@ export class ImportService {
 			case 'application/vnd.ms-excel':
 				return await this.importCSV(collection, stream);
 			default:
-				throw new UnsupportedMediaTypeException(`Can't import files of type "${mimetype}"`);
+				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 	}
 
@@ -91,11 +94,11 @@ export class ImportService {
 					saveQueue.push(value);
 				});
 
-				extractJSON.on('error', (err: any) => {
+				extractJSON.on('error', (err: Error) => {
 					destroyStream(stream);
 					destroyStream(extractJSON);
 
-					reject(new InvalidPayloadException(err.message));
+					reject(new InvalidPayloadError({ reason: err.message }));
 				});
 
 				saveQueue.error((err) => {
@@ -156,7 +159,7 @@ export class ImportService {
 					})
 					.on('error', (err: any) => {
 						destroyStream(stream);
-						reject(new InvalidPayloadException(err.message));
+						reject(new InvalidPayloadError({ reason: err.message }));
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {
@@ -220,6 +223,14 @@ export class ExportService {
 					knex: trx,
 				});
 
+				const { primary } = this.schema.collections[collection]!;
+
+				const sort = query.sort ?? [];
+
+				if (sort.includes(primary) === false) {
+					sort.push(primary);
+				}
+
 				const totalCount = await service
 					.readByQuery({
 						...query,
@@ -229,7 +240,7 @@ export class ExportService {
 					})
 					.then((result) => Number(result?.[0]?.['count'] ?? 0));
 
-				const count = query.limit ? Math.min(totalCount, query.limit) : totalCount;
+				const count = query.limit && query.limit > -1 ? Math.min(totalCount, query.limit) : totalCount;
 
 				const requestedLimit = query.limit ?? -1;
 				const batchesRequired = Math.ceil(count / env['EXPORT_BATCH_SIZE']);
@@ -245,6 +256,7 @@ export class ExportService {
 
 					const updatedQuery = {
 						...query,
+						sort,
 						limit,
 						offset: batch * env['EXPORT_BATCH_SIZE'],
 					}
@@ -318,10 +330,27 @@ export class ExportService {
 					schema: this.schema,
 				});
 
+				const usersService = new UsersService({
+					schema: this.schema,
+				});
+
+				const user = await usersService.readOne(this.accountability.user, {
+					fields: ['first_name', 'last_name', 'email'],
+				});
+
+				const href = new Url(env['PUBLIC_URL']).addPath('admin', 'files', savedFile).toString();
+
+				const message = `
+Hello ${userName(user)},
+
+Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
+`;
+
 				await notificationsService.createOne({
 					recipient: this.accountability.user,
 					sender: this.accountability.user,
 					subject: `Your export of ${collection} is ready`,
+					message,
 					collection: `directus_files`,
 					item: savedFile,
 				});
@@ -407,6 +436,6 @@ export class ExportService {
 			return toYAML(input);
 		}
 
-		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });
+		throw new ServiceUnavailableError({ service: 'export', reason: `Illegal export type used: "${format}"` });
 	}
 }

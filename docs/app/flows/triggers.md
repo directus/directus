@@ -11,7 +11,7 @@ readTime: 3 min read
 > changes to data, logins, errors, incoming webhooks, cron jobs, operations from other flows, or even the click of a
 > button within the Data Studio.
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 Please be sure to read the overview documentation on [Flows](/app/flows).
 
@@ -61,14 +61,14 @@ For example, let's say you configure the scope to be `item.create`.
 - _Optional:_ If you defined a **Response Body**, this replaces the event's `payload`.
 - The event transaction is committed or cancelled, based on your flow's logic.
 
-:::tip Response Body
+::: tip Response Body
 
 If no **Response Body** is configured, the original payload will not be modified, but you'd still have the ability to
 cancel the transaction.
 
 :::
 
-:::tip Cancelling Transactions
+::: tip Cancelling Transactions
 
 To completely cancel a transaction, you'll need to throw an error within a
 [script operation](/app/flows/operations#script) or end the flow on a [failure path](/app/flows#control-flow).
@@ -111,13 +111,13 @@ trigger panel.
 - **Cache** — Choose whether responses to `GET` requests should be stored and served from cache or the cache should be
   bypassed.
 
-:::tip Response Body
+::: tip Response Body
 
 If no data is defined in **Response Body**, the response is empty.
 
 :::
 
-:::tip Asynchronous
+::: tip Asynchronous
 
 If **Asynchronous** is enabled, the flows system will immediately resolve/respond to the request without returning a
 **Response Body**, which frees up the API immediately. If it is disabled, the flows system will wait for the flow to
@@ -160,7 +160,7 @@ This trigger executes by the [trigger flow](/app/flows/operations#another-flow) 
   - **All Data** — Responds with the entire data chain.
   - **Other** — Responds with value from an `<operationKey>`.
 
-:::tip Flows for-loops
+::: tip Flows for-loops
 
 If you pass an array to this trigger, it will run once for each item in the array.
 
@@ -178,15 +178,15 @@ _grayed out_ until you select some number of items. From the item page, the curr
 automatically. These item IDs are passed in to `$trigger`.
 
 - **Collections** — Choose the Collection(s) to add the button to.
-- **Location** — Choose to display the button on the [Item Page](/app/content#item-page),
-  [Collection Page](/app/content#collection-page), or both.
+- **Location** — Choose to display the button on the [Item Page](/user-guide/content-module/content#item-page),
+  [Collection Page](/user-guide/content-module/content#collection-page), or both.
 - **Asynchronous** — Toggle whether the Flow executes asynchronously. If enabled, you can immediately trigger the flow
   again. If not, you must wait for the flow to complete to use it again.
 - **Collection Page (Requires Selection)** — Toggle whether a selection is required in the Collection Page to trigger.
 - **Require Confirmation** - Toggle whether a confirmation dialog will be shown before the flow is executed.
 
-After the operation runs, a toast notification will appear in your [sidebar](/app/overview#4-sidebar) indicating whether
-the flow ran successfully.
+After the operation runs, a toast notification will appear in your
+[sidebar](/user-guide/overview/data-studio-app#4-sidebar) indicating whether the flow ran successfully.
 
 ### Confirmation Dialog
 

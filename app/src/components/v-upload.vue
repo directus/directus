@@ -1,95 +1,3 @@
-<template>
-	<div
-		data-dropzone
-		class="v-upload"
-		:class="{ dragging: dragging && fromUser, uploading }"
-		@dragenter.prevent="onDragEnter"
-		@dragover.prevent
-		@dragleave.prevent="onDragLeave"
-		@drop.stop.prevent="onDrop"
-	>
-		<template v-if="dragging && fromUser">
-			<v-icon class="upload-icon" x-large name="file_upload" />
-			<p class="type-label">{{ t('drop_to_upload') }}</p>
-		</template>
-
-		<template v-else-if="uploading">
-			<p class="type-label">{{ progress }}%</p>
-			<p class="type-text">
-				{{
-					multiple && numberOfFiles > 1
-						? t('upload_files_indeterminate', { done: done, total: numberOfFiles })
-						: t('upload_file_indeterminate')
-				}}
-			</p>
-			<v-progress-linear :value="progress" rounded />
-		</template>
-
-		<template v-else>
-			<div class="actions">
-				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
-					<v-icon name="file_upload" />
-				</v-button>
-				<v-button
-					v-if="fromLibrary"
-					v-tooltip="t('choose_from_library')"
-					icon
-					rounded
-					secondary
-					@click="activeDialog = 'choose'"
-				>
-					<v-icon name="folder_open" />
-				</v-button>
-				<v-button
-					v-if="fromUrl && fromUser"
-					v-tooltip="t('import_from_url')"
-					icon
-					rounded
-					secondary
-					@click="activeDialog = 'url'"
-				>
-					<v-icon name="link" />
-				</v-button>
-			</div>
-
-			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
-
-			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<drawer-files
-					:active="activeDialog === 'choose'"
-					:multiple="multiple"
-					:folder="folder"
-					@update:active="activeDialog = null"
-					@input="setSelection"
-				/>
-
-				<v-dialog
-					:model-value="activeDialog === 'url'"
-					:persistent="urlLoading"
-					@esc="activeDialog = null"
-					@update:model-value="activeDialog = null"
-				>
-					<v-card>
-						<v-card-title>{{ t('import_from_url') }}</v-card-title>
-						<v-card-text>
-							<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
-						</v-card-text>
-						<v-card-actions>
-							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-								{{ t('import_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-			</template>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import emitter, { Events } from '@/events';
@@ -112,13 +20,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	multiple: false,
 	preset: () => ({}),
-	fileId: undefined,
 	fromUser: true,
-	fromUrl: false,
-	fromLibrary: false,
-	folder: undefined,
 });
 
 const emit = defineEmits(['input']);
@@ -302,6 +205,7 @@ function useURLImport() {
 				url: url.value,
 				data: {
 					folder: props.folder,
+					id: props.fileId,
 				},
 			});
 
@@ -327,6 +231,98 @@ function openFileBrowser() {
 	input.value?.click();
 }
 </script>
+
+<template>
+	<div
+		data-dropzone
+		class="v-upload"
+		:class="{ dragging: dragging && fromUser, uploading }"
+		@dragenter.prevent="onDragEnter"
+		@dragover.prevent
+		@dragleave.prevent="onDragLeave"
+		@drop.stop.prevent="onDrop"
+	>
+		<template v-if="dragging && fromUser">
+			<v-icon class="upload-icon" x-large name="file_upload" />
+			<p class="type-label">{{ t('drop_to_upload') }}</p>
+		</template>
+
+		<template v-else-if="uploading">
+			<p class="type-label">{{ progress }}%</p>
+			<p class="type-text">
+				{{
+					multiple && numberOfFiles > 1
+						? t('upload_files_indeterminate', { done: done, total: numberOfFiles })
+						: t('upload_file_indeterminate')
+				}}
+			</p>
+			<v-progress-linear :value="progress" rounded />
+		</template>
+
+		<template v-else>
+			<div class="actions">
+				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
+					<v-icon name="file_upload" />
+				</v-button>
+				<v-button
+					v-if="fromLibrary"
+					v-tooltip="t('choose_from_library')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'choose'"
+				>
+					<v-icon name="folder_open" />
+				</v-button>
+				<v-button
+					v-if="fromUrl && fromUser"
+					v-tooltip="t('import_from_url')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'url'"
+				>
+					<v-icon name="link" />
+				</v-button>
+			</div>
+
+			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
+
+			<template v-if="fromUrl !== false || fromLibrary !== false">
+				<drawer-files
+					:active="activeDialog === 'choose'"
+					:multiple="multiple"
+					:folder="folder"
+					@update:active="activeDialog = null"
+					@input="setSelection"
+				/>
+
+				<v-dialog
+					:model-value="activeDialog === 'url'"
+					:persistent="urlLoading"
+					@esc="activeDialog = null"
+					@update:model-value="activeDialog = null"
+				>
+					<v-card>
+						<v-card-title>{{ t('import_from_url') }}</v-card-title>
+						<v-card-text>
+							<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
+						</v-card-text>
+						<v-card-actions>
+							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+								{{ t('import_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+			</template>
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-upload {

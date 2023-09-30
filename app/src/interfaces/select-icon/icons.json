@@ -455,10 +455,7 @@
 	},
 	{
 		"name": "Brand",
-		"icons": [
-			"launcher_assistant_on",
-			"nightlight_off"
-		]
+		"icons": ["launcher_assistant_on", "nightlight_off"]
 	},
 	{
 		"name": "Business & Payments",
@@ -1500,11 +1497,7 @@
 	},
 	{
 		"name": "Others",
-		"icons": [
-			"blood_pressure",
-			"contrast_rtl_off",
-			"keyboard_tab_rtl"
-		]
+		"icons": ["blood_pressure", "contrast_rtl_off", "keyboard_tab_rtl"]
 	},
 	{
 		"name": "Photo & Image",

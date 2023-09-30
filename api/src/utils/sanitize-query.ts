@@ -186,20 +186,26 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 	return result;
 
 	function parse(level: Record<string, any>, path: string[] = []) {
+		const subQuery: Record<string, any> = {};
 		const parsedLevel: Record<string, any> = {};
 
 		for (const [key, value] of Object.entries(level)) {
 			if (!key) break;
 
 			if (key.startsWith('_')) {
-				// Sanitize query only accepts non-underscore-prefixed query options
-				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, accountability);
-				// ...however we want to keep them for the nested structure of deep, otherwise there's no
-				// way of knowing when to keep nesting and when to stop
-				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0]!;
-				parsedLevel[`_${parsedKey}`] = parsedValue;
+				// Collect all sub query parameters without the leading underscore
+				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);
+			}
+		}
+
+		if (Object.keys(subQuery).length > 0) {
+			// Sanitize the entire sub query
+			const parsedSubQuery = sanitizeQuery(subQuery, accountability);
+
+			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
+				parsedLevel[`_${parsedKey}`] = parsedValue;
 			}
 		}
 

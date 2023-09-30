@@ -1,71 +1,6 @@
-<template>
-	<div class="permissions-overview">
-		<h2 class="title type-label">
-			{{ t('permissions') }}
-			<span class="instant-save">{{ t('saves_automatically') }}</span>
-		</h2>
-
-		<div class="table">
-			<permissions-overview-header />
-
-			<permissions-overview-row
-				v-for="collection in regularCollections"
-				:key="collection.collection"
-				:collection="collection"
-				:role="role"
-				:permissions="permissions.filter((p) => p.collection === collection.collection)"
-				:refreshing="refreshing"
-			/>
-
-			<button class="system-toggle" @click="systemVisible = !systemVisible">
-				{{ t('system_collections') }}
-				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
-			</button>
-
-			<transition-expand>
-				<div v-if="systemVisible">
-					<permissions-overview-row
-						v-for="collection in systemCollections"
-						:key="collection.collection"
-						:collection="collection"
-						:role="role"
-						:permissions="permissions.filter((p) => p.collection === collection.collection)"
-						:refreshing="refreshing"
-						:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
-					/>
-				</div>
-			</transition-expand>
-
-			<span v-if="systemVisible && appAccess" class="reset-toggle">
-				{{ t('reset_system_permissions_to') }}
-				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
-				/
-				<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
-			</span>
-		</div>
-
-		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
-
-		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
-			<v-card>
-				<v-card-title>
-					{{ t('reset_system_permissions_copy') }}
-				</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="resetting" @click="resetSystemPermissions(resetActive === 'recommended')">
-						{{ t('reset') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
-import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission } from '@directus/types';
 import { orderBy } from 'lodash';
@@ -101,8 +36,6 @@ const { permissions, fetchPermissions, refreshing } = usePermissions();
 
 const { resetActive, resetSystemPermissions, resetting } = useReset();
 
-fetchPermissions();
-
 watch(() => props.permission, fetchPermissions, { immediate: true });
 
 provide('refresh-permissions', fetchPermissions);
@@ -126,7 +59,8 @@ function usePermissions() {
 				params.filter.role = { _eq: props.role };
 			}
 
-			permissions.value = await fetchAll('/permissions', { params });
+			const response = await api.get('/permissions', { params });
+			permissions.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -194,6 +128,70 @@ function useReset() {
 	}
 }
 </script>
+
+<template>
+	<div class="permissions-overview">
+		<h2 class="title type-label">
+			{{ t('permissions') }}
+			<span class="instant-save">{{ t('saves_automatically') }}</span>
+		</h2>
+
+		<div class="table">
+			<permissions-overview-header />
+
+			<permissions-overview-row
+				v-for="collection in regularCollections"
+				:key="collection.collection"
+				:collection="collection"
+				:role="role"
+				:permissions="permissions.filter((p) => p.collection === collection.collection)"
+				:refreshing="refreshing"
+			/>
+
+			<button class="system-toggle" @click="systemVisible = !systemVisible">
+				{{ t('system_collections') }}
+				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
+			</button>
+
+			<transition-expand>
+				<div v-if="systemVisible">
+					<permissions-overview-row
+						v-for="collection in systemCollections"
+						:key="collection.collection"
+						:collection="collection"
+						:role="role"
+						:permissions="permissions.filter((p) => p.collection === collection.collection)"
+						:refreshing="refreshing"
+						:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
+					/>
+				</div>
+			</transition-expand>
+
+			<span v-if="systemVisible && appAccess" class="reset-toggle">
+				{{ t('reset_system_permissions_to') }}
+				<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
+				/
+				<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
+			</span>
+		</div>
+
+		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
+
+		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
+			<v-card>
+				<v-card-title>
+					{{ t('reset_system_permissions_copy') }}
+				</v-card-title>
+				<v-card-actions>
+					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="resetting" @click="resetSystemPermissions(resetActive === 'recommended')">
+						{{ t('reset') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .permissions-overview {

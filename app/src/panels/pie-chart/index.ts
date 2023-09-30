@@ -235,8 +235,38 @@ export default definePanel({
 												disabled: !isNumberColumn.value,
 											},
 											{
+												text: '$t:operators.nstarts_with',
+												value: 'nstarts_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.istarts_with',
+												value: 'istarts_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.nistarts_with',
+												value: 'nistarts_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
 												text: '$t:operators.ends_with',
-												value: 'ncontains',
+												value: 'ends_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.nends_with',
+												value: 'nends_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.iends_with',
+												value: 'iends_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.niends_with',
+												value: 'niends_with',
 												disabled: !isNumberColumn.value,
 											},
 											{

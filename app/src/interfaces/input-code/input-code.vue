@@ -1,15 +1,6 @@
-<template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
-		<div ref="codemirrorEl"></div>
-
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
-			<v-icon name="playlist_add" />
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
 import CodeMirror, { ModeSpec } from 'codemirror';
 import { Ref, computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -102,11 +93,7 @@ onMounted(async () => {
 const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
 
-	if (props.type === 'json' || typeof props.value === 'object') {
-		return JSON.stringify(props.value, null, 4);
-	}
-
-	return props.value as string;
+	return getStringifiedValue(props.value, props.type === 'json');
 });
 
 watch(
@@ -292,6 +279,16 @@ function fillTemplate() {
 	}
 }
 </script>
+
+<template>
+	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
+		<div ref="codemirrorEl"></div>
+
+		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
+			<v-icon name="playlist_add" />
+		</v-button>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .input-code {

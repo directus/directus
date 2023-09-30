@@ -1,9 +1,3 @@
-<template>
-	<div class="pie-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -217,7 +211,9 @@ async function setupChart() {
 }
 
 function getPercentage(value: number) {
-	return props.decimals && props.decimals >= 0 ? n(Number(value.toFixed(props.decimals))) : n(value);
+	return typeof props.decimals === 'number' && props.decimals >= 0
+		? n(Number(value.toFixed(props.decimals)))
+		: n(value);
 }
 
 function formatColor(color: string | number, value: string | number) {
@@ -271,6 +267,12 @@ function checkMatchingConditionalFill(
 	}
 }
 </script>
+
+<template>
+	<div class="pie-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .pie-chart {

@@ -1,19 +1,3 @@
-<template>
-	<div class="arrow-container">
-		<svg :width="size.width" :height="size.height" class="arrows">
-			<transition-group name="fade">
-				<path
-					v-for="arrow in arrows"
-					:key="arrow.id"
-					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
-					:d="arrow.d"
-					stroke-linecap="round"
-				/>
-			</transition-group>
-		</svg>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Vector2 } from '@/utils/vector2';
 import { computed } from 'vue';
@@ -214,7 +198,7 @@ const arrows = computed(() => {
 		const outerPoints = range(min[otherAxis], max[otherAxis], (axis === 'x' ? PANEL_WIDTH : PANEL_HEIGHT) * 20);
 		const innerPoints = range(min[axis], max[axis], 20);
 
-		for (let outer of outerPoints) {
+		for (const outer of outerPoints) {
 			for (let inner = 0; inner < innerPoints.length; inner++) {
 				const point = axis === 'x' ? new Vector2(innerPoints[inner], outer) : new Vector2(outer, innerPoints[inner]);
 				possiblePlaces[inner] = (possiblePlaces[inner] ?? true) && !isPointInPanel(point);
@@ -262,6 +246,22 @@ const arrows = computed(() => {
 	}
 });
 </script>
+
+<template>
+	<div class="arrow-container">
+		<svg :width="size.width" :height="size.height" class="arrows">
+			<transition-group name="fade">
+				<path
+					v-for="arrow in arrows"
+					:key="arrow.id"
+					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
+					:d="arrow.d"
+					stroke-linecap="round"
+				/>
+			</transition-group>
+		</svg>
+	</div>
+</template>
 
 <style scoped lang="scss">
 .arrow-container {

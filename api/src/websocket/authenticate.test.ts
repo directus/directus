@@ -1,9 +1,9 @@
 import type { Accountability } from '@directus/types';
-import { describe, expect, test, vi } from 'vitest';
 import type { Mock } from 'vitest';
-import { InvalidCredentialsException } from '../index.js';
-import { getAccountabilityForRole } from '../utils/get-accountability-for-role.js';
+import { describe, expect, test, vi } from 'vitest';
+import { InvalidCredentialsError } from '../errors/index.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
+import { getPermissions } from '../utils/get-permissions.js';
 import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate.js';
 import type { WebSocketAuthMessage } from './messages.js';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
@@ -14,8 +14,8 @@ vi.mock('../utils/get-accountability-for-token', () => ({
 	} as Accountability),
 }));
 
-vi.mock('../utils/get-accountability-for-role', () => ({
-	getAccountabilityForRole: vi.fn(),
+vi.mock('../utils/get-permissions', () => ({
+	getPermissions: vi.fn(),
 }));
 
 vi.mock('./utils/get-expires-at-for-token', () => ({
@@ -85,7 +85,7 @@ describe('authenticateConnection', () => {
 
 	test('Failure token expired', async () => {
 		(getAccountabilityForToken as Mock).mockImplementation(() => {
-			throw new InvalidCredentialsException('Token expired.');
+			throw new InvalidCredentialsError();
 		});
 
 		expect(() =>
@@ -93,7 +93,7 @@ describe('authenticateConnection', () => {
 				type: 'auth',
 				access_token: 'expired',
 			} as WebSocketAuthMessage)
-		).rejects.toThrow('Token expired.');
+		).rejects.toThrow('Authentication failed.');
 	});
 
 	test('Failure authentication failed', async () => {
@@ -107,19 +107,18 @@ describe('authenticateConnection', () => {
 });
 
 describe('refreshAccountability', () => {
-	test('should just work', async () => {
-		(getAccountabilityForRole as Mock).mockReturnValue({
-			role: '123-456-789',
-		} as Accountability);
+	test('update permissions', async () => {
+		(getPermissions as Mock).mockReturnValue([]);
 
 		const result = await refreshAccountability({
-			role: null,
+			role: '123-456-789',
 			user: 'abc-def-ghi',
 		});
 
 		expect(result).toStrictEqual({
 			role: '123-456-789',
 			user: 'abc-def-ghi',
+			permissions: [],
 		});
 	});
 });

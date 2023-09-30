@@ -35,6 +35,7 @@ tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
 location: Konum
+collection_names_are_case_sensitive: Koleksiyon adları büyük/küçük harfe duyarlıdır
 condition_rules: Durum Kuralları
 input: Girdi
 maps: Haritalar
@@ -80,14 +81,10 @@ create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
-create_translation_string: Çeviri Dizesi Oluştur
-no_translation_string: Çeviri Dizesi Yok
-no_translation_string_copy: Henüz çeviri dizesi yok.
-translation_string_key_placeholder: Çeviri dizesi anahtarı...
-translation_string_translations_placeholder: Yeni çeviri ekle
-edit_translation_string: Çeviri Dizesini Düzenle
-delete_translation_string_copy: >-
-  "{key}" çeviri dizesini silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.
+create_custom_translation: Özel Çeviri Oluştur
+edit_custom_translation: Özel Çeviriyi Düzenle
+no_custom_translations: Özel Çeviri Yok
+no_custom_translations_copy: Henüz bir özel çeviri bulunmamakta.
 invite_users: Kullanıcıları Davet Et
 invite: Davet Et
 email_already_invited: E-posta "{email}" zaten davet edildi
@@ -118,19 +115,13 @@ public_label: Herkese Açık
 public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
 admin_description: Sınırsız Uygulama/API erişimine sahip ilk yönetici rolü.
 not_allowed: İzin Verilmedi
-directus_version: Directus Versiyon
-node_version: Node Versiyon
-node_uptime: Node Hizmet Zamanı
-os_type: OS Tip
-os_version: OS Versiyon
-os_uptime: OS Hizmet Zamanı
-os_totalmem: OS Bellek
 archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | Seçilen {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinlerin üstüne yazacaktır. Emin misiniz?
+the_following_are_minimum_permissions: '"Uygulama Erişimi" etkinleştirildiğinde aşağıdaki minimum izinler otomatik olarak uygulanır. Gerekirse ek izinler verebilirsiniz, ancak izinleri bu seviyenin altına düşüremezsiniz.'
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Varsayılanlar
 unarchive: Arşivden Çıkar
@@ -155,6 +146,14 @@ validationError:
   required: Değer gereklidir
   unique: Değer benzersiz olmalı
   regex: Değer doğru biçime sahip değil
+  starts_with: Değer {substring} ile başlamalıdır
+  istarts_with: Değer {substring} ile başlamalıdır
+  nstarts_with: Değer {substring} ile başlayamaz
+  nistarts_with: Değer {substring} ile başlayamaz
+  ends_with: Değer {substring} ile bitmelidir
+  iends_with: Değer {substring} ile bitmelidir
+  nends_with: Değer {substring} ile bitemez
+  niends_with: Değer {substring} ile bitemez
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş
@@ -181,6 +180,7 @@ permissions_for_role: '{role} rolünün, {action} yapabileceği öğeler.'
 fields_for_role: '{role} rolünün, {action} yapabileceği alanlar.'
 validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
 presets_for_role: '{role} rolü için varsayılan alan değeri.'
+presets_field_warning: '"{field}" alanı için ilişkisel ön ayarlar "ayrıntılı" sözdizimiyle yapılandırılmalıdır.'
 presentation_and_aliases: Sunumlar
 revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
@@ -236,6 +236,7 @@ bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
 date_range: Tarih Aralığı
+translation_key_placeholder: Bir anahtar girin...
 datetime: Tarih ve Zaman
 dateTime: Tarih ve Zaman
 precision: Hassasiyet
@@ -296,7 +297,9 @@ m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bire İlişki
 invalid_item: Geçersiz Öğe
 require_confirmation: Doğrulama Gerekiyor
+dialog: Diyalog
 modal: Açılır Pencere
+confirmation_description: Onay Açıklaması
 next: Sonraki
 field_name: Alan Adı
 translations: Çeviriler
@@ -351,7 +354,7 @@ revision_delta_reverted: Geri Alındı
 revision_delta_update_message: Bu alan güncellenmiştir ancak değeri güvenlik nedeniyle gizlenmektedir.
 revision_delta_other: Revizyon
 revision_delta_by: '{user} tarafından {date} tarihinde'
-presentation_text_values_cannot_be_reimported: "Sunum metnini kullanır, değerler yeniden içe aktarılamaz."
+presentation_text_values_cannot_be_reimported: 'Sunum metnini kullanır, değerler yeniden içe aktarılamaz.'
 download_page_as_csv: 'Sayfayı CSV olarak indir'
 private_user: Gizli Kullanıcı
 creation_preview: Oluşturma Önizlemesi
@@ -389,6 +392,7 @@ move: Taşı
 system: Sistem
 add_field_related: İlişkili Koleksiyona Alan Ekle
 interface_label: Arayüz
+display_label: Göster
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu Sil
@@ -462,11 +466,8 @@ open_file_in_tab: Dosyayı yeni sekmede aç
 start_export: Dışa Aktarmayı Başlat
 not_available_for_local_downloads: Yerel indirmeler için mevcut değil
 exporting_all_items_in_collection: '{collection} içindeki tüm {total} öğe dışa aktarılıyor.'
-exporting_limited_items_in_collection: '{collection} içindeki {total} öğeden {limit} dışa aktarılıyor.'
-exporting_no_items_to_export: Dışa aktarılacak öğe yok. Aşağıdaki dışa aktarma yapılandırmasını ayarlayın.
-exporting_download_hint: Tamamlandığında, bu {format} dosyası otomatik olarak cihazınıza indirilecektir.
-exporting_batch_hint: Bu dışa aktarma, gruplar halinde işlenecek ve tamamlandıktan sonra {format} dosyası Dosya Kitaplığına kaydedilecektir.
-exporting_batch_hint_forced: Çok sayıda öğe nedeniyle, bu dışa aktarma toplu olarak işlenecek ve tamamlandıktan sonra {format} dosyası Dosya Kitaplığına kaydedilecektir.
+exporting_download_hint: '{format} dosyası oluşturulduktan sonra cihazınıza indirilecektir.'
+exporting_library_hint: '{format} dosyası oluşturulduktan sonra Dosya Kitaplığına kaydedilecektir.'
 collection_key: Koleksiyon Anahtarı
 name: İsim
 primary_key_field: Birincil Anahtar Alanı
@@ -491,10 +492,8 @@ enable_select_button: Seç Butonunu Etkinleştir
 allow_duplicates: Çiftlere İzin Ver
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
-click_to_expand: Genişletmek için Tıklayın
 select_item: Öğe Seçin
 no_items: Hiç öğe yok
-search_items: Öğeleri ara...
 disabled: Devre Dışı
 information: Bilgi
 report_bug: Hata Bildir
@@ -950,7 +949,6 @@ settings_project: Proje Ayarları
 settings_webhooks: Webhooklar
 settings_flows: Akışlar
 settings_presets: Ön Ayarlar ve Yer İşaretleri
-settings_translation_strings: Çeviri Dizeleri
 one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
 scope: Kapsam
 actions: Aksiyonlar
@@ -1000,7 +998,6 @@ page_help_settings_webhooks_collection: '**Webhooklara Göz At** — Projedeki t
 page_help_settings_webhooks_item: '**Webhook Detayı** — Projede webhook oluşturmak ve yönetmek için bir form/sayfa.'
 page_help_settings_flows_collection: '**Akışlara Gözat** — Proje içindeki tüm Akışları listeler.'
 page_help_settings_flows_item: '**Akış Ayrıntısı** — Bir veya daha fazla işlemi yönetmek için çalışma alanı.'
-page_help_settings_translation_strings_collection: '**Dize Çevirilerini Görüntüle** — Projedeki tüm çeviri dizelerini gösterir.'
 page_help_users_collection: '**Kullanıcı Dizini** — Projedeki tüm sistem kullanıcılarını listeler.'
 page_help_users_item: >-
   **Kullanıcı Detayı** — Hesap bilgilerini düzenle ya da diğer kullanıcıların detaylarını gör.
@@ -1263,6 +1260,7 @@ field_options:
     sort_field: Bir alan seçin...
     accountability_divider: İzlenebilirlik
     duplication_divider: Çoğaltma
+    preview_divider: Önizleme
   directus_files:
     title: Benzersiz bir başlık...
     description: Opsiyonel bir açıklama...
@@ -1320,6 +1318,8 @@ start_collapsed: Kapalı Başla
 block: Blok
 inline: Hizada
 comment: Yorum
+live_preview:
+  new_window: Yeni Pencerede Aç
 shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
 uses_left: Hiç kullanım kalmadı | 1 kullanım kaldı | {n} kullanım kaldı
@@ -1579,6 +1579,8 @@ interfaces:
   system-interface-options:
     interface-options: Arayüz Seçenekleri
     description: Arayüz seçeneklerini seçmek için açılır pencere
+  system-display:
+    display: Göster
   list-m2m:
     many-to-many: Çoktan Çoka
     description: Birden fazla ilişkili kesişim öğesi seçin
@@ -1643,6 +1645,7 @@ interfaces:
     sort_placeholder: Elle
     field_note_placeholder: Alan notu girin...
     incompatible_data: Mevcut veriler tekrarlayıcı ile uyumlu değildir ve tekrarlayıcıya veri eklenirken üzerine yazılacaktır
+    interface_group: Arayüz Seçenekleri
   slider:
     slider: Kaydırgaç
     description: Kaydırgaçı kullanarak bir sayı seçin
@@ -1682,7 +1685,6 @@ interfaces:
     input-translated-string: Çevrilmiş Dizeler
     description: Çeviri dizesi seçin veya ekleyin
     search_placeholder: Ara...
-    new_translation_string: Yeni Çeviri Dizesi
   boolean:
     toggle: Aç/Kapat
     description: Açık ve kapalı arasında geçiş yap
@@ -1719,6 +1721,16 @@ interfaces:
     folder_note: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     imageToken: Statik Erişim Anahtarı
     imageToken_label: Statik erişim anahtarı dosyaların URL'lerinin sonuna eklenir
+  input-block-editor:
+    tools: Araç Çubuğu
+    tools_options:
+      header: Header
+      nestedlist: Liste
+      embed: Yerleştir
+      code: Kod
+      image: Fotoğraf
+      table: Tablo
+      underline: Alt Çizgi
   input-autocomplete-api:
     input-autocomplete-api: Otomatik Tamamlamalı Girdi (API)
     description: Dış API değerleri için otomatik tamamlamalı arama.
@@ -2058,6 +2070,10 @@ operations:
     key: Kimlikler
     payload: Yük
     query: Sorgula
+  json-web-token:
+    payload: Yük
+    token: Erişim Anahtarı (Token)
+    options: Seçenekler
   log:
     name: Konsolda Oturum Aç
     message: Mesaj
@@ -2074,8 +2090,9 @@ operations:
     description: Bir veya daha fazla kullanıcıya uygulama içi bildirim gönderin
     recipient: Kullanıcı
     message: Mesaj
+    subject: Konu
   request:
-    description: "Bir URL'ye istekte bulunun"
+    description: 'Bir URL''ye istekte bulunun'
     url: URL
     url_placeholder: https://example.com/example
     method: Metod
