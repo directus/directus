@@ -19,6 +19,7 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
+import EmailSidebarDetail from '../components/email-sidebar-detail.vue';
 import FilesNotFound from './not-found.vue';
 
 const props = defineProps<{
