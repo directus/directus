@@ -99,12 +99,36 @@ watch(active, (newActive: boolean) => {
 	}
 });
 
+// const activeFilterCount = computed(() => {
+// 	if (!props.filter) return 0;
+
+// 	const filterOperators: string[] = [];
+
+// 	parseLevel(props.filter);
+
+// 	return filterOperators.length;
+
+// 	function parseLevel(level: Record<string, any>) {
+// 		for (const [key, value] of Object.entries(level)) {
+// 			if (key === '_and' || key === '_or') {
+// 				value.forEach(parseLevel);
+// 			} else if (key.startsWith('_')) {
+// 				filterOperators.push(key);
+// 			} else {
+// 				if (isObject(value)) {
+// 					parseLevel(value);
+// 				}
+// 			}
+// 		}
+// 	}
+// });
+// CHANGED
 const activeFilterCount = computed(() => {
-	if (!props.filter) return 0;
+	if (!props.layout_options) return 0;
 
 	const filterOperators: string[] = [];
 
-	parseLevel(props.filter);
+	parseLevel(props.layout_options.all_filters);
 
 	return filterOperators.length;
 
@@ -144,6 +168,7 @@ function emitValue() {
 function clearAllFilters() {
 	emit('update:modelValue', null);
 	emit('update:filter', null);
+	emit('update:layout_options', null);
 }
 </script>
 

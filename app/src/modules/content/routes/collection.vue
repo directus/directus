@@ -567,6 +567,7 @@ function useBookmarks() {
 function clearFilters() {
 	filter.value = null;
 	search.value = null;
+	layoutOptions.value = null
 }
 
 function usePermissions() {

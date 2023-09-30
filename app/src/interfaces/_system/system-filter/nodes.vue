@@ -1,81 +1,43 @@
 <template>
-	<draggable
-		:disabled="isDragDisabled"
-		tag="ul"
-		draggable=".row"
-		handle=".drag-handle"
-		class="group"
-		:list="filterSync"
-		:group="{ name: 'g1' }"
-		:item-key="getIndex"
-		:swap-threshold="0.3"
-		:force-fallback="true"
-		:move="onDragMove"
-		@end="onDragEnd"
-		>
-		<template #item="{ element, index }" >
+	<draggable :disabled="isDragDisabled" tag="ul" draggable=".row" handle=".drag-handle" class="group" :list="filterSync"
+		:group="{ name: 'g1' }" :item-key="getIndex" :swap-threshold="0.3" :force-fallback="true" :move="onDragMove"
+		@end="onDragEnd">
+		<template #item="{ element, index }">
 			<li class="row" @mousemove="onFieldHover(index)">
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline, 'header_disabled': isFieldDisabled(index) }">
-						<v-icon
-						name="drag_indicator"
-						class="drag-handle"
-						small
-						:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}"
-						/>
+						<v-icon name="drag_indicator" class="drag-handle" small
+							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}" />
 						<span v-if="!isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
-						<v-menu v-else placement="bottom-start" show-arrow :style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}">
+						<v-menu v-else placement="bottom-start" show-arrow
+							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}">
 							<template #activator="{ toggle }">
 								<button class="name" @click="toggle">
 									<span>{{ getFieldPreview(element) }}</span>
 								</button>
 							</template>
 
-							<v-field-list
-								:collection="collection"
-								:field="field"
-								include-functions
-								:include-relations="includeRelations"
-								:relational-field-selectable="relationalFieldSelectable"
-								:allow-select-all="false"
-								@add="updateField(index, $event[0])"
-							/>
+							<v-field-list :collection="collection" :field="field" include-functions
+								:include-relations="includeRelations" :relational-field-selectable="relationalFieldSelectable"
+								:allow-select-all="false" @add="updateField(index, $event[0])" />
 						</v-menu>
-						<v-select
-							inline
-							class="comparator"
-							placement="bottom-start"
+						<v-select inline class="comparator" placement="bottom-start"
 							:model-value="(filterInfo[index] as FilterInfoField).comparator"
 							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}"
 							:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
-							@update:model-value="updateComparator(index, $event)"
-						/>
-						<input-group
-							:field="element"
-							:collection="collection"
+							@update:model-value="updateComparator(index, $event)" />
+						<input-group :field="element" :collection="collection"
 							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}"
-							@update:field="replaceNode(index, $event)"
-						/>
+							@update:field="replaceNode(index, $event)" />
 
 						<!-- CHANGED  -->
 						<p class="filter_field_icons">
-							<v-icon
-								name="filter_list_off"
-								small
-								clickable
-								class="disable-icon"
+							<v-icon name="filter_list_off" small clickable class="disable-icon"
 								:class="{ 'field_disabled': isFieldDisabled(index) }"
-								v-tooltip="t(isFieldDisabled(index) ? 'Enable' : 'Disable')"
-								@click="onEnableDisableField(index)"
-							/>
+								v-tooltip="t(isFieldDisabled(index) ? 'Enable' : 'Disable')" @click="onEnableDisableField(index)" />
 
-							<v-icon
-								v-tooltip="t('delete_label')"
-								name="close"
-								small
-								clickable
-								@click="$emit('remove-node', [index], element)"
-							/>
+							<v-icon v-tooltip="t('delete_label')" name="close" small clickable
+								@click="$emit('remove-node', [index], element)" />
 						</p>
 					</div>
 				</div>
@@ -87,8 +49,8 @@
 							<span class="key" @click="toggleLogic(index)">
 								{{
 									filterInfo[index].name === '_and'
-										? t('interfaces.filter.logic_type_and')
-										: t('interfaces.filter.logic_type_or')
+									? t('interfaces.filter.logic_type_and')
+									: t('interfaces.filter.logic_type_or')
 								}}
 							</span>
 							<span class="text">
@@ -100,24 +62,14 @@
 							</span>
 						</div>
 						<span class="delete">
-							<v-icon
-								v-tooltip="t('delete_label')"
-								name="close"
-								small
-								clickable
-								@click="$emit('remove-node', [index], element)"
-							/>
+							<v-icon v-tooltip="t('delete_label')" name="close" small clickable
+								@click="$emit('remove-node', [index], element)" />
 						</span>
 					</div>
-					<nodes
-						:filter="element[filterInfo[index].name]"
-						:collection="collection"
-						:depth="depth + 1"
-						:inline="inline"
+					<nodes :filter="element[filterInfo[index].name]" :collection="collection" :depth="depth + 1" :inline="inline"
 						@change="$emit('change')"
 						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
-						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
-					/>
+						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })" />
 				</div>
 			</li>
 		</template>
@@ -209,13 +161,13 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 
 			return isField
 				? ({
-						id,
-						isField,
-						name,
-						field: getField(node),
-						comparator: getComparator(node),
-						node,
-				  } as FilterInfoField)
+					id,
+					isField,
+					name,
+					field: getField(node),
+					comparator: getComparator(node),
+					node,
+				} as FilterInfoField)
 				: ({ id, name, isField, node } as FilterInfo);
 		});
 	},
@@ -242,9 +194,9 @@ function isFieldDisabled(index: number) {
 
 function onEnableDisableField(index: number) {
 
-	if(!isFieldDisabled(index)) {
+	if (!isFieldDisabled(index)) {
 		// disable field
-		const newVal =  [ ...props.filter.disabled_filters, index]
+		const newVal = [...props.filter.disabled_filters, index]
 		emit('update:filter', { ...props.filter, disabled_filters: newVal });
 	} else {
 		// enable field
@@ -445,8 +397,10 @@ function isExistingField(node: Record<string, any>): boolean {
 	border: var(--border-width) solid var(--border-subdued);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
+
 	&_disabled {
 		color: gray;
+
 		input {
 			color: gray;
 		}
@@ -545,6 +499,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
+
 	// changed
 	.filter_field_icons {
 		--v-icon-color: var(--foreground-subdued);
@@ -559,14 +514,16 @@ function isExistingField(node: Record<string, any>): boolean {
 		transform: translateY(-50%);
 		// opacity: 0;
 		transition: opacity var(--fast) var(--transition);
+
 		.disable-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-subdued);
-	}
-	.field_disabled {
-		--v-icon-color: var(--primary);
-		--v-icon-color-hover: var(--primary);
-	}
+			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color-hover: var(--foreground-subdued);
+		}
+
+		.field_disabled {
+			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--primary);
+		}
 	}
 
 	&:hover {
@@ -623,7 +580,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		background-color: var(--primary-alt);
 		border-color: var(--primary);
 
-		> * {
+		>* {
 			opacity: 0;
 		}
 	}
