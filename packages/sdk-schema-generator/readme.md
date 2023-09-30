@@ -1,10 +1,10 @@
 # @directus/sdk-schema-generator
 
-Generating a typescript schema definition for the SDK
+Generating a TypeScript schema definition for the Directus SDK.
 
 ## Description
 
-This package exports re-usable logic for generating a typescript schema to be used with the SDK.
+This package exports re-usable logic for generating a TypeScript schema to be used with the Directus SDK.
 
 ### CLI
 
