@@ -20,8 +20,14 @@
 
 			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 				<div v-show="filterActive" ref="filterElement" class="filter">
-					<interface-system-filter class="filter-input" inline :value="filter" :collection-name="collection"
-						@input="$emit('update:filter', $event)" />
+					<!-- <interface-system-filter class="filter-input" inline :value="filter" :layout_opts="layout_options" :collection-name="collection"
+						@input="$emit('update:filter', $event)"
+						@inputLO="$emit('update:layout_options', $event)"
+						/> -->
+					<custom-filter class="filter-input" inline :value="filter" :layout_opts="layout_options" :collection-name="collection"
+						@input="$emit('update:filter', $event)"
+						@inputLO="$emit('update:layout_options', $event)"
+						/>
 				</div>
 			</transition-expand>
 		</div>
@@ -34,16 +40,20 @@ import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
 import { Ref, computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { FilterLayoutOptions } from './types';
+import CustomFilter from './custom-filter/custom-filter.vue'
 
 const props = defineProps<{
 	modelValue: string | null;
 	collection: string;
 	filter?: Filter | null;
+	layout_options: FilterLayoutOptions | null;
 }>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | null): void;
 	(e: 'update:filter', value: Filter | null): void;
+	(e: 'update:layout_options', value: FilterLayoutOptions | null): void;
 }>();
 
 const { t } = useI18n();
@@ -94,12 +104,38 @@ watch(active, (newActive: boolean) => {
 	}
 });
 
+// const activeFilterCount = computed(() => {
+// 	if (!props.filter) return 0;
+
+// 	const filterOperators: string[] = [];
+
+// 	parseLevel(props.filter);
+
+// 	return filterOperators.length;
+
+// 	function parseLevel(level: Record<string, any>) {
+// 		for (const [key, value] of Object.entries(level)) {
+// 			if (key === '_and' || key === '_or') {
+// 				value.forEach(parseLevel);
+// 			} else if (key.startsWith('_')) {
+// 				filterOperators.push(key);
+// 			} else {
+// 				if (isObject(value)) {
+// 					parseLevel(value);
+// 				}
+// 			}
+// 		}
+// 	}
+// });
+
+// CHANGED
+
 const activeFilterCount = computed(() => {
-	if (!props.filter) return 0;
+	if (!props.layout_options) return 0;
 
 	const filterOperators: string[] = [];
 
-	parseLevel(props.filter);
+	parseLevel(props.layout_options.all_filters);
 
 	return filterOperators.length;
 
@@ -139,6 +175,7 @@ function emitValue() {
 function clearAllFilters() {
 	emit('update:modelValue', null);
 	emit('update:filter', null);
+	emit('update:layout_options', null);
 }
 </script>
 

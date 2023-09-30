@@ -88,7 +88,7 @@
 
 			<template #actions>
 				<!-- <search-input v-model="search" v-model:filter="filter" :collection="collection" /> -->
-				<custom-search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<custom-search-input v-model="search" v-model:filter="filter" v-model:layout_options="layoutOptions" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
@@ -344,11 +344,6 @@ const {
 	clearLocalSave,
 } = usePreset(collection, bookmarkID);
 
-// UPDATE FILTER VALUE
-window.updateFilter = (newFilter: any) => {
-	filter.value = newFilter
-}
-
 // Use a custom filter for the export sidebar detail
 const exportFilter = ref(null);
 const exportFiltersMerged = computed<Filter>(() => {
@@ -572,6 +567,7 @@ function useBookmarks() {
 function clearFilters() {
 	filter.value = null;
 	search.value = null;
+	layoutOptions.value = null
 }
 
 function usePermissions() {

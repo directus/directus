@@ -244,6 +244,7 @@ import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 
+
 interface Props {
 	collection: string;
 	primaryKey?: string | null;
@@ -287,11 +288,51 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey);
 
-const { filter } = usePreset(collection);
+const { filter, layoutOptions } = usePreset(collection);
+
+watch(() => layoutOptions.value, () => {
+	setTimeout(() => {
+		router.push(`/content/${collection.value}`)
+	}, 500)
+}, { deep: true })
+
+// layoutOptions === null then filter === null
+// layoutOptions !== null then filter === null or filter === []
+// layoutOptions[{filter}] => filter[{filter}] === true then filter[{filter}] === false
 
 // UPDATE FILTER VALUE
-window.updateFilter = (newFilter: any) => {
-	filter.value = newFilter
+window.addFilterFromInterface = (newFilter: any) => {
+	const is_layoutOptions = Boolean(layoutOptions.value?.all_filters)
+	const is_newFilter_in_layoutOptions = layoutOptions.value?.all_filters.some(f => JSON.stringify(f) === JSON.stringify(newFilter))
+
+	if(is_layoutOptions) {
+
+		if(is_newFilter_in_layoutOptions) {
+			return router.push(`/content/${collection.value}`)
+		}
+
+		if(!is_newFilter_in_layoutOptions) {
+			layoutOptions.value = {
+				...layoutOptions.value,
+				all_filters: [...layoutOptions.value.all_filters, newFilter],
+			}
+
+			if(filter.value && (filter.value?._and || filter.value?._or)) {
+				const operator = filter.value._and ? '_and' : '_or'
+
+				filter.value[operator].push(newFilter)
+			} else {
+				filter.value = { _and: [newFilter] };
+			}
+		}
+
+	} else {
+		filter.value = { _and: [newFilter] };
+		layoutOptions.value = {
+			all_filters: [newFilter],
+			disabled_filters: []
+		}
+	}
 }
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
