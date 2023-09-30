@@ -20,7 +20,11 @@
 
 			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 				<div v-show="filterActive" ref="filterElement" class="filter">
-					<interface-system-filter class="filter-input" inline :value="filter" :layout_opts="layout_options" :collection-name="collection"
+					<!-- <interface-system-filter class="filter-input" inline :value="filter" :layout_opts="layout_options" :collection-name="collection"
+						@input="$emit('update:filter', $event)"
+						@inputLO="$emit('update:layout_options', $event)"
+						/> -->
+					<custom-filter class="filter-input" inline :value="filter" :layout_opts="layout_options" :collection-name="collection"
 						@input="$emit('update:filter', $event)"
 						@inputLO="$emit('update:layout_options', $event)"
 						/>
@@ -37,6 +41,7 @@ import { isObject } from 'lodash';
 import { Ref, computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { FilterLayoutOptions } from './types';
+import CustomFilter from './custom-filter/custom-filter.vue'
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -122,7 +127,9 @@ watch(active, (newActive: boolean) => {
 // 		}
 // 	}
 // });
+
 // CHANGED
+
 const activeFilterCount = computed(() => {
 	if (!props.layout_options) return 0;
 

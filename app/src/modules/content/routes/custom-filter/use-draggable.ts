@@ -1,11 +1,11 @@
 import { Filter } from '@directus/types';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 
-export function useDraggable(filterSync) {
-	const movingIndex = ref(null);
-	const futureIndex = ref(null);
+export function useDraggable(filterSync: Ref<Filter[]>) {
+	const movingIndex = ref<number | null>(null);
+	const futureIndex = ref<number | null>(null);
 
-	function onDragMove(e) {
+	function onDragMove(e: any) {
 		const { index, futureIndex: newIndex } = e.draggedContext;
 		movingIndex.value = index;
 		futureIndex.value = newIndex;

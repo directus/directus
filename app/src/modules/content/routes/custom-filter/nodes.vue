@@ -1,57 +1,44 @@
 <template>
-	<draggable
-		tag="ul"
-		draggable=".row"
-		handle=".drag-handle"
-		class="group"
-		:list="filterSync"
-		:group="{ name: 'g1' }"
-		:item-key="getIndex"
-		:swap-threshold="0.3"
-		:force-fallback="true"
-		@change="$emit('change')"
-	>
+	<draggable :disabled="isDragDisabled" tag="ul" draggable=".row" handle=".drag-handle" class="group" :list="filterSync"
+		:group="{ name: 'g1' }" :item-key="getIndex" :swap-threshold="0.3" :force-fallback="true" :move="onDragMove"
+		@end="onDragEnd">
 		<template #item="{ element, index }">
-			<li class="row">
+			<li class="row" @mousemove="onFieldHover(index)">
 				<div v-if="filterInfo[index].isField" block class="node field">
-					<div class="header" :class="{ inline }">
-						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
+					<div class="header" :class="{ inline, 'header_disabled': isFieldDisabled(index) }">
+						<v-icon name="drag_indicator" class="drag-handle" small
+							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}" />
 						<span v-if="!isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
-						<v-menu v-else placement="bottom-start" show-arrow>
+						<v-menu v-else placement="bottom-start" show-arrow
+							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}">
 							<template #activator="{ toggle }">
 								<button class="name" @click="toggle">
 									<span>{{ getFieldPreview(element) }}</span>
 								</button>
 							</template>
 
-							<v-field-list
-								:collection="collection"
-								:field="field"
-								include-functions
-								:include-relations="includeRelations"
-								:relational-field-selectable="relationalFieldSelectable"
-								:allow-select-all="false"
-								@add="updateField(index, $event[0])"
-							/>
+							<v-field-list :collection="collection" :field="field" include-functions
+								:include-relations="includeRelations" :relational-field-selectable="relationalFieldSelectable"
+								:allow-select-all="false" @add="updateField(index, $event[0])" />
 						</v-menu>
-						<v-select
-							inline
-							class="comparator"
-							placement="bottom-start"
+						<v-select inline class="comparator" placement="bottom-start"
 							:model-value="(filterInfo[index] as FilterInfoField).comparator"
+							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}"
 							:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
-							@update:model-value="updateComparator(index, $event)"
-						/>
-						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
-						<span class="delete">
-							<v-icon
-								v-tooltip="t('delete_label')"
-								name="close"
-								small
-								clickable
-								@click="$emit('remove-node', [index])"
-							/>
-						</span>
+							@update:model-value="updateComparator(index, $event)" />
+						<input-group :field="element" :collection="collection"
+							:style="isFieldDisabled(index) ? { 'pointer-events': 'none' } : {}"
+							@update:field="replaceNode(index, $event)" />
+
+						<!-- CHANGED  -->
+						<p class="filter_field_icons">
+							<v-icon name="filter_list_off" small clickable class="disable-icon"
+								:class="{ 'field_disabled': isFieldDisabled(index) }"
+								v-tooltip="t(isFieldDisabled(index) ? 'Enable' : 'Disable')" @click="onEnableDisableField(index)" />
+
+							<v-icon v-tooltip="t('delete_label')" name="close" small clickable
+								@click="$emit('remove-node', [index], element)" />
+						</p>
 					</div>
 				</div>
 
@@ -62,8 +49,8 @@
 							<span class="key" @click="toggleLogic(index)">
 								{{
 									filterInfo[index].name === '_and'
-										? t('interfaces.filter.logic_type_and')
-										: t('interfaces.filter.logic_type_or')
+									? t('interfaces.filter.logic_type_and')
+									: t('interfaces.filter.logic_type_or')
 								}}
 							</span>
 							<span class="text">
@@ -75,24 +62,14 @@
 							</span>
 						</div>
 						<span class="delete">
-							<v-icon
-								v-tooltip="t('delete_label')"
-								name="close"
-								small
-								clickable
-								@click="$emit('remove-node', [index])"
-							/>
+							<v-icon v-tooltip="t('delete_label')" name="close" small clickable
+								@click="$emit('remove-node', [index], element)" />
 						</span>
 					</div>
-					<nodes
-						:filter="element[filterInfo[index].name]"
-						:collection="collection"
-						:depth="depth + 1"
-						:inline="inline"
+					<nodes :filter="element[filterInfo[index].name]" :collection="collection" :depth="depth + 1" :inline="inline"
 						@change="$emit('change')"
 						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
-						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
-					/>
+						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })" />
 				</div>
 			</li>
 		</template>
@@ -103,7 +80,6 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { useSync } from '@directus/composables';
 import {
 	FieldFilter,
 	FieldFilterOperator,
@@ -115,11 +91,13 @@ import {
 } from '@directus/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
 import { get } from 'lodash';
-import { computed, toRefs } from 'vue';
+import { computed, toRefs, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
 import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
+import { FilterLayoutOptions } from '@/modules/content/routes/types';
+import { useDraggable } from './use-draggable';
 
 type FilterInfo = {
 	id: number;
@@ -138,7 +116,7 @@ type FilterInfoField = {
 };
 
 interface Props {
-	filter: Filter[];
+	filter: FilterLayoutOptions;
 	collection: string;
 	field?: string;
 	depth?: number;
@@ -160,26 +138,36 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);
 
 const { collection } = toRefs(props);
-const filterSync = useSync(props, 'filter', emit);
+// const filterSync = useSync(props, 'filter', emit);
+
+const filterSync = computed({
+	get() {
+		return props.filter.all_filters;
+	},
+	set(newVal) {
+		emit('update:filter', { ...props.filter, all_filters: newVal });
+	},
+});
+
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
 const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	get() {
-		return props.filter.map((node, id) => {
+		return props.filter.all_filters.map((node, id) => {
 			const name = getNodeName(node);
 			const isField = name.startsWith('_') === false;
 
 			return isField
 				? ({
-						id,
-						isField,
-						name,
-						field: getField(node),
-						comparator: getComparator(node),
-						node,
-				  } as FilterInfoField)
+					id,
+					isField,
+					name,
+					field: getField(node),
+					comparator: getComparator(node),
+					node,
+				} as FilterInfoField)
 				: ({ id, name, isField, node } as FilterInfo);
 		});
 	},
@@ -190,6 +178,33 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 		);
 	},
 });
+
+// CHANGED ------------------------------------
+const { onDragMove, onDragEnd } = useDraggable(filterSync);
+
+const isDragDisabled = ref(false)
+
+function onFieldHover(index: number) {
+	isDragDisabled.value = isFieldDisabled(index);
+}
+
+function isFieldDisabled(index: number) {
+	return props.filter.disabled_filters.includes(index)
+}
+
+function onEnableDisableField(index: number) {
+
+	if (!isFieldDisabled(index)) {
+		// disable field
+		const newVal = [...props.filter.disabled_filters, index]
+		emit('update:filter', { ...props.filter, disabled_filters: newVal });
+	} else {
+		// enable field
+		const newVal = props.filter.disabled_filters.filter(ind => ind !== index)
+		emit('update:filter', { ...props.filter, disabled_filters: newVal });
+	}
+}
+// ----------------------------------------------------------
 
 function getFieldPreview(node: Record<string, any>) {
 	const fieldKey = getField(node);
@@ -224,7 +239,7 @@ function getFieldPreview(node: Record<string, any>) {
 }
 
 function getIndex(item: Filter) {
-	return props.filter.findIndex((filter) => filter === item);
+	return props.filter.all_filters.findIndex((filter) => filter === item);
 }
 
 function toggleLogic(index: number) {
@@ -383,6 +398,15 @@ function isExistingField(node: Record<string, any>): boolean {
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
 
+	&_disabled {
+		color: gray;
+
+		input {
+			color: gray;
+		}
+	}
+
+
 	.logic-type {
 		color: var(--foreground-subdued);
 
@@ -476,10 +500,38 @@ function isExistingField(node: Record<string, any>): boolean {
 		transition: opacity var(--fast) var(--transition);
 	}
 
+	// changed
+	.filter_field_icons {
+		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color-hover: var(--danger);
+
+		display: flex;
+		align-items: center;
+		position: absolute;
+		top: 50%;
+		left: 100%;
+		padding-left: 4px;
+		transform: translateY(-50%);
+		// opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+
+		.disable-icon {
+			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color-hover: var(--foreground-subdued);
+		}
+
+		.field_disabled {
+			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--primary);
+		}
+	}
+
 	&:hover {
 		border-color: var(--border-normal);
 
 		.delete,
+		// changed
+		filter_field_icons,
 		&:hover {
 			opacity: 1;
 		}
@@ -498,6 +550,13 @@ function isExistingField(node: Record<string, any>): boolean {
 		padding-right: 12px;
 
 		.delete {
+			right: 8px;
+			left: unset;
+			background-color: var(--background-page);
+		}
+
+		// changed
+		.filter_field_icons {
 			right: 8px;
 			left: unset;
 			background-color: var(--background-page);
@@ -521,7 +580,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		background-color: var(--primary-alt);
 		border-color: var(--primary);
 
-		> * {
+		>* {
 			opacity: 0;
 		}
 	}

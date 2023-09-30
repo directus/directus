@@ -6,24 +6,16 @@
 		{{ t('select_a_collection') }}
 	</v-notice>
 
-	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
+	<div v-else class="system-filter"
+		:class="{ inline, empty: innerValueCopy.all_filters.length === 0, field: fieldName !== undefined }">
 		<v-list :mandatory="true">
-			<div v-if="innerValue.length === 0" class="no-rules">
+			<div v-if="innerValueCopy.all_filters.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>
 
-			<nodes
-				v-else
-				v-model:filter="innerValue"
-				:collection="collection"
-				:field="fieldName"
-				:depth="1"
-				:include-validation="includeValidation"
-				:include-relations="includeRelations"
-				:relational-field-selectable="relationalFieldSelectable"
-				@remove-node="removeNode($event)"
-				@change="emitValue"
-			/>
+			<nodes v-else v-model:filter="innerValueCopy" :collection="collection" :field="fieldName" :depth="1"
+				:include-validation="includeValidation" :include-relations="includeRelations"
+				:relational-field-selectable="relationalFieldSelectable" @remove-node="removeNode" />
 		</v-list>
 
 		<div v-if="fieldName" class="buttons">
@@ -40,15 +32,9 @@
 					</button>
 				</template>
 
-				<v-field-list
-					v-if="collectionRequired"
-					:collection="collection"
-					include-functions
-					:include-relations="includeRelations"
-					:relational-field-selectable="relationalFieldSelectable"
-					:allow-select-all="false"
-					@add="addNode($event[0])"
-				>
+				<v-field-list v-if="collectionRequired" :collection="collection" include-functions
+					:include-relations="includeRelations" :relational-field-selectable="relationalFieldSelectable"
+					:allow-select-all="false" @add="addNode($event[0])">
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
 							<v-list-item-content>
@@ -68,12 +54,8 @@
 					<v-divider />
 					<v-list-item @click.stop>
 						<v-list-item-content>
-							<input
-								v-model="newKey"
-								class="new-key-input"
-								:placeholder="t('interfaces.filter.add_key_placeholder')"
-								@keydown.enter="addKeyAsNode"
-							/>
+							<input v-model="newKey" class="new-key-input" :placeholder="t('interfaces.filter.add_key_placeholder')"
+								@keydown.enter="addKeyAsNode" />
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>
@@ -93,13 +75,15 @@ import {
 	parseJSON,
 } from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
-import { computed, inject, ref } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
+import { FilterLayoutOptions } from '../types';
 
 interface Props {
 	value?: Record<string, any> | string;
+	layout_opts: FilterLayoutOptions;
 	disabled?: boolean;
 	collectionName?: string;
 	collectionField?: string;
@@ -113,6 +97,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	value: undefined,
+	layout_opts: undefined,
 	disabled: false,
 	collectionName: undefined,
 	collectionField: undefined,
@@ -124,7 +109,7 @@ const props = withDefaults(defineProps<Props>(), {
 	relationalFieldSelectable: true,
 });
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'inputLO']);
 
 const { t } = useI18n();
 
@@ -163,17 +148,54 @@ const innerValue = computed<Filter[]>({
 	},
 });
 
-function emitValue() {
-	if (innerValue.value.length === 0) {
-		emit('input', null);
-	} else {
-		emit('input', { _and: innerValue.value });
+// CHANGED -----------------------------
+
+const innerValueCopy = computed<FilterLayoutOptions>({
+	get() {
+		if (!props.layout_opts || isEmpty(props.layout_opts.all_filters)) return { all_filters: [], disabled_filters: [] }
+		return cloneDeep({ all_filters: props.layout_opts.all_filters, disabled_filters: props.layout_opts.disabled_filters })
+	},
+	set(lo) {
+		if (lo.all_filters.length === 0) {
+			emit('inputLO', null);
+		} else {
+			emit('inputLO', { all_filters: lo.all_filters, disabled_filters: lo.disabled_filters });
+		}
+	},
+})
+
+watch(() => innerValueCopy.value, () => {
+	updateInnerValue()
+}, { deep: true })
+
+// function emitValue(e: DragEvent) {
+// 	if (innerValueCopy.value.all_filters.length === 0) {
+// 		emit('inputLO', null);
+// 	} else {
+// 		emit('inputLO', { all_filters: innerValueCopy.value.all_filters, disabled_filters: innerValueCopy.value.disabled_filters });
+// 	}
+// }
+
+window.addFilterFromDisplay = (newFilter: any) => {
+	const isFilterExists = innerValueCopy.value.all_filters.some(f => JSON.stringify(f) === JSON.stringify(newFilter))
+
+	if (!isFilterExists) {
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			all_filters: [...innerValueCopy.value.all_filters, newFilter]
+		}
 	}
 }
 
+
 function addNode(key: string) {
 	if (key === '$group') {
-		innerValue.value = innerValue.value.concat({ _and: [] });
+
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			all_filters: innerValueCopy.value.all_filters.concat({ _and: [] })
+		}
+
 	} else {
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);
@@ -198,7 +220,11 @@ function addNode(key: string) {
 		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });
-		innerValue.value = innerValue.value.concat(node);
+
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			all_filters: innerValueCopy.value.all_filters.concat(node)
+		}
 	}
 }
 
@@ -206,7 +232,12 @@ function removeNode(ids: string[]) {
 	const id = ids.pop();
 
 	if (ids.length === 0) {
-		innerValue.value = innerValue.value.filter((node, index) => index !== Number(id));
+		innerValueCopy.value = {
+			...innerValueCopy.value,
+			disabled_filters: innerValueCopy.value.disabled_filters.filter(ind => ind !== Number(id)).map(ind => ind > Number(id) ? ind - 1 : ind),
+			all_filters: innerValueCopy.value.all_filters.filter((node, index) => index !== Number(id)),
+		}
+
 		return;
 	}
 
@@ -215,6 +246,10 @@ function removeNode(ids: string[]) {
 	list = list.filter((_node, index) => index !== Number(id));
 
 	innerValue.value = set(innerValue.value, ids.join('.'), list);
+}
+
+function updateInnerValue() {
+	innerValue.value = innerValueCopy.value.all_filters.filter((f, ind) => !innerValueCopy.value.disabled_filters.includes(ind))
 }
 
 // For adding any new fields (eg. flow Validate operation rule)
@@ -230,6 +265,7 @@ function addKeyAsNode() {
 
 <style lang="scss" scoped>
 .system-filter {
+
 	:deep(ul),
 	:deep(li) {
 		list-style: none;
@@ -247,7 +283,7 @@ function addKeyAsNode() {
 		padding: 20px 20px 12px;
 		border: var(--border-width) solid var(--border-subdued);
 
-		& > :deep(.group) {
+		&> :deep(.group) {
 			margin-left: 0px;
 			padding-left: 0px;
 			border-left: none;
@@ -305,20 +341,24 @@ function addKeyAsNode() {
 			border: var(--border-width) solid var(--border-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);
+
 			&:hover,
 			&.active {
 				border-color: var(--border-normal);
 			}
+
 			&.active {
 				.expand_more {
 					transform: scaleY(-1);
 					transition-timing-function: var(--transition-in);
 				}
 			}
+
 			.add {
 				margin-left: 6px;
 				margin-right: 4px;
 			}
+
 			.expand_more {
 				margin-left: auto;
 				margin-right: 6px;
@@ -335,7 +375,7 @@ function addKeyAsNode() {
 		cursor: pointer;
 	}
 
-	button + button {
+	button+button {
 		margin-left: 24px;
 	}
 }
