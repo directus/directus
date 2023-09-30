@@ -239,26 +239,31 @@ router.post(
 	'/send',
 	asyncHandler(async (req, res, _next) => {
 		const { error } = sendSchema.validate(req.body);
+
 		if (error) {
-			throw new InvalidPayloadError(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		// Obtain the required fields from the template strings
 		const fields: Set<string> = new Set(
 			getFieldsFromTemplate(req.body.body).concat(getFieldsFromTemplate(req.body.subject))
 		);
+
 		fields.add('id');
 		fields.add('title');
 		fields.add('filename_download');
 		fields.add('filename_disk');
 		fields.add('storage');
+
 		const filesService = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const values: Record<string, any> = await filesService.readOne(req.body.key, {
 			fields: Array.from(fields),
 		}, { emitEvents: false });
+
 		// Use micromustache to render the template strings
 		const subject = req.body.subject ? render(req.body.subject, values) : '';
 		const body = req.body.body ? render(req.body.body, values) : '';
@@ -269,15 +274,18 @@ router.post(
 		// Check if the file exists
 		const storage = await getStorage();
 		const exists = await storage.location(values['storage']).exists(values['filename_disk']);
+
 		if (!exists) {
-			throw new InvalidPayloadError(`File does not exist`);
+			throw new InvalidPayloadError({reason: `File does not exist`});
 		}
+
 		const fileStream = await storage.location(values['storage']).read(values['filename_disk']);
 
 		const mailService = new MailService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		try {
 			const result: any = await mailService.send({
 				to: req.body.emails,
@@ -288,13 +296,14 @@ router.post(
 					content: fileStream,
 				}]
 			});
+
 			res.json({
 				success: true,
 				accepted: result.accepted?.length ?? 0,
 				rejected: result.rejected?.length ?? (req.body.emails.length - (result.accepted?.length ?? 0)),
 			});
 		} catch (error: any) {
-			throw new ServiceUnavailableError('Error sending email', { service: 'files', error });
+			throw new ServiceUnavailableError({reason: 'Error sending email', service: 'files' });
 		}
 	})
 );
