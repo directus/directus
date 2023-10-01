@@ -49,6 +49,7 @@ import { Field } from '@directus/types';
 import { i18n } from '@/lang';
 import api from '@/api';
 import { useCollection } from '@directus/composables';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
 import { useFieldsStore } from '@/stores/fields';
