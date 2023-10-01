@@ -19,9 +19,26 @@ export function adjustFieldsForDisplays(fields: readonly string[], parentCollect
 			);
 
 			if (!display) return fieldKey;
-			if (!display.value?.fields) return fieldKey;
+			if (!display.value?.fields && !display.value?.localFields) return fieldKey;
 
 			let fieldKeys: string[] | null = null;
+
+			if(Array.isArray(display.value?.localFields)){
+				const baseKey = fieldKey.split('.')[0];
+				fieldKeys = [...display.value.localFields.map((localFieldKey: string) => `${baseKey}.${localFieldKey}`)];
+				fieldKeys.push(fieldKey);
+			}
+
+			if (typeof display.value.localFields === 'function') {
+				fieldKeys = [...display.value
+					.localFields(field.meta?.display_options, {
+						collection: field.collection,
+						field: field.field,
+						type: field.type,
+					})];
+
+				fieldKeys.push(fieldKey);
+			}
 
 			if (Array.isArray(display.value.fields)) {
 				fieldKeys = display.value.fields.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);

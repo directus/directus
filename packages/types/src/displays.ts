@@ -35,4 +35,5 @@ export interface DisplayConfig {
 	types: readonly Type[];
 	localTypes?: readonly LocalType[];
 	fields?: string[] | DisplayFieldsFunction;
+	localFields?: string[] | DisplayFieldsFunction;
 }
