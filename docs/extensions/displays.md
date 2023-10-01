@@ -42,7 +42,8 @@ export default {
 - `types` — An array of supported [types](/user-guide/overview/glossary#types).
 - `localTypes` — An array of local types. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2m`, `m2a`,
   `presentation`, `translations` and `group`. Defaults to `standard`.
-- `fields` — If this option is set, the display will fetch relational fields. Can either be an array of fields or a
+- `fields` — If this option is set, the display will fetch relational fields. Can either be an array of fields or a function that returns an array of fields.
+- `localFields` - If this option is set, the display will fetch additional fields from the same collection. Can either be an array of fields or a
   function that returns an array of fields.
 
 ## Display Component
