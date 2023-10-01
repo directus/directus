@@ -109,9 +109,7 @@ export function useAliasFields(
 	 * @returns The value of the given key from the given item
 	 */
 	function getFromAliasedItem<K, T extends Record<string, K>>(item: T, key: string): K | undefined {
-		/* eslint-disable no-console */
 		const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
-		console.log("getFromAliasedItem", item, key, aliasInfo);
 
 		// Skip any nested fields prefixed with $ as they dont exist. ($thumbnail as an example)
 		key = key.includes('.')
