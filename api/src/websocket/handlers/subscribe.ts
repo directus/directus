@@ -177,9 +177,8 @@ export class SubscribeHandler {
 					this.unsubscribe(client, subscription.uid);
 				}
 
-				const data = subscription.event === undefined
-					? await getPayload(subscription, accountability, schema)
-					: { event: 'init' };
+				const data =
+					subscription.event === undefined ? await getPayload(subscription, accountability, schema) : { event: 'init' };
 
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);

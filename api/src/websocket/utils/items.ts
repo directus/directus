@@ -79,7 +79,7 @@ export async function getCollectionPayload(
 	switch (event?.action) {
 		case undefined:
 			return await service.readByQuery();
-	    case 'create':
+		case 'create':
 			return await service.readMany([String(event.key)]);
 		case 'update':
 			return await service.readMany(event.keys.map((key: any) => String(key)));
@@ -120,7 +120,6 @@ export async function getFieldsPayload(
 			return event.keys;
 		default:
 			return await service.readOne(event?.payload?.['collection'], event?.payload?.['field']);
-
 	}
 }
 
@@ -161,5 +160,4 @@ export async function getItemsPayload(
 		case 'delete':
 			return event.keys;
 	}
-
 }
