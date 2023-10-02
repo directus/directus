@@ -1,29 +1,3 @@
-<template>
-	<div class="panel-meter" :class="[{ 'has-header': showHeader }, `size-${size}`]">
-		<output>{{ displayValue }}</output>
-		<svg :width="svgSize.width" :height="svgSize.height">
-			<circle
-				cx="50%"
-				:cy="size === 'half' ? '100%' : '50%'"
-				fill="none"
-				:stroke-width="strokeWidth"
-				:stroke-linecap="roundedStroke ? 'round' : 'inherit'"
-				:r="radius"
-				stroke="var(--background-subdued)"
-			/>
-			<circle
-				cx="50%"
-				:cy="size === 'half' ? '100%' : '50%'"
-				fill="none"
-				:stroke-width="strokeWidth"
-				:stroke-linecap="roundedStroke ? 'round' : 'inherit'"
-				:r="radius"
-				:stroke="conditionalColor"
-			/>
-		</svg>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { BaseConditionalFillOperators, PanelFunction } from '@/types/panels';
 import { computed, unref } from 'vue';
@@ -154,6 +128,32 @@ const fontSize = computed(() => Math.min(Math.ceil(unref(circumference) / 100) *
 
 const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidth / 2 + 'px');
 </script>
+
+<template>
+	<div class="panel-meter" :class="[{ 'has-header': showHeader }, `size-${size}`]">
+		<output>{{ displayValue }}</output>
+		<svg :width="svgSize.width" :height="svgSize.height">
+			<circle
+				cx="50%"
+				:cy="size === 'half' ? '100%' : '50%'"
+				fill="none"
+				:stroke-width="strokeWidth"
+				:stroke-linecap="roundedStroke ? 'round' : 'inherit'"
+				:r="radius"
+				stroke="var(--background-subdued)"
+			/>
+			<circle
+				cx="50%"
+				:cy="size === 'half' ? '100%' : '50%'"
+				fill="none"
+				:stroke-width="strokeWidth"
+				:stroke-linecap="roundedStroke ? 'round' : 'inherit'"
+				:r="radius"
+				:stroke="conditionalColor"
+			/>
+		</svg>
+	</div>
+</template>
 
 <style scoped>
 .panel-meter {

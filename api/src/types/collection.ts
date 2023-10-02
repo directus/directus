@@ -8,7 +8,7 @@ export type CollectionMeta = {
 	singleton: boolean;
 	icon: string | null;
 	translations: Record<string, string>;
-	branches_enabled: boolean;
+	versioning: boolean;
 	item_duplication_fields: string[] | null;
 	accountability: 'all' | 'accountability' | null;
 	group: string | null;

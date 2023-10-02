@@ -357,6 +357,7 @@ move: Premjesti
 system: Sistem
 add_field_related: Dodaj polje povezanoj kolekciji
 interface_label: Interfejs
+display_label: Prikaz
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
@@ -1487,6 +1488,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcije interfejsa
     description: Modal za odabir opcija interfejsa
+  system-display:
+    display: Prikaz
   list-m2m:
     description: Odaberite više povezanih spojnih stavki
     columns_configure_notice: Možete konfigurisati predložak prikaza nakon kreiranja ovog polja.
@@ -1543,6 +1546,7 @@ interfaces:
     sort_placeholder: Ručno
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutni podaci nisu kompatibilni sa interfejsom repetitora i biće nadjačani prilikom dodavanja stavki u repetitor
+    interface_group: Opcije interfejsa
   slider:
     slider: Klizač
     description: Odaberite broj pomoću klizača

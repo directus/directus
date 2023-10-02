@@ -174,6 +174,9 @@ gtag('config', 'UA-24637628-7');
 			},
 		},
 	},
+	sitemap: {
+		hostname: 'https://docs.directus.io',
+	},
 	transformPageData(pageData) {
 		function setOGImage(asset) {
 			return [
@@ -390,10 +393,6 @@ function sidebar() {
 					text: 'Items',
 				},
 				{
-					link: '/reference/branches',
-					text: 'Branches',
-				},
-				{
 					link: '/reference/files',
 					text: 'Files',
 				},
@@ -486,6 +485,10 @@ function sidebar() {
 					text: 'Utilities',
 				},
 				{
+					link: '/reference/system/versions',
+					text: 'Versions',
+				},
+				{
 					link: '/reference/system/webhooks',
 					text: 'Webhooks',
 				},
@@ -498,10 +501,6 @@ function sidebar() {
 				{
 					text: 'All Guides',
 					link: '/guides/index.html',
-				},
-				{
-					text: 'SDK Quickstart',
-					link: '/guides/sdk/getting-started',
 				},
 				...sidebarGuides(),
 			],
@@ -538,11 +537,15 @@ function sidebar() {
 					text: 'Introduction',
 				},
 				{
+					link: '/extensions/installing-extensions',
+					text: 'Installing Extensions',
+				},
+				{
 					link: '/extensions/creating-extensions',
 					text: 'Creating Extensions',
 				},
 				{
-					text: 'Extension Types',
+					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
 						{
@@ -584,10 +587,6 @@ function sidebar() {
 						{
 							link: '/extensions/panels',
 							text: 'Panels',
-						},
-						{
-							link: '/extensions/themes',
-							text: 'Themes',
 						},
 						{
 							link: '/extensions/bundles',
@@ -827,6 +826,10 @@ function sidebarUserGuide() {
 			text: 'General Settings',
 			collapsed: true,
 			items: [
+				{
+					text: 'Theming',
+					link: '/user-guide/settings/theming',
+				},
 				{
 					text: 'Project Settings',
 					link: '/user-guide/settings/project-settings',

@@ -81,7 +81,7 @@ create_user: 创建用户
 message: 消息
 delete_panel: 删除面板
 create_webhook: 创建网络钩子
-create_custom_translation: 创建自定义翻译
+create_custom_translation: 建立自定义翻译
 edit_custom_translation: 编辑自定义翻译
 no_custom_translations: 没有自定义翻译
 no_custom_translations_copy: 尚无自定义翻译。
@@ -242,7 +242,7 @@ dateTime: DateTime
 precision: 精度
 decimal: Decimal
 float: Float
-integer: Integer
+integer: 整数数字
 json: JSON
 xml: XML
 yaml: YAML
@@ -395,6 +395,7 @@ move: 移动
 system: 系统
 add_field_related: 将字段添加到关联的模型
 interface_label: 接口
+display_label: 显示
 today: 今天
 yesterday: 昨天
 delete_comment: 删除注释
@@ -502,6 +503,7 @@ expand: 展开
 collapse: 收起
 select_item: 选择条目
 no_items: 无条目
+search_items: 搜索项
 disabled: 禁用
 information: 信息
 report_bug: 反馈Bug
@@ -949,6 +951,8 @@ wysiwyg_options:
   source_code: 编辑源代码
   fullscreen: 全屏显示
   directionality: 方向
+  lazy_loading: "延迟加载图像\n"
+  lazy_loading_label: 允许延迟加载
 dropdown: 下拉列表
 choices: 选择项
 choices_option_configured_incorrectly: 选择配置错误
@@ -1479,6 +1483,8 @@ undo_removed_item: 撤消删除的项目
 remove_item: 删除项目
 delete_item: 删除项目
 interfaces:
+  list-m2a:
+    prefix_note: 默认情况下使用相关项目的收藏名称
   filter:
     name: 筛选
     description: 配置过滤对象。
@@ -1614,6 +1620,8 @@ interfaces:
   system-interface-options:
     interface-options: 接口选项
     description: 选择接口选项的模式
+  system-display:
+    display: 显示
   list-m2m:
     many-to-many: 多对多
     description: 选择多个相关项目
@@ -1683,6 +1691,7 @@ interfaces:
     sort_placeholder: 手动
     field_note_placeholder: 输入字段备注...
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
+    interface_group: 接口选项
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字
@@ -2138,9 +2147,19 @@ operations:
     payload: 有效载荷 (Payload)
     query: 查询
   json-web-token:
+    name: JWT
+    description: 签名并验证JWT
+    operation: 操作
+    secret: 秘密
+    secret_placeholder: 输入文本
     payload: 有效载荷 (Payload)
     token: Token
+    token_placeholder: eyJhbGciOi
     options: 选项
+    options_placeholder: '请参考阅读https://www.npmjs.com/package/jsonwebtoken#usage for the available options'
+    sign: 签名令牌
+    verify: 验证令牌
+    decode: 删除令牌
   log:
     name: 记录到控制台
     description: 输出内容到控制台

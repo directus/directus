@@ -1,13 +1,3 @@
-<template>
-	<div class="v-divider" :class="{ vertical, inlineTitle, large }">
-		<span v-if="$slots.icon || $slots.default" class="wrapper">
-			<slot name="icon" class="icon" />
-			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
-		</span>
-		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** Render the divider vertically */
@@ -24,6 +14,16 @@ withDefaults(defineProps<Props>(), {
 	large: false,
 });
 </script>
+
+<template>
+	<div class="v-divider" :class="{ vertical, inlineTitle, large }">
+		<span v-if="$slots.icon || $slots.default" class="wrapper">
+			<slot name="icon" class="icon" />
+			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
+		</span>
+		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
+	</div>
+</template>
 
 <style>
 body {

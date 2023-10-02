@@ -1,9 +1,3 @@
-<template>
-	<div class="v-list-item-icon" :class="{ center }">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	center?: boolean;
@@ -13,6 +7,12 @@ withDefaults(defineProps<Props>(), {
 	center: false,
 });
 </script>
+
+<template>
+	<div class="v-list-item-icon" :class="{ center }">
+		<slot />
+	</div>
+</template>
 
 <style>
 body {

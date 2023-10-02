@@ -1,5 +1,6 @@
 import type { DirectusActivity } from '../../../schema/activity.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadActivityOutput<
@@ -28,14 +29,19 @@ export const readActivities =
  * @param key The primary key of the activity
  * @param query The query parameters
  * @returns Returns an activity object if a valid identifier was provided.
+ * @throws Will throw if key is empty
  */
 export const readActivity =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusActivity<Schema>>>(
 		key: DirectusActivity<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadActivityOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/activity/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/activity/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};

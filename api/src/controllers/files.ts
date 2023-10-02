@@ -92,9 +92,9 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			if (!payload.title) {
 				payload.title = formatTitle(path.parse(filename).name);
 			}
-
-			payload.filename_download = filename;
 		}
+
+		payload.filename_download = filename;
 
 		const payloadWithRequiredFields = {
 			...payload,

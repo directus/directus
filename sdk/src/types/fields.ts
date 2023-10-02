@@ -1,3 +1,4 @@
+import type { FunctionFields } from './functions.js';
 import type { ExtractItem } from './query.js';
 import type { ItemType, RelationalFields, RemoveRelationships } from './schema.js';
 import type { UnpackList } from './utils.js';
@@ -6,6 +7,7 @@ import type { UnpackList } from './utils.js';
  * Fields querying, including nested relational fields
  */
 export type QueryFields<Schema extends object, Item> = WrapQueryFields<
+	Schema,
 	Item,
 	QueryFieldsRelational<Schema, UnpackList<Item>>
 >;
@@ -13,7 +15,12 @@ export type QueryFields<Schema extends object, Item> = WrapQueryFields<
 /**
  * Wrap array of fields
  */
-export type WrapQueryFields<Item, NestedFields> = readonly ('*' | keyof UnpackList<Item> | NestedFields)[];
+export type WrapQueryFields<Schema extends object, Item, NestedFields> = readonly (
+	| '*'
+	| keyof UnpackList<Item>
+	| NestedFields
+	| FunctionFields<Schema, UnpackList<Item>>
+)[];
 
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
@@ -36,6 +43,7 @@ export type ManyToAnyFields<Schema extends object, Item> = ExtractItem<Schema, I
 		? 'collection' extends keyof TItem
 			? 'item' extends keyof TItem
 				? WrapQueryFields<
+						Schema,
 						TItem,
 						Omit<QueryFieldsRelational<Schema, UnpackList<Item>>, 'item'> & {
 							item?: {
@@ -76,7 +84,9 @@ export type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field
 /**
  * Return all keys if Fields is undefined or contains '*'
  */
-export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends infer Field
+export type FieldsWildcard<Item extends object, Fields> = unknown extends Fields
+	? keyof Item
+	: UnpackList<Fields> extends infer Field
 	? Field extends undefined
 		? keyof Item
 		: Field extends '*'
@@ -107,3 +117,10 @@ type AllKeys<T> = T extends any ? keyof T : never;
 export type PickFlatFields<Schema extends object, Item, Fields> = Extract<Fields, keyof Item> extends never
 	? never
 	: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;
+
+/**
+ * Extract a specific literal type from a collection
+ */
+export type LiteralFields<Item, Type extends string> = {
+	[Key in keyof Item]: Extract<Item[Key], Type>[] extends never[] ? never : Key;
+}[keyof Item];

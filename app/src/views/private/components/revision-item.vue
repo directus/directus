@@ -1,25 +1,3 @@
-<template>
-	<div class="revision-item" :class="{ last }" @click="$emit('click')">
-		<div class="header">
-			<span class="dot" :class="revision.activity.action" />
-			{{ headerMessage }}
-		</div>
-		<div class="content">
-			<span class="time">{{ time }}</span>
-			–
-			<user-popover
-				v-if="revision.activity.user"
-				class="user"
-				:user="typeof revision.activity.user === 'string' ? revision.activity.user : revision.activity.user.id"
-			>
-				<span>{{ user }}</span>
-			</user-popover>
-
-			<span v-else>{{ t('private_user') }}</span>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { userName } from '@/utils/user-name';
@@ -50,8 +28,8 @@ const headerMessage = computed(() => {
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
-		case 'commit':
-			return t('revision_delta_commited', revisionCount.value);
+		case 'version_save':
+			return t('revision_delta_version_saved', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -71,6 +49,28 @@ const user = computed(() => {
 	return t('private_user');
 });
 </script>
+
+<template>
+	<div class="revision-item" :class="{ last }" @click="$emit('click')">
+		<div class="header">
+			<span class="dot" :class="revision.activity.action" />
+			{{ headerMessage }}
+		</div>
+		<div class="content">
+			<span class="time">{{ time }}</span>
+			–
+			<user-popover
+				v-if="revision.activity.user"
+				class="user"
+				:user="typeof revision.activity.user === 'string' ? revision.activity.user : revision.activity.user.id"
+			>
+				<span>{{ user }}</span>
+			</user-popover>
+
+			<span v-else>{{ t('private_user') }}</span>
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .revision-item {
@@ -102,7 +102,7 @@ const user = computed(() => {
 				background-color: var(--primary);
 			}
 
-			&.commit {
+			&.version_save {
 				background-color: var(--primary);
 			}
 

@@ -1,9 +1,9 @@
 ---
-description: 'Learn how to proxy a third-party API with a custom endpoint.'
+description: Learn how to proxy a third-party API with a custom endpoint, requiring a valid user account.
 contributors: Tim Butterfield, Kevin Lewis
 ---
 
-# Use Custom Endpoints to Create an API Proxy
+# Use Custom Endpoints to Create an Authenticated API Proxy
 
 Endpoints are used in the API to perform certain functions.
 
@@ -18,8 +18,8 @@ As an example, this guide will proxy the Twilio API, but the same approach can b
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose endpoint), and type a name for your extension (for example,
@@ -50,26 +50,18 @@ variables, add the `env` context to the handler like so:
 handler: (router, { env }) => {
 ```
 
-To perform the API query, add the `axios` package which is included in Directus.
+Create variables for Twilio and construct the request headers object for Basic Authentication:
 
 ```js
-const axios = require('axios');
-```
+const twilioHost = 'https://api.twilio.com';
+const twilioSid = env.TWILIO_ACCOUNT_SID;
+const twilioToken = env.TWILIO_AUTH_TOKEN;
 
-Create variables for the Twilio auth details, and then create a new `axios` instance with them:
+const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
 
-```js
-const twilio_host = "https://api.twilio.com";
-const twilio_sid = env.TWILIO_ACCOUNT_SID;
-const twilio_token = env.TWILIO_AUTH_TOKEN;
-
-const twilio_api = axios.create({
-	baseURL: twilio_host,
-	auth: {
-		username: twilio_sid,
-		password: twilio_token,
-	},
-});
+const headers = {
+	Authorization: `Basic ${token}`,
+};
 ```
 
 _Note: the client initialization values are unique to Twilio. Other 3rd Party services may authentication differently,
@@ -79,27 +71,107 @@ The standard way to create an API route is to specify the method and the path. R
 endpoint that Twilio has, use a wildcard (\*) to run this function for every route for each supported method.
 
 ```js
-router.get('/*', (req, res) => {
-	twilio_api.get(req.url).then((response) => {
-		res.json(response.data);
-	}).catch((error) => {
-		res.send(error);
-	});
+router.get('/*', async (req, res) => {
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), { headers });
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status);
+			res.send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500);
+		res.send(error.message);
+	}
 });
 
-router.post('/*', (req, res) => {
-	twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
-		res.json(response.data);
-	}).catch((error) => {
-		res.send(error);
-	});
-});
+router.post('/*', async (req, res) => {
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), {
+			method: 'POST',
+			headers: {
+				...headers,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(req.body),
+		});
 
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status);
+			res.send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500);
+		res.send(error.message);
+	}
+});
 ```
 
 Each route includes the request (`req`) and response (`res`). The request has useful information that was provided by
 the user or application such as the URL, method, authentication and other HTTP headers. In this case, the URL needs to
 be combined with the twilio host to perform an API query.
+
+### Ensure User Is Authenticated
+
+As Twilio is an API that requires authentication and costs money to use, you should also require authentication for your
+endpoint. Without this, any person on the internet could use it.
+
+A client is unauthenticated if `req.accountability.user` is `null`, use this check to protect both methods:
+
+```js
+router.get('/*', async (req, res) => {
+	if (req.accountability?.user == null) { // [!code ++]
+		res.status(403); // [!code ++]
+		return res.send(`You don't have permission to access this.`); // [!code ++]
+	} // [!code ++]
+
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), { headers });
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status);
+			res.send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500);
+		res.send(error.message);
+	}
+});
+
+router.post('/*', async (req, res) => {
+	if (req.accountability?.user == null) { // [!code ++]
+		res.status(403); // [!code ++]
+		return res.send(`You don't have permission to access this.`); // [!code ++]
+	} // [!code ++]
+
+	try {
+		const response = await fetch(new URL(req.url, twilioHost), {
+			method: 'POST',
+			headers: {
+				...headers,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(req.body),
+		});
+
+		if (response.ok) {
+			res.json(await response.json());
+		} else {
+			res.status(response.status);
+			res.send(response.statusText);
+		}
+	} catch (error) {
+		res.status(500);
+		res.send(error.message);
+	}
+});
+```
 
 This is now complete and ready for testing. Build the endpoint with the latest changes.
 
@@ -144,7 +216,7 @@ It will look something like:
 
 Change the method to as required (in this case POST) and add the following json to the body:
 
-```js
+```json
 {
 	"From": "+0123456789",
 	"Body": "Hi from Directus",
@@ -171,33 +243,63 @@ simplify your other extensions.
 export default {
 	id: 'twilio',
 	handler: (router, { env }) => {
-		const axios = require('axios');
-		const twilio_host = "https://api.twilio.com";
-		const twilio_sid = env.TWILIO_ACCOUNT_SID;
-		const twilio_token = env.TWILIO_AUTH_TOKEN;
-		const twilio_from = env.TWILIO_PHONE_NUMBER;
-		const twilio_api = axios.create({
-		 	baseURL: twilio_host,
-			auth: {
-				username: twilio_sid,
-				password: twilio_token,
-			},
+		const twilioHost = 'https://api.twilio.com';
+		const twilioSid = env.TWILIO_ACCOUNT_SID;
+		const twilioToken = env.TWILIO_AUTH_TOKEN;
+
+		const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
+
+		const headers = {
+			Authorization: `Basic ${token}`,
+		};
+
+		router.get('/*', async (req, res) => {
+			if (req.accountability?.user == null) {
+				res.status(403);
+				return res.send(`You don't have permission to access this.`);
+			}
+
+			try {
+				const response = await fetch(new URL(req.url, twilioHost), { headers });
+
+				if (response.ok) {
+					res.json(await response.json());
+				} else {
+					res.status(response.status);
+					res.send(response.statusText);
+				}
+			} catch (error) {
+				res.status(500);
+				res.send(error.message);
+			}
 		});
 
-		router.get('/*', (req, res) => {
-			twilio_api.get(req.url).then((response) => {
-				res.json(response.data);
-			}).catch((error) => {
-				res.send(error);
-			});
-		});
+		router.post('/*', async (req, res) => {
+			if (req.accountability?.user == null) {
+				res.status(403);
+				return res.send(`You don't have permission to access this.`);
+			}
 
-		router.post('/*', (req, res) => {
-			twilio_api.post(req.url, new URLSearchParams(req.body)).then((response) => {
-				res.json(response.data);
-			}).catch((error) => {
-				res.send(error);
-			});
+			try {
+				const response = await fetch(new URL(req.url, twilioHost), {
+					method: 'POST',
+					headers: {
+						...headers,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(req.body),
+				});
+
+				if (response.ok) {
+					res.json(await response.json());
+				} else {
+					res.status(response.status);
+					res.send(response.statusText);
+				}
+			} catch (error) {
+				res.status(500);
+				res.send(error.message);
+			}
 		});
 	},
 };

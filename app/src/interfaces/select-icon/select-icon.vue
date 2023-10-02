@@ -1,3 +1,46 @@
+<script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import icons from './icons.json';
+
+withDefaults(
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		width?: string;
+	}>(),
+	{
+		width: 'half',
+	}
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const searchQuery = ref('');
+
+const filteredIcons = computed(() => {
+	if (searchQuery.value.length === 0) return icons;
+
+	return icons.map((group) => {
+		const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
+
+		return {
+			name: group.name,
+			icons,
+		};
+	});
+});
+
+function setIcon(icon: string | null) {
+	searchQuery.value = '';
+
+	emit('input', icon);
+}
+</script>
+
 <template>
 	<v-menu attached :disabled="disabled">
 		<template #activator="{ active, activate }">
@@ -44,49 +87,6 @@
 		</div>
 	</v-menu>
 </template>
-
-<script setup lang="ts">
-import formatTitle from '@directus/format-title';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import icons from './icons.json';
-
-withDefaults(
-	defineProps<{
-		value: string | null;
-		disabled?: boolean;
-		width?: string;
-	}>(),
-	{
-		width: 'half',
-	}
-);
-
-const emit = defineEmits(['input']);
-
-const { t } = useI18n();
-
-const searchQuery = ref('');
-
-const filteredIcons = computed(() => {
-	if (searchQuery.value.length === 0) return icons;
-
-	return icons.map((group) => {
-		const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
-
-		return {
-			name: group.name,
-			icons,
-		};
-	});
-});
-
-function setIcon(icon: string | null) {
-	searchQuery.value = '';
-
-	emit('input', icon);
-}
-</script>
 
 <style lang="scss" scoped>
 .v-input.has-value {

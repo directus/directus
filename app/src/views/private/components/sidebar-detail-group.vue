@@ -1,9 +1,3 @@
-<template>
-	<v-item-group v-model="openDetail" class="sidebar-detail-group" scope="sidebar-detail" :mandatory="mandatory">
-		<slot />
-	</v-item-group>
-</template>
-
 <script setup lang="ts">
 import { nextTick, ref, watch } from 'vue';
 
@@ -32,6 +26,12 @@ watch(
 	}
 );
 </script>
+
+<template>
+	<v-item-group v-model="openDetail" class="sidebar-detail-group" scope="sidebar-detail" :mandatory="mandatory">
+		<slot />
+	</v-item-group>
+</template>
 
 <style lang="scss" scoped>
 .sidebar-detail-group {

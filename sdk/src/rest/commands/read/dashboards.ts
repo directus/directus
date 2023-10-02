@@ -1,5 +1,6 @@
 import type { DirectusDashboard } from '../../../schema/dashboard.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadDashboardOutput<
@@ -28,14 +29,19 @@ export const readDashboards =
  * @param key The primary key of the dashboard
  * @param query The query parameters
  * @returns Returns the requested dashboard object.
+ * @throws Will throw if key is empty
  */
 export const readDashboard =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		key: DirectusDashboard<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadDashboardOutput<Schema, TQuery>, Schema> =>
-	() => ({
-		path: `/dashboards/${key}`,
-		params: query ?? {},
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(String(key), 'Key cannot be empty');
+
+		return {
+			path: `/dashboards/${key}`,
+			params: query ?? {},
+			method: 'GET',
+		};
+	};

@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import { debounce } from 'lodash';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+export type Choice = {
+	text: string;
+	value: string | number;
+	children?: Choice[];
+};
+
+withDefaults(
+	defineProps<{
+		value: string[] | null;
+		disabled?: boolean;
+		choices?: Choice[];
+		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+	}>(),
+	{
+		value: () => [],
+		choices: () => [],
+		valueCombining: 'all',
+	}
+);
+
+defineEmits(['input']);
+
+const { t } = useI18n();
+const search = ref('');
+
+const showSelectionOnly = ref(false);
+
+const setSearchDebounced = debounce((val: string) => {
+	searchDebounced.value = val;
+}, 250);
+
+watch(search, setSearchDebounced);
+
+const searchDebounced = ref('');
+</script>
+
 <template>
 	<div class="select-multiple-checkbox-tree">
 		<div v-if="choices.length > 10" class="search">
@@ -37,47 +78,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { debounce } from 'lodash';
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-type Choice = {
-	text: string;
-	value: string | number;
-	children?: Choice[];
-};
-
-withDefaults(
-	defineProps<{
-		value: string[] | null;
-		disabled?: boolean;
-		choices?: Choice[];
-		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
-	}>(),
-	{
-		value: () => [],
-		choices: () => [],
-		valueCombining: 'all',
-	}
-);
-
-defineEmits(['input']);
-
-const { t } = useI18n();
-const search = ref('');
-
-const showSelectionOnly = ref(false);
-
-const setSearchDebounced = debounce((val: string) => {
-	searchDebounced.value = val;
-}, 250);
-
-watch(search, setSearchDebounced);
-
-const searchDebounced = ref('');
-</script>
 
 <style scoped>
 .select-multiple-checkbox-tree {

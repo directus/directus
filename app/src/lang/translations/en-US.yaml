@@ -101,24 +101,33 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
-branch_name: Branch Name
-commit: Commit
-main_branch: Main
-create_branch: Create Branch
-switch_to_branch_after_creation: Switch to Branch After Creation
-rename_branch: Rename Branch
-compare_branch: Compare Branch
-merge_branch: Merge Branch
-merge_branch_drawer_title: Merge {branch} into Main
+keep: Keep
+version: Version
+version_key: Version Key
+version_name: Version Name
+main_version: Main
+switch_version: Switch Version
+switch_version_copy: Are you sure you want to switch to the "{version}" version?
+create_version: Create Version
+update_version: Update Version
+compare_version: Compare Version
+save_version: Save Version
+promote_version: Promote Version
+promote_version_disabled: No changes selected
+promote_version_drawer_title: Promote {version} into Main
+promote_version_changes: Changes
+promote_version_preview: Preview
 outdated_notice: >-
   The main item has been updated since this version was created. Please review all the field values below, and confirm
-  which version should be used when merging this version into the main item.
-merge_notice: >-
-  Please review all the field values below, and confirm which version should be used when merging this version into the
-  main item.
-delete_branch: Delete Branch
-delete_branch_copy: >-
-  Are you sure you want to delete the "{branch}" branch? This action cannot be undone.
+  which version should be used when promoting this version into the main item.
+promote_notice: >-
+  Please review all the field values below, and confirm which version should be used when promoting this version into
+  the main item.
+delete_version: Delete Version
+delete_version_copy: >-
+  Are you sure you want to delete the "{version}" version? This action cannot be undone.
+delete_on_promote_copy: >-
+  Do you want to delete or keep the "{version}" version after promoting?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -168,6 +177,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  email: Value has to be a valid email address
   regex: Value doesn't have the correct format
   starts_with: Value has to start with {substring}
   istarts_with: Value has to start with {substring}
@@ -365,6 +375,7 @@ clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
+archive_all: Archive All
 show_all_activity: Show All Activity
 page_not_found: Page Not Found
 page_not_found_body: The page you are looking for doesn't seem to exist.
@@ -377,7 +388,7 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
-revision_delta_commited: 'Commit (Updated 1 Field) | Commit (Updated {count} Fields)'
+revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
@@ -420,6 +431,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -470,7 +482,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -608,6 +619,7 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
+edit_item: Edit Item
 enabled: Enabled
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
@@ -779,6 +791,7 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 interface_options: Interface Options
+display_options: Display Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
@@ -1134,7 +1147,7 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
-    branches_enabled: Branches
+    versioning: Versioning
     archive_field: Archive Field
     item_duplication_fields: Item Duplication Fields
   directus_files:
@@ -1333,7 +1346,7 @@ field_options:
     duplication_divider: Duplication
     preview_divider: Preview
     content_versioning_divider: Content Versioning
-    enable_branches: Enable Branches
+    enable_versioning: Enable Versioning
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1497,6 +1510,7 @@ search: Search
 select_existing: Select Existing
 select_field_type: Select a field type
 select_interface: Select an interface
+select_display: Select a display
 settings: Settings
 sign_in: Sign In
 sign_out: Sign Out
@@ -1666,6 +1680,13 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
+    description: Select an existing display
+    placeholder: Select an display...
+  system-display-options:
+    display-options: Display Options
+    description: A modal for selecting options of a display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1718,7 +1739,7 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
+    folder: Root Folder
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root
@@ -1737,6 +1758,9 @@ interfaces:
     incompatible_data:
       The current data is not compatible with the repeater interface and will be overridden when adding items to the
       repeater
+    interface_group: Interface Options
+    display_group: Display Options
+
   slider:
     slider: Slider
     description: Select a number using a slider

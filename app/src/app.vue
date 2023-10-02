@@ -1,25 +1,3 @@
-<template>
-	<div id="directus" :style="brandStyle">
-		<transition name="fade">
-			<div v-if="hydrating" class="hydrating">
-				<v-progress-circular indeterminate />
-			</div>
-		</transition>
-
-		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
-
-			<template #append>
-				<v-error :error="error" />
-			</template>
-		</v-info>
-
-		<router-view v-else-if="!hydrating" />
-
-		<teleport to="#custom-css">{{ customCSS }}</teleport>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
@@ -108,6 +86,28 @@ const error = computed(() => appStore.error);
 
 useSystem();
 </script>
+
+<template>
+	<div id="directus" :style="brandStyle">
+		<transition name="fade">
+			<div v-if="hydrating" class="hydrating">
+				<v-progress-circular indeterminate />
+			</div>
+		</transition>
+
+		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
+
+			<template #append>
+				<v-error :error="error" />
+			</template>
+		</v-info>
+
+		<router-view v-else-if="!hydrating" />
+
+		<teleport to="#custom-css">{{ customCSS }}</teleport>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 :global(#app) {

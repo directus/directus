@@ -48,9 +48,11 @@ Value is stored as a JSON array of objects.
   - **Field**: Name of the field.
   - **Field Width**: Width of field on the Item Detail page.
   - **Type**: Type of value.
-  - **Interface**: The interface to use for the fields.
   - **Note**: A helpful note for the user.
-  - **Options**: Option configuration for the selected Interface.
+  - **Interface**: The interface to use for the fields.
+  - **Interface Options**: Option configuration for the selected Interface.
+  - **Display**: The display to use for the preview template.
+  - **Display Options**: Option configuration for the selected Display.
 
 ## Map
 

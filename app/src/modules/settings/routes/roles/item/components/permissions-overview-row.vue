@@ -1,3 +1,31 @@
+<script setup lang="ts">
+import { Permission } from '@directus/types';
+import { toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import useUpdatePermissions from '../composables/use-update-permissions';
+import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
+import { Collection } from '@/types/collections';
+
+const props = defineProps<{
+	collection: Collection;
+	permissions: Permission[];
+	refreshing: number[];
+	role?: string;
+	appMinimal?: Partial<Permission>[];
+}>();
+
+const { t } = useI18n();
+
+const { collection, role, permissions } = toRefs(props);
+const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
+
+function isLoading(action: string) {
+	const permission = getPermission(action);
+	if (!permission) return false;
+	return props.refreshing.includes(permission.id);
+}
+</script>
+
 <template>
 	<div class="permissions-overview-row">
 		<span class="name">
@@ -51,34 +79,6 @@
 		/>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { Permission } from '@directus/types';
-import { toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import useUpdatePermissions from '../composables/use-update-permissions';
-import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
-import { Collection } from '@/types/collections';
-
-const props = defineProps<{
-	collection: Collection;
-	permissions: Permission[];
-	refreshing: number[];
-	role?: string;
-	appMinimal?: Partial<Permission>[];
-}>();
-
-const { t } = useI18n();
-
-const { collection, role, permissions } = toRefs(props);
-const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
-
-function isLoading(action: string) {
-	const permission = getPermission(action);
-	if (!permission) return false;
-	return props.refreshing.includes(permission.id);
-}
-</script>
 
 <style lang="scss" scoped>
 .permissions-overview-row {

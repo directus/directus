@@ -1,35 +1,3 @@
-<template>
-	<div
-		class="card"
-		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
-		@click="handleClick"
-	>
-		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
-		<div class="header">
-			<div class="selection-fade"></div>
-			<v-skeleton-loader v-if="loading" />
-			<template v-else>
-				<v-icon-file v-if="type || imgError" :ext="type" />
-				<template v-else>
-					<v-image
-						v-if="showThumbnail"
-						:class="imageInfo?.fileType"
-						:src="imageInfo?.source"
-						:alt="item?.title"
-						role="presentation"
-					/>
-					<v-icon v-else large :name="icon" />
-				</template>
-			</template>
-		</div>
-		<v-skeleton-loader v-if="loading" type="text" />
-		<template v-else>
-			<div v-if="$slots.title" class="title"><slot name="title" /></div>
-			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
@@ -125,6 +93,38 @@ function handleClick() {
 	}
 }
 </script>
+
+<template>
+	<div
+		class="card"
+		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
+		@click="handleClick"
+	>
+		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
+		<div class="header">
+			<div class="selection-fade"></div>
+			<v-skeleton-loader v-if="loading" />
+			<template v-else>
+				<v-icon-file v-if="type || imgError" :ext="type" />
+				<template v-else>
+					<v-image
+						v-if="showThumbnail"
+						:class="imageInfo?.fileType"
+						:src="imageInfo?.source"
+						:alt="item?.title"
+						role="presentation"
+					/>
+					<v-icon v-else large :name="icon" />
+				</template>
+			</template>
+		</div>
+		<v-skeleton-loader v-if="loading" type="text" />
+		<template v-else>
+			<div v-if="$slots.title" class="title"><slot name="title" /></div>
+			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .loading {

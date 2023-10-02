@@ -32,6 +32,9 @@ export function isAllowed(
 
 	if (!permissionInfo.permissions || Object.keys(permissionInfo.permissions).length === 0) return true;
 
+	// Value is `null` while data is still loading, skip check in this case
+	if (value === null) return true;
+
 	return checkPermissions(permissionInfo.permissions);
 
 	function checkPermissions(permissions: Filter): boolean {
@@ -45,6 +48,13 @@ export function isAllowed(
 			const schema = generateJoi(permissions as FieldFilter);
 
 			const { error } = schema.validate(value);
+
+			// TODO: This is a temporary workaround, currently necessary for permission rules
+			//       containing relational fields because those values aren't received at this point
+			//		 and the check would always fail.
+			//       Therefore the check is instead always considered successful for now.
+			if (action === 'update' && error?.message.endsWith('must be of type object')) return true;
+
 			return error === undefined;
 		}
 	}

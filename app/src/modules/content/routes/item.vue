@@ -1,296 +1,15 @@
-<template>
-	<content-not-found
-		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
-	/>
-
-	<private-view v-else v-model:splitView="splitView" :split-view-min-width="310" :title="title">
-		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
-			<h1 class="type-title">
-				{{ collectionInfo.name }}
-			</h1>
-		</template>
-
-		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
-			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
-
-			<h1 v-else class="type-title">
-				<render-template
-					:collection="collectionInfo.collection"
-					:item="templateData"
-					:template="collectionInfo.meta.display_template"
-				/>
-			</h1>
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-			>
-				<v-icon :name="collectionInfo.icon" />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: t('content'), to: '/content' }]"
-			/>
-			<v-breadcrumb v-else :items="breadcrumb" />
-		</template>
-
-		<template #title-outer:append>
-			<branch-menu
-				v-if="
-					collectionInfo.meta &&
-					collectionInfo.meta.branches_enabled &&
-					!isNew &&
-					internalPrimaryKey !== '+' &&
-					readBranchesAllowed &&
-					!branchesLoading
-				"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:current-branch="currentBranch"
-				:branches="branches"
-				@add="addBranch"
-				@rename="renameBranch"
-				@delete="deleteBranch"
-				@switch="currentBranch = $event"
-			/>
-		</template>
-
-		<template #actions>
-			<v-button
-				v-if="previewURL"
-				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
-				rounded
-				icon
-				class="action-preview"
-				:secondary="livePreviewMode === null"
-				@click="toggleSplitView"
-			>
-				<v-icon name="visibility" outline />
-			</v-button>
-
-			<v-dialog
-				v-if="!isNew && currentBranch === null"
-				v-model="confirmDelete"
-				:disabled="deleteAllowed === false"
-				@esc="confirmDelete = false"
-			>
-				<template #activator="{ on }">
-					<v-button
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
-						:disabled="item === null || deleteAllowed !== true"
-						@click="on"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-dialog
-				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
-				v-model="confirmArchive"
-				:disabled="archiveAllowed === false"
-				@esc="confirmArchive = false"
-			>
-				<template #activator="{ on }">
-					<v-button
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
-						secondary
-						:disabled="item === null || archiveAllowed !== true"
-						@click="on"
-					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button secondary @click="confirmArchive = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
-							{{ isArchived ? t('unarchive') : t('archive') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-button
-				v-if="currentBranch === null"
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="!isSavable"
-				@click="saveAndQuit"
-			>
-				<v-icon name="check" />
-
-				<template #append-outer>
-					<save-options
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
-						:disabled-options="disabledOptions"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
-						@save-as-copy="saveAsCopyAndNavigate"
-						@discard-and-stay="discardAndStay"
-					/>
-				</template>
-			</v-button>
-			<v-button
-				v-else
-				v-tooltip.bottom="t('commit')"
-				rounded
-				icon
-				:loading="commitLoading"
-				:disabled="!isSavable"
-				@click="commitToBranchAndQuit"
-			>
-				<v-icon name="commit" />
-
-				<template #append-outer>
-					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
-						<template #activator="{ toggle }">
-							<v-icon name="more_vert" clickable @click="toggle" />
-						</template>
-
-						<v-list>
-							<v-list-item clickable @click="discardAndStay">
-								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
-								<v-list-item-content>{{ t('discard_all_changes') }}</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-menu>
-				</template>
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<content-navigation :current-collection="collection" />
-		</template>
-
-		<v-form
-			ref="form"
-			v-model="edits"
-			:autofocus="isNew"
-			:disabled="isNew ? false : updateAllowed === false"
-			:loading="loading"
-			:initial-values="item"
-			:fields="fields"
-			:primary-key="internalPrimaryKey"
-			:validation-errors="validationErrors"
-		/>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<template #splitView>
-			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
-		</template>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_collections_item')" class="page-description" />
-			</sidebar-detail>
-			<template v-if="isNew === false && loading === false && internalPrimaryKey">
-				<revisions-drawer-detail
-					v-if="revisionsAllowed && accountabilityScope === 'all'"
-					ref="revisionsDrawerDetailRef"
-					:collection="collection"
-					:primary-key="internalPrimaryKey"
-					:branch="currentBranch"
-					:scope="accountabilityScope"
-					@revert="revert"
-				/>
-				<comments-sidebar-detail
-					v-if="currentBranch === null"
-					:collection="collection"
-					:primary-key="internalPrimaryKey"
-				/>
-				<shares-sidebar-detail
-					v-if="currentBranch === null"
-					:collection="collection"
-					:primary-key="internalPrimaryKey"
-					:allowed="shareAllowed"
-				/>
-				<flow-sidebar-detail
-					location="item"
-					:collection="collection"
-					:primary-key="internalPrimaryKey"
-					:has-edits="hasEdits"
-					@refresh="refresh"
-				/>
-			</template>
-		</template>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useBranches } from '@/composables/use-branches';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
-import { usePermissionsStore } from '@/stores/permissions';
+import { useVersions } from '@/composables/use-versions';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
@@ -300,9 +19,9 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import { useCollection } from '@directus/composables';
 import { useHead } from '@unhead/vue';
 import { useRouter } from 'vue-router';
-import BranchMenu from '../components/branch-menu.vue';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
+import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
 
 interface Props {
@@ -319,7 +38,6 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
-const { hasPermission } = usePermissionsStore();
 
 const form = ref<HTMLElement>();
 
@@ -330,19 +48,18 @@ const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> 
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
-const readBranchesAllowed = computed<boolean>(() => hasPermission('directus_branches', 'read'));
-
 const {
-	currentBranch,
-	branches,
-	loading: branchesLoading,
+	readVersionsAllowed,
+	currentVersion,
+	versions,
+	loading: versionsLoading,
 	query,
-	addBranch,
-	renameBranch,
-	deleteBranch,
-	commitLoading,
-	commit,
-} = useBranches(collection, isSingleton, primaryKey);
+	addVersion,
+	updateVersion,
+	deleteVersion,
+	saveVersionLoading,
+	saveVersion,
+} = useVersions(collection, isSingleton, primaryKey);
 
 const {
 	isNew,
@@ -449,6 +166,10 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
+watch(currentVersion, () => {
+	edits.value = {};
+});
+
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
 const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
@@ -456,7 +177,7 @@ const { templateData: previewData, fetchTemplateValues } = useTemplateData(colle
 const previewURL = computed(() => {
 	const enrichedPreviewData = {
 		...unref(previewData),
-		$branch: currentBranch.value ? currentBranch.value.name : 'main',
+		$version: currentVersion.value ? currentVersion.value.name : 'main',
 	};
 
 	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
@@ -534,7 +255,7 @@ watch(saving, async (newVal, oldVal) => {
 	await refreshLivePreview();
 });
 
-watch(commitLoading, async (newVal, oldVal) => {
+watch(saveVersionLoading, async (newVal, oldVal) => {
 	if (newVal === true || oldVal === false) return;
 
 	await refreshLivePreview();
@@ -552,41 +273,41 @@ function navigateBack() {
 		return;
 	}
 
-	router.push(`/content/${props.collection}`);
+	router.push(getCollectionRoute(props.collection));
 }
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
 			name: collectionInfo.value?.name,
-			to: `/content/${props.collection}`,
+			to: getCollectionRoute(props.collection),
 		},
 	]);
 
 	return { breadcrumb };
 }
 
-async function commitToBranchAndQuit() {
+async function saveVersionAndQuit() {
 	if (isSavable.value === false) return;
 
 	try {
-		await commit(edits);
+		await saveVersion(edits);
 		edits.value = {};
 		if (props.singleton === false) router.push(`/content/${props.collection}`);
 	} catch {
-		// Commit shows unexpected error dialog
+		// Save version shows unexpected error dialog
 	}
 }
 
-async function commitToBranchAndStay() {
+async function saveVersionAndStay() {
 	if (isSavable.value === false) return;
 
 	try {
-		await commit(edits);
+		await saveVersion(edits);
 		edits.value = {};
 		refresh();
 	} catch {
-		// Commit shows unexpected error dialog
+		// Save version shows unexpected error dialog
 	}
 }
 
@@ -595,7 +316,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		if (props.singleton === false) router.push(`/content/${props.collection}`);
+		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -604,8 +325,8 @@ async function saveAndQuit() {
 async function saveAndStay() {
 	if (isSavable.value === false) return;
 
-	if (unref(currentBranch) !== null) {
-		commitToBranchAndStay();
+	if (unref(currentVersion) !== null) {
+		saveVersionAndStay();
 		return;
 	}
 
@@ -614,7 +335,8 @@ async function saveAndStay() {
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-			router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+
+			router.replace(getItemRoute(props.collection, newPrimaryKey));
 		} else {
 			revisionsDrawerDetailRef.value?.refresh?.();
 			refresh();
@@ -626,7 +348,7 @@ async function saveAndStay() {
 
 async function saveAndAddNew() {
 	if (isSavable.value === false) return;
-	if (unref(currentBranch) !== null) return;
+	if (unref(currentVersion) !== null) return;
 
 	try {
 		await save();
@@ -634,7 +356,7 @@ async function saveAndAddNew() {
 		if (isNew.value === true) {
 			refresh();
 		} else {
-			router.push(`/content/${props.collection}/+`);
+			router.push(getItemRoute(props.collection, '+'));
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -644,7 +366,8 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+
+		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -654,7 +377,7 @@ async function deleteAndQuit() {
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(`/content/${props.collection}`);
+		router.replace(getCollectionRoute(props.collection));
 	} catch {
 		// `remove` will show the unexpected error dialog
 	} finally {
@@ -667,7 +390,7 @@ async function toggleArchive() {
 		await archive();
 
 		if (isArchived.value === true) {
-			router.push(`/content/${props.collection}`);
+			router.push(getCollectionRoute(props.collection));
 		} else {
 			confirmArchive.value = false;
 		}
@@ -695,6 +418,289 @@ function revert(values: Record<string, any>) {
 	};
 }
 </script>
+
+<template>
+	<content-not-found
+		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
+	/>
+
+	<private-view v-else v-model:splitView="splitView" :split-view-min-width="310" :title="title">
+		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
+			<h1 class="type-title">
+				{{ collectionInfo.name }}
+			</h1>
+		</template>
+
+		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
+			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
+
+			<h1 v-else class="type-title">
+				<render-template
+					:collection="collectionInfo.collection"
+					:item="templateData"
+					:template="collectionInfo.meta.display_template"
+				/>
+			</h1>
+		</template>
+
+		<template #title-outer:prepend>
+			<v-button
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
+				class="header-icon"
+				rounded
+				icon
+				secondary
+				disabled
+			>
+				<v-icon :name="collectionInfo.icon" />
+			</v-button>
+
+			<v-button
+				v-else
+				v-tooltip.bottom="t('back')"
+				class="header-icon"
+				rounded
+				icon
+				secondary
+				exact
+				@click="navigateBack"
+			>
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+
+		<template #headline>
+			<v-breadcrumb
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
+				:items="[{ name: t('content'), to: '/content' }]"
+			/>
+			<v-breadcrumb v-else :items="breadcrumb" />
+		</template>
+
+		<template #title-outer:append>
+			<version-menu
+				v-if="
+					collectionInfo.meta &&
+					collectionInfo.meta.versioning &&
+					!isNew &&
+					internalPrimaryKey !== '+' &&
+					readVersionsAllowed &&
+					!versionsLoading
+				"
+				:collection="collection"
+				:primary-key="internalPrimaryKey"
+				:has-edits="hasEdits"
+				:current-version="currentVersion"
+				:versions="versions"
+				@add="addVersion"
+				@update="updateVersion"
+				@delete="deleteVersion"
+				@switch="currentVersion = $event"
+			/>
+		</template>
+
+		<template #actions>
+			<v-button
+				v-if="previewURL"
+				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
+				rounded
+				icon
+				class="action-preview"
+				:secondary="livePreviewMode === null"
+				@click="toggleSplitView"
+			>
+				<v-icon name="visibility" outline />
+			</v-button>
+
+			<v-dialog
+				v-if="!isNew && currentVersion === null"
+				v-model="confirmDelete"
+				:disabled="deleteAllowed === false"
+				@esc="confirmDelete = false"
+			>
+				<template #activator="{ on }">
+					<v-button
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
+						rounded
+						icon
+						class="action-delete"
+						secondary
+						:disabled="item === null || deleteAllowed !== true"
+						@click="on"
+					>
+						<v-icon name="delete" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-dialog
+				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
+				v-model="confirmArchive"
+				:disabled="archiveAllowed === false"
+				@esc="confirmArchive = false"
+			>
+				<template #activator="{ on }">
+					<v-button
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="archiveTooltip"
+						rounded
+						icon
+						secondary
+						:disabled="item === null || archiveAllowed !== true"
+						@click="on"
+					>
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmArchive = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
+							{{ isArchived ? t('unarchive') : t('archive') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-button
+				v-if="currentVersion === null"
+				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
+				rounded
+				icon
+				:loading="saving"
+				:disabled="!isSavable"
+				@click="saveAndQuit"
+			>
+				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
+						:disabled-options="disabledOptions"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
+			</v-button>
+			<v-button
+				v-else
+				v-tooltip.bottom="t('save_version')"
+				rounded
+				icon
+				:loading="saveVersionLoading"
+				:disabled="!isSavable"
+				@click="saveVersionAndQuit"
+			>
+				<v-icon name="beenhere" />
+
+				<template #append-outer>
+					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
+						<template #activator="{ toggle }">
+							<v-icon name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<v-list>
+							<v-list-item clickable @click="discardAndStay">
+								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
+								<v-list-item-content>{{ t('discard_all_changes') }}</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<content-navigation :current-collection="collection" />
+		</template>
+
+		<v-form
+			ref="form"
+			v-model="edits"
+			:autofocus="isNew"
+			:disabled="isNew ? false : updateAllowed === false"
+			:loading="loading"
+			:initial-values="item"
+			:fields="fields"
+			:primary-key="internalPrimaryKey"
+			:validation-errors="validationErrors"
+		/>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<template #splitView>
+			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
+		</template>
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_collections_item')" class="page-description" />
+			</sidebar-detail>
+			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+				<revisions-drawer-detail
+					v-if="revisionsAllowed && accountabilityScope === 'all'"
+					ref="revisionsDrawerDetailRef"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:version="currentVersion"
+					:scope="accountabilityScope"
+					@revert="revert"
+				/>
+				<comments-sidebar-detail
+					v-if="currentVersion === null"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+				/>
+				<shares-sidebar-detail
+					v-if="currentVersion === null"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:allowed="shareAllowed"
+				/>
+				<flow-sidebar-detail
+					v-if="currentVersion === null"
+					location="item"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:has-edits="hasEdits"
+					@refresh="refresh"
+				/>
+			</template>
+		</template>
+	</private-view>
+</template>
 
 <style lang="scss" scoped>
 .action-delete {

@@ -1,20 +1,3 @@
-<template>
-	<div class="system-display-template">
-		<v-notice v-if="collection === null" type="info">
-			{{ t('interfaces.system-display-template.select_a_collection') }}
-		</v-notice>
-
-		<v-field-template
-			v-else
-			:collection="collection"
-			:model-value="value"
-			:disabled="disabled"
-			:inject="injectValue"
-			@update:model-value="$emit('input', $event)"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import type { Field } from '@directus/types';
@@ -26,7 +9,7 @@ const props = defineProps<{
 	disabled?: boolean;
 	collectionField?: string;
 	collectionName?: string;
-	injectBranchField?: boolean;
+	injectVersionField?: boolean;
 }>();
 
 defineEmits<{
@@ -57,22 +40,22 @@ const collection = computed(() => {
 
 // TODO Initial version, probably needs polishing
 const injectValue = computed(() => {
-	if (!props.injectBranchField) return null;
+	if (!props.injectVersionField) return null;
 
-	const branchesEnabled = values.value['branches_enabled'];
+	const versioningEnabled = values.value['versioning'];
 
-	if (!branchesEnabled) return null;
+	if (!versioningEnabled) return null;
 
-	const fakeBranchField: Field = {
+	const fakeVersionField: Field = {
 		collection: unref(collection),
-		field: '$branch',
+		field: '$version',
 		schema: null,
-		name: 'Branch',
+		name: '$t:version',
 		type: 'integer',
 		meta: {
 			id: -1,
 			collection: unref(collection),
-			field: '$branch',
+			field: '$version',
 			sort: null,
 			special: null,
 			interface: null,
@@ -92,6 +75,23 @@ const injectValue = computed(() => {
 		},
 	};
 
-	return { fields: [fakeBranchField] };
+	return { fields: [fakeVersionField] };
 });
 </script>
+
+<template>
+	<div class="system-display-template">
+		<v-notice v-if="collection === null" type="info">
+			{{ t('interfaces.system-display-template.select_a_collection') }}
+		</v-notice>
+
+		<v-field-template
+			v-else
+			:collection="collection"
+			:model-value="value"
+			:disabled="disabled"
+			:inject="injectValue"
+			@update:model-value="$emit('input', $event)"
+		/>
+	</div>
+</template>

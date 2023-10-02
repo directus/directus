@@ -1,11 +1,3 @@
-<template>
-	<div class="actions">
-		<v-button v-tooltip.bottom="t('save')" :loading="loading" icon rounded @click="save">
-			<v-icon name="check" />
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
@@ -47,6 +39,14 @@ async function save() {
 	}
 }
 </script>
+
+<template>
+	<div class="actions">
+		<v-button v-tooltip.bottom="t('save')" :loading="loading" icon rounded @click="save">
+			<v-icon name="check" />
+		</v-button>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .actions {

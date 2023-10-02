@@ -1,16 +1,3 @@
-<template>
-	<div ref="labelContainer" class="metric type-title selectable" :class="{ 'has-header': showHeader }">
-		<p
-			ref="labelText"
-			:style="{ color, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
-		>
-			{{ prefix }}
-			{{ displayValue(metric) }}
-			{{ suffix }}
-		</p>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Filter } from '@directus/types';
 import { cssVar } from '@directus/utils/browser';
@@ -212,6 +199,19 @@ const color = computed(() => {
 	}
 });
 </script>
+
+<template>
+	<div ref="labelContainer" class="metric type-title selectable" :class="{ 'has-header': showHeader }">
+		<p
+			ref="labelText"
+			:style="{ color, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
+		>
+			{{ prefix }}
+			{{ displayValue(metric) }}
+			{{ suffix }}
+		</p>
+	</div>
+</template>
 
 <style scoped>
 .metric {
