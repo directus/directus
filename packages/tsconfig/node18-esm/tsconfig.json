@@ -3,9 +3,9 @@
 	"display": "Node.js 18 ESM",
 	"extends": "../base/tsconfig.json",
 	"compilerOptions": {
-		"module": "ES2022",
+		"module": "Node16",
 		"target": "ES2022",
-		"moduleResolution": "NodeNext",
+		"moduleResolution": "Node16",
 		"verbatimModuleSyntax": true
 	}
 }
