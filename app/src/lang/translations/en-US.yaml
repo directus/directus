@@ -888,6 +888,10 @@ panel_delete_confirm: Are you sure you want to delete this panel? This action ca
 list_panel_allow_edit: Allow Inline Editing
 dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
 edit_dashboard: Edit Dashboard
+export_dashboard: Export Dashboard
+duplicate_dashboard: Duplicate Dashboard
+search_dashboard: Search Dashboard...
+search_flow: Search Flow...
 delete_dashboard: Delete Dashboard
 visible: Visible
 prefix_placeholder: Text before value...
@@ -895,6 +899,8 @@ suffix_placeholder: Text after value...
 decimals_placeholder: Number of decimal places...
 no_dashboards: No Dashboards
 no_dashboards_copy: You don’t have any Dashboards yet.
+no_dashboards_copy_search: No dashboards found with that search.
+no_flows_copy_search: No flows found with that search.
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
 no_data: No Data
