@@ -43,7 +43,6 @@ describe('applySnapshot', () => {
 				collection: 'test_table_2',
 				meta: {
 					accountability: 'all',
-					branches_enabled: false,
 					collection: 'test_table_2',
 					group: null,
 					hidden: true,
@@ -52,6 +51,7 @@ describe('applySnapshot', () => {
 					note: null,
 					singleton: false,
 					translations: {},
+					versioning: false,
 				},
 				schema: { name: 'test_table_2' },
 				fields: [
@@ -125,7 +125,6 @@ describe('applySnapshot', () => {
 				collection: 'test_table_2',
 				meta: {
 					accountability: 'all',
-					branches_enabled: false,
 					collection: 'test_table_2',
 					group: 'test_table',
 					hidden: true,
@@ -134,6 +133,7 @@ describe('applySnapshot', () => {
 					note: null,
 					singleton: false,
 					translations: {},
+					versioning: false,
 				},
 				schema: { name: 'test_table_2' },
 				fields: [
@@ -230,7 +230,6 @@ describe('applySnapshot', () => {
 				],
 				meta: {
 					accountability: 'all',
-					branches_enabled: false,
 					collection: 'test_table_3',
 					group: 'test_table_2',
 					hidden: true,
@@ -239,6 +238,7 @@ describe('applySnapshot', () => {
 					note: null,
 					singleton: false,
 					translations: {},
+					versioning: false,
 				},
 				schema: { name: 'test_table_3' },
 			};

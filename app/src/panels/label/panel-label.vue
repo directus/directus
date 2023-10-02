@@ -1,19 +1,3 @@
-<template>
-	<div
-		ref="labelContainer"
-		class="label type-title selectable"
-		:class="[font, { 'has-header': showHeader }]"
-		:style="{ color: color, alignItems: showHeader ? 'flex-start' : 'center' }"
-	>
-		<p
-			ref="labelText"
-			:style="{ whiteSpace, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
-		>
-			{{ text }}
-		</p>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, onUpdated, ref } from 'vue';
 import { useAutoFontFit } from '@/composables/use-auto-fit-text';
@@ -120,7 +104,23 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<template>
+	<div
+		ref="labelContainer"
+		class="label type-title selectable"
+		:class="[font, { 'has-header': showHeader }]"
+		:style="{ color: color, alignItems: showHeader ? 'flex-start' : 'center' }"
+	>
+		<p
+			ref="labelText"
+			:style="{ whiteSpace, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
+		>
+			{{ text }}
+		</p>
+	</div>
+</template>
+
+<style scoped>
 .label {
 	display: flex;
 	justify-content: center;

@@ -12,7 +12,6 @@ import { registerAuthProviders } from './auth.js';
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
 import authRouter from './controllers/auth.js';
-import branchesRouter from './controllers/branches.js';
 import collectionsRouter from './controllers/collections.js';
 import dashboardsRouter from './controllers/dashboards.js';
 import extensionsRouter from './controllers/extensions.js';
@@ -38,6 +37,7 @@ import sharesRouter from './controllers/shares.js';
 import translationsRouter from './controllers/translations.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
+import versionsRouter from './controllers/versions.js';
 import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
@@ -269,7 +269,6 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use('/activity', activityRouter);
 	app.use('/assets', assetsRouter);
-	app.use('/branches', branchesRouter);
 	app.use('/collections', collectionsRouter);
 	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
@@ -293,6 +292,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
+	app.use('/versions', versionsRouter);
 	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints

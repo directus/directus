@@ -1,6 +1,7 @@
-export type Branch = {
+export type Version = {
 	id: string;
-	name: string;
+	key: string;
+	name: string | null;
 	collection: string;
 	item: string;
 	hash: string;
