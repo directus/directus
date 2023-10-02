@@ -1,24 +1,3 @@
-<template>
-	<component
-		:is="customValue ? 'div' : 'button'"
-		class="v-checkbox"
-		type="button"
-		role="checkbox"
-		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled="disabled"
-		:class="{ checked: isChecked, indeterminate, block }"
-		@click.stop="toggleInput"
-	>
-		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
-		<span class="label type-text">
-			<slot v-if="!customValue">{{ label }}</slot>
-			<input v-else v-model="internalValue" class="custom-input" @click.stop="" />
-		</span>
-		<div v-if="$slots.append" class="append"><slot name="append" /></div>
-	</component>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useSync } from '@directus/composables';
@@ -109,6 +88,27 @@ function toggleInput(): void {
 	}
 }
 </script>
+
+<template>
+	<component
+		:is="customValue ? 'div' : 'button'"
+		class="v-checkbox"
+		type="button"
+		role="checkbox"
+		:aria-pressed="isChecked ? 'true' : 'false'"
+		:disabled="disabled"
+		:class="{ checked: isChecked, indeterminate, block }"
+		@click.stop="toggleInput"
+	>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
+		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
+		<span class="label type-text">
+			<slot v-if="!customValue">{{ label }}</slot>
+			<input v-else v-model="internalValue" class="custom-input" @click.stop="" />
+		</span>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
+	</component>
+</template>
 
 <style>
 body {

@@ -1,3 +1,19 @@
+<script setup lang="ts">
+type Folder = {
+	id: string;
+	name: string;
+	children: Folder[];
+};
+
+defineProps<{
+	folder: Folder;
+	currentFolder: string | null;
+	clickHandler?: (folderId: string) => void;
+	disabled?: boolean;
+	disabledFolders?: string[];
+}>();
+</script>
+
 <template>
 	<div class="folder-picker-list-item">
 		<v-list-item
@@ -35,19 +51,3 @@
 		</v-list-group>
 	</div>
 </template>
-
-<script setup lang="ts">
-type Folder = {
-	id: string;
-	name: string;
-	children: Folder[];
-};
-
-defineProps<{
-	folder: Folder;
-	currentFolder: string | null;
-	clickHandler?: (folderId: string) => void;
-	disabled?: boolean;
-	disabledFolders?: string[];
-}>();
-</script>

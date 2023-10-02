@@ -226,7 +226,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				socket?.send(JSON.stringify(message));
 			},
-			async subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
+			async subscribe<Collection extends keyof Schema, const Options extends SubscribeOptions<Schema, Collection>>(
 				collection: Collection,
 				options = {} as Options
 			) {

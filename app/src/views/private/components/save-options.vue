@@ -1,3 +1,21 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { translateShortcut } from '@/utils/translate-shortcut';
+
+defineProps<{
+	disabledOptions?: string[];
+}>();
+
+defineEmits<{
+	(e: 'save-and-stay'): void;
+	(e: 'save-and-add-new'): void;
+	(e: 'save-as-copy'): void;
+	(e: 'discard-and-stay'): void;
+}>();
+
+const { t } = useI18n();
+</script>
+
 <template>
 	<v-menu show-arrow>
 		<template #activator="{ toggle }">
@@ -26,24 +44,6 @@
 		</v-list>
 	</v-menu>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { translateShortcut } from '@/utils/translate-shortcut';
-
-defineProps<{
-	disabledOptions?: string[];
-}>();
-
-defineEmits<{
-	(e: 'save-and-stay'): void;
-	(e: 'save-and-add-new'): void;
-	(e: 'save-as-copy'): void;
-	(e: 'discard-and-stay'): void;
-}>();
-
-const { t } = useI18n();
-</script>
 
 <style scoped>
 :deep(.v-icon) {

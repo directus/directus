@@ -41,6 +41,12 @@ import { createDirectus } from '@directus/sdk';
 const client = createDirectus('http://directus.example.com');
 ```
 
+::: tip TypeScript Version
+
+The SDK requires a minimum TypeScript version of 5.0 but it is recommended to keep up to date with the latest version.
+
+:::
+
 ## Creating a Composable Client
 
 The Directus SDK is a "Composable Client" that allows you to customize and build a client with the specific features you
@@ -59,9 +65,7 @@ For example, to create a client with REST or GraphQL support, use the following:
 ::: code-group
 
 ```js [JavaScript]
-import { createDirectus } from '@directus/sdk';
-import { rest } from '@directus/sdk/rest';
-import { graphql } from '@directus/sdk/graphql';
+import { createDirectus, rest, graphql } from '@directus/sdk';
 
 // Client with REST support
 const client = createDirectus('http://directus.example.com').with(rest());
@@ -71,9 +75,7 @@ const client = createDirectus('http://directus.example.com').with(graphql());
 ```
 
 ```ts [TypeScript]
-import { createDirectus } from '@directus/sdk';
-import { rest } from '@directus/sdk/rest';
-import { graphql } from '@directus/sdk/graphql';
+import { createDirectus, rest, graphql } from '@directus/sdk';
 
 interface Article {
 	id: number;
@@ -105,35 +107,15 @@ Use the `authentication()` composable to add user login and tokens auto-refresh 
 For example, to login to your directus instance, invoke the `login` method
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { authentication } from '@directus/sdk/auth';
+import { createDirectus, authentication } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(authentication());
 
 await client.login(email, password);
 ```
 
-#### Cross-Domain Cookies
-
-A common situation is for the Directus backend and frontend to be hosted on different domains requiring extra
-configuration to make sure cookies are passed correctly. You can do this globally per composable which will apply to all
-requests made using that composable:
-
-```js
-const client = createDirectus(URL)
-  .with(authentication('cookie', { credentials: 'include' }))
-  .with(graphql({ credentials: 'include' }))
-  .with(rest({ credentials: 'include' }))
-```
-
-Or you can enable this only for specific REST requests using the following helper:
-
-```js
-const result = await client.request(withOptions(
-  readItems('a-collection'),
-  { credentials: 'include' }
-));
-```
+There are many ways to create authenticated requests with the Directus SDK.
+[Read our SDK Authentication guide](/guides/sdk/authentication) for more.
 
 ## Making Requests
 
@@ -148,8 +130,7 @@ For example, to make a request to an `articles` collection.
 #### Read a single item
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItem } from '@directus/sdk/rest';
+import { createDirectus, rest, readItem } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -160,8 +141,7 @@ const result = await client.request(readItem('articles', article_id));
 #### Read all items
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -171,8 +151,7 @@ const result = await client.request(readItems('articles'));
 #### Read specific fields
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -186,8 +165,7 @@ const result = await client.request(
 #### Read all fields
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -201,8 +179,7 @@ const result = await client.request(
 #### Read nested fields
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -220,8 +197,7 @@ Add the `graphql()` composable to the client, this enables the `.query(...)` met
 For example, to make a request to an `articles` collection with TypeScript:
 
 ```ts
-import { createDirectus } from '@directus/sdk';
-import { graphql } from '@directus/sdk/graphql';
+import { createDirectus, graphql } from '@directus/sdk';
 
 interface Article {
 	id: number;
@@ -245,12 +221,6 @@ const result = await client.query<Article[]>(`
     }
 `);
 ```
-
-:::tip Importing SDK Composables
-
-All SDK composables can also be conveniently imported from the root package `@directus/sdk`.
-
-:::
 
 ## Global APIs
 

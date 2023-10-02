@@ -1,36 +1,3 @@
-<template>
-	<public-view>
-		<h1 class="type-title">{{ t('create_account') }}</h1>
-
-		<form @submit.prevent="onSubmit">
-			<v-input :model-value="email" disabled />
-
-			<v-input
-				v-model="password"
-				:placeholder="t('password')"
-				autofocus
-				autocomplete="password"
-				type="password"
-				:disabled="done"
-			/>
-
-			<v-notice v-if="done" type="success">{{ t('account_created_successfully') }}</v-notice>
-
-			<v-notice v-if="error" type="danger">
-				{{ errorFormatted }}
-			</v-notice>
-
-			<v-button v-if="!done" type="submit" :loading="creating" large>{{ t('create') }}</v-button>
-			<v-button v-else large :to="signInLink">{{ t('sign_in') }}</v-button>
-		</form>
-
-		<template #notice>
-			<v-icon name="lock" left />
-			{{ t('not_authenticated') }}
-		</template>
-	</public-view>
-</template>
-
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
@@ -81,6 +48,39 @@ async function onSubmit() {
 	}
 }
 </script>
+
+<template>
+	<public-view>
+		<h1 class="type-title">{{ t('create_account') }}</h1>
+
+		<form @submit.prevent="onSubmit">
+			<v-input :model-value="email" disabled />
+
+			<v-input
+				v-model="password"
+				:placeholder="t('password')"
+				autofocus
+				autocomplete="password"
+				type="password"
+				:disabled="done"
+			/>
+
+			<v-notice v-if="done" type="success">{{ t('account_created_successfully') }}</v-notice>
+
+			<v-notice v-if="error" type="danger">
+				{{ errorFormatted }}
+			</v-notice>
+
+			<v-button v-if="!done" type="submit" :loading="creating" large>{{ t('create') }}</v-button>
+			<v-button v-else large :to="signInLink">{{ t('sign_in') }}</v-button>
+		</form>
+
+		<template #notice>
+			<v-icon name="lock" left />
+			{{ t('not_authenticated') }}
+		</template>
+	</public-view>
+</template>
 
 <style lang="scss" scoped>
 h1 {

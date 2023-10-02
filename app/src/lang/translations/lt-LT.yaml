@@ -235,6 +235,7 @@ move: Perkelti
 system: Sistema
 add_field_related: Pridėti lauką į susijusią kolekciją
 interface_label: Sąsaja
+display_label: Rodymas
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
@@ -846,6 +847,8 @@ interfaces:
     image: Paveikslėlis
   system-interface:
     interface: Sąsaja
+  system-display:
+    display: Rodymas
   select-dropdown-m2o:
     display_template: Rodymo šablonas
   input-rich-text-md:

@@ -6,7 +6,7 @@ readTime: 5 min read
 # Custom Modules <small></small>
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
-> platform. [Learn more about Modules](/user-guide/overview/glossary#modules).
+> platform. They are developed using Vue.js. [Learn more about Modules](/user-guide/overview/glossary#modules).
 
 ## Extension Entrypoint
 

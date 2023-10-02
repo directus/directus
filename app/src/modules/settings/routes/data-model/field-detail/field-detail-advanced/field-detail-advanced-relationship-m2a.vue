@@ -1,3 +1,63 @@
+<script setup lang="ts">
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { orderBy } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
+
+const { t } = useI18n();
+
+const fieldDetailStore = useFieldDetailStore();
+const collectionsStore = useCollectionsStore();
+const relationsStore = useRelationsStore();
+const fieldsStore = useFieldsStore();
+
+const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+
+const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
+const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
+const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
+const oneCollectionField = syncFieldDetailStoreProperty('relations.m2o.meta.one_collection_field');
+const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
+const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
+const onDelete = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
+const onDeselect = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
+
+const isExisting = computed(() => editing.value !== '+');
+const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
+
+const availableCollections = computed(() => {
+	return [
+		...orderBy(collectionsStore.databaseCollections, ['collection'], ['asc']),
+		{
+			divider: true,
+		},
+		{
+			collection: t('system'),
+			selectable: false,
+			children: orderBy(collectionsStore.crudSafeSystemCollections, ['collection'], ['asc']),
+		},
+	];
+});
+
+const unsortableJunctionFields = computed(() => {
+	const fields = ['item', 'collection'];
+
+	if (junctionCollection.value) {
+		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
+		fields.push(...relations.map((field) => field.field));
+	}
+
+	return fields;
+});
+</script>
+
 <template>
 	<div>
 		<div class="grid">
@@ -153,66 +213,6 @@
 		</v-notice>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { orderBy } from 'lodash';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
-
-const { t } = useI18n();
-
-const fieldDetailStore = useFieldDetailStore();
-const collectionsStore = useCollectionsStore();
-const relationsStore = useRelationsStore();
-const fieldsStore = useFieldsStore();
-
-const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
-
-const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
-const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
-const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
-const oneCollectionField = syncFieldDetailStoreProperty('relations.m2o.meta.one_collection_field');
-const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
-const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
-const onDelete = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
-const onDeselect = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
-
-const isExisting = computed(() => editing.value !== '+');
-const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
-
-const availableCollections = computed(() => {
-	return [
-		...orderBy(collectionsStore.databaseCollections, ['collection'], ['asc']),
-		{
-			divider: true,
-		},
-		{
-			collection: t('system'),
-			selectable: false,
-			children: orderBy(collectionsStore.crudSafeSystemCollections, ['collection'], ['asc']),
-		},
-	];
-});
-
-const unsortableJunctionFields = computed(() => {
-	const fields = ['item', 'collection'];
-
-	if (junctionCollection.value) {
-		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
-		fields.push(...relations.map((field) => field.field));
-	}
-
-	return fields;
-});
-</script>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

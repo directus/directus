@@ -1,3 +1,40 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { ShowSelect } from '@directus/types';
+import { Header, Item } from './types';
+
+interface Props {
+	headers: Header[];
+	item: Item;
+	showSelect: ShowSelect;
+	showManualSort?: boolean;
+	isSelected?: boolean;
+	subdued?: boolean;
+	sortedManually?: boolean;
+	hasClickListener?: boolean;
+	height?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	showSelect: 'none',
+	showManualSort: false,
+	isSelected: false,
+	subdued: false,
+	sortedManually: false,
+	hasClickListener: false,
+	height: 48,
+});
+
+defineEmits(['click', 'item-selected']);
+
+const cssHeight = computed(() => {
+	return {
+		tableRow: props.height + 2 + 'px',
+		renderTemplateImage: props.height - 16 + 'px',
+	};
+});
+</script>
+
 <template>
 	<tr class="table-row" :class="{ subdued: subdued, clickable: hasClickListener }" @click="$emit('click', $event)">
 		<td v-if="showManualSort" class="manual cell" @click.stop>
@@ -37,43 +74,6 @@
 		</td>
 	</tr>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-import { ShowSelect } from '@directus/types';
-import { Header, Item } from './types';
-
-interface Props {
-	headers: Header[];
-	item: Item;
-	showSelect: ShowSelect;
-	showManualSort?: boolean;
-	isSelected?: boolean;
-	subdued?: boolean;
-	sortedManually?: boolean;
-	hasClickListener?: boolean;
-	height?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	showSelect: 'none',
-	showManualSort: false,
-	isSelected: false,
-	subdued: false,
-	sortedManually: false,
-	hasClickListener: false,
-	height: 48,
-});
-
-defineEmits(['click', 'item-selected']);
-
-const cssHeight = computed(() => {
-	return {
-		tableRow: props.height + 2 + 'px',
-		renderTemplateImage: props.height - 16 + 'px',
-	};
-});
-</script>
 
 <style lang="scss" scoped>
 .table-row {

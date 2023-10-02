@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+import PermissionsOverview from './item/components/permissions-overview.vue';
+import RoleInfoSidebarDetail from './item/components/role-info-sidebar-detail.vue';
+
+defineProps<{
+	permissionKey?: string;
+}>();
+
+const { t } = useI18n();
+</script>
+
 <template>
 	<private-view :title="t('public_label')">
 		<template #headline>{{ t('settings_permissions') }}</template>
@@ -20,19 +33,6 @@
 		</template>
 	</private-view>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-import PermissionsOverview from './item/components/permissions-overview.vue';
-import RoleInfoSidebarDetail from './item/components/role-info-sidebar-detail.vue';
-
-defineProps<{
-	permissionKey?: string;
-}>();
-
-const { t } = useI18n();
-</script>
 
 <style lang="scss" scoped>
 .header-icon {

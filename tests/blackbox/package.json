@@ -28,7 +28,7 @@
 		"seedrandom": "3.0.5",
 		"supertest": "6.3.3",
 		"ts-jest": "29.1.0",
-		"typescript": "5.0.4",
+		"typescript": "5.2.2",
 		"uuid": "9.0.0",
 		"ws": "8.12.1"
 	}
