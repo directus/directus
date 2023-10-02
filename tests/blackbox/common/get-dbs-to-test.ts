@@ -8,20 +8,22 @@ export const allVendors = [
 	'oracle',
 	'cockroachdb',
 	'sqlite3',
-];
+] as const;
 
-const vendors = process.env.TEST_DB?.split(',').map((v) => v.trim()) ?? allVendors;
+export type Vendor = (typeof allVendors)[number];
 
-if (vendors.length > 1 && process.env.TEST_LOCAL) {
+const vendors = process.env['TEST_DB']?.split(',').map((v) => v.trim()) ?? allVendors;
+
+if (vendors.length > 1 && process.env['TEST_LOCAL']) {
 	throw new Error(
 		`You can't test multiple databases simultaneously when using the locally running instance of Directus.`
 	);
 }
 
 for (const vendor of vendors) {
-	if (allVendors.includes(vendor) === false) {
+	if ((allVendors as unknown as string[]).includes(vendor) === false) {
 		throw new Error(`No e2e testing capabilities for vendor "${vendor}".`);
 	}
 }
 
-export default vendors;
+export default vendors as Vendor[];

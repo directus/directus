@@ -1,9 +1,10 @@
 import { getUrl } from '@common/config';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import request from 'supertest';
-import vendors from '@common/get-dbs-to-test';
+import { describe, expect, it } from 'vitest';
 
 describe('/auth/login/saml', () => {
-	const authCookies: Record<string, string> = {};
+	const authCookies = {} as Record<Vendor, string>;
 
 	describe('GET /', () => {
 		describe('when incorrect credential is provided', () => {
@@ -87,7 +88,7 @@ describe('/auth/login/saml', () => {
 
 					const SAMLResponse = authResponse.text
 						.split('<input type="hidden" name="SAMLResponse" value="')[1]
-						.split('" />')[0];
+						?.split('" />')[0];
 
 					const acsResponse = await request(getUrl(vendor))
 						.post('/auth/login/saml/acs')
@@ -126,11 +127,11 @@ describe('/auth/login/saml', () => {
 
 					const SAMLResponse = authResponse.text
 						.split('<input type="hidden" name="SAMLResponse" value="')[1]
-						.split('" />')[0];
+						?.split('" />')[0];
 
 					const RelayState = authResponse.text
 						.split('<input type="hidden" name="RelayState" value="')[1]
-						.split('" />')[0];
+						?.split('" />')[0];
 
 					const acsResponse = await request(getUrl(vendor))
 						.post('/auth/login/saml/acs')

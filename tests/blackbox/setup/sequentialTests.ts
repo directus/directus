@@ -1,5 +1,15 @@
+type SequentialTestEntry = {
+	testFilePath: string;
+};
+
+type SequentialTestsList = {
+	before: SequentialTestEntry[];
+	after: SequentialTestEntry[];
+	only: SequentialTestEntry[];
+};
+
 // Tests will run sequentially according to this list
-exports.list = {
+export const sequentialTestsList: SequentialTestsList = {
 	before: [
 		{ testFilePath: '/common/seed-database.test.ts' },
 		{ testFilePath: '/common/common.test.ts' },
@@ -28,26 +38,32 @@ exports.list = {
 	],
 };
 
-exports.getReversedTestIndex = function (testFilePath) {
-	if (this.list.only.length > 0) {
-		for (let index = 0; index < this.list.only.length; index++) {
-			if (testFilePath.includes(this.list.only[index].testFilePath)) {
+export function getReversedTestIndex(testFilePath: string) {
+	if (sequentialTestsList.only.length > 0) {
+		for (let index = 0; index < sequentialTestsList.only.length; index++) {
+			const onlyTest = sequentialTestsList.only[index];
+
+			if (onlyTest && testFilePath.includes(onlyTest.testFilePath)) {
 				return index;
 			}
 		}
 	}
 
-	for (let index = 0; index < this.list.before.length; index++) {
-		if (testFilePath.includes(this.list.before[index].testFilePath)) {
+	for (let index = 0; index < sequentialTestsList.before.length; index++) {
+		const beforeTest = sequentialTestsList.before[index];
+
+		if (beforeTest && testFilePath.includes(beforeTest.testFilePath)) {
 			return index;
 		}
 	}
 
-	for (let index = 0; index < this.list.after.length; index++) {
-		if (testFilePath.includes(this.list.after[index].testFilePath)) {
-			return 0 - this.list.after.length + index;
+	for (let index = 0; index < sequentialTestsList.after.length; index++) {
+		const afterTest = sequentialTestsList.after[index];
+
+		if (afterTest && testFilePath.includes(afterTest.testFilePath)) {
+			return 0 - sequentialTestsList.after.length + index;
 		}
 	}
 
-	return this.list.before.length;
-};
+	return sequentialTestsList.before.length;
+}

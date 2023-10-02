@@ -1,5 +1,6 @@
+import { CreateCollection, CreateField, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { CreateCollection, CreateField, DeleteCollection } from '@common/index';
+import { expect, it } from 'vitest';
 
 export const collection = 'test_perms_cache_purge';
 
@@ -32,6 +33,6 @@ export const seedDBStructure = () => {
 				expect(error).toBeFalsy();
 			}
 		},
-		300000
+		300_000
 	);
 };
