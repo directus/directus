@@ -10,9 +10,7 @@ Please make sure to "Link" the issue you're closing. Without a Linked issue, thi
 
 -->
 
-Fixes #<ISSUE_NUMBER>
-
-# Scope
+## Scope
 
 What's changed:
 
@@ -20,12 +18,16 @@ What's changed:
 - Consectetur adipiscing elit
 - Sed do eiusmod tempor incididunt
 
-# Potential Risks
+## Potential Risks / Drawbacks
 
 - Lorem ipsum dolor sit amet
 - Consectetur adipiscing elit
 
-# Review Questions
+## Review Questions
 
 - I would like to lorem ipsum
 - Special attention should be paid to dolor sit amet
+
+---
+
+Fixes #\<num\>
