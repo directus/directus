@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue';
+import { useLocalStorage } from '@vueuse/core';
 
 const props = defineProps<{
 	choices: string[];
@@ -7,33 +7,11 @@ const props = defineProps<{
 	alwaysDark?: boolean;
 }>();
 
-const selected = ref();
+const selected = useLocalStorage('toggler-value', props.choices[0]);
 
-const useStorage = (key: string) => {
-	const getStorageValue = () => {
-		return localStorage.getItem(key);
-	};
-
-	const setStorageValue = (value: string) => localStorage.setItem(key, value);
-
-	return { getStorageValue, setStorageValue };
+const changeSelected = (choice: (typeof props.choices)[number]) => {
+	selected.value = choice;
 };
-
-const { getStorageValue, setStorageValue } = useStorage('toggler-value');
-
-onBeforeMount(() => {
-	const value = getStorageValue();
-
-	if (value && props.choices.includes(value)) {
-		selected.value = value;
-	} else {
-		selected.value = props.choices[0];
-	}
-
-	watch(selected, (value) => {
-		setStorageValue(value);
-	});
-});
 </script>
 
 <template>
@@ -45,7 +23,7 @@ onBeforeMount(() => {
 					:key="choice"
 					class="button"
 					:class="{ active: selected == choice }"
-					@click="selected = choice"
+					@click="changeSelected(choice)"
 				>
 					{{ choice }}
 				</button>

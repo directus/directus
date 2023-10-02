@@ -920,6 +920,9 @@ importers:
       '@types/marked':
         specifier: 5.0.1
         version: 5.0.1
+      '@vueuse/core':
+        specifier: 10.1.2
+        version: 10.1.2(vue@3.3.4)
       eslint-parser-plain:
         specifier: 0.1.0
         version: 0.1.0
