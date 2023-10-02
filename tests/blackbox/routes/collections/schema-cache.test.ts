@@ -44,10 +44,10 @@ describe('Schema Caching Tests', () => {
 			const env4 = cloneDeep(env3);
 			env4[vendor]['CACHE_NAMESPACE'] = env1[vendor]['CACHE_NAMESPACE'] + '4';
 
-			const newServerPort1 = Number(env1[vendor]!.PORT) + 150;
-			const newServerPort2 = Number(env2[vendor]!.PORT) + 200;
-			const newServerPort3 = Number(env3[vendor]!.PORT) + 250;
-			const newServerPort4 = Number(env4[vendor]!.PORT) + 300;
+			const newServerPort1 = Number(env1[vendor].PORT) + 150;
+			const newServerPort2 = Number(env2[vendor].PORT) + 200;
+			const newServerPort3 = Number(env3[vendor].PORT) + 250;
+			const newServerPort4 = Number(env4[vendor].PORT) + 300;
 
 			env1[vendor]!.PORT = String(newServerPort1);
 			env2[vendor]!.PORT = String(newServerPort2);

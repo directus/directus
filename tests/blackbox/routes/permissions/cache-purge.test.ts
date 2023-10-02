@@ -46,15 +46,15 @@ describe('Permissions Cache Purging Tests', () => {
 			envRedisPurge[vendor]['CACHE_AUTO_PURGE'] = 'true';
 			envRedisPurge[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_redis_purge`;
 
-			const newServerPortMem = Number(envMem[vendor]!.PORT) + 150;
-			const newServerPortMemPurge = Number(envMemPurge[vendor]!.PORT) + 200;
-			const newServerPortRedis = Number(envRedis[vendor]!.PORT) + 250;
-			const newServerPortRedisPurge = Number(envRedisPurge[vendor]!.PORT) + 300;
+			const newServerPortMem = Number(envMem[vendor].PORT) + 150;
+			const newServerPortMemPurge = Number(envMemPurge[vendor].PORT) + 200;
+			const newServerPortRedis = Number(envRedis[vendor].PORT) + 250;
+			const newServerPortRedisPurge = Number(envRedisPurge[vendor].PORT) + 300;
 
-			envMem[vendor]!.PORT = String(newServerPortMem);
-			envMemPurge[vendor]!.PORT = String(newServerPortMemPurge);
-			envRedis[vendor]!.PORT = String(newServerPortRedis);
-			envRedisPurge[vendor]!.PORT = String(newServerPortRedisPurge);
+			envMem[vendor].PORT = String(newServerPortMem);
+			envMemPurge[vendor].PORT = String(newServerPortMemPurge);
+			envRedis[vendor].PORT = String(newServerPortRedis);
+			envRedisPurge[vendor].PORT = String(newServerPortRedisPurge);
 
 			const serverMem = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envMem[vendor] });
 			const serverMemPurge = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: envMemPurge[vendor] });
