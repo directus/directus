@@ -4,6 +4,7 @@ import { buildSchema } from './builder.js';
 import type { CliOptions } from './types.js';
 import { renderSchema } from './render.js';
 import { writeFileSync } from 'fs';
+import { getPackageVersion } from './version.js';
 
 async function generateSchema(args: CliOptions) {
 	const dataModel = await fetchDataModel(args.host, args.accessToken);
@@ -14,7 +15,6 @@ async function generateSchema(args: CliOptions) {
 
 	const schemaDefinition = renderSchema(schemaObject, {
 		rootName: args.rootName,
-		// TODO support indentation options
 		indent: { amount: 4, char: ' ' },
 	});
 
@@ -29,8 +29,7 @@ async function generateSchema(args: CliOptions) {
 const program = new Command();
 
 program.name('directus-sdk-schema').usage('[command] [options]');
-// TODO read from package.json
-program.version('1.0.0');
+program.version(getPackageVersion());
 
 program
 	.command('generate')
