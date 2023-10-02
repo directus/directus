@@ -1,10 +1,3 @@
-<template>
-	<component :is="component" class="button" :class="{ primary: !secondary, secondary }" v-bind="additionalProps">
-		<slot />
-		<component :is="icon" v-if="icon" class="icon" />
-	</component>
-</template>
-
 <script setup lang="ts">
 import { computed, type Component } from 'vue';
 
@@ -34,6 +27,13 @@ const additionalProps = computed(() => {
 	return {};
 });
 </script>
+
+<template>
+	<component :is="component" class="button" :class="{ primary: !secondary, secondary }" v-bind="additionalProps">
+		<slot />
+		<component :is="icon" v-if="icon" class="icon" />
+	</component>
+</template>
 
 <style scoped>
 .button {

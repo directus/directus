@@ -1,32 +1,3 @@
-<template>
-	<v-notice v-if="!selectedDisplay">
-		{{ t('select_display') }}
-	</v-notice>
-
-	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ t('no_options_available') }}
-	</v-notice>
-
-	<div v-else class="inset">
-		<v-form
-			v-if="usesCustomComponent === false"
-			v-model="options"
-			class="extension-options"
-			:fields="optionsFields"
-			:disabled="disabled"
-			primary-key="+"
-		/>
-
-		<component
-			:is="`display-options-${selectedDisplay.id}`"
-			v-else
-			:value="value"
-			:collection="collection"
-			@input="$emit('input', $event)"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { ExtensionOptionsContext } from '@directus/types';
@@ -112,6 +83,35 @@ const optionsFields = computed(() => {
 	return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
 });
 </script>
+
+<template>
+	<v-notice v-if="!selectedDisplay">
+		{{ t('select_display') }}
+	</v-notice>
+
+	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
+		{{ t('no_options_available') }}
+	</v-notice>
+
+	<div v-else class="inset">
+		<v-form
+			v-if="usesCustomComponent === false"
+			v-model="options"
+			class="extension-options"
+			:fields="optionsFields"
+			:disabled="disabled"
+			primary-key="+"
+		/>
+
+		<component
+			:is="`display-options-${selectedDisplay.id}`"
+			v-else
+			:value="value"
+			:collection="collection"
+			@input="$emit('input', $event)"
+		/>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .inset {

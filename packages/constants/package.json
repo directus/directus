@@ -30,7 +30,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"tsup": "7.1.0",
-		"typescript": "5.0.4"
+		"tsup": "7.2.0",
+		"typescript": "5.2.2"
 	}
 }

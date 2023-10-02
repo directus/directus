@@ -1,49 +1,3 @@
-<template>
-	<v-drawer
-		:title="modalTitle"
-		:model-value="isOpen"
-		class="new-collection"
-		persistent
-		:sidebar-label="currentTabInfo && currentTabInfo.text"
-		@cancel="close"
-	>
-		<template v-if="!loading" #sidebar>
-			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
-		</template>
-
-		<div v-if="!loading" class="content">
-			<permissions
-				v-if="currentTab[0] === 'permissions'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.permissions"
-			/>
-			<fields
-				v-if="currentTab[0] === 'fields'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.fields"
-			/>
-			<validation
-				v-if="currentTab[0] === 'validation'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.validation"
-			/>
-			<presets
-				v-if="currentTab[0] === 'presets'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.presets"
-			/>
-		</div>
-
-		<template v-if="!loading" #actions>
-			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
-		</template>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
@@ -192,6 +146,52 @@ async function load() {
 	}
 }
 </script>
+
+<template>
+	<v-drawer
+		:title="modalTitle"
+		:model-value="isOpen"
+		class="new-collection"
+		persistent
+		:sidebar-label="currentTabInfo && currentTabInfo.text"
+		@cancel="close"
+	>
+		<template v-if="!loading" #sidebar>
+			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
+		</template>
+
+		<div v-if="!loading" class="content">
+			<permissions
+				v-if="currentTab[0] === 'permissions'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.permissions"
+			/>
+			<fields
+				v-if="currentTab[0] === 'fields'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.fields"
+			/>
+			<validation
+				v-if="currentTab[0] === 'validation'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.validation"
+			/>
+			<presets
+				v-if="currentTab[0] === 'presets'"
+				v-model:permission="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.presets"
+			/>
+		</div>
+
+		<template v-if="!loading" #actions>
+			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
+		</template>
+	</v-drawer>
+</template>
 
 <style lang="scss" scoped>
 .content {

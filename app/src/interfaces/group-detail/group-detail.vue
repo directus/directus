@@ -1,50 +1,3 @@
-<template>
-	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
-		<template #activator="{ toggle, active }">
-			<v-divider
-				:style="{
-					'--v-divider-label-color': headerColor,
-				}"
-				:class="{ active, edited }"
-				:inline-title="false"
-				large
-				@click="toggle"
-			>
-				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
-				<template v-if="field.name">
-					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-					<span class="title">{{ field.name }}</span>
-				</template>
-				<v-icon
-					v-if="!active && validationMessages!.length > 0"
-					v-tooltip="validationMessages!.join('\n')"
-					class="warning"
-					name="error"
-					small
-				/>
-				<v-icon class="expand-icon" name="expand_more" />
-			</v-divider>
-		</template>
-
-		<v-form
-			:initial-values="initialValues"
-			:fields="fields"
-			:model-value="values"
-			:primary-key="primaryKey"
-			:group="field.meta?.field"
-			:validation-errors="validationErrors"
-			:loading="loading"
-			:batch-mode="batchMode"
-			:disabled="disabled"
-			:badge="badge"
-			:direction="direction"
-			:show-no-visible-fields="false"
-			:show-validation-errors="false"
-			@update:model-value="$emit('apply', $event)"
-		/>
-	</v-detail>
-</template>
-
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
@@ -123,6 +76,53 @@ watch(validationMessages, (newVal, oldVal) => {
 	detailOpen.value = validationMessages.value.length > 0;
 });
 </script>
+
+<template>
+	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
+		<template #activator="{ toggle, active }">
+			<v-divider
+				:style="{
+					'--v-divider-label-color': headerColor,
+				}"
+				:class="{ active, edited }"
+				:inline-title="false"
+				large
+				@click="toggle"
+			>
+				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
+				<template v-if="field.name">
+					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+					<span class="title">{{ field.name }}</span>
+				</template>
+				<v-icon
+					v-if="!active && validationMessages!.length > 0"
+					v-tooltip="validationMessages!.join('\n')"
+					class="warning"
+					name="error"
+					small
+				/>
+				<v-icon class="expand-icon" name="expand_more" />
+			</v-divider>
+		</template>
+
+		<v-form
+			:initial-values="initialValues"
+			:fields="fields"
+			:model-value="values"
+			:primary-key="primaryKey"
+			:group="field.meta?.field"
+			:validation-errors="validationErrors"
+			:loading="loading"
+			:batch-mode="batchMode"
+			:disabled="disabled"
+			:badge="badge"
+			:direction="direction"
+			:show-no-visible-fields="false"
+			:show-validation-errors="false"
+			@update:model-value="$emit('apply', $event)"
+		/>
+	</v-detail>
+</template>
 
 <style scoped>
 .v-form {

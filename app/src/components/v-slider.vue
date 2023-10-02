@@ -1,37 +1,3 @@
-<template>
-	<div class="v-slider" :style="styles">
-		<div v-if="$slots.prepend" class="prepend">
-			<slot name="prepend" :value="modelValue" />
-		</div>
-		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
-			<input
-				:disabled="disabled"
-				type="range"
-				:value="modelValue"
-				:max="max"
-				:min="min"
-				:step="step"
-				@change="onChange"
-				@input="onInput"
-			/>
-			<div class="fill" />
-			<div v-if="showTicks" class="ticks">
-				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
-			</div>
-			<div v-if="showThumbLabel" class="thumb-label-wrapper">
-				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
-					<slot name="thumb-label type-text" :value="modelValue">
-						{{ modelValue }}
-					</slot>
-				</div>
-			</div>
-		</div>
-		<div v-if="$slots.append" class="append">
-			<slot name="append" :value="modelValue" />
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -85,6 +51,40 @@ function onInput(event: Event) {
 	emit('update:modelValue', Number(target.value));
 }
 </script>
+
+<template>
+	<div class="v-slider" :style="styles">
+		<div v-if="$slots.prepend" class="prepend">
+			<slot name="prepend" :value="modelValue" />
+		</div>
+		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
+			<input
+				:disabled="disabled"
+				type="range"
+				:value="modelValue"
+				:max="max"
+				:min="min"
+				:step="step"
+				@change="onChange"
+				@input="onInput"
+			/>
+			<div class="fill" />
+			<div v-if="showTicks" class="ticks">
+				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
+			</div>
+			<div v-if="showThumbLabel" class="thumb-label-wrapper">
+				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
+					<slot name="thumb-label type-text" :value="modelValue">
+						{{ modelValue }}
+					</slot>
+				</div>
+			</div>
+		</div>
+		<div v-if="$slots.append" class="append">
+			<slot name="append" :value="modelValue" />
+		</div>
+	</div>
+</template>
 
 <style>
 body {

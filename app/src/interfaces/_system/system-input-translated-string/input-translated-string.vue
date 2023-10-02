@@ -1,88 +1,3 @@
-<template>
-	<div class="input-translated-string">
-		<v-menu ref="menuEl" :disabled="disabled" :close-on-content-click="false" attached>
-			<template #activator="{ toggle, active }">
-				<v-input
-					class="translation-input"
-					:model-value="localValue"
-					:autofocus="autofocus"
-					:placeholder="placeholder"
-					:disabled="disabled"
-					:active="active"
-					@update:model-value="localValue = $event"
-					@focus="isFocused = true"
-					@blur="blur"
-					@keydown.enter="checkKeyValidity"
-				>
-					<template v-if="hasValidKey" #input>
-						<button :disabled="disabled" @click.stop="setValue(null)">{{ value && getKeyWithoutPrefix(value) }}</button>
-					</template>
-					<template #append>
-						<v-icon
-							name="translate"
-							class="translate-icon"
-							:class="{ active }"
-							clickable
-							:tabindex="-1"
-							:disabled="disabled"
-							@click="toggle"
-						/>
-					</template>
-				</v-input>
-			</template>
-
-			<div v-if="searchValue !== null || filteredTranslationKeys.length >= 25" class="search">
-				<v-input
-					class="search-input"
-					type="text"
-					:model-value="searchValue"
-					autofocus
-					:placeholder="t('interfaces.input-translated-string.search_placeholder')"
-					@update:model-value="searchValue = $event"
-				>
-					<template #append>
-						<v-icon name="search" class="search-icon" />
-					</template>
-				</v-input>
-			</div>
-
-			<v-list :loading="loading">
-				<v-list-item
-					v-for="translationKey in filteredTranslationKeys"
-					:key="translationKey"
-					class="translation-key"
-					:class="{ selected: localValue && translationKey === localValueWithoutPrefix }"
-					clickable
-					@click="selectKey(translationKey)"
-				>
-					<v-list-item-icon>
-						<v-icon name="translate" />
-					</v-list-item-icon>
-					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
-					<v-list-item-icon class="info">
-						<custom-translations-tooltip :translation-key="translationKey" />
-					</v-list-item-icon>
-				</v-list-item>
-				<v-list-item class="new-custom-translation" clickable @click="openNewCustomTranslationDrawer">
-					<v-list-item-icon>
-						<v-icon name="add" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ t('interfaces.input-translated-string.new_custom_translation') }}
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-
-		<DrawerItem
-			v-model:active="isCustomTranslationDrawerOpen"
-			collection="directus_translations"
-			primary-key="+"
-			@input="create"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
@@ -209,6 +124,91 @@ function openNewCustomTranslationDrawer() {
 	isCustomTranslationDrawerOpen.value = true;
 }
 </script>
+
+<template>
+	<div class="input-translated-string">
+		<v-menu ref="menuEl" :disabled="disabled" :close-on-content-click="false" attached>
+			<template #activator="{ toggle, active }">
+				<v-input
+					class="translation-input"
+					:model-value="localValue"
+					:autofocus="autofocus"
+					:placeholder="placeholder"
+					:disabled="disabled"
+					:active="active"
+					@update:model-value="localValue = $event"
+					@focus="isFocused = true"
+					@blur="blur"
+					@keydown.enter="checkKeyValidity"
+				>
+					<template v-if="hasValidKey" #input>
+						<button :disabled="disabled" @click.stop="setValue(null)">{{ value && getKeyWithoutPrefix(value) }}</button>
+					</template>
+					<template #append>
+						<v-icon
+							name="translate"
+							class="translate-icon"
+							:class="{ active }"
+							clickable
+							:tabindex="-1"
+							:disabled="disabled"
+							@click="toggle"
+						/>
+					</template>
+				</v-input>
+			</template>
+
+			<div v-if="searchValue !== null || filteredTranslationKeys.length >= 25" class="search">
+				<v-input
+					class="search-input"
+					type="text"
+					:model-value="searchValue"
+					autofocus
+					:placeholder="t('interfaces.input-translated-string.search_placeholder')"
+					@update:model-value="searchValue = $event"
+				>
+					<template #append>
+						<v-icon name="search" class="search-icon" />
+					</template>
+				</v-input>
+			</div>
+
+			<v-list :loading="loading">
+				<v-list-item
+					v-for="translationKey in filteredTranslationKeys"
+					:key="translationKey"
+					class="translation-key"
+					:class="{ selected: localValue && translationKey === localValueWithoutPrefix }"
+					clickable
+					@click="selectKey(translationKey)"
+				>
+					<v-list-item-icon>
+						<v-icon name="translate" />
+					</v-list-item-icon>
+					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
+					<v-list-item-icon class="info">
+						<custom-translations-tooltip :translation-key="translationKey" />
+					</v-list-item-icon>
+				</v-list-item>
+				<v-list-item class="new-custom-translation" clickable @click="openNewCustomTranslationDrawer">
+					<v-list-item-icon>
+						<v-icon name="add" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('interfaces.input-translated-string.new_custom_translation') }}
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+
+		<DrawerItem
+			v-model:active="isCustomTranslationDrawerOpen"
+			collection="directus_translations"
+			primary-key="+"
+			@input="create"
+		/>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .translation-input {

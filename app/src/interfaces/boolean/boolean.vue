@@ -1,20 +1,3 @@
-<template>
-	<v-checkbox
-		block
-		:icon-on="iconOn"
-		:icon-off="iconOff"
-		:label="label"
-		:model-value="value"
-		:indeterminate="value === null"
-		:disabled="disabled"
-		:style="{
-			'--v-checkbox-color': colorOn,
-			'--v-checkbox-unchecked-color': colorOff,
-		}"
-		@update:model-value="$emit('input', $event)"
-	/>
-</template>
-
 <script setup lang="ts">
 import { i18n } from '@/lang';
 
@@ -41,3 +24,20 @@ defineEmits<{
 	(e: 'input', value: boolean | null): void;
 }>();
 </script>
+
+<template>
+	<v-checkbox
+		block
+		:icon-on="iconOn"
+		:icon-off="iconOff"
+		:label="label"
+		:model-value="value"
+		:indeterminate="value === null"
+		:disabled="disabled"
+		:style="{
+			'--v-checkbox-color': colorOn,
+			'--v-checkbox-unchecked-color': colorOff,
+		}"
+		@update:model-value="$emit('input', $event)"
+	/>
+</template>

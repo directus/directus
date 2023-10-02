@@ -9,12 +9,12 @@ export type RelationQuerySingle = {
 	fields: string[];
 };
 
-export function useRelationSingle(
+export function useRelationSingle<T extends Record<string, any>>(
 	value: Ref<number | string | Record<string, any> | null>,
 	previewQuery: Ref<RelationQuerySingle>,
 	relation: Ref<RelationM2O | undefined>
 ) {
-	const displayItem = ref<Record<string, any> | null>(null);
+	const displayItem: Ref<T | null> = ref(null);
 	const loading = ref(false);
 
 	watch([value, previewQuery, relation], getDisplayItem, { immediate: true });
@@ -60,7 +60,7 @@ export function useRelationSingle(
 		const id = typeof val === 'object' ? val[relation.value.relatedPrimaryKeyField.field] : val;
 
 		if (!id) {
-			displayItem.value = val as Record<string, any>;
+			displayItem.value = val as T;
 			return;
 		}
 
@@ -84,7 +84,7 @@ export function useRelationSingle(
 		} catch (err: any) {
 			// if the item has a manually entered primary key, we can ignore the error
 			if (typeof val === 'object' && err.response && err.response.status === 403) {
-				displayItem.value = val;
+				displayItem.value = val as T;
 			} else {
 				unexpectedError(err);
 			}

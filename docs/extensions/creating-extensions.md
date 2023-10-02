@@ -1,15 +1,14 @@
 ---
 description: A guide on how to scaffold your Directus Extension.
 readTime: 5 min read
+contributors: Rijk Van Zanten, Esther Agbaje
 ---
 
 # Creating Extensions
 
-## Scaffolding your Directus Extension
+To create an extension, use the `create-directus-extension` utility:
 
-The easiest way to start developing extensions is to use the `create-directus-extension` utility:
-
-```bash
+```shell
 npx create-directus-extension@latest
 ```
 
@@ -19,33 +18,7 @@ utility will create a folder with the recommended file structure to create an ex
 If you want to combine and share dependencies between one or more extensions, use the
 [bundle extension type](/extensions/bundles).
 
-### Extension Folder Structure
-
-The folder created by the utility is in fact an npm package. It comes with a few pre-installed packages depending on the
-extension type and the language you chose. The most important one is `@directus/extensions-sdk`. This package includes a
-CLI, which allows you to build your extension and to scaffold additional extensions, and it provides Typescript helpers
-and other utilities.
-
-Inside the created folder there is a `src/` folder. This folder contains the entrypoint of your extension. If you write
-additional source files, they should go into this folder.
-
-::: tip Entrypoint
-
-The entrypoint is either called `index.js` or `index.ts`, depending on which programming language you chose.
-
-:::
-
-The generated `package.json` file contains an additional `directus:extension` field with the following sub-fields:
-
-- `type` — The type of the extension
-- `path` — The path to the built extension
-- `source` — The path to the source entrypoint
-- `host` — A semver string that indicates with which versions of the Directus host, the extension is compatible with
-
-The CLI will use those fields by default to determine the input and output file paths and how the extension should be
-built.
-
-## Building your Extension
+## Building Your Extension
 
 Before your extension can be used by Directus, it has to be built. If you used the `create-directus-extension` utility
 to scaffold your extension, building your extension is as easy as running:
@@ -99,36 +72,6 @@ the config file can be loaded as a CommonJS or ESM file.
 
 :::
 
-## Developing your Extension
-
-To learn more about developing extensions of a specific type, you can refer to one of the individual guides:
-
-#### App Extensions
-
-- [Interfaces](/extensions/interfaces)
-- [Displays](/extensions/displays)
-- [Layouts](/extensions/layouts)
-- [Modules](/extensions/modules)
-- [Panels](/extensions/panels)
-
-#### API Extensions
-
-- [Hooks](/extensions/hooks)
-- [Endpoints](/extensions/endpoints)
-
-#### Hybrid Extensions
-
-- [Operations](/extensions/operations)
-- [Bundles](/extensions/bundles)
-
-::: tip Live Reloading
-
-When working on extensions, try setting the
-[`EXTENSIONS_AUTO_RELOAD` environment variable](/self-hosted/config-options). This will make the API reload extensions
-on changes automatically.
-
-:::
-
 ::: tip Component Library
 
 Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you can
@@ -137,53 +80,50 @@ Displays, Modules, Layouts, and Panels.
 
 :::
 
-## Publishing your Extension
+## Extension Folder Structure
 
-To make an extension available to all Directus users, you can publish the npm package created by
-`@directus/extensions-sdk` to the npm registry. Make sure the name of the package follows the naming convention for
-package extensions: `directus-extension-<extension-name>` or `@<scope>/directus-extension-<extension-name>`.
-`<extension-name>` has to be replaced with the name of your extension.
+The folder created by the utility is in fact an npm package. It comes with a few pre-installed packages depending on the
+extension type and the programming language you chose. The most important one is `@directus/extensions-sdk`. This
+package includes a CLI, which allows you to build your extension and to scaffold additional extensions, Typescript
+helpers, and other utilities.
 
-## Installing an Extension
+Inside the created folder there is a `src/` folder. This folder contains the entrypoint of your extension. If you write
+additional source files, they should go into this folder.
 
-There are two ways to install an extension.
+::: tip Entrypoint
 
-### Package Extension
-
-Package extensions are essentially npm packages. They can be installed from the npm registry, from a tarball, from a git
-repository or any other means supported by npm. On startup, Directus will automatically load any package extension
-installed into your Directus project folder.
-
-To install an extension from the npm registry, simply use the npm CLI:
-
-```bash
-cd <directus-project-folder>
-npm install <full-package-extension-name>
-```
-
-`<project-folder>` has to be replaced by the Directus project folder. `<full-package-extension-name>` should be replaced
-with the full name of the package extension (e.g. `directus-extension-custom`).
-
-### Local Extension
-
-Local extensions are essentially the files generated by the `directus-extension build` command. They can be installed by
-copying those files into a specific extensions folder.
-
-To install an extension locally, you have to move the output from the `dist/` folder into your project's
-`./extensions/<extension-folder>/<extension-name>/` folder. `<extension-folder>` has to be replaced by the extension
-type in plural form (e.g. interfaces). `<extension-name>` should be replaced with the name of your extension.
-
-### Local Bundle Extension
-
-Bundles require a slightly different method of deployment. There is no dedicated `<extension-folder>/` but instead you
-create your extension folder in the extension root and prefix the name with `directus-extension-`.
-
-To install a bundle locally, you have to move both the contents of the `dist/` folder and the `package.json` file into
-your project's `./extensions/directus-extension-<extension-name>/` folder. `<extension-name>` should be replaced with
-the name of your extension.
-
-::: warning Configurable Folders
-
-The path to the built extension as well as the extensions directory are configurable and may be located elsewhere.
+The entrypoint is either called `index.js` or `index.ts`, depending on which programming language you chose.
 
 :::
+
+The generated `package.json` file contains an additional `directus:extension` field with the following sub-fields:
+
+- `type` — The type of the extension
+- `path` — The path to the built extension
+- `source` — The path to the source entrypoint
+- `host` — A semver string that indicates with which versions of the Directus host, the extension is compatible with
+
+The CLI will use those fields by default to determine the input and output file paths and how the extension should be
+built.
+
+## Developing Your Extension
+
+To learn more about how to develop extensions of a specific type, refer to the individual guides:
+
+### App Extensions
+
+- [Interfaces](/extensions/interfaces)
+- [Layouts](/extensions/layouts)
+- [Displays](/extensions/displays)
+- [Panels](/extensions/panels)
+- [Modules](/extensions/modules)
+
+### API Extensions
+
+- [Endpoints](/extensions/endpoints)
+- [Hooks](/extensions/hooks)
+
+### Hybrid Extensions
+
+- [Operations](/extensions/operations)
+- [Bundles](/extensions/bundles)
