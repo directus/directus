@@ -1,38 +1,3 @@
-<template>
-	<v-skeleton-loader v-if="loading" />
-	<div v-else class="folder-picker">
-		<v-list>
-			<v-item-group v-model="openFolders" scope="folder-picker" multiple>
-				<v-list-group
-					disable-groupable-parent
-					clickable
-					:active="modelValue === null"
-					scope="folder-picker"
-					value="root"
-					@click="$emit('update:modelValue', null)"
-				>
-					<template #activator>
-						<v-list-item-icon>
-							<v-icon name="folder_special" outline />
-						</v-list-item-icon>
-						<v-list-item-content>{{ t('file_library') }}</v-list-item-content>
-					</template>
-
-					<folder-picker-list-item
-						v-for="folder in tree"
-						:key="folder.id"
-						:folder="folder"
-						:current-folder="modelValue"
-						:click-handler="(id) => $emit('update:modelValue', id)"
-						:disabled="disabledFolders?.includes(folder.id)"
-						:disabled-folders="disabledFolders"
-					/>
-				</v-list-group>
-			</v-item-group>
-		</v-list>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -53,12 +18,12 @@ type Folder = {
 };
 
 const props = defineProps<{
-	disabledFolders?: string[];
 	modelValue: string | null;
+	disabledFolders?: string[];
 }>();
 
 defineEmits<{
-	(e: 'update:modelValue', value: string | null): void;
+	'update:modelValue': [value: string | null];
 }>();
 
 const { t } = useI18n();
@@ -140,6 +105,41 @@ function parseFolder(id: string) {
 	}
 }
 </script>
+
+<template>
+	<v-skeleton-loader v-if="loading" />
+	<div v-else class="folder-picker">
+		<v-list>
+			<v-item-group v-model="openFolders" scope="folder-picker" multiple>
+				<v-list-group
+					disable-groupable-parent
+					clickable
+					:active="modelValue === null"
+					scope="folder-picker"
+					value="root"
+					@click="$emit('update:modelValue', null)"
+				>
+					<template #activator>
+						<v-list-item-icon>
+							<v-icon name="folder_special" outline />
+						</v-list-item-icon>
+						<v-list-item-content>{{ t('file_library') }}</v-list-item-content>
+					</template>
+
+					<folder-picker-list-item
+						v-for="folder in tree"
+						:key="folder.id"
+						:folder="folder"
+						:current-folder="modelValue"
+						:click-handler="(id) => $emit('update:modelValue', id)"
+						:disabled="disabledFolders?.includes(folder.id)"
+						:disabled-folders="disabledFolders"
+					/>
+				</v-list-group>
+			</v-item-group>
+		</v-list>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 :global(body) {

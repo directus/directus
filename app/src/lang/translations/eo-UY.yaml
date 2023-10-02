@@ -254,6 +254,7 @@ move_to_folder: Movi al dosierujo
 move: Move
 system: Sistemo
 interface_label: Interfaco
+display_label: Montri
 today: Hodiaŭ
 yesterday: Hieraŭ
 delete_comment: Forigi la komenton
@@ -954,6 +955,8 @@ interfaces:
     interface: Interfaco
     description: Elekti ekzistantan interfacon
     placeholder: Elekti interfacon...
+  system-display:
+    display: Montri
   list-m2m:
     many-to-many: Pluraj-al-pluraj-rilato
   select-dropdown-m2o:

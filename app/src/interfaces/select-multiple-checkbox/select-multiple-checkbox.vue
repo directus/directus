@@ -1,66 +1,3 @@
-<template>
-	<v-notice v-if="!choices" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
-	<div
-		v-else
-		class="checkboxes"
-		:class="gridClass"
-		:style="{
-			'--v-checkbox-color': color,
-		}"
-	>
-		<v-checkbox
-			v-for="item in choicesDisplayed"
-			:key="item.value"
-			block
-			:value="item.value"
-			:label="item.text"
-			:disabled="disabled"
-			:icon-on="iconOn"
-			:icon-off="iconOff"
-			:model-value="value || []"
-			@update:model-value="$emit('input', $event)"
-		/>
-		<v-detail
-			v-if="hideChoices && showAll === false"
-			:class="gridClass"
-			:label="t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
-			@update:model-value="showAll = true"
-		></v-detail>
-
-		<template v-if="allowOther">
-			<v-checkbox
-				v-for="otherValue in otherValues"
-				:key="otherValue.key"
-				block
-				custom-value
-				:value="otherValue.value"
-				:disabled="disabled"
-				:icon-on="iconOn"
-				:icon-off="iconOff"
-				:model-value="value || []"
-				@update:value="setOtherValue(otherValue.key, $event)"
-				@update:model-value="$emit('input', $event)"
-			/>
-
-			<button
-				v-if="allowOther"
-				:disabled="disabled"
-				class="add-new custom"
-				align="left"
-				outlined
-				dashed
-				secondary
-				@click="addOtherValue()"
-			>
-				<v-icon name="add" />
-				{{ t('other') }}
-			</button>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useCustomSelectionMultiple } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';
@@ -133,6 +70,69 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	emit('input', value)
 );
 </script>
+
+<template>
+	<v-notice v-if="!choices" type="warning">
+		{{ t('choices_option_configured_incorrectly') }}
+	</v-notice>
+	<div
+		v-else
+		class="checkboxes"
+		:class="gridClass"
+		:style="{
+			'--v-checkbox-color': color,
+		}"
+	>
+		<v-checkbox
+			v-for="item in choicesDisplayed"
+			:key="item.value"
+			block
+			:value="item.value"
+			:label="item.text"
+			:disabled="disabled"
+			:icon-on="iconOn"
+			:icon-off="iconOff"
+			:model-value="value || []"
+			@update:model-value="$emit('input', $event)"
+		/>
+		<v-detail
+			v-if="hideChoices && showAll === false"
+			:class="gridClass"
+			:label="t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
+			@update:model-value="showAll = true"
+		></v-detail>
+
+		<template v-if="allowOther">
+			<v-checkbox
+				v-for="otherValue in otherValues"
+				:key="otherValue.key"
+				block
+				custom-value
+				:value="otherValue.value"
+				:disabled="disabled"
+				:icon-on="iconOn"
+				:icon-off="iconOff"
+				:model-value="value || []"
+				@update:value="setOtherValue(otherValue.key, $event)"
+				@update:model-value="$emit('input', $event)"
+			/>
+
+			<button
+				v-if="allowOther"
+				:disabled="disabled"
+				class="add-new custom"
+				align="left"
+				outlined
+				dashed
+				secondary
+				@click="addOtherValue()"
+			>
+				<v-icon name="add" />
+				{{ t('other') }}
+			</button>
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .checkboxes {

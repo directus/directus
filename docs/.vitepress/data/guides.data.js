@@ -3,10 +3,24 @@ export default {
 		const gettingStarted = [
 			{ display: 'Quickstart Guide', path: '/getting-started/quickstart' },
 			{ display: 'Self-Hosted Installation', path: '/self-hosted/quickstart' },
-			{ display: 'Get Started With The SDK', path: '/guides/sdk/getting-started' },
 		];
 
 		const sections = [
+			{
+				title: 'SDK Guides',
+				indexPath: 'sdk',
+				summary: 'Learn how to leverage our composable TypeScript SDK in your projects.',
+				cols: 1,
+				blocks: [
+					{
+						title: 'Getting Started',
+						items: [
+							{ display: 'SDK Quickstart', path: '/guides/sdk/getting-started' },
+							{ display: 'SDK Authentication', path: '/guides/sdk/authentication' },
+						],
+					},
+				],
+			},
 			{
 				title: 'Framework Guides',
 				indexPath: 'frameworks',
@@ -194,6 +208,14 @@ export default {
 					{
 						title: 'Panels',
 						items: [
+							{
+								display: 'Create An Interactive Panel To Create Items',
+								path: '/guides/extensions/panels-create-items',
+							},
+							{
+								display: 'Create A Panel To Display External API Data With Vonage',
+								path: '/guides/extensions/panels-display-data-vonage',
+							},
 							{
 								display: 'Create An Interactive Panel To Send SMS With Twilio',
 								path: '/guides/extensions/panels-send-sms-twilio',

@@ -1,30 +1,3 @@
-<template>
-	<v-list nav>
-		<v-list-item v-for="item in navItems" :key="item.to" :to="item.to">
-			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="item.name" />
-			</v-list-item-content>
-		</v-list-item>
-
-		<v-divider />
-
-		<v-list-item v-for="item in externalItems" :key="item.href" :href="item.href">
-			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="item.name" />
-			</v-list-item-content>
-		</v-list-item>
-
-		<v-list-item href="https://github.com/directus/directus/releases" class="version">
-			<v-list-item-icon><v-icon name="directus" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow class="version" :text="`Directus ${version}`" />
-			</v-list-item-content>
-		</v-list-item>
-	</v-list>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -86,6 +59,33 @@ const externalItems = computed(() => {
 	];
 });
 </script>
+
+<template>
+	<v-list nav>
+		<v-list-item v-for="item in navItems" :key="item.to" :to="item.to">
+			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="item.name" />
+			</v-list-item-content>
+		</v-list-item>
+
+		<v-divider />
+
+		<v-list-item v-for="item in externalItems" :key="item.href" :href="item.href">
+			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="item.name" />
+			</v-list-item-content>
+		</v-list-item>
+
+		<v-list-item href="https://github.com/directus/directus/releases" class="version">
+			<v-list-item-icon><v-icon name="directus" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow class="version" :text="`Directus ${version}`" />
+			</v-list-item-content>
+		</v-list-item>
+	</v-list>
+</template>
 
 <style scoped>
 .version .v-icon {

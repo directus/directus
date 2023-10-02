@@ -1,29 +1,3 @@
-<template>
-	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
-		<accordion-section
-			v-for="accordionField in groupFields"
-			:key="accordionField.field"
-			:field="accordionField"
-			:fields="fields"
-			:values="groupValues"
-			:initial-values="initialValues"
-			:disabled="disabled"
-			:batch-mode="batchMode"
-			:batch-active-fields="batchActiveFields"
-			:primary-key="primaryKey"
-			:loading="loading"
-			:validation-errors="validationErrors"
-			:badge="badge"
-			:raw-editor-enabled="rawEditorEnabled"
-			:group="field.meta!.field"
-			:multiple="accordionMode === false"
-			:direction="direction"
-			@apply="$emit('apply', $event)"
-			@toggle-all="toggleAll"
-		/>
-	</v-item-group>
-</template>
-
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
@@ -132,3 +106,29 @@ function useComputedGroup() {
 	}
 }
 </script>
+
+<template>
+	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
+		<accordion-section
+			v-for="accordionField in groupFields"
+			:key="accordionField.field"
+			:field="accordionField"
+			:fields="fields"
+			:values="groupValues"
+			:initial-values="initialValues"
+			:disabled="disabled"
+			:batch-mode="batchMode"
+			:batch-active-fields="batchActiveFields"
+			:primary-key="primaryKey"
+			:loading="loading"
+			:validation-errors="validationErrors"
+			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
+			:group="field.meta!.field"
+			:multiple="accordionMode === false"
+			:direction="direction"
+			@apply="$emit('apply', $event)"
+			@toggle-all="toggleAll"
+		/>
+	</v-item-group>
+</template>

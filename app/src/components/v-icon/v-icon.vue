@@ -1,18 +1,3 @@
-<template>
-	<span
-		class="v-icon"
-		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
-		:role="clickable ? 'button' : undefined"
-		:tabindex="clickable ? 0 : undefined"
-		:style="{ '--v-icon-color': color }"
-		@click="emitClick"
-	>
-		<component :is="customIconName" v-if="customIconName" />
-		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else :class="{ filled }" :data-icon="name"></i>
-	</span>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
@@ -84,6 +69,21 @@ function emitClick(event: MouseEvent) {
 	emit('click', event);
 }
 </script>
+
+<template>
+	<span
+		class="v-icon"
+		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
+		:role="clickable ? 'button' : undefined"
+		:tabindex="clickable ? 0 : undefined"
+		:style="{ '--v-icon-color': color }"
+		@click="emitClick"
+	>
+		<component :is="customIconName" v-if="customIconName" />
+		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
+		<i v-else :class="{ filled }" :data-icon="name"></i>
+	</span>
+</template>
 
 <style>
 body {

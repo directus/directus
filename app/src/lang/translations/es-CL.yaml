@@ -386,6 +386,7 @@ move: Mover
 system: Sistema
 add_field_related: Agregar Campo a Colección Relacionada
 interface_label: Interfaz
+display_label: Mostrar
 today: Hoy
 yesterday: Ayer
 delete_comment: Eliminar Comentario
@@ -1569,6 +1570,8 @@ interfaces:
   system-interface-options:
     interface-options: Opciones de Interfaz
     description: Una ventana modal para seleccionar opciones de una interfaz
+  system-display:
+    display: Mostrar
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
@@ -1633,6 +1636,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Introducir nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
+    interface_group: Opciones de Interfaz
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador

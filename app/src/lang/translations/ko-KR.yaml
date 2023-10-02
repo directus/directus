@@ -380,6 +380,7 @@ move: 이동
 system: 시스템
 add_field_related: 관계형 컬렉션에 필드 추가
 interface_label: 인터페이스
+display_label: 표시하다
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
@@ -1574,6 +1575,8 @@ interfaces:
   system-interface-options:
     interface-options: 인터페이스 옵션
     description: 인터페이스 옵션을 선택하기 위한 모달
+  system-display:
+    display: 표시하다
   list-m2m:
     many-to-many: 다대다
     description: 여러 개의 관련 접합 항목 선택
@@ -1642,6 +1645,7 @@ interfaces:
     sort_placeholder: 수동
     field_note_placeholder: 필드 메모 입력...
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
+    interface_group: 인터페이스 옵션
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택

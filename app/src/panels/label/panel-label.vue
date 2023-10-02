@@ -1,9 +1,3 @@
-<template>
-	<div class="label type-title selectable" :class="{ 'has-header': showHeader }" :style="{ color: color }">
-		{{ text }}
-	</div>
-</template>
-
 <script setup lang="ts">
 withDefaults(
 	defineProps<{
@@ -26,6 +20,12 @@ export default defineComponent({
 	inheritAttrs: false,
 });
 </script>
+
+<template>
+	<div class="label type-title selectable" :class="{ 'has-header': showHeader }" :style="{ color: color }">
+		{{ text }}
+	</div>
+</template>
 
 <style scoped>
 .label {
