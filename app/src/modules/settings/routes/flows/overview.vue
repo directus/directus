@@ -15,6 +15,51 @@
 		</template>
 
 		<template #actions>
+
+			<v-input
+				v-model="search"
+				class="search"
+				:autofocus="flowsStore.flows.length > 25"
+				type="search"
+				:placeholder="t('search_flow')"
+				:full-width="false"
+			>
+				<template #prepend>
+					<v-icon name="search" outline />
+				</template>
+				<template #append>
+					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+				</template>
+			</v-input>
+
+			<v-dialog v-if="selection.length > 0" v-model="confirmBatchDelete" @esc="confirmBatchDelete = false">
+				<template #activator="{ on }">
+					<v-button
+						v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+						:disabled="batchDeleteAllowed !== true"
+						rounded
+						icon
+						class="action-delete"
+						secondary
+						@click="on"
+					>
+						<v-icon name="delete" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmBatchDelete = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="danger" :loading="batchDeleting" @click="batchDelete">
+							{{ t('delete_label') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 			<v-button
 				v-tooltip.bottom="createAllowed ? t('create_flow') : t('not_allowed')"
 				rounded
@@ -33,9 +78,9 @@
 		</template>
 
 		<v-info v-if="flows.length === 0" icon="bolt" :title="t('no_flows')" center>
-			{{ t('no_flows_copy') }}
+			{{ search ? t('no_flows_copy_search') : t('no_flows_copy') }}
 
-			<template v-if="createAllowed" #append>
+			<template v-if="createAllowed && !search" #append>
 				<v-button @click="editFlow = '+'">{{ t('create_flow') }}</v-button>
 			</template>
 		</v-info>
@@ -43,10 +88,14 @@
 		<v-table
 			v-else
 			v-model:headers="tableHeaders"
+			v-model="selection"
 			:items="flows"
 			:sort="internalSort"
 			show-resize
 			fixed-header
+			selection-use-keys
+			item-key="id"
+			show-select="multiple"
 			@click:row="navigateToFlow"
 			@update:sort="updateSort($event)"
 		>
@@ -151,8 +200,15 @@ const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
 const editFlow = ref<string | undefined>();
 
+const selection = ref<string[]>([]);
+const search = ref<string | null>(null);
+
 const createAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_flows', 'create');
+});
+
+const batchDeleteAllowed = computed<boolean>(() => {
+	return permissionsStore.hasPermission('directus_flows', 'delete');
 });
 
 const conditionalFormatting = ref([
@@ -212,7 +268,13 @@ const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
 const flowsStore = useFlowsStore();
 
 const flows = computed(() => {
-	const sortedFlows = sortBy(flowsStore.flows, [internalSort.value.by]);
+	const storedFlows = flowsStore.flows;
+
+	const searchedFlows = search.value
+		? storedFlows.filter((flow) => flow.name.toLowerCase().includes(search.value!.toLowerCase()))
+		: storedFlows;
+
+	const sortedFlows = sortBy(searchedFlows, [internalSort.value.by]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
 
@@ -240,6 +302,29 @@ async function deleteFlow() {
 	}
 }
 
+const confirmBatchDelete = ref(false);
+const batchDeleting = ref(false);
+
+async function batchDelete() {
+	batchDeleting.value = true;
+
+	const batchPrimaryKeys = selection.value;
+
+	try {
+		await api.delete(`/flows`, {
+			data: batchPrimaryKeys,
+		});
+
+		selection.value = [];
+		await flowsStore.hydrate();
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		confirmBatchDelete.value = false;
+		batchDeleting.value = false;
+	}
+}
+
 async function toggleFlowStatusById(id: string, value: string) {
 	try {
 		await api.patch(`/flows/${id}`, {
@@ -262,6 +347,23 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <style scoped>
+
+.v-input.search {
+	height: var(--v-button-height);
+	--border-radius: calc(44px / 2);
+	width: 200px;
+	margin-left: auto;
+
+	@media (min-width: 600px) {
+		width: 300px;
+		margin-top: 0px;
+	}
+}
+
+.action-delete {
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
+}
 .v-table {
 	padding: var(--content-padding);
 	padding-top: 0;
