@@ -1,9 +1,9 @@
-import { addExecOptions } from "../add-exec-options.js";
+import { addExecOptions } from "../utils/add-exec-options.js";
 import env from '../../env.js';
 import { getFlowManager } from "../../flows.js";
 import { EXEC_CREATE_OPERATION } from "@directus/constants";
 
-export default addExecOptions(() => {
+export default addExecOptions(({ extensionManager, extension }) => {
 	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
 	const flowManager = getFlowManager();
@@ -30,6 +30,10 @@ export default addExecOptions(() => {
 
 			return result;
 		});
+
+		extensionManager.registration.addUnregisterFunction(extension.name, () => {
+			flowManager.removeOperation(validOptions.id);
+		})
 	}
 
 	return {

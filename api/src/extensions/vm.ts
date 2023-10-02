@@ -3,8 +3,6 @@ import { createRequire } from 'node:module';
 import { readFile } from 'fs/promises';
 import { Isolate } from 'isolated-vm';
 import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from '@directus/types';
-import type { EventHandler } from '../types/events.js';
-import emitter from '../emitter.js';
 import logger from '../logger.js';
 import env from '../env.js';
 import { createExec } from './exec/node.js';
@@ -25,51 +23,33 @@ export class VmManager {
 
 	async runExtension(extension: ApiExtensionInfo) {
 		if (extension.type === 'endpoint') {
-			return this.run(`import ext from 'extension.js'; ext()`, extension);
+			await this.run(`import ext from 'extension.js'; ext()`, extension);
 		} else if (extension.type === 'hook') {
-			return this.run(`import ext from 'extension.js'; ext()`, extension);
+			await this.run(`import ext from 'extension.js'; ext()`, extension);
 		} else if (extension.type === 'operation') {
-			return this.run(
+			await this.run(
 				`import ext from 'extension.js'; ext()`,
 				extension,
 			);
 		} else if (extension.type === 'bundle') {
-			const unregisterFunctions: (() => Promise<void>)[] = [];
-
 			for (const innerExtension of extension.entries) {
 				if (innerExtension.type === 'endpoint') {
-					const unregister = await this.run(
+					await this.run(
 						`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) endpoint()`,
 						extension,
 					);
-
-					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'hook') {
-					const unregister = await this.run(
+					await this.run(
 						`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) hook()`,
 						extension,
 					);
-
-					unregisterFunctions.push(unregister);
 				} else if (innerExtension.type === 'operation') {
-					const unregister = await this.run(
+					await this.run(
 						`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) operation()`,
 						extension,
 					);
-
-					unregisterFunctions.push(unregister);
 				}
 			}
-
-			return async () => {
-				for (const unregister of unregisterFunctions) {
-					await unregister();
-				}
-			};
-		}
-
-		return () => {
-			/* do nothing */
 		}
 	}
 
@@ -79,7 +59,7 @@ export class VmManager {
 
 		const extensionCode = await readFile(extension.apiExtensionPath!, 'utf-8');
 
-		const enableDebugger = extension.debugger === true;
+		const enableDebugger = false;
 
 		const isolate: Isolate = new ivm.Isolate({ inspector: enableDebugger, memoryLimit: isolateSizeMb });
 		if (enableDebugger) this.createInspector(isolate.createInspectorSession(), extension.name);
@@ -91,8 +71,6 @@ export class VmManager {
 		jail.setSync('log', console.log)
 
 		await createExec(context, this.extensionManager, extension);
-
-		let hookEvents: EventHandler[] = [];
 
 		const runModule = await isolate.compileModule(startCode, { filename: 'extensionLoader.js' });
 
@@ -110,32 +88,13 @@ export class VmManager {
 			timeout: scriptTimeoutMs,
 		});
 
-		const unregister = async () => {
+		this.extensionManager.registration.addUnregisterFunction(extension.name, async () => {
 			try {
 				isolate.dispose();
-
-				for (const event of hookEvents) {
-					switch (event.type) {
-						case 'filter':
-							emitter.offFilter(event.name, event.handler);
-							break;
-						case 'action':
-							emitter.offAction(event.name, event.handler);
-							break;
-						case 'init':
-							emitter.offInit(event.name, event.handler);
-							break;
-						case 'schedule':
-							await event.job.stop();
-							break;
-					}
-				}
 			} catch (err) {
 				logger.error(err);
 			}
-		};
-
-		return unregister;
+		})
 	}
 
 	private async createInspector(channel: any, extensionName: string) {

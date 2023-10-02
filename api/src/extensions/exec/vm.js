@@ -9,6 +9,8 @@ const execBridgeSync = $2;
  * @returns {Promise<any>}
  */
 function exec(type, options) {
+	log('exec', Object.keys(this))
+
 	return new Promise((resolve, reject) => {
 
 		log('exec', type, typeof options['callback'])

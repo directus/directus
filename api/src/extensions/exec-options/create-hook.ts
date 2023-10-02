@@ -1,5 +1,5 @@
 import { EXEC_CREATE_HOOK } from "@directus/constants";
-import { addExecOptions } from "../add-exec-options.js";
+import { addExecOptions } from "../utils/add-exec-options.js";
 import env from '../../env.js';
 import logger from "../../logger.js";
 import type { ActionHandler, FilterHandler, InitHandler } from "@directus/types";
@@ -10,9 +10,6 @@ import type { EventHandler } from "../../types/events.js";
 export default addExecOptions(({ extensionManager, extension }) => {
 	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 	let scheduleIndex = 0;
-
-	// TODO: We somehow have to pass this up
-	const hookEvents: EventHandler[] = [];
 
 	async function createHook(options: unknown) {
 
@@ -31,7 +28,9 @@ export default addExecOptions(({ extensionManager, extension }) => {
 
 			emitter.onFilter(event, handler);
 
-			hookEvents.push({ type: 'filter', name: event, handler });
+			extensionManager.registration.addUnregisterFunction(extension.name, () => {
+				emitter.offFilter(event, handler);
+			})
 		} else if (validOptions.type === 'action') {
 			const { event, callback } = validOptions;
 
@@ -44,7 +43,9 @@ export default addExecOptions(({ extensionManager, extension }) => {
 
 			emitter.onAction(event, handler);
 
-			hookEvents.push({ type: 'action', name: event, handler });
+			extensionManager.registration.addUnregisterFunction(extension.name, () => {
+				emitter.offAction(event, handler);
+			})
 		} else if (validOptions.type === 'init') {
 			const { event, callback } = validOptions;
 
@@ -52,9 +53,11 @@ export default addExecOptions(({ extensionManager, extension }) => {
 				callback.apply(null, [meta], { timeout: scriptTimeoutMs, arguments: { copy: true } });
 			};
 
-			hookEvents.push({ type: 'init', name: event, handler });
+			emitter.onInit(event, handler);
 
-			emitter.onAction(event, handler);
+			extensionManager.registration.addUnregisterFunction(extension.name, () => {
+				emitter.offInit(event, handler);
+			})
 		} else if (validOptions.type === 'schedule') {
 			const { cron, callback } = validOptions;
 
@@ -71,10 +74,9 @@ export default addExecOptions(({ extensionManager, extension }) => {
 
 				scheduleIndex++;
 
-				hookEvents.push({
-					type: 'schedule',
-					job,
-				});
+				extensionManager.registration.addUnregisterFunction(extension.name, async () => {
+					await job.stop();
+				})
 			} else {
 				logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 			}
@@ -92,10 +94,20 @@ export default addExecOptions(({ extensionManager, extension }) => {
 
 			if (position === 'head') {
 				extensionManager.hookEmbedsHead.push(content);
+
+				extensionManager.registration.addUnregisterFunction(extension.name, () => {
+					const index = extensionManager.hookEmbedsHead.indexOf(content);
+					if (index !== -1) extensionManager.hookEmbedsHead.splice(index, 1);
+				})
 			}
 
 			if (position === 'body') {
 				extensionManager.hookEmbedsBody.push(content);
+
+				extensionManager.registration.addUnregisterFunction(extension.name, () => {
+					const index = extensionManager.hookEmbedsBody.indexOf(content);
+					if (index !== -1) extensionManager.hookEmbedsBody.splice(index, 1);
+				})
 			}
 		}
 	}

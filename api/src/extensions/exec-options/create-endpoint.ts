@@ -1,6 +1,6 @@
 import express from 'express';
 import { EXEC_CREATE_ENDPOINT } from "@directus/constants";
-import { addExecOptions } from "../add-exec-options.js";
+import { addExecOptions } from "../utils/add-exec-options.js";
 import env from '../../env.js';
 
 export default addExecOptions(({ extensionManager, extension }) => {
@@ -37,6 +37,11 @@ export default addExecOptions(({ extensionManager, extension }) => {
 			res.json(result);
 		});
 	}
+
+	extensionManager.registration.addUnregisterFunction(extension.name, () => {
+		const emptyRouter = express.Router();
+		endpointRouter.use(`/${extension.name}`, emptyRouter)
+	})
 
 	return {
 		'create-endpoint': createEndpoint,

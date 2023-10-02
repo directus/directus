@@ -62,6 +62,7 @@ type RunningApiExtension = {
 
 export class RegistrationManager {
 	private extensionManager: ExtensionManager;
+	// runningApiExtensions can have multiple entries for the same extension
 	private runningApiExtensions: RunningApiExtension[] = [];
 	public endpointRouter: Router;
 	private appExtensionChunks: Map<string, string>;
@@ -81,13 +82,7 @@ export class RegistrationManager {
 			try {
 
 				if (hook.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(hook);
-
-					this.runningApiExtensions.push({
-						extension: hook.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(hook);
 					return;
 				}
 
@@ -138,13 +133,7 @@ export class RegistrationManager {
 			try {
 
 				if (endpoint.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(endpoint);
-
-					this.runningApiExtensions.push({
-						extension: endpoint.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(endpoint);
 					return;
 				}
 
@@ -192,13 +181,7 @@ export class RegistrationManager {
 			try {
 
 				if (operation.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(operation);
-
-					this.runningApiExtensions.push({
-						extension: operation.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(operation);
 					return;
 				}
 
@@ -234,13 +217,7 @@ export class RegistrationManager {
 			try {
 
 				if (bundle.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(bundle);
-
-					this.runningApiExtensions.push({
-						extension: bundle.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(bundle);
 					return;
 				}
 
@@ -401,6 +378,21 @@ export class RegistrationManager {
 		const flowManager = getFlowManager();
 
 		flowManager.addOperation(config.id, config.handler);
+	}
+
+	public addUnregisterFunction(extension: string, unregister: () => void | Promise<void>): void {
+		this.runningApiExtensions.push({
+			extension,
+			unregister,
+		});
+	}
+
+	public async unregisterApiExtension(name: string): Promise<void> {
+		for (const extension of this.runningApiExtensions) {
+			if (extension.extension === name) {
+				await extension.unregister();
+			}
+		}
 	}
 
 	public async unregisterApiExtensions(): Promise<void> {

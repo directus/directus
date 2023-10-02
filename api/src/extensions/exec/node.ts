@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import env from '../../env.js';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import type { ExecFunction, ExecOptions } from '../add-exec-options.js';
+import type { ExecFunction, ExecOptions } from '../utils/add-exec-options.js';
 import type { ExtensionManager } from '../extensions.js';
 import { readFile, readdir } from 'node:fs/promises';
 
@@ -24,7 +24,6 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 		ivm,
 		new ivm.Reference(async function (type: unknown, options: unknown, callback: Reference<(error: Error, result: any) => void>) {
 			console.log("execOptions", type, options)
-
 
 			try {
 
@@ -72,7 +71,7 @@ async function loadExecOptions(extensionManager: ExtensionManager, extension: Ap
 	for (const file of files) {
 		const addExecOptions = await import(`../exec-options/${file.substring(0, file.length - 3)}.js`);
 
-		const execOptions = addExecOptions.default({ extensionManager, extension })
+		const execOptions = addExecOptions.default({ extensionManager, extension }) as ExecOptions;
 
 		for (const [key, value] of Object.entries(execOptions)) {
 			if (key in options) {
@@ -87,5 +86,5 @@ async function loadExecOptions(extensionManager: ExtensionManager, extension: Ap
 		}
 	}
 
-	return options;
+	return options
 }

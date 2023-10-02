@@ -1,5 +1,5 @@
 import { EXEC_REQUEST } from "@directus/constants";
-import { addExecOptions } from "../add-exec-options.js";
+import { addExecOptions } from "../utils/add-exec-options.js";
 
 
 export default addExecOptions(() => {
