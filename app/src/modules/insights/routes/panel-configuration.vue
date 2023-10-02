@@ -377,6 +377,15 @@ const stageChanges = () => {
 	border-bottom: var(--border-width) solid var(--border-normal);
 }
 
+
+:deep(.v-notice.normal) {
+	background-color: var(--foreground-inverted);
+}
+
+:deep(.v-notice.string) {
+	background-color: var(--foreground-inverted);
+}
+
 .setup {
 	--form-vertical-gap: 20px;
 
