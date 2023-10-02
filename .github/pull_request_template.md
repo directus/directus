@@ -20,7 +20,7 @@ What's changed:
 - Consectetur adipiscing elit
 - Sed do eiusmod tempor incididunt
 
-# Potential Risks
+# Potential Risks / Drawbacks
 
 - Lorem ipsum dolor sit amet
 - Consectetur adipiscing elit
