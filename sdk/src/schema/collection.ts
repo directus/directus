@@ -21,7 +21,7 @@ export type DirectusCollection<Schema extends object> = {
 			accountability: string | null;
 			color: string | null;
 			item_duplication_fields: string[] | null;
-			sort: string | null;
+			sort: number | null;
 			group: string | null;
 			collapse: string;
 			preview_url: string | null;
