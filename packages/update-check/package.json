@@ -41,8 +41,8 @@
 		"@vitest/coverage-c8": "0.31.1",
 		"keyv": "4.5.2",
 		"strip-ansi": "7.1.0",
-		"tsup": "7.1.0",
-		"typescript": "5.0.4",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	}
 }
