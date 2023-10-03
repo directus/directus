@@ -6,12 +6,7 @@ const version = __DIRECTUS_VERSION__;
 
 const { t } = useI18n();
 
-const navItems = [
-	{
-		icon: 'public',
-		name: t('settings_project'),
-		to: `/settings/project`,
-	},
+const dataItems = [
 	{
 		icon: 'list_alt',
 		name: t('settings_data_model'),
@@ -23,16 +18,6 @@ const navItems = [
 		to: `/settings/roles`,
 	},
 	{
-		icon: 'bookmark',
-		name: t('settings_presets'),
-		to: `/settings/presets`,
-	},
-	{
-		icon: 'translate',
-		name: t('settings_translations'),
-		to: `/settings/translations`,
-	},
-	{
 		icon: 'anchor',
 		name: t('settings_webhooks'),
 		to: `/settings/webhooks`,
@@ -41,6 +26,29 @@ const navItems = [
 		icon: 'bolt',
 		name: t('settings_flows'),
 		to: `/settings/flows`,
+	},
+];
+
+const appItems = [
+	{
+		icon: 'settings',
+		name: t('settings_project'),
+		to: `/settings/project`,
+	},
+	{
+		icon: 'palette',
+		name: t('settings_themes'),
+		to: `/settings/themes`,
+	},
+	{
+		icon: 'bookmark',
+		name: t('settings_presets'),
+		to: `/settings/presets`,
+	},
+	{
+		icon: 'translate',
+		name: t('settings_translations'),
+		to: `/settings/translations`,
 	},
 ];
 
@@ -62,7 +70,16 @@ const externalItems = computed(() => {
 
 <template>
 	<v-list nav>
-		<v-list-item v-for="item in navItems" :key="item.to" :to="item.to">
+		<v-list-item v-for="item in dataItems" :key="item.to" :to="item.to">
+			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="item.name" />
+			</v-list-item-content>
+		</v-list-item>
+
+		<v-divider />
+
+		<v-list-item v-for="item in appItems" :key="item.to" :to="item.to">
 			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="item.name" />
