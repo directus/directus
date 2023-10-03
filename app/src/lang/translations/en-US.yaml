@@ -265,6 +265,9 @@ geometry.Polygon: Polygon
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
+theme_auto: Automatic (Based on System)
+theme_light: Light Mode
+theme_dark: Dark Mode
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -988,7 +991,7 @@ no_options_available: No options available
 settings_data_model: Data Model
 settings_permissions: Access Control
 settings_project: Settings
-settings_themes: Theming
+settings_theming: Theming
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Bookmarks
@@ -1031,7 +1034,8 @@ page_help_files_collection: >-
   your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Project Settings** — Your project's global configuration options."
+page_help_settings_project: "**Settings** — Your project's global configuration options."
+page_help_settings_theming: "**Theming** — Your project's theming options."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
@@ -1204,6 +1208,7 @@ fields:
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
+    theming: Theming Defaults
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
