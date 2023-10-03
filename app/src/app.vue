@@ -73,6 +73,8 @@ watch(
 				?.setAttribute('content', appearance === 'light' ? '#ffffff' : '#263238');
 
 			document.body.classList.add(appearance);
+		} else {
+			document.body.classList.add('auto');
 		}
 	},
 	{ immediate: true }
