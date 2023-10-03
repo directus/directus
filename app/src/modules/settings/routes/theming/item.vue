@@ -9,7 +9,7 @@ import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
+import ThemingInfoSidebarDetail from './components/theming-info-sidebar-detail.vue';
 
 const { t } = useI18n();
 
@@ -21,7 +21,7 @@ const serverStore = useServerStore();
 const { fields: allFields } = useCollection('directus_settings');
 
 const fields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group !== 'theming_group' && field.field !== 'theming_group')
+	unref(allFields).filter((field) => field.meta?.group === 'theming_group' || field.field === 'theming_group')
 );
 
 const initialValues = ref(clone(settingsStore.settings));
@@ -57,11 +57,11 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="t('settings_project')">
+	<private-view :title="t('settings_theming')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="public" />
+				<v-icon name="palette" />
 			</v-button>
 		</template>
 
@@ -80,7 +80,7 @@ function discardAndLeave() {
 		</div>
 
 		<template #sidebar>
-			<project-info-sidebar-detail />
+			<theming-info-sidebar-detail />
 		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">

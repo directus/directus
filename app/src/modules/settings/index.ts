@@ -15,6 +15,7 @@ import NotFound from './routes/not-found.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
 import Project from './routes/project/project.vue';
+import Theming from './routes/theming/item.vue';
 import NewRole from './routes/roles/add-new.vue';
 import RolesCollection from './routes/roles/collection.vue';
 import RolesItem from './routes/roles/item/item.vue';
@@ -40,6 +41,11 @@ export default defineModule({
 			name: 'settings-project',
 			path: 'project',
 			component: Project,
+		},
+		{
+			name: 'settings-theming',
+			path: 'theming',
+			component: Theming,
 		},
 		{
 			path: 'data-model',

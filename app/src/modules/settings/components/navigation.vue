@@ -37,8 +37,8 @@ const appItems = [
 	},
 	{
 		icon: 'palette',
-		name: t('settings_themes'),
-		to: `/settings/themes`,
+		name: t('settings_theming'),
+		to: `/settings/theming`,
 	},
 	{
 		icon: 'bookmark',
