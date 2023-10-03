@@ -11,6 +11,12 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.string('project_color').defaultTo('#6644FF').notNullable().alter();
+
+		table.string('default_appearance').defaultTo('auto').notNullable();
+		table.string('default_theme_light');
+		table.json('theme_light_overrides');
+		table.string('default_theme_dark');
+		table.json('theme_dark_overrides');
 	});
 }
 
@@ -23,5 +29,11 @@ export async function down(knex: Knex): Promise<void> {
 
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.string('project_color').defaultTo(null).nullable().alter();
+
+		table.dropColumn('default_appearance');
+		table.dropColumn('default_theme_light');
+		table.dropColumn('theme_light_overrides');
+		table.dropColumn('default_theme_dark');
+		table.dropColumn('theme_dark_overrides');
 	});
 }
