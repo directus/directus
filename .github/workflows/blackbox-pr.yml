@@ -3,7 +3,7 @@ name: Blackbox Tests
 on:
   pull_request:
     branches:
-      - main
+      #- main
       - next
     paths:
       - api/**

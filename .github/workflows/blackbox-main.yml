@@ -26,7 +26,7 @@ env:
 jobs:
   test:
     name: ${{ matrix.vendor }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.vendor == 'mssql' && 'windows-latest' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
@@ -62,8 +62,22 @@ jobs:
         run:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
+      - name: Install dbatools module (MSSQL)
+        if: matrix.vendor == 'mssql'
+        uses: potatoqualitee/psmodulecache@v5.2
+        with:
+          modules-to-cache: dbatools
+
+      - name: Start services (MSSQL)
+        if: matrix.vendor == 'mssql'
+        shell: pwsh
+        run: |
+          choco install sql-server-2019 -y --no-progress --params="'/SAPWD:Test@123'"
+          Set-DbaTcpPort -SqlInstance MSSQLSERVER -Port 6105
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
+
       - name: Start services (other vendors)
-        if: matrix.vendor != 'sqlite3'
+        if: matrix.vendor != 'sqlite3' && matrix.vendor != 'mssql'
         run:
           docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml redis minio minio-mc -d
           --quiet-pull --wait
