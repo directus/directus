@@ -1,81 +1,86 @@
 <template>
-	<div class="container">
-		<!-- Top Navbar -->
-		<div class="nav">
-			<!-- Directus Logo -->
-			<div class="logo-container">
-				<div class="logo-wrapper">
-					<div class="logo" :class="{ running: isLoading }"></div>
-				</div>
+	<public-view :wide="true">
+		<div class="container">
+			<!-- Top Navbar -->
+			<div class="nav">
+				<!-- Directus Logo -->
+				<!-- <div class="logo-container">
+					<div class="logo-wrapper">
+						<div class="logo" :class="{ running: isLoading }"></div>
+					</div>
+				</div> -->
+				<v-progress-linear :value="progressPercent" rounded :indeterminate="isLoading"></v-progress-linear>
 			</div>
 
-			<v-progress-linear :value="progressPercent" rounded :indeterminate="isLoading"></v-progress-linear>
-		</div>
-
-		<!-- Content -->
-		<div class="onboarding-slides">
-			<Transition name="dialog" mode="out-in">
-				<!-- Welcome Slide -->
-				<div class="intro-text" v-if="currentSlideIndex === 0">
-					<h1 class="type-title">{{ t('onboarding.welcome.title') }}</h1>
-					<p class="type-text">{{ t('onboarding.welcome.text') }}</p>
-				</div>
-
-				<!-- Project Slide -->
-				<div class="slide" v-else-if="currentSlideIndex === 1">
-					<div class="intro-text">
-						<h1 class="type-title">{{ t('onboarding.project.title') }}</h1>
-						<p class="type-text">{{ t('onboarding.project.text') }}</p>
+			<!-- Content -->
+			<div class="onboarding-slides">
+				<Transition name="dialog" mode="out-in">
+					<!-- Welcome Slide -->
+					<div class="intro-text" v-if="currentSlideIndex === 0">
+						<h1 class="type-title">{{ t('onboarding.welcome.title') }}</h1>
+						<p class="type-text">{{ t('onboarding.welcome.text') }}</p>
 					</div>
-					<v-form v-model="payload.body.project" :fields="projectFields" :autofocus="true" />
-				</div>
 
-				<!-- User Slide -->
-				<div class="slide" v-else-if="currentSlideIndex === 2">
-					<div class="intro-text">
-						<h1 class="type-title">{{ t('onboarding.user.title') }}</h1>
-						<p class="type-text">{{ t('onboarding.user.text') }}</p>
+					<!-- Project Slide -->
+					<div class="slide" v-else-if="currentSlideIndex === 1">
+						<div class="intro-text">
+							<h1 class="type-title">{{ t('onboarding.project.title') }}</h1>
+							<p class="type-text">{{ t('onboarding.project.text') }}</p>
+						</div>
+						<v-form v-model="projectModel" :fields="projectFields" :autofocus="true" />
 					</div>
-					<v-form v-model="payload.body.user" :fields="userFields" :autofocus="true" :inline="true" />
-				</div>
 
-				<!-- Last Slide -->
-				<div class="intro-text" v-else-if="currentSlideIndex === 3">
-					<h1 class="type-title">{{ t('onboarding.loading.title') }}</h1>
-					<p class="type-text">{{ t('onboarding.loading.text') }}</p>
-				</div>
-			</Transition>
-		</div>
+					<!-- User Slide -->
+					<div class="slide" v-else-if="currentSlideIndex === 2">
+						<div class="intro-text">
+							<h1 class="type-title">{{ t('onboarding.user.title') }}</h1>
+							<p class="type-text">{{ t('onboarding.user.text') }}</p>
+						</div>
+						<v-form v-model="userModel" :fields="userFields" :autofocus="true" />
+					</div>
 
-		<!-- Actions -->
-		<div class="actions">
-			<!-- Left Actions -->
-			<div>
-				<Transition name="dialog">
-					<v-button v-if="!isLoading" secondary :disabled="isLoading || isFirstSlide" @click="prevSlide">
-						{{ t('back') }}
-					</v-button>
+					<!-- Last Slide -->
+					<div class="intro-text" v-else-if="currentSlideIndex === 3">
+						<h1 class="type-title">{{ t('onboarding.loading.title') }}</h1>
+						<p class="type-text">{{ t('onboarding.loading.text') }}</p>
+					</div>
 				</Transition>
-				<!-- ToDo: Figure out when and where to skip? Only at the end? -->
-				<!-- <Transition name="dialog">
+			</div>
+
+			<!-- Actions -->
+			<div class="actions">
+				<!-- Left Actions -->
+				<div>
+					<Transition name="dialog">
+						<v-button v-if="!isLoading" secondary :disabled="isLoading || isFirstSlide" @click="prevSlide">
+							{{ t('back') }}
+						</v-button>
+					</Transition>
+					<!-- ToDo: Figure out when and where to skip? Only at the end? -->
+					<!-- <Transition name="dialog">
 					<v-button v-if="!isLoading" secondary :disabled="isLoading" @click="skipSlide" class="btn-skip">
 						{{ t('skip') }}
 					</v-button>
 				</Transition> -->
-			</div>
-			<!-- Right Actions -->
-			<div>
-				<v-button @click="nextSlide" v-if="!isLoading" :disabled="isLoading">
-					{{ isLastSlide ? t('finish_setup') : t('next') }}
-				</v-button>
+				</div>
+				<!-- Right Actions -->
+				<div>
+					<v-button @click="nextSlide" v-if="!isLoading" :disabled="isLoading">
+						{{ isLastSlide ? t('finish_setup') : t('next') }}
+					</v-button>
+				</div>
 			</div>
 		</div>
-	</div>
+	</public-view>
 </template>
 
 <script setup lang="ts">
+import api from '@/api';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 import { Field } from '@directus/types';
-import { Ref, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import VForm from '../../components/v-form/v-form.vue';
@@ -83,20 +88,42 @@ import VForm from '../../components/v-form/v-form.vue';
 type OnboardingPayload = {
 	version: 1;
 	body: {
-		user?: {};
-		project?: {};
+		user?: {
+			email?: string;
+			wantsEmails?: boolean;
+			skill?: string;
+		};
+		project?: {
+			name?: string;
+			url?: string;
+			type?: string;
+		};
 	};
 };
 
 const { t } = useI18n();
 const router = useRouter();
+const settingsStore = useSettingsStore();
+const serverStore = useServerStore();
+const userStore = useUserStore();
 
-const payload: Ref<OnboardingPayload> = ref({
-	version: 1,
-	body: {
-		user: {},
-		project: {},
-	},
+// Split up the v-form models from the payload,
+// so that we need to explicitly choose fields that we want to add
+// Note: The models must match the field names of the v-forms
+const projectModel = ref({
+	project_name: settingsStore.settings?.project_name,
+	project_url: settingsStore.settings?.project_url,
+	project_logo: settingsStore.settings?.project_logo,
+	project_color: settingsStore.settings?.project_color,
+	project_use_case: undefined,
+});
+const userModel = ref({
+	id: userStore.currentUser?.id,
+	first_name: userStore.currentUser?.first_name,
+	last_name: userStore.currentUser?.last_name,
+	email: userStore.currentUser?.email,
+	wants_emails: false,
+	primary_skillset: undefined,
 });
 
 // TODO remove slides..
@@ -107,6 +134,50 @@ const progressPercent = computed(() => (currentSlideIndex.value / slideCount) * 
 const isFirstSlide = computed(() => currentSlideIndex.value === 0);
 const isLastSlide = computed(() => currentSlideIndex.value === slideCount - 1);
 const isLoading = ref(false);
+
+async function finishOnboarding() {
+	const settingUpdate = settingsStore
+		.updateSettings({
+			project_name: projectModel.value.project_name,
+			project_url: projectModel.value.project_url,
+			project_logo: projectModel.value.project_logo,
+			project_color: projectModel.value.project_color,
+			onboarding: JSON.stringify({ project_use_case: projectModel.value.project_use_case }),
+		})
+		.then(() => serverStore.hydrate())
+		.catch((e) => console.error('Error when updating settings', e));
+
+	const userUpdate = api
+		.patch(`/users/${userModel.value.id}`, {
+			first_name: userModel.value.first_name,
+			last_name: userModel.value.last_name,
+			email: userModel.value.email, // TODO validate before!
+			onboarding: JSON.stringify({ primary_skillset: userModel.value.primary_skillset }),
+		})
+		.then(() => userStore.hydrate())
+		.catch((e) => console.error('Error when updating users', e));
+
+	// TODO: Remove fields when $TELEMETRY is set
+	const onboarding: OnboardingPayload = {
+		version: 1,
+		body: {
+			user: {
+				email: userModel.value.email,
+				wantsEmails: userModel.value.wants_emails,
+				skill: userModel.value.primary_skillset,
+			},
+			project: {
+				name: projectModel.value.project_name,
+				url: projectModel.value.project_url ?? undefined,
+				type: projectModel.value.project_use_case,
+			},
+		},
+	};
+	// TODO: Do telemetry
+
+	await Promise.allSettled([settingUpdate, userUpdate]);
+	router.replace('/content');
+}
 
 function prevSlide() {
 	currentSlideIndex.value = Math.max(currentSlideIndex.value - 1, 0);
@@ -125,9 +196,7 @@ async function skipSlide() {
 async function nextSlide() {
 	if (isLastSlide.value) {
 		isLoading.value = true;
-		setTimeout(() => {
-			router.replace('/content');
-		}, 3000);
+		finishOnboarding();
 	}
 	currentSlideIndex.value = Math.min(currentSlideIndex.value + 1, slideCount);
 }
@@ -326,10 +395,10 @@ const userFields: Field[] = [
 	{
 		collection: 'onboarding',
 		name: t('onboarding.user.primary_skillset'),
-		field: 'questions_user',
+		field: 'primary_skillset',
 		type: 'string',
 		schema: {
-			name: 'questions_user',
+			name: 'primary_skillset',
 			table: 'onboarding',
 			schema: 'public',
 			data_type: 'character varying',
@@ -351,7 +420,7 @@ const userFields: Field[] = [
 		meta: {
 			id: 25,
 			collection: 'onboarding',
-			field: 'questions_user',
+			field: 'primary_skillset',
 			special: null,
 			interface: 'select-radio',
 			options: {
@@ -431,10 +500,10 @@ const projectFields: Field[] = [
 	{
 		collection: 'onboarding',
 		name: t('fields.directus_settings.project_url'),
-		field: 'public_url',
+		field: 'project_url',
 		type: 'string',
 		schema: {
-			name: 'public_url',
+			name: 'project_url',
 			table: 'onboarding',
 			schema: 'public',
 			data_type: 'character varying',
@@ -456,7 +525,7 @@ const projectFields: Field[] = [
 		meta: {
 			id: 28,
 			collection: 'onboarding',
-			field: 'public_url',
+			field: 'project_url',
 			special: null,
 			interface: 'input',
 			options: { placeholder: t('fields.directus_settings.project_url'), trim: true },
@@ -478,10 +547,10 @@ const projectFields: Field[] = [
 	{
 		collection: 'onboarding',
 		name: t('fields.directus_settings.project_color'),
-		field: 'brand_color',
+		field: 'project_color',
 		type: 'string',
 		schema: {
-			name: 'brand_color',
+			name: 'project_color',
 			table: 'onboarding',
 			schema: 'public',
 			data_type: 'character varying',
@@ -503,7 +572,7 @@ const projectFields: Field[] = [
 		meta: {
 			id: 29,
 			collection: 'onboarding',
-			field: 'brand_color',
+			field: 'project_color',
 			special: null,
 			interface: 'select-color',
 			options: { placeholder: t('fields.directus_settings.project_color'), trim: true },
@@ -572,10 +641,10 @@ const projectFields: Field[] = [
 	{
 		collection: 'onboarding',
 		name: t('onboarding.project.use_case'),
-		field: 'questions_project',
+		field: 'project_use_case',
 		type: 'string',
 		schema: {
-			name: 'questions_project',
+			name: 'project_use_case',
 			table: 'onboarding',
 			schema: 'public',
 			data_type: 'character varying',
@@ -597,7 +666,7 @@ const projectFields: Field[] = [
 		meta: {
 			id: 31,
 			collection: 'onboarding',
-			field: 'questions_project',
+			field: 'project_use_case',
 			special: null,
 			interface: 'select-radio',
 			options: {
@@ -632,7 +701,7 @@ const projectFields: Field[] = [
 	align-items: center;
 	justify-content: center;
 	gap: 64px;
-	padding: 64px 16px;
+	padding: 64px 0;
 	margin-left: auto;
 	margin-right: auto;
 	width: 100%;
