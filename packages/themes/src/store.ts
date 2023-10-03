@@ -7,17 +7,17 @@ import { theme as themeDirectusLight } from './themes/light-directus.js';
 const defaultLightThemes: Theme[] = [themeDirectusLight];
 const defaultDarkThemes: Theme[] = [/*themeDirectusDark*/];
 
-export const useThemeStore = defineStore('themes', () => {
+export const useThemeStore = defineStore('🎨 Themes', () => {
 	const themes = reactive({
-		light: Object.fromEntries(defaultLightThemes.map((theme) => [theme.name, theme])),
-		dark: Object.fromEntries(defaultDarkThemes.map((theme) => [theme.name, theme])),
+		light: defaultLightThemes,
+		dark: defaultDarkThemes,
 	});
 
 	const registerTheme = (theme: Theme) => {
 		if (theme.appearance === 'light') {
-			themes.light[theme.name] = theme;
+			themes.light.push(theme);
 		} else {
-			themes.dark[theme.name] = theme;
+			themes.dark.push(theme);
 		}
 	};
 

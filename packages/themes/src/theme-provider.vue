@@ -33,7 +33,7 @@ const theme = computed(() => {
 	const defaultTheme = props.dark ? themeDefaultDark : themeDefaultLight;
 	const overrides = props.dark ? props.themeDarkOverrides : props.themeLightOverrides;
 
-	const theme = unref(themes)[props.dark ? 'dark' : 'light'][themeName];
+	const theme = unref(themes)[props.dark ? 'dark' : 'light'].find((theme) => theme.name === themeName);
 
 	if (!theme) {
 		// eslint-disable-next-line no-console
