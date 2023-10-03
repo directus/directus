@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Improve performance when importing files
+Prevent slow down of the main thread by moving file import to worker threads
