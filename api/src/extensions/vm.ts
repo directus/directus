@@ -6,6 +6,7 @@ import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension 
 import logger from '../logger.js';
 import env from '../env.js';
 import { createExec } from './exec/node.js';
+import { handleIsolateError } from './utils/handle-isolate-error.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -84,9 +85,13 @@ export class VmManager {
 			throw new Error(`Cannot find module ${specifier} for extension ${extension.name}`);
 		});
 
-		runModule.evaluate({
-			timeout: scriptTimeoutMs,
-		});
+		try {
+			await runModule.evaluate({
+				timeout: scriptTimeoutMs,
+			});
+		} catch (error: any) {
+			handleIsolateError({ extension, extensionManager: this.extensionManager }, error, true)
+		}
 
 		this.extensionManager.registration.addUnregisterFunction(extension.name, async () => {
 			try {

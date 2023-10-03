@@ -1,5 +1,5 @@
 import express from 'express';
-import { EXEC_REGISTER_ENDPOINT } from "@directus/constants";
+import { EXEC_REGISTER_ENDPOINT, EXEC_REGISTER_ENDPOINT_RESPONSE } from "@directus/constants";
 import { addExecOptions } from "../utils/add-exec-options.js";
 import { resumeIsolate } from '../utils/resume-isolate.js';
 import type { Reference } from 'isolated-vm';
@@ -23,9 +23,17 @@ export default addExecOptions((context) => {
 				'url': req.url,
 			}])
 
-			// TODO: Validate result
+			const parsedResult = EXEC_REGISTER_ENDPOINT_RESPONSE.safeParse(result);
 
-			res.json(result);
+			if (!parsedResult.success) {
+				res.status(500).json({
+					'error': parsedResult.error,
+				})
+
+				return;
+			}
+
+			res.status(parsedResult.data.status).send(parsedResult.data.body);
 		})
 	}
 

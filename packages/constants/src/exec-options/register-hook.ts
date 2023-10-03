@@ -1,11 +1,13 @@
 import { z } from "zod";
 
+export const EXEC_REGISTER_FILTER_RESPONSE = z.record(z.string())
+
 export const EXEC_REGISTER_HOOK = z.union([
 	z.tuple([
 		z.literal('register-filter'),
 		z.object({
 			'event': z.string(),
-			'handler': z.function(z.tuple([z.record(z.string())]), z.record(z.string()))
+			'handler': z.function(z.tuple([z.record(z.string())]), EXEC_REGISTER_FILTER_RESPONSE)
 		})
 	]),
 	z.tuple([

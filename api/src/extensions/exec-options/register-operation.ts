@@ -1,6 +1,6 @@
 import { addExecOptions } from "../utils/add-exec-options.js";
 import { getFlowManager } from "../../flows.js";
-import { EXEC_REGISTER_OPERATION } from "@directus/constants";
+import { EXEC_REGISTER_OPERATION, EXEC_REGISTER_OPERATION_RESPONSE } from "@directus/constants";
 import { resumeIsolate } from "../utils/resume-isolate.js";
 import type { Reference } from "isolated-vm";
 import { handlerAsReference } from "../utils/handler-as-reference.js";
@@ -22,11 +22,9 @@ export default addExecOptions((context) => {
 				{ data: flowContext.data }
 			])
 
-			if (result instanceof Error) {
-				throw result;
-			}
+			const parsedResult = EXEC_REGISTER_OPERATION_RESPONSE.parse(result);
 
-			return result;
+			return parsedResult;
 		});
 
 		extensionManager.registration.addUnregisterFunction(extension.name, () => {

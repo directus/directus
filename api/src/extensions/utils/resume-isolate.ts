@@ -1,6 +1,7 @@
 import type { Reference } from "isolated-vm";
 import env from "../../env.js";
 import type { ExecContext } from "./add-exec-options.js";
+import { handleIsolateError } from "./handle-isolate-error.js";
 
 const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
@@ -16,12 +17,7 @@ export async function resumeIsolate(context: ExecContext, reference: Reference, 
 				promise: true, // TODO: make sure this makes sense
 			}
 		})
-	} catch (error) {
-		console.error(error);
-
-		setTimeout(() => {
-			console.log('Restarting extension', context.extension.name);
-			context.extensionManager.registration.restartSecureExtension(context.extension.name)
-		}, 1000)
+	} catch (error: any) {
+		handleIsolateError(context, error);
 	}
 }

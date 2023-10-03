@@ -14,13 +14,13 @@ export default addExecOptions(({ extension }) => {
 		const service = getService(collection, { schema });
 
 		if (type === 'create-items') {
-			service.createMany(options.data)
+			return service.createMany(options.data)
 		} else if (type === 'read-items') {
-			service.readByQuery(options.query ?? {})
+			return service.readByQuery(options.query ?? {})
 		} else if (type === 'update-items') {
-			service.updateByQuery(options.query ?? {}, options.data)
+			return service.updateByQuery(options.query ?? {}, options.data)
 		} else {
-			service.deleteByQuery(options.query ?? {})
+			return service.deleteByQuery(options.query ?? {})
 		}
 	}
 

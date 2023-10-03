@@ -1,4 +1,4 @@
-import { EXEC_REGISTER_HOOK } from "@directus/constants";
+import { EXEC_REGISTER_FILTER_RESPONSE, EXEC_REGISTER_HOOK } from "@directus/constants";
 import { addExecOptions } from "../utils/add-exec-options.js";
 import type { ActionHandler, FilterHandler } from "@directus/types";
 import emitter from "../../emitter.js";
@@ -20,12 +20,20 @@ export default addExecOptions((context) => {
 		if (type === 'register-filter') {
 			const { event, handler } = validOptions;
 
-			const filterHandler: FilterHandler = (payload, meta, eventContext) => {
-				resumeIsolate(context, handler as unknown as Reference, [
+			const filterHandler: FilterHandler = async (payload, meta, eventContext) => {
+				const result = await resumeIsolate(context, handler as unknown as Reference, [
 					payload,
 					meta,
 					{ accountability: eventContext.accountability }
 				])
+
+				const parsedResult = EXEC_REGISTER_FILTER_RESPONSE.safeParse(result);
+
+				if (!parsedResult.success) {
+					return payload
+				}
+
+				return parsedResult.data;
 			};
 
 			emitter.onFilter(event, filterHandler);
