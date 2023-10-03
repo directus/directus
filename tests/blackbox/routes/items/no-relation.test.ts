@@ -1165,8 +1165,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const artist = createArtist(pkType);
 						artist.name = artistName;
 						// first 1-10 company a; 11-25 company b; 26-50 company c
-						// eslint-disable-next-line no-nested-ternary
-						artist.company = companies[i <= 10 ? 0 : i <= 25 ? 1 : 2];
+
+						if (i <= 10) {
+						  artist.company = companies[0];
+						} else if (i <= 25) {
+						  artist.company = companies[1];
+						} else {
+						  artist.company = companies[2];
+						}
+
 						artists.push(artist);
 					}
 
