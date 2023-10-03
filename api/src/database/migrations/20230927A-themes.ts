@@ -9,13 +9,15 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('appearance');
 	});
 
-	await knex('directus_users').update({ appearance: 'dark' }).where({ theme: 'dark '});
-	await knex('directus_users').update({ appearance: 'light' }).where({ theme: 'light '});
+	await knex('directus_users').update({ appearance: 'dark' }).where({ theme: 'dark ' });
+	await knex('directus_users').update({ appearance: 'light' }).where({ theme: 'light ' });
 
 	await knex.schema.alterTable('directus_users', (table) => {
 		table.dropColumn('theme');
 		table.string('theme_dark');
 		table.string('theme_light');
+		table.json('theme_light_overrides');
+		table.json('theme_dark_overrides');
 	});
 
 	await knex('directus_settings').update({ project_color: '#6644ff' }).whereNull('project_color');
@@ -40,6 +42,8 @@ export async function down(knex: Knex): Promise<void> {
 		table.string('theme').defaultTo('auto').alter();
 		table.dropColumn('theme_dark');
 		table.dropColumn('theme_light');
+		table.dropColumn('theme_light_overrides');
+		table.dropColumn('theme_dark_overrides');
 	});
 
 	await knex.schema.alterTable('directus_settings', (table) => {
