@@ -983,12 +983,13 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Roles & Permissions
-settings_project: Project Settings
+settings_permissions: Access Control
+settings_project: Settings
+settings_themes: Theming
 settings_webhooks: Webhooks
 settings_flows: Flows
-settings_presets: Presets & Bookmarks
-settings_translations: Custom Translations
+settings_presets: Bookmarks
+settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
 configure_field_key_to_continue: Configure field key to continue
 scope: Scope
@@ -1259,7 +1260,7 @@ field_options:
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
+    project_logo_note: White 40×40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
