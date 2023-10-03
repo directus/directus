@@ -31,22 +31,6 @@ export default defineConfig({
 	plugins: [
 		directusExtensions(),
 		vue(),
-		{
-			// Injects a script tag to localhost:8098 so you can use the standalone Vue devtools
-			name: 'vue-devtools-standalone',
-			transformIndexHtml(html) {
-				return {
-					html,
-					tags: [
-						{
-							tag: 'script',
-							attrs: { src: 'http://localhost:8098' },
-							injectTo: 'head',
-						},
-					],
-				};
-			},
-		},
 		UnheadVite(),
 		yaml({
 			transform(data) {
