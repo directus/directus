@@ -131,6 +131,7 @@ fields:
           --sidebar-detail-color-active: #5E41EC !important;
         }
     width: full
+    group: theming_group
 
   - field: modules_divider
     interface: presentation-divider
