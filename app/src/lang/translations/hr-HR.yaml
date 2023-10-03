@@ -145,6 +145,7 @@ validationError:
   nnull: Vrijednost ne smije biti null
   required: Vrijednost je obavezna
   unique: Vrijednost mora biti jedinsrvena
+  email: Vrijednost mora biti valjana adresa e-pošte
   regex: Vrijednost nije ispravno formatirana
   starts_with: Vrijednost mora zapoćeti sa {substring}
   istarts_with: Vrijednost mora zapoćeti sa {substring}
@@ -341,6 +342,7 @@ clear_items: Očisti Stavke
 reset_to_default: Vrati na zadano
 undo_changes: Poništi promjene
 notifications: Obavijesti
+archive_all: Arhiviraj Sve
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nije pronađena
 page_not_found_body: Stranica koju tražite ne postoji.
