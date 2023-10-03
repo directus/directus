@@ -1,8 +1,19 @@
 import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
+	/**
+	 * Knex doesn't support setting defaults to null (you'll end up with `NULL::character varying`),
+	 * so we'll have to create a new column, copy over the relevant bits, and remove the old
+	 */
 	await knex.schema.alterTable('directus_users', (table) => {
-		table.renameColumn('theme', 'appearance');
+		table.string('appearance');
+	});
+
+	await knex('directus_users').update({ appearance: 'dark' }).where({ theme: 'dark '});
+	await knex('directus_users').update({ appearance: 'light' }).where({ theme: 'light '});
+
+	await knex.schema.alterTable('directus_users', (table) => {
+		table.dropColumn('theme');
 		table.string('theme_dark').notNullable().defaultTo('default');
 		table.string('theme_light').notNullable().defaultTo('default');
 	});
@@ -23,6 +34,10 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_users', (table) => {
 		table.renameColumn('appearance', 'theme');
+	});
+
+	await knex.schema.alterTable('directus_users', (table) => {
+		table.string('theme').defaultTo('auto').alter();
 		table.dropColumn('theme_dark');
 		table.dropColumn('theme_light');
 	});
