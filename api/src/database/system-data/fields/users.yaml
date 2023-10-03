@@ -83,11 +83,11 @@ fields:
     options:
       choices:
         - value: auto
-          text: $t:fields.directus_users.theme_auto
+          text: $t:appearance_auto
         - value: light
-          text: $t:fields.directus_users.theme_light
+          text: $t:appearance_light
         - value: dark
-          text: $t:fields.directus_users.theme_dark
+          text: $t:appearance_dark
     width: half
 
   - field: theme_light

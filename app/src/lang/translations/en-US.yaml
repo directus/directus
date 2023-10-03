@@ -972,6 +972,9 @@ choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
 deselect: Deselect
 deselect_all: Deselect All
+appearance_auto: Automatic (Based on System)
+appearance_light: Light Mode
+appearance_dark: Dark Mode
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
@@ -1158,9 +1161,6 @@ fields:
     user_preferences: User Preferences
     language: Language
     theme: Theme
-    theme_auto: Automatic (Based on System)
-    theme_light: Light Mode
-    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
