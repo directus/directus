@@ -1,15 +1,15 @@
 const ivm = $0;
 const execBridge = $1;
 
-function exec(type, ...args) {
+function exec(...args) {
 	return new Promise((resolve, reject) => {
 
-		if (type === 'create-endpoint' && typeof options['callback'] === 'function') {
-			options['callback'] = new ivm.Reference(options['callback']);
+		// Turn callback functions into references
+		if ((['register-endpoint', 'register-action', 'register-filter', 'register-operation'].includes(args[0])) && typeof args[1]['handler'] === 'function') {
+			args[1]['handler'] = new ivm.Reference(args[1]['handler']);
 		}
 
 		execBridge.applyIgnored(null, [
-			type,
 			new ivm.ExternalCopy(args).copyInto(),
 			new ivm.Reference((error, result) => {
 				if (error) {

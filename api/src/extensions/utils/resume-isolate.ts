@@ -4,7 +4,7 @@ import type { ExecContext } from "./add-exec-options.js";
 
 const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
-export async function resumeIsolate(context: ExecContext, reference: Reference<(...args: any[]) => any>, args: any[]) {
+export async function resumeIsolate(context: ExecContext, reference: Reference, args: any[]) {
 	try {
 		return await reference.apply(null, args, {
 			timeout: scriptTimeoutMs,
@@ -18,6 +18,10 @@ export async function resumeIsolate(context: ExecContext, reference: Reference<(
 		})
 	} catch (error) {
 		console.error(error);
-		context.extensionManager.registration.restartSecureExtension(context.extension.name)
+
+		setTimeout(() => {
+			console.log('Restarting extension', context.extension.name);
+			context.extensionManager.registration.restartSecureExtension(context.extension.name)
+		}, 1000)
 	}
 }

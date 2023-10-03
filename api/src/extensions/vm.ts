@@ -90,6 +90,7 @@ export class VmManager {
 
 		this.extensionManager.registration.addUnregisterFunction(extension.name, async () => {
 			try {
+				if (isolate.isDisposed) return;
 				isolate.dispose();
 			} catch (err) {
 				logger.error(err);

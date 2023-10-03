@@ -3,6 +3,8 @@ import { addExecOptions } from "../utils/add-exec-options.js";
 import type { ActionHandler, FilterHandler } from "@directus/types";
 import emitter from "../../emitter.js";
 import { resumeIsolate } from "../utils/resume-isolate.js";
+import type { Reference } from "isolated-vm";
+import { handlerAsReference } from "../utils/handler-as-reference.js";
 
 export default addExecOptions((context) => {
 	const { extensionManager, extension } = context
@@ -11,38 +13,40 @@ export default addExecOptions((context) => {
 
 	async function registerHook(args: unknown[]) {
 
+		handlerAsReference(EXEC_REGISTER_HOOK)
+
 		const [type, validOptions] = EXEC_REGISTER_HOOK.parse(args);
 
 		if (type === 'register-filter') {
-			const { event, callback } = validOptions;
+			const { event, handler } = validOptions;
 
-			const handler: FilterHandler = (payload, meta, eventContext) => {
-				resumeIsolate(context, callback, [
+			const filterHandler: FilterHandler = (payload, meta, eventContext) => {
+				resumeIsolate(context, handler as unknown as Reference, [
 					payload,
 					meta,
 					{ accountability: eventContext.accountability }
 				])
 			};
 
-			emitter.onFilter(event, handler);
+			emitter.onFilter(event, filterHandler);
 
 			extensionManager.registration.addUnregisterFunction(extension.name, () => {
-				emitter.offFilter(event, handler);
+				emitter.offFilter(event, filterHandler);
 			})
 		} else if (type === 'register-action') {
-			const { event, callback } = validOptions;
+			const { event, handler } = validOptions;
 
-			const handler: ActionHandler = (meta, eventContext) => {
-				resumeIsolate(context, callback, [
+			const actionHandler: ActionHandler = (meta, eventContext) => {
+				resumeIsolate(context, handler as unknown as Reference, [
 					meta,
 					{ accountability: eventContext.accountability }
 				])
 			};
 
-			emitter.onAction(event, handler);
+			emitter.onAction(event, actionHandler);
 
 			extensionManager.registration.addUnregisterFunction(extension.name, () => {
-				emitter.offAction(event, handler);
+				emitter.offAction(event, actionHandler);
 			})
 		} /* else if (type === 'register-init') {
 			const { event, callback } = validOptions;

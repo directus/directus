@@ -1,7 +1,6 @@
 import type { Context, Reference } from 'isolated-vm';
 import type { ApiExtensionInfo } from '../vm.js';
 import { createRequire } from 'node:module';
-import env from '../../env.js';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import type { ExecFunction, ExecOptions } from '../utils/add-exec-options.js';
@@ -19,11 +18,11 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 
 	const execOptions = await loadExecOptions(extensionManager, extension);
 
-	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
-
 	await context.evalClosure(isolateCode, [
 		ivm,
-		new ivm.Reference(async function (type: unknown, args: unknown[], callback: Reference<(error: Error, result: any) => void>) {
+		new ivm.Reference(async function (args: unknown[], callback: Reference<(error: Error, result: any) => void>) {
+			const type = args[0]
+
 			console.log("execOptions", type, args)
 
 			try {
