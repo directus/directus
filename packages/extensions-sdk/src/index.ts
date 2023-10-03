@@ -25,5 +25,7 @@ export {
 	getRelationType,
 } from '@directus/utils';
 export type {
-	ExecFunction
+	exec,
+	EXEC_CRUD,
+	EXEC_REGISTER_ENDPOINT
 } from '@directus/types'

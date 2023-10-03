@@ -157,10 +157,11 @@ export type ExtensionInfo = ExtensionRaw &
 		| Omit<BundleExtension, 'entrypoint' | 'path'>
 	);
 
-export type ExecFunction =
-	| ((...args: EXEC_CRUD) => Promise<any>)
-	| ((...args: EXEC_REQUEST) => Promise<string | Record<string, any>>)
-	| ((...args: EXEC_LOG) => Promise<void>)
-	| ((...args: EXEC_REGISTER_ENDPOINT) => Promise<void>)
-	| ((...args: EXEC_REGISTER_HOOK) => Promise<void>)
-	| ((...args: EXEC_REGISTER_OPERATION) => Promise<void>)
+declare function exec(...args: EXEC_CRUD): Promise<any>
+declare function exec(...args: EXEC_REQUEST): Promise<string | Record<string, any>>
+declare function exec(...args: EXEC_LOG): Promise<void>
+declare function exec(...args: EXEC_REGISTER_ENDPOINT): Promise<void>
+declare function exec(...args: EXEC_REGISTER_HOOK): Promise<void>
+declare function exec(...args: EXEC_REGISTER_OPERATION): Promise<void>
+
+export type exec = typeof exec;

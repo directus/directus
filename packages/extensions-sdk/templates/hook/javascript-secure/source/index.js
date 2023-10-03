@@ -1,14 +1,14 @@
 export default () => {
 	exec('register-filter', {
 		event: 'items.create',
-		handler: () => {
+		handler: async () => {
 			console.log('Creating Item!');
 		}
 	})
 
 	exec('register-action', {
 		event: 'items.create',
-		handler: () => {
+		handler: async () => {
 			console.log('Item created!');
 		}
 	})

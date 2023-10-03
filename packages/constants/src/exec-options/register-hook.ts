@@ -7,14 +7,14 @@ export const EXEC_REGISTER_HOOK = z.union([
 		z.literal('register-filter'),
 		z.object({
 			'event': z.string(),
-			'handler': z.function(z.tuple([z.record(z.string())]), EXEC_REGISTER_FILTER_RESPONSE)
+			'handler': z.function(z.tuple([z.record(z.string())]), EXEC_REGISTER_FILTER_RESPONSE.promise())
 		})
 	]),
 	z.tuple([
 		z.literal('register-action'),
 		z.object({
 			'event': z.string(),
-			'handler': z.function(z.tuple([z.record(z.string())]), z.void())
+			'handler': z.function(z.tuple([z.record(z.string())]), z.void().promise())
 		})
 	]),
 	// z.tuple([

@@ -1,7 +1,7 @@
 export default () => {
 	exec('register-operation', {
 		id: 'custom',
-		handler: ({ text }) => {
+		handler: async ({ text }) => {
 			console.log(text);
 		},
 	})
