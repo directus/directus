@@ -284,6 +284,7 @@ export class ExtensionManager {
 						name: extension.name,
 						enabled: true,
 						options: {},
+						granted_permissions: [],
 					};
 				})
 			);

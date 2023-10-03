@@ -15,7 +15,6 @@ import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
 import dashboardsRouter from './controllers/dashboards.js';
 import extensionsRouter from './controllers/extensions.js';
-import extensionPermissionsRouter from './controllers/extension-permissions.js';
 import fieldsRouter from './controllers/fields.js';
 import filesRouter from './controllers/files.js';
 import flowsRouter from './controllers/flows.js';
@@ -273,7 +272,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/collections', collectionsRouter);
 	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
-	app.use('/extension_permissions', extensionPermissionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
 	app.use('/flows', flowsRouter);
