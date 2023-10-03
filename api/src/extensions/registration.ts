@@ -41,6 +41,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import type { ApiExtensionInfo } from './vm.js';
 
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
@@ -378,6 +379,16 @@ export class RegistrationManager {
 		const flowManager = getFlowManager();
 
 		flowManager.addOperation(config.id, config.handler);
+	}
+
+	public async restartSecureExtension(name: string) {
+		await this.unregisterApiExtension(name);
+
+		const extension = this.extensionManager.getEnabledExtensions().find((extension) => extension.name === name);
+
+		if (!extension) return
+
+		await this.extensionManager.vm.runExtension(extension as ApiExtensionInfo);
 	}
 
 	public addUnregisterFunction(extension: string, unregister: () => void | Promise<void>): void {

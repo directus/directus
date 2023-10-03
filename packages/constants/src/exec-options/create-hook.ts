@@ -26,6 +26,6 @@ export const EXEC_CREATE_HOOK = z.union([
 	z.object({
 		'type': z.enum(['embed']),
 		'position': z.enum(['head', 'body']),
-		'code': z.union([z.string(), callback]),
+		'code': z.string()
 	})
 ])

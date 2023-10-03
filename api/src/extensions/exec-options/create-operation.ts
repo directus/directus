@@ -1,10 +1,10 @@
 import { addExecOptions } from "../utils/add-exec-options.js";
-import env from '../../env.js';
 import { getFlowManager } from "../../flows.js";
 import { EXEC_CREATE_OPERATION } from "@directus/constants";
+import { resumeIsolate } from "../utils/resume-isolate.js";
 
-export default addExecOptions(({ extensionManager, extension }) => {
-	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+export default addExecOptions((context) => {
+	const { extensionManager, extension } = context
 
 	const flowManager = getFlowManager();
 
@@ -14,15 +14,10 @@ export default addExecOptions(({ extensionManager, extension }) => {
 		const validOptions = EXEC_CREATE_OPERATION.parse(options);
 
 		flowManager.addOperation(validOptions.id, async (options, flowContext) => {
-			const result = await validOptions.handler.apply(null, [
+			const result = await resumeIsolate(context, validOptions.handler, [
 				options,
 				{ data: flowContext.data }
-			], {
-				timeout: scriptTimeoutMs,
-				arguments: {
-					copy: true
-				},
-			});
+			])
 
 			if (result instanceof Error) {
 				throw result;

@@ -38,29 +38,35 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 
 				const result = await execOptions[type]!(options)
 
-				callback.applyIgnored(null, [null, result], { timeout: scriptTimeoutMs, arguments: { copy: true } });
+				callback.apply(null, [null, result], { timeout: scriptTimeoutMs, arguments: { copy: true } }).catch(error => {
+					extensionManager.registration.restartSecureExtension(extension.name)
+				})
 			} catch (error: any) {
 				console.error(error);
-				callback.applyIgnored(null, [error, null], { timeout: scriptTimeoutMs, arguments: { copy: true } });
+
+				callback.apply(null, [error, null], { timeout: scriptTimeoutMs, arguments: { copy: true } }).catch(error => {
+					extensionManager.registration.restartSecureExtension(extension.name)
+				});
 			}
 		}),
-		new ivm.Reference(async function (type: unknown, options: unknown) {
-			try {
-				if (typeof type !== 'string') {
-					throw new TypeError('type must be a string');
-				}
+		// Future implementation for sync exec
+		// new ivm.Reference(async function (type: unknown, options: unknown) {
+		// 	try {
+		// 		if (typeof type !== 'string') {
+		// 			throw new TypeError('type must be a string');
+		// 		}
 
-				if (!(type in execOptions)) {
-					throw new Error(`Unknown exec option ${type}`);
-				}
+		// 		if (!(type in execOptions)) {
+		// 			throw new Error(`Unknown exec option ${type}`);
+		// 		}
 
-				const result = execOptions[type]!(options)
+		// 		const result = execOptions[type]!(options)
 
-				return [null, await result];
-			} catch (error: any) {
-				return [error, null];
-			}
-		})
+		// 		return [null, await result];
+		// 	} catch (error: any) {
+		// 		return [error, null];
+		// 	}
+		// })
 	]);
 }
 

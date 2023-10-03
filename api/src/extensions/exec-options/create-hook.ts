@@ -1,15 +1,13 @@
 import { EXEC_CREATE_HOOK } from "@directus/constants";
 import { addExecOptions } from "../utils/add-exec-options.js";
-import env from '../../env.js';
-import logger from "../../logger.js";
-import type { ActionHandler, FilterHandler, InitHandler } from "@directus/types";
-import { scheduleSynchronizedJob, validateCron } from "../../utils/schedule.js";
+import type { ActionHandler, FilterHandler } from "@directus/types";
 import emitter from "../../emitter.js";
-import type { EventHandler } from "../../types/events.js";
+import { resumeIsolate } from "../utils/resume-isolate.js";
 
-export default addExecOptions(({ extensionManager, extension }) => {
-	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
-	let scheduleIndex = 0;
+export default addExecOptions((context) => {
+	const { extensionManager, extension } = context
+
+	// let scheduleIndex = 0;
 
 	async function createHook(options: unknown) {
 
@@ -18,12 +16,12 @@ export default addExecOptions(({ extensionManager, extension }) => {
 		if (validOptions.type === 'filter') {
 			const { event, callback } = validOptions;
 
-			const handler: FilterHandler = (payload, meta, context) => {
-				callback.apply(null, [
+			const handler: FilterHandler = (payload, meta, eventContext) => {
+				resumeIsolate(context, callback, [
 					payload,
 					meta,
-					{ accountability: context.accountability }
-				], { timeout: scriptTimeoutMs, arguments: { copy: true } });
+					{ accountability: eventContext.accountability }
+				])
 			};
 
 			emitter.onFilter(event, handler);
@@ -34,11 +32,11 @@ export default addExecOptions(({ extensionManager, extension }) => {
 		} else if (validOptions.type === 'action') {
 			const { event, callback } = validOptions;
 
-			const handler: ActionHandler = (meta, context) => {
-				callback.apply(null, [
+			const handler: ActionHandler = (meta, eventContext) => {
+				resumeIsolate(context, callback, [
 					meta,
-					{ accountability: context.accountability }
-				], { timeout: scriptTimeoutMs, arguments: { copy: true } });
+					{ accountability: eventContext.accountability }
+				])
 			};
 
 			emitter.onAction(event, handler);
@@ -46,11 +44,13 @@ export default addExecOptions(({ extensionManager, extension }) => {
 			extensionManager.registration.addUnregisterFunction(extension.name, () => {
 				emitter.offAction(event, handler);
 			})
-		} else if (validOptions.type === 'init') {
+		} /* else if (validOptions.type === 'init') {
 			const { event, callback } = validOptions;
 
 			const handler: InitHandler = (meta) => {
-				callback.apply(null, [meta], { timeout: scriptTimeoutMs, arguments: { copy: true } });
+				callback.apply(null, [meta], { timeout: scriptTimeoutMs, arguments: { copy: true } }).catch(error => {
+					extensionManager.registration.restartSecureExtension(extension.name)
+				})
 			};
 
 			emitter.onInit(event, handler);
@@ -65,7 +65,9 @@ export default addExecOptions(({ extensionManager, extension }) => {
 				const job = scheduleSynchronizedJob(`${extension.name}:${scheduleIndex}`, cron, async () => {
 					if (extensionManager.options.schedule) {
 						try {
-							callback.apply(null, [], { timeout: scriptTimeoutMs });
+							callback.apply(null, [], { timeout: scriptTimeoutMs }).catch(error => {
+								extensionManager.registration.restartSecureExtension(extension.name)
+							})
 						} catch (error: any) {
 							logger.error(error);
 						}
@@ -83,33 +85,31 @@ export default addExecOptions(({ extensionManager, extension }) => {
 		} else if (validOptions.type === 'embed') {
 			const { position, code } = validOptions;
 
-			const content = typeof code === 'string' ? code : (await code.apply(null, [], { timeout: scriptTimeoutMs }))?.toString();
+			if (!code) return;
 
-			if (!content) return;
-
-			if (content.trim().length === 0) {
+			if (code.trim().length === 0) {
 				logger.warn(`Couldn't register embed hook. Provided code is empty!`);
 				return;
 			}
 
 			if (position === 'head') {
-				extensionManager.hookEmbedsHead.push(content);
+				extensionManager.hookEmbedsHead.push(code);
 
 				extensionManager.registration.addUnregisterFunction(extension.name, () => {
-					const index = extensionManager.hookEmbedsHead.indexOf(content);
+					const index = extensionManager.hookEmbedsHead.indexOf(code);
 					if (index !== -1) extensionManager.hookEmbedsHead.splice(index, 1);
 				})
 			}
 
 			if (position === 'body') {
-				extensionManager.hookEmbedsBody.push(content);
+				extensionManager.hookEmbedsBody.push(code);
 
 				extensionManager.registration.addUnregisterFunction(extension.name, () => {
-					const index = extensionManager.hookEmbedsBody.indexOf(content);
+					const index = extensionManager.hookEmbedsBody.indexOf(code);
 					if (index !== -1) extensionManager.hookEmbedsBody.splice(index, 1);
 				})
 			}
-		}
+		} */
 	}
 
 	return {

@@ -1,41 +1,27 @@
 import express from 'express';
 import { EXEC_CREATE_ENDPOINT } from "@directus/constants";
 import { addExecOptions } from "../utils/add-exec-options.js";
-import env from '../../env.js';
+import { resumeIsolate } from '../utils/resume-isolate.js';
 
-export default addExecOptions(({ extensionManager, extension }) => {
-	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+export default addExecOptions((context) => {
+	const { extensionManager, extension } = context
 	const endpointRouter = extensionManager.registration.endpointRouter;
 
 	const scopedRouter = express.Router();
 	endpointRouter.use(`/${extension.name}`, scopedRouter);
 
 	async function createEndpoint(options: unknown) {
-
-		console.log("createEndpoint", options)
-
 		const validOptions = EXEC_CREATE_ENDPOINT.parse(options);
 
-		console.log("createEndpoint", validOptions)
-
 		scopedRouter[<Lowercase<typeof validOptions.method>>validOptions.method.toLocaleLowerCase()](validOptions.path, async (req, res) => {
-			const result = await validOptions.callback.apply(null, [{
+			const result = await resumeIsolate(context, validOptions.callback, [{
 				'url': req.url,
-			}], {
-				timeout: scriptTimeoutMs,
-				arguments: {
-					copy: true
-				},
-				result: {
-					copy: true,
-					promise: true
-				},
-			});
+			}])
 
 			// TODO: Validate result
 
 			res.json(result);
-		});
+		})
 	}
 
 	extensionManager.registration.addUnregisterFunction(extension.name, () => {

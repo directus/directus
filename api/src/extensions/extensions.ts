@@ -270,7 +270,7 @@ export class ExtensionManager {
 
 		let registeredExtensions = await extensionsService.readByQuery({
 			limit: -1,
-			fields: ['*', 'granted_permissions.*'],
+			fields: ['*'],
 		});
 
 		if (registeredExtensions.length === 0 && extensions.length > 0) {
