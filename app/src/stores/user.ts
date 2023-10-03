@@ -46,6 +46,8 @@ export const useUserStore = defineStore({
 					'appearance',
 					'theme_light',
 					'theme_dark',
+					'theme_light_overrides',
+					'theme_dark_overrides',
 					'tfa_secret',
 					'avatar.id',
 					'role.admin_access',
