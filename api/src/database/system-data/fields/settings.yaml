@@ -32,6 +32,13 @@ fields:
       placeholder: en-US
     width: half
 
+  - field: theming_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
   - field: branding_divider
     interface: presentation-divider
     options:
@@ -41,25 +48,30 @@ fields:
       - alias
       - no-data
     width: full
+    group: theming_group
 
   - field: project_color
     interface: select-color
     note: $t:field_options.directus_settings.project_color_note
     width: half
+    group: theming_group
 
   - field: project_logo
     interface: file
     note: $t:field_options.directus_settings.project_logo_note
     width: half
+    group: theming_group
 
   - field: public_foreground
     interface: file
     width: half
+    group: theming_group
 
   - field: public_background
     interface: file
     translations:
     width: half
+    group: theming_group
 
   - field: public_note
     interface: input
@@ -67,6 +79,30 @@ fields:
       placeholder: $t:field_options.directus_settings.public_note_placeholder
       iconRight: info
     width: full
+    group: theming_group
+
+  - field: theming_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.theming
+    special:
+      - alias
+      - no-data
+    width: full
+    group: theming_group
+
+  - field: default_appearance
+    interface: select-radio
+    options:
+      choices:
+        - value: auto
+          text: $t:appearance_auto
+        - value: light
+          text: $t:appearance_light
+        - value: dark
+          text: $t:appearance_dark
+    group: theming_group
 
   - field: custom_css
     interface: input-code
