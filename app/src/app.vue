@@ -10,13 +10,15 @@ import { useHead } from '@unhead/vue';
 import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { startIdleTracking, stopIdleTracking } from './idle';
-import { getAppearance } from './utils/get-appearance';
+import { useTheme } from './composables/use-theme';
 
 const { t } = useI18n();
 
 const appStore = useAppStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
+
+const themeInfo = useTheme();
 
 const { hydrating } = toRefs(appStore);
 
@@ -43,9 +45,7 @@ useHead({
 			},
 		];
 	}),
-	style: [
-		{ textContent: brandStyleCss }
-	]
+	style: [{ textContent: brandStyleCss }],
 });
 
 onMounted(() => startIdleTracking());
@@ -90,7 +90,13 @@ useSystem();
 </script>
 
 <template>
-	<ThemeProvider :dark="getAppearance() === 'dark'" />
+	<ThemeProvider
+		:dark="themeInfo.appearance === 'dark'"
+		:theme-light="themeInfo.themeLight"
+		:theme-dark="themeInfo.themeDark"
+		:theme-light-overrides="themeInfo.themeLightOverrides"
+		:theme-dark-overrides="themeInfo.themeDarkOverrides"
+	/>
 
 	<div id="directus">
 		<transition name="fade">
