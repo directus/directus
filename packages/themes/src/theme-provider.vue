@@ -40,10 +40,10 @@ const theme = computed(() => {
 			console.warn(`Theme "${themeName}" doesn't exist.`);
 		}
 
-		return overrides ? merge(defaultTheme, { rules: overrides }) : defaultTheme;
+		return overrides ? merge({}, defaultTheme, { rules: overrides }) : defaultTheme;
 	}
 
-	return overrides ? merge(defaultTheme, theme, { rules: overrides }) : merge(defaultTheme, theme);
+	return overrides ? merge({}, defaultTheme, theme, { rules: overrides }) : merge(defaultTheme, theme);
 });
 
 const cssVariables = computed(() => {
