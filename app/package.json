@@ -153,7 +153,7 @@
 		"vite": "4.3.7",
 		"vitest": "0.31.1",
 		"vue": "3.3.4",
-		"vue-i18n": "9.2.2",
+		"vue-i18n": "9.5.0",
 		"vue-router": "4.2.0",
 		"vue-tsc": "1.6.5",
 		"vuedraggable": "4.1.0",
