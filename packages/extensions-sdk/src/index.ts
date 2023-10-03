@@ -25,6 +25,5 @@ export {
 	getRelationType,
 } from '@directus/utils';
 export type {
-	ExtensionAPI,
-	ConsoleSecure
+	ExecFunction
 } from '@directus/types'

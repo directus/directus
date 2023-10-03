@@ -30,6 +30,7 @@ import type { OperationAppConfig } from './operations.js';
 import type { PanelConfig } from './panels.js';
 import type { Relation } from './relations.js';
 import type { SchemaOverview } from './schema.js';
+import type { EXEC_CRUD, EXEC_LOG, EXEC_REGISTER_ENDPOINT, EXEC_REGISTER_HOOK, EXEC_REGISTER_OPERATION, EXEC_REQUEST } from './index.js';
 
 export type AppExtensionType = (typeof APP_EXTENSION_TYPES)[number];
 export type ApiExtensionType = (typeof API_EXTENSION_TYPES)[number];
@@ -155,3 +156,11 @@ export type ExtensionInfo = ExtensionRaw &
 		| Omit<HybridExtension, 'entrypoint' | 'path'>
 		| Omit<BundleExtension, 'entrypoint' | 'path'>
 	);
+
+export type ExecFunction =
+	| ((...args: EXEC_CRUD) => Promise<any>)
+	| ((...args: EXEC_REQUEST) => Promise<string | Record<string, any>>)
+	| ((...args: EXEC_LOG) => Promise<void>)
+	| ((...args: EXEC_REGISTER_ENDPOINT) => Promise<void>)
+	| ((...args: EXEC_REGISTER_HOOK) => Promise<void>)
+	| ((...args: EXEC_REGISTER_OPERATION) => Promise<void>)
