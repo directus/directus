@@ -35,12 +35,15 @@ const theme = computed(() => {
 	const theme = unref(themes)[props.dark ? 'dark' : 'light'].find((theme) => theme.name === themeName);
 
 	if (!theme) {
-		// eslint-disable-next-line no-console
-		console.warn(`Theme "${themeName}" doesn't exist.`);
-		return merge(defaultTheme, overrides);
+		if (themeName) {
+			// eslint-disable-next-line no-console
+			console.warn(`Theme "${themeName}" doesn't exist.`);
+		}
+
+		return overrides ? merge(defaultTheme, { rules: overrides }) : defaultTheme;
 	}
 
-	return merge(defaultTheme, theme, overrides);
+	return overrides ? merge(defaultTheme, theme, { rules: overrides }) : merge(defaultTheme, theme);
 });
 
 const cssVariables = computed(() => {
