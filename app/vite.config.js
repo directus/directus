@@ -12,13 +12,13 @@ import {
 	resolvePackageExtensions,
 } from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
+import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version } from '../directus/package.json';
-import UnheadVite from '@unhead/addons/vite';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
@@ -31,6 +31,22 @@ export default defineConfig({
 	plugins: [
 		directusExtensions(),
 		vue(),
+		{
+			// Injects a script tag to localhost:8098 so you can use the standalone Vue devtools
+			name: 'vue-devtools-standalone',
+			transformIndexHtml(html) {
+				return {
+					html,
+					tags: [
+						{
+							tag: 'script',
+							attrs: { src: 'http://localhost:8098' },
+							injectTo: 'head',
+						},
+					],
+				};
+			},
+		},
 		UnheadVite(),
 		yaml({
 			transform(data) {
