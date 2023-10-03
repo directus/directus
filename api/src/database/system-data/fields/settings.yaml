@@ -118,6 +118,20 @@ fields:
       appearance: dark
     group: theming_group
 
+  - field: theme_light_overrides
+    width: half
+    interface: input-code
+    options:
+      language: json
+    group: theming_group
+
+  - field: theme_dark_overrides
+    width: half
+    interface: input-code
+    options:
+      language: json
+    group: theming_group
+
   - field: custom_css
     interface: input-code
     options:
