@@ -4,14 +4,14 @@ import { addExecOptions } from "../utils/add-exec-options.js";
 
 export default addExecOptions(() => {
 	function createRequestFn(result: 'text' | 'json') {
-		return async function request(options: unknown) {
+		return async function request(args: unknown[]) {
 
-			const validOptions = EXEC_REQUEST.parse(options);
+			const [_, url, options] = EXEC_REQUEST.parse(args);
 
-			const response = await fetch(validOptions.url, {
-				method: validOptions.method,
-				headers: validOptions.headers,
-				body: validOptions.body,
+			const response = await fetch(url, {
+				method: options?.method ?? 'GET',
+				headers: options?.headers ?? {},
+				body: options?.body ?? null,
 			});
 
 			if (result === 'text') {

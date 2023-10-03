@@ -1,5 +1,5 @@
 import express from 'express';
-import { EXEC_CREATE_ENDPOINT } from "@directus/constants";
+import { EXEC_REGISTER_ENDPOINT } from "@directus/constants";
 import { addExecOptions } from "../utils/add-exec-options.js";
 import { resumeIsolate } from '../utils/resume-isolate.js';
 
@@ -10,8 +10,8 @@ export default addExecOptions((context) => {
 	const scopedRouter = express.Router();
 	endpointRouter.use(`/${extension.name}`, scopedRouter);
 
-	async function createEndpoint(options: unknown) {
-		const validOptions = EXEC_CREATE_ENDPOINT.parse(options);
+	async function registerEndpoint(args: unknown[]) {
+		const [_, validOptions] = EXEC_REGISTER_ENDPOINT.parse(args);
 
 		scopedRouter[<Lowercase<typeof validOptions.method>>validOptions.method.toLocaleLowerCase()](validOptions.path, async (req, res) => {
 			const result = await resumeIsolate(context, validOptions.callback, [{
@@ -30,6 +30,6 @@ export default addExecOptions((context) => {
 	})
 
 	return {
-		'create-endpoint': createEndpoint,
+		'register-endpoint': registerEndpoint,
 	}
 })

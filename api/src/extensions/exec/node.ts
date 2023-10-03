@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import type { ExecFunction, ExecOptions } from '../utils/add-exec-options.js';
 import type { ExtensionManager } from '../extensions.js';
 import { readFile, readdir } from 'node:fs/promises';
+import { resumeIsolate } from '../utils/resume-isolate.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -20,10 +21,10 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 
 	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
-	context.evalClosureSync(isolateCode, [
+	await context.evalClosure(isolateCode, [
 		ivm,
-		new ivm.Reference(async function (type: unknown, options: unknown, callback: Reference<(error: Error, result: any) => void>) {
-			console.log("execOptions", type, options)
+		new ivm.Reference(async function (type: unknown, args: unknown[], callback: Reference<(error: Error, result: any) => void>) {
+			console.log("execOptions", type, args)
 
 			try {
 
@@ -36,17 +37,13 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 				}
 
 
-				const result = await execOptions[type]!(options)
+				const result = await execOptions[type]!(args)
 
-				callback.apply(null, [null, result], { timeout: scriptTimeoutMs, arguments: { copy: true } }).catch(error => {
-					extensionManager.registration.restartSecureExtension(extension.name)
-				})
+				resumeIsolate({ extensionManager, extension }, callback, [null, result])
 			} catch (error: any) {
 				console.error(error);
 
-				callback.apply(null, [error, null], { timeout: scriptTimeoutMs, arguments: { copy: true } }).catch(error => {
-					extensionManager.registration.restartSecureExtension(extension.name)
-				});
+				resumeIsolate({ extensionManager, extension }, callback, [error, null])
 			}
 		}),
 		// Future implementation for sync exec

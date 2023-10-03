@@ -1,4 +1,4 @@
-import { EXEC_CREATE_HOOK } from "@directus/constants";
+import { EXEC_REGISTER_HOOK } from "@directus/constants";
 import { addExecOptions } from "../utils/add-exec-options.js";
 import type { ActionHandler, FilterHandler } from "@directus/types";
 import emitter from "../../emitter.js";
@@ -9,11 +9,11 @@ export default addExecOptions((context) => {
 
 	// let scheduleIndex = 0;
 
-	async function createHook(options: unknown) {
+	async function registerHook(args: unknown[]) {
 
-		const validOptions = EXEC_CREATE_HOOK.parse(options);
+		const [type, validOptions] = EXEC_REGISTER_HOOK.parse(args);
 
-		if (validOptions.type === 'filter') {
+		if (type === 'register-filter') {
 			const { event, callback } = validOptions;
 
 			const handler: FilterHandler = (payload, meta, eventContext) => {
@@ -29,7 +29,7 @@ export default addExecOptions((context) => {
 			extensionManager.registration.addUnregisterFunction(extension.name, () => {
 				emitter.offFilter(event, handler);
 			})
-		} else if (validOptions.type === 'action') {
+		} else if (type === 'register-action') {
 			const { event, callback } = validOptions;
 
 			const handler: ActionHandler = (meta, eventContext) => {
@@ -44,7 +44,7 @@ export default addExecOptions((context) => {
 			extensionManager.registration.addUnregisterFunction(extension.name, () => {
 				emitter.offAction(event, handler);
 			})
-		} /* else if (validOptions.type === 'init') {
+		} /* else if (type === 'register-init') {
 			const { event, callback } = validOptions;
 
 			const handler: InitHandler = (meta) => {
@@ -58,7 +58,7 @@ export default addExecOptions((context) => {
 			extensionManager.registration.addUnregisterFunction(extension.name, () => {
 				emitter.offInit(event, handler);
 			})
-		} else if (validOptions.type === 'schedule') {
+		} else if (type === 'register-schedule') {
 			const { cron, callback } = validOptions;
 
 			if (validateCron(cron)) {
@@ -82,7 +82,7 @@ export default addExecOptions((context) => {
 			} else {
 				logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 			}
-		} else if (validOptions.type === 'embed') {
+		} else if (type === 'register-embed') {
 			const { position, code } = validOptions;
 
 			if (!code) return;
@@ -113,6 +113,7 @@ export default addExecOptions((context) => {
 	}
 
 	return {
-		'create-hook': createHook,
+		'register-action': registerHook,
+		'register-filter': registerHook,
 	}
 })

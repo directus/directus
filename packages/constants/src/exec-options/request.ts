@@ -1,8 +1,12 @@
 import { z } from "zod";
 
-export const EXEC_REQUEST = z.object({
-	method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
-	url: z.string(),
-	headers: z.record(z.string()),
-	body: z.any(),
-})
+export const EXEC_REQUEST = z.tuple([
+	z.literal("request"),
+	z.string(),
+	z.object({
+		method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
+		headers: z.record(z.string()).optional(),
+		body: z.string().optional(),
+		output: z.enum(["json", "text"]),
+	}).optional(),
+])
