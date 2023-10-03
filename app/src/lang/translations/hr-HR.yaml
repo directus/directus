@@ -584,6 +584,7 @@ bookmark_doesnt_exist_copy: Oznaka koju pokušavate otvoriti nije pronađena.
 bookmark_doesnt_exist_cta: Povratak u zbirku
 select_an_item: Odaberi stavku...
 edit: Uredi
+edit_item: Uredi Stavku
 enabled: Omogućeno
 disable_tfa: Onemogući 2FA
 admin_disable_tfa_text: Jeste li sigurni da želite onemogućiti dvofaktorsku autentifikaciju "2FA" za ovog korisnika?
@@ -750,6 +751,7 @@ upload_pending: Prijenos na čekanju
 drag_file_here: Povucite i ispustite datoteku ovdje
 click_to_browse: Kliknite za pregledavanje
 interface_options: Opcije sučelja
+display_options: Prikaži Opcije
 layout_options: Mogućnosti izgleda
 rows: Retci
 columns: Stupci
@@ -1453,6 +1455,7 @@ search: Traži
 select_existing: Odaberi postojeće
 select_field_type: Odaberite vrstu polja
 select_interface: Odaberite sučelje
+select_display: Odaberi prikaz
 settings: Postavke
 sign_in: Prijava
 sign_out: Odjava
@@ -1471,6 +1474,7 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
+weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
@@ -1623,6 +1627,11 @@ interfaces:
     description: Modal za odabir opcija sučelja
   system-display:
     display: Prikaz
+    description: Odaberite postojeći prikaz
+    placeholder: Odaberi prikaz...
+  system-display-options:
+    display-options: Prikaži Opcije
+    description: Modal za odabir opcija prikaza
   list-m2m:
     many-to-many: Many to Many
     description: Odaberite više povezanih spojnih stavki
@@ -1675,6 +1684,7 @@ interfaces:
     description: Odaberite više povezanih stavki
     no_collection: Zbirka nije pronađena
   system-folder:
+    folder: Korijenska Mapa
     description: Odaberite mapu
     field_hint: Zadani direktorij za prenesene datoteke bez navedenog direktorija. Ne utječe na postojeće datoteke.
     root_name: Korijen biblioteke datoteka
@@ -1692,6 +1702,7 @@ interfaces:
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutačni podaci nisu kompatibilni sa sučeljem repetitora i bit će nadjačani prilikom dodavanja stavki u repetitor
     interface_group: Opcije sučelja
+    display_group: Prikaži Opcije
   slider:
     slider: Klizač
     description: Odaberite broj pomoću klizača
