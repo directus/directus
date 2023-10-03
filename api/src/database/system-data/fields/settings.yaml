@@ -104,6 +104,20 @@ fields:
           text: $t:appearance_dark
     group: theming_group
 
+  - field: default_theme_light
+    width: half
+    interface: system-theme
+    options:
+      appearance: light
+    group: theming_group
+
+  - field: default_theme_dark
+    width: half
+    interface: system-theme
+    options:
+      appearance: dark
+    group: theming_group
+
   - field: custom_css
     interface: input-code
     options:
