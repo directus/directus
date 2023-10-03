@@ -295,7 +295,7 @@ export function applySort(
 			if (operation === 'countAll') {
 				return {
 					order,
-					column: returnRecords ? column[0] : 'countAll',
+					column: 'countAll',
 				};
 			}
 
@@ -303,7 +303,7 @@ export function applySort(
 			if (operation === 'count' && (field === '*' || !field)) {
 				return {
 					order,
-					column: returnRecords ? column[0] : 'count',
+					column: 'count',
 				};
 			}
 
