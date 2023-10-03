@@ -14,8 +14,8 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.alterTable('directus_users', (table) => {
 		table.dropColumn('theme');
-		table.string('theme_dark').notNullable().defaultTo('default');
-		table.string('theme_light').notNullable().defaultTo('default');
+		table.string('theme_dark');
+		table.string('theme_light');
 	});
 
 	await knex('directus_settings').update({ project_color: '#6644ff' }).whereNull('project_color');
