@@ -1167,11 +1167,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// first 1-10 company a; 11-25 company b; 26-50 company c
 
 						if (i <= 10) {
-						  artist.company = companies[0];
+							artist.company = companies[0];
 						} else if (i <= 25) {
-						  artist.company = companies[1];
+							artist.company = companies[1];
 						} else {
-						  artist.company = companies[2];
+							artist.company = companies[2];
 						}
 
 						artists.push(artist);
