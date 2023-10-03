@@ -1,9 +1,9 @@
 import axios from 'axios';
+import fs from 'node:fs/promises';
 import type { Environment } from 'vitest';
 import { USER } from '../common/variables';
-import * as SequentialTests from '../setup/sequentialTests';
+import { getReversedTestIndex } from '../setup/sequential-tests';
 import { sleep } from '../utils/sleep';
-import fs from 'node:fs/promises';
 
 export default <Environment>{
 	name: 'custom',
@@ -18,7 +18,7 @@ export default <Environment>{
 			throw 'Missing flow env variables';
 		}
 
-		const testIndex = SequentialTests.getReversedTestIndex(testFilePath);
+		const testIndex = getReversedTestIndex(testFilePath);
 
 		while (testIndex !== 0) {
 			try {

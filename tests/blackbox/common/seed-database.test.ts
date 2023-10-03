@@ -1,6 +1,6 @@
 import { globby } from 'globby';
 import { describe, expect, test } from 'vitest';
-import { sequentialTestsList } from '../setup/sequentialTests';
+import { sequentialTestsList } from '../setup/sequential-tests';
 import { paths } from './config';
 import { ClearCaches, DisableTestCachingSetup } from './functions';
 

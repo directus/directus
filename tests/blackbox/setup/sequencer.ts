@@ -1,7 +1,7 @@
 import { findIndex } from 'lodash-es';
 import fs from 'node:fs/promises';
 import { BaseSequencer, type WorkspaceSpec } from 'vitest/node';
-import { sequentialTestsList } from './sequentialTests';
+import { sequentialTestsList } from './sequential-tests';
 
 export default class CustomSequencer extends BaseSequencer {
 	override async sort(files: WorkspaceSpec[]) {

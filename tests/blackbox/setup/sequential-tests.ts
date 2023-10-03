@@ -1,13 +1,3 @@
-type SequentialTestEntry = {
-	testFilePath: string;
-};
-
-type SequentialTestsList = {
-	before: SequentialTestEntry[];
-	after: SequentialTestEntry[];
-	only: SequentialTestEntry[];
-};
-
 // Tests will run sequentially according to this list
 export const sequentialTestsList: SequentialTestsList = {
 	before: [
@@ -67,3 +57,13 @@ export function getReversedTestIndex(testFilePath: string) {
 
 	return sequentialTestsList.before.length;
 }
+
+type SequentialTestEntry = {
+	testFilePath: string;
+};
+
+type SequentialTestsList = {
+	before: SequentialTestEntry[];
+	after: SequentialTestEntry[];
+	only: SequentialTestEntry[];
+};
