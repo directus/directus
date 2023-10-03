@@ -28,7 +28,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
 
 const WebSocketState = {
 	OPEN: 1,
-	CLOSED: 3
+	CLOSED: 3,
 } as const;
 
 /**
