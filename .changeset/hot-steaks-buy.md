@@ -4,4 +4,4 @@
 "@directus/types": patch
 ---
 
-Added TypeScript Schema Generator for the Directus SDK
+Introduce TypeScript Schema Generator for the Directus SDK
