@@ -91,12 +91,28 @@ fields:
     width: half
 
   - field: theme_light
-    interface: input
     width: half
+    interface: system-theme
+    options:
+      appearance: light
 
   - field: theme_dark
-    interface: input
     width: half
+    interface: system-theme
+    options:
+      appearance: dark
+
+  - field: theme_light_overrides
+    width: half
+    interface: input-code
+    options:
+      language: json
+
+  - field: theme_dark_overrides
+    width: half
+    interface: input-code
+    options:
+      language: json
 
   - field: tfa_secret
     interface: system-mfa-setup
