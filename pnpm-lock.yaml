@@ -1689,9 +1689,6 @@ importers:
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
-      defu:
-        specifier: 6.1.2
-        version: 6.1.2
       flat:
         specifier: 6.0.1
         version: 6.0.1
@@ -12105,6 +12102,7 @@ packages:
 
   /defu@6.1.2:
     resolution: {integrity: sha512-+uO4+qr7msjNNWKYPHqN/3+Dx3NFkmIzayk2L1MyZQlvgZb/J1A0fo410dpKrN2SnqFjt8n4JL8fDJE0wIgjFQ==}
+    dev: true
 
   /del@6.1.1:
     resolution: {integrity: sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg==}

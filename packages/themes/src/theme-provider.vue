@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { DeepPartial } from '@directus/types';
 import decamelize from 'decamelize';
-import { defu } from 'defu';
 import { flatten } from 'flat';
-import { mapKeys } from 'lodash-es';
+import { mapKeys, merge } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
@@ -12,11 +11,11 @@ import { useThemeStore } from './store.js';
 import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/light-directus.js';
 
 export interface ThemeProviderProps {
-	dark?: boolean;
-	themeLight?: string;
-	themeLightOverrides?: DeepPartial<Theme>;
-	themeDark?: string;
-	themeDarkOverrides?: DeepPartial<Theme>;
+	dark: boolean;
+	themeLight: string | null;
+	themeLightOverrides: DeepPartial<Theme['rules']>;
+	themeDark: string | null;
+	themeDarkOverrides: DeepPartial<Theme['rules']>;
 }
 
 const props = withDefaults(defineProps<ThemeProviderProps>(), {
@@ -38,10 +37,10 @@ const theme = computed(() => {
 	if (!theme) {
 		// eslint-disable-next-line no-console
 		console.warn(`Theme "${themeName}" doesn't exist.`);
-		return defu(overrides, defaultTheme);
+		return merge(defaultTheme, overrides);
 	}
 
-	return defu(overrides, theme, defaultTheme);
+	return merge(defaultTheme, theme, overrides);
 });
 
 const cssVariables = computed(() => {
