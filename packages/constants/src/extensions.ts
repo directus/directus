@@ -48,36 +48,18 @@ export const ExtensionOptionsBundleEntry = z.union([
 	}),
 ]);
 
-const services = [
-	'service.fetch',
-	'service.activity',
-	'service.collections',
-	'service.dashboards',
-	'service.fields',
-	'service.flows',
-	'service.items',
-	'service.notifications',
-	'service.operations ',
-	'service.panels ',
-	'service.presets',
-	'service.relations ',
-	'service.revisions ',
-	'service.server',
-	'service.settings',
-	'service.shares',
-	'service.translations ',
-	'service.utils',
-	'service.webhooks ',
-	'service.websocket',
-] as const;
-
-export const ExtensionPermissionOptions = z.enum(['fetch', ...services]);
-
-export const ExtensionPermission = z.object({
-	permission: ExtensionPermissionOptions,
-	optional: z.boolean().optional(),
-	options: z.record(z.any()).optional(),
-});
+export const ExtensionPermission = z.union([
+	z.object({
+		permission: z.literal('request'),
+		optional: z.boolean().optional(),
+		allowedUrls: z.array(z.string()).optional(),
+	}),
+	z.object({
+		permission: z.enum(['create-items', 'read-items', 'update-items', 'delete-items']),
+		optional: z.boolean().optional(),
+		role: z.string().optional(),
+	})
+])
 
 export const ExtensionOptionsBase = z.object({
 	host: z.string(),

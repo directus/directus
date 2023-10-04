@@ -7,7 +7,6 @@ import type {
 	ExtensionOptions,
 	ExtensionOptionsBundleEntries,
 	ExtensionOptionsBundleEntry,
-	ExtensionPermissionOptions,
 	ExtensionPermission,
 	ExtensionRaw,
 	HYBRID_EXTENSION_TYPES,
@@ -45,15 +44,7 @@ export type DatabaseExtension = {
 	name: string;
 	enabled: boolean;
 	options: Record<string, any>;
-	granted_permissions: DatabaseExtensionPermission[];
-};
-
-export type DatabaseExtensionPermission = {
-	id: number;
-	extension: string;
-	permission: string;
-	enabled: boolean;
-	options: Record<string, any>;
+	granted_permissions: ExtensionPermission[];
 };
 
 type ExtensionBase = {
@@ -101,7 +92,6 @@ export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundl
 export type ExtensionManifest = z.infer<typeof ExtensionManifest>;
 
 export type ExtensionPermission = z.infer<typeof ExtensionPermission>;
-export type ExtensionPermissionOptions = z.infer<typeof ExtensionPermissionOptions>;
 
 export type AppExtensionConfigs = {
 	interfaces: InterfaceConfig[];
