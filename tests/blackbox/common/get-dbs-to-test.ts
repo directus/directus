@@ -12,7 +12,7 @@ export const allVendors = [
 
 export type Vendor = (typeof allVendors)[number];
 
-const vendors = process.env['TEST_DB']?.split(',').map((v) => v.trim()) ?? allVendors;
+const vendors = (process.env['TEST_DB']?.split(',').map((v) => v.trim()) as Vendor[]) ?? allVendors;
 
 if (vendors.length > 1 && process.env['TEST_LOCAL']) {
 	throw new Error(
@@ -21,9 +21,9 @@ if (vendors.length > 1 && process.env['TEST_LOCAL']) {
 }
 
 for (const vendor of vendors) {
-	if ((allVendors as unknown as string[]).includes(vendor) === false) {
+	if (allVendors.includes(vendor) === false) {
 		throw new Error(`No e2e testing capabilities for vendor "${vendor}".`);
 	}
 }
 
-export default vendors as Vendor[];
+export default vendors;
