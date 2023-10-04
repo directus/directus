@@ -8,11 +8,13 @@ export const allVendors = [
 	'oracle',
 	'cockroachdb',
 	'sqlite3',
-];
+] as const;
 
-const vendors = process.env.TEST_DB?.split(',').map((v) => v.trim()) ?? allVendors;
+export type Vendor = (typeof allVendors)[number];
 
-if (vendors.length > 1 && process.env.TEST_LOCAL) {
+const vendors = (process.env['TEST_DB']?.split(',').map((v) => v.trim()) as Vendor[]) ?? allVendors;
+
+if (vendors.length > 1 && process.env['TEST_LOCAL']) {
 	throw new Error(
 		`You can't test multiple databases simultaneously when using the locally running instance of Directus.`
 	);
