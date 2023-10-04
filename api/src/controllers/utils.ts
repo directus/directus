@@ -3,16 +3,17 @@ import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import { flushCaches } from '../cache.js';
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
+import type { ImportWorkerData } from '../services/import-export/import-worker.js';
 import { ExportService } from '../services/import-export/index.js';
 import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
-import type { ImportWorkerData } from '../services/import-export/import-worker.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
@@ -122,7 +123,7 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			const { createTmpFile } = await import('@directus/utils/node');
-			const { getImportWorker } = await import('../services/import-export/get-import-worker.js');
+			const { getWorkerPool } = await import('../worker-pool.js');
 
 			const tmpFile = await createTmpFile().catch(() => null);
 
@@ -131,7 +132,10 @@ router.post(
 			fileStream.pipe(fs.createWriteStream(tmpFile.path));
 
 			fileStream.on('end', async () => {
-				const worker = getImportWorker();
+				const workerPool = getWorkerPool();
+
+				const require = createRequire(import.meta.url);
+				const filename = require.resolve('../services/import-export/import-worker');
 
 				const workerData: ImportWorkerData = {
 					collection: req.params['collection']!,
@@ -142,7 +146,7 @@ router.post(
 				};
 
 				try {
-					await worker.run(workerData);
+					await workerPool.run(workerData, { filename });
 					res.status(200).end();
 				} catch (error) {
 					next(error);
