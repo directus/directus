@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core';
+import { useLocalStorage, type RemovableRef } from '@vueuse/core';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
 	choices: string[];
@@ -7,10 +8,31 @@ const props = defineProps<{
 	alwaysDark?: boolean;
 }>();
 
-const selected = useLocalStorage('toggler-value', props.choices[0]);
+const selected = ref<string>();
+let localStorage: RemovableRef<string | undefined> | undefined;
 
-const changeSelected = (choice: (typeof props.choices)[number]) => {
-	selected.value = choice;
+// Get local storage on client side (preventing SSR <-> client mismatch & flash)
+onMounted(() => {
+	localStorage = useLocalStorage('toggler-value', undefined);
+
+	const initialValue = localStorage.value;
+
+	selected.value = initialValue && props.choices.includes(initialValue) ? initialValue : props.choices[0];
+
+	watch(localStorage, (value) => {
+		if (value && !props.choices.includes(value)) return;
+
+		selected.value = value;
+	});
+});
+
+const changeSelected = (choice: string) => {
+	if (localStorage) {
+		localStorage.value = choice;
+	} else {
+		// Not expected but as fallback safety
+		selected.value = choice;
+	}
 };
 </script>
 
@@ -22,7 +44,7 @@ const changeSelected = (choice: (typeof props.choices)[number]) => {
 					v-for="choice in choices"
 					:key="choice"
 					class="button"
-					:class="{ active: selected == choice }"
+					:class="{ active: choice === selected }"
 					@click="changeSelected(choice)"
 				>
 					{{ choice }}
@@ -32,7 +54,7 @@ const changeSelected = (choice: (typeof props.choices)[number]) => {
 
 		<div class="content-area">
 			<template v-for="choice in choices" :key="choice">
-				<div v-if="choice === selected">
+				<div class="content" :class="{ active: choice === selected }">
 					<slot :name="choice.toLowerCase()"></slot>
 				</div>
 			</template>
@@ -113,5 +135,17 @@ html.dark .snippet-toggler .button.active,
 	scrollbar-width: none;
 	overflow-y: auto;
 	tab-size: 2;
+	display: grid;
+	grid-template-columns: 100%;
+}
+
+.content {
+	visibility: hidden;
+	grid-row-start: 1;
+	grid-column-start: 1;
+}
+
+.content.active {
+	visibility: visible;
 }
 </style>

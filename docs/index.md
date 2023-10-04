@@ -31,7 +31,13 @@ import Badge from './.vitepress/components/Badge.vue'
 
 ```js
 GET /items/products/4?
-	fields[]=id,status,title,category,image.id,image.name
+	fields[]=
+	  id,
+	  status,
+	  title,
+	  category,
+	  image.id,
+	  image.name
 ```
 
 </template>
