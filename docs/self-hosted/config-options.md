@@ -764,6 +764,8 @@ OpenID is an authentication protocol built on OAuth 2.0, and should be preferred
 | `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                           | `openid profile email` |
 | `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                              | --                     |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                       | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                      | `given_name`      	   |
+| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                       | `family_name`          |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                           | `false`                |
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                           | `false`                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                       | --                     |
