@@ -52,4 +52,5 @@ export type Settings = {
 	basemaps: any[] | null;
 	mapbox_key: string | null;
 	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[];
+	onboarding: string | null;
 };

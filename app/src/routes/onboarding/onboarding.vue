@@ -13,6 +13,8 @@
 			</div>
 
 			<!-- Content -->
+			<!-- TODO this needs a different level of abstraction -->
+			<!-- Making the project slide skippable is yucky -->
 			<div class="onboarding-slides">
 				<Transition name="dialog" mode="out-in">
 					<!-- Welcome Slide -->
@@ -131,10 +133,10 @@ const userModel = ref({
 	primary_skillset: undefined,
 });
 
-// TODO remove slides..
-const slides = [0, 1, 2];
+const showProjectSlide = Boolean(settingsStore.settings?.onboarding) === false;
+/** Count: Welcome, Project*, User - We dont count the last loading slide because that makes the progress bar then be full */
+const slideCount = showProjectSlide ? 3 : 2;
 const currentSlideIndex = ref(0);
-const slideCount = slides.length;
 const progressPercent = computed(() => (currentSlideIndex.value / slideCount) * 100);
 const isFirstSlide = computed(() => currentSlideIndex.value === 0);
 const isLastSlide = computed(() => currentSlideIndex.value === slideCount - 1);
