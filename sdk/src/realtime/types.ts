@@ -1,5 +1,5 @@
 import type { Query } from '../types/query.js';
-import type { ApplyQueryFields, CollectionType } from '../index.js';
+import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../index.js';
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
@@ -23,15 +23,15 @@ export interface SubscribeOptions<Schema extends object, Collection extends keyo
 
 export type WebSocketEvents = 'open' | 'close' | 'error' | 'message';
 export type RemoveEventHandler = () => void;
-export type WebSocketEventHandler = (this: WebSocket, ev: Event | CloseEvent | any) => any;
+export type WebSocketEventHandler = (this: WebSocketInterface, ev: Event | CloseEvent | any) => any;
 
 export interface WebSocketClient<Schema extends object> {
 	connect(): Promise<void>;
 	disconnect(): void;
-	onWebSocket(event: 'open', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
-	onWebSocket(event: 'error', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
-	onWebSocket(event: 'close', callback: (this: WebSocket, ev: CloseEvent) => any): RemoveEventHandler;
-	onWebSocket(event: 'message', callback: (this: WebSocket, ev: any) => any): RemoveEventHandler;
+	onWebSocket(event: 'open', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
+	onWebSocket(event: 'error', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
+	onWebSocket(event: 'close', callback: (this: WebSocketInterface, ev: CloseEvent) => any): RemoveEventHandler;
+	onWebSocket(event: 'message', callback: (this: WebSocketInterface, ev: any) => any): RemoveEventHandler;
 	onWebSocket(event: WebSocketEvents, callback: WebSocketEventHandler): RemoveEventHandler;
 	sendMessage(message: string | Record<string, any>): void;
 	subscribe<Collection extends keyof Schema, const Options extends SubscribeOptions<Schema, Collection>>(
