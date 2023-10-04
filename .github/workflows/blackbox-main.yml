@@ -57,12 +57,11 @@ jobs:
         env:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 
-      - name: Start services (SQLite)
-        if: matrix.vendor == 'sqlite3'
+      - name: Start services
         run:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
-      - name: Start services (MSSQL)
+      - name: Start MSSQL
         if: matrix.vendor == 'mssql'
         shell: pwsh
         run: |
@@ -81,13 +80,9 @@ jobs:
           }"
           Restart-Service -Name 'MSSQL$SQLEXPRESS'
 
-          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
-
-      - name: Start services (other vendors)
+      - name: Start ${{ matrix.vendor }}
         if: matrix.vendor != 'sqlite3' && matrix.vendor != 'mssql'
-        run:
-          docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml redis minio minio-mc -d
-          --quiet-pull --wait
+        run: docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} -d --quiet-pull --wait
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox
