@@ -1,8 +1,6 @@
-/// <reference lib="dom" />
-
 export type FetchInterface =
-	| ((input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>)
-	| ((input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>);
+	| ((input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response | unknown>)
+	| ((input: RequestInfo, init?: RequestInit | undefined) => Promise<Response | unknown>);
 
 export type UrlInterface = typeof URL;
 
