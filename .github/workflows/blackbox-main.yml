@@ -12,12 +12,9 @@ on:
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox-main.yml
-  pull_request:
-    branches:
-      - main
 
 concurrency:
-  group: blackbox-main-vitest
+  group: blackbox-${{ github.ref }}
   cancel-in-progress: true
 
 env:
