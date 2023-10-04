@@ -1195,11 +1195,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 							sort: '-count.id',
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const queryKey = `${localCollectionArtists}_aggregated`;
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[queryKey]: {
 								__args: {
