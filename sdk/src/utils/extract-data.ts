@@ -1,3 +1,5 @@
+import { isFetchResponse } from "./is-response.js";
+
 /**
  *
  * @param {unknown} response
@@ -6,19 +8,20 @@
 export async function extractData(response: unknown) {
 	if (typeof response !== 'object' || !response) return;
 
-	if (response instanceof Response) {
-		const type = response.headers.get('Content-Type')?.toLowerCase();
+	if (isFetchResponse(response)) {
+		const res = response as Response;
+		const type = res.headers.get('Content-Type')?.toLowerCase();
 
 		if (type?.startsWith('application/json') || type?.startsWith('application/health+json')) {
-			const result = await response.json();
-			if (!response.ok) throw result;
+			const result = await res.json();
+			if (!res.ok) throw result;
 			if ('data' in result) return result.data;
 			return result;
 		}
 
 		if (type?.startsWith('text/html') || type?.startsWith('text/plain')) {
-			const result = await response.text();
-			if (!response.ok) throw result;
+			const result = await res.text();
+			if (!res.ok) throw result;
 			return result;
 		}
 
