@@ -142,5 +142,4 @@ export default defineComponent({
 		font-family: var(--family-monospace);
 	}
 }
-
 </style>
