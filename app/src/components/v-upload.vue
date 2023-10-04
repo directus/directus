@@ -57,11 +57,10 @@ function useUpload() {
 		uploading.value = true;
 		progress.value = 0;
 
-		const folderPreset: { folder?: string } = {};
-
-		if (props.folder) {
-			folderPreset.folder = props.folder;
-		}
+		const preset = {
+			...props.preset,
+			...(props.folder && { folder: props.folder }),
+		};
 
 		try {
 			if (!validFiles(files)) {
@@ -76,10 +75,7 @@ function useUpload() {
 						progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 						done.value = percentage.filter((p) => p === 100).length;
 					},
-					preset: {
-						...props.preset,
-						...folderPreset,
-					},
+					preset,
 				});
 
 				uploadedFiles && emit('input', uploadedFiles);
@@ -90,10 +86,7 @@ function useUpload() {
 						done.value = percentage === 100 ? 1 : 0;
 					},
 					fileId: props.fileId,
-					preset: {
-						...props.preset,
-						...folderPreset,
-					},
+					preset,
 				});
 
 				uploadedFile && emit('input', uploadedFile);
@@ -200,13 +193,16 @@ function useURLImport() {
 	async function importFromURL() {
 		loading.value = true;
 
+		const data = {
+			...props.preset,
+			...(props.folder && { folder: props.folder }),
+			id: props.fileId,
+		};
+
 		try {
 			const response = await api.post(`/files/import`, {
 				url: url.value,
-				data: {
-					folder: props.folder,
-					id: props.fileId,
-				},
+				data,
 			});
 
 			emitter.emit(Events.upload);
