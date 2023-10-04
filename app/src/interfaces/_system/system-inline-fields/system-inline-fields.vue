@@ -1,12 +1,3 @@
-<template>
-	<interface-list
-		:value="repeaterValue"
-		template="{{ name }} - {{ meta.interface }}"
-		:fields="repeaterFields"
-		@input="repeaterValue = $event"
-	/>
-</template>
-
 <script setup lang="ts">
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
@@ -177,3 +168,12 @@ const repeaterFields = computed(() => {
 	];
 });
 </script>
+
+<template>
+	<interface-list
+		:value="repeaterValue"
+		template="{{ name }} - {{ meta.interface }}"
+		:fields="repeaterFields"
+		@input="repeaterValue = $event"
+	/>
+</template>

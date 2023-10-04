@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import { useLocalStorage } from '@/composables/use-local-storage';
+import { Collection } from '@/types/collections';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import CollectionOptions from './collection-options.vue';
+import { CollectionTree } from '../collections.vue';
+
+const props = defineProps<{
+	collection: Collection;
+	collections: Collection[];
+	visibilityTree: CollectionTree;
+	disableDrag?: boolean;
+}>();
+
+const emit = defineEmits(['setNestedSort', 'editCollection']);
+
+const { t } = useI18n();
+const { data: isCollectionExpanded } = useLocalStorage(`settings-collapsed-${props.collection.collection}`, true);
+
+const toggleCollapse = () => {
+	isCollectionExpanded.value = !isCollectionExpanded.value;
+};
+
+const nestedCollections = computed(() =>
+	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
+);
+
+function onGroupSortChange(collections: Collection[]) {
+	const updates = collections.map((collection) => ({
+		collection: collection.collection,
+		meta: {
+			group: props.collection.collection,
+		},
+	}));
+
+	emit('setNestedSort', updates);
+}
+</script>
+
 <template>
 	<div v-show="visibilityTree.visible" class="collection-item">
 		<v-list-item
@@ -65,47 +106,6 @@
 		</transition-expand>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useLocalStorage } from '@/composables/use-local-storage';
-import { Collection } from '@/types/collections';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
-import CollectionOptions from './collection-options.vue';
-import { CollectionTree } from '../collections.vue';
-
-const props = defineProps<{
-	collection: Collection;
-	collections: Collection[];
-	visibilityTree: CollectionTree;
-	disableDrag?: boolean;
-}>();
-
-const emit = defineEmits(['setNestedSort', 'editCollection']);
-
-const { t } = useI18n();
-const { data: isCollectionExpanded } = useLocalStorage(`settings-collapsed-${props.collection.collection}`, true);
-
-const toggleCollapse = () => {
-	isCollectionExpanded.value = !isCollectionExpanded.value;
-};
-
-const nestedCollections = computed(() =>
-	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
-);
-
-function onGroupSortChange(collections: Collection[]) {
-	const updates = collections.map((collection) => ({
-		collection: collection.collection,
-		meta: {
-			group: props.collection.collection,
-		},
-	}));
-
-	emit('setNestedSort', updates);
-}
-</script>
 
 <style scoped>
 .drag-container {

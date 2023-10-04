@@ -7,7 +7,7 @@ readTime: 3 min read
 
 > Panels are modular units of data visualization that exist within the
 > [Insights module](/user-guide/insights/dashboards). Each panel exists within a Dashboard and can be positioned and
-> resized as needed. [Learn more about Panels](/user-guide/overview/glossary#panels).
+> resized as needed. They are developed using Vue.js. [Learn more about Panels](/user-guide/overview/glossary#panels).
 
 ## Extension Entrypoint
 

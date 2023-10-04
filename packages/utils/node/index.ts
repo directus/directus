@@ -7,3 +7,4 @@ export * from './path-to-relative-url.js';
 export * from './pluralize.js';
 export * from './readable-stream-to-string.js';
 export * from './resolve-package.js';
+export * from './tmp.js';

@@ -1,9 +1,3 @@
-<template>
-	<ul class="v-list" :class="{ nav, dense }">
-		<slot />
-	</ul>
-</template>
-
 <script setup lang="ts">
 import { toRefs } from 'vue';
 import { useGroupableParent } from '@directus/composables';
@@ -53,6 +47,12 @@ useGroupableParent(
 	props.scope
 );
 </script>
+
+<template>
+	<ul class="v-list" :class="{ nav, dense }">
+		<slot />
+	</ul>
+</template>
 
 <style scoped>
 :global(body) {

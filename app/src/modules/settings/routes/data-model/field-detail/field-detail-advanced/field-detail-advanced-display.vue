@@ -1,27 +1,3 @@
-<template>
-	<div>
-		<v-skeleton-loader v-if="loading" />
-		<v-fancy-select v-else v-model="display" class="select" :items="selectItems" />
-
-		<v-skeleton-loader v-if="loading" />
-		<template v-else>
-			<v-notice v-if="display && !selectedDisplay" class="not-found" type="danger">
-				{{ t('display_not_found', { display: display }) }}
-				<div class="spacer" />
-				<button @click="display = null">{{ t('reset_display') }}</button>
-			</v-notice>
-
-			<extension-options
-				v-if="display && selectedDisplay"
-				v-model="options"
-				type="display"
-				:options="customOptionsFields"
-				:extension="display"
-			/>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { FancySelectItem } from '@/components/v-fancy-select.vue';
 import { useExtension } from '@/composables/use-extension';
@@ -108,6 +84,30 @@ const options = computed({
 	},
 });
 </script>
+
+<template>
+	<div>
+		<v-skeleton-loader v-if="loading" />
+		<v-fancy-select v-else v-model="display" class="select" :items="selectItems" />
+
+		<v-skeleton-loader v-if="loading" />
+		<template v-else>
+			<v-notice v-if="display && !selectedDisplay" class="not-found" type="danger">
+				{{ t('display_not_found', { display: display }) }}
+				<div class="spacer" />
+				<button @click="display = null">{{ t('reset_display') }}</button>
+			</v-notice>
+
+			<extension-options
+				v-if="display && selectedDisplay"
+				v-model="options"
+				type="display"
+				:options="customOptionsFields"
+				:extension="display"
+			/>
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .type-title,

@@ -1,49 +1,3 @@
-<template>
-	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
-		<div
-			v-click-outside="{
-				handler: disable,
-				middleware: onClickOutside,
-			}"
-			class="search-input"
-			:class="{ active, 'filter-active': filterActive, 'has-content': !!modelValue, 'filter-border': filterBorder }"
-			@click="active = true"
-		>
-			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
-			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
-			<v-icon
-				v-if="modelValue"
-				clickable
-				class="icon-empty"
-				name="close"
-				@click.stop="$emit('update:modelValue', null)"
-			/>
-
-			<template v-if="showFilter">
-				<v-icon
-					v-tooltip.bottom="t('filter')"
-					clickable
-					class="icon-filter"
-					name="filter_list"
-					@click="filterActive = !filterActive"
-				/>
-
-				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
-					<div v-show="filterActive" ref="filterElement" class="filter">
-						<interface-system-filter
-							class="filter-input"
-							inline
-							:value="filter"
-							:collection-name="collection"
-							@input="$emit('update:filter', $event)"
-						/>
-					</div>
-				</transition-expand>
-			</template>
-		</div>
-	</v-badge>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, inject, Ref } from 'vue';
@@ -163,6 +117,50 @@ function emitValue() {
 	emit('update:modelValue', value);
 }
 </script>
+
+<template>
+	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
+		<div
+			v-click-outside="{
+				handler: disable,
+				middleware: onClickOutside,
+			}"
+			class="search-input"
+			:class="{ active, 'filter-active': filterActive, 'has-content': !!modelValue, 'filter-border': filterBorder }"
+			@click="active = true"
+		>
+			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
+			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
+			<v-icon
+				v-if="modelValue"
+				clickable
+				class="icon-empty"
+				name="close"
+				@click.stop="$emit('update:modelValue', null)"
+			/>
+
+			<v-icon
+				v-tooltip.bottom="t('filter')"
+				clickable
+				class="icon-filter"
+				name="filter_list"
+				@click="filterActive = !filterActive"
+			/>
+
+			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
+				<div v-show="filterActive" ref="filterElement" class="filter">
+					<interface-system-filter
+						class="filter-input"
+						inline
+						:value="filter"
+						:collection-name="collection"
+						@input="$emit('update:filter', $event)"
+					/>
+				</div>
+			</transition-expand>
+		</div>
+	</v-badge>
+</template>
 
 <style lang="scss" scoped>
 .search-badge {

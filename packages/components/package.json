@@ -42,7 +42,7 @@
 		"@vitest/coverage-c8": "0.31.1",
 		"histoire": "0.16.1",
 		"rollup-plugin-node-externals": "6.1.1",
-		"typescript": "5.0.4",
+		"typescript": "5.2.2",
 		"vite": "4.3.7",
 		"vite-plugin-dts": "2.3.0",
 		"vitest": "0.31.1"

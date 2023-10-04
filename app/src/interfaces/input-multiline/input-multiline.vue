@@ -1,28 +1,3 @@
-<template>
-	<v-textarea
-		v-bind="{ placeholder, trim }"
-		:model-value="value"
-		:nullable="!clear"
-		:disabled="disabled"
-		:class="font"
-		:dir="direction"
-		@update:model-value="$emit('input', $event)"
-	>
-		<template v-if="(percentageRemaining && percentageRemaining <= 20) || softLength" #append>
-			<span
-				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
-				class="remaining"
-				:class="{
-					warning: percentageRemaining! < 10,
-					danger: percentageRemaining! < 5,
-				}"
-			>
-				{{ charsRemaining }}
-			</span>
-		</template>
-	</v-textarea>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -65,6 +40,31 @@ const percentageRemaining = computed(() => {
 	return 100;
 });
 </script>
+
+<template>
+	<v-textarea
+		v-bind="{ placeholder, trim }"
+		:model-value="value"
+		:nullable="!clear"
+		:disabled="disabled"
+		:class="font"
+		:dir="direction"
+		@update:model-value="$emit('input', $event)"
+	>
+		<template v-if="(percentageRemaining && percentageRemaining <= 20) || softLength" #append>
+			<span
+				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
+				class="remaining"
+				:class="{
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
+				}"
+			>
+				{{ charsRemaining }}
+			</span>
+		</template>
+	</v-textarea>
+</template>
 
 <style lang="scss" scoped>
 .v-textarea {

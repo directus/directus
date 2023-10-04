@@ -1,18 +1,3 @@
-<template>
-	<span v-if="simple" class="rating simple">
-		<v-icon small name="star" filled />
-		{{ value }}
-	</span>
-	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
-		<div class="active" :style="ratingPercentage">
-			<v-icon v-for="index in starCount" :key="index" small name="star" filled />
-		</div>
-		<div class="inactive">
-			<v-icon v-for="index in starCount" :key="index" small name="star" />
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -44,6 +29,21 @@ const ratingPercentage = computed(() => ({
 	width: (Number(props.value) / starCount.value) * 100 + '%',
 }));
 </script>
+
+<template>
+	<span v-if="simple" class="rating simple">
+		<v-icon small name="star" filled />
+		{{ value }}
+	</span>
+	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
+		<div class="active" :style="ratingPercentage">
+			<v-icon v-for="index in starCount" :key="index" small name="star" filled />
+		</div>
+		<div class="inactive">
+			<v-icon v-for="index in starCount" :key="index" small name="star" />
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .rating {

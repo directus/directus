@@ -1,69 +1,3 @@
-<template>
-	<div class="v-pagination">
-		<v-button class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
-			<v-icon name="chevron_left" />
-		</v-button>
-
-		<v-button
-			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
-			class="page"
-			secondary
-			small
-			:disabled="disabled"
-			@click="toPage(1)"
-		>
-			1
-		</v-button>
-
-		<span
-			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1"
-			class="gap"
-		>
-			...
-		</span>
-
-		<v-button
-			v-for="page in visiblePages"
-			:key="page"
-			:class="{ active: modelValue === page }"
-			class="page"
-			secondary
-			small
-			:disabled="disabled"
-			@click="toPage(page)"
-		>
-			{{ page }}
-		</v-button>
-
-		<span
-			v-if="
-				showFirstLast && totalVisible && modelValue < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1
-			"
-			class="gap"
-		>
-			...
-		</span>
-
-		<v-button
-			v-if="
-				showFirstLast && totalVisible && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible
-			"
-			:class="{ active: modelValue === length }"
-			class="page"
-			secondary
-			small
-			:disabled="disabled"
-			@click="toPage(length)"
-		>
-			{{ length }}
-		</v-button>
-
-		<v-button class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
-			<v-icon name="chevron_right" />
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -139,6 +73,72 @@ function toPage(page: number) {
 	emit('update:modelValue', page);
 }
 </script>
+
+<template>
+	<div class="v-pagination">
+		<v-button class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
+			<v-icon name="chevron_left" />
+		</v-button>
+
+		<v-button
+			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
+			class="page"
+			secondary
+			small
+			:disabled="disabled"
+			@click="toPage(1)"
+		>
+			1
+		</v-button>
+
+		<span
+			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1"
+			class="gap"
+		>
+			...
+		</span>
+
+		<v-button
+			v-for="page in visiblePages"
+			:key="page"
+			:class="{ active: modelValue === page }"
+			class="page"
+			secondary
+			small
+			:disabled="disabled"
+			@click="toPage(page)"
+		>
+			{{ page }}
+		</v-button>
+
+		<span
+			v-if="
+				showFirstLast && totalVisible && modelValue < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1
+			"
+			class="gap"
+		>
+			...
+		</span>
+
+		<v-button
+			v-if="
+				showFirstLast && totalVisible && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible
+			"
+			:class="{ active: modelValue === length }"
+			class="page"
+			secondary
+			small
+			:disabled="disabled"
+			@click="toPage(length)"
+		>
+			{{ length }}
+		</v-button>
+
+		<v-button class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
+			<v-icon name="chevron_right" />
+		</v-button>
+	</div>
+</template>
 
 <style scoped>
 :global(body) {

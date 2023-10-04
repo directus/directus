@@ -1,45 +1,3 @@
-<template>
-	<private-view :title="t('settings_project')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="public" />
-			</v-button>
-		</template>
-
-		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<div class="settings">
-			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
-		</div>
-
-		<template #sidebar>
-			<project-info-sidebar-detail />
-		</template>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -93,6 +51,48 @@ function discardAndLeave() {
 	router.push(leaveTo.value);
 }
 </script>
+
+<template>
+	<private-view :title="t('settings_project')">
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon exact disabled>
+				<v-icon name="public" />
+			</v-button>
+		</template>
+
+		<template #actions>
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<div class="settings">
+			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
+		</div>
+
+		<template #sidebar>
+			<project-info-sidebar-detail />
+		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</private-view>
+</template>
 
 <style lang="scss" scoped>
 .settings {

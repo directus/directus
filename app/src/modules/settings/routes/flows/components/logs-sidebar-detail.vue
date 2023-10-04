@@ -1,87 +1,3 @@
-<template>
-	<sidebar-detail :title="t('logs')" icon="fact_check" :badge="revisionsCount">
-		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
-
-		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
-
-		<v-detail
-			v-for="group in revisionsByDate"
-			v-else
-			:key="group.dateFormatted"
-			:label="group.dateFormatted"
-			class="revisions-date-group"
-			start-open
-		>
-			<div class="scroll-container">
-				<div v-for="revision in group.revisions" :key="revision.id" class="log">
-					<button @click="previewing = revision">
-						<v-icon name="play_arrow" color="var(--primary)" small />
-						{{ revision.timeRelative }}
-					</button>
-				</div>
-			</div>
-		</v-detail>
-
-		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
-	</sidebar-detail>
-
-	<v-drawer
-		:model-value="!!previewing"
-		:title="previewing ? previewing.timestampFormatted : t('logs')"
-		icon="fact_check"
-		@cancel="previewing = null"
-		@esc="previewing = null"
-	>
-		<div class="content">
-			<div class="steps">
-				<div class="step">
-					<div class="header">
-						<span class="dot" />
-						<span class="type-label">
-							{{ t('trigger') }}
-							<span class="subdued">&nbsp;{{ usedTrigger?.name }}</span>
-						</span>
-					</div>
-
-					<div class="inset">
-						<v-detail v-if="triggerData.options" :label="t('options')">
-							<pre class="json selectable">{{ triggerData.options }}</pre>
-						</v-detail>
-
-						<v-detail v-if="triggerData.trigger" :label="t('payload')">
-							<pre class="json selectable">{{ triggerData.trigger }}</pre>
-						</v-detail>
-
-						<v-detail v-if="triggerData.accountability" :label="t('accountability')">
-							<pre class="json selectable">{{ triggerData.accountability }}</pre>
-						</v-detail>
-					</div>
-				</div>
-
-				<div v-for="step of steps" :key="step.id" class="step">
-					<div class="header">
-						<span class="dot" :class="step.status" />
-						<span v-tooltip="step.key" class="type-label">
-							{{ step.name }}
-							<span class="subdued">&nbsp;{{ step.operationType }}</span>
-						</span>
-					</div>
-
-					<div class="inset">
-						<v-detail v-if="step.options" :label="t('options')">
-							<pre class="json selectable">{{ step.options }}</pre>
-						</v-detail>
-
-						<v-detail v-if="step.data" :label="t('payload')">
-							<pre class="json selectable">{{ step.data }}</pre>
-						</v-detail>
-					</div>
-				</div>
-			</div>
-		</div>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
 import { useExtensions } from '@/extensions';
@@ -173,6 +89,90 @@ const steps = computed(() => {
 	);
 });
 </script>
+
+<template>
+	<sidebar-detail :title="t('logs')" icon="fact_check" :badge="revisionsCount">
+		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
+
+		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
+
+		<v-detail
+			v-for="group in revisionsByDate"
+			v-else
+			:key="group.dateFormatted"
+			:label="group.dateFormatted"
+			class="revisions-date-group"
+			start-open
+		>
+			<div class="scroll-container">
+				<div v-for="revision in group.revisions" :key="revision.id" class="log">
+					<button @click="previewing = revision">
+						<v-icon name="play_arrow" color="var(--primary)" small />
+						{{ revision.timeRelative }}
+					</button>
+				</div>
+			</div>
+		</v-detail>
+
+		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
+	</sidebar-detail>
+
+	<v-drawer
+		:model-value="!!previewing"
+		:title="previewing ? previewing.timestampFormatted : t('logs')"
+		icon="fact_check"
+		@cancel="previewing = null"
+		@esc="previewing = null"
+	>
+		<div class="content">
+			<div class="steps">
+				<div class="step">
+					<div class="header">
+						<span class="dot" />
+						<span class="type-label">
+							{{ t('trigger') }}
+							<span class="subdued">&nbsp;{{ usedTrigger?.name }}</span>
+						</span>
+					</div>
+
+					<div class="inset">
+						<v-detail v-if="triggerData.options" :label="t('options')">
+							<pre class="json selectable">{{ triggerData.options }}</pre>
+						</v-detail>
+
+						<v-detail v-if="triggerData.trigger" :label="t('payload')">
+							<pre class="json selectable">{{ triggerData.trigger }}</pre>
+						</v-detail>
+
+						<v-detail v-if="triggerData.accountability" :label="t('accountability')">
+							<pre class="json selectable">{{ triggerData.accountability }}</pre>
+						</v-detail>
+					</div>
+				</div>
+
+				<div v-for="step of steps" :key="step.id" class="step">
+					<div class="header">
+						<span class="dot" :class="step.status" />
+						<span v-tooltip="step.key" class="type-label">
+							{{ step.name }}
+							<span class="subdued">&nbsp;{{ step.operationType }}</span>
+						</span>
+					</div>
+
+					<div class="inset">
+						<v-detail v-if="step.options" :label="t('options')">
+							<pre class="json selectable">{{ step.options }}</pre>
+						</v-detail>
+
+						<v-detail v-if="step.data" :label="t('payload')">
+							<pre class="json selectable">{{ step.data }}</pre>
+						</v-detail>
+					</div>
+				</div>
+			</div>
+		</div>
+	</v-drawer>
+</template>
 
 <style lang="scss" scoped>
 .v-progress-linear {

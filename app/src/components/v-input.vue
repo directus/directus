@@ -1,60 +1,3 @@
-<template>
-	<div class="v-input" :class="classes" @click="$emit('click', $event)">
-		<div v-if="$slots['prepend-outer']" class="prepend-outer">
-			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
-		</div>
-		<div class="input" :class="{ disabled, active }">
-			<div v-if="$slots.prepend" class="prepend">
-				<slot name="prepend" :value="modelValue" :disabled="disabled" />
-			</div>
-			<span v-if="prefix" class="prefix">{{ prefix }}</span>
-			<slot name="input">
-				<input
-					ref="input"
-					v-focus="autofocus"
-					v-bind="attributes"
-					:placeholder="placeholder ? String(placeholder) : undefined"
-					:autocomplete="autocomplete"
-					:type="type"
-					:min="min"
-					:max="max"
-					:step="step"
-					:disabled="disabled"
-					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
-					v-on="listeners"
-				/>
-			</slot>
-			<span v-if="suffix" class="suffix">{{ suffix }}</span>
-			<span v-if="type === 'number' && !hideArrows">
-				<v-icon
-					:class="{ disabled: !isStepUpAllowed }"
-					name="keyboard_arrow_up"
-					class="step-up"
-					tabindex="-1"
-					clickable
-					:disabled="!isStepUpAllowed"
-					@click="stepUp"
-				/>
-				<v-icon
-					:class="{ disabled: !isStepDownAllowed }"
-					name="keyboard_arrow_down"
-					class="step-down"
-					tabindex="-1"
-					clickable
-					:disabled="!isStepDownAllowed"
-					@click="stepDown"
-				/>
-			</span>
-			<div v-if="$slots.append" class="append">
-				<slot name="append" :value="modelValue" :disabled="disabled" />
-			</div>
-		</div>
-		<div v-if="$slots['append-outer']" class="append-outer">
-			<slot name="append-outer" :value="modelValue" :disabled="disabled" />
-		</div>
-	</div>
-</template>
-
 <script lang="ts">
 export default {
 	inheritAttrs: false,
@@ -275,6 +218,63 @@ function stepDown() {
 	}
 }
 </script>
+
+<template>
+	<div class="v-input" :class="classes" @click="$emit('click', $event)">
+		<div v-if="$slots['prepend-outer']" class="prepend-outer">
+			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
+		</div>
+		<div class="input" :class="{ disabled, active }">
+			<div v-if="$slots.prepend" class="prepend">
+				<slot name="prepend" :value="modelValue" :disabled="disabled" />
+			</div>
+			<span v-if="prefix" class="prefix">{{ prefix }}</span>
+			<slot name="input">
+				<input
+					ref="input"
+					v-focus="autofocus"
+					v-bind="attributes"
+					:placeholder="placeholder ? String(placeholder) : undefined"
+					:autocomplete="autocomplete"
+					:type="type"
+					:min="min"
+					:max="max"
+					:step="step"
+					:disabled="disabled"
+					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+					v-on="listeners"
+				/>
+			</slot>
+			<span v-if="suffix" class="suffix">{{ suffix }}</span>
+			<span v-if="type === 'number' && !hideArrows">
+				<v-icon
+					:class="{ disabled: !isStepUpAllowed }"
+					name="keyboard_arrow_up"
+					class="step-up"
+					tabindex="-1"
+					clickable
+					:disabled="!isStepUpAllowed"
+					@click="stepUp"
+				/>
+				<v-icon
+					:class="{ disabled: !isStepDownAllowed }"
+					name="keyboard_arrow_down"
+					class="step-down"
+					tabindex="-1"
+					clickable
+					:disabled="!isStepDownAllowed"
+					@click="stepDown"
+				/>
+			</span>
+			<div v-if="$slots.append" class="append">
+				<slot name="append" :value="modelValue" :disabled="disabled" />
+			</div>
+		</div>
+		<div v-if="$slots['append-outer']" class="append-outer">
+			<slot name="append-outer" :value="modelValue" :disabled="disabled" />
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 :global(body) {
