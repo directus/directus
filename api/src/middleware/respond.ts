@@ -4,7 +4,7 @@ import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
 import env from '../env.js';
 import logger from '../logger.js';
-import { ExportService } from '../services/import-export.js';
+import { ExportService } from '../services/import-export/index.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';

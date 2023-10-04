@@ -1,9 +1,10 @@
 import { getUrl } from '@common/config';
-import * as common from '@common/index';
-import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
-import { requestGraphQL } from '@common/index';
+import { requestGraphQL } from '@common/transport';
+import { TEST_USERS, USER } from '@common/variables';
 import { EnumType } from 'json-to-graphql-query';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 
 const authModes = ['json', 'cookie'];
 
@@ -11,14 +12,14 @@ describe('Authentication Refresh Tests', () => {
 	describe('POST /refresh', () => {
 		describe('refreshes with refresh_token in the body', () => {
 			describe.each(authModes)('for %s mode', (mode) => {
-				common.TEST_USERS.forEach((userKey) => {
-					describe(common.USER[userKey].NAME, () => {
+				TEST_USERS.forEach((userKey) => {
+					describe(USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
 							// Setup
 							const refreshToken = (
 								await request(getUrl(vendor))
 									.post(`/auth/login`)
-									.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+									.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD })
 									.expect('Content-Type', /application\/json/)
 							).body.data.refresh_token;
 
@@ -27,8 +28,8 @@ describe('Authentication Refresh Tests', () => {
 									mutation: {
 										auth_login: {
 											__args: {
-												email: common.USER[userKey].EMAIL,
-												password: common.USER[userKey].PASSWORD,
+												email: USER[userKey].EMAIL,
+												password: USER[userKey].PASSWORD,
 											},
 											refresh_token: true,
 										},
@@ -97,8 +98,8 @@ describe('Authentication Refresh Tests', () => {
 
 		describe('refreshes with refresh_token in the cookie', () => {
 			describe.each(authModes)('for %s mode', (mode) => {
-				common.TEST_USERS.forEach((userKey) => {
-					describe(common.USER[userKey].NAME, () => {
+				TEST_USERS.forEach((userKey) => {
+					describe(USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
 							// Setup
 							const cookieName = 'directus_refresh_token';
@@ -106,7 +107,7 @@ describe('Authentication Refresh Tests', () => {
 							const refreshToken = (
 								await request(getUrl(vendor))
 									.post(`/auth/login`)
-									.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+									.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD })
 									.expect('Content-Type', /application\/json/)
 							).body.data.refresh_token;
 
@@ -115,8 +116,8 @@ describe('Authentication Refresh Tests', () => {
 									mutation: {
 										auth_login: {
 											__args: {
-												email: common.USER[userKey].EMAIL,
-												password: common.USER[userKey].PASSWORD,
+												email: USER[userKey].EMAIL,
+												password: USER[userKey].PASSWORD,
 											},
 											refresh_token: true,
 										},

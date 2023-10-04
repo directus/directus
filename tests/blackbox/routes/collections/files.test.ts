@@ -1,7 +1,8 @@
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
+import { USER } from '@common/variables';
 import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 
 describe('/files', () => {
 	describe('POST /', () => {
@@ -20,7 +21,7 @@ describe('/files', () => {
 					const response = await request(getUrl(vendor))
 						.post(`/files`)
 						.send(payload)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);
@@ -44,7 +45,7 @@ describe('/files', () => {
 					const response = await request(getUrl(vendor))
 						.post(`/files`)
 						.send(payload)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(400);
