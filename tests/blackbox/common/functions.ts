@@ -1,17 +1,19 @@
-import request from 'supertest';
-import { Env, getUrl } from './config';
-import * as common from './index';
-import vendors from './get-dbs-to-test';
 import type { Query } from '@directus/types';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
+import request from 'supertest';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { getUrl, type Env } from './config';
+import vendors, { type Vendor } from './get-dbs-to-test';
+import type { PrimaryKeyType } from './types';
+import { USER } from './variables';
 
 export function DisableTestCachingSetup() {
 	beforeEach(async () => {
-		process.env.TEST_NO_CACHE = 'true';
+		process.env['TEST_NO_CACHE'] = 'true';
 	});
 
 	afterAll(async () => {
-		delete process.env.TEST_NO_CACHE;
+		delete process.env['TEST_NO_CACHE'];
 	});
 }
 
@@ -21,16 +23,16 @@ export function ClearCaches() {
 			'%s',
 			async (vendor) => {
 				// Setup
-				common.EnableTestCaching();
+				EnableTestCaching();
 
 				// Assert
 				const response = await request(getUrl(vendor))
 					.post(`/utils/cache/clear`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 				const response2 = await request(getUrl(vendor))
 					.get(`/fields`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 				expect(response.statusCode).toBe(200);
 				expect(response2.statusCode).toBe(200);
@@ -41,7 +43,7 @@ export function ClearCaches() {
 }
 
 export function EnableTestCaching() {
-	delete process.env.TEST_NO_CACHE;
+	delete process.env['TEST_NO_CACHE'];
 }
 
 export type OptionsCreateRole = {
@@ -50,14 +52,14 @@ export type OptionsCreateRole = {
 	adminAccessEnabled: boolean;
 };
 
-export async function CreateRole(vendor: string, options: OptionsCreateRole) {
+export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 	// Action
 	const roleResponse = await request(getUrl(vendor))
 		.get(`/roles`)
 		.query({
 			filter: { name: { _eq: options.name } },
 		})
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 	if (roleResponse.body.data.length > 0) {
 		return roleResponse.body.data[0];
@@ -65,7 +67,7 @@ export async function CreateRole(vendor: string, options: OptionsCreateRole) {
 
 	const response = await request(getUrl(vendor))
 		.post(`/roles`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send({ name: options.name, app_access: options.appAccessEnabled, admin_access: options.adminAccessEnabled });
 
 	return response.body.data;
@@ -81,7 +83,7 @@ export type OptionsCreateUser = {
 	roleName?: string; // to generate role
 };
 
-export async function CreateUser(vendor: string, options: Partial<OptionsCreateUser>) {
+export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateUser>) {
 	// Validate options
 	if (!options.token) {
 		throw new Error('Missing required field: token');
@@ -98,7 +100,7 @@ export async function CreateUser(vendor: string, options: Partial<OptionsCreateU
 				filter: { name: { _eq: options.roleName } },
 				fields: ['id', 'name'],
 			})
-			.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+			.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 		if (roleResponse.body.data.length === 0) {
 			throw new Error(`Role ${options.roleName} does not exist`);
@@ -111,7 +113,7 @@ export async function CreateUser(vendor: string, options: Partial<OptionsCreateU
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/users`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options);
 
 	return response.body.data;
@@ -124,10 +126,10 @@ export type OptionsCreateCollection = {
 	fields?: any;
 	env?: Env;
 	// Automatically removed params
-	primaryKeyType?: common.PrimaryKeyType;
+	primaryKeyType?: PrimaryKeyType;
 };
 
-export async function CreateCollection(vendor: string, options: Partial<OptionsCreateCollection>) {
+export async function CreateCollection(vendor: Vendor, options: Partial<OptionsCreateCollection>) {
 	// Validate options
 	if (!options.collection) {
 		throw new Error('Missing required field: collection');
@@ -181,7 +183,7 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 	// Action
 	const collectionResponse = await request(getUrl(vendor, options.env))
 		.get(`/collections/${options.collection}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 	if (collectionResponse.body.data) {
 		return collectionResponse.body.data;
@@ -189,7 +191,7 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 
 	const response = await request(getUrl(vendor, options.env))
 		.post(`/collections`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options);
 
 	return response.body.data;
@@ -199,11 +201,11 @@ export type OptionsDeleteCollection = {
 	collection: string;
 };
 
-export async function DeleteCollection(vendor: string, options: OptionsDeleteCollection) {
+export async function DeleteCollection(vendor: Vendor, options: OptionsDeleteCollection) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.delete(`/collections/${options.collection}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 	return response.body;
 }
@@ -213,11 +215,11 @@ export type OptionsDeleteField = {
 	field: string;
 };
 
-export async function DeleteField(vendor: string, options: OptionsDeleteField) {
+export async function DeleteField(vendor: Vendor, options: OptionsDeleteField) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.delete(`/fields/${options.collection}/${options.field}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 	return response.body;
 }
@@ -230,7 +232,7 @@ export type OptionsCreateField = {
 	schema?: any;
 };
 
-export async function CreateField(vendor: string, options: OptionsCreateField) {
+export async function CreateField(vendor: Vendor, options: OptionsCreateField) {
 	// Parse options
 	const defaultOptions = {
 		meta: {},
@@ -242,7 +244,7 @@ export async function CreateField(vendor: string, options: OptionsCreateField) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/fields/${options.collection}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options);
 
 	return response.body.data;
@@ -256,7 +258,7 @@ export type OptionsCreateRelation = {
 	schema?: any;
 };
 
-export async function CreateRelation(vendor: string, options: OptionsCreateRelation) {
+export async function CreateRelation(vendor: Vendor, options: OptionsCreateRelation) {
 	// Parse options
 	const defaultOptions = {
 		meta: {},
@@ -268,7 +270,7 @@ export async function CreateRelation(vendor: string, options: OptionsCreateRelat
 	// Action
 	const relationResponse = await request(getUrl(vendor))
 		.get(`/relations/${options.collection}/${options.field}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 	if (relationResponse.statusCode === 200) {
 		return relationResponse.body.data;
@@ -276,7 +278,7 @@ export async function CreateRelation(vendor: string, options: OptionsCreateRelat
 
 	const response = await request(getUrl(vendor))
 		.post(`/relations`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options);
 
 	return response.body.data;
@@ -287,13 +289,13 @@ export type OptionsCreateFieldM2O = {
 	field: string;
 	fieldMeta?: any;
 	fieldSchema?: any;
-	primaryKeyType?: common.PrimaryKeyType;
+	primaryKeyType?: PrimaryKeyType;
 	otherCollection: string;
 	relationMeta?: any;
 	relationSchema?: any;
 };
 
-export async function CreateFieldM2O(vendor: string, options: OptionsCreateFieldM2O) {
+export async function CreateFieldM2O(vendor: Vendor, options: OptionsCreateFieldM2O) {
 	// Parse options
 	const defaultOptions = {
 		fieldMeta: {},
@@ -350,7 +352,7 @@ export type OptionsCreateFieldO2M = {
 	relationSchema?: any;
 };
 
-export async function CreateFieldO2M(vendor: string, options: OptionsCreateFieldO2M) {
+export async function CreateFieldO2M(vendor: Vendor, options: OptionsCreateFieldO2M) {
 	// Parse options
 	const defaultOptions = {
 		fieldMeta: {},
@@ -421,7 +423,7 @@ export type OptionsCreateFieldM2M = {
 	otherRelationSchema?: any;
 };
 
-export async function CreateFieldM2M(vendor: string, options: OptionsCreateFieldM2M) {
+export async function CreateFieldM2M(vendor: Vendor, options: OptionsCreateFieldM2M) {
 	// Parse options
 	const defaultOptions = {
 		fieldMeta: {},
@@ -547,7 +549,7 @@ export type OptionsCreateFieldM2A = {
 	itemRelationSchema?: any;
 };
 
-export async function CreateFieldM2A(vendor: string, options: OptionsCreateFieldM2A) {
+export async function CreateFieldM2A(vendor: Vendor, options: OptionsCreateFieldM2A) {
 	// Parse options
 	const defaultOptions = {
 		fieldMeta: {},
@@ -659,11 +661,11 @@ export type OptionsCreateItem = {
 	item: any;
 };
 
-export async function CreateItem(vendor: string, options: OptionsCreateItem) {
+export async function CreateItem(vendor: Vendor, options: OptionsCreateItem) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
 
 	return response.body.data;
@@ -673,7 +675,7 @@ export type OptionsReadItem = {
 	collection: string;
 } & Query;
 
-export async function ReadItem(vendor: string, options: OptionsReadItem) {
+export async function ReadItem(vendor: Vendor, options: OptionsReadItem) {
 	// Parse options
 	const defaultOptions = {
 		filter: {},
@@ -685,7 +687,7 @@ export async function ReadItem(vendor: string, options: OptionsReadItem) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.get(`/items/${options.collection}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.query(omit(options, 'collection'));
 
 	return response.body.data;
@@ -697,11 +699,11 @@ export type OptionsUpdateItem = {
 	item: any;
 };
 
-export async function UpdateItem(vendor: string, options: OptionsUpdateItem) {
+export async function UpdateItem(vendor: Vendor, options: OptionsUpdateItem) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.patch(`/items/${options.collection}/${options.id === undefined ? '' : options.id}`)
-		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
 
 	return response.body.data;

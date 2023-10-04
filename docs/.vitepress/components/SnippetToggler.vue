@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue';
+import { useLocalStorage, type RemovableRef } from '@vueuse/core';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
 	choices: string[];
@@ -7,33 +8,32 @@ const props = defineProps<{
 	alwaysDark?: boolean;
 }>();
 
-const selected = ref();
+const selected = ref<string>();
+let localStorage: RemovableRef<string | undefined> | undefined;
 
-const useStorage = (key: string) => {
-	const getStorageValue = () => {
-		return localStorage.getItem(key);
-	};
+// Get local storage on client side (preventing SSR <-> client mismatch & flash)
+onMounted(() => {
+	localStorage = useLocalStorage('toggler-value', undefined);
 
-	const setStorageValue = (value: string) => localStorage.setItem(key, value);
+	const initialValue = localStorage.value;
 
-	return { getStorageValue, setStorageValue };
-};
+	selected.value = initialValue && props.choices.includes(initialValue) ? initialValue : props.choices[0];
 
-const { getStorageValue, setStorageValue } = useStorage('toggler-value');
+	watch(localStorage, (value) => {
+		if (value && !props.choices.includes(value)) return;
 
-onBeforeMount(() => {
-	const value = getStorageValue();
-
-	if (value && props.choices.includes(value)) {
 		selected.value = value;
-	} else {
-		selected.value = props.choices[0];
-	}
-
-	watch(selected, (value) => {
-		setStorageValue(value);
 	});
 });
+
+const changeSelected = (choice: string) => {
+	if (localStorage) {
+		localStorage.value = choice;
+	} else {
+		// Not expected but as fallback safety
+		selected.value = choice;
+	}
+};
 </script>
 
 <template>
@@ -44,8 +44,8 @@ onBeforeMount(() => {
 					v-for="choice in choices"
 					:key="choice"
 					class="button"
-					:class="{ active: selected == choice }"
-					@click="selected = choice"
+					:class="{ active: choice === selected }"
+					@click="changeSelected(choice)"
 				>
 					{{ choice }}
 				</button>
@@ -54,7 +54,7 @@ onBeforeMount(() => {
 
 		<div class="content-area">
 			<template v-for="choice in choices" :key="choice">
-				<div v-if="choice === selected">
+				<div class="content" :class="{ active: choice === selected }">
 					<slot :name="choice.toLowerCase()"></slot>
 				</div>
 			</template>
@@ -135,5 +135,17 @@ html.dark .snippet-toggler .button.active,
 	scrollbar-width: none;
 	overflow-y: auto;
 	tab-size: 2;
+	display: grid;
+	grid-template-columns: 100%;
+}
+
+.content {
+	visibility: hidden;
+	grid-row-start: 1;
+	grid-column-start: 1;
+}
+
+.content.active {
+	visibility: visible;
 }
 </style>

@@ -266,6 +266,30 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
+## Version
+
+TBD
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`?version=draft`
+
+</template>
+<template #graphql>
+
+TBD
+
+</template>
+<template #sdk>
+
+TBD
+
+</template>
+</SnippetToggler>
+
 ## Sort
 
 What field(s) to sort by. Sorting defaults to ascending, but a minus sign (`-`) can be used to reverse this to

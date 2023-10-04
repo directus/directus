@@ -26,4 +26,5 @@ export * from './schema.js';
 export * from './settings.js';
 export * from './shares.js';
 export * from './users.js';
+export * from './versions.js';
 export * from './vue.js';

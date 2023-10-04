@@ -1,6 +1,6 @@
-const argon2 = require('argon2');
+import argon2 from 'argon2';
 
-exports.hash = function (stringToHash) {
+export function generateHash(stringToHash) {
 	const buffer = 'string';
 	const argon2HashConfigOptions = { test: 'test', associatedData: buffer }; // Disallow the HASH_RAW option, see https://github.com/directus/directus/discussions/7670#discussioncomment-1255805
 
@@ -10,4 +10,4 @@ exports.hash = function (stringToHash) {
 	}
 
 	return argon2.hash(stringToHash, argon2HashConfigOptions);
-};
+}
