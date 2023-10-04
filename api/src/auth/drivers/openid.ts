@@ -173,8 +173,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		const userPayload = {
 			provider,
-			first_name: userInfo['given_name'],
-			last_name: userInfo['family_name'],
+			first_name: userInfo[(this.config['firstNameKey']) ? this.config['firstNameKey'] : 'given_name'],
+			last_name: userInfo[(this.config['lastNameKey']) ? this.config['lastNameKey'] : 'family_name'],
 			email: email,
 			external_identifier: identifier,
 			role: this.config['defaultRoleId'],
