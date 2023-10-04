@@ -56,12 +56,17 @@
 							{{ t('back') }}
 						</v-button>
 					</Transition>
-					<!-- ToDo: Figure out when and where to skip? Only at the end? -->
 					<!-- <Transition name="dialog">
-					<v-button v-if="!isLoading" secondary :disabled="isLoading" @click="skipSlide" class="btn-skip">
-						{{ t('skip') }}
-					</v-button>
-				</Transition> -->
+						<v-button
+							v-if="!isLoading && isLastSlide"
+							secondary
+							:disabled="isLoading"
+							@click="skipOnboarding"
+							class="btn-skip"
+						>
+							{{ t('skip') }}
+						</v-button>
+					</Transition> -->
 				</div>
 				<!-- Right Actions -->
 				<div>
@@ -90,8 +95,8 @@ type OnboardingPayload = {
 	body: {
 		user?: {
 			email?: string;
-			wantsEmails?: boolean;
-			skill?: string;
+			wants_emails?: boolean;
+			primary_skillset?: string;
 		};
 		project?: {
 			name?: string;
@@ -163,8 +168,8 @@ async function finishOnboarding() {
 		body: {
 			user: {
 				email: userModel.value.email,
-				wantsEmails: userModel.value.wants_emails,
-				skill: userModel.value.primary_skillset,
+				wants_emails: userModel.value.wants_emails,
+				primary_skillset: userModel.value.primary_skillset,
 			},
 			project: {
 				name: projectModel.value.project_name,
@@ -176,27 +181,30 @@ async function finishOnboarding() {
 	// TODO: Do telemetry
 
 	await Promise.allSettled([settingUpdate, userUpdate]);
-	router.replace('/content');
+	return router.replace('/content');
 }
 
 function prevSlide() {
 	currentSlideIndex.value = Math.max(currentSlideIndex.value - 1, 0);
 }
 
-async function skipSlide() {
-	if (isLastSlide.value) {
-		isLoading.value = true;
-		setTimeout(() => {
-			router.replace('/content');
-		}, 3000);
-	}
-	currentSlideIndex.value = Math.min(currentSlideIndex.value + 1, slideCount);
+async function skipOnboarding() {
+	isLoading.value = true;
+	const userUpdate = api
+		.patch(`/users/${userModel.value.id}`, {
+			onboarding: '{}',
+		})
+		.then(() => userStore.hydrate())
+		.catch((e) => console.error('Error when updating users', e));
+
+	await Promise.allSettled([userUpdate]);
+	router.replace('/content').finally(() => (isLoading.value = false));
 }
 
 async function nextSlide() {
 	if (isLastSlide.value) {
 		isLoading.value = true;
-		finishOnboarding();
+		finishOnboarding().finally(() => (isLoading.value = false));
 	}
 	currentSlideIndex.value = Math.min(currentSlideIndex.value + 1, slideCount);
 }

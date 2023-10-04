@@ -3,8 +3,8 @@ import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
-import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
 import OnboardingRoute from '@/routes/onboarding/onboarding.vue';
+import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
@@ -153,6 +153,31 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			} else if (userStore.currentUser.tfa_secret !== null) {
 				return userStore.currentUser.last_page || '/login';
 			}
+		}
+
+		// TODO: Could redirect away from onboarding if its been filled out before
+		// TODO: Leaving it for now for easier testing
+		// if (
+		// 	to.name === 'onboarding' &&
+		// 	userStore.currentUser &&
+		// 	userStore.currentUser.role &&
+		// 	!('share' in userStore.currentUser) &&
+		// 	(!userStore.currentUser.role.admin_access || userStore.currentUser.onboarding)
+		// ) {
+		// 	console.log('NO YOU ALREADY ONBOARDED - GO AWAY');
+		// 	return '/content'; // TODO where to?
+		// }
+
+		if (
+			to.name !== 'onboarding' &&
+			userStore.currentUser &&
+			!('share' in userStore.currentUser) &&
+			userStore.currentUser.role &&
+			userStore.currentUser.role.admin_access &&
+			!userStore.currentUser.onboarding &&
+			serverStore.info.showAdminOnboarding
+		) {
+			return { name: 'onboarding' };
 		}
 	}
 };

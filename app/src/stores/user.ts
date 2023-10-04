@@ -28,7 +28,7 @@ export const useUserStore = defineStore({
 			return userName(this.currentUser);
 		},
 		isAdmin(): boolean {
-			return this.currentUser?.role.admin_access === true || false;
+			return this.currentUser?.role?.admin_access === true || false;
 		},
 	},
 	actions: {
@@ -50,6 +50,7 @@ export const useUserStore = defineStore({
 					'role.app_access',
 					'role.id',
 					'role.enforce_tfa',
+					'onboarding',
 				];
 
 				const { data } = await api.get(`/users/me`, { params: { fields } });
