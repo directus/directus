@@ -13,25 +13,24 @@ import { appendFile } from 'node:fs/promises';
 import type { Readable } from 'node:stream';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import stripBomStream from 'strip-bom-stream';
-import { file as createTmpFile } from 'tmp-promise';
-import getDatabase from '../database/index.js';
-import emitter from '../emitter.js';
-import env from '../env.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import env from '../../env.js';
 import {
 	ForbiddenError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
 	UnsupportedMediaTypeError,
-} from '../errors/index.js';
-import logger from '../logger.js';
-import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
-import { getDateFormatted } from '../utils/get-date-formatted.js';
-import { Url } from '../utils/url.js';
-import { userName } from '../utils/user-name.js';
-import { FilesService } from './files.js';
-import { ItemsService } from './items.js';
-import { NotificationsService } from './notifications.js';
-import { UsersService } from './users.js';
+} from '../../errors/index.js';
+import logger from '../../logger.js';
+import type { AbstractServiceOptions, ActionEventParams } from '../../types/index.js';
+import { getDateFormatted } from '../../utils/get-date-formatted.js';
+import { Url } from '../../utils/url.js';
+import { userName } from '../../utils/user-name.js';
+import { FilesService } from '../files.js';
+import { ItemsService } from '../items.js';
+import { NotificationsService } from '../notifications.js';
+import { UsersService } from '../users.js';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
@@ -203,7 +202,12 @@ export class ExportService {
 			file?: Partial<File>;
 		}
 	) {
+		const { createTmpFile } = await import('@directus/utils/node');
+		const tmpFile = await createTmpFile().catch(() => null);
+
 		try {
+			if (!tmpFile) throw new Error('Failed to create temporary file for export');
+
 			const mimeTypes = {
 				csv: 'text/csv',
 				json: 'application/json',
@@ -212,8 +216,6 @@ export class ExportService {
 			};
 
 			const database = getDatabase();
-
-			const { path, cleanup } = await createTmpFile();
 
 			await database.transaction(async (trx) => {
 				const service = new ItemsService(collection, {
@@ -264,7 +266,7 @@ export class ExportService {
 
 					if (result.length) {
 						await appendFile(
-							path,
+							tmpFile.path,
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
@@ -292,7 +294,7 @@ export class ExportService {
 				type: mimeTypes[format],
 			};
 
-			const savedFile = await filesService.uploadOne(createReadStream(path), fileWithDefaults);
+			const savedFile = await filesService.uploadOne(createReadStream(tmpFile.path), fileWithDefaults);
 
 			if (this.accountability?.user) {
 				const notificationsService = new NotificationsService({
@@ -325,8 +327,6 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 					item: savedFile,
 				});
 			}
-
-			await cleanup();
 		} catch (err: any) {
 			logger.error(err, `Couldn't export ${collection}: ${err.message}`);
 
@@ -343,6 +343,8 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 					message: `Please contact your system administrator for more information.`,
 				});
 			}
+		} finally {
+			await tmpFile?.cleanup();
 		}
 	}
 
