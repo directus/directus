@@ -1,13 +1,8 @@
+import { CreateCollection, CreateField, CreateFieldO2M, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import {
-	CreateCollection,
-	CreateField,
-	CreateFieldO2M,
-	CreateItem,
-	DeleteCollection,
-	PRIMARY_KEY_TYPES,
-} from '@common/index';
+import { PRIMARY_KEY_TYPES } from '@common/variables';
 import { v4 as uuid } from 'uuid';
+import { expect, it } from 'vitest';
 
 export const collectionFirst = 'test_items_conceal_filter_first';
 export const collectionSecond = 'test_items_conceal_filter_second';

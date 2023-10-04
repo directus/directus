@@ -1,4 +1,4 @@
-module.exports = function registerHooks({ action }, { services }) {
+export default function registerHooks({ action }, { services }) {
 	const logsCollection = 'tests_extensions_log';
 
 	action('test_items_no_relations_artists_integer.items.create', collectionsCallback);
@@ -34,4 +34,4 @@ module.exports = function registerHooks({ action }, { services }) {
 			await database(logsCollection).insert({ key, value: '0' });
 		}
 	}
-};
+}

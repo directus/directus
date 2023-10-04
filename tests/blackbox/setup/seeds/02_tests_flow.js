@@ -1,6 +1,6 @@
-const generateHash = require('../setup-utils');
+import { generateHash } from '../setup-utils.js';
 
-exports.seed = async function (knex) {
+export async function seed(knex) {
 	await knex('tests_flow_data').del();
 	await knex('tests_flow_completed').del();
 
@@ -21,10 +21,10 @@ exports.seed = async function (knex) {
 		{
 			id: '3d075128-c073-4f5d-891c-ed2eb2790a1c',
 			email: 'flow@tests.com',
-			password: await generateHash.hash('TestsFlowUserPassword'),
+			password: await generateHash('TestsFlowUserPassword'),
 			status: 'active',
 			role: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
 			token: 'TestsFlowToken',
 		},
 	]);
-};
+}
