@@ -3,10 +3,7 @@ import { randomIdentifier, randomInteger, randomAlpha } from '@directus/random';
 import { beforeEach, expect, test, describe } from 'vitest';
 import { parameterIndexGenerator } from '../../param-index-generator.js';
 import { convertFilter } from './filter.js';
-import type {
-	AbstractSqlQueryLogicalNode,
-	AbstractSqlQueryConditionNode,
-} from '../../../types/clauses/where/index.js';
+import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from '../../../types/clauses/where/index.js';
 
 let randomCollection: string;
 let randomField1: string;
