@@ -1,9 +1,7 @@
-import { isFetchResponse } from "./is-response.js";
+import { isFetchResponse } from './is-response.js';
 
 /**
- *
- * @param {unknown} response
- * @returns {any}
+ * Tries to extract a fetch response
  */
 export async function extractData(response: unknown) {
 	if (typeof response !== 'object' || !response) return;
