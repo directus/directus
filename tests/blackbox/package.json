@@ -4,7 +4,8 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"test": "vitest --watch=false"
+		"test": "vitest --watch=false",
+		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
