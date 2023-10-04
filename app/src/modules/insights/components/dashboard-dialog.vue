@@ -1,34 +1,3 @@
-<template>
-	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
-		<template #activator="slotBinding">
-			<slot name="activator" v-bind="slotBinding" />
-		</template>
-
-		<v-card>
-			<v-card-title v-if="!dashboard">{{ t('create_dashboard') }}</v-card-title>
-			<v-card-title v-else>{{ t('edit_dashboard') }}</v-card-title>
-
-			<v-card-text>
-				<div class="fields">
-					<v-input v-model="values.name" class="full" autofocus :placeholder="t('dashboard_name')" />
-					<interface-select-icon :value="values.icon" @input="values.icon = $event" />
-					<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
-					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
-				</div>
-			</v-card-text>
-
-			<v-card-actions>
-				<v-button secondary @click="cancel">
-					{{ t('cancel') }}
-				</v-button>
-				<v-button :disabled="!values.name" :loading="saving" @click="save">
-					{{ t('save') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { router } from '@/router';
@@ -98,6 +67,37 @@ async function save() {
 	}
 }
 </script>
+
+<template>
+	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
+		<template #activator="slotBinding">
+			<slot name="activator" v-bind="slotBinding" />
+		</template>
+
+		<v-card>
+			<v-card-title v-if="!dashboard">{{ t('create_dashboard') }}</v-card-title>
+			<v-card-title v-else>{{ t('edit_dashboard') }}</v-card-title>
+
+			<v-card-text>
+				<div class="fields">
+					<v-input v-model="values.name" class="full" autofocus :placeholder="t('dashboard_name')" />
+					<interface-select-icon :value="values.icon" @input="values.icon = $event" />
+					<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
+					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
+				</div>
+			</v-card-text>
+
+			<v-card-actions>
+				<v-button secondary @click="cancel">
+					{{ t('cancel') }}
+				</v-button>
+				<v-button :disabled="!values.name" :loading="saving" @click="save">
+					{{ t('save') }}
+				</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+</template>
 
 <style scoped>
 .fields {

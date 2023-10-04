@@ -1,9 +1,3 @@
-<template>
-	<div class="v-card" :class="{ disabled, tile }">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** Disables any interactions with the card */
@@ -17,6 +11,12 @@ withDefaults(defineProps<Props>(), {
 	tile: false,
 });
 </script>
+
+<template>
+	<div class="v-card" :class="{ disabled, tile }">
+		<slot />
+	</div>
+</template>
 
 <style>
 body {

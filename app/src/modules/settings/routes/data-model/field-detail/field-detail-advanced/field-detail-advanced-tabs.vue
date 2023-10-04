@@ -1,11 +1,3 @@
-<template>
-	<v-tabs v-model="currentTabSync" vertical>
-		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value" :disabled="tab.disabled">
-			{{ tab.text }}
-		</v-tab>
-	</v-tabs>
-</template>
-
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { storeToRefs } from 'pinia';
@@ -83,3 +75,11 @@ const tabs = computed(() => {
 	return tabs;
 });
 </script>
+
+<template>
+	<v-tabs v-model="currentTabSync" vertical>
+		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value" :disabled="tab.disabled">
+			{{ tab.text }}
+		</v-tab>
+	</v-tabs>
+</template>

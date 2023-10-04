@@ -1,12 +1,3 @@
-<template>
-	<span class="v-highlight">
-		<template v-for="(part, index) in parts" :key="index">
-			<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
-			<span v-else>{{ part.text }}</span>
-		</template>
-	</span>
-</template>
-
 <script setup lang="ts">
 import { toArray } from '@directus/utils';
 import { flatten } from 'lodash';
@@ -131,15 +122,18 @@ const parts = computed<HighlightPart[]>(() => {
 });
 </script>
 
-<style scoped>
-.v-highlight {
-	padding: 1px 2px;
-}
+<template>
+	<span class="v-highlight">
+		<template v-for="(part, index) in parts" :key="index">
+			<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
+			<template v-else>{{ part.text }}</template>
+		</template>
+	</span>
+</template>
 
+<style scoped>
 mark {
-	margin: -1px -2px;
-	padding: 1px 2px;
-	background-color: var(--primary-25);
-	border-radius: var(--border-radius);
+	background-color: var(--background-mark);
+	border-radius: 2px;
 }
 </style>

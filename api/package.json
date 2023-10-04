@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "13.1.0",
+	"version": "13.1.1",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -159,6 +159,7 @@
 		"strip-bom-stream": "5.0.0",
 		"tar": "6.1.13",
 		"tmp-promise": "3.0.3",
+		"tinypool": "0.8.1",
 		"tsx": "3.12.7",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
@@ -214,7 +215,7 @@
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
 		"supertest": "6.3.3",
-		"typescript": "5.0.4",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	},
 	"optionalDependencies": {

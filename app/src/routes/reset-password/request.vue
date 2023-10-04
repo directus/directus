@@ -1,17 +1,3 @@
-<template>
-	<form @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
-		<v-notice v-if="done" type="success">{{ t('password_reset_sent') }}</v-notice>
-		<v-notice v-if="error" type="danger">
-			{{ errorFormatted }}
-		</v-notice>
-		<div class="buttons">
-			<v-button type="submit" :loading="sending" large>{{ t('reset') }}</v-button>
-			<router-link :to="signInLink" class="sign-in">{{ t('sign_in') }}</router-link>
-		</div>
-	</form>
-</template>
-
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
@@ -53,6 +39,20 @@ async function onSubmit() {
 	}
 }
 </script>
+
+<template>
+	<form @submit.prevent="onSubmit">
+		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+		<v-notice v-if="done" type="success">{{ t('password_reset_sent') }}</v-notice>
+		<v-notice v-if="error" type="danger">
+			{{ errorFormatted }}
+		</v-notice>
+		<div class="buttons">
+			<v-button type="submit" :loading="sending" large>{{ t('reset') }}</v-button>
+			<router-link :to="signInLink" class="sign-in">{{ t('sign_in') }}</router-link>
+		</div>
+	</form>
+</template>
 
 <style lang="scss" scoped>
 .buttons {

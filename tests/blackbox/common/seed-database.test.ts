@@ -24,6 +24,7 @@ describe('Seed Database Structure', () => {
 	}
 
 	for (const path of paths) {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const importedTest = require(`../${path}`);
 
 		if (typeof importedTest.seedDBStructure === 'function') {

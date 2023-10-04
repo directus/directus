@@ -1,19 +1,3 @@
-<template>
-	<span class="v-breadcrumb">
-		<span v-for="(item, index) in items" :key="item.name" class="section" :class="{ disabled: item.disabled }">
-			<v-icon v-if="index > 0" name="chevron_right" small />
-			<router-link v-if="!item.disabled" :to="item.to" class="section-link">
-				<v-icon v-if="item.icon" :name="item.icon" small />
-				{{ item.name }}
-			</router-link>
-			<span v-else class="section-link">
-				<v-icon v-if="item.icon" :name="item.icon" />
-				{{ item.name }}
-			</span>
-		</span>
-	</span>
-</template>
-
 <script setup lang="ts">
 interface Breadcrumb {
 	to: string;
@@ -31,6 +15,22 @@ withDefaults(defineProps<Props>(), {
 	items: () => [],
 });
 </script>
+
+<template>
+	<span class="v-breadcrumb">
+		<span v-for="(item, index) in items" :key="item.name" class="section" :class="{ disabled: item.disabled }">
+			<v-icon v-if="index > 0" name="chevron_right" small />
+			<router-link v-if="!item.disabled" :to="item.to" class="section-link">
+				<v-icon v-if="item.icon" :name="item.icon" small />
+				{{ item.name }}
+			</router-link>
+			<span v-else class="section-link">
+				<v-icon v-if="item.icon" :name="item.icon" />
+				{{ item.name }}
+			</span>
+		</span>
+	</span>
+</template>
 
 <style>
 body {

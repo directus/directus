@@ -1,7 +1,3 @@
-<template>
-	<v-form v-model="conditionsSync" :fields="fields" :loading="loading" />
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { DeepPartial, Field } from '@directus/types';
@@ -22,7 +18,7 @@ const interfaceId = computed(() => field.value.meta?.interface ?? null);
 
 const conditionsSync = computed({
 	get() {
-		return conditions.value;
+		return { conditions: conditions.value };
 	},
 	set(value) {
 		if (!value.conditions || value.conditions.length === 0) {
@@ -37,7 +33,7 @@ const conditionsSync = computed({
 			return condition;
 		});
 
-		conditions.value = { conditions: conditionsWithDefaults };
+		conditions.value = conditionsWithDefaults;
 	},
 });
 
@@ -179,3 +175,7 @@ const fields = computed(() => [
 	},
 ]);
 </script>
+
+<template>
+	<v-form v-model="conditionsSync" :fields="fields" :loading="loading" />
+</template>
