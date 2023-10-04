@@ -1,17 +1,18 @@
-import config, { Env, getUrl, paths } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
-import request from 'supertest';
+import config, { getUrl, paths, type Env } from '@common/config';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
-import { ChildProcess, spawn } from 'child_process';
-import knex from 'knex';
-import type { Knex } from 'knex';
-import { cloneDeep } from 'lodash';
 import { sleep } from '@utils/sleep';
+import { ChildProcess, spawn } from 'child_process';
+import type { Knex } from 'knex';
+import knex from 'knex';
+import { cloneDeep } from 'lodash-es';
+import request from 'supertest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 describe('/flows', () => {
-	const databases = new Map<string, Knex>();
-	const directusInstances = {} as { [vendor: string]: ChildProcess };
+	const databases = new Map<Vendor, Knex>();
+	const directusInstances = {} as Record<Vendor, ChildProcess>;
 	const envs = {} as { [vendor: string]: Env };
 
 	beforeAll(async () => {
@@ -21,8 +22,8 @@ describe('/flows', () => {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
 			const env = cloneDeep(config.envs);
-			env[vendor].CACHE_ENABLED = 'true';
-			env[vendor].CACHE_STORE = 'memory';
+			env[vendor]['CACHE_ENABLED'] = 'true';
+			env[vendor]['CACHE_STORE'] = 'memory';
 
 			const newServerPort = Number(env[vendor]!.PORT) + 150;
 			env[vendor]!.PORT = String(newServerPort);
@@ -75,7 +76,7 @@ describe('/flows', () => {
 				const flowId = (
 					await request(getUrl(vendor, env))
 						.post('/flows')
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.query({ fields: ['id'] })
 						.send(payloadFlowCreate)
 				).body.data.id;
@@ -83,7 +84,7 @@ describe('/flows', () => {
 				const flowCacheEnabledId = (
 					await request(getUrl(vendor, env))
 						.post('/flows')
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.query({ fields: ['id'] })
 						.send({
 							...payloadFlowCreate,
@@ -95,7 +96,7 @@ describe('/flows', () => {
 				const flowCacheDisabledId = (
 					await request(getUrl(vendor, env))
 						.post('/flows')
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.query({ fields: ['id'] })
 						.send({
 							...payloadFlowCreate,
@@ -106,17 +107,17 @@ describe('/flows', () => {
 
 				await request(getUrl(vendor, env))
 					.patch(`/flows/${flowId}`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.send({ operation: { ...payloadOperationCreate, flow: flowId } });
 
 				await request(getUrl(vendor, env))
 					.patch(`/flows/${flowCacheEnabledId}`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.send({ operation: { ...payloadOperationCreate, flow: flowCacheEnabledId } });
 
 				await request(getUrl(vendor, env))
 					.patch(`/flows/${flowCacheDisabledId}`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.send({ operation: { ...payloadOperationCreate, flow: flowCacheDisabledId } });
 
 				// Action
@@ -172,7 +173,7 @@ describe('/flows', () => {
 				const flowId = (
 					await request(getUrl(vendor, env))
 						.post('/flows')
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.query({ fields: ['id'] })
 						.send(payloadFlowCreate)
 				).body.data.id;
@@ -180,7 +181,7 @@ describe('/flows', () => {
 				const flowCacheEnabledId = (
 					await request(getUrl(vendor, env))
 						.post('/flows')
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.query({ fields: ['id'] })
 						.send({
 							...payloadFlowCreate,
@@ -191,12 +192,12 @@ describe('/flows', () => {
 
 				await request(getUrl(vendor, env))
 					.patch(`/flows/${flowId}`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.send({ operation: { ...payloadOperationCreate, flow: flowId } });
 
 				await request(getUrl(vendor, env))
 					.patch(`/flows/${flowCacheEnabledId}`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.send({ operation: { ...payloadOperationCreate, flow: flowCacheEnabledId } });
 
 				// Action

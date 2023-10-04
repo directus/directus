@@ -1,6 +1,6 @@
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
+import { USER } from '@common/variables';
 import request from 'supertest';
 
 export const flowName = 'Schedule Hook Test';
@@ -35,14 +35,14 @@ export const seedDBValues = async () => {
 			const flowId = (
 				await request(getUrl(vendor))
 					.post('/flows')
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.query({ fields: ['id'] })
 					.send(payloadFlowCreate)
 			).body.data.id;
 
 			await request(getUrl(vendor))
 				.patch(`/flows/${flowId}`)
-				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 				.send({ operation: { ...payloadOperationCreate, flow: flowId } });
 		})
 	)

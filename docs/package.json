@@ -21,6 +21,7 @@
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/marked": "5.0.1",
+		"@vueuse/core": "10.1.2",
 		"eslint-parser-plain": "0.1.0",
 		"eslint-plugin-markdown": "3.0.1",
 		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@4.3.0-1",

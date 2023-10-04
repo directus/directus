@@ -229,3 +229,9 @@ Note: This feature is available for permissions, validation, presets and conditi
 support the root ID.
 
 :::
+
+::: tip Dynamic Variables not available in Flows
+
+Although certain Operations in Flows use filter rules, dynamic variables are not available in Flows.
+
+:::

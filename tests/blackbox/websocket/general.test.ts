@@ -1,19 +1,22 @@
-import config, { Env, getUrl, paths } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
-import request from 'supertest';
+import config, { getUrl, paths, type Env } from '@common/config';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import { createWebSocketConn, createWebSocketGql } from '@common/transport';
+import type { WebSocketResponse, WebSocketSubscriptionOptions } from '@common/types';
+import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
+import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
 import knex, { Knex } from 'knex';
-import { cloneDeep } from 'lodash';
-import { collectionFirst } from './general.seed';
+import { cloneDeep } from 'lodash-es';
+import request from 'supertest';
 import { v4 as uuid } from 'uuid';
-import { sleep } from '@utils/sleep';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { collectionFirst } from './general.seed';
 
 describe('WebSocket General Tests', () => {
 	const databases = new Map<string, Knex>();
 	const directusInstances = {} as { [vendor: string]: ChildProcess[] };
-	const envs = {} as { [vendor: string]: Env[] };
+	const envs = {} as Record<Vendor, [Env, Env]>;
 
 	beforeAll(async () => {
 		const promises = [];
@@ -22,9 +25,9 @@ describe('WebSocket General Tests', () => {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
 			const env1 = cloneDeep(config.envs);
-			env1[vendor].REDIS = `redis://localhost:6108/4`;
-			env1[vendor].MESSENGER_STORE = 'redis';
-			env1[vendor].MESSENGER_NAMESPACE = `directus-ws-${vendor}`;
+			env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
+			env1[vendor]['MESSENGER_STORE'] = 'redis';
+			env1[vendor]['MESSENGER_NAMESPACE'] = `directus-ws-${vendor}`;
 
 			const env2 = cloneDeep(env1);
 
@@ -46,7 +49,7 @@ describe('WebSocket General Tests', () => {
 
 		// Give the server some time to start
 		await Promise.all(promises);
-	}, 180000);
+	}, 180_000);
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
@@ -58,7 +61,7 @@ describe('WebSocket General Tests', () => {
 		}
 	});
 
-	describe.each(common.PRIMARY_KEY_TYPES)('Primary key type: %s', (pkType) => {
+	describe.each(PRIMARY_KEY_TYPES)('Primary key type: %s', (pkType) => {
 		const localCollectionFirst = `${collectionFirst}_${pkType}`;
 
 		describe('Test subscriptions', () => {
@@ -70,20 +73,20 @@ describe('WebSocket General Tests', () => {
 					const env1 = envs[vendor][0];
 					const env2 = envs[vendor][1];
 
-					const ws = common.createWebSocketConn(getUrl(vendor, env1), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const ws = createWebSocketConn(getUrl(vendor, env1), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					const ws2 = common.createWebSocketConn(getUrl(vendor, env2), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const ws2 = createWebSocketConn(getUrl(vendor, env2), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					const wsGql = common.createWebSocketGql(getUrl(vendor, env1), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const wsGql = createWebSocketGql(getUrl(vendor, env1), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					const wsGql2 = common.createWebSocketGql(getUrl(vendor, env2), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const wsGql2 = createWebSocketGql(getUrl(vendor, env2), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
 					const messageList = [];
@@ -128,7 +131,7 @@ describe('WebSocket General Tests', () => {
 						await request(getUrl(vendor, env1))
 							.post(`/items/${localCollectionFirst}`)
 							.send({ id: pkType === 'string' ? uuid() : undefined, name: insertedName })
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					).body.data.id;
 
 					for (const uid of uids) {
@@ -176,7 +179,7 @@ describe('WebSocket General Tests', () => {
 					expect(messageList).toEqual(messageList2);
 					expect(messageListGql).toEqual(messageListGql2);
 				},
-				100000
+				100_000
 			);
 		});
 
@@ -189,20 +192,20 @@ describe('WebSocket General Tests', () => {
 					const env1 = envs[vendor][0];
 					const env2 = envs[vendor][1];
 
-					const ws = common.createWebSocketConn(getUrl(vendor, env1), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const ws = createWebSocketConn(getUrl(vendor, env1), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					const ws2 = common.createWebSocketConn(getUrl(vendor, env2), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const ws2 = createWebSocketConn(getUrl(vendor, env2), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					const wsGql = common.createWebSocketGql(getUrl(vendor, env1), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const wsGql = createWebSocketGql(getUrl(vendor, env1), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					const wsGql2 = common.createWebSocketGql(getUrl(vendor, env2), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const wsGql2 = createWebSocketGql(getUrl(vendor, env2), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
 					// Action
@@ -243,7 +246,7 @@ describe('WebSocket General Tests', () => {
 					await request(getUrl(vendor, env1))
 						.post(`/items/${localCollectionFirst}`)
 						.send({ id: pkType === 'string' ? uuid() : undefined, name: uuid() })
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					ws.conn.close();
 					ws2.conn.close();
@@ -258,7 +261,7 @@ describe('WebSocket General Tests', () => {
 						expect(wsGql2.getMessageCount(uid)).toBe(0);
 					}
 				},
-				100000
+				100_000
 			);
 		});
 
@@ -270,17 +273,17 @@ describe('WebSocket General Tests', () => {
 					const eventUids = [undefined, 'create', 'update', 'delete'];
 					const env = envs[vendor][0];
 
-					const ws = common.createWebSocketConn(getUrl(vendor, env), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const ws = createWebSocketConn(getUrl(vendor, env), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					const wsGql = common.createWebSocketGql(getUrl(vendor, env), {
-						auth: { access_token: common.USER.ADMIN.TOKEN },
+					const wsGql = createWebSocketGql(getUrl(vendor, env), {
+						auth: { access_token: USER.ADMIN.TOKEN },
 					});
 
-					let messageList: common.WebSocketResponse[] = [];
+					let messageList: WebSocketResponse[] = [];
 					const messageListFiltered: Record<string, any> = {};
-					let messageListGql: common.WebSocketResponse[] = [];
+					let messageListGql: WebSocketResponse[] = [];
 					const messageListGqlFiltered: Record<string, any> = {};
 
 					let subscriptionKey = '';
@@ -290,7 +293,7 @@ describe('WebSocket General Tests', () => {
 						await ws.subscribe({
 							collection: localCollectionFirst,
 							uid,
-							event: uid as common.WebSocketSubscriptionOptions['event'],
+							event: uid as WebSocketSubscriptionOptions['event'],
 						});
 
 						const gqlQuery =
@@ -311,7 +314,7 @@ describe('WebSocket General Tests', () => {
 							collection: localCollectionFirst,
 							jsonQuery: gqlQuery,
 							uid,
-							event: uid as common.WebSocketSubscriptionOptions['event'],
+							event: uid as WebSocketSubscriptionOptions['event'],
 						});
 					}
 
@@ -322,7 +325,7 @@ describe('WebSocket General Tests', () => {
 						await request(getUrl(vendor, env))
 							.post(`/items/${localCollectionFirst}`)
 							.send({ id: pkType === 'string' ? uuid() : undefined, name: insertedName })
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					).body.data.id;
 
 					await sleep(100);
@@ -330,13 +333,13 @@ describe('WebSocket General Tests', () => {
 					await request(getUrl(vendor, env))
 						.patch(`/items/${localCollectionFirst}/${insertedId}`)
 						.send({ name: updatedName })
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					await sleep(100);
 
 					await request(getUrl(vendor, env))
 						.delete(`/items/${localCollectionFirst}/${insertedId}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					await sleep(100);
 
@@ -497,7 +500,7 @@ describe('WebSocket General Tests', () => {
 						}
 					}
 				},
-				100000
+				100_000
 			);
 		});
 	});

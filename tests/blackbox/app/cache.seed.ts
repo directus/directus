@@ -1,6 +1,7 @@
+import { CreateCollection, CreateField, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { CreateCollection, CreateField, CreateItem, DeleteCollection } from '@common/index';
 import { v4 as uuid } from 'uuid';
+import { expect, it } from 'vitest';
 
 export const collectionFirst = 'test_app_cache_first';
 export const collectionIgnored = 'test_app_cache_ignored';
@@ -51,7 +52,7 @@ export const seedDBStructure = () => {
 				expect(error).toBeFalsy();
 			}
 		},
-		300000
+		300_000
 	);
 };
 
