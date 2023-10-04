@@ -6,8 +6,6 @@ import getTemplatePath from '../../utils/get-template-path.js';
 
 type TemplateFile = { type: 'config' | 'source'; path: string };
 
-type LangWithSecure = Language | 'secure';
-
 async function copyTemplateFile(templateFile: TemplateFile, extensionPath: string, sourcePath?: string) {
 	if (sourcePath !== undefined) {
 		const oldName = path.basename(templateFile.path);
@@ -42,21 +40,21 @@ async function getLanguageTemplateFiles(templateLanguagePath: string): Promise<T
 	return [...configTemplateFiles, ...sourceTemplateFiles];
 }
 
-async function getTypeTemplateFiles(templateTypePath: string, language?: LangWithSecure): Promise<TemplateFile[]> {
+async function getTypeTemplateFiles(templateTypePath: string, language?: Language, secure?: boolean): Promise<TemplateFile[]> {
 	const [commonTemplateFiles, languageTemplateFiles] = await Promise.all([
 		getLanguageTemplateFiles(path.join(templateTypePath, 'common')),
-		language ? getLanguageTemplateFiles(path.join(templateTypePath, language)) : null,
+		language ? getLanguageTemplateFiles(path.join(templateTypePath, language + (secure ? '-secure' : ''))) : null,
 	]);
 
 	return [...commonTemplateFiles, ...(languageTemplateFiles ? languageTemplateFiles : [])];
 }
 
-async function getTemplateFiles(type: ExtensionType, language?: LangWithSecure): Promise<TemplateFile[]> {
+async function getTemplateFiles(type: ExtensionType, language?: Language, secure?: boolean): Promise<TemplateFile[]> {
 	const templatePath = getTemplatePath();
 
 	const [commonTemplateFiles, typeTemplateFiles] = await Promise.all([
-		getTypeTemplateFiles(path.join(templatePath, 'common'), language),
-		getTypeTemplateFiles(path.join(templatePath, type), language),
+		getTypeTemplateFiles(path.join(templatePath, 'common'), language, secure),
+		getTypeTemplateFiles(path.join(templatePath, type), language, secure),
 	]);
 
 	return [...commonTemplateFiles, ...typeTemplateFiles];
@@ -69,15 +67,7 @@ export default async function copyTemplate(
 	language?: Language,
 	secure?: boolean
 ): Promise<void> {
-	let lang: LangWithSecure | undefined = language
-
-	if (['hook', 'operation', 'endpoint'].includes(type)) {
-		if (secure === true) {
-			lang = 'secure'
-		}
-	}
-
-	const templateFiles = await getTemplateFiles(type, lang);
+	const templateFiles = await getTemplateFiles(type, language, secure);
 
 	await Promise.all(templateFiles.map((templateFile) => copyTemplateFile(templateFile, extensionPath, sourcePath)));
 }

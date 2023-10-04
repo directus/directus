@@ -5,8 +5,6 @@ import type { Field } from './fields.js';
 import type { DeepPartial } from './misc.js';
 import type { FlowRaw } from './flows.js';
 
-// --- operation ---
-
 export type OperationContext = ApiExtensionContext & {
 	data: Record<string, unknown>;
 	accountability: Accountability | null;
@@ -37,21 +35,4 @@ export interface OperationApiConfig<Options = Record<string, unknown>> {
 	id: string;
 
 	handler: OperationHandler<Options>;
-}
-
-// --- secure operation ---
-
-export type SecureOperationContext = {
-	data: Record<string, unknown>;
-};
-
-export type SecureOperationHandler<Options = Record<string, unknown>> = (
-	options: Options,
-	context: SecureOperationContext
-) => unknown | Promise<unknown> | void;
-
-export interface SecureOperationApiConfig<Options = Record<string, unknown>> {
-	id: string;
-
-	handler: SecureOperationHandler<Options>;
 }

@@ -244,7 +244,7 @@ export class ExtensionManager {
 
 		const registeredExtensions = await extensionsService.readByQuery({
 			limit: -1,
-			fields: ['*', 'granted_permissions.*'],
+			fields: ['*'],
 		});
 
 		for (const extension of extensions) {
@@ -258,6 +258,7 @@ export class ExtensionManager {
 					name: extension.name,
 					enabled: true,
 					options: {},
+					granted_permissions: [],
 				});
 
 				registeredExtensions.push({

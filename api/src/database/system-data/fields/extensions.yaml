@@ -5,6 +5,9 @@ fields:
   - field: enabled
     special:
       - cast-boolean
+  - field: granted_permissions
+    special:
+      - cast-json
   - field: options
     special:
       - cast-json

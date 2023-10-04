@@ -41,6 +41,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import type { ApiExtensionInfo } from './vm.js';
 
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
@@ -62,6 +63,7 @@ type RunningApiExtension = {
 
 export class RegistrationManager {
 	private extensionManager: ExtensionManager;
+	// runningApiExtensions can have multiple entries for the same extension
 	private runningApiExtensions: RunningApiExtension[] = [];
 	public endpointRouter: Router;
 	private appExtensionChunks: Map<string, string>;
@@ -81,13 +83,7 @@ export class RegistrationManager {
 			try {
 
 				if (hook.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(hook);
-
-					this.runningApiExtensions.push({
-						extension: hook.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(hook);
 					return;
 				}
 
@@ -138,13 +134,7 @@ export class RegistrationManager {
 			try {
 
 				if (endpoint.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(endpoint);
-
-					this.runningApiExtensions.push({
-						extension: endpoint.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(endpoint);
 					return;
 				}
 
@@ -192,13 +182,7 @@ export class RegistrationManager {
 			try {
 
 				if (operation.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(operation);
-
-					this.runningApiExtensions.push({
-						extension: operation.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(operation);
 					return;
 				}
 
@@ -234,13 +218,7 @@ export class RegistrationManager {
 			try {
 
 				if (bundle.secure) {
-					const unregister = await this.extensionManager.vm.runExtension(bundle);
-
-					this.runningApiExtensions.push({
-						extension: bundle.name,
-						unregister,
-					});
-
+					await this.extensionManager.vm.runExtension(bundle);
 					return;
 				}
 
@@ -401,6 +379,31 @@ export class RegistrationManager {
 		const flowManager = getFlowManager();
 
 		flowManager.addOperation(config.id, config.handler);
+	}
+
+	public async restartSecureExtension(name: string) {
+		await this.unregisterApiExtension(name);
+
+		const extension = this.extensionManager.getEnabledExtensions().find((extension) => extension.name === name);
+
+		if (!extension) return
+
+		await this.extensionManager.vm.runExtension(extension as ApiExtensionInfo);
+	}
+
+	public addUnregisterFunction(extension: string, unregister: () => void | Promise<void>): void {
+		this.runningApiExtensions.push({
+			extension,
+			unregister,
+		});
+	}
+
+	public async unregisterApiExtension(name: string): Promise<void> {
+		for (const extension of this.runningApiExtensions) {
+			if (extension.extension === name) {
+				await extension.unregister();
+			}
+		}
 	}
 
 	public async unregisterApiExtensions(): Promise<void> {

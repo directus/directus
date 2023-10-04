@@ -101,6 +101,10 @@ class FlowManager {
 		this.operations[id] = operation;
 	}
 
+	public removeOperation(id: string): void {
+		delete this.operations[id];
+	}
+
 	public clearOperations(): void {
 		this.operations = {};
 	}

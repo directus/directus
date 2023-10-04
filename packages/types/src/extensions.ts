@@ -7,7 +7,6 @@ import type {
 	ExtensionOptions,
 	ExtensionOptionsBundleEntries,
 	ExtensionOptionsBundleEntry,
-	ExtensionPermissionOptions,
 	ExtensionPermission,
 	HYBRID_EXTENSION_TYPES,
 	LOCAL_TYPES,
@@ -15,7 +14,6 @@ import type {
 	SplitEntrypoint,
 	ExtensionInfo,
 	DatabaseExtension,
-	DatabaseExtensionPermission,
 	AppExtension,
 	ApiExtension,
 	HybridExtension,
@@ -38,6 +36,7 @@ import type { OperationAppConfig } from './operations.js';
 import type { PanelConfig } from './panels.js';
 import type { Relation } from './relations.js';
 import type { SchemaOverview } from './schema.js';
+import type { EXEC_CRUD, EXEC_LOG, EXEC_REGISTER_ENDPOINT, EXEC_REGISTER_HOOK, EXEC_REGISTER_OPERATION, EXEC_REQUEST } from './index.js';
 
 export type AppExtensionType = (typeof APP_EXTENSION_TYPES)[number];
 export type ApiExtensionType = (typeof API_EXTENSION_TYPES)[number];
@@ -49,8 +48,6 @@ export type NestedExtensionType = (typeof NESTED_EXTENSION_TYPES)[number];
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
 export type DatabaseExtension = z.infer<typeof DatabaseExtension>;
-
-export type DatabaseExtensionPermission = z.infer<typeof DatabaseExtensionPermission>;
 
 export type AppExtension = z.infer<typeof AppExtension>;
 
@@ -70,7 +67,6 @@ export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundl
 export type ExtensionManifest = z.infer<typeof ExtensionManifest>;
 
 export type ExtensionPermission = z.infer<typeof ExtensionPermission>;
-export type ExtensionPermissionOptions = z.infer<typeof ExtensionPermissionOptions>;
 
 export type AppExtensionConfigs = {
 	interfaces: InterfaceConfig[];
@@ -119,3 +115,12 @@ export type ExtensionOptionsContext = {
 export type ExtensionInfo = z.infer<typeof ExtensionInfo>;
 
 export type FullExtension = z.infer<typeof FullExtension>;
+
+declare function exec(...args: EXEC_CRUD): Promise<any>
+declare function exec(...args: EXEC_REQUEST): Promise<string | Record<string, any>>
+declare function exec(...args: EXEC_LOG): Promise<void>
+declare function exec(...args: EXEC_REGISTER_ENDPOINT): Promise<void>
+declare function exec(...args: EXEC_REGISTER_HOOK): Promise<void>
+declare function exec(...args: EXEC_REGISTER_OPERATION): Promise<void>
+
+export type exec = typeof exec;

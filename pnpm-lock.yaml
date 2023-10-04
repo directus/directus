@@ -1108,6 +1108,9 @@ importers:
 
   packages/constants:
     dependencies:
+      isolated-vm:
+        specifier: 4.6.0
+        version: 4.6.0
       zod:
         specifier: 3.21.4
         version: 3.21.4
