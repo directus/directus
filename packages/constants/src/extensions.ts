@@ -108,19 +108,11 @@ export const ExtensionManifest = z.object({
 
 // ---------- types for database extension ---------- //
 
-export const DatabaseExtensionPermission = z.object({
-	id: z.number(),
-	extension: z.string(),
-	permission: z.string(),
-	enabled: z.boolean(),
-	options: z.record(z.any()).nullable(),
-});
-
 export const DatabaseExtension = z.object({
 	name: z.string(),
 	enabled: z.boolean(),
 	options: z.record(z.any()).nullable(),
-	granted_permissions: z.array(DatabaseExtensionPermission),
+	granted_permissions: z.array(ExtensionPermission).nullable(),
 	registry: z.string().nullable(),
 });
 
