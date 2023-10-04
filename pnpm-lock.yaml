@@ -1909,9 +1909,6 @@ importers:
       '@types/node-fetch':
         specifier: 2.6.4
         version: 2.6.4
-      '@vitest/coverage-c8':
-        specifier: 0.31.1
-        version: 0.31.1(vitest@0.31.1)
       tsup:
         specifier: 7.2.0
         version: 7.2.0(typescript@5.2.2)
