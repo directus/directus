@@ -19,8 +19,12 @@ export default addExecOptions((context) => {
 		const [_, validOptions] = EXEC_REGISTER_ENDPOINT.parse(args);
 
 		scopedRouter[<Lowercase<typeof validOptions.method>>validOptions.method.toLocaleLowerCase()](validOptions.path, async (req, res) => {
+
 			const result = await resumeIsolate(context, validOptions.handler as unknown as Reference, [{
 				'url': req.url,
+				'headers': req.headers,
+				'body': req.body,
+				'baseUrl': req.baseUrl,
 			}])
 
 			if (result instanceof Error) {
