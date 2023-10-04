@@ -26,7 +26,7 @@ env:
 jobs:
   test:
     name: ${{ matrix.vendor }}
-    runs-on: ${{ matrix.vendor == 'mssql' && 'windows-latest' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -57,32 +57,26 @@ jobs:
         env:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 
-      - name: Start services
-        run:
-          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
-
       - name: Start MSSQL
         if: matrix.vendor == 'mssql'
-        shell: pwsh
         run: |
-          # Install SQL Server Express 2022
-          choco install sql-server-express --version=2022.16.0.1000 --yes --no-progress --params="'/SAPWD:Test@123'"
+          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
+          curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/mssql-server-preview.list | sudo tee /etc/apt/sources.list.d/mssql-server-preview.list
+          sudo apt-get update
+          sudo apt-get install -y mssql-server
+          sudo MSSQL_PID='express' MSSQL_SA_PASSWORD='Test@123' /opt/mssql/bin/mssql-conf -n setup accept-eula
+          sudo /opt/mssql/bin/mssql-conf set network.tcpport 6105
+          sudo systemctl restart mssql-server
 
-          # Enable TCP on port 6105
-          sqlps -Command "&{
-            `$smo = 'Microsoft.SqlServer.Management.Smo.'
-            `$wmi = new-object (`$smo + 'Wmi.ManagedComputer')
-            `$uri = 'ManagedComputer[@Name=''' + (get-item env:\computername).Value + ''']/ServerInstance[@Name=''SQLEXPRESS'']/ServerProtocol[@Name=''Tcp'']'
-            `$Tcp = `$wmi.GetSmoObject(`$uri)
-            `$Tcp.IsEnabled = `$true
-            `$wmi.GetSmoObject(`$uri + '/IPAddress[@Name=''IPAll'']').IPAddressProperties[1].Value='6105'
-            `$Tcp.Alter()
-          }"
-          Restart-Service -Name 'MSSQL$SQLEXPRESS'
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Start ${{ matrix.vendor }}
         if: matrix.vendor != 'sqlite3' && matrix.vendor != 'mssql'
         run: docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} -d --quiet-pull --wait
+
+      - name: Start services
+        run:
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox
