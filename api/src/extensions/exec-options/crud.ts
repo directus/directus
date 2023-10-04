@@ -9,7 +9,14 @@ export default addExecOptions(({ extension }) => {
 
 	async function handleCRUD(args: unknown[]) {
 
+		const [type, collection, options] = EXEC_CRUD.parse(args);
+
+
 		const permission = extension.requested_permissions?.find((permission) => ['create-items', 'read-items', 'update-items', 'delete-items'].includes(permission.permission)) as ExtensionPermission & { permission: 'create-items' | 'read-items' | 'update-items' | 'delete-items' }
+
+		if (!permission) {
+			throw new Error(`You do not have access to "${type}}"`);
+		}
 
 		const accountability: Accountability = {
 			role: null
@@ -19,7 +26,6 @@ export default addExecOptions(({ extension }) => {
 			accountability.role = permission.role
 		}
 
-		const [type, collection, options] = EXEC_CRUD.parse(args);
 		const schema = await getSchema();
 
 		const service = getService(collection, { schema, accountability });

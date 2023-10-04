@@ -23,8 +23,6 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 		new ivm.Reference(async function (args: unknown[], callback: Reference<(error: Error, result: any) => void>) {
 			const type = args[0]
 
-			console.log("execOptions", type, args)
-
 			try {
 
 				if (typeof type !== 'string') {
@@ -40,8 +38,6 @@ export async function createExec(context: Context, extensionManager: ExtensionMa
 
 				resumeIsolate({ extensionManager, extension }, callback, [null, result])
 			} catch (error: any) {
-				console.error(error);
-
 				resumeIsolate({ extensionManager, extension }, callback, [error, null])
 			}
 		}),

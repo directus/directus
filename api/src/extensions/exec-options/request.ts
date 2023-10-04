@@ -10,7 +10,9 @@ export default addExecOptions(({ extension }) => {
 
 		const permission = extension.requested_permissions?.find((permission) => permission.permission === 'request') as ExtensionPermission & { permission: 'request' }
 
-		permission.optional
+		if (!permission) {
+			throw new Error(`You do not have access to "request" `);
+		}
 
 		if (permission?.allowedUrls?.length) {
 			let matchFound = false;

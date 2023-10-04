@@ -33,6 +33,6 @@ export default addExecOptions((context) => {
 	}
 
 	return {
-		'create-operation': createOperation,
+		'register-operation': createOperation,
 	}
 })

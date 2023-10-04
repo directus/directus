@@ -35,8 +35,8 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 
 		try {
 			parsedManifest = ExtensionManifest.parse(extensionManifest);
-		} catch (error) {
-			throw new Error(`The extension manifest of "${extensionName}" is not valid.\n${error}`);
+		} catch (error: any) {
+			throw new Error(`The extension manifest of "${extensionName}" is not valid.\n${error.message}`);
 		}
 
 		const extensionOptions = parsedManifest[EXTENSION_PKG_KEY];

@@ -69,8 +69,6 @@ export class VmManager {
 		const jail = context.global;
 		jail.setSync('global', jail.derefInto());
 
-		jail.setSync('log', console.log)
-
 		await createExec(context, this.extensionManager, extension);
 
 		const runModule = await isolate.compileModule(startCode, { filename: 'extensionLoader.js' });
