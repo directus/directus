@@ -23,19 +23,20 @@ export function adjustFieldsForDisplays(fields: readonly string[], parentCollect
 
 			let fieldKeys: string[] | null = null;
 
-			if(Array.isArray(display.value?.localFields)){
+			if (Array.isArray(display.value?.localFields)) {
 				const baseKey = fieldKey.split('.')[0];
 				fieldKeys = [...display.value.localFields.map((localFieldKey: string) => `${baseKey}.${localFieldKey}`)];
 				fieldKeys.push(fieldKey);
 			}
 
 			if (typeof display.value.localFields === 'function') {
-				fieldKeys = [...display.value
-					.localFields(field.meta?.display_options, {
+				fieldKeys = [
+					...display.value.localFields(field.meta?.display_options, {
 						collection: field.collection,
 						field: field.field,
 						type: field.type,
-					})];
+					}),
+				];
 
 				fieldKeys.push(fieldKey);
 			}
