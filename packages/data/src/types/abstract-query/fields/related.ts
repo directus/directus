@@ -10,7 +10,7 @@ import type { AbstractQueryFieldNodeFn } from './function.js';
  */
 export interface AbstractQueryFieldNodeRelatedBase {
 	/* From the related collection the user can pick primitives, apply a function or add another relational node   */
-	nodes: (AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn | AbstractQueryFieldNodeRelated)[];
+	fields: (AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn | AbstractQueryFieldNodeRelated)[];
 
 	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;

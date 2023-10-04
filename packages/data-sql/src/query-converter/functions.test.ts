@@ -1,7 +1,7 @@
 import type { AbstractQueryFieldNodeFn } from '@directus/data';
 import { randomAlpha, randomIdentifier } from '@directus/random';
 import { describe, expect, test, beforeEach } from 'vitest';
-import type { AbstractSqlQueryFnNode } from '../types/fields/fn.js';
+import type { AbstractSqlQueryFnNode } from '../types/clauses/selects/fn.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
 import { convertFn } from './functions.js';
 

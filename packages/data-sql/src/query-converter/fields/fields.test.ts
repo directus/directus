@@ -22,7 +22,7 @@ beforeEach(() => {
 	randomCollection = randomIdentifier();
 });
 
-test('convert primitives', () => {
+test('primitives only', () => {
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
@@ -66,7 +66,7 @@ test('convert primitives', () => {
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
 });
 
-test('convert primitive and fn nodes', () => {
+test('primitive and function', () => {
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
@@ -118,7 +118,7 @@ test('convert primitive and fn nodes', () => {
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
 });
 
-test('Convert nodes', () => {
+test('primitive, fn, m2o', () => {
 	const randomJoinCurrentField = randomIdentifier();
 	const randomExternalCollection = randomIdentifier();
 	const randomExternalStore = randomIdentifier();
@@ -143,7 +143,7 @@ test('Convert nodes', () => {
 					fields: [randomExternalField],
 				},
 			},
-			nodes: [
+			fields: [
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,

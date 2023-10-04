@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import { randomIdentifier } from '@directus/random';
 import type { AbstractQueryFieldNodeRelatedManyToOne } from '@directus/data';
 import { createJoin } from './create-join.js';
-import type { AbstractSqlQueryJoinNode } from '../../types/fields/join.js';
+import type { AbstractSqlQueryJoinNode } from '../../types/clauses/joins/join.js';
 
 test('Convert m2o relation on single field ', () => {
 	const randomCurrentCollection = randomIdentifier();
@@ -25,7 +25,7 @@ test('Convert m2o relation on single field ', () => {
 				fields: [randomExternalField],
 			},
 		},
-		nodes: [
+		fields: [
 			{
 				type: 'primitive',
 				field: randomExternalSelectField,
@@ -84,7 +84,7 @@ test('Convert m2o relation with composite keys', () => {
 				fields: [randomExternalField, randomExternalField2],
 			},
 		},
-		nodes: [
+		fields: [
 			{
 				type: 'primitive',
 				field: randomExternalSelectField,

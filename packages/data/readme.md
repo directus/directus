@@ -38,7 +38,7 @@ await engine.query({
 	root: true,
 	store: 'postgres',
 	collection: 'articles',
-	nodes: [
+	fields: [
 		{
 			type: 'primitive',
 			field: 'id',

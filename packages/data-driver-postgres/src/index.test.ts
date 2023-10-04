@@ -126,7 +126,7 @@ describe('querying the driver', () => {
 				},
 				{
 					type: 'm2o',
-					nodes: [
+					fields: [
 						{
 							type: 'primitive',
 							field: joinField1,

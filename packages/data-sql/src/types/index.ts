@@ -12,5 +12,29 @@
  *
  * @module
  */
+import type { ParameterTypes } from './parameterized-statement.js';
+import type { AbstractSqlClauses } from './clauses/index.js';
 
-export * from './abstract-sql-query.js';
+/**
+ * This is an abstract SQL query which can be passed to all SQL drivers.
+ *
+ * @example
+ * The following query gets the title of all articles and limits the result to 25 rows.
+ * ```ts
+ * const query: SqlStatement = {
+ *  select: [title],
+ *  from: 'articles',
+ *  limit: 0, // this is the index of the parameter
+ * 	parameters: [25],
+ * };
+ * ```
+ */
+
+export interface AbstractSqlQuery {
+	clauses: AbstractSqlClauses;
+	parameters: ParameterTypes[];
+	aliasMapping: Map<string, string[]>;
+}
+
+export * from './clauses/index.js';
+export * from './parameterized-statement.js';

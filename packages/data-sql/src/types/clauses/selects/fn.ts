@@ -1,5 +1,5 @@
 import type { AbstractSqlQueryColumn } from './primitive.js';
-import type { ValuesNode } from '../parameterized-statement.js';
+import type { ValuesNode } from '../../parameterized-statement.js';
 import type { ExtractFn, ArrayFn } from '@directus/data';
 
 /**

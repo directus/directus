@@ -6,7 +6,7 @@ import { convertFilter } from './filter.js';
 import type {
 	AbstractSqlQueryLogicalNode,
 	AbstractSqlQueryConditionNode,
-} from '../../../types/modifiers/filter/index.js';
+} from '../../../types/clauses/where/index.js';
 
 let randomCollection: string;
 let randomField1: string;

@@ -2,7 +2,7 @@ import type { ConditionFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import { convertFieldCondition } from './field.js';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter/index.js';
+import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 
 test('number', () => {
 	const randomCollection1 = randomIdentifier();
