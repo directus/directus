@@ -23,6 +23,14 @@ export default addExecOptions((context) => {
 				'url': req.url,
 			}])
 
+			if (result instanceof Error) {
+				res.status(500).json({
+					'error': result.message,
+				})
+
+				return
+			}
+
 			const parsedResult = EXEC_REGISTER_ENDPOINT_RESPONSE.safeParse(result);
 
 			if (!parsedResult.success) {

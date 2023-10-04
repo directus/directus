@@ -22,6 +22,10 @@ export default addExecOptions((context) => {
 				{ data: flowContext.data }
 			])
 
+			if (result instanceof Error) {
+				throw result;
+			}
+
 			const parsedResult = EXEC_REGISTER_OPERATION_RESPONSE.parse(result);
 
 			return parsedResult;

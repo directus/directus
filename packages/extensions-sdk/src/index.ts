@@ -26,6 +26,4 @@ export {
 } from '@directus/utils';
 export type {
 	exec,
-	EXEC_CRUD,
-	EXEC_REGISTER_ENDPOINT
 } from '@directus/types'

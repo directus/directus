@@ -12,18 +12,20 @@ export default addExecOptions(({ extension }) => {
 		const [type, collection, options] = EXEC_CRUD.parse(args);
 
 
-		const permission = extension.requested_permissions?.find((permission) => ['create-items', 'read-items', 'update-items', 'delete-items'].includes(permission.permission)) as ExtensionPermission & { permission: 'create-items' | 'read-items' | 'update-items' | 'delete-items' }
+		const permission = extension.granted_permissions?.find((permission) => ['create-items', 'read-items', 'update-items', 'delete-items'].includes(permission.permission)) as ExtensionPermission & { permission: 'create-items' | 'read-items' | 'update-items' | 'delete-items' }
 
 		if (!permission) {
-			throw new Error(`You do not have access to "${type}}"`);
+			throw new Error(`You do not have access to "${type}"`);
 		}
 
 		const accountability: Accountability = {
-			role: null
+			role: null,
+			admin: true
 		}
 
 		if (permission?.role) {
 			accountability.role = permission.role
+			accountability.admin = false
 		}
 
 		const schema = await getSchema();

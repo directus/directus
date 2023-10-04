@@ -6,9 +6,12 @@ import type { ExtensionPermission } from "@directus/types";
 export default addExecOptions(({ extension }) => {
 	async function request(args: unknown[]) {
 
+		// required until zod supports optional tuples
+		args[2] = args[2] ?? undefined;
+
 		const [_, url, options] = EXEC_REQUEST.parse(args);
 
-		const permission = extension.requested_permissions?.find((permission) => permission.permission === 'request') as ExtensionPermission & { permission: 'request' }
+		const permission = extension.granted_permissions?.find((permission) => permission.permission === 'request') as ExtensionPermission & { permission: 'request' }
 
 		if (!permission) {
 			throw new Error(`You do not have access to "request" `);

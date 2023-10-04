@@ -19,5 +19,6 @@ export async function resumeIsolate(context: ExecContext, reference: Reference, 
 		})
 	} catch (error: any) {
 		handleIsolateError(context, error);
+		return error
 	}
 }
