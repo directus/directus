@@ -1,39 +1,3 @@
-<template>
-	<div class="metric-list" :class="{ 'has-header': showHeader }">
-		<div>
-			<v-list class="metric-list">
-				<v-list-item v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
-					<div
-						v-if="row[aggregateFunction]?.[aggregateField]"
-						class="metric-bar"
-						:style="{
-							width: widthOfRow(row),
-							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
-						}"
-					>
-						<div class="metric-bar-text">
-							<render-template
-								:item="{ [groupByField]: row['group'][groupByField] }"
-								:collection="collection"
-								:template="`{{${groupByField}}}`"
-							/>
-						</div>
-
-						<div
-							class="metric-bar-number"
-							:style="{ color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField])).darken(2).hex()}` }"
-						>
-							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
-						</div>
-					</div>
-
-					<div class="spacer" />
-				</v-list-item>
-			</v-list>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import chroma from 'chroma-js';
 import { useI18n } from 'vue-i18n';
@@ -183,6 +147,42 @@ function getColor(input) {
 	}
 }
 </script>
+
+<template>
+	<div class="metric-list" :class="{ 'has-header': showHeader }">
+		<div>
+			<v-list class="metric-list">
+				<v-list-item v-for="row in sortedData" :key="row['group'][groupByField]" class="metric-list-item">
+					<div
+						v-if="row[aggregateFunction]?.[aggregateField]"
+						class="metric-bar"
+						:style="{
+							width: widthOfRow(row),
+							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
+						}"
+					>
+						<div class="metric-bar-text">
+							<render-template
+								:item="{ [groupByField]: row['group'][groupByField] }"
+								:collection="collection"
+								:template="`{{${groupByField}}}`"
+							/>
+						</div>
+
+						<div
+							class="metric-bar-number"
+							:style="{ color: `${chroma(getColor(row[aggregateFunction]?.[aggregateField])).darken(2).hex()}` }"
+						>
+							{{ prefix }}{{ displayValue(row[aggregateFunction]?.[aggregateField] ?? 0) }}{{ suffix }}
+						</div>
+					</div>
+
+					<div class="spacer" />
+				</v-list-item>
+			</v-list>
+		</div>
+	</div>
+</template>
 
 <style scoped>
 .metric-list {
