@@ -145,6 +145,7 @@ validationError:
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
   unique: Il valore deve essere unico
+  email: Il valore deve essere un indirizzo email valido
   regex: Il valore non ha il formato corretto
   starts_with: Il valore deve iniziare con {substring}
   istarts_with: Il valore deve iniziare con {substring}
@@ -583,6 +584,7 @@ bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è sta
 bookmark_doesnt_exist_cta: Ritorna alla raccolta
 select_an_item: Seleziona un elemento...
 edit: Modifica
+edit_item: Modifica elemento
 enabled: Abilitato
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
