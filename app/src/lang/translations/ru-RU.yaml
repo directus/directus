@@ -145,7 +145,16 @@ validationError:
   nnull: Значение не может быть NULL
   required: Значение обязательно
   unique: Значение должно быть уникальным
+  email: Значение должно быть действительным email адресом
   regex: Значение имеет неправильный формат
+  starts_with: Значение должно начинаться с "{substring}"
+  istarts_with: Значение должно начинаться с "{substring}"
+  nstarts_with: Значение не может начинаться с "{substring}"
+  nistarts_with: Значение не может начинаться с "{substring}"
+  ends_with: Значение должно заканчиваться на "{substring}"
+  iends_with: Значение должно заканчиваться на "{substring}"
+  nends_with: Значение не может заканчиваться на "{substring}"
+  niends_with: Значение не может заканчиваться на "{substring}"
 all_access: Полный доступ
 no_access: Без доступа
 use_custom: Настраиваемый
@@ -733,6 +742,7 @@ upload_pending: Ожидание загрузки
 drag_file_here: Перетащите файлы сюда
 click_to_browse: Нажмите для просмотра
 interface_options: Параметры интерфейса
+display_options: Параметры отображения
 layout_options: Параметры макета
 rows: Записи
 columns: Колонки
@@ -1349,6 +1359,7 @@ share: Поделиться
 share_item: Поделиться элементом
 shared_with_you: С вами поделились элементом
 shared_enter_passcode: Для продолжения введите пароль...
+shared_leave_blank_for_passwordless_access: Оставьте пустым для безпарольного доступа
 shared_leave_blank_for_unlimited: Оставьте пустым для неограниченного
 shared_times_remaining: Ссылка может быть использована {n} раз
 shared_last_remaining: Одноразовая ссылка
@@ -1432,6 +1443,7 @@ search: Поиск
 select_existing: Выбрать из существующего
 select_field_type: Выберите тип поля
 select_interface: Выберите интерфейс
+select_display: Выберите отображение
 settings: Настройки
 sign_in: Войти
 sign_out: Выйти
@@ -1458,6 +1470,7 @@ search_filter: Поиск и фильтрация
 enable_search_filter: Включить поиск и фильтрацию
 item_link: Ссылка на элемент
 show_link_to_item: Показывать ссылку на элемент
+navigate_to_item: Перейти к Элементу
 undo_removed_item: Отменить удаление элемента
 remove_item: Удалить элемент
 delete_item: Удалить элемент
@@ -1514,6 +1527,7 @@ interfaces:
     code: Код
     description: Написать или поделиться фрагментами кода
     line_number: Номер строки
+    line_wrapping: Перенос строк
     placeholder: Введите код сюда...
   system-collection:
     collection: Коллекция
@@ -1597,6 +1611,8 @@ interfaces:
     description: Окно выбора параметров интерфейса
   system-display:
     display: Отображение
+  system-display-options:
+    display-options: Параметры отображения
   list-m2m:
     many-to-many: Многие ко Многим
     description: Выберите несколько связанных элементов
@@ -1666,6 +1682,7 @@ interfaces:
     field_note_placeholder: Примечание к полю...
     incompatible_data: Текущие данные не совместимы с интерфейсом репитера и будут переопределены при добавлении элементов в репитер
     interface_group: Параметры интерфейса
+    display_group: Параметры отображения
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
