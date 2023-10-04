@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Fixed importing an image via URL into your current folder
+Fixed an issue where importing an image via URL wouldn't place it in the current folder
