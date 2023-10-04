@@ -1,4 +1,4 @@
-import type { WebSocketInterface } from "../../index.js";
+import type { WebSocketInterface } from '../../index.js';
 
 interface WebSocketListener {
 	(data: MessageEvent<string>): any;
