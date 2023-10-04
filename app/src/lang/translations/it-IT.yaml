@@ -751,6 +751,7 @@ upload_pending: Caricamento In Attesa
 drag_file_here: Trascina e rilascia il file qui
 click_to_browse: Clicca per Sfogliare
 interface_options: Opzioni interfaccia
+display_options: Opzioni di visualizzazione
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
@@ -1454,6 +1455,7 @@ search: Ricerca
 select_existing: Seleziona Esistente
 select_field_type: Seleziona un tipo di campo
 select_interface: Seleziona un'interfaccia
+select_display: Seleziona una visualizzazione
 settings: impostazioni
 sign_in: Accedi
 sign_out: Disconnessione
@@ -1472,6 +1474,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1624,6 +1627,11 @@ interfaces:
     description: Una modale per selezionare le opzioni di un'interfaccia
   system-display:
     display: Mostra
+    description: Sleziona una visualizzazione esistente
+    placeholder: Seleziona una visualizzazione...
+  system-display-options:
+    display-options: Opzioni di visualizzazione
+    description: Una modale per selezionare le opzioni di una visualizzazione
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
@@ -1676,6 +1684,7 @@ interfaces:
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta
   system-folder:
+    folder: Cartella radice
     description: Seleziona una cartella
     field_hint: Cartella predefinita per i file caricati senza una cartella specificata. Non influisce sui file esistenti.
     root_name: Radice libreria file
@@ -1693,6 +1702,7 @@ interfaces:
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
     interface_group: Opzioni interfaccia
+    display_group: Opzioni di visualizzazione
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore
