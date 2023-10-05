@@ -10,6 +10,11 @@ export const EXEC_REGISTER_ENDPOINT = z.tuple([
 	z.object({
 		'method': z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
 		'path': z.string(),
-		'handler': z.function(z.tuple([z.record(z.string())]), EXEC_REGISTER_ENDPOINT_RESPONSE.promise()),
+		'handler': z.function(z.tuple([z.object({
+			'url': z.string(),
+			'headers': z.record(z.string()),
+			'body': z.union([z.string(), z.record(z.any())]),
+			'baseUrl': z.string(),
+		})]), EXEC_REGISTER_ENDPOINT_RESPONSE.promise()),
 	})
 ])

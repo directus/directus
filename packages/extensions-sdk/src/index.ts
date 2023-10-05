@@ -18,9 +18,6 @@ export {
 	defineOperationApi,
 	defineOperationApp,
 	definePanel,
-	defineSecureEndpoint,
-	defineSecureHook,
-	defineSecureOperationApi,
 	getFieldsFromTemplate,
 	getRelationType,
 } from '@directus/utils';
