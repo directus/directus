@@ -13,12 +13,18 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 const router = Router();
 
 router.get(
-	'/:type',
+	'/:type?',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params['type'] as Plural<string>);
+		let type: typeof EXTENSION_TYPES[number] | undefined = undefined;
 
-		if (!isIn(type, EXTENSION_TYPES)) {
-			throw new RouteNotFoundError({ path: req.path });
+		if (req.params['type']) {
+			const singularType = depluralize(req.params['type'] as Plural<string>);
+
+			if (!isIn(singularType, EXTENSION_TYPES)) {
+				throw new RouteNotFoundError({ path: req.path });
+			}
+
+			type = singularType;
 		}
 
 		const extensionManager = getExtensionManager();
