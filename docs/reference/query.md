@@ -268,7 +268,7 @@ const result = await client.request(
 
 ## Version
 
-TBD
+Retrieve an item's result from a specific version.
 
 ### Example
 
