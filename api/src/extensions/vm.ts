@@ -7,6 +7,7 @@ import logger from '../logger.js';
 import env from '../env.js';
 import { createExec } from './exec/node.js';
 import { handleIsolateError } from './utils/handle-isolate-error.js';
+import { getStorage } from '../storage/index.js';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -58,7 +59,23 @@ export class VmManager {
 		const isolateSizeMb = Number(env['EXTENSIONS_SECURE_MEMORY']);
 		const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
-		const extensionCode = await readFile(extension.apiExtensionPath!, 'utf-8');
+		let extensionCode: string
+
+		if (extension.storage_location) {
+			const storage = await getStorage()
+			const storageDriver = storage.location(extension.storage_location)
+
+			const codeReadable = await storageDriver.read(extension.apiExtensionPath!)
+			const chunks: any[] = []
+
+			for await (const chunk of codeReadable) {
+				chunks.push(chunk)
+			}
+
+			extensionCode = Buffer.concat(chunks).toString("utf-8")
+		} else {
+			extensionCode = await readFile(extension.apiExtensionPath!, 'utf8');
+		}
 
 		const enableDebugger = false;
 

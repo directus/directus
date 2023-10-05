@@ -31,6 +31,7 @@
 	"devDependencies": {
 		"@babel/core": "7.21.8",
 		"@babel/preset-env": "7.21.5",
+		"@directus/storage-driver-local": "workspace:*",
 		"@directus/composables": "workspace:*",
 		"@directus/components": "workspace:*",
 		"@directus/constants": "workspace:*",

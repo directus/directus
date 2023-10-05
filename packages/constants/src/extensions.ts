@@ -127,7 +127,7 @@ const ExtensionBase = z.object({
 	host: z.string().optional(),
 	secure: z.boolean(),
 	debugger: z.boolean().optional(),
-	local: z.boolean(),
+	storage_location: z.string().optional(),
 	apiExtensionPath: z.string().optional(),
 	requested_permissions: z.array(ExtensionPermission).optional(),
 });

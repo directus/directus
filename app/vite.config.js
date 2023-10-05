@@ -3,9 +3,8 @@ import {
 	APP_SHARED_DEPS,
 	BUNDLE_EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
-	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
-import { generateExtensionsEntrypoint, getPackageExtensions, resolvePackageExtensions } from '@directus/utils/node';
+import { generateExtensionsEntrypoint, getPackageExtensions, getStorageExtensions } from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
@@ -15,6 +14,7 @@ import { defineConfig } from 'vitest/config';
 import { version } from '../directus/package.json';
 import UnheadVite from '@unhead/addons/vite';
 import pluginRewriteAll from 'vite-plugin-rewrite-all';
+import { DriverLocal } from '@directus/storage-driver-local'
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
@@ -77,13 +77,13 @@ export default defineConfig({
 function getExtensionsRealPaths() {
 	return fs.existsSync(EXTENSIONS_PATH)
 		? fs
-				.readdirSync(EXTENSIONS_PATH)
-				.flatMap((typeDir) => {
-					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-					if (!fs.statSync(extensionTypeDir).isDirectory()) return;
-					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
-				})
-				.filter((v) => v)
+			.readdirSync(EXTENSIONS_PATH)
+			.flatMap((typeDir) => {
+				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+				if (!fs.statSync(extensionTypeDir).isDirectory()) return;
+				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+			})
+			.filter((v) => v)
 		: [];
 }
 
@@ -138,7 +138,10 @@ function directusExtensions() {
 
 	async function loadExtensions() {
 		const packageExtensions = await getPackageExtensions(API_PATH);
-		const localExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
+
+		const driverLocal = new DriverLocal({ root: API_PATH });
+
+		const localExtensions = await getStorageExtensions('extensions', driverLocal, 'local');
 
 		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES];
 

@@ -9,7 +9,8 @@ import { ExtensionsService } from './service.js';
 import getDatabase from '../database/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import type { DatabaseExtensionPermission } from '@directus/types';
-import { isEqual } from 'lodash-es';
+import { getStorage } from '../storage/index.js';
+import { copyToStorageDriver } from '../utils/copy-storage-driver.js';
 
 export type ExtensionInstallationOptions = {
 	version?: string | undefined;
@@ -91,7 +92,10 @@ export class InstallationManager {
 			cwd: extensionFolderTemp,
 		});
 
-		await fse.move(path.join(extensionFolderTemp, 'package'), extensionFolder);
+		const storage = await getStorage()
+		const storageDriver = storage.location(env['EXTENSIONS_INSTALL_LOCATION'])
+
+		await copyToStorageDriver(path.join(extensionFolderTemp, 'package'), extensionFolder, storageDriver)
 		await fse.remove(extensionFolderTemp);
 
 		const manifest = await fse.readJSON(path.join(extensionFolder, 'package.json'));
@@ -129,11 +133,16 @@ export class InstallationManager {
 			throw new Error(`Extension "${name}" not found.`);
 		}
 
-		if (extension.local === false) {
-			throw new Error(`Extension "${name}" is not local.`);
+		if (!extension.storage_location) {
+			throw new Error(`Extension "${name}" installed over npm can not be uninstalled.`);
 		}
 
-		await fse.remove(path.join(env['EXTENSIONS_PATH'], name.replace(/[/\\]/g, '_')));
+		const storage = await getStorage()
+		const storageDriver = storage.location(env['EXTENSIONS_INSTALL_LOCATION'])
+
+		const extensionFolder = path.join(env['EXTENSIONS_PATH'], name.replace(/[/\\]/g, '_'))
+
+		storageDriver.delete(extensionFolder)
 
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
@@ -151,8 +160,8 @@ export class InstallationManager {
 			throw new Error(`Extension "${name}" not found.`);
 		}
 
-		if (extension.local === false) {
-			throw new Error(`Extension "${name}" is a npm dependency.`);
+		if (!extension.storage_location) {
+			throw new Error(`Extension "${name}" installed over npm can not be updated.`);
 		}
 
 		if ((env['EXTENSIONS_ALLOWED_REGISTRIES'] ?? []).includes(extension.registry) === false) {

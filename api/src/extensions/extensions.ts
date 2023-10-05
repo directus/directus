@@ -1,6 +1,6 @@
 import { APP_EXTENSION_TYPES, ExtensionInfo } from '@directus/constants';
-import type { ExtensionInfo as ExtensionInfoType, FullExtension } from '@directus/types';
-import { getPackageExtensions, resolvePackageExtensions } from '@directus/utils/node';
+import type { Extension, ExtensionInfo as ExtensionInfoType, FullExtension } from '@directus/types';
+import { getPackageExtensions, getStorageExtensions } from '@directus/utils/node';
 import type { Router } from 'express';
 import getDatabase from '../database/index.js';
 import { Emitter } from '../emitter.js';
@@ -15,6 +15,7 @@ import { InstallationManager } from './installation.js';
 import { WatcherManager } from './watcher.js';
 import { VmManager } from './vm.js';
 import path from 'path';
+import { getStorage } from '../storage/index.js';
 
 let extensionManager: ExtensionManager;
 
@@ -225,10 +226,22 @@ export class ExtensionManager {
 	}
 
 	private async getExtensions(): Promise<FullExtension[]> {
-		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION']);
-		const localExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
+		let extensions: Extension[] = []
 
-		const extensions = [...packageExtensions, ...localExtensions].filter(
+		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])
+		extensions.push(...packageExtensions)
+
+		for (const location of Array.from<string>(env['EXTENSIONS_STORAGE_LOCATIONS'])) {
+
+			const storage = await getStorage()
+			const storageDriver = storage.location(location)
+
+			const loadedExtensions = await getStorageExtensions(env['EXTENSIONS_PATH'], storageDriver, location)
+
+			extensions.push(...loadedExtensions)
+		}
+
+		extensions = extensions.filter(
 			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
 		);
 
@@ -278,7 +291,8 @@ export class ExtensionManager {
 
 			if (!registeredExtension) throw new Error(`Extension ${extension.name} is not registered in the database`);
 
-			const apiExtensionPath = typeof extension.entrypoint === 'string' ? path.resolve(extension.path, extension.entrypoint) : path.resolve(extension.path, extension.entrypoint.api)
+			const apiEntrypoint = typeof extension.entrypoint === 'string' ? extension.entrypoint : extension.entrypoint.api
+			const apiExtensionPath = extension.storage_location ? path.join(extension.path, apiEntrypoint) : path.resolve(extension.path, apiEntrypoint)
 
 			return { ...extension, ...registeredExtension, apiExtensionPath };
 		});

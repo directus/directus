@@ -547,6 +547,9 @@ importers:
       '@directus/format-title':
         specifier: 10.0.0
         version: 10.0.0
+      '@directus/storage-driver-local':
+        specifier: workspace:*
+        version: link:../packages/storage-driver-local
       '@directus/stores':
         specifier: workspace:*
         version: link:../packages/stores
@@ -1917,6 +1920,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
+      '@directus/storage':
+        specifier: workspace:*
+        version: link:../storage
       date-fns:
         specifier: 2.30.0
         version: 2.30.0
@@ -17436,6 +17442,13 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
 
+  /minimatch@9.0.3:
+    resolution: {integrity: sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
@@ -22476,7 +22489,7 @@ packages:
     dependencies:
       lunr: 2.3.9
       marked: 4.3.0
-      minimatch: 9.0.1
+      minimatch: 9.0.3
       shiki: 0.14.3
       typescript: 5.2.2
     dev: true

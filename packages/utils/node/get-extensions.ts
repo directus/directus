@@ -6,97 +6,43 @@ import {
 } from '@directus/constants';
 import type { Extension } from '@directus/types';
 import fse from 'fs-extra';
-import path from 'path';
+import path, { sep } from 'path';
 import { isTypeIn } from './array-helpers.js';
-import { listFolders } from './list-folders.js';
 import { resolvePackage } from './resolve-package.js';
+import type { Driver } from '@directus/storage';
 
-export const findExtension = async (folder: string, filename: string) => {
-	if (await fse.exists(path.join(folder, `${filename}.cjs`))) return `${filename}.cjs`;
-	if (await fse.exists(path.join(folder, `${filename}.mjs`))) return `${filename}.mjs`;
-	return `${filename}.js`;
-};
+export async function getStorageExtensions(root: string, driver: Driver, storage_location: string): Promise<Extension[]> {
+	const extensions: Extension[] = []
 
-export async function resolvePackageExtensions(root: string, extensionNames?: string[]): Promise<Extension[]> {
-	const extensions: Extension[] = [];
+	const folders = new Set<string>()
 
-	const local = extensionNames === undefined;
+	for await (const file of driver.list(root)) {
+		const folder = file.split(sep)[1]
+		if (!folder || !EXTENSION_NAME_REGEX.test(folder)) continue;
 
-	if (extensionNames === undefined) {
-		extensionNames = await listFolders(root);
-		extensionNames = extensionNames.filter((name) => EXTENSION_NAME_REGEX.test(name));
+		folders.add(folder)
 	}
 
-	for (const extensionName of extensionNames) {
-		const extensionPath = local ? path.join(root, extensionName) : resolvePackage(extensionName, root);
-		const extensionManifest: Record<string, any> = await fse.readJSON(path.join(extensionPath, 'package.json'));
+	for (const folder of folders) {
 
-		let parsedManifest;
+		const extensionPath = path.join(root, folder);
 
-		try {
-			parsedManifest = ExtensionManifest.parse(extensionManifest);
-		} catch (error: any) {
-			throw new Error(`The extension manifest of "${extensionName}" is not valid.\n${error.message}`);
+		const manifestReadable = await driver.read(path.join(extensionPath, 'package.json'));
+
+		const chunks = []
+
+		for await (const chunk of manifestReadable) {
+			chunks.push(chunk)
 		}
 
-		const extensionOptions = parsedManifest[EXTENSION_PKG_KEY];
+		const manifest = Buffer.concat(chunks).toString("utf-8")
 
-		if (extensionOptions.type === 'bundle') {
-			extensions.push({
-				path: extensionPath,
-				name: parsedManifest.name,
-				description: parsedManifest.description || '',
-				icon: parsedManifest.icon || '',
-				version: parsedManifest.version,
-				type: extensionOptions.type,
-				entrypoint: {
-					app: extensionOptions.path.app,
-					api: extensionOptions.path.api,
-				},
-				entries: extensionOptions.entries,
-				host: extensionOptions.host,
-				secure: extensionOptions.secure === true,
-				debugger: extensionOptions.debugger === true,
-				requested_permissions: extensionOptions.permissions ?? [],
-				local,
-			});
-		} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
-			extensions.push({
-				path: extensionPath,
-				name: parsedManifest.name,
-				description: parsedManifest.description ?? '',
-				icon: parsedManifest.icon ?? '',
-				version: parsedManifest.version,
-				type: extensionOptions.type,
-				entrypoint: {
-					app: extensionOptions.path.app,
-					api: extensionOptions.path.api,
-				},
-				host: extensionOptions.host,
-				secure: extensionOptions.secure === true,
-				debugger: extensionOptions.debugger === true,
-				requested_permissions: extensionOptions.permissions ?? [],
-				local,
-			});
-		} else {
-			extensions.push({
-				path: extensionPath,
-				name: parsedManifest.name,
-				description: parsedManifest.description ?? '',
-				icon: parsedManifest.icon ?? '',
-				version: parsedManifest.version,
-				type: extensionOptions.type,
-				entrypoint: extensionOptions.path,
-				host: extensionOptions.host,
-				secure: extensionOptions.secure === true,
-				debugger: extensionOptions.debugger === true,
-				requested_permissions: extensionOptions.permissions ?? [],
-				local,
-			});
-		}
+		const extension = parseExtension(folder, manifest, extensionPath, storage_location)
+
+		extensions.push(extension)
 	}
 
-	return extensions;
+	return extensions
 }
 
 export async function getPackageExtensions(root: string): Promise<Extension[]> {
@@ -110,5 +56,82 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 
 	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
 
-	return resolvePackageExtensions(root, extensionNames);
+	const extensions: Extension[] = []
+
+	for (const name of extensionNames) {
+		const extensionPath = resolvePackage(name, root)
+		const manifestPath = path.join(extensionPath, 'package.json')
+		const manifest = await fse.readJSON(manifestPath)
+		const extension = parseExtension(name, manifest, extensionPath)
+
+		extensions.push(extension)
+	}
+
+	return extensions
+}
+
+export function parseExtension(name: string, manifest: string, extensionPath: string, storage_location?: string): Extension {
+	let parsedManifest;
+
+	try {
+		parsedManifest = ExtensionManifest.parse(JSON.parse(manifest));
+	} catch (error: any) {
+		throw new Error(`The extension manifest of "${name}" is not valid.\n${error.message}`);
+	}
+
+	const extensionOptions = parsedManifest[EXTENSION_PKG_KEY];
+
+	if (extensionOptions.type === 'bundle') {
+		return {
+			path: extensionPath,
+			name: parsedManifest.name,
+			description: parsedManifest.description || '',
+			icon: parsedManifest.icon || '',
+			version: parsedManifest.version,
+			type: extensionOptions.type,
+			entrypoint: {
+				app: extensionOptions.path.app,
+				api: extensionOptions.path.api,
+			},
+			entries: extensionOptions.entries,
+			host: extensionOptions.host,
+			secure: extensionOptions.secure === true,
+			debugger: extensionOptions.debugger === true,
+			requested_permissions: extensionOptions.permissions ?? [],
+			storage_location
+		}
+	} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
+		return {
+			path: extensionPath,
+			name: parsedManifest.name,
+			description: parsedManifest.description ?? '',
+			icon: parsedManifest.icon ?? '',
+			version: parsedManifest.version,
+			type: extensionOptions.type,
+			entrypoint: {
+				app: extensionOptions.path.app,
+				api: extensionOptions.path.api,
+			},
+			host: extensionOptions.host,
+			secure: extensionOptions.secure === true,
+			debugger: extensionOptions.debugger === true,
+			requested_permissions: extensionOptions.permissions ?? [],
+			storage_location,
+		}
+	} else {
+		return {
+			path: extensionPath,
+			name: parsedManifest.name,
+			description: parsedManifest.description ?? '',
+			icon: parsedManifest.icon ?? '',
+			version: parsedManifest.version,
+			type: extensionOptions.type,
+			entrypoint: extensionOptions.path,
+			host: extensionOptions.host,
+			secure: extensionOptions.secure === true,
+			debugger: extensionOptions.debugger === true,
+			requested_permissions: extensionOptions.permissions ?? [],
+			storage_location,
+		}
+	}
 }

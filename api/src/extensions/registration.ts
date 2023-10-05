@@ -14,7 +14,7 @@ import type {
 } from '@directus/types';
 import getModuleDefault from '../utils/get-module-default.js';
 import type { ExtensionManager } from './extensions.js';
-import path from 'path';
+import path, { join } from 'path';
 import logger from '../logger.js';
 import { generateExtensionsEntrypoint, pathToRelativeUrl, resolvePackage } from '@directus/utils/node';
 import emitter from '../emitter.js';
@@ -42,6 +42,9 @@ import { fileURLToPath } from 'node:url';
 
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import type { ApiExtensionInfo } from './vm.js';
+import { copyFromStorageDriver } from '../utils/copy-storage-driver.js';
+import { getStorage } from '../storage/index.js';
+import { remove } from 'fs-extra';
 
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
@@ -87,11 +90,24 @@ export class RegistrationManager {
 					return;
 				}
 
-				const hookPath = hook.apiExtensionPath!
+				let hookInstance: HookConfig | { default: HookConfig }
 
-				const hookInstance: HookConfig | { default: HookConfig } = await import(
-					`./${pathToRelativeUrl(hookPath, __dirname)}?t=${Date.now()}`
-				);
+				if (hook.storage_location) {
+					const storage = await getStorage()
+					const storageDriver = storage.location(hook.storage_location)
+
+					const path = join('./extensions_temp', hook.apiExtensionPath!)
+
+					copyFromStorageDriver(hook.apiExtensionPath!, path, storageDriver)
+
+					hookInstance = await import(`./${pathToRelativeUrl(path, __dirname)}?t=${Date.now()}`)
+
+					await remove('./extensions_temp')
+				} else {
+					hookInstance = await import(
+						`./${pathToRelativeUrl(hook.apiExtensionPath!, __dirname)}?t=${Date.now()}`
+					);
+				}
 
 				const config = getModuleDefault(hookInstance);
 
@@ -138,11 +154,25 @@ export class RegistrationManager {
 					return;
 				}
 
-				const endpointPath = endpoint.apiExtensionPath!;
+				let endpointInstance: EndpointConfig | { default: EndpointConfig }
 
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
-					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
-				);
+				if (endpoint.storage_location) {
+					const storage = await getStorage()
+
+					const storageDriver = storage.location(endpoint.storage_location)
+
+					const path = join('./extensions_temp', endpoint.apiExtensionPath!)
+
+					copyFromStorageDriver(endpoint.apiExtensionPath!, path, storageDriver)
+
+					endpointInstance = await import(`./${pathToRelativeUrl(path, __dirname)}?t=${Date.now()}`)
+
+					await remove('./extensions_temp')
+				} else {
+					endpointInstance = await import(
+						`./${pathToRelativeUrl(endpoint.apiExtensionPath!, __dirname)}?t=${Date.now()}`
+					);
+				}
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -151,7 +181,7 @@ export class RegistrationManager {
 				this.runningApiExtensions.push({
 					extension: endpoint.name,
 					unregister: () => {
-						delete require.cache[require.resolve(endpointPath)];
+						delete require.cache[require.resolve(endpoint.apiExtensionPath!)];
 					},
 				});
 			} catch (error: any) {
@@ -186,11 +216,25 @@ export class RegistrationManager {
 					return;
 				}
 
-				const operationPath = operation.apiExtensionPath!
+				let operationInstance: OperationApiConfig | { default: OperationApiConfig }
 
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
-				);
+				if (operation.storage_location) {
+					const storage = await getStorage()
+
+					const storageDriver = storage.location(operation.storage_location)
+
+					const path = join('./extensions_temp', operation.apiExtensionPath!)
+
+					copyFromStorageDriver(operation.apiExtensionPath!, path, storageDriver)
+
+					operationInstance = await import(`./${pathToRelativeUrl(path, __dirname)}?t=${Date.now()}`)
+
+					await remove('./extensions_temp')
+				} else {
+					operationInstance = await import(
+						`./${pathToRelativeUrl(operation.apiExtensionPath!, __dirname)}?t=${Date.now()}`
+					);
+				}
 
 				const config = getModuleDefault(operationInstance);
 
@@ -199,7 +243,7 @@ export class RegistrationManager {
 				this.runningApiExtensions.push({
 					extension: operation.name,
 					unregister: () => {
-						delete require.cache[require.resolve(operationPath)];
+						delete require.cache[require.resolve(operation.apiExtensionPath!)];
 					},
 				});
 			} catch (error: any) {
@@ -222,11 +266,25 @@ export class RegistrationManager {
 					return;
 				}
 
-				const bundlePath = bundle.apiExtensionPath!;
+				let bundleInstances: BundleConfig | { default: BundleConfig }
 
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
-					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
-				);
+				if (bundle.storage_location) {
+					const storage = await getStorage()
+
+					const storageDriver = storage.location(bundle.storage_location)
+
+					const path = join('./extensions_temp', bundle.apiExtensionPath!)
+
+					copyFromStorageDriver(bundle.apiExtensionPath!, path, storageDriver)
+
+					bundleInstances = await import(`./${pathToRelativeUrl(path, __dirname)}?t=${Date.now()}`)
+
+					await remove('./extensions_temp')
+				} else {
+					bundleInstances = await import(
+						`./${pathToRelativeUrl(bundle.apiExtensionPath!, __dirname)}?t=${Date.now()}`
+					);
+				}
 
 				const configs = getModuleDefault(bundleInstances);
 
@@ -264,7 +322,7 @@ export class RegistrationManager {
 							}
 						}
 
-						delete require.cache[require.resolve(bundlePath)];
+						delete require.cache[require.resolve(bundle.apiExtensionPath!)];
 					},
 				});
 			} catch (error: any) {

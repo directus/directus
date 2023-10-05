@@ -164,6 +164,8 @@ const allowedEnvironmentVars = [
 	// extensions
 	'PACKAGE_FILE_LOCATION',
 	'EXTENSIONS_PATH',
+	'EXTENSIONS_STORAGE_LOCATIONS',
+	'EXTENSIONS_INSTALL_LOCATION',
 	'EXTENSIONS_AUTO_RELOAD',
 	'EXTENSIONS_CACHE_TTL',
 	'EXTENSIONS_ALLOWED_REGISTRIES',
@@ -234,6 +236,9 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
+	STORAGE_EXTENSIONS_DRIVER: 'local',
+	STORAGE_EXTENSIONS_ROOT: './extensions',
+
 	RATE_LIMITER_ENABLED: false,
 	RATE_LIMITER_POINTS: 50,
 	RATE_LIMITER_DURATION: 1,
@@ -280,6 +285,8 @@ const defaults: Record<string, any> = {
 
 	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
+	EXTENSIONS_STORAGE_LOCATIONS: ['extensions'],
+	EXTENSIONS_INSTALL_LOCATION: 'extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
 	EXTENSIONS_ALLOWED_REGISTRIES: 'https://registry.npmjs.org',
 	EXTENSIONS_AUTO_INSTALL: false,
@@ -362,6 +369,8 @@ const typeMap: Record<string, string> = {
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'array',
 
 	IMPORT_IP_DENY_LIST: 'array',
+
+	EXTENSIONS_STORAGE_LOCATIONS: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
 
