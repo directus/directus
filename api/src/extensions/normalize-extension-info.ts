@@ -1,4 +1,4 @@
-import type { Extension, ExtensionInfo, BundleExtension, NestedExtensionType } from '@directus/extensions';
+import type { BundleExtension, Extension, ExtensionInfo, NestedExtensionType } from '@directus/extensions';
 
 /**
  * Creates a standardized extension info object for a given extension
@@ -29,4 +29,4 @@ export const normalizeExtensionInfo = (extension: Extension): ExtensionInfo => {
 	} else {
 		return extensionInfo;
 	}
-}
+};

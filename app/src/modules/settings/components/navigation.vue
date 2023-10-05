@@ -42,11 +42,6 @@ const navItems = [
 		name: t('settings_flows'),
 		to: `/settings/flows`,
 	},
-	{
-		icon: 'extension',
-		name: t('extensions'),
-		to: '/settings/extensions',
-	}
 ];
 
 const externalItems = computed(() => {
