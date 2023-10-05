@@ -1,9 +1,7 @@
 import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
-import type { AppExtension, BundleExtension, Extension, HybridExtension } from '@directus/types';
+import { isIn, isTypeIn, pathToRelativeUrl, pluralize } from '@directus/utils/node';
 import path from 'path';
-import { isIn, isTypeIn } from './array-helpers.js';
-import { pluralize } from './pluralize.js';
-import { pathToRelativeUrl } from './path-to-relative-url.js';
+import type { AppExtension, BundleExtension, Extension, HybridExtension } from '../types/index.js';
 
 export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension =>
