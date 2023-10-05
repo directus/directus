@@ -3,48 +3,23 @@
 		<div class="container">
 			<!-- Top Navbar -->
 			<div class="nav">
-				<!-- Directus Logo -->
-				<!-- <div class="logo-container">
-					<div class="logo-wrapper">
-						<div class="logo" :class="{ running: isLoading }"></div>
-					</div>
-				</div> -->
 				<v-progress-linear :value="progressPercent" rounded :indeterminate="isLoading"></v-progress-linear>
 			</div>
 
 			<!-- Content -->
-			<!-- TODO this needs a different level of abstraction -->
-			<!-- Making the project slide skippable is yucky -->
 			<div class="onboarding-slides">
 				<Transition name="dialog" mode="out-in">
-					<!-- Welcome Slide -->
-					<div class="intro-text" v-if="currentSlideIndex === 0">
-						<h1 class="type-title">{{ t('onboarding.welcome.title') }}</h1>
-						<p class="type-text">{{ t('onboarding.welcome.text') }}</p>
-					</div>
-
-					<!-- Project Slide -->
-					<div class="slide" v-else-if="currentSlideIndex === 1">
+					<div class="slide" :key="currentSlideName">
 						<div class="intro-text">
-							<h1 class="type-title">{{ t('onboarding.project.title') }}</h1>
-							<p class="type-text">{{ t('onboarding.project.text') }}</p>
+							<h1 class="type-title">{{ t(currentSlide?.i18nTitle) }}</h1>
+							<p class="type-text">{{ t(currentSlide?.i18nText) }}</p>
 						</div>
-						<v-form v-model="projectModel" :fields="projectFields" :autofocus="true" />
-					</div>
-
-					<!-- User Slide -->
-					<div class="slide" v-else-if="currentSlideIndex === 2">
-						<div class="intro-text">
-							<h1 class="type-title">{{ t('onboarding.user.title') }}</h1>
-							<p class="type-text">{{ t('onboarding.user.text') }}</p>
-						</div>
-						<v-form v-model="userModel" :fields="userFields" :autofocus="true" />
-					</div>
-
-					<!-- Last Slide -->
-					<div class="intro-text" v-else-if="currentSlideIndex === 3">
-						<h1 class="type-title">{{ t('onboarding.loading.title') }}</h1>
-						<p class="type-text">{{ t('onboarding.loading.text') }}</p>
+						<v-form
+							v-if="currentSlide?.form"
+							v-model="currentSlide.form.model"
+							:fields="currentSlide.form.fields"
+							:autofocus="true"
+						/>
 					</div>
 				</Transition>
 			</div>
@@ -54,21 +29,15 @@
 				<!-- Left Actions -->
 				<div>
 					<Transition name="dialog">
-						<v-button v-if="!isLoading" secondary :disabled="isLoading || isFirstSlide" @click="prevSlide">
+						<v-button
+							v-if="!isLoading"
+							secondary
+							:disabled="isLoading || !currentSlide?.transitions.back"
+							@click="prevSlide"
+						>
 							{{ t('back') }}
 						</v-button>
 					</Transition>
-					<!-- <Transition name="dialog">
-						<v-button
-							v-if="!isLoading && isLastSlide"
-							secondary
-							:disabled="isLoading"
-							@click="skipOnboarding"
-							class="btn-skip"
-						>
-							{{ t('skip') }}
-						</v-button>
-					</Transition> -->
 				</div>
 				<!-- Right Actions -->
 				<div>
@@ -77,6 +46,11 @@
 					</v-button>
 				</div>
 			</div>
+			<Transition name="dialog">
+				<v-button v-if="!isLoading" secondary xSmall :disabled="isLoading" @click="skipOnboarding" class="btn-skip">
+					{{ t('onboarding.skip') }}
+				</v-button>
+			</Transition>
 		</div>
 	</public-view>
 </template>
@@ -87,10 +61,11 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Field } from '@directus/types';
-import { computed, ref } from 'vue';
+import { Ref, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import VForm from '../../components/v-form/v-form.vue';
+import { useProjectFields } from './forms/project';
+import { useUserFields } from './forms/user';
 
 type OnboardingPayload = {
 	version: 1;
@@ -105,6 +80,19 @@ type OnboardingPayload = {
 			url?: string;
 			type?: string;
 		};
+	};
+};
+
+type OnboardingSlide = {
+	i18nTitle: string;
+	i18nText: string;
+	form?: {
+		model: Ref<{}>;
+		fields: Field[];
+	};
+	transitions: {
+		back: string | null;
+		next: string | null;
 	};
 };
 
@@ -134,12 +122,48 @@ const userModel = ref({
 });
 
 const showProjectSlide = Boolean(settingsStore.settings?.onboarding) === false;
-/** Count: Welcome, Project*, User - We dont count the last loading slide because that makes the progress bar then be full */
+const slides: Ref<Record<string, OnboardingSlide>> = ref({
+	welcome: {
+		i18nTitle: 'onboarding.welcome.title',
+		i18nText: 'onboarding.welcome.text',
+		transitions: { back: null, next: showProjectSlide ? 'project' : 'user' },
+	},
+	user: {
+		i18nTitle: 'onboarding.user.title',
+		i18nText: 'onboarding.user.text',
+		form: {
+			model: userModel,
+			fields: useUserFields(),
+		},
+		transitions: { back: showProjectSlide ? 'project' : 'welcome', next: 'finish' },
+	},
+	finish: {
+		i18nTitle: 'onboarding.loading.title',
+		i18nText: 'onboarding.loading.title',
+		transitions: {
+			back: null,
+			next: null,
+		},
+	},
+});
+if (showProjectSlide) {
+	slides.value.project = {
+		i18nTitle: 'onboarding.project.title',
+		i18nText: 'onboarding.project.text',
+		form: {
+			model: projectModel,
+			fields: useProjectFields(),
+		},
+		transitions: { back: 'welcome', next: 'user' },
+	};
+}
+
 const slideCount = showProjectSlide ? 3 : 2;
+const currentSlideName = ref('welcome'); // Important that this matches a key in slides
 const currentSlideIndex = ref(0);
+const currentSlide = computed(() => slides.value[currentSlideName.value]);
+const isLastSlide = computed(() => currentSlide.value?.transitions.next === 'finish');
 const progressPercent = computed(() => (currentSlideIndex.value / slideCount) * 100);
-const isFirstSlide = computed(() => currentSlideIndex.value === 0);
-const isLastSlide = computed(() => currentSlideIndex.value === slideCount - 1);
 const isLoading = ref(false);
 
 async function finishOnboarding() {
@@ -162,7 +186,7 @@ async function finishOnboarding() {
 			onboarding: JSON.stringify({ primary_skillset: userModel.value.primary_skillset }),
 		})
 		.then(() => userStore.hydrate())
-		.catch((e) => console.error('Error when updating users', e));
+		.catch((e) => console.error('Error when updating user', e));
 
 	// TODO: Remove fields when $TELEMETRY is set
 	const onboarding: OnboardingPayload = {
@@ -187,7 +211,10 @@ async function finishOnboarding() {
 }
 
 function prevSlide() {
-	currentSlideIndex.value = Math.max(currentSlideIndex.value - 1, 0);
+	if (!currentSlide.value?.transitions.back) {
+		return;
+	}
+	currentSlideName.value = currentSlide.value?.transitions.back;
 }
 
 async function skipOnboarding() {
@@ -197,511 +224,26 @@ async function skipOnboarding() {
 			onboarding: '{}',
 		})
 		.then(() => userStore.hydrate())
-		.catch((e) => console.error('Error when updating users', e));
+		.catch((e) => console.error('Error when updating user', e));
 
 	await Promise.allSettled([userUpdate]);
 	router.replace('/content').finally(() => (isLoading.value = false));
 }
 
 async function nextSlide() {
+	if (!currentSlide.value?.transitions.next) {
+		return;
+	}
 	if (isLastSlide.value) {
 		isLoading.value = true;
-		finishOnboarding().finally(() => (isLoading.value = false));
+		// TODO remove artificial slowdown for seeing how it'd look on a slower connection
+		setTimeout(() => {
+			// Set the loading to false can be useful in case there were routing errors
+			finishOnboarding().finally(() => (isLoading.value = false));
+		}, 750);
 	}
-	currentSlideIndex.value = Math.min(currentSlideIndex.value + 1, slideCount);
+	currentSlideName.value = currentSlide.value.transitions.next;
 }
-
-const userFields: Field[] = [
-	{
-		collection: 'onboarding',
-		name: t('fields.directus_users.first_name'),
-		field: 'first_name',
-		type: 'string',
-		schema: {
-			name: 'first_name',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: false,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 17,
-			collection: 'onboarding',
-			field: 'first_name',
-			special: null,
-			interface: 'input',
-			options: { placeholder: t('fields.directus_users.first_name'), trim: true },
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 2,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('fields.directus_users.last_name'),
-		field: 'last_name',
-		type: 'string',
-		schema: {
-			name: 'last_name',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: false,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 18,
-			collection: 'onboarding',
-			field: 'last_name',
-			special: null,
-			interface: 'input',
-			options: { placeholder: t('fields.directus_users.last_name'), trim: true },
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 3,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('fields.directus_users.email'),
-		field: 'email',
-		type: 'string',
-		schema: {
-			name: 'email',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: false,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 19,
-			collection: 'onboarding',
-			field: 'email',
-			special: null,
-			interface: 'input',
-			options: { placeholder: t('fields.directus_users.email'), trim: true },
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 4,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: { _and: [{ email: { _regex: '.+@.+\\..+' } }] },
-			validation_message: "t('validationError.email')",
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('onboarding.user.mailinglist_name'),
-		field: 'wants_emails',
-		type: 'boolean',
-		schema: {
-			name: 'wants_emails',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'boolean',
-			is_nullable: false,
-			generation_expression: null,
-			default_value: false,
-			is_generated: false,
-			max_length: null,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 20,
-			collection: 'onboarding',
-			field: 'wants_emails',
-			special: ['cast-boolean'],
-			interface: 'boolean',
-			options: {
-				label: t('onboarding.user.mailinglist_label'),
-			},
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 5,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('onboarding.user.primary_skillset'),
-		field: 'primary_skillset',
-		type: 'string',
-		schema: {
-			name: 'primary_skillset',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: true,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 25,
-			collection: 'onboarding',
-			field: 'primary_skillset',
-			special: null,
-			interface: 'select-radio',
-			options: {
-				choices: [
-					{ text: t('onboarding.user.frontend'), value: 'frontend' },
-					{ text: t('onboarding.user.backend'), value: 'backend' },
-					{ text: t('onboarding.user.fullstack'), value: 'fullstack' },
-					{ text: t('onboarding.user.sql_lowcode'), value: 'sql and basic coding' },
-					{ text: t('onboarding.user.nontechnical'), value: 'non technical' },
-				],
-			},
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 6,
-			width: 'full',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-];
-
-const projectFields: Field[] = [
-	{
-		collection: 'onboarding',
-		name: t('fields.directus_settings.project_name'),
-		field: 'project_name',
-		type: 'string',
-		schema: {
-			name: 'project_name',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: false,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 27,
-			collection: 'onboarding',
-			field: 'project_name',
-			special: null,
-			interface: 'input',
-			options: { placeholder: t('fields.directus_settings.project_name'), trim: true },
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 8,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('fields.directus_settings.project_url'),
-		field: 'project_url',
-		type: 'string',
-		schema: {
-			name: 'project_url',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: false,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 28,
-			collection: 'onboarding',
-			field: 'project_url',
-			special: null,
-			interface: 'input',
-			options: { placeholder: t('fields.directus_settings.project_url'), trim: true },
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 9,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('fields.directus_settings.project_color'),
-		field: 'project_color',
-		type: 'string',
-		schema: {
-			name: 'project_color',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: false,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 29,
-			collection: 'onboarding',
-			field: 'project_color',
-			special: null,
-			interface: 'select-color',
-			options: { placeholder: t('fields.directus_settings.project_color'), trim: true },
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 11,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('fields.directus_settings.project_logo'),
-		field: 'project_logo',
-		type: 'uuid',
-		schema: {
-			name: 'project_logo',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'uuid',
-			is_nullable: true,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: null,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: 'public',
-			foreign_key_table: 'directus_files',
-			foreign_key_column: 'id',
-		},
-		meta: {
-			id: 30,
-			collection: 'onboarding',
-			field: 'project_logo',
-			special: ['file'],
-			interface: 'file-image',
-			options: { crop: false },
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 10,
-			width: 'half',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-	{
-		collection: 'onboarding',
-		name: t('onboarding.project.use_case'),
-		field: 'project_use_case',
-		type: 'string',
-		schema: {
-			name: 'project_use_case',
-			table: 'onboarding',
-			schema: 'public',
-			data_type: 'character varying',
-			is_nullable: true,
-			generation_expression: null,
-			default_value: null,
-			is_generated: false,
-			max_length: 255,
-			comment: null,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_unique: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_schema: null,
-			foreign_key_table: null,
-			foreign_key_column: null,
-		},
-		meta: {
-			id: 31,
-			collection: 'onboarding',
-			field: 'project_use_case',
-			special: null,
-			interface: 'select-radio',
-			options: {
-				choices: [
-					{ text: t('onboarding.project.personal'), value: 'personal' },
-					{ text: t('onboarding.project.work'), value: 'work' },
-					{ text: t('onboarding.project.exploring'), value: 'exploring' },
-				],
-			},
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 12,
-			width: 'full',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	},
-];
 </script>
 
 <style scoped>
@@ -754,6 +296,10 @@ const projectFields: Field[] = [
 	display: flex;
 	flex-direction: row;
 	gap: 16px;
+}
+
+.btn-skip {
+	place-self: flex-end;
 }
 
 .onboarding-slides {

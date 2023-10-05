@@ -311,7 +311,6 @@ confirmation_dialog: Confirmation Dialog
 confirmation_description: Confirmation Description
 confirmation_input_fields: Confirmation Input Fields
 next: Next
-skip: Skip
 field_name: Field Name
 translations: Translations
 no_translations: No Translations
@@ -2263,6 +2262,7 @@ operations:
     batch_size: Batch Size
     cache: Cache
 onboarding:
+  skip: Skip onboarding
   welcome:
     title: Welcome to Directus!
     text:
