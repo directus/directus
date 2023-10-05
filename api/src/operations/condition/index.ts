@@ -1,5 +1,6 @@
 import type { Filter } from '@directus/types';
-import { defineOperationApi, validatePayload } from '@directus/utils';
+import { validatePayload } from '@directus/utils';
+import { defineOperationApi } from '@directus/extensions';
 
 type Options = {
 	filter: Filter;

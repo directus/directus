@@ -6,7 +6,6 @@ export * from './array-helpers.js';
 export { compress, decompress } from './compress.js';
 export * from './deep-map.js';
 export * from './defaults.js';
-export * from './define-extension.js';
 export * from './functions.js';
 export * from './generate-joi.js';
 export * from './get-collection-type.js';

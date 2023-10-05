@@ -1,14 +1,14 @@
 import type {
-	InterfaceConfig,
 	DisplayConfig,
+	EndpointConfig,
+	HookConfig,
+	InterfaceConfig,
 	LayoutConfig,
 	ModuleConfig,
-	PanelConfig,
-	HookConfig,
-	EndpointConfig,
-	OperationAppConfig,
 	OperationApiConfig,
-} from '@directus/types';
+	OperationAppConfig,
+	PanelConfig,
+} from '../types/index.js';
 
 export function defineInterface<T extends InterfaceConfig>(config: T): T {
 	return config;

@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import InterfacePresentationNotice from './presentation-notice.vue';
 import PreviewSVG from './preview.svg?raw';
 

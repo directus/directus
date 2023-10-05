@@ -1,17 +1,14 @@
+import { isIn, isTypeIn, listFolders, pluralize, resolvePackage } from '@directus/utils/node';
+import fse from 'fs-extra';
+import path from 'path';
 import {
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
-	ExtensionManifest,
-} from '@directus/constants';
-import type { ApiExtensionType, AppExtensionType, Extension } from '@directus/types';
-import fse from 'fs-extra';
-import path from 'path';
-import { isIn, isTypeIn } from './array-helpers.js';
-import { listFolders } from './list-folders.js';
-import { pluralize } from './pluralize.js';
-import { resolvePackage } from './resolve-package.js';
+} from '../../shared/constants/index.js';
+import { ExtensionManifest } from '../../shared/schemas/index.js';
+import type { ApiExtensionType, AppExtensionType, Extension } from '../../shared/types/index.js';
 
 export const findExtension = async (folder: string, filename: string) => {
 	if (await fse.exists(path.join(folder, `${filename}.cjs`))) return `${filename}.cjs`;
