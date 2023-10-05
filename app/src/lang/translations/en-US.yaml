@@ -1029,6 +1029,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
 page_help_settings_project: "**Project Settings** — Your project's global configuration options."
+page_help_settings_extensions: "**Extensions** — The extensions installed in your project."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.

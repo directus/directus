@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { useI18n } from 'vue-i18n';
 
@@ -16,6 +17,10 @@ const { t } = useI18n();
 
 		<template #navigation>
 			<settings-navigation />
+		</template>
+
+		<template #sidebar>
+			<extensions-info-sidebar-detail />
 		</template>
 	</private-view>
 </template>
