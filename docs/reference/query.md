@@ -280,13 +280,27 @@ Retrieve an item's result from a specific version.
 </template>
 <template #graphql>
 
+Singletons:
+
 ```graphql
 query {
-	articles_by_id(id: 1, version: "draft") {
-		id
-		title
-		content
-	}
+    articles(version: "draft") {
+        id
+        title
+        content
+    }
+}
+```
+
+By ID:
+
+```graphql
+query {
+    articles_by_id(id: 1, version: "draft") {
+        id
+        title
+        content
+    }
 }
 ```
 
