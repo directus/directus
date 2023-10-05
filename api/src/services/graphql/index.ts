@@ -1032,6 +1032,12 @@ export class GraphQLService {
 							type: GraphQLString,
 						},
 					};
+				} else {
+					resolver.args = {
+						version: {
+							type: GraphQLString,
+						},
+					};
 				}
 
 				ReadCollectionTypes[collection.collection]!.addResolver(resolver);
