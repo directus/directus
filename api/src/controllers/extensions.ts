@@ -1,12 +1,12 @@
+import type { PrimaryKey } from '@directus/types';
 import { Router } from 'express';
 import env from '../env.js';
 import { ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import { getExtensionManager } from '../extensions/extensions.js';
+import { ExtensionsService } from '../extensions/service.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
-import type { PrimaryKey } from '@directus/types';
-import { ExtensionsService } from '../extensions/service.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const router = Router();
@@ -14,7 +14,6 @@ const router = Router();
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const a = req.query;
 		if (req.accountability?.admin !== true) throw new RouteNotFoundError({ path: req.path });
 
 		const extensionManager = await getExtensionManager();
