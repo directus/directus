@@ -1,3 +1,59 @@
+<script lang="ts" setup>
+import api from '@/api';
+import { useExtensionsStore } from '@/stores/extensions';
+import formatTitle from '@directus/format-title';
+import { ExtensionInfo } from '@directus/types';
+import { isEqual } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+
+const { t } = useI18n();
+
+const extensionsStore = useExtensionsStore();
+
+const edits = ref<Record<string, ExtensionInfo>>({});
+
+const extensions = computed(() => {
+	return extensionsStore.extensions.map((extension) => {
+		if (edits.value[extension.name]) {
+			return {
+				...extension,
+				...edits.value[extension.name],
+			};
+		}
+
+		return extension;
+	});
+});
+
+function setEnabled(name: string, enabled: boolean) {
+	edits.value[name] = {
+		...edits.value[name],
+		name,
+		enabled,
+	};
+}
+
+function formatName(name: string) {
+	return formatTitle(name.replace(/^directus-extension-/, ''));
+}
+
+const hasEdits = computed(() => isEqual(extensions.value, extensionsStore.extensions) === false);
+
+const saving = ref(false);
+
+async function saveExtensions() {
+	if (saving.value) return;
+
+	saving.value = true;
+	await api.patch('/extensions', Object.values(edits.value));
+	await extensionsStore.hydrate();
+	edits.value = {};
+	saving.value = false;
+}
+</script>
+
 <template>
 	<private-view :title="t('extensions')">
 		<template #title-outer:prepend>
@@ -54,62 +110,6 @@
 		<router-view name="add" />
 	</private-view>
 </template>
-
-<script lang="ts" setup>
-import api from '@/api';
-import { useExtensionsStore } from '@/stores/extensions';
-import formatTitle from '@directus/format-title';
-import { ExtensionInfo } from '@directus/types';
-import { isEqual } from 'lodash';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-
-const { t } = useI18n();
-
-const extensionsStore = useExtensionsStore();
-
-const edits = ref<Record<string, ExtensionInfo>>({});
-
-const extensions = computed(() => {
-	return extensionsStore.extensions.map((extension) => {
-		if (edits.value[extension.name]) {
-			return {
-				...extension,
-				...edits.value[extension.name],
-			};
-		}
-
-		return extension;
-	});
-});
-
-function setEnabled(name: string, enabled: boolean) {
-	edits.value[name] = {
-		...edits.value[name],
-		name,
-		enabled,
-	};
-}
-
-function formatName(name: string) {
-	return formatTitle(name.replace(/^directus-extension-/, ''));
-}
-
-const hasEdits = computed(() => isEqual(extensions.value, extensionsStore.extensions) === false);
-
-const saving = ref(false);
-
-async function saveExtensions() {
-	if (saving.value) return;
-
-	saving.value = true;
-	await api.patch('/extensions', Object.values(edits.value));
-	await extensionsStore.hydrate();
-	edits.value = {};
-	saving.value = false;
-}
-</script>
 
 <style scoped>
 main .v-list {
