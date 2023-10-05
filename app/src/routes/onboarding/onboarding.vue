@@ -110,7 +110,7 @@ const projectModel = ref({
 	project_url: settingsStore.settings?.project_url,
 	project_logo: settingsStore.settings?.project_logo,
 	project_color: settingsStore.settings?.project_color,
-	project_use_case: undefined,
+	project_use_case: settingsStore.settings?.onboarding?.project_use_case,
 });
 const userModel = ref({
 	id: userStore.currentUser?.id,
@@ -118,7 +118,7 @@ const userModel = ref({
 	last_name: userStore.currentUser?.last_name,
 	email: userStore.currentUser?.email,
 	wants_emails: false,
-	primary_skillset: undefined,
+	primary_skillset: userStore.currentUser?.onboarding?.primary_skillset,
 });
 
 const showProjectSlide = Boolean(settingsStore.settings?.onboarding) === false;
@@ -139,7 +139,7 @@ const slides: Ref<Record<string, OnboardingSlide>> = ref({
 	},
 	finish: {
 		i18nTitle: 'onboarding.loading.title',
-		i18nText: 'onboarding.loading.title',
+		i18nText: 'onboarding.loading.text',
 		transitions: {
 			back: null,
 			next: null,
