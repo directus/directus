@@ -280,7 +280,15 @@ TBD
 </template>
 <template #graphql>
 
-TBD
+```graphql
+query {
+	articles_by_id(id: 1, version: "draft") {
+		id
+		title
+		content
+	}
+}
+```
 
 </template>
 <template #sdk>
