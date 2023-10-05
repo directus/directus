@@ -1,11 +1,11 @@
-import type { ExtensionManager } from './extensions.js';
-import { createRequire } from 'node:module';
+import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from '@directus/types';
 import { readFile } from 'fs/promises';
 import { Isolate } from 'isolated-vm';
-import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from '@directus/types';
-import logger from '../logger.js';
+import { createRequire } from 'node:module';
 import env from '../env.js';
+import logger from '../logger.js';
 import { createExec } from './exec/node.js';
+import type { ExtensionManager } from './extensions.js';
 import { handleIsolateError } from './utils/handle-isolate-error.js';
 
 const require = createRequire(import.meta.url);
@@ -28,26 +28,23 @@ export class VmManager {
 		} else if (extension.type === 'hook') {
 			await this.run(`import ext from 'extension.js'; ext()`, extension);
 		} else if (extension.type === 'operation') {
-			await this.run(
-				`import ext from 'extension.js'; ext()`,
-				extension,
-			);
+			await this.run(`import ext from 'extension.js'; ext()`, extension);
 		} else if (extension.type === 'bundle') {
 			for (const innerExtension of extension.entries) {
 				if (innerExtension.type === 'endpoint') {
 					await this.run(
 						`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) endpoint()`,
-						extension,
+						extension
 					);
 				} else if (innerExtension.type === 'hook') {
 					await this.run(
 						`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) hook()`,
-						extension,
+						extension
 					);
 				} else if (innerExtension.type === 'operation') {
 					await this.run(
 						`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) operation()`,
-						extension,
+						extension
 					);
 				}
 			}
@@ -88,7 +85,7 @@ export class VmManager {
 				timeout: scriptTimeoutMs,
 			});
 		} catch (error: any) {
-			handleIsolateError({ extension, extensionManager: this.extensionManager }, error, true)
+			handleIsolateError({ extension, extensionManager: this.extensionManager }, error, true);
 		}
 
 		this.extensionManager.registration.addUnregisterFunction(extension.name, async () => {
@@ -98,7 +95,7 @@ export class VmManager {
 			} catch (err) {
 				logger.error(err);
 			}
-		})
+		});
 	}
 
 	private async createInspector(channel: any, extensionName: string) {
@@ -108,7 +105,7 @@ export class VmManager {
 			function dispose() {
 				try {
 					channel.dispose();
-				} catch (err) { }
+				} catch (err) {}
 			}
 
 			ws.on('error', dispose);
@@ -133,7 +130,7 @@ export class VmManager {
 				}
 			}
 
-			channel.onResponse = (callId: any, message: any) => send(message);
+			channel.onResponse = (_callId: any, message: any) => send(message);
 			channel.onNotification = send;
 		});
 
