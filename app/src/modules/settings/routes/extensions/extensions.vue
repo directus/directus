@@ -4,14 +4,17 @@ import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionItem from './components/extension-item.vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
-import { ref } from 'vue';
+import { ref, unref, computed } from 'vue';
 import type { ExtensionInfo } from '@directus/extensions';
+import { groupBy } from 'lodash';
 
 const { t } = useI18n();
 
 const error = ref();
 const loading = ref(false);
 const extensions = ref<ExtensionInfo[]>([]);
+
+const extensionsGrouped = computed(() => groupBy(unref(extensions), 'type'));
 
 const fetchExtensions = async () => {
 	loading.value = true;
@@ -47,6 +50,8 @@ fetchExtensions();
 		</template>
 
 		<div class="page-container">
+			{{ extensionsGrouped }}
+
 			<v-list v-if="extensions.length > 0 && !loading">
 				<extension-item
 					v-for="extension in extensions"
