@@ -55,4 +55,3 @@ export const ExtensionOptions = ExtensionOptionsBase.and(
 );
 
 export type ExtensionOptions = z.infer<typeof ExtensionOptions>;
-
