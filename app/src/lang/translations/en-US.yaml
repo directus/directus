@@ -28,6 +28,7 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+extensions: Extensions
 modules: Modules
 module_bar: Module Bar
 logs: Logs
