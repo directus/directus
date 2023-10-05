@@ -1,9 +1,32 @@
 <script setup lang="ts">
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
 import SettingsNavigation from '../../components/navigation.vue';
+import ExtensionItem from './components/extension-item.vue';
 import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { ref } from 'vue';
+import type { ExtensionInfo } from '@directus/types';
 
 const { t } = useI18n();
+
+const error = ref();
+const loading = ref(false);
+const extensions = ref<ExtensionInfo[]>([]);
+
+const fetchExtensions = async () => {
+	loading.value = true;
+
+	try {
+		const response = await api.get('/extensions');
+		extensions.value = response.data.data;
+	} catch (err) {
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
+};
+
+fetchExtensions();
 </script>
 
 <template>
@@ -22,6 +45,17 @@ const { t } = useI18n();
 		<template #sidebar>
 			<extensions-info-sidebar-detail />
 		</template>
+
+		<div class="page-container">
+			<v-list>
+				<extension-item
+					v-for="extension in extensions"
+					:key="extension.type + '-' + extension.name"
+					:name="extension.name"
+					:type="extension.type"
+				/>
+			</v-list>
+		</div>
 	</private-view>
 </template>
 
@@ -31,5 +65,10 @@ const { t } = useI18n();
 	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-hover-disabled: var(--primary-25);
 	--v-button-color-hover-disabled: var(--primary);
+}
+
+.page-container {
+	padding-top: 0;
+	padding: var(--content-padding);
 }
 </style>
