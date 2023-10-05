@@ -212,7 +212,7 @@ router.get(
 
 		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
 
-		const saves = await service.getVersionSaves(version['id']);
+		const saves = await service.getVersionSavesById(version['id']);
 
 		const current = assign({}, ...saves);
 
@@ -239,7 +239,7 @@ router.post(
 
 		await service.save(req.params['pk']!, req.body);
 
-		const saves = await service.getVersionSaves(req.params['pk']!);
+		const saves = await service.getVersionSavesById(req.params['pk']!);
 
 		const result = assign(mainItem, ...saves);
 

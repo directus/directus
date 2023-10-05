@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import type { Item, PrimaryKey, Query, Version } from '@directus/types';
+import type { Filter, Item, PrimaryKey, Query, Version } from '@directus/types';
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -111,17 +111,36 @@ export class VersionsService extends ItemsService {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getVersionSaves(key: PrimaryKey): Promise<Partial<Item>[]> {
+	async getVersionSavesById(id: PrimaryKey): Promise<Partial<Item>[]> {
 		const revisionsService = new RevisionsService({
 			knex: this.knex,
 			schema: this.schema,
 		});
 
 		const result = await revisionsService.readByQuery({
-			filter: { version: { _eq: key } },
+			filter: { version: { _eq: id } },
 		});
 
 		return result.map((revision) => revision['delta']);
+	}
+
+	async getVersionSaves(key: string, collection: string, item: string | undefined): Promise<Partial<Item>[] | null> {
+		const filter: Filter = {
+			key: { _eq: key },
+			collection: { _eq: collection },
+		};
+
+		if (item) {
+			filter['item'] = { _eq: item };
+		}
+
+		const versions = await this.readByQuery({ filter });
+
+		if (!versions?.[0]) return null;
+
+		const saves = await this.getVersionSavesById(versions[0]['id']);
+
+		return saves;
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -231,7 +250,7 @@ export class VersionsService extends ItemsService {
 			});
 		}
 
-		const saves = await this.getVersionSaves(id);
+		const saves = await this.getVersionSavesById(id);
 
 		const versionResult = assign({}, ...saves);
 

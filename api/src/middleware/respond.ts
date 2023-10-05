@@ -58,20 +58,9 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	) {
 		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
 
-		const filter: Filter = {
-			key: { _eq: req.sanitizedQuery.version },
-			collection: { _eq: req.collection },
-		};
+		const saves = await versionsService.getVersionSaves(req.sanitizedQuery.version, req.collection, req.params['pk']);
 
-		if (req.params['pk']) {
-			filter['item'] = { _eq: req.params['pk'] };
-		}
-
-		const versions = await versionsService.readByQuery({ filter });
-
-		if (versions[0]) {
-			const saves = await versionsService.getVersionSaves(versions[0]['id']);
-
+		if (saves) {
 			assign(res.locals['payload'].data, ...saves);
 		}
 	}
