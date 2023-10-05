@@ -12,7 +12,6 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
-import type { Filter } from '@directus/types';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
