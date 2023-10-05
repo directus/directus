@@ -1,3 +1,12 @@
+<script setup lang="ts">
+defineProps<{
+	color?: string;
+	icon?: string;
+	title?: string;
+	inlineTitle?: boolean;
+}>();
+</script>
+
 <template>
 	<v-divider
 		:class="{ 'add-margin-top': icon || title }"
@@ -12,15 +21,6 @@
 		<template v-if="title" #default>{{ title }}</template>
 	</v-divider>
 </template>
-
-<script setup lang="ts">
-defineProps<{
-	color?: string;
-	icon?: string;
-	title?: string;
-	inlineTitle?: boolean;
-}>();
-</script>
 
 <style lang="scss" scoped>
 .add-margin-top {

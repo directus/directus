@@ -1,20 +1,3 @@
-<template>
-	<div class="system-display-template">
-		<v-notice v-if="collection === null" type="info">
-			{{ t('interfaces.system-display-template.select_a_collection') }}
-		</v-notice>
-
-		<v-field-template
-			v-else
-			:collection="collection"
-			:model-value="value"
-			:disabled="disabled"
-			:inject="injectValue"
-			@update:model-value="$emit('input', $event)"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import type { Field } from '@directus/types';
@@ -95,3 +78,20 @@ const injectValue = computed(() => {
 	return { fields: [fakeVersionField] };
 });
 </script>
+
+<template>
+	<div class="system-display-template">
+		<v-notice v-if="collection === null" type="info">
+			{{ t('interfaces.system-display-template.select_a_collection') }}
+		</v-notice>
+
+		<v-field-template
+			v-else
+			:collection="collection"
+			:model-value="value"
+			:disabled="disabled"
+			:inject="injectValue"
+			@update:model-value="$emit('input', $event)"
+		/>
+	</div>
+</template>

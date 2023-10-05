@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { computed, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import useDisplayItems from './use-display-items';
+
+interface Props {
+	value: (string | number)[];
+	collection: string;
+	template: string;
+	filter: Record<string, any>;
+}
+const props = withDefaults(defineProps<Props>(), {});
+/*const emit = */ defineEmits(['input', 'select']);
+
+const { t } = useI18n();
+const { collection, template, value } = toRefs(props);
+
+const { displayItems, displayTemplate, loading } = useDisplayItems(collection, template, value);
+const displayItem = computed(() => (displayItems.value.length > 0 ? displayItems.value[0] : null));
+</script>
+
 <template>
 	<div class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
@@ -19,27 +40,6 @@
 		</v-input>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import useDisplayItems from './use-display-items';
-
-interface Props {
-	value: (string | number)[];
-	collection: string;
-	template: string;
-	filter: Record<string, any>;
-}
-const props = withDefaults(defineProps<Props>(), {});
-/*const emit = */ defineEmits(['input', 'select']);
-
-const { t } = useI18n();
-const { collection, template, value } = toRefs(props);
-
-const { displayItems, displayTemplate, loading } = useDisplayItems(collection, template, value);
-const displayItem = computed(() => (displayItems.value.length > 0 ? displayItems.value[0] : null));
-</script>
 
 <style lang="scss" scoped>
 .preview {

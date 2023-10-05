@@ -1,42 +1,3 @@
-<template>
-	<div class="wrapper">
-		<Transition name="fade" mode="out-in">
-			<div v-if="!feedback.rating" class="step">
-				<div>
-					<div>
-						<p class="desc">{{ getPrompt() }}</p>
-						<p class="heading">How helpful was this article?</p>
-					</div>
-				</div>
-				<div class="button-container">
-					<button v-for="item in ratingOptions" :key="item.value" class="btn" @click="handleSubmission(item.value)">
-						<span>{{ item.label }}</span>
-					</button>
-				</div>
-			</div>
-			<div v-else-if="feedback.rating && !success" class="step">
-				<div>
-					<p class="desc">This article is</p>
-					<div>
-						<span>{{ getRatingOption(feedback.rating)?.label }}</span>
-						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = undefined">
-							<span mi icon>close</span>
-						</button>
-					</div>
-				</div>
-				<p class="heading">{{ getRatingOption(feedback.rating)?.message }}</p>
-				<textarea v-model="feedback.comments" autofocus class="input" />
-				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
-					Send Us Your Feedback
-				</button>
-			</div>
-			<div v-else class="step">
-				<p class="heading">Thanks for your feedback!</p>
-			</div>
-		</Transition>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 
@@ -114,6 +75,45 @@ async function handleSubmission(rating?: number) {
 	}
 }
 </script>
+
+<template>
+	<div class="wrapper">
+		<Transition name="fade" mode="out-in">
+			<div v-if="!feedback.rating" class="step">
+				<div>
+					<div>
+						<p class="desc">{{ getPrompt() }}</p>
+						<p class="heading">How helpful was this article?</p>
+					</div>
+				</div>
+				<div class="button-container">
+					<button v-for="item in ratingOptions" :key="item.value" class="btn" @click="handleSubmission(item.value)">
+						<span>{{ item.label }}</span>
+					</button>
+				</div>
+			</div>
+			<div v-else-if="feedback.rating && !success" class="step">
+				<div>
+					<p class="desc">This article is</p>
+					<div>
+						<span>{{ getRatingOption(feedback.rating)?.label }}</span>
+						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = undefined">
+							<span mi icon>close</span>
+						</button>
+					</div>
+				</div>
+				<p class="heading">{{ getRatingOption(feedback.rating)?.message }}</p>
+				<textarea v-model="feedback.comments" autofocus class="input" />
+				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
+					Send Us Your Feedback
+				</button>
+			</div>
+			<div v-else class="step">
+				<p class="heading">Thanks for your feedback!</p>
+			</div>
+		</Transition>
+	</div>
+</template>
 
 <style scoped>
 .step > * + * {

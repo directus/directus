@@ -157,7 +157,7 @@
 		"snappy": "7.2.2",
 		"stream-json": "1.7.5",
 		"strip-bom-stream": "5.0.0",
-		"tmp-promise": "3.0.3",
+		"tinypool": "0.8.1",
 		"tsx": "3.12.7",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
@@ -212,7 +212,7 @@
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
 		"supertest": "6.3.3",
-		"typescript": "5.0.4",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	},
 	"optionalDependencies": {

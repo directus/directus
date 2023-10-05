@@ -1,12 +1,11 @@
 ---
-description: A guide on how to build custom Themes in Directus.
+description: A guide on how to create a custom Theme in Directus.
 readTime: 2 min read
 ---
 
-# Themes & Styling
+# Theming
 
-> **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily
-> tailored to your brand. [Learn more about the App](/user-guide/overview/data-studio-app).
+> Theming allows you to customize and style the visual appearance of your Directus App.
 
 ## App Themes
 
@@ -22,10 +21,6 @@ no limit to customization. Below are several code resources for key SCSS files.
   [Type Styles](https://github.com/directus/directus/blob/main/app/src/styles/mixins/type-styles.scss)
 - **Variables** — See the
   [Global Variables](https://github.com/directus/directus/blob/main/app/src/styles/_variables.scss)
-
-## Project Styling
-
-See [Project Settings - Branding & Style](/user-guide/settings/project-settings#branding-style).
 
 ## Custom CSS
 

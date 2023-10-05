@@ -1,15 +1,16 @@
-import { getUrl } from '@common/config';
-import request from 'supertest';
+import { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import { createReadStream } from 'fs';
-import path from 'path';
-import * as common from '@common/index';
+import { join } from 'path';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 
-const assetsDirectory = [__dirname, '..', '..', 'assets'];
+const assetsDirectory = [paths.cwd, 'assets'];
 const storages = ['local', 'minio'];
 
-const imageFileAvif = path.join(...assetsDirectory, 'directus.avif');
-const imageFilePng = path.join(...assetsDirectory, 'directus.png');
+const imageFileAvif = join(...assetsDirectory, 'directus.avif');
+const imageFilePng = join(...assetsDirectory, 'directus.png');
 
 describe('/assets', () => {
 	describe('GET /assets/:id', () => {
@@ -20,14 +21,14 @@ describe('/assets', () => {
 						// Setup
 						const insertResponse = await request(getUrl(vendor))
 							.post('/files')
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 							.field('storage', storage)
 							.attach('file', createReadStream(imageFileAvif));
 
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						// Assert
 						expect(response.statusCode).toBe(200);
@@ -47,14 +48,14 @@ describe('/assets', () => {
 						// Setup
 						const insertResponse = await request(getUrl(vendor))
 							.post('/files')
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 							.field('storage', storage)
 							.attach('file', createReadStream(imageFilePng));
 
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 							.set('Accept', requestHeaderAccept);
 
 						// Assert

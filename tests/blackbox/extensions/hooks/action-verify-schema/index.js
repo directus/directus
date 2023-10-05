@@ -1,4 +1,4 @@
-module.exports = function registerHooks({ action }) {
+export default function registerHooks({ action }) {
 	const logsCollection = 'tests_extensions_log';
 
 	action('collections.create', collectionsCallback);
@@ -97,4 +97,4 @@ module.exports = function registerHooks({ action }) {
 			}
 		}
 	}
-};
+}

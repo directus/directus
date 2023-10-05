@@ -1,62 +1,3 @@
-<template>
-	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
-		<div
-			ref="activator"
-			class="v-menu-activator"
-			:class="{ attached }"
-			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
-		>
-			<slot
-				name="activator"
-				v-bind="{
-					toggle: toggle,
-					active: isActive,
-					activate: activate,
-					deactivate: deactivate,
-				}"
-			/>
-		</div>
-
-		<teleport to="#menu-outlet">
-			<transition-bounce>
-				<div
-					v-if="isActive"
-					:id="id"
-					v-click-outside="{
-						handler: deactivate,
-						middleware: onClickOutsideMiddleware,
-						disabled: closeOnClick === false,
-						events: ['click'],
-					}"
-					class="v-menu-popper"
-					:class="{ active: isActive, attached }"
-					:data-placement="popperPlacement"
-					:style="styles"
-				>
-					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
-					<div
-						class="v-menu-content"
-						:class="{ 'full-height': fullHeight, seamless }"
-						v-on="{
-							...(closeOnContentClick ? { click: onContentClick } : {}),
-							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
-						}"
-					>
-						<slot
-							v-bind="{
-								toggle: toggle,
-								active: isActive,
-								activate: activate,
-								deactivate: deactivate,
-							}"
-						/>
-					</div>
-				</div>
-			</transition-bounce>
-		</teleport>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
@@ -417,6 +358,65 @@ function usePopper(
 	}
 }
 </script>
+
+<template>
+	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
+		<div
+			ref="activator"
+			class="v-menu-activator"
+			:class="{ attached }"
+			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
+		>
+			<slot
+				name="activator"
+				v-bind="{
+					toggle: toggle,
+					active: isActive,
+					activate: activate,
+					deactivate: deactivate,
+				}"
+			/>
+		</div>
+
+		<teleport to="#menu-outlet">
+			<transition-bounce>
+				<div
+					v-if="isActive"
+					:id="id"
+					v-click-outside="{
+						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
+						disabled: closeOnClick === false,
+						events: ['click'],
+					}"
+					class="v-menu-popper"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
+				>
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div
+						class="v-menu-content"
+						:class="{ 'full-height': fullHeight, seamless }"
+						v-on="{
+							...(closeOnContentClick ? { click: onContentClick } : {}),
+							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
+						}"
+					>
+						<slot
+							v-bind="{
+								toggle: toggle,
+								active: isActive,
+								activate: activate,
+								deactivate: deactivate,
+							}"
+						/>
+					</div>
+				</div>
+			</transition-bounce>
+		</teleport>
+	</div>
+</template>
 
 <style>
 body {

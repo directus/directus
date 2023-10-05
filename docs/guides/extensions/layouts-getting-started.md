@@ -14,8 +14,8 @@ and output the results.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your interface.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose layout), and type a name for your extension (for example,

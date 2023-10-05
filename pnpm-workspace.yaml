@@ -5,4 +5,4 @@ packages:
   - docs
   - sdk
   - packages/*
-  - tests/*
+  - tests/**

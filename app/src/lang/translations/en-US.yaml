@@ -101,6 +101,7 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+keep: Keep
 version: Version
 version_key: Version Key
 version_name: Version Name
@@ -125,6 +126,8 @@ promote_notice: >-
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
+delete_on_promote_copy: >-
+  Do you want to delete or keep the "{version}" version after promoting?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -479,7 +482,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -617,6 +619,7 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
+edit_item: Edit Item
 enabled: Enabled
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
@@ -1735,7 +1738,7 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
+    folder: Root Folder
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root

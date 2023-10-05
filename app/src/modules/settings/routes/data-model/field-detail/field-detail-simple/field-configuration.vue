@@ -1,66 +1,3 @@
-<template>
-	<div class="field-configuration" :style="{ 'grid-row': row }">
-		<div class="setup">
-			<template v-if="chosenInterface && !chosenInterfaceConfig.autoKey">
-				<div class="schema">
-					<div class="field half-left">
-						<div class="label type-label">
-							{{ t('key') }}
-							<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
-						</div>
-
-						<v-input v-model="key" autofocus class="monospace" db-safe :placeholder="t('a_unique_column_name')" />
-					</div>
-
-					<div class="field half-right">
-						<div class="label type-label">
-							{{ t('type') }}
-						</div>
-
-						<v-select v-model="type" :items="typeOptions" :disabled="typeDisabled" />
-					</div>
-
-					<div class="field half-left">
-						<div class="label type-label">
-							{{ t('default_value') }}
-						</div>
-
-						<v-checkbox v-if="type === 'boolean'" v-model="defaultValue" block :label="t('enabled')" />
-						<v-input v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
-					</div>
-
-					<div class="field half-right">
-						<div class="label type-label">
-							{{ t('required') }}
-						</div>
-
-						<v-checkbox v-model="required" block :label="t('require_value_to_be_set')" />
-					</div>
-				</div>
-
-				<relationship-configuration :local-type="localType" />
-
-				<v-divider inline />
-			</template>
-
-			<extension-options
-				v-model="options"
-				type="interface"
-				:extension="chosenInterface"
-				:options="customOptionsFields"
-			/>
-
-			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
-				{{ t('save') }}
-			</v-button>
-
-			<button class="toggle-advanced" @click="$emit('toggleAdvanced')">
-				{{ t('continue_in_advanced_field_creation_mode') }}
-			</button>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
@@ -144,6 +81,69 @@ const options = computed({
 	},
 });
 </script>
+
+<template>
+	<div class="field-configuration" :style="{ 'grid-row': row }">
+		<div class="setup">
+			<template v-if="chosenInterface && !chosenInterfaceConfig.autoKey">
+				<div class="schema">
+					<div class="field half-left">
+						<div class="label type-label">
+							{{ t('key') }}
+							<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+						</div>
+
+						<v-input v-model="key" autofocus class="monospace" db-safe :placeholder="t('a_unique_column_name')" />
+					</div>
+
+					<div class="field half-right">
+						<div class="label type-label">
+							{{ t('type') }}
+						</div>
+
+						<v-select v-model="type" :items="typeOptions" :disabled="typeDisabled" />
+					</div>
+
+					<div class="field half-left">
+						<div class="label type-label">
+							{{ t('default_value') }}
+						</div>
+
+						<v-checkbox v-if="type === 'boolean'" v-model="defaultValue" block :label="t('enabled')" />
+						<v-input v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
+					</div>
+
+					<div class="field half-right">
+						<div class="label type-label">
+							{{ t('required') }}
+						</div>
+
+						<v-checkbox v-model="required" block :label="t('require_value_to_be_set')" />
+					</div>
+				</div>
+
+				<relationship-configuration :local-type="localType" />
+
+				<v-divider inline />
+			</template>
+
+			<extension-options
+				v-model="options"
+				type="interface"
+				:extension="chosenInterface"
+				:options="customOptionsFields"
+			/>
+
+			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
+				{{ t('save') }}
+			</v-button>
+
+			<button class="toggle-advanced" @click="$emit('toggleAdvanced')">
+				{{ t('continue_in_advanced_field_creation_mode') }}
+			</button>
+		</div>
+	</div>
+</template>
 
 <style scoped lang="scss">
 @import '@/styles/mixins/form-grid';

@@ -1,33 +1,3 @@
-<template>
-	<v-drawer
-		:model-value="open"
-		:title="t('change_trigger')"
-		:subtitle="t('trigger_options')"
-		icon="offline_bolt"
-		persistent
-		@cancel="$emit('update:open', false)"
-	>
-		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!currentTrigger" @click="saveTrigger">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="content">
-			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
-
-			<v-form
-				v-if="flowEdits.trigger"
-				v-model="flowEdits.options"
-				class="extension-options"
-				:fields="currentTriggerOptionFields"
-				:initial-values="flow?.options"
-				primary-key="+"
-			/>
-		</div>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import { FlowRaw, TriggerType } from '@directus/types';
 import { computed, ref } from 'vue';
@@ -79,6 +49,36 @@ const currentTriggerOptionFields = computed(() => {
 	return currentTrigger.value.options;
 });
 </script>
+
+<template>
+	<v-drawer
+		:model-value="open"
+		:title="t('change_trigger')"
+		:subtitle="t('trigger_options')"
+		icon="offline_bolt"
+		persistent
+		@cancel="$emit('update:open', false)"
+	>
+		<template #actions>
+			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!currentTrigger" @click="saveTrigger">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<div class="content">
+			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+
+			<v-form
+				v-if="flowEdits.trigger"
+				v-model="flowEdits.options"
+				class="extension-options"
+				:fields="currentTriggerOptionFields"
+				:initial-values="flow?.options"
+				primary-key="+"
+			/>
+		</div>
+	</v-drawer>
+</template>
 
 <style scoped lang="scss">
 @import '@/styles/mixins/form-grid';

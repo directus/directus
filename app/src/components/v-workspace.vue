@@ -1,43 +1,3 @@
-<template>
-	<div
-		class="v-workspace"
-		:class="{ editing: editMode }"
-		:style="{ width: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
-	>
-		<div
-			class="workspace"
-			:style="{
-				transform: `scale(${zoomScale})`,
-				width: workspaceSize.width + 'px',
-				height: workspaceSize.height + 'px',
-			}"
-		>
-			<template v-if="!$slots.tile">
-				<v-workspace-tile
-					v-for="tile in tiles"
-					:key="tile.id"
-					v-bind="tile"
-					:edit-mode="editMode"
-					:resizable="resizable"
-					@preview="$emit('preview', tile)"
-					@edit="$emit('edit', tile)"
-					@update="$emit('update', { edits: $event, id: tile.id })"
-					@move="$emit('move', tile.id)"
-					@delete="$emit('delete', tile.id)"
-					@duplicate="$emit('duplicate', tile)"
-				>
-					<slot :tile="tile"></slot>
-				</v-workspace-tile>
-			</template>
-			<template v-else>
-				<template v-for="tile in tiles" :key="tile.id">
-					<slot name="tile" :tile="tile"></slot>
-				</template>
-			</template>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
 import { useElementSize } from '@directus/composables';
@@ -124,6 +84,46 @@ const workspaceBoxSize = computed(() => {
 	};
 });
 </script>
+
+<template>
+	<div
+		class="v-workspace"
+		:class="{ editing: editMode }"
+		:style="{ width: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
+	>
+		<div
+			class="workspace"
+			:style="{
+				transform: `scale(${zoomScale})`,
+				width: workspaceSize.width + 'px',
+				height: workspaceSize.height + 'px',
+			}"
+		>
+			<template v-if="!$slots.tile">
+				<v-workspace-tile
+					v-for="tile in tiles"
+					:key="tile.id"
+					v-bind="tile"
+					:edit-mode="editMode"
+					:resizable="resizable"
+					@preview="$emit('preview', tile)"
+					@edit="$emit('edit', tile)"
+					@update="$emit('update', { edits: $event, id: tile.id })"
+					@move="$emit('move', tile.id)"
+					@delete="$emit('delete', tile.id)"
+					@duplicate="$emit('duplicate', tile)"
+				>
+					<slot :tile="tile"></slot>
+				</v-workspace-tile>
+			</template>
+			<template v-else>
+				<template v-for="tile in tiles" :key="tile.id">
+					<slot name="tile" :tile="tile"></slot>
+				</template>
+			</template>
+		</div>
+	</div>
+</template>
 
 <style scoped>
 .v-workspace {
