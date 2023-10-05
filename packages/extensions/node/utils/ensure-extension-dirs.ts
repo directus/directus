@@ -1,7 +1,7 @@
-import { pluralize } from '@directus/utils';
+import { pluralize } from '@directus/utils/node';
 import fse from 'fs-extra';
 import path from 'path';
-import type { NestedExtensionType } from '../types/index.js';
+import type { NestedExtensionType } from '../../shared/types/index.js';
 
 export async function ensureExtensionDirs(
 	extensionsPath: string,

@@ -1,14 +1,14 @@
-import {
-	EXTENSION_NAME_REGEX,
-	EXTENSION_PKG_KEY,
-	ExtensionManifest,
-	HYBRID_EXTENSION_TYPES,
-	NESTED_EXTENSION_TYPES,
-} from '@directus/constants';
 import { isIn, isTypeIn, listFolders, pluralize, resolvePackage } from '@directus/utils/node';
 import fse from 'fs-extra';
 import path from 'path';
-import type { ApiExtensionType, AppExtensionType, Extension } from '../types/index.js';
+import {
+	EXTENSION_NAME_REGEX,
+	EXTENSION_PKG_KEY,
+	HYBRID_EXTENSION_TYPES,
+	NESTED_EXTENSION_TYPES,
+} from '../../shared/constants/index.js';
+import { ExtensionManifest } from '../../shared/schemas/index.js';
+import type { ApiExtensionType, AppExtensionType, Extension } from '../../shared/types/index.js';
 
 export const findExtension = async (folder: string, filename: string) => {
 	if (await fse.exists(path.join(folder, `${filename}.cjs`))) return `${filename}.cjs`;

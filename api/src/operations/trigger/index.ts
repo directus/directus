@@ -1,4 +1,5 @@
-import { defineOperationApi, optionToObject } from '@directus/utils';
+import { defineOperationApi } from '@directus/extensions';
+import { optionToObject } from '@directus/utils';
 import { omit } from 'lodash-es';
 import { getFlowManager } from '../../flows.js';
 

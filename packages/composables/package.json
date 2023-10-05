@@ -35,6 +35,7 @@
 		"vue": "3.3.4"
 	},
 	"devDependencies": {
+		"@directus/extensions": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.7",

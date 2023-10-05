@@ -1,4 +1,4 @@
-import { NESTED_EXTENSION_TYPES } from '@directus/constants';
+import { NESTED_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import type { DirResult } from 'tmp';
 import { dirSync } from 'tmp';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';

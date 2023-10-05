@@ -13,7 +13,8 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"type": "module",
 	"exports": {
-		".": "./dist/index.js",
+		".": "./dist/shared/index.js",
+		"./node": "./dist/node/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -21,8 +22,10 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "concurrently --group 'pnpm:build:*'",
+		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
+		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
+		"dev": "concurrently 'pnpm:build:* --watch'",
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
@@ -31,8 +34,10 @@
 		"@directus/types": "workspace:*",
 		"@types/express": "4.17.17",
 		"@types/fs-extra": "11.0.1",
+		"@types/node": "18.16.12",
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-c8": "0.31.1",
+		"concurrently": "8.2.1",
 		"knex": "2.5.1",
 		"pino": "8.14.1",
 		"tsup": "7.2.0",
