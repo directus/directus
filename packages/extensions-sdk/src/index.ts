@@ -18,6 +18,5 @@ export {
 	defineOperationApi,
 	defineOperationApp,
 	definePanel,
-	getFieldsFromTemplate,
-	getRelationType,
-} from '@directus/utils';
+} from '@directus/extensions';
+export { getFieldsFromTemplate, getRelationType } from '@directus/utils';
