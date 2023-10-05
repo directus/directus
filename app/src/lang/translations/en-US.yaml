@@ -1065,6 +1065,8 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 no_upscale: Don't upscale images
+no_extensions: No Extensions
+no_extensions_copy: No extensions have been installed yet.
 collection: Collection
 collections: Collections
 content: Content

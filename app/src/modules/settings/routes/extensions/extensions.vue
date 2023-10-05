@@ -5,7 +5,7 @@ import ExtensionItem from './components/extension-item.vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { ref } from 'vue';
-import type { ExtensionInfo } from '@directus/types';
+import type { ExtensionInfo } from '@directus/extensions';
 
 const { t } = useI18n();
 
@@ -47,7 +47,7 @@ fetchExtensions();
 		</template>
 
 		<div class="page-container">
-			<v-list>
+			<v-list v-if="extensions.length > 0 && !loading">
 				<extension-item
 					v-for="extension in extensions"
 					:key="extension.type + '-' + extension.name"
@@ -55,6 +55,15 @@ fetchExtensions();
 					:type="extension.type"
 				/>
 			</v-list>
+
+			<v-info
+				v-else
+				icon="error"
+				center
+				:title="t('no_extensions')"
+			>
+				{{ t('no_extensions_copy') }}
+			</v-info>
 		</div>
 	</private-view>
 </template>
