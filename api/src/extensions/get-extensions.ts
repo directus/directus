@@ -1,5 +1,5 @@
-import { APP_EXTENSION_TYPES } from '@directus/constants';
-import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/utils/node';
+import { APP_EXTENSION_TYPES } from '@directus/extensions';
+import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
 import env from '../env.js';
 
 export const getExtensions = async () => {

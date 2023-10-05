@@ -38,7 +38,7 @@
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-c8": "0.31.1",
 		"concurrently": "8.2.1",
-		"knex": "2.5.1",
+		"knex": "2.4.2",
 		"pino": "8.14.1",
 		"tsup": "7.2.0",
 		"typescript": "5.2.2",

@@ -1,4 +1,4 @@
-import { EXTENSION_TYPES } from '@directus/constants';
+import { EXTENSION_TYPES } from '@directus/extensions';
 import type { Plural } from '@directus/types';
 import { depluralize, isIn } from '@directus/utils';
 import { Router } from 'express';
@@ -15,7 +15,7 @@ const router = Router();
 router.get(
 	'/:type?',
 	asyncHandler(async (req, res, next) => {
-		let type: typeof EXTENSION_TYPES[number] | undefined = undefined;
+		let type: (typeof EXTENSION_TYPES)[number] | undefined = undefined;
 
 		if (req.params['type']) {
 			const singularType = depluralize(req.params['type'] as Plural<string>);

@@ -1,26 +1,19 @@
-import {
-	APP_SHARED_DEPS,
-	HYBRID_EXTENSION_TYPES,
-	JAVASCRIPT_FILE_EXTS,
-	NESTED_EXTENSION_TYPES,
-} from '@directus/constants';
+import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import type {
-	ActionHandler,
 	ApiExtension,
 	BundleExtension,
-	EmbedHandler,
 	EndpointConfig,
 	Extension,
 	ExtensionType,
-	FilterHandler,
 	HookConfig,
 	HybridExtension,
-	InitHandler,
 	OperationApiConfig,
-	ScheduleHandler,
-} from '@directus/types';
+} from '@directus/extensions';
+import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
+import { ensureExtensionDirs, generateExtensionsEntrypoint } from '@directus/extensions/node';
+import type { ActionHandler, EmbedHandler, FilterHandler, InitHandler, ScheduleHandler } from '@directus/types';
 import { isIn, isTypeIn, pluralize } from '@directus/utils';
-import { ensureExtensionDirs, generateExtensionsEntrypoint, pathToRelativeUrl } from '@directus/utils/node';
+import { pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
@@ -47,7 +40,7 @@ import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
 import { normalizeExtensionInfo } from './normalize-extension-info.js';
-import type { ApiExtensions, AppExtensions, Options } from './types.js';
+import type { ApiExtensions, AppExtensions, BundleConfig, Options } from './types.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329

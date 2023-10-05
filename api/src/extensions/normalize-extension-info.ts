@@ -1,4 +1,4 @@
-import type { Extension, ExtensionInfo, BundleExtension, NestedExtensionType } from '@directus/types';
+import type { Extension, ExtensionInfo, BundleExtension, NestedExtensionType } from '@directus/extensions';
 
 /**
  * Creates a standardized extension info object for a given extension

@@ -1,4 +1,4 @@
-import type { EndpointConfig, HookConfig, OperationApiConfig } from '@directus/types';
+import type { EndpointConfig, HookConfig, OperationApiConfig } from '@directus/extensions';
 
 export type BundleConfig = {
 	endpoints: { name: string; config: EndpointConfig }[];
