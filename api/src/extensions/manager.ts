@@ -1,5 +1,4 @@
 import {
-	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	HYBRID_EXTENSION_TYPES,
 	JAVASCRIPT_FILE_EXTS,
@@ -12,50 +11,44 @@ import type {
 	EmbedHandler,
 	EndpointConfig,
 	Extension,
-	ExtensionInfo,
 	ExtensionType,
 	FilterHandler,
 	HookConfig,
 	HybridExtension,
 	InitHandler,
-	NestedExtensionType,
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/types';
 import { isIn, isTypeIn, pluralize } from '@directus/utils';
-import {
-	ensureExtensionDirs,
-	generateExtensionsEntrypoint,
-	getLocalExtensions,
-	getPackageExtensions,
-	pathToRelativeUrl,
-	resolvePackage,
-	resolvePackageExtensions,
-} from '@directus/utils/node';
+import { ensureExtensionDirs, generateExtensionsEntrypoint, pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
-import { clone, escapeRegExp } from 'lodash-es';
+import { clone } from 'lodash-es';
 import { readdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
-import getDatabase from './database/index.js';
-import emitter, { Emitter } from './emitter.js';
-import env from './env.js';
-import { getFlowManager } from './flows.js';
-import logger from './logger.js';
-import * as services from './services/index.js';
-import type { EventHandler } from './types/index.js';
-import getModuleDefault from './utils/get-module-default.js';
-import { getSchema } from './utils/get-schema.js';
-import { JobQueue } from './utils/job-queue.js';
-import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
-import { Url } from './utils/url.js';
+import getDatabase from '../database/index.js';
+import emitter, { Emitter } from '../emitter.js';
+import env from '../env.js';
+import { getFlowManager } from '../flows.js';
+import logger from '../logger.js';
+import * as services from '../services/index.js';
+import type { EventHandler } from '../types/index.js';
+import getModuleDefault from '../utils/get-module-default.js';
+import { getSchema } from '../utils/get-schema.js';
+import { JobQueue } from '../utils/job-queue.js';
+import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { getExtensions } from './get-extensions.js';
+import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
+import { normalizeExtensionInfo } from './normalize-extension-info.js';
+import type { ApiExtensions, AppExtensions, Options } from './types.js';
+import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -65,39 +58,12 @@ const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.d
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-let extensionManager: ExtensionManager | undefined;
-
-export function getExtensionManager(): ExtensionManager {
-	if (extensionManager) {
-		return extensionManager;
-	}
-
-	extensionManager = new ExtensionManager();
-
-	return extensionManager;
-}
-
-type BundleConfig = {
-	endpoints: { name: string; config: EndpointConfig }[];
-	hooks: { name: string; config: HookConfig }[];
-	operations: { name: string; config: OperationApiConfig }[];
-};
-
-type AppExtensions = string | null;
-
-type ApiExtensions = { path: string }[];
-
-type Options = {
-	schedule: boolean;
-	watch: boolean;
-};
-
 const defaultOptions: Options = {
 	schedule: true,
 	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
 };
 
-class ExtensionManager {
+export class ExtensionManager {
 	private isLoaded = false;
 	private options: Options;
 
@@ -193,39 +159,13 @@ class ExtensionManager {
 	}
 
 	public getExtensionsList(type?: ExtensionType) {
-		if (type === undefined) {
-			return this.extensions.map(mapInfo);
-		} else {
-			return this.extensions.map(mapInfo).filter((extension) => extension.type === type);
+		const extensionInfo = this.extensions.map(normalizeExtensionInfo);
+
+		if (type) {
+			return extensionInfo.filter((extension) => extension.type === type);
 		}
 
-		function mapInfo(extension: Extension): ExtensionInfo {
-			const extensionInfo: ExtensionInfo = {
-				name: extension.name,
-				type: extension.type,
-				local: extension.local,
-				entries: [],
-			};
-
-			if (extension.host) extensionInfo.host = extension.host;
-			if (extension.version) extensionInfo.version = extension.version;
-
-			if (extension.type === 'bundle') {
-				const bundleExtensionInfo: Omit<BundleExtension, 'entrypoint' | 'path'> = {
-					name: extensionInfo.name,
-					type: 'bundle',
-					local: extensionInfo.local,
-					entries: extension.entries.map((entry) => ({
-						name: entry.name,
-						type: entry.type,
-					})) as { name: ExtensionInfo['name']; type: NestedExtensionType }[],
-				};
-
-				return bundleExtensionInfo;
-			} else {
-				return extensionInfo;
-			}
-		}
+		return extensionInfo;
 	}
 
 	public getExtension(name: string): Extension | undefined {
@@ -249,18 +189,13 @@ class ExtensionManager {
 			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
 			body: wrapEmbeds('Custom Embed Body', this.hookEmbedsBody),
 		};
-
-		function wrapEmbeds(label: string, content: string[]): string {
-			if (content.length === 0) return '';
-			return `<!-- Start ${label} -->\n${content.join('\n')}\n<!-- End ${label} -->`;
-		}
 	}
 
 	private async load(): Promise<void> {
 		try {
 			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
 
-			this.extensions = await this.getExtensions();
+			this.extensions = await getExtensions();
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
 			logger.warn(err);
@@ -351,18 +286,8 @@ class ExtensionManager {
 		}
 	}
 
-	private async getExtensions(): Promise<Extension[]> {
-		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION']);
-		const localPackageExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
-		const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
-
-		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
-			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
-		);
-	}
-
 	private async generateExtensionBundle(): Promise<string | null> {
-		const sharedDepsMapping = await this.getSharedDepsMapping(APP_SHARED_DEPS);
+		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 
 		const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
 			find: name,
@@ -396,27 +321,6 @@ class ExtensionManager {
 		}
 
 		return null;
-	}
-
-	private async getSharedDepsMapping(deps: string[]): Promise<Record<string, string>> {
-		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
-
-		const depsMapping: Record<string, string> = {};
-
-		for (const dep of deps) {
-			const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
-			const depName = appDir.find((file) => depRegex.test(file));
-
-			if (depName) {
-				const depUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'assets', depName);
-
-				depsMapping[dep] = depUrl.toString({ rootRelative: true });
-			} else {
-				logger.warn(`Couldn't find shared extension dependency "${dep}"`);
-			}
-		}
-
-		return depsMapping;
 	}
 
 	private async registerHooks(): Promise<void> {
@@ -466,11 +370,11 @@ class ExtensionManager {
 	}
 
 	private async registerOperations(): Promise<void> {
-		const internalOperations = await readdir(path.join(__dirname, 'operations'));
+		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
 
 		for (const operation of internalOperations) {
 			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-				`./operations/${operation}/index.js`
+				`../operations/${operation}/index.js`
 			);
 
 			const config = getModuleDefault(operationInstance);
@@ -487,7 +391,7 @@ class ExtensionManager {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
+					`../${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
 				);
 
 				const config = getModuleDefault(operationInstance);
@@ -510,7 +414,7 @@ class ExtensionManager {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
 				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
-					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
+					`../${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
 				);
 
 				const configs = getModuleDefault(bundleInstances);

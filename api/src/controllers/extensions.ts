@@ -4,7 +4,7 @@ import { depluralize, isIn } from '@directus/utils';
 import { Router } from 'express';
 import env from '../env.js';
 import { RouteNotFoundError } from '../errors/index.js';
-import { getExtensionManager } from '../extensions.js';
+import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
