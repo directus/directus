@@ -21,7 +21,7 @@ export const request = async <Output = any>(
 
 	const response = await fetcher(url, options);
 
-	return await extractData(response).catch((reason) => {
+	return extractData(response).catch((reason) => {
 		const errors = typeof reason === 'object' && 'errors' in reason ? reason.errors : reason;
 		throw { errors, response };
 	});
