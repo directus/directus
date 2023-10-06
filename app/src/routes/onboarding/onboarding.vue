@@ -122,12 +122,13 @@ const userModel = ref({
 });
 
 const showProjectSlide = Boolean(settingsStore.settings?.onboarding) === false;
-const slides: Ref<Record<string, OnboardingSlide>> = ref({
+const slides: Ref<Record<string, OnboardingSlide | null>> = ref({
 	welcome: {
 		i18nTitle: 'onboarding.welcome.title',
 		i18nText: 'onboarding.welcome.text',
 		transitions: { back: null, next: showProjectSlide ? 'project' : 'user' },
 	},
+	project: null, // This slide is optional
 	user: {
 		i18nTitle: 'onboarding.user.title',
 		i18nText: 'onboarding.user.text',
@@ -146,6 +147,8 @@ const slides: Ref<Record<string, OnboardingSlide>> = ref({
 		},
 	},
 });
+
+// Optionally add the project slide
 if (showProjectSlide) {
 	slides.value.project = {
 		i18nTitle: 'onboarding.project.title',
@@ -158,13 +161,16 @@ if (showProjectSlide) {
 	};
 }
 
-const slideCount = showProjectSlide ? 3 : 2;
 const currentSlideName = ref('welcome'); // Important that this matches a key in slides
-const currentSlideIndex = ref(0);
+const isLoading = ref(false);
+// Active means non-null slides because they would affect the progress-percentage
+const activeSlideNames = computed(() => Object.keys(slides.value).filter((key) => slides.value[key]));
+const currentSlideIndex = computed(() => activeSlideNames.value.findIndex((key) => key === currentSlideName.value));
 const currentSlide = computed(() => slides.value[currentSlideName.value]);
 const isLastSlide = computed(() => currentSlide.value?.transitions.next === 'finish');
-const progressPercent = computed(() => (currentSlideIndex.value / slideCount) * 100);
-const isLoading = ref(false);
+
+// Add one so that there is progress on the first slide
+const progressPercent = computed(() => ((currentSlideIndex.value + 1) / activeSlideNames.value.length) * 100);
 
 async function finishOnboarding() {
 	const settingUpdate = settingsStore
@@ -188,8 +194,7 @@ async function finishOnboarding() {
 		.then(() => userStore.hydrate())
 		.catch((e) => console.error('Error when updating user', e));
 
-	// TODO: Remove fields when $TELEMETRY is set
-	const onboarding: OnboardingPayload = {
+	const payload: OnboardingPayload = {
 		version: 1,
 		body: {
 			user: {
@@ -204,7 +209,7 @@ async function finishOnboarding() {
 			},
 		},
 	};
-	// TODO: Do telemetry
+	// TODO: Send payload to endpoint
 
 	await Promise.allSettled([settingUpdate, userUpdate]);
 	return router.replace('/content');
