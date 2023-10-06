@@ -59,7 +59,13 @@ export class VmManager {
 
 		const enableDebugger = false;
 
-		const isolate: Isolate = new ivm.Isolate({ inspector: enableDebugger, memoryLimit: isolateSizeMb });
+		const isolate: Isolate = new ivm.Isolate({
+			inspector: enableDebugger, memoryLimit: isolateSizeMb, onCatastrophicError: () => {
+				logger.error(`Catastrophic error in extension ${extension.name}, aborting process`);
+				process.abort();
+			}
+		});
+
 		if (enableDebugger) this.createInspector(isolate.createInspectorSession(), extension.name);
 		const context = await isolate.createContext({ inspector: enableDebugger });
 
@@ -105,7 +111,7 @@ export class VmManager {
 			function dispose() {
 				try {
 					channel.dispose();
-				} catch (err) {}
+				} catch (err) { }
 			}
 
 			ws.on('error', dispose);
