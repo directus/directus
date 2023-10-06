@@ -14,6 +14,7 @@ export default addExecOptions((context) => {
 	const endpointRouter = extensionManager.registration.endpointRouter;
 
 	const scopedRouter = express.Router();
+
 	endpointRouter.use(`/${extension.name}`, scopedRouter);
 
 	async function registerEndpoint(args: unknown[]) {
@@ -22,7 +23,7 @@ export default addExecOptions((context) => {
 
 		const [_, validOptions] = EXEC_REGISTER_ENDPOINT.parse(args);
 
-		scopedRouter[<Lowercase<typeof validOptions.method>>validOptions.method.toLocaleLowerCase()](validOptions.path, async (req, res) => {
+		scopedRouter[<Lowercase<typeof validOptions.method>>validOptions.method.toLowerCase()](validOptions.path, async (req, res) => {
 
 			const result = await resumeIsolate(context, validOptions.handler as unknown as Reference, [{
 				'url': req.url,
@@ -55,8 +56,7 @@ export default addExecOptions((context) => {
 
 	extensionManager.registration.addUnregisterFunction(extension.name, () => {
 		endpointRouter.stack = endpointRouter.stack.filter((layer) => {
-			console.log(layer)
-			return !layer.path?.startsWith(`/${extension.name}`)
+			return scopedRouter !== layer.handle
 		})
 	})
 

@@ -1,6 +1,6 @@
 import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from '@directus/types';
 import { readFile } from 'fs/promises';
-import { Isolate } from 'isolated-vm';
+import type { Isolate } from 'isolated-vm';
 import { createRequire } from 'node:module';
 import env from '../env.js';
 import logger from '../logger.js';

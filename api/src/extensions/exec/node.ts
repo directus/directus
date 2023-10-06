@@ -67,6 +67,8 @@ async function loadExecOptions(extensionManager: ExtensionManager, extension: Ap
 	const files = await readdir(join(__dirname, '..', 'exec-options'));
 
 	for (const file of files) {
+		if (file.endsWith('.d.ts')) continue;
+
 		const addExecOptions = await import(`../exec-options/${file.substring(0, file.length - 3)}.js`);
 
 		const execOptions = addExecOptions.default({ extensionManager, extension }) as ExecOptions;

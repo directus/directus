@@ -7,7 +7,7 @@ export function handleIsolateError(context: ExecContext, error: Error, alwaysRes
 	if (error.message !== 'Isolate was disposed during execution due to memory limit' && !alwaysRestart) return
 
 	setTimeout(() => {
-		logger.info('Restarting extension', context.extension.name);
+		logger.info(`Restarting extension ${context.extension.name}`);
 		context.extensionManager.registration.restartSecureExtension(context.extension.name)
 	}, 1000)
 }
