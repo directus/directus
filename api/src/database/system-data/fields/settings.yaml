@@ -120,14 +120,14 @@ fields:
 
   - field: theme_light_overrides
     width: half
-    interface: input-code
+    interface: system-theme-overrides
     options:
       language: json
     group: theming_group
 
   - field: theme_dark_overrides
     width: half
-    interface: input-code
+    interface: system-theme-overrides
     options:
       language: json
     group: theming_group
