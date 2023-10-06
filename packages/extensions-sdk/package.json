@@ -33,6 +33,7 @@
 	"dependencies": {
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
+		"@directus/extensions": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@rollup/plugin-commonjs": "25.0.0",

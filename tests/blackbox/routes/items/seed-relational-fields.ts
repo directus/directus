@@ -1,11 +1,15 @@
-import request from 'supertest';
 import { getUrl } from '@common/config';
-import { CreateItem, SeedFunctions, PrimaryKeyType } from '@common/index';
-import { TestsFieldSchema } from '@query/filter';
-import * as common from '@common/index';
+import { CreateItem } from '@common/functions';
+import type { Vendor } from '@common/get-dbs-to-test';
+import { SeedFunctions } from '@common/seed-functions';
+import type { PrimaryKeyType } from '@common/types';
+import { USER } from '@common/variables';
+import type { TestsFieldSchema } from '@query/filter';
+import request from 'supertest';
+import { expect } from 'vitest';
 
 export const seedRelationalFields = async (
-	vendor: string,
+	vendor: Vendor,
 	collection: string,
 	pkType: PrimaryKeyType,
 	testsSchema: TestsFieldSchema
@@ -25,7 +29,7 @@ export const seedRelationalFields = async (
 			if (testsSchema[key].children) {
 				const response = await request(getUrl(vendor))
 					.get(`/items/${testsSchema[key].relatedCollection}`)
-					.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 					.query({ fields: 'id', limit: -1 });
 
 				const primaryKeys = response.body.data.map((item: any) => item.id);

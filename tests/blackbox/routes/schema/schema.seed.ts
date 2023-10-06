@@ -1,16 +1,17 @@
-import vendors from '@common/get-dbs-to-test';
 import {
 	CreateCollection,
 	CreateField,
-	DeleteCollection,
-	PRIMARY_KEY_TYPES,
-	CreateFieldM2M,
 	CreateFieldM2A,
+	CreateFieldM2M,
 	CreateFieldM2O,
 	CreateFieldO2M,
+	DeleteCollection,
 	DeleteField,
-	PrimaryKeyType,
-} from '@common/index';
+} from '@common/functions';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES } from '@common/variables';
+import { expect, it } from 'vitest';
 import { seedAllFieldTypesStructure } from '../items/seed-all-field-types';
 
 export const collectionAll = 'test_schema_all';
@@ -45,7 +46,7 @@ export type Supplier = {
 	name: string;
 };
 
-export const deleteAllCollections = async (vendor: string, pkType: PrimaryKeyType, setDefaultValues: boolean) => {
+export const deleteAllCollections = async (vendor: Vendor, pkType: PrimaryKeyType, setDefaultValues: boolean) => {
 	const suffix = setDefaultValues ? '2' : '';
 
 	// Setup

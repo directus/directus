@@ -1,4 +1,4 @@
-import { EXTENSION_LANGUAGES } from '@directus/constants';
+import { EXTENSION_LANGUAGES } from '@directus/extensions';
 import type { Language, LanguageShort } from '../types.js';
 import { getFileExt } from './file.js';
 
