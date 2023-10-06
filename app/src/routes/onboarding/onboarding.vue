@@ -61,7 +61,7 @@ const userModel = ref({
 	first_name: userStore.currentUser?.first_name,
 	last_name: userStore.currentUser?.last_name,
 	email: userStore.currentUser?.email,
-	wants_emails: false,
+	wants_emails: userStore.currentUser?.onboarding?.wants_emails ?? false,
 	primary_skillset: userStore.currentUser?.onboarding?.primary_skillset,
 });
 
@@ -133,7 +133,10 @@ async function finishOnboarding() {
 			first_name: userModel.value.first_name,
 			last_name: userModel.value.last_name,
 			email: userModel.value.email, // TODO validate before!
-			onboarding: JSON.stringify({ primary_skillset: userModel.value.primary_skillset }),
+			onboarding: JSON.stringify({
+				primary_skillset: userModel.value.primary_skillset,
+				wants_emails: userModel.value.wants_emails,
+			}),
 		})
 		.then(() => userStore.hydrate())
 		.catch((e) => console.error('Error when updating user', e));
