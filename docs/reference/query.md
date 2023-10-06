@@ -270,6 +270,13 @@ const result = await client.request(
 
 Retrieve an item's result from a specific version.
 
+::: warning Requires Configuration
+
+Requires an [Versioning field](/app/data-model/collections#content-versioning) to be configured within the Collection's
+data model settings.
+
+:::
+
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
