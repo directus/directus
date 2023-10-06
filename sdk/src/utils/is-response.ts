@@ -1,7 +1,7 @@
 /**
  * Custom type guard to check if an object is likely a Fetch Response
  */
-export function isFetchResponse(result: unknown): boolean {
+export function isFetchResponse(result: unknown): result is Response {
 	if (typeof result !== 'object' || !result) return false;
 
 	return (
