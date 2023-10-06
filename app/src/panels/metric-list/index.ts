@@ -1,6 +1,6 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelMetricList from './panel-metric-list.vue';
 
