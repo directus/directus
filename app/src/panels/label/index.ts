@@ -1,4 +1,4 @@
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import PanelLabel from './panel-label.vue';
 
 export default definePanel({
