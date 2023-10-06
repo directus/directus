@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/utils';
+import { defineDisplay } from '@directus/extensions';
 import { TYPES, LOCAL_TYPES } from '@directus/constants';
 
 export default defineDisplay({

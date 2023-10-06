@@ -1,5 +1,5 @@
 import { useFieldsStore } from '@/stores/fields';
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import { cssVar } from '@directus/utils/browser';
 import { computed } from 'vue';
 import PanelPieChart from './panel-pie-chart.vue';

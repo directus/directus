@@ -48,7 +48,7 @@ import {
 import emitter from './emitter.js';
 import env from './env.js';
 import { InvalidPayloadError, ServiceUnavailableError } from './errors/index.js';
-import { getExtensionManager } from './extensions.js';
+import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
 import authenticate from './middleware/authenticate.js';

@@ -268,7 +268,14 @@ const result = await client.request(
 
 ## Version
 
-TBD
+Retrieve an item's result from a specific version.
+
+::: warning Requires Configuration
+
+Requires [Versioning](/app/data-model/collections#content-versioning) to be enabled within the Collection's data model
+settings.
+
+:::
 
 ### Example
 
@@ -280,7 +287,29 @@ TBD
 </template>
 <template #graphql>
 
-TBD
+Singletons:
+
+```graphql
+query {
+    articles(version: "draft") {
+        id
+        title
+        content
+    }
+}
+```
+
+By ID:
+
+```graphql
+query {
+    articles_by_id(id: 1, version: "draft") {
+        id
+        title
+        content
+    }
+}
+```
 
 </template>
 <template #sdk>

@@ -1,5 +1,5 @@
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { defineDisplay } from '@directus/utils';
+import { defineDisplay } from '@directus/extensions';
 import mime from 'mime/lite';
 import { h } from 'vue';
 

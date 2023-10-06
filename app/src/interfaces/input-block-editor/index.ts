@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import InterfaceBlockEditor from './input-block-editor.vue';
 import PreviewSVG from './preview.svg?raw';
 
