@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import InterfaceSystemDisplayOptions from './system-display-options.vue';
 
 export default defineInterface({

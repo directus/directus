@@ -1,14 +1,14 @@
 ---
 description:
-  This guide explains how to install the _Development_ version of Directus locally so that you can work on the
+  This guide explains how to setup and run a _Development_ environment for Directus so that you can work on the
   platform's source code.
 readTime: 4 min read
 ---
 
-# Running Locally
+# Running Dev Environment
 
-> This guide explains how to install the _Development_ version of Directus locally so that you can work on the
-> platform's source code. To install the _Production_ version locally, please follow to our
+> This guide explains how to setup and run a _Development_ environment for Directus so that you can work on the
+> platform's source code. To install the _Production_ version, please follow to our
 > [Docker Guide](/self-hosted/docker-guide).
 
 ::: tip Minimum Requirements
