@@ -7,6 +7,7 @@ import logger from '../logger.js';
 import { createExec } from './exec/node.js';
 import type { ExtensionManager } from './extensions.js';
 import { handleIsolateError } from './utils/handle-isolate-error.js';
+import { merge } from 'lodash-es';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -34,17 +35,17 @@ export class VmManager {
 				if (innerExtension.type === 'endpoint') {
 					await this.run(
 						`import { endpoints } from 'extension.js'; const endpoint = endpoints.find(endpoint => endpoint.name === ${innerExtension.name}) endpoint()`,
-						extension
+						merge({}, extension, { entries: [innerExtension] })
 					);
 				} else if (innerExtension.type === 'hook') {
 					await this.run(
 						`import { hooks } from 'extension.js'; const hook = hooks.find(hook => hook.name === ${innerExtension.name}) hook()`,
-						extension
+						merge({}, extension, { entries: [innerExtension] })
 					);
 				} else if (innerExtension.type === 'operation') {
 					await this.run(
 						`import { operations } from 'extension.js'; const operation = operations.find(operation => operation.name === ${innerExtension.name}) operation()`,
-						extension
+						merge({}, extension, { entries: [innerExtension] })
 					);
 				}
 			}
@@ -111,7 +112,9 @@ export class VmManager {
 			function dispose() {
 				try {
 					channel.dispose();
-				} catch (err) { }
+				} catch (err) {
+					// do nothing
+				}
 			}
 
 			ws.on('error', dispose);
@@ -140,7 +143,7 @@ export class VmManager {
 			channel.onNotification = send;
 		});
 
-		console.log(
+		logger.info(
 			`${extensionName} Inspector: devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:${this.debuggerPort}`
 		);
 

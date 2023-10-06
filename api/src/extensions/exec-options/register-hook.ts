@@ -5,9 +5,13 @@ import emitter from "../../emitter.js";
 import { resumeIsolate } from "../utils/resume-isolate.js";
 import type { Reference } from "isolated-vm";
 import { handlerAsReference } from "../utils/handler-as-reference.js";
+import { isExtensionType } from "../utils/is-extension-type.js";
 
 export default addExecOptions((context) => {
 	const { extensionManager, extension } = context
+
+	if (!isExtensionType(extension, 'hook')) return {};
+
 
 	// let scheduleIndex = 0;
 

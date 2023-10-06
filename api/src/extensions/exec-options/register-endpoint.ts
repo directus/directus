@@ -4,9 +4,13 @@ import { addExecOptions } from "../utils/add-exec-options.js";
 import { resumeIsolate } from '../utils/resume-isolate.js';
 import type { Reference } from 'isolated-vm';
 import { handlerAsReference } from '../utils/handler-as-reference.js';
+import { isExtensionType } from '../utils/is-extension-type.js';
 
 export default addExecOptions((context) => {
 	const { extensionManager, extension } = context
+
+	if (!isExtensionType(extension, 'endpoint')) return {};
+
 	const endpointRouter = extensionManager.registration.endpointRouter;
 
 	const scopedRouter = express.Router();
@@ -50,8 +54,10 @@ export default addExecOptions((context) => {
 	}
 
 	extensionManager.registration.addUnregisterFunction(extension.name, () => {
-		const emptyRouter = express.Router();
-		endpointRouter.use(`/${extension.name}`, emptyRouter)
+		endpointRouter.stack = endpointRouter.stack.filter((layer) => {
+			console.log(layer)
+			return !layer.path?.startsWith(`/${extension.name}`)
+		})
 	})
 
 	return {

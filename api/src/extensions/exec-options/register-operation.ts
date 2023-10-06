@@ -4,9 +4,12 @@ import { EXEC_REGISTER_OPERATION, EXEC_REGISTER_OPERATION_RESPONSE } from "@dire
 import { resumeIsolate } from "../utils/resume-isolate.js";
 import type { Reference } from "isolated-vm";
 import { handlerAsReference } from "../utils/handler-as-reference.js";
+import { isExtensionType } from "../utils/is-extension-type.js";
 
 export default addExecOptions((context) => {
 	const { extensionManager, extension } = context
+
+	if (!isExtensionType(extension, 'operation')) return {};
 
 	const flowManager = getFlowManager();
 

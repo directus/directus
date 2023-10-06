@@ -14,7 +14,7 @@ export async function resumeIsolate(context: ExecContext, reference: Reference, 
 			},
 			result: {
 				copy: true,
-				promise: true, // TODO: make sure this makes sense
+				promise: true
 			}
 		})
 	} catch (error: any) {
