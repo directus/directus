@@ -30,7 +30,7 @@ type OnboardingSlide = {
 	i18nTitle: string;
 	i18nText: string;
 	form?: {
-		model: Ref<{}>;
+		model: Ref<object>;
 		fields: Field[];
 	};
 	transitions: {
