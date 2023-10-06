@@ -132,23 +132,26 @@ test('primitive, fn, m2o', () => {
 			field: randomPrimitiveField1,
 		},
 		{
-			type: 'm2o',
-			join: {
-				current: {
-					fields: [randomJoinCurrentField],
-				},
-				external: {
-					store: randomExternalStore,
-					collection: randomExternalCollection,
-					fields: [randomExternalField],
-				},
-			},
+			type: 'nested-one',
 			fields: [
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
 				},
 			],
+			meta: {
+				type: 'm2o',
+				join: {
+					current: {
+						fields: [randomJoinCurrentField],
+					},
+					external: {
+						store: randomExternalStore,
+						collection: randomExternalCollection,
+						fields: [randomExternalField],
+					},
+				},
+			}
 		},
 		{
 			type: 'fn',

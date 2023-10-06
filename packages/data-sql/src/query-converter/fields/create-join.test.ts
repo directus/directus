@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { randomIdentifier } from '@directus/random';
-import type { AbstractQueryFieldNodeRelatedManyToOne } from '@directus/data';
+import type { AbstractQueryFieldNodeRelationalManyToOne } from '@directus/data';
 import { createJoin } from './create-join.js';
 import type { AbstractSqlQueryJoinNode } from '../../types/clauses/joins/join.js';
 
@@ -10,10 +10,9 @@ test('Convert m2o relation on single field ', () => {
 	const randomExternalCollection = randomIdentifier();
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
-	const randomExternalSelectField = randomIdentifier();
 	const randomAlias = randomIdentifier();
 
-	const node: AbstractQueryFieldNodeRelatedManyToOne = {
+	const node: AbstractQueryFieldNodeRelationalManyToOne = {
 		type: 'm2o',
 		join: {
 			current: {
@@ -25,12 +24,6 @@ test('Convert m2o relation on single field ', () => {
 				fields: [randomExternalField],
 			},
 		},
-		fields: [
-			{
-				type: 'primitive',
-				field: randomExternalSelectField,
-			},
-		],
 	};
 
 	const expected: AbstractSqlQueryJoinNode = {
@@ -68,11 +61,10 @@ test('Convert m2o relation with composite keys', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomExternalField2 = randomIdentifier();
-	const randomExternalSelectField = randomIdentifier();
 	const randomGeneratedAlias = randomIdentifier();
 	const randomUserAlias = randomIdentifier();
 
-	const node: AbstractQueryFieldNodeRelatedManyToOne = {
+	const node: AbstractQueryFieldNodeRelationalManyToOne = {
 		type: 'm2o',
 		join: {
 			current: {
@@ -84,13 +76,6 @@ test('Convert m2o relation with composite keys', () => {
 				fields: [randomExternalField, randomExternalField2],
 			},
 		},
-		fields: [
-			{
-				type: 'primitive',
-				field: randomExternalSelectField,
-			},
-		],
-		alias: randomUserAlias,
 	};
 
 	const expected: AbstractSqlQueryJoinNode = {
@@ -143,5 +128,5 @@ test('Convert m2o relation with composite keys', () => {
 		alias: randomUserAlias,
 	};
 
-	expect(createJoin(randomCurrentCollection, node, randomGeneratedAlias)).toStrictEqual(expected);
+	expect(createJoin(randomCurrentCollection, node, randomGeneratedAlias, randomUserAlias)).toStrictEqual(expected);
 });
