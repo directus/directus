@@ -272,8 +272,8 @@ Retrieve an item's result from a specific version.
 
 ::: warning Requires Configuration
 
-Requires an [Versioning field](/app/data-model/collections#content-versioning) to be configured within the Collection's
-data model settings.
+Requires [Versioning](/app/data-model/collections#content-versioning) to be enabled within the Collection's data model
+settings.
 
 :::
 
