@@ -39,7 +39,7 @@ export type HybridExtension = ExtensionBase & {
 };
 
 export type BundleExtension = ExtensionBase & {
-	type: 'bundle';
+	type: BundleExtensionType;
 	entrypoint: SplitEntrypoint;
 	entries: { type: NestedExtensionType; name: string }[];
 };
