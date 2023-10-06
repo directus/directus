@@ -342,7 +342,7 @@ export class RegistrationManager {
 		})
 	}
 
-	public async restartSecureExtension(name: string) {
+	public async restartExtension(name: string) {
 		await this.unregisterApiExtension(name);
 
 		const extension = this.extensionManager.getEnabledExtensions().find((extension) => extension.name === name);

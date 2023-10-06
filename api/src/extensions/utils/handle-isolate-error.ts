@@ -8,6 +8,6 @@ export function handleIsolateError(context: ExecContext, error: Error, alwaysRes
 
 	setTimeout(() => {
 		logger.info(`Restarting extension ${context.extension.name}`);
-		context.extensionManager.registration.restartSecureExtension(context.extension.name)
+		context.extensionManager.registration.restartExtension(context.extension.name)
 	}, 1000)
 }

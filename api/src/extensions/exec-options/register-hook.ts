@@ -65,7 +65,7 @@ export default addExecOptions((context) => {
 
 			const handler: InitHandler = (meta) => {
 				callback.apply(null, [meta], { timeout: scriptTimeoutMs, arguments: { copy: true } }).catch(error => {
-					extensionManager.registration.restartSecureExtension(extension.name)
+					extensionManager.registration.restartExtension(extension.name)
 				})
 			};
 
@@ -82,7 +82,7 @@ export default addExecOptions((context) => {
 					if (extensionManager.options.schedule) {
 						try {
 							callback.apply(null, [], { timeout: scriptTimeoutMs }).catch(error => {
-								extensionManager.registration.restartSecureExtension(extension.name)
+								extensionManager.registration.restartExtension(extension.name)
 							})
 						} catch (error: any) {
 							logger.error(error);
