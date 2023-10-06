@@ -4,8 +4,8 @@
  *
  * @module abstract-query
  */
+import type { AbstractQueryFieldNode } from './fields/field-nodes.js';
 import type { AbstractQueryModifiers } from './modifiers/index.js';
-import type { AbstractQueryFieldNode } from './fields/fieldNodes.js';
 
 /**
  * The abstract root query
@@ -35,8 +35,8 @@ export interface AbstractQuery {
  * - Rethink every / some
  */
 
-export * from './modifiers/index.js';
+export * from './fields/field-nodes.js';
 export * from './fields/function.js';
 export * from './fields/primitive.js';
 export * from './fields/related.js';
-export * from './fields/fieldNodes.js';
+export * from './modifiers/index.js';
