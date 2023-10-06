@@ -7,7 +7,7 @@ export type WebSocketConstructor = {
 	new (url: URL, protocols?: string | string[]): WebSocketInterface;
 };
 
-export interface WebSocketInterface {
+export type WebSocketInterface = {
 	readonly readyState: number;
 
 	addEventListener(type: string, listener: (this: WebSocketInterface, ev: any) => any): void;
@@ -15,4 +15,4 @@ export interface WebSocketInterface {
 
 	send(data: string): void;
 	close(code?: number, reason?: string): void;
-}
+};

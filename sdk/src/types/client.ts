@@ -12,15 +12,15 @@ export interface DirectusClient<Schema extends object> {
 /**
  * All used globals for the client
  */
-export interface ClientGlobals {
+export type ClientGlobals = {
 	fetch: FetchInterface;
 	WebSocket: WebSocketConstructor;
 	URL: UrlInterface;
-}
+};
 
 /**
  * Available options on the client
  */
-export interface ClientOptions {
+export type ClientOptions = {
 	globals?: Partial<ClientGlobals>;
-}
+};
