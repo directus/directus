@@ -270,22 +270,6 @@ async function nextSlide() {
 	width: 100%;
 }
 
-@media (min-width: 640px) {
-	.container {
-		max-width: 640px;
-	}
-}
-@media (min-width: 768px) {
-	.container {
-		max-width: 768px;
-	}
-}
-@media (min-width: 1024px) {
-	.container {
-		max-width: 1024px;
-	}
-}
-
 .nav {
 	display: flex;
 	flex-direction: column;
@@ -315,48 +299,6 @@ async function nextSlide() {
 
 .onboarding-slides {
 	width: 100%;
-}
-
-.logo-wrapper {
-	padding: 8px 12px;
-	border-radius: var(--border-radius-outline);
-	width: 64px;
-	height: 64px;
-	background-color: var(--purple);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.logo {
-	width: 40px;
-	height: 32px;
-	transform: translateY(4px); /* To center the animated rabbit because the sprite has too much height */
-	background-image: url('@/assets/sprite.svg');
-	background-position: 0% 0%;
-	background-size: 600px 32px;
-}
-
-.logo-container {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	font-style: italic;
-	letter-spacing: -1px;
-	gap: 16px;
-}
-
-.logo-type {
-	font-size: 38px;
-}
-
-.logo.running {
-	animation: 560ms run steps(14) infinite;
-}
-
-@keyframes run {
-	100% {
-		background-position: 100%;
-	}
 }
 
 .intro-text {
