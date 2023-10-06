@@ -72,7 +72,7 @@ What is the default behavior of this collection or "folder" collection when it h
 `locked`.
 
 `versioning` **boolean**\
-Whether or not the content versioning feature is enabled for this collection.
+Whether or not Content Versioning is enabled for this collection.
 
 #### Schema
 
