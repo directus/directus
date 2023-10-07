@@ -151,7 +151,7 @@ test('primitive, fn, m2o', () => {
 						fields: [randomExternalField],
 					},
 				},
-			}
+			},
 		},
 		{
 			type: 'fn',
