@@ -98,7 +98,7 @@ Create a new directory called `pages` and a new file called `index.vue` inside o
 <script setup>
 const { $directus, $readItems } = useNuxtApp()
 
-const global = await useAsyncData('global', () => {
+const { data: global } = await useAsyncData('global', () => {
   return $directus.request($readItems('global'))
 })
 </script>
@@ -128,7 +128,7 @@ of the top-level pages.
 const { $directus, $readItem } = useNuxtApp()
 const route = useRoute()
 
-const page = await useAsyncData('page', () => {
+const { data: page } = await useAsyncData('page', () => {
   return $directus.request($readItem('pages', route.params.slug))
 })
 
@@ -159,7 +159,7 @@ Create the following fields in your `posts` data model:
 - a text input field called `title`
 - a WYSIWYG input field called `content`
 - an image relational field called `image`
-- a datetime selection field called `published` - set the type to 'date'
+- a datetime selection field called `publish_date` - set the type to 'date'
 - a many-to-one relational field called `author` with the related collection set to `authors`
 
 In Roles & Permissions, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
@@ -179,7 +179,7 @@ Inside of the `pages` directory, create a new subdirectory called `blog` and a n
 <script setup>
 const { $directus, $readItems } = useNuxtApp()
 
-const posts = await useAsyncData('posts', () => {
+const { data: posts } = await useAsyncData('posts', () => {
   return $directus.request(
 	$readItems('posts', {
 		fields: ['slug', 'title', 'publish_date', { 'author': [ 'name' ] }],
@@ -221,7 +221,7 @@ Each blog post links to a page that does not yet exist. In the `pages/blog` dire
 
 ```vue
 <template>
-	<img :src="`${$directus.url}/assets/${post.image.filename_disk}?width=600`" alt="" />
+	<img :src="`${$directus.url}assets/${post.image.filename_disk}?width=600`" alt="" />
 	<h1>{{post.title}}</h1>
 	<div v-html="post.content"></div>
 </template>
@@ -230,7 +230,7 @@ Each blog post links to a page that does not yet exist. In the `pages/blog` dire
 const { $directus, $readItem } = useNuxtApp()
 const route = useRoute()
 
-const post = await useAsyncData('post', () => {
+const { data: post } = await useAsyncData('post', () => {
   return $directus.request(
     $readItem('posts', route.params.slug, {
       fields: ['*', { '*': ['*'] }]
