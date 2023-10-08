@@ -165,6 +165,17 @@ const result = await client.login('admin@example.com', 'd1r3ctu5');
 
 // login http request
 const result = await client.request(login('admin@example.com', 'd1r3ctu5'));
+
+/**
+ * The following example assumes your Directus instance and Frontend application are both hosted on the same domain over HTTPS.
+ * i.e. Your Directus instance is on https://directus.example.com and your Frontend is on https://www.example.com
+ * If you're working locally, make sure to follow the instructions in the Testing Seamless SSO Locally: https://docs.directus.io/self-hosted/sso.html#testing-seamless-sso-locally. That example is for SSO but the same settings apply for normal auth flows that require email:password
+ */
+  const client = createDirectus("http://localhost:8055")
+    .with(authentication("cookie", { credentials: "include" }))
+    .with(rest());
+
+  client.login("admin@example.com", "secure_password");
 ```
 
 </template>
