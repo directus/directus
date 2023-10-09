@@ -69,7 +69,12 @@ fields:
 
   - field: public_background
     interface: file
-    translations:
+    width: half
+    group: theming_group
+
+  - field: public_favicon
+    interface: file
+    note: $t:field_options.directus_settings.project_favicon_note
     width: half
     group: theming_group
 
@@ -78,7 +83,7 @@ fields:
     options:
       placeholder: $t:field_options.directus_settings.public_note_placeholder
       iconRight: info
-    width: full
+    width: half
     group: theming_group
 
   - field: theming_divider
