@@ -64,6 +64,9 @@ export class ExtensionManager {
 	 */
 	private isLoaded = false;
 
+	/**
+	 * All extensions that are loaded within the current process
+	 */
 	private extensions: Extension[] = [];
 
 	/**
@@ -83,19 +86,50 @@ export class ExtensionManager {
 	 */
 	private cachedModulePaths: string[] = [];
 
-	private apiEmitter: Emitter;
+	/**
+	 * A local-to-extensions scoped emitter that can be used to fire and listen to custom events
+	 * between extensions. These events are completely isolated from the core events that trigger
+	 * hooks etc
+	 */
+	private localEmitter: Emitter;
+
+	/**
+	 * Registered events against the global emitter used for handling hooks. Used when unloading
+	 * extensions to remove the listeners from the global emitter
+	 */
 	private hookEvents: EventHandler[] = [];
+
+	/**
+	 * Locally scoped express router used for custom endpoints. Allows extensions to dynamically
+	 * register and de-register endpoints without affecting the regular global router
+	 */
 	private endpointRouter: Router;
+
+	/**
+	 * Custom HTML to be injected at the end of the `<head>` tag of the app's index.html
+	 */
 	private hookEmbedsHead: string[] = [];
+
+	/**
+	 * Custom HTML to be injected at the end of the `<body>` tag of the app's index.html
+	 */
 	private hookEmbedsBody: string[] = [];
 
+	/**
+	 * Used to prevent race conditions when reloading extensions. Forces each reload to happen in
+	 * sequence.
+	 */
 	private reloadQueue: JobQueue;
+
+	/**
+	 * Optional file system watcher to auto-reload extensions when the local file system changes
+	 */
 	private watcher: FSWatcher | null = null;
 
 	constructor() {
 		this.options = defaultOptions;
 
-		this.apiEmitter = new Emitter();
+		this.localEmitter = new Emitter();
 		this.endpointRouter = Router();
 
 		this.reloadQueue = new JobQueue();
@@ -226,7 +260,7 @@ export class ExtensionManager {
 	private async unload(): Promise<void> {
 		await this.unregisterApiExtensions();
 
-		this.apiEmitter.offAll();
+		this.localEmitter.offAll();
 
 		if (env['SERVE_APP']) {
 			this.appExtensionsBundle = null;
@@ -524,7 +558,7 @@ export class ExtensionManager {
 			services,
 			env,
 			database: getDatabase(),
-			emitter: this.apiEmitter,
+			emitter: this.localEmitter,
 			logger,
 			getSchema,
 		});
@@ -541,7 +575,7 @@ export class ExtensionManager {
 			services,
 			env,
 			database: getDatabase(),
-			emitter: this.apiEmitter,
+			emitter: this.localEmitter,
 			logger,
 			getSchema,
 		});
