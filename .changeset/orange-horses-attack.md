@@ -3,9 +3,9 @@
 '@directus/composables': patch
 '@directus/components': patch
 '@directus/extensions': patch
-'@directus/constants': patch
-'@directus/types': patch
-'@directus/utils': patch
+'@directus/constants': major
+'@directus/types': major
+'@directus/utils': major
 '@directus/api': patch
 '@directus/app': patch
 ---

@@ -1,3 +1,4 @@
+import type { FetchInterface } from '../index.js';
 import { extractData } from './extract-data.js';
 
 /**
@@ -11,7 +12,7 @@ import { extractData } from './extract-data.js';
 export const request = async <Output = any>(
 	url: string,
 	options: RequestInit,
-	fetcher = globalThis.fetch
+	fetcher: FetchInterface = globalThis.fetch
 ): Promise<Output> => {
 	options.headers =
 		typeof options.headers === 'object' && !Array.isArray(options.headers)
@@ -20,10 +21,8 @@ export const request = async <Output = any>(
 
 	const response = await fetcher(url, options);
 
-	const data = await extractData(response).catch((reason) => {
+	return extractData(response).catch((reason) => {
 		const errors = typeof reason === 'object' && 'errors' in reason ? reason.errors : reason;
 		throw { errors, response };
 	});
-
-	return data;
 };
