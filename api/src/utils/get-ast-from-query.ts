@@ -7,7 +7,7 @@ import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@
 import type { Knex } from 'knex';
 import { cloneDeep, isEmpty, mapKeys, omitBy, uniq } from 'lodash-es';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
-import { getRelationType } from '../utils/get-relation-type.js';
+import { getRelationType } from './get-relation-type.js';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;

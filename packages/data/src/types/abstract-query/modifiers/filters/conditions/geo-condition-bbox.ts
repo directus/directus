@@ -1,4 +1,5 @@
 import type { GeoJSONGeometryCollection, GeoJSONMultiPolygon, GeoJSONPolygon } from 'wellknown';
+
 import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
 
 /**

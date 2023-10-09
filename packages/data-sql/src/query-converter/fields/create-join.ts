@@ -1,11 +1,12 @@
-import type { AbstractQueryFieldNodeRelatedManyToOne } from '@directus/data';
+import type { AbstractQueryFieldNodeRelationalManyToOne } from '@directus/data';
 import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../types/index.js';
 import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
 
 export const createJoin = (
 	currentCollection: string,
-	relationalField: AbstractQueryFieldNodeRelatedManyToOne,
-	externalCollectionAlias: string
+	relationalField: AbstractQueryFieldNodeRelationalManyToOne,
+	externalCollectionAlias: string,
+	fieldAlias?: string
 ): AbstractSqlQueryJoinNode => {
 	let on: AbstractSqlQueryLogicalNode | AbstractSqlQueryConditionNode;
 
@@ -40,8 +41,8 @@ export const createJoin = (
 		on,
 	};
 
-	if (relationalField.alias) {
-		result.alias = relationalField.alias;
+	if (fieldAlias) {
+		result.alias = fieldAlias;
 	}
 
 	return result;
