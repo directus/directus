@@ -46,7 +46,7 @@ const navItems = [
 		icon: 'extension',
 		name: t('extensions'),
 		to: '/settings/extensions',
-	}
+	},
 ];
 
 const externalItems = computed(() => {
