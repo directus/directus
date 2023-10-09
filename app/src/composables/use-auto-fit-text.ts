@@ -13,23 +13,25 @@ function extractValues(paddingString: string): { top: number; right: number; bot
 
 	switch (paddingValues.length) {
 		case 1:
-			// @ts-expect-error
-			top = right = bottom = left = paddingValues[0];
+			top = right = bottom = left = paddingValues[0]!;
 			break;
 		case 2:
-			// @ts-expect-error
-			[top, right] = paddingValues;
+			top = paddingValues[0]!;
+			right = paddingValues[1]!;
 			bottom = top;
 			left = right;
 			break;
 		case 3:
-			// @ts-expect-error
-			[top, right, bottom] = paddingValues;
+			top = paddingValues[0]!;
+			right = paddingValues[1]!;
+			bottom = paddingValues[2]!;
 			left = right;
 			break;
 		case 4:
-			// @ts-expect-error
-			[top, right, bottom, left] = paddingValues;
+			top = paddingValues[0]!;
+			right = paddingValues[1]!;
+			bottom = paddingValues[2]!;
+			left = paddingValues[3]!;
 			break;
 	}
 
