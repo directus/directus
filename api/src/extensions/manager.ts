@@ -40,7 +40,7 @@ import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
 import { normalizeExtensionInfo } from './normalize-extension-info.js';
-import type { ApiExtensions, AppExtensions, BundleConfig, Options } from './types.js';
+import type { ApiExtensions, BundleConfig, Options } from './types.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
@@ -62,9 +62,16 @@ export class ExtensionManager {
 
 	private extensions: Extension[] = [];
 
-	private appExtensions: AppExtensions = null;
+	/**
+	 * All app extensions bundled to a single JS file for use in app
+	 */
+	private appExtensionsBundle: string | null = null;
 	private appExtensionChunks: Map<string, string>;
-	private apiExtensions: ApiExtensions = [];
+
+	/**
+	 * Paths that have been loaded in with `require()` and therefore exist in the require cache
+	 */
+	private cachedModulePaths: string[] = [];
 
 	private apiEmitter: Emitter;
 	private hookEvents: EventHandler[] = [];
@@ -166,7 +173,7 @@ export class ExtensionManager {
 	}
 
 	public getAppExtensions(): string | null {
-		return this.appExtensions;
+		return this.appExtensionsBundle;
 	}
 
 	public getAppExtensionChunk(name: string): string | null {
@@ -200,7 +207,7 @@ export class ExtensionManager {
 		await this.registerBundles();
 
 		if (env['SERVE_APP']) {
-			this.appExtensions = await this.generateExtensionBundle();
+			this.appExtensionsBundle = await this.generateExtensionBundle();
 		}
 
 		this.isLoaded = true;
@@ -212,7 +219,7 @@ export class ExtensionManager {
 		this.apiEmitter.offAll();
 
 		if (env['SERVE_APP']) {
-			this.appExtensions = null;
+			this.appExtensionsBundle = null;
 		}
 
 		this.isLoaded = false;
@@ -331,7 +338,7 @@ export class ExtensionManager {
 
 				this.registerHook(config, hook.name);
 
-				this.apiExtensions.push({ path: hookPath });
+				this.cachedModulePaths.push(hookPath);
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
 				logger.warn(error);
@@ -354,7 +361,7 @@ export class ExtensionManager {
 
 				this.registerEndpoint(config, endpoint.name);
 
-				this.apiExtensions.push({ path: endpointPath });
+				this.cachedModulePaths.push(endpointPath);
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 				logger.warn(error);
@@ -391,7 +398,7 @@ export class ExtensionManager {
 
 				this.registerOperation(config);
 
-				this.apiExtensions.push({ path: operationPath });
+				this.cachedModulePaths.push(operationPath);
 			} catch (error: any) {
 				logger.warn(`Couldn't register operation "${operation.name}"`);
 				logger.warn(error);
@@ -424,7 +431,7 @@ export class ExtensionManager {
 					this.registerOperation(config);
 				}
 
-				this.apiExtensions.push({ path: bundlePath });
+				this.cachedModulePaths.push(bundlePath);
 			} catch (error: any) {
 				logger.warn(`Couldn't register bundle "${bundle.name}"`);
 				logger.warn(error);
@@ -562,10 +569,10 @@ export class ExtensionManager {
 
 		flowManager.clearOperations();
 
-		for (const apiExtension of this.apiExtensions) {
-			delete require.cache[require.resolve(apiExtension.path)];
+		for (const modulePath of this.cachedModulePaths) {
+			delete require.cache[require.resolve(modulePath)];
 		}
 
-		this.apiExtensions = [];
+		this.cachedModulePaths = [];
 	}
 }
