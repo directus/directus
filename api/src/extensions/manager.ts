@@ -4,6 +4,7 @@ import type {
 	BundleExtension,
 	EndpointConfig,
 	Extension,
+	ExtensionInfo,
 	ExtensionType,
 	HookConfig,
 	HybridExtension,
@@ -151,7 +152,7 @@ export class ExtensionManager {
 		if (!this.isLoaded) {
 			await this.load();
 
-			const loadedExtensions = this.getExtensionsList();
+			const loadedExtensions = this.getExtensions();
 
 			if (loadedExtensions.length > 0) {
 				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
@@ -188,18 +189,22 @@ export class ExtensionManager {
 		this.isLoaded = true;
 	}
 
+	/**
+	 * Unregister all extensions from the current process
+	 */
 	private async unload(): Promise<void> {
 		await this.unregisterApiExtensions();
 
 		this.localEmitter.offAll();
 
-		if (env['SERVE_APP']) {
-			this.appExtensionsBundle = null;
-		}
+		this.appExtensionsBundle = null;
 
 		this.isLoaded = false;
 	}
 
+	/**
+	 * Reload all the extensions. Will unload if extensions have already been loaded
+	 */
 	public reload(): void {
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
@@ -241,7 +246,7 @@ export class ExtensionManager {
 	 *
 	 * @param {string} [type] - Type to filter by
 	 */
-	public getExtensionsList(type?: ExtensionType) {
+	public getExtensions(type?: ExtensionType): ExtensionInfo[] {
 		const extensionInfo = this.extensions.map(normalizeExtensionInfo);
 
 		if (type) {
@@ -251,22 +256,37 @@ export class ExtensionManager {
 		return extensionInfo;
 	}
 
+	/**
+	 * Find the extension info by extension name
+	 */
 	public getExtension(name: string): Extension | undefined {
 		return this.extensions.find((extension) => extension.name === name);
 	}
 
-	public getAppExtensions(): string | null {
+	/**
+	 * Return the previously generated app extensions bundle
+	 */
+	public getAppExtensionsBundle(): string | null {
 		return this.appExtensionsBundle;
 	}
 
+	/**
+	 * Return the previously generated app extension bundle chunk by name
+	 */
 	public getAppExtensionChunk(name: string): string | null {
 		return this.appExtensionChunks.get(name) ?? null;
 	}
 
+	/**
+	 * Return the scoped router for custom endpoints
+	 */
 	public getEndpointRouter(): Router {
 		return this.endpointRouter;
 	}
 
+	/**
+	 * Return the custom HTML head and body embeds wrapped in a marker comment
+	 */
 	public getEmbeds() {
 		return {
 			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
@@ -274,6 +294,9 @@ export class ExtensionManager {
 		};
 	}
 
+	/**
+	 * Start the chokidar watcher for extensions on the local filesystem
+	 */
 	private initializeWatcher(): void {
 		logger.info('Watching extensions for changes...');
 
@@ -305,6 +328,9 @@ export class ExtensionManager {
 			.on('unlink', () => this.reload());
 	}
 
+	/**
+	 * Close and destroy the local filesystem watcher if enabled
+	 */
 	private async closeWatcher(): Promise<void> {
 		if (this.watcher) {
 			await this.watcher.close();
@@ -313,6 +339,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Update the chokidar watcher configuration when new extensions are added or existing ones
+	 * removed
+	 */
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
 		if (this.watcher) {
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
@@ -335,6 +365,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Uses rollup to bundle the app extensions together into a single file the app can download and
+	 * run.
+	 */
 	private async generateExtensionBundle(): Promise<string | null> {
 		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 
@@ -372,6 +406,10 @@ export class ExtensionManager {
 		return null;
 	}
 
+	/**
+	 * Import the hook module code for all hook extensions, and register them individually through
+	 * registerHook
+	 */
 	private async registerHooks(): Promise<void> {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
 
@@ -395,6 +433,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Import the endpoint module code for all endpoint extensions, and register them individually through
+	 * registerEndpoint
+	 */
 	private async registerEndpoints(): Promise<void> {
 		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
 
@@ -418,6 +460,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Import the operation module code for all operation extensions, and register them individually through
+	 * registerOperation
+	 */
 	private async registerOperations(): Promise<void> {
 		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
 
@@ -455,6 +501,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Import the module code for all hook, endpoint, and operation extensions registered within a
+	 * bundle, and register them with their respective registration function
+	 */
 	private async registerBundles(): Promise<void> {
 		const bundles = this.extensions.filter((extension): extension is BundleExtension => extension.type === 'bundle');
 
@@ -488,10 +538,13 @@ export class ExtensionManager {
 		}
 	}
 
-	private registerHook(register: HookConfig, name: string): void {
+	/**
+	 * Register a single hook
+	 */
+	private registerHook(hookRegistrationCallback: HookConfig, name: string): void {
 		let scheduleIndex = 0;
 
-		const registerFunctions = {
+		const hookRegistrationContext = {
 			filter: (event: string, handler: FilterHandler) => {
 				emitter.onFilter(event, handler);
 
@@ -559,7 +612,7 @@ export class ExtensionManager {
 			},
 		};
 
-		register(registerFunctions, {
+		hookRegistrationCallback(hookRegistrationContext, {
 			services,
 			env,
 			database: getDatabase(),
@@ -569,14 +622,18 @@ export class ExtensionManager {
 		});
 	}
 
+	/**
+	 * Register an individual endpoint
+	 */
 	private registerEndpoint(config: EndpointConfig, name: string): void {
-		const register = typeof config === 'function' ? config : config.handler;
+		const hookRegistrationCallback = typeof config === 'function' ? config : config.handler;
 		const routeName = typeof config === 'function' ? name : config.id;
 
 		const scopedRouter = express.Router();
+
 		this.endpointRouter.use(`/${routeName}`, scopedRouter);
 
-		register(scopedRouter, {
+		hookRegistrationCallback(scopedRouter, {
 			services,
 			env,
 			database: getDatabase(),
@@ -586,12 +643,18 @@ export class ExtensionManager {
 		});
 	}
 
+	/**
+	 * Register an individual operation
+	 */
 	private registerOperation(config: OperationApiConfig): void {
 		const flowManager = getFlowManager();
 
 		flowManager.addOperation(config.id, config.handler);
 	}
 
+	/**
+	 * Remove the registration for all API extensions
+	 */
 	private async unregisterApiExtensions(): Promise<void> {
 		for (const event of this.hookEvents) {
 			switch (event.type) {
