@@ -8,22 +8,38 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-const randomCollection = randomIdentifier();
-const randomCollectionToJoin = randomIdentifier();
+// random user inputs for root fields
+const rootCollection = randomIdentifier();
+const dataStore = randomIdentifier();
 const firstField = randomIdentifier();
 const firstFieldId = randomIdentifier();
 const secondField = randomIdentifier();
 const secondFieldId = randomIdentifier();
 const secondFieldAlias = randomIdentifier();
+
+// random user inputs and meta for m2o
+const collectionToJoin = randomIdentifier();
+const collectionToJoinId = randomIdentifier();
 const joinField1 = randomIdentifier();
-const joinFieldId = randomIdentifier();
+const joinField1Id = randomIdentifier();
 const joinField1Alias = randomIdentifier();
 const joinField2 = randomIdentifier();
-const collectionToJoinId = randomIdentifier();
 const joinField2Id = randomIdentifier();
 const fk = randomIdentifier();
 const foreignPk = randomIdentifier();
 const joinAlias = randomIdentifier();
+
+// random user input and meta for o2m
+const collectionToJoin2 = randomIdentifier();
+const collectionToJoin2Id = randomIdentifier();
+const joinField1m = randomIdentifier();
+const joinField1IdM = randomIdentifier();
+const joinField1AliasM = randomIdentifier();
+const joinField2m = randomIdentifier();
+const joinField2IdM = randomIdentifier();
+const fkM = randomIdentifier();
+const foreignPkm = randomIdentifier();
+const joinAliasM = randomIdentifier();
 
 describe('querying the driver', () => {
 	test('test', async () => {
@@ -43,13 +59,13 @@ describe('querying the driver', () => {
 							select: [
 								{
 									type: 'primitive',
-									table: randomCollection,
+									table: rootCollection,
 									column: firstField,
 									as: firstFieldId,
 								},
 								{
 									type: 'primitive',
-									table: randomCollection,
+									table: rootCollection,
 									column: secondField,
 									as: secondFieldId,
 									alias: secondFieldAlias,
@@ -58,7 +74,7 @@ describe('querying the driver', () => {
 									type: 'primitive',
 									table: collectionToJoinId,
 									column: joinField1,
-									as: joinFieldId,
+									as: joinField1Id,
 									alias: joinField1Alias,
 								},
 								{
@@ -67,12 +83,25 @@ describe('querying the driver', () => {
 									column: joinField2,
 									as: joinField2Id,
 								},
+								{
+									type: 'primitive',
+									table: collectionToJoin2Id,
+									column: joinField1m,
+									as: joinField2IdM,
+									alias: joinField1AliasM,
+								},
+								{
+									type: 'primitive',
+									table: collectionToJoin2Id,
+									column: joinField2m,
+									as: joinField2IdM,
+								},
 							],
-							from: randomCollection,
+							from: rootCollection,
 							joins: [
 								{
 									type: 'join',
-									table: randomCollectionToJoin,
+									table: collectionToJoin,
 									as: collectionToJoinId,
 									on: {
 										type: 'condition',
@@ -81,7 +110,7 @@ describe('querying the driver', () => {
 											type: 'condition-field',
 											target: {
 												type: 'primitive',
-												table: randomCollection,
+												table: rootCollection,
 												column: fk,
 											},
 											operation: 'eq',
@@ -94,14 +123,40 @@ describe('querying the driver', () => {
 									},
 									alias: joinAlias,
 								},
+								{
+									type: 'join',
+									table: collectionToJoin2,
+									as: collectionToJoinId,
+									on: {
+										type: 'condition',
+										negate: false,
+										condition: {
+											type: 'condition-field',
+											target: {
+												type: 'primitive',
+												table: rootCollection,
+												column: fkM,
+											},
+											operation: 'eq',
+											compareTo: {
+												type: 'primitive',
+												table: collectionToJoin2Id,
+												column: foreignPkm,
+											},
+										},
+									},
+									alias: joinAliasM,
+								},
 							],
 						},
 						parameters: [],
 						aliasMapping: new Map([
 							[firstFieldId, [firstField]],
 							[secondFieldId, [secondFieldAlias]],
-							[joinFieldId, [randomCollectionToJoin, joinField1Alias]],
-							[joinField2Id, [randomCollectionToJoin, joinField2]],
+							[joinField1Id, [collectionToJoin, joinField1Alias]],
+							[joinField2Id, [collectionToJoin, joinField2]],
+							[joinField1IdM, [collectionToJoin, joinField2]],
+							[joinField2IdM, [collectionToJoin, joinField2]],
 						]),
 					};
 
@@ -112,8 +167,8 @@ describe('querying the driver', () => {
 
 		const query: AbstractQuery = {
 			root: true,
-			collection: randomCollection,
-			store: 'randomDataStore1',
+			collection: rootCollection,
+			store: dataStore,
 			fields: [
 				{
 					type: 'primitive',
@@ -144,13 +199,40 @@ describe('querying the driver', () => {
 								fields: [fk],
 							},
 							external: {
-								store: 'randomDataStore1',
-								collection: randomCollectionToJoin,
+								store: dataStore,
+								collection: collectionToJoin,
 								fields: [foreignPk],
 							},
 						},
 					},
 					alias: joinAlias,
+				},
+				{
+					type: 'nested-many',
+					fields: [
+						{
+							type: 'primitive',
+							field: joinField1m,
+							alias: joinField1AliasM,
+						},
+						{
+							type: 'primitive',
+							field: joinField2m,
+						},
+					],
+					meta: {
+						type: 'o2m',
+						join: {
+							current: {
+								fields: [fkM],
+							},
+							external: {
+								store: dataStore,
+								collection: collectionToJoin2,
+								fields: [foreignPkm],
+							},
+						},
+					},
 				},
 			],
 		};
@@ -159,6 +241,7 @@ describe('querying the driver', () => {
 			connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 		});
 
+		/* @TODO randomize the mocked return values */
 		vi.spyOn(driver, 'getDataFromSource').mockReturnValue({
 			// @ts-ignore a promise is normally been returned
 			client: null,
@@ -168,14 +251,25 @@ describe('querying the driver', () => {
 						{
 							[firstFieldId]: 937,
 							[secondFieldId]: 'lorem ipsum',
-							[joinFieldId]: 42,
+							[joinField1Id]: 42,
 							[joinField2Id]: true,
+							[joinField2IdM]: true,
+							[joinField1IdM]: 27,
+						},
+						{
+							[firstFieldId]: 937,
+							[secondFieldId]: 'lorem ipsum',
+							[joinField1Id]: 42,
+							[joinField2Id]: true,
+							[joinField2IdM]: false,
+							[joinField1IdM]: 28,
 						},
 						{
 							[firstFieldId]: 1342,
 							[secondFieldId]: 'ipsum dapsum',
-							[joinFieldId]: 26,
-							[joinField2Id]: true,
+							[joinField1Id]: 26,
+							[joinField2IdM]: null,
+							[joinField1IdM]: null,
 						},
 					];
 
@@ -200,18 +294,29 @@ describe('querying the driver', () => {
 			{
 				[firstField]: 937,
 				[secondFieldAlias]: 'lorem ipsum',
-				[randomCollectionToJoin]: {
+				[collectionToJoin]: {
 					[joinField1Alias]: 42,
 					[joinField2]: true,
 				},
+				[collectionToJoin2]: [
+					{
+						[joinField1AliasM]: 27,
+						[joinField2m]: true,
+					},
+					{
+						[joinField1AliasM]: 28,
+						[joinField2m]: false,
+					},
+				],
 			},
 			{
 				[firstField]: 1342,
 				[secondFieldAlias]: 'ipsum dapsum',
-				[randomCollectionToJoin]: {
+				[collectionToJoin]: {
 					[joinField1Alias]: 26,
 					[joinField2]: true,
 				},
+				[collectionToJoin2]: [],
 			},
 		];
 
