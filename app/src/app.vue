@@ -47,12 +47,14 @@ useHead({
 		];
 	}),
 	link: computed(() => {
-		let href = '/favicon.ico';
+		let href: string;
 
 		if (serverStore.info?.project?.public_favicon) {
 			href = `/assets/${serverStore.info.project.public_favicon}`;
 		} else if (serverStore.info?.project?.project_color) {
 			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
+		} else {
+			href = '/favicon.ico';
 		}
 
 		return [
