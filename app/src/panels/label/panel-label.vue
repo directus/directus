@@ -52,7 +52,9 @@ function adjustPadding() {
 	return;
 }
 
-function updateFit() {
+async function updateFit() {
+	if (props.fontSize !== 'auto' || props.text.length <= 0) return;
+	await document.fonts.ready;
 	adjustPadding();
 	adjustFontSize();
 
@@ -72,20 +74,11 @@ function updateFit() {
 }
 
 onMounted(() => {
-	if (props.fontSize === 'auto') {
-		updateFit();
-
-		// Delay the initial font size adjustment to allow the text/font to render fully
-		setTimeout(() => {
-			updateFit();
-		}, 500);
-	}
+	updateFit();
 });
 
 onUpdated(() => {
-	if (props.fontSize == 'auto') {
-		updateFit();
-	}
+	updateFit();
 });
 
 onBeforeUnmount(() => {
@@ -109,7 +102,7 @@ export default defineComponent({
 		ref="labelContainer"
 		class="label type-title selectable"
 		:class="[font, { 'has-header': showHeader }]"
-		:style="{ color: color, alignItems: showHeader ? 'flex-start' : 'center' }"
+		:style="{ color: color }"
 	>
 		<p
 			ref="labelText"
@@ -123,7 +116,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .label {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	align-items: stretch;
 	width: 100%;
 	height: 100%;
 	color: var(--color-text);

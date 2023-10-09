@@ -76,7 +76,9 @@ function adjustPadding() {
 	return;
 }
 
-function updateFit() {
+async function updateFit() {
+	if (props.fontSize !== 'auto' || !props.data || props.data.length === 0) return;
+	await document.fonts.ready;
 	adjustPadding();
 	adjustFontSize();
 
@@ -96,20 +98,11 @@ function updateFit() {
 }
 
 onMounted(() => {
-	if (props.fontSize == 'auto') {
-		updateFit();
-
-		// Delay the initial font size adjustment to allow the text/font to render fully
-		setTimeout(() => {
-			updateFit();
-		}, 500);
-	}
+	updateFit();
 });
 
 onUpdated(() => {
-	if (props.fontSize == 'auto') {
-		updateFit();
-	}
+	updateFit();
 });
 
 onBeforeUnmount(() => {
@@ -216,8 +209,9 @@ const color = computed(() => {
 <style scoped>
 .metric {
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	justify-content: center;
+	flex-direction: column;
 	width: 100%;
 	height: 100%;
 	font-weight: 800;
