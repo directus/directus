@@ -146,7 +146,7 @@ export async function getItemsPayload(
 			// return only the subscribed id in case a bluk delete was done
 			return [subscription.item];
 		} else {
-			return await service.readOne(subscription.item, query);
+			return [await service.readOne(subscription.item, query)];
 		}
 	}
 
