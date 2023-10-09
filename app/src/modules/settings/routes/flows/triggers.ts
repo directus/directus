@@ -79,6 +79,7 @@ export function getTriggers() {
 									'items.create',
 									'items.update',
 									'items.delete',
+									'items.promote',
 									'items.sort',
 									{ divider: true },
 									'server.start',
@@ -100,9 +101,12 @@ export function getTriggers() {
 							interface: 'system-collections',
 							width: 'full' as Width,
 							readonly:
-								!scope || ['items.create', 'items.update', 'items.delete'].every((t) => scope?.includes(t) === false),
+								!scope ||
+								['items.create', 'items.update', 'items.delete', 'items.promote'].every(
+									(t) => scope?.includes(t) === false
+								),
 							options: {
-								includeSystem: true,
+								includeSystem: !scope || scope?.filter((t: string) => t !== 'items.promote').length > 0,
 							},
 						},
 					},
@@ -120,6 +124,7 @@ export function getTriggers() {
 									'items.create',
 									'items.update',
 									'items.delete',
+									'items.promote',
 									{ divider: true },
 									'request.not_found',
 									'request.error',
@@ -142,9 +147,12 @@ export function getTriggers() {
 							interface: 'system-collections',
 							width: 'full' as Width,
 							readonly:
-								!scope || ['items.create', 'items.update', 'items.delete'].every((t) => scope?.includes(t) === false),
+								!scope ||
+								['items.create', 'items.update', 'items.delete', 'items.promote'].every(
+									(t) => scope?.includes(t) === false
+								),
 							options: {
-								includeSystem: true,
+								includeSystem: !scope || scope?.filter((t: string) => t !== 'items.promote').length > 0,
 							},
 						},
 					},

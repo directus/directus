@@ -44,7 +44,7 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
@@ -72,6 +72,7 @@ import { SpecificationService } from '../specifications.js';
 import { TFAService } from '../tfa.js';
 import { UsersService } from '../users.js';
 import { UtilsService } from '../utils.js';
+import { VersionsService } from '../versions.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
 import { createSubscriptionGenerator } from './subscription.js';
 import { GraphQLBigInt } from './types/bigint.js';
@@ -1031,6 +1032,12 @@ export class GraphQLService {
 							type: GraphQLString,
 						},
 					};
+				} else {
+					resolver.args = {
+						version: {
+							type: GraphQLString,
+						},
+					};
 				}
 
 				ReadCollectionTypes[collection.collection]!.addResolver(resolver);
@@ -1073,6 +1080,7 @@ export class GraphQLService {
 						type: ReadCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
+							version: GraphQLString,
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
@@ -1404,6 +1412,21 @@ export class GraphQLService {
 		}
 
 		const result = await this.read(collection, query);
+
+		if (args['version']) {
+			const versionsService = new VersionsService({ accountability: this.accountability, schema: this.schema });
+
+			const saves = await versionsService.getVersionSaves(args['version'], collection, args['id']);
+
+			if (saves) {
+				if (this.schema.collections[collection]!.singleton) {
+					return assign(result, ...saves);
+				} else {
+					if (result?.[0] === undefined) return null;
+					return assign(result[0], ...saves);
+				}
+			}
+		}
 
 		if (args['id']) {
 			return result?.[0] || null;

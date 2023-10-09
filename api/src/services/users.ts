@@ -331,6 +331,7 @@ export class UsersService extends ItemsService {
 		}
 
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
 		await super.deleteMany(keys, opts);
 		return keys;
