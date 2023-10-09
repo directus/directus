@@ -120,7 +120,7 @@ export default defineComponent({
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .label {
 	display: flex;
 	justify-content: center;
