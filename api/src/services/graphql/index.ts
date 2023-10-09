@@ -1419,7 +1419,12 @@ export class GraphQLService {
 			const saves = await versionsService.getVersionSaves(args['version'], collection, args['id']);
 
 			if (saves) {
-				return assign(result?.[0] || {}, ...saves);
+				if (this.schema.collections[collection]!.singleton) {
+					return assign(result, ...saves);
+				} else {
+					if (result?.[0] === undefined) return null;
+					return assign(result[0], ...saves);
+				}
 			}
 		}
 
