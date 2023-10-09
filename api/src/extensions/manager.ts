@@ -57,15 +57,25 @@ const defaultOptions: ExtensionManagerOptions = {
 };
 
 export class ExtensionManager {
-	private isLoaded = false;
 	private options: ExtensionManagerOptions;
+
+	/**
+	 * Whether or not the extensions have been read from disk and registered into the system
+	 */
+	private isLoaded = false;
 
 	private extensions: Extension[] = [];
 
 	/**
-	 * All app extensions bundled to a single JS file for use in app
+	 * App extensions rolled up into a single bundle. Any chunks from the bundle will be available
+	 * under appExtensionChunks
 	 */
 	private appExtensionsBundle: string | null = null;
+
+	/**
+	 * Individual filename chunks from the rollup bundle. Used to improve the performance by allowing
+	 * extensions to split up their bundle into multiple smaller chunks
+	 */
 	private appExtensionChunks: Map<string, string>;
 
 	/**
