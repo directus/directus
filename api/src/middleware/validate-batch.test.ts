@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { beforeEach, expect, test, vi } from 'vitest';
-import '../../src/types/express.d.ts';
+import '../types/express.d.ts';
 import { InvalidPayloadError } from '../errors/invalid-payload.js';
 import { validateBatch } from './validate-batch.js';
 

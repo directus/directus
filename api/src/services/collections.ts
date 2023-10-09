@@ -14,8 +14,8 @@ import { systemCollectionRows } from '../database/system-data/collections/index.
 import emitter from '../emitter.js';
 import env from '../env.js';
 import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
-import { FieldsService } from '../services/fields.js';
-import { ItemsService } from '../services/items.js';
+import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
