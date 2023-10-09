@@ -40,7 +40,7 @@ import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
 import { normalizeExtensionInfo } from './normalize-extension-info.js';
-import type { ApiExtensions, BundleConfig, Options } from './types.js';
+import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
@@ -51,14 +51,14 @@ const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.d
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const defaultOptions: Options = {
+const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,
 	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
 };
 
 export class ExtensionManager {
 	private isLoaded = false;
-	private options: Options;
+	private options: ExtensionManagerOptions;
 
 	private extensions: Extension[] = [];
 
@@ -93,7 +93,7 @@ export class ExtensionManager {
 		this.appExtensionChunks = new Map();
 	}
 
-	public async initialize(options: Partial<Options> = {}): Promise<void> {
+	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
 		this.options = {
 			...defaultOptions,
 			...options,
