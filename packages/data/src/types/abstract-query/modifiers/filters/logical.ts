@@ -1,4 +1,4 @@
-import type { AbstractQueryConditionNode } from './conditions/index.js';
+import type { AbstractQueryConditionNode } from './conditions.js';
 import type { AbstractQueryNodeNegate } from './negate.js';
 
 /**

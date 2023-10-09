@@ -1,4 +1,3 @@
-import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
 import type {
 	GeoJSONGeometryCollection,
 	GeoJSONLineString,
@@ -6,6 +5,8 @@ import type {
 	GeoJSONMultiPoint,
 	GeoJSONPoint,
 } from 'wellknown';
+
+import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
 
 /**
  * Checks if a non box geo object intersects with another.

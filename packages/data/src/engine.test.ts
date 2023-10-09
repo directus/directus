@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { AbstractQuery, DataDriver } from './index.js';
-import { DataEngine } from './index.js';
 import { randomIdentifier } from '@directus/random';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { DataEngine } from './engine.js';
+import type { AbstractQuery } from './types/abstract-query.js';
+import type { DataDriver } from './types/driver.js';
 
 let engine: DataEngine;
 

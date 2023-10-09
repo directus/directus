@@ -50,7 +50,7 @@ export const convertFieldNodes = (
 			continue;
 		}
 
-		if (abstractField.type === 'm2o') {
+		if (abstractField.type === 'nested-one') {
 			/**
 			 * Always fetch the current context foreign key as well. We need it to check if the current
 			 * item has a related item so we don't expand `null` values in a nested object where every
@@ -59,18 +59,20 @@ export const convertFieldNodes = (
 			 * @TODO
 			 */
 
-			const m2oField = abstractField;
-			const externalCollectionAlias = createUniqueAlias(m2oField.join.external.collection);
-			const sqlJoinNode = createJoin(collection, m2oField, externalCollectionAlias);
+			if (abstractField.meta.type === 'm2o') {
+				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.external.collection);
+				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias, abstractField.alias);
 
-			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
-				...currentPath,
-				abstractField.join.external.collection,
-			]);
+				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
+					...currentPath,
+					abstractField.meta.join.external.collection,
+				]);
 
-			nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
-			joins.push(sqlJoinNode);
-			select.push(...nestedOutput.clauses.select);
+				nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
+				joins.push(sqlJoinNode);
+				select.push(...nestedOutput.clauses.select);
+			}
+
 			continue;
 		}
 
