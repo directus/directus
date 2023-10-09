@@ -199,7 +199,6 @@ function getColor(input) {
 .metric-list-item {
 	height: 36px;
 	border-bottom: var(--border-width) solid var(--border-subdued);
-	/* display: block; */
 }
 
 .metric-list-item:last-child {
