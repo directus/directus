@@ -8,12 +8,12 @@ export default definePanel({
 	icon: 'title',
 	component: PanelLabel,
 	options: ({ options }) => {
-		if (!options) options = {};
 		return [
 			{
 				field: 'text',
 				name: '$t:label',
 				type: 'string',
+				required: true,
 				meta: {
 					interface: options?.whiteSpace == 'nowrap' ? 'input' : 'input-multiline',
 				},
