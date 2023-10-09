@@ -1,10 +1,3 @@
-<template>
-	<div v-tooltip.bottom.end="latencyTooltip" class="latency-indicator">
-		<v-progress-circular v-if="!lastLatency" indeterminate />
-		<v-icon v-else :name="icon" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
@@ -71,6 +64,13 @@ const icon = computed(() => {
 	}
 });
 </script>
+
+<template>
+	<div v-tooltip.bottom.end="latencyTooltip" class="latency-indicator">
+		<v-progress-circular v-if="!lastLatency" indeterminate />
+		<v-icon v-else :name="icon" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-progress-circular {

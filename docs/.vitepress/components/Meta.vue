@@ -1,3 +1,13 @@
+<script setup lang="ts">
+defineProps<{ titleLeft?: string; titleRight?: string; titleBottom?: string }>();
+
+defineSlots<{
+	left(): any;
+	right(): any;
+	bottom(): any;
+}>();
+</script>
+
 <template>
 	<div class="wrapper">
 		<div class="top">
@@ -16,16 +26,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup lang="ts">
-defineProps<{ titleLeft?: string; titleRight?: string; titleBottom?: string }>();
-
-defineSlots<{
-	left(): any;
-	right(): any;
-	bottom(): any;
-}>();
-</script>
 
 <style scoped>
 .wrapper {

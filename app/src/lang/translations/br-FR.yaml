@@ -237,6 +237,7 @@ move: Dilec'hiañ
 system: Sistem
 add_field_related: Ouzhpennañ ar vaezienn d'an dastumad liammet
 interface_label: Etrefas
+display_label: Diskwel
 today: Hiziv
 yesterday: Dec'h
 delete_comment: Dilemel an evezhiadenn
@@ -308,7 +309,6 @@ comments: Evezhiadennoù
 no_comments: N'eus evezhiadenn ebet evit poent
 select_item: Dibab un elfenn
 no_items: Elfenn ebet
-search_items: Klask elfennoù...
 disabled: Diaktivet
 information: Titouroù
 report_bug: Diskleriañ ur bug
@@ -974,6 +974,8 @@ interfaces:
   system-interface-options:
     interface-options: Dibarzhioù an etrefas
     description: Ur popup evit dibab dibarzhioù an etrefas
+  system-display:
+    display: Diskwel
   list-m2m:
     description: Dibab meur a elfenn kej liammet
   select-dropdown-m2o:
@@ -1006,6 +1008,7 @@ interfaces:
     add_label: 'Skridennad "Krouiñ unan Nevez"'
     sort: Rummañ
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
+    interface_group: Dibarzhioù an etrefas
   slider:
     slider: Reti
     description: Dibab un niverenn gant ar reti
@@ -1206,6 +1209,8 @@ panels:
   label:
     name: Tikedenn
 operations:
+  json-web-token:
+    options: Arventennoù
   mail:
     template: Patrom
   notification:

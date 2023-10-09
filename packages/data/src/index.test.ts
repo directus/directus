@@ -43,7 +43,7 @@ describe('#query', () => {
 			store: sample.mockStoreIdentifier,
 			root: true,
 			collection: randomIdentifier(),
-			nodes: [],
+			fields: [],
 		};
 
 		await engine.query(query);

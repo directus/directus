@@ -1,9 +1,3 @@
-<template>
-	<div class="v-avatar" :class="[{ tile }, sizeClass]">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSizeClass } from '@directus/composables';
 
@@ -26,6 +20,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const sizeClass = useSizeClass(props);
 </script>
+
+<template>
+	<div class="v-avatar" :class="[{ tile }, sizeClass]">
+		<slot />
+	</div>
+</template>
 
 <style>
 body {

@@ -299,6 +299,7 @@ format: प्रारूप
 submit: दर्ज करें
 system: प्रणाली
 interface_label: इंटरफ़ेस
+display_label: दिखाएँ
 today: आज
 yesterday: बीता कल
 delete_comment: टिप्पणी हटाएँ
@@ -358,7 +359,6 @@ comments: टिप्पणियाँ
 no_comments: अभी तक कोई टिप्पणी नहीं
 select_item: आइटम का चयन करें
 no_items: कोई आइटम नहीं
-search_items: आइटम्स खोजें
 disabled: निष्क्रिय
 information: जानकारी
 report_bug: बग रिपोर्ट करें
@@ -467,6 +467,8 @@ interfaces:
     choices_value_placeholder: एक मान दर्ज करें...
   input-hash:
     hash: Hash
+  system-display:
+    display: दिखाएँ
   map:
     zoom: छोटा-बड़ा करें
   system-folder:

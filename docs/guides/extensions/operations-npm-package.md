@@ -1,11 +1,11 @@
 ---
-description: "Learn how to expose any package on npm as a custom operation."
-contributors: "Nils Twelker, Kevin Lewis"
+description: Learn how to expose any package on NPM as a custom operation.
+contributors: Nils Twelker, Kevin Lewis
 ---
 
-# Exposing an npm Package as a Custom Operation
+# Exposing an NPM Package as a Custom Operation
 
-This guide will show you how to expose an npm package as a custom operation in Flows. We will use `lodash` here, but the
+This guide will show you how to expose an NPM package as a custom operation in Flows. We will use `lodash` here, but the
 process should be the same for any package.
 
 ## Install Dependencies
@@ -13,8 +13,8 @@ process should be the same for any package.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose operation), and type a name for your extension (for example,
@@ -22,7 +22,7 @@ A list of options will appear (choose operation), and type a name for your exten
 
 Now the boilerplate has been created, install the lodash package, and then open the directory in your code editor.
 
-```
+```shell
 cd directus-operation-lodash
 npm install lodash
 ```
@@ -66,12 +66,12 @@ options: [
 ],
 ```
 
-If your npm package function requires multiple inputs, you can add them here. The `overview` array defines what is shown
+If your NPM package function requires multiple inputs, you can add them here. The `overview` array defines what is shown
 on the card when the operation is not selected.
 
 ## Build the API Function
 
-Open the `api.js` file and update the `id` to match the one used in the `app.js` file. Import from your npm package,
+Open the `api.js` file and update the `id` to match the one used in the `app.js` file. Import from your NPM package,
 execute your logic, and finish by return any data from the operation into the data chain.
 
 ```js
@@ -81,10 +81,10 @@ import { camelCase } from 'lodash'; // [!code ++]
 export default defineOperationApi({
 	id: 'operation-lodash-camelcase',
 	handler: ({ text }) => {
-		console.log(text) // [!code --]
+		console.log(text); // [!code --]
 		return { // [!code ++]
 			text: camelCase(text) // [!code ++]
-		} // [!code ++]
+		}; // [!code ++]
 	},
 });
 ```
@@ -126,7 +126,7 @@ flow from the right side toolbar.
 
 ## Summary
 
-This operation takes an npm package (`lodash`) and exposes it as a custom operation extension. You can use the same
+This operation takes an NPM package (`lodash`) and exposes it as a custom operation extension. You can use the same
 technique for other packages to extend on the features of Directus Flows.
 
 ## Complete Code
@@ -135,7 +135,7 @@ technique for other packages to extend on the features of Directus Flows.
 
 ```js
 export default {
-	id: 'operation-lodash',
+	id: 'operation-lodash-camelcase',
 	name: 'Lodash Camel Case',
 	icon: 'electric_bolt',
 	description: 'Use Lodash Camel Case Function.',
@@ -169,8 +169,8 @@ export default defineOperationApi({
 	id: 'operation-lodash-camelcase',
 	handler: ({ text }) => {
 		return {
-			text: camelCase(text)
-		}
+			text: camelCase(text),
+		};
 	},
 });
 ```

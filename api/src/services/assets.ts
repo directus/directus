@@ -1,5 +1,5 @@
 import type { Range, Stat } from '@directus/storage';
-import type { Accountability } from '@directus/types';
+import type { Accountability, File } from '@directus/types';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
@@ -19,7 +19,7 @@ import {
 } from '../errors/index.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, File, Transformation, TransformationSet } from '../types/index.js';
+import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
@@ -37,7 +37,7 @@ export class AssetsService {
 
 	async getAsset(
 		id: string,
-		transformation: TransformationSet,
+		transformation?: TransformationSet,
 		range?: Range
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
@@ -109,7 +109,7 @@ export class AssetsService {
 		}
 
 		const type = file.type;
-		const transforms = TransformationUtils.resolvePreset(transformation, file);
+		const transforms = transformation ? TransformationUtils.resolvePreset(transformation, file) : [];
 
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
@@ -178,7 +178,21 @@ export class AssetsService {
 				readStream.unpipe(transformer);
 			});
 
-			await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			try {
+				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+			} catch (error) {
+				try {
+					await storage.location(file.storage).delete(assetFilename);
+				} catch {
+					// Ignored to prevent original error from being overwritten
+				}
+
+				if ((error as Error)?.message?.includes('timeout')) {
+					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
+				} else {
+					throw error;
+				}
+			}
 
 			return {
 				stream: await storage.location(file.storage).read(assetFilename, range),

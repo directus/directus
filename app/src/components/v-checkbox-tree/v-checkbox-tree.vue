@@ -1,24 +1,3 @@
-<template>
-	<v-list v-model="openSelection" :mandatory="false" @toggle="$emit('group-toggle', $event)">
-		<v-checkbox-tree-checkbox
-			v-for="choice in choices"
-			:key="choice[itemValue]"
-			v-model="value"
-			:value-combining="valueCombining"
-			:search="search"
-			:item-text="itemText"
-			:item-value="itemValue"
-			:item-children="itemChildren"
-			:text="choice[itemText]"
-			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
-			:value="choice[itemValue]"
-			:children="choice[itemChildren]"
-			:disabled="disabled"
-			:show-selection-only="showSelectionOnly"
-		/>
-	</v-list>
-</template>
-
 <script lang="ts">
 export default {
 	name: 'VCheckboxTree',
@@ -26,7 +5,8 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { computed, ref, watch, toRefs } from 'vue';
+import { remove as removeDiacritics } from 'diacritics';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useVisibleChildren } from './use-visible-children';
 import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 
@@ -76,10 +56,12 @@ const value = computed({
 const fakeValue = ref('');
 const fakeParentValue = ref('');
 
-const { search, modelValue, showSelectionOnly, itemText, itemValue, itemChildren, choices } = toRefs(props);
+const { modelValue, showSelectionOnly, itemText, itemValue, itemChildren, choices } = toRefs(props);
+
+const normalizedSearch = computed(() => (props.search !== null ? removeDiacritics(props.search).toLowerCase() : null));
 
 const { visibleChildrenValues } = useVisibleChildren(
-	search,
+	normalizedSearch,
 	modelValue,
 	choices,
 	showSelectionOnly,
@@ -91,41 +73,44 @@ const { visibleChildrenValues } = useVisibleChildren(
 );
 
 let showAllSelection: (string | number)[] = [];
-const openSelection = ref<(string | number)[]>([]);
+const manualOpenSelection = ref<(string | number)[]>([]);
 
-watch(
-	() => props.search,
-	(newValue) => {
-		if (!newValue) return;
-
-		const selection = new Set([...openSelection.value, ...searchChoices(newValue, props.choices)]);
-
-		openSelection.value = [...selection];
-	},
-	{ immediate: true }
+const searchOpenSelection = computed(() =>
+	normalizedSearch.value ? searchChoices(normalizedSearch.value, props.choices) : []
 );
+
+const openSelection = computed({
+	get() {
+		return Array.from(new Set([...manualOpenSelection.value, ...searchOpenSelection.value]));
+	},
+	set(newValue) {
+		manualOpenSelection.value = newValue;
+	},
+});
 
 watch(showSelectionOnly, (isSelectionOnly) => {
 	if (isSelectionOnly) {
-		const selection = new Set([...openSelection.value, ...findSelectedChoices(props.choices, value.value)]);
+		const selection = new Set([...manualOpenSelection.value, ...findSelectedChoices(props.choices, value.value)]);
 
-		showAllSelection = openSelection.value;
-		openSelection.value = [...selection];
+		showAllSelection = manualOpenSelection.value;
+		manualOpenSelection.value = [...selection];
 	} else {
-		openSelection.value = [...showAllSelection];
+		manualOpenSelection.value = [...showAllSelection];
 	}
 });
 
-function searchChoices(text: string, target: Record<string, any>[]) {
+function searchChoices(text: string, target: Record<string, any>[], tree: string[] = []) {
 	const selection: string[] = [];
 
 	for (const item of target) {
-		if (item[props.itemText].toLowerCase().includes(text.toLowerCase())) {
-			selection.push(item[props.itemValue]);
+		const normalizedItemText = removeDiacritics(item[props.itemText]).toLowerCase();
+
+		if (normalizedItemText.includes(text)) {
+			selection.push(...tree, item[props.itemValue]);
 		}
 
 		if (item[props.itemChildren]) {
-			selection.push(...searchChoices(text, item[props.itemChildren]));
+			selection.push(...searchChoices(text, item[props.itemChildren], [...tree, item[props.itemValue]]));
 		}
 	}
 
@@ -158,3 +143,24 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 	return choices.flatMap((item) => selectedChoices(item));
 }
 </script>
+
+<template>
+	<v-list v-model="openSelection" :mandatory="false" @toggle="$emit('group-toggle', $event)">
+		<v-checkbox-tree-checkbox
+			v-for="choice in choices"
+			:key="choice[itemValue]"
+			v-model="value"
+			:value-combining="valueCombining"
+			:search="normalizedSearch"
+			:item-text="itemText"
+			:item-value="itemValue"
+			:item-children="itemChildren"
+			:text="choice[itemText]"
+			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
+			:value="choice[itemValue]"
+			:children="choice[itemChildren]"
+			:disabled="disabled"
+			:show-selection-only="showSelectionOnly"
+		/>
+	</v-list>
+</template>

@@ -1,100 +1,3 @@
-<template>
-	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
-		{{ t('no_app_access_copy') }}
-
-		<template #append>
-			<v-button to="/logout">{{ t('switch_user') }}</v-button>
-		</template>
-	</v-info>
-
-	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
-		<aside
-			id="navigation"
-			role="navigation"
-			aria-label="Module Navigation"
-			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
-		>
-			<module-bar />
-			<v-resizeable
-				v-model:width="navWidth"
-				:min-width="SIZES.minModuleNavWidth"
-				:max-width="maxWidthNav"
-				:options="navResizeOptions"
-				@dragging="(value) => (isDraggingNav = value)"
-				@transition-end="resetContentOverflowX"
-			>
-				<div class="module-nav alt-colors">
-					<project-info />
-
-					<div class="module-nav-content">
-						<slot name="navigation" />
-					</div>
-				</div>
-			</v-resizeable>
-		</aside>
-		<div id="main-content" ref="contentEl" class="content">
-			<header-bar
-				ref="headerBarEl"
-				:small="smallHeader || splitView"
-				:shadow="headerShadow || splitView"
-				show-sidebar-toggle
-				:title="title"
-				@toggle:sidebar="sidebarOpen = !sidebarOpen"
-				@primary="navOpen = !navOpen"
-			>
-				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
-					<slot :name="scopedSlotName" v-bind="slotData" />
-				</template>
-			</header-bar>
-
-			<div class="content-wrapper">
-				<v-resizeable
-					v-model:width="mainWidth"
-					:min-width="SIZES.minContentWidth"
-					:max-width="maxWidthMain"
-					:disabled="!splitViewWritable"
-					:options="mainResizeOptions"
-					@dragging="(value) => (isDraggingMain = value)"
-				>
-					<main v-show="showMain">
-						<slot />
-					</main>
-				</v-resizeable>
-
-				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingMain }">
-					<slot name="splitView" />
-				</div>
-			</div>
-		</div>
-		<aside
-			id="sidebar"
-			ref="sidebarEl"
-			role="contentinfo"
-			class="alt-colors"
-			aria-label="Module Sidebar"
-			:class="{ 'is-open': sidebarOpen, 'has-shadow': sidebarShadow }"
-			@click="openSidebar"
-		>
-			<div class="flex-container">
-				<sidebar-detail-group :sidebar-open="sidebarOpen">
-					<slot name="sidebar" />
-				</sidebar-detail-group>
-
-				<div class="spacer" />
-
-				<notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" />
-			</div>
-		</aside>
-
-		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
-		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
-
-		<notifications-drawer />
-		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
-		<notification-dialogs />
-	</div>
-</template>
-
 <script setup lang="ts">
 import VResizeable, { ResizeableOptions } from '@/components/v-resizeable.vue';
 import { useLocalStorage } from '@/composables/use-local-storage';
@@ -156,41 +59,30 @@ const headerBarEl = ref();
 const sidebarEl = ref<Element>();
 
 let navTransitionTimer: ReturnType<typeof setTimeout>;
-let previousContentOverflowX: string | null = null;
 
-const resetContentOverflowX = () => {
-	if (previousContentOverflowX !== null && contentEl.value) {
-		contentEl.value.style.overflowY = previousContentOverflowX;
-		previousContentOverflowX = null;
-	}
-
+const onNavTransitionEnd = () => {
 	clearTimeout(navTransitionTimer);
+	contentEl.value?.classList.remove('hide-overflow-x');
 };
 
 watch(splitViewWritable, () => {
-	if (!headerBarEl.value || !contentEl.value) return;
+	if (!contentEl.value || !headerBarEl.value) return;
 
-	previousContentOverflowX = contentEl.value.style.overflowX;
-	contentEl.value.style.overflowX = 'hidden';
-	navTransitionTimer = setTimeout(resetContentOverflowX, 1500);
+	contentEl.value.classList.add('hide-overflow-x', 'hide-overflow-y');
 
-	const previousContentOverflowY = contentEl.value.style.overflowY;
-	contentEl.value.style.overflowY = 'hidden';
+	navTransitionTimer = setTimeout(onNavTransitionEnd, 1500);
 
 	let headerBarTransitionTimer: ReturnType<typeof setTimeout> | undefined = undefined;
 	let cleanupListener: (() => void) | undefined = undefined;
 
-	const resetContentOverflowY = () => {
-		if (contentEl.value) {
-			contentEl.value.style.overflowY = previousContentOverflowY;
-		}
-
+	const onHeaderBarTransitionEnd = () => {
 		clearTimeout(headerBarTransitionTimer);
 		cleanupListener?.();
+		contentEl.value?.classList.remove('hide-overflow-y');
 	};
 
-	headerBarTransitionTimer = setTimeout(resetContentOverflowY, 1500);
-	cleanupListener = useEventListener(headerBarEl.value, 'transitionend', resetContentOverflowY);
+	headerBarTransitionTimer = setTimeout(onHeaderBarTransitionEnd, 1500);
+	cleanupListener = useEventListener(headerBarEl.value, 'transitionend', onHeaderBarTransitionEnd);
 });
 
 const { width: windowWidth } = useWindowSize();
@@ -359,6 +251,103 @@ function getWidth(input: unknown, fallback: number): number {
 }
 </script>
 
+<template>
+	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
+		{{ t('no_app_access_copy') }}
+
+		<template #append>
+			<v-button to="/logout">{{ t('switch_user') }}</v-button>
+		</template>
+	</v-info>
+
+	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
+		<aside
+			id="navigation"
+			role="navigation"
+			aria-label="Module Navigation"
+			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
+		>
+			<module-bar />
+			<v-resizeable
+				v-model:width="navWidth"
+				:min-width="SIZES.minModuleNavWidth"
+				:max-width="maxWidthNav"
+				:options="navResizeOptions"
+				@dragging="(value) => (isDraggingNav = value)"
+				@transition-end="onNavTransitionEnd"
+			>
+				<div class="module-nav alt-colors">
+					<project-info />
+
+					<div class="module-nav-content">
+						<slot name="navigation" />
+					</div>
+				</div>
+			</v-resizeable>
+		</aside>
+		<div id="main-content" ref="contentEl" class="content">
+			<header-bar
+				ref="headerBarEl"
+				:small="smallHeader || splitView"
+				:shadow="headerShadow || splitView"
+				show-sidebar-toggle
+				:title="title"
+				@toggle:sidebar="sidebarOpen = !sidebarOpen"
+				@primary="navOpen = !navOpen"
+			>
+				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
+					<slot :name="scopedSlotName" v-bind="slotData" />
+				</template>
+			</header-bar>
+
+			<div class="content-wrapper">
+				<v-resizeable
+					v-model:width="mainWidth"
+					:min-width="SIZES.minContentWidth"
+					:max-width="maxWidthMain"
+					:disabled="!splitViewWritable"
+					:options="mainResizeOptions"
+					@dragging="(value) => (isDraggingMain = value)"
+				>
+					<main v-show="showMain">
+						<slot />
+					</main>
+				</v-resizeable>
+
+				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingMain }">
+					<slot name="splitView" />
+				</div>
+			</div>
+		</div>
+		<aside
+			id="sidebar"
+			ref="sidebarEl"
+			role="contentinfo"
+			class="alt-colors"
+			aria-label="Module Sidebar"
+			:class="{ 'is-open': sidebarOpen, 'has-shadow': sidebarShadow }"
+			@click="openSidebar"
+		>
+			<div class="flex-container">
+				<sidebar-detail-group :sidebar-open="sidebarOpen">
+					<slot name="sidebar" />
+				</sidebar-detail-group>
+
+				<div class="spacer" />
+
+				<notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" />
+			</div>
+		</aside>
+
+		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
+		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
+
+		<notifications-drawer />
+		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
+		<notification-dialogs />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .private-view {
 	--content-padding: 12px;
@@ -458,6 +447,14 @@ function getWidth(input: unknown, fallback: number): number {
 
 		@media (min-width: 1260px) {
 			margin-right: 0;
+		}
+
+		&.hide-overflow-x {
+			overflow-x: hidden;
+		}
+
+		&.hide-overflow-y {
+			overflow-y: hidden;
 		}
 	}
 

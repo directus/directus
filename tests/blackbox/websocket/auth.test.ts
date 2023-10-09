@@ -1,15 +1,18 @@
 import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
-import request from 'supertest';
+import { createWebSocketConn } from '@common/transport';
+import type { WebSocketAuthMethod, WebSocketResponse } from '@common/types';
+import { TEST_USERS, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
 import knex, { Knex } from 'knex';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
+import request from 'supertest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 describe('WebSocket Auth Tests', () => {
-	const authMethods: common.WebSocketAuthMethod[] = ['public', 'handshake', 'strict'];
+	const authMethods: WebSocketAuthMethod[] = ['public', 'handshake', 'strict'];
 	const authenticationTimeoutSeconds = 1;
 	const slightDelay = 100;
 	const pathREST = 'wsRest';
@@ -20,10 +23,10 @@ describe('WebSocket Auth Tests', () => {
 		const env = cloneDeep(config.envs);
 
 		for (const vendor of vendors) {
-			env[vendor].WEBSOCKETS_REST_AUTH = authMethod;
-			env[vendor].WEBSOCKETS_REST_AUTH_TIMEOUT = String(authenticationTimeoutSeconds);
-			env[vendor].WEBSOCKETS_REST_PATH = `/${pathREST}`;
-			env[vendor].PORT = String(Number(env[vendor]!.PORT) + 500);
+			env[vendor]['WEBSOCKETS_REST_AUTH'] = authMethod;
+			env[vendor]['WEBSOCKETS_REST_AUTH_TIMEOUT'] = String(authenticationTimeoutSeconds);
+			env[vendor]['WEBSOCKETS_REST_PATH'] = `/${pathREST}`;
+			env[vendor].PORT = String(Number(env[vendor].PORT) + 500);
 		}
 
 		beforeAll(async () => {
@@ -51,11 +54,11 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects without authentication', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
 						});
 
@@ -93,13 +96,13 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with email authentication', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
-							auth: { email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD },
+							auth: { email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD },
 						});
 
 						let error;
@@ -136,18 +139,18 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with access token authentication', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const { access_token } = (
 							await request(getUrl(vendor))
 								.post('/auth/login')
-								.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+								.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD })
 						).body.data;
 
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
 							auth: { access_token },
 						});
@@ -186,13 +189,13 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with static access token authentication', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
-							auth: { access_token: common.USER[userKey].TOKEN },
+							auth: { access_token: USER[userKey].TOKEN },
 						});
 
 						let error;
@@ -229,18 +232,18 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with access token in query string', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const { access_token } = (
 							await request(getUrl(vendor))
 								.post('/auth/login')
-								.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+								.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD })
 						).body.data;
 
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
 							queryString: `access_token=${access_token}`,
 						});
@@ -279,13 +282,13 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with static access token in query string', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
-							queryString: `access_token=${common.USER[userKey].TOKEN}`,
+							queryString: `access_token=${USER[userKey].TOKEN}`,
 						});
 
 						let error;
@@ -322,16 +325,16 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('pings without authentication', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
 							respondToPing: false,
 						});
 
-						let wsMessages: common.WebSocketResponse[] | undefined;
+						let wsMessages: WebSocketResponse[] | undefined;
 						let error;
 
 						try {
@@ -366,17 +369,17 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('pings with access token authentication', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
-							auth: { access_token: common.USER[userKey].TOKEN },
+							auth: { access_token: USER[userKey].TOKEN },
 							respondToPing: false,
 						});
 
-						let wsMessages: common.WebSocketResponse[] | undefined;
+						let wsMessages: WebSocketResponse[] | undefined;
 						let error;
 
 						try {
@@ -411,17 +414,17 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('pings with access token in query string', () => {
-			common.TEST_USERS.forEach((userKey) => {
-				describe(common.USER[userKey].NAME, () => {
+			TEST_USERS.forEach((userKey) => {
+				describe(USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
-						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						const ws = createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
-							queryString: `access_token=${common.USER[userKey].TOKEN}`,
+							queryString: `access_token=${USER[userKey].TOKEN}`,
 							respondToPing: false,
 						});
 
-						let wsMessages: common.WebSocketResponse[] | undefined;
+						let wsMessages: WebSocketResponse[] | undefined;
 						let error;
 
 						try {

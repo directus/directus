@@ -1,7 +1,7 @@
-import type { CollectionsOverview, NestedDeepQuery } from '@directus/types';
+import type { CollectionsOverview, NestedDeepQuery, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker, type RawQuery } from 'knex-mock-client';
 import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -10,6 +10,7 @@ import { ItemsService } from '../../src/services/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
 import { InvalidPayloadError } from '../errors/index.js';
+import { DatabaseClients, type DatabaseClient } from '../types/database.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
@@ -109,6 +110,110 @@ describe('Integration Tests', () => {
 
 			expect(response).toBe(item.id.toUpperCase());
 		});
+	});
+
+	describe('reset auto increment sequence on manual PK', () => {
+		const schema: SchemaOverview = {
+			collections: {
+				author: {
+					collection: 'author',
+					primary: 'id',
+					singleton: false,
+					note: null,
+					sortField: null,
+					accountability: 'all',
+					fields: {
+						id: {
+							field: 'id',
+							defaultValue: 'AUTO_INCREMENT',
+							nullable: false,
+							generated: false,
+							type: 'integer',
+							dbType: 'integer',
+							precision: null,
+							scale: null,
+							special: [],
+							note: null,
+							alias: false,
+							validation: null,
+						},
+						name: {
+							field: 'name',
+							defaultValue: null,
+							nullable: true,
+							generated: false,
+							type: 'string',
+							dbType: 'character varying',
+							precision: null,
+							scale: null,
+							special: [],
+							note: null,
+							alias: false,
+							validation: null,
+						},
+					},
+				},
+			},
+			relations: [],
+		};
+
+		const dbsWhichDontNeedReset: DatabaseClient[] = ['mysql', 'sqlite', 'cockroachdb', 'oracle', 'mssql', 'redshift'];
+		const dbsWhichNeedReset: DatabaseClient[] = ['postgres'];
+		const item = { id: 42, name: 'random' };
+
+		function mockDbClientAndQueryReset(client: DatabaseClient): void {
+			// mock db client
+			vi.mocked(getDatabaseClient).mockReturnValue(client);
+
+			// mock response for the sequence-reset query
+			tracker.on
+				.any(({ sql }: RawQuery) => {
+					return sql.includes('WITH sequence_infos');
+				})
+				.responseOnce(42);
+		}
+
+		function historyIncludesResetStatement(): boolean {
+			return tracker.history.any.some((i) => i.sql.includes('WITH sequence_infos'));
+		}
+
+		it.each(dbsWhichNeedReset)('should reset the databases auto increment sequence for %s', async (client) => {
+			mockDbClientAndQueryReset(client);
+			tracker.on.insert('author').responseOnce(item);
+
+			const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
+			await itemService.createOne(item, { emitEvents: false });
+
+			expect(historyIncludesResetStatement()).toBe(true);
+		});
+
+		it.each(dbsWhichDontNeedReset)(
+			'should NOT reset the databases auto increment sequence for %s of the databases',
+			async (client) => {
+				mockDbClientAndQueryReset(client);
+				tracker.on.insert('author').responseOnce(item);
+
+				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
+				await itemService.createOne(item, { emitEvents: false });
+
+				expect(historyIncludesResetStatement()).toBe(false);
+			}
+		);
+
+		it.each(DatabaseClients)(
+			'should NOT reset the databases auto increment sequence for %s when PK is not manually provided',
+			async (client) => {
+				const itemWithoutPk = { name: 'John' };
+				mockDbClientAndQueryReset(client);
+				tracker.on.insert('author').response({ ...itemWithoutPk, id: 42 });
+				tracker.on.select('author').responseOnce(42);
+
+				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
+				await itemService.createOne(itemWithoutPk, { emitEvents: false });
+
+				expect(historyIncludesResetStatement()).toBe(false);
+			}
+		);
 	});
 
 	describe('readOne', () => {

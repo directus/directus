@@ -1,3 +1,46 @@
+<script setup lang="ts">
+import { useExtension } from '@/composables/use-extension';
+import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { FormField } from './types';
+
+const props = defineProps<{
+	field: FormField;
+	batchMode?: boolean;
+	batchActive?: boolean;
+	primaryKey?: string | number | null;
+	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
+	loading?: boolean;
+	disabled?: boolean;
+	autofocus?: boolean;
+	rawEditorEnabled?: boolean;
+	rawEditorActive?: boolean;
+	direction?: string;
+}>();
+
+defineEmits(['update:modelValue', 'setFieldValue']);
+
+const { t } = useI18n();
+
+const inter = useExtension(
+	'interface',
+	computed(() => props.field?.meta?.interface ?? 'input')
+);
+
+const interfaceExists = computed(() => !!inter.value);
+
+const componentName = computed(() => {
+	return props.field?.meta?.interface
+		? `interface-${props.field.meta.interface}`
+		: `interface-${getDefaultInterfaceForType(props.field.type!)}`;
+});
+
+const value = computed(() =>
+	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue
+);
+</script>
+
 <template>
 	<div
 		class="interface"
@@ -46,49 +89,6 @@
 		</v-notice>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
-
-const props = defineProps<{
-	field: FormField;
-	batchMode?: boolean;
-	batchActive?: boolean;
-	primaryKey?: string | number | null;
-	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
-	loading?: boolean;
-	disabled?: boolean;
-	autofocus?: boolean;
-	rawEditorEnabled?: boolean;
-	rawEditorActive?: boolean;
-	direction?: string;
-}>();
-
-defineEmits(['update:modelValue', 'setFieldValue']);
-
-const { t } = useI18n();
-
-const inter = useExtension(
-	'interface',
-	computed(() => props.field?.meta?.interface ?? 'input')
-);
-
-const interfaceExists = computed(() => !!inter.value);
-
-const componentName = computed(() => {
-	return props.field?.meta?.interface
-		? `interface-${props.field.meta.interface}`
-		: `interface-${getDefaultInterfaceForType(props.field.type!)}`;
-});
-
-const value = computed(() =>
-	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue
-);
-</script>
 
 <style lang="scss" scoped>
 .interface {

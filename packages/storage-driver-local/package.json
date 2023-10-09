@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-local",
-	"version": "10.0.8",
+	"version": "10.0.11",
 	"description": "Local file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -21,8 +21,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -32,8 +32,10 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "6.4.0",
+		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
-		"typescript": "5.0.4",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	}
 }

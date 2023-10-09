@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import Meta from './Meta.vue';
+import { useData } from 'vitepress';
+import { marked } from 'marked';
+
+const { page } = useData();
+</script>
+
 <template>
 	<blockquote>
 		<!-- eslint-disable-next-line vue/no-v-html -->
@@ -13,14 +21,6 @@
 		</template>
 	</Meta>
 </template>
-
-<script setup lang="ts">
-import Meta from './Meta.vue';
-import { useData } from 'vitepress';
-import { marked } from 'marked';
-
-const { page } = useData();
-</script>
 
 <style scoped>
 .data {

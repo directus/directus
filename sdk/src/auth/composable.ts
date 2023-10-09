@@ -1,11 +1,11 @@
-import type { loginOptions } from '../index.js';
+import type { LoginOptions } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
-const defaultConfigValues = {
+const defaultConfigValues: AuthenticationConfig = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
 	autoRefresh: true,
 };
@@ -18,19 +18,12 @@ const defaultConfigValues = {
  *
  * @returns A Directus authentication client.
  */
-export const authentication = (mode: AuthenticationMode = 'cookie', config: AuthenticationConfig = {}) => {
+export const authentication = (mode: AuthenticationMode = 'cookie', config: Partial<AuthenticationConfig> = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
-		config = { ...defaultConfigValues, ...config };
+		const authConfig = { ...defaultConfigValues, ...config };
 		let refreshPromise: Promise<AuthenticationData> | null = null;
 		let refreshTimeout: NodeJS.Timer | null = null;
-		const storage = config.storage ?? memoryStorage();
-
-		const autoRefresh = 'autoRefresh' in config ? config.autoRefresh : defaultConfigValues.autoRefresh;
-
-		const msRefreshBeforeExpires =
-			typeof config.msRefreshBeforeExpires === 'number'
-				? config.msRefreshBeforeExpires
-				: defaultConfigValues.msRefreshBeforeExpires;
+		const storage = authConfig.storage ?? memoryStorage();
 
 		const resetStorage = () => {
 			storage.set({ access_token: null, refresh_token: null, expires: null, expires_at: null });
@@ -52,7 +45,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				return;
 			}
 
-			if (authData.expires_at < new Date().getTime() + msRefreshBeforeExpires) {
+			if (authData.expires_at < new Date().getTime() + authConfig.msRefreshBeforeExpires) {
 				refresh().catch((_err) => {
 					/* throw err; */
 				});
@@ -66,7 +59,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			data.expires_at = new Date().getTime() + expires;
 			storage.set(data);
 
-			if (autoRefresh && expires > msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
+			if (authConfig.autoRefresh && expires > authConfig.msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 
 				refreshTimeout = setTimeout(() => {
@@ -75,7 +68,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 					refresh().catch((_err) => {
 						/* throw err; */
 					});
-				}, expires - msRefreshBeforeExpires);
+				}, expires - authConfig.msRefreshBeforeExpires);
 			}
 		};
 
@@ -84,24 +77,28 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const authData = await storage.get();
 				resetStorage();
 
-				const options = {
+				const fetchOptions: RequestInit = {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-				} as RequestInit;
+				};
+
+				if ('credentials' in authConfig) {
+					fetchOptions.credentials = authConfig.credentials;
+				}
+
+				const body: Record<string, any> = { mode };
 
 				if (mode === 'json' && authData?.refresh_token) {
-					options.body = JSON.stringify({
-						refresh_token: authData.refresh_token,
-					});
+					body['refresh_token'] = authData.refresh_token;
 				}
+
+				fetchOptions.body = JSON.stringify(body);
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), options).catch((err) => {
-					throw err;
-				});
+				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				setCredentials(data);
 				return data;
@@ -116,24 +113,29 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 		return {
 			refresh,
-			async login(email: string, password: string, options: loginOptions = {}) {
+			async login(email: string, password: string, options: LoginOptions = {}) {
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const authPath = options.provider ? `/auth/login/${options.provider}` : '/auth/login';
-				const requestUrl = getRequestUrl(client.url, authPath);
+				const requestUrl = getRequestUrl(client.url, '/auth/login');
 
 				const authData: Record<string, string> = { email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
-				if ('mode' in options) authData['mode'] = options.mode;
+				authData['mode'] = options.mode ?? mode;
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), {
+				const fetchOptions: RequestInit = {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify(authData),
-				});
+				};
+
+				if ('credentials' in authConfig) {
+					fetchOptions.credentials = authConfig.credentials;
+				}
+
+				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				setCredentials(data);
 				return data;
@@ -141,21 +143,25 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			async logout() {
 				const authData = await storage.get();
 
-				const options: RequestInit = {
+				const fetchOptions: RequestInit = {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
 				};
 
+				if ('credentials' in authConfig) {
+					fetchOptions.credentials = authConfig.credentials;
+				}
+
 				if (mode === 'json' && authData?.refresh_token) {
-					options.body = JSON.stringify({
+					fetchOptions.body = JSON.stringify({
 						refresh_token: authData.refresh_token,
 					});
 				}
 
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), options, null);
+				await request(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();

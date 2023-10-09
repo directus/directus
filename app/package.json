@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "10.6.2",
+	"version": "10.9.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -34,6 +34,7 @@
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
+		"@directus/extensions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/stores": "workspace:*",
@@ -148,7 +149,7 @@
 		"sass": "1.62.1",
 		"storybook": "7.0.12",
 		"tinymce": "6.6.0",
-		"typescript": "5.0.4",
+		"typescript": "5.2.2",
 		"vite": "4.3.7",
 		"vitest": "0.31.1",
 		"vue": "3.3.4",

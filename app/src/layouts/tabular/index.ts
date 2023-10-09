@@ -4,12 +4,13 @@ import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { getItemRoute } from '@/utils/get-route';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { defineLayout } from '@directus/utils';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -175,7 +176,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					}
 				},
 				set(value) {
-					layoutQuery.value.fields = value;
+					layoutQuery.value = Object.assign({}, layoutQuery.value, { fields: value });
 				},
 			});
 
@@ -305,10 +306,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						selection.value = selection.value.filter((item) => item !== primaryKey);
 					}
 				} else {
-					const next = router.resolve(`/content/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					const route = getItemRoute(unref(collection), primaryKey);
 
-					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
-					else router.push(next);
+					if (event.ctrlKey || event.metaKey) window.open(router.resolve(route).href, '_blank');
+					else router.push(route);
 				}
 			}
 

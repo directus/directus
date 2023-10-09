@@ -1,3 +1,45 @@
+<script setup lang="ts">
+import { addTokenToURL } from '@/api';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useUserStore } from '@/stores/user';
+import { getRootPath } from '@/utils/get-root-path';
+import { useAppStore } from '@directus/stores';
+import { User } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { Ref, computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+const appStore = useAppStore();
+const notificationsStore = useNotificationsStore();
+
+const { notificationsDrawerOpen } = storeToRefs(appStore);
+const { unread } = storeToRefs(notificationsStore);
+
+const userStore = useUserStore();
+
+const signOutActive = ref(false);
+
+const avatarURL = computed<string | null>(() => {
+	if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
+	return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
+});
+
+const avatarError: Ref<null | Event> = ref(null);
+
+const userProfileLink = computed<string>(() => {
+	const id = (userStore.currentUser as User).id;
+	return `/users/${id}`;
+});
+
+const signOutLink = computed<string>(() => {
+	return `/logout`;
+});
+
+const userFullName = userStore.fullName ?? undefined;
+</script>
+
 <template>
 	<div class="module-bar-avatar">
 		<v-badge :value="unread" :disabled="unread == 0" class="notifications-badge">
@@ -49,48 +91,6 @@
 		</v-hover>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { addTokenToURL } from '@/api';
-import { useNotificationsStore } from '@/stores/notifications';
-import { useUserStore } from '@/stores/user';
-import { getRootPath } from '@/utils/get-root-path';
-import { useAppStore } from '@directus/stores';
-import { User } from '@directus/types';
-import { storeToRefs } from 'pinia';
-import { Ref, computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-
-const appStore = useAppStore();
-const notificationsStore = useNotificationsStore();
-
-const { notificationsDrawerOpen } = storeToRefs(appStore);
-const { unread } = storeToRefs(notificationsStore);
-
-const userStore = useUserStore();
-
-const signOutActive = ref(false);
-
-const avatarURL = computed<string | null>(() => {
-	if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-	return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
-});
-
-const avatarError: Ref<null | Event> = ref(null);
-
-const userProfileLink = computed<string>(() => {
-	const id = (userStore.currentUser as User).id;
-	return `/users/${id}`;
-});
-
-const signOutLink = computed<string>(() => {
-	return `/logout`;
-});
-
-const userFullName = userStore.fullName ?? undefined;
-</script>
 
 <style lang="scss" scoped>
 .module-bar-avatar {

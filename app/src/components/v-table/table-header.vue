@@ -1,102 +1,3 @@
-<template>
-	<thead class="table-header" :class="{ resizing, reordering }">
-		<draggable
-			v-model="headersWritable"
-			:force-fallback="true"
-			:class="{ fixed }"
-			item-key="value"
-			tag="tr"
-			:disabled="!allowHeaderReorder"
-			:set-data="hideDragImage"
-			handle=".reorder-handle"
-			animation="150"
-			ghost-class="header-order-ghost"
-			swap-threshold="0.5"
-			@start="$emit('update:reordering', true)"
-			@end="$emit('update:reordering', false)"
-		>
-			<template #header>
-				<th
-					v-if="showManualSort"
-					class="manual cell"
-					:class="{ 'sorted-manually': sort.by === manualSortKey }"
-					scope="col"
-					@click="toggleManualSort"
-				>
-					<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
-				</th>
-
-				<th v-if="showSelect !== 'none'" class="select cell" scope="col">
-					<v-checkbox
-						v-if="showSelect === 'multiple'"
-						:model-value="allItemsSelected"
-						:indeterminate="someItemsSelected"
-						@update:model-value="toggleSelectAll"
-					/>
-				</th>
-			</template>
-
-			<template #item="{ element: header }">
-				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ width: header.width + 'px' }">
-					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
-						<template #activator="{ toggle }">
-							<div class="content reorder-handle" @click="toggle">
-								<span class="name">
-									<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
-									<slot :name="`header.${header.value}`" :header="header">
-										{{ header.text }}
-									</slot>
-								</span>
-
-								<v-icon
-									v-if="hasHeaderContextMenuSlot"
-									:name="sort.by === header.value ? 'sort' : 'arrow_drop_down'"
-									class="action-icon"
-									small
-								/>
-							</div>
-						</template>
-
-						<slot name="header-context-menu" v-bind="{ header }" />
-					</v-menu>
-
-					<div v-else class="content reorder-handle" @click="changeSort(header)">
-						<span class="name">
-							<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
-							<slot :name="`header.${header.value}`" :header="header">
-								{{ header.text }}
-							</slot>
-						</span>
-
-						<v-icon
-							v-if="header.sortable"
-							v-tooltip.top="t(getTooltipForSortIcon(header))"
-							name="sort"
-							class="action-icon"
-							small
-						/>
-					</div>
-					<span
-						v-if="showResize"
-						class="resize-handle"
-						@click.stop
-						@pointerdown="onResizeHandleMouseDown(header, $event)"
-					/>
-				</th>
-			</template>
-
-			<template #footer>
-				<th class="spacer cell" scope="col" />
-				<td v-if="$slots['header-append']" class="manual append cell" @click.stop>
-					<slot name="header-append" />
-				</td>
-				<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
-			</template>
-		</draggable>
-		<!-- </tr> -->
-	</thead>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref, useSlots } from 'vue';
@@ -269,6 +170,105 @@ function toggleManualSort() {
 	}
 }
 </script>
+
+<template>
+	<thead class="table-header" :class="{ resizing, reordering }">
+		<draggable
+			v-model="headersWritable"
+			:force-fallback="true"
+			:class="{ fixed }"
+			item-key="value"
+			tag="tr"
+			:disabled="!allowHeaderReorder"
+			:set-data="hideDragImage"
+			handle=".reorder-handle"
+			animation="150"
+			ghost-class="header-order-ghost"
+			swap-threshold="0.5"
+			@start="$emit('update:reordering', true)"
+			@end="$emit('update:reordering', false)"
+		>
+			<template #header>
+				<th
+					v-if="showManualSort"
+					class="manual cell"
+					:class="{ 'sorted-manually': sort.by === manualSortKey }"
+					scope="col"
+					@click="toggleManualSort"
+				>
+					<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
+				</th>
+
+				<th v-if="showSelect !== 'none'" class="select cell" scope="col">
+					<v-checkbox
+						v-if="showSelect === 'multiple'"
+						:model-value="allItemsSelected"
+						:indeterminate="someItemsSelected"
+						@update:model-value="toggleSelectAll"
+					/>
+				</th>
+			</template>
+
+			<template #item="{ element: header }">
+				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ width: header.width + 'px' }">
+					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
+						<template #activator="{ toggle }">
+							<div class="content reorder-handle" @click="toggle">
+								<span class="name">
+									<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
+									<slot :name="`header.${header.value}`" :header="header">
+										{{ header.text }}
+									</slot>
+								</span>
+
+								<v-icon
+									v-if="hasHeaderContextMenuSlot"
+									:name="sort.by === header.value ? 'sort' : 'arrow_drop_down'"
+									class="action-icon"
+									small
+								/>
+							</div>
+						</template>
+
+						<slot name="header-context-menu" v-bind="{ header }" />
+					</v-menu>
+
+					<div v-else class="content reorder-handle" @click="changeSort(header)">
+						<span class="name">
+							<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
+							<slot :name="`header.${header.value}`" :header="header">
+								{{ header.text }}
+							</slot>
+						</span>
+
+						<v-icon
+							v-if="header.sortable"
+							v-tooltip.top="t(getTooltipForSortIcon(header))"
+							name="sort"
+							class="action-icon"
+							small
+						/>
+					</div>
+					<span
+						v-if="showResize"
+						class="resize-handle"
+						@click.stop
+						@pointerdown="onResizeHandleMouseDown(header, $event)"
+					/>
+				</th>
+			</template>
+
+			<template #footer>
+				<th class="spacer cell" scope="col" />
+				<td v-if="$slots['header-append']" class="manual append cell" @click.stop>
+					<slot name="header-append" />
+				</td>
+				<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
+			</template>
+		</draggable>
+		<!-- </tr> -->
+	</thead>
+</template>
 
 <style lang="scss" scoped>
 .table-header {

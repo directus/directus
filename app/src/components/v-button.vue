@@ -1,43 +1,3 @@
-<template>
-	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
-		<slot name="prepend-outer" />
-		<component
-			:is="component"
-			v-focus="autofocus"
-			:download="download"
-			class="button"
-			:class="[
-				sizeClass,
-				`align-${align}`,
-				{
-					active: isActiveRoute,
-					icon,
-					outlined,
-					loading,
-					dashed,
-					tile,
-					'full-width': fullWidth,
-				},
-				kind,
-			]"
-			:type="type"
-			:disabled="disabled"
-			v-bind="additionalProps"
-			@click="onClick"
-		>
-			<span class="content" :class="{ invisible: loading }">
-				<slot v-bind="{ active, toggle }" />
-			</span>
-			<div class="spinner">
-				<slot v-if="loading" name="loading">
-					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
-				</slot>
-			</div>
-		</component>
-		<slot name="append-outer" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { RouteLocationRaw, useRoute, useLink } from 'vue-router';
@@ -67,6 +27,8 @@ interface Props {
 	to?: RouteLocationRaw;
 	/** To what external link the button should direct */
 	href?: string;
+	/** Where to open the external link of the button */
+	target?: string;
 	/** Renders the button highlighted */
 	active?: boolean;
 	/** If the button should be highlighted if it matches the current internal link */
@@ -111,6 +73,7 @@ const props = withDefaults(defineProps<Props>(), {
 	loading: false,
 	to: '',
 	href: undefined,
+	target: '_blank',
 	active: undefined,
 	exact: false,
 	query: false,
@@ -149,7 +112,7 @@ const additionalProps = computed(() => {
 	if (component.value === 'a') {
 		return {
 			href: props.href,
-			target: '_blank',
+			target: props.target,
 			rel: 'noopener noreferrer',
 		};
 	}
@@ -185,6 +148,46 @@ async function onClick(event: MouseEvent) {
 	emit('click', event);
 }
 </script>
+
+<template>
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
+		<slot name="prepend-outer" />
+		<component
+			:is="component"
+			v-focus="autofocus"
+			:download="download"
+			class="button"
+			:class="[
+				sizeClass,
+				`align-${align}`,
+				{
+					active: isActiveRoute,
+					icon,
+					outlined,
+					loading,
+					dashed,
+					tile,
+					'full-width': fullWidth,
+				},
+				kind,
+			]"
+			:type="type"
+			:disabled="disabled"
+			v-bind="additionalProps"
+			@click="onClick"
+		>
+			<span class="content" :class="{ invisible: loading }">
+				<slot v-bind="{ active, toggle }" />
+			</span>
+			<div class="spinner">
+				<slot v-if="loading" name="loading">
+					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
+				</slot>
+			</div>
+		</component>
+		<slot name="append-outer" />
+	</div>
+</template>
 
 <style scoped>
 :global(body) {

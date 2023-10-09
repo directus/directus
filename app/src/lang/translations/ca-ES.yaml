@@ -371,6 +371,7 @@ move: Mou
 system: Sistema
 add_field_related: Afegeix camps a la col·lecció relacionada
 interface_label: Interfície
+display_label: Mostra
 today: Avui
 yesterday: Ahir
 delete_comment: Elimina comentari
@@ -470,7 +471,6 @@ comments: Comentaris
 no_comments: No hi ha comentaris, encara
 select_item: Selecciona element
 no_items: No hi ha elements
-search_items: Cerca elements...
 disabled: Deshabilitat
 information: Informació
 report_bug: Informa d'un error
@@ -1456,6 +1456,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcions d'Interfície
     description: Un modal per la selecció de les opcions d'interfície
+  system-display:
+    display: Mostra
   list-m2m:
     many-to-many: Molts a molts
     description: Selecciona múltiples elements d'unió relacionats
@@ -1512,6 +1514,7 @@ interfaces:
     add_label: 'Etiqueta "Crea nou"'
     sort: Ordre
     field_note_placeholder: Introdueix una nota sobre el camp...
+    interface_group: Opcions d'Interfície
   slider:
     slider: Lliscador
     description: Selecciona un número utilitzant el lliscador
@@ -1744,6 +1747,10 @@ operations:
     payload: Càrrega
   item-update:
     payload: Càrrega
+  json-web-token:
+    payload: Càrrega
+    token: Token
+    options: Opcions
   log:
     message: Missatge
   mail:

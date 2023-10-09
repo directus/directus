@@ -1,3 +1,95 @@
+<script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script setup lang="ts">
+import { addTokenToURL } from '@/api';
+import { getItemRoute } from '@/utils/get-route';
+import { getRootPath } from '@/utils/get-root-path';
+import type { Field } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
+
+const props = withDefaults(
+	defineProps<{
+		collection?: string | null;
+		groupCollection?: string | null;
+		fieldsInCollection?: Field[];
+		primaryKeyField?: Record<string, any> | null;
+		groupedItems?: Group[];
+		groupTitle?: string | null;
+		groupPrimaryKeyField?: Record<string, any> | null;
+		change: (group: Group, event: ChangeEvent<Item>) => void;
+		changeGroupSort: (event: ChangeEvent<Group>) => void;
+		addGroup: (title: string) => Promise<void>;
+		editGroup: (id: string | number, title: string) => Promise<void>;
+		deleteGroup: (id: string | number) => Promise<void>;
+		isRelational?: boolean;
+		sortField?: string | null;
+		userField?: string | null;
+		groupsSortField?: string | null;
+		layoutOptions: LayoutOptions;
+	}>(),
+	{
+		collection: null,
+		groupCollection: null,
+		fieldsInCollection: () => [],
+		primaryKeyField: null,
+		groupedItems: () => [],
+		groupTitle: null,
+		groupPrimaryKeyField: null,
+		isRelational: true,
+		sortField: null,
+		userField: null,
+		groupsSortField: null,
+	}
+);
+
+defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
+
+const { t } = useI18n();
+
+const editDialogOpen = ref<string | number | null>(null);
+const editTitle = ref('');
+
+function openEditGroup(group: Group) {
+	editDialogOpen.value = group.id;
+	editTitle.value = group.title;
+}
+
+function parseAvatar(file: Record<string, any>) {
+	if (!file || !file.type) return;
+	if (file.type.startsWith('image') === false) return;
+
+	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
+	return addTokenToURL(url);
+}
+
+function cancelChanges() {
+	editDialogOpen.value = null;
+	editTitle.value = '';
+}
+
+function saveChanges() {
+	if (editDialogOpen.value === '+') {
+		props.addGroup(editTitle.value);
+	} else if (editDialogOpen.value) {
+		props.editGroup(editDialogOpen.value, editTitle.value);
+	}
+
+	editDialogOpen.value = null;
+	editTitle.value = '';
+}
+
+const textFieldConfiguration = computed<Field | undefined>(() => {
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+});
+</script>
+
 <template>
 	<div class="kanban">
 		<draggable
@@ -109,98 +201,6 @@
 		</v-dialog>
 	</div>
 </template>
-
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
-<script setup lang="ts">
-import { addTokenToURL } from '@/api';
-import { getItemRoute } from '@/utils/get-item-route';
-import { getRootPath } from '@/utils/get-root-path';
-import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
-import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
-import type { Field } from '@directus/types';
-
-const props = withDefaults(
-	defineProps<{
-		collection?: string | null;
-		groupCollection?: string | null;
-		fieldsInCollection?: Field[];
-		primaryKeyField?: Record<string, any> | null;
-		groupedItems?: Group[];
-		groupTitle?: string | null;
-		groupPrimaryKeyField?: Record<string, any> | null;
-		change: (group: Group, event: ChangeEvent<Item>) => void;
-		changeGroupSort: (event: ChangeEvent<Group>) => void;
-		addGroup: (title: string) => Promise<void>;
-		editGroup: (id: string | number, title: string) => Promise<void>;
-		deleteGroup: (id: string | number) => Promise<void>;
-		isRelational?: boolean;
-		sortField?: string | null;
-		userField?: string | null;
-		groupsSortField?: string | null;
-		layoutOptions: LayoutOptions;
-	}>(),
-	{
-		collection: null,
-		groupCollection: null,
-		fieldsInCollection: () => [],
-		primaryKeyField: null,
-		groupedItems: () => [],
-		groupTitle: null,
-		groupPrimaryKeyField: null,
-		isRelational: true,
-		sortField: null,
-		userField: null,
-		groupsSortField: null,
-	}
-);
-
-defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
-
-const { t } = useI18n();
-
-const editDialogOpen = ref<string | number | null>(null);
-const editTitle = ref('');
-
-function openEditGroup(group: Group) {
-	editDialogOpen.value = group.id;
-	editTitle.value = group.title;
-}
-
-function parseAvatar(file: Record<string, any>) {
-	if (!file || !file.type) return;
-	if (file.type.startsWith('image') === false) return;
-
-	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
-	return addTokenToURL(url);
-}
-
-function cancelChanges() {
-	editDialogOpen.value = null;
-	editTitle.value = '';
-}
-
-function saveChanges() {
-	if (editDialogOpen.value === '+') {
-		props.addGroup(editTitle.value);
-	} else if (editDialogOpen.value) {
-		props.editGroup(editDialogOpen.value, editTitle.value);
-	}
-
-	editDialogOpen.value = null;
-	editTitle.value = '';
-}
-
-const textFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
-});
-</script>
 
 <style lang="scss" scoped>
 .kanban {

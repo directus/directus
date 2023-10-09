@@ -33,9 +33,6 @@ export type Info = {
 				points: number;
 				duration: number;
 		  };
-	flows?: {
-		execAllowedModules: string[];
-	};
 	queryLimit?: {
 		default: number;
 		max: number;
@@ -51,7 +48,6 @@ export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
 		rateLimit: undefined,
-		flows: undefined,
 		queryLimit: undefined,
 	});
 
@@ -80,7 +76,6 @@ export const useServerStore = defineStore('serverStore', () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
 
 		info.project = serverInfoResponse.data.data?.project;
-		info.flows = serverInfoResponse.data.data?.flows;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
 		auth.providers = authResponse.data.data;

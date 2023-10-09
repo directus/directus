@@ -254,6 +254,7 @@ move_to_folder: Movi al dosierujo
 move: Move
 system: Sistemo
 interface_label: Interfaco
+display_label: Montri
 today: Hodiaŭ
 yesterday: Hieraŭ
 delete_comment: Forigi la komenton
@@ -336,7 +337,6 @@ comments: Komentoj
 no_comments: Ankoraŭ neniu komento
 select_item: Elekti kampon
 no_items: Neniu ero
-search_items: Serĉi erojn...
 disabled: Malŝaltita
 information: Informoj
 report_bug: Raporti cimon
@@ -955,6 +955,8 @@ interfaces:
     interface: Interfaco
     description: Elekti ekzistantan interfacon
     placeholder: Elekti interfacon...
+  system-display:
+    display: Montri
   list-m2m:
     many-to-many: Pluraj-al-pluraj-rilato
   select-dropdown-m2o:
@@ -1226,6 +1228,10 @@ operations:
   item-update:
     key: Identigiloj
     payload: Enhavaj datumoj
+  json-web-token:
+    payload: Enhavaj datumoj
+    token: Ĵetono
+    options: Opcioj
   log:
     name: Protokoli al la konzolo
     message: Mesaĝo

@@ -370,6 +370,7 @@ move: 移動
 system: 系統
 add_field_related: 新增欄位到關聯集合
 interface_label: 介面
+display_label: 顯示
 today: 今天
 yesterday: 昨天
 delete_comment: 刪除註解
@@ -463,7 +464,6 @@ comments: 評論
 no_comments: 還沒有評論
 select_item: 選擇項目
 no_items: 沒有任何項目
-search_items: 搜尋項目...
 disabled: 已停用
 information: 詳細資訊
 report_bug: 回報程式錯誤
@@ -1536,6 +1536,8 @@ interfaces:
   system-interface-options:
     interface-options: 介面選項
     description: 透過一個彈出方塊選擇選項
+  system-display:
+    display: 顯示
   list-m2m:
     many-to-many: 多對多
     description: 選擇多個關聯項目
@@ -1600,6 +1602,7 @@ interfaces:
     sort_placeholder: 手動
     field_note_placeholder: 輸入欄位備註...
     incompatible_data: 目前的資料與重複器不相容，在將資料加入重複器時將會被覆寫
+    interface_group: 介面選項
   slider:
     slider: 滑塊
     description: 使用滑塊選擇一個數字
@@ -1991,6 +1994,10 @@ operations:
     key: ID
     payload: 傳送資料
     query: 查詢
+  json-web-token:
+    payload: 傳送資料
+    token: 權杖
+    options: 選項
   log:
     name: 紀錄於主控台
     description: 將文字顯示到控制台中

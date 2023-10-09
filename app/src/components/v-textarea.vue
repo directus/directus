@@ -1,26 +1,3 @@
-<template>
-	<div
-		class="v-textarea"
-		:class="{
-			disabled,
-			'expand-on-focus': expandOnFocus,
-			'full-width': fullWidth,
-			'has-content': hasContent,
-		}"
-	>
-		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<textarea
-			v-focus="autofocus"
-			v-bind="$attrs"
-			:placeholder="placeholder"
-			:disabled="disabled"
-			:value="modelValue"
-			v-on="listeners"
-		/>
-		<div v-if="$slots.append" class="append"><slot name="append" /></div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -79,6 +56,29 @@ function trimIfEnabled() {
 	}
 }
 </script>
+
+<template>
+	<div
+		class="v-textarea"
+		:class="{
+			disabled,
+			'expand-on-focus': expandOnFocus,
+			'full-width': fullWidth,
+			'has-content': hasContent,
+		}"
+	>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
+		<textarea
+			v-focus="autofocus"
+			v-bind="$attrs"
+			:placeholder="placeholder"
+			:disabled="disabled"
+			:value="modelValue"
+			v-on="listeners"
+		/>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
+	</div>
+</template>
 
 <style>
 body {

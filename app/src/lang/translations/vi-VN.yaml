@@ -99,6 +99,8 @@ delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-
   Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Dữ liệu đã xóa sẽ không thể khôi phục lại được.
 delete_personal_bookmark: Xóa đánh dấu trang cá nhân
+delete_role_bookmark: Xoá dấu trang cho phân quyền
+delete_global_bookmark: Xoá dấu trang toàn app
 logoutReason:
   SIGN_OUT: Đăng Xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
@@ -112,6 +114,7 @@ archive_confirm_count: >-
   Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
 reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống cho:'
 reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
+the_following_are_minimum_permissions: Những quyền tối thiểu sau đây sẽ được áp dụng khi "App Access" được bật. Bạn có thể bổ sung các quyền khác nếu cần, nhưng không thể bỏ các quyền tối thiểu này.
 app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
 recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
@@ -136,6 +139,14 @@ validationError:
   required: Dữ liệu là bắt buộc
   unique: Giá trị phải là duy nhất
   regex: Giá trị không có định dạng đúng
+  starts_with: Giá trị phải bắt đầu với {substring}
+  istarts_with: Giá trị phải bắt đầu với {substring}
+  nstarts_with: Giá trị không thể bắt đầu với {substring}
+  nistarts_with: Giá trị không thể bắt đầu với {substring}
+  ends_with: Giá trị phải kết thúc với {substring}
+  iends_with: Giá trị phải kết thúc với {substring}
+  nends_with: Giá trị không thể kết thúc với {substring}
+  niends_with: Giá trị không thể kết thúc với {substring}
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
@@ -276,6 +287,7 @@ finish_setup: Hoàn Tất Cài Đặt
 dismiss: Bỏ qua
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Dữ liệu thực tế
+copy_raw_value: Sao chép dữ liệu thô
 copy_raw_value_success: Đã sao chép
 copy_raw_value_fail: Sao chép không thành công
 paste_raw_value: Dán dữ liệu thô
@@ -321,6 +333,10 @@ related_collections: Những Danh mục liên quan
 translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
 import_data_input_placeholder: CSV hoặc JSON...
+import_data_button: Bắt đầu nhập
+import_data_indeterminate: Đang nhập dữ liệu...
+import_data_success: Đã nhập dữ liệu thành công từ file {filename}
+import_data_error: Cấu trúc dữ liệu không phù hợp với bảng cần nhập.
 label_import: Nhập
 label_export: Xuất
 import_export: Nhập / Xuất
@@ -334,6 +350,7 @@ move: Di Chuyển
 system: Hệ thống
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
 interface_label: Giao diện
+display_label: Hiển thị
 today: Hôm nay
 yesterday: Hôm qua
 delete_comment: Xóa Bình luận
@@ -378,6 +395,7 @@ checksum: Giá trị checksum
 owner: Sở hữu bởi
 edited_by: Chỉnh sửa bởi
 folder: Thư mục
+folders: Thư mục
 zoom: Thu phóng
 download: Tải xuống
 open: Mở
@@ -394,7 +412,13 @@ replace_from_url: Hoán đổi với Tập Tin từ một Đường Dẫn
 no_file_selected: Chưa Có Tập Tin Nào Được Chọn
 download_file: Tải Xuống Tập Tin
 open_file_in_tab: Mở file trong tab mới
+start_export: Xuất dữ liệu
 exporting_all_items_in_collection: Xuất tất cả {total} bản ghi trong {collection}.
+exporting_limited_items_in_collection: '{count} trên {total} dòng dữ liệu trong {collection} sẽ được xuất.'
+exporting_no_items_to_export: Không có dữ liệu. Hãy điều chỉnh điều kiện lấy dữ liệu.
+exporting_download_hint: Khi file {fotmat} được tạo, tiến trình tải về sẽ bắt đầu.
+exporting_library_hint: Khi xuất file {format} hoàn tất, bạn có thể tải về ở Thư viện tệp tin.
+exporting_library_hint_forced: Vì xuất dữ liệu nhiều, một khi hoàn tất, file {format} sẽ được lưu vào Thư viện tệp tin.
 collection_key: Khóa Của Danh Mục
 name: Tên
 primary_key_field: Khóa Chính
@@ -411,10 +435,15 @@ save_and_create_new: Lưu và Tạo Mới
 save_and_stay: Lưu và Tiếp Tục Sửa Đổi
 save_as_copy: Lưu thành bản sao
 add_existing: Thêm Dữ Liệu Sẵn Có
+creating_items: Đang tạo các bản ghi
 enable_create_button: Bật Nút Tạo
+selecting_items: Chọn các bản ghi
+enable_select_button: Bật nút Chọn
 allow_duplicates: Cho phép Trùng lặp
 comments: Bình luận
 no_comments: Chưa Có Bình Luận
+expand: Mở rộng
+collapse: Thu gọn
 select_item: Chọn Bản Ghi
 no_items: Không có bản ghi nào
 search_items: Tìm kiếm...
@@ -422,6 +451,7 @@ disabled: Đã tắt
 information: Thông tin
 report_bug: Báo Cáo Lỗi
 request_feature: Yêu cầu tính năng
+request_body: Dữ liệu truyền lên
 interface_not_found: 'Giao diện "{interface}" không tồn tại.'
 reset_interface: Cài đặt lại Giao diện
 display_not_found: 'Hiển thị "{display}" không tồn tại.'
@@ -431,7 +461,10 @@ no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
+no_users_copy: Chưa có user nào thuộc quyền này.
+no_webhooks_copy: Chưa có webhook nào. Hãy tạo mới bằng nút dưới đây.
 no_notifications: Không có thông báo
+no_notifications_copy: Chưa có thông báo mới!
 activity_log: Nhật ký hoạt động
 all_items: Tất cả các mục
 any: Bất kỳ
@@ -516,6 +549,11 @@ errors:
   UNKNOWN: Lỗi Bất Thường
   SERVICE_UNAVAILABLE: Dịch vụ không khả dụng
   UNSUPPORTED_MEDIA_TYPE: Loại tập tin không được hỗ trợ
+  UNEXPECTED_RESPONSE: Lỗi không xác định
+  TOKEN_EXPIRED: Token đã hết hạn
+  METHOD_NOT_ALLOWED: Phương thức này bị cấm
+  REQUESTS_EXCEEDED: Bạn đã đạt giới hạn về số lần gọi API
+  CONTENT_TOO_LARGE: Dữ liệu quá lớn
 security: Bảo mật
 value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
@@ -528,6 +566,7 @@ unexpected_error_copy: Đã có lỗi không xác định xảy ra. Vui lòng th
 copy_details: Sao chép Chi tiết
 no_app_access: Không Có Quyền Truy Cập Chương Trình
 no_app_access_copy: Người dùng này không có quyền truy cập chương trình quản trị.
+password_reset_sent: Nếu email tồn tại, hệ thống sẽ gửi liên kết đến email của bạn để tạo lại mật khẩu.
 password_reset_successful: Mật khẩu được đặt lại thành công
 back: Trở lại
 filter: Bộ lọc
@@ -552,6 +591,10 @@ start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 one_item: '1 sản phẩm'
 one_filtered_item: 'Đã lọc được 1 mục'
+delete_collection_are_you_sure: >-
+  Bạn có chắc rằng bạn muốn xoá danh mục {collection} này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
+delete_folder_are_you_sure: Bạn có chắc rằng bạn muốn xoá {folder} này? Những thư mục và danh mục bên trong sẽ được mang ra ngoài và không bị xoá.
+delete_collection_peer_dependencies: Các fields sau đây sẽ bị xoá kèm vì nó liên quan đến collection này.
 collections_shown: Những Danh Mục Đang Hiển Thị
 visible_collections: Ứng dụng có thể nhìn thấy
 hidden_collections: Bảng Ẩn
@@ -571,6 +614,7 @@ color: Màu sắc
 circle: Vòng tròn
 empty_item: Mục trống
 log_in_with: 'Đăng nhập với {provider}'
+advanced_settings: Cài đặt Nâng cao
 advanced_filter: Bộ Lọc Nâng Cao
 delete_advanced_filter: Xoá Bộ Lọc
 advanced: Nâng cao
@@ -615,6 +659,7 @@ value_unique: Giá trị phải là duy nhất
 all_activity: Tất cả hoạt động
 create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
+n_items_selected: '0 bản ghi được chọn | 1 bản ghi được chọn | {n} bản ghi được chọn'
 per_page: Mỗi trang
 all_files: Tất cả các tệp
 my_files: Tập tin của tôi
@@ -630,12 +675,15 @@ no_results_copy: Điều chỉnh hoặc xóa bộ lọc tìm kiếm để tìm �
 clear_filters: Xoá các bộ lọc
 saves_automatically: Lưu tự động
 role: Phân quyền
+edit_role: Sửa phân quyền
 rule: Quy tắc
 user: Người dùng
 create: Tạo
+on_create: Khi khởi tạo
 on_update: Khi cập nhật
 read: Đọc
 update: Cập nhật
+delete: Xoá
 select_fields: Chọn trường
 format_text: Định dạng văn bản
 format_value: Định dạng giá trị
@@ -643,6 +691,11 @@ bold: In đậm
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
+run_flow_confirm: Bạn có muốn thực thi luồng này không?
+run_flow_on_current_collection: Chạy luồng trên collection hiện tại
+run_flow: Chạy
+field_name_placeholder: Nhập tên trường...
+field_key_placeholder: Nhập field key...
 flow_name: Tên
 flow_tracking_null: Không theo dõi bất cứ điều gì
 code: Mã nguồn
@@ -1001,6 +1054,8 @@ interfaces:
     icon: Biểu tượng
   system-interface:
     interface: Giao diện
+  system-display:
+    display: Hiển thị
   list-m2m:
     many-to-many: Quan hệ nhiều - nhiều
   select-dropdown-m2o:
@@ -1123,6 +1178,9 @@ triggers:
   webhook:
     method: Phương thức
 operations:
+  json-web-token:
+    token: Token
+    options: Tuỳ chọn
   log:
     message: Tin nhắn
   mail:

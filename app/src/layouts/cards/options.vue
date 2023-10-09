@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+import { useSync } from '@directus/composables';
+import { Field } from '@directus/types';
+
+const props = defineProps<{
+	collection: string;
+	icon: string;
+	fileFields: Field[];
+	imageFit: string;
+	imageSource?: string | null;
+	title?: string;
+	subtitle?: string;
+}>();
+
+const emit = defineEmits<{
+	(e: 'update:icon', icon: string): void;
+	(e: 'update:imageSource', imageSource: string): void;
+	(e: 'update:title', title: string): void;
+	(e: 'update:subtitle', subtitle: string): void;
+	(e: 'update:imageFit', imageFit: string): void;
+}>();
+
+const { t } = useI18n();
+
+const iconWritable = useSync(props, 'icon', emit);
+const imageSourceWritable = useSync(props, 'imageSource', emit);
+const titleWritable = useSync(props, 'title', emit);
+const subtitleWritable = useSync(props, 'subtitle', emit);
+const imageFitWritable = useSync(props, 'imageFit', emit);
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+	inheritAttrs: false,
+});
+</script>
+
 <template>
 	<div class="field">
 		<div class="type-label">{{ t('layouts.cards.image_source') }}</div>
@@ -43,47 +84,6 @@
 		</div>
 	</v-detail>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-import { useSync } from '@directus/composables';
-import { Field } from '@directus/types';
-
-const props = defineProps<{
-	collection: string;
-	icon: string;
-	fileFields: Field[];
-	imageFit: string;
-	imageSource?: string | null;
-	title?: string;
-	subtitle?: string;
-}>();
-
-const emit = defineEmits<{
-	(e: 'update:icon', icon: string): void;
-	(e: 'update:imageSource', imageSource: string): void;
-	(e: 'update:title', title: string): void;
-	(e: 'update:subtitle', subtitle: string): void;
-	(e: 'update:imageFit', imageFit: string): void;
-}>();
-
-const { t } = useI18n();
-
-const iconWritable = useSync(props, 'icon', emit);
-const imageSourceWritable = useSync(props, 'imageSource', emit);
-const titleWritable = useSync(props, 'title', emit);
-const subtitleWritable = useSync(props, 'subtitle', emit);
-const imageFitWritable = useSync(props, 'imageFit', emit);
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	inheritAttrs: false,
-});
-</script>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

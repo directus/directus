@@ -1,5 +1,5 @@
 import { getInfo as getGithubInfo } from '@changesets/get-github-info';
-import { MAIN_PACKAGE, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from '../constants.js';
+import config from '../config.js';
 import type { Change, Changesets, Notice, Type, UntypedPackage } from '../types.js';
 import { sortByExternalOrder, sortByObjectValues } from './sort.js';
 
@@ -17,7 +17,7 @@ export async function getInfo(changesets: Changesets): Promise<{
 
 		if (commit) {
 			githubInfo = await getGithubInfo({
-				repo: REPO,
+				repo: config.repo,
 				commit: commit,
 			});
 		}
@@ -29,20 +29,20 @@ export async function getInfo(changesets: Changesets): Promise<{
 		}
 
 		for (const { type, name } of releases) {
-			if (name === MAIN_PACKAGE || !summary) {
+			if (name === config.mainPackage || !summary) {
 				continue;
 			}
 
-			if (isUntypedPackage(name)) {
-				const untypedPackageName = UNTYPED_PACKAGES[name];
+			const untypedTitle = config.untypedPackageTitles[name];
 
-				const packageInUntypedPackages = untypedPackages.find((p) => p.name === untypedPackageName);
+			if (untypedTitle) {
+				const packageInUntypedPackages = untypedPackages.find((p) => p.name === untypedTitle);
 
 				if (packageInUntypedPackages) {
 					packageInUntypedPackages.changes.push(change);
 				} else {
 					untypedPackages.push({
-						name: untypedPackageName,
+						name: untypedTitle,
 						changes: [change],
 					});
 				}
@@ -50,7 +50,7 @@ export async function getInfo(changesets: Changesets): Promise<{
 				continue;
 			}
 
-			const typeTitle = TYPE_MAP[type];
+			const typeTitle = config.typedTitles[type];
 			const typeInTypes = types.find((t) => t.title === typeTitle);
 
 			if (typeInTypes) {
@@ -70,17 +70,13 @@ export async function getInfo(changesets: Changesets): Promise<{
 		}
 	}
 
-	types.sort(sortByObjectValues(TYPE_MAP, 'title'));
+	types.sort(sortByObjectValues(config.typedTitles, 'title'));
 
 	for (const { packages } of types) {
-		packages.sort(sortByExternalOrder(PACKAGE_ORDER, 'name'));
+		packages.sort(sortByExternalOrder(config.packageOrder, 'name'));
 	}
 
-	untypedPackages.sort(sortByObjectValues(UNTYPED_PACKAGES, 'name'));
+	untypedPackages.sort(sortByObjectValues(config.untypedPackageTitles, 'name'));
 
 	return { types, untypedPackages, notices };
-}
-
-function isUntypedPackage(name: string): name is keyof typeof UNTYPED_PACKAGES {
-	return Object.prototype.hasOwnProperty.call(UNTYPED_PACKAGES, name);
 }

@@ -6,7 +6,7 @@ export type DirectusNotification<Schema extends object> = MergeCoreCollection<
 	'directus_notifications',
 	{
 		id: string;
-		timestamp: string | null;
+		timestamp: 'datetime' | null;
 		status: string | null;
 		recipient: DirectusUser<Schema> | string;
 		sender: DirectusUser<Schema> | string | null;

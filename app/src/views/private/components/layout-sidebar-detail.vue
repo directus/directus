@@ -1,20 +1,3 @@
-<template>
-	<sidebar-detail icon="layers" :title="t('layout_options')">
-		<div class="layout-options">
-			<div class="field">
-				<div class="type-label">{{ t('layout') }}</div>
-				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
-					<template v-if="currentLayout!.icon" #prepend>
-						<v-icon :name="currentLayout!.icon" />
-					</template>
-				</v-select>
-			</div>
-
-			<slot />
-		</div>
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
@@ -45,6 +28,23 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 
 const layout = useSync(props, 'modelValue', emit);
 </script>
+
+<template>
+	<sidebar-detail icon="layers" :title="t('layout_options')">
+		<div class="layout-options">
+			<div class="field">
+				<div class="type-label">{{ t('layout') }}</div>
+				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
+					<template v-if="currentLayout!.icon" #prepend>
+						<v-icon :name="currentLayout!.icon" />
+					</template>
+				</v-select>
+			</div>
+
+			<slot />
+		</div>
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

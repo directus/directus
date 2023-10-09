@@ -1,4 +1,4 @@
-name: Assign Next Release Milestone
+name: Assign Next Patch Release Milestone
 
 on:
   pull_request_target:
@@ -24,7 +24,7 @@ jobs:
           echo "number=$(gh api graphql \
           --field owner='{owner}' \
           --field name='{repo}' \
-          --field milestoneQuery='Next Release' \
+          --field milestoneQuery='Next Patch Release' \
           --jq '.data.repository.milestones.nodes[].number' \
           --raw-field query='
             query($name: String!, $owner: String!, $milestoneQuery: String!) {
@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "number=$(gh api \
           'repos/{owner}/{repo}/milestones' \
-          --field title='Next Release' \
+          --field title='Next Patch Release' \
           --jq '.number'
           )" >> "$GITHUB_OUTPUT"
 
