@@ -9,6 +9,7 @@ export * from './geometry.js';
 export * from './items.js';
 export * from './misc.js';
 export * from './notifications.js';
+export * from './onboarding.js';
 export * from './permissions.js';
 export * from './presets.js';
 export * from './query.js';

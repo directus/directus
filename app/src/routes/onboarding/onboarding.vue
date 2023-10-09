@@ -3,28 +3,12 @@ import api from '@/api';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
-import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
+import { Field, OnboardingPayload, SettingsOnboarding, UserOnboarding } from '@directus/types';
 import { Ref, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useProjectFields } from './forms/project';
 import { useUserFields } from './forms/user';
-
-type OnboardingPayload = {
-	version: 1;
-	body: {
-		user?: {
-			email?: string;
-			wants_emails?: boolean;
-			primary_skillset?: string;
-		};
-		project?: {
-			name?: string;
-			url?: string;
-			type?: string;
-		};
-	};
-};
 
 type OnboardingSlide = {
 	i18nTitle: string;
