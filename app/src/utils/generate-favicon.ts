@@ -33,4 +33,4 @@ export const generateFavicon = (color: string, addDirectusLogo = true) => {
 	}
 
 	throw Error(`Couldn't generate favicon`);
-}
+};
