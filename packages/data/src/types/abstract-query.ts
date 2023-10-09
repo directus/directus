@@ -26,11 +26,3 @@ export interface AbstractQuery {
 	/** Optional attributes to perform a fine granular query */
 	modifiers?: AbstractQueryModifiers;
 }
-
-// disabled for now: it might be redundant
-// type AbstractQueryNodeType = 'primitive' | 'fn' | 'm2o' | 'o2m' | 'a2o' | 'o2a';
-
-/**
- * @TODO
- * - Rethink every / some
- */

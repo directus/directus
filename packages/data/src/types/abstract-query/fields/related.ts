@@ -1,6 +1,3 @@
-/**
- * This file will be split up into multiple files soon.
- */
 import type { AbstractQueryModifiers } from '../modifiers.js';
 import type { AbstractQueryFieldNodeFn } from './function.js';
 import type { AbstractQueryFieldNodePrimitive } from './primitive.js';
