@@ -3,7 +3,7 @@ import api from '@/api';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
-import { Field } from '@directus/types';
+import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
 import { Ref, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -123,7 +123,9 @@ async function finishOnboarding() {
 			project_url: projectModel.value.project_url,
 			project_logo: projectModel.value.project_logo,
 			project_color: projectModel.value.project_color,
-			onboarding: JSON.stringify({ project_use_case: projectModel.value.project_use_case }),
+			onboarding: JSON.stringify({
+				project_use_case: projectModel.value.project_use_case,
+			} satisfies SettingsOnboarding),
 		})
 		.then(() => serverStore.hydrate())
 		.catch((e) => console.error('Error when updating settings', e));
@@ -136,7 +138,8 @@ async function finishOnboarding() {
 			onboarding: JSON.stringify({
 				primary_skillset: userModel.value.primary_skillset,
 				wants_emails: userModel.value.wants_emails,
-			}),
+				retryTransmission: true,
+			} satisfies UserOnboarding),
 		})
 		.then(() => userStore.hydrate())
 		.catch((e) => console.error('Error when updating user', e));

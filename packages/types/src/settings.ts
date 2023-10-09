@@ -31,6 +31,10 @@ export type CustomAspectRatio = {
 	value: number;
 };
 
+export type SettingsOnboarding = {
+	project_use_case: string;
+};
+
 export type Settings = {
 	id: 1;
 	project_name: string;
@@ -52,5 +56,5 @@ export type Settings = {
 	basemaps: any[] | null;
 	mapbox_key: string | null;
 	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[];
-	onboarding: string | null;
+	onboarding: SettingsOnboarding | null;
 };
