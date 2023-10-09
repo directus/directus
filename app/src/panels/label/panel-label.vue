@@ -72,7 +72,7 @@ function updateFit() {
 }
 
 onMounted(() => {
-	if (props.fontSize == 'auto') {
+	if (props.fontSize === 'auto') {
 		updateFit();
 
 		// Delay the initial font size adjustment to allow the text/font to render fully
