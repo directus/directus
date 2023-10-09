@@ -22,7 +22,7 @@ export interface AbstractQueryFieldNodeNestedMany {
 	fields: AbstractQueryFieldNode[];
 	alias?: string;
 
-	/** For man it always possible to add modifiers to the foreign collection to adjust the results. */
+	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;
 
 	meta: AbstractQueryFieldNodeNestedRelationalMany; // AbstractQueryFieldNodeNestedObjectMany | AbstractQueryFieldNodeNestedJsonMany

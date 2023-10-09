@@ -14,6 +14,7 @@ import { pong } from './commands/pong.js';
 import { auth } from './commands/auth.js';
 import type { AuthenticationClient } from '../auth/types.js';
 import { sleep } from './index.js';
+import type { WebSocketInterface } from '../index.js';
 
 type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -41,7 +42,7 @@ const WebSocketState = {
 export function realtime(config: WebSocketConfig = {}) {
 	return <Schema extends object>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
-		let socket: WebSocket | null = null;
+		let socket: WebSocketInterface | null = null;
 		let uid = generateUid();
 		let reconnectAttempts = 0;
 		let reconnecting = false;
@@ -107,7 +108,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			message: new Set<WebSocketEventHandler>([]),
 		};
 
-		const handleMessages = async (ws: WebSocket, currentClient: AuthWSClient<Schema>) => {
+		const handleMessages = async (ws: WebSocketInterface, currentClient: AuthWSClient<Schema>) => {
 			while (ws.readyState !== WebSocketState.CLOSED) {
 				const message = await messageCallback(ws).catch(() => {
 					/* ignore invalid messages */
@@ -194,10 +195,10 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				socket = null;
 			},
-			onWebSocket(event: WebSocketEvents, callback: (this: WebSocket, ev: Event | CloseEvent | any) => any) {
+			onWebSocket(event: WebSocketEvents, callback: (this: WebSocketInterface, ev: Event | CloseEvent | any) => any) {
 				if (event === 'message') {
 					// add some message parsing
-					const updatedCallback = function (this: WebSocket, event: MessageEvent<any>) {
+					const updatedCallback = function (this: WebSocketInterface, event: MessageEvent<any>) {
 						if (typeof event.data !== 'string') return callback.call(this, event);
 
 						try {

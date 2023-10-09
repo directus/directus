@@ -1,7 +1,7 @@
 {
 	"name": "@directus/extensions",
-	"version": "0.0.1",
-	"description": "Utilities and Types for extensions",
+	"version": "0.0.0",
+	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
@@ -17,7 +17,7 @@
 		"./node": "./dist/node/index.js",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/shared/index.js",
 	"files": [
 		"dist"
 	],
@@ -27,6 +27,12 @@
 		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
 		"dev": "concurrently 'pnpm:build:* --watch'",
 		"test": "vitest --watch=false"
+	},
+	"dependencies": {
+		"@directus/utils": "workspace:*",
+		"fs-extra": "11.1.1",
+		"tmp": "0.2.1",
+		"zod": "3.21.4"
 	},
 	"devDependencies": {
 		"@directus/constants": "workspace:*",
@@ -45,11 +51,5 @@
 		"vitest": "0.31.1",
 		"vue": "3.3.4",
 		"vue-router": "4.2.0"
-	},
-	"dependencies": {
-		"@directus/utils": "workspace:*",
-		"fs-extra": "11.1.1",
-		"tmp": "0.2.1",
-		"zod": "3.21.4"
 	}
 }
