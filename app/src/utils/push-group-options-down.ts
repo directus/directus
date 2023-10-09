@@ -26,8 +26,8 @@ export function pushGroupOptionsDown(fields: Field[]) {
 		for (const childField of fields) {
 			if (childField.meta?.group !== field.field) continue
 
-			childField.meta.required = field.meta?.required ?? false
-			childField.meta.readonly = field.meta?.readonly ?? false
+			childField.meta.required = field.meta?.required || childField.meta.required
+			childField.meta.readonly = field.meta?.readonly || childField.meta.readonly
 		}
 
 		if (!field.meta) {
