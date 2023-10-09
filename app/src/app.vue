@@ -2,15 +2,15 @@
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
-import { setFavicon } from '@/utils/set-favicon';
+import { generateFavicon } from '@/utils/generate-favicon';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { startIdleTracking, stopIdleTracking } from './idle';
 import { useTheme } from './composables/use-theme';
+import { startIdleTracking, stopIdleTracking } from './idle';
 
 const { t } = useI18n();
 
@@ -27,6 +27,7 @@ const brandStyleCss = computed(() => {
 });
 
 useHead({
+	style: [{ textContent: brandStyleCss }],
 	titleTemplate: computed((title?: string) => {
 		const projectName = serverStore.info?.project?.project_name ?? 'Directus';
 		return !title ? projectName : `${title} · ${projectName}`;
@@ -45,20 +46,28 @@ useHead({
 			},
 		];
 	}),
-	style: [{ textContent: brandStyleCss }],
+	link: computed(() => {
+		let href: string;
+
+		if (serverStore.info?.project?.public_favicon) {
+			href = `/assets/${serverStore.info.project.public_favicon}`;
+		} else if (serverStore.info?.project?.project_color) {
+			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
+		} else {
+			href = '/favicon.ico';
+		}
+
+		return [
+			{
+				rel: 'icon',
+				href,
+			},
+		];
+	}),
 });
 
 onMounted(() => startIdleTracking());
 onUnmounted(() => stopIdleTracking());
-
-watch(
-	[() => serverStore.info?.project?.project_color ?? null, () => serverStore.info?.project?.project_logo ?? null],
-	() => {
-		const hasCustomLogo = !!serverStore.info?.project?.project_logo;
-		setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
-	},
-	{ immediate: true }
-);
 
 watch(
 	() => (userStore.currentUser as User)?.appearance,

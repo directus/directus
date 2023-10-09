@@ -24,6 +24,7 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.string('project_color').defaultTo('#6644FF').notNullable().alter();
+		table.uuid('public_favicon').references('directus_files.id');
 
 		table.string('default_appearance').defaultTo('auto').notNullable();
 		table.string('default_theme_light');

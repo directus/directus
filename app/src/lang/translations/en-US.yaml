@@ -1269,6 +1269,7 @@ field_options:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
     project_logo_note: White 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
