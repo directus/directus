@@ -5,6 +5,7 @@ import { cloneDeep, orderBy } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';
 import { translate } from '@/utils/translate-object-values';
 import { useExtension } from './use-extension';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 
 export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
 	const formFields = computed(() => {
