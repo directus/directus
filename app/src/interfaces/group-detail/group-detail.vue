@@ -30,11 +30,22 @@ const props = withDefaults(
 	}
 );
 
-defineEmits(['apply']);
+const emit = defineEmits(['apply']);
 
 const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
+
+// In case that conditions change the start prop after the group already got rendered
+// caused by the async loading of data to run the conditions against
+let interacted = false;
+
+watch(
+	() => props.start,
+	(newVal) => {
+		if (!interacted) detailOpen.value = newVal === 'open';
+	}
+);
 
 const edited = computed(() => {
 	if (!props.values) return false;
@@ -75,6 +86,11 @@ watch(validationMessages, (newVal, oldVal) => {
 	if (isEqual(newVal, oldVal)) return;
 	detailOpen.value = validationMessages.value.length > 0;
 });
+
+function onUpdateModelValue(data: any) {
+	interacted = true;
+	emit('apply', data);
+}
 </script>
 
 <template>
@@ -119,7 +135,7 @@ watch(validationMessages, (newVal, oldVal) => {
 			:direction="direction"
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
-			@update:model-value="$emit('apply', $event)"
+			@update:model-value="onUpdateModelValue"
 		/>
 	</v-detail>
 </template>
