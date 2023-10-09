@@ -230,7 +230,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
-						const description: string | null = null;
+						let description: string | null = null;
+
+						const fieldParts = field.key.split('.');
+
+						if (fieldParts.length > 1) {
+							const fieldNames = fieldParts.map((fieldKey, index) => {
+								const pathPrefix = fieldParts.slice(0, index);
+								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
+								return field?.name ?? fieldKey;
+							});
+
+							description = fieldNames.join(' -> ');
+						}
 
 						return {
 							text: field.name,

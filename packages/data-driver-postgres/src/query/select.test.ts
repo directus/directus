@@ -1,36 +1,61 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { beforeEach, expect, test } from 'vitest';
 import { select } from './select.js';
 import { randomIdentifier } from '@directus/random';
 
-let sample: {
-	statement: AbstractSqlQuery;
-};
+let randomTable: string;
 
 beforeEach(() => {
-	sample = {
-		statement: {
-			select: [
-				{
-					type: 'primitive',
-					column: randomIdentifier(),
-					table: randomIdentifier(),
-					as: randomIdentifier(),
-				},
-				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
-			],
-			from: randomIdentifier(),
-			parameters: [],
-		},
-	};
+	randomTable = randomIdentifier();
 });
 
 test('With multiple provided fields and an alias', () => {
-	const res = select(sample.statement);
+	const randomTable2 = randomIdentifier();
+	const randomColumn1 = randomIdentifier();
+	const randomColumn2 = randomIdentifier();
+	const randomAlias = randomIdentifier();
 
-	const expected = `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}" AS "${
-		sample.statement.select[0]!.as
-	}", "${sample.statement.select[1]!.table}"."${sample.statement.select[1]!.column}"`;
+	const sample: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'primitive',
+				table: randomTable,
+				column: randomColumn1,
+				as: randomAlias,
+			},
+			{
+				type: 'primitive',
+				table: randomTable2,
+				column: randomColumn2,
+			},
+		],
+		from: randomTable,
+	};
 
+	const res = select(sample);
+	const expected = `SELECT "${randomTable}"."${randomColumn1}" AS "${randomAlias}", "${randomTable2}"."${randomColumn2}"`;
+	expect(res).toStrictEqual(expected);
+});
+
+test('With a count', () => {
+	const randomTable = randomIdentifier();
+
+	const sample: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'fn',
+				fn: {
+					type: 'arrayFn',
+					fn: 'count',
+				},
+				table: randomTable,
+				column: '*',
+			},
+		],
+		from: randomTable,
+	};
+
+	const res = select(sample);
+	const expected = `SELECT COUNT("${randomTable}"."*")`;
 	expect(res).toStrictEqual(expected);
 });
