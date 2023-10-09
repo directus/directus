@@ -637,6 +637,9 @@ importers:
       '@rollup/plugin-yaml':
         specifier: 4.1.0
         version: 4.1.0
+      '@sinclair/typebox':
+        specifier: 0.28.13
+        version: 0.28.13
       '@sindresorhus/slugify':
         specifier: 2.2.1
         version: 2.2.1
@@ -7443,7 +7446,6 @@ packages:
 
   /@sinclair/typebox@0.28.13:
     resolution: {integrity: sha512-bSHHPYPB3UGMoa1n85cpzpMXksFabJA2ZUNojojg4gqfaSUgSmtAG+AbCAGJSylQYbk5slOxkQymqWXEv492aw==}
-    dev: false
 
   /@sindresorhus/is@4.6.0:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
