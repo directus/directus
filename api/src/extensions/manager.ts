@@ -51,13 +51,11 @@ const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.d
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const defaultOptions: ExtensionManagerOptions = {
-	schedule: true,
-	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
-};
-
 export class ExtensionManager {
-	private options: ExtensionManagerOptions;
+	private options: ExtensionManagerOptions = {
+		schedule: true,
+		watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
+	};
 
 	/**
 	 * Whether or not the extensions have been read from disk and registered into the system
@@ -79,7 +77,7 @@ export class ExtensionManager {
 	 * Individual filename chunks from the rollup bundle. Used to improve the performance by allowing
 	 * extensions to split up their bundle into multiple smaller chunks
 	 */
-	private appExtensionChunks: Map<string, string>;
+	private appExtensionChunks: Map<string, string> = new Map();
 
 	/**
 	 * Paths that have been loaded in with `require()` and therefore exist in the require cache
@@ -91,7 +89,7 @@ export class ExtensionManager {
 	 * between extensions. These events are completely isolated from the core events that trigger
 	 * hooks etc
 	 */
-	private localEmitter: Emitter;
+	private localEmitter: Emitter = new Emitter();
 
 	/**
 	 * Registered events against the global emitter used for handling hooks. Used when unloading
@@ -103,7 +101,7 @@ export class ExtensionManager {
 	 * Locally scoped express router used for custom endpoints. Allows extensions to dynamically
 	 * register and de-register endpoints without affecting the regular global router
 	 */
-	private endpointRouter: Router;
+	private endpointRouter: Router = Router();
 
 	/**
 	 * Custom HTML to be injected at the end of the `<head>` tag of the app's index.html
@@ -119,29 +117,21 @@ export class ExtensionManager {
 	 * Used to prevent race conditions when reloading extensions. Forces each reload to happen in
 	 * sequence.
 	 */
-	private reloadQueue: JobQueue;
+	private reloadQueue: JobQueue = new JobQueue();
 
 	/**
 	 * Optional file system watcher to auto-reload extensions when the local file system changes
 	 */
 	private watcher: FSWatcher | null = null;
 
-	constructor() {
-		this.options = defaultOptions;
-
-		this.localEmitter = new Emitter();
-		this.endpointRouter = Router();
-
-		this.reloadQueue = new JobQueue();
-
-		this.appExtensionChunks = new Map();
-	}
-
 	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
-		this.options = {
-			...defaultOptions,
-			...options,
-		};
+		if (options.schedule !== undefined) {
+			this.options.schedule = options.schedule;
+		}
+
+		if (options.watch !== undefined) {
+			this.options.watch = options.watch;
+		}
 
 		const wasWatcherInitialized = this.watcher !== null;
 
