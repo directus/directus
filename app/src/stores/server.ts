@@ -24,6 +24,7 @@ export type Info = {
 		default_language: string | null;
 		public_foreground: string | null;
 		public_background: string | null;
+		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
 	};
