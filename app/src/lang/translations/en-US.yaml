@@ -63,7 +63,7 @@ extension_panel: Panel
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operation
-extension_bundle: Bundles
+extension_bundle: Bundle
 extension_interfaces: Interfaces
 extension_displays: Displays
 extension_layouts: Layouts
