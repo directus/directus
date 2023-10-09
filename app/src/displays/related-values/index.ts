@@ -3,8 +3,9 @@ import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
-import { defineDisplay, getFieldsFromTemplate } from '@directus/utils';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
 import DisplayRelatedValues from './related-values.vue';
 

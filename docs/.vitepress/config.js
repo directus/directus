@@ -174,6 +174,9 @@ gtag('config', 'UA-24637628-7');
 			},
 		},
 	},
+	sitemap: {
+		hostname: 'https://docs.directus.io',
+	},
 	transformPageData(pageData) {
 		function setOGImage(asset) {
 			return [
@@ -210,7 +213,7 @@ gtag('config', 'UA-24637628-7');
 });
 
 function typeDocSidebarFormat(item) {
-	if (item.link !== null && !item.link.startsWith('/packages')) {
+	if (item.link && !item.link.startsWith('/packages')) {
 		item.link = item.link.substring(item.link.indexOf('/packages'));
 	}
 
@@ -495,10 +498,6 @@ function sidebar() {
 					text: 'All Guides',
 					link: '/guides/index.html',
 				},
-				{
-					text: 'SDK Quickstart',
-					link: '/guides/sdk/getting-started',
-				},
 				...sidebarGuides(),
 			],
 		},
@@ -534,11 +533,15 @@ function sidebar() {
 					text: 'Introduction',
 				},
 				{
+					link: '/extensions/installing-extensions',
+					text: 'Installing Extensions',
+				},
+				{
 					link: '/extensions/creating-extensions',
 					text: 'Creating Extensions',
 				},
 				{
-					text: 'Extension Types',
+					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
 						{
@@ -582,17 +585,13 @@ function sidebar() {
 							text: 'Panels',
 						},
 						{
-							link: '/extensions/themes',
-							text: 'Themes',
-						},
-						{
 							link: '/extensions/bundles',
 							text: 'Bundles',
 						},
 					],
 				},
 				{
-					text: 'Packages',
+					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
 			],
@@ -608,7 +607,7 @@ function sidebar() {
 						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
 						{ link: '/contributing/pull-request-process', text: 'Pull Request Process' },
 						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
-						{ link: '/contributing/running-locally', text: 'Running Locally' },
+						{ link: '/contributing/running-locally', text: 'Running Dev Environment' },
 						{ link: '/contributing/tests', text: 'Tests' },
 					],
 				},
@@ -823,6 +822,10 @@ function sidebarUserGuide() {
 			text: 'General Settings',
 			collapsed: true,
 			items: [
+				{
+					text: 'Theming',
+					link: '/user-guide/settings/theming',
+				},
 				{
 					text: 'Project Settings',
 					link: '/user-guide/settings/project-settings',

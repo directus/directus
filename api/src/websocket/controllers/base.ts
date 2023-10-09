@@ -97,6 +97,20 @@ export default abstract class SocketController {
 		return null;
 	}
 
+	private catchInvalidMessages(ws: WebSocket) {
+		/**
+		 * This fix was done to prevent the API from crashing on receiving invalid WebSocket frames
+		 * https://github.com/directus/directus/security/advisories/GHSA-hmgw-9jrg-hf2m
+		 * https://github.com/websockets/ws/issues/2098
+		 */
+		// @ts-ignore <- required because "_socket" is not typed on WS
+		ws._socket.prependListener('data', (data) => data.toString());
+
+		ws.on('error', (error) => {
+			if (error.message) logger.debug(error.message);
+		});
+	}
+
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
 		const { pathname, query } = parse(request.url!, true);
 		if (pathname !== this.endpoint) return;
@@ -121,6 +135,7 @@ export default abstract class SocketController {
 		}
 
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
+			this.catchInvalidMessages(ws);
 			const state = { accountability: null, expires_at: null } as AuthenticationState;
 			this.server.emit('connection', ws, state);
 		});
@@ -146,6 +161,7 @@ export default abstract class SocketController {
 		}
 
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
+			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
 			this.server.emit('connection', ws, state);
 		});
@@ -153,6 +169,8 @@ export default abstract class SocketController {
 
 	protected async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
+			this.catchInvalidMessages(ws);
+
 			try {
 				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
 				if (getMessageType(payload) !== 'auth') throw new Error();

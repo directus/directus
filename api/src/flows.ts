@@ -1,13 +1,6 @@
 import { Action } from '@directus/constants';
-import type {
-	Accountability,
-	ActionHandler,
-	FilterHandler,
-	Flow,
-	Operation,
-	OperationHandler,
-	SchemaOverview,
-} from '@directus/types';
+import type { OperationHandler } from '@directus/extensions';
+import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';

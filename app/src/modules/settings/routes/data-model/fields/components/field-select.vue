@@ -1,3 +1,166 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { ref, computed, unref } from 'vue';
+import { useFieldsStore } from '@/stores/fields';
+import { useRouter } from 'vue-router';
+import { cloneDeep } from 'lodash';
+import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getSpecialForType } from '@/utils/get-special-for-type';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Field } from '@directus/types';
+import FieldSelectMenu from './field-select-menu.vue';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import Draggable from 'vuedraggable';
+import formatTitle from '@directus/format-title';
+import { useExtension } from '@/composables/use-extension';
+import { getRelatedCollection } from '@/utils/get-related-collection';
+
+const props = withDefaults(
+	defineProps<{
+		field: Field;
+		disabled?: boolean;
+		fields?: Field[];
+	}>(),
+	{
+		fields: () => [],
+	}
+);
+
+const emit = defineEmits(['setNestedSort']);
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const fieldsStore = useFieldsStore();
+
+const { deleteActive, deleting, deleteField } = useDeleteField();
+const { duplicateActive, duplicateName, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
+
+const inter = useExtension(
+	'interface',
+	computed(() => props.field.meta?.interface ?? null)
+);
+
+const interfaceName = computed(() => inter.value?.name ?? null);
+
+const hidden = computed(() => props.field.meta?.hidden === true);
+
+const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
+
+const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
+
+const relatedCollectionInfo = computed(() => getRelatedCollection(props.field.collection, props.field.field));
+
+const showRelatedCollectionLink = computed(
+	() =>
+		unref(relatedCollectionInfo) !== null &&
+		props.field.collection !== unref(relatedCollectionInfo)?.relatedCollection &&
+		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
+);
+
+function setWidth(width: string) {
+	fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
+}
+
+function toggleVisibility() {
+	fieldsStore.updateField(props.field.collection, props.field.field, {
+		meta: { hidden: !props.field.meta?.hidden },
+	});
+}
+
+function useDeleteField() {
+	const deleteActive = ref(false);
+	const deleting = ref(false);
+
+	return {
+		deleteActive,
+		deleting,
+		deleteField,
+	};
+
+	async function deleteField() {
+		await fieldsStore.deleteField(props.field.collection, props.field.field);
+		deleting.value = false;
+		deleteActive.value = false;
+	}
+}
+
+function useDuplicate() {
+	const duplicateActive = ref(false);
+	const duplicateName = ref(props.field.field + '_copy');
+	const duplicating = ref(false);
+
+	const duplicateTo = ref(props.field.collection);
+
+	return {
+		duplicateActive,
+		duplicateName,
+		duplicateTo,
+		saveDuplicate,
+		duplicating,
+	};
+
+	async function saveDuplicate() {
+		const newField: Record<string, any> = {
+			...cloneDeep(props.field),
+			field: duplicateName.value,
+			collection: duplicateTo.value,
+		};
+
+		if (newField.meta) {
+			delete newField.meta.id;
+			delete newField.meta.sort;
+			delete newField.meta.group;
+		}
+
+		if (newField.schema) {
+			delete newField.schema.comment;
+		}
+
+		delete newField.name;
+
+		duplicating.value = true;
+
+		try {
+			await fieldsStore.createField(duplicateTo.value, newField);
+
+			notify({
+				title: t('field_create_success', { field: newField.field }),
+			});
+
+			duplicateActive.value = false;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			duplicating.value = false;
+		}
+	}
+}
+
+async function openFieldDetail() {
+	if (!props.field.meta) {
+		const special = getSpecialForType(props.field.type);
+		await fieldsStore.updateField(props.field.collection, props.field.field, { meta: { special } });
+	}
+
+	router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
+}
+
+async function onGroupSortChange(fields: Field[]) {
+	const updates = fields.map((field, index) => ({
+		field: field.field,
+		meta: {
+			sort: index + 1,
+			group: props.field.meta!.field,
+		},
+	}));
+
+	emit('setNestedSort', updates);
+}
+</script>
+
 <template>
 	<div class="field-select" :class="field.meta?.width || 'full'">
 		<v-input v-if="disabled" disabled class="field">
@@ -118,7 +281,7 @@
 						<div class="form-grid">
 							<div class="field">
 								<span class="type-label">{{ t('collection', 0) }}</span>
-								<v-select v-model="duplicateTo" class="monospace" :items="collections" />
+								<interface-system-collection :value="duplicateTo" class="monospace" @input="duplicateTo = $event" />
 							</div>
 
 							<div class="field">
@@ -150,178 +313,6 @@
 		</template>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, unref } from 'vue';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useRouter } from 'vue-router';
-import { cloneDeep } from 'lodash';
-import { getLocalTypeForField } from '@/utils/get-local-type';
-import { getSpecialForType } from '@/utils/get-special-for-type';
-import { notify } from '@/utils/notify';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { Field } from '@directus/types';
-import FieldSelectMenu from './field-select-menu.vue';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import Draggable from 'vuedraggable';
-import formatTitle from '@directus/format-title';
-import { useExtension } from '@/composables/use-extension';
-import { getRelatedCollection } from '@/utils/get-related-collection';
-
-const props = withDefaults(
-	defineProps<{
-		field: Field;
-		disabled?: boolean;
-		fields?: Field[];
-	}>(),
-	{
-		fields: () => [],
-	}
-);
-
-const emit = defineEmits(['setNestedSort']);
-
-const { t } = useI18n();
-
-const router = useRouter();
-
-const collectionsStore = useCollectionsStore();
-const fieldsStore = useFieldsStore();
-
-const { deleteActive, deleting, deleteField } = useDeleteField();
-const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
-
-const inter = useExtension(
-	'interface',
-	computed(() => props.field.meta?.interface ?? null)
-);
-
-const interfaceName = computed(() => inter.value?.name ?? null);
-
-const hidden = computed(() => props.field.meta?.hidden === true);
-
-const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
-
-const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
-
-const relatedCollectionInfo = computed(() => getRelatedCollection(props.field.collection, props.field.field));
-
-const showRelatedCollectionLink = computed(
-	() =>
-		unref(relatedCollectionInfo) !== null &&
-		props.field.collection !== unref(relatedCollectionInfo)?.relatedCollection &&
-		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
-);
-
-function setWidth(width: string) {
-	fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
-}
-
-function toggleVisibility() {
-	fieldsStore.updateField(props.field.collection, props.field.field, {
-		meta: { hidden: !props.field.meta?.hidden },
-	});
-}
-
-function useDeleteField() {
-	const deleteActive = ref(false);
-	const deleting = ref(false);
-
-	return {
-		deleteActive,
-		deleting,
-		deleteField,
-	};
-
-	async function deleteField() {
-		await fieldsStore.deleteField(props.field.collection, props.field.field);
-		deleting.value = false;
-		deleteActive.value = false;
-	}
-}
-
-function useDuplicate() {
-	const duplicateActive = ref(false);
-	const duplicateName = ref(props.field.field + '_copy');
-	const duplicating = ref(false);
-
-	const collections = computed(() =>
-		collectionsStore.collections
-			.map(({ collection }) => collection)
-			.filter((collection) => collection.startsWith('directus_') === false)
-	);
-
-	const duplicateTo = ref(props.field.collection);
-
-	return {
-		duplicateActive,
-		duplicateName,
-		collections,
-		duplicateTo,
-		saveDuplicate,
-		duplicating,
-	};
-
-	async function saveDuplicate() {
-		const newField: Record<string, any> = {
-			...cloneDeep(props.field),
-			field: duplicateName.value,
-			collection: duplicateTo.value,
-		};
-
-		if (newField.meta) {
-			delete newField.meta.id;
-			delete newField.meta.sort;
-			delete newField.meta.group;
-		}
-
-		if (newField.schema) {
-			delete newField.schema.comment;
-		}
-
-		delete newField.name;
-
-		duplicating.value = true;
-
-		try {
-			await fieldsStore.createField(duplicateTo.value, newField);
-
-			notify({
-				title: t('field_create_success', { field: newField.field }),
-			});
-
-			duplicateActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
-		} finally {
-			duplicating.value = false;
-		}
-	}
-}
-
-async function openFieldDetail() {
-	if (!props.field.meta) {
-		const special = getSpecialForType(props.field.type);
-		await fieldsStore.updateField(props.field.collection, props.field.field, { meta: { special } });
-	}
-
-	router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);
-}
-
-async function onGroupSortChange(fields: Field[]) {
-	const updates = fields.map((field, index) => ({
-		field: field.field,
-		meta: {
-			sort: index + 1,
-			group: props.field.meta!.field,
-		},
-	}));
-
-	emit('setNestedSort', updates);
-}
-</script>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

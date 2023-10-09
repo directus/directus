@@ -1,30 +1,3 @@
-<template>
-	<div>
-		<v-notice type="info">
-			{{
-				t('fields_for_role', {
-					role: role ? role.name : t('public_label'),
-					action: t(permission.action).toLowerCase(),
-				})
-			}}
-		</v-notice>
-
-		<p class="type-label">{{ t('field', 0) }}</p>
-		<interface-select-multiple-checkbox
-			:value="fields"
-			type="json"
-			:choices="fieldsInCollection"
-			@input="fields = $event"
-		/>
-
-		<div v-if="appMinimal" class="app-minimal">
-			<v-divider />
-			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
-			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useSync } from '@directus/composables';
@@ -82,6 +55,33 @@ const fields = computed({
 	},
 });
 </script>
+
+<template>
+	<div>
+		<v-notice type="info">
+			{{
+				t('fields_for_role', {
+					role: role ? role.name : t('public_label'),
+					action: t(permission.action).toLowerCase(),
+				})
+			}}
+		</v-notice>
+
+		<p class="type-label">{{ t('field', 0) }}</p>
+		<interface-select-multiple-checkbox
+			:value="fields"
+			type="json"
+			:choices="fieldsInCollection"
+			@input="fields = $event"
+		/>
+
+		<div v-if="appMinimal" class="app-minimal">
+			<v-divider />
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
+			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .type-label {

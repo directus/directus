@@ -8,9 +8,10 @@ import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
 import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
-import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -225,7 +226,10 @@ export default defineLayout<LayoutOptions>({
 			async () => {
 				if (calendar.value) {
 					const calendarLocale = await getFullcalendarLocale(locale.value);
-					calendar.value.setOption('locale', calendarLocale);
+
+					if (calendarLocale) {
+						calendar.value.setOption('locale', calendarLocale);
+					}
 				}
 			},
 			{ immediate: true }

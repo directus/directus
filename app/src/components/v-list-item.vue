@@ -1,25 +1,3 @@
-<template>
-	<component
-		:is="component"
-		class="v-list-item"
-		:class="{
-			active: isActiveRoute,
-			dense,
-			link: isLink,
-			disabled,
-			dashed,
-			block,
-			nav,
-			clickable,
-		}"
-		:download="download"
-		v-bind="additionalProps"
-		@click="onClick"
-	>
-		<slot />
-	</component>
-</template>
-
 <script setup lang="ts">
 import { RouteLocation, useLink, useRoute } from 'vue-router';
 import { computed } from 'vue';
@@ -131,6 +109,28 @@ function onClick(event: PointerEvent) {
 	emit('click', event);
 }
 </script>
+
+<template>
+	<component
+		:is="component"
+		class="v-list-item"
+		:class="{
+			active: isActiveRoute,
+			dense,
+			link: isLink,
+			disabled,
+			dashed,
+			block,
+			nav,
+			clickable,
+		}"
+		:download="download"
+		v-bind="additionalProps"
+		@click="onClick"
+	>
+		<slot />
+	</component>
+</template>
 
 <style>
 body {

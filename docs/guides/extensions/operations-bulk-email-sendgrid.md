@@ -17,8 +17,8 @@ To follow this guide, you will need a SendGrid API Key and access to SendGrid Dy
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose operation), and type a name for your extension (for example,
@@ -27,7 +27,7 @@ A list of options will appear (choose operation), and type a name for your exten
 Now the boilerplate has been created, install the `@sendgrid/mail` package, and then open the directory in your code
 editor.
 
-```
+```shell
 cd directus-operation-bulk-sendgrid
 npm install @sendgrid/mail
 ```
@@ -183,7 +183,12 @@ Now, the overview of the operation looks like this:
 
 ## Build the API Function
 
-Open the `api.js` file and update the `id` to match the one used in the `app.js` file.
+Open the `api.js` file, update the `id` to match the one used in the `app.js` file, and import the SendGrid package at
+the very top:
+
+```js
+import sgMail from '@sendgrid/mail'
+```
 
 The handler needs to include the fields from the `app.js` options and the environment variables from Directus. Replace
 the handler definition with the following:
@@ -196,7 +201,6 @@ handler: ({ from, recipients, substitutions, subject, template_id }, { env }
 Set up the SendGrid API and message object with the following code:
 
 ```js
-const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(env.SENDGRID_API_KEY);
 
 let msg = {
@@ -447,10 +451,11 @@ export default {
 `api.js`
 
 ```js
+import sgMail from '@sendgrid/mail';
+
 export default {
 	id: 'operation-bulk-sendgrid',
 	handler: ({ from, email_key, recipients, template_data, subject, template_id }, { env }) => {
-		const sgMail = require('@sendgrid/mail');
 		sgMail.setApiKey(env.SENDGRID_API_KEY);
 
 		let msg = {

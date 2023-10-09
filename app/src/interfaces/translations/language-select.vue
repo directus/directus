@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+const props = withDefaults(
+	defineProps<{
+		modelValue?: string;
+		items?: Record<string, any>[];
+		secondary?: boolean;
+	}>(),
+	{
+		items: () => [],
+	}
+);
+
+defineEmits(['update:modelValue']);
+
+const displayValue = computed(() => {
+	const item = props.items.find((item) => item.value === props.modelValue);
+	return item?.text ?? props.modelValue;
+});
+</script>
+
 <template>
 	<v-menu attached class="language-select" :class="{ secondary }">
 		<template #activator="{ toggle, active }">
@@ -27,28 +49,6 @@
 		</v-list>
 	</v-menu>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-
-const props = withDefaults(
-	defineProps<{
-		modelValue?: string;
-		items?: Record<string, any>[];
-		secondary?: boolean;
-	}>(),
-	{
-		items: () => [],
-	}
-);
-
-defineEmits(['update:modelValue']);
-
-const displayValue = computed(() => {
-	const item = props.items.find((item) => item.value === props.modelValue);
-	return item?.text ?? props.modelValue;
-});
-</script>
 
 <style lang="scss" scoped>
 .toggle {

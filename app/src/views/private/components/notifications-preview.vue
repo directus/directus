@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
+import SidebarButton from './sidebar-button.vue';
+import NotificationItem from './notification-item.vue';
+import { useNotificationsStore } from '@/stores/notifications';
+
+defineProps<{
+	sidebarOpen?: boolean;
+	modelValue?: boolean;
+}>();
+
+defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+}>();
+
+const { t } = useI18n();
+
+const notificationsStore = useNotificationsStore();
+const { lastFour } = storeToRefs(notificationsStore);
+</script>
+
 <template>
 	<div class="notifications-preview">
 		<transition-expand tag="div">
@@ -24,28 +46,6 @@
 		</sidebar-button>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
-import SidebarButton from './sidebar-button.vue';
-import NotificationItem from './notification-item.vue';
-import { useNotificationsStore } from '@/stores/notifications';
-
-defineProps<{
-	sidebarOpen?: boolean;
-	modelValue?: boolean;
-}>();
-
-defineEmits<{
-	(e: 'update:modelValue', value: boolean): void;
-}>();
-
-const { t } = useI18n();
-
-const notificationsStore = useNotificationsStore();
-const { lastFour } = storeToRefs(notificationsStore);
-</script>
 
 <style lang="scss" scoped>
 .notifications-preview {

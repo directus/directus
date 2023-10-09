@@ -1,11 +1,3 @@
-<template>
-	<div
-		id="map-container"
-		ref="container"
-		:class="{ select: selectMode, hover: hoveredFeature || hoveredCluster }"
-	></div>
-</template>
-
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
@@ -343,6 +335,14 @@ function hoverCluster(event: MapLayerMouseEvent) {
 	}
 }
 </script>
+
+<template>
+	<div
+		id="map-container"
+		ref="container"
+		:class="{ select: selectMode, hover: hoveredFeature || hoveredCluster }"
+	></div>
+</template>
 
 <style lang="scss" scoped>
 #map-container.hover :deep(.mapboxgl-canvas-container) {

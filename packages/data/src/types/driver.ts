@@ -1,6 +1,9 @@
-import type { AbstractQuery } from './abstract-query.js';
+import type { AbstractQuery } from './abstract-query/abstract-query.js';
+import type { ReadableStream } from 'node:stream/web';
 
-export interface DataDriver {
+export abstract class DataDriver {
+	abstract query: (query: AbstractQuery) => Promise<ReadableStream>;
+
 	/**
 	 * When the driver is first registered. Can be used to warm up caches, prepare connections to
 	 * databases, login to external services, etc
@@ -12,8 +15,4 @@ export interface DataDriver {
 	 * services, etc
 	 */
 	destroy?: () => Promise<void>;
-}
-
-export abstract class DataDriver {
-	abstract query: (query: AbstractQuery) => Promise<NodeJS.ReadableStream>;
 }

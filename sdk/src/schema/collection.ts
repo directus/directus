@@ -1,4 +1,4 @@
-import type { MergeCoreCollection } from '../index.js';
+import type { DirectusField, MergeCoreCollection, NestedPartial } from '../index.js';
 
 export type DirectusCollection<Schema extends object> = {
 	collection: string; // TODO keyof complete schema
@@ -21,7 +21,7 @@ export type DirectusCollection<Schema extends object> = {
 			accountability: string | null;
 			color: string | null;
 			item_duplication_fields: string[] | null;
-			sort: string | null;
+			sort: number | null;
 			group: string | null;
 			collapse: string;
 			preview_url: string | null;
@@ -32,6 +32,7 @@ export type DirectusCollection<Schema extends object> = {
 		name: string;
 		comment: string | null;
 	} | null;
+	fields?: NestedPartial<DirectusField<Schema>>[];
 };
 
 export type CollectionMetaTranslationType = {

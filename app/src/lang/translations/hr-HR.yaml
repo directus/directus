@@ -395,6 +395,7 @@ move: Premjesti
 system: Sustav
 add_field_related: Dodaj polje povezanoj zbirci
 interface_label: Sučelje
+display_label: Prikaz
 today: Danas
 yesterday: Jučer
 delete_comment: Obriši komentar
@@ -502,6 +503,7 @@ expand: Proširi
 collapse: Sažmi
 select_item: Odaberi stavku
 no_items: Nema stavki
+search_items: Pretraži Stavke...
 disabled: Onemogućeno
 information: Informacije
 report_bug: Prijavi grešku
@@ -949,6 +951,8 @@ wysiwyg_options:
   source_code: Uredi izvorni kod
   fullscreen: Puni zaslon
   directionality: Usmjerenost
+  lazy_loading: Odgodeno Učitavanje Slike
+  lazy_loading_label: Omogući Odgodeno Učitavanje Slike
 dropdown: Padajući izbornik
 choices: Izbori
 choices_option_configured_incorrectly: Izbori su pogrešno konfigurirani
@@ -1479,6 +1483,8 @@ undo_removed_item: Poništi uklanjanje stavke
 remove_item: Ukloni stavku
 delete_item: Obriši stavku
 interfaces:
+  list-m2a:
+    prefix_note: Koristi ime kolekcije povezane stavke kao zadano.
   filter:
     name: Filter
     description: Konfiguriraj objekt filtera.
@@ -1614,6 +1620,8 @@ interfaces:
   system-interface-options:
     interface-options: Opcije sučelja
     description: Modal za odabir opcija sučelja
+  system-display:
+    display: Prikaz
   list-m2m:
     many-to-many: Many to Many
     description: Odaberite više povezanih spojnih stavki
@@ -1683,6 +1691,7 @@ interfaces:
     sort_placeholder: Ručno
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutačni podaci nisu kompatibilni sa sučeljem repetitora i bit će nadjačani prilikom dodavanja stavki u repetitor
+    interface_group: Opcije sučelja
   slider:
     slider: Klizač
     description: Odaberite broj pomoću klizača
@@ -2138,9 +2147,19 @@ operations:
     payload: Payload
     query: Upit
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Prijava i provjera JSON Web Tokena
+    operation: Operacija
+    secret: Tajna
+    secret_placeholder: Unesite tajnu...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opcije
+    options_placeholder: 'Pogledajte https://www.npmjs.com/package/jsonwebtoken#usage za dostupne opcije'
+    sign: Prijava Tokena
+    verify: Verificiraj Token
+    decode: Dekodirajte token
   log:
     name: Prijava na konzolu
     description: Pošaljite nešto na konzolu
