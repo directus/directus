@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { getDatabaseVersion } from '../../../../database/index.js';
+import { getDatabaseVersion } from '../../../index.js';
 import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperMySQL extends SchemaHelper {
