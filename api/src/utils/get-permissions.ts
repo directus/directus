@@ -9,7 +9,7 @@ import env from '../env.js';
 import logger from '../logger.js';
 import { RolesService } from '../services/roles.js';
 import { UsersService } from '../services/users.js';
-import { mergePermissions } from '../utils/merge-permissions.js';
+import { mergePermissions } from './merge-permissions.js';
 import { mergePermissionsForShare } from './merge-permissions-for-share.js';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
