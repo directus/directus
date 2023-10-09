@@ -124,6 +124,13 @@ export class ExtensionManager {
 	 */
 	private watcher: FSWatcher | null = null;
 
+	/**
+	 * Load and register all extensions
+	 *
+	 * @param {ExtensionManagerOptions} options - Extension manager configuration options
+	 * @param {boolean} options.schedule - Whether or not to allow for scheduled (CRON) hook extensions
+	 * @param {boolean} options.watch - Whether or not to watch the local extensions folder for changes
+	 */
 	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
 		if (options.schedule !== undefined) {
 			this.options.schedule = options.schedule;
@@ -154,6 +161,43 @@ export class ExtensionManager {
 		if (this.options.watch && !wasWatcherInitialized) {
 			this.updateWatchedExtensions(this.extensions);
 		}
+	}
+
+	/**
+	 * Load all extensions from disk and register them in their respective places
+	 */
+	private async load(): Promise<void> {
+		try {
+			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
+
+			this.extensions = await getExtensions();
+		} catch (err: any) {
+			logger.warn(`Couldn't load extensions`);
+			logger.warn(err);
+		}
+
+		await this.registerHooks();
+		await this.registerEndpoints();
+		await this.registerOperations();
+		await this.registerBundles();
+
+		if (env['SERVE_APP']) {
+			this.appExtensionsBundle = await this.generateExtensionBundle();
+		}
+
+		this.isLoaded = true;
+	}
+
+	private async unload(): Promise<void> {
+		await this.unregisterApiExtensions();
+
+		this.localEmitter.offAll();
+
+		if (env['SERVE_APP']) {
+			this.appExtensionsBundle = null;
+		}
+
+		this.isLoaded = false;
 	}
 
 	public reload(): void {
@@ -192,6 +236,11 @@ export class ExtensionManager {
 		});
 	}
 
+	/**
+	 * Return all registered permissions optionally filtered by type
+	 *
+	 * @param {string} [type] - Type to filter by
+	 */
 	public getExtensionsList(type?: ExtensionType) {
 		const extensionInfo = this.extensions.map(normalizeExtensionInfo);
 
@@ -223,40 +272,6 @@ export class ExtensionManager {
 			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
 			body: wrapEmbeds('Custom Embed Body', this.hookEmbedsBody),
 		};
-	}
-
-	private async load(): Promise<void> {
-		try {
-			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
-
-			this.extensions = await getExtensions();
-		} catch (err: any) {
-			logger.warn(`Couldn't load extensions`);
-			logger.warn(err);
-		}
-
-		await this.registerHooks();
-		await this.registerEndpoints();
-		await this.registerOperations();
-		await this.registerBundles();
-
-		if (env['SERVE_APP']) {
-			this.appExtensionsBundle = await this.generateExtensionBundle();
-		}
-
-		this.isLoaded = true;
-	}
-
-	private async unload(): Promise<void> {
-		await this.unregisterApiExtensions();
-
-		this.localEmitter.offAll();
-
-		if (env['SERVE_APP']) {
-			this.appExtensionsBundle = null;
-		}
-
-		this.isLoaded = false;
 	}
 
 	private initializeWatcher(): void {
