@@ -360,17 +360,19 @@ export class RegistrationManager {
 	}
 
 	public async unregisterApiExtension(name: string): Promise<void> {
-		for (const extension of this.runningApiExtensions) {
+		this.runningApiExtensions = this.runningApiExtensions.reduce((acc, extension) => {
 			if (extension.extension === name) {
-				await extension.unregister();
+				extension.unregister();
+			} else {
+				acc.push(extension);
 			}
-		}
+
+			return acc;
+		}, [] as RunningApiExtension[])
 	}
 
 	public async unregisterApiExtensions(): Promise<void> {
-		for (const extension of this.runningApiExtensions) {
-			await extension.unregister();
-		}
+		await Promise.all(this.runningApiExtensions.map((extension) => extension.unregister()));
 
 		this.endpointRouter.stack = [];
 
