@@ -6,8 +6,6 @@ export type BundleConfig = {
 	operations: { name: string; config: OperationApiConfig }[];
 };
 
-export type AppExtensions = string | null;
-
 export type ApiExtensions = { path: string }[];
 
 export interface Options {
