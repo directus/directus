@@ -5,6 +5,10 @@ import path from 'path';
 import env from '../env.js';
 import logger from '../logger.js';
 import { Url } from '../utils/url.js';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const getSharedDepsMapping = async (deps: string[]): Promise<Record<string, string>> => {
 	const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
