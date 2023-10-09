@@ -43,8 +43,6 @@ const props = withDefaults(
 		decimals: 2,
 		color: 'var(--primary)',
 		fillType: 'gradient',
-		min: undefined,
-		max: undefined,
 	}
 );
 
