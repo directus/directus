@@ -23,35 +23,14 @@ const rootCollection = randomIdentifier();
 const dataStore = randomIdentifier();
 const firstField = randomIdentifier();
 const firstFieldId = randomIdentifier();
-const secondField = randomIdentifier();
-const secondFieldId = randomIdentifier();
-const secondFieldAlias = randomIdentifier();
-
-// random user inputs and meta for m2o
-const collectionToJoin = randomIdentifier();
-const collectionToJoinId = randomIdentifier();
-const joinField1 = randomIdentifier();
-const joinField1Id = randomIdentifier();
-const joinField1Alias = randomIdentifier();
-const joinField2 = randomIdentifier();
-const joinField2Id = randomIdentifier();
-const fk = randomIdentifier();
-const foreignPk = randomIdentifier();
-const joinAlias = randomIdentifier();
 
 // random user input and meta for o2m
-const collectionToJoin2 = randomIdentifier();
-const collectionToJoin2Id = randomIdentifier();
-const joinField1m = randomIdentifier();
-const joinField1IdM = randomIdentifier();
-const joinField1AliasM = randomIdentifier();
-const joinField2m = randomIdentifier();
-const joinField2IdM = randomIdentifier();
-const fkM = randomIdentifier();
-const foreignPkm = randomIdentifier();
-const joinAliasM = randomIdentifier();
 
 test('nested with local fields', async () => {
+	const secondField = randomIdentifier();
+	const secondFieldId = randomIdentifier();
+	const secondFieldAlias = randomIdentifier();
+
 	const query: AbstractQuery = {
 		root: true,
 		collection: rootCollection,
@@ -149,6 +128,18 @@ test('nested with local fields', async () => {
 });
 
 test('nested m2o field', async () => {
+	// random user inputs and meta for m2o
+	const collectionToJoin = randomIdentifier();
+	const collectionToJoinId = randomIdentifier();
+	const joinField1 = randomIdentifier();
+	const joinField1Id = randomIdentifier();
+	const joinField1Alias = randomIdentifier();
+	const joinField2 = randomIdentifier();
+	const joinField2Id = randomIdentifier();
+	const fk = randomIdentifier();
+	const foreignPk = randomIdentifier();
+	const joinAlias = randomIdentifier();
+
 	const query: AbstractQuery = {
 		root: true,
 		collection: rootCollection,
@@ -157,11 +148,6 @@ test('nested m2o field', async () => {
 			{
 				type: 'primitive',
 				field: firstField,
-			},
-			{
-				type: 'primitive',
-				field: secondField,
-				alias: secondFieldAlias,
 			},
 			{
 				type: 'nested-one',
@@ -202,13 +188,6 @@ test('nested m2o field', async () => {
 					table: rootCollection,
 					column: firstField,
 					as: firstFieldId,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-					as: secondFieldId,
-					alias: secondFieldAlias,
 				},
 				{
 					type: 'primitive',
@@ -255,7 +234,6 @@ test('nested m2o field', async () => {
 		parameters: [],
 		aliasMapping: new Map([
 			[firstFieldId, [firstField]],
-			[secondFieldId, [secondFieldAlias]],
 			[joinField1Id, [collectionToJoin, joinField1Alias]],
 			[joinField2Id, [collectionToJoin, joinField2]],
 		]),
@@ -274,13 +252,11 @@ test('nested m2o field', async () => {
 				const mockedData = [
 					{
 						[firstFieldId]: 937,
-						[secondFieldId]: 'lorem ipsum',
 						[joinField1Id]: 42,
 						[joinField2Id]: true,
 					},
 					{
 						[firstFieldId]: 1342,
-						[secondFieldId]: 'ipsum dapsum',
 						[joinField1Id]: 26,
 						[joinField2Id]: true,
 					},
@@ -306,7 +282,6 @@ test('nested m2o field', async () => {
 	const expectedResult = [
 		{
 			[firstField]: 937,
-			[secondFieldAlias]: 'lorem ipsum',
 			[collectionToJoin]: {
 				[joinField1Alias]: 42,
 				[joinField2]: true,
@@ -314,7 +289,6 @@ test('nested m2o field', async () => {
 		},
 		{
 			[firstField]: 1342,
-			[secondFieldAlias]: 'ipsum dapsum',
 			[collectionToJoin]: {
 				[joinField1Alias]: 26,
 				[joinField2]: true,
@@ -326,6 +300,17 @@ test('nested m2o field', async () => {
 });
 
 test.skip('nested o2m field', async () => {
+	const collectionToJoin2 = randomIdentifier();
+	const collectionToJoin2Id = randomIdentifier();
+	const joinField1m = randomIdentifier();
+	const joinField1IdM = randomIdentifier();
+	const joinField1AliasM = randomIdentifier();
+	const joinField2m = randomIdentifier();
+	const joinField2IdM = randomIdentifier();
+	const fkM = randomIdentifier();
+	const foreignPkm = randomIdentifier();
+	const joinAliasM = randomIdentifier();
+
 	const query: AbstractQuery = {
 		root: true,
 		collection: rootCollection,
@@ -376,14 +361,14 @@ test.skip('nested o2m field', async () => {
 				},
 				{
 					type: 'primitive',
-					table: collectionToJoinId,
-					column: joinField1,
-					as: joinField2Id,
-					alias: joinField1Alias,
+					table: collectionToJoin2Id,
+					column: joinField1m,
+					as: joinField2IdM,
+					alias: joinField1AliasM,
 				},
 				{
 					type: 'primitive',
-					table: collectionToJoinId,
+					table: collectionToJoin2Id,
 					column: joinField2m,
 					as: joinField2IdM,
 				},
@@ -402,13 +387,13 @@ test.skip('nested o2m field', async () => {
 							target: {
 								type: 'primitive',
 								table: rootCollection,
-								column: fk,
+								column: fkM,
 							},
 							operation: 'eq',
 							compareTo: {
 								type: 'primitive',
-								table: collectionToJoinId,
-								column: foreignPk,
+								table: collectionToJoin2Id,
+								column: foreignPkm,
 							},
 						},
 					},
@@ -419,8 +404,8 @@ test.skip('nested o2m field', async () => {
 		parameters: [],
 		aliasMapping: new Map([
 			[firstFieldId, [firstField]],
-			[joinField1IdM, [collectionToJoin, joinField2]],
-			[joinField2IdM, [collectionToJoin, joinField2]],
+			[joinField1IdM, [collectionToJoin2, joinField2m]],
+			[joinField2IdM, [collectionToJoin2, joinField2m]],
 		]),
 	});
 
@@ -447,7 +432,7 @@ test.skip('nested o2m field', async () => {
 					},
 					{
 						[firstFieldId]: 1342,
-						[joinField1Id]: 26,
+						[joinField1IdM]: 26,
 						[joinField2IdM]: null,
 						[joinField1IdM]: null,
 					},
