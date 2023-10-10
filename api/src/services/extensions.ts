@@ -87,7 +87,7 @@ export class ExtensionsService {
 			return {
 				name,
 				bundle: bundleName,
-				schema: pick(schema, 'type', 'local'),
+				schema: schema ? pick(schema, 'type', 'local') : null,
 				meta: omit(meta, 'name'),
 			};
 		});

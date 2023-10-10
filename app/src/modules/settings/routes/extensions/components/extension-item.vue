@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ExtensionInfo } from '@directus/extensions';
-import { iconMap } from '../constants/icons';
+import type { ApiOutput } from '@directus/extensions';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { iconMap } from '../constants/icons';
 
 const { t } = useI18n();
 
@@ -11,24 +11,25 @@ defineOptions({
 });
 
 interface ExtensionItem {
-	name: ExtensionInfo['name'];
-	type: ExtensionInfo['type'];
-	entries?: ExtensionItem[];
+	extension: ApiOutput;
+	children: ApiOutput[];
 }
 
 const props = defineProps<ExtensionItem>();
 
-const icon = computed(() => iconMap[props.type]);
+const type = computed(() => props.extension.schema?.type);
+
+const icon = computed(() => (type.value ? iconMap[type.value] : 'warning'));
 </script>
 
 <template>
 	<v-list-item block>
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
-		<v-list-item-content class="monospace">{{ name }}</v-list-item-content>
+		<v-list-item-content class="monospace">{{ extension.name }}</v-list-item-content>
 	</v-list-item>
 
-	<v-list v-if="entries" class="nested">
-		<ExtensionItem v-for="item in entries" :key="name + '__' + item.name" :name="item.name" :type="item.type" />
+	<v-list v-if="children" class="nested">
+		<extension-item v-for="item in children" :key="item.bundle + '__' + item.name" :extension="item" :children="[]" />
 	</v-list>
 </template>
 
