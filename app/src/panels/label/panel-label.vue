@@ -52,8 +52,19 @@ function adjustPadding() {
 	return;
 }
 
+function unmountResizeObserver() {
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+		resizeObserver = null;
+	}
+}
+
 async function updateFit() {
-	if (props.fontSize !== 'auto' || props.text.length <= 0) return;
+	if (props.fontSize !== 'auto' || props.text.length <= 0) {
+		unmountResizeObserver();
+		return;
+	}
+
 	await document.fonts.ready;
 	adjustPadding();
 	adjustFontSize();
@@ -82,10 +93,7 @@ onUpdated(() => {
 });
 
 onBeforeUnmount(() => {
-	if (resizeObserver) {
-		resizeObserver.disconnect();
-		resizeObserver = null;
-	}
+	unmountResizeObserver()
 });
 </script>
 
@@ -106,6 +114,7 @@ export default defineComponent({
 	>
 		<p
 			ref="labelText"
+			class="label-text"
 			:style="{ whiteSpace, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
 		>
 			{{ text }}
@@ -114,10 +123,15 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
+
+.label-text {
+	min-width: min-content;
+	min-height: min-content;
+	width: 100%;
+}
 .label {
 	display: flex;
-	flex-direction: column;
-	align-items: stretch;
+	align-items: center;
 	width: 100%;
 	height: 100%;
 	color: var(--color-text);

@@ -47,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 	fontSize: 'auto',
 	fontWeight: 800,
 	font: 'sans-serif',
+	textAlign: 'center',
 });
 
 const { locale } = useI18n();
@@ -76,8 +77,19 @@ function adjustPadding() {
 	return;
 }
 
+function unmountResizeObserver() {
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+		resizeObserver = null;
+	}
+}
+
 async function updateFit() {
-	if (props.fontSize !== 'auto' || !props.data || props.data.length === 0) return;
+	if (props.fontSize !== 'auto' || !props.data || props.data.length === 0) {
+		unmountResizeObserver();
+		return
+	}
+
 	await document.fonts.ready;
 	adjustPadding();
 	adjustFontSize();
@@ -106,10 +118,7 @@ onUpdated(() => {
 });
 
 onBeforeUnmount(() => {
-	if (resizeObserver) {
-		resizeObserver.disconnect();
-		resizeObserver = null;
-	}
+	unmountResizeObserver()
 });
 
 const metric = computed(() => {
@@ -197,6 +206,7 @@ const color = computed(() => {
 	<div ref="labelContainer" class="metric type-title selectable" :class="{ 'has-header': showHeader }">
 		<p
 			ref="labelText"
+			class="metric-text"
 			:style="{ color, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
 		>
 			{{ prefix }}
@@ -207,11 +217,15 @@ const color = computed(() => {
 </template>
 
 <style scoped>
+
+.metric-text {
+	min-width: min-content;
+	min-height: min-content;
+	width: 100%;
+}
 .metric {
 	display: flex;
-	align-items: stretch;
-	justify-content: center;
-	flex-direction: column;
+	align-items: center;
 	width: 100%;
 	height: 100%;
 	font-weight: 800;
