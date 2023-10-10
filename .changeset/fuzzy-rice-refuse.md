@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix readonly and required on groups
+Ensured the "Readonly" and "Required" options work on groups
