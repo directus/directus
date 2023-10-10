@@ -433,7 +433,11 @@ test.skip('nested o2m field', async () => {
 		client: null,
 		stream: new ReadableStream({
 			start(controller) {
-				// the first two results have the same
+				/*
+				 * this database result mock shows two m2o relations.
+				 * the first one has two 'many' parts, the second one has none 'many' part.
+				 * but the second one will get printed anyways since it's the db was queried with a LEFT JOIN.
+				 */
 				const mockedData = [
 					{
 						[firstFieldId]: firstFieldDbResult1, // the 'one' part, same value as the next one
