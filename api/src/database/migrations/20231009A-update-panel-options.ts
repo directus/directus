@@ -1,7 +1,9 @@
 import type { Knex } from 'knex';
 
-export async function up(knex: Knex): Promise<void> {
+export async function up(knex: Knex) {
 	const panels = await knex('directus_panels').where('type', '=', 'metric').select();
+
+	const updates: Promise<number>[] = [];
 
 	for (const panel of panels) {
 		let options = panel.options;
@@ -13,37 +15,44 @@ export async function up(knex: Knex): Promise<void> {
 			options = JSON.parse(options);
 		}
 
+		// Not expected, just to be on the safe side
+		if (!options) continue;
+
 		let needsUpdate = false;
 
 		// Check and update abbreviate -> notation
-		if (options && options.abbreviate === true) {
+		if (options.abbreviate === true) {
 			options.notation = 'compact';
 			delete options.abbreviate;
 			needsUpdate = true;
 		}
 
 		// Check and update decimals -> minimumFractionDigits and maximumFractionDigits
-		if (options && typeof options.decimals === 'number') {
+		if (typeof options.decimals === 'number') {
 			options.minimumFractionDigits = options.decimals;
 			options.maximumFractionDigits = options.decimals;
 			delete options.decimals;
 			needsUpdate = true;
 		}
 
-		// Convert the options back to string if they were stringified initially
-		if (wasStringified) {
-			options = JSON.stringify(options);
-		}
-
 		// Update the row with modified options if necessary
 		if (needsUpdate) {
-			await knex('directus_panels').update({ options }).where('id', panel.id);
+			// Convert the options back to string if they were stringified initially
+			if (wasStringified) {
+				options = JSON.stringify(options);
+			}
+
+			updates.push(knex('directus_panels').update({ options }).where('id', panel.id));
 		}
 	}
+
+	return Promise.all(updates);
 }
 
-export async function down(knex: Knex): Promise<void> {
+export async function down(knex: Knex) {
 	const panels = await knex('directus_panels').where('type', '=', 'metric').select();
+
+	const updates: Promise<number>[] = [];
 
 	for (const panel of panels) {
 		let options = panel.options;
@@ -55,10 +64,13 @@ export async function down(knex: Knex): Promise<void> {
 			options = JSON.parse(options);
 		}
 
+		// Not expected, just to be on the safe side
+		if (!options) continue;
+
 		let needsUpdate = false;
 
 		// Revert notation -> abbreviate
-		if (options && options.notation === 'compact') {
+		if (options.notation === 'compact') {
 			options.abbreviate = true;
 			delete options.notation;
 			needsUpdate = true;
@@ -66,7 +78,6 @@ export async function down(knex: Knex): Promise<void> {
 
 		// Revert minimumFractionDigits and maximumFractionDigits -> decimals
 		if (
-			options &&
 			typeof options.minimumFractionDigits === 'number' &&
 			options.minimumFractionDigits === options.maximumFractionDigits
 		) {
@@ -76,14 +87,16 @@ export async function down(knex: Knex): Promise<void> {
 			needsUpdate = true;
 		}
 
-		// Convert the options back to string if they were stringified initially
-		if (wasStringified) {
-			options = JSON.stringify(options);
-		}
-
 		// Update the row with reverted options if necessary
 		if (needsUpdate) {
-			await knex('directus_panels').update({ options }).where('id', panel.id);
+			// Convert the options back to string if they were stringified initially
+			if (wasStringified) {
+				options = JSON.stringify(options);
+			}
+
+			updates.push(knex('directus_panels').update({ options }).where('id', panel.id));
 		}
 	}
+
+	return Promise.all(updates);
 }
