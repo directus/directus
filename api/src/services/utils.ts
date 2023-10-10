@@ -147,4 +147,12 @@ export class UtilsService {
 			}
 		);
 	}
+
+	async clearCache(): Promise<void> {
+		const { cache } = getCache();
+
+		if (cache) {
+			await cache.clear();
+		}
+	}
 }
