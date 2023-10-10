@@ -108,7 +108,7 @@ export async function getFieldsPayload(
 	if ('item' in subscription) {
 		if (event?.action === 'delete') {
 			// return only the subscribed id in case a bluk delete was done
-			return [subscription.item];
+			return subscription.item;
 		} else {
 			return await service.readOne(subscription.collection, String(subscription.item));
 		}
