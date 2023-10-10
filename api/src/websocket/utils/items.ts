@@ -69,7 +69,7 @@ export async function getCollectionPayload(
 
 	if ('item' in subscription) {
 		if (event?.action === 'delete') {
-			// return only the subscribed id in case a bluk delete was done
+			// return only the subscribed id in case a bulk delete was done
 			return subscription.item;
 		} else {
 			return await service.readOne(String(subscription.item));
