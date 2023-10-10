@@ -29,7 +29,7 @@ router.get(
 
 		const extensionManager = getExtensionManager();
 
-		const extensions = extensionManager.getExtensionsList(type);
+		const extensions = extensionManager.getExtensions(type);
 
 		res.locals['payload'] = {
 			data: extensions,
@@ -49,7 +49,7 @@ router.get(
 		let source: string | null;
 
 		if (chunk === 'index.js') {
-			source = extensionManager.getAppExtensions();
+			source = extensionManager.getAppExtensionsBundle();
 		} else {
 			source = extensionManager.getAppExtensionChunk(chunk);
 		}

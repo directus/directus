@@ -2006,10 +2006,10 @@ export class GraphQLService {
 					const extensionManager = getExtensionManager();
 
 					return {
-						interfaces: extensionManager.getExtensionsList('interface'),
-						displays: extensionManager.getExtensionsList('display'),
-						layouts: extensionManager.getExtensionsList('layout'),
-						modules: extensionManager.getExtensionsList('module'),
+						interfaces: extensionManager.getExtensions('interface'),
+						displays: extensionManager.getExtensions('display'),
+						layouts: extensionManager.getExtensions('layout'),
+						modules: extensionManager.getExtensions('module'),
 					};
 				},
 			},
