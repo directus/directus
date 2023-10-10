@@ -2111,6 +2111,9 @@ panels:
     name: Metric
     description: Show a single value based on a query
     field: Field
+  metric_list:
+    name: Metric List
+    description: List and visualize aggregate metrics from a collection
   time_series:
     name: Time Series
     description: Render a line chart based on values over time
@@ -2435,5 +2438,3 @@ show_percentage: Show Percentage
 aggregation: Aggregation
 series_grouping: Series Grouping
 date_precision: Date Precision
-metric_list: Metric List
-metric_list_description: List and visualize aggregate metrics from a collection
