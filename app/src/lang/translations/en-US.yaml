@@ -2435,3 +2435,5 @@ show_percentage: Show Percentage
 aggregation: Aggregation
 series_grouping: Series Grouping
 date_precision: Date Precision
+metric_list: Metric List
+metric_list_description: List and visualize aggregate metrics from a collection

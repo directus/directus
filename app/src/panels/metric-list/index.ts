@@ -6,9 +6,9 @@ import PanelMetricList from './panel-metric-list.vue';
 
 export default definePanel({
 	id: 'metric-list',
-	name: 'Metric List',
+	name: 'metric_list',
 	icon: 'format_list_numbered_rtl',
-	description: 'List and visualize aggregate metrics from a collection',
+	description: 'metric_list_description',
 	component: PanelMetricList,
 	query(options) {
 		if (!options?.collection) return;
