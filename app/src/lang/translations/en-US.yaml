@@ -55,6 +55,24 @@ or: Or
 init: Init
 dataset_too_large_currently_showing_n_items: Dataset is too large. Currently showing the first {n} items.
 modifier: Modifier
+extension_interface: Interface
+extension_display: Display
+extension_layout: Layout
+extension_module: Module
+extension_panel: Panel
+extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operation
+extension_bundle: Bundle
+extension_interfaces: Interfaces
+extension_displays: Displays
+extension_layouts: Layouts
+extension_modules: Modules
+extension_panels: Panels
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Operations
+extension_bundles: Bundles
 custom: Custom
 hook: Hook
 fill_width: Fill Width
@@ -102,6 +120,33 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+keep: Keep
+version: Version
+version_key: Version Key
+version_name: Version Name
+main_version: Main
+switch_version: Switch Version
+switch_version_copy: Are you sure you want to switch to the "{version}" version?
+create_version: Create Version
+update_version: Update Version
+compare_version: Compare Version
+save_version: Save Version
+promote_version: Promote Version
+promote_version_disabled: No changes selected
+promote_version_drawer_title: Promote {version} into Main
+promote_version_changes: Changes
+promote_version_preview: Preview
+outdated_notice: >-
+  The main item has been updated since this version was created. Please review all the field values below, and confirm
+  which version should be used when promoting this version into the main item.
+promote_notice: >-
+  Please review all the field values below, and confirm which version should be used when promoting this version into
+  the main item.
+delete_version: Delete Version
+delete_version_copy: >-
+  Are you sure you want to delete the "{version}" version? This action cannot be undone.
+delete_on_promote_copy: >-
+  Do you want to delete or keep the "{version}" version after promoting?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -365,6 +410,7 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
+revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
@@ -1075,6 +1121,8 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 no_upscale: Don't upscale images
+no_extensions: No Extensions
+no_extensions_copy: No extensions have been installed yet.
 collection: Collection
 collections: Collections
 content: Content
@@ -1130,6 +1178,7 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    versioning: Versioning
     archive_field: Archive Field
     item_duplication_fields: Item Duplication Fields
   directus_files:
@@ -1325,6 +1374,8 @@ field_options:
     accountability_divider: Accountability
     duplication_divider: Duplication
     preview_divider: Preview
+    content_versioning_divider: Content Versioning
+    enable_versioning: Enable Versioning
   directus_files:
     title: A unique title...
     description: An optional description...

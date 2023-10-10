@@ -8,6 +8,7 @@ import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
 import NewCollection from './routes/data-model/new-collection.vue';
+import Extensions from './routes/extensions/extensions.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import FlowsDetail from './routes/flows/flow.vue';
 import FlowsOverview from './routes/flows/overview.vue';
@@ -224,6 +225,10 @@ export default defineModule({
 					],
 				},
 			],
+		},
+		{
+			path: 'extensions',
+			component: Extensions,
 		},
 		{
 			path: 'translations',

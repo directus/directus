@@ -13,10 +13,11 @@ readTime: 4 min read
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest LTS version of Node](https://nodejs.org/en/download) to _build_ a Development version
-of Directus.
+You will need to have the [latest LTS version of Node.js](https://nodejs.org/en/download) for the Development
+environment of Directus.
 
-You will also need to have the package manager [pnpm](https://pnpm.io) installed.
+You will also need to have the package manager [pnpm](https://pnpm.io) installed. It's recommended to install
+[pnpm via Corepack](https://pnpm.io/installation#using-corepack) for automatic use of the correct version.
 
 :::
 
@@ -37,14 +38,14 @@ git clone git@github.com:YOUR-USERNAME/directus.git
 git checkout -b YOUR-BRANCH-NAME
 ```
 
-## 4. Install the dependencies and build the project
+## 4. Install dependencies and build the project
 
 ```bash
 pnpm install
 pnpm build
 ```
 
-## 5. Setup Local Configuration
+## 5. Setup local configuration
 
 ### Create a `.env` file in `/api`
 
