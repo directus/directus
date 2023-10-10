@@ -38,10 +38,11 @@ import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
 import { normalizeExtensionInfo } from './normalize-extension-info.js';
-import type { BundleConfig, ExtensionManagerOptions } from './types.js';
+import type { BundleConfig, ExtensionManagerOptions, ExtensionSettings } from './types.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
@@ -67,6 +68,11 @@ export class ExtensionManager {
 	 * All extensions that are loaded within the current process
 	 */
 	private extensions: Extension[] = [];
+
+	/**
+	 * Settings for the extensions that are loaded within the current process
+	 */
+	private extensionsSettings: ExtensionSettings[] = [];
 
 	/**
 	 * App extensions rolled up into a single bundle. Any chunks from the bundle will be available
@@ -172,6 +178,7 @@ export class ExtensionManager {
 			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
 
 			this.extensions = await getExtensions();
+			this.extensionsSettings = await getExtensionsSettings(this.extensions);
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
 			logger.warn(err);
@@ -247,7 +254,9 @@ export class ExtensionManager {
 	 * @param {string} [type] - Type to filter by
 	 */
 	public getExtensions(type?: ExtensionType): ExtensionInfo[] {
-		const extensionInfo = this.extensions.map(normalizeExtensionInfo);
+		const extensionInfo = this.extensions.map((extension) =>
+			normalizeExtensionInfo(extension, this.extensionsSettings)
+		);
 
 		if (type) {
 			return extensionInfo.filter((extension) => extension.type === type);
@@ -414,6 +423,10 @@ export class ExtensionManager {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
 
 		for (const hook of hooks) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === hook.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
@@ -441,6 +454,10 @@ export class ExtensionManager {
 		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
 
 		for (const endpoint of endpoints) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === endpoint.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
@@ -482,6 +499,10 @@ export class ExtensionManager {
 		);
 
 		for (const operation of operations) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === operation.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
