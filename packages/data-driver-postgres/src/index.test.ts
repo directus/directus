@@ -18,13 +18,11 @@ vi.mock('@directus/data-sql', async (importOriginal) => {
 	};
 });
 
-// random user inputs for root fields
+// random user inputs for stuff which is used by all tests
 const rootCollection = randomIdentifier();
 const dataStore = randomIdentifier();
 const firstField = randomIdentifier();
 const firstFieldId = randomIdentifier();
-
-// random user input and meta for o2m
 
 test('nested with local fields', async () => {
 	const secondField = randomIdentifier();
@@ -78,7 +76,11 @@ test('nested with local fields', async () => {
 		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 	});
 
-	/* @TODO randomize the mocked return values */
+	const fistFieldDbResult1 = randomIdentifier();
+	const fistFieldDbResult2 = randomIdentifier();
+	const secondFieldDbResult1 = randomIdentifier();
+	const secondFieldDbResult2 = randomIdentifier();
+
 	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce({
 		// @ts-ignore a promise is normally been returned
 		client: null,
@@ -87,12 +89,12 @@ test('nested with local fields', async () => {
 			start(controller) {
 				const mockedData = [
 					{
-						[firstFieldId]: 937,
-						[secondFieldId]: 'lorem ipsum',
+						[firstFieldId]: fistFieldDbResult1,
+						[secondFieldId]: secondFieldDbResult1,
 					},
 					{
-						[firstFieldId]: 1342,
-						[secondFieldId]: 'ipsum dapsum',
+						[firstFieldId]: fistFieldDbResult2,
+						[secondFieldId]: secondFieldDbResult2,
 					},
 				];
 
@@ -115,12 +117,12 @@ test('nested with local fields', async () => {
 
 	const expectedResult = [
 		{
-			[firstField]: 937,
-			[secondFieldAlias]: 'lorem ipsum',
+			[firstField]: fistFieldDbResult1,
+			[secondFieldAlias]: secondFieldDbResult1,
 		},
 		{
-			[firstField]: 1342,
-			[secondFieldAlias]: 'ipsum dapsum',
+			[firstField]: fistFieldDbResult2,
+			[secondFieldAlias]: secondFieldDbResult2,
 		},
 	];
 
@@ -243,7 +245,13 @@ test('nested m2o field', async () => {
 		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 	});
 
-	/* @TODO randomize the mocked return values */
+	const firstFieldDbResult1 = randomIdentifier();
+	const firstFieldDbResult2 = randomIdentifier();
+	const secondFieldDbResult1 = randomIdentifier();
+	const secondFieldDbResult2 = randomIdentifier();
+	const thirdFieldDbResult1 = randomIdentifier();
+	const thirdFieldDbResult2 = randomIdentifier();
+
 	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce({
 		// @ts-ignore a promise is normally been returned
 		client: null,
@@ -251,14 +259,14 @@ test('nested m2o field', async () => {
 			start(controller) {
 				const mockedData = [
 					{
-						[firstFieldId]: 937,
-						[joinField1Id]: 42,
-						[joinField2Id]: true,
+						[firstFieldId]: firstFieldDbResult1,
+						[joinField1Id]: secondFieldDbResult1,
+						[joinField2Id]: thirdFieldDbResult1,
 					},
 					{
-						[firstFieldId]: 1342,
-						[joinField1Id]: 26,
-						[joinField2Id]: true,
+						[firstFieldId]: firstFieldDbResult2,
+						[joinField1Id]: secondFieldDbResult2,
+						[joinField2Id]: thirdFieldDbResult2,
 					},
 				];
 
@@ -281,17 +289,17 @@ test('nested m2o field', async () => {
 
 	const expectedResult = [
 		{
-			[firstField]: 937,
+			[firstField]: firstFieldDbResult1,
 			[collectionToJoin]: {
-				[joinField1Alias]: 42,
-				[joinField2]: true,
+				[joinField1Alias]: secondFieldDbResult1,
+				[joinField2]: thirdFieldDbResult1,
 			},
 		},
 		{
-			[firstField]: 1342,
+			[firstField]: firstFieldDbResult2,
 			[collectionToJoin]: {
-				[joinField1Alias]: 26,
-				[joinField2]: true,
+				[joinField1Alias]: secondFieldDbResult2,
+				[joinField2]: thirdFieldDbResult2,
 			},
 		},
 	];
@@ -413,7 +421,16 @@ test.skip('nested o2m field', async () => {
 		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 	});
 
-	/* @TODO randomize the mocked return values */
+	const firstFieldDbResult1 = randomIdentifier();
+	const firstFieldDbResult2 = randomIdentifier();
+	const firstFieldDbResult3 = randomIdentifier();
+	const secondFieldDbResult1 = randomIdentifier();
+	const secondFieldDbResult2 = randomIdentifier();
+	const secondFieldDbResult3 = randomIdentifier();
+	const thirdFieldDbResult1 = randomIdentifier();
+	const thirdFieldDbResult2 = randomIdentifier();
+	const thirdFieldDbResult3 = randomIdentifier();
+
 	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce({
 		// @ts-ignore a promise is normally been returned
 		client: null,
@@ -421,20 +438,19 @@ test.skip('nested o2m field', async () => {
 			start(controller) {
 				const mockedData = [
 					{
-						[firstFieldId]: 937,
-						[joinField2IdM]: true,
-						[joinField1IdM]: 27,
+						[firstFieldId]: firstFieldDbResult1,
+						[joinField2IdM]: secondFieldDbResult1,
+						[joinField1IdM]: thirdFieldDbResult1,
 					},
 					{
-						[firstFieldId]: 937,
-						[joinField2IdM]: false,
-						[joinField1IdM]: 28,
+						[firstFieldId]: firstFieldDbResult2,
+						[joinField2IdM]: secondFieldDbResult2,
+						[joinField1IdM]: thirdFieldDbResult2,
 					},
 					{
-						[firstFieldId]: 1342,
-						[joinField1IdM]: 26,
-						[joinField2IdM]: null,
-						[joinField1IdM]: null,
+						[firstFieldId]: firstFieldDbResult3,
+						[joinField1IdM]: secondFieldDbResult3,
+						[joinField2IdM]: thirdFieldDbResult3,
 					},
 				];
 
