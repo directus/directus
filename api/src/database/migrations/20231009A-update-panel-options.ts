@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 
 		// Check if the options are stringified and parse them
 		const wasStringified = typeof options === 'string';
+
 		if (wasStringified) {
 			options = JSON.parse(options);
 		}
@@ -49,6 +50,7 @@ export async function down(knex: Knex): Promise<void> {
 
 		// Check if the options are stringified and parse them
 		const wasStringified = typeof options === 'string';
+
 		if (wasStringified) {
 			options = JSON.parse(options);
 		}
