@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Limit amount of characters you can enter on input interface
+Ensured the hard limit for amount of characters is properly represented in input interface
