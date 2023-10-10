@@ -51,6 +51,7 @@ describe('applySnapshot', () => {
 					note: null,
 					singleton: false,
 					translations: {},
+					versioning: false,
 				},
 				schema: { name: 'test_table_2' },
 				fields: [
@@ -132,6 +133,7 @@ describe('applySnapshot', () => {
 					note: null,
 					singleton: false,
 					translations: {},
+					versioning: false,
 				},
 				schema: { name: 'test_table_2' },
 				fields: [
@@ -236,6 +238,7 @@ describe('applySnapshot', () => {
 					note: null,
 					singleton: false,
 					translations: {},
+					versioning: false,
 				},
 				schema: { name: 'test_table_3' },
 			};

@@ -485,6 +485,10 @@ function sidebar() {
 					text: 'Utilities',
 				},
 				{
+					link: '/reference/system/versions',
+					text: 'Versions',
+				},
+				{
 					link: '/reference/system/webhooks',
 					text: 'Webhooks',
 				},

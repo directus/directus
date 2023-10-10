@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
-import { computed, inject, ref } from 'vue';
+import type { Field } from '@directus/types';
+import { computed, inject, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -8,6 +9,7 @@ const props = defineProps<{
 	disabled?: boolean;
 	collectionField?: string;
 	collectionName?: string;
+	injectVersionField?: boolean;
 }>();
 
 defineEmits<{
@@ -35,6 +37,46 @@ const collection = computed(() => {
 	if (collectionExists === false) return null;
 	return collectionName;
 });
+
+// TODO Initial version, probably needs polishing
+const injectValue = computed(() => {
+	if (!props.injectVersionField) return null;
+
+	const versioningEnabled = values.value['versioning'];
+
+	if (!versioningEnabled) return null;
+
+	const fakeVersionField: Field = {
+		collection: unref(collection),
+		field: '$version',
+		schema: null,
+		name: '$t:version',
+		type: 'integer',
+		meta: {
+			id: -1,
+			collection: unref(collection),
+			field: '$version',
+			sort: null,
+			special: null,
+			interface: null,
+			options: null,
+			display: null,
+			display_options: null,
+			hidden: false,
+			translations: null,
+			readonly: true,
+			width: 'full',
+			group: null,
+			note: null,
+			required: false,
+			conditions: null,
+			validation: null,
+			validation_message: null,
+		},
+	};
+
+	return { fields: [fakeVersionField] };
+});
 </script>
 
 <template>
@@ -48,6 +90,7 @@ const collection = computed(() => {
 			:collection="collection"
 			:model-value="value"
 			:disabled="disabled"
+			:inject="injectValue"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</div>
