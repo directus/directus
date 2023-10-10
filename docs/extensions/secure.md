@@ -1,0 +1,254 @@
+---
+description: Learn about the Directus Secure Extensions Framework to isolate and build trust in your extensions.
+contributors: Nils Twelker, Kevin Lewis, Esther Agbaje
+---
+
+# Secure Extensions
+
+The Secure Extensions Framework is designed to provide robust security to your data and maintain strict control over interactions with the external environment. The main purpose is to allow configurations that limit how extensions access your information and communicate externally.
+
+The Secure Extensions Framework is available for API and Hybrid Extensions.
+
+::: info Directus Marketplace
+
+In the future, API and Hybrid extensions must be built with the Secure Extensions Framework to be distributed in the Directus Marketplace (coming soon).
+
+:::
+
+## Understanding Isolates 
+
+An isolate is a secure environment to evaluate and execute extensions. The environment is given capabilities via an `exec` function exposed by Directus. While the `exec` function has some default capabilities, it can be extended through extension permissions. 
+
+Isolates only have access to [JavaScript standard built-in objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects). This means that common runtime functions such as `console` and `setTimeout` are not available. 
+
+## Creating Secure Extensions
+
+When using the CLI provided with the Directus Extensions SDK to scaffold a new extension, you will be given the option to create a Secure Extension. This will use our new templates for creating Secure Extensions.
+
+You can run the CLI from your terminal with the following command:
+
+```
+npx create-directus-extension@latest
+```
+
+Secure Extensions have the following properties in the `package.json` file:
+
+- A `secure` property with the value of `true`.
+- A `permissions` property which is an array of required and optional permissions.
+
+## Exeuction Types
+
+- the exec function always returns a promise 
+- the first parameter is a string with an available execution type
+- subsequent parameters depend on the execution type
+- there are some built-in execution types that do not require permissions, some are added through granted permissions
+- if the execution type does not exist, the `exec` function will throw an error
+
+## Log
+
+The `log` execution type allows you to show a message in the console as `console.log` is not available in isolates.
+
+::: tabs
+
+== Signature
+
+```js
+function exec('log', message: string)
+```
+
+== Example
+
+```js
+function exec('log', 'Hello, world!')
+```
+
+:::
+
+
+The `log` execution type is available in all Directus Secure Extensions with no further permissions required. 
+
+## Request
+
+Explainer
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+Explain required permissions
+
+## Database Interactions
+
+### Create Items
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+Explain required permissions
+
+### Read Items
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+### Update Items
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+### Delete Items
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+Explain required permissions
+
+## Hooks
+
+### Register Action
+
+Explainer
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+### Register Filter
+
+Explainer
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+## Endpoints
+
+### Register Endpoint
+
+Explainer
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::
+
+## Operations
+
+### Register Operation
+
+Explainer
+
+::: tabs
+
+== Signature
+
+```js
+// To Include
+```
+
+== Example
+
+```js
+// To Include
+```
+
+:::

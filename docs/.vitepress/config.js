@@ -595,6 +595,10 @@ function sidebar() {
 					],
 				},
 				{
+					text: 'Secure Extensions',
+					link: '/extensions/secure',
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
