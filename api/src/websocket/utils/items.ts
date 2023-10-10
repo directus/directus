@@ -77,14 +77,15 @@ export async function getCollectionPayload(
 	}
 
 	switch (event?.action) {
-		case undefined:
-			return await service.readByQuery();
 		case 'create':
 			return await service.readMany([String(event.key)]);
 		case 'update':
 			return await service.readMany(event.keys.map((key: any) => String(key)));
 		case 'delete':
 			return event.keys;
+		case undefined:
+		default:
+			return await service.readByQuery();
 	}
 }
 
@@ -151,13 +152,14 @@ export async function getItemsPayload(
 	}
 
 	switch (event?.action) {
-		case undefined:
-			return await service.readByQuery(query);
 		case 'create':
 			return await service.readMany([event.key], query);
 		case 'update':
 			return await service.readMany(event.keys, query);
 		case 'delete':
 			return event.keys;
+		case undefined:
+		default:
+			return await service.readByQuery(query);
 	}
 }
