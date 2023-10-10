@@ -111,7 +111,6 @@ describe('querying the driver', () => {
 		});
 
 		const query: AbstractQuery = {
-			root: true,
 			collection: randomCollection,
 			store: 'randomDataStore1',
 			fields: [

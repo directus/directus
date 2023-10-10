@@ -11,9 +11,6 @@ import type { AbstractQueryModifiers } from './abstract-query/modifiers.js';
  * The abstract root query
  */
 export interface AbstractQuery {
-	/** Marked as entrypoint of the query */
-	root: boolean;
-
 	/** Location where the data is stored */
 	store: string;
 

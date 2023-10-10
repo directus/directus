@@ -43,7 +43,6 @@ describe('#query', () => {
 	test('Passes AbstractQuery to store query method', async () => {
 		const query: AbstractQuery = {
 			store: sample.mockStoreIdentifier,
-			root: true,
 			collection: randomIdentifier(),
 			fields: [],
 		};
