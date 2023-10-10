@@ -29,6 +29,24 @@ function getSteamForMock(data: Record<string, any>[]) {
 	};
 }
 
+/**
+ * Receives all the data from a given stream.
+ */
+async function getActualResult(readableStream: any) {
+	const actualResult: Record<string, any>[] = [];
+
+	for await (const chunk of readableStream) {
+		actualResult.push(chunk);
+
+		// this is a hot fix. for some reason the mocked db response stream does not close properly
+		if (actualResult.length === 2) {
+			break;
+		}
+	}
+
+	return actualResult;
+}
+
 // random user inputs for stuff which is used by all tests
 const rootCollection = randomIdentifier();
 const dataStore = randomIdentifier();
@@ -107,16 +125,7 @@ test('nested with local fields', async () => {
 	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
-	const actualResult: Record<string, any>[] = [];
-
-	for await (const chunk of readableStream) {
-		actualResult.push(chunk);
-
-		// this is a hot fix. for some reason the mocked db response stream does not close properly
-		if (actualResult.length === 2) {
-			break;
-		}
-	}
+	const actualResult = await getActualResult(readableStream);
 
 	const expectedResult = [
 		{
@@ -272,16 +281,7 @@ test('nested m2o field', async () => {
 	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
-	const actualResult: Record<string, any>[] = [];
-
-	for await (const chunk of readableStream) {
-		actualResult.push(chunk);
-
-		// this is a hot fix. for some reason the mocked db response stream does not close properly
-		if (actualResult.length === 2) {
-			break;
-		}
-	}
+	const actualResult = await getActualResult(readableStream);
 
 	const expectedResult = [
 		{
@@ -451,16 +451,7 @@ test.skip('nested o2m field', async () => {
 	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
-	const actualResult: Record<string, any>[] = [];
-
-	for await (const chunk of readableStream) {
-		actualResult.push(chunk);
-
-		// this is a hot fix. for some reason the mocked db response stream does not close properly
-		if (actualResult.length === 2) {
-			break;
-		}
-	}
+	const actualResult = getActualResult(readableStream);
 
 	const expectedResult = [
 		{
