@@ -1,4 +1,4 @@
-import type { AbstractQueryFilterNode } from './index.js';
+import type { AbstractQueryFilterNode } from '../filters.js';
 
 /**
  * Specifies that the wrapper filter should be negated.

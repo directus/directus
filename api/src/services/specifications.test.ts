@@ -3,7 +3,7 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services/index.js';
+import { CollectionsService, FieldsService, RelationsService, SpecificationService } from './index.js';
 import type { Collection } from '../types/index.js';
 
 class Client_PG extends MockClient {}
