@@ -11,30 +11,29 @@ const fields: Field[] = [
 		meta: {
 			required: true,
 			readonly: true,
-			special: ['group']
+			special: ['group'],
 		} as any,
 		schema: null,
 		name: 'Group 1',
-	}, {
+	},
+	{
 		field: 'field_in_group1',
 		type: 'boolean',
 		collection: 'test',
 		meta: {
 			required: false,
-			group: 'group1'
+			group: 'group1',
 		} as any,
 		schema: null,
 		name: 'Field in group 1',
-	}
-]
+	},
+];
 
 test('Test pushGroupOptionsDown not mutating', () => {
-
 	expect(pushGroupOptionsDown(fields)).not.toBe(fields);
 });
 
 test('Test pushGroupOptionsDown', () => {
-
 	expect(pushGroupOptionsDown(fields)).toEqual([
 		{
 			field: 'group1',
@@ -43,24 +42,25 @@ test('Test pushGroupOptionsDown', () => {
 			meta: {
 				required: false,
 				readonly: false,
-				special: ['group']
+				special: ['group'],
 			},
 			schema: null,
 			name: 'Group 1',
-		}, {
+		},
+		{
 			field: 'field_in_group1',
 			type: 'boolean',
 			collection: 'test',
 			meta: {
 				required: true,
 				readonly: true,
-				group: 'group1'
+				group: 'group1',
 			},
 			schema: null,
 			name: 'Field in group 1',
-		}
+		},
 	]);
-})
+});
 
 const fieldsNested: Field[] = [
 	{
@@ -70,22 +70,24 @@ const fieldsNested: Field[] = [
 		meta: {
 			required: true,
 			readonly: false,
-			special: ['group']
+			special: ['group'],
 		} as any,
 		schema: null,
 		name: 'Group 1',
-	}, {
+	},
+	{
 		field: 'field_in_group1',
 		type: 'boolean',
 		collection: 'test',
 		meta: {
 			required: false,
 			readonly: false,
-			group: 'group1'
+			group: 'group1',
 		} as any,
 		schema: null,
 		name: 'Field in group 1',
-	}, {
+	},
+	{
 		field: 'group1_1',
 		type: 'alias',
 		collection: 'test',
@@ -93,26 +95,26 @@ const fieldsNested: Field[] = [
 			group: 'group1',
 			required: false,
 			readonly: true,
-			special: ['group']
+			special: ['group'],
 		} as any,
 		schema: null,
 		name: 'Group 1 1',
-	}, {
+	},
+	{
 		field: 'field_in_group1_1',
 		type: 'boolean',
 		collection: 'test',
 		meta: {
 			required: false,
 			readonly: false,
-			group: 'group1_1'
+			group: 'group1_1',
 		} as any,
 		schema: null,
 		name: 'Field in group 1 1',
-	}
-]
+	},
+];
 
 test('Test pushGroupOptionsDown with nested groups', () => {
-
 	expect(pushGroupOptionsDown(fieldsNested)).toEqual([
 		{
 			field: 'group1',
@@ -121,22 +123,24 @@ test('Test pushGroupOptionsDown with nested groups', () => {
 			meta: {
 				required: false,
 				readonly: false,
-				special: ['group']
+				special: ['group'],
 			} as any,
 			schema: null,
 			name: 'Group 1',
-		}, {
+		},
+		{
 			field: 'field_in_group1',
 			type: 'boolean',
 			collection: 'test',
 			meta: {
 				required: true,
 				readonly: false,
-				group: 'group1'
+				group: 'group1',
 			} as any,
 			schema: null,
 			name: 'Field in group 1',
-		}, {
+		},
+		{
 			field: 'group1_1',
 			type: 'alias',
 			collection: 'test',
@@ -144,21 +148,22 @@ test('Test pushGroupOptionsDown with nested groups', () => {
 				group: 'group1',
 				required: false,
 				readonly: false,
-				special: ['group']
+				special: ['group'],
 			} as any,
 			schema: null,
 			name: 'Group 1 1',
-		}, {
+		},
+		{
 			field: 'field_in_group1_1',
 			type: 'boolean',
 			collection: 'test',
 			meta: {
 				required: true,
 				readonly: true,
-				group: 'group1_1'
+				group: 'group1_1',
 			} as any,
 			schema: null,
 			name: 'Field in group 1 1',
-		}
+		},
 	]);
-})
+});

@@ -13,7 +13,7 @@ import { useCollection } from '@directus/composables';
 import { Field, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
-import { cloneDeep, mergeWith } from 'lodash';
+import { mergeWith } from 'lodash';
 import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -130,7 +130,7 @@ export function useItem<T extends Record<string, any>>(
 			}
 		);
 
-		const fields = pushGroupOptionsDown(fieldsWithPermissions.value)
+		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
 		const errors = validateItem(payloadToValidate, fields, isNew.value);
 
