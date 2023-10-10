@@ -4,6 +4,7 @@ export * from './authentication.js';
 export * from './authorization.js';
 export * from './collections.js';
 export * from './dashboards.js';
+export * from './extensions.js';
 export * from './fields.js';
 export * from './files.js';
 export * from './flows.js';
@@ -33,3 +34,4 @@ export * from './users.js';
 export * from './utils.js';
 export * from './webhooks.js';
 export * from './websocket.js';
+

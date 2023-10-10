@@ -4,8 +4,7 @@ import type {
 	BundleExtension,
 	EndpointConfig,
 	Extension,
-	ExtensionInfo,
-	ExtensionType,
+	ExtensionSettings,
 	HookConfig,
 	HybridExtension,
 	OperationApiConfig,
@@ -41,8 +40,7 @@ import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
-import { normalizeExtensionInfo } from './normalize-extension-info.js';
-import type { BundleConfig, ExtensionManagerOptions, ExtensionSettings } from './types.js';
+import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
@@ -158,10 +156,8 @@ export class ExtensionManager {
 		if (!this.isLoaded) {
 			await this.load();
 
-			const loadedExtensions = this.getExtensions();
-
-			if (loadedExtensions.length > 0) {
-				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
+			if (this.extensions.length > 0) {
+				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
 			}
 		}
 
@@ -249,30 +245,6 @@ export class ExtensionManager {
 	}
 
 	/**
-	 * Return all registered permissions optionally filtered by type
-	 *
-	 * @param {string} [type] - Type to filter by
-	 */
-	public getExtensions(type?: ExtensionType): ExtensionInfo[] {
-		const extensionInfo = this.extensions.map((extension) =>
-			normalizeExtensionInfo(extension, this.extensionsSettings)
-		);
-
-		if (type) {
-			return extensionInfo.filter((extension) => extension.type === type);
-		}
-
-		return extensionInfo;
-	}
-
-	/**
-	 * Find the extension info by extension name
-	 */
-	public getExtension(name: string): Extension | undefined {
-		return this.extensions.find((extension) => extension.name === name);
-	}
-
-	/**
 	 * Return the previously generated app extensions bundle
 	 */
 	public getAppExtensionsBundle(): string | null {
@@ -301,6 +273,13 @@ export class ExtensionManager {
 			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
 			body: wrapEmbeds('Custom Embed Body', this.hookEmbedsBody),
 		};
+	}
+
+	/**
+	 * Allow reading the installed extensions
+	 */
+	public getExtensions() {
+		return this.extensions;
 	}
 
 	/**

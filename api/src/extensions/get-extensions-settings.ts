@@ -8,10 +8,6 @@ import getDatabase from '../database/index.js';
  * longer installed.
  */
 export const getExtensionsSettings = async (extensions: Extension[]) => {
-	/**
-	 * @TODO bundles
-	 */
-
 	const database = getDatabase();
 
 	const settings = await database.select<ExtensionSettings[]>('*').from('directus_extensions');
@@ -19,7 +15,7 @@ export const getExtensionsSettings = async (extensions: Extension[]) => {
 	const extensionNames = extensions
 		.map((extension) => {
 			if (extension.type === 'bundle') {
-				return extension.entries.map((entry) => `${extension.name}/${entry.name}`);
+				return [extension.name, ...extension.entries.map((entry) => `${extension.name}/${entry.name}`)];
 			}
 
 			return extension.name;
