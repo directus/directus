@@ -18,6 +18,17 @@ vi.mock('@directus/data-sql', async (importOriginal) => {
 	};
 });
 
+function getSteamForMock(data: Record<string, any>[]) {
+	return {
+		client: null,
+		stream: new ReadableStream({
+			start(controller) {
+				data.forEach((chunk: any) => controller.enqueue(chunk));
+			},
+		}),
+	};
+}
+
 // random user inputs for stuff which is used by all tests
 const rootCollection = randomIdentifier();
 const dataStore = randomIdentifier();
@@ -81,27 +92,19 @@ test('nested with local fields', async () => {
 	const secondFieldDbResult1 = randomIdentifier();
 	const secondFieldDbResult2 = randomIdentifier();
 
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce({
-		// @ts-ignore a promise is normally been returned
-		client: null,
+	const mockedData = [
+		{
+			[firstFieldId]: fistFieldDbResult1,
+			[secondFieldId]: secondFieldDbResult1,
+		},
+		{
+			[firstFieldId]: fistFieldDbResult2,
+			[secondFieldId]: secondFieldDbResult2,
+		},
+	];
 
-		stream: new ReadableStream({
-			start(controller) {
-				const mockedData = [
-					{
-						[firstFieldId]: fistFieldDbResult1,
-						[secondFieldId]: secondFieldDbResult1,
-					},
-					{
-						[firstFieldId]: fistFieldDbResult2,
-						[secondFieldId]: secondFieldDbResult2,
-					},
-				];
-
-				mockedData.forEach((chunk) => controller.enqueue(chunk));
-			},
-		}),
-	});
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult: Record<string, any>[] = [];
@@ -252,28 +255,21 @@ test('nested m2o field', async () => {
 	const thirdFieldDbResult1 = randomIdentifier();
 	const thirdFieldDbResult2 = randomIdentifier();
 
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce({
-		// @ts-ignore a promise is normally been returned
-		client: null,
-		stream: new ReadableStream({
-			start(controller) {
-				const mockedData = [
-					{
-						[firstFieldId]: firstFieldDbResult1,
-						[joinField1Id]: secondFieldDbResult1,
-						[joinField2Id]: thirdFieldDbResult1,
-					},
-					{
-						[firstFieldId]: firstFieldDbResult2,
-						[joinField1Id]: secondFieldDbResult2,
-						[joinField2Id]: thirdFieldDbResult2,
-					},
-				];
+	const mockedData = [
+		{
+			[firstFieldId]: firstFieldDbResult1,
+			[joinField1Id]: secondFieldDbResult1,
+			[joinField2Id]: thirdFieldDbResult1,
+		},
+		{
+			[firstFieldId]: firstFieldDbResult2,
+			[joinField1Id]: secondFieldDbResult2,
+			[joinField2Id]: thirdFieldDbResult2,
+		},
+	];
 
-				mockedData.forEach((chunk) => controller.enqueue(chunk));
-			},
-		}),
-	});
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult: Record<string, any>[] = [];
@@ -428,38 +424,31 @@ test.skip('nested o2m field', async () => {
 	const thirdFieldDbResult1 = randomIdentifier();
 	const thirdFieldDbResult2 = randomIdentifier();
 
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce({
-		// @ts-ignore a promise is normally been returned
-		client: null,
-		stream: new ReadableStream({
-			start(controller) {
-				/*
-				 * this database result mock shows two m2o relations.
-				 * the first one has two 'many' parts, the second one has none 'many' part.
-				 * but the second one will get printed anyways since it's the db was queried with a LEFT JOIN.
-				 */
-				const mockedData = [
-					{
-						[firstFieldId]: firstFieldDbResult1, // the 'one' part, same value as the next one
-						[joinField2IdM]: secondFieldDbResult1, // a field from the 'many' part.
-						[joinField1IdM]: thirdFieldDbResult1, // another field from the 'many' part
-					},
-					{
-						[firstFieldId]: firstFieldDbResult1, // the 'one' part, same as the previous one
-						[joinField2IdM]: secondFieldDbResult2, // this is a field from the 'many' part, but it's different value as above but for the same 'one' part
-						[joinField1IdM]: thirdFieldDbResult2, // another field from the 'many' part
-					},
-					{
-						[firstFieldId]: firstFieldDbResult2, // the 'one' part, now without any 'many' part
-						[joinField1IdM]: null, // there is no relation to the desired LEFT JOINed table, so both field values are null
-						[joinField2IdM]: null, // also null because there is no relation
-					},
-				];
+	/*
+	 * this database result mock shows two o2m relations.
+	 * the first one has two 'many' parts, the second one has none 'many' part.
+	 * but the second one will get printed anyways since it's the db was queried with a LEFT JOIN.
+	 */
+	const mockedData = [
+		{
+			[firstFieldId]: firstFieldDbResult1, // the 'one' part, same value as the next one
+			[joinField2IdM]: secondFieldDbResult1, // a field from the 'many' part.
+			[joinField1IdM]: thirdFieldDbResult1, // another field from the 'many' part
+		},
+		{
+			[firstFieldId]: firstFieldDbResult1, // the 'one' part, same as the previous one
+			[joinField2IdM]: secondFieldDbResult2, // this is a field from the 'many' part, but it's different value as above but for the same 'one' part
+			[joinField1IdM]: thirdFieldDbResult2, // another field from the 'many' part
+		},
+		{
+			[firstFieldId]: firstFieldDbResult2, // the 'one' part, now without any 'many' part
+			[joinField1IdM]: null, // there is no relation to the desired LEFT JOINed table, so both field values are null
+			[joinField2IdM]: null, // also null because there is no relation
+		},
+	];
 
-				mockedData.forEach((chunk) => controller.enqueue(chunk));
-			},
-		}),
-	});
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult: Record<string, any>[] = [];
