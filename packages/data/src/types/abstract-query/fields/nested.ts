@@ -1,5 +1,5 @@
 import type { AbstractQueryModifiers } from '../modifiers.js';
-import type { AbstractQueryFieldNode } from './fields.js';
+import type { AbstractQueryFieldNode } from '../fields.js';
 import type {
 	AbstractQueryFieldNodeNestedRelationalMany,
 	AbstractQueryFieldNodeNestedRelationalOne,

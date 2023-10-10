@@ -4,7 +4,7 @@
  *
  * @module abstract-query
  */
-import type { AbstractQueryFieldNode } from './abstract-query/fields/fields.js';
+import type { AbstractQueryFieldNode } from './abstract-query/fields.js';
 import type { AbstractQueryModifiers } from './abstract-query/modifiers.js';
 
 /**
