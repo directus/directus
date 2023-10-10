@@ -93,7 +93,7 @@ onUpdated(() => {
 });
 
 onBeforeUnmount(() => {
-	unmountResizeObserver()
+	unmountResizeObserver();
 });
 </script>
 
@@ -123,7 +123,6 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-
 .label-text {
 	min-width: min-content;
 	min-height: min-content;

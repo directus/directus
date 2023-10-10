@@ -87,7 +87,7 @@ function unmountResizeObserver() {
 async function updateFit() {
 	if (props.fontSize !== 'auto' || !props.data || props.data.length === 0) {
 		unmountResizeObserver();
-		return
+		return;
 	}
 
 	await document.fonts.ready;
@@ -118,7 +118,7 @@ onUpdated(() => {
 });
 
 onBeforeUnmount(() => {
-	unmountResizeObserver()
+	unmountResizeObserver();
 });
 
 const metric = computed(() => {
@@ -217,7 +217,6 @@ const color = computed(() => {
 </template>
 
 <style scoped>
-
 .metric-text {
 	min-width: min-content;
 	min-height: min-content;
