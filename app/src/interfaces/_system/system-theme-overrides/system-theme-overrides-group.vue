@@ -85,8 +85,6 @@ const isGroup = (key: string) => {
 <style scoped lang="scss">
 .theme-overrides-group {
 	&:not(.root) {
-		margin-block: 1ch;
-
 		.group-contents {
 			padding-left: 2ch;
 			border-left: 1px solid var(--border-subdued);

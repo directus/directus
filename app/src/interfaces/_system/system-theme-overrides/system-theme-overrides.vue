@@ -22,11 +22,21 @@ const set: SetValueFn = (path: string[], value: string | number | undefined) => 
 </script>
 
 <template>
-	<SystemThemeOverridesGroup
-		root
-		:schema="ThemeSchema.properties.rules"
-		:path="[]"
-		:value="value ?? {}"
-		:set="set"
-	/>
+	<div class="theme-overrides">
+		<SystemThemeOverridesGroup
+			root
+			:schema="ThemeSchema.properties.rules"
+			:path="[]"
+			:value="value ?? {}"
+			:set="set"
+		/>
+	</div>
 </template>
+
+<style scoped lang="scss">
+.theme-overrides {
+	border: 2px solid var(--border-normal);
+	padding: 12px;
+	border-radius: var(--border-radius);
+}
+</style>

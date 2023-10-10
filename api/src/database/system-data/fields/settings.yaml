@@ -86,17 +86,6 @@ fields:
     width: half
     group: theming_group
 
-  - field: theming_divider
-    interface: presentation-divider
-    options:
-      icon: palette
-      title: $t:fields.directus_settings.theming
-    special:
-      - alias
-      - no-data
-    width: full
-    group: theming_group
-
   - field: default_appearance
     interface: select-radio
     options:
@@ -109,29 +98,40 @@ fields:
           text: $t:appearance_dark
     group: theming_group
 
+  - field: theming_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.theming
+    special:
+      - alias
+      - no-data
+    width: full
+    group: theming_group
+
   - field: default_theme_light
-    width: half
+    width: full
     interface: system-theme
     options:
       appearance: light
     group: theming_group
 
-  - field: default_theme_dark
-    width: half
-    interface: system-theme
-    options:
-      appearance: dark
-    group: theming_group
-
   - field: theme_light_overrides
-    width: half
+    width: full
     interface: system-theme-overrides
     options:
       language: json
     group: theming_group
 
+  - field: default_theme_dark
+    width: full
+    interface: system-theme
+    options:
+      appearance: dark
+    group: theming_group
+
   - field: theme_dark_overrides
-    width: half
+    width: full
     interface: system-theme-overrides
     options:
       language: json
