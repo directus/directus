@@ -423,34 +423,32 @@ test.skip('nested o2m field', async () => {
 
 	const firstFieldDbResult1 = randomIdentifier();
 	const firstFieldDbResult2 = randomIdentifier();
-	const firstFieldDbResult3 = randomIdentifier();
 	const secondFieldDbResult1 = randomIdentifier();
 	const secondFieldDbResult2 = randomIdentifier();
-	const secondFieldDbResult3 = randomIdentifier();
 	const thirdFieldDbResult1 = randomIdentifier();
 	const thirdFieldDbResult2 = randomIdentifier();
-	const thirdFieldDbResult3 = randomIdentifier();
 
 	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce({
 		// @ts-ignore a promise is normally been returned
 		client: null,
 		stream: new ReadableStream({
 			start(controller) {
+				// the first two results have the same
 				const mockedData = [
 					{
-						[firstFieldId]: firstFieldDbResult1,
-						[joinField2IdM]: secondFieldDbResult1,
-						[joinField1IdM]: thirdFieldDbResult1,
+						[firstFieldId]: firstFieldDbResult1, // the 'one' part, same value as the next one
+						[joinField2IdM]: secondFieldDbResult1, // a field from the 'many' part.
+						[joinField1IdM]: thirdFieldDbResult1, // another field from the 'many' part
 					},
 					{
-						[firstFieldId]: firstFieldDbResult2,
-						[joinField2IdM]: secondFieldDbResult2,
-						[joinField1IdM]: thirdFieldDbResult2,
+						[firstFieldId]: firstFieldDbResult1, // the 'one' part, same as the previous one
+						[joinField2IdM]: secondFieldDbResult2, // this is a field from the 'many' part, but it's different value as above but for the same 'one' part
+						[joinField1IdM]: thirdFieldDbResult2, // another field from the 'many' part
 					},
 					{
-						[firstFieldId]: firstFieldDbResult3,
-						[joinField1IdM]: secondFieldDbResult3,
-						[joinField2IdM]: thirdFieldDbResult3,
+						[firstFieldId]: firstFieldDbResult2, // the 'one' part, now without any 'many' part
+						[joinField1IdM]: null, // there is no relation to the desired LEFT JOINed table, so both field values are null
+						[joinField2IdM]: null, // also null because there is no relation
 					},
 				];
 
@@ -473,20 +471,20 @@ test.skip('nested o2m field', async () => {
 
 	const expectedResult = [
 		{
-			[firstField]: 937,
+			[firstField]: firstFieldDbResult1,
 			[collectionToJoin2]: [
 				{
-					[joinField1AliasM]: 27,
-					[joinField2m]: true,
+					[joinField1AliasM]: secondFieldDbResult1,
+					[joinField2m]: thirdFieldDbResult1,
 				},
 				{
-					[joinField1AliasM]: 28,
-					[joinField2m]: false,
+					[joinField1AliasM]: secondFieldDbResult2,
+					[joinField2m]: thirdFieldDbResult2,
 				},
 			],
 		},
 		{
-			[firstField]: 1342,
+			[firstField]: firstFieldDbResult2,
 			[collectionToJoin2]: [],
 		},
 	];
