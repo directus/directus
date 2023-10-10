@@ -1,4 +1,4 @@
-import isDirectusJWT from '../../src/utils/is-directus-jwt.js';
+import isDirectusJWT from './is-directus-jwt.js';
 import jwt from 'jsonwebtoken';
 import { test, expect } from 'vitest';
 

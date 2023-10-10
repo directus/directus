@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { expect, test, vi } from 'vitest';
-import type { DirectusTokenPayload } from '../../src/types/index.js';
-import { verifyAccessJWT, verifyJWT } from '../../src/utils/jwt.js';
+import type { DirectusTokenPayload } from '../types/index.js';
+import { verifyAccessJWT, verifyJWT } from './jwt.js';
 import { TokenExpiredError, InvalidTokenError } from '../errors/index.js';
 import { ServiceUnavailableError } from '../errors/index.js';
 

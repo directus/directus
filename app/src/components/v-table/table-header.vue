@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, ref, useSlots } from 'vue';
-import { ShowSelect } from '@directus/types';
 import { useEventListener } from '@/composables/use-event-listener';
-import { Header, Sort } from './types';
-import { throttle, clone } from 'lodash';
-import Draggable from 'vuedraggable';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
+import { ShowSelect } from '@directus/types';
+import { clone, throttle } from 'lodash';
+import { computed, ref, useSlots } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import { Header, Sort } from './types';
 
 interface Props {
 	headers: Header[];
@@ -441,6 +441,8 @@ function toggleManualSort() {
 	background-color: var(--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
+	border: var(--background-page) 6px solid;
+	box-sizing: content-box;
 	margin-right: 8px;
 	vertical-align: middle;
 }
