@@ -9,7 +9,7 @@ import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTheme } from './composables/use-theme';
+import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
 
 const { t } = useI18n();
@@ -18,7 +18,7 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
 
-const themeInfo = useTheme();
+const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
 
 const { hydrating } = toRefs(appStore);
 
@@ -100,11 +100,11 @@ useSystem();
 
 <template>
 	<ThemeProvider
-		:dark="themeInfo.appearance === 'dark'"
-		:theme-light="themeInfo.themeLight"
-		:theme-dark="themeInfo.themeDark"
-		:theme-light-overrides="themeInfo.themeLightOverrides"
-		:theme-dark-overrides="themeInfo.themeDarkOverrides"
+		:dark-mode="darkMode"
+		:theme-light="themeLight"
+		:theme-dark="themeDark"
+		:theme-light-overrides="themeLightOverrides"
+		:theme-dark-overrides="themeDarkOverrides"
 	/>
 
 	<div id="directus">
@@ -158,3 +158,4 @@ useSystem();
 	opacity: 0;
 }
 </style>
+./composables/use-theme-configuration
