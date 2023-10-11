@@ -65,13 +65,13 @@ The `log` execution type allows you to show a message in the console as `console
 == Signature
 
 ```js
-function exec('log', message: string)
+async function exec('log', message: string)
 ```
 
 == Example
 
 ```js
-function exec('log', 'Hello, world!')
+await exec('log', 'Hello, world!')
 ```
 
 :::
@@ -81,25 +81,51 @@ The `log` execution type is available in all Directus Secure Extensions with no 
 
 ## Request
 
-Explainer
+The `request` execution type allows you to make HTTP requests as `fetch` is unavilable in an isolate. 
 
 ::: tabs
 
 == Signature
 
 ```js
-// To Include
+async function exec('request', url: string, options?: {
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  body?: string,
+  headers?: Record<string, string>,
+  output: 'text' | 'json'
+}): Promise<string | Record<string, any>>
 ```
 
-== Example
+== Simple Example
 
 ```js
-// To Include
+const text = await exec('request', 'https://example-api.com');
+```
+
+== Complex Example
+
+```js
+const text = await exec('request', 'https://example-api.com', {
+	method: 'GET',
+	headers: {
+		'User-Agent': 'Directus Extension'
+	}
+})
 ```
 
 :::
 
-Explain required permissions
+The `request` execution type requires the following permissions are added to your extension's metadata: 
+
+```js
+{
+	permission: 'request',
+	optional: boolean,
+	allowedUrls: string[]
+}
+```
+
+Strings in the `allowedUrls` array can be regex or use wildcard notation.
 
 ## Database Interactions
 
