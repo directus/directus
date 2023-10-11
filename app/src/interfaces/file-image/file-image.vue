@@ -136,7 +136,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
-			{{ t('disabled') }}
+			{{ t('no_image_selected') }}
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
