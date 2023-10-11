@@ -7,44 +7,6 @@ import type { Subscription } from '../types.js';
 type PSubscription = Omit<Subscription, 'client'>;
 
 /**
- * Get a single item from a collection using the appropriate service
- *
- * @param subscription Subscription object
- * @param accountability Accountability object
- * @param schema Schema object
- * @param event Event data
- * @returns the fetched item
- */
-export async function getSinglePayload(
-	subscription: PSubscription,
-	accountability: Accountability | null,
-	schema: SchemaOverview,
-	event?: WebSocketEvent
-): Promise<Record<string, any>> {
-	const metaService = new MetaService({ schema, accountability });
-	const query = subscription.query ?? {};
-	const id = subscription.item!;
-
-	const result: Record<string, any> = {
-		event: event?.action ?? 'init',
-	};
-
-	if (subscription.collection === 'directus_collections') {
-		const service = new CollectionsService({ schema, accountability });
-		result['data'] = await service.readOne(String(id));
-	} else {
-		const service = getService(subscription.collection, { schema, accountability });
-		result['data'] = await service.readOne(id, query);
-	}
-
-	if ('meta' in query) {
-		result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
-	}
-
-	return result;
-}
-
-/**
  * Get items from a collection using the appropriate service
  *
  * @param subscription Subscription object
@@ -53,7 +15,7 @@ export async function getSinglePayload(
  * @param event Event data
  * @returns the fetched items
  */
-export async function getMultiPayload(
+export async function getPayload(
 	subscription: PSubscription,
 	accountability: Accountability | null,
 	schema: SchemaOverview,
@@ -67,10 +29,10 @@ export async function getMultiPayload(
 
 	switch (subscription.collection) {
 		case 'directus_collections':
-			result['data'] = await getCollectionPayload(accountability, schema, event);
+			result['data'] = await getCollectionPayload(subscription, accountability, schema, event);
 			break;
 		case 'directus_fields':
-			result['data'] = await getFieldsPayload(accountability, schema, event);
+			result['data'] = await getFieldsPayload(subscription, accountability, schema, event);
 			break;
 		case 'directus_relations':
 			result['data'] = event?.payload;
@@ -98,20 +60,32 @@ export async function getMultiPayload(
  * @returns the fetched collection data
  */
 export async function getCollectionPayload(
+	subscription: PSubscription,
 	accountability: Accountability | null,
 	schema: SchemaOverview,
 	event?: WebSocketEvent
 ) {
 	const service = new CollectionsService({ schema, accountability });
 
-	if (!event?.action) {
-		return await service.readByQuery();
-	} else if (event.action === 'create') {
-		return await service.readMany([String(event.key)]);
-	} else if (event.action === 'delete') {
-		return event.keys;
-	} else {
-		return await service.readMany(event.keys.map((key: any) => String(key)));
+	if ('item' in subscription) {
+		if (event?.action === 'delete') {
+			// return only the subscribed id in case a bulk delete was done
+			return subscription.item;
+		} else {
+			return await service.readOne(String(subscription.item));
+		}
+	}
+
+	switch (event?.action) {
+		case 'create':
+			return await service.readMany([String(event.key)]);
+		case 'update':
+			return await service.readMany(event.keys.map((key: any) => String(key)));
+		case 'delete':
+			return event.keys;
+		case undefined:
+		default:
+			return await service.readByQuery();
 	}
 }
 
@@ -124,18 +98,29 @@ export async function getCollectionPayload(
  * @returns the fetched field data
  */
 export async function getFieldsPayload(
+	subscription: PSubscription,
 	accountability: Accountability | null,
 	schema: SchemaOverview,
 	event?: WebSocketEvent
 ) {
 	const service = new FieldsService({ schema, accountability });
 
-	if (!event?.action) {
-		return await service.readAll();
-	} else if (event.action === 'delete') {
-		return event.keys;
-	} else {
-		return await service.readOne(event.payload?.['collection'], event.payload?.['field']);
+	if ('item' in subscription) {
+		if (event?.action === 'delete') {
+			// return only the subscribed id in case a bluk delete was done
+			return subscription.item;
+		} else {
+			return await service.readOne(subscription.collection, String(subscription.item));
+		}
+	}
+
+	switch (event?.action) {
+		case undefined:
+			return await service.readAll();
+		case 'delete':
+			return event.keys;
+		default:
+			return await service.readOne(event?.payload?.['collection'], event?.payload?.['field']);
 	}
 }
 
@@ -157,13 +142,24 @@ export async function getItemsPayload(
 	const query = subscription.query ?? {};
 	const service = getService(subscription.collection, { schema, accountability });
 
-	if (!event?.action) {
-		return await service.readByQuery(query);
-	} else if (event.action === 'create') {
-		return await service.readMany([event.key], query);
-	} else if (event.action === 'delete') {
-		return event.keys;
-	} else {
-		return await service.readMany(event.keys, query);
+	if ('item' in subscription) {
+		if (event?.action === 'delete') {
+			// return only the subscribed id in case a bluk delete was done
+			return subscription.item;
+		} else {
+			return await service.readOne(subscription.item, query);
+		}
+	}
+
+	switch (event?.action) {
+		case 'create':
+			return await service.readMany([event.key], query);
+		case 'update':
+			return await service.readMany(event.keys, query);
+		case 'delete':
+			return event.keys;
+		case undefined:
+		default:
+			return await service.readByQuery(query);
 	}
 }
