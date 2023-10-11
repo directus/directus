@@ -59,7 +59,6 @@ test('nested with local fields', async () => {
 	const secondFieldAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
-		root: true,
 		collection: rootCollection,
 		store: dataStore,
 		fields: [
@@ -155,7 +154,6 @@ test('nested m2o field', async () => {
 	const joinAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
-		root: true,
 		collection: rootCollection,
 		store: dataStore,
 		fields: [
@@ -316,7 +314,6 @@ test.skip('nested o2m field', async () => {
 	const joinAliasM = randomIdentifier();
 
 	const query: AbstractQuery = {
-		root: true,
 		collection: rootCollection,
 		store: dataStore,
 		fields: [
