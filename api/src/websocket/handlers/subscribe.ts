@@ -128,7 +128,7 @@ export class SubscribeHandler {
 
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
-				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) return;
+				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
