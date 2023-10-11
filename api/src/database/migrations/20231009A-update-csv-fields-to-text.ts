@@ -12,6 +12,8 @@ export async function up(knex: Knex) {
 	for (const { collection, field } of csvFields) {
 		updates.push(
 			inspector.columnInfo(collection, field).then((column) => {
+				if (column.data_type === 'text') return;
+
 				return helper.changeToType(collection, field, 'text', {
 					default: column.default_value,
 					nullable: column.is_nullable,
