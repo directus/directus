@@ -17,7 +17,7 @@ In the future, API and Hybrid extensions must be built with the Secure Extension
 
 ## Understanding Isolates 
 
-An isolate is a secure environment to evaluate and execute extensions. The environment is given capabilities via an `exec` function exposed by Directus. While the `exec` function has some default capabilities, it can be extended through extension permissions. 
+An isolate is a secure environment to evaluate and execute extensions. The environment is given capabilities via an `exec` function exposed by Directus. While the `exec` function has minimal default capabilities, it can be extended through extension permissions. 
 
 Isolates only have access to [JavaScript standard built-in objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects). This means that common runtime functions such as `console` and `setTimeout` are not available. 
 
@@ -38,11 +38,23 @@ Secure Extensions have the following properties in the `package.json` file:
 
 ## Exeuction Types
 
-- the exec function always returns a promise 
-- the first parameter is a string with an available execution type
-- subsequent parameters depend on the execution type
-- there are some built-in execution types that do not require permissions, some are added through granted permissions
-- if the execution type does not exist, the `exec` function will throw an error
+The `exec` function is an asynchronous operation that returns a `Promise` object. It executes a specific operation defined by an execution type.
+
+```js
+await exec(executionType, ...additionalArguments)
+```
+
+The first argument of the `exec` function is an `executionType` string, which represents the type of operation to be conducted. The `executionType` should correspond to a valid, available execution type.
+
+Additional parameters required by the `exec` function depend on the provided execution type. These are added after the `executionType` parameter.
+
+There are built-in execution types provided with the `exec` function that are available to all extensions, irrespective of its permissions, while other execution types may be added through granted permissions. 
+
+:::warning Handle Optional Permissions
+
+If an invalid or non-existent `executionType` is passed to the `exec` function, it will throw an error. If you set some permissions as optional, you should handle both cases where they are and are not granted.
+
+:::
 
 ## Log
 
