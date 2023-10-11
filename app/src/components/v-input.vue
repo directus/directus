@@ -37,6 +37,8 @@ interface Props {
 	type?: string;
 	/** Hide the arrows that are used to increase or decrease a number */
 	hideArrows?: boolean;
+	/** The maximum amount of characters that can be entered */
+	maxLength?: number;
 	/** The maximum number that can be entered */
 	max?: number;
 	/** The minimum number that can be entered */
@@ -237,6 +239,7 @@ function stepDown() {
 					:placeholder="placeholder ? String(placeholder) : undefined"
 					:autocomplete="autocomplete"
 					:type="type"
+					:maxlength="maxLength"
 					:min="min"
 					:max="max"
 					:step="step"
