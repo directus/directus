@@ -22,7 +22,7 @@ export async function up(knex: Knex) {
 		);
 	}
 
-	return Promise.all(updates);
+	return checkPromises(updates);
 }
 
 export async function down(knex: Knex) {
@@ -43,5 +43,19 @@ export async function down(knex: Knex) {
 		);
 	}
 
-	return Promise.all(updates);
+	return checkPromises(updates);
+}
+
+async function checkPromises<T>(promises: Promise<T>[]) {
+	const result = await Promise.allSettled(promises);
+
+	const errors = result.filter(isRejectedPromise).map((promise) => promise.reason);
+
+	if (errors.length > 0) {
+		throw new Error(errors.toString());
+	}
+}
+
+function isRejectedPromise<T>(promise: PromiseSettledResult<T>): promise is PromiseRejectedResult {
+	return promise.status === 'rejected';
 }
