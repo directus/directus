@@ -125,29 +125,58 @@ The `request` execution type requires the following permissions are added to you
 }
 ```
 
-Strings in the `allowedUrls` array can be regex or use wildcard notation.
+`optional` can be omitted and will default to `false`. 
+
+`allowedUrls` contains an array of strings, which may be regex or use wildcard notation.
 
 ## Database Interactions
 
+Isolates do not have the abiltiy to access your collections by default. By enabling any of the Create/Read/Update/Delete (CRUD) execution types in your extension, you will be able to perform these actions.
+
+:::info No Single Item CRUD Operations
+
+In the current release, all database interaction execution types are for multiple items.
+
+:::
+
 ### Create Items
+
+The `create-items` execution type allows you to create items in collections in your Directus project.
 
 ::: tabs
 
 == Signature
 
 ```js
-// To Include
+async function exec('create-items', collection: string, options: {
+	data: Record<string, unknown>[]
+}): Promise<any>
 ```
 
 == Example
 
 ```js
-// To Include
+const items = await exec('create-items', 'articles', {
+	data: [{ title: 'Hello World' }]
+})
 ```
 
 :::
 
-Explain required permissions
+The `create-items` execution type requires the following permissions are added to your extension's metadata:
+
+```js
+{
+	permission: 'create-items',
+	optional: boolean,
+	role: string
+}
+```
+
+`optional` can be omitted and will default to `false`. 
+
+`role` accepts the id of a role in your Directus project to control what collections can be accessed.
+
 
 ### Read Items
 
@@ -156,16 +185,34 @@ Explain required permissions
 == Signature
 
 ```js
-// To Include
+async function exec('read-items', collection: string, options: {
+	query?: Query 
+}): Promise<any>
 ```
 
 == Example
 
 ```js
-// To Include
+const items = await exec('read-items', 'articles', {
+	query: { limit: 5, sort: '-date_published' }
+})
 ```
 
 :::
+
+The `read-items` execution type requires the following permissions are added to your extension's metadata:
+
+```js
+{
+	permission: 'read-items',
+	optional: boolean,
+	role: string
+}
+```
+
+`optional` can be omitted and will default to `false`. 
+
+`role` accepts the id of a role in your Directus project to control what collections can be accessed.
 
 ### Update Items
 
@@ -174,16 +221,35 @@ Explain required permissions
 == Signature
 
 ```js
-// To Include
+async function exec('update-items', collection: string, options: {
+	query?: Query, data: Record<string, unknown> 
+}): Promise<any>
 ```
 
 == Example
 
 ```js
-// To Include
+const items = await exec('update-items', 'articles', {
+	query: { id: { _eq: '42' } },
+	data: { title: 'The Hitchhiker\'s Guide to the Galaxy' }
+})
 ```
 
 :::
+
+The `update-items` execution type requires the following permissions are added to your extension's metadata:
+
+```js
+{
+	permission: 'update-items',
+	optional: boolean,
+	role: string
+}
+```
+
+`optional` can be omitted and will default to `false`. 
+
+`role` accepts the id of a role in your Directus project to control what collections can be accessed.
 
 ### Delete Items
 
@@ -192,18 +258,34 @@ Explain required permissions
 == Signature
 
 ```js
-// To Include
+async function exec('delete-items', collection: string, options: {
+	query?: Query
+}): Promise<any>
 ```
 
 == Example
 
 ```js
-// To Include
+const items = await exec('update-items', 'articles', {
+	query: { id: { _eq: '404' } },
+})
 ```
 
 :::
 
-Explain required permissions
+The `delete-items` execution type requires the following permissions are added to your extension's metadata:
+
+```js
+{
+	permission: 'delete-items',
+	optional: boolean,
+	role: string
+}
+```
+
+`optional` can be omitted and will default to `false`. 
+
+`role` accepts the id of a role in your Directus project to control what collections can be accessed.
 
 ## Hooks
 
