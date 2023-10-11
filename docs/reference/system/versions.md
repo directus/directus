@@ -296,9 +296,9 @@ TBD
 </template>
 </SnippetToggler>
 
-## Rename a Version
+## Update a Version
 
-Rename an existing version.
+Update an existing version.
 
 ### Request
 
@@ -360,9 +360,9 @@ TBD
 </template>
 </SnippetToggler>
 
-## Rename Multiple Versions
+## Update Multiple Versions
 
-Rename multiple existing versions.
+Update multiple existing versions.
 
 ### Request
 
