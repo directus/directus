@@ -199,7 +199,10 @@ async function onGroupSortChange(fields: Field[]) {
 				<template #header>
 					<div class="header full">
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-						<span class="name">{{ field.field }}</span>
+						<span class="name">
+							{{ field.field }}
+							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
+						</span>
 						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"

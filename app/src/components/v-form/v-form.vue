@@ -12,6 +12,7 @@ import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import type { FormField as TFormField } from './types';
 import ValidationErrors from './validation-errors.vue';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 
 type FieldValues = {
 	[field: string]: any;
@@ -151,13 +152,23 @@ function useForm() {
 
 	const { formFields } = useFormFields(fields);
 
-	const fieldsMap: ComputedRef<Record<string, TFormField | undefined>> = computed(() => {
+	const fieldsWithConditions = computed(() => {
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
-		return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
+
+		let fields = formFields.value.reduce((result, field) => {
 			const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-			if (newField.field) result[newField.field] = newField;
+
+			if (newField.field) result.push(newField);
 			return result;
-		}, {} as Record<string, Field>);
+		}, [] as Field[]);
+
+		fields = pushGroupOptionsDown(fields);
+
+		return fields;
+	});
+
+	const fieldsMap: ComputedRef<Record<string, TFormField | undefined>> = computed(() => {
+		return Object.fromEntries(fieldsWithConditions.value.map((field) => [field.field, field]));
 	});
 
 	const fieldsInGroup = computed(() =>
@@ -171,17 +182,7 @@ function useForm() {
 	});
 
 	const fieldsForGroup = computed(() => {
-		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
-
-		return fieldNames.value.map((name: string) => {
-			const fields = getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null);
-
-			return fields.reduce((result: Field[], field: Field) => {
-				const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-				if (newField.field) result.push(newField);
-				return result;
-			}, [] as Field[]);
-		});
+		return fieldNames.value.map((name: string) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
 	return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
@@ -199,7 +200,7 @@ function useForm() {
 	}
 
 	function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
-		const fieldsInGroup: Field[] = fields.value.filter((field) => {
+		const fieldsInGroup = fieldsWithConditions.value.filter((field) => {
 			const meta = fieldsMap.value?.[field.field]?.meta;
 			return meta?.group === group || (group === null && isNil(meta));
 		});
