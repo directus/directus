@@ -2,49 +2,32 @@
 import type { DeepPartial } from '@directus/types';
 import decamelize from 'decamelize';
 import { flatten } from 'flat';
-import { mapKeys, merge } from 'lodash-es';
-import { storeToRefs } from 'pinia';
-import { computed, unref } from 'vue';
+import { mapKeys } from 'lodash-es';
+import { computed, toRefs, unref } from 'vue';
 import type { Theme } from './schema.js';
-import { useThemeStore } from './store.js';
 // import { theme as themeDefaultDark } from './themes/dark-directus.js';
 import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/light-directus.js';
+import { useTheme } from './use-theme.js';
 
-export interface ThemeProviderProps {
-	dark: boolean;
-	themeLight: string | null;
-	themeLightOverrides: DeepPartial<Theme['rules']>;
-	themeDark: string | null;
-	themeDarkOverrides: DeepPartial<Theme['rules']>;
-}
-
-const props = withDefaults(defineProps<ThemeProviderProps>(), {
-	themeLight: themeDefaultLight.name,
-	themeDark: themeDefaultDark.name,
-	themeLightOverrides: () => ({}),
-	themeDarkOverrides: () => ({}),
-});
-
-const { themes } = storeToRefs(useThemeStore());
-
-const theme = computed(() => {
-	const themeName = props.dark ? props.themeDark : props.themeLight;
-	const defaultTheme = props.dark ? themeDefaultDark : themeDefaultLight;
-	const overrides = props.dark ? props.themeDarkOverrides : props.themeLightOverrides;
-
-	const theme = unref(themes)[props.dark ? 'dark' : 'light'].find((theme) => theme.name === themeName);
-
-	if (!theme) {
-		if (themeName) {
-			// eslint-disable-next-line no-console
-			console.warn(`Theme "${themeName}" doesn't exist.`);
-		}
-
-		return overrides ? merge({}, defaultTheme, { rules: overrides }) : defaultTheme;
+const props = withDefaults(
+	defineProps<{
+		darkMode: boolean;
+		themeLight: string | null;
+		themeLightOverrides: DeepPartial<Theme['rules']>;
+		themeDark: string | null;
+		themeDarkOverrides: DeepPartial<Theme['rules']>;
+	}>(),
+	{
+		themeLight: themeDefaultLight.name,
+		themeDark: themeDefaultDark.name,
+		themeLightOverrides: () => ({}),
+		themeDarkOverrides: () => ({}),
 	}
+);
 
-	return overrides ? merge({}, defaultTheme, theme, { rules: overrides }) : merge(defaultTheme, theme);
-});
+const { darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides } = toRefs(props);
+
+const { theme } = useTheme(darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides);
 
 const cssVariables = computed(() => {
 	const rules = flatten<Theme['rules'], Record<string, string | number>>(unref(theme).rules, { delimiter: '--' });
@@ -55,7 +38,9 @@ const cssVariables = computed(() => {
 });
 
 const cssString = computed(() => {
-	return `:root {${Object.entries(unref(cssVariables)).map(([key, value]) => `${key}: ${value};`).join(' ')}}`;
+	return `:root {${Object.entries(unref(cssVariables))
+		.map(([key, value]) => `${key}: ${value};`)
+		.join(' ')}}`;
 });
 </script>
 
