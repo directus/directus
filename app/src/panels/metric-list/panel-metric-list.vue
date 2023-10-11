@@ -7,11 +7,11 @@ import { formatNumber } from '@/utils/format-number';
 import { computed, unref } from 'vue';
 import type { Style, Notation, Unit } from '@/utils/format-number';
 
-interface Group {
+export interface Group {
 	[groupByField: string]: string;
 }
 
-interface Aggregate {
+export interface Aggregate {
 	[aggregateFunction: string]: {
 		[aggregateField: string]: number;
 	};
