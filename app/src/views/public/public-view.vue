@@ -97,23 +97,31 @@ const logoURL = computed<string | null>(() => {
 	<div class="public-view" :class="{ branded: isBranded }">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
-				<div
-					v-if="info?.project?.project_logo"
-					class="logo"
-					:style="info?.project.project_color ? { backgroundColor: info.project.project_color } : {}"
-				>
-					<v-image :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+				<!-- Start: Logo -->
+				<div class="logo-box">
+					<div
+						v-if="info?.project?.project_logo"
+						class="logo"
+						:style="info?.project.project_color ? { backgroundColor: info.project.project_color } : {}"
+					>
+						<v-image :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+					</div>
+					<div
+						v-else
+						class="logo"
+						:style="info?.project?.project_color ? { backgroundColor: info.project.project_color } : {}"
+					>
+						<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
+					</div>
+					<div class="title">
+						<h1 class="type-title">{{ info?.project?.project_name }}</h1>
+						<p class="subtitle">{{ info?.project?.project_descriptor ?? t('application') }}</p>
+					</div>
 				</div>
-				<div
-					v-else
-					class="logo"
-					:style="info?.project?.project_color ? { backgroundColor: info.project.project_color } : {}"
-				>
-					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
-				</div>
-				<div class="title">
-					<h1 class="type-title">{{ info?.project?.project_name }}</h1>
-					<p class="subtitle">{{ info?.project?.project_descriptor ?? t('application') }}</p>
+
+				<!-- End: Actions -->
+				<div class="actions">
+					<slot name="actions" />
 				</div>
 			</div>
 
@@ -278,10 +286,26 @@ const logoURL = computed<string | null>(() => {
 
 	.title-box {
 		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
 		align-items: center;
-		width: max-content;
+		width: 100%;
 		max-width: 100%;
 		height: 64px;
+
+		.logo-box {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.actions {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 8px;
+		}
 
 		.title {
 			margin-top: 2px;
