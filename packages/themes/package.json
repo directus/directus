@@ -15,7 +15,6 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
-		"./.": "./themes/",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -31,22 +30,22 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@rollup/plugin-node-resolve": "15.0.2",
-		"@types/lodash-es": "4.17.7",
-		"@vitejs/plugin-vue": "4.2.3",
+		"@rollup/plugin-node-resolve": "15.2.3",
+		"@types/lodash-es": "4.17.9",
+		"@vitejs/plugin-vue": "4.4.0",
 		"@vitest/coverage-c8": "0.31.1",
-		"rollup-plugin-node-externals": "6.1.1",
+		"rollup-plugin-node-externals": "6.1.2",
 		"typescript": "5.2.2",
-		"vite": "4.3.7",
-		"vite-plugin-dts": "2.3.0",
-		"vitest": "0.31.1"
+		"vite": "4.4.11",
+		"vite-plugin-dts": "3.6.0",
+		"vitest": "0.34.6"
 	},
 	"dependencies": {
-		"@sinclair/typebox": "0.28.13",
+		"@sinclair/typebox": "0.31.17",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21",
-		"pinia": "2.1.1",
+		"pinia": "2.1.6",
 		"vue": "3.3.4"
 	}
 }
