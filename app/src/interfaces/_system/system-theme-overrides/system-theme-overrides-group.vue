@@ -1,84 +1,62 @@
 <script setup lang="ts">
-import VSelect from '@/components/v-select/v-select.vue';
-import type { TObject, TRef } from '@sinclair/typebox';
-import { difference } from 'lodash';
-import { computed, unref } from 'vue';
+import { isPlainObject } from 'lodash';
+import { ref } from 'vue';
 import SystemThemeOverridesRule from './system-theme-overrides-rule.vue';
-import type { GroupValue, SetValueFn } from './types.js';
+import type { SetValueFn } from './types.js';
 
 defineOptions({
 	name: 'SystemThemeOverridesGroup',
 	inheritAttrs: false,
 });
 
-const props = defineProps<{
-	schema: TObject<{ [key: string]: TObject | TRef }>;
+defineProps<{
+	rules: Record<string, unknown>;
+	group?: string;
 	root?: boolean;
-	rule?: string;
-	value: GroupValue;
+	value: Record<string, unknown> | undefined;
 	path: string[];
 	set: SetValueFn;
 }>();
 
-const allProperties = computed(() => Object.keys(props.schema.properties));
-const usedProperties = computed(() => Object.keys(props.value));
-const availableProperties = computed(() => difference(unref(allProperties), unref(usedProperties)));
-
-const addProperty = (key: string) => props.set([...props.path, key], undefined);
-
-const getNested = (key: string) => {
-	const nested = props.schema.properties[key];
-
-	if (!nested || !nested.type || nested.type !== 'object') {
-		throw new Error(`Nested schema for ${key} can't be extracted from schema ${props.schema}`);
-	}
-
-	return nested as TObject<{ [key: string]: TObject | TRef }>;
-};
-
-const isGroup = (key: string) => {
-	try {
-		getNested(key);
-		return true;
-	} catch (err) {
-		return false;
-	}
-};
+const collapsed = ref(true);
 </script>
 
 <template>
 	<div class="theme-overrides-group" :class="{ root }">
-		<p class="rule">{{ rule }}</p>
+		<button
+			v-if="!root"
+			class="group-toggle"
+			:class="{ collapsed, 'has-value': !!value }"
+			@click="collapsed = !collapsed"
+		>
+			<span>{{ group }}</span>
+			<v-icon class="icon" name="expand_more" small />
+		</button>
 
-		<div class="group-contents">
-			<template v-for="child in Object.keys(value)" :key="child">
-				<system-theme-overrides-group
-					v-if="isGroup(child)"
-					:rule="child"
-					:value="(value[child] as GroupValue) ?? {}"
-					:set="set"
-					:schema="getNested(child)"
-					:path="[...path, child]"
-				/>
-				<system-theme-overrides-rule
-					v-else
-					:rule="child"
-					type="color"
-					:set="set"
-					:value="(value[child] as string | number | undefined)"
-					:path="[...path, child]"
-				/>
-			</template>
+		<transition-expand>
+			<div v-if="root || !collapsed" class="group-contents">
+				<template v-for="(ruleValue, ruleKey) in rules" :key="ruleKey">
+					<system-theme-overrides-group
+						v-if="isPlainObject(ruleValue)"
+						:group="ruleKey"
+						:rules="(ruleValue as Record<string, unknown>)"
+						:value="(value?.[ruleKey] as Record<string, unknown> | undefined)"
+						:set="set"
+						:path="[...path, ruleKey]"
+					/>
 
-			<v-select
-				v-if="availableProperties.length > 0"
-				class="select"
-				placeholder="Add Rule"
-				:items="availableProperties"
-				inline
-				@update:model-value="addProperty"
-			/>
-		</div>
+					<system-theme-overrides-rule
+						v-else
+						:rule="ruleKey"
+						type="color"
+						:set="set"
+						:default-value="(ruleValue as string | number)"
+						:value="(value?.[ruleKey] as string | number | undefined)"
+						:path="[...path, ruleKey]"
+					/>
+				</template>
+			</div>
+		</transition-expand>
 	</div>
 </template>
 
@@ -92,7 +70,44 @@ const isGroup = (key: string) => {
 	}
 }
 
-.rule {
+.group-toggle {
 	font-family: var(--family-monospace);
+	color: var(--foreground-normal);
+	width: calc(100% + 16px);
+	text-align: left;
+	padding-inline: 8px;
+	margin-inline-start: -8px;
+
+	&.has-value {
+		position: relative;
+
+		&::before {
+			content: '';
+			width: 4px;
+			height: 4px;
+			background-color: var(--foreground-subdued);
+			border-radius: 4px;
+			position: absolute;
+			top: 11px;
+			left: -1px;
+			display: block;
+		}
+	}
+
+	&:hover {
+		background-color: var(--background-subdued);
+		border-radius: var(--border-radius);
+	}
+
+	.icon {
+		rotate: 0deg;
+		transition: rotate var(--fast) var(--transition);
+	}
+
+	&.collapsed {
+		.icon {
+			rotate: -90deg;
+		}
+	}
 }
 </style>
