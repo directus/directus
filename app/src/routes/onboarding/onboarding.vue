@@ -136,7 +136,7 @@ async function finishOnboarding() {
 	// It might fail but proceed as normal for seamless user experience
 	collectOnboarding().catch(() => {});
 
-	// return router.replace('/content');
+	return router.replace('/content');
 }
 
 function prevSlide() {
@@ -223,8 +223,8 @@ async function nextSlide() {
 				<Transition name="dialog" mode="out-in">
 					<div :key="currentSlideName" class="slide">
 						<div class="intro-text">
-							<h1 class="type-title">{{ t(currentSlide?.i18nTitle) }}</h1>
-							<p class="type-text">{{ t(currentSlide?.i18nText) }}</p>
+							<h2 class="type-title">{{ t(currentSlide?.i18nTitle) }}</h2>
+							<div class="text-content" v-md="t(currentSlide?.i18nText)"></div>
 						</div>
 						<v-form
 							v-if="currentSlide?.form"
@@ -268,7 +268,7 @@ async function nextSlide() {
 	</public-view>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .container {
 	display: flex;
 	flex-direction: column;
@@ -308,16 +308,22 @@ async function nextSlide() {
 	width: 100%;
 }
 
-.intro-text {
-	margin-bottom: 64px;
+.btn-skip {
+	:deep(button) {
+		color: var(--foreground-subdued);
+	}
 }
 
-/* Inherits from global class */
-.type-title {
-	margin-bottom: 8px;
-}
-/* Inherits from global class */
-.type-text {
+.intro-text {
 	max-width: 600px;
+	margin-bottom: 64px;
+
+	.type-title {
+		margin-bottom: 1em;
+	}
+
+	:deep() {
+		@import '@/styles/markdown';
+	}
 }
 </style>

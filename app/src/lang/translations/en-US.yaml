@@ -2262,43 +2262,48 @@ operations:
     batch_size: Batch Size
     cache: Cache
 onboarding:
+  privacy_note:
+    We take user privacy very seriously. We'll never sell or share your information with anyone outside of our
+    organization.
   action:
     skip: Skip
     first: Start Setup
     continue: Continue
-    last: Save and continue
+    last: Save and Continue
   welcome:
     title: Welcome to Directus!
-    text:
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ratione sed, voluptatem deleniti praesentium, iure
-      veniam unde quis architecto dolor tenetur repellat. Illum dignissimos minima corporis porro pariatur possimus
-      ratione blanditiis!
+    text: |
+      Whether you're starting from scratch, a seasoned pro, or just checking out Directus for the first time, we're so thrilled you're here. 
+
+      To get your project up and running as quickly as possible, the next few pages will guide you through initial user and project set-up. Ready? Let's get started!
+
+      By the way – Be sure to join our [Directus Discord](https://directus.chat) to get updates, community support, and to see what awesome stuff other users are building.
   project:
     title: Let's setup your project
-    text:
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam quidem deleniti asperiores rerum doloremque
-      consequuntur consequatur cum modi quam nobis qui exercitationem velit temporibus, ratione itaque voluptate
-      excepturi minus nesciunt?
+    text: |
+      We built Directus to be completely customizable. From URL, to logo, to color scheme, you can give your project a distinct identity to make it truly *yours*.
+
+      Don't worry if you're not ready to customize yet – these can all be revisited later and easily removed or changed from inside the project settings.
     use_case: What are you planning to use Directus for?
     personal: Personal project
     work: Business
     exploring: Just exploring
   user:
     title: Let's setup your user
-    text:
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, laboriosam! Vero doloremque, veritatis dicta,
-      doloribus vitae perspiciatis reiciendis animi accusamus neque laborum at quis quae culpa quia tempora! Quasi, at.
+    text: |
+      Each user has a unique identity within Directus, and this information will be used to create your specific persona. Don't worry if you accidentally spell your name wrong, these are fully editable inside of your project settings.
     mailinglist_name: Product Updates
-    mailinglist_label: Receive updates via email
+    mailinglist_label: Receive once-a-month updates
     primary_skillset: What is your primary skillset?
     frontend: Front-end Developer
     backend: Back-end Developer
     fullstack: Full-stack Developer
     db_admin: Database Administrator
     data_scientist: Data Scientist
-    nontechnical: Non-Technical
+    nontechnical: Non-Technical User
   loading:
     title: Setting up your database...
-    text:
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, iusto ullam fugit quae qui rem assumenda magnam
-      odit, iure asperiores.
+    text: |
+      Awesome! You're all set.
+
+      Now, sit back, relax, and give us a few moments to work our magic… ✨🐰

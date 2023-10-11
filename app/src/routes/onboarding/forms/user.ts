@@ -186,7 +186,7 @@ export const useUserFields = function (): Field[] {
 				sort: 5,
 				width: 'half',
 				translations: null,
-				note: null,
+				note: t('onboarding.privacy_note'),
 				conditions: null,
 				required: false,
 				group: null,
