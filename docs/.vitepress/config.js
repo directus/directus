@@ -596,7 +596,7 @@ function sidebar() {
 				},
 				{
 					text: 'Secure Extensions',
-					link: '/extensions/secure',
+					link: '/extensions/secure/introduction',
 				},
 				{
 					text: 'Internal Packages',
