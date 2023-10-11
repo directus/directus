@@ -1,30 +1,45 @@
 import type { Knex } from 'knex';
 import { getHelpers } from '../helpers/index.js';
+import { createInspector } from '@directus/schema';
 
-export async function up(knex: Knex): Promise<void> {
+export async function up(knex: Knex) {
+	const inspector = createInspector(knex);
 	const helper = getHelpers(knex).schema;
 	const csvFields = await knex.select('collection', 'field').from('directus_fields').where('special', '=', 'cast-csv');
 
-	for (const entry of csvFields) {
-		const { defaultValue, nullable } = await knex(entry.collection).columnInfo(entry.field);
+	const updates: Promise<void>[] = [];
 
-		await helper.changeToType(entry.collection, entry.field, 'text', {
-			default: defaultValue,
-			nullable,
-		});
+	for (const { collection, field } of csvFields) {
+		updates.push(
+			inspector.columnInfo(collection, field).then((column) => {
+				return helper.changeToType(collection, field, 'text', {
+					default: column.default_value,
+					nullable: column.is_nullable,
+				});
+			})
+		);
 	}
+
+	return Promise.all(updates);
 }
 
-export async function down(knex: Knex): Promise<void> {
+export async function down(knex: Knex) {
+	const inspector = createInspector(knex);
 	const helper = getHelpers(knex).schema;
 	const csvFields = await knex.select('collection', 'field').from('directus_fields').where('special', '=', 'cast-csv');
 
-	for (const entry of csvFields) {
-		const { defaultValue, nullable } = await knex(entry.collection).columnInfo(entry.field);
+	const updates: Promise<void>[] = [];
 
-		await helper.changeToType(entry.collection, entry.field, 'string', {
-			default: defaultValue,
-			nullable,
-		});
+	for (const { collection, field } of csvFields) {
+		updates.push(
+			inspector.columnInfo(collection, field).then((column) => {
+				return helper.changeToType(collection, field, 'string', {
+					default: column.default_value,
+					nullable: column.is_nullable,
+				});
+			})
+		);
 	}
+
+	return Promise.all(updates);
 }
