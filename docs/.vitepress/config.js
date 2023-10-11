@@ -596,7 +596,17 @@ function sidebar() {
 				},
 				{
 					text: 'Secure Extensions',
-					link: '/extensions/secure/introduction',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/secure/introduction',
+							text: 'Introduction'
+						},
+						{
+							link: '/extensions/secure/execution-types',
+							text: 'Execution Types'
+						},
+					]
 				},
 				{
 					text: 'Internal Packages',
