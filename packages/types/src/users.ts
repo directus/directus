@@ -15,7 +15,7 @@ export type Avatar = {
 };
 
 export type UserOnboarding = {
-	primary_skillset: string;
+	primary_skillset: string | null;
 	wants_emails: boolean;
 	retryTransmission: boolean;
 };
