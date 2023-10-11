@@ -135,7 +135,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
+		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ t('no_image_selected') }}
 		</v-notice>
 
