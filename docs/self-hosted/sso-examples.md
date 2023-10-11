@@ -53,6 +53,9 @@ AUTH_GOOGLE_IDENTIFIER_KEY="email"
 AUTH_KEYCLOAK_DRIVER="openid"
 AUTH_KEYCLOAK_CLIENT_ID="..."
 AUTH_KEYCLOAK_CLIENT_SECRET="..."
+# For Keycloak < 18.0.0
+AUTH_KEYCLOAK_ISSUER_URL="http://<your_keycloak_domain>/auth/realms/<your_keycloak_realm>/.well-known/openid-configuration"
+# For Keycloak >= 18.0.0
 AUTH_KEYCLOAK_ISSUER_URL="http://<your_keycloak_domain>/realms/<your_keycloak_realm>/.well-known/openid-configuration"
 AUTH_KEYCLOAK_IDENTIFIER_KEY="email"
 ```
