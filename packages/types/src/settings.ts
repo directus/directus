@@ -32,7 +32,7 @@ export type CustomAspectRatio = {
 };
 
 export type SettingsOnboarding = {
-	project_use_case: string;
+	project_use_case: string | null;
 };
 
 export type Settings = {

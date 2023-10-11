@@ -175,7 +175,7 @@ export const useProjectFields = function (): Field[] {
 				collection: 'onboarding',
 				field: 'project_logo',
 				special: ['file'],
-				interface: 'file-image',
+				interface: 'file',
 				options: { crop: false },
 				display: null,
 				display_options: null,

@@ -2262,7 +2262,11 @@ operations:
     batch_size: Batch Size
     cache: Cache
 onboarding:
-  skip: Skip onboarding
+  action:
+    skip: Skip
+    first: Start Setup
+    continue: Continue
+    last: Save and continue
   welcome:
     title: Welcome to Directus!
     text:
@@ -2277,21 +2281,22 @@ onboarding:
       excepturi minus nesciunt?
     use_case: What are you planning to use Directus for?
     personal: Personal project
-    work: Work project
+    work: Business
     exploring: Just exploring
   user:
     title: Let's setup your user
     text:
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, laboriosam! Vero doloremque, veritatis dicta,
       doloribus vitae perspiciatis reiciendis animi accusamus neque laborum at quis quae culpa quia tempora! Quasi, at.
-    mailinglist_name: Newsletter
+    mailinglist_name: Product Updates
     mailinglist_label: Receive updates via email
     primary_skillset: What is your primary skillset?
-    frontend: Frontend
-    backend: Backend
-    fullstack: Fullstack
-    sql_lowcode: SQL and basic coding
-    nontechnical: Non technical
+    frontend: Front-end Developer
+    backend: Back-end Developer
+    fullstack: Full-stack Developer
+    db_admin: Database Administrator
+    data_scientist: Data Scientist
+    nontechnical: Non-Technical
   loading:
     title: Setting up your database...
     text:
