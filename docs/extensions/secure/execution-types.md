@@ -5,25 +5,28 @@ contributors: Nils Twelker, Kevin Lewis, Esther Agbaje
 
 # Execution Types
 
-In a Secure Extension, the `exec` function is an asynchronous operation that returns a `Promise` object. It executes a specific operation defined by an execution type.
+In a Secure Extension, the `exec` function is an asynchronous operation that returns a `Promise` object. It executes a
+specific operation defined by an execution type.
 
 ```js
 await exec(executionType, ...additionalArguments)
 ```
 
-The first argument of the `exec` function is an `executionType` string, which represents the type of operation to be conducted. The `executionType` should correspond to a valid, available execution type.
+The first argument of the `exec` function is an `executionType` string, which represents the type of operation to be
+conducted. The `executionType` should correspond to a valid, available execution type.
 
-Additional parameters required by the `exec` function depend on the provided execution type. These are added after the `executionType` parameter.
+Additional parameters required by the `exec` function depend on the provided execution type. These are added after the
+`executionType` parameter.
 
-There are built-in execution types provided with the `exec` function that are available to all extensions, irrespective of its permissions, while other execution types may be added through granted permissions. 
+There are built-in execution types provided with the `exec` function that are available to all extensions, irrespective
+of its permissions, while other execution types may be added through granted permissions.
 
 :::warning Handle Optional Permissions
 
-If an invalid or non-existent `executionType` is passed to the `exec` function, it will throw an error. If you set some permissions as optional, you should handle both cases where they are and are not granted.
+If an invalid or non-existent `executionType` is passed to the `exec` function, it will throw an error. If you set some
+permissions as optional, you should handle both cases where they are and are not granted.
 
 :::
-
-
 
 ## Log
 
@@ -45,12 +48,11 @@ await exec('log', 'Hello, world!');
 
 :::
 
-
-The `log` execution type is available in all Directus Secure Extensions with no further permissions required. 
+The `log` execution type is available in all Directus Secure Extensions with no further permissions required.
 
 ## Request
 
-The `request` execution type allows you to make HTTP requests as `fetch` is unavilable in an isolate. 
+The `request` execution type allows you to make HTTP requests as `fetch` is unavailable in an isolate.
 
 ::: tabs
 
@@ -84,7 +86,7 @@ const text = await exec('request', 'https://example-api.com', {
 
 :::
 
-The `request` execution type requires the following permissions are added to your extension's metadata: 
+The `request` execution type requires the following permissions are added to your extension's metadata:
 
 ```js
 {
@@ -94,13 +96,14 @@ The `request` execution type requires the following permissions are added to you
 }
 ```
 
-`optional` can be omitted and will default to `false`. 
+`optional` can be omitted and will default to `false`.
 
 `allowedUrls` contains an array of strings, which may be regex or use wildcard notation.
 
 ## Database Interactions
 
-Isolates do not have the abiltiy to access your collections by default. By enabling any of the Create/Read/Update/Delete (CRUD) execution types in your extension, you will be able to perform these actions.
+Isolates do not have the ability to access your collections by default. By enabling any of the Create/Read/Update/Delete
+(CRUD) execution types in your extension, you will be able to perform these actions.
 
 :::info No Single Item CRUD Operations
 
@@ -142,10 +145,9 @@ The `create-items` execution type requires the following permissions are added t
 }
 ```
 
-`optional` can be omitted and will default to `false`. 
+`optional` can be omitted and will default to `false`.
 
 `role` accepts the id of a role in your Directus project to control what collections can be accessed.
-
 
 ### Read Items
 
@@ -155,7 +157,7 @@ The `create-items` execution type requires the following permissions are added t
 
 ```js
 async function exec('read-items', collection: string, options: {
-	query?: Query 
+	query?: Query
 }): Promise<any>
 ```
 
@@ -179,7 +181,7 @@ The `read-items` execution type requires the following permissions are added to 
 }
 ```
 
-`optional` can be omitted and will default to `false`. 
+`optional` can be omitted and will default to `false`.
 
 `role` accepts the id of a role in your Directus project to control what collections can be accessed.
 
@@ -191,7 +193,7 @@ The `read-items` execution type requires the following permissions are added to 
 
 ```js
 async function exec('update-items', collection: string, options: {
-	query?: Query, data: Record<string, unknown> 
+	query?: Query, data: Record<string, unknown>
 }): Promise<any>
 ```
 
@@ -216,7 +218,7 @@ The `update-items` execution type requires the following permissions are added t
 }
 ```
 
-`optional` can be omitted and will default to `false`. 
+`optional` can be omitted and will default to `false`.
 
 `role` accepts the id of a role in your Directus project to control what collections can be accessed.
 
@@ -252,7 +254,7 @@ The `delete-items` execution type requires the following permissions are added t
 }
 ```
 
-`optional` can be omitted and will default to `false`. 
+`optional` can be omitted and will default to `false`.
 
 `role` accepts the id of a role in your Directus project to control what collections can be accessed.
 
@@ -285,7 +287,8 @@ await exec('register-filter', {
 
 :::
 
-The `register-filter` execution type is available in all Directus Secure Extensions with no further permissions required. All events are exposed. 
+The `register-filter` execution type is available in all Directus Secure Extensions with no further permissions
+required. All events are exposed.
 
 ### Register Action
 
@@ -314,15 +317,19 @@ await exec('register-action', {
 
 :::
 
-The `register-action` execution type is available in all Directus Secure Extensions with no further permissions required. All events are exposed. 
+The `register-action` execution type is available in all Directus Secure Extensions with no further permissions
+required. All events are exposed.
 
 ## Endpoints
 
 ### Register Endpoint
 
-The Secure Extensions Framework intentionally limits your access to the scoped router which defines your endpoint's paths. 
+The Secure Extensions Framework intentionally limits your access to the scoped router which defines your endpoint's
+paths.
 
-Instead of being able to define the namespace of your endpoints, Secure Extensions will always use the full extension name. For example, an extension with name `directus-extension-my-extension` will have all of it's endpoints under `https://example.directus.app/directus-extension-my-extension/`. 
+Instead of being able to define the namespace of your endpoints, Secure Extensions will always use the full extension
+name. For example, an extension with name `directus-extension-my-extension` will have all of it's endpoints under
+`https://example.directus.app/directus-extension-my-extension/`.
 
 ::: tabs
 
@@ -362,7 +369,8 @@ await exec('register-endpoint', {
 
 :::
 
-The `register-action` execution type is available in all Directus Secure Extensions with no further permissions required.
+The `register-action` execution type is available in all Directus Secure Extensions with no further permissions
+required.
 
 ## Operations
 
