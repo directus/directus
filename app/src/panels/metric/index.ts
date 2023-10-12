@@ -1,7 +1,7 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { PanelQuery } from '@directus/types';
-import { definePanel } from '@directus/utils';
+import type { PanelQuery } from '@directus/extensions';
+import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelMetric from './panel-metric.vue';
 

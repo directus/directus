@@ -1,19 +1,3 @@
-<template>
-	<button
-		class="v-radio"
-		type="button"
-		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled="disabled"
-		:class="{ checked: isChecked, block }"
-		@click="emitValue"
-	>
-		<v-icon :name="icon" />
-		<span class="label type-text">
-			<slot name="label">{{ label }}</slot>
-		</span>
-	</button>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -57,6 +41,22 @@ function emitValue(): void {
 	emit('update:modelValue', props.value);
 }
 </script>
+
+<template>
+	<button
+		class="v-radio"
+		type="button"
+		:aria-pressed="isChecked ? 'true' : 'false'"
+		:disabled="disabled"
+		:class="{ checked: isChecked, block }"
+		@click="emitValue"
+	>
+		<v-icon :name="icon" />
+		<span class="label type-text">
+			<slot name="label">{{ label }}</slot>
+		</span>
+	</button>
+</template>
 
 <style>
 body {

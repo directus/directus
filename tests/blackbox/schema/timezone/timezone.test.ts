@@ -1,11 +1,18 @@
 import { getUrl } from '@common/config';
+import {
+	ClearCaches,
+	CreateCollection,
+	CreateField,
+	DeleteCollection,
+	DisableTestCachingSetup,
+} from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import request from 'supertest';
-import { cloneDeep } from 'lodash';
-import { validateDateDifference } from '@utils/validate-date-difference';
-import { CreateCollection, CreateField, DeleteCollection } from '@common/functions';
-import * as common from '@common/index';
+import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
+import { validateDateDifference } from '@utils/validate-date-difference';
+import { cloneDeep } from 'lodash-es';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 
 const collectionName = 'schema_timezone_tests';
 
@@ -51,7 +58,7 @@ describe('schema', () => {
 
 	describe('timezone', () => {
 		describe('update timezone field schema', () => {
-			common.DisableTestCachingSetup();
+			DisableTestCachingSetup();
 
 			it.each(vendors)(
 				'%s',
@@ -102,7 +109,7 @@ describe('schema', () => {
 						.send({
 							meta: {},
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
@@ -113,7 +120,7 @@ describe('schema', () => {
 								special: ['date-created'],
 							},
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
@@ -124,7 +131,7 @@ describe('schema', () => {
 								special: ['date-updated'],
 							},
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
@@ -137,7 +144,7 @@ describe('schema', () => {
 										special: ['cast-timestamp'],
 									},
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 								.expect('Content-Type', /application\/json/)
 								.expect(200);
 
@@ -148,7 +155,7 @@ describe('schema', () => {
 										special: ['date-created', 'cast-timestamp'],
 									},
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 								.expect('Content-Type', /application\/json/)
 								.expect(200);
 
@@ -159,7 +166,7 @@ describe('schema', () => {
 										special: ['date-updated', 'cast-timestamp'],
 									},
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 								.expect('Content-Type', /application\/json/)
 								.expect(200);
 
@@ -172,7 +179,7 @@ describe('schema', () => {
 										special: ['cast-datetime'],
 									},
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 								.expect('Content-Type', /application\/json/)
 								.expect(200);
 
@@ -185,7 +192,7 @@ describe('schema', () => {
 			);
 		});
 
-		common.ClearCaches();
+		ClearCaches();
 
 		describe('stores the correct timezone data', () => {
 			it.each(vendors)(
@@ -204,7 +211,7 @@ describe('schema', () => {
 					await request(getUrl(vendor))
 						.post(`/items/${collectionName}`)
 						.send(dates)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
@@ -212,7 +219,7 @@ describe('schema', () => {
 
 					const response = await request(getUrl(vendor))
 						.get(`/items/${collectionName}?fields=*`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
 
@@ -278,7 +285,7 @@ describe('schema', () => {
 
 				const existingDataResponse = await request(getUrl(vendor))
 					.get(`/items/${collectionName}?fields=*&limit=1`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
@@ -287,7 +294,7 @@ describe('schema', () => {
 				await request(getUrl(vendor))
 					.patch(`/items/${collectionName}/${existingDataResponse.body.data[0].id}`)
 					.send(payload)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
@@ -295,7 +302,7 @@ describe('schema', () => {
 
 				const response = await request(getUrl(vendor))
 					.get(`/items/${collectionName}/${existingDataResponse.body.data[0].id}?fields=*`)
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 

@@ -1,7 +1,8 @@
-import { defineOperationApi, isValidJSON } from '@directus/utils';
+import { defineOperationApi } from '@directus/extensions';
+import { isValidJSON } from '@directus/utils';
+import { isAxiosError } from 'axios';
 import encodeUrl from 'encodeurl';
 import { getAxios } from '../../request/index.js';
-import { isAxiosError } from 'axios';
 
 type Options = {
 	url: string;

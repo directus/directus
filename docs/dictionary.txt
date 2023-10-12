@@ -128,6 +128,7 @@ CMS
 CockroachDB
 CodeDeploy
 CommonJS
+Corepack
 composables
 config-options
 CORS
@@ -292,6 +293,7 @@ OracleDB
 OracleDB's
 OSS
 OTP
+overwriteable
 pageClass
 param
 paywalled
@@ -332,6 +334,7 @@ reactively
 readonly
 readTime
 (R|r)ealtime
+(R|r)ealtime's
 (R|r)eal-(T|t)ime
 rebase
 reconfigurations
@@ -385,6 +388,7 @@ SVGs?
 TablePlus
 tfa
 TFA
+Theming
 TileJSON
 (T|t)imeseries
 TinyMCE
@@ -415,11 +419,12 @@ UUIDv4
 UX
 v[0-9]{1,2}
 varchar
+validator
 vCPU
 Vercel
 viewability
 VitePress
-(V|v)onage
+(V|v)onage[.]?
 volta
 VPC
 Vue
@@ -434,3 +439,5 @@ XSS
 yaml
 YAML
 Zeet
+
+Butterfield

@@ -1,10 +1,10 @@
-import { EXTENSION_TYPES } from '@directus/constants';
+import { EXTENSION_TYPES } from '@directus/extensions';
 import type { Plural } from '@directus/types';
 import { depluralize, isIn } from '@directus/utils';
 import { Router } from 'express';
 import env from '../env.js';
 import { RouteNotFoundError } from '../errors/index.js';
-import { getExtensionManager } from '../extensions.js';
+import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
@@ -13,12 +13,18 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 const router = Router();
 
 router.get(
-	'/:type',
+	'/:type?',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params['type'] as Plural<string>);
+		let type: (typeof EXTENSION_TYPES)[number] | undefined = undefined;
 
-		if (!isIn(type, EXTENSION_TYPES)) {
-			throw new RouteNotFoundError({ path: req.path });
+		if (req.params['type']) {
+			const singularType = depluralize(req.params['type'] as Plural<string>);
+
+			if (!isIn(singularType, EXTENSION_TYPES)) {
+				throw new RouteNotFoundError({ path: req.path });
+			}
+
+			type = singularType;
 		}
 
 		const extensionManager = getExtensionManager();

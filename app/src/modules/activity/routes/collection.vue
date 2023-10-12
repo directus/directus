@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import { useExtension } from '@/composables/use-extension';
+import { usePreset } from '@/composables/use-preset';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useLayout } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import ActivityNavigation from '../components/navigation.vue';
+
+defineProps<{
+	primaryKey?: string;
+}>();
+
+const { t } = useI18n();
+
+const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
+
+const { layoutWrapper } = useLayout(layout);
+
+const currentLayout = useExtension('layout', layout);
+
+const roleFilter = ref<Filter | null>(null);
+</script>
+
 <template>
 	<component
 		:is="layoutWrapper"
@@ -62,33 +89,6 @@
 		</private-view>
 	</component>
 </template>
-
-<script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { usePreset } from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
-import { useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
-import { mergeFilters } from '@directus/utils';
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import ActivityNavigation from '../components/navigation.vue';
-
-defineProps<{
-	primaryKey?: string;
-}>();
-
-const { t } = useI18n();
-
-const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
-
-const { layoutWrapper } = useLayout(layout);
-
-const currentLayout = useExtension('layout', layout);
-
-const roleFilter = ref<Filter | null>(null);
-</script>
 
 <style lang="scss" scoped>
 .content {

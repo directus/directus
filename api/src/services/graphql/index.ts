@@ -50,7 +50,7 @@ import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
 import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
-import { getExtensionManager } from '../../extensions.js';
+import { getExtensionManager } from '../../extensions/index.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';

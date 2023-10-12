@@ -1,5 +1,7 @@
+import { CreateCollection, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { CreateCollection, DeleteCollection, PRIMARY_KEY_TYPES } from '@common/index';
+import { PRIMARY_KEY_TYPES } from '@common/variables';
+import { expect, it } from 'vitest';
 
 export const collection = 'test_fields_crud';
 
@@ -26,6 +28,6 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		300000
+		300_000
 	);
 };

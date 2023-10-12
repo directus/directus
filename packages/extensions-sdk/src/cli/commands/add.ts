@@ -1,3 +1,9 @@
+import type {
+	ExtensionOptions,
+	ExtensionOptionsBundleEntry,
+	NestedExtensionType,
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/extensions';
 import {
 	EXTENSION_LANGUAGES,
 	EXTENSION_NAME_REGEX,
@@ -5,13 +11,7 @@ import {
 	EXTENSION_TYPES,
 	ExtensionManifest,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
-import type {
-	ExtensionOptions,
-	ExtensionOptionsBundleEntry,
-	NestedExtensionType,
-	ExtensionManifest as TExtensionManifest,
-} from '@directus/types';
+} from '@directus/extensions';
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';

@@ -393,6 +393,7 @@ move: Verplaatsen
 system: Systeem
 add_field_related: Veld toevoegen aan gerelateerde collectie
 interface_label: Interface
+display_label: Toon
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
@@ -1459,6 +1460,8 @@ interfaces:
   system-interface-options:
     interface-options: Interface-opties
     description: Een modal voor het selecteren van een interface
+  system-display:
+    display: Toon
   list-m2m:
     description: Selecteer meerdere gerelateerde items
   select-dropdown-m2o:
@@ -1490,6 +1493,7 @@ interfaces:
     edit_fields: Velden bewerken
     sort: Sorteren
     sort_placeholder: Handmatig
+    interface_group: Interface-opties
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider

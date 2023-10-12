@@ -3,11 +3,11 @@ import type { ClientGlobals, ClientOptions, DirectusClient } from './types/clien
 /**
  * The default globals supplied to the client
  */
-const defaultGlobals = {
+const defaultGlobals: ClientGlobals = {
 	fetch: globalThis.fetch,
 	WebSocket: globalThis.WebSocket,
 	URL: globalThis.URL,
-} as ClientGlobals;
+};
 
 /**
  * Creates a client to communicate with a Directus app.

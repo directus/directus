@@ -1,19 +1,3 @@
-<template>
-	<div class="v-detail" :class="{ disabled }">
-		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
-			<v-divider @click="internalActive = !internalActive">
-				<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
-				<slot name="title">{{ label }}</slot>
-			</v-divider>
-		</slot>
-		<transition-expand>
-			<div v-if="internalActive" class="content">
-				<slot />
-			</div>
-		</transition-expand>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { i18n } from '@/lang';
@@ -62,6 +46,22 @@ function toggle() {
 	internalActive.value = !internalActive.value;
 }
 </script>
+
+<template>
+	<div class="v-detail" :class="{ disabled }">
+		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
+			<v-divider @click="internalActive = !internalActive">
+				<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
+				<slot name="title">{{ label }}</slot>
+			</v-divider>
+		</slot>
+		<transition-expand>
+			<div v-if="internalActive" class="content">
+				<slot />
+			</div>
+		</transition-expand>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-divider {

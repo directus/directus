@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import { data } from '../../data/guides.data.js';
+import GuidesSection from './GuidesSection.vue';
+</script>
+
 <template>
 	<section class="hero">
 		<div>
@@ -19,8 +24,3 @@
 		<GuidesSection :section="section" />
 	</section>
 </template>
-
-<script setup lang="ts">
-import { data } from '../../data/guides.data.js';
-import GuidesSection from './GuidesSection.vue';
-</script>

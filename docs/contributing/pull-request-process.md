@@ -15,10 +15,7 @@ accidentally work on the same issue at the same time.
 
 ## Choosing What to Implement
 
-We welcome PRs for any [Issue](https://github.com/directus/directus/issues). Issues labeled
-["Community"](https://github.com/directus/directus/issues?q=is:issue+is:open+label:Community) have been identified as
-good improvements or fixes for community members, as they're often a little more scoped in what they affect. This in
-turn makes it easier to implement the change and review the work. Issues labeled
+We welcome PRs for any open [Issue](https://github.com/directus/directus/issues). Issues labeled
 ["Good First Issue"](https://github.com/directus/directus/issues?q=is:issue+is:open+label:%22Good+First+Issue%22) are
 typically easier to resolve for those who haven't contributed to the codebase before, and are therefore a great starting
 point.

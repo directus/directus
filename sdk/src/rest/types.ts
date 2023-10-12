@@ -5,7 +5,7 @@ export interface RestCommand<_Output extends object | unknown, _Schema extends o
 }
 
 export interface RestClient<Schema extends object> {
-	request<Output extends object>(options: RestCommand<Output, Schema>): Promise<Output>;
+	request<Output>(options: RestCommand<Output, Schema>): Promise<Output>;
 }
 
 export interface RestConfig {

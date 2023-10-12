@@ -3,6 +3,10 @@ description:
   If you're looking for the fastest way to get up-and-running with Directus locally, this guide will get you there in minutes.
 ---
 
+<script setup lang="ts">
+import { data as directus } from '../.vitepress/data/directus.data.js';
+</script>
+
 # Self-Hosting Quickstart
 
 <iframe style="width:100%; aspect-ratio:16/9; margin-top: 2em;" src="https://www.youtube.com/embed/J7tFWxAGkh4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -31,11 +35,11 @@ Open a text editor such as Visual Studio Code, nano, Vim, TextEdit, or Notepad.
 
 Copy and paste the following and save the file as `docker-compose.yml`:
 
-```yml
+```yaml-vue
 version: '3'
 services:
   directus:
-    image: directus/directus:latest
+    image: directus/directus:{{ directus.version.full }}
     ports:
       - 8055:8055
     volumes:
@@ -53,7 +57,7 @@ services:
 
 Save the file. Let's step through it:
 
-- This file defines a single Docker container that will use the latest version of the `directus/directus` image.
+- This file defines a single Docker container that will use the specified version of the `directus/directus` image.
 - The `ports` list maps internal port `8055` is made available to our machine using the same port number, meaning we can
   access it from our computer's browser.
 - The`volumes` section maps internal `directus/database` and `directus/uploads` to our local file system alongside the

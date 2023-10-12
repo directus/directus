@@ -1,156 +1,3 @@
-<template>
-	<div class="field-select" :class="field.meta?.width || 'full'">
-		<v-input v-if="disabled" disabled class="field">
-			<template #prepend>
-				<v-icon v-tooltip="t('system_fields_locked')" name="lock" />
-			</template>
-
-			<template #input>
-				<div
-					v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
-					class="label"
-				>
-					<div class="label-inner">
-						<span class="name">{{ field.field }}</span>
-						<span v-if="interfaceName" class="interface">{{ interfaceName }}</span>
-					</div>
-				</div>
-			</template>
-		</v-input>
-
-		<template v-else>
-			<draggable
-				v-if="localType === 'group'"
-				class="field-grid group full nested"
-				:model-value="nestedFields"
-				:force-fallback="true"
-				handle=".drag-handle"
-				:group="{ name: 'fields' }"
-				:set-data="hideDragImage"
-				:animation="150"
-				item-key="field"
-				:fallback-on-body="true"
-				:invert-swap="true"
-				@update:model-value="onGroupSortChange"
-			>
-				<template #header>
-					<div class="header full">
-						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-						<span class="name">{{ field.field }}</span>
-						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
-						<field-select-menu
-							:field="field"
-							:no-delete="nestedFields.length > 0"
-							@toggle-visibility="toggleVisibility"
-							@set-width="setWidth($event)"
-							@duplicate="duplicateActive = true"
-							@delete="deleteActive = true"
-						/>
-					</div>
-				</template>
-
-				<template #item="{ element }">
-					<field-select :field="element" :fields="fields" @set-nested-sort="$emit('setNestedSort', $event)" />
-				</template>
-			</draggable>
-
-			<v-input v-else class="field" :class="{ hidden }" readonly>
-				<template #prepend>
-					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-				</template>
-
-				<template #input>
-					<div
-						v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
-						class="label"
-						@click="openFieldDetail"
-					>
-						<div class="label-inner">
-							<span class="name">
-								{{ field.field }}
-								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
-							</span>
-							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-							<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
-						</div>
-					</div>
-				</template>
-
-				<template #append>
-					<div class="icons">
-						<v-icon
-							v-if="field.schema && field.schema.is_primary_key"
-							v-tooltip="t('primary_key')"
-							name="vpn_key"
-							small
-						/>
-						<v-icon
-							v-if="!field.meta"
-							v-tooltip="t('db_only_click_to_configure')"
-							name="report_problem"
-							class="unmanaged"
-							small
-						/>
-						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
-
-						<router-link
-							v-if="showRelatedCollectionLink"
-							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`"
-						>
-							<v-icon name="open_in_new" class="link-icon" small />
-						</router-link>
-
-						<field-select-menu
-							:field="field"
-							@toggle-visibility="toggleVisibility"
-							@set-width="setWidth($event)"
-							@duplicate="duplicateActive = true"
-							@delete="deleteActive = true"
-						/>
-					</div>
-				</template>
-			</v-input>
-
-			<v-dialog v-model="duplicateActive" @esc="duplicateActive = false">
-				<v-card class="duplicate">
-					<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
-					<v-card-text>
-						<div class="form-grid">
-							<div class="field">
-								<span class="type-label">{{ t('collection', 0) }}</span>
-								<interface-system-collection :value="duplicateTo" class="monospace" @input="duplicateTo = $event" />
-							</div>
-
-							<div class="field">
-								<span class="type-label">{{ t('field', 0) }}</span>
-								<v-input v-model="duplicateName" class="monospace" db-safe autofocus />
-							</div>
-						</div>
-					</v-card-text>
-					<v-card-actions>
-						<v-button secondary @click="duplicateActive = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button :disabled="duplicateName === null" :loading="duplicating" @click="saveDuplicate">
-							{{ t('duplicate') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-dialog v-model="deleteActive" @esc="deleteActive = false">
-				<v-card>
-					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
-					<v-card-actions>
-						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" kind="danger" @click="deleteField">{{ t('delete_label') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, unref } from 'vue';
@@ -313,6 +160,162 @@ async function onGroupSortChange(fields: Field[]) {
 	emit('setNestedSort', updates);
 }
 </script>
+
+<template>
+	<div class="field-select" :class="field.meta?.width || 'full'">
+		<v-input v-if="disabled" disabled class="field">
+			<template #prepend>
+				<v-icon v-tooltip="t('system_fields_locked')" name="lock" />
+			</template>
+
+			<template #input>
+				<div
+					v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					class="label"
+				>
+					<div class="label-inner">
+						<span class="name">{{ field.field }}</span>
+						<span v-if="interfaceName" class="interface">{{ interfaceName }}</span>
+					</div>
+				</div>
+			</template>
+		</v-input>
+
+		<template v-else>
+			<draggable
+				v-if="localType === 'group'"
+				class="field-grid group full nested"
+				:model-value="nestedFields"
+				:force-fallback="true"
+				handle=".drag-handle"
+				:group="{ name: 'fields' }"
+				:set-data="hideDragImage"
+				:animation="150"
+				item-key="field"
+				:fallback-on-body="true"
+				:invert-swap="true"
+				@update:model-value="onGroupSortChange"
+			>
+				<template #header>
+					<div class="header full">
+						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+						<span class="name">
+							{{ field.field }}
+							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
+						</span>
+						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
+						<field-select-menu
+							:field="field"
+							:no-delete="nestedFields.length > 0"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
+							@duplicate="duplicateActive = true"
+							@delete="deleteActive = true"
+						/>
+					</div>
+				</template>
+
+				<template #item="{ element }">
+					<field-select :field="element" :fields="fields" @set-nested-sort="$emit('setNestedSort', $event)" />
+				</template>
+			</draggable>
+
+			<v-input v-else class="field" :class="{ hidden }" readonly>
+				<template #prepend>
+					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
+				</template>
+
+				<template #input>
+					<div
+						v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+						class="label"
+						@click="openFieldDetail"
+					>
+						<div class="label-inner">
+							<span class="name">
+								{{ field.field }}
+								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
+							</span>
+							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
+							<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+						</div>
+					</div>
+				</template>
+
+				<template #append>
+					<div class="icons">
+						<v-icon
+							v-if="field.schema && field.schema.is_primary_key"
+							v-tooltip="t('primary_key')"
+							name="vpn_key"
+							small
+						/>
+						<v-icon
+							v-if="!field.meta"
+							v-tooltip="t('db_only_click_to_configure')"
+							name="report_problem"
+							class="unmanaged"
+							small
+						/>
+						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
+
+						<router-link
+							v-if="showRelatedCollectionLink"
+							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`"
+						>
+							<v-icon name="open_in_new" class="link-icon" small />
+						</router-link>
+
+						<field-select-menu
+							:field="field"
+							@toggle-visibility="toggleVisibility"
+							@set-width="setWidth($event)"
+							@duplicate="duplicateActive = true"
+							@delete="deleteActive = true"
+						/>
+					</div>
+				</template>
+			</v-input>
+
+			<v-dialog v-model="duplicateActive" @esc="duplicateActive = false">
+				<v-card class="duplicate">
+					<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
+					<v-card-text>
+						<div class="form-grid">
+							<div class="field">
+								<span class="type-label">{{ t('collection', 0) }}</span>
+								<interface-system-collection :value="duplicateTo" class="monospace" @input="duplicateTo = $event" />
+							</div>
+
+							<div class="field">
+								<span class="type-label">{{ t('field', 0) }}</span>
+								<v-input v-model="duplicateName" class="monospace" db-safe autofocus />
+							</div>
+						</div>
+					</v-card-text>
+					<v-card-actions>
+						<v-button secondary @click="duplicateActive = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button :disabled="duplicateName === null" :loading="duplicating" @click="saveDuplicate">
+							{{ t('duplicate') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-dialog v-model="deleteActive" @esc="deleteActive = false">
+				<v-card>
+					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
+					<v-card-actions>
+						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
+						<v-button :loading="deleting" kind="danger" @click="deleteField">{{ t('delete_label') }}</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';

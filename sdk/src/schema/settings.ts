@@ -30,7 +30,7 @@ export type DirectusSettings<Schema extends object> = MergeCoreCollection<
 		storage_default_folder: DirectusFolder<Schema> | string | null;
 		basemaps: Record<string, any> | null;
 		mapbox_key: string | null;
-		module_bar: any | null;
+		module_bar: 'json' | null;
 		project_descriptor: string | null;
 		default_language: string;
 		custom_aspect_ratios: Record<string, any> | null;

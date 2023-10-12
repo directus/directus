@@ -1,43 +1,3 @@
-<template>
-	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
-		<slot name="prepend-outer" />
-		<component
-			:is="component"
-			v-focus="autofocus"
-			:download="download"
-			class="button"
-			:class="[
-				sizeClass,
-				`align-${align}`,
-				{
-					active: isActiveRoute,
-					icon,
-					outlined,
-					loading,
-					dashed,
-					tile,
-					'full-width': fullWidth,
-				},
-				kind,
-			]"
-			:type="type"
-			:disabled="disabled"
-			v-bind="additionalProps"
-			@click="onClick"
-		>
-			<span class="content" :class="{ invisible: loading }">
-				<slot v-bind="{ active, toggle }" />
-			</span>
-			<div class="spinner">
-				<slot v-if="loading" name="loading">
-					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
-				</slot>
-			</div>
-		</component>
-		<slot name="append-outer" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { RouteLocationRaw, useRoute, useLink } from 'vue-router';
@@ -188,6 +148,46 @@ async function onClick(event: MouseEvent) {
 	emit('click', event);
 }
 </script>
+
+<template>
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
+		<slot name="prepend-outer" />
+		<component
+			:is="component"
+			v-focus="autofocus"
+			:download="download"
+			class="button"
+			:class="[
+				sizeClass,
+				`align-${align}`,
+				{
+					active: isActiveRoute,
+					icon,
+					outlined,
+					loading,
+					dashed,
+					tile,
+					'full-width': fullWidth,
+				},
+				kind,
+			]"
+			:type="type"
+			:disabled="disabled"
+			v-bind="additionalProps"
+			@click="onClick"
+		>
+			<span class="content" :class="{ invisible: loading }">
+				<slot v-bind="{ active, toggle }" />
+			</span>
+			<div class="spinner">
+				<slot v-if="loading" name="loading">
+					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
+				</slot>
+			</div>
+		</component>
+		<slot name="append-outer" />
+	</div>
+</template>
 
 <style scoped>
 :global(body) {

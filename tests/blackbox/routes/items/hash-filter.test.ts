@@ -1,20 +1,21 @@
-import request from 'supertest';
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
+import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
+import request from 'supertest';
+import { beforeAll, describe, expect, it, test } from 'vitest';
 import { collectionFirst, collectionSecond, seedDBValues } from './hash-filter.seed';
 
 let isSeeded = false;
 
 beforeAll(async () => {
 	isSeeded = await seedDBValues();
-}, 300000);
+}, 300_000);
 
 test('Seed Database Values', () => {
 	expect(isSeeded).toStrictEqual(true);
 });
 
-describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
+describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 	const localCollectionFirst = `${collectionFirst}_${pkType}`;
 	const localCollectionSecond = `${collectionSecond}_${pkType}`;
 
@@ -25,11 +26,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -47,28 +48,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.query({
 							filter: JSON.stringify({ hash_field: { _null: true } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _nnull: true } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _null: true } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _nnull: true } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -90,28 +91,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.query({
 							filter: JSON.stringify({ hash_field: { _contains: 'a' } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _eq: 'b' } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _starts_with: 'c' } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _ends_with: 'd' } }),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(400);
@@ -131,7 +132,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								second_ids: { hash_field: { _null: true } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
@@ -140,7 +141,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								second_ids: { hash_field: { _null: true } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
@@ -149,7 +150,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								first_id: { hash_field: { _null: true } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
@@ -158,7 +159,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								first_id: { hash_field: { _null: true } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -182,7 +183,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								second_ids: { hash_field: { _contains: 'a' } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
@@ -191,7 +192,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								second_ids: { hash_field: { _eq: 'b' } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
@@ -200,7 +201,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								first_id: { hash_field: { _starts_with: 'c' } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
@@ -209,7 +210,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								first_id: { hash_field: { _ends_with: 'd' } },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(400);

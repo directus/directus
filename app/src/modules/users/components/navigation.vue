@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import useNavigation from '../composables/use-navigation';
+import NavigationRole from './navigation-role.vue';
+
+defineProps<{
+	currentRole?: string;
+}>();
+
+const { t } = useI18n();
+
+const { roles, loading } = useNavigation();
+
+const lastAdminRoleId = computed(() => {
+	if (!roles.value) return null;
+	const adminRoles = roles.value.filter((role) => role.admin_access === true);
+	return adminRoles.length === 1 ? adminRoles[0].id : null;
+});
+</script>
+
 <template>
 	<v-list nav>
 		<v-list-item to="/users" exact :active="!currentRole">
@@ -22,27 +43,6 @@
 		/>
 	</v-list>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import useNavigation from '../composables/use-navigation';
-import NavigationRole from './navigation-role.vue';
-
-defineProps<{
-	currentRole?: string;
-}>();
-
-const { t } = useI18n();
-
-const { roles, loading } = useNavigation();
-
-const lastAdminRoleId = computed(() => {
-	if (!roles.value) return null;
-	const adminRoles = roles.value.filter((role) => role.admin_access === true);
-	return adminRoles.length === 1 ? adminRoles[0].id : null;
-});
-</script>
 
 <style lang="scss" scoped>
 .v-skeleton-loader {

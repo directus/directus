@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { useUserStore } from '@/stores/user';
+import { Filter } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	filter?: Filter;
+}>();
+
+const emit = defineEmits(['update:filter']);
+
+const { t } = useI18n();
+
+const userStore = useUserStore();
+const currentUserID = computed(() => userStore.currentUser?.id);
+
+const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
+const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
+
+function setNavFilter(key: string, value: any) {
+	emit('update:filter', {
+		[key]: {
+			_eq: value,
+		},
+	});
+}
+
+function clearNavFilter() {
+	emit('update:filter', null);
+}
+</script>
+
 <template>
 	<v-list nav>
 		<v-list-item clickable :active="!filterField" @click="clearNavFilter">
@@ -90,36 +123,3 @@
 		</v-list-item>
 	</v-list>
 </template>
-
-<script setup lang="ts">
-import { useUserStore } from '@/stores/user';
-import { Filter } from '@directus/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const props = defineProps<{
-	filter?: Filter;
-}>();
-
-const emit = defineEmits(['update:filter']);
-
-const { t } = useI18n();
-
-const userStore = useUserStore();
-const currentUserID = computed(() => userStore.currentUser?.id);
-
-const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
-const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
-
-function setNavFilter(key: string, value: any) {
-	emit('update:filter', {
-		[key]: {
-			_eq: value,
-		},
-	});
-}
-
-function clearNavFilter() {
-	emit('update:filter', null);
-}
-</script>

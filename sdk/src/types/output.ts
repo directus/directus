@@ -1,4 +1,5 @@
-import type { FieldsWildcard, HasManyToAnyRelation, PickFlatFields, PickRelationalFields } from './fields.js';
+import type { FieldsWildcard, HasManyToAnyRelation, PickRelationalFields } from './fields.js';
+import type { MappedFunctionFields } from './functions.js';
 import type { ItemType } from './schema.js';
 import type { IfAny, IsNullable, Merge, Mutable, UnpackList } from './utils.js';
 
@@ -14,13 +15,15 @@ export type ApplyQueryFields<
 	CollectionItem extends object = UnpackList<Collection>,
 	Fields = UnpackList<Mutable<ReadonlyFields>>,
 	RelationalFields = PickRelationalFields<Fields>,
-	RelationalKeys = RelationalFields extends never ? never : keyof RelationalFields,
-	FlatFields = FieldsWildcard<CollectionItem, Exclude<Fields, RelationalKeys>>
+	RelationalKeys extends keyof RelationalFields = RelationalFields extends never ? never : keyof RelationalFields,
+	FlatFields extends keyof CollectionItem = FieldsWildcard<CollectionItem, Exclude<Fields, RelationalKeys>>
 > = IfAny<
 	Schema,
 	Record<string, any>,
 	Merge<
-		PickFlatFields<Schema, CollectionItem, FlatFields>,
+		MappedFunctionFields<Schema, CollectionItem> extends infer FF
+			? MapFlatFields<CollectionItem, FlatFields, FF extends Record<string, string> ? FF : Record<string, string>>
+			: never,
 		RelationalFields extends never
 			? never
 			: {
@@ -77,3 +80,38 @@ export type ApplyNestedQueryFields<Schema extends object, Collection, Fields> = 
  * Carry nullability of
  */
 export type RelationNullable<Relation, Output> = IsNullable<Relation, Output | null, Output>;
+
+/**
+ * Map literal types to actual output types
+ */
+export type MapFlatFields<
+	Item extends object,
+	Fields extends keyof Item,
+	FunctionMap extends Record<string, string>
+> = {
+	[F in Fields as F extends keyof FunctionMap ? FunctionMap[F] : F]: F extends keyof FunctionMap
+		? FunctionOutputType
+		: Extract<Item[F], keyof FieldOutputMap> extends infer A
+		? A[] extends never[]
+			? Item[F]
+			: A extends keyof FieldOutputMap
+			? FieldOutputMap[A] | Exclude<Item[F], A>
+			: Item[F]
+		: Item[F];
+};
+
+// Possible JSON types
+type JsonPrimitive = null | boolean | number | string;
+type JsonValue = JsonPrimitive | JsonPrimitive[] | { [key: string]: JsonValue };
+
+/**
+ * Output map for specific literal types
+ */
+export type FieldOutputMap = {
+	json: JsonValue;
+	csv: string[];
+	datetime: string;
+};
+
+// all functions return a numeric type
+type FunctionOutputType = number;

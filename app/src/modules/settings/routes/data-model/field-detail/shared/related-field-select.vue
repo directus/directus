@@ -1,42 +1,3 @@
-<template>
-	<v-input
-		:model-value="modelValue"
-		db-safe
-		:nullable="nullable"
-		:disabled="disabled"
-		:placeholder="placeholder"
-		:class="{ matches: fieldExists }"
-		@update:model-value="$emit('update:modelValue', $event)"
-	>
-		<template v-if="fields && fields.length > 0 && !disabled" #append>
-			<v-menu show-arrow placement="bottom-end">
-				<template #activator="{ toggle }">
-					<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable @click="toggle" />
-				</template>
-
-				<v-list class="monospace">
-					<v-list-item
-						v-for="field in fields"
-						:key="field.value"
-						:active="modelValue === field.value"
-						:disabled="field.disabled"
-						clickable
-						@click="$emit('update:modelValue', field.value)"
-					>
-						<v-list-item-content>
-							{{ field.text }}
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-		</template>
-
-		<template v-if="disabled" #input>
-			<v-text-overflow :text="modelValue" />
-		</template>
-	</v-input>
-</template>
-
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
@@ -86,3 +47,42 @@ const fieldExists = computed(() => {
 	return !!fieldsStore.getField(props.collection, props.modelValue);
 });
 </script>
+
+<template>
+	<v-input
+		:model-value="modelValue"
+		db-safe
+		:nullable="nullable"
+		:disabled="disabled"
+		:placeholder="placeholder"
+		:class="{ matches: fieldExists }"
+		@update:model-value="$emit('update:modelValue', $event)"
+	>
+		<template v-if="fields && fields.length > 0 && !disabled" #append>
+			<v-menu show-arrow placement="bottom-end">
+				<template #activator="{ toggle }">
+					<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable @click="toggle" />
+				</template>
+
+				<v-list class="monospace">
+					<v-list-item
+						v-for="field in fields"
+						:key="field.value"
+						:active="modelValue === field.value"
+						:disabled="field.disabled"
+						clickable
+						@click="$emit('update:modelValue', field.value)"
+					>
+						<v-list-item-content>
+							{{ field.text }}
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		</template>
+
+		<template v-if="disabled" #input>
+			<v-text-overflow :text="modelValue" />
+		</template>
+	</v-input>
+</template>

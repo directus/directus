@@ -1,7 +1,3 @@
-<template>
-	<v-icon small :name="value" :style="style" :filled="filled" />
-</template>
-
 <script setup lang="ts">
 import { isHex } from '@/utils/is-hex';
 import { computed } from 'vue';
@@ -17,3 +13,7 @@ const style = computed(() => {
 	else return {};
 });
 </script>
+
+<template>
+	<v-icon small :name="value" :style="style" :filled="filled" />
+</template>

@@ -1,9 +1,3 @@
-<template>
-	<v-button v-if="limitWarning" rounded icon>
-		<v-icon v-tooltip.bottom.start="t('layouts.kanban.not_all_loaded')" name="warning" />
-	</v-button>
-</template>
-
 <script lang="ts">
 export default {
 	inheritAttrs: false,
@@ -23,6 +17,12 @@ withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n();
 </script>
+
+<template>
+	<v-button v-if="limitWarning" rounded icon>
+		<v-icon v-tooltip.bottom.start="t('layouts.kanban.not_all_loaded')" name="warning" />
+	</v-button>
+</template>
 
 <style lang="scss" scoped>
 .v-button :deep(.button) {

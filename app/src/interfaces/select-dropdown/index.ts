@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import PreviewSVG from './preview.svg?raw';
 import InterfaceSelectDropdown from './select-dropdown.vue';
 
