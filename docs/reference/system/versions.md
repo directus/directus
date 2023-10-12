@@ -70,11 +70,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readVersions } from '@directus/sdk';
+import { createDirectus, rest, readContentVersions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readVersions(query_object));
+const result = await client.request(readContentVersions(query_object));
 ```
 
 </template>
