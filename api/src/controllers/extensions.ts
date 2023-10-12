@@ -1,6 +1,6 @@
 import express from 'express';
 import env from '../env.js';
-import { RouteNotFoundError } from '../errors/index.js';
+import { ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -23,6 +23,32 @@ router.get(
 
 		const extensions = await service.readAll();
 		res.locals['payload'] = { data: extensions || null };
+		return next();
+	}),
+	respond
+);
+
+router.patch(
+	'/:bundleOrName/:name?',
+	asyncHandler(async (req, res, next) => {
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const bundle = req.params['name'] ? req.params['bundleOrName'] : null;
+		const name = req.params['name'] ? req.params['name'] : req.params['bundleOrName'];
+
+		if (bundle === undefined || !name) {
+			throw new ForbiddenError();
+		}
+
+		await service.updateOne(bundle, name, req.body);
+
+		const updated = await service.readOne(bundle, name);
+
+		res.locals['payload'] = { data: updated || null };
+
 		return next();
 	}),
 	respond

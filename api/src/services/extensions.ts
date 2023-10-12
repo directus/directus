@@ -1,7 +1,8 @@
 import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability, DeepPartial, SchemaOverview } from '@directus/types';
+import Joi from 'joi';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
@@ -9,6 +10,7 @@ import { getCache } from '../cache.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
 import type { AbstractServiceOptions } from '../types/index.js';
@@ -45,17 +47,66 @@ export class ExtensionsService {
 	}
 
 	async readAll() {
+		if (this.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		const installedExtensions = this.extensionsManager.getExtensions();
 		const configuredExtensions = await this.extensionsItemService.readByQuery({ limit: -1 });
 
 		return this.stitch(installedExtensions, configuredExtensions);
 	}
 
+	async readOne(bundle: string | null, name: string) {
+		if (this.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const key = this.getKey(bundle, name);
+
+		const schema = this.extensionsManager.getExtensions().find((extension) => extension.name === bundle ?? name);
+		const meta = await this.extensionsItemService.readOne(key);
+
+		const stitched = this.stitch(schema ? [schema] : [], [meta])[0];
+
+		if (stitched) return stitched;
+
+		throw new ForbiddenError();
+	}
+
+	async updateOne(bundle: string | null, name: string, data: DeepPartial<ApiOutput>) {
+		if (this.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const key = this.getKey(bundle, name);
+
+		const updateExtensionSchema = Joi.object({
+			meta: Joi.object({
+				enabled: Joi.boolean(),
+			}),
+		});
+
+		const { error } = updateExtensionSchema.validate(data);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: error.message });
+		}
+
+		if ('meta' in data && 'enabled' in data.meta) {
+			await this.knex('directus_extensions').update({ enabled: data.meta.enabled }).where({ name: key });
+		}
+	}
+
+	private getKey(bundle: string | null, name: string) {
+		return bundle ? `${bundle}/${name}` : name;
+	}
+
 	/**
 	 * Combine the settings stored in the database with the information available from the installed
 	 * extensions into the standardized extensions api output
 	 */
-	stitch(installed: Extension[], configured: ExtensionSettings[]): ApiOutput[] {
+	private stitch(installed: Extension[], configured: ExtensionSettings[]): ApiOutput[] {
 		/**
 		 * On startup, the extensions manager will automatically create the rows for installed
 		 * extensions that don't have configured settings yet, so there should always be equal or more
