@@ -1158,7 +1158,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
-    mapping: Zuordnung
+    mapping: Kartografie
     basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
