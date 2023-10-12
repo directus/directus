@@ -10,7 +10,7 @@ import type { RestCommand } from '../../types.js';
  * @returns All fields with different values, along with the hash of the main item and the information whether the current
 version is outdated (main item has been updated since the creation of the current version)
  */
-export const compareVersion =
+export const compareContentVersion =
 	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id']
 	): RestCommand<
@@ -35,7 +35,7 @@ export const compareVersion =
  *
  * @returns Item object resulted from all saves in the specified version.
  */
-export const saveVersion =
+export const saveContentVersion =
 	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
 		item: Partial<Item>
@@ -55,7 +55,7 @@ export const saveVersion =
  *
  * @returns The primary key of the promoted item.
  */
-export const promoteVersion =
+export const promoteContentVersion =
 	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
 		mainHash: string,

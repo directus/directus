@@ -3,7 +3,7 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type UpdateVersionOutput<
+export type UpdateContentVersionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusVersion<Schema>
@@ -17,12 +17,12 @@ export type UpdateVersionOutput<
  * @returns Returns the version objects for the updated versions.
  * @throws Will throw if keys is empty
  */
-export const updateVersions =
+export const updateContentVersions =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
 		keys: DirectusVersion<Schema>['id'][],
 		item: Partial<DirectusVersion<Schema>>,
 		query?: TQuery
-	): RestCommand<UpdateVersionOutput<Schema, TQuery>[], Schema> =>
+	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
 
@@ -42,12 +42,12 @@ export const updateVersions =
  * @returns Returns the version object for the updated version.
  * @throws Will throw if key is empty
  */
-export const updateVersion =
+export const updateContentVersion =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
 		key: DirectusVersion<Schema>['id'],
 		item: Partial<DirectusVersion<Schema>>,
 		query?: TQuery
-	): RestCommand<UpdateVersionOutput<Schema, TQuery>, Schema> =>
+	): RestCommand<UpdateContentVersionOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');
 

@@ -107,12 +107,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readVersions } from '@directus/sdk';
+import { createDirectus, rest, readContentVersions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	readVersions({
+	readContentVersions({
 		fields: ['*'],
 	})
 );
@@ -141,11 +141,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readVersion } from '@directus/sdk';
+import { createDirectus, rest, readContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readVersion(version_id, query_object));
+const result = await client.request(readContentVersion(version_id, query_object));
 ```
 
 </template>
@@ -175,12 +175,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readVersion } from '@directus/sdk';
+import { createDirectus, rest, readContentVersion } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	readVersion('dc2ac3f9-2076-4e86-8677-b47643eddacf', {
+	readContentVersion('dc2ac3f9-2076-4e86-8677-b47643eddacf', {
 		fields: ['*'],
 	})
 );
@@ -211,11 +211,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createVersion } from '@directus/sdk';
+import { createDirectus, rest, createContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(createVersion(version_object));
+const result = await client.request(createContentVersion(version_object));
 ```
 
 </template>
@@ -257,12 +257,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createVersion } from '@directus/sdk';
+import { createDirectus, rest, createContentVersion } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	createVersion({
+	createContentVersion({
 		key: 'draft',
 		name: 'My Draft',
 		collection: 'my_collection',
@@ -296,11 +296,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createVersions } from '@directus/sdk';
+import { createDirectus, rest, createContentVersions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(createVersions(version_object_array));
+const result = await client.request(createContentVersions(version_object_array));
 ```
 
 </template>
@@ -349,12 +349,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createVersions } from '@directus/sdk';
+import { createDirectus, rest, createContentVersions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	createVersions([
+	createContentVersions([
 		{
 			name: "My Version",
 			collection: "my_collection",
@@ -394,11 +394,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateVersion } from '@directus/sdk';
+import { createDirectus, rest, updateContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(updateVersion(version_id, partial_version_object));
+const result = await client.request(updateContentVersion(version_id, partial_version_object));
 ```
 
 </template>
@@ -438,12 +438,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateVersion } from '@directus/sdk';
+import { createDirectus, rest, updateContentVersion } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', {
+	updateContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', {
 		name: 'My Updated Version',
 	})
 );
@@ -479,11 +479,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateVersions } from '@directus/sdk';
+import { createDirectus, rest, updateContentVersions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(updateVersions(version_id_array, partial_version_object));
+const result = await client.request(updateContentVersions(version_id_array, partial_version_object));
 ```
 
 </template>
@@ -530,12 +530,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateVersions } from '@directus/sdk';
+import { createDirectus, rest, updateContentVersions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'], {
+	updateContentVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'], {
 		name: 'My Updated Version',
 	})
 );
@@ -564,11 +564,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteVersion } from '@directus/sdk';
+import { createDirectus, rest, deleteContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteVersion(version_id));
+const result = await client.request(deleteContentVersion(version_id));
 ```
 
 </template>
@@ -594,11 +594,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteVersion } from '@directus/sdk';
+import { createDirectus, rest, deleteContentVersion } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+const result = await client.request(deleteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
 ```
 
 </template>
@@ -626,11 +626,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteVersions } from '@directus/sdk';
+import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteVersions(version_id_array));
+const result = await client.request(deleteContentVersions(version_id_array));
 ```
 
 </template>
@@ -664,12 +664,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteVersions } from '@directus/sdk';
+import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	deleteVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631', '5fd4a4be-a3ad-4544-9a27-d62b2c897056'])
+	deleteContentVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631', '5fd4a4be-a3ad-4544-9a27-d62b2c897056'])
 );
 ```
 
@@ -698,11 +698,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, saveVersion } from '@directus/sdk';
+import { createDirectus, rest, saveContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(saveVersion(version_id, partial_item_object));
+const result = await client.request(saveContentVersion(version_id, partial_item_object));
 ```
 
 </template>
@@ -734,11 +734,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, saveVersion } from '@directus/sdk';
+import { createDirectus, rest, saveContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(saveVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: "updated value" }));
+const result = await client.request(saveContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: "updated value" }));
 ```
 
 </template>
@@ -764,11 +764,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, compareVersion } from '@directus/sdk';
+import { createDirectus, rest, compareContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(compareVersion(version_id));
+const result = await client.request(compareContentVersion(version_id));
 ```
 
 </template>
@@ -808,11 +808,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, compareVersion } from '@directus/sdk';
+import { createDirectus, rest, compareContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(compareVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+const result = await client.request(compareContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
 ```
 
 </template>
@@ -848,11 +848,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, promoteVersion } from '@directus/sdk';
+import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(promoteVersion(version_id, promote_object));
+const result = await client.request(promoteContentVersion(version_id, promote_object));
 ```
 
 </template>
@@ -887,11 +887,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, promoteVersion } from '@directus/sdk';
+import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(promoteVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', ['my_field']));
+const result = await client.request(promoteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', ['my_field']));
 ```
 
 </template>
