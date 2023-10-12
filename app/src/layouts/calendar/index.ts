@@ -189,7 +189,9 @@ export default defineLayout<LayoutOptions>({
 					};
 
 					if (endDateField.value && endDateFieldInfo.value && info.event.endStr) {
-						itemChanges[endDateField.value] = adjustForType(info.event.endStr, endDateFieldInfo.value.type);
+						const endDateStr = info.event.allDay ? adjustDateType(info.event.end) : info.event.endStr;
+						itemChanges[endDateField.value] = adjustForType(endDateStr, endDateFieldInfo.value.type);
+						console.log(itemChanges, info);
 					}
 
 					const endpoint = getEndpoint(collection.value);
@@ -338,6 +340,13 @@ export default defineLayout<LayoutOptions>({
 			}
 
 			return dateString;
+		}
+
+		function adjustDateType(date: Date) {
+			// because we add a day for the "Date" type rendering we need to
+			// remove that extra day here before saving the updated value
+			date.setDate(date.getDate() - 1);
+			return format(date, 'yyyy-MM-dd');
 		}
 	},
 });
