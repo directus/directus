@@ -7,15 +7,17 @@ import { throwIfEmpty } from '../../utils/index.js';
  * Update an existing extension.
  * @param bundle - Bundle this extension is in
  * @param name - Unique name of the extension
+ * @param data - Partial extension object
  * @returns Returns the extension that was updated
  */
-export const updateRelation =
+export const updateExtension =
 	<Schema extends object>(
 		bundle: string | null,
 		name: string,
 		data: NestedPartial<Extension>
 	): RestCommand<Extension, Schema> =>
 	() => {
+		if (bundle !== null) throwIfEmpty(bundle, 'Bundle cannot be an empty string');
 		throwIfEmpty(name, 'Name cannot be empty');
 
 		return {
