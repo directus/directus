@@ -541,7 +541,6 @@ const result = await client.request(
 );
 ```
 
-
 </template>
 </SnippetToggler>
 
@@ -830,8 +829,8 @@ Promote an existing version into the main item.
 
 `POST /versions/:id/promote`
 
-Pass the current hash of the main item (obtained from the `compare` endpoint) along with an optional array of field names of
-which the values are to be promoted from the current version into the main item.
+Pass the current hash of the main item (obtained from the `compare` endpoint) along with an optional array of field
+names of which the values are to be promoted from the current version into the main item.
 
 ```json
 {
