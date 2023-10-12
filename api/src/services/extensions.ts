@@ -76,7 +76,15 @@ export class ExtensionsService {
 				const bundle = installed.find((extension) => extension.name === bundleName);
 
 				if (bundle && 'entries' in bundle) {
-					schema = bundle.entries.find((entry) => entry.name === name) ?? null;
+					const entry = bundle.entries.find((entry) => entry.name === name) ?? null;
+
+					if (entry) {
+						schema = {
+							name: entry.name,
+							type: entry.type,
+							local: bundle.local,
+						};
+					}
 				} else {
 					schema = null;
 				}
