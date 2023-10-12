@@ -611,7 +611,7 @@ function usePermissions() {
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .bookmark-controls {
@@ -634,7 +634,7 @@ function usePermissions() {
 		color: var(--foreground-subdued);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 

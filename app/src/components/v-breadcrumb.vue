@@ -35,7 +35,7 @@ withDefaults(defineProps<Props>(), {
 <style>
 body {
 	--v-breadcrumb-color: var(--foreground-subdued);
-	--v-breadcrumb-color-hover: var(--foreground-normal);
+	--v-breadcrumb-color-hover: var(--theme--foreground);
 	--v-breadcrumb-color-disabled: var(--foreground-subdued);
 	--v-breadcrumb-divider-color: var(--foreground-subdued);
 }

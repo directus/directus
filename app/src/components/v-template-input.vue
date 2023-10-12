@@ -309,7 +309,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	padding: var(--input-padding);
 	padding-bottom: 32px;
 	overflow: hidden;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	font-family: var(--family-sans-serif);
 	white-space: nowrap;
 	background-color: var(--theme--background);

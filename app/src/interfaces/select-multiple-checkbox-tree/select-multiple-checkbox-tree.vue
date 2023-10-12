@@ -120,7 +120,7 @@ const searchDebounced = ref('');
 }
 
 .footer > button:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .footer > button.active {

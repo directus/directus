@@ -67,7 +67,7 @@ div.preview {
 
 	.actions {
 		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color-hover: var(--theme--foreground);
 
 		.v-icon + .v-icon {
 			margin-left: 4px;

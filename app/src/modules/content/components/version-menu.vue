@@ -397,7 +397,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 	margin-left: 16px;
 	padding: 2px;
 	background-color: var(--background-normal);
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	border-radius: 24px;
 
 	.version-name {

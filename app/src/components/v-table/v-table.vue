@@ -347,7 +347,7 @@ function updateSort(newSort: Sort) {
 :global(body) {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
-	--v-table-color: var(--foreground-normal);
+	--v-table-color: var(--theme--foreground);
 	--v-table-background-color: var(--background-input);
 }
 

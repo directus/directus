@@ -148,7 +148,7 @@
 }
 
 span.flatpickr-weekday {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	font-weight: 600;
 }
 
@@ -174,7 +174,7 @@ span.flatpickr-weekday {
 .flatpickr-day:focus,
 .flatpickr-day.prevMonthDay:focus,
 .flatpickr-day.nextMonthDay:focus {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background: var(--background-highlight);
 	border-color: var(--background-highlight);
 }
@@ -186,7 +186,7 @@ span.flatpickr-weekday {
 
 .flatpickr-day.today:hover,
 .flatpickr-day.today:focus {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background: var(--background-normal-alt);
 	border-color: var(--primary);
 }
@@ -243,7 +243,7 @@ span.flatpickr-weekday {
 
 .flatpickr-weekwrapper span.flatpickr-day,
 .flatpickr-weekwrapper span.flatpickr-day:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 /* Time */

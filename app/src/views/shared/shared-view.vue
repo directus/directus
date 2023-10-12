@@ -102,7 +102,7 @@ header {
 		margin-left: 16px;
 
 		h1 {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 			font-weight: 700;
 			font-size: 24px;
 			line-height: 24px;

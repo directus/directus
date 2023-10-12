@@ -712,7 +712,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 </style>

@@ -166,7 +166,7 @@ body {
 		--v-button-background-color: var(--background-normal);
 		--v-button-background-color-active: var(--background-normal);
 		--v-button-background-color-hover: var(--background-normal-alt);
-		--v-button-color-disabled: var(--foreground-normal);
+		--v-button-color-disabled: var(--theme--foreground);
 	}
 
 	.content {

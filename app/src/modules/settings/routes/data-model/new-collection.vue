@@ -509,7 +509,7 @@ function getSystemRelations() {
 }
 
 .system :deep(.v-input .active .input) {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .system .v-icon {

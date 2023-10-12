@@ -19,7 +19,7 @@
 	transition: opacity 200ms;
 
 	&.inverted {
-		--tooltip-foreground-color: var(--foreground-normal);
+		--tooltip-foreground-color: var(--theme--foreground);
 		--tooltip-background-color: var(--background-subdued);
 	}
 

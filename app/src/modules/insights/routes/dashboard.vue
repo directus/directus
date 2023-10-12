@@ -399,16 +399,16 @@ const refreshInterval = computed({
 .fullscreen,
 .zoom-to-fit,
 .clear-changes {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
 	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-background-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--foreground-inverted);
 	--v-button-background-color-active: var(--primary);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .panel-container {

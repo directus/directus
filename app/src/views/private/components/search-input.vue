@@ -268,7 +268,7 @@ function emitValue() {
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 		text-overflow: ellipsis;
 		background-color: var(--theme--background);
 		border: none;

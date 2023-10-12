@@ -377,7 +377,7 @@ function toggleManualSort() {
 		}
 
 		&.sorted-manually {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 

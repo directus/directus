@@ -372,6 +372,6 @@ function usePermissions() {
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 </style>

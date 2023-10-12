@@ -71,7 +71,7 @@ const collapsed = ref(true);
 
 .group-toggle {
 	font-family: var(--family-monospace);
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	width: calc(100% + 16px);
 	text-align: left;
 	padding-inline: 8px;

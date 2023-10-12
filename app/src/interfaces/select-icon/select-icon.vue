@@ -100,7 +100,7 @@ function setIcon(icon: string | null) {
 .content {
 	padding: 8px;
 
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--foreground);
 
 	.v-icon.active {
 		color: var(--primary);

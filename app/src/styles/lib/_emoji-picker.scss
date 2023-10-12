@@ -2,8 +2,8 @@
 	.emoji-picker {
 		--category-button-active-color: var(--primary);
 		--font: var(--family-sans-serif);
-		--text-color: var(--foreground-normal);
-		--dark-text-color: var(--foreground-normal);
+		--text-color: var(--theme--foreground);
+		--dark-text-color: var(--theme--foreground);
 		--secondary-text-color: var(--foreground-normal-alt);
 		--dark-secondary-text-color: var(--foreground-normal-alt);
 		--dark-border-color: var(--border-normal);
@@ -61,7 +61,7 @@
 				}
 
 				&:hover {
-					color: var(--foreground-normal);
+					color: var(--theme--foreground);
 				}
 			}
 		}

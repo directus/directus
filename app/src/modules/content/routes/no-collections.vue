@@ -55,7 +55,7 @@ const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .v-table {

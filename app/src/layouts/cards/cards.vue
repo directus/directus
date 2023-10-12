@@ -195,7 +195,7 @@ watch(width, () => {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }

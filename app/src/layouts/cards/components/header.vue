@@ -144,7 +144,7 @@ function toggleDescending() {
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 
@@ -163,7 +163,7 @@ function toggleDescending() {
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 
@@ -172,7 +172,7 @@ function toggleDescending() {
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 			cursor: pointer;
 		}
 	}
@@ -185,7 +185,7 @@ function toggleDescending() {
 		}
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 			cursor: pointer;
 		}
 	}

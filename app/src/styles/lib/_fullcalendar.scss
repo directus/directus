@@ -75,7 +75,7 @@
 
 			&:not(:disabled) {
 				&:hover {
-					--fc-button-text-color: var(--foreground-normal);
+					--fc-button-text-color: var(--theme--foreground);
 				}
 
 				&:active:focus,

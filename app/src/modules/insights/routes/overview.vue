@@ -194,7 +194,7 @@ async function deleteDashboard() {
 
 .ctx-toggle {
 	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .v-list-item.danger {
@@ -204,6 +204,6 @@ async function deleteDashboard() {
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 </style>

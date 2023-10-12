@@ -112,7 +112,7 @@ const cssHeight = computed(() => {
 		--v-icon-color: var(--foreground-subdued);
 
 		&.sorted-manually {
-			--v-icon-color: var(--foreground-normal);
+			--v-icon-color: var(--theme--foreground);
 
 			&:hover {
 				cursor: ns-resize;

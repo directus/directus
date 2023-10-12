@@ -73,7 +73,7 @@ watch(
 
 	.clipboard-icon {
 		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color-hover: var(--theme--foreground);
 
 		margin-left: 4px;
 	}

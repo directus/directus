@@ -237,7 +237,7 @@ function useReset() {
 	}
 
 	button:hover {
-		color: var(--foreground-normal) !important;
+		color: var(--theme--foreground) !important;
 	}
 }
 </style>

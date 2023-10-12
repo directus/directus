@@ -317,7 +317,7 @@ function checkMatchingConditionalFill(
 
 .apexcharts-tooltip-text {
 	line-height: 1.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .apexcharts-yaxistooltip {

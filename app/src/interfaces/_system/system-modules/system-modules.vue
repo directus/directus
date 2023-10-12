@@ -281,7 +281,7 @@ function remove(id: string) {
 	--v-list-item-color-hover: var(--primary-125);
 	--v-list-item-background-color-hover: var(--primary-10);
 	--v-icon-color: var(--primary);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .to {

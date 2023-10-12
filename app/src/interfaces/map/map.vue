@@ -516,7 +516,7 @@ function handleKeyDown(event: any) {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 

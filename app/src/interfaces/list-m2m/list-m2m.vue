@@ -759,7 +759,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 </style>

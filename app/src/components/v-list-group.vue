@@ -115,7 +115,7 @@ function onClick(event: MouseEvent) {
 		transition: transform var(--medium) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.active {

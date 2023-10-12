@@ -1,12 +1,12 @@
 .codex-editor {
 	--bg-color: var(--background-normal) !important;
-	--front-color: var(--foreground-normal) !important;
+	--front-color: var(--theme--foreground) !important;
 	--border-color: var(--border-normal) !important;
 }
 
 .codex-editor .ce-toolbar__plus,
 .codex-editor .ce-toolbar__settings-btn {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 }
@@ -18,7 +18,7 @@
 
 .codex-editor .ce-toolbar__plus svg,
 .codex-editor .ce-toolbar__settings-btn svg {
-	fill: var(--foreground-normal) !important;
+	fill: var(--theme--foreground) !important;
 }
 
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
@@ -32,7 +32,7 @@
 
 .codex-editor .ce-toolbar .ce-toolbox__button svg,
 .codex-editor .ce-toolbar .ce-toolbox__button:hover svg {
-	fill: var(--foreground-normal);
+	fill: var(--theme--foreground);
 }
 
 .codex-editor .cdx-loader::before {
@@ -54,7 +54,7 @@
 }
 
 .codex-editor .ce-popover-item__title {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .codex-editor .ce-popover-item:not(.ce-popover-item--confirmation):hover {
@@ -68,7 +68,7 @@
 }
 
 .codex-editor .ce-popover-item--confirmation .ce-popover-item-label {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .codex-editor .ce-popover-item--active {
@@ -92,7 +92,7 @@
 }
 
 .codex-editor .ce-popover-item-icon svg {
-	fill: var(--foreground-normal);
+	fill: var(--theme--foreground);
 }
 
 .codex-editor .ce-popover-item-secondary-label {
@@ -197,7 +197,7 @@
 }
 
 .codex-editor .ce-conversion-toolbar__label {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .codex-editor .ce-conversion-tool__icon {
@@ -216,7 +216,7 @@
 
 .codex-editor .cdx-input,
 .codex-editor .ce-code__textarea {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	font-size: inherit;
 	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
@@ -263,7 +263,7 @@
 
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background: var(--background-normal);
 	border-color: var(--border-normal);
 	box-shadow: unset;
@@ -374,7 +374,7 @@
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__title {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
@@ -426,7 +426,7 @@
 }
 
 .tc-toolbox {
-	--toggler-dots-color: var(--foreground-normal);
+	--toggler-dots-color: var(--theme--foreground);
 	--toggler-dots-color-hovered: var(--foreground-normal-alt);
 }
 

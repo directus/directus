@@ -358,8 +358,8 @@ async function revert(values: Record<string, any>) {
 
 .header-icon.secondary {
 	--v-button-background-color: var(--background-normal);
-	--v-button-color-disabled: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
 }
 
 .v-form {

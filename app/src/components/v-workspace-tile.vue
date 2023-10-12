@@ -444,7 +444,7 @@ function useDragDrop() {
 .edit-icon,
 .note {
 	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .delete-action {

@@ -416,9 +416,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
-	--v-button-color: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
 	--v-button-background-color-hover: var(--border-normal);
-	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color-hover: var(--theme--foreground);
 
 	min-height: 300px;
 	overflow: hidden;
@@ -525,9 +525,9 @@ textarea {
 		--v-button-background-color: var(--border-subdued);
 		--v-button-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--border-normal);
-		--v-button-color-hover: var(--foreground-normal);
+		--v-button-color-hover: var(--theme--foreground);
 		--v-button-background-color-active: var(--border-normal);
-		--v-button-color-active: var(--foreground-normal);
+		--v-button-color-active: var(--theme--foreground);
 	}
 }
 

@@ -59,7 +59,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 	text-decoration: none;
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 
 	&.has-items {

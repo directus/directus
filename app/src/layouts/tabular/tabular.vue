@@ -352,7 +352,7 @@ function removeField(fieldKey: string) {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }
@@ -362,10 +362,10 @@ function removeField(fieldKey: string) {
 }
 
 .add-field {
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--foreground);
 
 	&.active {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground);
 	}
 }
 

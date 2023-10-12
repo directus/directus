@@ -240,9 +240,9 @@ async function onClick(event: MouseEvent) {
 }
 
 .secondary {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
 	--v-button-background-color: var(--border-subdued);
 	--v-button-background-color-hover: var(--background-normal-alt);
 	--v-button-background-color-active: var(--background-normal-alt);

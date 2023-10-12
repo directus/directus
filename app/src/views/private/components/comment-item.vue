@@ -150,7 +150,7 @@ function useEdits() {
 
 .comment-item .content :deep(pre) {
 	padding: 2px 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 	margin: 2px 0;
@@ -162,7 +162,7 @@ function useEdits() {
 
 .comment-item .content :deep(code) {
 	padding: 2px 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 	margin: 2px 0;

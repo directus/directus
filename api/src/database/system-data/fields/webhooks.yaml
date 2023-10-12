@@ -46,7 +46,7 @@ fields:
           background: 'var(--primary)'
         - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
-          foreground: 'var(--foreground-normal)'
+          foreground: 'var(--theme--foreground)'
           background: 'var(--background-normal-alt)'
     options:
       choices:

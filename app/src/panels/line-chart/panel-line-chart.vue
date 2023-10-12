@@ -240,7 +240,7 @@ function setUpChart() {
 				height: 8,
 			},
 			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-normal)',
+			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
 			fontSize: '10px',
 		},
@@ -297,7 +297,7 @@ function setUpChart() {
 
 .apexcharts-tooltip-text {
 	line-height: 0.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .apexcharts-tooltip-marker {

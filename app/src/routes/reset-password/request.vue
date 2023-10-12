@@ -71,7 +71,7 @@ async function onSubmit() {
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 </style>

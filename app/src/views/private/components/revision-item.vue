@@ -175,7 +175,7 @@ const user = computed(() => {
 		}
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }

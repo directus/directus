@@ -146,9 +146,9 @@ body {
 	--v-list-item-border-radius: var(--border-radius);
 	--v-list-item-border-color: var(--border-subdued);
 	--v-list-item-border-color-hover: var(--border-normal-alt);
-	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
-	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
-	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
+	--v-list-item-color: var(--v-list-color, var(--theme--foreground));
+	--v-list-item-color-hover: var(--v-list-color-hover, var(--theme--foreground));
+	--v-list-item-color-active: var(--v-list-color-active, var(--theme--foreground));
 	--v-list-item-background-color: var(--v-list-background-color, var(--background-normal));
 	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
 	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
@@ -224,7 +224,7 @@ body {
 
 	&.dense {
 		:deep(.v-text-overflow) {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&:hover,

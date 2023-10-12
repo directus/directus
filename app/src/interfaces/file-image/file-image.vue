@@ -285,7 +285,7 @@ img {
 	.actions {
 		--v-button-color: var(--foreground-subdued);
 		--v-button-background-color: var(--white);
-		--v-button-color-hover: var(--foreground-normal);
+		--v-button-color-hover: var(--theme--foreground);
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;

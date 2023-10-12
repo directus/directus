@@ -110,7 +110,7 @@ body {
 		justify-content: center;
 		width: 60px;
 		height: 60px;
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 		cursor: pointer;
 		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 

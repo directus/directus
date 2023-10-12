@@ -51,7 +51,7 @@ const { t } = useI18n();
 }
 
 :deep(.v-icon:hover:not(.disabled)) {
-	color: var(--foreground-normal) !important;
+	color: var(--theme--foreground) !important;
 }
 
 :deep(.v-icon.disabled) {

@@ -328,7 +328,7 @@ function useURLImport() {
 	margin-right: 4px;
 
 	&:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground);
 	}
 }
 </style>

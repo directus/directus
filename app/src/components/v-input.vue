@@ -284,7 +284,7 @@ function stepDown() {
 	--v-input-font-family: var(--family-sans-serif);
 	--v-input-placeholder-color: var(--foreground-subdued);
 	--v-input-box-shadow-color-focus: var(--primary);
-	--v-input-color: var(--foreground-normal);
+	--v-input-color: var(--theme--foreground);
 	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
 }

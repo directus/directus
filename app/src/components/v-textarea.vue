@@ -153,7 +153,7 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: var(--input-padding);
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 		font-family: var(--v-textarea-font-family);
 		background-color: transparent;
 		border: 0;

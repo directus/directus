@@ -92,6 +92,6 @@ async function hydrateAndLogin() {
 }
 
 .continue-as .sign-out:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 </style>

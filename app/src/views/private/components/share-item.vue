@@ -165,7 +165,7 @@ const formattedTime = computed(() => {
 		transition: all var(--slow) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.active {

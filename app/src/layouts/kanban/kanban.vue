@@ -273,7 +273,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					}
 
 					.v-icon:hover {
-						color: var(--foreground-normal);
+						color: var(--theme--foreground);
 					}
 				}
 			}

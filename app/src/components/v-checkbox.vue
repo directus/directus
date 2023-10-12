@@ -211,7 +211,7 @@ body {
 
 	&:not(:disabled):not(.indeterminate) {
 		.label {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.block {

@@ -325,8 +325,8 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	&.branded :deep(.v-input) {
-		--v-input-border-color-focus: var(--foreground-normal);
-		--v-input-box-shadow-color-focus: var(--foreground-normal);
+		--v-input-border-color-focus: var(--theme--foreground);
+		--v-input-box-shadow-color-focus: var(--theme--foreground);
 	}
 
 	&.branded :deep(.v-input.solid) {

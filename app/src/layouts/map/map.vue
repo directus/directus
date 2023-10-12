@@ -217,7 +217,7 @@ limitWritable.value = selectedSize;
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 

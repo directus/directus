@@ -77,7 +77,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 	p {
 		margin-right: 1ch;
 
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 
 	.value {
@@ -97,7 +97,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 		width: 1.2ch;
 		height: 1.2ch;
 		background-color: v-bind(swatchValue);
-		border: 1px solid var(--foreground-normal);
+		border: 1px solid var(--theme--foreground);
 	}
 }
 </style>

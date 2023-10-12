@@ -269,7 +269,7 @@ function onFlowDrawerCompletion(id: string) {
 
 .ctx-toggle {
 	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .v-list-item.danger {

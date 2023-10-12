@@ -87,7 +87,7 @@ const iconName = computed(() => {
 .info {
 	--v-notice-icon-color: var(--primary);
 	--v-notice-border-color: var(--primary);
-	--v-notice-color: var(--foreground-normal);
+	--v-notice-color: var(--theme--foreground);
 	--v-notice-background-color: var(--background-normal);
 }
 
@@ -101,7 +101,7 @@ const iconName = computed(() => {
 .warning {
 	--v-notice-icon-color: var(--warning);
 	--v-notice-border-color: var(--warning);
-	--v-notice-color: var(--foreground-normal);
+	--v-notice-color: var(--theme--foreground);
 	--v-notice-background-color: var(--background-normal);
 }
 

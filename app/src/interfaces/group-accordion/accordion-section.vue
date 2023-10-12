@@ -147,7 +147,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	&.active {
 		.field-name,
 		.icon {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 

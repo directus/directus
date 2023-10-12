@@ -70,7 +70,7 @@ const color = computed(() => {
 <style>
 body {
 	--v-progress-linear-height: 4px;
-	--v-progress-linear-color: var(--foreground-normal);
+	--v-progress-linear-color: var(--theme--foreground);
 	--v-progress-linear-background-color: var(--border-normal);
 	--v-progress-linear-transition: 400ms;
 }
