@@ -1,0 +1,27 @@
+import type { ApiOutput as Extension } from '@directus/extensions';
+import type { NestedPartial } from '../../../types/index.js';
+import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
+
+/**
+ * Update an existing extension.
+ * @param bundle - Bundle this extension is in
+ * @param name - Unique name of the extension
+ * @returns Returns the extension that was updated
+ */
+export const updateRelation =
+	<Schema extends object>(
+		bundle: string | null,
+		name: string,
+		data: NestedPartial<Extension>
+	): RestCommand<Extension, Schema> =>
+	() => {
+		throwIfEmpty(name, 'Name cannot be empty');
+
+		return {
+			path: bundle ? `/extensions/${bundle}/${name}` : `/extensions/${name}`,
+			params: {},
+			body: JSON.stringify(data),
+			method: 'PATCH',
+		};
+	};
