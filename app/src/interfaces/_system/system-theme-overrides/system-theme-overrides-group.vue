@@ -6,7 +6,6 @@ import type { SetValueFn } from './types.js';
 
 defineOptions({
 	name: 'SystemThemeOverridesGroup',
-	inheritAttrs: false,
 });
 
 defineProps<{
