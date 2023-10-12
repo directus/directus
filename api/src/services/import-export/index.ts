@@ -154,6 +154,13 @@ export class ImportService {
 				stream
 					.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
 					.on('data', (obj: Record<string, unknown>) => {
+						// Filter out all undefined fields
+						for (const field in obj) {
+							if (obj[field] === undefined) {
+								delete obj[field];
+							}
+						}
+
 						saveQueue.push(obj);
 					})
 					.on('error', (err: any) => {
