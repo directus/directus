@@ -1,6 +1,7 @@
 import type { DirectusVersion } from '../../../schema/version.js';
 import type { UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Compare an existing version with the main item.
@@ -22,10 +23,14 @@ export const compareContentVersion =
 		},
 		Schema
 	> =>
-	() => ({
-		path: `/versions/${id}/compare`,
-		method: 'GET',
-	});
+	() => {
+		throwIfEmpty(id, 'ID cannot be empty');
+
+		return {
+			path: `/versions/${id}/compare`,
+			method: 'GET',
+		};
+	};
 
 /**
  * Saves new data to the item in the specified version.
@@ -40,11 +45,15 @@ export const saveContentVersion =
 		id: DirectusVersion<Schema>['id'],
 		item: Partial<Item>
 	): RestCommand<Item, Schema> =>
-	() => ({
-		path: `/versions/${id}/save`,
-		method: 'POST',
-		body: JSON.stringify(item),
-	});
+	() => {
+		throwIfEmpty(id, 'ID cannot be empty');
+
+		return {
+			path: `/versions/${id}/save`,
+			method: 'POST',
+			body: JSON.stringify(item),
+		};
+	};
 
 /**
  * Promotes the version to the main version.
@@ -61,8 +70,12 @@ export const promoteContentVersion =
 		mainHash: string,
 		fields?: (keyof UnpackList<Item>)[]
 	): RestCommand<string | number, Schema> =>
-	() => ({
-		path: `/versions/${id}/promote`,
-		method: 'POST',
-		body: JSON.stringify(fields ? { mainHash, fields } : { mainHash }),
-	});
+	() => {
+		throwIfEmpty(id, 'ID cannot be empty');
+
+		return {
+			path: `/versions/${id}/promote`,
+			method: 'POST',
+			body: JSON.stringify(fields ? { mainHash, fields } : { mainHash }),
+		};
+	};
