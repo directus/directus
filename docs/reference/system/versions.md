@@ -32,7 +32,7 @@ When the version was created.
 User that created the version. Many-to-one to [users](/reference/system/users).
 
 ```json
- {
+{
 	"id": "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5",
 	"key": "my_version",
 	"name": "My Version",
@@ -356,14 +356,14 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	createContentVersions([
 		{
-			name: "My Version",
-			collection: "my_collection",
-			item: 1
+			name: 'My Version',
+			collection: 'my_collection',
+			item: 1,
 		},
 		{
-			name: "Another Version",
-			collection: "another_collection",
-			item: 2
+			name: 'Another Version',
+			collection: 'another_collection',
+			item: 2,
 		},
 	])
 );
@@ -669,7 +669,11 @@ import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	deleteContentVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631', '5fd4a4be-a3ad-4544-9a27-d62b2c897056'])
+	deleteContentVersions([
+		'21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5',
+		'31e1c0c6-b575-47fb-908a-baf81b4e5631',
+		'5fd4a4be-a3ad-4544-9a27-d62b2c897056',
+	])
 );
 ```
 
@@ -738,7 +742,9 @@ import { createDirectus, rest, saveContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(saveContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: "updated value" }));
+const result = await client.request(
+	saveContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: 'updated value' })
+);
 ```
 
 </template>
@@ -781,14 +787,14 @@ version is outdated (main item has been updated since the creation of the curren
 
 ```json
 {
-    "outdated": false,
-    "mainHash": "2ee9c4e33b19d2cdec66a1ff7355e75a331591d9",
-    "current": {
-      "my_field": "updated value"
-    },
-    "main": {
-      "my_field": "main value"
-    }
+	"outdated": false,
+	"mainHash": "2ee9c4e33b19d2cdec66a1ff7355e75a331591d9",
+	"current": {
+		"my_field": "updated value"
+	},
+	"main": {
+		"my_field": "main value"
+	}
 }
 ```
 
@@ -872,9 +878,7 @@ The primary key of the updated item.
 ```json
 {
 	"mainHash": "2ee9c4e33b19d2cdec66a1ff7355e75a331591d9",
-	"fields": [
-		"my_field"
-	]
+	"fields": ["my_field"]
 }
 ```
 
@@ -891,7 +895,11 @@ import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(promoteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', ['my_field']));
+const result = await client.request(
+	promoteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', [
+		'my_field',
+	])
+);
 ```
 
 </template>
