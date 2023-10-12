@@ -9,11 +9,15 @@ export const getExtensions = async () => {
 
 	const filterDuplicates = ({ name }: Extension) => loadedNames.includes(name) === false;
 
-	const localPackageExtensions = (await resolvePackageExtensions(env['EXTENSIONS_PATH'])).filter(filterDuplicates);
+	const localPackageExtensions = (await resolvePackageExtensions(env['EXTENSIONS_PATH'])).filter((extension) =>
+		filterDuplicates(extension)
+	);
 
 	loadedNames.push(...localPackageExtensions.map(({ name }) => name));
 
-	const packageExtensions = (await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).filter(filterDuplicates);
+	const packageExtensions = (await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).filter((extension) =>
+		filterDuplicates(extension)
+	);
 
 	return [...packageExtensions, ...localPackageExtensions, ...localExtensions];
 };
