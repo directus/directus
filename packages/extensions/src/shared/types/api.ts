@@ -10,5 +10,5 @@ export interface ApiOutput {
 	name: string;
 	bundle: string | null;
 	schema: Pick<Extension, SchemaFields> | null;
-	meta: Omit<ExtensionSettings, 'name'> | null;
+	meta: Omit<ExtensionSettings, 'name'>;
 }

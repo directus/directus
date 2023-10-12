@@ -68,6 +68,7 @@ fetchExtensions();
 								:children="
 									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.name) : []
 								"
+								@refresh="fetchExtensions"
 							/>
 						</template>
 					</v-list>
