@@ -24,8 +24,10 @@ const fetchExtensions = async () => {
 	loading.value = true;
 
 	try {
-		const response = await api.get('/extensions');
-		extensions.value = response.data.data;
+		const response = await api.get<{ data: ApiOutput[] }>('/extensions');
+
+		// Only render extensions that are both installed _and_ configured
+		extensions.value = response.data.data.filter((extension) => extension?.schema?.type !== undefined);
 	} catch (err) {
 		error.value = err;
 	} finally {
