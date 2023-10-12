@@ -47,7 +47,7 @@
 }
 
 .codex-editor .ce-popover {
-	background: var(--background-page);
+	background: var(--theme--background);
 	border-color: var(--border-normal);
 	border-width: var(--border-width);
 	border-radius: var(--border-radius);
@@ -86,7 +86,7 @@
 }
 
 .codex-editor .ce-popover-item-icon {
-	background: var(--background-page);
+	background: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	box-shadow: none;
 }
@@ -218,7 +218,7 @@
 .codex-editor .ce-code__textarea {
 	color: var(--foreground-normal);
 	font-size: inherit;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	box-shadow: unset;

@@ -384,7 +384,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-subdued);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
@@ -513,7 +513,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		.delete {
 			right: 8px;
 			left: unset;
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 		}
 	}
 }

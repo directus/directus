@@ -330,10 +330,6 @@ async function onGroupSortChange(fields: Field[]) {
 	grid-column: 1 / span 2;
 }
 
-.v-input.hidden {
-	--background-page: var(--background-subdued);
-}
-
 .v-input.monospace {
 	--v-input-font-family: var(--family-monospace);
 }

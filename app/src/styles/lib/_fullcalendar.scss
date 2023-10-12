@@ -105,10 +105,10 @@
 			padding: 0 8px;
 			font-weight: inherit !important;
 			font-size: inherit !important;
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 			border-top: 2px solid var(--border-subdued);
 			border-bottom: 2px solid var(--border-subdued);
-			box-shadow: 0 0 0 2px var(--background-page);
+			box-shadow: 0 0 0 2px var(--theme--background);
 		}
 	}
 

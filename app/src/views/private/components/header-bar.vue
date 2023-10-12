@@ -94,7 +94,7 @@ onUnmounted(() => {
 	height: var(--header-bar-height);
 	margin: 0;
 	padding: 0 10px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	box-shadow: 0;
 	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
 

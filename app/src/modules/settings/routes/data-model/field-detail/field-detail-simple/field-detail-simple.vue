@@ -217,7 +217,7 @@ function toggleInterface(id: string) {
 }
 
 .preview {
-	--v-icon-color: var(--background-page);
+	--v-icon-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;
@@ -255,7 +255,7 @@ function toggleInterface(id: string) {
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: 2px solid var(--primary);
 	border-radius: var(--border-radius);
 	box-shadow: 0 0 8px var(--primary-75);

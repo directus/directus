@@ -12,7 +12,7 @@
 		box-shadow: var(--card-shadow);
 		border-radius: var(--border-radius);
 		border: var(--border-width) solid var(--border-normal);
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 	}
 
 	.emoji-picker__search-container {
@@ -28,7 +28,7 @@
 		input.emoji-picker__search {
 			border-radius: var(--border-radius);
 			border: var(--border-width) solid var(--border-normal);
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 
 			height: 100%;
 

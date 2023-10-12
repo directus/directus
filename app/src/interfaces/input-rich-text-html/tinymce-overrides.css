@@ -190,7 +190,7 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog {
 	color: var(--foreground-normal);
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: none;
 	box-shadow: none;
 }
@@ -203,7 +203,7 @@ body.dark .tox .tox-toolbar__overflow {
 	padding: 20px;
 	color: var(--foreground-normal);
 	font-size: 16px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 }
 
 .tox .tox-dialog__body {
@@ -217,7 +217,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-dialog__footer {
 	padding: 0 24px 24px;
 	color: var(--foreground-normal);
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border-top: none;
 }
 
@@ -231,7 +231,7 @@ body.dark .tox .tox-toolbar__overflow {
 	font-weight: 500;
 	font-size: 14px;
 	font-family: var(--family-sans-serif);
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: var(--fast) var(--transition);
@@ -246,7 +246,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-toolbar-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 }
 
 .tox .tox-menu {

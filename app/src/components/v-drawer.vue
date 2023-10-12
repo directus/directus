@@ -145,7 +145,7 @@ body {
 	width: 100%;
 	max-width: var(--v-drawer-max-width);
 	height: 100%;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 
 	.cancel {
 		display: none;

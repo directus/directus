@@ -310,7 +310,7 @@ function addKeyAsNode() {
 			height: 30px;
 			padding: 0;
 			color: var(--foreground-subdued);
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 			border: var(--border-width) solid var(--border-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);

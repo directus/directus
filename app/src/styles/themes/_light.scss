@@ -15,7 +15,6 @@
 	--background-normal-alt: #e4eaf1;
 	--background-subdued: #f7fafc;
 	--background-highlight: #f7f9fd;
-	--background-page: #ffffff;
 	--background-input: #ffffff;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;
@@ -46,6 +45,6 @@
 	--danger-alt: var(--red-10);
 
 	.alt-colors {
-		--background-subdued: var(--background-page);
+		--background-subdued: var(--theme--background);
 	}
 }

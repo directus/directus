@@ -237,7 +237,7 @@ body {
 
 	&.block {
 		--v-list-item-border-color: var(--border-subdued);
-		--v-list-item-background-color: var(--background-page);
+		--v-list-item-background-color: var(--theme--background);
 		--v-list-item-background-color-hover: var(--card-face-color);
 		--v-icon-color: var(--foreground-subdued);
 

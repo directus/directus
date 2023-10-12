@@ -39,7 +39,7 @@
 	--navigation-shadow: 0px 0px 12px var(--black);
 	--sidebar-shadow: var(--navigation-shadow);
 
-	--module-background: var(--background-page);
+	--module-background: var(--theme--background);
 	--module-background-alt: var(--background-normal);
 	--module-icon: var(--foreground-subdued);
 	--module-icon-alt: var(--foreground-normal-alt);
@@ -60,6 +60,6 @@
 	--danger-alt: var(--red-10);
 
 	.alt-colors {
-		--background-subdued: var(--background-page);
+		--background-subdued: var(--theme--background);
 	}
 }

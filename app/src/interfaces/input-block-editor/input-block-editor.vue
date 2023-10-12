@@ -201,7 +201,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .bordered {
 	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 

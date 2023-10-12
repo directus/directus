@@ -122,7 +122,7 @@ function toggle(item: Record<string, any>) {
 		width: 44px;
 		height: 44px;
 		margin-right: 12px;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		border-radius: 50%;
 	}
 

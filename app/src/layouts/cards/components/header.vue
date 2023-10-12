@@ -126,10 +126,10 @@ function toggleDescending() {
 	height: 52px;
 	margin-bottom: 36px;
 	padding: 0 8px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border-top: var(--border-width) solid var(--border-subdued);
 	border-bottom: var(--border-width) solid var(--border-subdued);
-	box-shadow: 0 0 0 2px var(--background-page);
+	box-shadow: 0 0 0 2px var(--theme--background);
 }
 
 .start {
