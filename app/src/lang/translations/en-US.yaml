@@ -1256,7 +1256,7 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
-    branding: Branding & Style
+    branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note

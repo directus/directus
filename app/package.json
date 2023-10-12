@@ -72,6 +72,7 @@
 		"@pinia/testing": "0.1.1",
 		"@popperjs/core": "2.11.7",
 		"@rollup/plugin-yaml": "4.1.0",
+		"@sinclair/typebox": "0.31.17",
 		"@sindresorhus/slugify": "2.2.1",
 		"@storybook/addon-actions": "7.0.12",
 		"@storybook/addon-backgrounds": "7.0.12",
