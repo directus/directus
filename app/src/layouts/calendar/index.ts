@@ -24,6 +24,7 @@ import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import { LayoutOptions } from './types';
+import { EventImpl } from '@fullcalendar/core/internal';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',
@@ -185,11 +186,12 @@ export default defineLayout<LayoutOptions>({
 					if (!collection.value || !startDateField.value || !startDateFieldInfo.value) return;
 
 					const itemChanges: Partial<Item> = {
-						[startDateField.value]: adjustForType(info.event.startStr, startDateFieldInfo.value.type),
+						[startDateField.value]: adjustDateTimeType(info.event.startStr, startDateFieldInfo.value.type),
 					};
 
 					if (endDateField.value && endDateFieldInfo.value && info.event.endStr) {
-						itemChanges[endDateField.value] = adjustForType(info.event.endStr, endDateFieldInfo.value.type);
+						const endDateStr = info.event.allDay ? adjustDateType(info.event) : info.event.endStr;
+						itemChanges[endDateField.value] = adjustDateTimeType(endDateStr, endDateFieldInfo.value.type);
 					}
 
 					const endpoint = getEndpoint(collection.value);
@@ -332,12 +334,21 @@ export default defineLayout<LayoutOptions>({
 			};
 		}
 
-		function adjustForType(dateString: string, type: string) {
+		function adjustDateTimeType(dateString: string, type: string) {
 			if (type === 'dateTime') {
 				return dateString.substring(0, 19);
 			}
 
 			return dateString;
+		}
+
+		function adjustDateType(event: EventImpl) {
+			if (!event.end) return event.endStr;
+			// because we add a day for the "Date" type rendering we need to
+			// remove that extra day here before saving the updated value
+			const date = event.end;
+			date.setDate(date.getDate() - 1);
+			return format(date, 'yyyy-MM-dd');
 		}
 	},
 });

@@ -1,18 +1,16 @@
 import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
-import csv from 'csv-parser';
 import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { set, transform } from 'lodash-es';
 import { createReadStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
 import type { Readable } from 'node:stream';
+import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
-import stripBomStream from 'strip-bom-stream';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
@@ -131,28 +129,37 @@ export class ImportService {
 				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
 			});
 
+			const transform = (value: string) => {
+				if (value.length === 0) return;
+
+				try {
+					const parsedJson = parseJSON(value);
+
+					if (typeof parsedJson === 'number') {
+						return value;
+					}
+
+					return parsedJson;
+				} catch {
+					return value;
+				}
+			};
+
+			const PapaOptions: Papa.ParseConfig = {
+				header: true,
+				transform,
+			};
+
 			return new Promise<void>((resolve, reject) => {
 				stream
-					.pipe(stripBomStream())
-					.pipe(csv())
-					.on('data', (value: Record<string, string>) => {
-						const obj = transform(value, (result: Record<string, string>, value, key) => {
-							if (value.length === 0) {
-								delete result[key];
-							} else {
-								try {
-									const parsedJson = parseJSON(value);
-
-									if (typeof parsedJson === 'number') {
-										set(result, key, value);
-									} else {
-										set(result, key, parsedJson);
-									}
-								} catch {
-									set(result, key, value);
-								}
+					.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
+					.on('data', (obj: Record<string, unknown>) => {
+						// Filter out all undefined fields
+						for (const field in obj) {
+							if (obj[field] === undefined) {
+								delete obj[field];
 							}
-						});
+						}
 
 						saveQueue.push(obj);
 					})
@@ -161,6 +168,9 @@ export class ImportService {
 						reject(new InvalidPayloadError({ reason: err.message }));
 					})
 					.on('end', () => {
+						// In case of empty CSV file
+						if (!saveQueue.started) return resolve();
+
 						saveQueue.drain(() => {
 							for (const nestedActionEvent of nestedActionEvents) {
 								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
