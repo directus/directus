@@ -69,7 +69,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readVersions(query_object));
+```
 
 </template>
 </SnippetToggler>
@@ -100,7 +106,17 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readVersions({
+		fields: ['*'],
+	})
+);
+```
 
 </template>
 </SnippetToggler>
@@ -124,7 +140,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readVersion(version_id, query_object));
+```
 
 </template>
 </SnippetToggler>
@@ -152,7 +174,17 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readVersion('dc2ac3f9-2076-4e86-8677-b47643eddacf', {
+		fields: ['*'],
+	})
+);
+```
 
 </template>
 </SnippetToggler>
@@ -178,7 +210,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createVersion(version_object));
+```
 
 </template>
 </SnippetToggler>
@@ -205,7 +243,7 @@ Returns the [version object](#the-version-object) for the created version.
 ```json
 {
 	"name": "My Version",
-	"collection": "my-collection",
+	"collection": "my_collection",
 	"item": "1"
 }
 ```
@@ -218,7 +256,20 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createVersion({
+		key: 'draft',
+		name: 'My Draft',
+		collection: 'my_collection',
+		item: 1,
+	})
+);
+```
 
 </template>
 </SnippetToggler>
@@ -244,7 +295,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createVersions(version_object_array));
+```
 
 </template>
 </SnippetToggler>
@@ -266,19 +323,19 @@ Returns an array of [version objects](#the-version-object) for the created versi
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /dashboards`
+`POST /versions`
 
 ```json
 [
 	{
 		"name": "My Version",
-		"collection": "my-collection",
-		"item": "1"
+		"collection": "my_collection",
+		"item": 1
 	},
 	{
 		"name": "Another Version",
-		"collection": "another-collection",
-		"item": "2"
+		"collection": "another_collection",
+		"item": 2
 	}
 ]
 ```
@@ -291,7 +348,26 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createVersions([
+		{
+			name: "My Version",
+			collection: "my_collection",
+			item: 1
+		},
+		{
+			name: "Another Version",
+			collection: "another_collection",
+			item: 2
+		},
+	])
+);
+```
 
 </template>
 </SnippetToggler>
@@ -317,7 +393,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateVersion(version_id, partial_version_object));
+```
 
 </template>
 </SnippetToggler>
@@ -355,7 +437,17 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', {
+		name: 'My Updated Version',
+	})
+);
+```
 
 </template>
 </SnippetToggler>
@@ -386,7 +478,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateVersions(version_id_array, partial_version_object));
+```
 
 </template>
 </SnippetToggler>
@@ -431,7 +529,18 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'], {
+		name: 'My Updated Version',
+	})
+);
+```
+
 
 </template>
 </SnippetToggler>
@@ -455,7 +564,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteVersion(version_id));
+```
 
 </template>
 </SnippetToggler>
@@ -479,7 +594,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+```
 
 </template>
 </SnippetToggler>
@@ -505,7 +626,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteVersions(version_id_array));
+```
 
 </template>
 </SnippetToggler>
@@ -537,7 +664,15 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631', '5fd4a4be-a3ad-4544-9a27-d62b2c897056'])
+);
+```
 
 </template>
 </SnippetToggler>
@@ -563,7 +698,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, saveVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(saveVersion(version_id, partial_item_object));
+```
 
 </template>
 </SnippetToggler>
@@ -593,7 +734,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, saveVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(saveVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: "updated value" }));
+```
 
 </template>
 </SnippetToggler>
@@ -617,7 +764,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, compareVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(compareVersion(version_id));
+```
 
 </template>
 </SnippetToggler>
@@ -655,7 +808,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, compareVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(compareVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+```
 
 </template>
 </SnippetToggler>
@@ -671,7 +830,7 @@ Promote an existing version into the main item.
 
 `POST /versions/:id/promote`
 
-Pass the current hash of the main item (obtained from the `compare` endpoint) along with an array of field names of
+Pass the current hash of the main item (obtained from the `compare` endpoint) along with an optional array of field names of
 which the values are to be promoted from the current version into the main item.
 
 ```json
@@ -689,7 +848,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, promoteVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(promoteVersion(version_id, promote_object));
+```
 
 </template>
 </SnippetToggler>
@@ -722,7 +887,13 @@ TBD
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, promoteVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(promoteVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', ['my_field']));
+```
 
 </template>
 </SnippetToggler>
