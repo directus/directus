@@ -4,8 +4,7 @@ import { Router } from 'express';
 import Joi from 'joi';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
-import { flushCaches } from '../cache.js';
-import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
+import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import type { ImportWorkerData } from '../services/import-export/import-worker.js';
@@ -194,11 +193,12 @@ router.post(
 router.post(
 	'/cache/clear',
 	asyncHandler(async (req, res) => {
-		if (req.accountability?.admin !== true) {
-			throw new ForbiddenError();
-		}
+		const service = new UtilsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-		await flushCaches(true);
+		await service.clearCache();
 
 		res.status(200).end();
 	})
