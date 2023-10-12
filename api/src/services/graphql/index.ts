@@ -2627,40 +2627,6 @@ export class GraphQLService {
 			});
 		}
 
-		if ('directus_extensions' in schema.read.collections) {
-			Extension.addFields({
-				bundle: GraphQLString,
-				name: new GraphQLNonNull(GraphQLString),
-				schema: schemaComposer.createObjectTC({
-					name: 'directus_extensions_schema',
-					fields: {
-						type: GraphQLString,
-						local: GraphQLBoolean,
-					},
-				}),
-				meta: schemaComposer.createObjectTC({
-					name: 'directus_extensions_meta',
-					fields: {
-						enabled: GraphQLBoolean,
-					},
-				}),
-			});
-
-			schemaComposer.Query.addFields({
-				extensions: {
-					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Extension.getType()))),
-					resolve: async () => {
-						const service = new ExtensionsService({
-							accountability: this.accountability,
-							schema: this.schema,
-						});
-
-						return await service.readAll();
-					},
-				},
-			});
-		}
-
 		if (this.accountability?.admin === true) {
 			schemaComposer.Mutation.addFields({
 				create_collections_item: {
@@ -2840,6 +2806,70 @@ export class GraphQLService {
 
 						await relationsService.deleteOne(args['collection'], args['field']);
 						return { collection: args['collection'], field: args['field'] };
+					},
+				},
+			});
+
+			Extension.addFields({
+				bundle: GraphQLString,
+				name: new GraphQLNonNull(GraphQLString),
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_extensions_schema',
+					fields: {
+						type: GraphQLString,
+						local: GraphQLBoolean,
+					},
+				}),
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_extensions_meta',
+					fields: {
+						enabled: GraphQLBoolean,
+					},
+				}),
+			});
+
+			schemaComposer.Query.addFields({
+				extensions: {
+					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Extension.getType()))),
+					resolve: async () => {
+						const service = new ExtensionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await service.readAll();
+					},
+				},
+			});
+
+			schemaComposer.Mutation.addFields({
+				update_extensions_item: {
+					type: Extension,
+					args: {
+						bundle: GraphQLString,
+						name: new GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(
+							schemaComposer.createObjectTC({
+								name: 'update_directus_extensions_input',
+								fields: {
+									meta: schemaComposer.createObjectTC({
+										name: 'update_directus_extensions_input_meta',
+										fields: {
+											enabled: GraphQLBoolean,
+										},
+									}),
+								},
+							})
+						),
+					},
+					resolve: async (_, args) => {
+						const extensionsService = new ExtensionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						await extensionsService.updateOne(args['bundle'], args['name'], args['data']);
+						return await extensionsService.readOne(args['bundle'], args['name']);
 					},
 				},
 			});
