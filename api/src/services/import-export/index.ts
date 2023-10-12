@@ -161,6 +161,9 @@ export class ImportService {
 						reject(new InvalidPayloadError({ reason: err.message }));
 					})
 					.on('end', () => {
+						// In case of empty CSV file
+						if (!saveQueue.started) return resolve();
+
 						saveQueue.drain(() => {
 							for (const nestedActionEvent of nestedActionEvents) {
 								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
