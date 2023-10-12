@@ -1060,6 +1060,7 @@ editing_preset: Editing Preset
 layout_preview: Layout Preview
 layout_setup: Layout Setup
 data: Data
+theme-overrides: Theme Overrides
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
