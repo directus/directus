@@ -14,7 +14,7 @@ defineOptions({
 	name: 'ExtensionItem',
 });
 
-const emit = defineEmits<{ refresh: [] }>();
+const emit = defineEmits(['refresh']);
 
 interface ExtensionItem {
 	extension: ApiOutput;
@@ -33,7 +33,11 @@ const toggleEnabled = async () => {
 	changingEnabledState.value = true;
 
 	try {
-		await api.patch(`/extensions/${props.extension.name}`, { meta: { enabled: !props.extension.meta.enabled } });
+		const endpoint = props.extension.bundle
+			? `/extensions/${props.extension.bundle}/${props.extension.name}`
+			: `/extensions/${props.extension.name}`;
+
+		await api.patch(endpoint, { meta: { enabled: !props.extension.meta.enabled } });
 	} finally {
 		changingEnabledState.value = false;
 		emit('refresh');
@@ -42,7 +46,7 @@ const toggleEnabled = async () => {
 </script>
 
 <template>
-	<v-list-item block>
+	<v-list-item block :class="{ disabled: !extension.meta.enabled }">
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content class="monospace">{{ extension.name }}</v-list-item-content>
 
@@ -50,6 +54,7 @@ const toggleEnabled = async () => {
 			<v-progress-circular v-if="changingEnabledState" indeterminate />
 			<v-chip v-else small>{{ extension.meta.enabled ? t('enabled') : t('disabled') }}</v-chip>
 			<extension-item-options
+				class="options"
 				:name="extension.name"
 				:enabled="extension.meta.enabled"
 				@toggle-enabled="toggleEnabled"
@@ -58,7 +63,13 @@ const toggleEnabled = async () => {
 	</v-list-item>
 
 	<v-list v-if="children" class="nested">
-		<extension-item v-for="item in children" :key="item.bundle + '__' + item.name" :extension="item" :children="[]" />
+		<extension-item
+			v-for="item in children"
+			:key="item.bundle + '__' + item.name"
+			:extension="item"
+			:children="[]"
+			@refresh="$emit('refresh')"
+		/>
 	</v-list>
 </template>
 
@@ -69,5 +80,13 @@ const toggleEnabled = async () => {
 
 .nested {
 	margin-left: 20px;
+}
+
+.disabled {
+	--v-list-item-color: var(--foreground-subdued);
+}
+
+.options {
+	margin-left: 12px;
 }
 </style>

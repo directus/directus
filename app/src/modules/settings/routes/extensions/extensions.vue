@@ -56,7 +56,7 @@ fetchExtensions();
 			<extensions-info-sidebar-detail />
 		</template>
 
-		<div v-if="loading === false" class="page-container">
+		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
 					<extension-group-divider class="group-divider" :type="(type as typeof EXTENSION_TYPES[number])" />
