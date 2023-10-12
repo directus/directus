@@ -5,7 +5,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { collectOnboarding } from '@/utils/send-onboarding';
 import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
-import { Ref, computed, ref } from 'vue';
+import { Ref, computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useProjectFields } from './forms/project';
@@ -92,6 +92,16 @@ if (showProjectSlide) {
 
 const currentSlideName = ref('welcome'); // Important that this matches a key in slides
 const isLoading = ref(false);
+const error = ref<unknown>(null);
+const notice = ref<HTMLDivElement | null>(null);
+watchEffect(() => {
+	console.log('WATCHING ERRORNOTICE YO', notice.value);
+	if (!notice.value) {
+		return;
+	}
+	notice.value.scrollIntoView({ behavior: 'smooth' });
+});
+
 // Active means non-null slides because they would affect the progress-percentage
 const activeSlideNames = computed(() => Object.keys(slides.value).filter((key) => slides.value[key]));
 const currentSlideIndex = computed(() => activeSlideNames.value.findIndex((key) => key === currentSlideName.value));
@@ -113,30 +123,32 @@ async function finishOnboarding() {
 				project_use_case: projectModel.value.project_use_case ?? null,
 			} satisfies SettingsOnboarding),
 		})
-		.then(() => serverStore.hydrate())
-		.catch((e) => console.error('Error when updating settings', e));
+		.then(() => settingsStore.hydrate());
 
 	const userUpdate = api
 		.patch(`/users/${userModel.value.id}`, {
 			first_name: userModel.value.first_name,
 			last_name: userModel.value.last_name,
-			email: userModel.value.email, // TODO validate before!
+			email: userModel.value.email,
 			onboarding: JSON.stringify({
 				primary_skillset: userModel.value.primary_skillset ?? null,
 				wants_emails: userModel.value.wants_emails,
 				retryTransmission: true,
 			} satisfies UserOnboarding),
 		})
-		.then(() => userStore.hydrate())
-		.catch((e) => console.error('Error when updating user', e));
+		.then(() => userStore.hydrate());
 
-	await Promise.allSettled([settingUpdate, userUpdate]);
-
-	// Dont await the result, similar to telemetry
-	// It might fail but proceed as normal for seamless user experience
-	collectOnboarding().catch(() => {});
-
-	return router.replace('/content');
+	try {
+		await Promise.all([settingUpdate, userUpdate]);
+		// Dont await the result, similar to telemetry
+		// It might fail but proceed as normal for seamless user experience
+		collectOnboarding().catch(() => {});
+		router.replace('/content');
+	} catch (err) {
+		error.value = err;
+	} finally {
+		isLoading.value = false;
+	}
 }
 
 function prevSlide() {
@@ -144,6 +156,7 @@ function prevSlide() {
 		return;
 	}
 
+	error.value = null;
 	currentSlideName.value = currentSlide.value?.transitions.back;
 }
 
@@ -170,9 +183,15 @@ async function skipOnboarding() {
 		.then(() => userStore.hydrate())
 		.catch((e) => console.error('Error when updating user', e));
 
-	await Promise.allSettled([settingUpdate, userUpdate]);
-
-	router.replace('/content').finally(() => (isLoading.value = false));
+	try {
+		await Promise.all([settingUpdate, userUpdate, Promise.reject(new Error('FAIL YO'))]);
+		error.value = null;
+		router.replace('/content');
+	} catch (err) {
+		error.value = err;
+	} finally {
+		isLoading.value = false;
+	}
 }
 
 async function nextSlide() {
@@ -180,13 +199,16 @@ async function nextSlide() {
 		return;
 	}
 
+	error.value = null;
 	if (isLastSlide.value) {
 		isLoading.value = true;
 
 		// TODO remove artificial slowdown for seeing how it'd look on a slower connection
 		setTimeout(() => {
 			// Set the loading to false can be useful in case there were routing errors
-			finishOnboarding().finally(() => (isLoading.value = false));
+			finishOnboarding()
+				.catch((err) => (error.value = err))
+				.finally(() => (isLoading.value = false));
 		}, 750);
 	}
 
@@ -235,6 +257,13 @@ async function nextSlide() {
 					</div>
 				</Transition>
 			</div>
+
+			<!-- Error -->
+			<Transition name="dialog">
+				<div v-if="error" ref="notice" class="notice-error">
+					<v-notice type="danger">{{ t('unexpected_error_copy') }}</v-notice>
+				</div>
+			</Transition>
 
 			<!-- Actions -->
 			<div class="actions">
@@ -325,5 +354,10 @@ async function nextSlide() {
 	:deep() {
 		@import '@/styles/markdown';
 	}
+}
+
+.notice-error,
+.notice-error > .v-notice {
+	width: 100%;
 }
 </style>
