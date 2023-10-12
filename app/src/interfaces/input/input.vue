@@ -75,6 +75,7 @@ const inputType = computed(() => {
 		:slug="slug"
 		:min="min"
 		:max="max"
+		:max-length="length"
 		:step="step"
 		:dir="direction"
 		:autocomplete="masked ? 'new-password' : 'off'"

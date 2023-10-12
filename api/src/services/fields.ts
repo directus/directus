@@ -680,7 +680,7 @@ export class FieldsService {
 			const type = field.type as 'float' | 'decimal';
 			column = table[type](field.field, field.schema?.numeric_precision ?? 10, field.schema?.numeric_scale ?? 5);
 		} else if (field.type === 'csv') {
-			column = table.string(field.field);
+			column = table.text(field.field);
 		} else if (field.type === 'hash') {
 			column = table.string(field.field, 255);
 		} else if (field.type === 'dateTime') {

@@ -8,7 +8,6 @@ let sample: AbstractQuery;
 
 beforeEach(() => {
 	sample = {
-		root: true,
 		store: randomIdentifier(),
 		collection: randomIdentifier(),
 		fields: [

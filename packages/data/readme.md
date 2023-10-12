@@ -35,7 +35,6 @@ await engine.registerStore('postgres', pgDriver);
 ```js
 // query data
 await engine.query({
-	root: true,
 	store: 'postgres',
 	collection: 'articles',
 	fields: [

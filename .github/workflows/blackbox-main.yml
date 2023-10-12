@@ -61,9 +61,8 @@ jobs:
           sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
           sudo apt-get update
           sudo apt-get install -y mssql-server
-          sudo MSSQL_PID='express' MSSQL_SA_PASSWORD='Test@123' /opt/mssql/bin/mssql-conf -n setup accept-eula
           sudo /opt/mssql/bin/mssql-conf set network.tcpport 6105
-          sudo systemctl restart mssql-server
+          sudo MSSQL_PID='express' MSSQL_SA_PASSWORD='Test@123' /opt/mssql/bin/mssql-conf -n setup accept-eula
 
       - name: Start database
         if: matrix.vendor != 'sqlite3' && matrix.vendor != 'mssql'
