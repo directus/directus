@@ -137,9 +137,9 @@ export class ImportService {
 
 					if (typeof parsedJson === 'number') {
 						return value;
-					} else {
-						return parsedJson;
 					}
+
+					return parsedJson;
 				} catch {
 					return value;
 				}
