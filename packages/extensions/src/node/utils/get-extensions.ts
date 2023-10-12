@@ -1,5 +1,6 @@
 import { isIn, isTypeIn, listFolders, pluralize, resolvePackage } from '@directus/utils/node';
 import fse from 'fs-extra';
+import { pick } from 'lodash-es';
 import path from 'path';
 import {
 	EXTENSION_NAME_REGEX,
@@ -50,7 +51,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 					app: extensionOptions.path.app,
 					api: extensionOptions.path.api,
 				},
-				entries: extensionOptions.entries,
+				entries: extensionOptions.entries.map((entry) => pick(entry, 'name', 'type')),
 				host: extensionOptions.host,
 				local,
 			});
