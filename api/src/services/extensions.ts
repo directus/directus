@@ -95,6 +95,8 @@ export class ExtensionsService {
 
 		if ('meta' in data && 'enabled' in data.meta) {
 			await this.knex('directus_extensions').update({ enabled: data.meta.enabled }).where({ name: key });
+
+			this.extensionsManager.reload();
 		}
 	}
 
