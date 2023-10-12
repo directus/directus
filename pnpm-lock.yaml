@@ -461,8 +461,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       '@types/papaparse':
-        specifier: 5.3.8
-        version: 5.3.8
+        specifier: 5.3.9
+        version: 5.3.9
       '@types/qs':
         specifier: 6.9.7
         version: 6.9.7
@@ -8838,8 +8838,8 @@ packages:
     resolution: {integrity: sha512-tfyXl1JPCf2hzIDK29gO7qGqJjThKBzg/Cn3bA68R9NmWdOx+f7k5mm4to/n43BHspCwcoUC6FU4NpUoK/h9bQ==}
     dev: true
 
-  /@types/papaparse@5.3.8:
-    resolution: {integrity: sha512-ArKIEOOWULbhi53wkAiRy1ze4wvrTfhpAj7Yfzva+EkmX2sV8PpFB+xqzJfzXNzK4me95FJH9QZt5NXFVGzOoQ==}
+  /@types/papaparse@5.3.9:
+    resolution: {integrity: sha512-sZcrKD63qA4/6GyBcVvX6AIp0AkpfyYk00CUQHMBvb4+OVXTZWyXUvidUZaai1wyKUVyJoxO7mgREam/pMRrDw==}
     dependencies:
       '@types/node': 18.16.12
     dev: true
