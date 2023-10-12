@@ -129,7 +129,7 @@ export class ImportService {
 				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
 			});
 
-			const transform = (value: any, _field: string) => {
+			const transform = (value: string) => {
 				if (value.length === 0) return;
 
 				try {
