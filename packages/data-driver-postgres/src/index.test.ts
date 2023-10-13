@@ -18,7 +18,7 @@ vi.mock('@directus/data-sql', async (importOriginal) => {
 	};
 });
 
-function getSteamForMock(data: Record<string, any>[]) {
+function getStreamForMock(data: Record<string, any>[]) {
 	return {
 		client: null,
 		stream: new ReadableStream({
@@ -104,35 +104,35 @@ test('nested with local fields', async () => {
 		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 	});
 
-	const fistFieldDbResult1 = randomIdentifier();
-	const fistFieldDbResult2 = randomIdentifier();
+	const firstFieldDbResult1 = randomIdentifier();
+	const firstFieldDbResult2 = randomIdentifier();
 	const secondFieldDbResult1 = randomIdentifier();
 	const secondFieldDbResult2 = randomIdentifier();
 
 	const mockedData = [
 		{
-			[firstFieldId]: fistFieldDbResult1,
+			[firstFieldId]: firstFieldDbResult1,
 			[secondFieldId]: secondFieldDbResult1,
 		},
 		{
-			[firstFieldId]: fistFieldDbResult2,
+			[firstFieldId]: firstFieldDbResult2,
 			[secondFieldId]: secondFieldDbResult2,
 		},
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);
 
 	const expectedResult = [
 		{
-			[firstField]: fistFieldDbResult1,
+			[firstField]: firstFieldDbResult1,
 			[secondFieldAlias]: secondFieldDbResult1,
 		},
 		{
-			[firstField]: fistFieldDbResult2,
+			[firstField]: firstFieldDbResult2,
 			[secondFieldAlias]: secondFieldDbResult2,
 		},
 	];
@@ -149,8 +149,8 @@ test('nested m2o field', async () => {
 	const joinField1Alias = randomIdentifier();
 	const joinField2 = randomIdentifier();
 	const joinField2Id = randomIdentifier();
-	const fk = randomIdentifier();
-	const foreignPk = randomIdentifier();
+	const foreignKeyField = randomIdentifier();
+	const collectionToJoinPrimaryKeyField = randomIdentifier();
 	const joinAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
@@ -178,12 +178,12 @@ test('nested m2o field', async () => {
 					type: 'm2o',
 					join: {
 						current: {
-							fields: [fk],
+							fields: [foreignKeyField],
 						},
 						external: {
 							store: dataStore,
 							collection: collectionToJoin,
-							fields: [foreignPk],
+							fields: [collectionToJoinPrimaryKeyField],
 						},
 					},
 				},
@@ -229,13 +229,13 @@ test('nested m2o field', async () => {
 							target: {
 								type: 'primitive',
 								table: rootCollection,
-								column: fk,
+								column: foreignKeyField,
 							},
 							operation: 'eq',
 							compareTo: {
 								type: 'primitive',
 								table: collectionToJoinId,
-								column: foreignPk,
+								column: collectionToJoinPrimaryKeyField,
 							},
 						},
 					},
@@ -276,7 +276,7 @@ test('nested m2o field', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);
@@ -302,16 +302,16 @@ test('nested m2o field', async () => {
 });
 
 test.skip('nested o2m field', async () => {
-	const collectionToJoin2 = randomIdentifier();
-	const collectionToJoin2Id = randomIdentifier();
-	const joinField1m = randomIdentifier();
-	const joinField1IdM = randomIdentifier();
-	const joinField1AliasM = randomIdentifier();
-	const joinField2m = randomIdentifier();
-	const joinField2IdM = randomIdentifier();
-	const fkM = randomIdentifier();
-	const foreignPkm = randomIdentifier();
-	const joinAliasM = randomIdentifier();
+	const collectionToJoin = randomIdentifier();
+	const collectionToJoinId = randomIdentifier();
+	const joinField1 = randomIdentifier();
+	const joinField1Id = randomIdentifier();
+	const joinField1Alias = randomIdentifier();
+	const joinField2 = randomIdentifier();
+	const joinField2Id = randomIdentifier();
+	const primaryKeyField = randomIdentifier();
+	const collectionToJoinForeignKeyField = randomIdentifier();
+	const joinAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -326,24 +326,24 @@ test.skip('nested o2m field', async () => {
 				fields: [
 					{
 						type: 'primitive',
-						field: joinField1m,
-						alias: joinField1AliasM,
+						field: joinField1,
+						alias: joinField1Alias,
 					},
 					{
 						type: 'primitive',
-						field: joinField2m,
+						field: joinField2,
 					},
 				],
 				meta: {
 					type: 'o2m',
 					join: {
 						current: {
-							fields: [fkM],
+							fields: [primaryKeyField],
 						},
 						external: {
 							store: dataStore,
-							collection: collectionToJoin2,
-							fields: [foreignPkm],
+							collection: collectionToJoin,
+							fields: [collectionToJoinForeignKeyField],
 						},
 					},
 				},
@@ -362,24 +362,24 @@ test.skip('nested o2m field', async () => {
 				},
 				{
 					type: 'primitive',
-					table: collectionToJoin2Id,
-					column: joinField1m,
-					as: joinField2IdM,
-					alias: joinField1AliasM,
+					table: collectionToJoinId,
+					column: joinField1,
+					as: joinField2Id,
+					alias: joinField1Alias,
 				},
 				{
 					type: 'primitive',
-					table: collectionToJoin2Id,
-					column: joinField2m,
-					as: joinField2IdM,
+					table: collectionToJoinId,
+					column: joinField2,
+					as: joinField2Id,
 				},
 			],
 			from: rootCollection,
 			joins: [
 				{
 					type: 'join',
-					table: collectionToJoin2,
-					as: collectionToJoin2Id,
+					table: collectionToJoin,
+					as: collectionToJoinId,
 					on: {
 						type: 'condition',
 						negate: false,
@@ -388,25 +388,25 @@ test.skip('nested o2m field', async () => {
 							target: {
 								type: 'primitive',
 								table: rootCollection,
-								column: fkM,
+								column: primaryKeyField,
 							},
 							operation: 'eq',
 							compareTo: {
 								type: 'primitive',
-								table: collectionToJoin2Id,
-								column: foreignPkm,
+								table: collectionToJoinId,
+								column: collectionToJoinForeignKeyField,
 							},
 						},
 					},
-					alias: joinAliasM,
+					alias: joinAlias,
 				},
 			],
 		},
 		parameters: [],
 		aliasMapping: new Map([
 			[firstFieldId, [firstField]],
-			[joinField1IdM, [collectionToJoin2, joinField2m]],
-			[joinField2IdM, [collectionToJoin2, joinField2m]],
+			[joinField1Id, [collectionToJoin, joinField2]],
+			[joinField2Id, [collectionToJoin, joinField2]],
 		]),
 	});
 
@@ -423,29 +423,29 @@ test.skip('nested o2m field', async () => {
 
 	/*
 	 * this database result mock shows two o2m relations.
-	 * the first one has two 'many' parts, the second one has none 'many' part.
-	 * but the second one will get printed anyways since it's the db was queried with a LEFT JOIN.
+	 * the first one has two 'many' parts, the second one has no 'many' part.
+	 * but the second one will get printed anyways since the db was queried with a LEFT JOIN.
 	 */
 	const mockedData = [
 		{
 			[firstFieldId]: firstFieldDbResult1, // the 'one' part, same value as the next one
-			[joinField2IdM]: secondFieldDbResult1, // a field from the 'many' part.
-			[joinField1IdM]: thirdFieldDbResult1, // another field from the 'many' part
+			[joinField2Id]: secondFieldDbResult1, // a field from the 'many' part
+			[joinField1Id]: thirdFieldDbResult1, // another field from the 'many' part
 		},
 		{
 			[firstFieldId]: firstFieldDbResult1, // the 'one' part, same as the previous one
-			[joinField2IdM]: secondFieldDbResult2, // this is a field from the 'many' part, but it's different value as above but for the same 'one' part
-			[joinField1IdM]: thirdFieldDbResult2, // another field from the 'many' part
+			[joinField2Id]: secondFieldDbResult2, // this is a field from the 'many' part with a different value as above but for the same 'one' part
+			[joinField1Id]: thirdFieldDbResult2, // another field from the 'many' part
 		},
 		{
 			[firstFieldId]: firstFieldDbResult2, // the 'one' part, now without any 'many' part
-			[joinField1IdM]: null, // there is no relation to the desired LEFT JOINed table, so both field values are null
-			[joinField2IdM]: null, // also null because there is no relation
+			[joinField1Id]: null, // there is no relation to the desired LEFT JOINed table, so both field values are null
+			[joinField2Id]: null, // also null because there is no relation
 		},
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getSteamForMock(mockedData));
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = getActualResult(readableStream);
@@ -453,20 +453,20 @@ test.skip('nested o2m field', async () => {
 	const expectedResult = [
 		{
 			[firstField]: firstFieldDbResult1,
-			[collectionToJoin2]: [
+			[collectionToJoin]: [
 				{
-					[joinField1AliasM]: secondFieldDbResult1,
-					[joinField2m]: thirdFieldDbResult1,
+					[joinField1Alias]: secondFieldDbResult1,
+					[joinField2]: thirdFieldDbResult1,
 				},
 				{
-					[joinField1AliasM]: secondFieldDbResult2,
-					[joinField2m]: thirdFieldDbResult2,
+					[joinField1Alias]: secondFieldDbResult2,
+					[joinField2]: thirdFieldDbResult2,
 				},
 			],
 		},
 		{
 			[firstField]: firstFieldDbResult2,
-			[collectionToJoin2]: [],
+			[collectionToJoin]: [],
 		},
 	];
 
