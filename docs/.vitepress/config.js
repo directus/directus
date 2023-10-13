@@ -405,6 +405,10 @@ function sidebar() {
 					text: 'Collections',
 				},
 				{
+					link: '/reference/system/versions',
+					text: 'Content Versions',
+				},
+				{
 					link: '/reference/system/dashboards',
 					text: 'Dashboards',
 				},
@@ -483,10 +487,6 @@ function sidebar() {
 				{
 					link: '/reference/system/utilities',
 					text: 'Utilities',
-				},
-				{
-					link: '/reference/system/versions',
-					text: 'Versions',
 				},
 				{
 					link: '/reference/system/webhooks',

@@ -1,4 +1,4 @@
-import type { ApplyQueryFields, CollectionType, Query, RegularCollections } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, QueryItem, RegularCollections } from '../../../types/index.js';
 import { throwIfEmpty, throwIfCoreCollection } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -54,7 +54,7 @@ export const readItem =
 	<
 		Schema extends object,
 		Collection extends RegularCollections<Schema>,
-		const TQuery extends Query<Schema, CollectionType<Schema, Collection>>
+		const TQuery extends QueryItem<Schema, CollectionType<Schema, Collection>>
 	>(
 		collection: Collection,
 		key: string | number,
