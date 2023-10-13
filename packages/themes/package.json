@@ -24,7 +24,6 @@
 	"scripts": {
 		"build": "vite build && npm run generate-json-schema",
 		"dev": "vite build --watch",
-		"test": "vitest --watch=false",
 		"generate-json-schema": "node generate-json-schema.js"
 	},
 	"devDependencies": {
