@@ -44,9 +44,11 @@ const Rules = Type.Object({
 		}),
 
 		list: Type.Object({
-			icon: Color,
-			iconHover: Color,
-			iconActive: Color,
+			icon: Type.Object({
+				foreground: Color,
+				foregroundHover: Color,
+				foregroundActive: Color,
+			}),
 
 			foreground: Color,
 			foregroundHover: Color,
@@ -74,9 +76,11 @@ const Rules = Type.Object({
 
 		section: Type.Object({
 			toggle: Type.Object({
-				icon: Color,
-				iconHover: Color,
-				iconActive: Color,
+				icon: Type.Object({
+					foreground: Color,
+					foregroundHover: Color,
+					foregroundActive: Color,
+				}),
 
 				foreground: Color,
 				foregroundHover: Color,

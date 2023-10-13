@@ -406,9 +406,9 @@ function getWidth(input: unknown, fallback: number): number {
 				--v-list-item-color: var(--theme--navigation--list--foreground);
 				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
 				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
-				--v-list-item-icon-color: var(--theme--navigation--list--icon);
-				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon-hover);
-				--v-list-item-icon-color-active: var(--theme--navigation--list--icon-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
 				--v-list-item-background-color: var(--theme--navigation--list--background);
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);

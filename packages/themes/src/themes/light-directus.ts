@@ -39,9 +39,11 @@ export const theme: Theme = {
 			},
 
 			list: {
-				icon: 'var(--project-color)',
-				iconHover: 'var(--theme--navigation--list--icon)',
-				iconActive: 'var(--theme--navigation--list--icon)',
+				icon: {
+					foreground: 'var(--project-color)',
+					foregroundHover: 'var(--theme--navigation--list--icon)',
+					foregroundActive: 'var(--theme--navigation--list--icon)',
+				},
 
 				foreground: 'var(--theme--foreground-accent)',
 				foregroundHover: 'var(--theme--navigation--list--foreground)',
@@ -69,9 +71,11 @@ export const theme: Theme = {
 
 			section: {
 				toggle: {
-					icon: 'var(--theme--foreground--accent)',
-					iconHover: 'var(--theme--sidebar--section--toggle--icon)',
-					iconActive: 'var(--theme--sidebar--section--toggle--icon)',
+					icon: {
+						foreground: 'var(--theme--foreground--accent)',
+						foregroundHover: 'var(--theme--sidebar--section--toggle--icon)',
+						foregroundActive: 'var(--theme--sidebar--section--toggle--icon)',
+					},
 
 					foreground: 'var(--theme--foreground--accent)',
 					foregroundHover: 'var(--theme--sidebar--section--toggle--foreground)',
