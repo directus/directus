@@ -432,18 +432,18 @@ under the closing `script` tag:
 	}
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 			svg {
-				fill: var(--primary);
+				fill: var(--theme--primary);
 			}
 		}
 		&.block {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 			.label {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 			&::before {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 				opacity: 0.1;
 			}
 		}
@@ -759,18 +759,18 @@ export default {
 	}
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 			svg {
-				fill: var(--primary);
+				fill: var(--theme--primary);
 			}
 		}
 		&.block {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 			.label {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 			&::before {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 				opacity: 0.1;
 			}
 		}

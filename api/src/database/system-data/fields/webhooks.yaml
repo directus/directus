@@ -16,10 +16,10 @@ fields:
     display_options:
       choices:
         - value: POST
-          foreground: 'var(--primary)'
+          foreground: 'var(--theme--primary)'
           background: 'var(--primary-25)'
         - value: GET
-          foreground: 'var(--secondary)'
+          foreground: 'var(--theme--secondary)'
           background: 'var(--secondary-25)'
       format: false
     options:
@@ -43,7 +43,7 @@ fields:
         - text: $t:field_options.directus_webhooks.status_options_active
           value: active
           foreground: 'var(--primary-10)'
-          background: 'var(--primary)'
+          background: 'var(--theme--primary)'
         - text: $t:field_options.directus_webhooks.status_options_inactive
           value: inactive
           foreground: 'var(--theme--foreground)'
@@ -115,7 +115,7 @@ fields:
       choices:
         - text: $t:create
           value: create
-          foreground: 'var(--primary)'
+          foreground: 'var(--theme--primary)'
           background: 'var(--primary-25)'
         - text: $t:update
           value: update
@@ -123,7 +123,7 @@ fields:
           background: 'var(--blue-25)'
         - text: $t:delete_label
           value: delete
-          foreground: 'var(--danger)'
+          foreground: 'var(--theme--danger)'
           background: 'var(--danger-25)'
         - text: $t:login
           value: login

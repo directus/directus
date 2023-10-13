@@ -13,7 +13,7 @@ fields:
       choices:
         - text: $t:field_options.directus_activity.create
           value: create
-          foreground: 'var(--primary)'
+          foreground: 'var(--theme--primary)'
           background: 'var(--primary-25)'
         - text: $t:field_options.directus_activity.update
           value: update
@@ -21,7 +21,7 @@ fields:
           background: 'var(--blue-25)'
         - text: $t:field_options.directus_activity.delete
           value: delete
-          foreground: 'var(--danger)'
+          foreground: 'var(--theme--danger)'
           background: 'var(--danger-25)'
         - text: $t:field_options.directus_activity.login
           value: login
