@@ -38,7 +38,7 @@ fetchExtensions();
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="extension" />
+				<v-icon name="category" />
 			</v-button>
 		</template>
 
