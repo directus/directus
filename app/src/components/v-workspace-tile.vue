@@ -469,7 +469,7 @@ function useDragDrop() {
 	border-bottom-right-radius: var(--border-radius-outline);
 	border-bottom-left-radius: var(--border-radius-outline);
 	backdrop-filter: blur(3px);
-	background-color: rgba(var(--theme--background), 0.5);
+	background-color: rgba(var(--background-page-rgb), 0.5);
 }
 
 .resize-handlers div {
