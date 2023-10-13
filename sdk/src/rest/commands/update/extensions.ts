@@ -1,5 +1,4 @@
-import type { ApiOutput as Extension } from '@directus/extensions';
-import type { NestedPartial } from '../../../types/index.js';
+import type { NestedPartial, ExtensionItem } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -14,8 +13,8 @@ export const updateExtension =
 	<Schema extends object>(
 		bundle: string | null,
 		name: string,
-		data: NestedPartial<Extension>
-	): RestCommand<Extension, Schema> =>
+		data: NestedPartial<ExtensionItem>
+	): RestCommand<ExtensionItem, Schema> =>
 	() => {
 		if (bundle !== null) throwIfEmpty(bundle, 'Bundle cannot be an empty string');
 		throwIfEmpty(name, 'Name cannot be empty');
