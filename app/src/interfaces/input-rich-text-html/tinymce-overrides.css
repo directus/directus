@@ -1,5 +1,5 @@
 .tox {
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 }
 
 .tox .tox-tbtn {
@@ -230,7 +230,7 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 	background-color: var(--theme--background);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -238,7 +238,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-textarea {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .tox .tox-textfield:focus,
@@ -253,7 +253,7 @@ body.dark .tox .tox-toolbar__overflow {
 	box-sizing: border-box;
 	padding: 4px !important;
 	color: var(--theme--form--field--input--foreground);
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -297,7 +297,7 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--white);
 	font-weight: 500;
 	font-size: 16px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 	line-height: 19px;
 	background-color: var(--theme--primary);
 	border: 2px solid var(--theme--primary);

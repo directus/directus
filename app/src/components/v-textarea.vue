@@ -85,7 +85,7 @@ body {
 	--v-textarea-min-height: none;
 	--v-textarea-max-height: var(--input-height-tall);
 	--v-textarea-height: var(--input-height-tall);
-	--v-textarea-font-family: var(--family-sans-serif);
+	--v-textarea-font-family: var(--theme--font-family-sans-serif);
 }
 </style>
 

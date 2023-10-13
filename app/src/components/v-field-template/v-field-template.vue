@@ -302,7 +302,7 @@ function setContent() {
 	padding: var(--input-padding) 0;
 	overflow: hidden;
 	font-size: 14px;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	white-space: nowrap;
 
 	:deep(span) {

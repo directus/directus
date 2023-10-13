@@ -187,7 +187,7 @@ limitWritable.value = selectedSize;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 	background-color: var(--theme--background);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);

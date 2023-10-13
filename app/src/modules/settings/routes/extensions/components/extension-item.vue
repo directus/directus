@@ -34,7 +34,7 @@ const icon = computed(() => iconMap[props.type]);
 
 <style lang="scss" scoped>
 .monospace {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 
 .nested {

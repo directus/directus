@@ -70,7 +70,7 @@ const collapsed = ref(true);
 }
 
 .group-toggle {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	color: var(--theme--form--field--input--foreground);
 	width: calc(100% + 16px);
 	text-align: left;

@@ -7,7 +7,7 @@
 <style>
 body {
 	--v-list-item-content-padding: 9px 0;
-	--v-list-item-content-font-family: var(--family-sans-serif);
+	--v-list-item-content-font-family: var(--theme--font-family-sans-serif);
 }
 </style>
 

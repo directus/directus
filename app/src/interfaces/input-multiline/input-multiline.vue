@@ -69,15 +69,15 @@ const percentageRemaining = computed(() => {
 <style lang="scss" scoped>
 .v-textarea {
 	&.monospace {
-		--v-textarea-font-family: var(--family-monospace);
+		--v-textarea-font-family: var(--theme--font-family-monospace);
 	}
 
 	&.serif {
-		--v-textarea-font-family: var(--family-serif);
+		--v-textarea-font-family: var(--theme--font-family-serif);
 	}
 
 	&.sans-serif {
-		--v-textarea-font-family: var(--family-sans-serif);
+		--v-textarea-font-family: var(--theme--font-family-sans-serif);
 	}
 }
 

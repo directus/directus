@@ -60,7 +60,7 @@ function emitValue(newValue: string) {
 
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 	--v-icon-color: var(--theme--warning);
 
 	&.hashed {

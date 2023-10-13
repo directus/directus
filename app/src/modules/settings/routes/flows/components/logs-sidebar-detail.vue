@@ -231,7 +231,7 @@ const steps = computed(() => {
 
 .json {
 	background-color: var(--background-subdued);
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	border-radius: var(--border-radius);
 	padding: 20px;
 	margin-top: 20px;
@@ -279,7 +279,7 @@ const steps = computed(() => {
 	}
 
 	.mono {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 		color: var(--theme--foreground-subdued);
 	}
 

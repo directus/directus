@@ -199,15 +199,15 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.sans-serif {
-		font-family: var(--family-sans-serif);
+		font-family: var(--theme--font-family-sans-serif);
 	}
 
 	&.serif {
-		font-family: var(--family-serif);
+		font-family: var(--theme--font-family-serif);
 	}
 
 	&.monospace {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 
 	.v-icon {

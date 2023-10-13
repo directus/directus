@@ -281,7 +281,7 @@ function stepDown() {
 
 <style lang="scss" scoped>
 :global(body) {
-	--v-input-font-family: var(--family-sans-serif);
+	--v-input-font-family: var(--theme--font-family-sans-serif);
 	--v-input-placeholder-color: var(--theme--foreground-subdued);
 	--v-input-box-shadow-color-focus: var(--theme--primary);
 	--v-input-color: var(--theme--foreground);

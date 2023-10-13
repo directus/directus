@@ -134,7 +134,7 @@ async function setupChart() {
 			},
 			type: props.donut ? 'donut' : 'pie',
 			height: size,
-			fontFamily: 'var(--family-sans-serif)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			selection: {
 				enabled: false,

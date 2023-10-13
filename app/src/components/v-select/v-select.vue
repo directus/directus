@@ -372,7 +372,7 @@ function useDisplayValue() {
 
 <style scoped lang="scss">
 :global(body) {
-	--v-select-font-family: var(--family-sans-serif);
+	--v-select-font-family: var(--theme--font-family-sans-serif);
 	--v-select-placeholder-color: var(--theme--foreground-subdued);
 }
 

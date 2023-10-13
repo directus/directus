@@ -123,7 +123,7 @@ function onGroupSortChange(collections: Collection[]) {
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	pointer-events: none;
 }
 

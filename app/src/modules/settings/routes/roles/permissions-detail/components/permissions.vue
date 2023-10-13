@@ -69,7 +69,7 @@ const fields = computed(() => [
 
 	.app-minimal-preview {
 		padding: 16px;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 		background-color: var(--background-subdued);
 		border-radius: var(--border-radius);
 	}

@@ -116,7 +116,7 @@ function setUpChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--family-sans-serif)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
 			foreColor: 'var(--theme--foreground-subdued)',
 		},
 		series: [series],
@@ -190,7 +190,7 @@ function setUpChart() {
 				show: ['both', 'xAxis'].includes(props.showAxisLabels),
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -224,7 +224,7 @@ function setUpChart() {
 						  } as any);
 				},
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -239,7 +239,7 @@ function setUpChart() {
 				width: 8,
 				height: 8,
 			},
-			fontFamily: 'var(--family-sans-serif)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
 			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
 			fontSize: '10px',

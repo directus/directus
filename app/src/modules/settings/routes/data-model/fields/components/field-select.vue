@@ -331,11 +331,11 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .v-input.monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 }
 
 .v-select.monospace {
-	--v-select-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
 }
 
 .v-icon {
@@ -417,7 +417,7 @@ async function onGroupSortChange(fields: Field[]) {
 		margin-bottom: 8px;
 		padding-top: 8px;
 		color: var(--theme--primary);
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 
 		.drag-handle {
 			--v-icon-color: var(--theme--primary);
@@ -473,13 +473,13 @@ async function onGroupSortChange(fields: Field[]) {
 
 			.name {
 				margin-right: 8px;
-				font-family: var(--family-monospace);
+				font-family: var(--theme--font-family-monospace);
 			}
 
 			.interface {
 				display: none;
 				color: var(--theme--foreground-subdued);
-				font-family: var(--family-monospace);
+				font-family: var(--theme--font-family-monospace);
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);
 

@@ -286,7 +286,7 @@ function remove(id: string) {
 
 .to {
 	color: var(--theme--form--field--input--foreground-subdued);
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .enabled .to {

@@ -147,6 +147,6 @@ const addAll = () => {
 }
 
 .raw-field-names {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 </style>

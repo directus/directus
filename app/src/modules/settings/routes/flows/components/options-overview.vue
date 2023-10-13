@@ -52,7 +52,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	}
 
 	dd {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 		flex-basis: 0;
 	}
 

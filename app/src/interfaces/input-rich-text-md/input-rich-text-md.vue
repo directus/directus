@@ -422,7 +422,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 	min-height: 300px;
 	overflow: hidden;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 }

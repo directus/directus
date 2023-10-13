@@ -30,7 +30,7 @@ body {
 	color: ${cssVar('--foreground-normal')};
 	background-color: ${cssVar('--theme--form--field--input--background')};
 	margin: 20px;
-	font-family: ${cssVar('--family-sans-serif')};
+	font-family: ${cssVar('--theme--font-family-sans-serif')};
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
@@ -113,7 +113,7 @@ code {
 	line-height: 24px;
 	font-weight: 500;
 	padding: 2px 4px;
-	font-family: ${cssVar('--family-monospace')}, monospace;
+	font-family: ${cssVar('--theme--font-family-monospace')}, monospace;
 	background-color: ${cssVar('--background-normal')};
 	border-radius: ${cssVar('--border-radius')};
 	overflow-wrap: break-word;
@@ -123,7 +123,7 @@ pre {
 	line-height: 24px;
 	font-weight: 500;
 	padding: 1em;
-	font-family: ${cssVar('--family-monospace')}, monospace;
+	font-family: ${cssVar('--theme--font-family-monospace')}, monospace;
 	background-color: ${cssVar('--background-normal')};
 	border-radius: ${cssVar('--border-radius')};
 	overflow: auto;

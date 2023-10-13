@@ -163,7 +163,7 @@ function emitValue(val: string) {
 	display: flex;
 	justify-content: center;
 	color: var(--theme--primary);
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	cursor: pointer;
@@ -194,7 +194,7 @@ function emitValue(val: string) {
 
 input {
 	color: var(--theme--primary);
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	line-height: 1em;
 	background-color: var(--theme--background);
 	border: none;
@@ -202,7 +202,7 @@ input {
 	&::placeholder {
 		color: var(--theme--form--field--input--foreground-subdued);
 		font-weight: 500;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 }
 

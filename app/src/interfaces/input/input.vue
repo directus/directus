@@ -101,15 +101,15 @@ const inputType = computed(() => {
 <style lang="scss" scoped>
 .v-input {
 	&.monospace {
-		--v-input-font-family: var(--family-monospace);
+		--v-input-font-family: var(--theme--font-family-monospace);
 	}
 
 	&.serif {
-		--v-input-font-family: var(--family-serif);
+		--v-input-font-family: var(--theme--font-family-serif);
 	}
 
 	&.sans-serif {
-		--v-input-font-family: var(--family-sans-serif);
+		--v-input-font-family: var(--theme--font-family-sans-serif);
 	}
 }
 

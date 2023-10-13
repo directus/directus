@@ -215,15 +215,15 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .monospace {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .serif {
-	font-family: var(--family-serif);
+	font-family: var(--theme--font-family-serif);
 }
 
 .sans-serif {
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 }
 
 .uploader-drawer-content {

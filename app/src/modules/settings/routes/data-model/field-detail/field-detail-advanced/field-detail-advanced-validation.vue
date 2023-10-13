@@ -68,8 +68,8 @@ const fields = computed(() => [
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
-	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
 }
 
 .required {

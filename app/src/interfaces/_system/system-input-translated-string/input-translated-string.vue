@@ -221,7 +221,7 @@ function openNewCustomTranslationDrawer() {
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
 		user-select: none;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 
 	:deep(button:not(:disabled):hover) {
