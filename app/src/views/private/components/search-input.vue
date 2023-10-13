@@ -153,7 +153,7 @@ function emitValue() {
 
 <style lang="scss" scoped>
 .search-badge {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--theme--primary);
 	--v-badge-offset-y: 8px;
 	--v-badge-offset-x: 8px;
 }
@@ -177,13 +177,13 @@ function emitValue() {
 		margin-left: 8px;
 
 		&:hover {
-			--v-icon-color: var(--danger);
+			--v-icon-color: var(--theme--danger);
 		}
 	}
 
 	.icon-search,
 	.icon-filter {
-		--v-icon-color-hover: var(--primary);
+		--v-icon-color-hover: var(--theme--primary);
 	}
 
 	.icon-search {
@@ -225,7 +225,7 @@ function emitValue() {
 		width: 200px;
 
 		.icon-filter {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		@media (min-width: 600px) {

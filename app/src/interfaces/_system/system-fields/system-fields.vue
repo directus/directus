@@ -127,7 +127,7 @@ const removeField = (field: string) => {
 
 <style lang="scss" scoped>
 .toggle {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	margin-left: 10px;
 	margin-top: 6px;

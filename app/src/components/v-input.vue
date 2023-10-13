@@ -283,10 +283,10 @@ function stepDown() {
 :global(body) {
 	--v-input-font-family: var(--family-sans-serif);
 	--v-input-placeholder-color: var(--theme--foreground-subdued);
-	--v-input-box-shadow-color-focus: var(--primary);
+	--v-input-box-shadow-color-focus: var(--theme--primary);
 	--v-input-color: var(--theme--foreground);
 	--v-input-background-color: var(--background-input);
-	--v-input-border-color-focus: var(--primary);
+	--v-input-border-color-focus: var(--theme--primary);
 }
 
 .v-input {
@@ -337,7 +337,7 @@ function stepDown() {
 			display: block;
 
 			&:hover:not(.disabled) {
-				--arrow-color: var(--primary);
+				--arrow-color: var(--theme--primary);
 			}
 
 			&:active:not(.disabled) {

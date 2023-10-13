@@ -132,10 +132,10 @@ const inputType = computed(() => {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 </style>

@@ -1,6 +1,6 @@
 .fc {
-	--fc-event-bg-color: var(--primary);
-	--fc-event-border-color: var(--primary);
+	--fc-event-bg-color: var(--theme--primary);
+	--fc-event-border-color: var(--theme--primary);
 	--fc-today-bg-color: var(--primary-10);
 	--fc-button-bg-color: transparent;
 	--fc-button-active-bg-color: transparent;
@@ -29,7 +29,7 @@
 	}
 
 	.fc-daygrid-more-link {
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-weight: 600;
 	}
 
@@ -86,10 +86,10 @@
 		}
 
 		&-active {
-			--fc-button-text-color: var(--primary);
+			--fc-button-text-color: var(--theme--primary);
 
 			&:hover {
-				--fc-button-text-color: var(--primary) !important;
+				--fc-button-text-color: var(--theme--primary) !important;
 			}
 		}
 	}
@@ -119,6 +119,6 @@
 	}
 
 	.fc-event.selected {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }

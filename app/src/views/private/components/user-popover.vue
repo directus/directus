@@ -119,7 +119,7 @@ function navigateToUser() {
 		margin-right: 4px;
 
 		&.active {
-			--v-chip-color: var(--success);
+			--v-chip-color: var(--theme--success);
 			--v-chip-background-color: var(--success-25);
 		}
 
@@ -129,17 +129,17 @@ function navigateToUser() {
 		}
 
 		&.invited {
-			--v-chip-color: var(--primary);
+			--v-chip-color: var(--theme--primary);
 			--v-chip-background-color: var(--primary-25);
 		}
 
 		&.suspended {
-			--v-chip-color: var(--warning);
+			--v-chip-color: var(--theme--warning);
 			--v-chip-background-color: var(--warning-25);
 		}
 
 		&.archived {
-			--v-chip-color: var(--danger);
+			--v-chip-color: var(--theme--danger);
 			--v-chip-background-color: var(--danger-25);
 		}
 	}

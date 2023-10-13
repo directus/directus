@@ -104,11 +104,11 @@ function isLoading(action: string) {
 
 				&:hover {
 					&.all {
-						color: var(--success);
+						color: var(--theme--success);
 					}
 
 					&.none {
-						color: var(--danger);
+						color: var(--theme--danger);
 					}
 				}
 			}

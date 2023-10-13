@@ -262,8 +262,8 @@ function handleClick() {
 		}
 
 		.selector {
-			--v-icon-color: var(--primary);
-			--v-icon-color-hover: var(--primary);
+			--v-icon-color: var(--theme--primary);
+			--v-icon-color-hover: var(--theme--primary);
 
 			opacity: 1;
 		}

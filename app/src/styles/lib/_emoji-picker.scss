@@ -1,6 +1,6 @@
 .emoji-picker__wrapper {
 	.emoji-picker {
-		--category-button-active-color: var(--primary);
+		--category-button-active-color: var(--theme--primary);
 		--font: var(--family-sans-serif);
 		--text-color: var(--theme--foreground);
 		--dark-text-color: var(--theme--foreground);
@@ -37,7 +37,7 @@
 			}
 
 			&:focus {
-				border-color: var(--primary);
+				border-color: var(--theme--primary);
 			}
 
 			&::placeholder {

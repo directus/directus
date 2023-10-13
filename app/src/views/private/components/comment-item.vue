@@ -112,7 +112,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(a) {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .comment-item .content :deep(blockquote) {
@@ -140,7 +140,7 @@ function useEdits() {
 .comment-item .content :deep(mark) {
 	display: inline-block;
 	padding: 2px 4px;
-	color: var(--primary);
+	color: var(--theme--primary);
 	line-height: 1;
 	background: var(--primary-alt);
 	border-radius: var(--border-radius);
@@ -221,7 +221,7 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text:hover span {
 	color: var(--foreground-inverted);
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 }
 
 .comment-item:hover :deep(.comment-header .header-right .time) {
@@ -233,7 +233,7 @@ function useEdits() {
 }
 
 .user-name {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .buttons {

@@ -54,7 +54,7 @@
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	outline: 1px solid var(--primary);
+	outline: 1px solid var(--theme--primary);
 	outline-color: var(--primary-50);
 }
 
@@ -233,7 +233,7 @@
 	display: block;
 	width: 200%;
 	height: 200%;
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 	opacity: 0;
 	content: ' ';
 }

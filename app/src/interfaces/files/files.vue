@@ -444,7 +444,7 @@ const allowDrag = computed(
 	cursor: pointer;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 

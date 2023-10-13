@@ -347,8 +347,8 @@ async function onGroupSortChange(fields: Field[]) {
 	}
 
 	&.unmanaged {
-		--v-icon-color: var(--warning);
-		--v-icon-color-hover: var(--warning);
+		--v-icon-color: var(--theme--warning);
+		--v-icon-color-hover: var(--theme--warning);
 	}
 
 	&.link-icon:hover {
@@ -390,7 +390,7 @@ async function onGroupSortChange(fields: Field[]) {
 		z-index: 1;
 		width: 4px;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		border-radius: 2px;
 		content: '';
 	}
@@ -402,7 +402,7 @@ async function onGroupSortChange(fields: Field[]) {
 		z-index: 1;
 		width: 100%;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		opacity: 0.1;
 		content: '';
 	}
@@ -416,11 +416,11 @@ async function onGroupSortChange(fields: Field[]) {
 		width: 100%;
 		margin-bottom: 8px;
 		padding-top: 8px;
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-family: var(--family-monospace);
 
 		.drag-handle {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 
 			margin-right: 8px;
 		}
@@ -516,12 +516,12 @@ async function onGroupSortChange(fields: Field[]) {
 .required {
 	position: relative;
 	left: -8px;
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .sortable-ghost {
 	border-radius: var(--border-radius);
-	outline: 2px dashed var(--primary);
+	outline: 2px dashed var(--theme--primary);
 
 	> * {
 		opacity: 0;

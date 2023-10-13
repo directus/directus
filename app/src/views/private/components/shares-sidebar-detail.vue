@@ -229,7 +229,7 @@ async function send() {
 @import '@/styles/mixins/form-grid';
 
 .sidebar-detail {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--theme--primary);
 }
 
 .v-progress-linear {

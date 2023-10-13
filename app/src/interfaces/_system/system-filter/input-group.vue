@@ -201,7 +201,7 @@ function setListValue(index: number, newVal: any) {
 		cursor: pointer;
 
 		&:hover {
-			color: var(--danger);
+			color: var(--theme--danger);
 		}
 	}
 }

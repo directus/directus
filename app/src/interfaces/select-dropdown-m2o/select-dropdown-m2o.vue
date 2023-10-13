@@ -269,10 +269,10 @@ function onSelection(selection: (number | string)[] | null) {
 }
 
 .add:hover {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .deselect:hover {
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 }
 </style>

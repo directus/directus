@@ -277,7 +277,7 @@ function pointerLeave() {
 				<display-color
 					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
 					class="status-dot"
-					:value="flowStatus === 'active' ? 'var(--primary)' : 'var(--theme--foreground-subdued)'"
+					:value="flowStatus === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 				/>
 
 				<v-select
@@ -307,7 +307,7 @@ function pointerLeave() {
 	padding: 4px;
 
 	:deep(.header .name) {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	.flow-status-select {
@@ -329,8 +329,8 @@ function pointerLeave() {
 	}
 
 	&.trigger {
-		border-color: var(--primary);
-		box-shadow: 0 0 0 1px var(--primary);
+		border-color: var(--theme--primary);
+		box-shadow: 0 0 0 1px var(--theme--primary);
 		transition: var(--fast) var(--transition);
 		transition-property: border-color, box-shadow;
 
@@ -345,7 +345,7 @@ function pointerLeave() {
 			border-radius: 4px;
 			z-index: -1;
 			opacity: 0.2;
-			box-shadow: 0 0 0 10px var(--primary);
+			box-shadow: 0 0 0 10px var(--theme--primary);
 
 			animation-name: floating;
 			animation-duration: 3s;
@@ -353,15 +353,15 @@ function pointerLeave() {
 			animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
 			@keyframes floating {
 				0% {
-					box-shadow: 0 0 0 10px var(--primary);
+					box-shadow: 0 0 0 10px var(--theme--primary);
 					opacity: 0.2;
 				}
 				50% {
-					box-shadow: 0 0 0 8px var(--primary);
+					box-shadow: 0 0 0 8px var(--theme--primary);
 					opacity: 0.3;
 				}
 				100% {
-					box-shadow: 0 0 0 10px var(--primary);
+					box-shadow: 0 0 0 10px var(--theme--primary);
 					opacity: 0.2;
 				}
 			}
@@ -415,7 +415,7 @@ function pointerLeave() {
 		background-color: var(--theme--background);
 		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
 
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	.add-resolve,
@@ -424,7 +424,7 @@ function pointerLeave() {
 		left: var(--resolve-left);
 
 		.button-hint {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 
@@ -433,10 +433,10 @@ function pointerLeave() {
 		top: var(--reject-top);
 		left: var(--reject-left);
 
-		--v-icon-color: var(--secondary);
+		--v-icon-color: var(--theme--secondary);
 
 		.button-hint {
-			--v-icon-color: var(--secondary);
+			--v-icon-color: var(--theme--secondary);
 		}
 	}
 
@@ -448,16 +448,16 @@ function pointerLeave() {
 	&.reject {
 		:deep(.header) {
 			.v-icon {
-				color: var(--secondary);
+				color: var(--theme--secondary);
 			}
 
 			.name {
-				color: var(--secondary);
+				color: var(--theme--secondary);
 			}
 		}
 
 		.attachment {
-			--v-icon-color: var(--secondary);
+			--v-icon-color: var(--theme--secondary);
 		}
 	}
 
@@ -497,7 +497,7 @@ function pointerLeave() {
 	width: 100%;
 	height: 100%;
 
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 
 	.v-error {
 		margin-top: 8px;

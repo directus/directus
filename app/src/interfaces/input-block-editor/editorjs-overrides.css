@@ -23,11 +23,11 @@
 
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
 .codex-editor .ce-settings .cdx-settings-button--active svg {
-	fill: var(--primary) !important;
+	fill: var(--theme--primary) !important;
 }
 
 .codex-editor .cdx-settings-button--active {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .codex-editor .ce-toolbar .ce-toolbox__button svg,
@@ -37,7 +37,7 @@
 
 .codex-editor .cdx-loader::before {
 	border: 3px solid var(--background-normal-alt);
-	border-left-color: var(--primary);
+	border-left-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-search-field {
@@ -72,7 +72,7 @@
 }
 
 .codex-editor .ce-popover-item--active {
-	color: var(--primary);
+	color: var(--theme--primary);
 	background: var(--v-list-background-color-active);
 }
 
@@ -160,7 +160,7 @@
 }
 
 .codex-editor .ce-toolbox__button.ce-toolbox__button--active svg {
-	fill: var(--primary);
+	fill: var(--theme--primary);
 }
 
 .codex-editor .ce-conversion-toolbar,
@@ -183,7 +183,7 @@
 .codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {
 	--webkit-box-shadow: unset;
 
-	color: var(--primary);
+	color: var(--theme--primary);
 	background-color: var(--v-list-item-background-color-hover) !important;
 	box-shadow: unset;
 }
@@ -231,11 +231,11 @@
 
 .codex-editor .cdx-input:focus,
 .codex-editor .ce-code__textarea:focus {
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .codex-editor .ce-inline-tool-input {
-	color: var(--primary);
+	color: var(--theme--primary);
 	background: var(--background-normal);
 	border-top-color: var(--border-normal);
 }
@@ -290,7 +290,7 @@
 
 .codex-editor .image-tool {
 	--bg-color: var(--background-normal-alt);
-	--front-color: var(--primary);
+	--front-color: var(--theme--primary);
 	--border-color: var(--border-normal);
 }
 
@@ -307,7 +307,7 @@
 }
 
 .codex-editor .cdx-personality__link {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-size: 0.72em;
 }
 
@@ -326,12 +326,12 @@
 
 /* Ripple effect when enabling a checkbox */
 .codex-editor .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check::before {
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check {
-	background: var(--primary);
-	border-color: var(--primary);
+	background: var(--theme--primary);
+	border-color: var(--theme--primary);
 }
 
 /* Checkbox color when hovered. We have to use !important here because the specificity of the default styling is higher */
@@ -537,7 +537,7 @@
 }
 
 .codex-editor .ce-block a {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .codex-editor .ce-block a.btn {
@@ -629,5 +629,5 @@
 }
 
 .codex-editor .ce-inline-tool--active {
-	color: var(--primary);
+	color: var(--theme--primary);
 }

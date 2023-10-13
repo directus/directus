@@ -119,9 +119,9 @@ const formattedTime = computed(() => {
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .item-info {
@@ -135,7 +135,7 @@ const formattedTime = computed(() => {
 	font-size: 12px;
 
 	&.no-left {
-		color: var(--danger);
+		color: var(--theme--danger);
 	}
 }
 
@@ -146,7 +146,7 @@ const formattedTime = computed(() => {
 	text-transform: uppercase;
 
 	&.expired {
-		color: var(--warning);
+		color: var(--theme--warning);
 	}
 
 	&.upcoming {

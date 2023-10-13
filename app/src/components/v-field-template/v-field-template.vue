@@ -319,7 +319,7 @@ function setContent() {
 :deep(button) {
 	margin: -1px 4px 0;
 	padding: 2px 4px 0;
-	color: var(--primary);
+	color: var(--theme--primary);
 	background-color: var(--primary-alt);
 	border-radius: var(--border-radius);
 	transition: var(--fast) var(--transition);
@@ -329,7 +329,7 @@ function setContent() {
 
 :deep(button:not(:disabled):hover) {
 	color: var(--white);
-	background-color: var(--danger);
+	background-color: var(--theme--danger);
 }
 
 .placeholder {

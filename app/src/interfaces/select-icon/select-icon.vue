@@ -90,7 +90,7 @@ function setIcon(icon: string | null) {
 
 <style lang="scss" scoped>
 .v-input.has-value {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--theme--primary);
 
 	&:focus-within {
 		--v-input-placeholder-color: var(--theme--foreground-subdued);
@@ -103,7 +103,7 @@ function setIcon(icon: string | null) {
 	--v-icon-color-hover: var(--theme--foreground);
 
 	.v-icon.active {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	.v-divider {

@@ -276,13 +276,13 @@ const arrows = computed(() => {
 
 		path {
 			fill: transparent;
-			stroke: var(--primary);
+			stroke: var(--theme--primary);
 			stroke-width: 2px;
 			transition: stroke var(--fast) var(--transition);
 			transform: translateX(0);
 
 			&.reject {
-				stroke: var(--secondary);
+				stroke: var(--theme--secondary);
 			}
 
 			&.subdued {

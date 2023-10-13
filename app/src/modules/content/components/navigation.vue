@@ -84,7 +84,7 @@ const hasHiddenCollections = computed(
 	.v-button {
 		--v-button-color: var(--theme--foreground-subdued);
 		--v-button-background-color: var(--theme--foreground-subdued);
-		--v-button-background-color-hover: var(--primary);
+		--v-button-background-color-hover: var(--theme--primary);
 	}
 }
 

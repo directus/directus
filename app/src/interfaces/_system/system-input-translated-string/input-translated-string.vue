@@ -215,7 +215,7 @@ function openNewCustomTranslationDrawer() {
 	:deep(button) {
 		margin-right: auto;
 		padding: 2px 8px 0;
-		color: var(--primary);
+		color: var(--theme--primary);
 		background-color: var(--primary-alt);
 		border-radius: var(--border-radius);
 		transition: var(--fast) var(--transition);
@@ -226,14 +226,14 @@ function openNewCustomTranslationDrawer() {
 
 	:deep(button:not(:disabled):hover) {
 		color: var(--white);
-		background-color: var(--danger);
+		background-color: var(--theme--danger);
 	}
 
 	.translate-icon {
 		&:hover,
 		&.active {
-			--v-icon-color-hover: var(--primary);
-			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--theme--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 }
@@ -266,16 +266,16 @@ function openNewCustomTranslationDrawer() {
 		flex-basis: auto;
 		flex-grow: 0;
 		flex-shrink: 1;
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	&.selected {
 		--v-list-item-color-active: var(--foreground-inverted);
-		--v-list-item-background-color-active: var(--primary);
+		--v-list-item-background-color-active: var(--theme--primary);
 		--v-list-item-color-hover: var(--foreground-inverted);
-		--v-list-item-background-color-hover: var(--primary);
+		--v-list-item-background-color-hover: var(--theme--primary);
 
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		color: var(--foreground-inverted);
 
 		.v-list-item-icon {
@@ -292,10 +292,10 @@ function openNewCustomTranslationDrawer() {
 .new-custom-translation {
 	--v-list-item-color-hover: var(--primary-125);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 
 	.v-list-item-icon {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 </style>

@@ -203,7 +203,7 @@ function useReset() {
 
 	.instant-save {
 		margin-left: 4px;
-		color: var(--warning);
+		color: var(--theme--warning);
 	}
 }
 
@@ -232,7 +232,7 @@ function useReset() {
 	text-align: center;
 
 	button {
-		color: var(--primary) !important;
+		color: var(--theme--primary) !important;
 		transition: color var(--fast) var(--transition);
 	}
 

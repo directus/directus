@@ -112,7 +112,7 @@ function toggleInput(): void {
 
 <style>
 body {
-	--v-checkbox-color: var(--primary);
+	--v-checkbox-color: var(--theme--primary);
 	--v-checkbox-unchecked-color: var(--theme--foreground-subdued);
 }
 </style>
@@ -122,7 +122,7 @@ body {
 
 .v-checkbox {
 	--v-icon-color: var(--v-checkbox-unchecked-color);
-	--v-icon-color-hover: var(--primary);
+	--v-icon-color-hover: var(--theme--primary);
 
 	position: relative;
 	display: flex;
@@ -200,7 +200,7 @@ body {
 
 	&:not(:disabled):hover {
 		.checkbox {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		&.block {

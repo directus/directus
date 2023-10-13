@@ -132,7 +132,7 @@ async function save() {
 
 <style lang="scss" scoped>
 :deep(.required-mark) {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-input.search {

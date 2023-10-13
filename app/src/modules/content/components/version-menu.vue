@@ -389,7 +389,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-item {
 	--v-list-item-color-active: var(--foreground-inverted);
-	--v-list-item-background-color-active: var(--primary);
+	--v-list-item-background-color-active: var(--theme--primary);
 }
 
 .version-button {
@@ -409,7 +409,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 	}
 
 	&.main {
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		color: var(--white);
 
 		&:hover {
@@ -419,7 +419,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 }
 
 .version-delete {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
 }
 </style>

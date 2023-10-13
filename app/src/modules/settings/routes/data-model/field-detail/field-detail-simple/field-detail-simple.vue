@@ -256,7 +256,7 @@ function toggleInterface(id: string) {
 	display: block;
 	padding: 8px 16px;
 	background-color: var(--theme--background);
-	border: 2px solid var(--primary);
+	border: 2px solid var(--theme--primary);
 	border-radius: var(--border-radius);
 	box-shadow: 0 0 8px var(--primary-75);
 }
@@ -267,7 +267,7 @@ function toggleInterface(id: string) {
 
 .interface.active .preview {
 	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .interface.gray .preview {

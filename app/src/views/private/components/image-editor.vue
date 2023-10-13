@@ -533,7 +533,7 @@ function setAspectRatio() {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .toolbar-button {

@@ -217,7 +217,7 @@ function getSystemFields() {
 							text: '$t:published',
 							value: 'published',
 							foreground: '#FFFFFF',
-							background: 'var(--primary)',
+							background: 'var(--theme--primary)',
 						},
 						{
 							text: '$t:draft',
@@ -229,7 +229,7 @@ function getSystemFields() {
 							text: '$t:archived',
 							value: 'archived',
 							foreground: '#FFFFFF',
-							background: 'var(--warning)',
+							background: 'var(--theme--warning)',
 						},
 					],
 				},
@@ -525,7 +525,7 @@ function getSystemRelations() {
 }
 
 .required {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .content {

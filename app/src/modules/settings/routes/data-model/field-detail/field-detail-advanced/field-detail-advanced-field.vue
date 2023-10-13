@@ -108,7 +108,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-notice {

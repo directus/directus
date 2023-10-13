@@ -127,15 +127,15 @@ body {
 
 	&.colorful {
 		&.danger .inner {
-			background-color: var(--danger);
+			background-color: var(--theme--danger);
 		}
 
 		&.warning .inner {
-			background-color: var(--warning);
+			background-color: var(--theme--warning);
 		}
 
 		&.success .inner {
-			background-color: var(--success);
+			background-color: var(--theme--success);
 		}
 	}
 }

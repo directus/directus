@@ -175,7 +175,7 @@ function discardAndLeave() {
 
 	.instant-save {
 		margin-left: 4px;
-		color: var(--warning);
+		color: var(--theme--warning);
 	}
 }
 
@@ -192,13 +192,13 @@ function discardAndLeave() {
 
 .header-icon {
 	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
+	--v-button-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 </style>

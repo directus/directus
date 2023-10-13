@@ -32,7 +32,7 @@ const internalCurrentTab = useSync(props, 'currentTab', emit);
 	border-radius: 50%;
 
 	&.on {
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 	}
 }
 </style>

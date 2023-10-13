@@ -98,7 +98,7 @@ const { t } = useI18n();
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		margin-left: 3px;
 
@@ -140,7 +140,7 @@ const { t } = useI18n();
 		}
 
 		&.active {
-			color: var(--primary);
+			color: var(--theme--primary);
 			background-color: var(--primary-alt);
 			border-radius: 50%;
 		}

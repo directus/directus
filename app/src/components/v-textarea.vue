@@ -142,8 +142,8 @@ body {
 
 	&:focus:not(.disabled),
 	&:focus-within:not(.disabled) {
-		border-color: var(--primary);
-		box-shadow: 0 0 16px -8px var(--primary);
+		border-color: var(--theme--primary);
+		box-shadow: 0 0 16px -8px var(--theme--primary);
 	}
 
 	textarea {

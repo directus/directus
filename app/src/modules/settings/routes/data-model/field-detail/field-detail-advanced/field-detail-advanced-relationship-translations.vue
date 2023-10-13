@@ -195,11 +195,11 @@ const relatedPrimaryKey = computed(
 	margin-top: 48px;
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		transform: translateX(-50%);

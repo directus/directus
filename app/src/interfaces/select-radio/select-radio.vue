@@ -24,7 +24,7 @@ const props = withDefaults(
 	{
 		iconOn: 'radio_button_checked',
 		iconOff: 'radio_button_unchecked',
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
 	}
 );
 

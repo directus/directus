@@ -285,12 +285,12 @@ function useTab() {
 	&.main {
 		border-radius: var(--border-radius) var(--border-radius) 0 0;
 		&.active {
-			color: var(--secondary);
+			color: var(--theme--secondary);
 			background-color: var(--secondary-alt);
 
 			.version {
-				color: var(--secondary);
-				border-color: var(--secondary);
+				color: var(--theme--secondary);
+				border-color: var(--theme--secondary);
 				background-color: var(--secondary-25);
 			}
 		}
@@ -299,12 +299,12 @@ function useTab() {
 	&.current {
 		border-radius: 0 0 var(--border-radius) var(--border-radius);
 		&.active {
-			color: var(--primary);
+			color: var(--theme--primary);
 			background-color: var(--primary-alt);
 
 			.version {
-				color: var(--primary);
-				border-color: var(--primary);
+				color: var(--theme--primary);
+				border-color: var(--theme--primary);
 				background-color: var(--primary-25);
 			}
 		}

@@ -23,7 +23,7 @@ const props = withDefaults(
 	{
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
 		itemsShown: 8,
 	}
 );

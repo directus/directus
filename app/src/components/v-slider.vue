@@ -89,8 +89,8 @@ function onInput(event: Event) {
 <style>
 body {
 	--v-slider-color: var(--border-normal);
-	--v-slider-thumb-color: var(--primary);
-	--v-slider-fill-color: var(--primary);
+	--v-slider-thumb-color: var(--theme--primary);
+	--v-slider-fill-color: var(--theme--primary);
 }
 </style>
 
@@ -231,7 +231,7 @@ body {
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 			border-radius: var(--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;

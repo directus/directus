@@ -101,8 +101,8 @@
 }
 
 .wysiwyg:not(.disabled) .tox-tinymce.focus {
-	border-color: var(--primary) !important;
-	box-shadow: 0 0 16px -8px var(--primary) !important;
+	border-color: var(--theme--primary) !important;
+	box-shadow: 0 0 16px -8px var(--theme--primary) !important;
 }
 
 .tox .tox-toolbar,
@@ -284,7 +284,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .tox .tox-button {
@@ -299,10 +299,10 @@ body.dark .tox .tox-toolbar__overflow {
 	font-size: 16px;
 	font-family: var(--family-sans-serif);
 	line-height: 19px;
-	background-color: var(--primary);
-	border: 2px solid var(--primary);
+	background-color: var(--theme--primary);
+	border: 2px solid var(--theme--primary);
 	border: none;
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 	border-radius: var(--border-radius);
 	cursor: pointer;
 	-webkit-transition: var(--fast) var(--transition);
@@ -311,8 +311,8 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-button:hover:not(:disabled) {
-	background-color: var(--primary);
-	border-color: var(--primary);
+	background-color: var(--theme--primary);
+	border-color: var(--theme--primary);
 }
 
 .tox .tox-button--secondary {
@@ -394,7 +394,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-insert-table-picker .tox-insert-table-picker__selected {
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .tox .tox-pop.tox-pop--top::after {

@@ -34,7 +34,7 @@ const props = withDefaults(
 		showMarker: true,
 		curveType: 'smooth',
 		decimals: 2,
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
 	}
 );
 
@@ -94,7 +94,7 @@ function setUpChart() {
 	const colors =
 		props.color && props.color.startsWith('var(--')
 			? cssVar(props.color.substring(4, props.color.length - 1))
-			: props.color ?? 'var(--primary)';
+			: props.color ?? 'var(--theme--primary)';
 
 	chart.value = new ApexCharts(chartEl.value, {
 		colors: [colors],

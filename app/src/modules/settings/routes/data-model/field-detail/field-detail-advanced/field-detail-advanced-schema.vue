@@ -473,7 +473,7 @@ function useOnUpdate() {
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .precision-scale {

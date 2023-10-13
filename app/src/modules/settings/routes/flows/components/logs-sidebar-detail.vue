@@ -107,7 +107,7 @@ const steps = computed(() => {
 			<div class="scroll-container">
 				<div v-for="revision in group.revisions" :key="revision.id" class="log">
 					<button @click="previewing = revision">
-						<v-icon name="play_arrow" color="var(--primary)" small />
+						<v-icon name="play_arrow" color="var(--theme--primary)" small />
 						{{ revision.timeRelative }}
 					</button>
 				</div>
@@ -290,16 +290,16 @@ const steps = computed(() => {
 		z-index: 2;
 		width: 12px;
 		height: 12px;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		border: 2px solid var(--theme--background);
 		border-radius: 8px;
 
 		&.resolve {
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 		}
 
 		&.reject {
-			background-color: var(--secondary);
+			background-color: var(--theme--secondary);
 		}
 	}
 }

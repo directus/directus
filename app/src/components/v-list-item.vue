@@ -230,7 +230,7 @@ body {
 		&:hover,
 		&.active {
 			:deep(.v-text-overflow) {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 		}
 	}
@@ -273,7 +273,7 @@ body {
 		}
 
 		&.sortable-chosen {
-			border: var(--border-width) solid var(--primary) !important;
+			border: var(--border-width) solid var(--theme--primary) !important;
 		}
 
 		&.sortable-ghost {

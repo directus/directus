@@ -334,14 +334,14 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--primary);
 	}
 
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0px;
 		padding: 2px 4px;
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
 		vertical-align: -2px;

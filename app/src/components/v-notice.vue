@@ -85,30 +85,30 @@ const iconName = computed(() => {
 }
 
 .info {
-	--v-notice-icon-color: var(--primary);
-	--v-notice-border-color: var(--primary);
+	--v-notice-icon-color: var(--theme--primary);
+	--v-notice-border-color: var(--theme--primary);
 	--v-notice-color: var(--theme--foreground);
 	--v-notice-background-color: var(--background-normal);
 }
 
 .success {
-	--v-notice-icon-color: var(--success);
-	--v-notice-border-color: var(--success);
-	--v-notice-color: var(--success);
+	--v-notice-icon-color: var(--theme--success);
+	--v-notice-border-color: var(--theme--success);
+	--v-notice-color: var(--theme--success);
 	--v-notice-background-color: var(--background-normal);
 }
 
 .warning {
-	--v-notice-icon-color: var(--warning);
-	--v-notice-border-color: var(--warning);
+	--v-notice-icon-color: var(--theme--warning);
+	--v-notice-border-color: var(--theme--warning);
 	--v-notice-color: var(--theme--foreground);
 	--v-notice-background-color: var(--background-normal);
 }
 
 .danger {
-	--v-notice-icon-color: var(--danger);
-	--v-notice-border-color: var(--danger);
-	--v-notice-color: var(--danger);
+	--v-notice-icon-color: var(--theme--danger);
+	--v-notice-border-color: var(--theme--danger);
+	--v-notice-color: var(--theme--danger);
 	--v-notice-background-color: var(--background-normal);
 }
 

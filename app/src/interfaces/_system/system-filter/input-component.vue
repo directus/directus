@@ -162,7 +162,7 @@ function emitValue(val: string) {
 .preview {
 	display: flex;
 	justify-content: center;
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-family: var(--family-monospace);
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -193,7 +193,7 @@ function emitValue(val: string) {
 }
 
 input {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-family: var(--family-monospace);
 	line-height: 1em;
 	background-color: var(--theme--background);

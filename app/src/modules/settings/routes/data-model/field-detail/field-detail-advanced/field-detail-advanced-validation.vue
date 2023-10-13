@@ -73,7 +73,7 @@ const fields = computed(() => [
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-notice {

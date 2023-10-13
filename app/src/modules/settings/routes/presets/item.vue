@@ -587,13 +587,13 @@ function discardAndLeave() {
 
 .header-icon {
 	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
+	--v-button-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
@@ -616,9 +616,9 @@ function discardAndLeave() {
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--primary);
-	--sidebar-detail-color: var(--primary);
-	--sidebar-detail-color-active: var(--primary);
+	--sidebar-detail-icon-color: var(--theme--primary);
+	--sidebar-detail-color: var(--theme--primary);
+	--sidebar-detail-color-active: var(--theme--primary);
 	--form-vertical-gap: 24px;
 
 	display: contents;

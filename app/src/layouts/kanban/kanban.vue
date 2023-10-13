@@ -292,13 +292,13 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					box-shadow: 0px 2px 4px 0px rgba(var(--card-shadow-color), 0.1);
 
 					&:hover .title {
-						// color: var(--primary);
+						// color: var(--theme--primary);
 						text-decoration: underline;
 					}
 				}
 
 				.title {
-					color: var(--primary);
+					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
 					line-height: 1.25;
@@ -395,18 +395,18 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 		}
 
 		&:hover {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 
 			.v-icon {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 		}
 	}
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 </style>

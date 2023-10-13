@@ -165,7 +165,7 @@ const unsortableJunctionFields = computed(() => {
 	margin-top: 48px;
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		bottom: 17px;
@@ -175,7 +175,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-input.matches {
-	--v-input-color: var(--primary);
+	--v-input-color: var(--theme--primary);
 }
 
 .v-list {
@@ -198,7 +198,7 @@ const unsortableJunctionFields = computed(() => {
 	margin-top: 48px;
 
 	.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		bottom: 17px;

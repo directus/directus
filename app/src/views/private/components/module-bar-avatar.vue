@@ -163,7 +163,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 		&:hover {
 			.v-icon {
-				--v-icon-color: var(--primary);
+				--v-icon-color: var(--theme--primary);
 			}
 		}
 	}

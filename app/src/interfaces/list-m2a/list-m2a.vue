@@ -478,7 +478,7 @@ const allowDrag = computed(
 
 .v-list-item {
 	.collection {
-		color: var(--primary);
+		color: var(--theme--primary);
 		white-space: nowrap;
 		margin-right: 1ch;
 	}
@@ -494,7 +494,7 @@ const allowDrag = computed(
 		}
 
 		.collection {
-			color: var(--danger);
+			color: var(--theme--danger);
 		}
 	}
 }
@@ -525,20 +525,20 @@ const allowDrag = computed(
 	cursor: default;
 
 	.invalid-icon {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 
 .clear-icon {
 	--v-icon-color: var(--theme--foreground-subdued);
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color-hover: var(--theme--danger);
 
 	margin-right: 8px;
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--danger);
+		color: var(--theme--danger);
 	}
 }
 

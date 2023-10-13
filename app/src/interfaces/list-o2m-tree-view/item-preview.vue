@@ -74,17 +74,17 @@ div.preview {
 		}
 
 		.deselect {
-			--v-icon-color-hover: var(--danger);
+			--v-icon-color-hover: var(--theme--danger);
 		}
 	}
 
 	&.deleted {
-		color: var(--danger);
+		color: var(--theme--danger);
 		background-color: var(--danger-10);
 
 		.actions {
 			--v-icon-color: var(--danger-50);
-			--v-icon-color-hover: var(--danger);
+			--v-icon-color-hover: var(--theme--danger);
 		}
 	}
 }

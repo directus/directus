@@ -157,7 +157,7 @@ watch(
 		}
 
 		.cm-variable-2 {
-			color: var(--secondary);
+			color: var(--theme--secondary);
 		}
 	}
 

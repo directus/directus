@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 	data: () => [],
 	strokeWidth: 20,
 	roundedStroke: false,
-	color: 'var(--primary)',
+	color: 'var(--theme--primary)',
 	max: 100,
 	conditionalFill: () => [],
 	size: 'full',
@@ -92,7 +92,7 @@ const dashOffset = computed(() => {
 });
 
 const conditionalColor = computed(() => {
-	const defaultColor = props.color ?? 'var(--primary)';
+	const defaultColor = props.color ?? 'var(--theme--primary)';
 
 	if (!unref(percent) || props.conditionalFill.length === 0) {
 		return defaultColor;

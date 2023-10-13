@@ -119,7 +119,7 @@ const availableCollections = computed(() => {
 	}
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 }
 </style>

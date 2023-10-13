@@ -412,7 +412,7 @@ const secondFields = computed(() => {
 
 	.v-form {
 		--form-vertical-gap: 32px;
-		--v-chip-color: var(--primary);
+		--v-chip-color: var(--theme--primary);
 		--v-chip-background-color: var(--primary-alt);
 
 		margin-top: 32px;
@@ -426,8 +426,8 @@ const secondFields = computed(() => {
 
 	.secondary {
 		.v-form {
-			--primary: var(--secondary);
-			--v-chip-color: var(--secondary);
+			--primary: var(--theme--secondary);
+			--v-chip-color: var(--theme--secondary);
 			--v-chip-background-color: var(--secondary-alt);
 		}
 

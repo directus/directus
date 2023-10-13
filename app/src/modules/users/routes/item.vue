@@ -437,7 +437,7 @@ function revert(values: Record<string, any>) {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
@@ -517,9 +517,9 @@ function revert(values: Record<string, any>) {
 			margin-top: 4px;
 
 			&.active {
-				--v-chip-color: var(--primary);
+				--v-chip-color: var(--theme--primary);
 				--v-chip-background-color: var(--primary-25);
-				--v-chip-color-hover: var(--primary);
+				--v-chip-color-hover: var(--theme--primary);
 				--v-chip-background-color-hover: var(--primary-25);
 			}
 		}

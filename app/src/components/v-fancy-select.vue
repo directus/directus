@@ -136,16 +136,16 @@ function toggle(item: Record<string, any>) {
 
 	&.active {
 		z-index: 2;
-		color: var(--primary);
+		color: var(--theme--primary);
 		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		border-color: var(--theme--primary);
 
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		&:hover {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 		}
 	}
 }

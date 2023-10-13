@@ -174,6 +174,6 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 </style>

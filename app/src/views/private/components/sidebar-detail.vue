@@ -51,7 +51,7 @@ const { sidebarOpen } = toRefs(appStore);
 body {
 	--sidebar-detail-icon-color: var(--theme--foreground-accent);
 	--sidebar-detail-color: var(--theme--foreground-accent);
-	--sidebar-detail-color-active: var(--primary);
+	--sidebar-detail-color-active: var(--theme--primary);
 }
 </style>
 
@@ -60,7 +60,7 @@ body {
 	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
 	--v-badge-border-color: var(--background-normal-alt);
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--theme--primary);
 	--v-badge-color: var(--background-normal);
 
 	display: contents;
@@ -155,7 +155,7 @@ body {
 		}
 
 		:deep(.page-description a) {
-			color: var(--primary);
+			color: var(--theme--primary);
 		}
 	}
 

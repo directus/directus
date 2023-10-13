@@ -404,7 +404,7 @@ const refreshInterval = computed({
 	--v-button-background-color: var(--theme--foreground-subdued);
 	--v-button-background-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--foreground-inverted);
-	--v-button-background-color-active: var(--primary);
+	--v-button-background-color-active: var(--theme--primary);
 }
 
 .header-icon {
@@ -442,7 +442,7 @@ const refreshInterval = computed({
 	width: 100%;
 	height: 100%;
 
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 
 	.v-error {
 		margin-top: 8px;

@@ -235,7 +235,7 @@ function saveOperation() {
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
 	margin-top: -12px;
 	margin-left: -4px;
@@ -244,7 +244,7 @@ function saveOperation() {
 .error {
 	display: block;
 	margin-top: 4px;
-	color: var(--danger);
+	color: var(--theme--danger);
 	font-style: italic;
 }
 </style>

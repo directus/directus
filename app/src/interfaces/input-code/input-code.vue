@@ -310,7 +310,7 @@ function fillTemplate() {
 	top: 10px;
 	right: 10px;
 	z-index: 4;
-	color: var(--primary);
+	color: var(--theme--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
 	user-select: none;

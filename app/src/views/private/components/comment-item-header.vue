@@ -186,9 +186,9 @@ function useDelete() {
 
 .action-delete {
 	--v-button-background-color: var(--danger-25);
-	--v-button-color: var(--danger);
+	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-50);
-	--v-button-color-hover: var(--danger);
+	--v-button-color-hover: var(--theme--danger);
 }
 
 .dot {
@@ -197,7 +197,7 @@ function useDelete() {
 	height: 6px;
 	margin-right: 4px;
 	vertical-align: middle;
-	background-color: var(--warning);
+	background-color: var(--theme--warning);
 	border-radius: 3px;
 }
 </style>

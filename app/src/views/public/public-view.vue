@@ -22,7 +22,7 @@ const serverStore = useServerStore();
 const { info } = storeToRefs(serverStore);
 
 const colors = computed(() => {
-	const primary = info.value?.project?.project_color || 'var(--primary)';
+	const primary = info.value?.project?.project_color || 'var(--theme--primary)';
 	const primaryHex = primary.startsWith('var(--') ? cssVar(primary.substring(4, primary.length - 1)) : primary;
 	const isDark = getAppearance() === 'dark';
 	const primaryColor = Color(primaryHex);

@@ -101,6 +101,6 @@ const percentageRemaining = computed(() => {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 </style>

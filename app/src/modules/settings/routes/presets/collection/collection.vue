@@ -274,13 +274,13 @@ function usePermissions() {
 <style lang="scss" scoped>
 .header-icon {
 	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
+	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 </style>

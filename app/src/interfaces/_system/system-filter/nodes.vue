@@ -395,7 +395,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		.key {
 			margin-right: 4px;
 			padding: 2px 6px;
-			color: var(--primary);
+			color: var(--theme--primary);
 			background-color: var(--primary-alt);
 			border-radius: 6px;
 			cursor: pointer;
@@ -408,7 +408,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		}
 
 		&.or .key {
-			color: var(--secondary);
+			color: var(--theme--secondary);
 			background-color: var(--secondary-alt);
 
 			&:hover {
@@ -478,7 +478,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 	.delete {
 		--v-icon-color: var(--theme--foreground-subdued);
-		--v-icon-color-hover: var(--danger);
+		--v-icon-color-hover: var(--theme--danger);
 
 		position: absolute;
 		top: 50%;
@@ -532,7 +532,7 @@ function isExistingField(node: Record<string, any>): boolean {
 .group :deep(.sortable-ghost) {
 	.node .header {
 		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		border-color: var(--theme--primary);
 
 		> * {
 			opacity: 0;

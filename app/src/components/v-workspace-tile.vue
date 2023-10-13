@@ -59,7 +59,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
 	name: undefined,
 	icon: 'space_dashboard',
-	color: 'var(--primary)',
+	color: 'var(--theme--primary)',
 	note: undefined,
 	showHeader: true,
 	minWidth: 8,
@@ -362,8 +362,8 @@ function useDragDrop() {
 
 		&.dragging {
 			z-index: 3 !important;
-			border-color: var(--primary);
-			box-shadow: 0 0 0 1px var(--primary);
+			border-color: var(--theme--primary);
+			box-shadow: 0 0 0 1px var(--theme--primary);
 		}
 
 		&.dragging .resize-details {
@@ -448,9 +448,9 @@ function useDragDrop() {
 }
 
 .delete-action {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .edit-actions {

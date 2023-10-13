@@ -142,7 +142,7 @@ function toPage(page: number) {
 
 <style scoped>
 :global(body) {
-	--v-pagination-active-color: var(--primary);
+	--v-pagination-active-color: var(--theme--primary);
 }
 
 .v-pagination {
@@ -194,9 +194,9 @@ function toPage(page: number) {
 }
 
 .v-button.active {
-	--v-button-background-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--theme--primary);
 	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-background-color: var(--primary);
+	--v-button-background-color: var(--theme--primary);
 	--v-button-color: var(--foreground-inverted);
 }
 </style>

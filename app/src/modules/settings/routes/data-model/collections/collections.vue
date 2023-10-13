@@ -304,9 +304,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 .header-icon {
 	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
+	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .collection-item.hidden {
@@ -325,9 +325,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 .draggable-list :deep(.sortable-ghost) {
 	.v-list-item {
 		--v-list-item-background-color: var(--primary-alt);
-		--v-list-item-border-color: var(--primary);
+		--v-list-item-border-color: var(--theme--primary);
 		--v-list-item-background-color-hover: var(--primary-alt);
-		--v-list-item-border-color-hover: var(--primary);
+		--v-list-item-border-color-hover: var(--theme--primary);
 
 		> * {
 			opacity: 0;

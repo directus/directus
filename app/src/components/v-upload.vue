@@ -371,9 +371,9 @@ function openFileBrowser() {
 }
 
 .dragging {
-	color: var(--primary);
+	color: var(--theme--primary);
 	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 
 	* {
 		pointer-events: none;
@@ -391,8 +391,8 @@ function openFileBrowser() {
 	--v-progress-linear-height: 8px;
 
 	color: var(--white);
-	background-color: var(--primary);
-	border-color: var(--primary);
+	background-color: var(--theme--primary);
+	border-color: var(--theme--primary);
 	border-style: solid;
 
 	.v-progress-linear {

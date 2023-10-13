@@ -436,8 +436,8 @@ function edit(type: Alteration, options?: Record<string, any>) {
 }
 
 .interface-input-rich-text-md:not(.disabled):focus-within {
-	border-color: var(--primary);
-	box-shadow: 0 0 16px -8px var(--primary);
+	border-color: var(--theme--primary);
+	box-shadow: 0 0 16px -8px var(--theme--primary);
 }
 
 textarea {
@@ -466,11 +466,11 @@ textarea {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .interface-input-rich-text-md.disabled .preview-box {

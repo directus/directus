@@ -92,7 +92,7 @@ function deleteItem(elem: Record<string, any>) {
 	gap: var(--v-sheet-padding);
 
 	button {
-		color: var(--primary);
+		color: var(--theme--primary);
 		padding: 0 4px;
 
 		&:hover {
@@ -107,7 +107,7 @@ function deleteItem(elem: Record<string, any>) {
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 </style>

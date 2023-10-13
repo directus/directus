@@ -506,11 +506,11 @@ function setFocus(val: boolean) {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .image-preview,

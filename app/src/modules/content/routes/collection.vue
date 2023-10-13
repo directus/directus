@@ -606,7 +606,7 @@ function usePermissions() {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
@@ -639,7 +639,7 @@ function usePermissions() {
 	}
 
 	.save {
-		color: var(--warning);
+		color: var(--theme--warning);
 
 		&:hover {
 			color: var(--warning-125);
@@ -651,12 +651,12 @@ function usePermissions() {
 		color: var(--theme--foreground-subdued);
 
 		&:hover {
-			color: var(--warning);
+			color: var(--theme--warning);
 		}
 	}
 
 	.saved {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }
 </style>

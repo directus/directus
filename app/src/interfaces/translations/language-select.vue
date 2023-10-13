@@ -52,7 +52,7 @@ const displayValue = computed(() => {
 
 <style lang="scss" scoped>
 .toggle {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 	--v-icon-color-hover: var(--primary-150);
 
 	display: flex;
@@ -60,7 +60,7 @@ const displayValue = computed(() => {
 	width: 100%;
 	height: var(--input-height);
 	padding: var(--input-padding);
-	color: var(--primary);
+	color: var(--theme--primary);
 	text-align: left;
 	background-color: var(--primary-alt);
 	border-radius: var(--border-radius);
@@ -76,7 +76,7 @@ const displayValue = computed(() => {
 }
 
 .v-input .input {
-	color: var(--primary);
+	color: var(--theme--primary);
 	background-color: var(--primary-alt);
 	border: 0px;
 }
@@ -87,10 +87,10 @@ const displayValue = computed(() => {
 
 .secondary {
 	.toggle {
-		--v-icon-color: var(--secondary);
+		--v-icon-color: var(--theme--secondary);
 		--v-icon-color-hover: var(--secondary-150);
 
-		color: var(--secondary);
+		color: var(--theme--secondary);
 		background-color: var(--secondary-alt);
 	}
 }

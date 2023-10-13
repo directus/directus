@@ -60,7 +60,7 @@ function emitValue(): void {
 
 <style>
 body {
-	--v-radio-color: var(--primary);
+	--v-radio-color: var(--theme--primary);
 }
 </style>
 

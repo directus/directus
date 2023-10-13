@@ -724,7 +724,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	&.disabled {
@@ -740,7 +740,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	cursor: pointer;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 

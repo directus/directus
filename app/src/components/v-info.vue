@@ -54,17 +54,17 @@ withDefaults(defineProps<Props>(), {
 }
 
 .success .icon {
-	color: var(--success);
+	color: var(--theme--success);
 	background-color: var(--success-alt);
 }
 
 .warning .icon {
-	color: var(--warning);
+	color: var(--theme--warning);
 	background-color: var(--warning-alt);
 }
 
 .danger .icon {
-	color: var(--danger);
+	color: var(--theme--danger);
 	background-color: var(--danger-alt);
 }
 

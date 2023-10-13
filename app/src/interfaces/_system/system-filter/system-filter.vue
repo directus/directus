@@ -284,7 +284,7 @@ function addKeyAsNode() {
 	}
 
 	.add-filter {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	&.inline {
@@ -339,7 +339,7 @@ function addKeyAsNode() {
 
 .field .buttons {
 	button {
-		color: var(--primary);
+		color: var(--theme--primary);
 		display: inline-block;
 		cursor: pointer;
 	}

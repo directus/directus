@@ -678,7 +678,7 @@ function getLinkForItem(item: DisplayItem) {
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	&.disabled {
@@ -693,7 +693,7 @@ function getLinkForItem(item: DisplayItem) {
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 

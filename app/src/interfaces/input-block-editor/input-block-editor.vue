@@ -210,7 +210,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--primary);
 	}
 }
 

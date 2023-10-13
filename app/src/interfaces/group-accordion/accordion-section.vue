@@ -158,7 +158,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		margin-top: -12px;
 		margin-left: 2px;
@@ -194,7 +194,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .fields {

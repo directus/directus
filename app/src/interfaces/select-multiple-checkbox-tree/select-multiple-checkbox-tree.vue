@@ -124,7 +124,7 @@ const searchDebounced = ref('');
 }
 
 .footer > button.active {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .footer > button:disabled {

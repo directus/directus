@@ -177,7 +177,7 @@ function cancelAndClose() {
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	&.enabled {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 
