@@ -2019,9 +2019,6 @@ importers:
 
   sdk:
     devDependencies:
-      '@directus/extensions':
-        specifier: workspace:*
-        version: link:../packages/extensions
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig

@@ -47,7 +47,6 @@
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
-		"@directus/extensions": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/node-fetch": "2.6.4",
 		"tsup": "7.2.0",

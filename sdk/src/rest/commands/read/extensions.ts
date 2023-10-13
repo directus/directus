@@ -1,5 +1,18 @@
 import type { RestCommand } from '../../types.js';
-import type { ApiOutput as ReadExtensionOutput } from '@directus/extensions';
+
+export type ExtensionTypes = "interface" | "display" | "layout" | "module" | "panel" | "hook" | "endpoint" | "operation" | "bundle";
+
+/**
+ * Copied from @directus/extensions
+ * The API output structure used when engaging with the /extensions endpoints
+ */
+export interface ReadExtensionOutput {
+	name: string;
+	bundle: string | null;
+	schema: { type: ExtensionTypes, local: boolean } | null;
+	meta: { enabled: boolean; /* options, permissions? */ };
+}
+
 
 /**
  * List the available extensions in the project.
