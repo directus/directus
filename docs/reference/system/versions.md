@@ -18,7 +18,7 @@ Primary key of the Content Version.
 Key of the Content Version, used as the value for the [`version`](/reference/items#query-parameters-1) query parameter.
 
 `name` **string**\
-Name of the Content Version.
+Descriptive name of the Content Version.
 
 `collection` **string**\
 Name of the collection the Content Version is created on.
@@ -65,7 +65,13 @@ If using SEARCH you can provide a [query object](/reference/query) as the body o
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Query {
+	versions: [directus_versions]
+}
+```
 
 </template>
 <template #sdk>
@@ -102,7 +108,17 @@ are available, data will be an empty array.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+query {
+	versions {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -136,7 +152,13 @@ List an existing Content Version by primary key.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Query {
+	versions_by_id(id: ID!): directus_versions
+}
+```
 
 </template>
 <template #sdk>
@@ -170,7 +192,17 @@ Returns the requested [Content Version object](#the-content-version-object).
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+query {
+	versions_by_id(id: "e35f7b9a-aabe-4a41-92b4-2bed97fd49ef") {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -206,7 +238,13 @@ Provide a [Content Version object](#the-content-version-object) as the body of 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_versions_item(data: create_directus_versions_input!): directus_versions
+}
+```
 
 </template>
 <template #sdk>
@@ -243,6 +281,7 @@ Returns the [Content Version object](#the-content-version-object) for the create
 
 ```json
 {
+	"key": "my_version",
 	"name": "My Version",
 	"collection": "my_collection",
 	"item": "1"
@@ -252,7 +291,24 @@ Returns the [Content Version object](#the-content-version-object) for the create
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	create_versions_item(
+		data: {
+			key: "my_version"
+			name: "My Version"
+			collection: "my_collection"
+			item: "1"
+		}
+	) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -264,8 +320,8 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	createContentVersion({
-		key: 'draft',
-		name: 'My Draft',
+		key: 'my_version',
+		name: 'My Version',
 		collection: 'my_collection',
 		item: 1,
 	})
@@ -291,7 +347,13 @@ Provide an array of [Content Version objects](#the-content-version-object) as th
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_versions_items(data: [create_directus_versions_input!]!): [directus_versions]
+}
+```
 
 </template>
 <template #sdk>
@@ -329,11 +391,13 @@ Returns an array of [Content Version objects](#the-content-version-object) for t
 ```json
 [
 	{
+		"key": "my_version",
 		"name": "My Version",
 		"collection": "my_collection",
 		"item": 1
 	},
 	{
+		"key": "another_version",
 		"name": "Another Version",
 		"collection": "another_collection",
 		"item": 2
@@ -344,7 +408,32 @@ Returns an array of [Content Version objects](#the-content-version-object) for t
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	create_versions_items(
+		data: [
+			{
+				key: "my_version"
+				name: "My Version"
+				collection: "my_collection"
+				item: "1"
+			}
+			{
+				key: "another_version"
+				name: "Another Version"
+				collection: "another_collection"
+				item: "2"
+			}
+		]
+	) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -357,11 +446,13 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	createContentVersions([
 		{
+			key: "my_version",
 			name: 'My Version',
 			collection: 'my_collection',
 			item: 1,
 		},
 		{
+			key: "another_version",
 			name: 'Another Version',
 			collection: 'another_collection',
 			item: 2,
@@ -389,7 +480,13 @@ Provide a partial [Content Version object](#the-content-version-object) as the b
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_versions_item(id: ID!, data: update_directus_versions_input!): directus_versions
+}
+```
 
 </template>
 <template #sdk>
@@ -433,7 +530,17 @@ Returns the [Content Version object](#the-content-version-object) for the update
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	update_versions_item(id: "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", data: { name: "My Updated Version" }) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -474,7 +581,13 @@ Update multiple existing Content Versions.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_versions_items(ids: [ID!]!, data: update_directus_versions_input!): [directus_versions]
+}
+```
 
 </template>
 <template #sdk>
@@ -525,7 +638,20 @@ Returns the [Content Version objects](#the-content-version-object) for the updat
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	update_versions_items(
+		ids: ["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631"]
+		data: { name: "My Updated Version" }
+	) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -559,7 +685,13 @@ Delete an existing Content Version.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	delete_versions_item(id: ID!): delete_one
+}
+```
 
 </template>
 <template #sdk>
@@ -589,7 +721,15 @@ Empty body.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	delete_versions_item(id: "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5") {
+		id
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -621,7 +761,13 @@ Provide an array of Content Version IDs as the body of your request.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	delete_versions_items(ids: [ID!]!): delete_many
+}
+```
 
 </template>
 <template #sdk>
@@ -653,13 +799,21 @@ Empty body.
 `DELETE /versions`
 
 ```json
-["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631", "5fd4a4be-a3ad-4544-9a27-d62b2c897056"]
+["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631"]
 ```
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	delete_versions_items(ids: ["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631"]) {
+		ids
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -673,7 +827,6 @@ const result = await client.request(
 	deleteContentVersions([
 		'21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5',
 		'31e1c0c6-b575-47fb-908a-baf81b4e5631',
-		'5fd4a4be-a3ad-4544-9a27-d62b2c897056',
 	])
 );
 ```
@@ -697,7 +850,9 @@ Provide a partial [item object](/reference/items#the-item-object) as the body of
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
@@ -733,7 +888,9 @@ Returns the [item object](/reference/items#the-item-object) with the new state a
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
@@ -765,7 +922,9 @@ Compare an existing Content Version with the main version of the item.
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
@@ -810,7 +969,9 @@ Content Version):
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
@@ -850,7 +1011,9 @@ array of field names of which the values are to be promoted (by default, all fie
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
@@ -887,7 +1050,9 @@ The primary key of the promoted item.
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
