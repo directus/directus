@@ -1799,6 +1799,9 @@ importers:
       '@sinclair/typebox':
         specifier: 0.31.17
         version: 0.31.17
+      '@unhead/vue':
+        specifier: 1.1.30
+        version: 1.1.30(vue@3.3.4)
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
@@ -9263,20 +9266,17 @@ packages:
     dependencies:
       '@unhead/schema': 1.1.30
       '@unhead/shared': 1.1.30
-    dev: true
 
   /@unhead/schema@1.1.30:
     resolution: {integrity: sha512-lgz0aw+OP1PlKHBhNWAVabV2iAHBhSXCt3Ynswu0m++MwJxOVXizYJRZOVKK7Zx3u7vwPRV/nweYc6rmNHv5gA==}
     dependencies:
       hookable: 5.5.3
       zhead: 2.1.3
-    dev: true
 
   /@unhead/shared@1.1.30:
     resolution: {integrity: sha512-OPS+d4SZuYSWquQZVLfbyFYggdqKz8DtcdHXObRoKWnosrgVPyGJoOaFnjfkYYuvU6BFYnUtnZNMRQVUjmER1g==}
     dependencies:
       '@unhead/schema': 1.1.30
-    dev: true
 
   /@unhead/vue@1.1.30(vue@3.3.4):
     resolution: {integrity: sha512-jWDfYDjiNj8a8GTQoYeJrpKisI7YKIWwuMP1IREKa4cx41oCsbCKUDjomjnpmdBcpqvb/Kw32Tm+EMcuE/CYkA==}
@@ -9288,7 +9288,6 @@ packages:
       hookable: 5.5.3
       unhead: 1.1.30
       vue: 3.3.4
-    dev: true
 
   /@vitejs/plugin-vue@4.2.3(vite@4.3.7)(vue@3.3.4):
     resolution: {integrity: sha512-R6JDUfiZbJA9cMiguQ7jxALsgiprjBeHL5ikpXfJCH62pPHtI+JdJ5xWj6Ev73yXSlYl86+blXn1kZHQ7uElxw==}
@@ -14321,7 +14320,6 @@ packages:
 
   /hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
-    dev: true
 
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -22023,7 +22021,6 @@ packages:
       '@unhead/schema': 1.1.30
       '@unhead/shared': 1.1.30
       hookable: 5.5.3
-    dev: true
 
   /unherit@3.0.1:
     resolution: {integrity: sha512-akOOQ/Yln8a2sgcLj4U0Jmx0R5jpIg2IUyRrWOzmEbjBtGzBdHtSeFKgoEcoH4KYIG/Pb8GQ/BwtYm0GCq1Sqg==}
@@ -23599,7 +23596,6 @@ packages:
 
   /zhead@2.1.3:
     resolution: {integrity: sha512-T6kZx8TYdLhuy2vURjPUj9EK9Dobnctu12CYw9ibu6Xj/UAqh2q2bQaA3vFrL4Rna5+CXYHYN3uJrUu6VulYzw==}
-    dev: true
 
   /zod-validation-error@1.0.1(zod@3.21.4):
     resolution: {integrity: sha512-QRk2AtHLJg8sCZAbEjXSs7E0n4/mSdX5caoh6eOUvDSdcIQz03i0xoNN1Qx6UZT+ADVHRK6+ZXRtldzW6nnltA==}
