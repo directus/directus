@@ -401,6 +401,10 @@ function sidebar() {
 					text: 'Activity',
 				},
 				{
+					link: '/reference/system/branches',
+					text: 'Branches',
+				},
+				{
 					link: '/reference/system/collections',
 					text: 'Collections',
 				},
@@ -483,10 +487,6 @@ function sidebar() {
 				{
 					link: '/reference/system/utilities',
 					text: 'Utilities',
-				},
-				{
-					link: '/reference/system/versions',
-					text: 'Versions',
 				},
 				{
 					link: '/reference/system/webhooks',
