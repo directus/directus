@@ -1,4 +1,4 @@
-export type Version = {
+export type ContentVersion = {
 	id: string;
 	key: string;
 	name: string | null;

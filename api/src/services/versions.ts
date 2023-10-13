@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import type { Filter, Item, PrimaryKey, Query, Version } from '@directus/types';
+import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/types';
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -237,7 +237,7 @@ export class VersionsService extends ItemsService {
 	}
 
 	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {
-		const { id, collection, item } = (await this.readOne(version)) as Version;
+		const { id, collection, item } = (await this.readOne(version)) as ContentVersion;
 
 		// will throw an error if the accountability does not have permission to update the item
 		await this.authorizationService.checkAccess('update', collection, item);
