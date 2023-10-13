@@ -35,6 +35,7 @@ import * as services from '../services/index.js';
 import type { EventHandler } from '../types/index.js';
 import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
+import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { getExtensionsSettings } from './get-extensions-settings.js';
@@ -409,9 +410,9 @@ export class ExtensionManager {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
-				const hookInstance: HookConfig | { default: HookConfig } = await import(
-					`./${pathToRelativeUrl(hookPath, __dirname)}?t=${Date.now()}`
-				);
+				const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
+					fresh: true,
+				});
 
 				const config = getModuleDefault(hookInstance);
 
@@ -440,8 +441,12 @@ export class ExtensionManager {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
-					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
+					endpointPath,
+					import.meta.url,
+					{
+						fresh: true,
+					}
 				);
 
 				const config = getModuleDefault(endpointInstance);
@@ -485,8 +490,12 @@ export class ExtensionManager {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`../${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
+					operationPath,
+					import.meta.url,
+					{
+						fresh: true,
+					}
 				);
 
 				const config = getModuleDefault(operationInstance);
@@ -512,8 +521,12 @@ export class ExtensionManager {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
-					`../${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
+					bundlePath,
+					import.meta.url,
+					{
+						fresh: true,
+					}
 				);
 
 				const configs = getModuleDefault(bundleInstances);
