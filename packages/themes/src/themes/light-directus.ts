@@ -12,6 +12,10 @@ export const theme: Theme = {
 		background: '#fff',
 
 		primary: 'var(--project-color)',
+		primaryBackground: 'color-mix(var(--theme--background), var(--project-color), 10%)',
+		primarySubdued: 'color-mix(var(--theme--background), var(--project-color), 25%)',
+		primaryAccent: 'color-mix(var(--project-color), var(--theme--foreground), 25%)',
+
 		secondary: '#ff99dd',
 		success: '#2ecda7',
 		warning: '#ffa439',
@@ -72,12 +76,12 @@ export const theme: Theme = {
 			section: {
 				toggle: {
 					icon: {
-						foreground: 'var(--theme--foreground--accent)',
+						foreground: 'var(--theme--foreground-accent)',
 						foregroundHover: 'var(--theme--sidebar--section--toggle--icon--foreground)',
 						foregroundActive: 'var(--theme--sidebar--section--toggle--icon--foreground)',
 					},
 
-					foreground: 'var(--theme--foreground--accent)',
+					foreground: 'var(--theme--foreground-accent)',
 					foregroundHover: 'var(--theme--sidebar--section--toggle--foreground)',
 					foregroundActive: 'var(--theme--sidebar--section--toggle--foreground)',
 
