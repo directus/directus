@@ -73,7 +73,7 @@ const { sidebarOpen } = toRefs(appStore);
 		background-color: var(--theme--sidebar--section--toggle--background);
 
 		.icon {
-			--v-icon-color: var(--theme--sidebar--section--toggle--icon);
+			--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
 
 			display: flex;
 			align-items: center;
@@ -87,7 +87,7 @@ const { sidebarOpen } = toRefs(appStore);
 			background-color: var(--theme--sidebar--section--toggle--background-hover);
 
 			.icon {
-				--v-icon-color: var(--theme--sidebar--section--toggle--icon-hover);
+				--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground-hover);
 			}
 		}
 
@@ -96,7 +96,7 @@ const { sidebarOpen } = toRefs(appStore);
 			background-color: var(--theme--sidebar--section--toggle--background-active);
 
 			.icon {
-				--v-icon-color: var(--theme--sidebar--section--toggle--icon-active);
+				--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground-active);
 			}
 		}
 	}
