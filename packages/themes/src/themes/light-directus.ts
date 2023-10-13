@@ -12,9 +12,9 @@ export const theme: Theme = {
 		background: '#fff',
 
 		primary: 'var(--project-color)',
-		primaryBackground: 'color-mix(in srgb, var(--theme--background), var(--project-color) 10%)',
-		primarySubdued: 'color-mix(in srgb, var(--theme--background), var(--project-color) 50%)',
-		primaryAccent: 'color-mix(in srgb, var(--project-color), #2e3c43 25%)',
+		primaryBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--primary) 10%)',
+		primarySubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--primary) 50%)',
+		primaryAccent: 'color-mix(in srgb, var(--theme--primary), #2e3c43 25%)',
 
 		secondary: '#ff99dd',
 		success: '#2ecda7',
@@ -44,7 +44,7 @@ export const theme: Theme = {
 
 			list: {
 				icon: {
-					foreground: 'var(--project-color)',
+					foreground: 'var(--theme--primary)',
 					foregroundHover: 'var(--theme--navigation--list--icon--foreground)',
 					foregroundActive: 'var(--theme--navigation--list--icon--foreground)',
 				},
