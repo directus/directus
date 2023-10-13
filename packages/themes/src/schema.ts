@@ -54,6 +54,16 @@ const Rules = Type.Object({
 			backgroundActive: Color,
 		}),
 	}),
+
+	header: Type.Object({
+		background: Color,
+		headline: Type.Object({
+			foreground: Color,
+		}),
+		title: Type.Object({
+			foreground: Color,
+		}),
+	}),
 });
 
 export const ThemeSchema = Type.Object({

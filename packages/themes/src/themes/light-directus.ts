@@ -31,6 +31,7 @@ export const theme: Theme = {
 					foreground: '#8196b1',
 					foregroundHover: '#fff',
 					foregroundActive: 'var(--theme--foreground-accent)',
+
 					background: 'transparent',
 					backgroundHover: 'transparent',
 					backgroundActive: '#f0f4f9',
@@ -49,6 +50,16 @@ export const theme: Theme = {
 				background: 'transparent',
 				backgroundHover: '#e4eaf1',
 				backgroundActive: '#e4eaf1',
+			},
+		},
+
+		header: {
+			background: 'var(--theme--background)',
+			headline: {
+				foreground: 'var(--theme--foreground-subdued)',
+			},
+			title: {
+				foreground: 'var(--theme--foreground-accent)',
 			},
 		},
 	},

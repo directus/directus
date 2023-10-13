@@ -53,5 +53,7 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 	border: 2px solid var(--border-normal);
 	padding: var(--input-padding);
 	border-radius: var(--border-radius);
+	max-height: var(--input-height-max);
+	overflow-y: auto;
 }
 </style>

@@ -94,7 +94,7 @@ onUnmounted(() => {
 	height: var(--header-bar-height);
 	margin: 0;
 	padding: 0 10px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--header--background);
 	box-shadow: 0;
 	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
 
@@ -136,10 +136,11 @@ onUnmounted(() => {
 		}
 
 		.headline {
+			--v-breadcrumb-color: var(--theme--header--headline--foreground);
+
 			position: absolute;
 			top: 2px;
 			left: 0;
-			color: var(--theme--foreground-subdued);
 			font-weight: 600;
 			font-size: 12px;
 			white-space: nowrap;
@@ -158,6 +159,7 @@ onUnmounted(() => {
 			overflow: hidden;
 
 			.type-title {
+				color: var(--theme--header--title--foreground);
 				flex-grow: 1;
 				width: 100%;
 				overflow: hidden;
@@ -215,6 +217,19 @@ onUnmounted(() => {
 
 		&:not(.small) {
 			margin: 24px 0;
+
+			/* Somewhat hacky way to make sure we fill
+			the empty space caused by the margin with
+			the appropriate color*/
+			&::before {
+				content: '';
+				width: 100%;
+				height: 24px;
+				bottom: 100%;
+				left: 0;
+				background-color: var(--theme--header--background);
+				position: absolute;
+			}
 		}
 	}
 }
