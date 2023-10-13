@@ -174,7 +174,7 @@ const result = await client.request(readItem(collection_name, item_id, query_obj
 
 Supports all [global query parameters](/reference/query).
 
-Additonally, supports a `version` parameter to retrieve an item's state from a specific
+Additionally, supports a `version` parameter to retrieve an item's state from a specific
 [Content Version](/reference/system/versions). The value corresponds to the `key` of the Content Version.
 
 ### Response
@@ -303,7 +303,7 @@ response consists of a plain [item object](#the-item-object) (the singleton) ins
 
 Supports all [global query parameters](/reference/query).
 
-Additonally, supports a `version` parameter to retrieve a singelton's state from a specific
+Additionally, supports a `version` parameter to retrieve a singelton's state from a specific
 [Content Version](/reference/system/versions). The value corresponds to the `key` of the Content Version.
 
 #### Request Body
