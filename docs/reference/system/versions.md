@@ -15,7 +15,7 @@ pageClass: page-reference
 Primary key of the Content Version.
 
 `key` **string**\
-Key of the Content Version, used as the value for the `version` query parameter.
+Key of the Content Version, used as the value for the [`version`](/reference/items#query-parameters-1) query parameter.
 
 `name` **string**\
 Name of the Content Version.
