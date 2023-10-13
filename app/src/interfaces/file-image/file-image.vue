@@ -251,7 +251,7 @@ img {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--background-normal);
 	padding: 32px;
 
@@ -283,9 +283,9 @@ img {
 	}
 
 	.actions {
-		--v-button-color: var(--theme--foreground-subdued);
+		--v-button-color: var(--theme--form--field--input--foreground-subdued);
 		--v-button-background-color: var(--white);
-		--v-button-color-hover: var(--theme--foreground);
+		--v-button-color-hover: var(--theme--form--field--input--foreground);
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;

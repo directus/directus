@@ -116,7 +116,7 @@ const inputType = computed(() => {
 .remaining {
 	display: none;
 	width: 24px;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;

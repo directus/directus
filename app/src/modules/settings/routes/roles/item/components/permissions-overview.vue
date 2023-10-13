@@ -209,7 +209,7 @@ function useReset() {
 
 .table {
 	max-width: 792px;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 }

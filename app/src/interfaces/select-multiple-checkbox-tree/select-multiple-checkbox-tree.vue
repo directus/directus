@@ -114,13 +114,13 @@ const searchDebounced = ref('');
 }
 
 .footer > button {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
 
 .footer > button:hover {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .footer > button.active {
@@ -128,7 +128,7 @@ const searchDebounced = ref('');
 }
 
 .footer > button:disabled {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	cursor: not-allowed;
 }
 </style>

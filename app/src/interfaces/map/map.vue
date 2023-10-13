@@ -491,7 +491,7 @@ function handleKeyDown(event: any) {
 
 	.v-info {
 		padding: 20px;
-		background-color: var(--background-input);
+		background-color: var(--theme--form--field--input--background);
 		border-radius: var(--border-radius);
 		box-shadow: var(--card-shadow);
 	}
@@ -505,7 +505,7 @@ function handleKeyDown(event: any) {
 		justify-content: space-between;
 		height: 36px;
 		padding: 10px;
-		color: var(--theme--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);
 		border: var(--border-width) solid var(--theme--background);
 		border-radius: var(--border-radius);
@@ -516,7 +516,7 @@ function handleKeyDown(event: any) {
 		}
 
 		.v-select {
-			color: var(--theme--foreground);
+			color: var(--theme--form--field--input--foreground);
 		}
 	}
 

@@ -363,7 +363,7 @@ function pressedEnter() {
 	padding: 5px;
 	overflow: scroll;
 	white-space: pre;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: border-color var(--fast) var(--transition);

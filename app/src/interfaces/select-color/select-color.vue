@@ -353,7 +353,7 @@ function useColor() {
 						'--v-slider-color': 'none',
 						'--theme--background': 'none',
 						'--v-slider-fill-color': 'none',
-						'--v-slider-thumb-color': 'var(--theme--foreground)',
+						'--v-slider-thumb-color': 'var(--theme--form--field--input--foreground)',
 						'--v-slider-track-background-image':
 							'linear-gradient(to right, transparent,' +
 							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +

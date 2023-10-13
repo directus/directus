@@ -8,7 +8,7 @@
 	font-family: var(--family-monospace);
 	line-height: 22px;
 	direction: ltr;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: all var(--fast) var(--transition);

@@ -65,7 +65,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 			content: '';
 			width: 4px;
 			height: 4px;
-			background-color: var(--theme--foreground-subdued);
+			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;
 			top: 11px;
@@ -77,7 +77,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 	p {
 		margin-right: 1ch;
 
-		color: var(--theme--foreground);
+		color: var(--theme--form--field--input--foreground);
 	}
 
 	.value {
@@ -89,7 +89,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 		max-width: 100%;
 
 		&::placeholder {
-			color: var(--theme--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 		}
 	}
 
@@ -97,7 +97,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 		width: 1.2ch;
 		height: 1.2ch;
 		background-color: v-bind(swatchValue);
-		border: 1px solid var(--theme--foreground);
+		border: 1px solid var(--theme--form--field--input--foreground);
 	}
 }
 </style>

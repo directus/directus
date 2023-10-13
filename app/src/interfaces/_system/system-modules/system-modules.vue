@@ -281,11 +281,11 @@ function remove(id: string) {
 	--v-list-item-color-hover: var(--theme--primary-accent);
 	--v-list-item-background-color-hover: var(--theme--primary-background);
 	--v-icon-color: var(--theme--primary);
-	--v-icon-color-hover: var(--theme--foreground);
+	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 }
 
 .to {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-family: var(--family-monospace);
 }
 

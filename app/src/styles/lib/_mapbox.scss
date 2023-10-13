@@ -13,7 +13,7 @@
 	button {
 		width: 36px;
 		height: 36px;
-		background: var(--background-input) !important;
+		background: var(--theme--form--field--input--background) !important;
 		border: none !important;
 		transition: background-color var(--fast) var(--transition);
 
@@ -80,7 +80,7 @@
 	min-width: 24px;
 	min-height: 24px;
 	color: var(--theme--foreground);
-	background: var(--background-input) !important;
+	background: var(--theme--form--field--input--background) !important;
 	box-shadow: var(--card-shadow);
 
 	button {
@@ -111,7 +111,7 @@
 .mapboxgl-ctrl-attrib:not(.mapboxgl-compact) {
 	font-size: 0.8em;
 	color: var(--theme--foreground);
-	background: var(--background-input);
+	background: var(--theme--form--field--input--background);
 	border-radius: 0 6px 0 0;
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 

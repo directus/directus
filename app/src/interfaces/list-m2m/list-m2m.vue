@@ -694,7 +694,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.item-count {
-		color: var(--theme--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		white-space: nowrap;
 	}
 
@@ -719,7 +719,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 }
 
 .item-link {
-	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
@@ -734,7 +734,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 }
 
 .deselect {
-	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 	cursor: pointer;
@@ -751,7 +751,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	width: 120px;
 	padding: 10px 0;
 	margin-right: 2px;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		width: auto;
@@ -759,7 +759,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.v-select {
-		color: var(--theme--foreground);
+		color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

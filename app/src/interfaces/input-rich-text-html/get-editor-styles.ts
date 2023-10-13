@@ -28,7 +28,7 @@ export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospac
 }
 body {
 	color: ${cssVar('--foreground-normal')};
-	background-color: ${cssVar('--background-input')};
+	background-color: ${cssVar('--theme--form--field--input--background')};
 	margin: 20px;
 	font-family: ${cssVar('--family-sans-serif')};
 	-webkit-font-smoothing: antialiased;
@@ -44,7 +44,7 @@ body.mce-content-readonly {
 }
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${cssVar(`--family-${font}`)}, serif;
-	color: ${cssVar('--theme--foreground-accent')};
+	color: ${cssVar('--theme--form--field--input--foreground-accent')};
 	font-weight: 700;
 	margin-bottom: 0;
 }

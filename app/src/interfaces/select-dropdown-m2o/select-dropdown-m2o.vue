@@ -264,7 +264,7 @@ function onSelection(selection: (number | string)[] | null) {
 	margin-right: 4px;
 
 	&:hover {
-		--v-icon-color: var(--theme--foreground);
+		--v-icon-color: var(--theme--form--field--input--foreground);
 	}
 }
 

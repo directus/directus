@@ -416,9 +416,9 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
-	--v-button-color: var(--theme--foreground);
+	--v-button-color: var(--theme--form--field--input--foreground);
 	--v-button-background-color-hover: var(--border-normal);
-	--v-button-color-hover: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
 	min-height: 300px;
 	overflow: hidden;
@@ -458,7 +458,7 @@ textarea {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -474,7 +474,7 @@ textarea {
 }
 
 .interface-input-rich-text-md.disabled .preview-box {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror) {
@@ -523,11 +523,11 @@ textarea {
 
 	.view {
 		--v-button-background-color: var(--border-subdued);
-		--v-button-color: var(--theme--foreground-subdued);
+		--v-button-color: var(--theme--form--field--input--foreground-subdued);
 		--v-button-background-color-hover: var(--border-normal);
-		--v-button-color-hover: var(--theme--foreground);
+		--v-button-color-hover: var(--theme--form--field--input--foreground);
 		--v-button-background-color-active: var(--border-normal);
-		--v-button-color-active: var(--theme--foreground);
+		--v-button-color-active: var(--theme--form--field--input--foreground);
 	}
 }
 

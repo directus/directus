@@ -85,7 +85,7 @@ const percentageRemaining = computed(() => {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;

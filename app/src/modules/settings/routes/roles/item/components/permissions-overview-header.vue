@@ -24,7 +24,7 @@ const { t } = useI18n();
 	z-index: 4;
 	display: flex;
 	padding: 12px;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 	border-bottom: var(--border-width) solid var(--border-normal);
 
 	.name {

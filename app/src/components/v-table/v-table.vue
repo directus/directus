@@ -348,7 +348,7 @@ function updateSort(newSort: Sort) {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--theme--foreground);
-	--v-table-background-color: var(--background-input);
+	--v-table-background-color: var(--theme--form--field--input--background);
 }
 
 .v-table {
@@ -450,7 +450,7 @@ table :deep(.sortable-ghost .cell) {
 .loading-text,
 .no-items-text {
 	text-align: center;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 }
 
 .loading-text td,

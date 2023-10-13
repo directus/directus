@@ -280,7 +280,7 @@ function useURLImport() {
 
 <style lang="scss" scoped>
 .preview {
-	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -328,7 +328,7 @@ function useURLImport() {
 	margin-right: 4px;
 
 	&:hover {
-		--v-icon-color: var(--theme--foreground);
+		--v-icon-color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

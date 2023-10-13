@@ -530,11 +530,11 @@ const allowDrag = computed(
 }
 
 .clear-icon {
-	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	--v-icon-color-hover: var(--theme--danger);
 
 	margin-right: 8px;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
@@ -543,6 +543,6 @@ const allowDrag = computed(
 }
 
 .launch-icon {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 </style>

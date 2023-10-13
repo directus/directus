@@ -93,14 +93,14 @@ function setIcon(icon: string | null) {
 	--v-input-placeholder-color: var(--theme--primary);
 
 	&:focus-within {
-		--v-input-placeholder-color: var(--theme--foreground-subdued);
+		--v-input-placeholder-color: var(--theme--form--field--input--foreground-subdued);
 	}
 }
 
 .content {
 	padding: 8px;
 
-	--v-icon-color-hover: var(--theme--foreground);
+	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 
 	.v-icon.active {
 		color: var(--theme--primary);
@@ -119,7 +119,7 @@ function setIcon(icon: string | null) {
 	grid-template-columns: repeat(auto-fit, 24px);
 	justify-content: center;
 	padding: 20px 0;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .open-indicator {

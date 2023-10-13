@@ -1,12 +1,12 @@
 .codex-editor {
 	--bg-color: var(--background-normal) !important;
-	--front-color: var(--theme--foreground) !important;
+	--front-color: var(--theme--form--field--input--foreground) !important;
 	--border-color: var(--border-normal) !important;
 }
 
 .codex-editor .ce-toolbar__plus,
 .codex-editor .ce-toolbar__settings-btn {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 }
@@ -18,7 +18,7 @@
 
 .codex-editor .ce-toolbar__plus svg,
 .codex-editor .ce-toolbar__settings-btn svg {
-	fill: var(--theme--foreground) !important;
+	fill: var(--theme--form--field--input--foreground) !important;
 }
 
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
@@ -32,7 +32,7 @@
 
 .codex-editor .ce-toolbar .ce-toolbox__button svg,
 .codex-editor .ce-toolbar .ce-toolbox__button:hover svg {
-	fill: var(--theme--foreground);
+	fill: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .cdx-loader::before {
@@ -54,7 +54,7 @@
 }
 
 .codex-editor .ce-popover-item__title {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-popover-item:not(.ce-popover-item--confirmation):hover {
@@ -68,7 +68,7 @@
 }
 
 .codex-editor .ce-popover-item--confirmation .ce-popover-item-label {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-popover-item--active {
@@ -92,11 +92,11 @@
 }
 
 .codex-editor .ce-popover-item-icon svg {
-	fill: var(--theme--foreground);
+	fill: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-popover-item-secondary-label {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .codex-editor .ce-popover__items:not(:first-child) {
@@ -131,7 +131,7 @@
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm svg {
-	fill: var(--theme--foreground-accent) !important;
+	fill: var(--theme--form--field--input--foreground-accent) !important;
 }
 
 /* Tooltips */
@@ -197,7 +197,7 @@
 }
 
 .codex-editor .ce-conversion-toolbar__label {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-conversion-tool__icon {
@@ -216,7 +216,7 @@
 
 .codex-editor .cdx-input,
 .codex-editor .ce-code__textarea {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 	font-size: inherit;
 	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
@@ -263,7 +263,7 @@
 
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 	background: var(--background-normal);
 	border-color: var(--border-normal);
 	box-shadow: unset;
@@ -277,7 +277,7 @@
 }
 
 .codex-editor .ce-paragraph[data-placeholder]:empty::before {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 /* Quote block */
@@ -374,7 +374,7 @@
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__title {
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
@@ -391,7 +391,7 @@
 }
 
 .codex-editor .cdx-attaches__size {
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 /* InlineCode */
@@ -426,8 +426,8 @@
 }
 
 .tc-toolbox {
-	--toggler-dots-color: var(--theme--foreground);
-	--toggler-dots-color-hovered: var(--theme--foreground-accent);
+	--toggler-dots-color: var(--theme--form--field--input--foreground);
+	--toggler-dots-color-hovered: var(--theme--form--field--input--foreground-accent);
 }
 
 .tc-toolbox__toggler:hover {
@@ -560,7 +560,7 @@
 
 .codex-editor .ce-block b,
 .codex-editor .ce-block strong {
-	color: var(--theme--foreground-accent);
+	color: var(--theme--form--field--input--foreground-accent);
 	font-weight: 600;
 }
 
@@ -624,7 +624,7 @@
 .codex-editor .ce-block figure figcaption {
 	display: block;
 	margin-top: 0.25rem;
-	color: var(--theme--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	text-align: center;
 }
 

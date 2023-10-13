@@ -131,7 +131,7 @@ const customIcon = computed(() => {
 }
 
 .custom {
-	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -153,7 +153,7 @@ const customIcon = computed(() => {
 		border-radius: 0;
 
 		&::placeholder {
-			color: var(--theme--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 		}
 	}
 
@@ -188,11 +188,11 @@ const customIcon = computed(() => {
 		cursor: not-allowed;
 
 		input {
-			color: var(--theme--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			cursor: not-allowed;
 
 			&::placeholder {
-				color: var(--theme--foreground-subdued);
+				color: var(--theme--form--field--input--foreground-subdued);
 			}
 		}
 	}

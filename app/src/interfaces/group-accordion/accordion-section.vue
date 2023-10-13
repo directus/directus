@@ -147,13 +147,13 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	&.active {
 		.field-name,
 		.icon {
-			color: var(--theme--foreground);
+			color: var(--theme--form--field--input--foreground);
 		}
 	}
 
 	.field-name,
 	.icon {
-		color: var(--theme--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 	}
 
@@ -176,7 +176,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 		display: block;
 		width: 4px;
 		height: 4px;
-		background-color: var(--theme--foreground-subdued);
+		background-color: var(--theme--form--field--input--foreground-subdued);
 		border-radius: 4px;
 		content: '';
 	}

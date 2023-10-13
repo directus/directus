@@ -285,7 +285,7 @@ function stepDown() {
 	--v-input-placeholder-color: var(--theme--foreground-subdued);
 	--v-input-box-shadow-color-focus: var(--theme--primary);
 	--v-input-color: var(--theme--foreground);
-	--v-input-background-color: var(--background-input);
+	--v-input-background-color: var(--theme--form--field--input--background);
 	--v-input-border-color-focus: var(--theme--primary);
 }
 
@@ -355,7 +355,7 @@ function stepDown() {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-input);
+			background-color: var(--theme--form--field--input--background);
 			border-color: var(--border-normal-alt);
 		}
 
@@ -364,7 +364,7 @@ function stepDown() {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-input);
+			background-color: var(--theme--form--field--input--background);
 			border-color: var(--v-input-border-color-focus);
 			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
 		}

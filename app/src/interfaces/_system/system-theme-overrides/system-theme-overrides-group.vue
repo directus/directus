@@ -71,7 +71,7 @@ const collapsed = ref(true);
 
 .group-toggle {
 	font-family: var(--family-monospace);
-	color: var(--theme--foreground);
+	color: var(--theme--form--field--input--foreground);
 	width: calc(100% + 16px);
 	text-align: left;
 	padding-inline: 8px;
@@ -84,7 +84,7 @@ const collapsed = ref(true);
 			content: '';
 			width: 4px;
 			height: 4px;
-			background-color: var(--theme--foreground-subdued);
+			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;
 			top: 11px;
