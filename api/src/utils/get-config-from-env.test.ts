@@ -1,4 +1,4 @@
-import { getConfigFromEnv } from '../../src/utils/get-config-from-env.js';
+import { getConfigFromEnv } from './get-config-from-env.js';
 import { describe, test, expect, vi } from 'vitest';
 
 vi.mock('../../src/env', () => {

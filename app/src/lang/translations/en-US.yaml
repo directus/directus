@@ -55,6 +55,24 @@ or: Or
 init: Init
 dataset_too_large_currently_showing_n_items: Dataset is too large. Currently showing the first {n} items.
 modifier: Modifier
+extension_interface: Interface
+extension_display: Display
+extension_layout: Layout
+extension_module: Module
+extension_panel: Panel
+extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operation
+extension_bundle: Bundle
+extension_interfaces: Interfaces
+extension_displays: Displays
+extension_layouts: Layouts
+extension_modules: Modules
+extension_panels: Panels
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Operations
+extension_bundles: Bundles
 custom: Custom
 hook: Hook
 fill_width: Fill Width
@@ -500,6 +518,7 @@ import_from_url: Import File from URL
 replace_from_device: Replace File from Device
 replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
+no_image_selected: No Image Selected
 no_file_selected: No File Selected
 download_file: Download File
 open_file_in_tab: Open file in new tab
@@ -1094,6 +1113,8 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 no_upscale: Don't upscale images
+no_extensions: No Extensions
+no_extensions_copy: No extensions have been installed yet.
 collection: Collection
 collections: Collections
 content: Content

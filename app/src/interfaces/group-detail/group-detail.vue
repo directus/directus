@@ -36,6 +36,15 @@ const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
 
+// In case that conditions change the start prop after the group already got rendered
+// caused by the async loading of data to run the conditions against
+watch(
+	() => props.loading,
+	(newVal) => {
+		if (!newVal) detailOpen.value = props.start === 'open';
+	}
+);
+
 const edited = computed(() => {
 	if (!props.values) return false;
 
