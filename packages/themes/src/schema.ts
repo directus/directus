@@ -22,9 +22,24 @@ const Rules = Type.Object({
 	primaryAccent: Color,
 
 	secondary: Color,
+	secondaryBackground: Color,
+	secondarySubdued: Color,
+	secondaryAccent: Color,
+
 	success: Color,
+	successBackground: Color,
+	successSubdued: Color,
+	successAccent: Color,
+
 	warning: Color,
+	warningBackground: Color,
+	warningSubdued: Color,
+	warningAccent: Color,
+
 	danger: Color,
+	dangerBackground: Color,
+	dangerSubdued: Color,
+	dangerAccent: Color,
 
 	navigation: Type.Object({
 		background: Color,

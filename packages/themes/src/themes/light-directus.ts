@@ -17,9 +17,24 @@ export const theme: Theme = {
 		primaryAccent: 'color-mix(in srgb, var(--theme--primary), #2e3c43 25%)',
 
 		secondary: '#ff99dd',
+		secondaryBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--secondary) 10%)',
+		secondarySubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--secondary) 50%)',
+		secondaryAccent: 'color-mix(in srgb, var(--theme--secondary), #2e3c43 25%)',
+
 		success: '#2ecda7',
+		successBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--success) 10%)',
+		successSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--success) 50%)',
+		successAccent: 'color-mix(in srgb, var(--theme--success), #2e3c43 25%)',
+
 		warning: '#ffa439',
+		warningBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--warning) 10%)',
+		warningSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--warning) 50%)',
+		warningAccent: 'color-mix(in srgb, var(--theme--warning), #2e3c43 25%)',
+
 		danger: '#e35169',
+		dangerBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 10%)',
+		dangerSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 50%)',
+		dangerAccent: 'color-mix(in srgb, var(--theme--danger), #2e3c43 25%)',
 
 		navigation: {
 			background: '#f0f4f9',
