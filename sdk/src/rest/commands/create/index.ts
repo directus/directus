@@ -1,5 +1,4 @@
 export * from './activity.js';
-export * from './branches.js';
 export * from './collections.js';
 export * from './dashboards.js';
 export * from './fields.js';
@@ -17,4 +16,5 @@ export * from './roles.js';
 export * from './shares.js';
 export * from './translations.js';
 export * from './users.js';
+export * from './versions.js';
 export * from './webhooks.js';

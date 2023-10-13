@@ -266,9 +266,9 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Branch (Version)
+## Version
 
-Retrieve an item's state from a specific branch.
+Retrieve an item's result from a specific version.
 
 ::: warning Requires Configuration
 
@@ -279,75 +279,42 @@ settings.
 
 ### Example
 
-Collection:
-
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-```http
-GET /items/articles/1
-	?branch=draft
-```
+`?version=draft`
 
 </template>
 <template #graphql>
 
+Singletons:
+
 ```graphql
 query {
-	articles_by_id(id: 1, branch: "draft") {
-		id
-		title
-		content
-	}
+    articles(version: "draft") {
+        id
+        title
+        content
+    }
+}
+```
+
+By ID:
+
+```graphql
+query {
+    articles_by_id(id: 1, version: "draft") {
+        id
+        title
+        content
+    }
 }
 ```
 
 </template>
 <template #sdk>
 
-```js
-import { createDirectus, rest, readItem } from '@directus/sdk';
-
-const client = createDirectus('https://directus.example.com').with(rest());
-
-const result = await client.request(readItem('articles', '1', { branch: 'draft' }));
-```
-
-</template>
-</SnippetToggler>
-
-Singleton:
-
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-<template #rest>
-
-```http
-GET /items/about
-	?branch=draft
-```
-
-</template>
-<template #graphql>
-
-```graphql
-query {
-	about(branch: "draft") {
-		id
-		content
-	}
-}
-```
-
-</template>
-<template #sdk>
-
-```js
-import { createDirectus, rest, readSingleton } from '@directus/sdk';
-
-const client = createDirectus('https://directus.example.com').with(rest());
-
-const result = await client.request(readSingleton('about', { branch: 'draft' }));
-```
+TBD
 
 </template>
 </SnippetToggler>

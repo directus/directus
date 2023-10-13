@@ -1,5 +1,4 @@
 export * from './activity.js';
-export * from './branch.js';
 export * from './collection.js';
 export * from './core.js';
 export * from './dashboard.js';
@@ -19,4 +18,5 @@ export * from './settings.js';
 export * from './share.js';
 export * from './translation.js';
 export * from './user.js';
+export * from './version.js';
 export * from './webhook.js';
