@@ -111,14 +111,14 @@ function unsetValue(e: any) {
 	&.today-icon {
 		&:hover,
 		&.active {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 
 	&.clear-icon {
 		&:hover,
 		&.active {
-			--v-icon-color: var(--danger);
+			--v-icon-color: var(--theme--danger);
 		}
 	}
 }

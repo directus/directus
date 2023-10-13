@@ -81,13 +81,13 @@ function onCloseClick(event: MouseEvent) {
 
 <style>
 body {
-	--v-chip-color: var(--foreground-normal);
+	--v-chip-color: var(--theme--foreground);
 	--v-chip-background-color: var(--background-normal-alt);
 	--v-chip-color-hover: var(--white);
-	--v-chip-background-color-hover: var(--primary-125);
-	--v-chip-close-color: var(--danger);
-	--v-chip-close-color-disabled: var(--primary);
-	--v-chip-close-color-hover: var(--primary-125);
+	--v-chip-background-color-hover: var(--theme--primary-accent);
+	--v-chip-close-color: var(--theme--danger);
+	--v-chip-close-color-disabled: var(--theme--primary);
+	--v-chip-close-color-hover: var(--theme--primary-accent);
 }
 </style>
 

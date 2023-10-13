@@ -110,12 +110,12 @@ function onClick(event: MouseEvent) {
 
 	.activator-icon {
 		margin-right: 0 !important;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.active {

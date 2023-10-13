@@ -41,7 +41,7 @@ const props = withDefaults(
 		showMarker: true,
 		curveType: 'smooth',
 		decimals: 2,
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
 		fillType: 'gradient',
 	}
 );
@@ -130,7 +130,7 @@ function setUpChart() {
 	const colors = monoThemeGenerator(
 		props.color && props.color.startsWith('var(--')
 			? cssVar(props.color.substring(4, props.color.length - 1))
-			: props.color ?? 'var(--primary)',
+			: props.color ?? 'var(--theme--primary)',
 		series.length
 	);
 
@@ -157,8 +157,8 @@ function setUpChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground-subdued)',
 			sparkline: {
 				enabled: isSparkline,
 			},
@@ -252,8 +252,8 @@ function setUpChart() {
 				show: ['both', 'xAxis'].includes(props.showAxisLabels),
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -287,8 +287,8 @@ function setUpChart() {
 						  } as any);
 				},
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -302,8 +302,8 @@ function setUpChart() {
 				width: 8,
 				height: 8,
 			},
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-normal)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
 			fontSize: '10px',
 		},
@@ -360,7 +360,7 @@ function setUpChart() {
 
 .apexcharts-tooltip-text {
 	line-height: 0.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .apexcharts-tooltip-marker {

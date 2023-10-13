@@ -23,7 +23,7 @@ const props = withDefaults(
 	{
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
 		itemsShown: 8,
 	}
 );
@@ -187,7 +187,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 }
 
 .custom {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -240,11 +240,11 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 		cursor: not-allowed;
 
 		input {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			cursor: not-allowed;
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--theme--form--field--input--foreground-subdued);
 			}
 		}
 	}

@@ -69,10 +69,10 @@ function toggle() {
 }
 
 .v-detail:not(.disabled) .v-divider {
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--theme--foreground-subdued);
 
 	&:hover {
-		--v-divider-label-color: var(--foreground-normal-alt);
+		--v-divider-label-color: var(--theme--foreground-accent);
 
 		cursor: pointer;
 	}

@@ -9,7 +9,7 @@
 h1 {
 	margin-top: 1em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 36px;
 	line-height: 46px;
@@ -18,7 +18,7 @@ h1 {
 h2 {
 	margin-top: 1.25em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 24px;
 	line-height: 34px;
@@ -27,7 +27,7 @@ h2 {
 h3 {
 	margin-top: 1.25em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 19px;
 	line-height: 29px;
@@ -36,7 +36,7 @@ h3 {
 h4 {
 	margin-top: 1.5em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 16px;
 	line-height: 26px;
@@ -45,7 +45,7 @@ h4 {
 h5 {
 	margin-top: 2em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 14px;
 	line-height: 24px;
@@ -54,7 +54,7 @@ h5 {
 h6 {
 	margin-top: 2em;
 	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 12px;
 	line-height: 22px;
@@ -68,7 +68,7 @@ p {
 }
 
 a {
-	color: var(--primary-125);
+	color: var(--theme--primary-accent);
 	text-decoration: none;
 }
 
@@ -96,7 +96,7 @@ code {
 	padding: 2px 4px;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
+	font-family: var(--theme--font-family-monospace), monospace;
 	line-height: 24px;
 	overflow-wrap: break-word;
 	background-color: var(--background-normal);
@@ -108,7 +108,7 @@ pre {
 	overflow: auto;
 	font-weight: 500;
 	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
+	font-family: var(--theme--font-family-monospace), monospace;
 	line-height: 24px;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);

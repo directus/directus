@@ -1,5 +1,5 @@
 import { Style, RasterSource } from 'maplibre-gl';
-import { getTheme } from '@/utils/get-theme';
+import { getAppearance } from '@/utils/get-appearance';
 import { useSettingsStore } from '@/stores/settings';
 
 export type BasemapSource = {
@@ -110,7 +110,7 @@ function getDefaultMapboxBasemap(): BasemapSource {
 		url: 'mapbox://styles/directus/cktaiz31c509n18nrxj63zdy6',
 	};
 
-	if (getTheme() === 'dark') {
+	if (getAppearance() === 'dark') {
 		defaultMapboxBasemap.url = 'mapbox://styles/directus/cl0bombrr001115taz5ilsynw';
 	}
 

@@ -28,7 +28,7 @@ withDefaults(defineProps<Props>(), {
 <style>
 body {
 	--v-divider-color: var(--border-normal);
-	--v-divider-label-color: var(--foreground-normal-alt);
+	--v-divider-label-color: var(--theme--foreground-accent);
 }
 </style>
 
@@ -71,6 +71,7 @@ body {
 	&.large .type-text {
 		font-weight: 700;
 		font-size: 24px;
+		font-family: var(--theme--font-family-display);
 	}
 
 	&.inlineTitle {

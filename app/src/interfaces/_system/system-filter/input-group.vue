@@ -197,11 +197,11 @@ function setListValue(index: number, newVal: any) {
 	.v-icon {
 		margin-right: 8px;
 		margin-left: 12px;
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
 		&:hover {
-			color: var(--danger);
+			color: var(--theme--danger);
 		}
 	}
 }
