@@ -15,6 +15,7 @@ interface Props {
 	decimals?: number;
 	strokeWidth?: number;
 	roundedStroke?: boolean;
+	showPercentage?: boolean;
 	color?: string;
 	max?: number;
 	conditionalFill?: { operator: BaseConditionalFillOperators; color: string; value: number }[];
@@ -25,6 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 	data: () => [],
 	strokeWidth: 20,
 	roundedStroke: false,
+	showPercentage: true,
 	color: 'var(--primary)',
 	max: 100,
 	conditionalFill: () => [],
@@ -41,28 +43,29 @@ const percent = computed(() => {
 
 const displayValue = computed(() => {
 	const percentDecimal = Number((unref(percent) * 100).toFixed(1));
-	return n(percentDecimal) + '%';
+	return props.showPercentage ? n(percentDecimal) + '%' : '';
 });
 
 const radius = computed(() => {
-	// 40 is 20*2 padding, 4 is 2*2 border
-	const widthPx = props.width * 20 - 40 - 4;
-	let heightPx = props.height * 20 - 40 - 4;
+	// 24 is 12*2 padding, 4 is 2*2 border
+	const widthPx = props.width * 20 - 24 - 4;
+	let heightPx = props.height * 20 - 24 - 4;
 
 	// Adjust for header if enabled, v-workspace-tile header has a fixed height of 42px
 	if (props.showHeader) heightPx = heightPx - 42;
 
 	const strokeOffset = props.strokeWidth / 2;
 
-	if (widthPx >= heightPx) {
-		if (props.size === 'half') {
-			return heightPx * 0.75 - strokeOffset;
-		}
+	// Determine the shorter dimension
+	const minDimension = Math.min(widthPx, heightPx);
 
-		return heightPx / 2 - strokeOffset;
+	if (props.size == 'half' && heightPx < widthPx) {
+		// Added so half circles that have a shorter height than width can maximize the space up to the padding of the height
+		return Math.min(widthPx / 2 - strokeOffset, (props.height * 30) / 2 - 12);
 	}
 
-	return widthPx / 2 - strokeOffset;
+	// The radius is half of the shorter dimension inclusive of padding and border
+	return minDimension / 2 - strokeOffset;
 });
 
 const svgSize = computed(() => {
@@ -157,7 +160,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 	width: 100%;
 	height: 100%;
 	position: relative;
-	padding: 20px;
+	padding: 12px;
 	display: grid;
 	align-items: center;
 	justify-items: center;
@@ -184,7 +187,6 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 	position: relative;
 	top: v-bind(halfSizeOutputOffset);
 }
-
 .panel-meter svg circle:last-child {
 	transform-origin: center center;
 	transform: rotate(-90deg);

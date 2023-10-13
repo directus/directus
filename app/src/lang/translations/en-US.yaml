@@ -690,6 +690,7 @@ security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
+create_default: Create Default
 edit_bookmark: Edit Bookmark
 edit_personal_bookmark: Edit Personal Bookmark
 edit_role_bookmark: Edit Role Bookmark
@@ -2131,6 +2132,9 @@ panels:
     name: Metric
     description: Show a single value based on a query
     field: Field
+  metric_list:
+    name: Metric List
+    description: List and visualize aggregate metrics from a collection
   time_series:
     name: Time Series
     description: Render a line chart based on values over time
@@ -2159,6 +2163,7 @@ panels:
     smooth: Smooth
     straight: Straight
     step_line: Step Line
+    show_legend: Show Legend
   meter:
     name: Meter
     description: Meter for tracking values
@@ -2312,3 +2317,39 @@ operations:
     batch: Batch
     batch_size: Batch Size
     cache: Cache
+unit: Unit
+standard: Standard
+scientific: Scientific
+engineering: Engineering
+compact: Compact
+currency: Currency
+notation: Notation
+style: Style
+fonts:
+  thin: Thin
+  extra_light: Extra Light
+  light: Light
+  normal: Normal
+  medium: Medium
+  semi_bold: Semi Bold
+  bold: Bold
+  extra_bold: Extra Bold
+  black: Black
+  italic: Italic
+  oblique: Oblique
+  small: Small
+  large: Large
+  auto: Auto
+text_wrap: Text Wrap
+center: Center
+justify: Justify
+text_align: Text Align
+font_weight: Font Weight
+font_style: Font Style
+font_size: Font Size
+minimum_fraction_digits: Minimum Decimals
+maximum_fraction_digits: Maximum Decimals
+show_percentage: Show Percentage
+aggregation: Aggregation
+series_grouping: Series Grouping
+date_precision: Date Precision

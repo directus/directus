@@ -378,19 +378,22 @@ function useDragDrop() {
 
 .resize-details {
 	position: absolute;
-	top: 0;
+	bottom: 0;
 	right: 0;
 	z-index: 2;
-	padding: 17px 14px;
+	padding: 2px 11.5px 11.5px 2px;
 	color: var(--foreground-subdued);
 	font-weight: 500;
-	font-size: 15px;
+	font-size: 12px;
 	font-family: var(--family-monospace);
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
-	background-color: var(--background-page);
 	border-top-right-radius: var(--border-radius-outline);
+	border-bottom-right-radius: var(--border-radius-outline);
+	border-top-left-radius: var(--border-radius-outline);
+	backdrop-filter: blur(3px);
+	background-color: rgba(var(--background-page-rgb), 0.5);
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
 	pointer-events: none;
@@ -443,8 +446,8 @@ function useDragDrop() {
 .more-icon,
 .edit-icon,
 .note {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--foreground-normal);
+	--v-icon-color-hover: var(--foreground-normal-alt);
 }
 
 .delete-action {
@@ -461,9 +464,12 @@ function useDragDrop() {
 	display: flex;
 	gap: 4px;
 	align-items: center;
-	padding: 12px 12px 8px;
-	background-color: var(--background-page);
+	padding: 7px;
 	border-top-right-radius: var(--border-radius-outline);
+	border-bottom-right-radius: var(--border-radius-outline);
+	border-bottom-left-radius: var(--border-radius-outline);
+	backdrop-filter: blur(3px);
+	background-color: rgba(var(--background-page-rgb), 0.5);
 }
 
 .resize-handlers div {

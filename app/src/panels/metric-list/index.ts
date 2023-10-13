@@ -1,50 +1,48 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import type { PanelQuery } from '@directus/extensions';
 import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
-import PanelMetric from './panel-metric.vue';
+import PanelMetricList from './panel-metric-list.vue';
 
 export default definePanel({
-	id: 'metric',
-	name: '$t:panels.metric.name',
-	description: '$t:panels.metric.description',
-	icon: 'functions',
-	component: PanelMetric,
+	id: 'metric-list',
+	name: '$t:panels.metric_list.name',
+	icon: 'format_list_numbered_rtl',
+	description: '$t:panels.metric_list.description',
+	component: PanelMetricList,
 	query(options) {
-		if (!options || !options.function) return;
+		if (!options?.collection) return;
+
 		const collectionsStore = useCollectionsStore();
 		const collectionInfo = collectionsStore.getCollection(options.collection);
 
 		if (!collectionInfo) return;
 		if (collectionInfo?.meta?.singleton) return;
 
-		const isRawValue = ['first', 'last'].includes(options.function);
+		// sort by the aggregate field
+		const sort =
+			options.sortDirection == 'asc'
+				? [`${options.aggregateFunction}.${options.aggregateField}`]
+				: ['-' + `${options.aggregateFunction}.${options.aggregateField}`];
 
-		const sort = options.sortField && `${options.function === 'last' ? '-' : ''}${options.sortField}`;
+		const aggregate = {
+			[options.aggregateFunction]: [options.aggregateField || '*'],
+		};
 
-		const aggregate = isRawValue
-			? undefined
-			: {
-					[options.function]: [options.field || '*'],
-			  };
+		const group = [options.groupByField];
 
-		const panelQuery: PanelQuery = {
+		const panelQuery = {
 			collection: options.collection,
 			query: {
 				sort,
-				limit: 1,
-				fields: [options.field],
+				limit: options.limit ?? 5,
+				aggregate,
+				group,
 			},
 		};
 
 		if (options.filter && Object.keys(options.filter).length > 0) {
 			panelQuery.query.filter = options.filter;
-		}
-
-		if (aggregate) {
-			panelQuery.query.aggregate = aggregate;
-			delete panelQuery.query.fields;
 		}
 
 		return panelQuery;
@@ -53,8 +51,8 @@ export default definePanel({
 		const fieldsStore = useFieldsStore();
 
 		const fieldType = computed(() => {
-			return options?.collection && options?.field
-				? fieldsStore.getField(options.collection, options.field)?.type
+			return options?.collection && options?.aggregateField
+				? fieldsStore.getField(options.collection, options.aggregateField)?.type
 				: null;
 		});
 
@@ -73,15 +71,26 @@ export default definePanel({
 						includeSystem: true,
 						includeSingleton: false,
 					},
-					selectedCollection: '',
-					hasBeenSelected: false,
 					width: 'half',
 				},
 			},
 			{
-				field: 'field',
+				field: 'limit',
+				type: 'integer',
+				name: '$t:limit',
+				schema: {
+					default_value: 5,
+				},
+				meta: {
+					interface: 'input',
+					width: 'half',
+				},
+			},
+
+			{
+				field: 'groupByField',
 				type: 'string',
-				name: '$t:panels.metric.field',
+				name: 'GroupBy Field',
 				meta: {
 					interface: 'system-field',
 					options: {
@@ -93,7 +102,21 @@ export default definePanel({
 				},
 			},
 			{
-				field: 'function',
+				field: 'aggregateField',
+				type: 'string',
+				name: 'Aggregated Field',
+				meta: {
+					interface: 'system-field',
+					options: {
+						collectionField: 'collection',
+						allowPrimaryKey: true,
+						allowNone: true,
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'aggregateFunction',
 				type: 'string',
 				name: '$t:aggregate_function',
 				meta: {
@@ -109,16 +132,6 @@ export default definePanel({
 							{
 								text: 'Count (Distinct)',
 								value: 'countDistinct',
-								disabled: false,
-							},
-							{
-								text: 'First',
-								value: 'first',
-								disabled: false,
-							},
-							{
-								text: 'Last',
-								value: 'last',
 								disabled: false,
 							},
 							{
@@ -144,30 +157,30 @@ export default definePanel({
 								value: 'sumDistinct',
 								disabled: !fieldIsNumber.value,
 							},
-							{
-								text: 'Minimum',
-								value: 'min',
-								disabled: !fieldIsNumber.value,
-							},
-							{
-								text: 'Maximum',
-								value: 'max',
-								disabled: !fieldIsNumber.value,
-							},
 						],
 					},
 				},
 			},
 			{
-				field: 'sortField',
+				field: 'sortDirection',
 				type: 'string',
-				name: '$t:sort_field',
+				name: '$t:sort_direction',
+				schema: {
+					default_value: 'desc',
+				},
 				meta: {
-					interface: 'system-field',
+					interface: 'select-dropdown',
 					options: {
-						collectionField: 'collection',
-						allowPrimaryKey: true,
-						placeholder: '$t:primary_key',
+						choices: [
+							{
+								text: '$t:sort_asc',
+								value: 'asc',
+							},
+							{
+								text: '$t:sort_desc',
+								value: 'desc',
+							},
+						],
 					},
 					width: 'half',
 				},
@@ -180,7 +193,6 @@ export default definePanel({
 					interface: 'system-filter',
 					options: {
 						collectionField: 'collection',
-						relationalFieldSelectable: false,
 					},
 				},
 			},
@@ -343,7 +355,7 @@ export default definePanel({
 								name: '$t:operator',
 								type: 'string',
 								schema: {
-									default_value: '>=',
+									default_value: '=',
 								},
 								meta: {
 									interface: 'select-dropdown',
@@ -360,22 +372,18 @@ export default definePanel({
 											{
 												text: '$t:operators.gt',
 												value: '>',
-												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.gte',
 												value: '>=',
-												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.lt',
 												value: '<',
-												disabled: !fieldIsNumber.value,
 											},
 											{
 												text: '$t:operators.lte',
 												value: '<=',
-												disabled: !fieldIsNumber.value,
 											},
 										],
 									},
@@ -407,159 +415,8 @@ export default definePanel({
 					},
 				},
 			},
-			{
-				field: 'textAlign',
-				type: 'string',
-				name: '$t:text_align',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{
-								text: '$t:left',
-								value: 'left',
-							},
-							{
-								text: '$t:center',
-								value: 'center',
-							},
-							{
-								text: '$t:right',
-								value: 'right',
-							},
-							{
-								text: '$t:justify',
-								value: 'justify',
-							},
-						],
-					},
-				},
-				schema: {
-					default_value: 'center',
-				},
-			},
-			{
-				field: 'fontWeight',
-				type: 'string',
-				name: '$t:font_weight',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{
-								text: '$t:fonts.thin',
-								value: 100,
-							},
-							{
-								text: '$t:fonts.extra_light',
-								value: 200,
-							},
-							{
-								text: '$t:fonts.light',
-								value: 300,
-							},
-							{
-								text: '$t:fonts.normal',
-								value: 400,
-							},
-							{
-								text: '$t:fonts.medium',
-								value: 500,
-							},
-							{
-								text: '$t:fonts.semi_bold',
-								value: 600,
-							},
-							{
-								text: '$t:fonts.bold',
-								value: 700,
-							},
-							{
-								text: '$t:fonts.extra_bold',
-								value: 800,
-							},
-							{
-								text: '$t:fonts.black',
-								value: 900,
-							},
-						],
-					},
-				},
-				schema: {
-					default_value: 800,
-				},
-			},
-			{
-				field: 'fontStyle',
-				type: 'string',
-				name: '$t:font_style',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{
-								text: '$t:fonts.normal',
-								value: 'normal',
-							},
-							{
-								text: '$t:fonts.italic',
-								value: 'italic',
-							},
-							{
-								text: '$t:fonts.oblique',
-								value: 'oblique',
-							},
-						],
-					},
-				},
-				schema: {
-					default_value: 'normal',
-				},
-			},
-			{
-				field: 'fontSize',
-				type: 'string',
-				name: '$t:font_size',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{ text: '$t:fonts.small', value: '32px' },
-							{ text: '$t:fonts.medium', value: '48px' },
-							{ text: '$t:fonts.large', value: '64px' },
-							{ text: '$t:fonts.auto', value: 'auto' },
-						],
-					},
-				},
-				schema: {
-					default_value: 'auto',
-				},
-			},
-			{
-				field: 'font',
-				type: 'string',
-				name: '$t:font',
-				meta: {
-					width: 'half',
-					interface: 'select-dropdown',
-					options: {
-						choices: [
-							{ text: '$t:displays.formatted-value.font_sans_serif', value: 'sans-serif' },
-							{ text: '$t:displays.formatted-value.font_serif', value: 'serif' },
-							{ text: '$t:displays.formatted-value.font_monospace', value: 'monospace' },
-						],
-					},
-				},
-				schema: {
-					default_value: 'sans-serif',
-				},
-			},
 		];
 	},
-	minWidth: 6,
-	minHeight: 2,
+	minWidth: 12,
+	minHeight: 6,
 });

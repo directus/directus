@@ -212,6 +212,17 @@ export default definePanel({
 				},
 			},
 			{
+				field: 'showPercentage',
+				name: '$t:show_percentage',
+				schema: {
+					default_value: true,
+				},
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+			},
+			{
 				field: 'conditionalFill',
 				type: 'json',
 				name: '$t:conditional_styles',
@@ -289,6 +300,6 @@ export default definePanel({
 			},
 		];
 	},
-	minWidth: 10,
-	minHeight: 10,
+	minWidth: 6,
+	minHeight: 6,
 });
