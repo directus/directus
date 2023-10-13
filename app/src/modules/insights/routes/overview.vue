@@ -166,19 +166,6 @@ function exportDasboard(ids: string[]) {
 	window.open(exportUrl);
 }
 
-function exportDasboardNah(ids: string[]) {
-	const exportedData = ids.map(getNewDashboardData);
-
-	// Download exported dashboard as json file
-	const element = document.createElement('a');
-	element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportedData)));
-	element.setAttribute('download', `exported-dashboards-${new Date().toISOString()}.json`);
-	element.style.display = 'none';
-	document.body.appendChild(element);
-	element.click();
-	document.body.removeChild(element);
-}
-
 async function deleteDashboard() {
 	if (!confirmDelete.value) return;
 
