@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Add support for uploading custom favicon files
+Added support for uploading custom favicon files

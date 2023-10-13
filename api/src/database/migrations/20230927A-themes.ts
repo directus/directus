@@ -9,8 +9,8 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('appearance');
 	});
 
-	await knex('directus_users').update({ appearance: 'dark' }).where({ theme: 'dark ' });
-	await knex('directus_users').update({ appearance: 'light' }).where({ theme: 'light ' });
+	await knex('directus_users').update({ appearance: 'dark' }).where({ theme: 'dark' });
+	await knex('directus_users').update({ appearance: 'light' }).where({ theme: 'light' });
 
 	await knex.schema.alterTable('directus_users', (table) => {
 		table.dropColumn('theme');
@@ -50,6 +50,7 @@ export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.string('project_color').defaultTo(null).nullable().alter();
 
+		table.dropColumn('public_favicon');
 		table.dropColumn('default_appearance');
 		table.dropColumn('default_theme_light');
 		table.dropColumn('theme_light_overrides');
