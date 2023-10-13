@@ -295,14 +295,7 @@ Returns the [Content Version object](#the-content-version-object) for the create
 
 ```graphql
 mutation {
-	create_versions_item(
-		data: {
-			key: "my_version"
-			name: "My Version"
-			collection: "my_collection"
-			item: "1"
-		}
-	) {
+	create_versions_item(data: { key: "my_version", name: "My Version", collection: "my_collection", item: "1" }) {
 		id
 		key
 		name
@@ -414,18 +407,8 @@ Returns an array of [Content Version objects](#the-content-version-object) for t
 mutation {
 	create_versions_items(
 		data: [
-			{
-				key: "my_version"
-				name: "My Version"
-				collection: "my_collection"
-				item: "1"
-			}
-			{
-				key: "another_version"
-				name: "Another Version"
-				collection: "another_collection"
-				item: "2"
-			}
+			{ key: "my_version", name: "My Version", collection: "my_collection", item: "1" }
+			{ key: "another_version", name: "Another Version", collection: "another_collection", item: "2" }
 		]
 	) {
 		id
@@ -446,13 +429,13 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	createContentVersions([
 		{
-			key: "my_version",
+			key: 'my_version',
 			name: 'My Version',
 			collection: 'my_collection',
 			item: 1,
 		},
 		{
-			key: "another_version",
+			key: 'another_version',
 			name: 'Another Version',
 			collection: 'another_collection',
 			item: 2,
@@ -824,10 +807,7 @@ import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	deleteContentVersions([
-		'21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5',
-		'31e1c0c6-b575-47fb-908a-baf81b4e5631',
-	])
+	deleteContentVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'])
 );
 ```
 
