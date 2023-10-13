@@ -30,6 +30,15 @@ const settingsStore = useSettingsStore();
 const serverStore = useServerStore();
 const userStore = useUserStore();
 
+// Some databases that dont have a native json type may return strings
+if (typeof settingsStore?.settings?.onboarding === 'string') {
+	settingsStore.settings.onboarding = JSON.parse(settingsStore.settings.onboarding);
+}
+
+if (typeof userStore?.currentUser?.onboarding === 'string') {
+	userStore.currentUser.onboarding = JSON.parse(userStore.currentUser.onboarding);
+}
+
 // Split up the v-form models from the payload,
 // so that we need to explicitly choose fields that we want to add
 // Note: The models must match the field names of the v-forms
@@ -38,7 +47,7 @@ const projectModel = ref({
 	project_url: settingsStore.settings?.project_url,
 	project_logo: settingsStore.settings?.project_logo,
 	project_color: settingsStore.settings?.project_color,
-	project_use_case: settingsStore.settings?.onboarding?.project_use_case,
+	project_use_case: settingsStore.settings?.onboarding?.project_use_case, // ?? JSON.parse(settingsStore.settings?.onboarding),
 });
 
 const userModel = ref({
@@ -95,7 +104,6 @@ const isLoading = ref(false);
 const error = ref<unknown>(null);
 const notice = ref<HTMLDivElement | null>(null);
 watchEffect(() => {
-	console.log('WATCHING ERRORNOTICE YO', notice.value);
 	if (!notice.value) {
 		return;
 	}
@@ -132,7 +140,7 @@ async function finishOnboarding() {
 			email: userModel.value.email,
 			onboarding: JSON.stringify({
 				primary_skillset: userModel.value.primary_skillset ?? null,
-				wants_emails: userModel.value.wants_emails,
+				wants_emails: userModel.value.wants_emails ?? false,
 				retryTransmission: true,
 			} satisfies UserOnboarding),
 		})
