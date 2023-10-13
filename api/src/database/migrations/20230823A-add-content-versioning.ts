@@ -18,6 +18,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.timestamp('date_created').defaultTo(knex.fn.now());
 		table.timestamp('date_updated').defaultTo(knex.fn.now());
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
+		// Cannot have two constraints from/to the same table, handled on API side
 		table.uuid('user_updated').references('id').inTable('directus_users');
 	});
 
