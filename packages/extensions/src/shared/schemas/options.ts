@@ -10,25 +10,31 @@ export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
 export const ExtensionSandboxOptions = z.object({
 	enabled: z.boolean(),
-	requestedScopes: z.union([
-		z.object({
-			type: z.literal('request'),
-			permissions: z.object({
-				urls: z.string(),
+	requestedScopes: z.array(
+		z.union([
+			z.object({
+				type: z.literal('request'),
+				permissions: z.object({
+					urls: z.string(),
+					methods: z.array(z.union([z.literal('get'), z.literal('post'), z.literal('patch'), z.literal('delete')])),
+				}),
 			}),
-		}),
-		z.object({
-			type: z.literal('create-items'),
-			permissions: z.object({
-				collection: z.union([z.array(z.string()), z.literal('*')]),
-			}),
-		}),
-	]),
+			z.any(), // @TODO replace with other scopes
+		])
+	),
 });
+
+export type ExtensionSandboxOptions = z.infer<typeof ExtensionSandboxOptions>;
 
 export const ExtensionOptionsBundleEntry = z.union([
 	z.object({
-		type: z.union([z.enum(APP_EXTENSION_TYPES), z.enum(API_EXTENSION_TYPES)]),
+		type: z.enum(API_EXTENSION_TYPES),
+		name: z.string(),
+		source: z.string(),
+		sandbox: z.optional(ExtensionSandboxOptions),
+	}),
+	z.object({
+		type: z.enum(APP_EXTENSION_TYPES),
 		name: z.string(),
 		source: z.string(),
 	}),
@@ -36,6 +42,7 @@ export const ExtensionOptionsBundleEntry = z.union([
 		type: z.enum(HYBRID_EXTENSION_TYPES),
 		name: z.string(),
 		source: SplitEntrypoint,
+		sandbox: z.optional(ExtensionSandboxOptions),
 	}),
 ]);
 

@@ -6,7 +6,7 @@ import type {
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
 } from '../constants/index.js';
-import type { SplitEntrypoint } from '../schemas/index.js';
+import type { SplitEntrypoint, ExtensionSandboxOptions } from '../schemas/index.js';
 
 export type AppExtensionType = (typeof APP_EXTENSION_TYPES)[number];
 export type ApiExtensionType = (typeof API_EXTENSION_TYPES)[number];
@@ -19,12 +19,9 @@ type ExtensionBase = {
 	path: string;
 	name: string;
 	local: boolean;
-	sandbox?: {
-		enabled: boolean;
-		permissions: x;
-	};
 	version?: string;
 	host?: string;
+	sandbox?: ExtensionSandboxOptions;
 };
 
 export type AppExtension = ExtensionBase & {
