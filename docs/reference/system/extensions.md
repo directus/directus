@@ -148,7 +148,7 @@ Provide a partial [extension object](#the-extension-object) as the body of your
 
 ```graphql
 type Mutation {
-	update_extensions_item(collection: String!, field: String!, data: update_directus_extensions_input!): directus_extensions
+	update_extensions_item(bundle: String, name: String!, data: update_directus_extensions_input!): directus_extensions
 }
 ```
 
