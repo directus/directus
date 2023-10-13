@@ -6,6 +6,7 @@ import { mapKeys } from 'lodash-es';
 import { computed, toRefs, unref } from 'vue';
 import type { Theme } from './schema.js';
 // import { theme as themeDefaultDark } from './themes/dark-directus.js';
+import { useHead } from '@unhead/vue';
 import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/light-directus.js';
 import { useFonts } from './use-fonts.js';
 import { useTheme } from './use-theme.js';
@@ -40,23 +41,36 @@ const cssVariables = computed(() => {
 
 const { googleFonts } = useFonts(theme);
 
+useHead({
+	link: computed(() => {
+		let fontsImport = '';
+
+		if (googleFonts.value.length > 0) {
+			const fontsString = googleFonts.value.join('&family=');
+			fontsImport += `https://fonts.googleapis.com/css2?family=${fontsString}`;
+			fontsImport += '\n';
+		}
+
+		return fontsImport
+			? [
+					{
+						rel: 'stylesheet',
+						href: fontsImport,
+					},
+			  ]
+			: [];
+	}),
+});
+
 const cssString = computed(() => {
-	let fontsImport = '';
-
-	if (googleFonts.value.length > 0) {
-		const fontsString = googleFonts.value.join('&family=');
-		fontsImport += `@import("https://fonts.googleapis.com/css2?family=${fontsString}");`;
-		fontsImport += '\n';
-	}
-
 	const variables = `:root {${Object.entries(unref(cssVariables))
 		.map(([key, value]) => `${key}: ${value};`)
 		.join(' ')}}`;
 
-	return fontsImport + variables;
+	return variables;
 });
 </script>
 
 <template>
-	<teleport to="#theme">{{ cssString }} {{ googleFonts }}</teleport>
+	<teleport to="#theme">{{ cssString }}</teleport>
 </template>

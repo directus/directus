@@ -42,6 +42,7 @@
 	},
 	"dependencies": {
 		"@sinclair/typebox": "0.31.17",
+		"@unhead/vue": "1.1.30",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21",
