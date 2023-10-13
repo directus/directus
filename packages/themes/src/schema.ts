@@ -2,12 +2,12 @@ import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 
 export const TypeId = {
-	Color: 'color',
-	Weight: 'weight',
+	Color: 'Color',
+	FontFamily: 'FontFamily',
 };
 
 const Color = Type.Ref(Type.String({ $id: TypeId.Color }));
-// const Weight = Type.Integer({ $id: TypeId.Weight });
+const FontFamily = Type.Ref(Type.String({ $id: TypeId.FontFamily }));
 
 const Rules = Type.Object({
 	foreground: Color,
@@ -40,6 +40,11 @@ const Rules = Type.Object({
 	dangerBackground: Color,
 	dangerSubdued: Color,
 	dangerAccent: Color,
+
+	fontFamilyDisplay: FontFamily,
+	fontFamilySansSerif: FontFamily,
+	fontFamilySerif: FontFamily,
+	fontFamilyMonospace: FontFamily,
 
 	navigation: Type.Object({
 		background: Color,
@@ -86,6 +91,7 @@ const Rules = Type.Object({
 		}),
 		title: Type.Object({
 			foreground: Color,
+			fontFamily: FontFamily,
 		}),
 	}),
 
@@ -129,10 +135,9 @@ const Rules = Type.Object({
 export const ThemeSchema = Type.Object({
 	name: Type.String(),
 	appearance: Type.Union([Type.Literal('light'), Type.Literal('dark')]),
-	fonts: Type.Array(Type.String()),
 	rules: Rules,
 });
 
-export const Definitions = { $defs: { [TypeId.Color]: Color } };
+export const Definitions = { $defs: { [TypeId.Color]: Color, [TypeId.FontFamily]: FontFamily } };
 
 export type Theme = Static<typeof ThemeSchema>;

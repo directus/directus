@@ -7,6 +7,7 @@ import { computed, toRefs, unref } from 'vue';
 import type { Theme } from './schema.js';
 // import { theme as themeDefaultDark } from './themes/dark-directus.js';
 import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/light-directus.js';
+import { useFonts } from './use-fonts.js';
 import { useTheme } from './use-theme.js';
 
 const props = withDefaults(
@@ -37,13 +38,25 @@ const cssVariables = computed(() => {
 	return mapKeys(rules, (_value, key) => getRuleName(key));
 });
 
+const { googleFonts } = useFonts(theme);
+
 const cssString = computed(() => {
-	return `:root {${Object.entries(unref(cssVariables))
+	let fontsImport = '';
+
+	if (googleFonts.value.length > 0) {
+		const fontsString = googleFonts.value.join('&family=');
+		fontsImport += `@import("https://fonts.googleapis.com/css2?family=${fontsString}");`;
+		fontsImport += '\n';
+	}
+
+	const variables = `:root {${Object.entries(unref(cssVariables))
 		.map(([key, value]) => `${key}: ${value};`)
 		.join(' ')}}`;
+
+	return fontsImport + variables;
 });
 </script>
 
 <template>
-	<teleport to="#theme">{{ cssString }}</teleport>
+	<teleport to="#theme">{{ cssString }} {{ googleFonts }}</teleport>
 </template>

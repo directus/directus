@@ -25,7 +25,7 @@ export const useTheme = (
 		const theme = unref(themes)[darkMode ? 'dark' : 'light'].find((theme) => theme.name === themeName);
 
 		if (!theme) {
-			if (themeName) {
+			if (themeName && themeName !== defaultTheme.name) {
 				// eslint-disable-next-line no-console
 				console.warn(`Theme "${themeName}" doesn't exist.`);
 			}

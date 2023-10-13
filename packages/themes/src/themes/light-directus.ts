@@ -3,7 +3,6 @@ import type { Theme } from '../schema.js';
 export const theme: Theme = {
 	name: 'Light (Directus)',
 	appearance: 'light',
-	fonts: [],
 	rules: {
 		foreground: '#4f5464',
 		foregroundAccent: '#172940',
@@ -35,6 +34,11 @@ export const theme: Theme = {
 		dangerBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 10%)',
 		dangerSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 50%)',
 		dangerAccent: 'color-mix(in srgb, var(--theme--danger), #2e3c43 25%)',
+
+		fontFamilyDisplay: 'var(--theme--font-family-sans-serif)',
+		fontFamilySansSerif: '"Inter", system-ui',
+		fontFamilySerif: '"Merriweather", serif',
+		fontFamilyMonospace: '"Fira Mono", monospace',
 
 		navigation: {
 			background: '#f0f4f9',
@@ -81,6 +85,7 @@ export const theme: Theme = {
 			},
 			title: {
 				foreground: 'var(--theme--foreground-accent)',
+				fontFamily: 'var(--theme--font-family-display)',
 			},
 		},
 
