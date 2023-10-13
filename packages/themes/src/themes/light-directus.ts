@@ -40,12 +40,12 @@ export const theme: Theme = {
 
 			list: {
 				icon: 'var(--project-color)',
-				iconHover: 'var(--project-color)',
-				iconActive: 'var(--project-color)',
+				iconHover: 'var(--theme--navigation--list--icon)',
+				iconActive: 'var(--theme--navigation--list--icon)',
 
 				foreground: 'var(--theme--foreground-accent)',
-				foregroundHover: 'var(--theme--foreground-accent)',
-				foregroundActive: 'var(--theme--foreground-accent)',
+				foregroundHover: 'var(--theme--navigation--list--foreground)',
+				foregroundActive: 'var(--theme--navigation--list--foreground)',
 
 				background: 'transparent',
 				backgroundHover: '#e4eaf1',
@@ -60,6 +60,27 @@ export const theme: Theme = {
 			},
 			title: {
 				foreground: 'var(--theme--foreground-accent)',
+			},
+		},
+
+		sidebar: {
+			background: '#f0f4f9',
+			foreground: 'var(--theme--foreground-subdued)',
+
+			section: {
+				toggle: {
+					icon: 'var(--theme--foreground--accent)',
+					iconHover: 'var(--theme--sidebar--section--toggle--icon)',
+					iconActive: 'var(--theme--sidebar--section--toggle--icon)',
+
+					foreground: 'var(--theme--foreground--accent)',
+					foregroundHover: 'var(--theme--sidebar--section--toggle--foreground)',
+					foregroundActive: 'var(--theme--sidebar--section--toggle--foreground)',
+
+					background: '#e4eaf1',
+					backgroundHover: 'var(--theme--sidebar--section--toggle--background)',
+					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
+				},
 			},
 		},
 	},

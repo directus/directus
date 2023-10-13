@@ -47,14 +47,6 @@ const { sidebarOpen } = toRefs(appStore);
 	</div>
 </template>
 
-<style>
-body {
-	--sidebar-detail-icon-color: var(--theme--foreground-accent);
-	--sidebar-detail-color: var(--theme--foreground-accent);
-	--sidebar-detail-color-active: var(--theme--primary);
-}
-</style>
-
 <style lang="scss" scoped>
 .sidebar-detail {
 	--v-badge-offset-x: 3px;
@@ -77,11 +69,11 @@ body {
 		justify-content: space-between;
 		width: 100%;
 		height: 60px;
-		color: var(--sidebar-detail-color);
-		background-color: var(--background-normal-alt);
+		color: var(--theme--sidebar--section--toggle--foreground);
+		background-color: var(--theme--sidebar--section--toggle--background);
 
 		.icon {
-			--v-icon-color: var(--sidebar-detail-icon-color);
+			--v-icon-color: var(--theme--sidebar--section--toggle--icon);
 
 			display: flex;
 			align-items: center;
@@ -90,12 +82,21 @@ body {
 			height: 100%;
 		}
 
-		&.open,
 		&:hover {
-			color: var(--sidebar-detail-color-active);
+			color: var(--theme--sidebar--section--toggle--foreground-hover);
+			background-color: var(--theme--sidebar--section--toggle--background-hover);
 
 			.icon {
-				--v-icon-color: var(--sidebar-detail-color-active);
+				--v-icon-color: var(--theme--sidebar--section--toggle--icon-hover);
+			}
+		}
+
+		&.open {
+			color: var(--theme--sidebar--section--toggle--foreground-active);
+			background-color: var(--theme--sidebar--section--toggle--background-active);
+
+			.icon {
+				--v-icon-color: var(--theme--sidebar--section--toggle--icon-active);
 			}
 		}
 	}
@@ -151,7 +152,7 @@ body {
 
 		:deep(.page-description) {
 			margin-bottom: 8px;
-			color: var(--theme--foreground-subdued);
+			color: var(--theme--sidebar--foreground);
 		}
 
 		:deep(.page-description a) {

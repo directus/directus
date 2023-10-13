@@ -34,23 +34,26 @@ const Rules = Type.Object({
 			background: Color,
 			button: Type.Object({
 				foreground: Color,
-				background: Color,
 				foregroundHover: Color,
-				backgroundHover: Color,
 				foregroundActive: Color,
+
+				background: Color,
+				backgroundHover: Color,
 				backgroundActive: Color,
 			}),
 		}),
 
 		list: Type.Object({
 			icon: Color,
-			foreground: Color,
-			background: Color,
 			iconHover: Color,
-			foregroundHover: Color,
-			backgroundHover: Color,
 			iconActive: Color,
+
+			foreground: Color,
+			foregroundHover: Color,
 			foregroundActive: Color,
+
+			background: Color,
+			backgroundHover: Color,
 			backgroundActive: Color,
 		}),
 	}),
@@ -62,6 +65,27 @@ const Rules = Type.Object({
 		}),
 		title: Type.Object({
 			foreground: Color,
+		}),
+	}),
+
+	sidebar: Type.Object({
+		background: Color,
+		foreground: Color,
+
+		section: Type.Object({
+			toggle: Type.Object({
+				icon: Color,
+				iconHover: Color,
+				iconActive: Color,
+
+				foreground: Color,
+				foregroundHover: Color,
+				foregroundActive: Color,
+
+				background: Color,
+				backgroundHover: Color,
+				backgroundActive: Color,
+			}),
 		}),
 	}),
 });

@@ -616,9 +616,6 @@ function discardAndLeave() {
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--theme--primary);
-	--sidebar-detail-color: var(--theme--primary);
-	--sidebar-detail-color-active: var(--theme--primary);
 	--form-vertical-gap: 24px;
 
 	display: contents;

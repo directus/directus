@@ -55,5 +55,6 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 	border-radius: var(--border-radius);
 	max-height: var(--input-height-max);
 	overflow-y: auto;
+	background-color: var(--background-input);
 }
 </style>

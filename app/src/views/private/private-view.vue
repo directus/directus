@@ -497,7 +497,7 @@ function getWidth(input: unknown, fallback: number): number {
 		width: 280px;
 		height: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 
