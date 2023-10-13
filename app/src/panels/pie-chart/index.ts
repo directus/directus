@@ -3,11 +3,13 @@ import { definePanel } from '@directus/extensions';
 import { cssVar } from '@directus/utils/browser';
 import { computed } from 'vue';
 import PanelPieChart from './panel-pie-chart.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'pie-chart',
 	name: '$t:panels.piechart.name',
 	icon: 'pie_chart',
+	preview: PreviewSVG,
 	description: '$t:panels.piechart.description',
 	component: PanelPieChart,
 	query(options) {
