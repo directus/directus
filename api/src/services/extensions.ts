@@ -133,7 +133,6 @@ export class ExtensionsService {
 
 					if (entry) {
 						schema = {
-							name: entry.name,
 							type: entry.type,
 							local: bundle.local,
 						};
