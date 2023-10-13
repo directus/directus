@@ -245,7 +245,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 						overflow: hidden;
 						white-space: nowrap;
 						text-overflow: ellipsis;
-						color: var(--foreground-normal-alt);
+						color: var(--theme--foreground-accent);
 						margin-right: 6px;
 					}
 				}
@@ -265,7 +265,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 				}
 
 				.actions {
-					color: var(--foreground-subdued);
+					color: var(--theme--foreground-subdued);
 
 					.v-icon {
 						margin-left: 4px;
@@ -351,7 +351,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					margin-bottom: 2px;
 					.datetime {
 						display: inline-block;
-						color: var(--foreground-subdued);
+						color: var(--theme--foreground-subdued);
 						font-size: 13px;
 						font-weight: 600;
 						line-height: 24px;
@@ -373,7 +373,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 						.avatar-overflow {
 							align-self: center;
-							color: var(--foreground-subdued);
+							color: var(--theme--foreground-subdued);
 							margin-left: 2px;
 						}
 					}
@@ -390,7 +390,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 		transition: border-color var(--transition) var(--fast);
 
 		.v-icon {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			transition: color var(--transition) var(--fast);
 		}
 

@@ -320,7 +320,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	&:empty::before {
 		pointer-events: none;
 		content: attr(placeholder);
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	&.multiline {

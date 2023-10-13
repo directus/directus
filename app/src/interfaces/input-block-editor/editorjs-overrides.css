@@ -96,7 +96,7 @@
 }
 
 .codex-editor .ce-popover-item-secondary-label {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .codex-editor .ce-popover__items:not(:first-child) {
@@ -131,7 +131,7 @@
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm svg {
-	fill: var(--foreground-normal-alt) !important;
+	fill: var(--theme--foreground-accent) !important;
 }
 
 /* Tooltips */
@@ -277,7 +277,7 @@
 }
 
 .codex-editor .ce-paragraph[data-placeholder]:empty::before {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 /* Quote block */
@@ -391,7 +391,7 @@
 }
 
 .codex-editor .cdx-attaches__size {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 /* InlineCode */
@@ -427,7 +427,7 @@
 
 .tc-toolbox {
 	--toggler-dots-color: var(--theme--foreground);
-	--toggler-dots-color-hovered: var(--foreground-normal-alt);
+	--toggler-dots-color-hovered: var(--theme--foreground-accent);
 }
 
 .tc-toolbox__toggler:hover {
@@ -560,7 +560,7 @@
 
 .codex-editor .ce-block b,
 .codex-editor .ce-block strong {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 600;
 }
 
@@ -624,7 +624,7 @@
 .codex-editor .ce-block figure figcaption {
 	display: block;
 	margin-top: 0.25rem;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 }
 

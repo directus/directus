@@ -458,7 +458,7 @@ textarea {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -474,7 +474,7 @@ textarea {
 }
 
 .interface-input-rich-text-md.disabled .preview-box {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror) {
@@ -523,7 +523,7 @@ textarea {
 
 	.view {
 		--v-button-background-color: var(--border-subdued);
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--theme--foreground-subdued);
 		--v-button-background-color-hover: var(--border-normal);
 		--v-button-color-hover: var(--theme--foreground);
 		--v-button-background-color-active: var(--border-normal);

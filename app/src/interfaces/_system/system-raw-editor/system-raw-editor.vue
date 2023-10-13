@@ -153,7 +153,7 @@ watch(
 		padding: var(--input-padding);
 
 		.cm-tag {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.cm-variable-2 {

@@ -108,7 +108,7 @@ const formattedTime = computed(() => {
 }
 
 .item-date {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-size: 12px;
 }
 
@@ -127,7 +127,7 @@ const formattedTime = computed(() => {
 .item-info {
 	display: flex;
 	align-items: center;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .share-uses {
@@ -157,7 +157,7 @@ const formattedTime = computed(() => {
 .header-right {
 	position: relative;
 	flex-basis: 24px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	.more {
 		cursor: pointer;

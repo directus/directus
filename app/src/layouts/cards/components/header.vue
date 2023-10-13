@@ -140,7 +140,7 @@ function toggleDescending() {
 	}
 
 	.select-all {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -156,7 +156,7 @@ function toggleDescending() {
 .end {
 	display: flex;
 	align-items: center;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	.size-selector {
 		margin-right: 16px;

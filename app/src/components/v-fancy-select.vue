@@ -169,7 +169,7 @@ function toggle(item: Record<string, any>) {
 }
 
 .icon-right {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 }
 
 .v-divider {

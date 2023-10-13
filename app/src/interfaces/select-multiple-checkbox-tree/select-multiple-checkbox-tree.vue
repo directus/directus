@@ -114,7 +114,7 @@ const searchDebounced = ref('');
 }
 
 .footer > button {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
@@ -128,7 +128,7 @@ const searchDebounced = ref('');
 }
 
 .footer > button:disabled {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	cursor: not-allowed;
 }
 </style>

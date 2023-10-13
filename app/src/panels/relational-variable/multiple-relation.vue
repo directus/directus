@@ -102,7 +102,7 @@ function deleteItem(elem: Record<string, any>) {
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 

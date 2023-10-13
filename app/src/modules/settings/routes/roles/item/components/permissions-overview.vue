@@ -217,7 +217,7 @@ function useReset() {
 .system-toggle {
 	width: 100%;
 	height: 48px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-subdued);
 
 	.v-icon {
@@ -228,7 +228,7 @@ function useReset() {
 .reset-toggle {
 	display: block;
 	margin: 8px auto;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 
 	button {

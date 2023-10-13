@@ -278,7 +278,7 @@ function addKeyAsNode() {
 		}
 
 		.no-rules {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			font-family: var(--family-monospace);
 		}
 	}
@@ -309,7 +309,7 @@ function addKeyAsNode() {
 			width: 100%;
 			height: 30px;
 			padding: 0;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			background-color: var(--theme--background);
 			border: var(--border-width) solid var(--border-subdued);
 			border-radius: 100px;

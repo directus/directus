@@ -274,13 +274,13 @@ const steps = computed(() => {
 		}
 
 		.subdued {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 
 	.mono {
 		font-family: var(--family-monospace);
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	.dot {
@@ -306,7 +306,7 @@ const steps = computed(() => {
 
 .empty {
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 

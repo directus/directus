@@ -139,7 +139,7 @@ onUnmounted(() => {
 			position: absolute;
 			top: 2px;
 			left: 0;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			font-weight: 600;
 			font-size: 12px;
 			white-space: nowrap;

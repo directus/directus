@@ -163,7 +163,7 @@ watch(validationMessages, (newVal, oldVal) => {
 	display: block;
 	width: 4px;
 	height: 4px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--theme--foreground-subdued);
 	border-radius: 4px;
 	content: '';
 }

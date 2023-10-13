@@ -113,7 +113,7 @@ function toggleInput(): void {
 <style>
 body {
 	--v-checkbox-color: var(--primary);
-	--v-checkbox-unchecked-color: var(--foreground-subdued);
+	--v-checkbox-unchecked-color: var(--theme--foreground-subdued);
 }
 </style>
 
@@ -160,11 +160,11 @@ body {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.checkbox {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 

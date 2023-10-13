@@ -134,7 +134,7 @@ dt {
 dd {
 	flex-grow: 1;
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }

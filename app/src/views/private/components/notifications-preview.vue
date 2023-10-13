@@ -54,7 +54,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 
 .link {
 	display: block;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 	text-decoration: none;
 

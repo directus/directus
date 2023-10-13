@@ -93,7 +93,7 @@ function setIcon(icon: string | null) {
 	--v-input-placeholder-color: var(--primary);
 
 	&:focus-within {
-		--v-input-placeholder-color: var(--foreground-subdued);
+		--v-input-placeholder-color: var(--theme--foreground-subdued);
 	}
 }
 
@@ -119,7 +119,7 @@ function setIcon(icon: string | null) {
 	grid-template-columns: repeat(auto-fit, 24px);
 	justify-content: center;
 	padding: 20px 0;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .open-indicator {

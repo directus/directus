@@ -285,7 +285,7 @@ function remove(id: string) {
 }
 
 .to {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-family: var(--family-monospace);
 }
 

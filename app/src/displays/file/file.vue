@@ -59,7 +59,7 @@ img {
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	position: relative;
 	display: inline-flex;

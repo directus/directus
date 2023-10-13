@@ -11,6 +11,9 @@ const Color = Type.Ref(Type.String({ $id: TypeId.Color }));
 
 const Rules = Type.Object({
 	foreground: Color,
+	foregroundSubdued: Color,
+	foregroundAccent: Color,
+
 	background: Color,
 	navigation: Type.Object({
 		background: Color,

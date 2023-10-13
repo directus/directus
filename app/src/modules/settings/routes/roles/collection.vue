@@ -198,7 +198,7 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .description {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .public {

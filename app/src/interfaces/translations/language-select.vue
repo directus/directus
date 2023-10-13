@@ -116,7 +116,7 @@ const displayValue = computed(() => {
 			gap: 10px;
 			align-items: center;
 			justify-content: flex-end;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		&:hover {
@@ -131,7 +131,7 @@ const displayValue = computed(() => {
 				display: block;
 				width: 4px;
 				height: 4px;
-				background-color: var(--foreground-subdued);
+				background-color: var(--theme--foreground-subdued);
 				border-radius: 2px;
 				content: '';
 			}

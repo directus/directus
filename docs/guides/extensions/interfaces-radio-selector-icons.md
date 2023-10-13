@@ -359,11 +359,11 @@ under the closing `script` tag:
 	border-radius: 0;
 	appearance: none;
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 		svg {
 			width: 100%;
 			height: 100%;
-			fill: var(--foreground-subdued);
+			fill: var(--theme--foreground-subdued);
 		}
 	}
     & > .v-icon {
@@ -395,10 +395,10 @@ under the closing `script` tag:
 	&:disabled {
 		cursor: not-allowed;
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&.block {
@@ -427,7 +427,7 @@ under the closing `script` tag:
 	}
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&:not(:disabled).checked {
@@ -686,11 +686,11 @@ export default {
 	border-radius: 0;
 	appearance: none;
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 		svg {
 			width: 100%;
 			height: 100%;
-			fill: var(--foreground-subdued);
+			fill: var(--theme--foreground-subdued);
 		}
 	}
     & > .v-icon {
@@ -722,10 +722,10 @@ export default {
 	&:disabled {
 		cursor: not-allowed;
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&.block {
@@ -754,7 +754,7 @@ export default {
 	}
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&:not(:disabled).checked {

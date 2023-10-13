@@ -47,7 +47,7 @@ const { t } = useI18n();
 
 <style scoped>
 :deep(.v-icon) {
-	color: var(--foreground-subdued) !important;
+	color: var(--theme--foreground-subdued) !important;
 }
 
 :deep(.v-icon:hover:not(.disabled)) {

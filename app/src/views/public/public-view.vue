@@ -166,7 +166,7 @@ const logoURL = computed<string | null>(() => {
 	height: 100%;
 
 	:slotted(.v-icon) {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		margin-left: 4px;
 	}
@@ -273,7 +273,7 @@ const logoURL = computed<string | null>(() => {
 
 	.notice {
 		display: flex;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	.title-box {
@@ -295,7 +295,7 @@ const logoURL = computed<string | null>(() => {
 
 			.subtitle {
 				width: 100%;
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 	}
@@ -319,9 +319,9 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	&.branded :deep(.v-button) {
-		--v-button-background-color: var(--foreground-normal-alt);
-		--v-button-background-color-hover: var(--foreground-normal-alt);
-		--v-button-background-color-active: var(--foreground-normal-alt);
+		--v-button-background-color: var(--theme--foreground-accent);
+		--v-button-background-color-hover: var(--theme--foreground-accent);
+		--v-button-background-color-active: var(--theme--foreground-accent);
 	}
 
 	&.branded :deep(.v-input) {
@@ -330,7 +330,7 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	&.branded :deep(.v-input.solid) {
-		--v-input-border-color-focus: var(--foreground-subdued);
+		--v-input-border-color-focus: var(--theme--foreground-subdued);
 	}
 }
 

@@ -339,11 +339,11 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .v-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--foreground);
 
 	&.hidden-icon {
-		--v-icon-color-hover: var(--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground-subdued);
 	}
 
 	&.unmanaged {
@@ -478,7 +478,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 			.interface {
 				display: none;
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 				font-family: var(--family-monospace);
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);

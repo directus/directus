@@ -57,7 +57,7 @@ const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
 }
 
 .drag-handle {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	cursor: ns-resize;
 

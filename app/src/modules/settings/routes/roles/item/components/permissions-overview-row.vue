@@ -94,7 +94,7 @@ function isLoading(action: string) {
 
 		.actions {
 			margin-left: 8px;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			font-size: 12px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);

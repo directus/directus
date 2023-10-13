@@ -401,7 +401,7 @@ const refreshInterval = computed({
 .clear-changes {
 	--v-button-color: var(--theme--foreground);
 	--v-button-color-hover: var(--theme--foreground);
-	--v-button-background-color: var(--foreground-subdued);
+	--v-button-background-color: var(--theme--foreground-subdued);
 	--v-button-background-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--foreground-inverted);
 	--v-button-background-color-active: var(--primary);

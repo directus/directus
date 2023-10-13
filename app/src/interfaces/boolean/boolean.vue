@@ -16,7 +16,7 @@ withDefaults(
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
 		colorOn: 'var(--primary)',
-		colorOff: 'var(--foreground-subdued)',
+		colorOff: 'var(--theme--foreground-subdued)',
 	}
 );
 

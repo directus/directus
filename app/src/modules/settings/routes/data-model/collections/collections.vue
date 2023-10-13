@@ -310,7 +310,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .collection-item.hidden {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--theme--foreground-subdued);
 }
 
 .collection-icon {
@@ -318,7 +318,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .hidden .collection-name {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	flex-grow: 1;
 }
 

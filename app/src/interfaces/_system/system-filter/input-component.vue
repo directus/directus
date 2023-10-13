@@ -170,7 +170,7 @@ function emitValue(val: string) {
 
 	&:empty {
 		&::after {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			content: '--';
 		}
 	}
@@ -200,7 +200,7 @@ input {
 	border: none;
 
 	&::placeholder {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		font-weight: 500;
 		font-family: var(--family-monospace);
 	}

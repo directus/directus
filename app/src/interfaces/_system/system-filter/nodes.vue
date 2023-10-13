@@ -390,7 +390,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	transition: border-color var(--fast) var(--transition);
 
 	.logic-type {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		.key {
 			margin-right: 4px;
@@ -477,7 +477,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	.delete {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 		--v-icon-color-hover: var(--danger);
 
 		position: absolute;
@@ -499,7 +499,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	.drag-handle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		margin-right: 4px;
 		cursor: grab;

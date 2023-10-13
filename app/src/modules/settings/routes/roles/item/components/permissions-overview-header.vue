@@ -17,7 +17,7 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .permissions-overview-header {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	position: sticky;
 	top: calc(var(--header-bar-height) - 1px); // minus 1px to avoid gaps

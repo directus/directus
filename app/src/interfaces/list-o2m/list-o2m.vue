@@ -648,7 +648,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.item-count {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		white-space: nowrap;
 	}
 
@@ -673,7 +673,7 @@ function getLinkForItem(item: DisplayItem) {
 }
 
 .item-link {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
@@ -688,7 +688,7 @@ function getLinkForItem(item: DisplayItem) {
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
@@ -704,7 +704,7 @@ function getLinkForItem(item: DisplayItem) {
 	width: 120px;
 	padding: 10px 0;
 	margin-right: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	span {
 		width: auto;

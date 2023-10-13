@@ -145,7 +145,7 @@ function navigateToUser() {
 	}
 
 	.email {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 
@@ -153,7 +153,7 @@ function navigateToUser() {
 	cursor: help;
 
 	&:hover {
-		border-bottom: 2px dotted var(--foreground-subdued);
+		border-bottom: 2px dotted var(--theme--foreground-subdued);
 	}
 }
 

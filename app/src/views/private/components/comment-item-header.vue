@@ -134,7 +134,7 @@ function useDelete() {
 		margin-right: 8px;
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
@@ -147,7 +147,7 @@ function useDelete() {
 	.header-right {
 		position: relative;
 		flex-basis: 24px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		.more {
 			cursor: pointer;

@@ -286,7 +286,7 @@ const arrows = computed(() => {
 			}
 
 			&.subdued {
-				stroke: var(--foreground-subdued);
+				stroke: var(--theme--foreground-subdued);
 			}
 
 			&.fade-enter-active,

@@ -160,12 +160,12 @@ body {
 		resize: none;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 
 	&.disabled textarea {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		background-color: var(--background-subdued);
 	}
 }

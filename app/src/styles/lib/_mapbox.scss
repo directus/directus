@@ -97,7 +97,7 @@
 	a {
 		color: var(--theme--foreground);
 		&:hover {
-			color: var(--foreground-normal-alt);
+			color: var(--theme--foreground-accent);
 		}
 	}
 
@@ -119,7 +119,7 @@
 		color: var(--theme--foreground);
 
 		&:hover {
-			color: var(--foreground-normal-alt);
+			color: var(--theme--foreground-accent);
 		}
 	}
 }
@@ -174,7 +174,7 @@
 }
 
 .mapbox-gl-geocoder--error {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .map-selection-box {

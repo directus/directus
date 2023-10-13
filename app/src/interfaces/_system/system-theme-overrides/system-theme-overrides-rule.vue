@@ -65,7 +65,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 			content: '';
 			width: 4px;
 			height: 4px;
-			background-color: var(--foreground-subdued);
+			background-color: var(--theme--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;
 			top: 11px;
@@ -89,7 +89,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 		max-width: 100%;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 

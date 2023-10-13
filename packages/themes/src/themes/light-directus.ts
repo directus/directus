@@ -5,14 +5,16 @@ export const theme: Theme = {
 	appearance: 'light',
 	fonts: [],
 	rules: {
-		foreground: '#4f5464',
 		background: '#fff',
+		foreground: '#4f5464',
+		foregroundAccent: '#172940',
+		foregroundSubdued: '#a2b5cd',
 		navigation: {
 			background: '#f0f4f9',
 
 			project: {
 				background: '#e4eaf1',
-				foreground: '#172940'
+				foreground: '#172940',
 			},
 
 			modules: {
@@ -29,17 +31,17 @@ export const theme: Theme = {
 
 			list: {
 				icon: 'var(--brand)',
-				foreground: '#172940',
-				background: 'transparent',
-
 				iconHover: 'var(--brand)',
-				foregroundHover: '#172940',
-				backgroundHover: '#e4eaf1',
-
 				iconActive: 'var(--brand)',
+
+				foreground: '#172940',
+				foregroundHover: '#172940',
 				foregroundActive: '#172940',
+
+				background: 'transparent',
+				backgroundHover: '#e4eaf1',
 				backgroundActive: '#e4eaf1',
-			}
+			},
 		},
 	},
 };

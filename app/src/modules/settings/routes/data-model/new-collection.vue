@@ -505,7 +505,7 @@ function getSystemRelations() {
 }
 
 .system :deep(.v-input .input) {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .system :deep(.v-input .active .input) {
@@ -513,7 +513,7 @@ function getSystemRelations() {
 }
 
 .system .v-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 }
 
 .spacer {

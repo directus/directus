@@ -382,7 +382,7 @@ function useDragDrop() {
 	right: 0;
 	z-index: 2;
 	padding: 17px 14px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 15px;
 	font-family: var(--family-monospace);
@@ -423,13 +423,13 @@ function useDragDrop() {
 }
 
 .icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	margin-right: 4px;
 }
 
 .name {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
 	font-family: var(--family-sans-serif);
@@ -443,7 +443,7 @@ function useDragDrop() {
 .more-icon,
 .edit-icon,
 .note {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 }
 

@@ -505,7 +505,7 @@ function handleKeyDown(event: any) {
 		justify-content: space-between;
 		height: 36px;
 		padding: 10px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		background-color: var(--theme--background);
 		border: var(--border-width) solid var(--theme--background);
 		border-radius: var(--border-radius);

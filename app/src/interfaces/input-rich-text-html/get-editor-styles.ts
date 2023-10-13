@@ -44,7 +44,7 @@ body.mce-content-readonly {
 }
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${cssVar(`--family-${font}`)}, serif;
-	color: ${cssVar('--foreground-normal-alt')};
+	color: ${cssVar('--theme--foreground-accent')};
 	font-weight: 700;
 	margin-bottom: 0;
 }

@@ -190,7 +190,7 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.bold {
-		color: var(--foreground-normal-alt);
+		color: var(--theme--foreground-accent);
 		font-weight: 700;
 	}
 

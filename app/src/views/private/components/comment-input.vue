@@ -396,7 +396,7 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 8px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
@@ -405,7 +405,7 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 36px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
@@ -423,12 +423,12 @@ function pressedEnter() {
 	.mention,
 	.emoji-button {
 		--v-button-background-color: transparent;
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--theme--foreground-subdued);
 		--v-button-color-hover: var(--primary);
 	}
 
 	.cancel {
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--theme--foreground-subdued);
 	}
 
 	.post-comment {

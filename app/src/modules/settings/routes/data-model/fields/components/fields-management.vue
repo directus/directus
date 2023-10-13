@@ -212,7 +212,7 @@ async function setNestedSort(updates?: Field[]) {
 	width: max-content;
 	margin: 0 auto;
 	margin-top: 8px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

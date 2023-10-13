@@ -4,8 +4,8 @@
 		--font: var(--family-sans-serif);
 		--text-color: var(--theme--foreground);
 		--dark-text-color: var(--theme--foreground);
-		--secondary-text-color: var(--foreground-normal-alt);
-		--dark-secondary-text-color: var(--foreground-normal-alt);
+		--secondary-text-color: var(--theme--foreground-accent);
+		--dark-secondary-text-color: var(--theme--foreground-accent);
 		--dark-border-color: var(--border-normal);
 		--dark-background-color: var(--background-subdued);
 
@@ -20,7 +20,7 @@
 		margin: 8px;
 
 		.emoji-picker__search-icon {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			top: calc(50% - 2px);
 			transform: translate(0, -50%);
 		}
@@ -41,7 +41,7 @@
 			}
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 	}
@@ -57,7 +57,7 @@
 				transition: color var(--fast) var(--transition);
 
 				&:not(.active) {
-					color: var(--foreground-subdued);
+					color: var(--theme--foreground-subdued);
 				}
 
 				&:hover {

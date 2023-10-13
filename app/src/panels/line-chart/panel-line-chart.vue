@@ -117,7 +117,7 @@ function setUpChart() {
 				enabled: false,
 			},
 			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			foreColor: 'var(--theme--foreground-subdued)',
 		},
 		series: [series],
 		stroke: {
@@ -191,7 +191,7 @@ function setUpChart() {
 				offsetY: -4,
 				style: {
 					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -225,7 +225,7 @@ function setUpChart() {
 				},
 				style: {
 					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},

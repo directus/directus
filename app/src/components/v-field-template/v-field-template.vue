@@ -336,7 +336,7 @@ function setContent() {
 	position: absolute;
 	top: 50%;
 	left: 14px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);
 	user-select: none;
 	pointer-events: none;

@@ -545,7 +545,7 @@ function discardAndLeave() {
 			<display-color
 				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
 				class="status-dot"
-				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--theme--foreground-subdued)'"
 			/>
 		</template>
 
@@ -736,7 +736,7 @@ function discardAndLeave() {
 }
 
 .clear-changes {
-	--v-button-background-color: var(--foreground-subdued);
+	--v-button-background-color: var(--theme--foreground-subdued);
 	--v-button-background-color-hover: var(--theme--foreground);
 }
 

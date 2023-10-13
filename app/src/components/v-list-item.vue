@@ -198,13 +198,13 @@ body {
 		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {
-			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--foreground-subdued));
+			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-hover);
 			background-color: var(--v-list-item-background-color-hover);
 		}
 
 		&:not(.disabled):not(.dense):not(.block):active {
-			--v-list-item-icon-color: var(--v-list-item-icon-color-active, var(--foreground-subdued));
+			--v-list-item-icon-color: var(--v-list-item-icon-color-active, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-active);
 			background-color: var(--v-list-item-background-color-active);
 		}
@@ -217,7 +217,7 @@ body {
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--foreground-subdued) !important;
+		--v-list-item-color: var(--theme--foreground-subdued) !important;
 
 		cursor: not-allowed;
 	}
@@ -239,7 +239,7 @@ body {
 		--v-list-item-border-color: var(--border-subdued);
 		--v-list-item-background-color: var(--theme--background);
 		--v-list-item-background-color-hover: var(--card-face-color);
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		position: relative;
 		display: flex;

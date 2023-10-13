@@ -175,12 +175,12 @@ function handleClick() {
 		}
 
 		.type {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			text-transform: uppercase;
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 
 		.v-skeleton-loader {
@@ -314,6 +314,6 @@ function handleClick() {
 
 .subtitle {
 	margin-top: 0px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 </style>

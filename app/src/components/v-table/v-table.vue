@@ -456,7 +456,7 @@ table :deep(.sortable-ghost .cell) {
 .loading-text td,
 .no-items-text td {
 	padding: 16px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .inline {
@@ -469,7 +469,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .disabled {
-	--v-table-color: var(--foreground-subdued);
+	--v-table-color: var(--theme--foreground-subdued);
 	--v-table-background-color: var(--background-subdued);
 }
 </style>

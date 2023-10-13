@@ -463,7 +463,7 @@ function revert(values: Record<string, any>) {
 	border-radius: calc(var(--border-radius) + 4px);
 
 	.avatar {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		display: flex;
 		flex-shrink: 0;
@@ -509,9 +509,9 @@ function revert(values: Record<string, any>) {
 		}
 
 		.v-chip {
-			--v-chip-color: var(--foreground-subdued);
+			--v-chip-color: var(--theme--foreground-subdued);
 			--v-chip-background-color: var(--background-subdued);
-			--v-chip-color-hover: var(--foreground-subdued);
+			--v-chip-color-hover: var(--theme--foreground-subdued);
 			--v-chip-background-color-hover: var(--background-subdued);
 
 			margin-top: 4px;
@@ -527,7 +527,7 @@ function revert(values: Record<string, any>) {
 		.title,
 		.email,
 		.location {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.name {

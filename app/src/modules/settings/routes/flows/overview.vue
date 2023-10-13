@@ -36,7 +36,7 @@ const conditionalFormatting = ref([
 		operator: 'eq',
 		value: 'inactive',
 		text: t('inactive'),
-		color: 'var(--foreground-subdued)',
+		color: 'var(--theme--foreground-subdued)',
 		background: 'var(--background-normal)',
 	},
 ]);
@@ -268,7 +268,7 @@ function onFlowDrawerCompletion(id: string) {
 }
 
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 }
 

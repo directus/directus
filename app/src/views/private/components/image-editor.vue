@@ -528,7 +528,7 @@ function setAspectRatio() {
 
 .dimensions {
 	margin-right: 12px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }
 

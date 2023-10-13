@@ -49,8 +49,8 @@ const { sidebarOpen } = toRefs(appStore);
 
 <style>
 body {
-	--sidebar-detail-icon-color: var(--foreground-normal-alt);
-	--sidebar-detail-color: var(--foreground-normal-alt);
+	--sidebar-detail-icon-color: var(--theme--foreground-accent);
+	--sidebar-detail-color: var(--theme--foreground-accent);
 	--sidebar-detail-color-active: var(--primary);
 }
 </style>
@@ -151,7 +151,7 @@ body {
 
 		:deep(.page-description) {
 			margin-bottom: 8px;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		:deep(.page-description a) {
@@ -160,7 +160,7 @@ body {
 	}
 
 	.expand-icon {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 </style>

@@ -115,7 +115,7 @@ function setUpChart() {
 			width: '100%',
 			toolbar: { show: false },
 			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			foreColor: 'var(--theme--foreground-subdued)',
 			selection: { enabled: false },
 			zoom: { enabled: false },
 		},
@@ -195,7 +195,7 @@ function setUpChart() {
 				showDuplicates: true,
 				style: {
 					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -225,7 +225,7 @@ function setUpChart() {
 				formatter: formatNumericValue,
 				style: {
 					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},

@@ -277,7 +277,7 @@ function pointerLeave() {
 				<display-color
 					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
 					class="status-dot"
-					:value="flowStatus === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+					:value="flowStatus === 'active' ? 'var(--primary)' : 'var(--theme--foreground-subdued)'"
 				/>
 
 				<v-select
@@ -322,7 +322,7 @@ function pointerLeave() {
 		.name {
 			display: inline-block;
 			font-size: 20px;
-			color: var(--foreground-normal-alt);
+			color: var(--theme--foreground-accent);
 			font-weight: 600;
 			margin-bottom: 8px;
 		}
@@ -462,28 +462,28 @@ function pointerLeave() {
 	}
 
 	&.subdued {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		:deep(.header) {
 			.v-icon {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 			.name {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 
 		.button {
-			border-color: var(--foreground-subdued);
-			--v-icon-color: var(--foreground-subdued);
+			border-color: var(--theme--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 
 			.dot {
-				background-color: var(--foreground-subdued);
+				background-color: var(--theme--foreground-subdued);
 			}
 		}
 
 		.button-hint {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 }

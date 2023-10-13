@@ -44,10 +44,10 @@ const iconName = computed(() => {
 
 <style scoped>
 :global(body) {
-	--v-notice-color: var(--foreground-subdued);
+	--v-notice-color: var(--theme--foreground-subdued);
 	--v-notice-background-color: var(--background-subdued);
 	--v-notice-border-color: var(--background-subdued);
-	--v-notice-icon-color: var(--foreground-subdued);
+	--v-notice-icon-color: var(--theme--foreground-subdued);
 }
 
 .v-notice {

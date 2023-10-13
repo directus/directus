@@ -160,7 +160,7 @@ const user = computed(() => {
 .content {
 	position: relative;
 	z-index: 2;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 16px;
 
 	.time {

@@ -330,7 +330,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-button--naked {
 	min-width: auto;
 	height: auto;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: transparent;
 	border-color: transparent;
 }

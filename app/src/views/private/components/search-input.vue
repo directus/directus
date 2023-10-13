@@ -171,7 +171,7 @@ function emitValue() {
 		border-bottom-right-radius var(--fast) var(--transition);
 
 	.icon-empty {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		display: none;
 		margin-left: 8px;
@@ -275,7 +275,7 @@ function emitValue() {
 		border-radius: 0;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 }

@@ -328,7 +328,7 @@ function openFileBrowser() {
 	justify-content: center;
 	min-height: var(--input-height-tall);
 	padding: 32px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 	border: 2px dashed var(--border-normal);
 	border-radius: var(--border-radius);

@@ -41,8 +41,8 @@
 
 	--module-background: var(--theme--background);
 	--module-background-alt: var(--background-normal);
-	--module-icon: var(--foreground-subdued);
-	--module-icon-alt: var(--foreground-normal-alt);
+	--module-icon: var(--theme--foreground-subdued);
+	--module-icon-alt: var(--theme--foreground-accent);
 
 	// Generate color variations
 	@include generate-colors($color-mapping, $dark-theme-shade, $dark-theme-tint);

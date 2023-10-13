@@ -15,12 +15,12 @@
 }
 
 .disabled .CodeMirror {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-subdued);
 }
 
 .CodeMirror .CodeMirror-placeholder {
-	color: var(--foreground-subdued) !important;
+	color: var(--theme--foreground-subdued) !important;
 }
 
 .CodeMirror:hover {
@@ -62,16 +62,16 @@
 .CodeMirror-linenumber {
 	min-width: 20px;
 	padding: 0 3px 0 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-align: right;
 }
 
 .CodeMirror-guttermarker {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 }
 .CodeMirror-guttermarker-subtle {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 /* CURSOR */
@@ -84,7 +84,7 @@
 
 /* Shown when moving in bi-directional text */
 .CodeMirror div.CodeMirror-secondarycursor {
-	border-left: 1px solid var(--foreground-subdued);
+	border-left: 1px solid var(--theme--foreground-subdued);
 }
 .cm-fat-cursor .CodeMirror-cursor {
 	width: auto;
@@ -231,7 +231,7 @@
 	color: var(--primary);
 }
 .cm-s-default .cm-bracket {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 .cm-s-default .cm-tag {
 	color: var(--success);

@@ -115,18 +115,18 @@ defineExpose({
 	margin-top: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .external {
 	margin-left: 20px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .other {
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--theme--foreground-subdued);
 
 	font-style: italic;
 }

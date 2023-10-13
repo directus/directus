@@ -44,7 +44,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 
 	.descriptor {
 		display: block;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 </style>

@@ -282,7 +282,7 @@ function stepDown() {
 <style lang="scss" scoped>
 :global(body) {
 	--v-input-font-family: var(--family-sans-serif);
-	--v-input-placeholder-color: var(--foreground-subdued);
+	--v-input-placeholder-color: var(--theme--foreground-subdued);
 	--v-input-box-shadow-color-focus: var(--primary);
 	--v-input-color: var(--theme--foreground);
 	--v-input-background-color: var(--background-input);
@@ -291,7 +291,7 @@ function stepDown() {
 
 .v-input {
 	--arrow-color: var(--border-normal);
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -372,14 +372,14 @@ function stepDown() {
 		&.disabled {
 			--arrow-color: var(--border-normal);
 
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			background-color: var(--background-subdued);
 			border-color: var(--border-normal);
 		}
 
 		.prefix,
 		.suffix {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.append {
@@ -449,7 +449,7 @@ function stepDown() {
 
 			.prefix,
 			.suffix {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 

@@ -1,5 +1,5 @@
 @mixin type-title {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 24px;
 	font-family: var(--family-sans-serif);
@@ -12,7 +12,7 @@
 }
 
 @mixin type-label {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
 	font-family: var(--family-sans-serif);
@@ -30,7 +30,7 @@
 }
 
 @mixin type-note {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 13px;
 	font-family: var(--family-sans-serif);

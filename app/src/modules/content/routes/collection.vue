@@ -631,7 +631,7 @@ function usePermissions() {
 	}
 
 	.add {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		&:hover {
 			color: var(--theme--foreground);
@@ -648,7 +648,7 @@ function usePermissions() {
 
 	.clear {
 		margin-left: 4px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		&:hover {
 			color: var(--warning);

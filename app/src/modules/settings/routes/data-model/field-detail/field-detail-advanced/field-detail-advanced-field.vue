@@ -61,7 +61,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 							display: 'formatted-value',
 							display_options: {
 								font: 'monospace',
-								color: 'var(--foreground-subdued)',
+								color: 'var(--theme--foreground-subdued)',
 							},
 						},
 						schema: {

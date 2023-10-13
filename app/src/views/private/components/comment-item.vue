@@ -118,7 +118,7 @@ function useEdits() {
 .comment-item .content :deep(blockquote) {
 	margin: 8px 0;
 	padding-left: 6px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 	border-left: 2px solid var(--border-normal);
 }
@@ -179,7 +179,7 @@ function useEdits() {
 	margin-top: 12px;
 	font-weight: 600;
 	font-size: 16px;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 }
 
 .comment-item.expand .content::after {
@@ -211,7 +211,7 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text span {
 	padding: 4px 12px 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	font-size: 12px;
 	background-color: var(--background-normal);

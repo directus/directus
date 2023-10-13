@@ -111,20 +111,20 @@ const externalItems = computed(() => {
 
 <style scoped>
 .version .v-icon {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 }
 
 .version :deep(.v-text-overflow) {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 }
 
 .version:hover .v-icon {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 }
 
 .version:hover :deep(.v-text-overflow) {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 }
 </style>

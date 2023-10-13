@@ -193,7 +193,7 @@ async function deleteDashboard() {
 }
 
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 }
 

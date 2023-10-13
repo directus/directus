@@ -87,7 +87,7 @@ async function hydrateAndLogin() {
 }
 
 .continue-as .sign-out {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 }
 

@@ -196,7 +196,7 @@ async function onClick(event: MouseEvent) {
 	--v-button-color: var(--foreground-inverted);
 	--v-button-color-hover: var(--foreground-inverted);
 	--v-button-color-active: var(--foreground-inverted);
-	--v-button-color-disabled: var(--foreground-subdued);
+	--v-button-color-disabled: var(--theme--foreground-subdued);
 	--v-button-background-color: var(--primary);
 	--v-button-background-color-hover: var(--primary-125);
 	--v-button-background-color-active: var(--primary);
@@ -348,7 +348,7 @@ async function onClick(event: MouseEvent) {
 }
 
 .outlined.secondary {
-	--v-button-color: var(--foreground-subdued);
+	--v-button-color: var(--theme--foreground-subdued);
 }
 
 .outlined.active {

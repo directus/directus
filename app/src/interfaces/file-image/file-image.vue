@@ -251,7 +251,7 @@ img {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-normal);
 	padding: 32px;
 
@@ -283,7 +283,7 @@ img {
 	}
 
 	.actions {
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--theme--foreground-subdued);
 		--v-button-background-color: var(--white);
 		--v-button-color-hover: var(--theme--foreground);
 		--v-button-background-color-hover: var(--white);

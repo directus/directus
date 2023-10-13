@@ -202,14 +202,14 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	padding-bottom: 4px;
 	background-color: var(--background-normal);
 	box-shadow: 0 0 4px 2px var(--background-normal);
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--theme--foreground-subdued);
 }
 
 .empty {
 	margin-top: 16px;
 	margin-bottom: 8px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 </style>

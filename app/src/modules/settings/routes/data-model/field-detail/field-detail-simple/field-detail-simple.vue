@@ -271,15 +271,15 @@ function toggleInterface(id: string) {
 }
 
 .interface.gray .preview {
-	--primary: var(--foreground-subdued);
-	--primary-50: var(--foreground-subdued);
+	--primary: var(--theme--foreground-subdued);
+	--primary-50: var(--theme--foreground-subdued);
 
 	background-color: var(--background-subdued);
 }
 
 .interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
-	box-shadow: 0 0 8px var(--foreground-subdued);
+	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 </style>

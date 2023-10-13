@@ -110,7 +110,7 @@ header {
 
 		.subtitle {
 			width: 100%;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 }

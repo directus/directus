@@ -38,7 +38,7 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 
 .close {
 	--v-button-background-color: var(--white);
-	--v-button-color: var(--foreground-subdued);
+	--v-button-color: var(--theme--foreground-subdued);
 	--v-button-background-color-hover: var(--white);
 	--v-button-color-hover: var(--theme--foreground);
 

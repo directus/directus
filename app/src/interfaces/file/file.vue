@@ -280,7 +280,7 @@ function useURLImport() {
 
 <style lang="scss" scoped>
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	align-items: center;

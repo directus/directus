@@ -49,7 +49,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .info .icon {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-normal);
 }
 
@@ -74,7 +74,7 @@ withDefaults(defineProps<Props>(), {
 
 .content {
 	max-width: 300px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 22px;
 
 	&:not(:last-child) {

@@ -109,8 +109,8 @@ body {
 		flex-grow: 1;
 
 		&.disabled {
-			--v-slider-thumb-color: var(--foreground-subdued);
-			--v-slider-fill-color: var(--foreground-subdued);
+			--v-slider-thumb-color: var(--theme--foreground-subdued);
+			--v-slider-fill-color: var(--theme--foreground-subdued);
 		}
 
 		&.thumb-label-visible {
