@@ -193,7 +193,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .disabled {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--background-subdued);
 	border-color: var(--border-normal);
 	pointer-events: none;
@@ -201,7 +201,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .bordered {
 	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 
@@ -210,20 +210,20 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--primary);
 	}
 }
 
 .monospace {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .serif {
-	font-family: var(--family-serif);
+	font-family: var(--theme--font-family-serif);
 }
 
 .sans-serif {
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 }
 
 .uploader-drawer-content {

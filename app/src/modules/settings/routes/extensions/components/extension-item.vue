@@ -75,7 +75,7 @@ const toggleEnabled = async () => {
 
 <style lang="scss" scoped>
 .monospace {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 
 .nested {

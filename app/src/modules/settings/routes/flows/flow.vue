@@ -545,7 +545,7 @@ function discardAndLeave() {
 			<display-color
 				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
 				class="status-dot"
-				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+				:value="flow?.status === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 			/>
 		</template>
 
@@ -713,10 +713,10 @@ function discardAndLeave() {
 
 <style scoped lang="scss">
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .status-dot {
@@ -736,12 +736,12 @@ function discardAndLeave() {
 }
 
 .clear-changes {
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-background-color: var(--theme--foreground-subdued);
+	--v-button-background-color-hover: var(--theme--foreground);
 }
 
 .delete-flow {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 

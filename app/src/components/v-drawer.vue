@@ -145,7 +145,7 @@ body {
 	width: 100%;
 	max-width: var(--v-drawer-max-width);
 	height: 100%;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 
 	.cancel {
 		display: none;
@@ -166,7 +166,7 @@ body {
 		--v-button-background-color: var(--background-normal);
 		--v-button-background-color-active: var(--background-normal);
 		--v-button-background-color-hover: var(--background-normal-alt);
-		--v-button-color-disabled: var(--foreground-normal);
+		--v-button-color-disabled: var(--theme--foreground);
 	}
 
 	.content {

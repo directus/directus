@@ -15,6 +15,7 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 
 interface Props {
 	primaryKey: string;
@@ -280,6 +281,8 @@ const refreshInterval = computed({
 				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
 
+			<comments-sidebar-detail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
+
 			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
 		</template>
 
@@ -399,16 +402,16 @@ const refreshInterval = computed({
 .fullscreen,
 .zoom-to-fit,
 .clear-changes {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-background-color: var(--theme--foreground-subdued);
+	--v-button-background-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--foreground-inverted);
-	--v-button-background-color-active: var(--primary);
+	--v-button-background-color-active: var(--theme--primary);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .panel-container {
@@ -442,7 +445,7 @@ const refreshInterval = computed({
 	width: 100%;
 	height: 100%;
 
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 
 	.v-error {
 		margin-top: 8px;

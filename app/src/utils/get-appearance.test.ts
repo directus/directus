@@ -14,7 +14,7 @@ beforeEach(() => {
 	);
 });
 
-import { getTheme } from '@/utils/get-theme';
+import { getAppearance } from '@/utils/get-appearance';
 import { useUserStore } from '@/stores/user';
 
 test(`Defaults to light when configured to auto and matchMedia isn't available in the browser`, () => {
@@ -23,11 +23,11 @@ test(`Defaults to light when configured to auto and matchMedia isn't available i
 	userStore.currentUser = undefined as any;
 	window.matchMedia = undefined as any;
 
-	expect(getTheme()).toBe('light');
+	expect(getAppearance()).toBe('light');
 
 	userStore.currentUser = {} as any;
 
-	expect(getTheme()).toBe('light');
+	expect(getAppearance()).toBe('light');
 });
 
 test(`Uses matchMedia to find browser preference for dark mode`, () => {
@@ -36,17 +36,17 @@ test(`Uses matchMedia to find browser preference for dark mode`, () => {
 	userStore.currentUser = undefined as any;
 	window.matchMedia = vi.fn(() => ({ matches: true })) as any;
 
-	expect(getTheme()).toBe('dark');
+	expect(getAppearance()).toBe('dark');
 });
 
-test(`Returns configured theme if not set to auto in store`, () => {
+test(`Returns configured appearance if not set to auto in store`, () => {
 	const userStore = useUserStore();
 
-	userStore.currentUser = { theme: 'light' } as any;
+	userStore.currentUser = { appearance: 'light' } as any;
 
-	expect(getTheme()).toBe('light');
+	expect(getAppearance()).toBe('light');
 
-	userStore.currentUser = { theme: 'dark' } as any;
+	userStore.currentUser = { appearance: 'dark' } as any;
 
-	expect(getTheme()).toBe('dark');
+	expect(getAppearance()).toBe('dark');
 });

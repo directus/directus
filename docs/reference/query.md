@@ -266,59 +266,6 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Version
-
-Retrieve an item's result from a specific version.
-
-::: warning Requires Configuration
-
-Requires [Versioning](/app/data-model/collections#content-versioning) to be enabled within the Collection's data model
-settings.
-
-:::
-
-### Example
-
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-<template #rest>
-
-`?version=draft`
-
-</template>
-<template #graphql>
-
-Singletons:
-
-```graphql
-query {
-    articles(version: "draft") {
-        id
-        title
-        content
-    }
-}
-```
-
-By ID:
-
-```graphql
-query {
-    articles_by_id(id: 1, version: "draft") {
-        id
-        title
-        content
-    }
-}
-```
-
-</template>
-<template #sdk>
-
-TBD
-
-</template>
-</SnippetToggler>
-
 ## Sort
 
 What field(s) to sort by. Sorting defaults to ascending, but a minus sign (`-`) can be used to reverse this to

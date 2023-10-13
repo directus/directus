@@ -193,7 +193,7 @@ export default definePanel({
 				name: '$t:color',
 				type: 'string',
 				schema: {
-					default_value: 'var(--primary)',
+					default_value: 'var(--theme--primary)',
 				},
 				meta: {
 					interface: 'select-color',
@@ -205,6 +205,17 @@ export default definePanel({
 				name: '$t:rounded_stroke',
 				schema: {
 					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+			},
+			{
+				field: 'showPercentage',
+				name: '$t:show_percentage',
+				schema: {
+					default_value: true,
 				},
 				meta: {
 					interface: 'boolean',
@@ -289,6 +300,6 @@ export default definePanel({
 			},
 		];
 	},
-	minWidth: 10,
-	minHeight: 10,
+	minWidth: 6,
+	minHeight: 6,
 });

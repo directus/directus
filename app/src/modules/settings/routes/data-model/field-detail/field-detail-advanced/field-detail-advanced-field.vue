@@ -61,7 +61,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 							display: 'formatted-value',
 							display_options: {
 								font: 'monospace',
-								color: 'var(--foreground-subdued)',
+								color: 'var(--theme--foreground-subdued)',
 							},
 						},
 						schema: {
@@ -104,11 +104,11 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-notice {

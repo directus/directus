@@ -606,12 +606,12 @@ function usePermissions() {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .bookmark-controls {
@@ -631,15 +631,15 @@ function usePermissions() {
 	}
 
 	.add {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 
 	.save {
-		color: var(--warning);
+		color: var(--theme--warning);
 
 		&:hover {
 			color: var(--warning-125);
@@ -648,15 +648,15 @@ function usePermissions() {
 
 	.clear {
 		margin-left: 4px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		&:hover {
-			color: var(--warning);
+			color: var(--theme--warning);
 		}
 	}
 
 	.saved {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }
 </style>

@@ -175,9 +175,9 @@ function discardAndStay() {
 <style lang="scss" scoped>
 .action-delete {
 	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
+	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-color-hover: var(--theme--danger);
 }
 
 .v-form {
@@ -186,9 +186,9 @@ function discardAndStay() {
 }
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 </style>

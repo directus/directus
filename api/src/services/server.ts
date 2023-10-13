@@ -43,6 +43,7 @@ export class ServerService {
 				'default_language',
 				'public_foreground',
 				'public_background',
+				'public_favicon',
 				'public_note',
 				'custom_css',
 			],
