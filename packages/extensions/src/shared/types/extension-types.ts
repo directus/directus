@@ -18,9 +18,13 @@ export type ExtensionType = (typeof EXTENSION_TYPES)[number];
 type ExtensionBase = {
 	path: string;
 	name: string;
+	local: boolean;
+	sandbox?: {
+		enabled: boolean;
+		permissions: x;
+	};
 	version?: string;
 	host?: string;
-	local: boolean;
 };
 
 export type AppExtension = ExtensionBase & {

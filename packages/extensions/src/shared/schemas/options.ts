@@ -8,6 +8,24 @@ export const SplitEntrypoint = z.object({
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
+export const ExtensionSandboxOptions = z.object({
+	enabled: z.boolean(),
+	requestedScopes: z.union([
+		z.object({
+			type: z.literal('request'),
+			permissions: z.object({
+				urls: z.string(),
+			}),
+		}),
+		z.object({
+			type: z.literal('create-items'),
+			permissions: z.object({
+				collection: z.union([z.array(z.string()), z.literal('*')]),
+			}),
+		}),
+	]),
+});
+
 export const ExtensionOptionsBundleEntry = z.union([
 	z.object({
 		type: z.union([z.enum(APP_EXTENSION_TYPES), z.enum(API_EXTENSION_TYPES)]),
