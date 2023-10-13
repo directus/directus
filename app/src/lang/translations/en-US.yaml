@@ -1143,6 +1143,7 @@ directus_collection:
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
   directus_translations: Custom translations
+  directus_versions: Content Versions for items
 fields:
   directus_activity:
     item: Item Primary Key
