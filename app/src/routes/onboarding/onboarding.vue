@@ -150,6 +150,7 @@ async function finishOnboarding() {
 		await Promise.all([settingUpdate, userUpdate]);
 		// Dont await the result, similar to telemetry
 		// It might fail but proceed as normal for seamless user experience
+		// TODO replace with api side
 		collectOnboarding().catch(() => {});
 		router.replace('/content');
 	} catch (err) {
@@ -192,7 +193,7 @@ async function skipOnboarding() {
 		.catch((e) => console.error('Error when updating user', e));
 
 	try {
-		await Promise.all([settingUpdate, userUpdate, Promise.reject(new Error('FAIL YO'))]);
+		await Promise.all([settingUpdate, userUpdate]);
 		error.value = null;
 		router.replace('/content');
 	} catch (err) {
