@@ -1,9 +1,9 @@
 import type { DirectusVersion } from '../../../schema/version.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
- * Delete multiple existing versions.
+ * Delete multiple existing Content Versions.
  * @param keys
  * @returns
  * @throws Will throw if keys is empty
@@ -21,7 +21,7 @@ export const deleteContentVersions =
 	};
 
 /**
- * Delete an existing version.
+ * Delete an existing Content Version.
  * @param key
  * @returns
  * @throws Will throw if key is empty

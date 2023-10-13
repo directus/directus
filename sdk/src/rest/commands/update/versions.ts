@@ -1,7 +1,7 @@
 import type { DirectusVersion } from '../../../schema/version.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateContentVersionOutput<
 	Schema extends object,
@@ -10,11 +10,11 @@ export type UpdateContentVersionOutput<
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
- * Update multiple existing versions.
+ * Update multiple existing Content Versions.
  * @param keys
  * @param item
  * @param query
- * @returns Returns the version objects for the updated versions.
+ * @returns Returns the Content Version objects for the updated Content Versions.
  * @throws Will throw if keys is empty
  */
 export const updateContentVersions =
@@ -35,11 +35,11 @@ export const updateContentVersions =
 	};
 
 /**
- * Update an existing version.
+ * Update an existing Content Version.
  * @param key
  * @param item
  * @param query
- * @returns Returns the version object for the updated version.
+ * @returns Returns the Content Version object for the updated Content Version.
  * @throws Will throw if key is empty
  */
 export const updateContentVersion =

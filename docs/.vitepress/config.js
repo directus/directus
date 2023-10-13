@@ -401,12 +401,12 @@ function sidebar() {
 					text: 'Activity',
 				},
 				{
-					link: '/reference/system/branches',
-					text: 'Branches',
-				},
-				{
 					link: '/reference/system/collections',
 					text: 'Collections',
+				},
+				{
+					link: '/reference/system/versions',
+					text: 'Content Versions',
 				},
 				{
 					link: '/reference/system/dashboards',

@@ -9,12 +9,12 @@ export type CreateContentVersionOutput<
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
- * Create multiple new versions.
+ * Create multiple new Content Verisions.
  *
- * @param item The version to create
+ * @param items The Content Versions to create
  * @param query Optional return data query
  *
- * @returns Returns the version object for the created version.
+ * @returns Returns the Content Version object for the created Content Versions.
  */
 export const createContentVersions =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
@@ -29,12 +29,12 @@ export const createContentVersions =
 	});
 
 /**
- * Create a new version.
+ * Create a new Content Version.
  *
- * @param item The version to create
+ * @param item The Content Version to create
  * @param query Optional return data query
  *
- * @returns Returns the version object for the created version.
+ * @returns Returns the Content Version object for the created Content Version.
  */
 export const createContentVersion =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(

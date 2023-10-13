@@ -1,7 +1,7 @@
 import type { DirectusVersion } from '../../../schema/version.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type ReadContentVersionOutput<
 	Schema extends object,
@@ -10,9 +10,9 @@ export type ReadContentVersionOutput<
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
- * List all versions that exist in Directus.
+ * List all Content Versions that exist in Directus.
  * @param query The query parameters
- * @returns An array of up to limit version objects. If no items are available, data will be an empty array.
+ * @returns An array of up to limit Content Version objects. If no items are available, data will be an empty array.
  */
 export const readContentVersions =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
@@ -25,10 +25,10 @@ export const readContentVersions =
 	});
 
 /**
- * List an existing version by primary key.
- * @param key The primary key of the version
+ * List an existing COntent Version by primary key.
+ * @param key The primary key of the Content Version
  * @param query The query parameters
- * @returns Returns a version object if a valid primary key was provided.
+ * @returns Returns a Content Version object if a valid primary key was provided.
  * @throws Will throw if key is empty
  */
 export const readContentVersion =

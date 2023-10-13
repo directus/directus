@@ -4,12 +4,36 @@ import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
 /**
- * Compare an existing version with the main item.
+ * Save item changes to an existing Content Version.
  *
- * @param id Primary key of the version.
+ * @param id Primary key of the Content Version.
+ * @param item The item changes to save to the specified Content Version.
  *
- * @returns All fields with different values, along with the hash of the main item and the information whether the current
-version is outdated (main item has been updated since the creation of the current version)
+ * @returns State of the item after save.
+ */
+export const saveToContentVersion =
+	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
+		id: DirectusVersion<Schema>['id'],
+		item: Partial<Item>
+	): RestCommand<Item, Schema> =>
+	() => {
+		throwIfEmpty(id, 'ID cannot be empty');
+
+		return {
+			path: `/versions/${id}/save`,
+			method: 'POST',
+			body: JSON.stringify(item),
+		};
+	};
+
+/**
+ * Compare an existing Content Version with the main version of the item.
+ *
+ * @param id Primary key of the Content Version.
+ *
+ * @returns All fields with different values, along with the hash of the main version of the item and the information
+whether the Content Version is outdated (i.e. main version of the item has been updated since the creation of the
+Content Version)
  */
 export const compareContentVersion =
 	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
@@ -33,34 +57,11 @@ export const compareContentVersion =
 	};
 
 /**
- * Saves new data to the item in the specified version.
+ * Promote an existing Content Version to become the new main version of the item.
  *
  * @param id Primary key of the version.
- * @param item The item data to save in the specified version.
- *
- * @returns Item object resulted from all saves in the specified version.
- */
-export const saveContentVersion =
-	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
-		id: DirectusVersion<Schema>['id'],
-		item: Partial<Item>
-	): RestCommand<Item, Schema> =>
-	() => {
-		throwIfEmpty(id, 'ID cannot be empty');
-
-		return {
-			path: `/versions/${id}/save`,
-			method: 'POST',
-			body: JSON.stringify(item),
-		};
-	};
-
-/**
- * Promotes the version to the main version.
- *
- * @param id Primary key of the version.
- * @param mainHash mainHash from Compare Version Object.
- * @param fields Optional - fields to include when promoting the version. Includes all fields by default if not specified.
+ * @param mainHash The current hash of the main version of the item (obtained from the `compare` endpoint).
+ * @param fields Optional array of field names of which the values are to be promoted. By default, all fields are selected.
  *
  * @returns The primary key of the promoted item.
  */
