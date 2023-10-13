@@ -96,7 +96,7 @@ function deleteItem(elem: Record<string, any>) {
 		padding: 0 4px;
 
 		&:hover {
-			color: var(--primary-125);
+			color: var(--theme--primary-accent);
 		}
 	}
 }

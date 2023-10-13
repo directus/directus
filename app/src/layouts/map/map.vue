@@ -222,8 +222,8 @@ limitWritable.value = selectedSize;
 }
 
 .v-progress-circular {
-	--v-progress-circular-background-color: var(--primary-25);
-	--v-progress-circular-color: var(--primary-75);
+	--v-progress-circular-background-color: var(--theme--primary-background);
+	--v-progress-circular-color: var(--theme--primary);
 }
 
 .reset-preset {

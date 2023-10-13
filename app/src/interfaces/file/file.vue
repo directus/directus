@@ -299,7 +299,7 @@ function useURLImport() {
 	}
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 
 	&.is-svg {

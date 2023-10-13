@@ -12,9 +12,9 @@ export const theme: Theme = {
 		background: '#fff',
 
 		primary: 'var(--project-color)',
-		primaryBackground: 'color-mix(var(--theme--background), var(--project-color), 10%)',
-		primarySubdued: 'color-mix(var(--theme--background), var(--project-color), 25%)',
-		primaryAccent: 'color-mix(var(--project-color), var(--theme--foreground), 25%)',
+		primaryBackground: 'color-mix(in srgb, var(--theme--background), var(--project-color) 10%)',
+		primarySubdued: 'color-mix(in srgb, var(--theme--background), var(--project-color) 50%)',
+		primaryAccent: 'color-mix(in srgb, var(--project-color), #2e3c43 25%)',
 
 		secondary: '#ff99dd',
 		success: '#2ecda7',

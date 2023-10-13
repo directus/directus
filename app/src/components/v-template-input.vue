@@ -345,7 +345,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		font-size: 0;
 		line-height: 1;
 		vertical-align: -2px;
-		background: var(--primary-alt);
+		background: var(--theme--primary-background);
 		border-radius: var(--border-radius);
 		user-select: text;
 

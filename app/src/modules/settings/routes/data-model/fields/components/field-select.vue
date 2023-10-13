@@ -443,7 +443,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 	&.nested {
 		.field :deep(.input) {
-			border: var(--border-width) solid var(--primary-25);
+			border: var(--border-width) solid var(--theme--primary-subdued);
 		}
 	}
 }

@@ -670,7 +670,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	border-radius: var(--border-radius);
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 }
 

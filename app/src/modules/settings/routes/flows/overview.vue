@@ -280,6 +280,6 @@ function onFlowDrawerCompletion(id: string) {
 
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
-	--v-button-background-color-disabled: var(--primary-alt);
+	--v-button-background-color-disabled: var(--theme--primary-background);
 }
 </style>

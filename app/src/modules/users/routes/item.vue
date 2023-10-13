@@ -518,9 +518,9 @@ function revert(values: Record<string, any>) {
 
 			&.active {
 				--v-chip-color: var(--theme--primary);
-				--v-chip-background-color: var(--primary-25);
+				--v-chip-background-color: var(--theme--primary-subdued);
 				--v-chip-color-hover: var(--theme--primary);
-				--v-chip-background-color-hover: var(--primary-25);
+				--v-chip-background-color-hover: var(--theme--primary-subdued);
 			}
 		}
 

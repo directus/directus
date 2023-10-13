@@ -1,7 +1,7 @@
 .fc {
 	--fc-event-bg-color: var(--theme--primary);
 	--fc-event-border-color: var(--theme--primary);
-	--fc-today-bg-color: var(--primary-alt);
+	--fc-today-bg-color: var(--theme--primary-background);
 	--fc-button-bg-color: transparent;
 	--fc-button-active-bg-color: transparent;
 	--fc-button-hover-bg-color: transparent;
@@ -10,7 +10,7 @@
 	--fc-button-hover-border-color: transparent;
 	--fc-button-text-color: var(--theme--foreground-subdued);
 	--fc-border-color: var(--border-normal);
-	--fc-highlight-color: var(--primary-alt);
+	--fc-highlight-color: var(--theme--primary-background);
 	--fc-neutral-bg-color: var(--background-normal);
 	--fc-list-event-hover-bg-color: var(--background-subdued);
 
@@ -48,7 +48,7 @@
 
 	.fc-daygrid-dot-event:hover,
 	.fc-daygrid-dot-event.fc-event-mirror {
-		background: var(--primary-25);
+		background: var(--theme--primary-subdued);
 	}
 
 	.fc-daygrid-event-dot {

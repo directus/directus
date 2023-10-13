@@ -141,7 +141,7 @@ const { t } = useI18n();
 
 		&.active {
 			color: var(--theme--primary);
-			background-color: var(--primary-alt);
+			background-color: var(--theme--primary-background);
 			border-radius: 50%;
 		}
 	}

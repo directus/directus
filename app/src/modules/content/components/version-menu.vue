@@ -413,7 +413,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 		color: var(--white);
 
 		&:hover {
-			background-color: var(--primary-125);
+			background-color: var(--theme--primary-accent);
 		}
 	}
 }

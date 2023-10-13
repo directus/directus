@@ -216,7 +216,7 @@ function openNewCustomTranslationDrawer() {
 		margin-right: auto;
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 		border-radius: var(--border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
@@ -290,7 +290,7 @@ function openNewCustomTranslationDrawer() {
 }
 
 .new-custom-translation {
-	--v-list-item-color-hover: var(--primary-125);
+	--v-list-item-color-hover: var(--theme--primary-accent);
 
 	color: var(--theme--primary);
 

@@ -137,7 +137,7 @@ function toggle(item: Record<string, any>) {
 	&.active {
 		z-index: 2;
 		color: var(--theme--primary);
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 		border-color: var(--theme--primary);
 
 		.v-icon {

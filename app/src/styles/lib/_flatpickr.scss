@@ -209,7 +209,7 @@ span.flatpickr-weekday {
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-	color: var(--primary-alt);
+	color: var(--theme--primary-background);
 	background: var(--theme--primary);
 	border-color: var(--theme--primary);
 	box-shadow: none;

@@ -300,12 +300,12 @@ function useTab() {
 		border-radius: 0 0 var(--border-radius) var(--border-radius);
 		&.active {
 			color: var(--theme--primary);
-			background-color: var(--primary-alt);
+			background-color: var(--theme--primary-background);
 
 			.version {
 				color: var(--theme--primary);
 				border-color: var(--theme--primary);
-				background-color: var(--primary-25);
+				background-color: var(--theme--primary-subdued);
 			}
 		}
 	}

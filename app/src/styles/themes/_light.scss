@@ -2,21 +2,6 @@
 @mixin light {
 	color-scheme: light;
 
-	--primary-alt: #f0ecff !important;
-	--primary-10: #f0ecff !important;
-	--primary-25: #d9d0ff !important;
-	--primary-50: #b3a1ff !important;
-	--primary-75: #8c73ff !important;
-	--primary-90: #7557ff !important;
-
-	--primary: #6644ff !important;
-
-	--primary-110: #5e41ec !important;
-	--primary-125: #523dcf !important;
-	--primary-150: #3e369f !important;
-	--primary-175: #2b3070 !important;
-	--primary-190: #1f2c53 !important;
-
 	--border-normal: #d3dae4;
 	--border-normal-alt: #a2b5cd;
 	--border-subdued: #f0f4f9;
@@ -30,7 +15,7 @@
 	--background-input: #ffffff;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;
-	--background-mark: var(--primary-25);
+	--background-mark: var(--theme--primary-subdued);
 
 	--card-face-color: #fafcfd;
 	--card-shadow-color: 23, 41, 64;

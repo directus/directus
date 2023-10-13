@@ -123,7 +123,7 @@ function close() {
 		}
 
 		.text {
-			color: var(--primary-alt);
+			color: var(--theme--primary-background);
 		}
 	}
 

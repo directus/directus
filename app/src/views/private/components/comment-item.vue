@@ -142,7 +142,7 @@ function useEdits() {
 	padding: 2px 4px;
 	color: var(--theme--primary);
 	line-height: 1;
-	background: var(--primary-alt);
+	background: var(--theme--primary-background);
 	border-radius: var(--border-radius);
 	user-select: text;
 	pointer-events: none;

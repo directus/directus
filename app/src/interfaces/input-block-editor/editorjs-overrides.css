@@ -336,8 +336,8 @@
 
 /* Checkbox color when hovered. We have to use !important here because the specificity of the default styling is higher */
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox:hover .cdx-checklist__item-checkbox-check {
-	background: var(--primary-125) !important;
-	border-color: var(--primary-125) !important;
+	background: var(--theme--primary-accent) !important;
+	border-color: var(--theme--primary-accent) !important;
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
@@ -447,7 +447,7 @@
 
 .tc-add-column:hover,
 .tc-add-row:hover {
-	background-color: var(--primary-alt);
+	background-color: var(--theme--primary-background);
 }
 
 .tc-add-row:hover::before {

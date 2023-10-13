@@ -89,7 +89,7 @@ p {
 	margin: 1.5em 0;
 }
 a {
-	color: ${cssVar('--primary-125')};
+	color: ${cssVar('--theme--primary-accent')};
 	text-decoration: none;
 }
 ul, ol {

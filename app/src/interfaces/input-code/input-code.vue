@@ -316,7 +316,7 @@ function fillTemplate() {
 	user-select: none;
 
 	&:hover {
-		color: var(--primary-125);
+		color: var(--theme--primary-accent);
 		transition: none;
 	}
 }

@@ -320,7 +320,7 @@ function setContent() {
 	margin: -1px 4px 0;
 	padding: 2px 4px 0;
 	color: var(--theme--primary);
-	background-color: var(--primary-alt);
+	background-color: var(--theme--primary-background);
 	border-radius: var(--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;

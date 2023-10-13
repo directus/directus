@@ -247,18 +247,18 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-25));
+	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-75);
+	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
 	padding: 8px 16px;
 	background-color: var(--theme--background);
 	border: 2px solid var(--theme--primary);
 	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
+	box-shadow: 0 0 8px var(--theme--primary-subdued);
 }
 
 .interface:hover .preview {
@@ -266,7 +266,7 @@ function toggleInterface(id: string) {
 }
 
 .interface.active .preview {
-	background-color: var(--primary-alt);
+	background-color: var(--theme--primary-background);
 	border-color: var(--theme--primary);
 }
 

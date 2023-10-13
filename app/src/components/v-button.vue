@@ -198,7 +198,7 @@ async function onClick(event: MouseEvent) {
 	--v-button-color-active: var(--foreground-inverted);
 	--v-button-color-disabled: var(--theme--foreground-subdued);
 	--v-button-background-color: var(--theme--primary);
-	--v-button-background-color-hover: var(--primary-125);
+	--v-button-background-color-hover: var(--theme--primary-accent);
 	--v-button-background-color-active: var(--theme--primary);
 	--v-button-background-color-disabled: var(--background-normal);
 	--v-button-font-size: 16px;

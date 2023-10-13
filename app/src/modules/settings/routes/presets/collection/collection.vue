@@ -273,9 +273,9 @@ function usePermissions() {
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-background-color-disabled: var(--primary-alt);
+	--v-button-background-color-disabled: var(--theme--primary-background);
 	--v-button-color-disabled: var(--theme--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
 	--v-button-color-hover-disabled: var(--theme--primary);
 }
 

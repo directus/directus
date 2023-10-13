@@ -413,14 +413,14 @@ const secondFields = computed(() => {
 	.v-form {
 		--form-vertical-gap: 32px;
 		--v-chip-color: var(--theme--primary);
-		--v-chip-background-color: var(--primary-alt);
+		--v-chip-background-color: var(--theme--primary-background);
 
 		margin-top: 32px;
 	}
 
 	.primary {
 		.v-divider {
-			--v-divider-color: var(--primary-25);
+			--v-divider-color: var(--theme--primary-subdued);
 		}
 	}
 

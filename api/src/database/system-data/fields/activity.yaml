@@ -14,7 +14,7 @@ fields:
         - text: $t:field_options.directus_activity.create
           value: create
           foreground: 'var(--theme--primary)'
-          background: 'var(--primary-25)'
+          background: 'var(--theme--primary-subdued)'
         - text: $t:field_options.directus_activity.update
           value: update
           foreground: 'var(--blue)'

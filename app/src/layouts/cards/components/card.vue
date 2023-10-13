@@ -146,7 +146,7 @@ function handleClick() {
 		width: 100%;
 		overflow: hidden;
 		background-color: var(--background-normal);
-		border-color: var(--primary-25);
+		border-color: var(--theme--primary-subdued);
 		border-style: solid;
 		border-width: 0px;
 		border-radius: var(--border-radius);
