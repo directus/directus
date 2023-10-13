@@ -53,7 +53,7 @@ const displayValue = computed(() => {
 <style lang="scss" scoped>
 .toggle {
 	--v-icon-color: var(--theme--primary);
-	--v-icon-color-hover: var(--primary-150);
+	--v-icon-color-hover: var(--primary-125);
 
 	display: flex;
 	align-items: center;

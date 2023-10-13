@@ -180,7 +180,7 @@ function navigateToRole({ item }: { item: Role }) {
 <style lang="scss" scoped>
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-background-color-disabled: var(--primary-alt);
 	--v-button-background-color-hover-disabled: var(--primary-25);
 	--v-button-color-hover-disabled: var(--theme--primary);
 }

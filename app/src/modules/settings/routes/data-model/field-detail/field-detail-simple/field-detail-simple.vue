@@ -247,7 +247,7 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--primary-25));
 }
 
 .preview .fallback {

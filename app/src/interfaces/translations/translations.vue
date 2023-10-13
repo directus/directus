@@ -420,7 +420,7 @@ const secondFields = computed(() => {
 
 	.primary {
 		.v-divider {
-			--v-divider-color: var(--primary-50);
+			--v-divider-color: var(--primary-25);
 		}
 	}
 

@@ -276,10 +276,10 @@ function remove(id: string) {
 .v-list-item.enabled {
 	--v-list-item-border-color: var(--theme--primary);
 	--v-list-item-color: var(--primary-125);
-	--v-list-item-background-color: var(--primary-10);
-	--v-list-item-border-color-hover: var(--primary-150);
+	--v-list-item-background-color: var(--primary-alt);
+	--v-list-item-border-color-hover: var(--primary-125);
 	--v-list-item-color-hover: var(--primary-125);
-	--v-list-item-background-color-hover: var(--primary-10);
+	--v-list-item-background-color-hover: var(--primary-alt);
 	--v-icon-color: var(--theme--primary);
 	--v-icon-color-hover: var(--theme--foreground);
 }
@@ -290,7 +290,7 @@ function remove(id: string) {
 }
 
 .enabled .to {
-	color: var(--primary-50);
+	color: var(--primary-25);
 }
 
 .drawer-content {

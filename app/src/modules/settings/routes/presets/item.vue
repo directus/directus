@@ -586,7 +586,7 @@ function discardAndLeave() {
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
+	--v-button-background-color: var(--primary-alt);
 	--v-button-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--theme--primary);
