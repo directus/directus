@@ -89,6 +89,14 @@ const Rules = Type.Object({
 		}),
 	}),
 
+	form: Type.Object({
+		field: Type.Object({
+			label: Type.Object({
+				foreground: Color,
+			}),
+		}),
+	}),
+
 	sidebar: Type.Object({
 		background: Color,
 		foreground: Color,

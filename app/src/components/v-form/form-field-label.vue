@@ -76,6 +76,7 @@ const { t } = useI18n();
 	display: flex;
 	margin-bottom: 8px;
 	cursor: pointer;
+	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {
 		display: inline;

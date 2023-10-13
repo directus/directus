@@ -84,6 +84,14 @@ export const theme: Theme = {
 			},
 		},
 
+		form: {
+			field: {
+				label: {
+					foreground: 'var(--theme--foreground-accent)',
+				},
+			},
+		},
+
 		sidebar: {
 			background: '#f0f4f9',
 			foreground: 'var(--theme--foreground-subdued)',
