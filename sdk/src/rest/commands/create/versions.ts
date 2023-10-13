@@ -9,7 +9,7 @@ export type CreateContentVersionOutput<
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
- * Create multiple new Content Verisions.
+ * Create multiple new Content Versions.
  *
  * @param items The Content Versions to create
  * @param query Optional return data query
