@@ -25,7 +25,6 @@ const mockAdminUser = {
 	last_name: 'User',
 	email: 'test@example.com',
 	last_page: null,
-	theme: 'light',
 	tfa_secret: null,
 	// this should be "null", but mocked as "{ id: null }" due to lodash pick usage
 	avatar: {
