@@ -87,7 +87,7 @@ fields:
     group: theming_group
 
   - field: default_appearance
-    interface: select-radio
+    interface: select-dropdown
     options:
       choices:
         - value: auto
@@ -115,12 +115,11 @@ fields:
     options:
       appearance: light
     group: theming_group
+    hidden: true
 
   - field: theme_light_overrides
     width: full
     interface: system-theme-overrides
-    options:
-      language: json
     group: theming_group
 
   - field: default_theme_dark
@@ -129,12 +128,11 @@ fields:
     options:
       appearance: dark
     group: theming_group
+    hidden: true
 
   - field: theme_dark_overrides
     width: full
     interface: system-theme-overrides
-    options:
-      language: json
     group: theming_group
 
   - field: custom_css
@@ -161,7 +159,6 @@ fields:
 
           --v-button-background-color: #6644FF !important;
           --v-button-background-color-hover: #5E41EC !important;
-          --sidebar-detail-color-active: #5E41EC !important;
         }
     width: full
     group: theming_group

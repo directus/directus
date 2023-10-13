@@ -1234,6 +1234,8 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1277,6 +1279,8 @@ fields:
     transformations_presets: Limit transformations to presets below
     image_editor: Image Editor
     custom_aspect_ratios: Custom Aspect Ratios
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_shares:
     name: Name
     role: Role

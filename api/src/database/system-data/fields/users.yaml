@@ -78,6 +78,28 @@ fields:
     options:
       includeProjectDefault: true
 
+  - field: tfa_secret
+    interface: system-mfa-setup
+    special:
+      - conceal
+    width: half
+
+  - field: email_notifications
+    interface: boolean
+    width: half
+    special:
+      - cast-boolean
+
+  - field: theming_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:theme
+    special:
+      - alias
+      - no-data
+    width: full
+
   - field: appearance
     interface: select-dropdown
     options:
@@ -95,36 +117,22 @@ fields:
     interface: system-theme
     options:
       appearance: light
+    hidden: true
 
   - field: theme_dark
     width: half
     interface: system-theme
     options:
       appearance: dark
+    hidden: true
 
   - field: theme_light_overrides
-    width: half
-    interface: input-code
-    options:
-      language: json
+    width: full
+    interface: system-theme-overrides
 
   - field: theme_dark_overrides
-    width: half
-    interface: input-code
-    options:
-      language: json
-
-  - field: tfa_secret
-    interface: system-mfa-setup
-    special:
-      - conceal
-    width: half
-
-  - field: email_notifications
-    interface: boolean
-    width: half
-    special:
-      - cast-boolean
+    width: full
+    interface: system-theme-overrides
 
   - field: admin_divider
     interface: presentation-divider
