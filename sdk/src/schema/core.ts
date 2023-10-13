@@ -1,4 +1,5 @@
 import type { DirectusActivity } from './activity.js';
+import type { DirectusBranch } from './branch.js';
 import type { DirectusCollection } from './collection.js';
 import type { DirectusDashboard } from './dashboard.js';
 import type { DirectusField } from './field.js';
@@ -15,7 +16,6 @@ import type { DirectusRole } from './role.js';
 import type { DirectusSettings } from './settings.js';
 import type { DirectusShare } from './share.js';
 import type { DirectusUser } from './user.js';
-import type { DirectusVersion } from './version.js';
 import type { DirectusWebhook } from './webhook.js';
 
 export interface CoreSchema<Schema extends object = object> {
@@ -36,6 +36,6 @@ export interface CoreSchema<Schema extends object = object> {
 	directus_settings: DirectusSettings<Schema>;
 	directus_shares: DirectusShare<Schema>[];
 	directus_users: DirectusUser<Schema>[];
-	directus_versions: DirectusVersion<Schema>[];
+	directus_branches: DirectusBranch<Schema>[];
 	directus_webhooks: DirectusWebhook<Schema>[];
 }

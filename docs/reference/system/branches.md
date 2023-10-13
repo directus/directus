@@ -1,35 +1,36 @@
 ---
-description: REST and GraphQL API documentation on the Versions collection in Directus.
+description: REST and GraphQL API documentation on the Branches collection in Directus.
 readTime: 5 min read
 pageClass: page-reference
 ---
 
-# Versions
+# Branches (Versions)
 
-> TBD
+> Branches are part of the Content Versioning feature and serve as a container in which an item can be modified
+> independently of its main version.
 
-## The Version Object
+## The Branch Object
 
 `id` **uuid**\
-Primary key of the version.
+Primary key of the branch.
 
 `key` **string**\
-Key of the version, used as the value for the `version` query parameter.
+Key of the branch, used as the value for the `branch` query parameter.
 
 `name` **string**\
-Name of the version.
+Name of the branch.
 
 `collection` **string**\
-Name of the collection the version is created on.
+Name of the collection the branch is created on.
 
 `item` **many-to-one**\
-The item the version is created on.
+The item the branch is created on.
 
 `date_created` **Date**\
-When the version was created.
+When the branch was created.
 
 `user_created` **many-to-one**\
-User that created the version. Many-to-one to [users](/reference/system/users).
+User that created the branch. Many-to-one to [users](/reference/system/users).
 
 ```json
 {
@@ -44,18 +45,18 @@ User that created the version. Many-to-one to [users](/reference/system/users).
 }
 ```
 
-## List Versions
+## List Branches
 
-List all versions that exist in Directus.
+List all existing branches.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /versions`
+`GET /branches`
 
-`SEARCH /versions`
+`SEARCH /branches`
 
 If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
 
@@ -70,11 +71,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readContentVersions } from '@directus/sdk';
+import { createDirectus, rest, readBranches } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readContentVersions(query_object));
+const result = await client.request(readBranches(query_object));
 ```
 
 </template>
@@ -86,17 +87,17 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-An array of up to [limit](/reference/query#limit) [version objects](#the-version-object). If no items are available,
-data will be an empty array.
+An array of up to [limit](/reference/query#limit) [branch objects](#the-branch-object). If no items are available, data
+will be an empty array.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /versions`
+`GET /branches`
 
-`SEARCH /versions`
+`SEARCH /branches`
 
 </template>
 <template #graphql>
@@ -107,12 +108,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readContentVersions } from '@directus/sdk';
+import { createDirectus, rest, readBranches } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	readContentVersions({
+	readBranches({
 		fields: ['*'],
 	})
 );
@@ -121,16 +122,16 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Retrieve a Version
+## Retrieve a Branch
 
-List an existing version by primary key.
+Retrieve an existing branch by primary key.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /versions/:id`
+`GET /branches/:id`
 
 </template>
 <template #graphql>
@@ -141,11 +142,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readContentVersion } from '@directus/sdk';
+import { createDirectus, rest, readBranch } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readContentVersion(version_id, query_object));
+const result = await client.request(readBranch(branch_id, query_object));
 ```
 
 </template>
@@ -157,14 +158,14 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-Returns the requested [version object](#the-version-object).
+Returns the requested [branch object](#the-branch-object).
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /dashboards/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
+`GET /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
 
 </template>
 <template #graphql>
@@ -175,12 +176,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, readContentVersion } from '@directus/sdk';
+import { createDirectus, rest, readBranch } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	readContentVersion('dc2ac3f9-2076-4e86-8677-b47643eddacf', {
+	readCBranch('dc2ac3f9-2076-4e86-8677-b47643eddacf', {
 		fields: ['*'],
 	})
 );
@@ -189,18 +190,18 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Create a Version
+## Create a Branch
 
-Create a new version.
+Create a new branch for an item.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /version`
+`POST /branches`
 
-Provide a [version object](#the-version-object) as the body of your request.
+Provide a [branch object](#the-branch-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -211,11 +212,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createContentVersion } from '@directus/sdk';
+import { createDirectus, rest, createBranch } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(createContentVersion(version_object));
+const result = await client.request(createBranch(branch_object));
 ```
 
 </template>
@@ -227,21 +228,22 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-A partial [version object](#the-version-object).
+A partial [branch object](#the-branch-object).
 
 ### Response
 
-Returns the [version object](#the-version-object) for the created version.
+Returns the [branch object](#the-branch-object) for the created branch.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /versions`
+`POST /branches`
 
 ```json
 {
+	"key": "my_version",
 	"name": "My Version",
 	"collection": "my_collection",
 	"item": "1"
@@ -257,14 +259,14 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createContentVersion } from '@directus/sdk';
+import { createDirectus, rest, createBranch } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	createContentVersion({
-		key: 'draft',
-		name: 'My Draft',
+	createBranch({
+		key: 'my_version',
+		name: 'My Version',
 		collection: 'my_collection',
 		item: 1,
 	})
@@ -274,18 +276,18 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Create Multiple Versions
+## Create Multiple Branches
 
-Create multiple new versions.
+Create multiple new branches.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /versions`
+`POST /branches`
 
-Provide an array of [version objects](#the-version-object) as the body of your request.
+Provide an array of [branch objects](#the-branch-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -296,11 +298,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createContentVersions } from '@directus/sdk';
+import { createDirectus, rest, createBranches } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(createContentVersions(version_object_array));
+const result = await client.request(createBranches(branch_object_array));
 ```
 
 </template>
@@ -312,27 +314,29 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-An array of partial [version objects](#the-version-object).
+An array of partial [branch objects](#the-branch-object).
 
 ### Response
 
-Returns an array of [version objects](#the-version-object) for the created versions.
+Returns an array of [branch objects](#the-branch-object) for the created branches.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /versions`
+`POST /branches`
 
 ```json
 [
 	{
+		"key": "my_version",
 		"name": "My Version",
 		"collection": "my_collection",
 		"item": 1
 	},
 	{
+		"key": "another_version",
 		"name": "Another Version",
 		"collection": "another_collection",
 		"item": 2
@@ -349,18 +353,20 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, createContentVersions } from '@directus/sdk';
+import { createDirectus, rest, createBranches } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	createContentVersions([
+	createBranches([
 		{
+			key: 'my_version',
 			name: 'My Version',
 			collection: 'my_collection',
 			item: 1,
 		},
 		{
+			key: 'another_version',
 			name: 'Another Version',
 			collection: 'another_collection',
 			item: 2,
@@ -372,18 +378,18 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Update a Version
+## Update a Branch
 
-Update an existing version.
+Update an existing branch.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /versions/:id`
+`PATCH /branches/:id`
 
-Provide a partial [version object](#the-version-object) as the body of your request.
+Provide a partial [branch object](#the-branch-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -394,11 +400,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateContentVersion } from '@directus/sdk';
+import { createDirectus, rest, updateBranch } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(updateContentVersion(version_id, partial_version_object));
+const result = await client.request(updateBranch(branch_id, partial_branch_object));
 ```
 
 </template>
@@ -410,18 +416,18 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-A partial [version object](#the-version-object).
+A partial [branch object](#the-branch-object).
 
 ### Response
 
-Returns the [version object](#the-version-object) for the updated version.
+Returns the [branch object](#the-branch-object) for the updated branch.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
+`PATCH /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
 
 ```json
 {
@@ -438,12 +444,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateContentVersion } from '@directus/sdk';
+import { createDirectus, rest, updateBranch } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', {
+	updateBranch('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', {
 		name: 'My Updated Version',
 	})
 );
@@ -452,21 +458,21 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Update Multiple Versions
+## Update Multiple Branches
 
-Update multiple existing versions.
+Update multiple existing branches.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /versions`
+`PATCH /branches`
 
 ```json
 {
-	"keys": version_id_array,
-	"data": partial_version_object
+	"keys": branch_id_array,
+	"data": partial_branch_object
 }
 ```
 
@@ -479,11 +485,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateContentVersions } from '@directus/sdk';
+import { createDirectus, rest, updateBranches } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(updateContentVersions(version_id_array, partial_version_object));
+const result = await client.request(updateBranches(branch_id_array, partial_branch_object));
 ```
 
 </template>
@@ -496,21 +502,21 @@ Supports all [global query parameters](/reference/query).
 #### Request Body
 
 `keys` **Required**\
-Array of primary keys of the versions you'd like to update.
+Array of primary keys of the branches you'd like to update.
 
 `data` **Required**\
-The name property of the [version object](#the-version-object).
+The name property of the [branch object](#the-branch-object).
 
 ### Response
 
-Returns the [version objects](#the-version-object) for the updated versions.
+Returns the [branch objects](#the-branch-object) for the updated branches.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`PATCH /versions`
+`PATCH /branches`
 
 ```json
 {
@@ -530,12 +536,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, updateContentVersions } from '@directus/sdk';
+import { createDirectus, rest, updateBranches } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateContentVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'], {
+	updateBranches(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'], {
 		name: 'My Updated Version',
 	})
 );
@@ -544,16 +550,16 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Delete a Version
+## Delete a Branch
 
-Delete an existing version.
+Delete an existing branch.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /versions/:id`
+`DELETE /branches/:id`
 
 </template>
 <template #graphql>
@@ -564,11 +570,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteContentVersion } from '@directus/sdk';
+import { createDirectus, rest, deleteBranch } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteContentVersion(version_id));
+const result = await client.request(deleteBranch(branch_id));
 ```
 
 </template>
@@ -583,7 +589,7 @@ Empty body.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
+`DELETE /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
 
 </template>
 <template #graphql>
@@ -594,28 +600,28 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteContentVersion } from '@directus/sdk';
+import { createDirectus, rest, deleteBranch } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+const result = await client.request(deleteBranch('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
 ```
 
 </template>
 </SnippetToggler>
 
-## Delete Multiple Versions
+## Delete Multiple Branches
 
-Delete multiple existing versions.
+Delete multiple existing branches.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /versions`
+`DELETE /branches`
 
-Provide an array of version IDs as the body of your request.
+Provide an array of branch IDs as the body of your request.
 
 </template>
 <template #graphql>
@@ -626,11 +632,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
+import { createDirectus, rest, deleteBranches } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteContentVersions(version_id_array));
+const result = await client.request(deleteBranches(branch_id_array));
 ```
 
 </template>
@@ -638,7 +644,7 @@ const result = await client.request(deleteContentVersions(version_id_array));
 
 #### Request Body
 
-An array of version primary keys
+An array of branch primary keys
 
 ### Response
 
@@ -649,7 +655,7 @@ Empty body.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`DELETE /versions`
+`DELETE /branches`
 
 ```json
 ["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631", "5fd4a4be-a3ad-4544-9a27-d62b2c897056"]
@@ -664,12 +670,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
+import { createDirectus, rest, deleteBranches } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	deleteContentVersions([
+	deleteBranches([
 		'21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5',
 		'31e1c0c6-b575-47fb-908a-baf81b4e5631',
 		'5fd4a4be-a3ad-4544-9a27-d62b2c897056',
@@ -680,16 +686,16 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
-## Save to a Version
+## Save to a Branch
 
-Save changes to an existing version.
+Save item changes to an existing branch.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /versions/:id/save`
+`POST /branches/:id/save`
 
 Provide a partial [item object](/reference/items#the-item-object) as the body of your request.
 
@@ -702,11 +708,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, saveContentVersion } from '@directus/sdk';
+import { createDirectus, rest, saveToBranch } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(saveContentVersion(version_id, partial_item_object));
+const result = await client.request(saveToBranch(branch_id, partial_item_object));
 ```
 
 </template>
@@ -714,18 +720,18 @@ const result = await client.request(saveContentVersion(version_id, partial_item_
 
 ### Response
 
-Returns the [item object](/reference/items#the-item-object) of the item state after the save.
+Returns the [item object](/reference/items#the-item-object) of the state after the save.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/save`
+`POST /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/save`
 
 ```json
 {
-	"my_field": "updated value"
+	"my_field": "Updated value"
 }
 ```
 
@@ -738,28 +744,28 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, saveContentVersion } from '@directus/sdk';
+import { createDirectus, rest, saveToBranch } from '@directus/sdk';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	saveContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: 'updated value' })
+	saveToBranch('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: 'Updated value' })
 );
 ```
 
 </template>
 </SnippetToggler>
 
-## Compare a Version
+## Compare a Branch
 
-Compare an existing version with the main item.
+Compare an existing branch with the main version of the item.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /versions/:id/compare`
+`GET /branches/:id/compare`
 
 </template>
 <template #graphql>
@@ -770,11 +776,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, compareContentVersion } from '@directus/sdk';
+import { createDirectus, rest, compareBranch } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(compareContentVersion(version_id));
+const result = await client.request(compareBranch(branch_id));
 ```
 
 </template>
@@ -782,18 +788,18 @@ const result = await client.request(compareContentVersion(version_id));
 
 ### Response
 
-Returns all fields with different values, along with the hash of the main item and the information whether the current
-version is outdated (main item has been updated since the creation of the current version):
+Returns all fields with different values, along with the hash of the main version of the item and the information
+whether the current branch is outdated (main version of the item has been updated since the creation of the branch):
 
 ```json
 {
 	"outdated": false,
 	"mainHash": "2ee9c4e33b19d2cdec66a1ff7355e75a331591d9",
 	"current": {
-		"my_field": "updated value"
+		"my_field": "Updated value"
 	},
 	"main": {
-		"my_field": "main value"
+		"my_field": "Main value"
 	}
 }
 ```
@@ -803,7 +809,7 @@ version is outdated (main item has been updated since the creation of the curren
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/compare`
+`GET /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/compare`
 
 </template>
 <template #graphql>
@@ -814,29 +820,29 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, compareContentVersion } from '@directus/sdk';
+import { createDirectus, rest, compareBranch } from '@directus/sdk';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(compareContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+const result = await client.request(compareBranch('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
 ```
 
 </template>
 </SnippetToggler>
 
-## Promote a Version
+## Promote a Branch
 
-Promote an existing version into the main item.
+Promote an existing branch as new main version of the item.
 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /versions/:id/promote`
+`POST /branches/:id/promote`
 
-Pass the current hash of the main item (obtained from the `compare` endpoint) along with an optional array of field
-names of which the values are to be promoted from the current version into the main item.
+Pass the current hash of the main version of the item (obtained from the `compare` endpoint) along with an optional
+array of field names of which the values are to be promoted.
 
 ```json
 {
@@ -854,11 +860,11 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
+import { createDirectus, rest, promoteBranch } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(promoteContentVersion(version_id, promote_object));
+const result = await client.request(promoteBranch(branch_id, promote_object));
 ```
 
 </template>
@@ -873,7 +879,7 @@ The primary key of the updated item.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/promote`
+`POST /branches/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5/promote`
 
 ```json
 {
@@ -891,12 +897,12 @@ TBD
 <template #sdk>
 
 ```js
-import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
+import { createDirectus, rest, promoteBranch } from '@directus/sdk';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	promoteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', [
+	promoteBranch('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', [
 		'my_field',
 	])
 );
