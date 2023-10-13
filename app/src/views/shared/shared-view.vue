@@ -121,7 +121,7 @@ header {
 	justify-content: center;
 	width: 60px;
 	height: 60px;
-	background-color: var(--brand);
+	background-color: var(--project-color);
 	border-radius: var(--border-radius);
 
 	img {

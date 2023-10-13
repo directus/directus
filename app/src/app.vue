@@ -23,7 +23,7 @@ const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides
 const { hydrating } = toRefs(appStore);
 
 const brandStyleCss = computed(() => {
-	return `:root { --brand: ${serverStore.info?.project?.project_color ?? 'var(--primary)'} }`;
+	return `:root { --project-color: ${serverStore.info?.project?.project_color ?? 'var(--primary)'} }`;
 });
 
 useHead({

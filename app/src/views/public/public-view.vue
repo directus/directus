@@ -307,7 +307,7 @@ const logoURL = computed<string | null>(() => {
 		justify-content: center;
 		width: 56px;
 		height: 56px;
-		background-color: var(--brand);
+		background-color: var(--project-color);
 		border-radius: calc(var(--border-radius) - 2px);
 
 		img {
