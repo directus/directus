@@ -24,6 +24,8 @@ function getStreamForMock(data: Record<string, any>[]) {
 		stream: new ReadableStream({
 			start(controller) {
 				data.forEach((chunk: any) => controller.enqueue(chunk));
+
+				controller.close();
 			},
 		}),
 	};
@@ -37,11 +39,6 @@ async function getActualResult(readableStream: any) {
 
 	for await (const chunk of readableStream) {
 		actualResult.push(chunk);
-
-		// this is a hot fix. for some reason the mocked db response stream does not close properly
-		if (actualResult.length === 2) {
-			break;
-		}
 	}
 
 	return actualResult;
