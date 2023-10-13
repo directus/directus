@@ -23,7 +23,7 @@
 	],
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite",
+		"dev": "vite build --watch",
 		"test": "vitest --watch=false",
 		"story:dev": "histoire dev",
 		"story:build": "histoire build",

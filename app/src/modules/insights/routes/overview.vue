@@ -442,17 +442,17 @@ async function batchDelete() {
 }
 
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 </style>

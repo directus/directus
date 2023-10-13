@@ -227,7 +227,7 @@ onMounted(() => {
 		padding: 0px 8px;
 
 		.url {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -241,7 +241,7 @@ onMounted(() => {
 			display: flex;
 			align-items: center;
 			&.disabled {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 

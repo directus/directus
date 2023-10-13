@@ -156,8 +156,8 @@ const onDeleteOptions = computed(() =>
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 
 	position: relative;
 	display: grid;
@@ -166,11 +166,11 @@ const onDeleteOptions = computed(() =>
 	margin-top: 48px;
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 
 	.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		bottom: 17px;
@@ -180,7 +180,7 @@ const onDeleteOptions = computed(() =>
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 
 .v-divider {
@@ -204,7 +204,7 @@ const onDeleteOptions = computed(() =>
 	}
 
 	.field-name {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 }
 

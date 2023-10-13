@@ -138,6 +138,6 @@ function getChildBookmarks(collection: Collection) {
 
 <style scoped>
 .hidden {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--theme--foreground-subdued);
 }
 </style>

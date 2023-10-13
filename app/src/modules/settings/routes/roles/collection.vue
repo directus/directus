@@ -179,10 +179,10 @@ function navigateToRole({ item }: { item: Role }) {
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .roles {
@@ -192,18 +192,18 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .system {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .description {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .public {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 </style>

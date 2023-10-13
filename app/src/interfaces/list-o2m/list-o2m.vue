@@ -648,7 +648,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.item-count {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		white-space: nowrap;
 	}
 
@@ -673,12 +673,12 @@ function getLinkForItem(item: DisplayItem) {
 }
 
 .item-link {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	&.disabled {
@@ -688,12 +688,12 @@ function getLinkForItem(item: DisplayItem) {
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 
@@ -704,7 +704,7 @@ function getLinkForItem(item: DisplayItem) {
 	width: 120px;
 	padding: 10px 0;
 	margin-right: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		width: auto;
@@ -712,7 +712,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

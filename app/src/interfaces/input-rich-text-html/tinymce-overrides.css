@@ -1,25 +1,25 @@
 .tox {
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 }
 
 .tox .tox-tbtn {
 	height: 36px;
 	margin: 0;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .tox .tox-listbox__select-chevron svg,
 .tox .tox-collection__item-caret svg {
-	fill: var(--foreground-normal);
+	fill: var(--theme--form--field--input--foreground);
 }
 
 .tox .tox-swatches__picker-btn svg {
-	fill: var(--foreground-normal);
+	fill: var(--theme--form--field--input--foreground);
 }
 
 .tox .tox-tbtn svg,
 .tox .tox-tbtn:hover svg {
-	fill: var(--foreground-normal);
+	fill: var(--theme--form--field--input--foreground);
 }
 
 .tox-tbtn[aria-label='Bold'] .tox-icon svg {
@@ -29,7 +29,7 @@
 .tox-tbtn[aria-label='Bold'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
 	content: 'format_bold';
@@ -43,7 +43,7 @@
 .tox-tbtn[aria-label='Italic'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
 	content: 'format_italic';
@@ -57,7 +57,7 @@
 .tox-tbtn[aria-label='Underline'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
 	content: 'format_underlined';
@@ -71,7 +71,7 @@
 .tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
 	content: 'insert_link';
@@ -84,12 +84,12 @@
 }
 
 .tox .tox-edit-area__iframe {
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 }
 
 .tox-tinymce {
 	min-height: 300px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: var(--fast) var(--transition);
@@ -101,8 +101,8 @@
 }
 
 .wysiwyg:not(.disabled) .tox-tinymce.focus {
-	border-color: var(--primary) !important;
-	box-shadow: 0 0 16px -8px var(--primary) !important;
+	border-color: var(--theme--primary) !important;
+	box-shadow: 0 0 16px -8px var(--theme--primary) !important;
 }
 
 .tox .tox-toolbar,
@@ -147,7 +147,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-split-button:hover,
 .tox .tox-tbtn:hover,
 .tox .tox-split-button:focus {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	background: var(--border-normal);
 }
 
@@ -189,8 +189,8 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog {
-	color: var(--foreground-normal);
-	background-color: var(--background-page);
+	color: var(--theme--form--field--input--foreground);
+	background-color: var(--theme--background);
 	border: none;
 	box-shadow: none;
 }
@@ -201,13 +201,13 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog__header {
 	padding: 20px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-size: 16px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 }
 
 .tox .tox-dialog__body {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .tox .tox-dialog__body-content {
@@ -216,8 +216,8 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog__footer {
 	padding: 0 24px 24px;
-	color: var(--foreground-normal);
-	background-color: var(--background-page);
+	color: var(--theme--form--field--input--foreground);
+	background-color: var(--theme--background);
 	border-top: none;
 }
 
@@ -227,18 +227,18 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-selectfield select,
 .tox .tox-textarea {
 	padding: 12px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--family-sans-serif);
-	background-color: var(--background-page);
+	font-family: var(--theme--font-family-sans-serif);
+	background-color: var(--theme--background);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: var(--fast) var(--transition);
 }
 
 .tox .tox-textarea {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .tox .tox-textfield:focus,
@@ -246,14 +246,14 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-toolbar-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 }
 
 .tox .tox-menu {
 	box-sizing: border-box;
 	padding: 4px !important;
-	color: var(--foreground-normal);
-	font-family: var(--family-sans-serif);
+	color: var(--theme--form--field--input--foreground);
+	font-family: var(--theme--font-family-sans-serif);
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
@@ -264,12 +264,12 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-collection--list .tox-collection__item {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .tox .tox-collection--list .tox-collection__item--enabled,
 .tox .tox-collection--list .tox-collection__item--active {
-	color: var(--foreground-normal) !important;
+	color: var(--theme--form--field--input--foreground) !important;
 	background-color: var(--background-normal-alt) !important;
 }
 
@@ -278,13 +278,13 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-collection__item-accessory {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .tox .tox-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .tox .tox-button {
@@ -297,12 +297,12 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--white);
 	font-weight: 500;
 	font-size: 16px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 	line-height: 19px;
-	background-color: var(--primary);
-	border: 2px solid var(--primary);
+	background-color: var(--theme--primary);
+	border: 2px solid var(--theme--primary);
 	border: none;
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 	border-radius: var(--border-radius);
 	cursor: pointer;
 	-webkit-transition: var(--fast) var(--transition);
@@ -311,18 +311,18 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-button:hover:not(:disabled) {
-	background-color: var(--primary);
-	border-color: var(--primary);
+	background-color: var(--theme--primary);
+	border-color: var(--theme--primary);
 }
 
 .tox .tox-button--secondary {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	background-color: var(--background-normal);
 	border-color: var(--background-normal);
 }
 
 .tox .tox-button--secondary:hover:not(:disabled) {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	background-color: var(--background-normal);
 	border-color: var(--background-normal);
 }
@@ -330,13 +330,13 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-button--naked {
 	min-width: auto;
 	height: auto;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: transparent;
 	border-color: transparent;
 }
 
 .tox .tox-button--naked.tox-button--icon:hover:not(:disabled) {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	background-color: transparent;
 	border-color: transparent;
 }
@@ -348,7 +348,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-label,
 .tox .tox-toolbar-label {
 	margin-bottom: 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 16px;
 }
@@ -358,7 +358,7 @@ body.dark .tox .tox-toolbar__overflow {
 	width: 100%;
 	margin-bottom: 4px;
 	padding: 12px 16px;
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 14px;
 	border-bottom: none;
@@ -386,7 +386,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-insert-table-picker__label {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .tox .tox-insert-table-picker > div {
@@ -394,7 +394,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-insert-table-picker .tox-insert-table-picker__selected {
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .tox .tox-pop.tox-pop--top::after {

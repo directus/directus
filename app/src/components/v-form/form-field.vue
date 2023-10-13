@@ -234,10 +234,10 @@ function useComputedValues() {
 	margin-top: 4px;
 
 	:deep(a) {
-		color: var(--primary);
+		color: var(--theme--primary);
 
 		&:hover {
-			color: var(--primary-125);
+			color: var(--theme--primary-accent);
 		}
 	}
 }
@@ -255,7 +255,7 @@ function useComputedValues() {
 	display: flex;
 	align-items: center;
 	margin-top: 4px;
-	color: var(--danger);
+	color: var(--theme--danger);
 	font-style: italic;
 }
 

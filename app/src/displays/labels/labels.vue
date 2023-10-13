@@ -50,14 +50,14 @@ const items = computed(() => {
 			return {
 				value: item,
 				text: itemStringValue,
-				foreground: 'var(--foreground-normal)',
+				foreground: 'var(--theme--foreground)',
 				background: 'var(--background-normal)',
 			};
 		} else {
 			return {
 				value: item,
 				text: choice.text || itemStringValue,
-				foreground: choice.foreground || 'var(--foreground-normal)',
+				foreground: choice.foreground || 'var(--theme--foreground)',
 				background: choice.background || 'var(--background-normal)',
 			};
 		}

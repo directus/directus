@@ -27,7 +27,7 @@ const styles = computed(() => {
 
 	if (value !== null) style['background-color'] = value;
 
-	const pageColorString = cssVar('--background-page');
+	const pageColorString = cssVar('--theme--background');
 
 	const pageColorRGB = Color(pageColorString);
 	const colorRGB = value === null ? Color(defaultColor) : Color(value);

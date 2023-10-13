@@ -21,7 +21,7 @@ withDefaults(defineProps<Props>(), {
 	display: inline-flex;
 	align-self: center;
 	margin: 8px 0;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	&:not(:only-child) {
 		&:first-child {

@@ -22,21 +22,30 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
-		"test": "vitest --watch=false"
+		"build": "vite build && npm run generate-json-schema",
+		"dev": "vite build --watch",
+		"generate-json-schema": "node generate-json-schema.js"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@rollup/plugin-node-resolve": "15.2.3",
+		"@types/lodash-es": "4.17.9",
+		"@vitejs/plugin-vue": "4.4.0",
 		"@vitest/coverage-c8": "0.31.1",
-		"tsup": "7.2.0",
+		"rollup-plugin-node-externals": "6.1.2",
 		"typescript": "5.2.2",
-		"vitest": "0.31.1"
+		"vite": "4.4.11",
+		"vite-plugin-dts": "3.6.0",
+		"vitest": "0.34.6"
 	},
 	"dependencies": {
-		"@sinclair/typebox": "0.28.13",
-		"defu": "6.1.2",
-		"pinia": "2.1.1",
+		"@sinclair/typebox": "0.31.17",
+		"@unhead/vue": "1.1.30",
+		"decamelize": "6.0.0",
+		"flat": "6.0.1",
+		"lodash-es": "4.17.21",
+		"pinia": "2.1.6",
 		"vue": "3.3.4"
 	}
 }

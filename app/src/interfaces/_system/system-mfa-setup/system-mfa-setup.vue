@@ -174,10 +174,10 @@ function cancelAndClose() {
 
 <style lang="scss" scoped>
 .checkbox-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	&.enabled {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 
@@ -193,8 +193,8 @@ function cancelAndClose() {
 .secret {
 	display: block;
 	margin: 0 auto 16px;
-	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
+	color: var(--theme--form--field--input--foreground-subdued);
+	font-family: var(--theme--font-family-monospace);
 	letter-spacing: 2.6px;
 	text-align: center;
 }

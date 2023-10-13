@@ -59,7 +59,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
 	name: undefined,
 	icon: 'space_dashboard',
-	color: 'var(--primary)',
+	color: 'var(--theme--primary)',
 	note: undefined,
 	showHeader: true,
 	minWidth: 8,
@@ -338,7 +338,7 @@ function useDragDrop() {
 	display: block;
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: 1px solid var(--border-subdued);
 	box-shadow: 0 0 0 1px var(--border-subdued);
 	z-index: 1;
@@ -362,8 +362,8 @@ function useDragDrop() {
 
 		&.dragging {
 			z-index: 3 !important;
-			border-color: var(--primary);
-			box-shadow: 0 0 0 1px var(--primary);
+			border-color: var(--theme--primary);
+			box-shadow: 0 0 0 1px var(--theme--primary);
 		}
 
 		&.dragging .resize-details {
@@ -382,10 +382,10 @@ function useDragDrop() {
 	right: 0;
 	z-index: 2;
 	padding: 2px 11.5px 11.5px 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 12px;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
@@ -426,16 +426,16 @@ function useDragDrop() {
 }
 
 .icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	margin-right: 4px;
 }
 
 .name {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 	font-style: normal;
 }
 
@@ -446,14 +446,14 @@ function useDragDrop() {
 .more-icon,
 .edit-icon,
 .note {
-	--v-icon-color: var(--foreground-normal);
-	--v-icon-color-hover: var(--foreground-normal-alt);
+	--v-icon-color: var(--theme--foreground);
+	--v-icon-color-hover: var(--theme--foreground-accent);
 }
 
 .delete-action {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .edit-actions {
