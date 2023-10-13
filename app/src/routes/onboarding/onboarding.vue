@@ -277,7 +277,7 @@ async function nextSlide() {
 			<div class="actions">
 				<!-- Left Actions -->
 				<div>
-					<Transition name="dialog">
+					<!-- <Transition name="dialog">
 						<v-button
 							v-if="!isLoading"
 							secondary
@@ -286,18 +286,12 @@ async function nextSlide() {
 						>
 							{{ t('back') }}
 						</v-button>
-					</Transition>
+					</Transition> -->
 				</div>
 				<!-- Right Actions -->
 				<div>
 					<v-button v-if="!isLoading" :disabled="isLoading" @click="nextSlide">
-						{{
-							isFirstSlide
-								? t('onboarding.action.first')
-								: isLastSlide
-								? t('onboarding.action.last')
-								: t('onboarding.action.continue')
-						}}
+						{{ isFirstSlide ? t('onboarding.action.first') : t('onboarding.action.saveAndContinue') }}
 					</v-button>
 				</div>
 			</div>
