@@ -29,7 +29,7 @@ Whether or not the extension is enabled.
 Information about the installed extension. Can't be changed.
 
 `type` **string**\
-Type of the extension. One of `'interface'`, `'display'`, `'layout'`, `'module'`, `'panel'`, `'hoo'`k','``'endpoint'`, `'operation'`,
+Type of the extension. One of `'interface'`, `'display'`, `'layout'`, `'module'`, `'panel'`, `'hook'`, `'endpoint'`, `'operation'`,
 `'bundle'`.
 
 `local` **boolean**\
