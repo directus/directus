@@ -27,7 +27,7 @@ export const getExtensionsSettings = async (extensions: Extension[]) => {
 	const missing = difference(extensionNames, extensionSettingNames);
 
 	if (missing.length > 0) {
-		const missingRows = missing.map((name) => ({ name, enabled: true, options: null, permissions: null }));
+		const missingRows = missing.map((name) => ({ name, enabled: true }));
 		await database.insert(missingRows).into('directus_extensions');
 		settings.push(...missingRows);
 	}
