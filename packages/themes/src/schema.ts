@@ -94,6 +94,11 @@ const Rules = Type.Object({
 			label: Type.Object({
 				foreground: Color,
 			}),
+			input: Type.Object({
+				background: Color,
+				foreground: Color,
+				foregroundSubdued: Color,
+			}),
 		}),
 	}),
 

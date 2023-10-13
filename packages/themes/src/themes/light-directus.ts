@@ -89,6 +89,11 @@ export const theme: Theme = {
 				label: {
 					foreground: 'var(--theme--foreground-accent)',
 				},
+				input: {
+					background: 'var(--theme--background)',
+					foreground: 'var(--theme--foreground)',
+					foregroundSubdued: 'var(--theme--foreground-subdued)',
+				},
 			},
 		},
 
