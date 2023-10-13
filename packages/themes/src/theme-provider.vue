@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { DeepPartial } from '@directus/types';
+import { useHead } from '@unhead/vue';
 import decamelize from 'decamelize';
 import { flatten } from 'flat';
 import { mapKeys } from 'lodash-es';
 import { computed, toRefs, unref } from 'vue';
 import type { Theme } from './schema.js';
-// import { theme as themeDefaultDark } from './themes/dark-directus.js';
-import { useHead } from '@unhead/vue';
-import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/light-directus.js';
+import { theme as themeDefaultDark } from './themes/dark-directus.js';
+import { theme as themeDefaultLight } from './themes/light-directus.js';
 import { useFonts } from './use-fonts.js';
 import { useTheme } from './use-theme.js';
 

@@ -5,8 +5,8 @@ import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
 import { useThemeStore } from './store.js';
-// import { theme as themeDefaultDark } from './themes/dark-directus.js';
-import { theme as themeDefaultDark, theme as themeDefaultLight } from './themes/light-directus.js';
+import { theme as themeDefaultDark } from './themes/dark-directus.js';
+import { theme as themeDefaultLight } from './themes/light-directus.js';
 
 export const useTheme = (
 	darkMode: MaybeRef<boolean>,
