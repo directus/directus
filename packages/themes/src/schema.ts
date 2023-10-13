@@ -15,6 +15,13 @@ const Rules = Type.Object({
 	foregroundAccent: Color,
 
 	background: Color,
+
+	primary: Color,
+	secondary: Color,
+	success: Color,
+	warning: Color,
+	danger: Color,
+
 	navigation: Type.Object({
 		background: Color,
 

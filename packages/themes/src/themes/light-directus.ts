@@ -5,16 +5,24 @@ export const theme: Theme = {
 	appearance: 'light',
 	fonts: [],
 	rules: {
-		background: '#fff',
 		foreground: '#4f5464',
 		foregroundAccent: '#172940',
 		foregroundSubdued: '#a2b5cd',
+
+		background: '#fff',
+
+		primary: 'var(--project-color)',
+		secondary: '#ff99dd',
+		success: '#2ecda7',
+		warning: '#ffa439',
+		danger: '#e35169',
+
 		navigation: {
 			background: '#f0f4f9',
 
 			project: {
 				background: '#e4eaf1',
-				foreground: '#172940',
+				foreground: 'var(--theme--foreground-accent)',
 			},
 
 			modules: {
@@ -22,7 +30,7 @@ export const theme: Theme = {
 				button: {
 					foreground: '#8196b1',
 					foregroundHover: '#fff',
-					foregroundActive: '#172940',
+					foregroundActive: 'var(--theme--foreground-accent)',
 					background: 'transparent',
 					backgroundHover: 'transparent',
 					backgroundActive: '#f0f4f9',
@@ -30,13 +38,13 @@ export const theme: Theme = {
 			},
 
 			list: {
-				icon: 'var(--brand)',
-				iconHover: 'var(--brand)',
-				iconActive: 'var(--brand)',
+				icon: 'var(--project-color)',
+				iconHover: 'var(--project-color)',
+				iconActive: 'var(--project-color)',
 
-				foreground: '#172940',
-				foregroundHover: '#172940',
-				foregroundActive: '#172940',
+				foreground: 'var(--theme--foreground-accent)',
+				foregroundHover: 'var(--theme--foreground-accent)',
+				foregroundActive: 'var(--theme--foreground-accent)',
 
 				background: 'transparent',
 				backgroundHover: '#e4eaf1',
