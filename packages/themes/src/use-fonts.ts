@@ -41,38 +41,40 @@ export const useFonts = (rules: MaybeRef<Theme>) => {
 	});
 
 	const googleFonts = computed(() => {
-		return fonts.value.filter((font) => {
-			/**
-			 * I (Rijk)'d like the definition to remain valid CSS, so we can't introduce new characters
-			 * to differentiate. However, both `"font"` and `font` are valid font identifiers, so we
-			 * could rely on the existence of `""` as a sneaky way to differentiate between Google Font
-			 * and "regular" font.
-			 *
-			 * There's no way in JS to check what fonts exist, so we'll have to assume all custom fonts
-			 * are coming from Google Fonts.
-			 */
-
-			if (font.startsWith('"') && font.endsWith('"') && font.includes('var(') === false) {
-				/* While Inter/Merriweather/Fira Mono are Google Fonts, we ship them locally as they're
-				 * used in the default theme. They shouldn't be double-loaded so they're filtered out here.
+		return fonts.value
+			.filter((font) => {
+				/**
+				 * I (Rijk)'d like the definition to remain valid CSS, so we can't introduce new characters
+				 * to differentiate. However, both `"font"` and `font` are valid font identifiers, so we
+				 * could rely on the existence of `""` as a sneaky way to differentiate between Google Font
+				 * and "regular" font.
+				 *
+				 * There's no way in JS to check what fonts exist, so we'll have to assume all custom fonts
+				 * are coming from Google Fonts.
 				 */
-				const localFonts = ['Inter', 'Merriweather', 'Fira Mono'];
 
-				if (localFonts.includes(font) || localFonts.map((font) => `"${font}"`).includes(font)) {
-					return false;
+				if (font.startsWith('"') && font.endsWith('"') && font.includes('var(') === false) {
+					/* While Inter/Merriweather/Fira Mono are Google Fonts, we ship them locally as they're
+					 * used in the default theme. They shouldn't be double-loaded so they're filtered out here.
+					 */
+					const localFonts = ['Inter', 'Merriweather', 'Fira Mono'];
+
+					if (localFonts.includes(font) || localFonts.map((font) => `"${font}"`).includes(font)) {
+						return false;
+					}
+
+					return true;
 				}
 
-				return true;
-			}
+				return false;
+			})
+			.map((font) => {
+				if (font.startsWith('"') && font.endsWith('"')) {
+					font = font.slice(1, -1);
+				}
 
-			return false;
-		}).map((font) => {
-			if (font.startsWith('"') && font.endsWith('"')) {
-				font = font.slice(1, -1);
-			}
-
-			return font.replace(' ', '+');
-		})
+				return font.replace(' ', '+');
+			});
 	});
 
 	return { fonts, googleFonts };

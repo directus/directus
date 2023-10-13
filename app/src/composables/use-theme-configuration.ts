@@ -50,7 +50,10 @@ export const useThemeConfiguration = () => {
 
 	const darkMode = computed(() => appearance.value === 'dark');
 
-	const themeLight = computed(() => userSettings.value?.theme_light ?? systemSettings.value?.default_theme_light ?? null);
+	const themeLight = computed(
+		() => userSettings.value?.theme_light ?? systemSettings.value?.default_theme_light ?? null
+	);
+
 	const themeDark = computed(() => userSettings.value?.theme_dark ?? systemSettings.value?.default_theme_dark ?? null);
 
 	const themeLightOverrides = computed(() =>
