@@ -44,7 +44,7 @@ fetchExtensions();
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="extension" />
+				<v-icon name="category" />
 			</v-button>
 		</template>
 
