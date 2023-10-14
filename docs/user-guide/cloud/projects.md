@@ -5,14 +5,14 @@ readTime: 8 min read
 
 # Cloud Projects
 
-> Cloud Projects are individual instances of Directus, managed within a Team. Standard and Enterprise tier Projects are
-> available, with each offering different options for infrastructure, configuration and professional services. A Cloud
-> Project is a Directus Instance, the [Infrastructure](/user-guide/cloud/glossary#infrastructure) it runs on, and all of
-> its [data and file assets](/user-guide/cloud/glossary#asset-storage). All Cloud Projects include all
+> Cloud Projects are individual instances of Directus, managed within a Team. Professional and Enterprise tier Projects
+> are available, with each offering different options for infrastructure, configuration and professional services. A
+> Cloud Project is a Directus Instance, the [Infrastructure](/user-guide/cloud/glossary#infrastructure) it runs on, and
+> all of its [data and file assets](/user-guide/cloud/glossary#asset-storage). All Cloud Projects include all
 > [Cloud Exclusives](/user-guide/cloud/glossary#cloud-exclusives). See
 > [Support Options](/user-guide/cloud/glossary#support-options) to find out how to get help on your Project.
 
-There are two different Project tiers on Directus Cloud: [Standard](#create-a-standard-project) and
+There are two different Project tiers on Directus Cloud: [Professional](#create-a-professional-project) and
 [Enterprise](#create-an-enterprise-project). A side-by-side comparison of what's included in each tier can be found on
 the [Pricing page](https://directus.io/pricing).
 
@@ -29,26 +29,26 @@ Project Name and Project Slug. On the right, you'll see the Project tier, follow
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
 
-## Create a Standard Project
+## Create a Professional Project
 
-The Standard tier is perfect for most production-ready use cases. Standard tier Projects come with custom URLs, daily
-[backups](/user-guide/cloud/glossary#backups) and the recommended infrastructure for most projects. as needed.
+The Professional tier is perfect for most production-ready use cases. Professional tier Projects come with custom URLs,
+daily [backups](/user-guide/cloud/glossary#backups) and the recommended infrastructure for most projects. as needed.
 
-Standard Projects come with the following configuration options:
+Professional Projects come with the following configuration options:
 
 - **Project Name** — Custom. This can be changed at any time.
 - **Project URL** — Custom URL: `your-custom-url.directus.app`. _This cannot be changed_.
 - [Datacenter Region](/user-guide/cloud/glossary#datacenter-regions) — `United States, East`, `Europe, Frankfurt` or
   `Asia Pacific, Singapore`.
 
-To create a Standard Project:
+To create a Professional Project:
 
 1. Open the Team Menu in the Dashboard Header and select the desired Team.
 2. Click **"Projects"**.
 3. Click the Team you wish to create a Project under.
 4. Click **"Create Project"**.
 5. Set the Project Name as desired.
-6. Select the Standard tier.
+6. Select the Professional tier.
 7. Set the configuration options as desired.
 8. Click **"Proceed to Checkout"**. You will be taken to a checkout page.
 9. Enter payment information and hit **"Subscribe"**.
@@ -114,9 +114,9 @@ To access the Project Monitor Page:
 2. Click **"Projects"** to enter the Projects page.
 3. Click the Project to enter the Project Monitor page.
 
-## Manage a Standard Project
+## Manage a Professional Project
 
-On Standard Projects, it's possible to change the Project Name.
+On Professional Projects, it's possible to change the Project Name.
 
 1. Open the Team Menu in the Dashboard Header and click the desired Team.
 2. Click **"Projects"** to enter the Projects page.
