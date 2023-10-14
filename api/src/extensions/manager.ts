@@ -446,16 +446,16 @@ export class ExtensionManager {
 				? `import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
 						.filter((type) => extension.entries.some((entry) => entry.type === type))
 						.map((type) => pluralize(type))
-						.join(',')}} from '\0virtual'; ${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
+						.join(',')}} from '@directus/virtual-entrypoint'; ${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
 						.filter((type) => extension.entries.some((entry) => entry.type === type))
 						.map((type) => `for (const ${type} of ${pluralize(type)}) { ${type}() }`)
 						.join(';')};`
-				: `import e from '\0virtual'; e();`;
+				: `import e from '@directus/virtual-entrypoint'; e();`;
 
 		const runModule = await isolate.compileModule(virtualEntrypoint);
 
 		await runModule.instantiate(context, (specifier) => {
-			if (specifier !== '\0virtual') throw new Error(`Couldn't import module ${specifier}`);
+			if (specifier !== '@directus/virtual-entrypoint') throw new Error(`Couldn't import module ${specifier}`);
 
 			return isolate.compileModule(extensionCode, {
 				filename: entrypointPath,
