@@ -16,6 +16,8 @@ export const exec = async (type: unknown, ...args: unknown[]) => {
 
 			/** @TODO gotta do some more typescript wizardly to get this to properly read the types */
 			await (handler as any)(...(schema.parse(args) as any));
+		} else {
+			throw new Error(`Type "${type}" isn't a valid handler type`);
 		}
 	} catch (err) {
 		logger.warn(err);
