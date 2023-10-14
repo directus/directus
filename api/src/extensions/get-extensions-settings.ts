@@ -1,6 +1,8 @@
-import type { Extension, ExtensionSettings } from '@directus/extensions';
+import type { Extension } from '@directus/extensions';
 import { difference } from 'lodash-es';
 import getDatabase from '../database/index.js';
+import { ExtensionsService } from '../services/extensions.js';
+import { getSchema } from '../utils/get-schema.js';
 
 /**
  * Loads stored settings for all extensions. Creates empty new rows in extensions tables for
@@ -10,7 +12,12 @@ import getDatabase from '../database/index.js';
 export const getExtensionsSettings = async (extensions: Extension[]) => {
 	const database = getDatabase();
 
-	const settings = await database.select<ExtensionSettings[]>('*').from('directus_extensions');
+	const service = new ExtensionsService({
+		knex: database,
+		schema: await getSchema(),
+	});
+
+	const settings = await service.extensionsItemService.readByQuery({ limit: -1 });
 
 	const extensionNames = extensions
 		.map((extension) => {
