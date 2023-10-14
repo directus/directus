@@ -24,8 +24,8 @@ import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
-import type IsolatedVM from 'isolated-vm';
 import type { Isolate } from 'isolated-vm';
+import ivm from 'isolated-vm';
 import { clone } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
@@ -59,8 +59,6 @@ const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.d
 
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const ivm = require('isolated-vm') as typeof IsolatedVM;
 
 export class ExtensionManager {
 	private options: ExtensionManagerOptions = {
@@ -437,6 +435,21 @@ export class ExtensionManager {
 		const jail = context.global;
 
 		jail.setSync('global', jail.derefInto());
+
+		await context.global.set(
+			'exec',
+			new ivm.Callback(
+				async (type: string, ...args: unknown[]) => {
+					console.log(type, ...args);
+
+					if (type === 'log') {
+						console.log(`Sent log: `, ...args);
+						return;
+					}
+				},
+				{ async: true }
+			)
+		);
 
 		// await createExec(context, extension);
 
