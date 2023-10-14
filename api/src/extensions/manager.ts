@@ -45,6 +45,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { exec } from './exec/index.js';
 import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
@@ -436,20 +437,10 @@ export class ExtensionManager {
 
 		jail.setSync('global', jail.derefInto());
 
-		await context.global.set(
-			'exec',
-			new ivm.Callback(
-				async (type: string, ...args: unknown[]) => {
-					console.log(type, ...args);
-
-					if (type === 'log') {
-						console.log(`Sent log: `, ...args);
-						return;
-					}
-				},
-				{ async: true }
-			)
-		);
+		/**
+		 * Register the global `exec` function for cross isolate communication
+		 */
+		await context.global.set('exec', new ivm.Callback(exec, { async: true }));
 
 		// await createExec(context, extension);
 
