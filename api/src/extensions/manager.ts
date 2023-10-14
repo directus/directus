@@ -45,7 +45,6 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { createExec } from './exec/node.js';
 import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
@@ -439,7 +438,7 @@ export class ExtensionManager {
 
 		jail.setSync('global', jail.derefInto());
 
-		await createExec(context, extension);
+		// await createExec(context, extension);
 
 		// @TODO: Move into until
 		const virtualEntrypoint =

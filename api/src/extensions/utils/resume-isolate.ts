@@ -1,9 +1,8 @@
 import type { Reference } from 'isolated-vm';
 import env from '../../env.js';
-import type { ExecContext } from './add-exec-options.js';
 import { handleIsolateError } from './handle-isolate-error.js';
 
-export async function resumeIsolate(context: ExecContext, reference: Reference, args: any[]) {
+export async function resumeIsolate(context: unknown, reference: Reference, args: any[]) {
 	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
 	try {
