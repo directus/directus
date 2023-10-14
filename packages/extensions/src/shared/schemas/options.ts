@@ -8,21 +8,23 @@ export const SplitEntrypoint = z.object({
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
-export const ExtensionSandboxOptions = z.object({
-	enabled: z.boolean(),
-	requestedScopes: z.array(
-		z.union([
-			z.object({
-				type: z.literal('request'),
-				permissions: z.object({
-					urls: z.string(),
-					methods: z.array(z.union([z.literal('get'), z.literal('post'), z.literal('patch'), z.literal('delete')])),
+export const ExtensionSandboxOptions = z.optional(
+	z.object({
+		enabled: z.boolean(),
+		requestedScopes: z.array(
+			z.union([
+				z.object({
+					type: z.literal('request'),
+					permissions: z.object({
+						urls: z.string(),
+						methods: z.array(z.union([z.literal('get'), z.literal('post'), z.literal('patch'), z.literal('delete')])),
+					}),
 				}),
-			}),
-			z.any(), // @TODO replace with other scopes
-		])
-	),
-});
+				z.any(), // @TODO replace with other scopes
+			])
+		),
+	})
+);
 
 export type ExtensionSandboxOptions = z.infer<typeof ExtensionSandboxOptions>;
 
@@ -53,16 +55,24 @@ export const ExtensionOptionsBase = z.object({
 	hidden: z.boolean().optional(),
 });
 
-export const ExtensionOptionsAppOrApi = z.object({
-	type: z.union([z.enum(APP_EXTENSION_TYPES), z.enum(API_EXTENSION_TYPES)]),
+export const ExtensionOptionsApp = z.object({
+	type: z.enum(APP_EXTENSION_TYPES),
 	path: z.string(),
 	source: z.string(),
+});
+
+export const ExtensionOptionsApi = z.object({
+	type: z.enum(API_EXTENSION_TYPES),
+	path: z.string(),
+	source: z.string(),
+	sandbox: ExtensionSandboxOptions,
 });
 
 export const ExtensionOptionsHybrid = z.object({
 	type: z.enum(HYBRID_EXTENSION_TYPES),
 	path: SplitEntrypoint,
 	source: SplitEntrypoint,
+	sandbox: ExtensionSandboxOptions,
 });
 
 export const ExtensionOptionsBundle = z.object({
@@ -76,7 +86,7 @@ export const ExtensionOptionsBundleEntries = z.array(ExtensionOptionsBundleEntry
 export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundleEntries>;
 
 export const ExtensionOptions = ExtensionOptionsBase.and(
-	z.union([ExtensionOptionsAppOrApi, ExtensionOptionsHybrid, ExtensionOptionsBundle])
+	z.union([ExtensionOptionsApp, ExtensionOptionsApi, ExtensionOptionsHybrid, ExtensionOptionsBundle])
 );
 
 export type ExtensionOptions = z.infer<typeof ExtensionOptions>;

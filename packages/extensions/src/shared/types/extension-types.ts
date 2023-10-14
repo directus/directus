@@ -21,7 +21,6 @@ type ExtensionBase = {
 	local: boolean;
 	version?: string;
 	host?: string;
-	sandbox?: ExtensionSandboxOptions;
 };
 
 export type AppExtension = ExtensionBase & {
@@ -32,11 +31,13 @@ export type AppExtension = ExtensionBase & {
 export type ApiExtension = ExtensionBase & {
 	type: ApiExtensionType;
 	entrypoint: string;
+	sandbox?: ExtensionSandboxOptions;
 };
 
 export type HybridExtension = ExtensionBase & {
 	type: HybridExtensionType;
 	entrypoint: SplitEntrypoint;
+	sandbox?: ExtensionSandboxOptions;
 };
 
 export interface BundleExtensionEntry {
