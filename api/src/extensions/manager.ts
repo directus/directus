@@ -9,7 +9,12 @@ import type {
 	HybridExtension,
 	OperationApiConfig,
 } from '@directus/extensions';
-import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
+import {
+	APP_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+	HYBRID_EXTENSION_TYPES,
+	NESTED_EXTENSION_TYPES,
+} from '@directus/extensions';
 import { ensureExtensionDirs, generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type { ActionHandler, EmbedHandler, FilterHandler, InitHandler, ScheduleHandler } from '@directus/types';
 import { isIn, isTypeIn, pluralize } from '@directus/utils';
@@ -19,8 +24,10 @@ import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
+import type IsolatedVM from 'isolated-vm';
+import type { Isolate } from 'isolated-vm';
 import { clone } from 'lodash-es';
-import { readdir } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -38,10 +45,12 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { createExec } from './exec/node.js';
 import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
 import type { BundleConfig, ExtensionManagerOptions } from './types.js';
+import { handleIsolateError } from './utils/handle-isolate-error.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
@@ -51,6 +60,8 @@ const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.d
 
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const ivm = require('isolated-vm') as typeof IsolatedVM;
 
 export class ExtensionManager {
 	private options: ExtensionManagerOptions = {
@@ -89,6 +100,11 @@ export class ExtensionManager {
 	 * Paths that have been loaded in with `require()` and therefore exist in the require cache
 	 */
 	private cachedModulePaths: string[] = [];
+
+	/**
+	 * Isolated VMs in which secure API extensions are executed
+	 */
+	private secureApiExtensionIsolates: Isolate[] = [];
 
 	/**
 	 * A local-to-extensions scoped emitter that can be used to fire and listen to custom events
@@ -395,6 +411,69 @@ export class ExtensionManager {
 		return null;
 	}
 
+	private async registerSecureApiExtension(extension: ApiExtension | HybridExtension | BundleExtension) {
+		const isolateSizeMb = Number(env['EXTENSIONS_SECURE_MEMORY']);
+		const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+
+		const entrypointPath = path.resolve(
+			extension.path,
+			isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
+				? extension.entrypoint.api
+				: extension.entrypoint
+		);
+
+		const extensionCode = await readFile(entrypointPath, 'utf-8');
+
+		const isolate = new ivm.Isolate({
+			memoryLimit: isolateSizeMb,
+			onCatastrophicError: (e) => {
+				logger.error(`Error in secure API extension ${extension.name}: ${e}`);
+
+				process.abort();
+			},
+		});
+
+		const context = await isolate.createContext();
+
+		const jail = context.global;
+
+		jail.setSync('global', jail.derefInto());
+
+		await createExec(context, extension);
+
+		// @TODO: Move into until
+		const virtualEntrypoint =
+			extension.type === 'bundle'
+				? `import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
+						.filter((type) => extension.entries.some((entry) => entry.type === type))
+						.map((type) => pluralize(type))
+						.join(',')}} from '\0virtual'; ${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
+						.filter((type) => extension.entries.some((entry) => entry.type === type))
+						.map((type) => `for (const ${type} of ${pluralize(type)}) { ${type}() }`)
+						.join(';')};`
+				: `import e from '\0virtual'; e();`;
+
+		const runModule = await isolate.compileModule(virtualEntrypoint);
+
+		await runModule.instantiate(context, (specifier) => {
+			if (specifier !== '\0virtual') throw new Error(`Couldn't import module ${specifier}`);
+
+			return isolate.compileModule(extensionCode, {
+				filename: entrypointPath,
+			});
+		});
+
+		try {
+			await runModule.evaluate({
+				timeout: scriptTimeoutMs,
+			});
+		} catch (error: any) {
+			handleIsolateError({ extension, extensionManager: this.extensionManager }, error, true);
+		}
+
+		this.secureApiExtensionIsolates.push(isolate);
+	}
+
 	/**
 	 * Import the hook module code for all hook extensions, and register them individually through
 	 * registerHook
@@ -408,17 +487,21 @@ export class ExtensionManager {
 			if (!enabled) continue;
 
 			try {
-				const hookPath = path.resolve(hook.path, hook.entrypoint);
+				if ('sandbox' in hook) {
+					this.registerSecureApiExtension(hook);
+				} else {
+					const hookPath = path.resolve(hook.path, hook.entrypoint);
 
-				const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
-					fresh: true,
-				});
+					const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
+						fresh: true,
+					});
 
-				const config = getModuleDefault(hookInstance);
+					const config = getModuleDefault(hookInstance);
 
-				this.registerHook(config, hook.name);
+					this.registerHook(config, hook.name);
 
-				this.cachedModulePaths.push(hookPath);
+					this.cachedModulePaths.push(hookPath);
+				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
 				logger.warn(error);
@@ -439,21 +522,25 @@ export class ExtensionManager {
 			if (!enabled) continue;
 
 			try {
-				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				if ('sandbox' in endpoint) {
+					this.registerSecureApiExtension(endpoint);
+				} else {
+					const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
-					endpointPath,
-					import.meta.url,
-					{
-						fresh: true,
-					}
-				);
+					const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
+						endpointPath,
+						import.meta.url,
+						{
+							fresh: true,
+						}
+					);
 
-				const config = getModuleDefault(endpointInstance);
+					const config = getModuleDefault(endpointInstance);
 
-				this.registerEndpoint(config, endpoint.name);
+					this.registerEndpoint(config, endpoint.name);
 
-				this.cachedModulePaths.push(endpointPath);
+					this.cachedModulePaths.push(endpointPath);
+				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 				logger.warn(error);
@@ -488,21 +575,25 @@ export class ExtensionManager {
 			if (!enabled) continue;
 
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				if ('sandbox' in operation) {
+					this.registerSecureApiExtension(operation);
+				} else {
+					const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
-					operationPath,
-					import.meta.url,
-					{
-						fresh: true,
-					}
-				);
+					const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
+						operationPath,
+						import.meta.url,
+						{
+							fresh: true,
+						}
+					);
 
-				const config = getModuleDefault(operationInstance);
+					const config = getModuleDefault(operationInstance);
 
-				this.registerOperation(config);
+					this.registerOperation(config);
 
-				this.cachedModulePaths.push(operationPath);
+					this.cachedModulePaths.push(operationPath);
+				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register operation "${operation.name}"`);
 				logger.warn(error);
@@ -519,31 +610,35 @@ export class ExtensionManager {
 
 		for (const bundle of bundles) {
 			try {
-				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+				if ('sandbox' in bundle) {
+					this.registerSecureApiExtension(bundle);
+				} else {
+					const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
-					bundlePath,
-					import.meta.url,
-					{
-						fresh: true,
+					const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
+						bundlePath,
+						import.meta.url,
+						{
+							fresh: true,
+						}
+					);
+
+					const configs = getModuleDefault(bundleInstances);
+
+					for (const { config, name } of configs.hooks) {
+						this.registerHook(config, name);
 					}
-				);
 
-				const configs = getModuleDefault(bundleInstances);
+					for (const { config, name } of configs.endpoints) {
+						this.registerEndpoint(config, name);
+					}
 
-				for (const { config, name } of configs.hooks) {
-					this.registerHook(config, name);
+					for (const { config } of configs.operations) {
+						this.registerOperation(config);
+					}
+
+					this.cachedModulePaths.push(bundlePath);
 				}
-
-				for (const { config, name } of configs.endpoints) {
-					this.registerEndpoint(config, name);
-				}
-
-				for (const { config } of configs.operations) {
-					this.registerOperation(config);
-				}
-
-				this.cachedModulePaths.push(bundlePath);
 			} catch (error: any) {
 				logger.warn(`Couldn't register bundle "${bundle.name}"`);
 				logger.warn(error);
@@ -699,5 +794,17 @@ export class ExtensionManager {
 		}
 
 		this.cachedModulePaths = [];
+
+		for (const isolate of this.secureApiExtensionIsolates) {
+			try {
+				if (!isolate.isDisposed) {
+					isolate.dispose();
+				}
+			} catch (err) {
+				logger.error(err);
+			}
+		}
+
+		this.secureApiExtensionIsolates = [];
 	}
 }
