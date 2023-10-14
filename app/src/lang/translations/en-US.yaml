@@ -73,6 +73,8 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
 extension_bundles: Bundles
+enable: Enable
+disable: Disable
 custom: Custom
 hook: Hook
 fill_width: Fill Width

@@ -95,3 +95,5 @@ data:
 
   - collection: directus_translations
     note: $t:directus_collection.directus_translations
+
+  - collection: directus_extensions
