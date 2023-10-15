@@ -185,8 +185,8 @@ const relatedPrimaryKey = computed(
 @import '@/styles/mixins/no-wrap';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 
 	position: relative;
 	display: grid;
@@ -195,11 +195,11 @@ const relatedPrimaryKey = computed(
 	margin-top: 48px;
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		transform: translateX(-50%);
@@ -228,7 +228,7 @@ const relatedPrimaryKey = computed(
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 
 .v-notice {

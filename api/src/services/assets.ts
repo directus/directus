@@ -43,7 +43,7 @@ export class AssetsService {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
-			.select('project_logo', 'public_background', 'public_foreground')
+			.select('project_logo', 'public_background', 'public_foreground', 'public_favicon')
 			.from('directus_settings')
 			.first();
 

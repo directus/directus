@@ -89,7 +89,7 @@ const addAll = () => {
 				@click="$emit('add', [`${fn}(${field.key})`])"
 			>
 				<v-list-item-icon>
-					<v-icon name="auto_awesome" small color="var(--primary)" />
+					<v-icon name="auto_awesome" small color="var(--theme--primary)" />
 				</v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow
@@ -142,11 +142,11 @@ const addAll = () => {
 
 <style lang="scss" scoped>
 .functions {
-	--v-icon-color: var(--primary);
-	--v-list-item-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
+	--v-list-item-color: var(--theme--primary);
 }
 
 .raw-field-names {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 </style>

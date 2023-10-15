@@ -291,7 +291,7 @@ function toggleManualSort() {
 			display: flex;
 			align-items: center;
 			height: 100%;
-			color: var(--foreground-normal-alt);
+			color: var(--theme--foreground-accent);
 			font-weight: 600;
 
 			> span {
@@ -327,7 +327,7 @@ function toggleManualSort() {
 
 		.action-icon {
 			margin-left: 4px;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			transform: scaleY(-1);
@@ -368,7 +368,7 @@ function toggleManualSort() {
 	}
 
 	.manual {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		cursor: pointer;
 
 		.v-icon {
@@ -377,7 +377,7 @@ function toggleManualSort() {
 		}
 
 		&.sorted-manually {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 
@@ -403,7 +403,7 @@ function toggleManualSort() {
 		}
 
 		&:hover::after {
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 		}
 	}
 }
@@ -422,7 +422,7 @@ function toggleManualSort() {
 		right: 0;
 		top: 20%;
 		height: 60%;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 	}
 
 	&::before {
@@ -438,10 +438,10 @@ function toggleManualSort() {
 .description-dot {
 	width: 8px;
 	height: 8px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
-	border: var(--background-page) 6px solid;
+	border: var(--theme--background) 6px solid;
 	box-sizing: content-box;
 	margin-right: 8px;
 	vertical-align: middle;

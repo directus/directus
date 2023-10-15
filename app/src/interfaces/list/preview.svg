@@ -1,20 +1,20 @@
 <svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18.4443" y="9" width="120" height="22" rx="6" fill="var(--background-page)" />
-	<rect x="19.4443" y="10" width="118" height="20" rx="5" stroke="var(--primary)" stroke-opacity="0.25"
+	<rect x="18.4443" y="9" width="120" height="22" rx="6" fill="var(--theme--background)" />
+	<rect x="19.4443" y="10" width="118" height="20" rx="5" stroke="var(--theme--primary)" stroke-opacity="0.25"
 		stroke-width="2" />
-	<rect x="46" y="17" width="10" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
-	<rect x="60" y="17" width="40" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
-	<path opacity="0.5" d="M38 18H28V19.2691H38V18ZM28 21.7778H38V20.5087H28V21.7778Z" fill="var(--primary)" />
-	<rect x="18" y="65" width="120" height="22" rx="6" fill="var(--background-page)" />
-	<rect x="19" y="66" width="118" height="20" rx="5" stroke="var(--primary)" stroke-opacity="0.25" stroke-width="2" />
-	<rect x="46" y="73" width="60" height="6" rx="2" fill="var(--primary)" fill-opacity="0.25" />
-	<path opacity="0.5" d="M38 74H28V75.2691H38V74ZM28 77.7778H38V76.5087H28V77.7778Z" fill="var(--primary)" />
-	<rect x="18" y="37" width="120" height="22" rx="6" fill="var(--background-page)" class="glow" />
-	<rect x="19" y="38" width="118" height="20" rx="5" stroke="var(--primary)" stroke-width="2" />
-	<rect x="46" y="45" width="30" height="6" rx="2" fill="var(--primary)" />
-	<rect x="80" y="45" width="10" height="6" rx="2" fill="var(--primary)" />
-	<path d="M38 46H28V47.2691H38V46ZM28 49.7778H38V48.5087H28V49.7778Z" fill="var(--primary)" />
+	<rect x="46" y="17" width="10" height="6" rx="2" fill="var(--theme--primary)" fill-opacity="0.25" />
+	<rect x="60" y="17" width="40" height="6" rx="2" fill="var(--theme--primary)" fill-opacity="0.25" />
+	<path opacity="0.5" d="M38 18H28V19.2691H38V18ZM28 21.7778H38V20.5087H28V21.7778Z" fill="var(--theme--primary)" />
+	<rect x="18" y="65" width="120" height="22" rx="6" fill="var(--theme--background)" />
+	<rect x="19" y="66" width="118" height="20" rx="5" stroke="var(--theme--primary)" stroke-opacity="0.25" stroke-width="2" />
+	<rect x="46" y="73" width="60" height="6" rx="2" fill="var(--theme--primary)" fill-opacity="0.25" />
+	<path opacity="0.5" d="M38 74H28V75.2691H38V74ZM28 77.7778H38V76.5087H28V77.7778Z" fill="var(--theme--primary)" />
+	<rect x="18" y="37" width="120" height="22" rx="6" fill="var(--theme--background)" class="glow" />
+	<rect x="19" y="38" width="118" height="20" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
+	<rect x="46" y="45" width="30" height="6" rx="2" fill="var(--theme--primary)" />
+	<rect x="80" y="45" width="10" height="6" rx="2" fill="var(--theme--primary)" />
+	<path d="M38 46H28V47.2691H38V46ZM28 49.7778H38V48.5087H28V49.7778Z" fill="var(--theme--primary)" />
 	<path
 		d="M127.074 52.0742H118.926V43.9258H123V42.75H118.926C118.27 42.75 117.75 43.2695 117.75 43.9258V52.0742C117.75 52.7305 118.27 53.25 118.926 53.25H127.074C127.73 53.25 128.25 52.7305 128.25 52.0742V48H127.074V52.0742ZM124.176 42.75V43.9258H126.254L120.539 49.6406L121.359 50.4609L127.074 44.7461V46.8242H128.25V42.75H124.176Z"
-		fill="var(--primary)" />
+		fill="var(--theme--primary)" />
 </svg>

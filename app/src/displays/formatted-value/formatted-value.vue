@@ -190,7 +190,7 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.bold {
-		color: var(--foreground-normal-alt);
+		color: var(--theme--foreground-accent);
 		font-weight: 700;
 	}
 
@@ -199,15 +199,15 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.sans-serif {
-		font-family: var(--family-sans-serif);
+		font-family: var(--theme--font-family-sans-serif);
 	}
 
 	&.serif {
-		font-family: var(--family-serif);
+		font-family: var(--theme--font-family-serif);
 	}
 
 	&.monospace {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 
 	.v-icon {

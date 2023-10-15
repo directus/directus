@@ -116,22 +116,22 @@ function close() {
 	}
 
 	&.info {
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 
 		&.tail::after {
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 		}
 
 		.text {
-			color: var(--primary-alt);
+			color: var(--theme--primary-background);
 		}
 	}
 
 	&.success {
-		background-color: var(--success);
+		background-color: var(--theme--success);
 
 		&.tail::after {
-			background-color: var(--success);
+			background-color: var(--theme--success);
 		}
 
 		.text {
@@ -140,10 +140,10 @@ function close() {
 	}
 
 	&.warning {
-		background-color: var(--warning);
+		background-color: var(--theme--warning);
 
 		&.tail::after {
-			background-color: var(--warning);
+			background-color: var(--theme--warning);
 		}
 
 		.text {
@@ -152,10 +152,10 @@ function close() {
 	}
 
 	&.error {
-		background-color: var(--danger);
+		background-color: var(--theme--danger);
 
 		&.tail::after {
-			background-color: var(--danger);
+			background-color: var(--theme--danger);
 		}
 
 		.text {

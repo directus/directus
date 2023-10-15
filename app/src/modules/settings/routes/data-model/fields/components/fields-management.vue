@@ -201,8 +201,8 @@ async function setNestedSort(updates?: Field[]) {
 
 .add-field {
 	--v-button-font-size: 14px;
-	--v-button-background-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-125);
+	--v-button-background-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-accent);
 
 	margin-top: -12px;
 }
@@ -212,11 +212,11 @@ async function setNestedSort(updates?: Field[]) {
 	width: max-content;
 	margin: 0 auto;
 	margin-top: 8px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 

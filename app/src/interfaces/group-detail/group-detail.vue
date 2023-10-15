@@ -163,7 +163,7 @@ watch(validationMessages, (newVal, oldVal) => {
 	display: block;
 	width: 4px;
 	height: 4px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--theme--form--field--input--foreground-subdued);
 	border-radius: 4px;
 	content: '';
 }
@@ -174,6 +174,6 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 </style>

@@ -372,8 +372,8 @@ function useDisplayValue() {
 
 <style scoped lang="scss">
 :global(body) {
-	--v-select-font-family: var(--family-sans-serif);
-	--v-select-placeholder-color: var(--foreground-subdued);
+	--v-select-font-family: var(--theme--font-family-sans-serif);
+	--v-select-placeholder-color: var(--theme--foreground-subdued);
 }
 
 .list {
@@ -420,7 +420,7 @@ function useDisplayValue() {
 .inline-display.label {
 	padding: 4px 8px;
 	padding-right: 26px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 	transition: color var(--fast) var(--transition);

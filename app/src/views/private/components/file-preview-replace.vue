@@ -43,7 +43,7 @@ function onInput() {
 
 <style scoped>
 .replace-toggle {
-	color: var(--primary);
+	color: var(--theme--primary);
 	cursor: pointer;
 	font-weight: 600;
 	margin-top: 12px;

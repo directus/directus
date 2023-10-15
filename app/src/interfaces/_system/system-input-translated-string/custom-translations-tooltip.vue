@@ -96,7 +96,7 @@ const clicked = (toggleTooltip: () => void) => {
 	align-items: center;
 
 	.icon {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
@@ -127,7 +127,7 @@ const clicked = (toggleTooltip: () => void) => {
 	gap: 20px;
 	align-items: center;
 	justify-content: space-between;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-size: 12px;
 
 	.lang {

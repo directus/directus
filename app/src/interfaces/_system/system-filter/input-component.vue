@@ -162,15 +162,15 @@ function emitValue(val: string) {
 .preview {
 	display: flex;
 	justify-content: center;
-	color: var(--primary);
-	font-family: var(--family-monospace);
+	color: var(--theme--primary);
+	font-family: var(--theme--font-family-monospace);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	cursor: pointer;
 
 	&:empty {
 		&::after {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			content: '--';
 		}
 	}
@@ -193,16 +193,16 @@ function emitValue(val: string) {
 }
 
 input {
-	color: var(--primary);
-	font-family: var(--family-monospace);
+	color: var(--theme--primary);
+	font-family: var(--theme--font-family-monospace);
 	line-height: 1em;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: none;
 
 	&::placeholder {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		font-weight: 500;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 }
 

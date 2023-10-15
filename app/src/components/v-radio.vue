@@ -60,7 +60,7 @@ function emitValue(): void {
 
 <style>
 body {
-	--v-radio-color: var(--primary);
+	--v-radio-color: var(--theme--primary);
 }
 </style>
 
@@ -84,18 +84,18 @@ body {
 	}
 
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 	}
 
 	&:disabled {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
@@ -125,7 +125,7 @@ body {
 
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
