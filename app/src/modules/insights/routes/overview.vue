@@ -431,7 +431,6 @@ async function batchDelete() {
 			margin-top: 0px;
 		}
 	}
-
 }
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
