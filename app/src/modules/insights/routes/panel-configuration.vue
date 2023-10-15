@@ -343,13 +343,7 @@ const stageChanges = () => {
 }
 
 .interface.gray .preview {
-	--primary: var(--gray);
-	--primary-20: var(--gray-20);
-	--primary-30: var(--gray-30);
-	--primary-40: var(--gray-40);
-	--primary-50: var(--gray-50);
-	--primary-70: var(--gray-70);
-	--primary-80: var(--gray-80);
+	filter: grayscale(0.8);
 
 	background-color: var(--background-subdued);
 }

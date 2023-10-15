@@ -342,7 +342,7 @@ async function batchDelete() {
 
 							<v-list-item class="warning" clickable @click="duplicateDashboard(item.id, toggle)">
 								<v-list-item-icon>
-									<v-progress-circular v-if="duplicating == item.id" indeterminate small />
+									<v-progress-circular v-if="duplicating === item.id" indeterminate small />
 									<v-icon v-if="duplicating !== item.id" name="content_copy" />
 								</v-list-item-icon>
 								<v-list-item-content>
@@ -418,19 +418,21 @@ async function batchDelete() {
 	</private-view>
 </template>
 
-<style scoped>
-.v-input.search {
-	height: var(--v-button-height);
-	--border-radius: calc(44px / 2);
-	width: 200px;
-	margin-left: auto;
+<style scoped lang="scss">
+.v-input {
+	&.search {
+		height: var(--v-button-height);
+		--border-radius: calc(44px / 2);
+		width: 200px;
+		margin-left: auto;
 
-	@media (min-width: 600px) {
-		width: 300px;
-		margin-top: 0px;
+		@media (min-width: 600px) {
+			width: 300px;
+			margin-top: 0px;
+		}
 	}
-}
 
+}
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;

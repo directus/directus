@@ -4,15 +4,15 @@
             <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--card-face-color)" class="glow" />
             <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--primary)" stroke-width="2" />
         </g>
-        <rect x="27" y="46" width="6" height="4" rx="1" fill="var(--primary-40)" />
+        <rect x="27" y="46" width="6" height="4" rx="1" fill="var(--primary-50)" />
         <line x1="38" y1="47.75" x2="128" y2="47.75" stroke="#E4EAF1" stroke-width="0.5" />
-        <rect x="27" y="56" width="6" height="4" rx="1" fill="var(--primary-40)" />
+        <rect x="27" y="56" width="6" height="4" rx="1" fill="var(--primary-50)" />
         <line x1="38" y1="57.75" x2="128" y2="57.75" stroke="#E4EAF1" stroke-width="0.5" />
-        <rect x="27" y="66" width="6" height="4" rx="1" fill="var(--primary-40)" />
+        <rect x="27" y="66" width="6" height="4" rx="1" fill="var(--primary-50)" />
         <line x1="38" y1="67.75" x2="128" y2="67.75" stroke="#E4EAF1" stroke-width="0.5" />
-        <rect x="27" y="36" width="6" height="4" rx="1" fill="var(--primary-40)" />
+        <rect x="27" y="36" width="6" height="4" rx="1" fill="var(--primary-50)" />
         <line x1="38" y1="37.75" x2="128" y2="37.75" stroke="#E4EAF1" stroke-width="0.5" />
-        <rect x="27" y="26" width="6" height="4" rx="1" fill="var(--primary-40)" />
+        <rect x="27" y="26" width="6" height="4" rx="1" fill="var(--primary-50)" />
         <line x1="38" y1="27.75" x2="128" y2="27.75" stroke="#E4EAF1" stroke-width="0.5" />
         <path d="M42 32C42 30.8954 42.8954 30 44 30H46C47.1046 30 48 30.8954 48 32V68H42V32Z"
             fill="var(--primary)" />
@@ -32,15 +32,15 @@
             fill="var(--primary)" />
         <path d="M122 41C122 39.8954 122.895 39 124 39H126C127.105 39 128 39.8954 128 41V68H122V41Z"
             fill="var(--primary)" />
-        <rect x="43" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="53" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="63" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="73" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="83" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="93" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="103" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="113" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
-        <rect x="123" y="72" width="4" height="4" rx="1" fill="var(--primary-40)" />
+        <rect x="43" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="53" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="63" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="73" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="83" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="93" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="103" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="113" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
+        <rect x="123" y="72" width="4" height="4" rx="1" fill="var(--primary-50)" />
     </g>
     <defs>
         <clipPath id="clip0_1280_93">
