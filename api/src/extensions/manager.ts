@@ -45,7 +45,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { exec } from './exec/index.js';
+import { generateSecureApiExtensionsEntrypoint } from './generate-secure-api-extensions-entrypoint.js';
 import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
@@ -396,15 +396,13 @@ export class ExtensionManager {
 		return null;
 	}
 
-	private async registerSecureApiExtension(extension: ApiExtension | HybridExtension | BundleExtension) {
+	private async registerSecureApiExtension(extension: ApiExtension | HybridExtension) {
 		const isolateSizeMb = Number(env['EXTENSIONS_SECURE_MEMORY']);
 		const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
 
 		const entrypointPath = path.resolve(
 			extension.path,
-			isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
-				? extension.entrypoint.api
-				: extension.entrypoint
+			isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.api : extension.entrypoint
 		);
 
 		const extensionCode = await readFile(entrypointPath, 'utf-8');
@@ -412,40 +410,41 @@ export class ExtensionManager {
 		const isolate = new ivm.Isolate({
 			memoryLimit: isolateSizeMb,
 			onCatastrophicError: (e) => {
-				logger.error(`Error in secure API extension ${extension.name}: ${e}`);
+				logger.error(`Error in secure ${extension.type} "${extension.name}"`);
+				logger.error(e);
 
 				process.abort();
 			},
 		});
 
-		const context = await isolate.createContext();
+		try {
+			const context = await isolate.createContext();
 
-		await context.evalClosure('globalThis.exec = (...args) => $0.apply(null, args, { result: { promise: true }});', [
-			new ivm.Reference(exec),
-		]);
+			const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
 
-		const module = await isolate.compileModule(extensionCode);
+			await module.instantiate(context, () => {
+				throw new Error('Imports are porhibited in secure extensions');
+			});
 
-		await module.instantiate(context, () => {
-			throw new Error();
-		});
+			await module.evaluate({ timeout: scriptTimeoutMs });
 
-		await module.evaluate();
+			const cb = await module.namespace.get('default', { reference: true });
 
-		const cb = await module.namespace.get('default', { reference: true });
+			const { code, hostFunctions, unregisterFunction } = generateSecureApiExtensionsEntrypoint(extension.type);
 
-		await context.evalClosure(`($0.deref())();`, [cb], { result: { promise: true } });
+			await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
+				timeout: scriptTimeoutMs,
+			});
 
-		this.unregisterFunctionMap.set(extension.name, () => {
-			try {
-				if (!isolate.isDisposed) {
-					isolate.dispose();
-				}
-			} catch (error) {
-				logger.warn(`Couldn't unload secure API extensions`);
-				logger.warn(error);
-			}
-		});
+			this.unregisterFunctionMap.set(extension.name, async () => {
+				await unregisterFunction();
+
+				isolate.dispose();
+			});
+		} catch (error) {
+			logger.warn(`Couldn't register secure ${extension.type} "${extension.name}"`);
+			logger.warn(error);
+		}
 	}
 
 	/**
