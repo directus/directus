@@ -9,12 +9,7 @@ import type {
 	HybridExtension,
 	OperationApiConfig,
 } from '@directus/extensions';
-import {
-	APP_EXTENSION_TYPES,
-	APP_SHARED_DEPS,
-	HYBRID_EXTENSION_TYPES,
-	NESTED_EXTENSION_TYPES,
-} from '@directus/extensions';
+import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
 import { ensureExtensionDirs, generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
 	ActionHandler,
@@ -425,42 +420,27 @@ export class ExtensionManager {
 
 		const context = await isolate.createContext();
 
-		const jail = context.global;
+		await context.evalClosure('globalThis.exec = (...args) => $0.apply(null, args, { result: { promise: true }});', [
+			new ivm.Reference(exec),
+		]);
 
-		await jail.set('global', jail.derefInto());
+		const module = await isolate.compileModule(extensionCode);
 
-		// Register the global `exec` function for cross isolate communication
-		await jail.set('exec', new ivm.Callback(exec, { async: true }));
-
-		// @TODO: Move into until
-		const virtualEntrypoint =
-			extension.type === 'bundle'
-				? `import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
-						.filter((type) => extension.entries.some((entry) => entry.type === type))
-						.map((type) => pluralize(type))
-						.join(',')}} from '@directus/virtual-entrypoint'; ${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
-						.filter((type) => extension.entries.some((entry) => entry.type === type))
-						.map((type) => `for (const ${type} of ${pluralize(type)}) { ${type}() }`)
-						.join(';')};`
-				: `import e from '@directus/virtual-entrypoint'; e();`;
-
-		const runModule = await isolate.compileModule(virtualEntrypoint);
-
-		await runModule.instantiate(context, (specifier) => {
-			if (specifier !== '@directus/virtual-entrypoint') throw new Error(`Couldn't import module ${specifier}`);
-
-			return isolate.compileModule(extensionCode, {
-				filename: entrypointPath,
-			});
+		await module.instantiate(context, () => {
+			throw new Error();
 		});
 
-		try {
-			await runModule.evaluate({
-				timeout: scriptTimeoutMs,
-			});
-		} catch (error: any) {
-			// handleIsolateError({ extension, extensionManager: this.extensionManager }, error, true);
-		}
+		await module.evaluate();
+
+		const cb = await module.namespace.get('default', { reference: true });
+
+		await context.evalClosure(
+			`
+			return Promise.resolve(($0.deref())());
+		`,
+			[cb],
+			{ result: { promise: true } }
+		);
 
 		this.unregisterFunctionMap.set(extension.name, () => {
 			try {

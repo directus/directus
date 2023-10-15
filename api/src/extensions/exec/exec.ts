@@ -7,8 +7,8 @@ import { isValidHandler } from './util/is-valid-handler.js';
  * Execute a secure operation
  */
 export const exec = async (type: unknown, ...args: unknown[]) => {
-	assert(typeof type === 'string');
-	assert(!!type);
+	assert(typeof type === 'string', 'Type argument must be of type string');
+	assert(!!type, 'Type argument cannot be falsy');
 
 	try {
 		if (isValidHandler(type)) {
