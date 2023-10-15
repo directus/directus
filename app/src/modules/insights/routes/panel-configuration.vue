@@ -319,18 +319,18 @@ const stageChanges = () => {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-75);
+	--v-icon-color: var(--theme--primary-75);
 
 	display: block;
 	padding: 8px 16px;
 	background-color: var(--background-page);
-	border: 2px solid var(--primary);
+	border: 2px solid var(--theme--primary);
 	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
+	box-shadow: 0 0 8px var(--theme--primary-75);
 }
 
 .interface:hover .preview {
@@ -338,12 +338,12 @@ const stageChanges = () => {
 }
 
 .interface.active .preview {
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	background-color: var(--theme--primary-background);
+	border-color: var(--theme--primary);
 }
 
 .interface.gray .preview {
-	filter: grayscale(0.8);
+	filter: grayscale(1);
 
 	background-color: var(--background-subdued);
 }

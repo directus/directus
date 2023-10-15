@@ -203,8 +203,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	padding-top: 0px;
 	padding-bottom: 0px;
 	color: var(--white);
-	background-color: var(--primary);
-	border: var(--border-width) solid var(--primary);
+	background-color: var(--theme--primary);
+	border: var(--border-width) solid var(--theme--primary);
 	border-radius: var(--border-radius);
 
 	.type-text {
@@ -233,12 +233,12 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	border-radius: var(--border-radius);
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;
@@ -281,7 +281,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }
 </style>
