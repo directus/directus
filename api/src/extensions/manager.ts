@@ -16,7 +16,14 @@ import {
 	NESTED_EXTENSION_TYPES,
 } from '@directus/extensions';
 import { ensureExtensionDirs, generateExtensionsEntrypoint } from '@directus/extensions/node';
-import type { ActionHandler, EmbedHandler, FilterHandler, InitHandler, PromiseCallback, ScheduleHandler } from '@directus/types';
+import type {
+	ActionHandler,
+	EmbedHandler,
+	FilterHandler,
+	InitHandler,
+	PromiseCallback,
+	ScheduleHandler,
+} from '@directus/types';
 import { isIn, isTypeIn, pluralize } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
@@ -420,14 +427,10 @@ export class ExtensionManager {
 
 		const jail = context.global;
 
-		jail.setSync('global', jail.derefInto());
+		await jail.set('global', jail.derefInto());
 
-		/**
-		 * Register the global `exec` function for cross isolate communication
-		 */
-		await context.global.set('exec', new ivm.Callback(exec, { async: true }));
-
-		// await createExec(context, extension);
+		// Register the global `exec` function for cross isolate communication
+		await jail.set('exec', new ivm.Callback(exec, { async: true }));
 
 		// @TODO: Move into until
 		const virtualEntrypoint =
@@ -484,7 +487,7 @@ export class ExtensionManager {
 			if (!enabled) continue;
 
 			try {
-				if ('sandbox' in hook) {
+				if (hook.sandbox?.enabled) {
 					this.registerSecureApiExtension(hook);
 				} else {
 					const hookPath = path.resolve(hook.path, hook.entrypoint);
@@ -523,7 +526,7 @@ export class ExtensionManager {
 			if (!enabled) continue;
 
 			try {
-				if ('sandbox' in endpoint) {
+				if (endpoint.sandbox?.enabled) {
 					this.registerSecureApiExtension(endpoint);
 				} else {
 					const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
@@ -580,7 +583,7 @@ export class ExtensionManager {
 			if (!enabled) continue;
 
 			try {
-				if ('sandbox' in operation) {
+				if (operation.sandbox?.enabled) {
 					this.registerSecureApiExtension(operation);
 				} else {
 					const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
@@ -619,47 +622,43 @@ export class ExtensionManager {
 
 		for (const bundle of bundles) {
 			try {
-				if ('sandbox' in bundle) {
-					this.registerSecureApiExtension(bundle);
-				} else {
-					const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
-					const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
-						bundlePath,
-						import.meta.url,
-						{
-							fresh: true,
-						}
-					);
-
-					const configs = getModuleDefault(bundleInstances);
-
-					const unregisterFunctions: PromiseCallback[] = [];
-
-					for (const { config, name } of configs.hooks) {
-						const unregisters = this.registerHook(config, name);
-
-						unregisterFunctions.push(...unregisters);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
+					bundlePath,
+					import.meta.url,
+					{
+						fresh: true,
 					}
+				);
 
-					for (const { config, name } of configs.endpoints) {
-						const unregister = this.registerEndpoint(config, name);
+				const configs = getModuleDefault(bundleInstances);
 
-						unregisterFunctions.push(unregister);
-					}
+				const unregisterFunctions: PromiseCallback[] = [];
 
-					for (const { config } of configs.operations) {
-						const unregister = this.registerOperation(config);
+				for (const { config, name } of configs.hooks) {
+					const unregisters = this.registerHook(config, name);
 
-						unregisterFunctions.push(unregister);
-					}
-
-					this.unregisterFunctionMap.set(bundle.name, async () => {
-						await Promise.all(unregisterFunctions.map((fn) => fn()));
-
-						deleteFromRequireCache(bundlePath);
-					});
+					unregisterFunctions.push(...unregisters);
 				}
+
+				for (const { config, name } of configs.endpoints) {
+					const unregister = this.registerEndpoint(config, name);
+
+					unregisterFunctions.push(unregister);
+				}
+
+				for (const { config } of configs.operations) {
+					const unregister = this.registerOperation(config);
+
+					unregisterFunctions.push(unregister);
+				}
+
+				this.unregisterFunctionMap.set(bundle.name, async () => {
+					await Promise.all(unregisterFunctions.map((fn) => fn()));
+
+					deleteFromRequireCache(bundlePath);
+				});
 			} catch (error: any) {
 				logger.warn(`Couldn't register bundle "${bundle.name}"`);
 				logger.warn(error);
