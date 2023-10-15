@@ -1,7 +1,6 @@
 import logger from '../../logger.js';
-import type { ExecContext } from './add-exec-options.js';
 
-export function handleIsolateError(context: ExecContext, error: Error, alwaysRestart = false) {
+export function handleIsolateError(context: any, error: Error, alwaysRestart = false) {
 	logger.error(error);
 
 	if (error.message !== 'Isolate was disposed during execution due to memory limit' && !alwaysRestart) return;
