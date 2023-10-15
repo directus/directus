@@ -434,13 +434,7 @@ export class ExtensionManager {
 
 		const cb = await module.namespace.get('default', { reference: true });
 
-		await context.evalClosure(
-			`
-			return Promise.resolve(($0.deref())());
-		`,
-			[cb],
-			{ result: { promise: true } }
-		);
+		await context.evalClosure(`($0.deref())();`, [cb], { result: { promise: true } });
 
 		this.unregisterFunctionMap.set(extension.name, () => {
 			try {
