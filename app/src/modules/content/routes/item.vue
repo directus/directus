@@ -177,7 +177,7 @@ const { templateData: previewData, fetchTemplateValues } = useTemplateData(colle
 const previewURL = computed(() => {
 	const enrichedPreviewData = {
 		...unref(previewData),
-		$version: currentVersion.value ? currentVersion.value.name : 'main',
+		$version: currentVersion.value ? currentVersion.value.key : 'main',
 	};
 
 	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
