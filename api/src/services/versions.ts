@@ -9,7 +9,6 @@ import { InvalidPayloadError, UnprocessableContentError } from '../errors/index.
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { ActivityService } from './activity.js';
 import { AuthorizationService } from './authorization.js';
-import { CollectionsService } from './collections.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
@@ -21,18 +20,11 @@ const versionUpdateSchema = Joi.object({
 
 export class VersionsService extends ItemsService {
 	authorizationService: AuthorizationService;
-	collectionsService: CollectionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_versions', options);
 
 		this.authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		this.collectionsService = new CollectionsService({
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
@@ -51,12 +43,19 @@ export class VersionsService extends ItemsService {
 
 		if (!data['item']) throw new InvalidPayloadError({ reason: `"item" is required` });
 
-		// will throw an error if the collection does not exist or the accountability does not have permission to read it
-		const existingCollection = await this.collectionsService.readOne(data['collection']);
+		const { CollectionsService } = await import('./collections.js');
+
+		const collectionsService = new CollectionsService({
+			accountability: null,
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const existingCollection = await collectionsService.readOne(data['collection']);
 
 		if (!existingCollection.meta?.versioning) {
 			throw new UnprocessableContentError({
-				reason: `Versioning feature is not enabled for collection "${data['collection']}"`,
+				reason: `Content Versioning is not enabled for collection "${data['collection']}"`,
 			});
 		}
 
