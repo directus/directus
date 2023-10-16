@@ -13,11 +13,6 @@ import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 
-const versionUpdateSchema = Joi.object({
-	key: Joi.string(),
-	name: Joi.string(),
-});
-
 export class VersionsService extends ItemsService {
 	authorizationService: AuthorizationService;
 
@@ -72,17 +67,6 @@ export class VersionsService extends ItemsService {
 
 		// will throw an error if the accountability does not have permission to read the item
 		await this.authorizationService.checkAccess('read', data['collection'], data['item']);
-	}
-
-	private async validateUpdateData(data: Partial<Item>): Promise<void> {
-		// Only allow updates on "key" and "name" fields
-		const { error } = versionUpdateSchema.validate(data);
-		if (error) throw new InvalidPayloadError({ reason: error.message });
-
-		// Reserves the "main" version key for the version query parameter
-		if ('key' in data && data['key'] === 'main') {
-			throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
-		}
 	}
 
 	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
@@ -168,28 +152,42 @@ export class VersionsService extends ItemsService {
 		return super.createMany(data, opts);
 	}
 
-	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!Array.isArray(data)) {
-			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
-		}
-
-		for (const item of data) {
-			await this.validateUpdateData(item);
-		}
-
-		return super.updateBatch(data, opts);
-	}
-
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.validateUpdateData(data);
+		// Only allow updates on "key" and "name" fields
+		const versionUpdateSchema = Joi.object({
+			key: Joi.string(),
+			name: Joi.string(),
+		});
+
+		const { error } = versionUpdateSchema.validate(data);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
+		if ('key' in data) {
+			if (keys.length > 1)
+				throw new UnprocessableContentError({
+					reason: `Cannot update multiple versions to the same key"`,
+				});
+
+			// Reserves the "main" version key for the version query parameter
+			if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+
+			if (keys[0]) {
+				const { collection, item } = await this.readOne(keys[0], { fields: ['collection', 'item'] });
+
+				const existingVersions = await super.readByQuery({
+					fields: ['key', 'collection', 'item'],
+					filter: { key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
+				});
+
+				if (existingVersions.length > 0) {
+					throw new UnprocessableContentError({
+						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
+					});
+				}
+			}
+		}
 
 		return super.updateMany(keys, data, opts);
-	}
-
-	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.validateUpdateData(data);
-
-		return super.updateByQuery(query, data, opts);
 	}
 
 	async save(key: PrimaryKey, data: Partial<Item>) {
