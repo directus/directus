@@ -1,0 +1,29 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1280_167)">
+        <g filter="url(#filter0_d_1280_167)">
+            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--card-face-color)" class="glow" />
+            <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--theme--primary)"
+                stroke-width="2" />
+        </g>
+        <rect x="88" y="39" width="24" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="88" y="46" width="41" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="88" y="53" width="26" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <path
+            d="M81 48C81 42.8403 79.4035 37.807 76.4296 33.5906C73.4557 29.3742 69.2501 26.1813 64.3896 24.4498C59.5292 22.7182 54.252 22.533 49.2821 23.9195C44.3122 25.306 39.8931 28.1962 36.6309 32.1938L56 48H81Z"
+            fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <path
+            d="M81 48C81 52.0707 80.006 56.0799 78.1042 59.6792C76.2025 63.2784 73.4507 66.3588 70.0878 68.6527C66.7249 70.9466 62.8527 72.3846 58.8078 72.8418C54.7628 73.299 50.6673 72.7615 46.8773 71.2761C43.0872 69.7906 39.7173 67.4021 37.0602 64.3182C34.4031 61.2342 32.5393 57.548 31.6307 53.58C30.7221 49.6119 30.7962 45.482 31.8466 41.5491C32.897 37.6162 34.8919 33.9993 37.6579 31.0127L56 48H81Z"
+            fill="var(--theme--primary-subdued)" />
+        <path
+            d="M56 73C59.283 73 62.5339 72.3534 65.5671 71.097C68.6002 69.8406 71.3562 67.9991 73.6777 65.6777C75.9991 63.3562 77.8406 60.6002 79.097 57.5671C80.3534 54.5339 81 51.283 81 48H56L56 73Z"
+            fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
+        <rect x="63" y="56" width="8" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="40" y="52" width="8" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="57" y="33" width="8" height="4" rx="1" fill="var(--theme--primary)" />
+    </g>
+    <defs>
+        <clipPath id="clip0_1280_167">
+            <rect width="156" height="96" fill="var(--background-page)" class="glow" />
+        </clipPath>
+    </defs>
+</svg>

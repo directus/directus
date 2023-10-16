@@ -2368,3 +2368,7 @@ show_percentage: Show Percentage
 aggregation: Aggregation
 series_grouping: Series Grouping
 date_precision: Date Precision
+export_dashboard: Export Dashboard
+duplicate_dashboard: Duplicate Dashboard
+search_dashboard: Search Dashboard...
+search_flow: Search Flow...

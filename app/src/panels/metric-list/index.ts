@@ -3,11 +3,13 @@ import { useFieldsStore } from '@/stores/fields';
 import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelMetricList from './panel-metric-list.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'metric-list',
 	name: '$t:panels.metric_list.name',
 	icon: 'format_list_numbered_rtl',
+	preview: PreviewSVG,
 	description: '$t:panels.metric_list.description',
 	component: PanelMetricList,
 	query(options) {

@@ -4,12 +4,14 @@ import type { PanelQuery } from '@directus/extensions';
 import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelMetric from './panel-metric.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'metric',
 	name: '$t:panels.metric.name',
 	description: '$t:panels.metric.description',
 	icon: 'functions',
+	preview: PreviewSVG,
 	component: PanelMetric,
 	query(options) {
 		if (!options || !options.function) return;
