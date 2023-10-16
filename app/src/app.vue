@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
-import { useUserStore } from '@/stores/user';
 import { generateFavicon } from '@/utils/generate-favicon';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
-import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -15,7 +13,6 @@ import { startIdleTracking, stopIdleTracking } from './idle';
 const { t } = useI18n();
 
 const appStore = useAppStore();
-const userStore = useUserStore();
 const serverStore = useServerStore();
 
 const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
@@ -70,21 +67,14 @@ onMounted(() => startIdleTracking());
 onUnmounted(() => stopIdleTracking());
 
 watch(
-	() => (userStore.currentUser as User)?.appearance,
-	(appearance) => {
+	darkMode,
+	(isDark) => {
 		document.body.classList.remove('dark');
 		document.body.classList.remove('light');
-		document.body.classList.remove('auto');
 
-		if (appearance) {
-			document
-				.querySelector('head meta[name="theme-color"]')
-				?.setAttribute('content', appearance === 'light' ? '#ffffff' : '#263238');
+		document.querySelector('head meta[name="theme-color"]')?.setAttribute('content', isDark ? '#263238' : '#ffffff');
 
-			document.body.classList.add(appearance);
-		} else {
-			document.body.classList.add('auto');
-		}
+		document.body.classList.add(isDark ? 'dark' : 'light');
 	},
 	{ immediate: true }
 );
