@@ -5,7 +5,7 @@ import { generateFavicon } from '@/utils/generate-favicon';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
-import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
@@ -61,23 +61,11 @@ useHead({
 			},
 		];
 	}),
+	bodyAttrs: computed(() => ({ class: [darkMode.value ? 'dark' : 'light'] })),
 });
 
 onMounted(() => startIdleTracking());
 onUnmounted(() => stopIdleTracking());
-
-watch(
-	darkMode,
-	(isDark) => {
-		document.body.classList.remove('dark');
-		document.body.classList.remove('light');
-
-		document.querySelector('head meta[name="theme-color"]')?.setAttribute('content', isDark ? '#263238' : '#ffffff');
-
-		document.body.classList.add(isDark ? 'dark' : 'light');
-	},
-	{ immediate: true }
-);
 
 const customCSS = computed(() => {
 	return serverStore.info?.project?.custom_css || '';
