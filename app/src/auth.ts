@@ -5,7 +5,6 @@ import { router } from '@/router';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
-import { collectOnboarding } from './utils/send-onboarding';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -51,10 +50,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 
 	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 	appStore.authenticated = true;
-
-	// Dont await the onboarding, similar to telemetry
-	// It might fail but proceed as normal for seamless user experience
-	collectOnboarding();
 
 	await hydrate();
 }
