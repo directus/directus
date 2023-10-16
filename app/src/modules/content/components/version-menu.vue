@@ -43,7 +43,10 @@ const { createDialogActive, newVersionKey, newVersionName, closeCreateDialog, cr
 	useCreateDialog();
 
 const { updateDialogActive, openUpdateDialog, closeUpdateDialog, updating, updateVersion } = useUpdateDialog();
-const { deleteDialogActive, deleting, deleteVersion } = useDeleteDialog();
+
+const { deleting, deleteVersion } = useDelete();
+
+const { deleteDialogActive, onDeleteVersion } = useDeleteDialog();
 
 function useSwitchDialog() {
 	const switchDialogActive = ref(false);
@@ -163,12 +166,10 @@ function useUpdateDialog() {
 	}
 }
 
-function useDeleteDialog() {
-	const deleteDialogActive = ref(false);
+function useDelete() {
 	const deleting = ref(false);
 
 	return {
-		deleteDialogActive,
 		deleting,
 		deleteVersion,
 	};
@@ -182,8 +183,6 @@ function useDeleteDialog() {
 			await api.delete(`/versions/${currentVersion.value.id}`);
 
 			emit('delete');
-
-			deleteDialogActive.value = false;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -192,15 +191,29 @@ function useDeleteDialog() {
 	}
 }
 
+function useDeleteDialog() {
+	const deleteDialogActive = ref(false);
+
+	return {
+		deleteDialogActive,
+		onDeleteVersion,
+	};
+
+	async function onDeleteVersion() {
+		await deleteVersion();
+		deleteDialogActive.value = false;
+	}
+}
+
 function getVersionDisplayName(version: ContentVersion) {
 	return isNil(version.name) ? version.key : version.name;
 }
 
-function onPromoteComplete(deleteOnPromote: boolean) {
+async function onPromoteComplete(deleteOnPromote: boolean) {
 	isVersionPromoteDrawerOpen.value = false;
 
 	if (deleteOnPromote) {
-		emit('delete');
+		await deleteVersion();
 	} else {
 		emit('switch', null);
 	}
@@ -365,7 +378,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 				<v-card-title>{{ t('delete_version_copy', { version: currentVersion!.name }) }}</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="deleteDialogActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleting" kind="danger" @click="deleteVersion">
+					<v-button :loading="deleting" kind="danger" @click="onDeleteVersion">
 						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
