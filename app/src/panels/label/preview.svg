@@ -1,0 +1,16 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1308_5)">
+        <g filter="url(#filter0_d_1308_5)">
+            <rect x="18" y="28" width="120" height="54" rx="6" fill="var(--card-face-color)" class="glow" />
+            <rect x="19" y="29" width="118" height="52" rx="5" stroke="var(--theme--primary)"
+                stroke-width="2" />
+        </g>
+        <rect x="28" y="39" width="100" height="15" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <rect x="28" y="56" width="80" height="15" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+    </g>
+    <defs>
+        <clipPath id="clip0_1308_5">
+            <rect width="156" height="96" fill="var(--background-page)" class="glow" />
+        </clipPath>
+    </defs>
+</svg>

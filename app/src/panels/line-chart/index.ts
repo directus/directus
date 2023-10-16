@@ -3,12 +3,14 @@ import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import { getGroups } from '@/utils/get-groups';
 import PanelLineChart from './panel-line-chart.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'line-chart',
 	name: '$t:panels.linechart.name',
 	description: '$t:panels.linechart.description',
 	icon: 'show_chart',
+	preview: PreviewSVG,
 	component: PanelLineChart,
 	query: (options) => {
 		if (!options['yAxis'] || !options['xAxis'] || !options['collection']) return;

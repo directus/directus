@@ -1,11 +1,13 @@
 import { definePanel } from '@directus/extensions';
 import PanelLabel from './panel-label.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'label',
 	name: '$t:panels.label.name',
 	description: '$t:panels.label.description',
 	icon: 'title',
+	preview: PreviewSVG,
 	component: PanelLabel,
 	options: ({ options }) => {
 		return [
