@@ -38,10 +38,15 @@ export type HybridExtension = ExtensionBase & {
 	entrypoint: SplitEntrypoint;
 };
 
+export interface BundleExtensionEntry {
+	name: string;
+	type: AppExtensionType | ApiExtensionType | HybridExtensionType;
+}
+
 export type BundleExtension = ExtensionBase & {
 	type: BundleExtensionType;
 	entrypoint: SplitEntrypoint;
-	entries: { type: NestedExtensionType; name: string }[];
+	entries: BundleExtensionEntry[];
 };
 
 export type Extension = AppExtension | ApiExtension | HybridExtension | BundleExtension;

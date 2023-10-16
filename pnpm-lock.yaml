@@ -1273,6 +1273,9 @@ importers:
       fs-extra:
         specifier: 11.1.1
         version: 11.1.1
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
       tmp:
         specifier: 0.2.1
         version: 0.2.1
@@ -1295,6 +1298,9 @@ importers:
       '@types/fs-extra':
         specifier: 11.0.1
         version: 11.0.1
+      '@types/lodash-es':
+        specifier: 4.17.9
+        version: 4.17.9
       '@types/node':
         specifier: 18.16.12
         version: 18.16.12

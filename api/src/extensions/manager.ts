@@ -4,8 +4,7 @@ import type {
 	BundleExtension,
 	EndpointConfig,
 	Extension,
-	ExtensionInfo,
-	ExtensionType,
+	ExtensionSettings,
 	HookConfig,
 	HybridExtension,
 	OperationApiConfig,
@@ -36,11 +35,12 @@ import * as services from '../services/index.js';
 import type { EventHandler } from '../types/index.js';
 import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
+import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
-import { normalizeExtensionInfo } from './normalize-extension-info.js';
 import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
@@ -67,6 +67,11 @@ export class ExtensionManager {
 	 * All extensions that are loaded within the current process
 	 */
 	private extensions: Extension[] = [];
+
+	/**
+	 * Settings for the extensions that are loaded within the current process
+	 */
+	private extensionsSettings: ExtensionSettings[] = [];
 
 	/**
 	 * App extensions rolled up into a single bundle. Any chunks from the bundle will be available
@@ -152,10 +157,8 @@ export class ExtensionManager {
 		if (!this.isLoaded) {
 			await this.load();
 
-			const loadedExtensions = this.getExtensions();
-
-			if (loadedExtensions.length > 0) {
-				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
+			if (this.extensions.length > 0) {
+				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
 			}
 		}
 
@@ -172,6 +175,7 @@ export class ExtensionManager {
 			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
 
 			this.extensions = await getExtensions();
+			this.extensionsSettings = await getExtensionsSettings(this.extensions);
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
 			logger.warn(err);
@@ -242,28 +246,6 @@ export class ExtensionManager {
 	}
 
 	/**
-	 * Return all registered permissions optionally filtered by type
-	 *
-	 * @param {string} [type] - Type to filter by
-	 */
-	public getExtensions(type?: ExtensionType): ExtensionInfo[] {
-		const extensionInfo = this.extensions.map(normalizeExtensionInfo);
-
-		if (type) {
-			return extensionInfo.filter((extension) => extension.type === type);
-		}
-
-		return extensionInfo;
-	}
-
-	/**
-	 * Find the extension info by extension name
-	 */
-	public getExtension(name: string): Extension | undefined {
-		return this.extensions.find((extension) => extension.name === name);
-	}
-
-	/**
 	 * Return the previously generated app extensions bundle
 	 */
 	public getAppExtensionsBundle(): string | null {
@@ -292,6 +274,13 @@ export class ExtensionManager {
 			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
 			body: wrapEmbeds('Custom Embed Body', this.hookEmbedsBody),
 		};
+	}
+
+	/**
+	 * Allow reading the installed extensions
+	 */
+	public getExtensions() {
+		return this.extensions;
 	}
 
 	/**
@@ -414,12 +403,16 @@ export class ExtensionManager {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
 
 		for (const hook of hooks) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === hook.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
-				const hookInstance: HookConfig | { default: HookConfig } = await import(
-					`./${pathToRelativeUrl(hookPath, __dirname)}?t=${Date.now()}`
-				);
+				const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
+					fresh: true,
+				});
 
 				const config = getModuleDefault(hookInstance);
 
@@ -441,11 +434,19 @@ export class ExtensionManager {
 		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
 
 		for (const endpoint of endpoints) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === endpoint.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
-					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
+					endpointPath,
+					import.meta.url,
+					{
+						fresh: true,
+					}
 				);
 
 				const config = getModuleDefault(endpointInstance);
@@ -482,11 +483,19 @@ export class ExtensionManager {
 		);
 
 		for (const operation of operations) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === operation.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`../${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
+					operationPath,
+					import.meta.url,
+					{
+						fresh: true,
+					}
 				);
 
 				const config = getModuleDefault(operationInstance);
@@ -512,8 +521,12 @@ export class ExtensionManager {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
-					`../${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
+					bundlePath,
+					import.meta.url,
+					{
+						fresh: true,
+					}
 				);
 
 				const configs = getModuleDefault(bundleInstances);

@@ -28,7 +28,7 @@ const dataItems = [
 		to: `/settings/flows`,
 	},
 	{
-		icon: 'extension',
+		icon: 'category',
 		name: t('extensions'),
 		to: '/settings/extensions',
 	},

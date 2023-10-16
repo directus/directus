@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import api from '@/api';
-import { EXTENSION_TYPES, ExtensionInfo } from '@directus/extensions';
+import { ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
 import { groupBy } from 'lodash';
-import { computed, ref, unref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
@@ -13,16 +13,21 @@ const { t } = useI18n();
 
 const error = ref();
 const loading = ref(false);
-const extensions = ref<ExtensionInfo[]>([]);
+const extensions = ref<ApiOutput[]>([]);
 
-const extensionsGrouped = computed(() => groupBy(unref(extensions), 'type'));
+const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
+const regular = computed(() => extensions.value.filter(({ bundle }) => !!bundle === false));
+
+const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 
 const fetchExtensions = async () => {
 	loading.value = true;
 
 	try {
-		const response = await api.get('/extensions');
-		extensions.value = response.data.data;
+		const response = await api.get<{ data: ApiOutput[] }>('/extensions');
+
+		// Only render extensions that are both installed _and_ configured
+		extensions.value = response.data.data.filter((extension) => extension?.schema?.type !== undefined);
 	} catch (err) {
 		error.value = err;
 	} finally {
@@ -36,9 +41,10 @@ fetchExtensions();
 <template>
 	<private-view :title="t('extensions')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="extension" />
+				<v-icon name="category" />
 			</v-button>
 		</template>
 
@@ -50,19 +56,21 @@ fetchExtensions();
 			<extensions-info-sidebar-detail />
 		</template>
 
-		<div v-if="loading === false" class="page-container">
+		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
-				<div v-for="(list, type) in extensionsGrouped" :key="`${type}-list`" class="extension-group">
+				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
 					<extension-group-divider class="group-divider" :type="(type as typeof EXTENSION_TYPES[number])" />
 
 					<v-list>
-						<extension-item
-							v-for="extension in list"
-							:key="extension.type + '-' + extension.name"
-							:name="extension.name"
-							:type="extension.type"
-							:entries="('entries' in extension && extension.entries) || undefined"
-						/>
+						<template v-for="extension in list" :key="extension.name">
+							<extension-item
+								:extension="extension"
+								:children="
+									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.name) : []
+								"
+								@refresh="fetchExtensions"
+							/>
+						</template>
 					</v-list>
 				</div>
 			</template>
