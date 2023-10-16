@@ -675,6 +675,7 @@ errors:
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
   UNPROCESSABLE_ENTITY: Unprocessable entity
+  UNPROCESSABLE_CONTENT: Unprocessable Content
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
