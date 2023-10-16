@@ -21,6 +21,7 @@ export async function collectOnboarding(userId: string) {
 	}
 
 	const settingsService = new SettingsService({ schema });
+
 	const settings = await settingsService.readSingleton({
 		fields: ['project_name', 'project_url', 'onboarding'],
 	});
@@ -50,6 +51,7 @@ export async function collectOnboarding(userId: string) {
 			const updatedUserOnboarding = {
 				onboarding: { ...user?.['onboarding'], retryTransmission: false } satisfies UserOnboarding,
 			};
+
 			return usersService.updateOne(userId, updatedUserOnboarding);
 		},
 		(reason) => {

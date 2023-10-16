@@ -2269,7 +2269,7 @@ onboarding:
     skip: Skip
     first: Start Setup
     continue: Continue
-    last: Save and Continue
+    saveAndContinue: Save and Continue
   welcome:
     title: Welcome to Directus!
     text: |

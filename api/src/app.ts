@@ -23,6 +23,7 @@ import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
 import notFoundHandler from './controllers/not-found.js';
 import notificationsRouter from './controllers/notifications.js';
+import onboardingRouter from './controllers/onboarding.js';
 import operationsRouter from './controllers/operations.js';
 import panelsRouter from './controllers/panels.js';
 import permissionsRouter from './controllers/permissions.js';
@@ -277,6 +278,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 	app.use('/notifications', notificationsRouter);
+	app.use('/onboarding', onboardingRouter);
 	app.use('/operations', operationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);

@@ -3,7 +3,6 @@ import api from '@/api';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
-import { collectOnboarding } from '@/utils/send-onboarding';
 import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
 import { Ref, computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -103,10 +102,12 @@ const currentSlideName = ref('welcome'); // Important that this matches a key in
 const isLoading = ref(false);
 const error = ref<unknown>(null);
 const notice = ref<HTMLDivElement | null>(null);
+
 watchEffect(() => {
 	if (!notice.value) {
 		return;
 	}
+
 	notice.value.scrollIntoView({ behavior: 'smooth' });
 });
 
@@ -150,8 +151,7 @@ async function finishOnboarding() {
 		await Promise.all([settingUpdate, userUpdate]);
 		// Dont await the result, similar to telemetry
 		// It might fail but proceed as normal for seamless user experience
-		// TODO replace with api side
-		collectOnboarding().catch(() => {});
+		api.post(`/onboarding/${userStore.currentUser?.id}/send`);
 		router.replace('/content');
 	} catch (err) {
 		error.value = err;
@@ -160,17 +160,9 @@ async function finishOnboarding() {
 	}
 }
 
-function prevSlide() {
-	if (!currentSlide.value?.transitions.back) {
-		return;
-	}
-
-	error.value = null;
-	currentSlideName.value = currentSlide.value?.transitions.back;
-}
-
 async function skipOnboarding() {
 	isLoading.value = true;
+	error.value = null;
 
 	const settingUpdate = settingsStore
 		.updateSettings({
@@ -179,22 +171,24 @@ async function skipOnboarding() {
 			} satisfies SettingsOnboarding),
 		})
 		.then(() => serverStore.hydrate())
-		.catch((e) => console.error('Error when updating settings', e));
+		.catch((e) => (error.value = e));
 
 	const userUpdate = api
 		.patch(`/users/${userModel.value.id}`, {
 			onboarding: JSON.stringify({
 				primary_skillset: null,
 				wants_emails: false,
-				retryTransmission: false,
+				retryTransmission: true,
 			} satisfies UserOnboarding),
 		})
 		.then(() => userStore.hydrate())
-		.catch((e) => console.error('Error when updating user', e));
+		.catch((e) => (error.value = e));
 
 	try {
 		await Promise.all([settingUpdate, userUpdate]);
-		error.value = null;
+		// Dont await the result, similar to telemetry
+		// It might fail but proceed as normal for seamless user experience
+		api.post(`/onboarding/${userStore.currentUser?.id}/send`);
 		router.replace('/content');
 	} catch (err) {
 		error.value = err;
@@ -209,6 +203,7 @@ async function nextSlide() {
 	}
 
 	error.value = null;
+
 	if (isLastSlide.value) {
 		isLoading.value = true;
 
@@ -255,7 +250,7 @@ async function nextSlide() {
 					<div :key="currentSlideName" class="slide">
 						<div class="intro-text">
 							<h2 class="type-title">{{ t(currentSlide?.i18nTitle) }}</h2>
-							<div class="text-content" v-md="t(currentSlide?.i18nText)"></div>
+							<div v-md="t(currentSlide?.i18nText)" class="text-content"></div>
 						</div>
 						<v-form
 							v-if="currentSlide?.form"
