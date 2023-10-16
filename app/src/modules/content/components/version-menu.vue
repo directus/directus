@@ -286,7 +286,11 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>
-					{{ t('switch_version_copy', { version: switchTarget ? switchTarget.name : t('main_version') }) }}
+					{{
+						t('switch_version_copy', {
+							version: switchTarget ? switchTarget.name || switchTarget.key : t('main_version'),
+						})
+					}}
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="switchVersion()">

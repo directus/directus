@@ -134,7 +134,7 @@ update_version: Update Version
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
-promote_version_disabled: No changes selected
+promote_version_disabled: No Changes
 promote_version_drawer_title: Promote {version} into Main
 promote_version_changes: Changes
 promote_version_preview: Preview
