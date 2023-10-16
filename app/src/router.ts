@@ -155,19 +155,6 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			}
 		}
 
-		// TODO: Could redirect away from onboarding if its been filled out before
-		// TODO: Leaving it for now for easier testing
-		// if (
-		// 	to.name === 'onboarding' &&
-		// 	userStore.currentUser &&
-		// 	userStore.currentUser.role &&
-		// 	!('share' in userStore.currentUser) &&
-		// 	(!userStore.currentUser.role.admin_access || userStore.currentUser.onboarding)
-		// ) {
-		// 	console.log('NO YOU ALREADY ONBOARDED - GO AWAY');
-		// 	return '/content'; // TODO where to?
-		// }
-
 		if (
 			to.name !== 'onboarding' &&
 			userStore.currentUser &&
