@@ -1,4 +1,6 @@
-export default {
+import { defineLoader } from 'vitepress';
+
+export default defineLoader({
 	async load() {
 		const gettingStarted = [
 			{ display: 'Quickstart Guide', path: '/getting-started/quickstart' },
@@ -253,4 +255,4 @@ export default {
 			},
 		};
 	},
-};
+});

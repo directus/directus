@@ -21,7 +21,7 @@ export const deleteFolders =
 	};
 
 /**
- * Delete multiple existing folders.
+ * Delete an existing folder.
  * @param key
  * @returns
  * @throws Will throw if key is empty

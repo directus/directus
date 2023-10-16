@@ -46,7 +46,10 @@ export type AggregationTypes = {
  * Aggregation parameters
  */
 export type AggregateRecord<Fields = string> = {
-	[Func in keyof AggregationTypes]?: Fields | (AggregationTypes[Func]['wildcard'] extends never ? never : '*');
+	[Func in keyof AggregationTypes]?:
+		| Fields
+		| Fields[]
+		| (AggregationTypes[Func]['wildcard'] extends never ? never : '*');
 };
 
 /**
@@ -96,10 +99,16 @@ export type AggregationOutput<
 		: never
 	: object) & {
 	[Func in keyof Options['aggregate']]: Func extends keyof AggregationTypes
-		? Options['aggregate'][Func] extends string
+		? Options['aggregate'][Func] extends string[]
+			? {
+					[Field in UnpackList<Options['aggregate'][Func]>]: Field extends '*'
+						? AggregationTypes[Func]['output']
+						: { [SubField in Field]: AggregationTypes[Func]['output'] }[Field];
+			  }
+			: Options['aggregate'][Func] extends string
 			? Options['aggregate'][Func] extends '*'
 				? AggregationTypes[Func]['output']
-				: { [Field in Options['aggregate'][Func]]: AggregationTypes[Func]['output'] }
+				: { [SubField in Options['aggregate'][Func]]: AggregationTypes[Func]['output'] }[Options['aggregate'][Func]]
 			: never
 		: never;
 })[];

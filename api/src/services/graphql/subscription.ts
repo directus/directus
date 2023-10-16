@@ -4,7 +4,7 @@ import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { refreshAccountability } from '../../websocket/authenticate.js';
-import { getSinglePayload } from '../../websocket/utils/items.js';
+import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 
@@ -49,7 +49,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'create') {
 				try {
 					subscription.item = eventData['key'];
-					const result = await getSinglePayload(subscription, accountability, schema, eventData);
+					const result = await getPayload(subscription, accountability, schema, eventData);
 
 					yield {
 						[event]: {
@@ -67,7 +67,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				for (const key of eventData['keys']) {
 					try {
 						subscription.item = key;
-						const result = await getSinglePayload(subscription, accountability, schema, eventData);
+						const result = await getPayload(subscription, accountability, schema, eventData);
 
 						yield {
 							[event]: {
