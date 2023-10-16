@@ -17,6 +17,9 @@ type OnboardingSlide = {
 		model: Ref<object>;
 		fields: Field[];
 	};
+	actions?: {
+		next: () => Promise<any>;
+	};
 	transitions: {
 		back: string | null;
 		next: string | null;
@@ -46,7 +49,7 @@ const projectModel = ref({
 	project_url: settingsStore.settings?.project_url,
 	project_logo: settingsStore.settings?.project_logo,
 	project_color: settingsStore.settings?.project_color,
-	project_use_case: settingsStore.settings?.onboarding?.project_use_case, // ?? JSON.parse(settingsStore.settings?.onboarding),
+	project_use_case: settingsStore.settings?.onboarding?.project_use_case,
 });
 
 const userModel = ref({
@@ -74,6 +77,27 @@ const slides: Ref<Record<string, OnboardingSlide>> = ref({
 			model: userModel,
 			fields: useUserFields(),
 		},
+		actions: {
+			next: async function () {
+				isLoading.value = true;
+
+				await api
+					.patch(`/users/${userModel.value.id}`, {
+						first_name: userModel.value.first_name,
+						last_name: userModel.value.last_name,
+						email: userModel.value.email,
+						onboarding: JSON.stringify({
+							primary_skillset: userModel.value.primary_skillset ?? null,
+							wants_emails: userModel.value.wants_emails ?? false,
+							retryTransmission: true,
+						} satisfies UserOnboarding),
+					})
+					.then(() => userStore.hydrate())
+					.catch((e) => (error.value = e));
+
+				finishOnboarding();
+			},
+		},
 		transitions: { back: showProjectSlide ? 'project' : 'welcome', next: 'finish' },
 	},
 	finish: {
@@ -93,6 +117,22 @@ if (showProjectSlide) {
 		form: {
 			model: projectModel,
 			fields: useProjectFields(),
+		},
+		actions: {
+			next: async function () {
+				await settingsStore
+					.updateSettings({
+						project_name: projectModel.value.project_name,
+						project_url: projectModel.value.project_url,
+						project_logo: projectModel.value.project_logo,
+						project_color: projectModel.value.project_color,
+						onboarding: JSON.stringify({
+							project_use_case: projectModel.value.project_use_case ?? null,
+						} satisfies SettingsOnboarding),
+					})
+					.then(() => settingsStore.hydrate())
+					.catch((e) => (error.value = e));
+			},
 		},
 		transitions: { back: 'welcome', next: 'user' },
 	};
@@ -122,79 +162,18 @@ const isLastSlide = computed(() => currentSlide.value?.transitions.next === 'fin
 const progressPercent = computed(() => ((currentSlideIndex.value + 1) / activeSlideNames.value.length) * 100);
 
 async function finishOnboarding() {
-	const settingUpdate = settingsStore
-		.updateSettings({
-			project_name: projectModel.value.project_name,
-			project_url: projectModel.value.project_url,
-			project_logo: projectModel.value.project_logo,
-			project_color: projectModel.value.project_color,
-			onboarding: JSON.stringify({
-				project_use_case: projectModel.value.project_use_case ?? null,
-			} satisfies SettingsOnboarding),
-		})
-		.then(() => settingsStore.hydrate());
-
-	const userUpdate = api
-		.patch(`/users/${userModel.value.id}`, {
-			first_name: userModel.value.first_name,
-			last_name: userModel.value.last_name,
-			email: userModel.value.email,
-			onboarding: JSON.stringify({
-				primary_skillset: userModel.value.primary_skillset ?? null,
-				wants_emails: userModel.value.wants_emails ?? false,
-				retryTransmission: true,
-			} satisfies UserOnboarding),
-		})
-		.then(() => userStore.hydrate());
-
-	try {
-		await Promise.all([settingUpdate, userUpdate]);
-		// Dont await the result, similar to telemetry
-		// It might fail but proceed as normal for seamless user experience
-		api.post(`/onboarding/${userStore.currentUser?.id}/send`);
-		router.replace('/content');
-	} catch (err) {
-		error.value = err;
-	} finally {
-		isLoading.value = false;
-	}
+	isLoading.value = true;
+	error.value = null;
+	// Dont await the result, similar to telemetry
+	// It might fail but proceed as normal for seamless user experience
+	api.post(`/onboarding/${userStore.currentUser?.id}/send`);
+	router.replace('/content');
 }
 
 async function skipOnboarding() {
 	isLoading.value = true;
 	error.value = null;
-
-	const settingUpdate = settingsStore
-		.updateSettings({
-			onboarding: JSON.stringify({
-				project_use_case: null,
-			} satisfies SettingsOnboarding),
-		})
-		.then(() => serverStore.hydrate())
-		.catch((e) => (error.value = e));
-
-	const userUpdate = api
-		.patch(`/users/${userModel.value.id}`, {
-			onboarding: JSON.stringify({
-				primary_skillset: null,
-				wants_emails: false,
-				retryTransmission: true,
-			} satisfies UserOnboarding),
-		})
-		.then(() => userStore.hydrate())
-		.catch((e) => (error.value = e));
-
-	try {
-		await Promise.all([settingUpdate, userUpdate]);
-		// Dont await the result, similar to telemetry
-		// It might fail but proceed as normal for seamless user experience
-		api.post(`/onboarding/${userStore.currentUser?.id}/send`);
-		router.replace('/content');
-	} catch (err) {
-		error.value = err;
-	} finally {
-		isLoading.value = false;
-	}
+	finishOnboarding();
 }
 
 async function nextSlide() {
@@ -204,16 +183,8 @@ async function nextSlide() {
 
 	error.value = null;
 
-	if (isLastSlide.value) {
-		isLoading.value = true;
-
-		// TODO remove artificial slowdown for seeing how it'd look on a slower connection
-		setTimeout(() => {
-			// Set the loading to false can be useful in case there were routing errors
-			finishOnboarding()
-				.catch((err) => (error.value = err))
-				.finally(() => (isLoading.value = false));
-		}, 750);
+	if (currentSlide.value.actions?.next) {
+		currentSlide.value.actions.next();
 	}
 
 	currentSlideName.value = currentSlide.value.transitions.next;
