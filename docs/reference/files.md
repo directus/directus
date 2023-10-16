@@ -136,27 +136,101 @@ Below are four possible qualities (200x200 cover) to visually compare the balanc
 | ![25%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-25-20220216A.jpg)<br>_4KB_ | ![50%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-50-20220216A.jpg)<br>_6KB_ | ![75%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-75-20220216A.jpg)<br>_8KB_ | ![100%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-100-20220216A.jpg)<br>_38KB_ |
 
 ### Preset
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
-example.com/assets/<file-id>?key=<key>
+GET /assets/<file-id>?key=<key>
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('<file-id>', { key: '<key>' }));
+```
+
+</template>
+</SnippetToggler>
 
 ### Custom
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
 ```
-example.com/assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
-example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&height=200&quality=80
+GET /assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc9d01a4', {
+	fit: '<fit>',
+	width: <width>,
+	height: <height>,
+	quality: <quality>,
+}));
+```
+</template>
+</SnippetToggler>
 
 ### Advanced
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
 ```
-?transforms=[
+GET /assets/<file-id>?transforms=[
 	["blur", 45],
 	["tint", "rgb(255, 0, 0)"],
 	["expand", { "right": 200, "bottom": 150 }]
 ]
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc9d01a4', {
+	transforms: [
+		["blur", 45],
+		["tint", "rgb(255, 0, 0)"],
+		["expand", { "right": 200, "bottom": 150 }]
+	]
+}));
+```
+</template>
+</SnippetToggler>
+
 
 ## The File Object
 
