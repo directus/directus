@@ -8,7 +8,7 @@ export const useThemeConfiguration = () => {
 	const settingsStore = useSettingsStore();
 	const userStore = useUserStore();
 
-	let browserAppearance = ref<'dark' | 'light'>(
+	const browserAppearance = ref<'dark' | 'light'>(
 		window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 	);
 
