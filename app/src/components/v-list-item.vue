@@ -201,6 +201,11 @@ body {
 			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-hover);
 			background-color: var(--v-list-item-background-color-hover);
+
+			&.active {
+				color: var(--v-list-item-color-active-hover, var(--v-list-item-color-hover));
+				background-color: var(--v-list-item-background-color-active-hover, var(--v-list-item-background-color-hover));
+			}
 		}
 
 		&:not(.disabled):not(.dense):not(.block):active {

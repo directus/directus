@@ -390,6 +390,8 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 .version-item {
 	--v-list-item-color-active: var(--foreground-inverted);
 	--v-list-item-background-color-active: var(--theme--primary);
+	--v-list-item-color-active-hover: var(--white);
+	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
 }
 
 .version-button {
