@@ -583,9 +583,9 @@ function revert(values: Record<string, any>) {
 
 			<v-button
 				v-if="currentVersion === null"
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
+				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				@click="saveAndQuit"
@@ -605,9 +605,9 @@ function revert(values: Record<string, any>) {
 			</v-button>
 			<v-button
 				v-else
-				v-tooltip.bottom="t('save_version')"
 				rounded
 				icon
+				:tooltip="t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
 				@click="saveVersionAndQuit"

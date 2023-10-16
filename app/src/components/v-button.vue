@@ -59,32 +59,16 @@ interface Props {
 	large?: boolean;
 	/** Renders a larger button */
 	xLarge?: boolean;
+	/** Tooltip text to show on hover */
+	tooltip?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	autofocus: false,
 	kind: 'normal',
-	fullWidth: false,
-	rounded: false,
-	outlined: false,
-	icon: false,
 	type: 'button',
-	disabled: false,
-	loading: false,
 	to: '',
-	href: undefined,
 	target: '_blank',
-	active: undefined,
-	exact: false,
-	query: false,
-	secondary: false,
-	warning: false,
-	danger: false,
-	value: undefined,
-	dashed: false,
-	tile: false,
 	align: 'center',
-	download: undefined,
 });
 
 const emit = defineEmits(['click']);
@@ -155,6 +139,7 @@ async function onClick(event: MouseEvent) {
 		<component
 			:is="component"
 			v-focus="autofocus"
+			v-tooltip.bottom="tooltip"
 			:download="download"
 			class="button"
 			:class="[
