@@ -92,8 +92,7 @@ const slides: Ref<Record<string, OnboardingSlide>> = ref({
 							retryTransmission: true,
 						} satisfies UserOnboarding),
 					})
-					.then(() => userStore.hydrate())
-					.catch((e) => (error.value = e));
+					.then(() => userStore.hydrate());
 
 				finishOnboarding();
 			},
@@ -130,8 +129,7 @@ if (showProjectSlide) {
 							project_use_case: projectModel.value.project_use_case ?? null,
 						} satisfies SettingsOnboarding),
 					})
-					.then(() => settingsStore.hydrate())
-					.catch((e) => (error.value = e));
+					.then(() => settingsStore.hydrate());
 			},
 		},
 		transitions: { back: 'welcome', next: 'user' },
@@ -184,10 +182,16 @@ async function nextSlide() {
 	error.value = null;
 
 	if (currentSlide.value.actions?.next) {
-		currentSlide.value.actions.next();
+		try {
+			await currentSlide.value.actions.next();
+			currentSlideName.value = currentSlide.value.transitions.next;
+		} catch (err) {
+			error.value = err;
+			isLoading.value = false;
+		}
+	} else {
+		currentSlideName.value = currentSlide.value.transitions.next;
 	}
-
-	currentSlideName.value = currentSlide.value.transitions.next;
 }
 </script>
 
