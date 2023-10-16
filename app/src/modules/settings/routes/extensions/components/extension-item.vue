@@ -83,7 +83,7 @@ const toggleEnabled = async () => {
 }
 
 .disabled {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--theme--foreground-subdued);
 }
 
 .options {
