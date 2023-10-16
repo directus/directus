@@ -10,10 +10,6 @@ export interface RequestOptions {
 	onResponse?: ResponseTransformer;
 }
 
-export interface RequestTransformer {
-	(options: RequestInit): RequestInit | Promise<RequestInit>;
-}
+export type RequestTransformer = (options: RequestInit) => RequestInit | Promise<RequestInit>;
 
-export interface ResponseTransformer {
-	<Output = any>(data: any, request: RequestInit): Output | Promise<Output>;
-}
+export type ResponseTransformer<Output = any> = (data: any, request: RequestInit) => Output | Promise<Output>;

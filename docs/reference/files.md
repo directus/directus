@@ -137,26 +137,102 @@ Below are four possible qualities (200x200 cover) to visually compare the balanc
 
 ### Preset
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
 ```
-example.com/assets/<file-id>?key=<key>
+GET /assets/<file-id>?key=<key>
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('<file-id>', { key: '<key>' }));
+```
+
+</template>
+</SnippetToggler>
 
 ### Custom
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
 ```
-example.com/assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
-example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&height=200&quality=80
+GET /assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc9d01a4', {
+	fit: '<fit>',
+	width: <width>,
+	height: <height>,
+	quality: <quality>,
+}));
+```
+
+</template>
+</SnippetToggler>
 
 ### Advanced
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
 ```
-?transforms=[
+GET /assets/<file-id>?transforms=[
 	["blur", 45],
 	["tint", "rgb(255, 0, 0)"],
 	["expand", { "right": 200, "bottom": 150 }]
 ]
 ```
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, readAssetRaw } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc9d01a4', {
+	transforms: [
+		["blur", 45],
+		["tint", "rgb(255, 0, 0)"],
+		["expand", { "right": 200, "bottom": 150 }]
+	]
+}));
+```
+
+</template>
+</SnippetToggler>
 
 ## The File Object
 
