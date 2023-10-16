@@ -79,6 +79,12 @@ export const convertFieldNodes = (
 		}
 
 		if (abstractField.type === 'nested-many') {
+			/*
+			 * nested many nodes are handled by the driver,
+			 * because the most performant technique to use here depends on the vendor.
+			 * some prefer a sub query in the statement, some a join and some prefer multiple separate queries.
+			 * That's why we don't do anything with nested many nodes here but instead just forward them to the driver.
+			 */
 			nestedMany.push(abstractField);
 		}
 
