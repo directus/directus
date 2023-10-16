@@ -98,3 +98,6 @@ data:
 
   - collection: directus_versions
     note: $t:directus_collection.directus_versions
+
+  - collection: directus_extensions
+    note: $t:directus_collection.directus_extensions

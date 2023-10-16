@@ -1,16 +1,16 @@
 .fc {
-	--fc-event-bg-color: var(--primary);
-	--fc-event-border-color: var(--primary);
-	--fc-today-bg-color: var(--primary-10);
+	--fc-event-bg-color: var(--theme--primary);
+	--fc-event-border-color: var(--theme--primary);
+	--fc-today-bg-color: var(--theme--primary-background);
 	--fc-button-bg-color: transparent;
 	--fc-button-active-bg-color: transparent;
 	--fc-button-hover-bg-color: transparent;
 	--fc-button-border-color: transparent;
 	--fc-button-active-border-color: transparent;
 	--fc-button-hover-border-color: transparent;
-	--fc-button-text-color: var(--foreground-subdued);
+	--fc-button-text-color: var(--theme--foreground-subdued);
 	--fc-border-color: var(--border-normal);
-	--fc-highlight-color: var(--primary-10);
+	--fc-highlight-color: var(--theme--primary-background);
 	--fc-neutral-bg-color: var(--background-normal);
 	--fc-list-event-hover-bg-color: var(--background-subdued);
 
@@ -29,7 +29,7 @@
 	}
 
 	.fc-daygrid-more-link {
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-weight: 600;
 	}
 
@@ -48,7 +48,7 @@
 
 	.fc-daygrid-dot-event:hover,
 	.fc-daygrid-dot-event.fc-event-mirror {
-		background: var(--primary-25);
+		background: var(--theme--primary-subdued);
 	}
 
 	.fc-daygrid-event-dot {
@@ -75,7 +75,7 @@
 
 			&:not(:disabled) {
 				&:hover {
-					--fc-button-text-color: var(--foreground-normal);
+					--fc-button-text-color: var(--theme--foreground);
 				}
 
 				&:active:focus,
@@ -86,10 +86,10 @@
 		}
 
 		&-active {
-			--fc-button-text-color: var(--primary);
+			--fc-button-text-color: var(--theme--primary);
 
 			&:hover {
-				--fc-button-text-color: var(--primary) !important;
+				--fc-button-text-color: var(--theme--primary) !important;
 			}
 		}
 	}
@@ -105,10 +105,10 @@
 			padding: 0 8px;
 			font-weight: inherit !important;
 			font-size: inherit !important;
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 			border-top: 2px solid var(--border-subdued);
 			border-bottom: 2px solid var(--border-subdued);
-			box-shadow: 0 0 0 2px var(--background-page);
+			box-shadow: 0 0 0 2px var(--theme--background);
 		}
 	}
 
@@ -119,6 +119,6 @@
 	}
 
 	.fc-event.selected {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }

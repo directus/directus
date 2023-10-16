@@ -1,15 +1,15 @@
 <svg width="156" height="96" viewBox="0 0 156 96" fill="none"
 	xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="15" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="28" y="15" width="30" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity="0.25" x="18" y="27" width="120" height="2" rx="1" fill="var(--primary)"/>
-	<rect x="18" y="41" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="28" y="41" width="50" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity="0.25" x="18" y="53" width="120" height="2" rx="1" fill="var(--primary)"/>
-	<rect x="18" y="67" width="6" height="6" rx="2" fill="var(--primary)"/>
-	<rect x="28" y="67" width="40" height="6" rx="2" fill="var(--primary)"/>
-	<rect opacity="0.25" x="18" y="79" width="120" height="2" rx="1" fill="var(--primary)"/>
-	<path d="M130.82 14.6602L130 15.4805L132.652 18.1602L130 20.8398L130.82 21.6602L134.32 18.1602L130.82 14.6602Z" fill="var(--primary)"/>
-	<path d="M130.82 41L130 41.8203L132.652 44.5L130 47.1797L130.82 48L134.32 44.5L130.82 41Z" fill="var(--primary)"/>
-	<path d="M130.82 67L130 67.8203L132.652 70.5L130 73.1797L130.82 74L134.32 70.5L130.82 67Z" fill="var(--primary)"/>
+	<rect x="18" y="15" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="28" y="15" width="30" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity="0.25" x="18" y="27" width="120" height="2" rx="1" fill="var(--theme--primary)"/>
+	<rect x="18" y="41" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="28" y="41" width="50" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity="0.25" x="18" y="53" width="120" height="2" rx="1" fill="var(--theme--primary)"/>
+	<rect x="18" y="67" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect x="28" y="67" width="40" height="6" rx="2" fill="var(--theme--primary)"/>
+	<rect opacity="0.25" x="18" y="79" width="120" height="2" rx="1" fill="var(--theme--primary)"/>
+	<path d="M130.82 14.6602L130 15.4805L132.652 18.1602L130 20.8398L130.82 21.6602L134.32 18.1602L130.82 14.6602Z" fill="var(--theme--primary)"/>
+	<path d="M130.82 41L130 41.8203L132.652 44.5L130 47.1797L130.82 48L134.32 44.5L130.82 41Z" fill="var(--theme--primary)"/>
+	<path d="M130.82 67L130 67.8203L132.652 70.5L130 73.1797L130.82 74L134.32 70.5L130.82 67Z" fill="var(--theme--primary)"/>
 </svg>

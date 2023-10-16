@@ -1,11 +1,11 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="18" width="120" height="26" rx="6" fill="var(--background-page)" class="glow"/>
-	<rect x="19" y="19" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2"/>
-	<rect x="28" y="28" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="82" y="28" width="20" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect opacity=".25" x="19" y="53" width="118" height="24" rx="5" fill="var(--background-page)" stroke="var(--primary)" stroke-width="2"/>
-	<rect x="28" y="62" width="20" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="52" y="62" width="40" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<path d="m124.52 32.777-1.504-1.449.027-.027a9.996 9.996 0 0 0 2.16-3.801h1.723v-1.176h-4.102v-1.148h-1.148v1.148h-4.102V27.5h6.535c-.41 1.121-1.011 2.188-1.859 3.117a9.14 9.14 0 0 1-1.34-1.941h-1.176a10.89 10.89 0 0 0 1.75 2.652l-2.98 2.926.82.82 2.926-2.898 1.805 1.804.465-1.203Zm3.281-2.953h-1.176l-2.625 7h1.176l.656-1.75h2.762l.656 1.75h1.176l-2.625-7Zm-1.531 4.102.929-2.543.957 2.543h-1.886Z" fill="var(--primary)"/>
-	<path opacity=".25" d="m124.52 66.777-1.504-1.449.027-.027a9.996 9.996 0 0 0 2.16-3.801h1.723v-1.176h-4.102v-1.148h-1.148v1.148h-4.102V61.5h6.535c-.41 1.121-1.011 2.188-1.859 3.117a9.14 9.14 0 0 1-1.34-1.941h-1.176a10.89 10.89 0 0 0 1.75 2.652l-2.98 2.926.82.82 2.926-2.898 1.805 1.805.465-1.204Zm3.281-2.953h-1.176l-2.625 7h1.176l.656-1.75h2.762l.656 1.75h1.176l-2.625-7Zm-1.531 4.102.929-2.543.957 2.543h-1.886Z" fill="var(--primary)"/>
+	<rect x="18" y="18" width="120" height="26" rx="6" fill="var(--theme--background)" class="glow"/>
+	<rect x="19" y="19" width="118" height="24" rx="5" stroke="var(--theme--primary)" stroke-width="2"/>
+	<rect x="28" y="28" width="50" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="82" y="28" width="20" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect opacity=".25" x="19" y="53" width="118" height="24" rx="5" fill="var(--theme--background)" stroke="var(--theme--primary)" stroke-width="2"/>
+	<rect x="28" y="62" width="20" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="52" y="62" width="40" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<path d="m124.52 32.777-1.504-1.449.027-.027a9.996 9.996 0 0 0 2.16-3.801h1.723v-1.176h-4.102v-1.148h-1.148v1.148h-4.102V27.5h6.535c-.41 1.121-1.011 2.188-1.859 3.117a9.14 9.14 0 0 1-1.34-1.941h-1.176a10.89 10.89 0 0 0 1.75 2.652l-2.98 2.926.82.82 2.926-2.898 1.805 1.804.465-1.203Zm3.281-2.953h-1.176l-2.625 7h1.176l.656-1.75h2.762l.656 1.75h1.176l-2.625-7Zm-1.531 4.102.929-2.543.957 2.543h-1.886Z" fill="var(--theme--primary)"/>
+	<path opacity=".25" d="m124.52 66.777-1.504-1.449.027-.027a9.996 9.996 0 0 0 2.16-3.801h1.723v-1.176h-4.102v-1.148h-1.148v1.148h-4.102V61.5h6.535c-.41 1.121-1.011 2.188-1.859 3.117a9.14 9.14 0 0 1-1.34-1.941h-1.176a10.89 10.89 0 0 0 1.75 2.652l-2.98 2.926.82.82 2.926-2.898 1.805 1.805.465-1.204Zm3.281-2.953h-1.176l-2.625 7h1.176l.656-1.75h2.762l.656 1.75h1.176l-2.625-7Zm-1.531 4.102.929-2.543.957 2.543h-1.886Z" fill="var(--theme--primary)"/>
 </svg>

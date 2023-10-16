@@ -1033,6 +1033,8 @@ Empty body.
 </template>
 <template #graphql>
 
+`POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_users_items(ids: ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"]) {

@@ -389,7 +389,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-item {
 	--v-list-item-color-active: var(--foreground-inverted);
-	--v-list-item-background-color-active: var(--primary);
+	--v-list-item-background-color-active: var(--theme--primary);
 }
 
 .version-button {
@@ -397,7 +397,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 	margin-left: 16px;
 	padding: 2px;
 	background-color: var(--background-normal);
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	border-radius: 24px;
 
 	.version-name {
@@ -409,17 +409,17 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 	}
 
 	&.main {
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		color: var(--white);
 
 		&:hover {
-			background-color: var(--primary-125);
+			background-color: var(--theme--primary-accent);
 		}
 	}
 }
 
 .version-delete {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
 }
 </style>

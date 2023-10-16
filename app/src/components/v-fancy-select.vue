@@ -122,7 +122,7 @@ function toggle(item: Record<string, any>) {
 		width: 44px;
 		height: 44px;
 		margin-right: 12px;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		border-radius: 50%;
 	}
 
@@ -136,16 +136,16 @@ function toggle(item: Record<string, any>) {
 
 	&.active {
 		z-index: 2;
-		color: var(--primary);
-		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-color: var(--theme--primary);
 
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		&:hover {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 		}
 	}
 }
@@ -169,7 +169,7 @@ function toggle(item: Record<string, any>) {
 }
 
 .icon-right {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 }
 
 .v-divider {

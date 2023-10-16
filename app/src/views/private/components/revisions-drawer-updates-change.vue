@@ -67,7 +67,7 @@ const wholeThing = computed(() => {
 	}
 
 	&.added {
-		color: var(--success);
+		color: var(--theme--success);
 		background-color: var(--success-alt);
 		border-radius: 0 0 var(--border-radius) var(--border-radius);
 
@@ -77,7 +77,7 @@ const wholeThing = computed(() => {
 	}
 
 	&.deleted {
-		color: var(--danger);
+		color: var(--theme--danger);
 		background-color: var(--danger-alt);
 		border-radius: var(--border-radius) var(--border-radius) 0 0;
 
@@ -87,7 +87,7 @@ const wholeThing = computed(() => {
 	}
 
 	&.updated {
-		color: var(--warning);
+		color: var(--theme--warning);
 		background-color: var(--warning-alt);
 		border-radius: var(--border-radius);
 	}

@@ -4,35 +4,36 @@ readTime: 5 min read
 pageClass: page-reference
 ---
 
-# Versions
+# Content Versions
 
-> TBD
+> Content Versioning enables users to create unpublished copies of an item (called "Content Versions"), modify them
+> independently from the main version, and promote them to become the new main version when ready.
 
-## The Version Object
+## The Content Version Object
 
 `id` **uuid**\
-Primary key of the version.
+Primary key of the Content Version.
 
 `key` **string**\
-Key of the version, used as the value for the `version` query parameter.
+Key of the Content Version, used as the value for the [`version`](/reference/items#query-parameters-1) query parameter.
 
 `name` **string**\
-Name of the version.
+Descriptive name of the Content Version.
 
 `collection` **string**\
-Name of the collection the version is created on.
+Name of the collection the Content Version is created on.
 
 `item` **many-to-one**\
-The item the version is created on.
+The item the Content Version is created on.
 
 `date_created` **Date**\
-When the version was created.
+When the Content Version was created.
 
 `user_created` **many-to-one**\
-User that created the version. Many-to-one to [users](/reference/system/users).
+User that created the Content Version. Many-to-one to [users](/reference/system/users).
 
 ```json
- {
+{
 	"id": "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5",
 	"key": "my_version",
 	"name": "My Version",
@@ -44,9 +45,9 @@ User that created the version. Many-to-one to [users](/reference/system/users).
 }
 ```
 
-## List Versions
+## List Content Versions
 
-List all versions that exist in Directus.
+List all Content Versions that exist in Directus.
 
 ### Request
 
@@ -64,12 +65,24 @@ If using SEARCH you can provide a [query object](/reference/query) as the body o
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Query {
+	versions: [directus_versions]
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readContentVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readContentVersions(query_object));
+```
 
 </template>
 </SnippetToggler>
@@ -80,8 +93,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-An array of up to [limit](/reference/query#limit) [version objects](#the-version-object). If no items are available,
-data will be an empty array.
+An array of up to [limit](/reference/query#limit) [Content Version objects](#the-content-version-object). If no items
+are available, data will be an empty array.
 
 ### Example
 
@@ -95,19 +108,39 @@ data will be an empty array.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+query {
+	versions {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readContentVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readContentVersions({
+		fields: ['*'],
+	})
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Retrieve a Version
+## Retrieve a Content Version
 
-List an existing version by primary key.
+List an existing Content Version by primary key.
 
 ### Request
 
@@ -119,12 +152,24 @@ List an existing version by primary key.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Query {
+	versions_by_id(id: ID!): directus_versions
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readContentVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(readContentVersion(content_version_id, query_object));
+```
 
 </template>
 </SnippetToggler>
@@ -135,31 +180,51 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-Returns the requested [version object](#the-version-object).
+Returns the requested [Content Version object](#the-content-version-object).
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`GET /dashboards/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
+`GET /versions/21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5`
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+query {
+	versions_by_id(id: "e35f7b9a-aabe-4a41-92b4-2bed97fd49ef") {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, readContentVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readContentVersion('dc2ac3f9-2076-4e86-8677-b47643eddacf', {
+		fields: ['*'],
+	})
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Create a Version
+## Create a Content Version
 
-Create a new version.
+Create a new Content Version for an item.
 
 ### Request
 
@@ -168,17 +233,29 @@ Create a new version.
 
 `POST /version`
 
-Provide a [version object](#the-version-object) as the body of your request.
+Provide a [Content Version object](#the-content-version-object) as the body of your request.
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_versions_item(data: create_directus_versions_input!): directus_versions
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createContentVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createContentVersion(content_version_object));
+```
 
 </template>
 </SnippetToggler>
@@ -189,11 +266,11 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-A partial [version object](#the-version-object).
+A partial [Content Version object](#the-content-version-object).
 
 ### Response
 
-Returns the [version object](#the-version-object) for the created version.
+Returns the [Content Version object](#the-content-version-object) for the created version.
 
 ### Example
 
@@ -204,8 +281,9 @@ Returns the [version object](#the-version-object) for the created version.
 
 ```json
 {
+	"key": "my_version",
 	"name": "My Version",
-	"collection": "my-collection",
+	"collection": "my_collection",
 	"item": "1"
 }
 ```
@@ -213,19 +291,42 @@ Returns the [version object](#the-version-object) for the created version.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	create_versions_item(data: { key: "my_version", name: "My Version", collection: "my_collection", item: "1" }) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createContentVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createContentVersion({
+		key: 'my_version',
+		name: 'My Version',
+		collection: 'my_collection',
+		item: 1,
+	})
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Create Multiple Versions
+## Create Multiple Content Versions
 
-Create multiple new versions.
+Create multiple new Content Versions.
 
 ### Request
 
@@ -234,17 +335,29 @@ Create multiple new versions.
 
 `POST /versions`
 
-Provide an array of [version objects](#the-version-object) as the body of your request.
+Provide an array of [Content Version objects](#the-content-version-object) as the body of your request.
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_versions_items(data: [create_directus_versions_input!]!): [directus_versions]
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createContentVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(createContentVersions(content_version_object_array));
+```
 
 </template>
 </SnippetToggler>
@@ -255,30 +368,32 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-An array of partial [version objects](#the-version-object).
+An array of partial [Content Version objects](#the-content-version-object).
 
 ### Response
 
-Returns an array of [version objects](#the-version-object) for the created versions.
+Returns an array of [Content Version objects](#the-content-version-object) for the created versions.
 
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
-`POST /dashboards`
+`POST /versions`
 
 ```json
 [
 	{
+		"key": "my_version",
 		"name": "My Version",
-		"collection": "my-collection",
-		"item": "1"
+		"collection": "my_collection",
+		"item": 1
 	},
 	{
+		"key": "another_version",
 		"name": "Another Version",
-		"collection": "another-collection",
-		"item": "2"
+		"collection": "another_collection",
+		"item": 2
 	}
 ]
 ```
@@ -286,19 +401,55 @@ Returns an array of [version objects](#the-version-object) for the created versi
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	create_versions_items(
+		data: [
+			{ key: "my_version", name: "My Version", collection: "my_collection", item: "1" }
+			{ key: "another_version", name: "Another Version", collection: "another_collection", item: "2" }
+		]
+	) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, createContentVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createContentVersions([
+		{
+			key: 'my_version',
+			name: 'My Version',
+			collection: 'my_collection',
+			item: 1,
+		},
+		{
+			key: 'another_version',
+			name: 'Another Version',
+			collection: 'another_collection',
+			item: 2,
+		},
+	])
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Rename a Version
+## Update a Content Version
 
-Rename an existing version.
+Update an existing Content Version.
 
 ### Request
 
@@ -307,17 +458,29 @@ Rename an existing version.
 
 `PATCH /versions/:id`
 
-Provide a partial [version object](#the-version-object) as the body of your request.
+Provide a partial [Content Version object](#the-content-version-object) as the body of your request.
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_versions_item(id: ID!, data: update_directus_versions_input!): directus_versions
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateContentVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateContentVersion(content_version_id, partial_content_version_object));
+```
 
 </template>
 </SnippetToggler>
@@ -328,11 +491,11 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-A partial [version object](#the-version-object).
+A partial [Content Version object](#the-content-version-object).
 
 ### Response
 
-Returns the [version object](#the-version-object) for the updated version.
+Returns the [Content Version object](#the-content-version-object) for the updated version.
 
 ### Example
 
@@ -350,19 +513,39 @@ Returns the [version object](#the-version-object) for the updated version.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	update_versions_item(id: "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", data: { name: "My Updated Version" }) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateContentVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', {
+		name: 'My Updated Version',
+	})
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Rename Multiple Versions
+## Update Multiple Content Versions
 
-Rename multiple existing versions.
+Update multiple existing Content Versions.
 
 ### Request
 
@@ -373,20 +556,32 @@ Rename multiple existing versions.
 
 ```json
 {
-	"keys": version_id_array,
-	"data": partial_version_object
+	"keys": content_version_id_array,
+	"data": partial_content_version_object
 }
 ```
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_versions_items(ids: [ID!]!, data: update_directus_versions_input!): [directus_versions]
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateContentVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateContentVersions(content_version_id_array, partial_content_version_object));
+```
 
 </template>
 </SnippetToggler>
@@ -398,14 +593,14 @@ Supports all [global query parameters](/reference/query).
 #### Request Body
 
 `keys` **Required**\
-Array of primary keys of the versions you'd like to update.
+Array of primary keys of the Content Versions you'd like to update.
 
 `data` **Required**\
-The name property of the [version object](#the-version-object).
+The name property of the [Content Version object](#the-content-version-object).
 
 ### Response
 
-Returns the [version objects](#the-version-object) for the updated versions.
+Returns the [Content Version objects](#the-content-version-object) for the updated versions.
 
 ### Example
 
@@ -426,19 +621,42 @@ Returns the [version objects](#the-version-object) for the updated versions.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	update_versions_items(
+		ids: ["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631"]
+		data: { name: "My Updated Version" }
+	) {
+		id
+		key
+		name
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, updateContentVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateContentVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'], {
+		name: 'My Updated Version',
+	})
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Delete a Version
+## Delete a Content Version
 
-Delete an existing version.
+Delete an existing Content Version.
 
 ### Request
 
@@ -450,12 +668,24 @@ Delete an existing version.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	delete_versions_item(id: ID!): delete_one
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteContentVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteContentVersion(content_version_id));
+```
 
 </template>
 </SnippetToggler>
@@ -474,19 +704,33 @@ Empty body.
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	delete_versions_item(id: "21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5") {
+		id
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteContentVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+```
 
 </template>
 </SnippetToggler>
 
-## Delete Multiple Versions
+## Delete Multiple Content Versions
 
-Delete multiple existing versions.
+Delete multiple existing Content Versions.
 
 ### Request
 
@@ -495,24 +739,36 @@ Delete multiple existing versions.
 
 `DELETE /versions`
 
-Provide an array of version IDs as the body of your request.
+Provide an array of Content Version IDs as the body of your request.
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	delete_versions_items(ids: [ID!]!): delete_many
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(deleteContentVersions(content_version_id_array));
+```
 
 </template>
 </SnippetToggler>
 
 #### Request Body
 
-An array of version primary keys
+An array of Content Version primary keys
 
 ### Response
 
@@ -526,25 +782,41 @@ Empty body.
 `DELETE /versions`
 
 ```json
-["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631", "5fd4a4be-a3ad-4544-9a27-d62b2c897056"]
+["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631"]
 ```
 
 </template>
 <template #graphql>
 
-TBD
+`POST /graphql/system`
+
+```graphql
+mutation {
+	delete_versions_items(ids: ["21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5", "31e1c0c6-b575-47fb-908a-baf81b4e5631"]) {
+		ids
+	}
+}
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteContentVersions(['21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '31e1c0c6-b575-47fb-908a-baf81b4e5631'])
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Save to a Version
+## Save to a Content Version
 
-Save changes to an existing version.
+Save item changes to an existing Content Version.
 
 ### Request
 
@@ -558,19 +830,27 @@ Provide a partial [item object](/reference/items#the-item-object) as the body of
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, saveToContentVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(saveToContentVersion(content_version_id, partial_item_object));
+```
 
 </template>
 </SnippetToggler>
 
 ### Response
 
-Returns the [item object](/reference/items#the-item-object) of the item state after the save.
+Returns the [item object](/reference/items#the-item-object) with the new state after save.
 
 ### Example
 
@@ -581,26 +861,36 @@ Returns the [item object](/reference/items#the-item-object) of the item state af
 
 ```json
 {
-	"my_field": "updated value"
+	"my_field": "Updated Value"
 }
 ```
 
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, saveContentVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	saveContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', { my_field: 'Updated Value' })
+);
+```
 
 </template>
 </SnippetToggler>
 
-## Compare a Version
+## Compare a Content Version
 
-Compare an existing version with the main item.
+Compare an existing Content Version with the main version of the item.
 
 ### Request
 
@@ -612,31 +902,40 @@ Compare an existing version with the main item.
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, compareContentVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(compareContentVersion(content_version_id));
+```
 
 </template>
 </SnippetToggler>
 
 ### Response
 
-Returns all fields with different values, along with the hash of the main item and the information whether the current
-version is outdated (main item has been updated since the creation of the current version):
+Returns all fields with different values, along with the hash of the main version of the item and the information
+whether the Content Version is outdated (i.e. main version of the item has been updated since the creation of the
+Content Version):
 
 ```json
 {
-    "outdated": false,
-    "mainHash": "2ee9c4e33b19d2cdec66a1ff7355e75a331591d9",
-    "current": {
-      "my_field": "updated value"
-    },
-    "main": {
-      "my_field": "main value"
-    }
+	"outdated": false,
+	"mainHash": "2ee9c4e33b19d2cdec66a1ff7355e75a331591d9",
+	"current": {
+		"my_field": "Updated Value"
+	},
+	"main": {
+		"my_field": "Main Value"
+	}
 }
 ```
 
@@ -650,19 +949,27 @@ version is outdated (main item has been updated since the creation of the curren
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, compareContentVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(compareContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5'));
+```
 
 </template>
 </SnippetToggler>
 
-## Promote a Version
+## Promote a Content Version
 
-Promote an existing version into the main item.
+Promote an existing Content Version to become the new main version of the item.
 
 ### Request
 
@@ -671,8 +978,8 @@ Promote an existing version into the main item.
 
 `POST /versions/:id/promote`
 
-Pass the current hash of the main item (usually obtained from the `compare` endpoint) along with an array of field names
-of which the values are to be promoted from the current version into the main item.
+Pass the current hash of the main version of the item (obtained from the `compare` endpoint) along with an optional
+array of field names of which the values are to be promoted (by default, all fields are selected).
 
 ```json
 {
@@ -684,19 +991,27 @@ of which the values are to be promoted from the current version into the main it
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(promoteContentVersion(content_version_id, promote_object));
+```
 
 </template>
 </SnippetToggler>
 
 ### Response
 
-The primary key of the updated item.
+The primary key of the promoted item.
 
 ### Example
 
@@ -708,21 +1023,31 @@ The primary key of the updated item.
 ```json
 {
 	"mainHash": "2ee9c4e33b19d2cdec66a1ff7355e75a331591d9",
-	"fields": [
-		"my_field"
-	]
+	"fields": ["my_field"]
 }
 ```
 
 </template>
 <template #graphql>
 
-TBD
+```
+// Not supported in GraphQL
+```
 
 </template>
 <template #sdk>
 
-TBD
+```js
+import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	promoteContentVersion('21a7ed5f-eb19-42ae-8ee2-61f25b8c4eb5', '2ee9c4e33b19d2cdec66a1ff7355e75a331591d9', [
+		'my_field',
+	])
+);
+```
 
 </template>
 </SnippetToggler>

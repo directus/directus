@@ -25,6 +25,7 @@ export type DirectusCollection<Schema extends object> = {
 			group: string | null;
 			collapse: string;
 			preview_url: string | null;
+			versioning: boolean;
 		}
 	>;
 	schema: {

@@ -73,6 +73,8 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
 extension_bundles: Bundles
+enable: Enable
+disable: Disable
 custom: Custom
 hook: Hook
 fill_width: Fill Width
@@ -311,6 +313,9 @@ geometry.Polygon: Polygon
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
+theme_auto: Automatic (Based on System)
+theme_light: Light Mode
+theme_dark: Dark Mode
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -690,6 +695,7 @@ security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
+create_default: Create Default
 edit_bookmark: Edit Bookmark
 edit_personal_bookmark: Edit Personal Bookmark
 edit_role_bookmark: Edit Role Bookmark
@@ -1020,6 +1026,11 @@ choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
 deselect: Deselect
 deselect_all: Deselect All
+theme: Theme
+select_a_theme: Select a Theme
+appearance_auto: Automatic (Based on System)
+appearance_light: Light Mode
+appearance_dark: Dark Mode
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
@@ -1031,12 +1042,13 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Roles & Permissions
-settings_project: Project Settings
+settings_permissions: Access Control
+settings_project: Settings
+settings_theming: Theming
 settings_webhooks: Webhooks
 settings_flows: Flows
-settings_presets: Presets & Bookmarks
-settings_translations: Custom Translations
+settings_presets: Bookmarks
+settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
 configure_field_key_to_continue: Configure field key to continue
 scope: Scope
@@ -1051,6 +1063,7 @@ editing_preset: Editing Preset
 layout_preview: Layout Preview
 layout_setup: Layout Setup
 data: Data
+theme-overrides: Theme Overrides
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
@@ -1075,7 +1088,8 @@ page_help_files_collection: >-
   your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Project Settings** — Your project's global configuration options."
+page_help_settings_project: "**Settings** — Your project's global configuration options."
+page_help_settings_theming: "**Theming** — Your project's theming options."
 page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
@@ -1144,6 +1158,7 @@ directus_collection:
   directus_webhooks: Configuration for event-based HTTP requests
   directus_translations: Custom translations
   directus_versions: Content Versions for items
+  directus_extensions: Configuration of extensions
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1209,10 +1224,6 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
-    theme: Theme
-    theme_auto: Automatic (Based on System)
-    theme_light: Light Mode
-    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -1228,6 +1239,8 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1252,10 +1265,11 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
-    branding: Branding & Style
+    branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
+    theming: Theming Defaults
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
@@ -1270,6 +1284,8 @@ fields:
     transformations_presets: Limit transformations to presets below
     image_editor: Image Editor
     custom_aspect_ratios: Custom Aspect Ratios
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_shares:
     name: Name
     role: Role
@@ -1312,7 +1328,8 @@ field_options:
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
+    project_logo_note: White 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -2132,6 +2149,9 @@ panels:
     name: Metric
     description: Show a single value based on a query
     field: Field
+  metric_list:
+    name: Metric List
+    description: List and visualize aggregate metrics from a collection
   time_series:
     name: Time Series
     description: Render a line chart based on values over time
@@ -2160,6 +2180,7 @@ panels:
     smooth: Smooth
     straight: Straight
     step_line: Step Line
+    show_legend: Show Legend
   meter:
     name: Meter
     description: Meter for tracking values
@@ -2313,3 +2334,39 @@ operations:
     batch: Batch
     batch_size: Batch Size
     cache: Cache
+unit: Unit
+standard: Standard
+scientific: Scientific
+engineering: Engineering
+compact: Compact
+currency: Currency
+notation: Notation
+style: Style
+fonts:
+  thin: Thin
+  extra_light: Extra Light
+  light: Light
+  normal: Normal
+  medium: Medium
+  semi_bold: Semi Bold
+  bold: Bold
+  extra_bold: Extra Bold
+  black: Black
+  italic: Italic
+  oblique: Oblique
+  small: Small
+  large: Large
+  auto: Auto
+text_wrap: Text Wrap
+center: Center
+justify: Justify
+text_align: Text Align
+font_weight: Font Weight
+font_style: Font Style
+font_size: Font Size
+minimum_fraction_digits: Minimum Decimals
+maximum_fraction_digits: Maximum Decimals
+show_percentage: Show Percentage
+aggregation: Aggregation
+series_grouping: Series Grouping
+date_precision: Date Precision

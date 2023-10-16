@@ -43,7 +43,7 @@ body {
 	width: var(--v-avatar-size);
 	height: var(--v-avatar-size);
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	background-color: var(--v-avatar-color);

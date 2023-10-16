@@ -1,10 +1,10 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="19" y="14" width="118" height="68" rx="6" fill="var(--background-page)"/>
-	<rect x="19" y="14" width="118" height="68" rx="6" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 6"/>
-	<rect opacity=".25" x="29" y="24" width="98" height="20" rx="5" fill="var(--background-page)" stroke="var(--primary)" stroke-width="2"/>
-	<rect x="38" y="31" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="92" y="31" width="20" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect opacity=".25" x="29" y="52" width="98" height="20" rx="5" fill="var(--background-page)" stroke="var(--primary)" stroke-width="2"/>
-	<rect x="38" y="59" width="20" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<rect x="62" y="59" width="40" height="6" rx="2" fill="var(--primary)" fill-opacity=".25"/>
+	<rect x="19" y="14" width="118" height="68" rx="6" fill="var(--theme--background)"/>
+	<rect x="19" y="14" width="118" height="68" rx="6" stroke="var(--theme--primary)" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 6"/>
+	<rect opacity=".25" x="29" y="24" width="98" height="20" rx="5" fill="var(--theme--background)" stroke="var(--theme--primary)" stroke-width="2"/>
+	<rect x="38" y="31" width="50" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="92" y="31" width="20" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect opacity=".25" x="29" y="52" width="98" height="20" rx="5" fill="var(--theme--background)" stroke="var(--theme--primary)" stroke-width="2"/>
+	<rect x="38" y="59" width="20" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<rect x="62" y="59" width="40" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
 </svg>

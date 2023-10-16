@@ -296,7 +296,7 @@ function onLinkClick(to: string) {
 				flex-grow: 1;
 			}
 			.datetime {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 
