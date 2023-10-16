@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNode } from '@directus/data';
+import type { AbstractQueryFieldNode, AbstractQueryFieldNodeNestedMany } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
@@ -9,6 +9,7 @@ export type Result = {
 	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
+	nestedMany: AbstractQueryFieldNodeNestedMany[];
 };
 
 /**
@@ -37,6 +38,7 @@ export const convertFieldNodes = (
 	const joins: AbstractSqlClauses['joins'] = [];
 	const parameters: ParameterTypes[] = [];
 	const aliasRelationalMapping: Map<string, string[]> = new Map();
+	const nestedMany: AbstractQueryFieldNodeNestedMany[] = [];
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
@@ -76,6 +78,10 @@ export const convertFieldNodes = (
 			continue;
 		}
 
+		if (abstractField.type === 'nested-many') {
+			nestedMany.push(abstractField);
+		}
+
 		if (abstractField.type === 'fn') {
 			const fnField = abstractField;
 
@@ -91,5 +97,5 @@ export const convertFieldNodes = (
 		}
 	}
 
-	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping };
+	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping, nestedMany };
 };
