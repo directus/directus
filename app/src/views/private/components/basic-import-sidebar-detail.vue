@@ -220,7 +220,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -264,7 +264,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	text-overflow: ellipsis;
 
 	&.no-file {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 
@@ -273,7 +273,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .download-local {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 	display: block;
 	width: 100%;

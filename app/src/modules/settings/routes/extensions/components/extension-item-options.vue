@@ -33,7 +33,7 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	&:hover {
 		--v-icon-color: var(--foreground-normal);

@@ -349,9 +349,9 @@ const stageChanges = () => {
 }
 
 .interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
-	box-shadow: 0 0 8px var(--foreground-subdued);
+	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 
 .field-configuration {
