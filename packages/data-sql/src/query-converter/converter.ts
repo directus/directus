@@ -37,5 +37,6 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 		clauses,
 		parameters,
 		aliasMapping: convertedFieldNodes.aliasMapping,
+		nestedMany: convertedFieldNodes.nestedMany,
 	};
 };
