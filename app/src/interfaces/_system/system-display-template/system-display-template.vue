@@ -38,7 +38,6 @@ const collection = computed(() => {
 	return collectionName;
 });
 
-// TODO Initial version, probably needs polishing
 const injectValue = computed(() => {
 	if (!props.injectVersionField) return null;
 
