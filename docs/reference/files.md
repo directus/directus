@@ -136,6 +136,7 @@ Below are four possible qualities (200x200 cover) to visually compare the balanc
 | ![25%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-25-20220216A.jpg)<br>_4KB_ | ![50%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-50-20220216A.jpg)<br>_6KB_ | ![75%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-75-20220216A.jpg)<br>_8KB_ | ![100%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-100-20220216A.jpg)<br>_38KB_ |
 
 ### Preset
+
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
@@ -191,6 +192,7 @@ const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc
 	quality: <quality>,
 }));
 ```
+
 </template>
 </SnippetToggler>
 
@@ -228,9 +230,9 @@ const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc
 	]
 }));
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## The File Object
 
