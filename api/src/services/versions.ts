@@ -141,8 +141,20 @@ export class VersionsService extends ItemsService {
 			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
+		const keyCombos = new Set();
+
 		for (const item of data) {
 			await this.validateCreateData(item);
+
+			const keyCombo = `${item['key']}-${item['collection']}-${item['item']}`;
+
+			if (keyCombos.has(keyCombo)) {
+				throw new UnprocessableContentError({
+					reason: `Cannot create multiple versions on "${item['item']}" in collection "${item['collection']}" with the same key "${item['key']}"`,
+				});
+			}
+
+			keyCombos.add(keyCombo);
 
 			const mainItem = await this.getMainItem(item['collection'], item['item']);
 
@@ -163,16 +175,23 @@ export class VersionsService extends ItemsService {
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		if ('key' in data) {
-			if (keys.length > 1)
-				throw new UnprocessableContentError({
-					reason: `Cannot update multiple versions to the same key"`,
-				});
-
 			// Reserves the "main" version key for the version query parameter
 			if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
 
-			if (keys[0]) {
-				const { collection, item } = await this.readOne(keys[0], { fields: ['collection', 'item'] });
+			const keyCombos = new Set();
+
+			for (const key of keys) {
+				const { collection, item } = await this.readOne(key, { fields: ['collection', 'item'] });
+
+				const keyCombo = `${data['key']}-${collection}-${item}`;
+
+				if (keyCombos.has(keyCombo)) {
+					throw new UnprocessableContentError({
+						reason: `Cannot update multiple versions on "${item}" in collection "${collection}" to the same key "${data['key']}"`,
+					});
+				}
+
+				keyCombos.add(keyCombo);
 
 				const existingVersions = await super.readByQuery({
 					fields: ['key', 'collection', 'item'],
