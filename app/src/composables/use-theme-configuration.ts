@@ -2,11 +2,19 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import type { Settings, User } from '@directus/types';
 import { merge } from 'lodash';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useThemeConfiguration = () => {
 	const settingsStore = useSettingsStore();
 	const userStore = useUserStore();
+
+	let browserAppearance = ref<'dark' | 'light'>(
+		window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+	);
+
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ matches }) => {
+		browserAppearance.value = matches ? 'dark' : 'light';
+	});
 
 	const systemSettings = computed(() => {
 		let system: Settings | null = null;
@@ -33,19 +41,11 @@ export const useThemeConfiguration = () => {
 	});
 
 	const appearance = computed(() => {
-		let appearance: 'dark' | 'light';
-
 		if (!configuredAppearance.value || configuredAppearance.value === 'auto') {
-			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				appearance = 'dark';
-			}
-
-			appearance = 'light';
-		} else {
-			appearance = configuredAppearance.value;
+			return browserAppearance.value;
 		}
 
-		return appearance;
+		return configuredAppearance.value;
 	});
 
 	const darkMode = computed(() => appearance.value === 'dark');
