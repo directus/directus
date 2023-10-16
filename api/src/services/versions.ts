@@ -55,11 +55,11 @@ export class VersionsService extends ItemsService {
 		}
 
 		const existingVersions = await super.readByQuery({
-			fields: ['key', 'collection', 'item'],
+			aggregate: { count: ['*'] },
 			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
 		});
 
-		if (existingVersions.length > 0) {
+		if (existingVersions[0]!['count'] > 0) {
 			throw new UnprocessableContentError({
 				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
@@ -180,8 +180,8 @@ export class VersionsService extends ItemsService {
 
 			const keyCombos = new Set();
 
-			for (const key of keys) {
-				const { collection, item } = await this.readOne(key, { fields: ['collection', 'item'] });
+			for (const pk of keys) {
+				const { collection, item } = await this.readOne(pk, { fields: ['collection', 'item'] });
 
 				const keyCombo = `${data['key']}-${collection}-${item}`;
 
@@ -194,11 +194,11 @@ export class VersionsService extends ItemsService {
 				keyCombos.add(keyCombo);
 
 				const existingVersions = await super.readByQuery({
-					fields: ['key', 'collection', 'item'],
-					filter: { key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
+					aggregate: { count: ['*'] },
+					filter: { id: { _neq: pk }, key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
 				});
 
-				if (existingVersions.length > 0) {
+				if (existingVersions[0]!['count'] > 0) {
 					throw new UnprocessableContentError({
 						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
 					});
