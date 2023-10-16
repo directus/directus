@@ -50,7 +50,7 @@ const injectValue = computed(() => {
 		collection: unref(collection),
 		field: '$version',
 		schema: null,
-		name: t('version_live_preview'),
+		name: t('version'),
 		type: 'integer',
 		meta: {
 			id: -1,

@@ -126,7 +126,6 @@ keep: Keep
 version: Version
 version_key: Version Key
 version_name: Version Name
-version_live_preview: Version (Content Versioning)
 main_version: Main
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version?
