@@ -2,7 +2,7 @@
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Version } from '@directus/types';
+import { ContentVersion } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -12,17 +12,17 @@ interface Props {
 	collection: string;
 	primaryKey: string | number;
 	hasEdits: boolean;
-	currentVersion: Version | null;
-	versions: Version[] | null;
+	currentVersion: ContentVersion | null;
+	versions: ContentVersion[] | null;
 }
 
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-	add: [version: Version];
+	add: [version: ContentVersion];
 	update: [updates: { key: string; name?: string }];
 	delete: [];
-	switch: [version: Version | null];
+	switch: [version: ContentVersion | null];
 }>();
 
 const { t } = useI18n();
@@ -47,7 +47,7 @@ const { deleteDialogActive, deleting, deleteVersion } = useDeleteDialog();
 
 function useSwitchDialog() {
 	const switchDialogActive = ref(false);
-	const switchTarget = ref<Version | null>(null);
+	const switchTarget = ref<ContentVersion | null>(null);
 
 	return {
 		switchDialogActive,
@@ -55,7 +55,7 @@ function useSwitchDialog() {
 		switchVersion,
 	};
 
-	function switchVersion(version?: Version | null) {
+	function switchVersion(version?: ContentVersion | null) {
 		if (version !== undefined) switchTarget.value = version;
 
 		if (hasEdits.value && !switchDialogActive.value) {
@@ -192,7 +192,7 @@ function useDeleteDialog() {
 	}
 }
 
-function getVersionDisplayName(version: Version) {
+function getVersionDisplayName(version: ContentVersion) {
 	return isNil(version.name) ? version.key : version.name;
 }
 

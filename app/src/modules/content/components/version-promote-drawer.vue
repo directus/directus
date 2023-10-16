@@ -2,7 +2,7 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field, Version } from '@directus/types';
+import { ContentVersion, Field } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,7 +17,7 @@ type Comparison = {
 
 interface Props {
 	active: boolean;
-	currentVersion: Version;
+	currentVersion: ContentVersion;
 }
 
 const { t } = useI18n();

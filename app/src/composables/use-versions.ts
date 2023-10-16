@@ -1,7 +1,7 @@
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter, Query, Version } from '@directus/types';
+import { Filter, Query, ContentVersion } from '@directus/types';
 import { Ref, computed, ref, unref, watch } from 'vue';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
@@ -9,8 +9,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	const readVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'read'));
 
-	const currentVersion = ref<Version | null>(null);
-	const versions = ref<Version[] | null>(null);
+	const currentVersion = ref<ContentVersion | null>(null);
+	const versions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
 	const saveVersionLoading = ref(false);
 
@@ -88,7 +88,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function addVersion(version: Version) {
+	async function addVersion(version: ContentVersion) {
 		versions.value = [...(versions.value ? versions.value : []), version];
 
 		currentVersion.value = version;
