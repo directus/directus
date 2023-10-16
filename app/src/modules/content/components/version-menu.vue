@@ -313,7 +313,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								class="full"
 								:placeholder="t('version_key')"
 								autofocus
-								db-safe
+								slug
 								trim
 								@keyup.enter="createVersion"
 							/>
@@ -370,7 +370,14 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 				<v-card-actions>
 					<v-button secondary @click="closeRenameDialog">{{ t('cancel') }}</v-button>
-					<v-button :disabled="newVersionKey === null" :loading="updating" @click="renameVersion">
+					<v-button
+						:disabled="
+							(newVersionKey === null || newVersionKey === currentVersion?.key) &&
+							newVersionName === currentVersion?.name
+						"
+						:loading="updating"
+						@click="renameVersion"
+					>
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
