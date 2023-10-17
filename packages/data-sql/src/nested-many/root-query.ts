@@ -1,5 +1,6 @@
 import type { AbstractQuery } from '@directus/data';
 
-export function getRootQuery(query: AbstractQuery) {
+// @ts-ignore
+export function getRootQuery(query: AbstractQuery): AbstractQuery {
 	// @TODO implement
 }

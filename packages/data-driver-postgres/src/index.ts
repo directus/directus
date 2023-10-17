@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
-import { convertQuery, getOrmTransformer, type ParameterizedSqlStatement } from '@directus/data-sql';
+import { convertQuery, getOrmTransformer, getRootQuery, type ParameterizedSqlStatement } from '@directus/data-sql';
 import type { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
@@ -46,18 +46,27 @@ export default class DataDriverPostgres implements DataDriver {
 		};
 	}
 
+	private convertAbstractQuery(query: AbstractQuery): {
+		sql: ParameterizedSqlStatement;
+		aliasMapping: Map<string, string[]>;
+	} {
+		const abstractSql = convertQuery(query);
+		const statement = convertToActualStatement(abstractSql.clauses);
+		const parameters = convertParameters(abstractSql.parameters);
+		return { sql: { statement, parameters }, aliasMapping: abstractSql.aliasMapping };
+	}
+
 	async query(query: AbstractQuery): Promise<ReadableStream> {
 		let client: PoolClient | null = null;
 
 		try {
-			const conversionResult = convertQuery(query);
-			const statement = convertToActualStatement(conversionResult.clauses);
-			const parameters = convertParameters(conversionResult.parameters);
-
-			const { poolClient, stream } = await this.getDataFromSource(this.#pool, { statement, parameters });
+			// query root
+			const root = getRootQuery(query);
+			const rootSql = this.convertAbstractQuery(root);
+			const { poolClient, stream } = await this.getDataFromSource(this.#pool, rootSql.sql);
 			client = poolClient;
 
-			const ormTransformer = getOrmTransformer(conversionResult.aliasMapping);
+			const ormTransformer = getOrmTransformer(rootSql.aliasMapping);
 			return stream.pipeThrough(ormTransformer);
 		} catch (err) {
 			client?.release();
