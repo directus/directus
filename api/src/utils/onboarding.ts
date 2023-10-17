@@ -54,9 +54,6 @@ export async function collectOnboarding(userId: string) {
 
 			return usersService.updateOne(userId, updatedUserOnboarding);
 		},
-		(reason) => {
-			logger.error(reason);
-			throw reason;
-		}
+		(reason) => logger.error(reason)
 	);
 }
