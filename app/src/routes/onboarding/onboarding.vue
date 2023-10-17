@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useProjectFields } from './forms/project';
 import { useUserFields } from './forms/user';
+import { parseJSON } from '@directus/utils';
 
 type OnboardingSlide = {
 	i18nTitle: string;
@@ -32,11 +33,11 @@ const userStore = useUserStore();
 
 // Some databases that dont have a native json type may return strings
 if (typeof settingsStore?.settings?.onboarding === 'string') {
-	settingsStore.settings.onboarding = JSON.parse(settingsStore.settings.onboarding);
+	settingsStore.settings.onboarding = parseJSON(settingsStore.settings.onboarding);
 }
 
 if (typeof userStore?.currentUser?.onboarding === 'string') {
-	userStore.currentUser.onboarding = JSON.parse(userStore.currentUser.onboarding);
+	userStore.currentUser.onboarding = parseJSON(userStore.currentUser.onboarding);
 }
 
 // Split up the v-form models from the payload,
