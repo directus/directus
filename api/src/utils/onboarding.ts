@@ -16,7 +16,7 @@ export async function collectOnboarding(userId: string) {
 		user['onboarding'] = JSON.parse(user['onboarding']);
 	}
 
-	if (!user?.['onboarding']?.['retryTransmission']) {
+	if (!user?.['onboarding']?.['retry_transmission']) {
 		return;
 	}
 
@@ -49,7 +49,7 @@ export async function collectOnboarding(userId: string) {
 	return axios.post('https://telemetry.directus.io/onboarding', payload).then(
 		() => {
 			const updatedUserOnboarding = {
-				onboarding: { ...user?.['onboarding'], retryTransmission: false } satisfies UserOnboarding,
+				onboarding: { ...user?.['onboarding'], retry_transmission: false } satisfies UserOnboarding,
 			};
 
 			return usersService.updateOne(userId, updatedUserOnboarding);

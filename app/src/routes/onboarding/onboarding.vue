@@ -87,7 +87,7 @@ const slides: Ref<Record<string, OnboardingSlide>> = ref({
 						onboarding: JSON.stringify({
 							primary_skillset: userModel.value.primary_skillset ?? null,
 							wants_emails: userModel.value.wants_emails ?? false,
-							retryTransmission: true,
+							retry_transmission: true,
 						} satisfies UserOnboarding),
 					})
 					.then(() => userStore.hydrate());
