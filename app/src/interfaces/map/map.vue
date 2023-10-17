@@ -550,7 +550,7 @@ function handleKeyDown(event: any) {
 </style>
 
 <style lang="scss">
-  .mapbox-gl-draw_ctrl-draw-btn {
+.mapbox-gl-draw_ctrl-draw-btn {
 	color: unset;
 }
 </style>
