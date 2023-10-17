@@ -240,8 +240,8 @@ async function onClick(event: MouseEvent) {
 }
 
 .link {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal-alt);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground-accent);
 	--v-button-background-color: transparent;
 	--v-button-background-color-hover: transparent;
 	--v-button-background-color-active: transparent;
