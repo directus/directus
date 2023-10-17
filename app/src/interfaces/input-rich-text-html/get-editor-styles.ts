@@ -27,7 +27,7 @@ export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospac
 	background: ${cssVar('--background-normal-alt')};
 }
 body {
-	color: ${cssVar('--foreground-normal')};
+	color: ${cssVar('--theme--form--field--input--foreground')};
 	background-color: ${cssVar('--theme--form--field--input--background')};
 	margin: 20px;
 	font-family: ${cssVar('--theme--font-family-sans-serif')};
