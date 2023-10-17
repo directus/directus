@@ -1,4 +1,3 @@
-
 import type { Range } from '@directus/storage';
 import {createError, ErrorCode } from '../index.js';
 
