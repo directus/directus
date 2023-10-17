@@ -138,6 +138,8 @@ const currentSlideName = ref('welcome'); // Important that this matches a key in
 const isLoading = ref(false);
 const error = ref<unknown>(null);
 const notice = ref<HTMLDivElement | null>(null);
+const doubleClickPreventionTimerMs = 250;
+const isNextBtnDisabled = ref(false);
 
 watchEffect(() => {
 	if (!notice.value) {
@@ -153,20 +155,21 @@ const currentSlideIndex = computed(() => activeSlideNames.value.findIndex((key) 
 const currentSlide = computed(() => slides.value[currentSlideName.value]);
 const isFirstSlide = computed(() => currentSlide.value?.transitions.back === null);
 const isLastSlide = computed(() => currentSlide.value?.transitions.next === 'finish');
+const isNavigationDisabled = computed(() => isLoading.value || isNextBtnDisabled.value);
 
 // Add one so that there is progress on the first slide
 const progressPercent = computed(() => ((currentSlideIndex.value + 1) / activeSlideNames.value.length) * 100);
 
-async function finishOnboarding() {
+function finishOnboarding() {
 	isLoading.value = true;
 	error.value = null;
 	// Dont await the result, similar to telemetry
 	// It might fail but proceed as normal for seamless user experience
-	api.post(`/onboarding/${userStore.currentUser?.id}/send`);
+	api.post(`/onboarding/${userStore.currentUser?.id}/send`).catch(() => {});
 	router.replace('/content');
 }
 
-async function skipOnboarding() {
+function skipOnboarding() {
 	isLoading.value = true;
 	error.value = null;
 	finishOnboarding();
@@ -176,6 +179,10 @@ async function nextSlide() {
 	if (!currentSlide.value?.transitions.next) {
 		return;
 	}
+
+	// To prevent accidental double clicks skipping over a slide
+	isNextBtnDisabled.value = true;
+	setTimeout(() => (isNextBtnDisabled.value = false), doubleClickPreventionTimerMs);
 
 	error.value = null;
 
@@ -248,7 +255,7 @@ async function nextSlide() {
 				<div></div>
 				<!-- Right Actions -->
 				<div>
-					<v-button v-if="!isLoading" :disabled="isLoading" @click="nextSlide">
+					<v-button v-if="!isLoading" :disabled="isNavigationDisabled" @click="nextSlide">
 						{{ isFirstSlide ? t('onboarding.action.first') : t('onboarding.action.saveAndContinue') }}
 					</v-button>
 				</div>
