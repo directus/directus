@@ -27,9 +27,11 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 
 	const database = getDatabase();
 
+	const tokenAccountability = await getAccountabilityForToken(req.token, defaultAccountability);
+
 	const customAccountability = await emitter.emitFilter(
 		'authenticate',
-		defaultAccountability,
+		tokenAccountability,
 		{
 			req,
 		},
@@ -40,12 +42,12 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 		}
 	);
 
-	if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {
+	if (customAccountability && isEqual(customAccountability, tokenAccountability) === false) {
 		req.accountability = customAccountability;
 		return next();
 	}
 
-	req.accountability = await getAccountabilityForToken(req.token, defaultAccountability);
+	req.accountability = tokenAccountability;
 
 	return next();
 };
