@@ -155,7 +155,6 @@ const activeSlideNames = computed(() => Object.keys(slides.value).filter((key) =
 const currentSlideIndex = computed(() => activeSlideNames.value.findIndex((key) => key === currentSlideName.value));
 const currentSlide = computed(() => slides.value[currentSlideName.value]);
 const isFirstSlide = computed(() => currentSlide.value?.transitions.back === null);
-const isLastSlide = computed(() => currentSlide.value?.transitions.next === 'finish');
 const isNavigationDisabled = computed(() => isLoading.value || isNextBtnDisabled.value);
 
 // Add one so that there is progress on the first slide
