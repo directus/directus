@@ -19,7 +19,7 @@ export async function timeout(milliseconds: Reference<number>): Promise<void> {
 }
 
 export function registerFilterGenerator() {
-	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
 	const filterUnregisterFunctions: PromiseCallback[] = [];
 
@@ -32,7 +32,7 @@ export function registerFilterGenerator() {
 		const handler: FilterHandler = async (payload) => {
 			const response = await cb.apply(null, [new ivm.ExternalCopy(payload).copyInto()], {
 				result: { reference: true, promise: true },
-				timeout: scriptTimeoutMs,
+				timeout: sandboxTimeout,
 			});
 
 			return response.copy();
@@ -49,7 +49,7 @@ export function registerFilterGenerator() {
 }
 
 export function registerActionGenerator() {
-	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
 	const actionUnregisterFunctions: PromiseCallback[] = [];
 
@@ -62,7 +62,7 @@ export function registerActionGenerator() {
 		const handler: ActionHandler = (payload) =>
 			cb.apply(null, [new ivm.ExternalCopy(payload).copyInto()], {
 				result: { reference: true, promise: true },
-				timeout: scriptTimeoutMs,
+				timeout: sandboxTimeout,
 			});
 
 		emitter.onAction(eventCopied, handler);

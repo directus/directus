@@ -1,5 +1,5 @@
 import type { ApiExtensionType, HybridExtensionType } from '@directus/extensions';
-import { log, registerActionGenerator, registerFilterGenerator, timeout } from './secure-extension-registration.js';
+import { log, registerActionGenerator, registerFilterGenerator, timeout } from './sandbox-extension-registration.js';
 
 function* parameterIndexGenerator(): Generator<number, number, number> {
 	let index = 0;
@@ -22,7 +22,7 @@ function generateHostFunctionReference(
 	} }});`;
 }
 
-export function generateSecureApiExtensionsEntrypoint(type: ApiExtensionType | HybridExtensionType) {
+export function generateApiExtensionsSandboxEntrypoint(type: ApiExtensionType | HybridExtensionType) {
 	const index = parameterIndexGenerator();
 
 	const hostFunctions = [];

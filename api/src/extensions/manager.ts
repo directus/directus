@@ -45,7 +45,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { generateSecureApiExtensionsEntrypoint } from './generate-secure-api-extensions-entrypoint.js';
+import { generateApiExtensionsSandboxEntrypoint } from './generate-api-extensions-sandbox-entrypoint.js';
 import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
@@ -396,9 +396,9 @@ export class ExtensionManager {
 		return null;
 	}
 
-	private async registerSecureApiExtension(extension: ApiExtension | HybridExtension) {
-		const isolateSizeMb = Number(env['EXTENSIONS_SECURE_MEMORY']);
-		const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+	private async registerSandboxedApiExtension(extension: ApiExtension | HybridExtension) {
+		const sandboxMemory = Number(env['EXTENSIONS_SANDBOX_MEMORY']);
+		const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
 		const entrypointPath = path.resolve(
 			extension.path,
@@ -408,9 +408,9 @@ export class ExtensionManager {
 		const extensionCode = await readFile(entrypointPath, 'utf-8');
 
 		const isolate = new ivm.Isolate({
-			memoryLimit: isolateSizeMb,
+			memoryLimit: sandboxMemory,
 			onCatastrophicError: (e) => {
-				logger.error(`Error in secure ${extension.type} "${extension.name}"`);
+				logger.error(`Error in API extension sandbox of ${extension.type} "${extension.name}"`);
 				logger.error(e);
 
 				process.abort();
@@ -423,17 +423,17 @@ export class ExtensionManager {
 			const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
 
 			await module.instantiate(context, () => {
-				throw new Error('Imports are porhibited in secure extensions');
+				throw new Error('Imports are prohibited in API extension sandboxes');
 			});
 
-			await module.evaluate({ timeout: scriptTimeoutMs });
+			await module.evaluate({ timeout: sandboxTimeout });
 
 			const cb = await module.namespace.get('default', { reference: true });
 
-			const { code, hostFunctions, unregisterFunction } = generateSecureApiExtensionsEntrypoint(extension.type);
+			const { code, hostFunctions, unregisterFunction } = generateApiExtensionsSandboxEntrypoint(extension.type);
 
 			await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
-				timeout: scriptTimeoutMs,
+				timeout: sandboxTimeout,
 			});
 
 			this.unregisterFunctionMap.set(extension.name, async () => {
@@ -442,7 +442,7 @@ export class ExtensionManager {
 				isolate.dispose();
 			});
 		} catch (error) {
-			logger.warn(`Couldn't register secure ${extension.type} "${extension.name}"`);
+			logger.warn(`Couldn't register ${extension.type} "${extension.name}"`);
 			logger.warn(error);
 		}
 	}
@@ -461,7 +461,7 @@ export class ExtensionManager {
 
 			try {
 				if (hook.sandbox?.enabled) {
-					this.registerSecureApiExtension(hook);
+					this.registerSandboxedApiExtension(hook);
 				} else {
 					const hookPath = path.resolve(hook.path, hook.entrypoint);
 
@@ -500,7 +500,7 @@ export class ExtensionManager {
 
 			try {
 				if (endpoint.sandbox?.enabled) {
-					this.registerSecureApiExtension(endpoint);
+					this.registerSandboxedApiExtension(endpoint);
 				} else {
 					const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
@@ -557,7 +557,7 @@ export class ExtensionManager {
 
 			try {
 				if (operation.sandbox?.enabled) {
-					this.registerSecureApiExtension(operation);
+					this.registerSandboxedApiExtension(operation);
 				} else {
 					const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 

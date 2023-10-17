@@ -3,7 +3,7 @@ import env from '../../env.js';
 import { handleIsolateError } from './handle-isolate-error.js';
 
 export async function resumeIsolate(context: unknown, reference: Reference, args: any[]) {
-	const scriptTimeoutMs = Number(env['EXTENSIONS_SECURE_TIMEOUT']);
+	const scriptTimeoutMs = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
 	try {
 		return await reference.apply(null, args, {
