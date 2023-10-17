@@ -230,7 +230,7 @@ async function nextSlide() {
 					<div :key="currentSlideName" class="slide">
 						<div class="intro-text">
 							<h2 class="type-title">{{ t(currentSlide?.i18nTitle) }}</h2>
-							<div v-md="t(currentSlide?.i18nText)" class="text-content"></div>
+							<div v-md="{ value: t(currentSlide?.i18nText), target: '_blank' }" class="text-content" />
 						</div>
 						<v-form
 							v-if="currentSlide?.form"
