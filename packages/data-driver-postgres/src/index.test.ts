@@ -304,17 +304,13 @@ test('nested m2o field', async () => {
 	expect(actualResult).toEqual(expectedResult);
 });
 
-test.skip('nested o2m field', async () => {
+test.todo('nested o2m field', async () => {
 	const collectionToJoin = randomIdentifier();
-	const collectionToJoinId = randomIdentifier();
 	const joinField1 = randomIdentifier();
-	const joinField1Id = randomIdentifier();
 	const joinField1Alias = randomIdentifier();
 	const joinField2 = randomIdentifier();
-	const joinField2Id = randomIdentifier();
 	const primaryKeyField = randomIdentifier();
 	const collectionToJoinForeignKeyField = randomIdentifier();
-	const joinAlias = randomIdentifier();
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -354,65 +350,6 @@ test.skip('nested o2m field', async () => {
 		],
 	};
 
-	vi.mocked(convertQuery).mockReturnValue({
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-					as: firstFieldId,
-				},
-				{
-					type: 'primitive',
-					table: collectionToJoinId,
-					column: joinField1,
-					as: joinField2Id,
-					alias: joinField1Alias,
-				},
-				{
-					type: 'primitive',
-					table: collectionToJoinId,
-					column: joinField2,
-					as: joinField2Id,
-				},
-			],
-			from: rootCollection,
-			joins: [
-				{
-					type: 'join',
-					table: collectionToJoin,
-					as: collectionToJoinId,
-					on: {
-						type: 'condition',
-						negate: false,
-						condition: {
-							type: 'condition-field',
-							target: {
-								type: 'primitive',
-								table: rootCollection,
-								column: primaryKeyField,
-							},
-							operation: 'eq',
-							compareTo: {
-								type: 'primitive',
-								table: collectionToJoinId,
-								column: collectionToJoinForeignKeyField,
-							},
-						},
-					},
-					alias: joinAlias,
-				},
-			],
-		},
-		parameters: [],
-		aliasMapping: new Map([
-			[firstFieldId, [firstField]],
-			[joinField1Id, [collectionToJoin, joinField2]],
-			[joinField2Id, [collectionToJoin, joinField2]],
-		]),
-	});
-
 	const driver = new DataDriverPostgres({
 		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 	});
@@ -425,30 +362,9 @@ test.skip('nested o2m field', async () => {
 	const thirdFieldDbResult2 = randomIdentifier();
 
 	/*
-	 * this database result mock shows two o2m relations.
-	 * the first one has two 'many' parts, the second one has no 'many' part.
-	 * but the second one will get printed anyways since the db was queried with a LEFT JOIN.
+	 * @TODO mock the database responses.
+	 * One mock for o part query, and multiple mocks for the m part.
 	 */
-	const mockedData = [
-		{
-			[firstFieldId]: firstFieldDbResult1, // the 'one' part, same value as the next one
-			[joinField2Id]: secondFieldDbResult1, // a field from the 'many' part
-			[joinField1Id]: thirdFieldDbResult1, // another field from the 'many' part
-		},
-		{
-			[firstFieldId]: firstFieldDbResult1, // the 'one' part, same as the previous one
-			[joinField2Id]: secondFieldDbResult2, // this is a field from the 'many' part with a different value as above but for the same 'one' part
-			[joinField1Id]: thirdFieldDbResult2, // another field from the 'many' part
-		},
-		{
-			[firstFieldId]: firstFieldDbResult2, // the 'one' part, now without any 'many' part
-			[joinField1Id]: null, // there is no relation to the desired LEFT JOINed table, so both field values are null
-			[joinField2Id]: null, // also null because there is no relation
-		},
-	];
-
-	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = getActualResult(readableStream);
