@@ -121,6 +121,8 @@ fields:
     width: full
     interface: system-theme-overrides
     group: theming_group
+    special:
+      - cast-json
 
   - field: default_theme_dark
     width: full
@@ -134,6 +136,8 @@ fields:
     width: full
     interface: system-theme-overrides
     group: theming_group
+    special:
+      - cast-json
 
   - field: custom_css
     interface: input-code
