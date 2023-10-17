@@ -3,9 +3,15 @@
  *
  * @packageDocumentation
  */
-import type { AbstractQuery, DataDriver } from '@directus/data';
-import { convertQuery, getOrmTransformer, getRootQuery, type ParameterizedSqlStatement } from '@directus/data-sql';
-import type { ReadableStream } from 'node:stream/web';
+import type { AbstractQuery, AbstractQueryFieldNodeNestedMany, DataDriver } from '@directus/data';
+import {
+	convertManyNodeToAbstractQuery,
+	convertQuery,
+	getOrmTransformer,
+	getRootQuery,
+	type ParameterizedSqlStatement,
+} from '@directus/data-sql';
+import { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
 import { convertToActualStatement } from './query/index.js';
@@ -59,12 +65,28 @@ export default class DataDriverPostgres implements DataDriver {
 	async query(query: AbstractQuery): Promise<ReadableStream> {
 		let client: PoolClient | null = null;
 
+		// const finalStream = new ReadableStream();
+
 		try {
 			// query root
 			const root = getRootQuery(query);
 			const rootSql = this.convertAbstractQuery(root);
 			const { poolClient, stream } = await this.getDataFromSource(this.#pool, rootSql.sql);
 			client = poolClient;
+
+			stream.on('data', async (rootChunk: Record<string, any>) => {
+				const nestedManyNodes = query.fields.filter(
+					(i) => i.type === 'nested-many'
+				) as AbstractQueryFieldNodeNestedMany[];
+
+				for (const nestedMany of nestedManyNodes) {
+					const subQuery = convertManyNodeToAbstractQuery(nestedMany, rootChunk);
+					const subSql = this.convertAbstractQuery(subQuery);
+					await this.getDataFromSource(this.#pool, subSql.sql);
+				}
+
+				// @TODO merge results
+			});
 
 			const ormTransformer = getOrmTransformer(rootSql.aliasMapping);
 			return stream.pipeThrough(ormTransformer);
