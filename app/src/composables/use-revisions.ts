@@ -4,7 +4,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { Filter, Version } from '@directus/types';
+import { Filter, ContentVersion } from '@directus/types';
 import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { ref, Ref, unref, watch } from 'vue';
@@ -18,7 +18,7 @@ type UseRevisionsOptions = {
 export function useRevisions(
 	collection: Ref<string>,
 	primaryKey: Ref<number | string>,
-	version: Ref<Version | null>,
+	version: Ref<ContentVersion | null>,
 	options?: UseRevisionsOptions
 ) {
 	const { t } = useI18n();
