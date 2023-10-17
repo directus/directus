@@ -244,7 +244,7 @@ describe('#read', () => {
 	test('Calls download with offset and count if start and end ranges are provided', async () => {
 		await driver.read(sample.path.input, sample.range);
 
-		expect(mockDownload).toHaveBeenCalledWith(sample.range.start, sample.range.end - sample.range.start);
+		expect(mockDownload).toHaveBeenCalledWith(sample.range.start, sample.range.end - sample.range.start + 1);
 	});
 
 	test('Throws error when no readable stream is returned', async () => {
