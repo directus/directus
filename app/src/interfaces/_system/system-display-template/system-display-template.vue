@@ -38,7 +38,6 @@ const collection = computed(() => {
 	return collectionName;
 });
 
-// TODO Initial version, probably needs polishing
 const injectValue = computed(() => {
 	if (!props.injectVersionField) return null;
 
@@ -50,7 +49,7 @@ const injectValue = computed(() => {
 		collection: unref(collection),
 		field: '$version',
 		schema: null,
-		name: '$t:version',
+		name: t('version'),
 		type: 'integer',
 		meta: {
 			id: -1,

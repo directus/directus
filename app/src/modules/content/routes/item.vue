@@ -177,7 +177,7 @@ const { templateData: previewData, fetchTemplateValues } = useTemplateData(colle
 const previewURL = computed(() => {
 	const enrichedPreviewData = {
 		...unref(previewData),
-		$version: currentVersion.value ? currentVersion.value.name : 'main',
+		$version: currentVersion.value ? currentVersion.value.key : 'main',
 	};
 
 	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
@@ -583,9 +583,9 @@ function revert(values: Record<string, any>) {
 
 			<v-button
 				v-if="currentVersion === null"
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
 				rounded
 				icon
+				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				@click="saveAndQuit"
@@ -605,9 +605,9 @@ function revert(values: Record<string, any>) {
 			</v-button>
 			<v-button
 				v-else
-				v-tooltip.bottom="t('save_version')"
 				rounded
 				icon
+				:tooltip="t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
 				@click="saveVersionAndQuit"
@@ -617,7 +617,7 @@ function revert(values: Record<string, any>) {
 				<template #append-outer>
 					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
 						<template #activator="{ toggle }">
-							<v-icon name="more_vert" clickable @click="toggle" />
+							<v-icon class="version-more-options" name="more_vert" clickable @click="toggle" />
 						</template>
 
 						<v-list>
@@ -726,5 +726,13 @@ function revert(values: Record<string, any>) {
 
 .title-loader {
 	width: 260px;
+}
+
+:deep(.version-more-options.v-icon) {
+	color: var(--theme--foreground-subdued);
+
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 </style>

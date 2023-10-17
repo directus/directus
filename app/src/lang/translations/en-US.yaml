@@ -128,13 +128,13 @@ version_key: Version Key
 version_name: Version Name
 main_version: Main
 switch_version: Switch Version
-switch_version_copy: Are you sure you want to switch to the "{version}" version?
+switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
-update_version: Update Version
+rename_version: Rename Version
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
-promote_version_disabled: No changes selected
+promote_version_disabled: No Changes
 promote_version_drawer_title: Promote {version} into Main
 promote_version_changes: Changes
 promote_version_preview: Preview
@@ -674,7 +674,7 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNPROCESSABLE_ENTITY: Unprocessable entity
+  UNPROCESSABLE_CONTENT: Unprocessable Content
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
@@ -1157,6 +1157,8 @@ directus_collection:
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
   directus_translations: Custom translations
+  directus_versions: Content Versions for items
+  directus_extensions: Configuration of extensions
 fields:
   directus_activity:
     item: Item Primary Key

@@ -2,7 +2,7 @@
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Version } from '@directus/types';
+import { ContentVersion } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -12,17 +12,17 @@ interface Props {
 	collection: string;
 	primaryKey: string | number;
 	hasEdits: boolean;
-	currentVersion: Version | null;
-	versions: Version[] | null;
+	currentVersion: ContentVersion | null;
+	versions: ContentVersion[] | null;
 }
 
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-	add: [version: Version];
+	add: [version: ContentVersion];
 	update: [updates: { key: string; name?: string }];
 	delete: [];
-	switch: [version: Version | null];
+	switch: [version: ContentVersion | null];
 }>();
 
 const { t } = useI18n();
@@ -42,12 +42,15 @@ const { switchDialogActive, switchTarget, switchVersion } = useSwitchDialog();
 const { createDialogActive, newVersionKey, newVersionName, closeCreateDialog, creating, createVersion } =
 	useCreateDialog();
 
-const { updateDialogActive, openUpdateDialog, closeUpdateDialog, updating, updateVersion } = useUpdateDialog();
-const { deleteDialogActive, deleting, deleteVersion } = useDeleteDialog();
+const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renameVersion } = useRenameDialog();
+
+const { deleting, deleteVersion } = useDelete();
+
+const { deleteDialogActive, onDeleteVersion } = useDeleteDialog();
 
 function useSwitchDialog() {
 	const switchDialogActive = ref(false);
-	const switchTarget = ref<Version | null>(null);
+	const switchTarget = ref<ContentVersion | null>(null);
 
 	return {
 		switchDialogActive,
@@ -55,7 +58,7 @@ function useSwitchDialog() {
 		switchVersion,
 	};
 
-	function switchVersion(version?: Version | null) {
+	function switchVersion(version?: ContentVersion | null) {
 		if (version !== undefined) switchTarget.value = version;
 
 		if (hasEdits.value && !switchDialogActive.value) {
@@ -114,19 +117,19 @@ function useCreateDialog() {
 	}
 }
 
-function useUpdateDialog() {
-	const updateDialogActive = ref(false);
+function useRenameDialog() {
+	const renameDialogActive = ref(false);
 	const updating = ref(false);
 
 	return {
-		updateDialogActive,
+		renameDialogActive,
 		updating,
-		updateVersion,
-		openUpdateDialog,
-		closeUpdateDialog,
+		renameVersion,
+		openRenameDialog,
+		closeRenameDialog,
 	};
 
-	async function updateVersion() {
+	async function renameVersion() {
 		if (!unref(primaryKey) || unref(primaryKey) === '+' || !newVersionKey.value) return;
 
 		updating.value = true;
@@ -141,7 +144,7 @@ function useUpdateDialog() {
 
 			emit('update', updates);
 
-			closeUpdateDialog();
+			closeRenameDialog();
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -149,26 +152,24 @@ function useUpdateDialog() {
 		}
 	}
 
-	function openUpdateDialog() {
+	function openRenameDialog() {
 		if (!currentVersion.value) return;
 		newVersionKey.value = currentVersion.value.key;
 		newVersionName.value = currentVersion.value.name;
-		updateDialogActive.value = true;
+		renameDialogActive.value = true;
 	}
 
-	function closeUpdateDialog() {
-		updateDialogActive.value = false;
+	function closeRenameDialog() {
+		renameDialogActive.value = false;
 		newVersionKey.value = null;
 		newVersionName.value = null;
 	}
 }
 
-function useDeleteDialog() {
-	const deleteDialogActive = ref(false);
+function useDelete() {
 	const deleting = ref(false);
 
 	return {
-		deleteDialogActive,
 		deleting,
 		deleteVersion,
 	};
@@ -182,8 +183,6 @@ function useDeleteDialog() {
 			await api.delete(`/versions/${currentVersion.value.id}`);
 
 			emit('delete');
-
-			deleteDialogActive.value = false;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
@@ -192,15 +191,29 @@ function useDeleteDialog() {
 	}
 }
 
-function getVersionDisplayName(version: Version) {
+function useDeleteDialog() {
+	const deleteDialogActive = ref(false);
+
+	return {
+		deleteDialogActive,
+		onDeleteVersion,
+	};
+
+	async function onDeleteVersion() {
+		await deleteVersion();
+		deleteDialogActive.value = false;
+	}
+}
+
+function getVersionDisplayName(version: ContentVersion) {
 	return isNil(version.name) ? version.key : version.name;
 }
 
-function onPromoteComplete(deleteOnPromote: boolean) {
+async function onPromoteComplete(deleteOnPromote: boolean) {
 	isVersionPromoteDrawerOpen.value = false;
 
 	if (deleteOnPromote) {
-		emit('delete');
+		await deleteVersion();
 	} else {
 		emit('switch', null);
 	}
@@ -246,12 +259,12 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item v-if="updateVersionsAllowed" clickable @click="openUpdateDialog">
-						{{ t('update_version') }}
-					</v-list-item>
-
 					<v-list-item clickable @click="isVersionPromoteDrawerOpen = true">
 						{{ t('promote_version') }}
+					</v-list-item>
+
+					<v-list-item v-if="updateVersionsAllowed" clickable @click="openRenameDialog">
+						{{ t('rename_version') }}
 					</v-list-item>
 
 					<v-list-item v-if="deleteVersionsAllowed" class="version-delete" clickable @click="deleteDialogActive = true">
@@ -273,7 +286,11 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>
-					{{ t('switch_version_copy', { version: switchTarget ? switchTarget.name : t('main_version') }) }}
+					{{
+						t('switch_version_copy', {
+							version: switchTarget ? switchTarget.name || switchTarget.key : t('main_version'),
+						})
+					}}
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="switchVersion()">
@@ -296,7 +313,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 								class="full"
 								:placeholder="t('version_key')"
 								autofocus
-								db-safe
+								slug
 								trim
 								@keyup.enter="createVersion"
 							/>
@@ -322,9 +339,9 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="updateDialogActive" persistent @esc="closeUpdateDialog">
+		<v-dialog :model-value="renameDialogActive" persistent @esc="closeRenameDialog">
 			<v-card>
-				<v-card-title>{{ t('update_version') }}</v-card-title>
+				<v-card-title>{{ t('rename_version') }}</v-card-title>
 
 				<v-card-text>
 					<div class="grid">
@@ -334,9 +351,9 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 								class="full"
 								:placeholder="t('version_key')"
 								autofocus
-								db-safe
+								slug
 								trim
-								@keyup.enter="updateVersion"
+								@keyup.enter="renameVersion"
 							/>
 						</div>
 						<div class="field">
@@ -345,15 +362,22 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 								class="full"
 								trim
 								:placeholder="t('version_name')"
-								@keyup.enter="updateVersion"
+								@keyup.enter="renameVersion"
 							/>
 						</div>
 					</div>
 				</v-card-text>
 
 				<v-card-actions>
-					<v-button secondary @click="closeUpdateDialog">{{ t('cancel') }}</v-button>
-					<v-button :disabled="newVersionKey === null" :loading="updating" @click="updateVersion">
+					<v-button secondary @click="closeRenameDialog">{{ t('cancel') }}</v-button>
+					<v-button
+						:disabled="
+							(newVersionKey === null || newVersionKey === currentVersion?.key) &&
+							newVersionName === currentVersion?.name
+						"
+						:loading="updating"
+						@click="renameVersion"
+					>
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
@@ -365,7 +389,7 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 				<v-card-title>{{ t('delete_version_copy', { version: currentVersion!.name }) }}</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="deleteDialogActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleting" kind="danger" @click="deleteVersion">
+					<v-button :loading="deleting" kind="danger" @click="onDeleteVersion">
 						{{ t('delete_label') }}
 					</v-button>
 				</v-card-actions>
@@ -390,6 +414,8 @@ function onPromoteComplete(deleteOnPromote: boolean) {
 .version-item {
 	--v-list-item-color-active: var(--foreground-inverted);
 	--v-list-item-background-color-active: var(--theme--primary);
+	--v-list-item-color-active-hover: var(--white);
+	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
 }
 
 .version-button {

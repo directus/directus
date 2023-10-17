@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import type { Filter, Item, PrimaryKey, Query, Version } from '@directus/types';
+import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/types';
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -9,30 +9,17 @@ import { InvalidPayloadError, UnprocessableContentError } from '../errors/index.
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { ActivityService } from './activity.js';
 import { AuthorizationService } from './authorization.js';
-import { CollectionsService } from './collections.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 
-const versionUpdateSchema = Joi.object({
-	key: Joi.string(),
-	name: Joi.string(),
-});
-
 export class VersionsService extends ItemsService {
 	authorizationService: AuthorizationService;
-	collectionsService: CollectionsService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_versions', options);
 
 		this.authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		this.collectionsService = new CollectionsService({
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
@@ -51,21 +38,28 @@ export class VersionsService extends ItemsService {
 
 		if (!data['item']) throw new InvalidPayloadError({ reason: `"item" is required` });
 
-		// will throw an error if the collection does not exist or the accountability does not have permission to read it
-		const existingCollection = await this.collectionsService.readOne(data['collection']);
+		const { CollectionsService } = await import('./collections.js');
+
+		const collectionsService = new CollectionsService({
+			accountability: null,
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const existingCollection = await collectionsService.readOne(data['collection']);
 
 		if (!existingCollection.meta?.versioning) {
 			throw new UnprocessableContentError({
-				reason: `Versioning feature is not enabled for collection "${data['collection']}"`,
+				reason: `Content Versioning is not enabled for collection "${data['collection']}"`,
 			});
 		}
 
 		const existingVersions = await super.readByQuery({
-			fields: ['key', 'collection', 'item'],
+			aggregate: { count: ['*'] },
 			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
 		});
 
-		if (existingVersions.length > 0) {
+		if (existingVersions[0]!['count'] > 0) {
 			throw new UnprocessableContentError({
 				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
@@ -73,17 +67,6 @@ export class VersionsService extends ItemsService {
 
 		// will throw an error if the accountability does not have permission to read the item
 		await this.authorizationService.checkAccess('read', data['collection'], data['item']);
-	}
-
-	private async validateUpdateData(data: Partial<Item>): Promise<void> {
-		// Only allow updates on "key" and "name" fields
-		const { error } = versionUpdateSchema.validate(data);
-		if (error) throw new InvalidPayloadError({ reason: error.message });
-
-		// Reserves the "main" version key for the version query parameter
-		if ('key' in data && data['key'] === 'main') {
-			throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
-		}
 	}
 
 	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
@@ -158,8 +141,20 @@ export class VersionsService extends ItemsService {
 			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
+		const keyCombos = new Set();
+
 		for (const item of data) {
 			await this.validateCreateData(item);
+
+			const keyCombo = `${item['key']}-${item['collection']}-${item['item']}`;
+
+			if (keyCombos.has(keyCombo)) {
+				throw new UnprocessableContentError({
+					reason: `Cannot create multiple versions on "${item['item']}" in collection "${item['collection']}" with the same key "${item['key']}"`,
+				});
+			}
+
+			keyCombos.add(keyCombo);
 
 			const mainItem = await this.getMainItem(item['collection'], item['item']);
 
@@ -169,28 +164,49 @@ export class VersionsService extends ItemsService {
 		return super.createMany(data, opts);
 	}
 
-	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!Array.isArray(data)) {
-			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
-		}
-
-		for (const item of data) {
-			await this.validateUpdateData(item);
-		}
-
-		return super.updateBatch(data, opts);
-	}
-
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.validateUpdateData(data);
+		// Only allow updates on "key" and "name" fields
+		const versionUpdateSchema = Joi.object({
+			key: Joi.string(),
+			name: Joi.string(),
+		});
+
+		const { error } = versionUpdateSchema.validate(data);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
+		if ('key' in data) {
+			// Reserves the "main" version key for the version query parameter
+			if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+
+			const keyCombos = new Set();
+
+			for (const pk of keys) {
+				const { collection, item } = await this.readOne(pk, { fields: ['collection', 'item'] });
+
+				const keyCombo = `${data['key']}-${collection}-${item}`;
+
+				if (keyCombos.has(keyCombo)) {
+					throw new UnprocessableContentError({
+						reason: `Cannot update multiple versions on "${item}" in collection "${collection}" to the same key "${data['key']}"`,
+					});
+				}
+
+				keyCombos.add(keyCombo);
+
+				const existingVersions = await super.readByQuery({
+					aggregate: { count: ['*'] },
+					filter: { id: { _neq: pk }, key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
+				});
+
+				if (existingVersions[0]!['count'] > 0) {
+					throw new UnprocessableContentError({
+						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
+					});
+				}
+			}
+		}
 
 		return super.updateMany(keys, data, opts);
-	}
-
-	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.validateUpdateData(data);
-
-		return super.updateByQuery(query, data, opts);
 	}
 
 	async save(key: PrimaryKey, data: Partial<Item>) {
@@ -237,7 +253,7 @@ export class VersionsService extends ItemsService {
 	}
 
 	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {
-		const { id, collection, item } = (await this.readOne(version)) as Version;
+		const { id, collection, item } = (await this.readOne(version)) as ContentVersion;
 
 		// will throw an error if the accountability does not have permission to update the item
 		await this.authorizationService.checkAccess('update', collection, item);

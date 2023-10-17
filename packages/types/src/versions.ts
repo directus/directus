@@ -1,4 +1,4 @@
-export type Version = {
+export type ContentVersion = {
 	id: string;
 	key: string;
 	name: string | null;
@@ -6,5 +6,7 @@ export type Version = {
 	item: string;
 	hash: string;
 	date_created: string;
-	user_created: string;
+	date_updated: string | null;
+	user_created: string | null;
+	user_updated: string | null;
 };
