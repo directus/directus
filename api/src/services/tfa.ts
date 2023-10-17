@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { authenticator } from 'otplib';
 import getDatabase from '../database/index.js';
-import { InvalidPayloadError } from '../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 

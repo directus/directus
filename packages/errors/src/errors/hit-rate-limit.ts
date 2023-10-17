@@ -1,6 +1,6 @@
 import { createError } from '@directus/errors';
 import ms from 'ms';
-import { ErrorCode } from './codes.js';
+import { ErrorCode } from '../index.js';
 
 export interface HitRateLimitErrorExtensions {
 	limit: number;

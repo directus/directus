@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { Router } from 'express';
-import { RouteNotFoundError } from '../errors/index.js';
+import { RouteNotFoundError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';

@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
 import env from '../env.js';
-import { InvalidQueryError } from '../errors/index.js';
+import { InvalidQueryError } from '@directus/errors';
 import { calculateFieldDepth } from './calculate-field-depth.js';
 
 const querySchema = Joi.object({

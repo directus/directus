@@ -8,7 +8,7 @@ import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { ForbiddenError } from './errors/index.js';
+import { ForbiddenError } from '@directus/errors';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';

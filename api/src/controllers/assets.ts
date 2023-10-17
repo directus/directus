@@ -6,7 +6,7 @@ import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { InvalidQueryError, RangeNotSatisfiableError } from '../errors/index.js';
+import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';

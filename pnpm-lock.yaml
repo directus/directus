@@ -1230,6 +1230,13 @@ importers:
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/errors:
+    dependencies:
+      '@directus/storage':
+        specifier: workspace:*
+        version: link:../storage
+      ms:
+        specifier: 2.1.3
+        version: 2.1.3
     devDependencies:
       '@directus/random':
         specifier: workspace:*

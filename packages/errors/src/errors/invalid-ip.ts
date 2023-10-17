@@ -1,4 +1,3 @@
-import { createError } from '@directus/errors';
-import { ErrorCode } from './codes.js';
+import { createError, ErrorCode } from '../index.js';
 
 export const InvalidIpError = createError(ErrorCode.InvalidIp, 'Invalid IP address.', 401);

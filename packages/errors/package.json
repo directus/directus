@@ -25,6 +25,10 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest --watch=false"
 	},
+	"dependencies": {
+		"ms": "2.1.3",
+		"@directus/storage": "workspace:*"
+	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",

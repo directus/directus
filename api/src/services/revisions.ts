@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 
