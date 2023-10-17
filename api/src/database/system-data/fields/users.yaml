@@ -129,10 +129,14 @@ fields:
   - field: theme_light_overrides
     width: full
     interface: system-theme-overrides
+    special:
+      - cast-json
 
   - field: theme_dark_overrides
     width: full
     interface: system-theme-overrides
+    special:
+      - cast-json
 
   - field: admin_divider
     interface: presentation-divider
