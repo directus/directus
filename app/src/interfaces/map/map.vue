@@ -548,3 +548,9 @@ function handleKeyDown(event: any) {
 	opacity: 0;
 }
 </style>
+
+<style lang="scss">
+  .mapbox-gl-draw_ctrl-draw-btn {
+	color: unset;
+}
+</style>
