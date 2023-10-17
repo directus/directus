@@ -39,17 +39,12 @@ export default class DataDriverPostgres implements DataDriver {
 		await this.#pool.end();
 	}
 
-	async getDataFromSource(pool: pg.Pool, sql: ParameterizedSqlStatement): Promise<{ poolClient: any; stream: any }> {
+	async getDataFromSource(pool: pg.Pool, sql: ParameterizedSqlStatement): Promise<ReadableStream<Record<string, any>>> {
 		const poolClient: PoolClient = await pool.connect();
 		const queryStream = new QueryStream(sql.statement, sql.parameters);
 		const stream = poolClient.query(queryStream);
-		stream.on('end', () => poolClient?.release());
-		const webStream = Readable.toWeb(stream);
-
-		return {
-			poolClient,
-			stream: webStream,
-		};
+		stream.on('end', () => poolClient.release());
+		return Readable.toWeb(stream);
 	}
 
 	private convertAbstractQuery(query: AbstractQuery): {
@@ -63,36 +58,29 @@ export default class DataDriverPostgres implements DataDriver {
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream> {
-		let client: PoolClient | null = null;
+		//@ts-ignore
+		const finalStream = new ReadableStream();
+		const root = getRootQuery(query);
+		const rootSql = this.convertAbstractQuery(root);
+		const nestedManyNodes = query.fields.filter((i) => i.type === 'nested-many') as AbstractQueryFieldNodeNestedMany[];
+		const rootStream = await this.getDataFromSource(this.#pool, rootSql.sql);
 
-		// const finalStream = new ReadableStream();
+		for await (const rootChunk of rootStream) {
+			for (const nestedMany of nestedManyNodes) {
+				const subQuery = convertManyNodeToAbstractQuery(nestedMany, rootChunk);
+				const subSql = this.convertAbstractQuery(subQuery);
+				const subStream = await this.getDataFromSource(this.#pool, subSql.sql);
 
-		try {
-			// query root
-			const root = getRootQuery(query);
-			const rootSql = this.convertAbstractQuery(root);
-			const { poolClient, stream } = await this.getDataFromSource(this.#pool, rootSql.sql);
-			client = poolClient;
+				const mPart = [];
 
-			stream.on('data', async (rootChunk: Record<string, any>) => {
-				const nestedManyNodes = query.fields.filter(
-					(i) => i.type === 'nested-many'
-				) as AbstractQueryFieldNodeNestedMany[];
-
-				for (const nestedMany of nestedManyNodes) {
-					const subQuery = convertManyNodeToAbstractQuery(nestedMany, rootChunk);
-					const subSql = this.convertAbstractQuery(subQuery);
-					await this.getDataFromSource(this.#pool, subSql.sql);
+				for await (const subChunk of subStream) {
+					mPart.push(subChunk);
 				}
-
-				// @TODO merge results
-			});
-
-			const ormTransformer = getOrmTransformer(rootSql.aliasMapping);
-			return stream.pipeThrough(ormTransformer);
-		} catch (err) {
-			client?.release();
-			throw new Error('Failed to perform the query: ' + err);
+			}
+			// @TODO merge results
 		}
+
+		const ormTransformer = getOrmTransformer(rootSql.aliasMapping);
+		return rootStream.pipeThrough(ormTransformer);
 	}
 }
