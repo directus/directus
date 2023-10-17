@@ -238,7 +238,7 @@ describe('#read', () => {
 	test('Calls download with count if end range is provided', async () => {
 		await driver.read(sample.path.input, { end: sample.range.end });
 
-		expect(mockDownload).toHaveBeenCalledWith(undefined, sample.range.end);
+		expect(mockDownload).toHaveBeenCalledWith(undefined, sample.range.end + 1);
 	});
 
 	test('Calls download with offset and count if start and end ranges are provided', async () => {
