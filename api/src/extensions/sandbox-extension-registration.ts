@@ -1,6 +1,5 @@
 import type { ActionHandler, FilterHandler, PromiseCallback } from '@directus/types';
 import type { Reference } from 'isolated-vm';
-import ivm from 'isolated-vm';
 import { setTimeout } from 'node:timers/promises';
 import emitter from '../emitter.js';
 import env from '../env.js';
@@ -30,7 +29,8 @@ export function registerFilterGenerator() {
 		const eventCopied = event.copySync();
 
 		const handler: FilterHandler = async (payload) => {
-			const response = await cb.apply(null, [new ivm.ExternalCopy(payload).copyInto()], {
+			const response = await cb.apply(null, [payload], {
+				arguments: { copy: true },
 				result: { reference: true, promise: true },
 				timeout: sandboxTimeout,
 			});
@@ -60,7 +60,8 @@ export function registerActionGenerator() {
 		const eventCopied = event.copySync();
 
 		const handler: ActionHandler = (payload) =>
-			cb.apply(null, [new ivm.ExternalCopy(payload).copyInto()], {
+			cb.apply(null, [payload], {
+				arguments: { copy: true },
 				result: { reference: true, promise: true },
 				timeout: sandboxTimeout,
 			});
