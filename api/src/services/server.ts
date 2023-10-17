@@ -73,9 +73,7 @@ export class ServerService {
 				default: env['QUERY_LIMIT_DEFAULT'],
 				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
 			};
-		}
 
-		if (this.accountability?.user) {
 			if (toBoolean(env['WEBSOCKETS_ENABLED'])) {
 				info['websocket'] = {};
 
@@ -99,9 +97,7 @@ export class ServerService {
 			} else {
 				info['websocket'] = false;
 			}
-		}
 
-		if (this.accountability?.user) {
 			info['showAdminOnboarding'] = toBoolean(env['SHOW_ADMIN_ONBOARDING']);
 		}
 
