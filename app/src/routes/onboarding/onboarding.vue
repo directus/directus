@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
@@ -29,7 +28,6 @@ type OnboardingSlide = {
 const { t } = useI18n();
 const router = useRouter();
 const settingsStore = useSettingsStore();
-const serverStore = useServerStore();
 const userStore = useUserStore();
 
 // Some databases that dont have a native json type may return strings
@@ -247,18 +245,7 @@ async function nextSlide() {
 			<!-- Actions -->
 			<div class="actions">
 				<!-- Left Actions -->
-				<div>
-					<!-- <Transition name="dialog">
-						<v-button
-							v-if="!isLoading"
-							secondary
-							:disabled="isLoading || !currentSlide?.transitions.back"
-							@click="prevSlide"
-						>
-							{{ t('back') }}
-						</v-button>
-					</Transition> -->
-				</div>
+				<div></div>
 				<!-- Right Actions -->
 				<div>
 					<v-button v-if="!isLoading" :disabled="isLoading" @click="nextSlide">
