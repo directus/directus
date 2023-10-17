@@ -136,4 +136,3 @@ useSystem();
 	opacity: 0;
 }
 </style>
-./composables/use-theme-configuration
