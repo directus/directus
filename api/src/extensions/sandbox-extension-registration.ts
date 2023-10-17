@@ -1,8 +1,10 @@
+import type { OperationHandler } from '@directus/extensions';
 import type { ActionHandler, FilterHandler, PromiseCallback } from '@directus/types';
 import type { Reference } from 'isolated-vm';
 import { setTimeout } from 'node:timers/promises';
 import emitter from '../emitter.js';
 import env from '../env.js';
+import { getFlowManager } from '../flows.js';
 import logger from '../logger.js';
 
 export function log(message: Reference<string>): void {
@@ -74,4 +76,37 @@ export function registerActionGenerator() {
 	};
 
 	return { action, actionUnregisterFunctions };
+}
+
+export function registerOperationGenerator() {
+	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
+
+	const flowManager = getFlowManager();
+
+	const registerOperationUnregisterFunctions: PromiseCallback[] = [];
+
+	const registerOperation = (
+		id: Reference<string>,
+		cb: Reference<(data: Record<string, unknown>) => unknown | Promise<unknown> | void>
+	) => {
+		if (id.typeof !== 'string') throw new Error('Operation config id has to be of type string');
+		if (cb.typeof !== 'function') throw new Error('Operation config handler has to be of type function');
+
+		const idCopied = id.copySync();
+
+		const handler: OperationHandler = async (data) =>
+			cb.apply(null, [data], {
+				arguments: { copy: true },
+				result: { reference: true, promise: true },
+				timeout: sandboxTimeout,
+			});
+
+		flowManager.addOperation(idCopied, handler);
+
+		registerOperationUnregisterFunctions.push(() => {
+			flowManager.removeOperation(idCopied);
+		});
+	};
+
+	return { registerOperation, registerOperationUnregisterFunctions };
 }

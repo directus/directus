@@ -1,5 +1,11 @@
 import type { ApiExtensionType, HybridExtensionType } from '@directus/extensions';
-import { log, registerActionGenerator, registerFilterGenerator, timeout } from './sandbox-extension-registration.js';
+import {
+	log,
+	registerActionGenerator,
+	registerFilterGenerator,
+	registerOperationGenerator,
+	timeout,
+} from './sandbox-extension-registration.js';
 
 function* parameterIndexGenerator(): Generator<number, number, number> {
 	let index = 0;
@@ -30,7 +36,6 @@ export function generateApiExtensionsSandboxEntrypoint(type: ApiExtensionType | 
 	const preamble = `
 		const extensionExport = $${index.next().value}.deref();
 	`;
-	// const exec = (...args) => $1.apply(null, args, { arguments: { reference: true }, result: { promise: true }});
 
 	const context = `
 		const log = ${generateHostFunctionReference(index, ['message'], { async: false })}
@@ -84,20 +89,26 @@ export function generateApiExtensionsSandboxEntrypoint(type: ApiExtensionType | 
 		const unregisterFunction = async () => {};
 
 		return { code, hostFunctions, unregisterFunction };
-	} else if (type === 'operation') {
+	} else {
 		const code = `
 			${preamble}
 			${context}
 
+			const registerOperation = ${generateHostFunctionReference(index, ['id', 'handler'], { async: false })}
+
 			const operationConfig = extensionExport(filter, context);
 
-			exec('register-operation', operationConfig.id, operationConfig.handler);
+			registerOperation(operationConfig.id, operationConfig.handler);
 		`;
 
-		const unregisterFunction = async () => {};
+		const { registerOperation, registerOperationUnregisterFunctions } = registerOperationGenerator();
+
+		hostFunctions.push(registerOperation);
+
+		const unregisterFunction = async () => {
+			await Promise.all(registerOperationUnregisterFunctions.map((fn) => fn()));
+		};
 
 		return { code, hostFunctions, unregisterFunction };
-	} else {
-		throw new Error();
 	}
 }
