@@ -172,7 +172,7 @@ router.get(
 
 		let range: Range | undefined = undefined;
 
-		if (req.headers.range && Object.keys(transformationParams).length === 0 ) {
+		if (req.headers.range && Object.keys(transformationParams).length === 0) {
 			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
 			if (rangeParts && rangeParts.length > 1) {
