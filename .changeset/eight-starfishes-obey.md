@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-moved api/errors to @directus/errors package and exported them
+Made API errors available through `@directus/errors`
