@@ -30,6 +30,13 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Install
+        uses: ./.github/actions/install
+
+      - name: Build
+        uses: ./.github/actions/build
+      
+
       - name: Run Linter
         run: pnpm exec eslint .
 
@@ -42,8 +49,9 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
-        with:
-          build: false
+
+      - name: Install
+        uses: ./.github/actions/install
 
       - name: Run Formatter
         run: pnpm exec prettier --check .
@@ -57,6 +65,13 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
+
+      - name: Install
+        uses: ./.github/actions/install
+
+      - name: Build
+        uses: ./.github/actions/build
+      
 
       - name: Run Tests
         run: pnpm test

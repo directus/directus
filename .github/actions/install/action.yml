@@ -1,0 +1,24 @@
+name: Install
+description: Install dependencies
+runs:
+  using: composite
+  steps:
+    - name: Get cache info
+      id: cache-info
+      shell: bash
+      run: |
+        echo "os-release=$(node --eval 'console.log(os.release())')" >> $GITHUB_OUTPUT
+        echo "pnpm-cache-dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.cache-info.outputs.pnpm-cache-dir }}
+        key:
+          ${{ runner.os }}-${{ steps.cache-info.outputs.os-release }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ steps.cache-info.outputs.os-release }}-pnpm-store-
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install

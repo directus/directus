@@ -21,8 +21,24 @@ env:
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Prepare
+      uses: ./.github/actions/prepare
+      
+    - name: Install
+      uses: ./.github/actions/install
+
+    - name: Build
+      uses: ./.github/actions/build
+
   test:
-    name: ${{ matrix.vendor }}
+    name: ${{ matrix.vendor }} ${{ matrix.shard }}
+    needs: [build]
     runs-on: ${{ matrix.vendor == 'mssql' && 'ubuntu-20.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
@@ -37,6 +53,7 @@ jobs:
           - mssql
           - oracle
           - cockroachdb
+        shard: [1/3, 2/3, 3/3]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -44,6 +61,12 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Install
+        uses: ./.github/actions/install
+
+      - name: Build
+        uses: ./.github/actions/build
+      
       - name: Install Oracle client
         if: matrix.vendor == 'oracle'
         run: |
@@ -73,4 +96,4 @@ jobs:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox
+        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox --shard ${{ matrix.shard }}

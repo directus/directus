@@ -29,8 +29,10 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
-        with:
-          build: false
+
+      - name: Install
+        uses: ./.github/actions/install
+
 
       - name: Lint
         run: pnpm --filter docs spellcheck

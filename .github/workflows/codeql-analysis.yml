@@ -27,8 +27,10 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
-        with:
-          build: false
+
+      - name: Install
+        uses: ./.github/actions/install
+
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2

@@ -54,6 +54,12 @@ jobs:
         with:
           registry: https://registry.npmjs.org
 
+      - name: Install
+        uses: ./.github/actions/install
+
+      - name: Build
+        uses: ./.github/actions/build
+
       - name: Publish packages to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
