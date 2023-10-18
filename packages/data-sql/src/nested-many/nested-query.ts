@@ -1,9 +1,44 @@
-// @ts-nocheck
-import type { AbstractQuery, AbstractQueryFieldNodeNestedMany } from '@directus/data';
+import type {
+	AbstractQuery,
+	AbstractQueryConditionNode,
+	AbstractQueryFieldNodeNestedMany,
+	// AbstractQueryNodeLogical,
+} from '@directus/data';
 
 export function convertManyNodeToAbstractQuery(
-	fieldNode: AbstractQueryFieldNodeNestedMany,
+	nestedMany: AbstractQueryFieldNodeNestedMany,
 	chunk: Record<string, any>
 ): AbstractQuery {
-	// @TODO implement
+	if (nestedMany.meta.type !== 'o2m') {
+		throw new Error('Not yet implemented');
+	}
+
+	const relationalKeyFields = nestedMany.meta.join.external.fields;
+	const relationalKeyValues = relationalKeyFields.map((i) => chunk[i]);
+
+	let filter = null;
+
+	if (relationalKeyFields.length === 1) {
+		filter = {
+			type: 'condition',
+			condition: {
+				type: typeof relationalKeyValues[0] === 'number' ? 'condition-number' : 'condition-string',
+				target: {
+					type: 'primitive',
+					field: relationalKeyFields[0],
+				},
+				operation: 'eq',
+				compareTo: relationalKeyValues[0],
+			},
+		} as AbstractQueryConditionNode;
+	} else {
+		throw new Error('Not yet implemented');
+	}
+
+	return {
+		store: nestedMany.meta.join.external.store,
+		collection: nestedMany.meta.join.external.collection,
+		fields: nestedMany.fields,
+		modifiers: { filter },
+	};
 }
