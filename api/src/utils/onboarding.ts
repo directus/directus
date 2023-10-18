@@ -1,5 +1,4 @@
 import type { OnboardingPayload, UserOnboarding } from '@directus/types';
-import logger from '../logger.js';
 import { SettingsService } from '../services/settings.js';
 import { UsersService } from '../services/users.js';
 import { getSchema } from './get-schema.js';
@@ -37,14 +36,11 @@ export async function collectOnboarding(userId: string) {
 		},
 	};
 
-	return axios.post('https://telemetry.directus.io/onboarding', payload).then(
-		() => {
-			const updatedUserOnboarding = {
-				onboarding: { ...user?.['onboarding'], retry_transmission: false } satisfies UserOnboarding,
-			};
+	await axios.post('https://telemetry.directus.io/onboarding', payload);
 
-			return usersService.updateOne(userId, updatedUserOnboarding);
-		},
-		(reason) => logger.error(reason)
-	);
+	const updatedUserOnboarding = {
+		onboarding: { ...user?.['onboarding'], retry_transmission: false } satisfies UserOnboarding,
+	};
+
+	await usersService.updateOne(userId, updatedUserOnboarding);
 }
