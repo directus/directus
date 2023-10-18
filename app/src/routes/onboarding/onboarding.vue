@@ -2,7 +2,7 @@
 import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
-import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
+import { DeepPartial, Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
 import { AxiosError } from 'axios';
 import { Ref, computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -15,7 +15,7 @@ type OnboardingSlide = {
 	i18nText: string;
 	form?: {
 		model: Ref<object>;
-		fields: Field[];
+		fields: DeepPartial<Field>[];
 	};
 	actions?: {
 		next: () => Promise<any>;
