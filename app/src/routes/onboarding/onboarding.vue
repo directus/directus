@@ -3,12 +3,12 @@ import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import { Ref, computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useProjectFields } from './forms/project';
 import { useUserFields } from './forms/user';
-import { parseJSON } from '@directus/utils';
 
 type OnboardingSlide = {
 	i18nTitle: string;
@@ -139,7 +139,7 @@ const currentSlideName = ref('welcome'); // Important that this matches a key in
 const isLoading = ref(false);
 const error = ref<unknown>(null);
 const notice = ref<HTMLDivElement | null>(null);
-const doubleClickPreventionTimerMs = 250;
+const doubleClickPreventionTimerMs = 500;
 const isNextBtnDisabled = ref(false);
 
 watchEffect(() => {
