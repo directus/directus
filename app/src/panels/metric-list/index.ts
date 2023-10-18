@@ -309,7 +309,7 @@ export default definePanel({
 				},
 				meta: {
 					interface: 'input',
-					hidden: options?.numberStyle !== 'unit',
+					hidden: options?.numberStyle !== 'unit' && options?.numberStyle !== 'currency',
 				},
 			},
 			{

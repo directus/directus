@@ -96,6 +96,7 @@ function displayValue(value: number) {
 		unit: props.unit,
 		minimumFractionDigits: props.minimumFractionDigits,
 		maximumFractionDigits: props.maximumFractionDigits,
+		currency: props.numberStyle === 'currency' ? String(props.unit) : undefined,
 	});
 }
 

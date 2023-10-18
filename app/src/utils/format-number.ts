@@ -100,11 +100,12 @@ interface BaseNumberFormatOptions {
 	roundingMode?: RoundingMode;
 	roundingIncrement?: number;
 	unit?: Unit;
+	currency?: string;
 }
 
 interface CurrencyOptions extends BaseNumberFormatOptions {
 	style: 'currency';
-	currency?: string; // ISO 4217 currency code (e.g., 'USD', 'EUR', 'JPY')
+	currency: string; // ISO 4217 currency code (e.g., 'USD', 'EUR', 'JPY')
 	currencyDisplay?: CurrencyDisplay;
 	currencySign?: CurrencySign;
 }
@@ -134,6 +135,10 @@ export function formatNumber(value: number, locales: string | string[], options?
 	if (options?.style !== 'unit' && options?.unit) {
 		// if unit is not style but there is a unit prop, delete it
 		delete options.unit;
+	}
+
+	if (options?.style !== 'currency' && options?.currency) {
+		delete options.currency;
 	}
 
 	try {
