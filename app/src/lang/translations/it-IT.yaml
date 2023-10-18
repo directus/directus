@@ -27,6 +27,7 @@ method: Metodo
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+extensions: Estensioni
 modules: Moduli
 module_bar: Barra del modulo
 logs: Registri
@@ -465,6 +466,7 @@ import_from_url: Importa File da URL
 replace_from_device: Sostituisci File dal Dispositivo
 replace_from_library: Sostituisci File dalla Libreria
 replace_from_url: Sostituisci File da URL
+no_image_selected: Nessuna immagine selezionata
 no_file_selected: Nessun File Selezionato
 download_file: Scarica File
 open_file_in_tab: Apri il file in una nuova scheda
@@ -1014,6 +1016,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
 page_help_settings_project: "**Impostazioni progetto** — Le opzioni di configurazione globale del tuo progetto."
+page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
 page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
 page_help_settings_datamodel_fields: >-
@@ -1474,6 +1477,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
