@@ -5,6 +5,7 @@ import { router } from '@/router';
 import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
+import { useServerStore } from './stores/server';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -27,8 +28,6 @@ function getAuthEndpoint(provider?: string, share?: boolean) {
 }
 
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
-	const appStore = useAppStore();
-
 	const response = await api.post<any>(getAuthEndpoint(provider, share), {
 		...credentials,
 		mode: 'cookie',
@@ -48,8 +47,14 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
 	}
 
+	const appStore = useAppStore();
+	const serverStore = useServerStore();
+
 	appStore.accessTokenExpiry = Date.now() + response.data.data.expires;
 	appStore.authenticated = true;
+
+	// Reload server store to get authenticated data
+	serverStore.hydrate();
 
 	await hydrate();
 }
