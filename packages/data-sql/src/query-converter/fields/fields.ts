@@ -1,5 +1,5 @@
 import type { AbstractQueryFieldNode, AbstractQueryFieldNodeNestedMany } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
+import type { AbstractSqlClauses, AbstractSqlNestedMany, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
@@ -9,7 +9,7 @@ export type Result = {
 	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
-	nestedMany: AbstractQueryFieldNodeNestedMany[];
+	nestedManys: AbstractSqlNestedMany[];
 };
 
 /**
@@ -38,7 +38,7 @@ export const convertFieldNodes = (
 	const joins: AbstractSqlClauses['joins'] = [];
 	const parameters: ParameterTypes[] = [];
 	const aliasRelationalMapping: Map<string, string[]> = new Map();
-	const nestedMany: AbstractQueryFieldNodeNestedMany[] = [];
+	const nestedManys: AbstractSqlNestedMany[] = [];
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
@@ -85,7 +85,52 @@ export const convertFieldNodes = (
 			 * some prefer a sub query in the statement, some a join and some prefer multiple separate queries.
 			 * That's why we don't do anything with nested many nodes here but instead just forward them to the driver.
 			 */
-			nestedMany.push(abstractField);
+
+			const fieldMeta = abstractField.meta;
+
+			if (fieldMeta.type === 'o2m') {
+				const externalCollectionAlias = createUniqueAlias(fieldMeta.join.external.collection);
+
+				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
+					...currentPath,
+					fieldMeta.join.external.collection,
+				]);
+
+				nestedManys.push({
+					queryGenerator: (fields) => ({
+						clauses: {
+							select: nestedOutput.clauses.select,
+							from: fieldMeta.join.external.collection,
+							where: {
+								type: 'logical',
+								operator: 'and',
+								negate: false,
+								childNodes: fieldMeta.join.current.fields.map((field) => ({
+									type: 'condition',
+									condition: {
+										type: 'condition-string',
+										operation: 'eq',
+										target: {
+											type: 'primitive',
+											table: fieldMeta.join.external.collection,
+											column: field,
+										},
+										compareTo: {
+											type: 'value',
+											parameterIndex: idxGenerator.next().value,
+										},
+									},
+									negate: false,
+								})),
+							},
+						},
+						parameters: [...nestedOutput.parameters, ...fields],
+						aliasMapping: nestedOutput.aliasMapping,
+						nestedManys: nestedOutput.nestedManys,
+					}),
+					alias: externalCollectionAlias,
+				});
+			}
 		}
 
 		if (abstractField.type === 'fn') {
@@ -103,5 +148,5 @@ export const convertFieldNodes = (
 		}
 	}
 
-	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping, nestedMany };
+	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping, nestedManys };
 };

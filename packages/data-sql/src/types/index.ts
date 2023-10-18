@@ -45,7 +45,17 @@ export interface AbstractSqlQuery {
 	aliasMapping: Map<string, string[]>;
 
 	/* how o2m relations are handled is driver specific and hence just forwarded */
-	nestedMany: AbstractQueryFieldNodeNestedMany[];
+	nestedManys: AbstractSqlNestedMany[];
+}
+
+// @TODO move to types module and make use of it where possible
+type ArrayOneElement<T> = [T, ...T[]];
+type ArrayTwoElements<T> = [T, T, ...T[]];
+
+
+export interface AbstractSqlNestedMany {
+	queryGenerator: (fields: [string, ...string[]]) => AbstractSqlQuery;
+	alias: string;
 }
 
 export * from './clauses/index.js';
