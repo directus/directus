@@ -142,7 +142,7 @@ export const useUserFields = function (): Field[] {
 				required: false,
 				group: null,
 				validation: { _and: [{ email: { _regex: '.+@.+\\..+' } }] },
-				validation_message: "t('validationError.email')",
+				validation_message: t('validationError.email'),
 			},
 		},
 		{
