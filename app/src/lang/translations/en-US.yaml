@@ -2277,11 +2277,11 @@ onboarding:
 
       To get your project up and running as quickly as possible, the next few pages will guide you through initial user and project set-up. Ready? Let's get started!
 
-      By the way, be sure to join our [Directus Discord](https://directus.chat) to get updates, community support, and to see what awesome stuff other users are building.
+      Be sure to join our [Directus Discord](https://directus.chat) to get updates, community support, and to see what awesome stuff other users are building.
   project:
     title: Let's setup your project
     text: |
-      We built Directus to be completely customizable. From URL, to logo, to color scheme, you can give your project a distinct identity to make it truly *yours*.
+      We built Directus to be completely customizable. From colors to logo, you can give your project a distinct identity to make it truly *yours*.
 
       Don't worry if you're not ready to customize yet – these can all be revisited later and easily removed or changed from inside the project settings.
     use_case: What are you planning to use Directus for?
@@ -2291,7 +2291,7 @@ onboarding:
   user:
     title: Let's setup your user
     text: |
-      Each user has a unique identity within Directus, and this information will be used to create your specific persona. Don't worry if you accidentally spell your name wrong, these are fully editable inside of your project settings.
+      Each user has a unique identity within Directus, and this information is used to tailor the app to you. Don't worry if you need to change values later on, these are fully editable inside of your user settings.
     mailinglist_name: Product Updates
     mailinglist_label: Receive once-a-month updates
     primary_skillset: What is your primary skillset?
