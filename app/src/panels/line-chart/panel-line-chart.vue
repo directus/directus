@@ -102,7 +102,7 @@ const yAxisRange = computed(() => {
 function setUpChart() {
 	if (props.aggregation && !props.xAxis) return;
 
-	const categories = props.data.map((d) => d['group'][props.xAxis!]); // get the unique categories
+	const categories = [...new Set(props.data.map((d) => d['group'][props.xAxis!]))]; // get the unique categories
 
 	let series: any = [];
 
