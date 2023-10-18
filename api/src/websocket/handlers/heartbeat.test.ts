@@ -7,19 +7,14 @@ import type { WebSocketClient } from '../types.js';
 import { HeartbeatHandler } from './heartbeat.js';
 
 // mocking
-vi.mock('../controllers', async () => {
-	const actual = await vi.importActual<typeof import('../controllers/index.js')>('../controllers/index.js');
-
-	return {
-		...actual,
-		getWebSocketController: vi.fn(() => ({
-			clients: new Set(),
-		})),
-	};
-});
+vi.mock('../controllers', () => ({
+	getWebSocketController: vi.fn(() => ({
+		clients: new Set(),
+	})),
+}));
 
 vi.mock('../../env', async () => {
-	const actual = await vi.importActual<typeof import('../../env.js')>('../../env.js');
+	const actual = (await vi.importActual('../../env')) as { default: Record<string, any> };
 
 	const MOCK_ENV = {
 		...actual.default,
