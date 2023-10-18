@@ -22,8 +22,8 @@ export async function extractData(response: unknown) {
 			return result;
 		}
 
-		// empty body fallback
-		return;
+		// fallback for anything else
+		return response;
 	}
 
 	// exception for alternatives like ofetch that don't return the Response object
