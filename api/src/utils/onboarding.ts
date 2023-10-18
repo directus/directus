@@ -11,11 +11,6 @@ export async function collectOnboarding(userId: string) {
 	const usersService = new UsersService({ schema });
 	const user = await usersService.readOne(userId, { fields: ['email', 'onboarding'] });
 
-	// Some databases that dont have a native json type may return strings
-	if (typeof user?.['onboarding'] === 'string') {
-		user['onboarding'] = JSON.parse(user['onboarding']);
-	}
-
 	if (!user?.['onboarding']?.['retry_transmission']) {
 		return;
 	}
@@ -25,10 +20,6 @@ export async function collectOnboarding(userId: string) {
 	const settings = await settingsService.readSingleton({
 		fields: ['project_name', 'project_url', 'onboarding'],
 	});
-
-	if (typeof settings?.['onboarding'] === 'string') {
-		settings['onboarding'] = JSON.parse(settings['onboarding']);
-	}
 
 	const payload: OnboardingPayload = {
 		version: 1,
