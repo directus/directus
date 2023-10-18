@@ -999,9 +999,9 @@ environment variable:
 
 ## Onboarding
 
-New admin users are presented with an onboarding screen to help guide new users of Directus to set up their project and
-user profiles. They may optionally join our mailing list to receive product news/updates if they'd like. You can easily
-opt-out with the following environment variable:
+New admin users are presented with an onboarding screen to help them quickly set up their project and user profile. They
+may optionally join our mailing list to receive product news/updates if they'd like. The onboarding process can easily
+be opted out with the following environment variable:
 
 | Variable                | Description                                             | Default Value |
 | ----------------------- | ------------------------------------------------------- | ------------- |
