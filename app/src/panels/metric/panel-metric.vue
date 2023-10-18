@@ -150,6 +150,7 @@ function displayValue(value: number) {
 		unit: props.unit,
 		minimumFractionDigits: props.minimumFractionDigits,
 		maximumFractionDigits: props.maximumFractionDigits,
+		currency: props.numberStyle === 'currency' ? String(props.unit) : undefined,
 	});
 }
 
@@ -203,7 +204,7 @@ const color = computed(() => {
 </script>
 
 <template>
-	<div ref="labelContainer" class="metric type-title selectable" :class="{ 'has-header': showHeader }">
+	<div ref="labelContainer" class="metric type-title selectable" :class="[font, { 'has-header': showHeader }]">
 		<p
 			ref="labelText"
 			class="metric-text"
@@ -216,7 +217,7 @@ const color = computed(() => {
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .metric-text {
 	min-width: min-content;
 	min-height: min-content;
@@ -231,5 +232,17 @@ const color = computed(() => {
 	white-space: nowrap;
 	line-height: 1.2;
 	padding: 12px;
+
+	&.sans-serif {
+		font-family: var(--theme--font-family-sans-serif);
+	}
+
+	&.serif {
+		font-family: var(--theme--font-family-serif);
+	}
+
+	&.monospace {
+		font-family: var(--theme--font-family-monospace);
+	}
 }
 </style>

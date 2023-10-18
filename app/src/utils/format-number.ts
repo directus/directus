@@ -100,11 +100,12 @@ interface BaseNumberFormatOptions {
 	roundingMode?: RoundingMode;
 	roundingIncrement?: number;
 	unit?: Unit;
+	currency?: string;
 }
 
 interface CurrencyOptions extends BaseNumberFormatOptions {
 	style: 'currency';
-	currency?: string; // ISO 4217 currency code (e.g., 'USD', 'EUR', 'JPY')
+	currency: string; // ISO 4217 currency code (e.g., 'USD', 'EUR', 'JPY')
 	currencyDisplay?: CurrencyDisplay;
 	currencySign?: CurrencySign;
 }
@@ -136,10 +137,15 @@ export function formatNumber(value: number, locales: string | string[], options?
 		delete options.unit;
 	}
 
+	if(options?.style !== 'currency' && options?.currency) {
+		delete options.currency;
+	}
+
 	try {
 		const formatter: Intl.NumberFormat = new Intl.NumberFormat(locales, options);
 		return formatter.format(value);
 	} catch (e) {
+		console.error(e)
 		return String(value);
 	}
 }
