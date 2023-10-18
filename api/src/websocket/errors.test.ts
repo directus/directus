@@ -1,7 +1,7 @@
 import { createError } from '@directus/errors';
 import { describe, expect, test, vi } from 'vitest';
 import { ZodError } from 'zod';
-import { InvalidPayloadError } from '../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import logger from '../logger.js';
 import { WebSocketError, handleWebSocketError } from './errors.js';
 import type { WebSocketClient } from './types.js';

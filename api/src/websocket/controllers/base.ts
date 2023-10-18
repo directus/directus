@@ -10,7 +10,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { InvalidProviderConfigError, TokenExpiredError } from '../../errors/index.js';
+import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import logger from '../../logger.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';

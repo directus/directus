@@ -1,4 +1,3 @@
-export { ErrorCode } from './codes.js';
 export { ContainsNullValuesError } from './contains-null-values.js';
 export { ContentTooLargeError } from './content-too-large.js';
 export { ForbiddenError } from './forbidden.js';
