@@ -215,8 +215,8 @@ To implement content versioning on an item in your collection, follow these step
 
 1. Navigate to **Settings** > **Data Model** and choose the Collection.
 2. Locate the "**Content Versioning**" section and toggle to enable it.
-3. Go to the specific item for which you want to create a new version. You will see a "**Main**" version at the top of your
-   item view.
+3. Go to the specific item for which you want to create a new version. You will see a "**Main**" version at the top of
+   your item view.
 4. Select "**Create Version**" from the dropdown.
 5. When prompted, give your new version a key and a name. For instance, you can use "draft" as the key and "My Draft" as
    the name.
