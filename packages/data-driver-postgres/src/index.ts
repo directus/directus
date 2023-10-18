@@ -47,29 +47,27 @@ export default class DataDriverPostgres implements DataDriver {
 		return Readable.toWeb(stream);
 	}
 
-	private convertAbstractQuery(query: AbstractQuery): {
-		sql: ParameterizedSqlStatement;
-		aliasMapping: Map<string, string[]>;
-	} {
+	// We might can move this function into data-sql and pass some functions from the driver to it (?)
+	private async queryDatabase(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
 		const abstractSql = convertQuery(query);
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
-		return { sql: { statement, parameters }, aliasMapping: abstractSql.aliasMapping };
+		const rootStream = await this.getDataFromSource(this.#pool, { statement, parameters });
+		const ormTransformer = getOrmTransformer(abstractSql.aliasMapping);
+		return rootStream.pipeThrough(ormTransformer);
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream> {
 		//@ts-ignore
 		const finalStream = new ReadableStream();
 		const root = getRootQuery(query);
-		const rootSql = this.convertAbstractQuery(root);
+		const rootStream = await this.queryDatabase(root);
 		const nestedManyNodes = query.fields.filter((i) => i.type === 'nested-many') as AbstractQueryFieldNodeNestedMany[];
-		const rootStream = await this.getDataFromSource(this.#pool, rootSql.sql);
 
 		for await (const rootChunk of rootStream) {
 			for (const nestedMany of nestedManyNodes) {
 				const subQuery = convertManyNodeToAbstractQuery(nestedMany, rootChunk);
-				const subSql = this.convertAbstractQuery(subQuery);
-				const subStream = await this.getDataFromSource(this.#pool, subSql.sql);
+				const subStream = await this.queryDatabase(subQuery);
 
 				const mPart = [];
 
@@ -77,10 +75,9 @@ export default class DataDriverPostgres implements DataDriver {
 					mPart.push(subChunk);
 				}
 			}
-			// @TODO merge results
+			// @TODO merge results into final stream
 		}
 
-		const ormTransformer = getOrmTransformer(rootSql.aliasMapping);
-		return rootStream.pipeThrough(ormTransformer);
+		return finalStream;
 	}
 }
