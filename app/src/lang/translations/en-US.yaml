@@ -2277,7 +2277,7 @@ onboarding:
 
       To get your project up and running as quickly as possible, the next few pages will guide you through initial user and project set-up. Ready? Let's get started!
 
-      By the way – Be sure to join our [Directus Discord](https://directus.chat) to get updates, community support, and to see what awesome stuff other users are building.
+      By the way, be sure to join our [Directus Discord](https://directus.chat) to get updates, community support, and to see what awesome stuff other users are building.
   project:
     title: Let's setup your project
     text: |
