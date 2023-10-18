@@ -15,7 +15,7 @@ import {
 	InvalidProviderConfigError,
 	ServiceUnavailableError,
 	UnexpectedResponseError,
-} from '../../errors/index.js';
+} from '@directus/errors';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';

@@ -7,7 +7,7 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import { handler } from './authenticate.js';
-import { InvalidCredentialsError } from '../errors/index.js';
+import { InvalidCredentialsError } from '@directus/errors';
 
 vi.mock('../database/index');
 
