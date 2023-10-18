@@ -137,7 +137,7 @@ export function formatNumber(value: number, locales: string | string[], options?
 		delete options.unit;
 	}
 
-	if(options?.style !== 'currency' && options?.currency) {
+	if (options?.style !== 'currency' && options?.currency) {
 		delete options.currency;
 	}
 
@@ -145,7 +145,6 @@ export function formatNumber(value: number, locales: string | string[], options?
 		const formatter: Intl.NumberFormat = new Intl.NumberFormat(locales, options);
 		return formatter.format(value);
 	} catch (e) {
-		console.error(e)
 		return String(value);
 	}
 }
