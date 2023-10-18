@@ -4,6 +4,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
 import { parseJSON } from '@directus/utils';
+import { AxiosError } from 'axios';
 import { Ref, computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -137,7 +138,7 @@ if (showProjectSlide) {
 
 const currentSlideName = ref('welcome'); // Important that this matches a key in slides
 const isLoading = ref(false);
-const error = ref<unknown>(null);
+const error = ref<AxiosError | null | unknown>(null);
 const notice = ref<HTMLDivElement | null>(null);
 const doubleClickPreventionTimerMs = 500;
 const isNextBtnDisabled = ref(false);
@@ -245,7 +246,9 @@ async function nextSlide() {
 			<!-- Error -->
 			<Transition name="dialog">
 				<div v-if="error" ref="notice" class="notice-error">
-					<v-notice type="danger">{{ t('unexpected_error_copy') }}</v-notice>
+					<v-notice type="danger">
+						{{ error?.response?.data?.errors?.map((e) => e?.message)?.join?.(' ') ?? t('unexpected_error_copy') }}
+					</v-notice>
 				</div>
 			</Transition>
 
