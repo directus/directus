@@ -36,7 +36,7 @@ export class DriverAzure implements Driver {
 	async read(filepath: string, range?: Range) {
 		const { readableStreamBody } = await this.containerClient
 			.getBlobClient(this.fullPath(filepath))
-			.download(range?.start, range?.end ? range.end - (range.start || 0) : undefined);
+			.download(range?.start, range?.end ? range.end - (range.start || 0) + 1 : undefined);
 
 		if (!readableStreamBody) {
 			throw new Error(`No stream returned for file "${filepath}"`);
