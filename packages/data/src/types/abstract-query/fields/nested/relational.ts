@@ -58,7 +58,7 @@ export interface AbstractQueryFieldNodeRelationalJoinMany {
 
 	/** the external collection or item which should be pulled/joined/merged into the current collection */
 	external: {
-		store?: string;
+		store: string;
 		collection: string;
 		fields: [string, ...string[]];
 	};
