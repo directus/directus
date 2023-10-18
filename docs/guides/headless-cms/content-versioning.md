@@ -1,6 +1,5 @@
 ---
 description: This guide covers the process of enabling and utilizing content versioning in Directus.
-
 directus_version: 10.7.0
 author: Esther Agbaje
 ---
@@ -11,80 +10,93 @@ author: Esther Agbaje
 
 ## Introduction
 
-Content versioning allows you to create and manage different versions of your content. There are several reasons to use
-content versioning, such as: To keep track of changes to your content over time To collaborate seamlessly with others To
-restore previous versions of your content if necessary
+Content versioning allows teams to create and manage different versions of their content. There are several reasons to
+use content versioning, such as:
 
-Content versioning follows a git-like workflow: you have a main version of an item and then can create versions, add
-content to those versions, and finally incorporate (or 'merge') those changes back into the main version.
+- To keep track of changes to your content over time.
+- To collaborate seamlessly with others.
+- To restore previous versions of your content if necessary.
 
-## Prerequisites
+With content versioning, when you have multiple people working on the same content, they no longer need to worry about
+overwriting each other's work. They can simply create separate versions to create changes, test out these changes, and
+promote them back into the main version when ready.
 
-Before you begin, make sure you have the following:
+In this guide, we'll explore how to create and maintain different versions of your content in Directus.
 
-- Access to a Directus instance
-- Admin privileges to enable content versioning for a collection
+## Concepts
 
-## Setting up Content Versioning for a Collection
+1. **Version:** A version is a snapshot of a piece of content at a particular point in time. Each version represents the
+   state of the content at a specific moment, and it can be used to track changes and maintain a history of the content.
+2. **Main:** The main version is the original version of a piece of content that has been created and published. It is
+   the default version that is displayed to users. The main version is the "source of truth" for all other versions.
+3. **Promote:** Promoting a version means to make it the new main version. When a new version is promoted, it becomes
+   the main version that is displayed to users, and it replaces the previous main version.
+
+## Setting up Content Versioning
 
 To enable content versioning for a collection in Directus, follow these steps:
 
-1. Log in to your Directus instance
-2. Go to Settings > Data Model
-3. Open an existing one that you want to enable content versioning for.
+1. Log in to your Directus instance.
+2. Navigate to **Settings** > **Data Model**.
+3. Select the collection that you want to enable content versioning for.
 4. Scroll down to the Content Versioning section.
-5. Check the Enable Branches option.
-6. Save your data model.
-
-Once you've enabled content versioning, you’re now ready to manage different versions of your content.
+5. Toggle "**Enable Versions**" and save your data model.
 
 ## Creating a New Version
 
-Once content versioning is enabled for a collection, you can create new versions of its items. Follow these steps to
-create a new version:
+With content versioning set up, you can now create a new version of your content.
 
-1. Open an item within the collection, such as an article collection.
-2. At the top of the item view, you will see the main content branch displayed as "main".
-3. Click on the "Create version" button.
-4. Provide a key and a name for the new version. For example, you can use "draft" as the key and "my draft" as the name.
-5. Click "Save" to create the new version.
+1. Open an item within your desired collection.
+2. At the top of the item view, you will notice a dropdown with the main content version displayed as "**main**".
+3. From the dropdown, click "**Create Version**".
+4. Provide a **key** and a **name** for the new version. For instance, you can use "draft" as the key and "My Draft" as
+   the name.
+5. Click "**Save**" to create the new version.
 
-## Making Edits and Viewing Changes in a Version
+::: tip Version Source
 
-After creating a new version, you can make edits and view the changes without affecting the main version. Here's how:
+All new versions originate from the main version. This implies that the main version acts as the single source of truth
+for other versions.
 
-1. Open the item in the newly created version (e.g., "my draft").
+:::
+
+## Making Changes to a Version
+
+After creating a new version, you can make changes without affecting the main version. Here's how:
+
+1. Open the item in the newly created version e.g. "**My Draft**" version.
 2. Make the desired edits to the item's content.
 3. Save the changes.
-4. Notice that the main version remains unaffected, while the changes are reflected in the "my draft" version.
+4. Notice that the main version remains unaffected, while the changes are reflected only in the "**My Draft**" version.
 
 ## Reviewing and Promoting a Version
 
 Once you are satisfied with the changes made in a version and want to incorporate them into the main version, you can
 promote the version. Follow these steps to promote a version:
 
-1. Open the version you want to promote (e.g., "my draft").
-2. Select the "Promote Version" option.
-3. In the "Changes" tab, you can review all the changes made in the version and decide which changes to accept or
+1. Open the version you want to promote.
+2. Select the "**Promote Version**" option fom the dropdown.
+3. In the "**Changes**" tab, you can review all the changes made in the version and decide which changes to accept or
    reject.
-4. Switch to the "Preview" tab to see a preview of the changes you are about to promote.
-5. After reviewing the changes, confirm the promotion.
+4. Switch to the "**Preview**" tab to see a preview of the changes you are about to promote.
+5. After reviewing the changes, confirm the promotion by clicking "**Save**".
 
 After promoting a version, you can choose to keep or delete the version.
 
 ::: tip Programmatically Implement Content Versioning
 
 You have the option to integrate content versioning through the API. To learn how to accomplish this, please refer to
-our API reference documentation.
+our [API reference documentation](/reference/system/collections).
 
 :::
 
 ## Next Steps
 
-Over the course of this guide, you’ve set up content versioning for your collection. Here are some additional tips when
-using this feature:
+Over the course of this guide, you’ve set up content versioning for your collection and learnt how to promote a version
+into the main version. Here are some additional tips when using this feature:
 
-- Create Multiple Versions: Experiment with content by creating numerous versions of an item to test new concepts
-  independently.
-- Compare Versions: Directus allows side-by-side visual diffing of any two selected versions.
-- Configure Automated Workflows: Leverage webhooks to automatically promote versions based on defined milestones.
+- Name versions descriptively so it's clear what changes each version contains.
+- To prevent conflicts, ensure no modifications are made to the main version at the time a new version is created.
+- Access the version history by referring the "**Revisions**" sidebar.
+- Rollback to a previous main version by using the existing revert feature.
+- Configure roles and permissions as needed to the `directus_versions` system collection.
