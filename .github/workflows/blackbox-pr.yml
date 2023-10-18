@@ -39,6 +39,7 @@ jobs:
   test:
     name: SQLite Only ${{ matrix.shard }}
     runs-on: ubuntu-latest
+    needs: [build]
     strategy:
       matrix:
         shard: [1/3, 2/3, 3/3]
