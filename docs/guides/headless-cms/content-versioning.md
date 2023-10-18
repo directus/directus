@@ -74,7 +74,7 @@ Once you are satisfied with the changes made in a version and want to incorporat
 promote the version. Follow these steps to promote a version:
 
 1. Open the version you want to promote.
-2. Select the "**Promote Version**" option fom the dropdown.
+2. Select the "**Promote Version**" option from the dropdown.
 3. In the "**Changes**" tab, you can review all the changes made in the version and decide which changes to accept or
    reject.
 4. Switch to the "**Preview**" tab to see a preview of the changes you are about to promote.
@@ -91,7 +91,7 @@ our [API reference documentation](/reference/system/collections).
 
 ## Next Steps
 
-Over the course of this guide, you’ve set up content versioning for your collection and learnt how to promote a version
+Over the course of this guide, you’ve set up content versioning for your collection and learned how to promote a version
 into the main version. Here are some additional tips when using this feature:
 
 - Name versions descriptively so it's clear what changes each version contains.
