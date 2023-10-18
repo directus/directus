@@ -16,7 +16,6 @@ runs:
         key: pnpm-build-cache-${{ github.sha }}
 
     - name: 📥 Build
-      if: ${{ steps.pnpm-build-cache.outputs.cache-hit != 'true' && inputs.build == 'true' }}
       shell: bash
       run: pnpm run build
       env:
