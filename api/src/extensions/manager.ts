@@ -384,7 +384,7 @@ export class ExtensionManager {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`../${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
+					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
 				);
 
 				const config = getModuleDefault(operationInstance);
@@ -407,7 +407,7 @@ export class ExtensionManager {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
 				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
-					`../${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
+					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
 				);
 
 				const configs = getModuleDefault(bundleInstances);
