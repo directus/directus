@@ -1,7 +1,6 @@
 ---
 description: This guide covers the process of enabling and utilizing content versioning in Directus.
-directus_version: 10.7.0
-author: Esther Agbaje
+contributors: Esther Agbaje
 ---
 
 # Implementing Content Versioning
