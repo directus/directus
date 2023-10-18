@@ -3,7 +3,6 @@
 	"version": "0.0.2",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
-	"sideEffects": false,
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -12,6 +11,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"sideEffects": false,
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
@@ -26,26 +26,25 @@
 		"dev": "vite build --watch",
 		"generate-json-schema": "node generate-json-schema.js"
 	},
-	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
-		"@directus/types": "workspace:*",
-		"@rollup/plugin-node-resolve": "15.2.3",
-		"@types/lodash-es": "4.17.9",
-		"@vitejs/plugin-vue": "4.4.0",
-		"@vitest/coverage-c8": "0.31.1",
-		"rollup-plugin-node-externals": "6.1.2",
-		"typescript": "5.2.2",
-		"vite": "4.4.11",
-		"vite-plugin-dts": "3.6.0",
-		"vitest": "0.34.6"
-	},
 	"dependencies": {
 		"@sinclair/typebox": "0.31.17",
 		"@unhead/vue": "1.1.30",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
-		"lodash-es": "4.17.21",
-		"pinia": "2.1.6",
+		"lodash-es": "4.17.21"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@types/lodash-es": "4.17.9",
+		"@vitejs/plugin-vue": "4.4.0",
+		"rollup-plugin-node-externals": "6.1.2",
+		"typescript": "5.2.2",
+		"vite": "4.4.11",
+		"vite-plugin-dts": "3.6.0"
+	},
+	"peerDependencies": {
+		"pinia": "2.1.7",
 		"vue": "3.3.4"
 	}
 }
