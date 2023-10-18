@@ -2302,7 +2302,7 @@ onboarding:
     data_scientist: Data Scientist
     nontechnical: Non-Technical User
   loading:
-    title: Setting up your database...
+    title: Setting up your project...
     text: |
       Awesome! You're all set.
 
