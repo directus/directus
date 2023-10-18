@@ -182,5 +182,7 @@ fields:
     hidden: true
 
   - field: onboarding
+    special:
+      - cast-json
     readonly: true
     hidden: true

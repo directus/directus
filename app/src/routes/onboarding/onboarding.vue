@@ -3,7 +3,6 @@ import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { Field, SettingsOnboarding, UserOnboarding } from '@directus/types';
-import { parseJSON } from '@directus/utils';
 import { AxiosError } from 'axios';
 import { Ref, computed, ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -31,15 +30,6 @@ const { t } = useI18n();
 const router = useRouter();
 const settingsStore = useSettingsStore();
 const userStore = useUserStore();
-
-// Some databases that dont have a native json type may return strings
-if (typeof settingsStore?.settings?.onboarding === 'string') {
-	settingsStore.settings.onboarding = parseJSON(settingsStore.settings.onboarding);
-}
-
-if (typeof userStore?.currentUser?.onboarding === 'string') {
-	userStore.currentUser.onboarding = parseJSON(userStore.currentUser.onboarding);
-}
 
 // Split up the v-form models from the payload,
 // so that we need to explicitly choose fields that we want to add

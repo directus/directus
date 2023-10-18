@@ -56,5 +56,10 @@ export type Settings = {
 	basemaps: any[] | null;
 	mapbox_key: string | null;
 	module_bar: (SettingsModuleBarLink | SettingsModuleBarModule)[];
-	onboarding: SettingsOnboarding | string | null;
+	default_appearance: 'auto' | 'light' | 'dark';
+	default_theme_light: string | null;
+	default_theme_dark: string | null;
+	theme_light_overrides: Record<string, unknown> | null;
+	theme_dark_overrides: Record<string, unknown> | null;
+	onboarding: SettingsOnboarding | null;
 };

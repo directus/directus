@@ -412,5 +412,7 @@ fields:
               placeholder: $t:value
 
   - field: onboarding
+    special:
+      - cast-json
     readonly: true
     hidden: true
