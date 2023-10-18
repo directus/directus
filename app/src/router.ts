@@ -153,18 +153,16 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			} else if (userStore.currentUser.tfa_secret !== null) {
 				return userStore.currentUser.last_page || '/login';
 			}
-		}
 
-		if (
-			to.name !== 'onboarding' &&
-			userStore.currentUser &&
-			!('share' in userStore.currentUser) &&
-			userStore.currentUser.role &&
-			userStore.currentUser.role.admin_access &&
-			!userStore.currentUser.onboarding &&
-			serverStore.info.showAdminOnboarding
-		) {
-			return { name: 'onboarding' };
+			if (
+				to.name !== 'onboarding' &&
+				serverStore.info.showAdminOnboarding &&
+				userStore.currentUser.role.admin_access &&
+				!userStore.currentUser.onboarding &&
+				!userStore.skippedOnboarding
+			) {
+				return { name: 'onboarding' };
+			}
 		}
 	}
 };

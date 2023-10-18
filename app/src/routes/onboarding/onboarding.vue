@@ -81,18 +81,18 @@ const slides: Ref<Record<string, OnboardingSlide>> = ref({
 			next: async function () {
 				isLoading.value = true;
 
-				await api
-					.patch(`/users/${userModel.value.id}`, {
-						first_name: userModel.value.first_name,
-						last_name: userModel.value.last_name,
-						email: userModel.value.email,
-						onboarding: JSON.stringify({
-							primary_skillset: userModel.value.primary_skillset ?? null,
-							wants_emails: userModel.value.wants_emails ?? false,
-							retry_transmission: true,
-						} satisfies UserOnboarding),
-					})
-					.then(() => userStore.hydrate());
+				await api.patch(`/users/${userModel.value.id}`, {
+					first_name: userModel.value.first_name,
+					last_name: userModel.value.last_name,
+					email: userModel.value.email,
+					onboarding: JSON.stringify({
+						primary_skillset: userModel.value.primary_skillset ?? null,
+						wants_emails: userModel.value.wants_emails ?? false,
+						retry_transmission: true,
+					} satisfies UserOnboarding),
+				});
+
+				await userStore.hydrate();
 
 				finishOnboarding();
 			},
@@ -119,17 +119,15 @@ if (showProjectSlide) {
 		},
 		actions: {
 			next: async function () {
-				await settingsStore
-					.updateSettings({
-						project_name: projectModel.value.project_name,
-						project_url: projectModel.value.project_url,
-						project_logo: projectModel.value.project_logo,
-						project_color: projectModel.value.project_color,
-						onboarding: JSON.stringify({
-							project_use_case: projectModel.value.project_use_case ?? null,
-						} satisfies SettingsOnboarding),
-					})
-					.then(() => settingsStore.hydrate());
+				await settingsStore.updateSettings({
+					project_name: projectModel.value.project_name,
+					project_url: projectModel.value.project_url,
+					project_logo: projectModel.value.project_logo,
+					project_color: projectModel.value.project_color,
+					onboarding: JSON.stringify({
+						project_use_case: projectModel.value.project_use_case ?? null,
+					} satisfies SettingsOnboarding),
+				});
 			},
 		},
 		transitions: { back: 'welcome', next: 'user' },
@@ -173,6 +171,7 @@ function finishOnboarding() {
 function skipOnboarding() {
 	isLoading.value = true;
 	error.value = null;
+	userStore.skippedOnboarding = true;
 	finishOnboarding();
 }
 
