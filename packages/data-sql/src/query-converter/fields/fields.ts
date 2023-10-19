@@ -1,9 +1,10 @@
-import type { AbstractQueryFieldNode, AbstractQueryFieldNodeNestedMany } from '@directus/data';
+import type { AbstractQueryFieldNode } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlNestedMany, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
+import { getSubQuery } from './create-nested-manys.js';
 
 export type Result = {
 	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
@@ -80,10 +81,10 @@ export const convertFieldNodes = (
 
 		if (abstractField.type === 'nested-many') {
 			/*
-			 * nested many nodes are handled by the driver,
-			 * because the most performant technique to use here depends on the vendor.
-			 * some prefer a sub query in the statement, some a join and some prefer multiple separate queries.
-			 * That's why we don't do anything with nested many nodes here but instead just forward them to the driver.
+			 * nested many nodes are handled by the driver.
+			 * As a default behavior, we do separate queries for each o part result row.
+			 * The driver itself can use different technique if another technique is more performant,
+			 * like do a sub query in the statement or a join.
 			 */
 
 			const fieldMeta = abstractField.meta;
@@ -96,40 +97,8 @@ export const convertFieldNodes = (
 					fieldMeta.join.external.collection,
 				]);
 
-				nestedManys.push({
-					queryGenerator: (fields) => ({
-						clauses: {
-							select: nestedOutput.clauses.select,
-							from: fieldMeta.join.external.collection,
-							where: {
-								type: 'logical',
-								operator: 'and',
-								negate: false,
-								childNodes: fieldMeta.join.current.fields.map((field) => ({
-									type: 'condition',
-									condition: {
-										type: 'condition-string',
-										operation: 'eq',
-										target: {
-											type: 'primitive',
-											table: fieldMeta.join.external.collection,
-											column: field,
-										},
-										compareTo: {
-											type: 'value',
-											parameterIndex: idxGenerator.next().value,
-										},
-									},
-									negate: false,
-								})),
-							},
-						},
-						parameters: [...nestedOutput.parameters, ...fields],
-						aliasMapping: nestedOutput.aliasMapping,
-						nestedManys: nestedOutput.nestedManys,
-					}),
-					alias: externalCollectionAlias,
-				});
+				const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, idxGenerator, externalCollectionAlias);
+				nestedManys.push(abstractSqlSubQuery);
 			}
 		}
 

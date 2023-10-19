@@ -14,7 +14,6 @@
  */
 import type { ParameterTypes } from './parameterized-statement.js';
 import type { AbstractSqlClauses } from './clauses/index.js';
-import type { AbstractQueryFieldNodeNestedMany } from '@directus/data';
 
 /**
  * This is an abstract SQL query which can be passed to all SQL drivers.
@@ -51,7 +50,6 @@ export interface AbstractSqlQuery {
 // @TODO move to types module and make use of it where possible
 type ArrayOneElement<T> = [T, ...T[]];
 type ArrayTwoElements<T> = [T, T, ...T[]];
-
 
 export interface AbstractSqlNestedMany {
 	queryGenerator: (fields: [string, ...string[]]) => AbstractSqlQuery;
