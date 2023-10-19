@@ -26,7 +26,7 @@ import Badge from './.vitepress/components/Badge.vue'
 		</div>
 		<div :class="$style.heroToggler">
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API" :alwaysDark="true">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api" alwaysDark maintainHeight>
 <template #rest>
 
 ```js
