@@ -1,6 +1,7 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
+	"homepage": "https://directus.io",
 	"scripts": {
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --cache --check .",
