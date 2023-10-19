@@ -217,7 +217,7 @@ function closeDrawer() {
 		<v-list v-if="Array.isArray(internalValue) && internalValue.length > 0">
 			<draggable
 				:disabled="disabled"
-				:force-fallback="true"
+				force-fallback
 				:model-value="internalValue"
 				item-key="id"
 				handle=".drag-handle"

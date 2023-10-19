@@ -1,4 +1,3 @@
-import { createError } from '@directus/errors';
-import { ErrorCode } from './codes.js';
+import { createError, ErrorCode } from '../index.js';
 
 export const InvalidTokenError = createError(ErrorCode.InvalidToken, 'Invalid token.', 403);

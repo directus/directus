@@ -68,7 +68,7 @@ List all flows that exist in Directus.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /flows`
@@ -114,7 +114,7 @@ be an empty array.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /flows`
@@ -161,7 +161,7 @@ List an existing flow by primary key.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /flows/:id`
@@ -201,7 +201,7 @@ Returns the requested [flow object](#the-flow-object).
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -245,7 +245,7 @@ Create a new flow.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /flows`
@@ -291,7 +291,7 @@ Returns the [flow object](#the-flow-object) for the created flow.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /flows`
@@ -344,7 +344,7 @@ Create multiple new flows.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /flows`
@@ -390,7 +390,7 @@ Returns the [flow object](#the-flow-object) for the created flow.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /flows`
@@ -461,7 +461,7 @@ Update an existing flow.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /flows/:id`
@@ -507,7 +507,7 @@ Returns the [flow object](#the-flow-object) for the updated flow.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -556,7 +556,7 @@ Update multiple existing flows.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /flows`
@@ -611,7 +611,7 @@ Returns the [flow objects](#the-flow-object) for the updated flows.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /flows`
@@ -667,7 +667,7 @@ Delete an existing flow.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /flows/:id`
@@ -703,7 +703,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba`
@@ -741,7 +741,7 @@ Delete multiple existing flows.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /flows`
@@ -783,7 +783,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /flows`
@@ -833,7 +833,7 @@ Start a flow with GET webhook trigger.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /flows/trigger/:flow_uuid`
@@ -858,7 +858,7 @@ Result of the flow, if any.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
@@ -887,7 +887,7 @@ Start a flow with POST webhook trigger.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /flows/trigger/:flow_uuid`
@@ -916,7 +916,7 @@ Result of the flow, if any.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`

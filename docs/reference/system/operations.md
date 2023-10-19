@@ -71,7 +71,7 @@ List all operations that exist in Directus.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /operations`
@@ -118,7 +118,7 @@ data will be an empty array.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /operations`
@@ -162,7 +162,7 @@ const result = await client.request(
 
 List an existing operation by primary key.
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /operations/:id`
@@ -204,7 +204,7 @@ Returns the requested [operation object](#the-operation-object).
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /operations/3c636d1c-4eb2-49cd-8a6d-3ec571ab3390`
@@ -246,7 +246,7 @@ const result = await client.request(
 
 Create a new operation.
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /operations`
@@ -294,7 +294,7 @@ Returns the [operation object](#the-operation-object) for the created operation.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /operations`
@@ -350,7 +350,7 @@ Create multiple new operations.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /operations`
@@ -411,7 +411,7 @@ Returns the [operation object](#the-operation-object) for the created operation.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /operations`
@@ -488,7 +488,7 @@ Update an existing operation.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /operation/:id`
@@ -534,7 +534,7 @@ Returns the [operation object](#the-operation-object) for the updated operation.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /operation/7d62f1e9-a83f-407b-84f8-1c184f014501`
@@ -581,7 +581,7 @@ const result = await client.request(
 
 Update multiple existing operations.
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /operations`
@@ -636,7 +636,7 @@ Returns the [operation objects](#the-operation-object) for the updated operation
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /operations`
@@ -692,7 +692,7 @@ Delete an existing operation.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /operations/:id`
@@ -728,7 +728,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /operations/07ac467e-1900-4c62-9637-8dac2ab97f71`
@@ -764,7 +764,7 @@ Delete multiple existing operations.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /operations`
@@ -806,7 +806,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /operations`
@@ -856,7 +856,7 @@ Trigger an operation based on primary key.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `POST /operations/trigger/:operation_uuid`
@@ -885,7 +885,7 @@ Result of the operation, if any.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`

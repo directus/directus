@@ -65,6 +65,8 @@ const vueRules = {
 	'vue/multi-word-component-names': 'off',
 	// Don't require default value for props that are not marked as required
 	'vue/require-default-prop': 'off',
+	// Require shorthand form attribute when v-bind value is true
+	'vue/prefer-true-attribute-shorthand': 'error',
 };
 
 const getExtends = (configs = []) => [

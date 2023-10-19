@@ -86,7 +86,7 @@ function onGroupSortChange(collections: Collection[]) {
 		<transition-expand class="collection-items">
 			<draggable
 				v-if="isCollectionExpanded"
-				:force-fallback="true"
+				force-fallback
 				:model-value="nestedCollections"
 				:group="{ name: 'collections' }"
 				:swap-threshold="0.3"

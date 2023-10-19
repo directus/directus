@@ -120,14 +120,7 @@ function emitValue(val: string) {
 			placeholder="--"
 			@input="emitValue(($event.target as HTMLInputElement).value)"
 		/>
-		<v-menu
-			ref="dateTimeMenu"
-			:close-on-content-click="false"
-			:show-arrow="true"
-			placement="bottom-start"
-			seamless
-			full-height
-		>
+		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
 				<v-icon class="preview" name="event" small @click="toggle" />
 			</template>
@@ -141,7 +134,7 @@ function emitValue(val: string) {
 			</div>
 		</v-menu>
 	</template>
-	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
+	<v-menu v-else :close-on-content-click="false" show-arrow placement="bottom-start">
 		<template #activator="{ toggle }">
 			<v-icon
 				v-if="type.startsWith('geometry') || type === 'json'"

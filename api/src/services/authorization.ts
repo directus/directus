@@ -13,7 +13,7 @@ import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { ForbiddenError } from '../errors/forbidden.js';
+import { ForbiddenError } from '@directus/errors';
 import type {
 	AST,
 	AbstractServiceOptions,

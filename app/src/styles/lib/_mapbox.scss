@@ -195,6 +195,10 @@
 	max-width: 80%;
 }
 
+.mapbox-gl-draw_ctrl-draw-btn {
+	color: unset;
+}
+
 .mapboxgl-ctrl-zoom-in::after {
 	content: 'add';
 }

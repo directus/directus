@@ -42,7 +42,7 @@ Retrieve a temporary access token and refresh token.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/login`
@@ -124,7 +124,7 @@ The token's expiration time can be configured through
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/login`
@@ -176,7 +176,7 @@ Retrieve a new access token using a refresh token.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/refresh`
@@ -246,7 +246,7 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/refresh`
@@ -299,7 +299,7 @@ Invalidate the refresh token thus destroying the user's session.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/logout`
@@ -347,7 +347,7 @@ to submit it here.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/logout`
@@ -393,7 +393,7 @@ Request a password reset email to be sent to the given user.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/password/request`
@@ -441,7 +441,7 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/password/request`
@@ -484,7 +484,7 @@ this endpoint to allow the user to reset their password.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/password/reset`
@@ -531,7 +531,7 @@ New password for the user.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /auth/password/reset`
@@ -581,7 +581,7 @@ To learn more about setting up auth providers, see
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `GET /auth`
@@ -632,7 +632,7 @@ Whether or not the default authentication provider is disabled.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `GET /auth`

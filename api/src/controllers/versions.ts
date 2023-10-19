@@ -1,7 +1,6 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import { assign } from 'lodash-es';
-import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';

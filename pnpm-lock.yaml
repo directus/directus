@@ -523,9 +523,6 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
-      '@directus/errors':
-        specifier: workspace:*
-        version: link:../packages/errors
       '@directus/extensions':
         specifier: workspace:*
         version: link:../packages/extensions
@@ -1233,6 +1230,13 @@ importers:
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/errors:
+    dependencies:
+      '@directus/storage':
+        specifier: workspace:*
+        version: link:../storage
+      ms:
+        specifier: 2.1.3
+        version: 2.1.3
     devDependencies:
       '@directus/random':
         specifier: workspace:*
@@ -1240,9 +1244,6 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../types
       '@types/ms':
         specifier: 0.7.31
         version: 0.7.31

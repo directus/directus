@@ -1,6 +1,5 @@
 import { Action, FUNCTIONS } from '@directus/constants';
-import type { DirectusError } from '@directus/errors';
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
@@ -49,7 +48,6 @@ import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
