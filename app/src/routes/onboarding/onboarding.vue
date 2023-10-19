@@ -191,7 +191,7 @@ async function nextSlide() {
 </script>
 
 <template>
-	<public-view :wide="true">
+	<public-view wide>
 		<template #actions>
 			<Transition name="dialog">
 				<v-button
@@ -226,7 +226,7 @@ async function nextSlide() {
 							v-if="currentSlide?.form"
 							v-model="currentSlide.form.model"
 							:fields="currentSlide.form.fields"
-							:autofocus="true"
+							autofocus
 						/>
 					</div>
 				</Transition>
