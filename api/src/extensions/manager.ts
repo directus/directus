@@ -49,6 +49,7 @@ import { generateApiExtensionsSandboxEntrypoint } from './generate-api-extension
 import { getExtensionsSettings } from './get-extensions-settings.js';
 import { getExtensions } from './get-extensions.js';
 import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
+import { instantiateSandboxSdk } from './instantiate-sandbox-sdk.js';
 import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 import { wrapEmbeds } from './wrap-embeds.js';
 
@@ -422,8 +423,13 @@ export class ExtensionManager {
 
 			const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
 
-			await module.instantiate(context, () => {
-				throw new Error('Imports are prohibited in API extension sandboxes');
+			const sdkModule = instantiateSandboxSdk(isolate);
+
+			await module.instantiate(context, (specifier) => {
+				if (specifier !== '@directus/extensions-sdk')
+					throw new Error('Imports other than "@directus/extensions-sdk" are prohibited in API extension sandboxes');
+
+				return sdkModule;
 			});
 
 			await module.evaluate({ timeout: sandboxTimeout });

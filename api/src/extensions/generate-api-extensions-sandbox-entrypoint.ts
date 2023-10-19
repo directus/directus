@@ -1,67 +1,33 @@
 import type { ApiExtensionType, HybridExtensionType } from '@directus/extensions';
+import { numberGenerator } from '@directus/utils';
 import type { Router } from 'express';
 import {
-	log,
 	registerActionGenerator,
 	registerFilterGenerator,
 	registerOperationGenerator,
 	registerRouteGenerator,
-	timeout,
 } from './api-sandbox-registration.js';
-
-function* parameterIndexGenerator(): Generator<number, number, number> {
-	let index = 0;
-
-	while (true) {
-		yield index++;
-	}
-}
-
-function generateHostFunctionReference(
-	index: Generator<number, number, number>,
-	args: string[],
-	{ async }: { async: boolean }
-): string {
-	const argsList = args.join(', ');
-	const i = index.next().value;
-
-	return `(${argsList}) => $${i}.apply(null, [${argsList}], { arguments: { reference: true }, result: { promise: ${
-		async ? 'true' : 'false'
-	} }});`;
-}
+import { generateHostFunctionReference } from './generate-host-function-reference.js';
 
 export function generateApiExtensionsSandboxEntrypoint(
 	type: ApiExtensionType | HybridExtensionType,
 	name: string,
 	endpointRouter: Router
 ) {
-	const index = parameterIndexGenerator();
+	const index = numberGenerator();
 
 	const hostFunctions = [];
 
-	const preamble = `
-		const extensionExport = $${index.next().value}.deref();
-	`;
-
-	const context = `
-		const log = ${generateHostFunctionReference(index, ['message'], { async: false })}
-		const timeout = ${generateHostFunctionReference(index, ['milliseconds'], { async: true })}
-
-		const context = { log, timeout };
-	`;
-
-	hostFunctions.push(log);
-	hostFunctions.push(timeout);
+	const extensionExport = `const extensionExport = $${index.next().value}.deref();`;
 
 	if (type === 'hook') {
 		const code = `
-			${preamble}
-			${context}
+			${extensionExport}
 
 			const filter = ${generateHostFunctionReference(index, ['event', 'handler'], { async: false })}
 			const action = ${generateHostFunctionReference(index, ['event', 'handler'], { async: false })}
 
-			extensionExport({ filter, action }, context);
+			extensionExport({ filter, action });
 		`;
 
 		const { register: filter, unregisterFunctions: filterUnregisterFunctions } = registerFilterGenerator();
@@ -77,8 +43,7 @@ export function generateApiExtensionsSandboxEntrypoint(
 		return { code, hostFunctions, unregisterFunction };
 	} else if (type === 'endpoint') {
 		const code = `
-			${preamble}
-			${context}
+			${extensionExport}
 
 			const registerRoute = ${generateHostFunctionReference(index, ['path', 'method', 'handler'], { async: false })}
 
@@ -100,7 +65,7 @@ export function generateApiExtensionsSandboxEntrypoint(
 				}
 			};
 
-			extensionExport(router, context);
+			extensionExport(router);
 		`;
 
 		const { register, unregisterFunction } = registerRouteGenerator(name, endpointRouter);
@@ -110,12 +75,11 @@ export function generateApiExtensionsSandboxEntrypoint(
 		return { code, hostFunctions, unregisterFunction };
 	} else {
 		const code = `
-			${preamble}
-			${context}
+			${extensionExport}
 
 			const registerOperation = ${generateHostFunctionReference(index, ['id', 'handler'], { async: false })}
 
-			const operationConfig = extensionExport(filter, context);
+			const operationConfig = extensionExport(filter);
 
 			registerOperation(operationConfig.id, operationConfig.handler);
 		`;
