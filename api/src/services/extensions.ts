@@ -1,3 +1,4 @@
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { ApiOutput, Extension, ExtensionSettings } from '@directus/extensions';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -10,7 +11,6 @@ import { getCache } from '../cache.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
 import type { AbstractServiceOptions } from '../types/index.js';
