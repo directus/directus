@@ -57,7 +57,7 @@ test('primitives only', () => {
 			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
 			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
 		]),
-		nestedMany: [],
+		nestedManys: [],
 	};
 
 	const idGen = parameterIndexGenerator();
@@ -110,7 +110,7 @@ test('primitive and function', () => {
 			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
 			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
 		]),
-		nestedMany: [],
+		nestedManys: [],
 	};
 
 	const idGen = parameterIndexGenerator();
@@ -225,7 +225,7 @@ test('primitive, fn, m2o', () => {
 			[`${randomJoinNodeField}_RANDOM`, [randomExternalCollection, randomJoinNodeField]],
 			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFn]],
 		]),
-		nestedMany: [],
+		nestedManys: [],
 	};
 
 	const result = convertFieldNodes(randomCollection, fields, idGen);
@@ -284,28 +284,10 @@ test('primitive, o2m', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]]]),
-		nestedMany: [
+		nestedManys: [
 			{
-				type: 'nested-many',
-				fields: [
-					{
-						type: 'primitive',
-						field: randomJoinNodeField,
-					},
-				],
-				meta: {
-					type: 'o2m',
-					join: {
-						current: {
-							fields: [randomJoinCurrentField],
-						},
-						external: {
-							store: randomExternalStore,
-							collection: randomExternalCollection,
-							fields: [randomExternalField],
-						},
-					},
-				},
+				queryGenerator: expect.any(Function),
+				alias: `${randomExternalCollection}_RANDOM`,
 			},
 		],
 	};
