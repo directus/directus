@@ -301,7 +301,7 @@ function updateSort(newSort: Sort) {
 			<draggable
 				v-else
 				v-model="internalItems"
-				:force-fallback="true"
+				force-fallback
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"

@@ -477,7 +477,7 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-list v-else>
 				<draggable
-					:force-fallback="true"
+					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"

@@ -213,7 +213,7 @@ function remove(id: string) {
 		<v-list class="list">
 			<draggable
 				v-model="valuesWithData"
-				:force-fallback="true"
+				force-fallback
 				:set-data="hideDragImage"
 				item-key="id"
 				handle=".drag-handle"
