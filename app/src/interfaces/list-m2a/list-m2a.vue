@@ -348,7 +348,7 @@ const allowDrag = computed(
 			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
 			<draggable
-				:force-fallback="true"
+				force-fallback
 				:model-value="displayItems"
 				item-key="$index"
 				:set-data="hideDragImage"

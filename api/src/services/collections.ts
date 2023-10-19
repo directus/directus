@@ -13,7 +13,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 import type {

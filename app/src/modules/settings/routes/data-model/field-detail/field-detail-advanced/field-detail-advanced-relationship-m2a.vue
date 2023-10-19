@@ -130,7 +130,7 @@ const unsortableJunctionFields = computed(() => {
 				:disabled-fields="unsortableJunctionFields"
 				:collection="junctionCollection"
 				:placeholder="t('add_sort_field')"
-				:nullable="true"
+				nullable
 			/>
 		</div>
 

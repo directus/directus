@@ -243,7 +243,7 @@ function useColor() {
 					/>
 					<v-button
 						class="swatch"
-						:icon="true"
+						icon
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
 							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',

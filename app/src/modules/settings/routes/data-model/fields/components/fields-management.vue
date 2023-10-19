@@ -125,14 +125,14 @@ async function setNestedSort(updates?: Field[]) {
 		<draggable
 			class="field-grid"
 			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
-			:force-fallback="true"
+			force-fallback
 			handle=".drag-handle"
 			:group="{ name: 'fields' }"
 			:set-data="hideDragImage"
 			item-key="field"
 			:animation="150"
-			:fallback-on-body="true"
-			:invert-swap="true"
+			fallback-on-body
+			invert-swap
 			@update:model-value="setSort"
 		>
 			<template #item="{ element }">

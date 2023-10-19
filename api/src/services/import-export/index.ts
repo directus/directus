@@ -19,7 +19,7 @@ import {
 	InvalidPayloadError,
 	ServiceUnavailableError,
 	UnsupportedMediaTypeError,
-} from '../../errors/index.js';
+} from '@directus/errors';
 import logger from '../../logger.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../../types/index.js';
 import { getDateFormatted } from '../../utils/get-date-formatted.js';

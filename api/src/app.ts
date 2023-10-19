@@ -47,7 +47,7 @@ import {
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { InvalidPayloadError, ServiceUnavailableError } from './errors/index.js';
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';

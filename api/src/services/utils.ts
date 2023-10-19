@@ -4,7 +4,7 @@ import { flushCaches, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 

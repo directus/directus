@@ -4,7 +4,7 @@ import { Router } from 'express';
 import Joi from 'joi';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
-import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
+import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import type { ImportWorkerData } from '../services/import-export/import-worker.js';

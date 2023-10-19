@@ -1,219 +1,393 @@
+/**
+ * Package tests for the driver.
+ * Database responses are mocked and '@directus/data-sql' is partially mocked to know the generated aliases.
+ */
+
 import type { AbstractQuery } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
-import { expect, test, describe, vi, afterEach } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import DataDriverPostgres from './index.js';
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import { convertQuery } from '@directus/data-sql';
+
+beforeEach(() => {
+	vi.mock('@directus/data-sql', async (importOriginal) => {
+		const mod = (await importOriginal()) as any;
+
+		return {
+			...mod,
+			convertQuery: vi.fn(),
+		};
+	});
+});
 
 afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-const randomCollection = randomIdentifier();
-const randomCollectionToJoin = randomIdentifier();
+function getStreamForMock(data: Record<string, any>[]) {
+	return {
+		client: null,
+		stream: new ReadableStream({
+			start(controller) {
+				data.forEach((chunk: any) => controller.enqueue(chunk));
+
+				controller.close();
+			},
+		}),
+	};
+}
+
+/**
+ * Receives all the data from a given stream.
+ */
+async function getActualResult(readableStream: any) {
+	const actualResult: Record<string, any>[] = [];
+
+	for await (const chunk of readableStream) {
+		actualResult.push(chunk);
+	}
+
+	return actualResult;
+}
+
+// random user inputs for stuff which is used by all tests
+const rootCollection = randomIdentifier();
+const dataStore = randomIdentifier();
 const firstField = randomIdentifier();
 const firstFieldId = randomIdentifier();
-const secondField = randomIdentifier();
-const secondFieldId = randomIdentifier();
-const secondFieldAlias = randomIdentifier();
-const joinField1 = randomIdentifier();
-const joinFieldId = randomIdentifier();
-const joinField1Alias = randomIdentifier();
-const joinField2 = randomIdentifier();
-const collectionToJoinId = randomIdentifier();
-const joinField2Id = randomIdentifier();
-const fk = randomIdentifier();
-const foreignPk = randomIdentifier();
-const joinAlias = randomIdentifier();
 
-describe('querying the driver', () => {
-	test('test', async () => {
-		/**
-		 * the function 'convertToAbstractSqlQueryAndGenerateAliases' needs to me mocked.
-		 * Otherwise we wouldn't know the generated aliases and hence the db response.
-		 */
-		vi.mock('@directus/data-sql', async () => {
-			// import the actual package, but replace one function with a mock (partial mocking)
-			const actual: any = await vi.importActual('@directus/data-sql');
+test('nested with local fields', async () => {
+	const secondField = randomIdentifier();
+	const secondFieldId = randomIdentifier();
+	const secondFieldAlias = randomIdentifier();
 
-			return {
-				...actual,
-				convertQuery: vi.fn().mockImplementation(() => {
-					const sqlQuery: AbstractSqlQuery = {
-						clauses: {
-							select: [
-								{
-									type: 'primitive',
-									table: randomCollection,
-									column: firstField,
-									as: firstFieldId,
-								},
-								{
-									type: 'primitive',
-									table: randomCollection,
-									column: secondField,
-									as: secondFieldId,
-									alias: secondFieldAlias,
-								},
-								{
-									type: 'primitive',
-									table: collectionToJoinId,
-									column: joinField1,
-									as: joinFieldId,
-									alias: joinField1Alias,
-								},
-								{
-									type: 'primitive',
-									table: collectionToJoinId,
-									column: joinField2,
-									as: joinField2Id,
-								},
-							],
-							from: randomCollection,
-							joins: [
-								{
-									type: 'join',
-									table: randomCollectionToJoin,
-									as: collectionToJoinId,
-									on: {
-										type: 'condition',
-										negate: false,
-										condition: {
-											type: 'condition-field',
-											target: {
-												type: 'primitive',
-												table: randomCollection,
-												column: fk,
-											},
-											operation: 'eq',
-											compareTo: {
-												type: 'primitive',
-												table: collectionToJoinId,
-												column: foreignPk,
-											},
-										},
-									},
-									alias: joinAlias,
-								},
-							],
-						},
-						parameters: [],
-						aliasMapping: new Map([
-							[firstFieldId, [firstField]],
-							[secondFieldId, [secondFieldAlias]],
-							[joinFieldId, [randomCollectionToJoin, joinField1Alias]],
-							[joinField2Id, [randomCollectionToJoin, joinField2]],
-						]),
-					};
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'primitive',
+				field: firstField,
+			},
+			{
+				type: 'primitive',
+				field: secondField,
+				alias: secondFieldAlias,
+			},
+		],
+	};
 
-					return sqlQuery;
-				}),
-			};
-		});
-
-		const query: AbstractQuery = {
-			collection: randomCollection,
-			store: 'randomDataStore1',
-			fields: [
+	vi.mocked(convertQuery).mockReturnValue({
+		clauses: {
+			select: [
 				{
 					type: 'primitive',
-					field: firstField,
+					table: rootCollection,
+					column: firstField,
+					as: firstFieldId,
 				},
 				{
 					type: 'primitive',
-					field: secondField,
+					table: rootCollection,
+					column: secondField,
+					as: secondFieldId,
 					alias: secondFieldAlias,
 				},
+			],
+			from: rootCollection,
+		},
+		parameters: [],
+		aliasMapping: new Map([
+			[firstFieldId, [firstField]],
+			[secondFieldId, [secondFieldAlias]],
+		]),
+	});
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	const firstFieldDbResult1 = randomIdentifier();
+	const firstFieldDbResult2 = randomIdentifier();
+	const secondFieldDbResult1 = randomIdentifier();
+	const secondFieldDbResult2 = randomIdentifier();
+
+	const mockedData = [
+		{
+			[firstFieldId]: firstFieldDbResult1,
+			[secondFieldId]: secondFieldDbResult1,
+		},
+		{
+			[firstFieldId]: firstFieldDbResult2,
+			[secondFieldId]: secondFieldDbResult2,
+		},
+	];
+
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
+
+	const readableStream = await driver.query(query);
+	const actualResult = await getActualResult(readableStream);
+
+	const expectedResult = [
+		{
+			[firstField]: firstFieldDbResult1,
+			[secondFieldAlias]: secondFieldDbResult1,
+		},
+		{
+			[firstField]: firstFieldDbResult2,
+			[secondFieldAlias]: secondFieldDbResult2,
+		},
+	];
+
+	expect(actualResult).toEqual(expectedResult);
+});
+
+test('nested m2o field', async () => {
+	// random user inputs and meta for m2o
+	const collectionToJoin = randomIdentifier();
+	const collectionToJoinId = randomIdentifier();
+	const joinField1 = randomIdentifier();
+	const joinField1Id = randomIdentifier();
+	const joinField1Alias = randomIdentifier();
+	const joinField2 = randomIdentifier();
+	const joinField2Id = randomIdentifier();
+	const foreignKeyField = randomIdentifier();
+	const collectionToJoinPrimaryKeyField = randomIdentifier();
+	const joinAlias = randomIdentifier();
+
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'primitive',
+				field: firstField,
+			},
+			{
+				type: 'nested-one',
+				fields: [
+					{
+						type: 'primitive',
+						field: joinField1,
+						alias: joinField1Alias,
+					},
+					{
+						type: 'primitive',
+						field: joinField2,
+					},
+				],
+				meta: {
+					type: 'm2o',
+					join: {
+						current: {
+							fields: [foreignKeyField],
+						},
+						external: {
+							store: dataStore,
+							collection: collectionToJoin,
+							fields: [collectionToJoinPrimaryKeyField],
+						},
+					},
+				},
+				alias: joinAlias,
+			},
+		],
+	};
+
+	vi.mocked(convertQuery).mockReturnValue({
+		clauses: {
+			select: [
 				{
-					type: 'nested-one',
-					fields: [
-						{
-							type: 'primitive',
-							field: joinField1,
-							alias: joinField1Alias,
-						},
-						{
-							type: 'primitive',
-							field: joinField2,
-						},
-					],
-					meta: {
-						type: 'm2o',
-						join: {
-							current: {
-								fields: [fk],
+					type: 'primitive',
+					table: rootCollection,
+					column: firstField,
+					as: firstFieldId,
+				},
+				{
+					type: 'primitive',
+					table: collectionToJoinId,
+					column: joinField1,
+					as: joinField1Id,
+					alias: joinField1Alias,
+				},
+				{
+					type: 'primitive',
+					table: collectionToJoinId,
+					column: joinField2,
+					as: joinField2Id,
+				},
+			],
+			from: rootCollection,
+			joins: [
+				{
+					type: 'join',
+					table: collectionToJoin,
+					as: collectionToJoinId,
+					on: {
+						type: 'condition',
+						negate: false,
+						condition: {
+							type: 'condition-field',
+							target: {
+								type: 'primitive',
+								table: rootCollection,
+								column: foreignKeyField,
 							},
-							external: {
-								store: 'randomDataStore1',
-								collection: randomCollectionToJoin,
-								fields: [foreignPk],
+							operation: 'eq',
+							compareTo: {
+								type: 'primitive',
+								table: collectionToJoinId,
+								column: collectionToJoinPrimaryKeyField,
 							},
 						},
 					},
 					alias: joinAlias,
 				},
 			],
-		};
-
-		const driver = new DataDriverPostgres({
-			connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
-		});
-
-		vi.spyOn(driver, 'getDataFromSource').mockReturnValue({
-			// @ts-ignore a promise is normally been returned
-			client: null,
-			stream: new ReadableStream({
-				start(controller) {
-					const mockedData = [
-						{
-							[firstFieldId]: 937,
-							[secondFieldId]: 'lorem ipsum',
-							[joinFieldId]: 42,
-							[joinField2Id]: true,
-						},
-						{
-							[firstFieldId]: 1342,
-							[secondFieldId]: 'ipsum dapsum',
-							[joinFieldId]: 26,
-							[joinField2Id]: true,
-						},
-					];
-
-					mockedData.forEach((chunk) => controller.enqueue(chunk));
-				},
-			}),
-		});
-
-		const readableStream = await driver.query(query);
-		const actualResult: Record<string, any>[] = [];
-
-		for await (const chunk of readableStream) {
-			actualResult.push(chunk);
-
-			// this is a hot fix. for some reason the mocked db response stream does not close properly
-			if (actualResult.length === 2) {
-				break;
-			}
-		}
-
-		const expectedResult = [
-			{
-				[firstField]: 937,
-				[secondFieldAlias]: 'lorem ipsum',
-				[randomCollectionToJoin]: {
-					[joinField1Alias]: 42,
-					[joinField2]: true,
-				},
-			},
-			{
-				[firstField]: 1342,
-				[secondFieldAlias]: 'ipsum dapsum',
-				[randomCollectionToJoin]: {
-					[joinField1Alias]: 26,
-					[joinField2]: true,
-				},
-			},
-		];
-
-		expect(actualResult).toEqual(expectedResult);
+		},
+		parameters: [],
+		aliasMapping: new Map([
+			[firstFieldId, [firstField]],
+			[joinField1Id, [collectionToJoin, joinField1Alias]],
+			[joinField2Id, [collectionToJoin, joinField2]],
+		]),
 	});
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	const firstFieldDbResult1 = randomIdentifier();
+	const firstFieldDbResult2 = randomIdentifier();
+	const secondFieldDbResult1 = randomIdentifier();
+	const secondFieldDbResult2 = randomIdentifier();
+	const thirdFieldDbResult1 = randomIdentifier();
+	const thirdFieldDbResult2 = randomIdentifier();
+
+	const mockedData = [
+		{
+			[firstFieldId]: firstFieldDbResult1,
+			[joinField1Id]: secondFieldDbResult1,
+			[joinField2Id]: thirdFieldDbResult1,
+		},
+		{
+			[firstFieldId]: firstFieldDbResult2,
+			[joinField1Id]: secondFieldDbResult2,
+			[joinField2Id]: thirdFieldDbResult2,
+		},
+	];
+
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
+
+	const readableStream = await driver.query(query);
+	const actualResult = await getActualResult(readableStream);
+
+	const expectedResult = [
+		{
+			[firstField]: firstFieldDbResult1,
+			[collectionToJoin]: {
+				[joinField1Alias]: secondFieldDbResult1,
+				[joinField2]: thirdFieldDbResult1,
+			},
+		},
+		{
+			[firstField]: firstFieldDbResult2,
+			[collectionToJoin]: {
+				[joinField1Alias]: secondFieldDbResult2,
+				[joinField2]: thirdFieldDbResult2,
+			},
+		},
+	];
+
+	expect(actualResult).toEqual(expectedResult);
+});
+
+test.todo('nested o2m field', async () => {
+	const collectionToJoin = randomIdentifier();
+	const joinField1 = randomIdentifier();
+	const joinField1Alias = randomIdentifier();
+	const joinField2 = randomIdentifier();
+	const primaryKeyField = randomIdentifier();
+	const collectionToJoinForeignKeyField = randomIdentifier();
+
+	const query: AbstractQuery = {
+		collection: rootCollection,
+		store: dataStore,
+		fields: [
+			{
+				type: 'primitive',
+				field: firstField,
+			},
+			{
+				type: 'nested-many',
+				fields: [
+					{
+						type: 'primitive',
+						field: joinField1,
+						alias: joinField1Alias,
+					},
+					{
+						type: 'primitive',
+						field: joinField2,
+					},
+				],
+				meta: {
+					type: 'o2m',
+					join: {
+						current: {
+							fields: [primaryKeyField],
+						},
+						external: {
+							store: dataStore,
+							collection: collectionToJoin,
+							fields: [collectionToJoinForeignKeyField],
+						},
+					},
+				},
+			},
+		],
+	};
+
+	const driver = new DataDriverPostgres({
+		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
+	});
+
+	const firstFieldDbResult1 = randomIdentifier();
+	const firstFieldDbResult2 = randomIdentifier();
+	const secondFieldDbResult1 = randomIdentifier();
+	const secondFieldDbResult2 = randomIdentifier();
+	const thirdFieldDbResult1 = randomIdentifier();
+	const thirdFieldDbResult2 = randomIdentifier();
+
+	/*
+	 * @TODO mock the database responses.
+	 * One mock for o part query, and multiple mocks for the m part.
+	 */
+
+	const readableStream = await driver.query(query);
+	const actualResult = getActualResult(readableStream);
+
+	const expectedResult = [
+		{
+			[firstField]: firstFieldDbResult1,
+			[collectionToJoin]: [
+				{
+					[joinField1Alias]: secondFieldDbResult1,
+					[joinField2]: thirdFieldDbResult1,
+				},
+				{
+					[joinField1Alias]: secondFieldDbResult2,
+					[joinField2]: thirdFieldDbResult2,
+				},
+			],
+		},
+		{
+			[firstField]: firstFieldDbResult2,
+			[collectionToJoin]: [],
+		},
+	];
+
+	expect(actualResult).toEqual(expectedResult);
 });
