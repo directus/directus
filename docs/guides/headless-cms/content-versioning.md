@@ -1,5 +1,5 @@
 ---
-description: This guide covers the process of enabling and utilizing content versioning in Directus.
+description: This guide covers the process of enabling and utilizing Content Versioning in Directus.
 contributors: Esther Agbaje
 ---
 
@@ -9,14 +9,14 @@ contributors: Esther Agbaje
 
 ## Introduction
 
-Content versioning allows teams to create and manage different versions of their content. There are several reasons to
-use content versioning, such as:
+Content Versioning allows teams to create and manage different versions of their content. There are several reasons to
+use Content Versioning, such as:
 
 - To keep track of changes to your content over time.
 - To collaborate seamlessly with others.
 - To restore previous versions of your content if necessary.
 
-With content versioning, when you have multiple people working on the same content, they no longer need to worry about
+With Content Versioning, when you have multiple people working on the same content, they no longer need to worry about
 overwriting each other's work. They can simply create separate versions to create changes, test out these changes, and
 promote them back into the main version when ready.
 
@@ -33,20 +33,20 @@ In this guide, we'll explore how to create and maintain different versions of yo
 
 ## Setting up Content Versioning
 
-To enable content versioning for a collection in Directus, follow these steps:
+To enable Content Versioning for a collection in Directus, follow these steps:
 
 1. Log in to your Directus instance.
 2. Navigate to **Settings** > **Data Model**.
-3. Select the collection that you want to enable content versioning for.
+3. Select the collection that you want to enable Content Versioning for.
 4. Scroll down to the Content Versioning section.
 5. Toggle "**Enable Versions**" and save your data model.
 
 ## Creating a New Version
 
-With content versioning set up, you can now create a new version of your content.
+With Content Versioning set up, you can now create a new version of your content.
 
 1. Open an item within your desired collection.
-2. At the top of the item view, you will notice a dropdown with the main content version displayed as "**main**".
+2. At the top of the item view, you will notice a dropdown with the main Content Version displayed as "**main**".
 3. From the dropdown, click "**Create Version**".
 4. Provide a **key** and a **name** for the new version. For instance, you can use "draft" as the key and "My Draft" as
    the name.
@@ -84,14 +84,14 @@ After promoting a version, you can choose to keep or delete the version.
 
 ::: tip Programmatically Implement Content Versioning
 
-You have the option to integrate content versioning through the API. To learn how to accomplish this, please refer to
+You have the option to integrate Content Versioning through the API. To learn how to accomplish this, please refer to
 our [API reference documentation](/reference/system/versions).
 
 :::
 
 ## Next Steps
 
-Over the course of this guide, you’ve set up content versioning for your collection and learned how to promote a version
+Over the course of this guide, you’ve set up Content Versioning for your collection and learned how to promote a version
 into the main version. Here are some additional tips when using this feature:
 
 - Name versions descriptively so it's clear what changes each version contains.

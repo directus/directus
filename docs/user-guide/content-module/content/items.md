@@ -211,7 +211,7 @@ steps:
 
 ## Implement Content Versioning on an Item
 
-To implement content versioning on an item in your collection, follow these steps:
+To implement Content Versioning on an item in your collection, follow these steps:
 
 1. Navigate to **Settings** > **Data Model** and choose the Collection.
 2. Locate the "**Content Versioning**" section and toggle to enable it.
