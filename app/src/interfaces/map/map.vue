@@ -79,7 +79,7 @@ const appStore = useAppStore();
 const { basemap } = toRefs(appStore);
 
 const style = computed(() => {
-	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+	const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 	return basemap.value, getStyleFromBasemapSource(source);
 });
 
@@ -301,10 +301,10 @@ function isTypeCompatible(a?: GeometryType, b?: GeometryType): boolean {
 	}
 
 	if (a.startsWith('Multi')) {
-		return a.replace('Multi', '') == b.replace('Multi', '');
+		return a.replace('Multi', '') === b.replace('Multi', '');
 	}
 
-	return a == b;
+	return a === b;
 }
 
 function loadValueFromProps() {
@@ -348,7 +348,7 @@ function getCurrentGeometry(): Geometry | null {
 	const geometries = features.map((f) => f.geometry) as (SimpleGeometry | MultiGeometry)[];
 	let result: Geometry;
 
-	if (geometries.length == 0) {
+	if (geometries.length === 0) {
 		return null;
 	} else if (!geometryType) {
 		if (geometries.length > 1) {
@@ -358,7 +358,7 @@ function getCurrentGeometry(): Geometry | null {
 		}
 	} else if (geometryType.startsWith('Multi')) {
 		const coordinates = geometries
-			.filter(({ type }) => `Multi${type}` == geometryType)
+			.filter(({ type }) => `Multi${type}` === geometryType)
 			.map(({ coordinates }) => coordinates);
 
 		result = { type: geometryType, coordinates } as Geometry;

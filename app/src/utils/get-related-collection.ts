@@ -28,7 +28,7 @@ export function getRelatedCollection(collection: string, field: string): Related
 	const o2mTypes = ['o2m', 'm2m', 'm2a', 'translations', 'files'];
 
 	if (localType && o2mTypes.includes(localType)) {
-		if (localType == 'm2m' && relations.length > 1) {
+		if (localType === 'm2m' && relations.length > 1) {
 			return {
 				relatedCollection: relations[1].related_collection!,
 				junctionCollection: relations[0].collection,

@@ -100,7 +100,7 @@ function formatUntypedPackages(untypedPackages: UntypedPackage[]): string {
 	const output = [];
 
 	for (const { name, changes } of untypedPackages) {
-		if (changes.length == 0) {
+		if (changes.length === 0) {
 			continue;
 		}
 

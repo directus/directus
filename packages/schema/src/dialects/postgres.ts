@@ -509,7 +509,7 @@ export default class Postgres implements SchemaInspector {
 
 		for (const column of parsedColumns) {
 			const geometry = geometries.find((geometry) => {
-				return column.name == geometry.name && column.table == geometry.table;
+				return column.name === geometry.name && column.table === geometry.table;
 			});
 
 			if (geometry) {

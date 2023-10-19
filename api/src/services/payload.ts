@@ -251,9 +251,9 @@ export class PayloadService {
 	 */
 	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
 		const process =
-			action == 'read'
+			action === 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
-				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
+				: (value: any) => this.helpers.st.fromGeoJSON(typeof value === 'string' ? parseJSON(value) : value);
 
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
@@ -628,8 +628,8 @@ export class PayloadService {
 						// http route, and or a bigInteger in the DB
 						if (
 							isNil(existingRecord[relation.field]) === false &&
-							(existingRecord[relation.field] == parent ||
-								existingRecord[relation.field] == payload[currentPrimaryKeyField])
+							(existingRecord[relation.field] === parent ||
+								existingRecord[relation.field] === payload[currentPrimaryKeyField])
 						) {
 							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
 							continue;

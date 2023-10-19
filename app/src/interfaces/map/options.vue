@@ -55,7 +55,7 @@ const appStore = useAppStore();
 const { basemap } = toRefs(appStore);
 
 const style = computed(() => {
-	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+	const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 	return getStyleFromBasemapSource(source);
 });
 

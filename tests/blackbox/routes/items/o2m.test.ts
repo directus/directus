@@ -1678,7 +1678,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toBe(200);
-					expect(response.body.data[0].states_count == count).toBeTruthy();
+					expect(response.body.data[0].states_count === count).toBeTruthy();
 
 					expect(gqlResponse.statusCode).toBe(200);
 					expect(gqlResponse.body.data[localCollectionCountries][0].states_func.count).toEqual(count);

@@ -328,7 +328,7 @@ function expandCluster(event: MapLayerMouseEvent) {
 }
 
 function hoverCluster(event: MapLayerMouseEvent) {
-	if (event.type == 'mousemove') {
+	if (event.type === 'mousemove') {
 		hoveredCluster.value = true;
 	} else {
 		hoveredCluster.value = false;

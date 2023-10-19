@@ -212,7 +212,7 @@ function useCropper() {
 		if (!imageData.value) return 'crop_original';
 
 		if (customAspectRatios) {
-			const customAspectRatio = customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
+			const customAspectRatio = customAspectRatios.find((customAR) => customAR.value === aspectRatio.value);
 			if (customAspectRatio) return 'crop_square';
 		}
 

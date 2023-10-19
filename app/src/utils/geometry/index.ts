@@ -111,7 +111,7 @@ export function toGeoJSON(entries: any[], options: GeometryOptions): FeatureColl
 		geojson.features.push(feature as Feature);
 	}
 
-	if (geojson.features.length == 0) {
+	if (geojson.features.length === 0) {
 		delete geojson.bbox;
 	}
 
@@ -121,7 +121,7 @@ export function toGeoJSON(entries: any[], options: GeometryOptions): FeatureColl
 export function flatten(geometry?: AnyGeometry): SimpleGeometry[] {
 	if (!geometry) return [];
 
-	if (geometry.type == 'GeometryCollection') {
+	if (geometry.type === 'GeometryCollection') {
 		return geometry.geometries.flatMap(flatten);
 	}
 

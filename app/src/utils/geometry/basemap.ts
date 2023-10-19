@@ -34,19 +34,19 @@ export function getBasemapSources(): BasemapSource[] {
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
-	if (basemap.type == 'style') {
+	if (basemap.type === 'style') {
 		return basemap.url;
 	} else {
 		const style: Style = { ...baseStyle };
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.attribution) source.attribution = basemap.attribution;
 
-		if (basemap.type == 'raster') {
+		if (basemap.type === 'raster') {
 			source.tiles = expandUrl(basemap.url);
 			source.tileSize = basemap.tileSize || 512;
 		}
 
-		if (basemap.type == 'tile') {
+		if (basemap.type === 'tile') {
 			source.url = basemap.url;
 		}
 

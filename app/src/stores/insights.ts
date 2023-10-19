@@ -187,7 +187,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	function emptyRelations() {
 		return unref(panels)
 			.filter(({ type }) => type === 'relational-variable')
-			.filter(({ options }) => get(unref(variables), options.field) == undefined)
+			.filter(({ options }) => get(unref(variables), options.field) === undefined)
 			.map(({ options }) => options.field)
 			.filter((fieldName) => typeof fieldName === 'string' && fieldName.length > 0);
 	}

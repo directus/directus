@@ -23,8 +23,8 @@ export async function getAccountabilityForToken(
 			const payload = verifyAccessJWT(token, env['SECRET'] as string);
 
 			accountability.role = payload.role;
-			accountability.admin = payload.admin_access === true || payload.admin_access == 1;
-			accountability.app = payload.app_access === true || payload.app_access == 1;
+			accountability.admin = payload.admin_access === true || payload.admin_access === 1;
+			accountability.app = payload.app_access === true || payload.app_access === 1;
 
 			if (payload.share) accountability.share = payload.share;
 			if (payload.share_scope) accountability.share_scope = payload.share_scope;
@@ -49,8 +49,8 @@ export async function getAccountabilityForToken(
 
 			accountability.user = user.id;
 			accountability.role = user.role;
-			accountability.admin = user.admin_access === true || user.admin_access == 1;
-			accountability.app = user.app_access === true || user.app_access == 1;
+			accountability.admin = user.admin_access === true || user.admin_access === 1;
+			accountability.app = user.app_access === true || user.app_access === 1;
 		}
 	}
 

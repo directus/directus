@@ -8,6 +8,7 @@ import { ComponentPublicInstance } from 'vue';
 export function getVueComponentName(vm: ComponentPublicInstance | null): string {
 	if (!vm) return `unknown`;
 	if (vm.$root === vm) return 'root';
+	// eslint-disable-next-line eqeqeq
 	const options = typeof vm === 'function' && (vm as any).cid != null ? (vm as any)?.options : vm?.$options;
 	let name = options.name || options.__name || options._componentTag;
 	const file = options.__file;

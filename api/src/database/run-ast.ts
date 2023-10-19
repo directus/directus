@@ -446,7 +446,7 @@ function mergeWithParentItems(
 		for (const parentItem of parentItems) {
 			const itemChild = nestedItems.find((nestedItem) => {
 				return (
-					nestedItem[schema.collections[nestedNode.relation.related_collection!]!.primary] ==
+					nestedItem[schema.collections[nestedNode.relation.related_collection!]!.primary] ===
 					parentItem[nestedNode.relation.field]
 				);
 			});
@@ -462,11 +462,11 @@ function mergeWithParentItems(
 				if (Array.isArray(nestedItem[nestedNode.relation.field])) return true;
 
 				return (
-					nestedItem[nestedNode.relation.field] ==
+					nestedItem[nestedNode.relation.field] ===
 						parentItem[schema.collections[nestedNode.relation.related_collection!]!.primary] ||
 					nestedItem[nestedNode.relation.field]?.[
 						schema.collections[nestedNode.relation.related_collection!]!.primary
-					] == parentItem[schema.collections[nestedNode.relation.related_collection!]!.primary]
+					] === parentItem[schema.collections[nestedNode.relation.related_collection!]!.primary]
 				);
 			});
 
@@ -526,7 +526,7 @@ function mergeWithParentItems(
 			}
 
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection]!.find((nestedItem) => {
-				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == parentItem[nestedNode.fieldKey];
+				return nestedItem[nestedNode.relatedKey[relatedCollection]!] === parentItem[nestedNode.fieldKey];
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;

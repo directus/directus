@@ -520,7 +520,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (!item || !to) return;
 
 				if (isRelational.value) {
-					if (groupsSortField.value == null) return;
+					if (groupsSortField.value === null) return;
 					await groupsChangeManualSort({ item, to });
 				} else {
 					if (!selectedGroup.value) return;

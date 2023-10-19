@@ -141,7 +141,7 @@ function addField(field: FieldTree) {
 	button.setAttribute('contenteditable', 'false');
 	button.innerText = String(field.name);
 
-	if (window.getSelection()?.rangeCount == 0) {
+	if (window.getSelection()?.rangeCount === 0) {
 		const range = document.createRange();
 		range.selectNodeContents(contentEl.value.children[0] as Node);
 		window.getSelection()?.addRange(range);

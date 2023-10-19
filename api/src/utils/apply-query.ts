@@ -785,19 +785,19 @@ export function applyFilter(
 				dbQuery[logical].whereNotBetween(selectionRaw, value);
 			}
 
-			if (operator == '_intersects') {
+			if (operator === '_intersects') {
 				dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
 			}
 
-			if (operator == '_nintersects') {
+			if (operator === '_nintersects') {
 				dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
 			}
 
-			if (operator == '_intersects_bbox') {
+			if (operator === '_intersects_bbox') {
 				dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
 			}
 
-			if (operator == '_nintersects_bbox') {
+			if (operator === '_nintersects_bbox') {
 				dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
 			}
 		}

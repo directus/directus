@@ -32,7 +32,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 		const schema = await getSchema();
 
-		if (skipAdminInit == null) {
+		if (!skipAdminInit) {
 			await createDefaultAdmin(schema);
 		} else {
 			logger.info('Skipping creation of default Admin user and role...');

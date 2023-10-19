@@ -37,7 +37,7 @@ export function parseIptc(buffer: Buffer): Record<string, unknown> {
 		const iptcData = buffer.subarray(iptcBlockDataPos, iptcBlockDataPos + iptcBlockSize).toString();
 
 		if (iptcBlockTypeId) {
-			if (iptc[iptcBlockTypeId] == null) {
+			if (!iptc[iptcBlockTypeId]) {
 				iptc[iptcBlockTypeId] = iptcData;
 			} else if (Array.isArray(iptc[iptcBlockTypeId])) {
 				iptc[iptcBlockTypeId].push(iptcData);

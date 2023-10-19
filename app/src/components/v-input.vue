@@ -202,9 +202,7 @@ function stepUp() {
 
 	input.value.stepUp();
 
-	if (input.value.value != null) {
-		return emit('update:modelValue', Number(input.value.value));
-	}
+	return emit('update:modelValue', Number(input.value.value));
 }
 
 function stepDown() {

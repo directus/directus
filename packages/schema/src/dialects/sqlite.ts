@@ -63,7 +63,7 @@ export default class SQLite implements SchemaInspector {
 						column.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table)
 							? 'AUTO_INCREMENT'
 							: parseDefaultValue(column.dflt_value),
-					is_nullable: column.notnull == 0,
+					is_nullable: column.notnull === 0,
 					is_generated: column.hidden !== 0,
 					data_type: extractType(column.type),
 					max_length: extractMaxLength(column.type),

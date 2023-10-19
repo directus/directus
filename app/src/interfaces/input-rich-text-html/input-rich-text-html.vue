@@ -286,10 +286,10 @@ function setup(editor: any) {
 }
 
 function setFocus(val: boolean) {
-	if (editorElement.value == null) return;
+	if (editorElement.value === null) return;
 	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
-	if (body == null) return;
+	if (body === null) return;
 
 	if (val) {
 		body.classList.add('focus');

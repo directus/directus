@@ -163,7 +163,7 @@ export default defineLayout<LayoutOptions>({
 					if (!collection.value) return;
 
 					if (props.selectMode || selection.value?.length > 0) {
-						const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
+						const item = items.value.find((item) => item[primaryKeyField.value!.field] === info.event.id);
 
 						if (item) {
 							const primaryKey = item[primaryKeyField.value!.field];

@@ -115,11 +115,11 @@ export class BoxSelectControl {
 	}
 
 	onKeyDown(event: KeyboardEvent): void {
-		if (event.key == 'Shift') {
+		if (event.key === 'Shift') {
 			this.activate(true);
 		}
 
-		if (event.key == 'Escape') {
+		if (event.key === 'Escape') {
 			this.reset();
 			this.activate(false);
 			this.map!.fire('select.end', { features: [] });
@@ -133,7 +133,7 @@ export class BoxSelectControl {
 	}
 
 	onKeyUp(event: KeyboardEvent): void {
-		if (event.key == 'Shift') {
+		if (event.key === 'Shift') {
 			this.activate(false);
 		}
 	}

@@ -40,6 +40,8 @@ const basicRules = {
 	'no-nested-ternary': 'error',
 	// Require brace style for multi-line control statements
 	curly: ['error', 'multi-line'],
+	// Require the use of type-safe equality operators
+	eqeqeq: 'error',
 };
 
 const tsRules = {

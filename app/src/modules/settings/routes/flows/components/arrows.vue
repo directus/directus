@@ -208,7 +208,7 @@ const arrows = computed(() => {
 		let pointer = Math.floor(possiblePlaces.length / 2);
 
 		for (let i = 0; i < possiblePlaces.length; i++) {
-			pointer += i * (i % 2 == 0 ? -1 : 1);
+			pointer += i * (i % 2 === 0 ? -1 : 1);
 			if (possiblePlaces[pointer]) return min[axis] + pointer * 20;
 		}
 

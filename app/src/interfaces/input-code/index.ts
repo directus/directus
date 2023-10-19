@@ -11,7 +11,7 @@ const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choi
 		return acc;
 	}
 
-	if (choice.mode == null || choice.mode == 'null') {
+	if (choice.mode === null || choice.mode === 'null') {
 		choice.mode = 'plaintext';
 	}
 

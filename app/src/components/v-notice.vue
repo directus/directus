@@ -21,13 +21,13 @@ const iconName = computed(() => {
 		return props.icon;
 	}
 
-	if (props.type == 'info') {
+	if (props.type === 'info') {
 		return 'info';
-	} else if (props.type == 'success') {
+	} else if (props.type === 'success') {
 		return 'check_circle';
-	} else if (props.type == 'warning') {
+	} else if (props.type === 'warning') {
 		return 'warning';
-	} else if (props.type == 'danger') {
+	} else if (props.type === 'danger') {
 		return 'error';
 	} else {
 		return 'info';

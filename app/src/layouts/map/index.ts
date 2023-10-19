@@ -50,12 +50,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const geometryField = syncRefProperty(layoutOptions, 'geometryField', undefined);
 
 		const geometryFieldData = computed(() => {
-			return fieldsInCollection.value.find((f: Field) => f.field == geometryField.value);
+			return fieldsInCollection.value.find((f: Field) => f.field === geometryField.value);
 		});
 
 		const geometryFields = computed(() => {
 			return (fieldsInCollection.value as Field[]).filter(
-				({ type, meta }) => type.startsWith('geometry') || meta?.interface == 'map'
+				({ type, meta }) => type.startsWith('geometry') || meta?.interface === 'map'
 			);
 		});
 
