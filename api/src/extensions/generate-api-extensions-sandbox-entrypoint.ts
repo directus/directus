@@ -64,8 +64,8 @@ export function generateApiExtensionsSandboxEntrypoint(
 			extensionExport({ filter, action }, context);
 		`;
 
-		const { filter, filterUnregisterFunctions } = registerFilterGenerator();
-		const { action, actionUnregisterFunctions } = registerActionGenerator();
+		const { register: filter, unregisterFunctions: filterUnregisterFunctions } = registerFilterGenerator();
+		const { register: action, unregisterFunctions: actionUnregisterFunctions } = registerActionGenerator();
 
 		hostFunctions.push(filter);
 		hostFunctions.push(action);
@@ -103,11 +103,11 @@ export function generateApiExtensionsSandboxEntrypoint(
 			extensionExport(router, context);
 		`;
 
-		const { registerRoute, registerRouteUnregisterFunction } = registerRouteGenerator(name, endpointRouter);
+		const { register, unregisterFunction } = registerRouteGenerator(name, endpointRouter);
 
-		hostFunctions.push(registerRoute);
+		hostFunctions.push(register);
 
-		return { code, hostFunctions, unregisterFunction: registerRouteUnregisterFunction };
+		return { code, hostFunctions, unregisterFunction };
 	} else {
 		const code = `
 			${preamble}
@@ -120,12 +120,12 @@ export function generateApiExtensionsSandboxEntrypoint(
 			registerOperation(operationConfig.id, operationConfig.handler);
 		`;
 
-		const { registerOperation, registerOperationUnregisterFunctions } = registerOperationGenerator();
+		const { register, unregisterFunctions } = registerOperationGenerator();
 
-		hostFunctions.push(registerOperation);
+		hostFunctions.push(register);
 
 		const unregisterFunction = async () => {
-			await Promise.all(registerOperationUnregisterFunctions.map((fn) => fn()));
+			await Promise.all(unregisterFunctions.map((fn) => fn()));
 		};
 
 		return { code, hostFunctions, unregisterFunction };

@@ -25,9 +25,12 @@ export async function timeout(milliseconds: Reference<number>): Promise<void> {
 export function registerFilterGenerator() {
 	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
-	const filterUnregisterFunctions: PromiseCallback[] = [];
+	const unregisterFunctions: PromiseCallback[] = [];
 
-	const filter = (event: Reference<string>, cb: Reference<(payload: unknown) => unknown | Promise<unknown>>) => {
+	const registerFilter = (
+		event: Reference<string>,
+		cb: Reference<(payload: unknown) => unknown | Promise<unknown>>
+	) => {
 		if (event.typeof !== 'string') throw new Error('Filter event has to be of type string');
 		if (cb.typeof !== 'function') throw new Error('Filter handler has to be of type function');
 
@@ -45,20 +48,20 @@ export function registerFilterGenerator() {
 
 		emitter.onFilter(eventCopied, handler);
 
-		filterUnregisterFunctions.push(() => {
+		unregisterFunctions.push(() => {
 			emitter.offFilter(eventCopied, handler);
 		});
 	};
 
-	return { filter, filterUnregisterFunctions };
+	return { register: registerFilter, unregisterFunctions };
 }
 
 export function registerActionGenerator() {
 	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
-	const actionUnregisterFunctions: PromiseCallback[] = [];
+	const unregisterFunctions: PromiseCallback[] = [];
 
-	const action = (event: Reference<string>, cb: Reference<(payload: unknown) => void | Promise<void>>) => {
+	const registerAction = (event: Reference<string>, cb: Reference<(payload: unknown) => void | Promise<void>>) => {
 		if (event.typeof !== 'string') throw new Error('Action event has to be of type string');
 		if (cb.typeof !== 'function') throw new Error('Action handler has to be of type function');
 
@@ -73,12 +76,12 @@ export function registerActionGenerator() {
 
 		emitter.onAction(eventCopied, handler);
 
-		actionUnregisterFunctions.push(() => {
+		unregisterFunctions.push(() => {
 			emitter.offAction(eventCopied, handler);
 		});
 	};
 
-	return { action, actionUnregisterFunctions };
+	return { register: registerAction, unregisterFunctions };
 }
 
 export function registerRouteGenerator(endpointName: string, endpointRouter: Router) {
@@ -139,11 +142,11 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 		}
 	};
 
-	const registerRouteUnregisterFunction = () => {
+	const unregisterFunction = () => {
 		endpointRouter.stack = endpointRouter.stack.filter((layer) => router !== layer.handle);
 	};
 
-	return { registerRoute, registerRouteUnregisterFunction };
+	return { register: registerRoute, unregisterFunction };
 }
 
 export function registerOperationGenerator() {
@@ -151,7 +154,7 @@ export function registerOperationGenerator() {
 
 	const flowManager = getFlowManager();
 
-	const registerOperationUnregisterFunctions: PromiseCallback[] = [];
+	const unregisterFunctions: PromiseCallback[] = [];
 
 	const registerOperation = (
 		id: Reference<string>,
@@ -171,10 +174,10 @@ export function registerOperationGenerator() {
 
 		flowManager.addOperation(idCopied, handler);
 
-		registerOperationUnregisterFunctions.push(() => {
+		unregisterFunctions.push(() => {
 			flowManager.removeOperation(idCopied);
 		});
 	};
 
-	return { registerOperation, registerOperationUnregisterFunctions };
+	return { register: registerOperation, unregisterFunctions };
 }
