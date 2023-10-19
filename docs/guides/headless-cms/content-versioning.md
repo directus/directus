@@ -85,7 +85,7 @@ After promoting a version, you can choose to keep or delete the version.
 ::: tip Programmatically Implement Content Versioning
 
 You have the option to integrate content versioning through the API. To learn how to accomplish this, please refer to
-our [API reference documentation](/reference/system/collections).
+our [API reference documentation](/reference/system/versions).
 
 :::
 
