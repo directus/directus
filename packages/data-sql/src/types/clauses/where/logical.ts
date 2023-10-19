@@ -13,5 +13,5 @@ export interface AbstractSqlQueryLogicalNode {
 	negate: boolean;
 
 	/* A list of conditions or a nested group with another operator. */
-	childNodes: (AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode)[];
+	childNodes: [AbstractSqlQueryConditionNode, ...AbstractSqlQueryConditionNode[]] | AbstractSqlQueryLogicalNode[];
 }
