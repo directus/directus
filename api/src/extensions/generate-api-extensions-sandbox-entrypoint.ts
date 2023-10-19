@@ -7,7 +7,7 @@ import {
 	registerOperationGenerator,
 	registerRouteGenerator,
 	timeout,
-} from './sandbox-extension-registration.js';
+} from './api-sandbox-registration.js';
 
 function* parameterIndexGenerator(): Generator<number, number, number> {
 	let index = 0;
