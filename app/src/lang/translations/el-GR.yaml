@@ -27,6 +27,7 @@ method: Μέθοδος
 published: Δημοσιευμένο
 draft: Πρόχειρο
 archived: Αρχειοθετήθηκε
+extensions: Επεκτάσεις
 modules: Ενότητες
 module_bar: Γραμμή Ενθεμάτων
 logs: Αρχεία καταγραφής (Logs)
@@ -35,6 +36,7 @@ tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
 location: Τοποθεσία
+collection_names_are_case_sensitive: Τα ονόματα των συλλογών εφαρμόζουν διάκριση πεζών - κεφαλαίων γραμμάτων
 condition_rules: Κανόνες Κατάστασης
 input: Εισαγωγή
 maps: Χάρτες
