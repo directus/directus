@@ -1,12 +1,13 @@
 import { numberGenerator } from '@directus/utils';
 import type { Isolate, Module } from 'isolated-vm';
-import { log, sleep } from './api-sandbox-sdk.js';
+import { log, request, sleep } from './api-sandbox-sdk.js';
 import { generateHostFunctionReference } from './generate-host-function-reference.js';
 
 function getSdk() {
 	return [
 		{ name: 'log', handler: log, args: ['message'], async: false },
 		{ name: 'sleep', handler: sleep, args: ['milliseconds'], async: true },
+		{ name: 'request', handler: request, args: ['url', 'options'], async: true },
 	];
 }
 
