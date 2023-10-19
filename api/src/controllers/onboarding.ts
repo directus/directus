@@ -1,5 +1,5 @@
+import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import express from 'express';
-import { ForbiddenError, InvalidCredentialsError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { collectOnboarding } from '../utils/onboarding.js';
