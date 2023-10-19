@@ -160,7 +160,7 @@ function addKeyAsNode() {
 	</v-notice>
 
 	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
-		<v-list :mandatory="true">
+		<v-list mandatory>
 			<div v-if="innerValue.length === 0" class="no-rules">
 				{{ t('interfaces.filter.no_rules') }}
 			</div>

@@ -175,7 +175,7 @@ function toggleManualSort() {
 	<thead class="table-header" :class="{ resizing, reordering }">
 		<draggable
 			v-model="headersWritable"
-			:force-fallback="true"
+			force-fallback
 			:class="{ fixed }"
 			item-key="value"
 			tag="tr"

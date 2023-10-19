@@ -155,7 +155,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 			:model-value="fileHandler !== null"
 			icon="image"
 			:title="t('upload_from_device')"
-			:cancelable="true"
+			cancelable
 			@update:model-value="unsetFileHandler"
 			@cancel="unsetFileHandler"
 		>

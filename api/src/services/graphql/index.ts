@@ -49,7 +49,7 @@ import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
+import { ErrorCode, ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { getExtensionManager } from '../../extensions/index.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';

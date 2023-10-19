@@ -16,7 +16,7 @@ import {
 	IllegalAssetTransformationError,
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
-} from '../errors/index.js';
+} from '@directus/errors';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';

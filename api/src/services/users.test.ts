@@ -4,7 +4,7 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '../errors/index.js';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({

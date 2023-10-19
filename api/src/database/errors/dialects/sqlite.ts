@@ -3,7 +3,7 @@ import {
 	InvalidForeignKeyError,
 	NotNullViolationError,
 	RecordNotUniqueError,
-} from '../../../errors/index.js';
+} from '@directus/errors';
 import type { SQLiteError } from './types.js';
 
 // NOTE:
