@@ -8,8 +8,8 @@ export function log(message: Reference<string>): void {
 	logger.info(message.copySync());
 }
 
-export async function timeout(milliseconds: Reference<number>): Promise<void> {
-	if (milliseconds.typeof !== 'number') throw new Error('Timeout message has to be of type number');
+export async function sleep(milliseconds: Reference<number>): Promise<void> {
+	if (milliseconds.typeof !== 'number') throw new Error('Sleep milliseconds has to be of type number');
 
 	await setTimeout(await milliseconds.copy());
 }
