@@ -66,7 +66,7 @@ const unsortableJunctionFields = computed(() => {
 				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
 				:placeholder="t('add_sort_field') + '...'"
-				:nullable="true"
+				nullable
 			/>
 		</div>
 

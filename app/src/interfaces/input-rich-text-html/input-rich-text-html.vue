@@ -362,7 +362,7 @@ function setFocus(val: boolean) {
 				<interface-input-code
 					:value="code"
 					language="htmlmixed"
-					:line-wrapping="true"
+					line-wrapping
 					@input="code = $event"
 				></interface-input-code>
 			</div>
@@ -406,7 +406,7 @@ function setFocus(val: boolean) {
 							<v-select
 								v-model="imageSelection.transformationKey"
 								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
-								:show-deselect="true"
+								show-deselect
 							/>
 						</div>
 					</div>

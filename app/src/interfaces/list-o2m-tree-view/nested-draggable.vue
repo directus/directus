@@ -207,7 +207,7 @@ function stageEdits(item: Record<string, any>) {
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		:disabled="disabled"
-		:force-fallback="true"
+		force-fallback
 		@start="drag = true"
 		@end="drag = false"
 		@change="change($event as ChangeEvent)"
