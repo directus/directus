@@ -49,27 +49,26 @@ export default class DataDriverPostgres implements DataDriver {
 	// We might can move this function into data-sql and pass some functions from the driver to it (?)
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, any>>> {
 		// const abstractSql = convertQuery(query);
+		console.log('querying database', abstractSql);
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
-		const rootStream = await this.getDataFromSource(this.#pool, { statement, parameters });
+
+		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
 		const ormTransformer = getOrmTransformer(abstractSql.aliasMapping);
-		return rootStream.pipeThrough(ormTransformer);
+		return stream.pipeThrough(ormTransformer);
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream> {
 		const abstractSql = convertQuery(query);
 		const rootStream = await this.queryDatabase(abstractSql);
 
-		const subStreams = [];
-
-		for await (const rootChunk of rootStream) {
+		for await (const chunk of rootStream) {
 			for (const nestedMany of abstractSql.nestedManys) {
-				const internalRelationalFieldValues = nestedMany.internalRelationFields.map((field) => rootChunk[field]);
+				// @TODO enable composite keys
+				const identifierValueFromChunk = chunk[nestedMany.internalIdentifierFields[0]];
 
-				// @ts-ignore - how to make sure that a string or number is returned?
-				const subQuery = nestedMany.queryGenerator(internalRelationalFieldValues);
+				const subQuery = nestedMany.queryGenerator([identifierValueFromChunk]);
 				const subStream = await this.queryDatabase(subQuery);
-				subStreams.push(subStream);
 			}
 		}
 

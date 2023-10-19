@@ -52,9 +52,10 @@ export interface AbstractSqlNestedMany {
 	 * The nested many sub queries cannot be generated complement, since they rely on the result of the root query
 	 * Therefore we use a function here instead, which takes the missing values as parameters to generate the actual sub query.
 	 */
-	internalRelationFields: string[];
 	queryGenerator: (internalRelationalFieldValues: [string | number, ...(string | number)[]]) => AbstractSqlQuery;
 	alias: string;
+	externalKeyFields: [string | number, ...(string | number)[]];
+	internalIdentifierFields: [string | number, ...(string | number)[]];
 }
 
 export * from './clauses/index.js';

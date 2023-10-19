@@ -13,7 +13,7 @@ export function convertManyNodeToAbstractQuery(
 		throw new Error('Not yet implemented');
 	}
 
-	const relationalKeyFields = nestedMany.meta.join.external.fields;
+	const relationalKeyFields = nestedMany.meta.external.fields;
 	const relationalKeyValues = relationalKeyFields.map((i) => chunk[i]);
 
 	let filter = null;
@@ -36,8 +36,8 @@ export function convertManyNodeToAbstractQuery(
 	}
 
 	return {
-		store: nestedMany.meta.join.external.store,
-		collection: nestedMany.meta.join.external.collection,
+		store: nestedMany.meta.external.store,
+		collection: nestedMany.meta.external.collection,
 		fields: nestedMany.fields,
 		modifiers: { filter },
 	};
