@@ -41,7 +41,7 @@ export interface AbstractQueryFieldNodeRelationalOneToAny {
  * @example
  * ```
  * const functionNode = {
- * 	current: {
+ * 	internal: {
  * 		fields: ['id']
  *  },
  * 	external: {
@@ -52,7 +52,7 @@ export interface AbstractQueryFieldNodeRelationalOneToAny {
  */
 export interface AbstractQueryFieldNodeRelationalJoinMany {
 	/** the fields of the current collection which have the relational value to an external collection or item */
-	current: {
+	internal: {
 		fields: [string, ...string[]];
 	};
 
@@ -65,13 +65,13 @@ export interface AbstractQueryFieldNodeRelationalJoinMany {
 }
 
 export interface AbstractQueryFieldNodeRelationalJoinAny {
-	current: {
+	internal: {
 		collectionField: string;
 		fields: [string, ...string[]];
 	};
 
 	external: {
-		store?: string;
+		store: string;
 		fields: [string, ...string[]];
 	};
 }

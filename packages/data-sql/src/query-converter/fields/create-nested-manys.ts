@@ -10,13 +10,13 @@ export function getSubQuery(
 ): AbstractSqlNestedMany {
 	const where = getWhereClause(fieldMeta, idxGenerator);
 	return {
-		queryGenerator: (fields: [string, ...string[]]) => ({
+		queryGenerator: (internalRelationalFieldValues) => ({
 			clauses: {
 				select: nestedOutput.clauses.select,
 				from: fieldMeta.join.external.collection,
 				where,
 			},
-			parameters: [...nestedOutput.parameters, ...fields],
+			parameters: [...nestedOutput.parameters, ...internalRelationalFieldValues],
 			aliasMapping: nestedOutput.aliasMapping,
 			nestedManys: nestedOutput.nestedManys,
 		}),
@@ -28,22 +28,21 @@ function getWhereClause(
 	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
 	idxGenerator: Generator<number, number, number>
 ): AbstractSqlQueryWhereNode {
-	let where: AbstractSqlQueryWhereNode;
+	const table = fieldMeta.join.external.collection;
 
-	if (fieldMeta.join.current.fields.length === 1) {
-		where = getCondition(fieldMeta.join.external.collection, fieldMeta.join.external.fields[0], idxGenerator);
-	} else {
-		where = {
+	if (fieldMeta.join.internal.fields.length < 1) {
+		return {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: fieldMeta.join.current.fields.map((field) =>
-				getCondition(fieldMeta.join.external.collection, field, idxGenerator)
-			),
+			childNodes: fieldMeta.join.internal.fields.map((field) => getCondition(table, field, idxGenerator)) as [
+				AbstractSqlQueryConditionNode,
+				...AbstractSqlQueryConditionNode[]
+			],
 		};
+	} else {
+		return getCondition(table, fieldMeta.join.external.fields[0], idxGenerator);
 	}
-
-	return where;
 }
 
 function getCondition(
@@ -54,7 +53,7 @@ function getCondition(
 	return {
 		type: 'condition',
 		condition: {
-			type: 'condition-string',
+			type: 'condition-string', // could also be a condition-number, but it doesn't matter because both support 'eq'
 			operation: 'eq',
 			target: {
 				type: 'primitive',

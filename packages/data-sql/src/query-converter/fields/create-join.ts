@@ -10,12 +10,12 @@ export const createJoin = (
 ): AbstractSqlQueryJoinNode => {
 	let on: AbstractSqlQueryLogicalNode | AbstractSqlQueryConditionNode;
 
-	if (relationalField.join.current.fields.length > 1) {
+	if (relationalField.join.internal.fields.length > 1) {
 		on = {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: relationalField.join.current.fields.map((currentField, index) => {
+			childNodes: relationalField.join.internal.fields.map((currentField, index) => {
 				const externalField = relationalField.join.external.fields[index];
 
 				if (!externalField) {
@@ -28,7 +28,7 @@ export const createJoin = (
 	} else {
 		on = getJoinCondition(
 			currentCollection,
-			relationalField.join.current.fields[0],
+			relationalField.join.internal.fields[0],
 			externalCollectionAlias,
 			relationalField.join.external.fields[0]
 		);

@@ -29,7 +29,7 @@ describe('create abstract query with filter for sub query', () => {
 			meta: {
 				type: 'o2m',
 				join: {
-					current: {
+					internal: {
 						fields: [relationalKeyFieldCurrent],
 					},
 					external: {

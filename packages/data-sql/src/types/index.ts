@@ -47,12 +47,12 @@ export interface AbstractSqlQuery {
 	nestedManys: AbstractSqlNestedMany[];
 }
 
-// @TODO move to types module and make use of it where possible
-type ArrayOneElement<T> = [T, ...T[]];
-type ArrayTwoElements<T> = [T, T, ...T[]];
-
 export interface AbstractSqlNestedMany {
-	queryGenerator: (fields: [string, ...string[]]) => AbstractSqlQuery;
+	/*
+	 * The nested many sub queries cannot be generated complement, since they rely on the result of the root query
+	 * Therefore we use a function here instead, which takes the missing values as parameters to generate the actual sub query.
+	 */
+	queryGenerator: (internalRelationalFieldValues: [string | number, ...(string | number)[]]) => AbstractSqlQuery;
 	alias: string;
 }
 

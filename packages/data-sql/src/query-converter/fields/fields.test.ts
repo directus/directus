@@ -144,7 +144,7 @@ test('primitive, fn, m2o', () => {
 			meta: {
 				type: 'm2o',
 				join: {
-					current: {
+					internal: {
 						fields: [randomJoinCurrentField],
 					},
 					external: {
@@ -257,7 +257,7 @@ test('primitive, o2m', () => {
 			meta: {
 				type: 'o2m',
 				join: {
-					current: {
+					internal: {
 						fields: [randomJoinCurrentField],
 					},
 					external: {

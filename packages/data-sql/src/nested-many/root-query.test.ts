@@ -60,7 +60,7 @@ test.todo('get root query', () => {
 						meta: {
 							type: 'o2m',
 							join: {
-								current: {
+								internal: {
 									fields: [relationalKeyField2],
 								},
 								external: {
@@ -75,7 +75,7 @@ test.todo('get root query', () => {
 				meta: {
 					type: 'o2m',
 					join: {
-						current: {
+						internal: {
 							fields: [relationalKeyField1],
 						},
 						external: {
