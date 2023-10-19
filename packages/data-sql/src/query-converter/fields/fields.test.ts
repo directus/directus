@@ -288,6 +288,7 @@ test('primitive, o2m', () => {
 			{
 				queryGenerator: expect.any(Function),
 				alias: `${randomExternalCollection}_RANDOM`,
+				internalRelationFields: [randomJoinCurrentField],
 			},
 		],
 	};

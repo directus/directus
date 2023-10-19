@@ -101,6 +101,7 @@ test('nested with local fields', async () => {
 			[firstFieldId, [firstField]],
 			[secondFieldId, [secondFieldAlias]],
 		]),
+		nestedManys: [],
 	});
 
 	const driver = new DataDriverPostgres({
@@ -180,7 +181,7 @@ test('nested m2o field', async () => {
 				meta: {
 					type: 'm2o',
 					join: {
-						current: {
+						internal: {
 							fields: [foreignKeyField],
 						},
 						external: {
@@ -252,6 +253,7 @@ test('nested m2o field', async () => {
 			[joinField1Id, [collectionToJoin, joinField1Alias]],
 			[joinField2Id, [collectionToJoin, joinField2]],
 		]),
+		nestedManys: [],
 	});
 
 	const driver = new DataDriverPostgres({
@@ -336,7 +338,7 @@ test.todo('nested o2m field', async () => {
 				meta: {
 					type: 'o2m',
 					join: {
-						current: {
+						internal: {
 							fields: [primaryKeyField],
 						},
 						external: {

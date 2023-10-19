@@ -3,12 +3,11 @@
  *
  * @packageDocumentation
  */
-import type { AbstractQuery, AbstractQueryFieldNodeNestedMany, DataDriver } from '@directus/data';
+import type { AbstractQuery, DataDriver } from '@directus/data';
 import {
-	convertManyNodeToAbstractQuery,
 	convertQuery,
 	getOrmTransformer,
-	getRootQuery,
+	type AbstractSqlQuery,
 	type ParameterizedSqlStatement,
 } from '@directus/data-sql';
 import { ReadableStream } from 'node:stream/web';
@@ -48,8 +47,8 @@ export default class DataDriverPostgres implements DataDriver {
 	}
 
 	// We might can move this function into data-sql and pass some functions from the driver to it (?)
-	private async queryDatabase(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
-		const abstractSql = convertQuery(query);
+	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, any>>> {
+		// const abstractSql = convertQuery(query);
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
 		const rootStream = await this.getDataFromSource(this.#pool, { statement, parameters });
@@ -58,19 +57,17 @@ export default class DataDriverPostgres implements DataDriver {
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream> {
-		const rootQuery = getRootQuery(query);
-		const rootStream = await this.queryDatabase(rootQuery);
-		const nestedManyNodes = query.fields.filter((i) => i.type === 'nested-many') as AbstractQueryFieldNodeNestedMany[];
+		const abstractSql = convertQuery(query);
+		const rootStream = await this.queryDatabase(abstractSql);
 
 		const subStreams = [];
 
 		for await (const rootChunk of rootStream) {
-			for (const nestedMany of nestedManyNodes) {
-				if (nestedMany.meta.type !== 'o2m') {
-					throw new Error('o2a is not yet implemented');
-				}
+			for (const nestedMany of abstractSql.nestedManys) {
+				const internalRelationalFieldValues = nestedMany.internalRelationFields.map((field) => rootChunk[field]);
 
-				const subQuery = convertManyNodeToAbstractQuery(nestedMany, rootChunk);
+				// @ts-ignore - how to make sure that a string or number is returned?
+				const subQuery = nestedMany.queryGenerator(internalRelationalFieldValues);
 				const subStream = await this.queryDatabase(subQuery);
 				subStreams.push(subStream);
 			}
@@ -78,6 +75,28 @@ export default class DataDriverPostgres implements DataDriver {
 
 		return rootStream;
 	}
+
+	// async queryAbstract(query: AbstractQuery): Promise<ReadableStream> {
+	// 	const rootQuery = getRootQuery(query);
+	// 	const rootStream = await this.queryDatabase(rootQuery);
+	// 	const nestedManyNodes = query.fields.filter((i) => i.type === 'nested-many') as AbstractQueryFieldNodeNestedMany[];
+
+	// 	const subStreams = [];
+
+	// 	for await (const rootChunk of rootStream) {
+	// 		for (const nestedMany of nestedManyNodes) {
+	// 			if (nestedMany.meta.type !== 'o2m') {
+	// 				throw new Error('o2a is not yet implemented');
+	// 			}
+
+	// 			const subQuery = convertManyNodeToAbstractQuery(nestedMany, rootChunk);
+	// 			const subStream = await this.queryDatabase(subQuery);
+	// 			subStreams.push(subStream);
+	// 		}
+	// 	}
+
+	// 	return rootStream;
+	// }
 }
 
 // this function can go into data-sql

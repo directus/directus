@@ -21,6 +21,7 @@ export function getSubQuery(
 			nestedManys: nestedOutput.nestedManys,
 		}),
 		alias,
+		internalRelationFields: fieldMeta.join.internal.fields,
 	};
 }
 

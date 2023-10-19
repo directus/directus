@@ -86,20 +86,22 @@ export const convertFieldNodes = (
 			 * The driver itself can use different technique if another technique is more performant,
 			 * like do a sub query in the statement or a join.
 			 */
-
 			const fieldMeta = abstractField.meta;
 
-			if (fieldMeta.type === 'o2m') {
-				const externalCollectionAlias = createUniqueAlias(fieldMeta.join.external.collection);
-
-				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
-					...currentPath,
-					fieldMeta.join.external.collection,
-				]);
-
-				const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, idxGenerator, externalCollectionAlias);
-				nestedManys.push(abstractSqlSubQuery);
+			if (fieldMeta.type !== 'o2m') {
+				continue;
 			}
+
+			const externalCollectionAlias = createUniqueAlias(fieldMeta.join.external.collection);
+
+			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
+				...currentPath,
+				fieldMeta.join.external.collection,
+			]);
+
+			const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, idxGenerator, externalCollectionAlias);
+			nestedManys.push(abstractSqlSubQuery);
+			continue;
 		}
 
 		if (abstractField.type === 'fn') {
