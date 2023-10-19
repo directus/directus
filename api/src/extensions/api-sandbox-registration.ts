@@ -79,7 +79,7 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 
 	const registerRoute = (
 		path: Reference<string>,
-		method: Reference<'get' | 'post' | 'put' | 'patch' | 'delete'>,
+		method: Reference<'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'>,
 		cb: Reference<
 			(req: {
 				url: string;
@@ -110,19 +110,19 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 		};
 
 		switch (methodCopied) {
-			case 'get':
+			case 'GET':
 				router.get(pathCopied, handler);
 				break;
-			case 'post':
+			case 'POST':
 				router.post(pathCopied, handler);
 				break;
-			case 'put':
+			case 'PUT':
 				router.put(pathCopied, handler);
 				break;
-			case 'patch':
+			case 'PATCH':
 				router.patch(pathCopied, handler);
 				break;
-			case 'delete':
+			case 'DELETE':
 				router.delete(pathCopied, handler);
 				break;
 		}
