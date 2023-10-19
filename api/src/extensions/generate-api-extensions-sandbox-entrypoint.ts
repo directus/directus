@@ -1,9 +1,11 @@
 import type { ApiExtensionType, HybridExtensionType } from '@directus/extensions';
+import type { Router } from 'express';
 import {
 	log,
 	registerActionGenerator,
 	registerFilterGenerator,
 	registerOperationGenerator,
+	registerRouteGenerator,
 	timeout,
 } from './sandbox-extension-registration.js';
 
@@ -28,7 +30,11 @@ function generateHostFunctionReference(
 	} }});`;
 }
 
-export function generateApiExtensionsSandboxEntrypoint(type: ApiExtensionType | HybridExtensionType) {
+export function generateApiExtensionsSandboxEntrypoint(
+	type: ApiExtensionType | HybridExtensionType,
+	name: string,
+	endpointRouter: Router
+) {
 	const index = parameterIndexGenerator();
 
 	const hostFunctions = [];
@@ -74,21 +80,34 @@ export function generateApiExtensionsSandboxEntrypoint(type: ApiExtensionType | 
 			${preamble}
 			${context}
 
+			const registerRoute = ${generateHostFunctionReference(index, ['path', 'method', 'handler'], { async: false })}
+
 			const router = {
-				get: (route, cb) => {
-					exec('register-endpoint', 'get', route, cb);
+				get: (path, handler) => {
+					registerRoute(path, 'get', handler);
 				},
-				post: (route, cb) => {
-					exec('register-endpoint', 'post', route, cb);
+				post: (path, handler) => {
+					registerRoute(path, 'post', handler);
+				},
+				put: (path, handler) => {
+					registerRoute(path, 'put', handler);
+				},
+				patch: (path, handler) => {
+					registerRoute(path, 'patch', handler);
+				},
+				delete: (path, handler) => {
+					registerRoute(path, 'delete', handler);
 				}
 			};
 
 			extensionExport(router, context);
 		`;
 
-		const unregisterFunction = async () => {};
+		const { registerRoute, registerRouteUnregisterFunction } = registerRouteGenerator(name, endpointRouter);
 
-		return { code, hostFunctions, unregisterFunction };
+		hostFunctions.push(registerRoute);
+
+		return { code, hostFunctions, unregisterFunction: registerRouteUnregisterFunction };
 	} else {
 		const code = `
 			${preamble}

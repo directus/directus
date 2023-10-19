@@ -430,7 +430,11 @@ export class ExtensionManager {
 
 			const cb = await module.namespace.get('default', { reference: true });
 
-			const { code, hostFunctions, unregisterFunction } = generateApiExtensionsSandboxEntrypoint(extension.type);
+			const { code, hostFunctions, unregisterFunction } = generateApiExtensionsSandboxEntrypoint(
+				extension.type,
+				extension.name,
+				this.endpointRouter
+			);
 
 			await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
 				timeout: sandboxTimeout,
