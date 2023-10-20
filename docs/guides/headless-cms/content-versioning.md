@@ -10,17 +10,7 @@ contributors: Esther Agbaje
 ## Introduction
 
 Content Versioning allows teams to create and manage different versions of their content. There are several reasons to
-use Content Versioning, such as:
-
-- To keep track of changes to your content over time.
-- To collaborate seamlessly with others.
-- To restore previous versions of your content if necessary.
-
-With Content Versioning, when you have multiple people working on the same content, they no longer need to worry about
-overwriting each other's work. They can simply create separate versions to create changes, test out these changes, and
-promote them back into the main version when ready.
-
-In this guide, we'll explore how to create and maintain different versions of your content in Directus.
+use Content Versioning, including drafting content without publishing it, and more ways to collaborate with others.
 
 ## Concepts
 
@@ -31,7 +21,7 @@ In this guide, we'll explore how to create and maintain different versions of yo
 3. **Promote:** Promoting a version means to make it the new main version. When a new version is promoted, it becomes
    the main version that is displayed to users, and it replaces the previous main version.
 
-## Setting up Content Versioning
+## Setting Up Content Versioning
 
 To enable Content Versioning for a collection in Directus, follow these steps:
 
@@ -43,7 +33,7 @@ To enable Content Versioning for a collection in Directus, follow these steps:
 
 ## Creating a New Version
 
-With Content Versioning set up, you can now create a new version of your content.
+With Content Versioning set up, you can now create a new version of your content:
 
 1. Open an item within your desired collection.
 2. At the top of the item view, you will notice a dropdown with the main Content Version displayed as "**main**".
@@ -61,7 +51,7 @@ for other versions.
 
 ## Making Changes to a Version
 
-After creating a new version, you can make changes without affecting the main version. Here's how:
+After creating a new version, you can make changes without affecting the main version:
 
 1. Open the item in the newly created version e.g. "**My Draft**" version.
 2. Make the desired edits to the item's content.
@@ -89,10 +79,16 @@ our [API reference documentation](/reference/system/versions).
 
 :::
 
+## Revisions and Content Versioning
+
+Under the hood, content versions are stored in the `directus_revisions` collection. In bigger projects this collection can get large.
+
+Some Directus users combat this my periodically purging some or all data in this collection. Be aware that this could unintentionally purge content versions, so purging logic may have to be updated.
+
 ## Next Steps
 
-Over the course of this guide, you’ve set up Content Versioning for your collection and learned how to promote a version
-into the main version. Here are some additional tips when using this feature:
+You have now set up Content Versioning for a collection and learned how to promote a version
+to the main version. Here are some additional tips when using this feature:
 
 - Name versions descriptively so it's clear what changes each version contains.
 - To prevent conflicts, ensure no modifications are made to the main version at the time a new version is created.
