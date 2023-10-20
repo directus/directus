@@ -9,12 +9,12 @@ interface Props {
 	modelValue?: string | number | boolean | Record<string, any> | Array<any> | null;
 	initialValue?: string | number | boolean | Record<string, any> | Array<any> | null;
 	restricted?: boolean;
+	rawEditorMenuOptionHidden?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	initialValue: null,
-	restricted: false,
 });
 
 defineEmits(['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw']);
@@ -42,7 +42,7 @@ const relational = computed(
 
 <template>
 	<v-list>
-		<v-list-item clickable @click="$emit('edit-raw')">
+		<v-list-item v-if="!rawEditorMenuOptionHidden" clickable @click="$emit('edit-raw')">
 			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
 			<v-list-item-content>{{ restricted ? t('view_raw_value') : t('edit_raw_value') }}</v-list-item-content>
 		</v-list-item>

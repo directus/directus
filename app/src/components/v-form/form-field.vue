@@ -26,22 +26,16 @@ interface Props {
 	badge?: string;
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
+	rawEditorMenuOptionHidden?: boolean;
 	direction?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	batchMode: false,
-	batchActive: false,
-	disabled: false,
 	modelValue: undefined,
 	initialValue: undefined,
 	primaryKey: undefined,
-	loading: false,
 	validationError: undefined,
-	autofocus: false,
 	badge: undefined,
-	rawEditorEnabled: false,
-	rawEditorActive: false,
 	direction: undefined,
 });
 
@@ -176,6 +170,7 @@ function useComputedValues() {
 				:model-value="internalValue"
 				:initial-value="initialValue"
 				:restricted="isDisabled"
+				:raw-editor-menu-option-hidden="rawEditorMenuOptionHidden"
 				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
