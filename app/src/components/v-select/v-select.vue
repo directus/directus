@@ -55,8 +55,6 @@ interface Props {
 	multiplePreviewThreshold?: number;
 	/** The direction the menu should open */
 	placement?: Placement;
-	/** Should the menu be the same width as the select element */
-	isMenuSameWidth?: true;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -73,7 +71,6 @@ const props = withDefaults(defineProps<Props>(), {
 	closeOnContentClick: true,
 	multiplePreviewThreshold: 3,
 	placement: 'bottom',
-	isMenuSameWidth: true,
 });
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
@@ -238,7 +235,6 @@ function useDisplayValue() {
 		class="v-select"
 		:disabled="disabled"
 		:attached="inline === false"
-		:is-same-width="isMenuSameWidth"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
