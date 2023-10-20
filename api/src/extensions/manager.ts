@@ -443,6 +443,7 @@ export class ExtensionManager {
 
 		await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
 			timeout: sandboxTimeout,
+			filename: '<extensions-sandbox>',
 		});
 
 		this.unregisterFunctionMap.set(extension.name, async () => {

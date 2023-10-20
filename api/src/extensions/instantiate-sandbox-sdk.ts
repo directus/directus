@@ -18,20 +18,22 @@ export async function instantiateSandboxSdk(
 ): Promise<Module> {
 	const apiContext = await isolate.createContext();
 
+	await apiContext.global.set('sdk', apiContext.global.derefInto());
+
 	const index = numberGenerator();
 	const sdk = getSdk();
 
 	const handlerCode = sdk
-		.map(({ name, args, async }) => `globalThis.${name} = ${generateHostFunctionReference(index, args, { async })}`)
+		.map(({ name, args, async }) => `sdk.${name} = ${generateHostFunctionReference(index, args, { async })}`)
 		.join('\n');
 
 	await apiContext.evalClosure(
 		handlerCode,
 		sdk.map(({ generator }) => generator(requestedScopes)),
-		{ arguments: { reference: true } }
+		{ filename: '<extensions-sdk>', arguments: { reference: true } }
 	);
 
-	const exportCode = sdk.map(({ name }) => `export const ${name} = globalThis.${name};`).join('\n');
+	const exportCode = sdk.map(({ name }) => `export const ${name} = sdk.${name};`).join('\n');
 
 	const apiModule = await isolate.compileModule(exportCode);
 
