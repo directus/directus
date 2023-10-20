@@ -53,6 +53,13 @@ or: или
 init: Инициализация
 dataset_too_large_currently_showing_n_items: Набор данных слишком большой. Показано первые {n} элементов.
 modifier: Модификатор
+extension_interface: Интерфейс
+extension_display: Отображение
+extension_layout: Макет
+extension_panel: Панель
+extension_hook: Хук
+extension_modules: Модули
+enable: Включить
 custom: Пользовательский
 hook: Хук
 fill_width: В ширину
@@ -100,6 +107,7 @@ rename_folder: Переименовать папку
 delete_folder: Удалить папку
 prefix: Префикс
 suffix: Суффикс
+promote_version_preview: Предпросмотр
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -605,7 +613,6 @@ errors:
   RECORD_NOT_UNIQUE: Обнаружен дубликат значения
   USER_SUSPENDED: Пользователь заблокирован
   CONTAINS_NULL_VALUES: Поле содержит значения NULL
-  UNPROCESSABLE_ENTITY: Необрабатываемый объект
   INTERNAL_SERVER_ERROR: Неожиданная ошибка
   NOT_NULL_VIOLATION: Значение не может быть NULL
   ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
@@ -961,12 +968,11 @@ editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
 no_options_available: Нет доступных вариантов
 settings_data_model: Модель данных
-settings_permissions: Роли и права доступа
-settings_project: Настройки проекта
+settings_project: Настройки
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
-settings_presets: Шаблоны и закладки
-settings_translations: Пользовательские Переводы
+settings_presets: Закладки
+settings_translations: Переводы
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
 scope: Область применения
 actions: Действия
@@ -1001,7 +1007,6 @@ page_help_files_collection: >-
   **Библиотека файлов** — список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_files_item: >-
   **Карточка файла** — форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
-page_help_settings_project: "**Настройки проекта** — глобальные параметры конфигурации проекта."
 page_help_settings_datamodel_collections: >-
   **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
@@ -1126,10 +1131,6 @@ fields:
     tags: Теги
     user_preferences: Пользовательские настройки
     language: Язык
-    theme: Тема
-    theme_auto: Автоматически (как в системе)
-    theme_light: Светлая тема
-    theme_dark: Тёмная тема
     tfa_secret: Двухфакторная аутентификация
     admin_options: Параметры администратора
     status: Статус
@@ -1168,7 +1169,6 @@ fields:
     project_color: Цвет проекта
     project_logo: Логотип проекта
     default_language: Язык по умолчанию
-    branding: Фирменный стиль
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
@@ -1228,7 +1228,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Мой проект...
     project_color_note: Фон страницы входа и логотипа
-    project_logo_note: Белый 40х40 SVG/PNG
     public_note_placeholder: Короткое сообщение, видимое для всех (поддерживается форматирование с помощью Markdown)...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -2034,6 +2033,7 @@ panels:
     smooth: Гладкий
     straight: Прямой
     step_line: Ступенчатая линия
+    show_legend: Показать легенду
   meter:
     name: Счётчик
   piechart:
@@ -2154,3 +2154,14 @@ operations:
     data: Данные
     parallel: Параллельно
     cache: Кэш
+standard: Стандартный
+compact: Компактный
+style: Стиль
+fonts:
+  thin: Тонкий
+  normal: Нормальный
+  medium: Средний
+  bold: Жирный
+  black: Чёрный
+  italic: Наклонный
+  auto: Авто
