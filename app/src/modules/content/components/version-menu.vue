@@ -20,7 +20,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
 	add: [version: ContentVersion];
-	update: [updates: { key: string; name?: string }];
+	update: [updates: { key: string; name?: string | null }];
 	delete: [];
 	switch: [version: ContentVersion | null];
 }>();
@@ -137,7 +137,7 @@ function useRenameDialog() {
 		try {
 			const updates = {
 				key: newVersionKey.value,
-				...(newVersionName.value ? { name: newVersionName.value } : {}),
+				...(newVersionName.value !== currentVersion.value?.name ? { name: newVersionName.value } : {}),
 			};
 
 			await api.patch(`/versions/${unref(currentVersion)!.id}`, updates);

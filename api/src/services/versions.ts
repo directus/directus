@@ -168,7 +168,7 @@ export class VersionsService extends ItemsService {
 		// Only allow updates on "key" and "name" fields
 		const versionUpdateSchema = Joi.object({
 			key: Joi.string(),
-			name: Joi.string(),
+			name: Joi.string().allow(null).optional(),
 		});
 
 		const { error } = versionUpdateSchema.validate(data);

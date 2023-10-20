@@ -94,7 +94,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		currentVersion.value = version;
 	}
 
-	async function updateVersion(updates: { key: string; name?: string }) {
+	async function updateVersion(updates: { key: string; name?: string | null }) {
 		if (!currentVersion.value || !versions.value) return;
 
 		const currentVersionId = currentVersion.value.id;
@@ -103,7 +103,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		if (versionToUpdate) {
 			versionToUpdate.key = updates.key;
-			if (updates?.name) versionToUpdate.name = updates.name;
+			if ('name' in updates) versionToUpdate.name = updates.name ?? null;
 			currentVersion.value = versionToUpdate;
 		}
 	}
