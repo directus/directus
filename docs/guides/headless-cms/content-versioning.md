@@ -81,14 +81,16 @@ our [API reference documentation](/reference/system/versions).
 
 ## Revisions and Content Versioning
 
-Under the hood, content versions are stored in the `directus_revisions` collection. In bigger projects this collection can get large.
+Under the hood, content versions are stored in the `directus_revisions` collection. In bigger projects this collection
+can get large.
 
-Some Directus users combat this my periodically purging some or all data in this collection. Be aware that this could unintentionally purge content versions, so purging logic may have to be updated.
+Some Directus users combat this my periodically purging some or all data in this collection. Be aware that this could
+unintentionally purge content versions, so purging logic may have to be updated.
 
 ## Next Steps
 
-You have now set up Content Versioning for a collection and learned how to promote a version
-to the main version. Here are some additional tips when using this feature:
+You have now set up Content Versioning for a collection and learned how to promote a version to the main version. Here
+are some additional tips when using this feature:
 
 - Name versions descriptively so it's clear what changes each version contains.
 - To prevent conflicts, ensure no modifications are made to the main version at the time a new version is created.
