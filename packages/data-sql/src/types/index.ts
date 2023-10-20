@@ -54,6 +54,7 @@ export interface AbstractSqlNestedMany {
 	 */
 	queryGenerator: (internalRelationalFieldValues: [string | number, ...(string | number)[]]) => AbstractSqlQuery;
 	alias: string;
+	collection: string;
 	externalKeyFields: [string | number, ...(string | number)[]];
 	internalIdentifierFields: [string | number, ...(string | number)[]];
 }

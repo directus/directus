@@ -70,16 +70,13 @@ export default class DataDriverPostgres implements DataDriver {
 
 				const subQuery = nestedMany.queryGenerator([identifierValueFromChunk]);
 				const subStream = await this.queryDatabase(subQuery);
-
-				// receive all data/chunks from the sub stream
 				const subData = [];
 
 				for await (const subChunk of subStream) {
-					subData.push(subChunk);
+					subData.push(Object.values(subChunk));
 				}
 
-				finalChunk = { ...chunk, [nestedMany.alias]: subData };
-
+				finalChunk = { ...chunk, [nestedMany.collection]: subData };
 				console.log(finalChunk);
 			}
 		}

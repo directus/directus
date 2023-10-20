@@ -23,6 +23,7 @@ export function getSubQuery(
 		alias,
 		externalKeyFields: fieldMeta.external.fields,
 		internalIdentifierFields: fieldMeta.internalIdentifierFields,
+		collection: fieldMeta.external.collection,
 	};
 }
 
