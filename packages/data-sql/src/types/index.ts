@@ -14,6 +14,7 @@
  */
 import type { ParameterTypes } from './parameterized-statement.js';
 import type { AbstractSqlClauses } from './clauses/index.js';
+import type { AtLeastOneElement } from '@directus/data';
 
 /**
  * This is an abstract SQL query which can be passed to all SQL drivers.
@@ -55,8 +56,8 @@ export interface AbstractSqlNestedMany {
 	queryGenerator: (internalRelationalFieldValues: [string | number, ...(string | number)[]]) => AbstractSqlQuery;
 	alias: string;
 	collection: string;
-	externalKeyFields: [string | number, ...(string | number)[]];
-	internalIdentifierFields: [string | number, ...(string | number)[]];
+	externalKeyFields: AtLeastOneElement<string | number>;
+	internalIdentifierFields: AtLeastOneElement<string | number>;
 }
 
 export * from './clauses/index.js';
