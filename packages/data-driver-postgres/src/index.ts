@@ -59,7 +59,7 @@ export default class DataDriverPostgres implements DataDriver {
 		return stream.pipeThrough(ormTransformer);
 	}
 
-	async query(query: AbstractQuery): Promise<ReadableStream> {
+	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
 		const abstractSql = convertQuery(query);
 		const queryDB = this.queryDatabase.bind(this);
 		const rootStream = await queryDB(abstractSql);
