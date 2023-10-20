@@ -432,7 +432,6 @@ dimensions: Dimensions
 size: Taille
 created: Créé
 modified: Modifié
-checksum: Code de vérification
 owner: Propriétaire
 edited_by: Modifié par
 folder: Dossier
@@ -1629,7 +1628,6 @@ interfaces:
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
   system-folder:
-    folder: Dossier
     description: Sélectionner un dossier
     field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine

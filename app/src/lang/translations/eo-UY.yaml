@@ -300,7 +300,6 @@ dimensions: Dimensioj
 size: Grando
 created: Kreita
 modified: Ŝanĝita
-checksum: Kontrolsumo
 owner: Posedanto
 edited_by: Redaktita de
 folder: Dosierujo
@@ -979,7 +978,6 @@ interfaces:
   list-o2m:
     one-to-many: Unu-al-pluraj-rilato
   system-folder:
-    folder: Dosierujo
     description: Elekti dosierujon
   list:
     repeater: Ripetilo

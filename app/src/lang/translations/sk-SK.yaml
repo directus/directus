@@ -446,7 +446,6 @@ dimensions: Rozmery
 size: Veľkosť
 created: Vytvorené
 modified: Upravené
-checksum: Kontrolný súčet
 owner: Vlastník
 edited_by: Upravil
 folder: Priečinok
@@ -1668,7 +1667,6 @@ interfaces:
     description: Vyberie viacej súvisiacich položiek
     no_collection: Zbierka sa nenašla
   system-folder:
-    folder: Priečinok
     description: Vyberte priečinok
     field_hint: Predvolený priečinok na nahrávanie súborov bez určeného priečinka. Neovplyvní existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov

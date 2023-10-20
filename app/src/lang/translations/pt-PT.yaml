@@ -371,7 +371,6 @@ dimensions: Dimensões
 size: Tamanho
 created: Criado
 modified: Modificado
-checksum: Soma de verificação
 owner: Proprietário
 edited_by: Editado por
 folder: Pasta
@@ -898,8 +897,6 @@ interfaces:
     edit: Editar
   map:
     zoom: Zoom
-  system-folder:
-    folder: Pasta
   list:
     sort: Ordenar
   tags:

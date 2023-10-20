@@ -425,7 +425,6 @@ dimensions: ディメンション
 size: サイズ
 created: 作成
 modified: 修正されました
-checksum: チェックサム
 owner: 所有者
 edited_by: '編集者:'
 folder: フォルダ
@@ -1342,8 +1341,6 @@ interfaces:
     edit: 編集
   map:
     zoom: 拡大
-  system-folder:
-    folder: フォルダ
   list:
     sort: 並べ替え
   tags:

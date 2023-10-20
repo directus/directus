@@ -423,7 +423,6 @@ dimensions: دوریەکان
 size: قەبارە
 created: دروستکرا
 modified: گۆڕدراو
-checksum: کۆی پشکنین
 owner: خاوەن
 edited_by: دەستکاریکراوە لەلایەن
 folder: بوخچە
@@ -1606,7 +1605,6 @@ interfaces:
     description: چەند ماددەی پەیوەندیدار دیاری بکە
     no_collection: کۆمەڵەکە نادۆزرێتەوە
   system-folder:
-    folder: بوخچە
     description: بوخچەیەک دیاریبکە
     root_name: ڕیشەی پێشانگای پەڕگە
     system_default: بنەڕەتیەکانی سیستەم

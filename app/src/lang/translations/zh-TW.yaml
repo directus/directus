@@ -415,7 +415,6 @@ dimensions: 尺寸
 size: 尺寸
 created: 已建立
 modified: 已修改
-checksum: 校驗和
 owner: 擁有者
 edited_by: 編輯者
 folder: 資料夾
@@ -1586,7 +1585,6 @@ interfaces:
     description: 選擇多個關聯項目
     no_collection: 找不到該集合
   system-folder:
-    folder: 資料夾
     description: 選擇一個資料夾
     root_name: 檔案庫的基礎位置
     system_default: 系統預設值

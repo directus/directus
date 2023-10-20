@@ -27,6 +27,7 @@ method: Μέθοδος
 published: Δημοσιευμένο
 draft: Πρόχειρο
 archived: Αρχειοθετήθηκε
+extensions: Επεκτάσεις
 modules: Ενότητες
 module_bar: Γραμμή Ενθεμάτων
 logs: Αρχεία καταγραφής (Logs)
@@ -35,6 +36,7 @@ tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
 location: Τοποθεσία
+collection_names_are_case_sensitive: Τα ονόματα των συλλογών εφαρμόζουν διάκριση πεζών - κεφαλαίων γραμμάτων
 condition_rules: Κανόνες Κατάστασης
 input: Εισαγωγή
 maps: Χάρτες
@@ -189,7 +191,6 @@ months:
   october: Οκτώβριος
   november: Νοέμβριος
   december: Δεκέμβριος
-checksum: Έλεγχος αθροίσματος
 owner: Ιδιοκτήτης
 download: Λήψη
 name: Όνομα
@@ -230,6 +231,7 @@ wysiwyg_options:
   table: Πίνακας
 choices: Επιλογές
 deselect: Αποεπιλέξτε
+creating_in: 'Δημιουργία Στοιχείου: {collection}'
 editing_in_batch: 'Μαζική Επεξεργασία {count} Στοιχείων'
 settings_project: Ρυθμίσεις Έργου
 discard_changes: Ακύρωση αλλαγών
@@ -323,6 +325,9 @@ field_options:
     headers:
       value: Τιμή
 comment: Σχόλιο
+continue_label: Συνέχεια
+continue_as: >-
+  Ο χρήστης {name} είναι επί του παρόντος πιστοποιημένος. Αν αναγνωρίζετε αυτόν τον λογαριασμό, πατήστε συνέχεια.
 delete_field_are_you_sure: >-
   Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.
 description: Περιγραφή
@@ -338,6 +343,7 @@ hidden: Κρυφό
 icon: Εικονίδιο
 info: Πληροφορίες
 latency: Καθυστέρηση
+authenticated: Πιστοποιημένος
 options: Επιλογές
 otp: Κωδικός μιάς χρήσης
 password: Κωδικός
@@ -348,6 +354,8 @@ reset_password: Επαναφορά Κωδικού
 save: Αποθήκευση
 search: Αναζήτηση
 settings: Ρυθμίσεις
+sign_in: Είσοδος
+sign_out: Αποσύνδεση
 translation: Μετάφραση
 value: Τιμή
 table: Πίνακας

@@ -153,7 +153,6 @@ interfaces:
   system-interface-options:
     interface-options: Takførisflatastillingar
   system-folder:
-    folder: Faldari
     description: Vel ein faldara
     root_name: Fílasavns Rót
     system_default: Grundkervi
