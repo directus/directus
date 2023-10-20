@@ -8,6 +8,7 @@ import { randomIdentifier } from '@directus/random';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import DataDriverPostgres from './index.js';
 import { convertQuery } from '@directus/data-sql';
+import { ReadableStream } from 'node:stream/web';
 
 beforeEach(() => {
 	vi.mock('@directus/data-sql', async (importOriginal) => {
@@ -24,23 +25,19 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-function getStreamForMock(data: Record<string, any>[]) {
-	return {
-		client: null,
-		stream: new ReadableStream({
-			start(controller) {
-				data.forEach((chunk: any) => controller.enqueue(chunk));
-
-				controller.close();
-			},
-		}),
-	};
+function getStreamForMock(data: Record<string, any>[]): ReadableStream<Record<string, any>> {
+	return new ReadableStream({
+		start(controller) {
+			data.forEach((chunk) => controller.enqueue(chunk));
+			controller.close();
+		},
+	});
 }
 
 /**
  * Receives all the data from a given stream.
  */
-async function getActualResult(readableStream: any) {
+async function getActualResult(readableStream: ReadableStream<Record<string, any>>): Promise<Record<string, any>[]> {
 	const actualResult: Record<string, any>[] = [];
 
 	for await (const chunk of readableStream) {
@@ -125,7 +122,7 @@ test('nested with local fields', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
+	vi.spyOn(driver, 'queryDatabase').mockReturnValueOnce(getStreamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);
@@ -281,7 +278,7 @@ test('nested m2o field', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getStreamForMock(mockedData));
+	vi.spyOn(driver, 'queryDatabase').mockReturnValueOnce(getStreamForMock(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);
