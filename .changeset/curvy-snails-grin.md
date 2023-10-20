@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Only change items per page if necessary (otherwise triggers auto-save)
+Only change items per page in table if necessary (otherwise triggers auto-save)
