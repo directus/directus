@@ -53,6 +53,13 @@ or: Lub
 init: Rozpocznij
 dataset_too_large_currently_showing_n_items: Zbiór danych jest zbyt duży. Obecnie wyświetlane są pierwsze {n} elementów.
 modifier: Modyfikator
+extension_interface: Interfejs
+extension_display: Pokaż
+extension_layout: Układ
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Moduły
+enable: Włącz
 custom: Własny
 hook: Hook
 fill_width: Szerokość wypełnienia
@@ -100,6 +107,7 @@ rename_folder: Zmień nazwę folderu
 delete_folder: Usuń folder
 prefix: Przedrostek
 suffix: Przyrostek
+promote_version_preview: Podgląd
 reset_bookmark: Zresetuj zakładkę
 update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
@@ -610,7 +618,6 @@ errors:
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
-  UNPROCESSABLE_ENTITY: Jednostka niemożliwa do przetworzenia
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
   ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
@@ -967,12 +974,11 @@ editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
 no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
-settings_permissions: Role i uprawnienia
-settings_project: Ustawienia projektu
+settings_project: Ustawienia
 settings_webhooks: Webhooki
 settings_flows: Przepływy
-settings_presets: Szablony i zakładki
-settings_translations: Własne tłumaczenia
+settings_presets: Zakładki
+settings_translations: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 configure_field_key_to_continue: Skonfiguruj klucz pola, aby kontynuować
 scope: Zakres
@@ -1008,7 +1014,6 @@ page_help_files_collection: >-
   **Biblioteka plików** — Lista wszystkich zasobów plików przesłanych do tego projektu. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
 page_help_files_item: >-
   **Szczegóły pliku** — Formularz do zarządzania metadanymi plików, edycji oryginalnego zasobu i aktualizacji ustawień dostępu.
-page_help_settings_project: "**Ustawienia projektu** — globalne opcje konfiguracji projektu."
 page_help_settings_datamodel_collections: >-
   **Model danych: Kolekcje** — Lista wszystkich dostępnych kolekcji. Obejmuje to widoczne, ukryte i systemowe kolekcje, jak również niezarządzane tabele bazy danych, które mogą być dodane.
 page_help_settings_datamodel_fields: >-
@@ -1133,10 +1138,6 @@ fields:
     tags: Etykiety
     user_preferences: Ustawienia użytkownika
     language: Język
-    theme: Motyw
-    theme_auto: Automatyczne (Oparte na systemie)
-    theme_light: Tryb jasny
-    theme_dark: Tryb ciemny
     tfa_secret: Uwierzytelnianie dwuetapowe
     admin_options: Opcje administratora
     status: Status
@@ -1175,7 +1176,6 @@ fields:
     project_color: Kolor projektu
     project_logo: Logo projektu
     default_language: Domyślny język
-    branding: Marka i Styl
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
@@ -1235,7 +1235,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
     project_color_note: Tło logowania i logo
-    project_logo_note: Biały 40x40 SVG/PNG
     public_note_placeholder: Krótka, publiczna wiadomość, która obsługuje formatowanie markdown...
     security_divider_title: Bezpieczeństwo
     auth_password_policy:
@@ -2058,6 +2057,7 @@ panels:
     smooth: Gładki
     straight: Prosta
     step_line: Linia kroku
+    show_legend: Pokaż Legendę
   meter:
     name: Licznik
     description: Licznik wartości śledzenia
@@ -2198,3 +2198,14 @@ operations:
     batch: Partia
     batch_size: Rozmiar partii
     cache: Cache
+standard: Standardowy
+compact: Kompaktowy
+style: Style
+fonts:
+  thin: Cienka
+  normal: Normalny
+  medium: Średni
+  bold: Pogrubiony
+  black: Czarny
+  italic: Kursywa
+  auto: Automatycznie
