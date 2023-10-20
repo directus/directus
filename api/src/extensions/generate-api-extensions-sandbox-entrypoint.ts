@@ -27,7 +27,7 @@ export function generateApiExtensionsSandboxEntrypoint(
 			const filter = ${generateHostFunctionReference(index, ['event', 'handler'], { async: false })}
 			const action = ${generateHostFunctionReference(index, ['event', 'handler'], { async: false })}
 
-			extensionExport({ filter, action });
+			return extensionExport({ filter, action });
 		`;
 
 		const { register: filter, unregisterFunctions: filterUnregisterFunctions } = registerFilterGenerator();
@@ -65,7 +65,7 @@ export function generateApiExtensionsSandboxEntrypoint(
 				}
 			};
 
-			extensionExport(router);
+			return extensionExport(router);
 		`;
 
 		const { register, unregisterFunction } = registerRouteGenerator(name, endpointRouter);

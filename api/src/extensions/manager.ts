@@ -418,45 +418,38 @@ export class ExtensionManager {
 			},
 		});
 
-		try {
-			const context = await isolate.createContext();
+		const context = await isolate.createContext();
 
-			const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
+		const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
 
-			const sdkModule = instantiateSandboxSdk(isolate, extension.sandbox?.requestedScopes ?? {});
+		const sdkModule = await instantiateSandboxSdk(isolate, extension.sandbox?.requestedScopes ?? {});
 
-			await module.instantiate(context, (specifier) => {
-				if (specifier !== '@directus/extensions-sdk/api')
-					throw new Error(
-						'Imports other than "@directus/extensions-sdk/api" are prohibited in API extension sandboxes'
-					);
+		await module.instantiate(context, (specifier) => {
+			if (specifier !== '@directus/extensions-sdk/api')
+				throw new Error('Imports other than "@directus/extensions-sdk/api" are prohibited in API extension sandboxes');
 
-				return sdkModule;
-			});
+			return sdkModule;
+		});
 
-			await module.evaluate({ timeout: sandboxTimeout });
+		await module.evaluate({ timeout: sandboxTimeout });
 
-			const cb = await module.namespace.get('default', { reference: true });
+		const cb = await module.namespace.get('default', { reference: true });
 
-			const { code, hostFunctions, unregisterFunction } = generateApiExtensionsSandboxEntrypoint(
-				extension.type,
-				extension.name,
-				this.endpointRouter
-			);
+		const { code, hostFunctions, unregisterFunction } = generateApiExtensionsSandboxEntrypoint(
+			extension.type,
+			extension.name,
+			this.endpointRouter
+		);
 
-			await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
-				timeout: sandboxTimeout,
-			});
+		await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
+			timeout: sandboxTimeout,
+		});
 
-			this.unregisterFunctionMap.set(extension.name, async () => {
-				await unregisterFunction();
+		this.unregisterFunctionMap.set(extension.name, async () => {
+			await unregisterFunction();
 
-				isolate.dispose();
-			});
-		} catch (error) {
-			logger.warn(`Couldn't register ${extension.type} "${extension.name}"`);
-			logger.warn(error);
-		}
+			isolate.dispose();
+		});
 	}
 
 	/**
@@ -473,7 +466,7 @@ export class ExtensionManager {
 
 			try {
 				if (hook.sandbox?.enabled) {
-					this.registerSandboxedApiExtension(hook);
+					await this.registerSandboxedApiExtension(hook);
 				} else {
 					const hookPath = path.resolve(hook.path, hook.entrypoint);
 
@@ -512,7 +505,7 @@ export class ExtensionManager {
 
 			try {
 				if (endpoint.sandbox?.enabled) {
-					this.registerSandboxedApiExtension(endpoint);
+					await this.registerSandboxedApiExtension(endpoint);
 				} else {
 					const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
@@ -569,7 +562,7 @@ export class ExtensionManager {
 
 			try {
 				if (operation.sandbox?.enabled) {
-					this.registerSandboxedApiExtension(operation);
+					await this.registerSandboxedApiExtension(operation);
 				} else {
 					const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 

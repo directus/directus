@@ -6,7 +6,7 @@ export function generateHostFunctionReference(
 	const argsList = args.join(', ');
 	const i = index.next().value;
 
-	return `(${argsList}) => $${i}.apply(null, [${argsList}], { arguments: { reference: true }, result: { promise: ${
+	return `(${argsList}) => $${i}.apply${!async ? 'Sync' : ''}(null, [${argsList}], { arguments: { reference: true }, result: { promise: ${
 		async ? 'true' : 'false'
 	} }});`;
 }
