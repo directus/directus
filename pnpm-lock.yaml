@@ -1022,7 +1022,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: 4.3.7
-        version: 4.3.7(sass@1.62.1)
+        version: 4.3.7(@types/node@18.16.12)
       vite-plugin-dts:
         specifier: 2.3.0
         version: 2.3.0(rollup@3.22.0)(vite@4.3.7)
@@ -1403,7 +1403,7 @@ importers:
         version: 4.0.0(rollup@3.22.0)
       vite:
         specifier: 4.3.7
-        version: 4.3.7(sass@1.62.1)
+        version: 4.3.7(@types/node@18.16.12)
       vue:
         specifier: 3.3.4
         version: 3.3.4
@@ -5992,7 +5992,7 @@ packages:
       chokidar: 3.5.3
       pathe: 0.2.0
       picocolors: 1.0.0
-      vite: 4.3.7(sass@1.62.1)
+      vite: 4.3.7(@types/node@18.16.12)
     dev: true
 
   /@histoire/shared@0.16.5(vite@4.3.7):
@@ -6006,7 +6006,7 @@ packages:
       chokidar: 3.5.3
       pathe: 0.2.0
       picocolors: 1.0.0
-      vite: 4.3.7(sass@1.62.1)
+      vite: 4.3.7(@types/node@18.16.12)
     dev: true
 
   /@histoire/vendors@0.16.5:
@@ -14270,7 +14270,7 @@ packages:
       sade: 1.8.1
       shiki-es: 0.2.0
       sirv: 2.0.3
-      vite: 4.3.7(sass@1.62.1)
+      vite: 4.3.7(@types/node@18.16.12)
       vite-node: 0.28.4
     transitivePeerDependencies:
       - '@types/node'
@@ -22522,7 +22522,7 @@ packages:
       kolorist: 1.8.0
       magic-string: 0.29.0
       ts-morph: 18.0.0
-      vite: 4.3.7(sass@1.62.1)
+      vite: 4.3.7(@types/node@18.16.12)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -22568,6 +22568,38 @@ packages:
       - supports-color
       - typescript
     dev: true
+
+  /vite@4.3.7(@types/node@18.16.12):
+    resolution: {integrity: sha512-MTIFpbIm9v7Hh5b0wSBgkcWzSBz7SAa6K/cBTwS4kUiQJfQLFlZZRJRQgqunCVzhTPCk674tW+0Qaqh3Q00dBg==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 18.16.12
+      esbuild: 0.17.19
+      postcss: 8.4.31
+      rollup: 3.22.0
+    optionalDependencies:
+      fsevents: 2.3.3
 
   /vite@4.3.7(sass@1.62.1):
     resolution: {integrity: sha512-MTIFpbIm9v7Hh5b0wSBgkcWzSBz7SAa6K/cBTwS4kUiQJfQLFlZZRJRQgqunCVzhTPCk674tW+0Qaqh3Q00dBg==}
