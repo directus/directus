@@ -5,6 +5,7 @@ import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
 import { getSubQuery } from './create-nested-manys.js';
+import { parameterIndexGenerator } from '../param-index-generator.js';
 
 export type Result = {
 	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
@@ -96,9 +97,10 @@ export const convertFieldNodes = (
 			// we need to make sure, that the identifier field is included as primitive field node
 			// so we can use the returning value as parameter for the sub queries
 
-			const nestedOutput = convertFieldNodes(fieldMeta.join.foreign.collection, abstractField.fields, idxGenerator);
+			const index = parameterIndexGenerator();
+			const nestedOutput = convertFieldNodes(fieldMeta.join.foreign.collection, abstractField.fields, index);
 			const externalCollectionAlias = createUniqueAlias(fieldMeta.join.foreign.collection);
-			const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, idxGenerator, externalCollectionAlias);
+			const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, index, externalCollectionAlias);
 			nestedManys.push(abstractSqlSubQuery);
 			continue;
 		}
