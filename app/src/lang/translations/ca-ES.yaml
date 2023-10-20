@@ -422,7 +422,6 @@ dimensions: Dimensions
 size: Mida
 created: Creat
 modified: Modificat
-checksum: Checksum
 owner: Propietari
 edited_by: Editat per
 folder: Carpeta
@@ -1500,7 +1499,6 @@ interfaces:
     description: Selecciona múltiples elements relacionats
     no_collection: No s'ha trobat la col·lecció
   system-folder:
-    folder: Carpeta
     description: Selecciona una carpeta
     root_name: Arrel de la biblioteca de fitxers
     system_default: Predeterminats del sistema

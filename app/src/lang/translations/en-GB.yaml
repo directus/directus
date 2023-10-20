@@ -425,7 +425,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -1609,7 +1608,6 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root

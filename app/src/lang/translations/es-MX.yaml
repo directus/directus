@@ -444,7 +444,6 @@ dimensions: Dimensiones
 size: Tamaño
 created: Creado
 modified: Modificado
-checksum: Checksum
 owner: Propietario
 edited_by: Editado por
 folder: Carpeta
@@ -1641,7 +1640,6 @@ interfaces:
     description: Seleccionar varios elementos relacionados
     no_collection: No se encontró la colección
   system-folder:
-    folder: Carpeta
     description: Seleccione una carpeta
     field_hint: Carpeta predeterminada para los archivos subidos sin una carpeta especificada. No afecta a los archivos existentes.
     root_name: Raíz de la Biblioteca de Archivos

@@ -431,7 +431,6 @@ dimensions: 규격
 size: 용량
 created: 작성됨
 modified: 수정됨
-checksum: 체크섬
 owner: 소유자
 edited_by: 편집자
 folder: 폴더
@@ -1628,7 +1627,6 @@ interfaces:
     description: 여러 관련 항목 선택
     no_collection: 컬렉션을 찾을 수 없습니다.
   system-folder:
-    folder: 폴더
     description: 폴더 선택
     field_hint: 폴더를 지정하지 않고 업로드된 파일의 기본 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     root_name: 파일 라이브러리 루트

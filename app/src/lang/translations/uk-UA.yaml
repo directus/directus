@@ -425,7 +425,6 @@ dimensions: Розміри
 size: Розмір
 created: Створено
 modified: Змінено
-checksum: Контрольна сума
 owner: Власник
 edited_by: Відредагували
 folder: Папка
@@ -1608,7 +1607,6 @@ interfaces:
     description: Вибрати кілька пов'язаних об'єктів
     no_collection: Колекцію не знайдено
   system-folder:
-    folder: Папка
     description: Обрати теку
     root_name: Корінь файлової бібліотеки
     system_default: Стандартні налаштування

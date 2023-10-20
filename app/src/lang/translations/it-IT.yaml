@@ -27,6 +27,7 @@ method: Metodo
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+extensions: Estensioni
 modules: Moduli
 module_bar: Barra del modulo
 logs: Registri
@@ -145,6 +146,7 @@ validationError:
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
   unique: Il valore deve essere unico
+  email: Il valore deve essere un indirizzo email valido
   regex: Il valore non ha il formato corretto
   starts_with: Il valore deve iniziare con {substring}
   istarts_with: Il valore deve iniziare con {substring}
@@ -447,7 +449,6 @@ dimensions: Dimensioni
 size: Dimensione
 created: Creato
 modified: Modificato
-checksum: Checksum
 owner: Proprietario
 edited_by: Modificato da
 folder: Cartella
@@ -465,6 +466,7 @@ import_from_url: Importa File da URL
 replace_from_device: Sostituisci File dal Dispositivo
 replace_from_library: Sostituisci File dalla Libreria
 replace_from_url: Sostituisci File da URL
+no_image_selected: Nessuna immagine selezionata
 no_file_selected: Nessun File Selezionato
 download_file: Scarica File
 open_file_in_tab: Apri il file in una nuova scheda
@@ -584,6 +586,7 @@ bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è sta
 bookmark_doesnt_exist_cta: Ritorna alla raccolta
 select_an_item: Seleziona un elemento...
 edit: Modifica
+edit_item: Modifica elemento
 enabled: Abilitato
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
@@ -750,6 +753,7 @@ upload_pending: Caricamento In Attesa
 drag_file_here: Trascina e rilascia il file qui
 click_to_browse: Clicca per Sfogliare
 interface_options: Opzioni interfaccia
+display_options: Opzioni di visualizzazione
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
@@ -1012,6 +1016,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
 page_help_settings_project: "**Impostazioni progetto** — Le opzioni di configurazione globale del tuo progetto."
+page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
 page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
 page_help_settings_datamodel_fields: >-
@@ -1453,6 +1458,7 @@ search: Ricerca
 select_existing: Seleziona Esistente
 select_field_type: Seleziona un tipo di campo
 select_interface: Seleziona un'interfaccia
+select_display: Seleziona una visualizzazione
 settings: impostazioni
 sign_in: Accedi
 sign_out: Disconnessione
@@ -1471,6 +1477,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1623,6 +1630,11 @@ interfaces:
     description: Una modale per selezionare le opzioni di un'interfaccia
   system-display:
     display: Mostra
+    description: Sleziona una visualizzazione esistente
+    placeholder: Seleziona una visualizzazione...
+  system-display-options:
+    display-options: Opzioni di visualizzazione
+    description: Una modale per selezionare le opzioni di una visualizzazione
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
@@ -1675,7 +1687,7 @@ interfaces:
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta
   system-folder:
-    folder: Cartella
+    folder: Cartella radice
     description: Seleziona una cartella
     field_hint: Cartella predefinita per i file caricati senza una cartella specificata. Non influisce sui file esistenti.
     root_name: Radice libreria file
@@ -1693,6 +1705,7 @@ interfaces:
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
     interface_group: Opzioni interfaccia
+    display_group: Opzioni di visualizzazione
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore
