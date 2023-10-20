@@ -7,13 +7,17 @@ import { getAxios } from '../request/index.js';
 export function log(message: Reference<string>): void {
 	if (message.typeof !== 'string') throw new Error('Log message has to be of type string');
 
-	logger.info(message.copySync());
+	const messageCopied = message.copySync();
+
+	logger.info(messageCopied);
 }
 
 export async function sleep(milliseconds: Reference<number>): Promise<void> {
 	if (milliseconds.typeof !== 'number') throw new Error('Sleep milliseconds has to be of type number');
 
-	await setTimeout(await milliseconds.copy());
+	const millisecondsCopied = await milliseconds.copy();
+
+	await setTimeout(millisecondsCopied);
 }
 
 export async function request(
