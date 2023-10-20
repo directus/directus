@@ -414,7 +414,7 @@ export class ExtensionManager {
 				logger.error(`Error in API extension sandbox of ${extension.type} "${extension.name}"`);
 				logger.error(e);
 
-				isolate.dispose();
+				process.abort();
 			},
 		});
 
