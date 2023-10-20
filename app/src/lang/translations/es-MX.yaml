@@ -53,6 +53,13 @@ or: O
 init: Inicializador
 dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Mostrando los primeros {n} elementos.
 modifier: Modificador
+extension_interface: Interfaz
+extension_display: Mostrar
+extension_layout: Diseño
+extension_panel: Panel
+extension_hook: Gancho
+extension_modules: Módulos
+enable: Habilitado
 custom: Personalizado
 hook: Gancho
 fill_width: Ancho completo
@@ -100,6 +107,7 @@ rename_folder: Renombrar carpeta
 delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
+promote_version_preview: Vista previa
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar marcador
@@ -600,7 +608,6 @@ errors:
   RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
   USER_SUSPENDED: Usuario suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
-  UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
   NOT_NULL_VIOLATION: El valor no puede ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
@@ -950,11 +957,11 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando por lote {count} elementos'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de datos
-settings_permissions: Roles y permisos
-settings_project: Configuración del proyecto
+settings_project: Ajustes
 settings_webhooks: Webhooks
 settings_flows: Flujos
-settings_presets: Preajustes y marcadores
+settings_presets: Marcadores
+settings_translations: Traducciones
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
 actions: Acciones
@@ -989,7 +996,6 @@ page_help_files_collection: >-
   **Biblioteca de archivos** — Lista todos los archivos subidos a este proyecto. Personaliza el diseño, los filtros y la ordenación para adaptar su vista, e incluso guardar los marcadores de estas diferentes configuraciones para un acceso rápido.
 page_help_files_item: >-
   **Detalle de archivo** — Una forma para administrar metadatos de archivos, editar el archivo original y actualizar los ajustes de acceso.
-page_help_settings_project: "**Ajustes del proyecto** — Opciones globales de configuración de tu proyecto."
 page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
@@ -1111,10 +1117,6 @@ fields:
     tags: Etiquetas
     user_preferences: Preferencias de usuario
     language: Idioma
-    theme: Tema
-    theme_auto: Automático (basado en el sistema)
-    theme_light: Modo claro
-    theme_dark: Modo oscuro
     tfa_secret: Autenticación de dos factores
     admin_options: Opciones de administrador
     status: Estado
@@ -1153,7 +1155,6 @@ fields:
     project_color: Color del proyecto
     project_logo: Logo del proyecto
     default_language: Idioma predeterminado
-    branding: Marca y estilo
     public_foreground: Superficie Pública
     public_background: Fondo público
     public_note: Notas Públicas
@@ -1213,7 +1214,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mi proyecto...
     project_color_note: Inicio de sesión y fondo de logo
-    project_logo_note: Blanco 40x40 SVG/PNG
     public_note_placeholder: Un mensaje corto y público que soporta formato markdown...
     security_divider_title: Seguridad
     auth_password_policy:
@@ -2016,6 +2016,7 @@ panels:
     smooth: Suave
     straight: Recto
     step_line: Línea de paso
+    show_legend: Mostrar leyenda
   meter:
     name: Medidor
     description: Medidor para los valores de seguimiento
@@ -2155,3 +2156,14 @@ operations:
     batch: Lote
     batch_size: Tamaño del lote
     cache: Caché
+standard: Estándar
+compact: Compacto
+style: Estilo
+fonts:
+  thin: Fino
+  normal: Normal
+  medium: Medio
+  bold: Negrita
+  black: Negro
+  italic: Cursiva
+  auto: Automático
