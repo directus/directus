@@ -315,6 +315,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								autofocus
 								slug
 								trim
+								:max-length="64"
 								@keyup.enter="createVersion"
 							/>
 						</div>
@@ -324,6 +325,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								class="full"
 								:placeholder="t('version_name')"
 								trim
+								:max-length="255"
 								@keyup.enter="createVersion"
 							/>
 						</div>
@@ -353,6 +355,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								autofocus
 								slug
 								trim
+								:max-length="64"
 								@keyup.enter="renameVersion"
 							/>
 						</div>
@@ -360,8 +363,9 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 							<v-input
 								v-model="newVersionName"
 								class="full"
-								trim
 								:placeholder="t('version_name')"
+								trim
+								:max-length="255"
 								@keyup.enter="renameVersion"
 							/>
 						</div>
