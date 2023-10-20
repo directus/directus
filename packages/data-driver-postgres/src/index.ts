@@ -82,7 +82,7 @@ export default class DataDriverPostgres implements DataDriver {
 						const subData = [];
 
 						for await (const subChunk of subStream) {
-							subData.push(Object.values(subChunk));
+							subData.push(subChunk);
 						}
 
 						controller.enqueue({ ...value, [nestedMany.collection]: subData });
