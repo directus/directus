@@ -423,7 +423,7 @@ export class ExtensionManager {
 
 			const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
 
-			const sdkModule = instantiateSandboxSdk(isolate);
+			const sdkModule = instantiateSandboxSdk(isolate, extension.sandbox?.requestedScopes ?? {});
 
 			await module.instantiate(context, (specifier) => {
 				if (specifier !== '@directus/extensions-sdk/api')

@@ -1,17 +1,21 @@
+import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import { numberGenerator } from '@directus/utils';
 import type { Isolate, Module } from 'isolated-vm';
-import { log, request, sleep } from './api-sandbox-sdk.js';
+import { logGenerator, requestGenerator, sleepGenerator } from './api-sandbox-sdk.js';
 import { generateHostFunctionReference } from './generate-host-function-reference.js';
 
 function getSdk() {
 	return [
-		{ name: 'log', handler: log, args: ['message'], async: false },
-		{ name: 'sleep', handler: sleep, args: ['milliseconds'], async: true },
-		{ name: 'request', handler: request, args: ['url', 'options'], async: true },
+		{ name: 'log', generator: logGenerator, args: ['message'], async: false },
+		{ name: 'sleep', generator: sleepGenerator, args: ['milliseconds'], async: true },
+		{ name: 'request', generator: requestGenerator, args: ['url', 'options'], async: true },
 	];
 }
 
-export async function instantiateSandboxSdk(isolate: Isolate): Promise<Module> {
+export async function instantiateSandboxSdk(
+	isolate: Isolate,
+	requestedScopes: ExtensionSandboxRequestedScopes
+): Promise<Module> {
 	const apiContext = await isolate.createContext();
 
 	const index = numberGenerator();
@@ -23,7 +27,7 @@ export async function instantiateSandboxSdk(isolate: Isolate): Promise<Module> {
 
 	await apiContext.evalClosure(
 		handlerCode,
-		sdk.map(({ handler }) => handler),
+		sdk.map(({ generator }) => generator(requestedScopes)),
 		{ arguments: { reference: true } }
 	);
 

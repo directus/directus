@@ -1,69 +1,91 @@
+import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import encodeUrl from 'encodeurl';
 import type { Reference } from 'isolated-vm';
 import { setTimeout } from 'node:timers/promises';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 
-export function log(message: Reference<string>): void {
-	if (message.typeof !== 'string') throw new Error('Log message has to be of type string');
+export function logGenerator(_requestedScopes: ExtensionSandboxRequestedScopes): (message: Reference<string>) => void {
+	return (message) => {
+		if (message.typeof !== 'string') throw new Error('Log message has to be of type string');
 
-	const messageCopied = message.copySync();
+		const messageCopied = message.copySync();
 
-	logger.info(messageCopied);
+		logger.info(messageCopied);
+	};
 }
 
-export async function sleep(milliseconds: Reference<number>): Promise<void> {
-	if (milliseconds.typeof !== 'number') throw new Error('Sleep milliseconds has to be of type number');
+export function sleepGenerator(
+	_requestedScopes: ExtensionSandboxRequestedScopes
+): (milliseconds: Reference<number>) => Promise<void> {
+	return async (milliseconds) => {
+		if (milliseconds.typeof !== 'number') throw new Error('Sleep milliseconds has to be of type number');
 
-	const millisecondsCopied = await milliseconds.copy();
+		const millisecondsCopied = await milliseconds.copy();
 
-	await setTimeout(millisecondsCopied);
+		await setTimeout(millisecondsCopied);
+	};
 }
 
-export async function request(
+export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScopes): (
 	url: Reference<string>,
-	options?: Reference<{
+	options: Reference<{
 		method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 		body?: Record<string, any> | string;
 		headers?: { header: string; value: string }[];
 	}>
-): Promise<{
+) => Promise<{
 	status: number;
 	statusText: string;
 	headers: Record<string, any>;
 	data: string;
 }> {
-	if (url.typeof !== 'string') throw new Error('Request url has to be of type string');
-	if (options !== undefined && options.typeof !== 'object') throw new Error('Request url has to be of type string');
+	return async (url, options) => {
+		if (url.typeof !== 'string') throw new Error('Request url has to be of type string');
+		if (options.typeof !== 'undefined' && options.typeof !== 'object')
+			throw new Error('Request options has to be of type object');
 
-	const method = await options?.get('method', { reference: true });
-	const body = await options?.get('body', { reference: true });
-	const headers = await options?.get('headers', { reference: true });
+		const urlCopied = url.copySync();
 
-	if (method !== undefined && method.typeof !== 'string') throw new Error('Request method has to be of type string');
-	if (body !== undefined && body.typeof !== 'string' && body.typeof !== 'object')
-		throw new Error('Request body has to be of type string or object');
-	if (headers !== undefined && headers.typeof !== 'array') throw new Error('Request headers has to be of type array');
+		const permissions = requestedScopes.request?.permissions;
 
-	const urlCopied = await url.copy();
-	const methodCopied = await method?.copy();
-	const bodyCopied = await body?.copy();
-	const headersCopied = await headers?.copy();
+		if (permissions === undefined) throw new Error('No permission to access "request"');
 
-	const customHeaders =
-		headersCopied?.reduce((acc, { header, value }) => {
-			acc[header] = value;
-			return acc;
-		}, {} as Record<string, string>) ?? {};
+		if (!permissions.urls.includes(urlCopied)) throw new Error(`No permission to request "${urlCopied}"`);
 
-	const axios = await getAxios();
+		const method = await options?.get('method', { reference: true });
+		const body = await options?.get('body', { reference: true });
+		const headers = await options?.get('headers', { reference: true });
 
-	const result = await axios({
-		url: encodeUrl(urlCopied),
-		method: methodCopied ?? 'GET',
-		data: bodyCopied ?? null,
-		headers: customHeaders,
-	});
+		if (method.typeof !== 'undefined' && method.typeof !== 'string')
+			throw new Error('Request method has to be of type string');
+		if (body.typeof !== 'undefined' && body.typeof !== 'string' && body.typeof !== 'object')
+			throw new Error('Request body has to be of type string or object');
+		if (headers.typeof !== 'undefined' && headers.typeof !== 'array')
+			throw new Error('Request headers has to be of type array');
 
-	return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
+		const methodCopied = await method?.copy();
+		const bodyCopied = await body?.copy();
+		const headersCopied = await headers?.copy();
+
+		if (!permissions.methods.includes(methodCopied ?? 'GET'))
+			throw new Error(`No permission to use request method "${methodCopied}"`);
+
+		const customHeaders =
+			headersCopied?.reduce((acc, { header, value }) => {
+				acc[header] = value;
+				return acc;
+			}, {} as Record<string, string>) ?? {};
+
+		const axios = await getAxios();
+
+		const result = await axios({
+			url: encodeUrl(urlCopied),
+			method: methodCopied ?? 'GET',
+			data: bodyCopied ?? null,
+			headers: customHeaders,
+		});
+
+		return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
+	};
 }

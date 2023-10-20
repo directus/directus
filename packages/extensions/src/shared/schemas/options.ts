@@ -8,25 +8,26 @@ export const SplitEntrypoint = z.object({
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
+export const ExtensionSandboxRequestedScopes = z.object({
+	request: z.optional(
+		z.object({
+			permissions: z.object({
+				urls: z.array(z.string()),
+				methods: z.array(z.union([z.literal('GET'), z.literal('POST'), z.literal('PATCH'), z.literal('PUT'), z.literal('DELETE')])),
+			}),
+		})
+	),
+});
+
 export const ExtensionSandboxOptions = z.optional(
 	z.object({
 		enabled: z.boolean(),
-		requestedScopes: z.array(
-			z.union([
-				z.object({
-					type: z.literal('request'),
-					permissions: z.object({
-						urls: z.string(),
-						methods: z.array(z.union([z.literal('get'), z.literal('post'), z.literal('patch'), z.literal('delete')])),
-					}),
-				}),
-				z.any(), // @TODO replace with other scopes
-			])
-		),
+		requestedScopes: ExtensionSandboxRequestedScopes,
 	})
 );
 
 export type ExtensionSandboxOptions = z.infer<typeof ExtensionSandboxOptions>;
+export type ExtensionSandboxRequestedScopes = z.infer<typeof ExtensionSandboxRequestedScopes>;
 
 export const ExtensionOptionsBundleEntry = z.union([
 	z.object({
