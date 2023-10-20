@@ -57,7 +57,7 @@ const circleStyle = computed(() => ({
 
 <style>
 body {
-	--v-progress-circular-color: var(--foreground-normal);
+	--v-progress-circular-color: var(--theme--foreground);
 	--v-progress-circular-background-color: var(--border-normal);
 	--v-progress-circular-transition: 400ms;
 	--v-progress-circular-speed: 2s;

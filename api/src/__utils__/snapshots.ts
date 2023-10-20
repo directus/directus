@@ -15,6 +15,7 @@ export const snapshotBeforeCreateCollection: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -89,6 +90,7 @@ export const snapshotCreateCollection: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -108,6 +110,7 @@ export const snapshotCreateCollection: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -127,6 +130,7 @@ export const snapshotCreateCollection: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -291,6 +295,7 @@ export const snapshotCreateCollectionNotNested: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -310,6 +315,7 @@ export const snapshotCreateCollectionNotNested: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -429,6 +435,7 @@ export const snapshotBeforeDeleteCollection: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -448,6 +455,7 @@ export const snapshotBeforeDeleteCollection: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {
@@ -467,6 +475,7 @@ export const snapshotBeforeDeleteCollection: Snapshot = {
 				item_duplication_fields: null,
 				note: null,
 				singleton: false,
+				versioning: false,
 				translations: {},
 			},
 			schema: {

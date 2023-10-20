@@ -280,7 +280,7 @@ function useURLImport() {
 
 <style lang="scss" scoped>
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -299,7 +299,7 @@ function useURLImport() {
 	}
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 
 	&.is-svg {
@@ -314,21 +314,21 @@ function useURLImport() {
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;
 }
 
 .deselect:hover {
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 }
 
 .edit {
 	margin-right: 4px;
 
 	&:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

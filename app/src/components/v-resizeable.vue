@@ -198,7 +198,7 @@ function onPointerUp() {
 		bottom: 0;
 		width: 4px;
 		z-index: 10;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		cursor: ew-resize;
 		opacity: 0;
 		transform: translate(50%, 0);
@@ -234,10 +234,10 @@ function onPointerUp() {
 
 			&:hover,
 			&:active {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 
 				&::before {
-					background-color: var(--primary);
+					background-color: var(--theme--primary);
 				}
 			}
 		}

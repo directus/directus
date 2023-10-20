@@ -101,11 +101,11 @@ function emitValue(newValue: string | null) {
 
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 }
 
 .saved {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--theme--primary);
 }
 
 .v-notice {
@@ -117,10 +117,10 @@ function emitValue(newValue: string | null) {
 }
 
 .clear-icon {
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color-hover: var(--theme--danger);
 }
 
 .default-icon {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 </style>

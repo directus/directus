@@ -52,13 +52,13 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	}
 
 	dd {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 		flex-basis: 0;
 	}
 
 	.clipboard-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground);
 		margin-left: 4px;
 	}
 }

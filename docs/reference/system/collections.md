@@ -71,6 +71,9 @@ What sort order of the collection relative to other collections of the same leve
 What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`,
 `locked`.
 
+`versioning` **boolean**\
+Whether or not Content Versioning is enabled for this collection.
+
 #### Schema
 
 "Raw" database information. Based on the database vendor used, different information might be returned. The following

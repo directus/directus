@@ -21,6 +21,9 @@ defineEmits(['add']);
 		clickable
 		@click="$emit('add', field)"
 	>
+		<v-list-item-icon v-if="field.field.startsWith('$')">
+			<v-icon name="auto_awesome" small color="var(--theme--primary)" />
+		</v-list-item-icon>
 		<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
 	</v-list-item>
 	<v-list-group v-else :value="field.key" clickable @click="$emit('add', field)">

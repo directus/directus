@@ -225,8 +225,8 @@ const notificationsPreviewActive = ref(false);
 
 const { sidebarOpen, fullScreen } = storeToRefs(appStore);
 
-const theme = computed(() => {
-	return userStore.currentUser && 'theme' in userStore.currentUser ? userStore.currentUser.theme : 'auto';
+const appearance = computed(() => {
+	return userStore.currentUser && 'appearance' in userStore.currentUser ? userStore.currentUser.appearance : 'auto';
 });
 
 provide('main-element', contentEl);
@@ -260,7 +260,7 @@ function getWidth(input: unknown, fallback: number): number {
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
+	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
 		<aside
 			id="navigation"
 			role="navigation"
@@ -358,7 +358,7 @@ function getWidth(input: unknown, fallback: number): number {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
@@ -400,11 +400,18 @@ function getWidth(input: unknown, fallback: number): number {
 			width: 220px;
 			height: 100%;
 			font-size: 1rem;
-			background-color: var(--background-normal);
+			background: var(--theme--navigation--background);
 
 			&-content {
-				--v-list-item-background-color-hover: var(--background-normal-alt);
-				--v-list-item-background-color-active: var(--background-normal-alt);
+				--v-list-item-color: var(--theme--navigation--list--foreground);
+				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
+				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
+				--v-list-item-background-color: var(--theme--navigation--list--background);
+				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
+				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
 
 				height: calc(100% - 64px);
 				overflow-x: hidden;
@@ -490,7 +497,7 @@ function getWidth(input: unknown, fallback: number): number {
 		width: 280px;
 		height: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 
