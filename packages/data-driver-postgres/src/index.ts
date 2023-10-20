@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import type { AbstractQuery, DataDriver } from '@directus/data';
+import type { AbstractQuery, AtLeastOneElement, DataDriver } from '@directus/data';
 import {
 	convertQuery,
 	getOrmTransformer,
@@ -75,9 +75,10 @@ export default class DataDriverPostgres implements DataDriver {
 					}
 
 					for (const nestedMany of abstractSql.nestedManys) {
-						// @TODO enable composite keys
-						const identifierValueFromChunk = value[nestedMany.internalIdentifierFields[0]];
-						const subQuery = nestedMany.queryGenerator([identifierValueFromChunk]);
+						const subQuery = nestedMany.queryGenerator(
+							nestedMany.internalIdentifierFields.map((field) => value[field]) as AtLeastOneElement<string | number>
+						);
+
 						const subStream = await queryDB(subQuery);
 						const subData = [];
 
