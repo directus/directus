@@ -443,7 +443,6 @@ dimensions: Boyutlar
 size: Boyut
 created: Oluşturulma Tarihi
 modified: Değiştirildi
-checksum: Checksum
 owner: Sahip
 edited_by: Düzenleyen
 folder: Klasör
@@ -1629,7 +1628,6 @@ interfaces:
     description: Birden fazla ilişkili öğe seçin
     no_collection: Koleksiyon bulunamadı
   system-folder:
-    folder: Klasör
     description: Bir klasör seçin
     root_name: Dosya Kütüphanesi Kökü
     system_default: Sistem Varsayılanları

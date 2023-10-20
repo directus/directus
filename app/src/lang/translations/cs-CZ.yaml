@@ -436,7 +436,6 @@ dimensions: Rozměry
 size: Velikost
 created: Vytvořena
 modified: Upraveno
-checksum: Kontrolní součet
 owner: Vlastník
 edited_by: Upravil/a
 folder: Složka
@@ -1591,7 +1590,6 @@ interfaces:
     description: Vyberte více souvisejících položek
     no_collection: Kolekce nebyla nalezena
   system-folder:
-    folder: Složka
     description: Vyberte složku
     root_name: Kořenový adresář knihovny souborů
     system_default: Výchozí nastavení systému

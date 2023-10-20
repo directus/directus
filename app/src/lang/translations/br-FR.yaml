@@ -268,7 +268,6 @@ dimensions: Mentoù
 size: Ment
 created: Krouet
 modified: Kemmet
-checksum: Kod gwiriañ
 owner: Perc'henn
 edited_by: Kemmet gant
 folder: Teuliad
@@ -996,8 +995,6 @@ interfaces:
     one-to-many: Unan da meur a hini
     description: Dibab meur a elfenn liammet
     no_collection: N'eo ket bet kavet an dastumad
-  system-folder:
-    folder: Teuliad
   select-radio:
     radio-buttons: Boutonoù radio
     description: Dibab unan eus ar choazoù kinniget

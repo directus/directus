@@ -141,7 +141,6 @@ post_comment_success: תגובה פורסמה
 post_comment_updated: התגובה עודכנה
 functions:
   count: כמות
-checksum: מחרוזת בדיקה
 users: משתמשים
 activity: פעילות
 action: פעולה

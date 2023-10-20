@@ -446,7 +446,6 @@ dimensions: Wymiary
 size: Wielkość
 created: Utworzony
 modified: Zmodyfikowane
-checksum: Suma kontrolna
 owner: Właściciel
 edited_by: Edytowane przez
 folder: Folder
@@ -1671,7 +1670,6 @@ interfaces:
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
   system-folder:
-    folder: Folder
     description: Wybierz folder
     field_hint: Domyślny katalog przesłanych plików bez określonego folderu. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików

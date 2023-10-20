@@ -366,7 +366,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -1412,7 +1411,6 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
     description: Select a folder
     root_name: File Library Root
     system_default: System Defaults

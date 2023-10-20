@@ -472,8 +472,6 @@ interfaces:
     zoom: Aðdráttur
   presentation-notice:
     notice: Tilkynning
-  system-folder:
-    folder: Mappa
   list:
     sort: Flokka
   tags:

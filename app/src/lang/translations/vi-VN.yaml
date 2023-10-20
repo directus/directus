@@ -391,7 +391,6 @@ dimensions: Kích thước
 size: Kích thước
 created: Đã tạo
 modified: Đã sửa đổi
-checksum: Giá trị checksum
 owner: Sở hữu bởi
 edited_by: Chỉnh sửa bởi
 folder: Thư mục
@@ -1069,7 +1068,6 @@ interfaces:
   list-o2m:
     one-to-many: Quan hệ một - nhiều
   system-folder:
-    folder: Thư mục
     description: Chọn một thư mục
   list:
     sort: Sắp xếp

@@ -434,7 +434,6 @@ dimensions: Dimensões
 size: Tamanho
 created: Criado
 modified: Modificado
-checksum: Checksum
 owner: Proprietário
 edited_by: Editado por
 folder: Pasta
@@ -1629,7 +1628,6 @@ interfaces:
     description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
   system-folder:
-    folder: Pasta
     description: Selecionar uma pasta
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
