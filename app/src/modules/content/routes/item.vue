@@ -564,7 +564,7 @@ function revert(values: Record<string, any>) {
 			</v-dialog>
 
 			<v-dialog
-				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
+				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew && currentVersion === null"
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
