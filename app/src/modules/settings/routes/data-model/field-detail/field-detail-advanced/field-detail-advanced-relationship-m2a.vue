@@ -85,7 +85,6 @@ const unsortableJunctionFields = computed(() => {
 					item-label-font-family="var(--theme--font-family-monospace)"
 					item-disabled="meta.singleton"
 					multiple
-					:is-menu-same-width="false"
 					:multiple-preview-threshold="0"
 				/>
 			</div>
