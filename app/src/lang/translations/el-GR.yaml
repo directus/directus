@@ -54,6 +54,8 @@ or: Ή
 init: '΄Εναρξη'
 dataset_too_large_currently_showing_n_items: Τα δεδομένα είναι πολλά. Αυτή τη στιγμή εμφανίζονται τα πρώτα {n} στοιχεία.
 modifier: Μετατροπέας
+extension_hook: Άγκιστρο
+extension_modules: Ενότητες
 custom: Προσαρμοσμένο
 hook: Άγκιστρο
 fill_width: Πλήρες Πλάτος
@@ -233,7 +235,8 @@ choices: Επιλογές
 deselect: Αποεπιλέξτε
 creating_in: 'Δημιουργία Στοιχείου: {collection}'
 editing_in_batch: 'Μαζική Επεξεργασία {count} Στοιχείων'
-settings_project: Ρυθμίσεις Έργου
+settings_project: Ρυθμίσεις
+settings_presets: Σελιδοδείκτες
 discard_changes: Ακύρωση αλλαγών
 add_new: Προσθήκη νέου
 all: Όλα
@@ -283,7 +286,6 @@ fields:
     description: Περιγραφή
     tags: Ετικέτες
     language: Γλώσσα
-    theme: Θέμα
     tfa_secret: Έλεγχος ταυτότητας δυο παραγόντων
     status: Κατάσταση
     role: Ρόλος
@@ -429,3 +431,5 @@ operations:
     parallel: Παράλληλα
     batch: Δέσμη
     batch_size: Μέγεθος δέσμης
+standard: Τυπικό
+compact: Συμπαγής
