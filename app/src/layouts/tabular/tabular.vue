@@ -99,7 +99,7 @@ const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 );
 
 if (limitWritable.value !== selectedSize) {
-  limitWritable.value = selectedSize;
+	limitWritable.value = selectedSize;
 }
 
 const showManualSort = computed(() => {
