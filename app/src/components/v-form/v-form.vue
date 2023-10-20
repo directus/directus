@@ -13,6 +13,7 @@ import FormField from './form-field.vue';
 import type { FormField as TFormField } from './types';
 import ValidationErrors from './validation-errors.vue';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
+import type { MenuOptions } from './form-field-menu.vue';
 
 type FieldValues = {
 	[field: string]: any;
@@ -33,7 +34,9 @@ interface Props {
 	badge?: string;
 	showValidationErrors?: boolean;
 	showNoVisibleFields?: boolean;
+	/* Enable the raw editor toggler on fields */
 	rawEditorEnabled?: boolean;
+	disabledMenuOptions?: MenuOptions[];
 	direction?: string;
 	showDivider?: boolean;
 	inline?: boolean;
@@ -44,20 +47,13 @@ const props = withDefaults(defineProps<Props>(), {
 	fields: undefined,
 	initialValues: null,
 	modelValue: null,
-	loading: false,
-	batchMode: false,
 	primaryKey: undefined,
-	disabled: false,
 	validationErrors: () => [],
-	autofocus: false,
 	group: null,
 	badge: undefined,
 	showValidationErrors: true,
 	showNoVisibleFields: true,
-	rawEditorEnabled: false,
 	direction: undefined,
-	showDivider: false,
-	inline: false,
 });
 
 const { t } = useI18n();
@@ -93,11 +89,11 @@ const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
 
 const firstEditableFieldIndex = computed(() => {
-	for (let i = 0; i < fieldNames.value.length; i++) {
-		const field = fieldsMap.value[fieldNames.value[i]];
+	for (const [index, fieldName] of fieldNames.value.entries()) {
+		const field = fieldsMap.value[fieldName];
 
 		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
-			return i;
+			return index;
 		}
 	}
 
@@ -105,11 +101,11 @@ const firstEditableFieldIndex = computed(() => {
 });
 
 const firstVisibleFieldIndex = computed(() => {
-	for (let i = 0; i < fieldNames.value.length; i++) {
-		const field = fieldsMap.value[fieldNames.value[i]];
+	for (const [index, fieldName] of fieldNames.value.entries()) {
+		const field = fieldsMap.value[fieldName];
 
 		if (field?.meta && !field.meta?.hidden) {
-			return i;
+			return index;
 		}
 	}
 
@@ -410,6 +406,7 @@ function useRawEditor() {
 					:badge="badge"
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawActiveFields.has(fieldName)"
+					:disabled-menu-options="disabledMenuOptions"
 					:direction="direction"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
