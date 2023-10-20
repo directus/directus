@@ -94,15 +94,14 @@ export const convertFieldNodes = (
 
 			// @TODO
 			// we need to make sure, that the identifier field is included as primitive field node
-			// so we use the returning value as parameter for the sub queries
+			// so we can use the returning value as parameter for the sub queries
 
-			const externalCollectionAlias = createUniqueAlias(fieldMeta.external.collection);
-
-			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
+			const nestedOutput = convertFieldNodes(fieldMeta.external.collection, abstractField.fields, idxGenerator, [
 				...currentPath,
 				fieldMeta.external.collection,
 			]);
 
+			const externalCollectionAlias = createUniqueAlias(fieldMeta.external.collection);
 			const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, idxGenerator, externalCollectionAlias);
 			nestedManys.push(abstractSqlSubQuery);
 			continue;

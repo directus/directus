@@ -22,8 +22,8 @@ export interface AbstractQueryFieldNodeRelationalOneToMany {
 	type: 'o2m';
 
 	/*
-	 * o2m relational type does noy have anything stored on the o side,
-	 * just "foreign keys" (in sql and mongodb) in the related collection
+	 * as a reminder: the o2m relational type does noy have anything stored on the o side,
+	 * the relational keys live in the related collection
 	 */
 
 	internalIdentifierFields: [string, ...string[]];
@@ -33,7 +33,6 @@ export interface AbstractQueryFieldNodeRelationalOneToMany {
 		collection: string;
 		fields: [string, ...string[]];
 	};
-
 }
 
 export interface AbstractQueryFieldNodeRelationalAnyToOne {

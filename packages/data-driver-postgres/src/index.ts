@@ -49,10 +49,9 @@ export default class DataDriverPostgres implements DataDriver {
 	// We might can move this function into data-sql and pass some functions from the driver to it (?)
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, any>>> {
 		// const abstractSql = convertQuery(query);
-		console.log('querying database', abstractSql);
+		// console.log('querying database', abstractSql.clauses);
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
-
 		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
 		const ormTransformer = getOrmTransformer(abstractSql.aliasMapping);
 		return stream.pipeThrough(ormTransformer);
@@ -62,6 +61,8 @@ export default class DataDriverPostgres implements DataDriver {
 		const abstractSql = convertQuery(query);
 		const rootStream = await this.queryDatabase(abstractSql);
 
+		let finalChunk: Record<string, any> = {};
+
 		for await (const chunk of rootStream) {
 			for (const nestedMany of abstractSql.nestedManys) {
 				// @TODO enable composite keys
@@ -69,10 +70,25 @@ export default class DataDriverPostgres implements DataDriver {
 
 				const subQuery = nestedMany.queryGenerator([identifierValueFromChunk]);
 				const subStream = await this.queryDatabase(subQuery);
+
+				// receive all data/chunks from the sub stream
+				const subData = [];
+
+				for await (const subChunk of subStream) {
+					subData.push(subChunk);
+				}
+
+				finalChunk = { ...chunk, [nestedMany.alias]: subData };
+
+				console.log(finalChunk);
 			}
 		}
 
-		return rootStream;
+		return new ReadableStream({
+			start(controller) {
+				controller.enqueue(finalChunk);
+			},
+		});
 	}
 
 	// async queryAbstract(query: AbstractQuery): Promise<ReadableStream> {
@@ -96,10 +112,4 @@ export default class DataDriverPostgres implements DataDriver {
 
 	// 	return rootStream;
 	// }
-}
-
-// this function can go into data-sql
-// @ts-ignore
-export function mergeStreams(rootStream, subStreams, nestedMany) {
-	// @TODO implement
 }
