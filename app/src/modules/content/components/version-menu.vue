@@ -315,6 +315,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								autofocus
 								slug
 								trim
+								:max-length="64"
 								@keyup.enter="createVersion"
 							/>
 						</div>
@@ -353,6 +354,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								autofocus
 								slug
 								trim
+								:max-length="64"
 								@keyup.enter="renameVersion"
 							/>
 						</div>

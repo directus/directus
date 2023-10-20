@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_versions', (table) => {
 		table.uuid('id').primary().notNullable();
-		table.string('key').notNullable();
+		table.string('key', 64).notNullable();
 		table.string('name');
 
 		table
