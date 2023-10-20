@@ -48,10 +48,10 @@ export interface AbstractQueryFieldNodeRelationalOneToAny {
  * @example
  * ```
  * const functionNode = {
- * 	internal: {
+ * 	local: {
  * 		fields: ['id']
  *  },
- * 	external: {
+ * 	foreign: {
  * 		store: 'mongodb',
  * 		collection: 'some-collection',
  * }
@@ -59,12 +59,12 @@ export interface AbstractQueryFieldNodeRelationalOneToAny {
  */
 export interface AbstractQueryFieldNodeRelationalJoinMany {
 	/** the fields of the current collection which have the relational value to an external collection or item */
-	internal: {
+	local: {
 		fields: AtLeastOneElement<string>;
 	};
 
 	/** the external collection or item which should be pulled/joined/merged into the current collection */
-	external: {
+	foreign: {
 		store: string;
 		collection: string;
 		fields: AtLeastOneElement<string>;
@@ -72,12 +72,12 @@ export interface AbstractQueryFieldNodeRelationalJoinMany {
 }
 
 export interface AbstractQueryFieldNodeRelationalJoinAny {
-	internal: {
+	local: {
 		collectionField: string;
 		fields: AtLeastOneElement<string>;
 	};
 
-	external: {
+	foreign: {
 		store: string;
 		fields: AtLeastOneElement<string>;
 	};

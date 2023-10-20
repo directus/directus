@@ -63,12 +63,12 @@ export const convertFieldNodes = (
 			 */
 
 			if (abstractField.meta.type === 'm2o') {
-				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.external.collection);
+				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
 				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias, abstractField.alias);
 
 				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
 					...currentPath,
-					abstractField.meta.join.external.collection,
+					abstractField.meta.join.foreign.collection,
 				]);
 
 				nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
@@ -96,8 +96,8 @@ export const convertFieldNodes = (
 			// we need to make sure, that the identifier field is included as primitive field node
 			// so we can use the returning value as parameter for the sub queries
 
-			const nestedOutput = convertFieldNodes(fieldMeta.join.external.collection, abstractField.fields, idxGenerator);
-			const externalCollectionAlias = createUniqueAlias(fieldMeta.join.external.collection);
+			const nestedOutput = convertFieldNodes(fieldMeta.join.foreign.collection, abstractField.fields, idxGenerator);
+			const externalCollectionAlias = createUniqueAlias(fieldMeta.join.foreign.collection);
 			const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, idxGenerator, externalCollectionAlias);
 			nestedManys.push(abstractSqlSubQuery);
 			continue;

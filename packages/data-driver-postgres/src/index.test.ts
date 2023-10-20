@@ -181,10 +181,10 @@ test('nested m2o field', async () => {
 				meta: {
 					type: 'm2o',
 					join: {
-						internal: {
+						local: {
 							fields: [foreignKeyField],
 						},
-						external: {
+						foreign: {
 							store: dataStore,
 							collection: collectionToJoin,
 							fields: [collectionToJoinPrimaryKeyField],
@@ -338,10 +338,10 @@ test.todo('nested o2m field', async () => {
 				meta: {
 					type: 'o2m',
 					join: {
-						internal: {
+						local: {
 							fields: [primaryKeyField],
 						},
-						external: {
+						foreign: {
 							store: dataStore,
 							collection: collectionToJoin,
 							fields: [collectionToJoinForeignKeyField],

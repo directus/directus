@@ -10,13 +10,13 @@ export const createJoin = (
 ): AbstractSqlQueryJoinNode => {
 	let on: AbstractSqlQueryLogicalNode | AbstractSqlQueryConditionNode;
 
-	if (relationalField.join.internal.fields.length > 1) {
+	if (relationalField.join.local.fields.length > 1) {
 		on = {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: relationalField.join.internal.fields.map((currentField, index) => {
-				const externalField = relationalField.join.external.fields[index];
+			childNodes: relationalField.join.local.fields.map((currentField, index) => {
+				const externalField = relationalField.join.foreign.fields[index];
 
 				if (!externalField) {
 					throw new Error(`Missing related foreign key join column for current context column "${currentField}"`);
@@ -28,15 +28,15 @@ export const createJoin = (
 	} else {
 		on = getJoinCondition(
 			currentCollection,
-			relationalField.join.internal.fields[0],
+			relationalField.join.local.fields[0],
 			externalCollectionAlias,
-			relationalField.join.external.fields[0]
+			relationalField.join.foreign.fields[0]
 		);
 	}
 
 	const result: AbstractSqlQueryJoinNode = {
 		type: 'join',
-		table: relationalField.join.external.collection,
+		table: relationalField.join.foreign.collection,
 		as: externalCollectionAlias,
 		on,
 	};

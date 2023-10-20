@@ -15,10 +15,10 @@ test('Convert m2o relation on single field ', () => {
 	const node: AbstractQueryFieldNodeRelationalManyToOne = {
 		type: 'm2o',
 		join: {
-			internal: {
+			local: {
 				fields: [randomCurrentField],
 			},
-			external: {
+			foreign: {
 				store: randomExternalStore,
 				collection: randomExternalCollection,
 				fields: [randomExternalField],
@@ -67,10 +67,10 @@ test('Convert m2o relation with composite keys', () => {
 	const node: AbstractQueryFieldNodeRelationalManyToOne = {
 		type: 'm2o',
 		join: {
-			internal: {
+			local: {
 				fields: [randomCurrentField, randomCurrentField2],
 			},
-			external: {
+			foreign: {
 				store: randomExternalStore,
 				collection: randomExternalCollection,
 				fields: [randomExternalField, randomExternalField2],

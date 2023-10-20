@@ -60,10 +60,10 @@ test.todo('get root query', () => {
 						meta: {
 							type: 'o2m',
 							join: {
-								internal: {
+								local: {
 									fields: [relationalKeyField2],
 								},
-								external: {
+								foreign: {
 									store: randomStore,
 									collection: collectionToJoin2,
 									fields: [collectionToJoinForeignKeyField2],
@@ -75,10 +75,10 @@ test.todo('get root query', () => {
 				meta: {
 					type: 'o2m',
 					join: {
-						internal: {
+						local: {
 							fields: [relationalKeyField1],
 						},
-						external: {
+						foreign: {
 							store: randomStore,
 							collection: collectionToJoin,
 							fields: [collectionToJoinForeignKeyField],

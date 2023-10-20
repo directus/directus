@@ -29,10 +29,10 @@ describe('create abstract query with filter for sub query', () => {
 			meta: {
 				type: 'o2m',
 				join: {
-					internal: {
+					local: {
 						fields: [relationalKeyFieldCurrent],
 					},
-					external: {
+					foreign: {
 						store: randomStore,
 						collection: collectionToJoin,
 						fields: [relationalKeyFieldForeign],

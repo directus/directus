@@ -144,10 +144,10 @@ test('primitive, fn, m2o', () => {
 			meta: {
 				type: 'm2o',
 				join: {
-					internal: {
+					local: {
 						fields: [randomJoinCurrentField],
 					},
-					external: {
+					foreign: {
 						store: randomExternalStore,
 						collection: randomExternalCollection,
 						fields: [randomExternalField],
@@ -257,10 +257,10 @@ test('primitive, o2m', () => {
 			meta: {
 				type: 'o2m',
 				join: {
-					internal: {
+					local: {
 						fields: [randomJoinCurrentField],
 					},
-					external: {
+					foreign: {
 						store: randomExternalStore,
 						collection: randomExternalCollection,
 						fields: [randomExternalField],
