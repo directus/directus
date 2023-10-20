@@ -47,6 +47,7 @@ const {
 							:fields="currentSlide.form.fields"
 							:validation-errors="validationErrors"
 							autofocus
+							:disabled-menu-options="['edit-raw']"
 						/>
 					</div>
 				</Transition>
