@@ -11,6 +11,7 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
+import { translateShortcut } from '@/utils/translate-shortcut';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
@@ -137,8 +138,29 @@ const archiveTooltip = computed(() => {
 	return t('archive');
 });
 
-useShortcut('meta+s', saveAndStay, form);
-useShortcut('meta+shift+s', saveAndAddNew, form);
+useShortcut(
+	'meta+s',
+	() => {
+		if (unref(currentVersion) === null) {
+			saveAndStay();
+		} else {
+			saveVersionAction('stay');
+		}
+	},
+	form
+);
+
+useShortcut(
+	'meta+shift+s',
+	() => {
+		if (unref(currentVersion) === null) {
+			saveAndAddNew();
+		} else {
+			saveVersionAction('quit');
+		}
+	},
+	form
+);
 
 const {
 	createAllowed,
@@ -287,25 +309,24 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function saveVersionAndQuit() {
+async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
 		await saveVersion(edits);
 		edits.value = {};
-		if (props.singleton === false) router.push(`/content/${props.collection}`);
-	} catch {
-		// Save version shows unexpected error dialog
-	}
-}
 
-async function saveVersionAndStay() {
-	if (isSavable.value === false) return;
-
-	try {
-		await saveVersion(edits);
-		edits.value = {};
-		refresh();
+		switch (action) {
+			case 'main':
+				currentVersion.value = null;
+				break;
+			case 'stay':
+				refresh();
+				break;
+			case 'quit':
+				if (!props.singleton) router.push(`/content/${props.collection}`);
+				break;
+		}
 	} catch {
 		// Save version shows unexpected error dialog
 	}
@@ -324,11 +345,6 @@ async function saveAndQuit() {
 
 async function saveAndStay() {
 	if (isSavable.value === false) return;
-
-	if (unref(currentVersion) !== null) {
-		saveVersionAndStay();
-		return;
-	}
 
 	try {
 		const savedItem: Record<string, any> = await save();
@@ -548,7 +564,7 @@ function revert(values: Record<string, any>) {
 			</v-dialog>
 
 			<v-dialog
-				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
+				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew && currentVersion === null"
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
@@ -610,7 +626,7 @@ function revert(values: Record<string, any>) {
 				:tooltip="t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
-				@click="saveVersionAndQuit"
+				@click="saveVersionAction('main')"
 			>
 				<v-icon name="beenhere" />
 
@@ -621,6 +637,16 @@ function revert(values: Record<string, any>) {
 						</template>
 
 						<v-list>
+							<v-list-item clickable @click="saveVersionAction('stay')">
+								<v-list-item-icon><v-icon name="beenhere" /></v-list-item-icon>
+								<v-list-item-content>{{ t('save_and_stay') }}</v-list-item-content>
+								<v-list-item-hint>{{ translateShortcut(['meta', 's']) }}</v-list-item-hint>
+							</v-list-item>
+							<v-list-item clickable @click="saveVersionAction('quit')">
+								<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>
+								<v-list-item-content>{{ t('save_and_quit') }}</v-list-item-content>
+								<v-list-item-hint>{{ translateShortcut(['meta', 'shift', 's']) }}</v-list-item-hint>
+							</v-list-item>
 							<v-list-item clickable @click="discardAndStay">
 								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
 								<v-list-item-content>{{ t('discard_all_changes') }}</v-list-item-content>

@@ -551,6 +551,7 @@ generated_uuid: Generated UUID
 manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
+save_and_quit: Save and Quit
 save_as_copy: Save as Copy
 add_existing: Add Existing
 creating_items: Creating Items
