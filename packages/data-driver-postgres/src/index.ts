@@ -10,7 +10,7 @@ import {
 	type AbstractSqlQuery,
 	type ParameterizedSqlStatement,
 } from '@directus/data-sql';
-import { ReadableStream } from 'node:stream/web';
+import { ReadableStream, type ReadableStreamDefaultReadResult } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
 import { convertToActualStatement } from './query/index.js';
@@ -21,6 +21,8 @@ import { convertParameters } from './query/parameters.js';
 export interface DataDriverPostgresConfig {
 	connectionString: string;
 }
+
+type SteamResult = ReadableStreamDefaultReadResult<Record<string, any>>;
 
 export default class DataDriverPostgres implements DataDriver {
 	#config: DataDriverPostgresConfig;
@@ -59,33 +61,41 @@ export default class DataDriverPostgres implements DataDriver {
 
 	async query(query: AbstractQuery): Promise<ReadableStream> {
 		const abstractSql = convertQuery(query);
-		const rootStream = await this.queryDatabase(abstractSql);
+		const queryDB = this.queryDatabase.bind(this);
+		const rootStream = await queryDB(abstractSql);
 
-		let finalChunk: Record<string, any> = {};
+		const stream = new ReadableStream({
+			start(controller) {
+				const reader = rootStream.getReader();
 
-		for await (const chunk of rootStream) {
-			for (const nestedMany of abstractSql.nestedManys) {
-				// @TODO enable composite keys
-				const identifierValueFromChunk = chunk[nestedMany.internalIdentifierFields[0]];
+				async function mergeNestedData({ done, value }: SteamResult): Promise<SteamResult | void> {
+					if (done) {
+						controller.close();
+						return;
+					}
 
-				const subQuery = nestedMany.queryGenerator([identifierValueFromChunk]);
-				const subStream = await this.queryDatabase(subQuery);
-				const subData = [];
+					for (const nestedMany of abstractSql.nestedManys) {
+						// @TODO enable composite keys
+						const identifierValueFromChunk = value[nestedMany.internalIdentifierFields[0]];
+						const subQuery = nestedMany.queryGenerator([identifierValueFromChunk]);
+						const subStream = await queryDB(subQuery);
+						const subData = [];
 
-				for await (const subChunk of subStream) {
-					subData.push(Object.values(subChunk));
+						for await (const subChunk of subStream) {
+							subData.push(Object.values(subChunk));
+						}
+
+						controller.enqueue({ ...value, [nestedMany.collection]: subData });
+					}
+
+					return reader.read().then(mergeNestedData);
 				}
 
-				finalChunk = { ...chunk, [nestedMany.collection]: subData };
-				console.log(finalChunk);
-			}
-		}
-
-		return new ReadableStream({
-			start(controller) {
-				controller.enqueue(finalChunk);
+				reader.read().then(mergeNestedData);
 			},
 		});
+
+		return stream;
 	}
 
 	// async queryAbstract(query: AbstractQuery): Promise<ReadableStream> {
