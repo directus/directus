@@ -137,7 +137,7 @@ function useRenameDialog() {
 		try {
 			const updates = {
 				key: newVersionKey.value,
-				...(newVersionName.value !== currentVersion.value?.name ? { name: newVersionName.value } : {}),
+				...(newVersionName.value !== currentVersion.value?.name && { name: newVersionName.value }),
 			};
 
 			await api.patch(`/versions/${unref(currentVersion)!.id}`, updates);
