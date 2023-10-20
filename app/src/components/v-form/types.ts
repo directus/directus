@@ -6,3 +6,7 @@ export type FormField = DeepPartial<Field> & {
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 };
+
+export type FieldValues = {
+	[field: string]: any;
+};

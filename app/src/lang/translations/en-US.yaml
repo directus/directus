@@ -2268,7 +2268,6 @@ onboarding:
   action:
     skip: Skip
     first: Start Setup
-    continue: Continue
     saveAndContinue: Save and Continue
   welcome:
     title: Welcome to Directus!
