@@ -4,18 +4,29 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
 
-interface Props {
-	field: FormField;
-	modelValue?: string | number | boolean | Record<string, any> | Array<any> | null;
-	initialValue?: string | number | boolean | Record<string, any> | Array<any> | null;
-	restricted?: boolean;
-	rawEditorMenuOptionHidden?: boolean;
-}
+export type MenuOptions =
+	| 'edit-raw'
+	| 'view-raw'
+	| 'copy-raw'
+	| 'paste-raw'
+	| 'reset-to-default'
+	| 'undo-changes'
+	| 'clear-value';
 
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: null,
-	initialValue: null,
-});
+const props = withDefaults(
+	defineProps<{
+		field: FormField;
+		modelValue?: string | number | boolean | Record<string, any> | Array<any> | null;
+		initialValue?: string | number | boolean | Record<string, any> | Array<any> | null;
+		restricted?: boolean;
+		disabledOptions?: MenuOptions[];
+	}>(),
+	{
+		modelValue: null,
+		initialValue: null,
+		disabledOptions: () => [],
+	}
+);
 
 defineEmits(['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw']);
 
@@ -32,6 +43,38 @@ const isRequired = computed(() => {
 	return props.field?.schema?.is_nullable === false;
 });
 
+const localDisabledOptions = computed(() => {
+	const disabledOptions = new Set(props.disabledOptions);
+
+	if (props.restricted) disabledOptions.add('edit-raw');
+
+	if (!props.restricted) disabledOptions.add('view-raw');
+
+	if (!isCopySupported.value) disabledOptions.add('copy-raw');
+
+	if (!isPasteSupported.value || props.restricted) disabledOptions.add('paste-raw');
+
+	if (defaultValue.value === null || props.restricted) disabledOptions.add('reset-to-default');
+
+	if (!props.initialValue || props.restricted) disabledOptions.add('undo-changes');
+
+	if ((isRequired.value && defaultValue.value !== null) || props.restricted) disabledOptions.add('clear-value');
+
+	return disabledOptions;
+});
+
+const showDivider = computed(() => {
+	const upperOptions = (['edit-raw', 'view-raw', 'copy-raw', 'paste-raw'] as MenuOptions[]).some(
+		(option) => !localDisabledOptions.value.has(option)
+	);
+
+	const lowerOptions = (['reset-to-default', 'undo-changes', 'clear-value'] as MenuOptions[]).some(
+		(option) => !localDisabledOptions.value.has(option)
+	);
+
+	return upperOptions && lowerOptions;
+});
+
 const relational = computed(
 	() =>
 		props.field.meta?.special?.find((type) =>
@@ -42,21 +85,30 @@ const relational = computed(
 
 <template>
 	<v-list>
-		<v-list-item v-if="!rawEditorMenuOptionHidden" clickable @click="$emit('edit-raw')">
+		<v-list-item v-if="!localDisabledOptions.has('edit-raw')" clickable @click="$emit('edit-raw')">
 			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ restricted ? t('view_raw_value') : t('edit_raw_value') }}</v-list-item-content>
+			<v-list-item-content>{{ t('edit_raw_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item v-if="isCopySupported" :disabled="modelValue === null" clickable @click="$emit('copy-raw')">
+		<v-list-item v-if="!localDisabledOptions.has('view-raw')" clickable @click="$emit('edit-raw')">
+			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
+			<v-list-item-content>{{ t('view_raw_value') }}</v-list-item-content>
+		</v-list-item>
+		<v-list-item
+			v-if="!localDisabledOptions.has('copy-raw')"
+			:disabled="modelValue === null"
+			clickable
+			@click="$emit('copy-raw')"
+		>
 			<v-list-item-icon><v-icon name="content_copy" /></v-list-item-icon>
 			<v-list-item-content>{{ t('copy_raw_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item v-if="isPasteSupported && !restricted" clickable @click="$emit('paste-raw')">
+		<v-list-item v-if="!localDisabledOptions.has('paste-raw')" clickable @click="$emit('paste-raw')">
 			<v-list-item-icon><v-icon name="content_paste" /></v-list-item-icon>
 			<v-list-item-content>{{ t('paste_raw_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-divider v-if="!restricted" />
+		<v-divider v-if="showDivider" />
 		<v-list-item
-			v-if="!restricted && defaultValue !== null"
+			v-if="!localDisabledOptions.has('reset-to-default')"
 			:disabled="modelValue === defaultValue"
 			clickable
 			@click="$emit('update:modelValue', defaultValue)"
@@ -67,7 +119,7 @@ const relational = computed(
 			<v-list-item-content>{{ t('reset_to_default') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
-			v-if="!restricted && initialValue"
+			v-if="!localDisabledOptions.has('undo-changes')"
 			:disabled="initialValue === undefined || modelValue === initialValue"
 			clickable
 			@click="$emit('unset', field)"
@@ -78,7 +130,7 @@ const relational = computed(
 			<v-list-item-content>{{ t('undo_changes') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
-			v-if="!restricted && (defaultValue === null || !isRequired)"
+			v-if="!localDisabledOptions.has('clear-value')"
 			:disabled="modelValue === null || relational"
 			clickable
 			@click="$emit('update:modelValue', null)"

@@ -13,6 +13,7 @@ import FormField from './form-field.vue';
 import type { FormField as TFormField } from './types';
 import ValidationErrors from './validation-errors.vue';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
+import type { MenuOptions } from './form-field-menu.vue';
 
 type FieldValues = {
 	[field: string]: any;
@@ -33,10 +34,9 @@ interface Props {
 	badge?: string;
 	showValidationErrors?: boolean;
 	showNoVisibleFields?: boolean;
-	/* Enable the raw editor toggle on fields */
+	/* Enable the raw editor toggler on fields */
 	rawEditorEnabled?: boolean;
-	/* Hide the raw editor option in field menu */
-	rawEditorMenuOptionHidden?: boolean;
+	disabledMenuOptions?: MenuOptions[];
 	direction?: string;
 	showDivider?: boolean;
 	inline?: boolean;
@@ -406,7 +406,7 @@ function useRawEditor() {
 					:badge="badge"
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawActiveFields.has(fieldName)"
-					:raw-editor-menu-option-hidden="rawEditorMenuOptionHidden"
+					:disabled-menu-options="disabledMenuOptions"
 					:direction="direction"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"

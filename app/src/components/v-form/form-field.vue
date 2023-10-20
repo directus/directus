@@ -8,7 +8,7 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
-import FormFieldMenu from './form-field-menu.vue';
+import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
 import type { FormField } from './types';
 
@@ -26,7 +26,7 @@ interface Props {
 	badge?: string;
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
-	rawEditorMenuOptionHidden?: boolean;
+	disabledMenuOptions?: MenuOptions[];
 	direction?: string;
 }
 
@@ -170,7 +170,7 @@ function useComputedValues() {
 				:model-value="internalValue"
 				:initial-value="initialValue"
 				:restricted="isDisabled"
-				:raw-editor-menu-option-hidden="rawEditorMenuOptionHidden"
+				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
