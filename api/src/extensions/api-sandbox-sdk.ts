@@ -45,7 +45,7 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 		if (options.typeof !== 'undefined' && options.typeof !== 'object')
 			throw new Error('Request options has to be of type object');
 
-		const urlCopied = url.copySync();
+		const urlCopied = await url.copy();
 
 		const permissions = requestedScopes.request?.permissions;
 
@@ -53,15 +53,15 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 
 		if (!permissions.urls.includes(urlCopied)) throw new Error(`No permission to request "${urlCopied}"`);
 
-		const method = await options?.get('method', { reference: true });
-		const body = await options?.get('body', { reference: true });
-		const headers = await options?.get('headers', { reference: true });
+		const method = options.typeof !== 'undefined' ? await options.get('method', { reference: true }) : undefined;
+		const body = options.typeof !== 'undefined' ? await options.get('body', { reference: true }) : undefined;
+		const headers = options.typeof !== 'undefined' ? await options.get('headers', { reference: true }) : undefined;
 
-		if (method.typeof !== 'undefined' && method.typeof !== 'string')
+		if (method !== undefined && method.typeof !== 'undefined' && method.typeof !== 'string')
 			throw new Error('Request method has to be of type string');
-		if (body.typeof !== 'undefined' && body.typeof !== 'string' && body.typeof !== 'object')
+		if (body !== undefined && body.typeof !== 'undefined' && body.typeof !== 'string' && body.typeof !== 'object')
 			throw new Error('Request body has to be of type string or object');
-		if (headers.typeof !== 'undefined' && headers.typeof !== 'array')
+		if (headers !== undefined && headers.typeof !== 'undefined' && headers.typeof !== 'array')
 			throw new Error('Request headers has to be of type array');
 
 		const methodCopied = await method?.copy();
