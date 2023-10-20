@@ -1,3 +1,5 @@
+import type { AtLeastOneElement } from '../../../misc.js';
+
 /**
  * Used to build a relational query for m2o and a2o relations.
  */
@@ -26,12 +28,12 @@ export interface AbstractQueryFieldNodeRelationalOneToMany {
 	 * the relational keys live in the related collection
 	 */
 
-	internalIdentifierFields: [string, ...string[]];
+	internalIdentifierFields: AtLeastOneElement<string>;
 
 	external: {
 		store: string;
 		collection: string;
-		fields: [string, ...string[]];
+		fields: AtLeastOneElement<string>;
 	};
 }
 
@@ -64,25 +66,25 @@ export interface AbstractQueryFieldNodeRelationalOneToAny {
 export interface AbstractQueryFieldNodeRelationalJoinMany {
 	/** the fields of the current collection which have the relational value to an external collection or item */
 	internal: {
-		fields: [string, ...string[]];
+		fields: AtLeastOneElement<string>;
 	};
 
 	/** the external collection or item which should be pulled/joined/merged into the current collection */
 	external: {
 		store: string;
 		collection: string;
-		fields: [string, ...string[]];
+		fields: AtLeastOneElement<string>;
 	};
 }
 
 export interface AbstractQueryFieldNodeRelationalJoinAny {
 	internal: {
 		collectionField: string;
-		fields: [string, ...string[]];
+		fields: AtLeastOneElement<string>;
 	};
 
 	external: {
 		store: string;
-		fields: [string, ...string[]];
+		fields: AtLeastOneElement<string>;
 	};
 }
