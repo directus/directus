@@ -28,13 +28,7 @@ export interface AbstractQueryFieldNodeRelationalOneToMany {
 	 * the relational keys live in the related collection
 	 */
 
-	internalIdentifierFields: AtLeastOneElement<string>;
-
-	external: {
-		store: string;
-		collection: string;
-		fields: AtLeastOneElement<string>;
-	};
+	join: AbstractQueryFieldNodeRelationalJoinMany;
 }
 
 export interface AbstractQueryFieldNodeRelationalAnyToOne {
