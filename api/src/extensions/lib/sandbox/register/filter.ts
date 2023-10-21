@@ -10,8 +10,8 @@ export function registerFilterGenerator() {
 		event: Reference<string>,
 		cb: Reference<(payload: unknown) => unknown | Promise<unknown>>
 	) => {
-		if (event.typeof !== 'string') throw new Error('Filter event has to be of type string');
-		if (cb.typeof !== 'function') throw new Error('Filter handler has to be of type function');
+		if (event.typeof !== 'string') throw new TypeError('Filter event has to be of type string');
+		if (cb.typeof !== 'function') throw new TypeError('Filter handler has to be of type function');
 
 		const eventCopied = event.copySync();
 

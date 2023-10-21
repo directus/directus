@@ -7,8 +7,8 @@ export function registerActionGenerator() {
 	const unregisterFunctions: PromiseCallback[] = [];
 
 	const registerAction = (event: Reference<string>, cb: Reference<(payload: unknown) => void | Promise<void>>) => {
-		if (event.typeof !== 'string') throw new Error('Action event has to be of type string');
-		if (cb.typeof !== 'function') throw new Error('Action handler has to be of type function');
+		if (event.typeof !== 'string') throw new TypeError('Action event has to be of type string');
+		if (cb.typeof !== 'function') throw new TypeError('Action handler has to be of type function');
 
 		const eventCopied = event.copySync();
 

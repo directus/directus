@@ -20,9 +20,9 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 			}) => { status: number; body: string } | Promise<{ status: number; body: string }>
 		>
 	) => {
-		if (path.typeof !== 'string') throw new Error('Route path has to be of type string');
-		if (method.typeof !== 'string') throw new Error('Route method has to be of type string');
-		if (cb.typeof !== 'function') throw new Error('Route handler has to be of type function');
+		if (path.typeof !== 'string') throw new TypeError('Route path has to be of type string');
+		if (method.typeof !== 'string') throw new TypeError('Route method has to be of type string');
+		if (cb.typeof !== 'function') throw new TypeError('Route handler has to be of type function');
 
 		const pathCopied = path.copySync();
 		const methodCopied = method.copySync();
