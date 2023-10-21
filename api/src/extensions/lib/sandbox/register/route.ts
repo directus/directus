@@ -2,6 +2,7 @@ import type { RequestHandler, Router } from 'express';
 import express from 'express';
 import type { Reference } from 'isolated-vm';
 import type { IncomingHttpHeaders } from 'node:http';
+import logger from '../../../../logger.js';
 import { callReference } from './call-reference.js';
 
 export function registerRouteGenerator(endpointName: string, endpointRouter: Router) {
@@ -30,11 +31,16 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 		const handler: RequestHandler = async (req, res) => {
 			const request = { url: req.url, headers: req.headers, body: req.body };
 
-			const response = await callReference(cb, [request]);
+			try {
+				const response = await callReference(cb, [request]);
 
-			const responseCopied = await response.copy();
+				const responseCopied = await response.copy();
 
-			res.status(responseCopied.status).send(responseCopied.body);
+				res.status(responseCopied.status).send(responseCopied.body);
+			} catch (err) {
+				logger.warn(err);
+				res.status(500).end();
+			}
 		};
 
 		switch (methodCopied) {
