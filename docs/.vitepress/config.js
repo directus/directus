@@ -600,13 +600,13 @@ function sidebar() {
 					items: [
 						{
 							link: '/extensions/secure/introduction',
-							text: 'Introduction'
+							text: 'Introduction',
 						},
 						{
 							link: '/extensions/secure/execution-types',
-							text: 'Execution Types'
+							text: 'Execution Types',
 						},
-					]
+					],
 				},
 				{
 					text: 'Internal Packages',
