@@ -14,13 +14,11 @@ withDefaults(defineProps<Props>(), {
 	</div>
 </template>
 
-<style>
-body {
-	--v-list-item-icon-color: var(--foreground-subdued);
-}
-</style>
-
 <style lang="scss" scoped>
+:global(body) {
+	--v-list-item-icon-color: var(--theme--foreground-subdued);
+}
+
 .v-list-item-icon {
 	$this: &;
 
@@ -65,7 +63,7 @@ body {
 			}
 
 			&.disabled #{$this} :slotted(.v-icon) {
-				--v-icon-color: var(--foreground-subdued) !important;
+				--v-icon-color: var(--theme--foreground-subdued) !important;
 			}
 		}
 	}

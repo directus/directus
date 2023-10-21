@@ -42,7 +42,7 @@ withDefaults(defineProps<Props>(), {
 :global(body) {
 	--v-badge-color: var(--white);
 	--v-badge-background-color: var(--red);
-	--v-badge-border-color: var(--background-page);
+	--v-badge-border-color: var(--theme--background);
 	--v-badge-offset-x: 0px;
 	--v-badge-offset-y: 0px;
 	--v-badge-size: 16px;

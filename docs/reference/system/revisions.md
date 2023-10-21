@@ -32,6 +32,9 @@ Snapshot of the changes made in this revision.
 `parent` **many-to-one**\
 Parent revision that triggered this revision. Many-to-one to revisions (recursive).
 
+`version` **many-to-one**\
+Associated version of this revision. Many-to-one to [versions](/reference/system/versions).
+
 ```json
 {
 	"id": 368,
@@ -44,7 +47,8 @@ Parent revision that triggered this revision. Many-to-one to revisions (recursiv
 	"delta": {
 		"title": "Hello from the Docs!"
 	},
-	"parent": null
+	"parent": null,
+	"version": null
 }
 ```
 

@@ -1,12 +1,12 @@
 .codex-editor {
 	--bg-color: var(--background-normal) !important;
-	--front-color: var(--foreground-normal) !important;
+	--front-color: var(--theme--form--field--input--foreground) !important;
 	--border-color: var(--border-normal) !important;
 }
 
 .codex-editor .ce-toolbar__plus,
 .codex-editor .ce-toolbar__settings-btn {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 }
@@ -18,26 +18,26 @@
 
 .codex-editor .ce-toolbar__plus svg,
 .codex-editor .ce-toolbar__settings-btn svg {
-	fill: var(--foreground-normal) !important;
+	fill: var(--theme--form--field--input--foreground) !important;
 }
 
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
 .codex-editor .ce-settings .cdx-settings-button--active svg {
-	fill: var(--primary) !important;
+	fill: var(--theme--primary) !important;
 }
 
 .codex-editor .cdx-settings-button--active {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .codex-editor .ce-toolbar .ce-toolbox__button svg,
 .codex-editor .ce-toolbar .ce-toolbox__button:hover svg {
-	fill: var(--foreground-normal);
+	fill: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .cdx-loader::before {
 	border: 3px solid var(--background-normal-alt);
-	border-left-color: var(--primary);
+	border-left-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-search-field {
@@ -47,14 +47,14 @@
 }
 
 .codex-editor .ce-popover {
-	background: var(--background-page);
+	background: var(--theme--background);
 	border-color: var(--border-normal);
 	border-width: var(--border-width);
 	border-radius: var(--border-radius);
 }
 
 .codex-editor .ce-popover-item__title {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-popover-item:not(.ce-popover-item--confirmation):hover {
@@ -68,11 +68,11 @@
 }
 
 .codex-editor .ce-popover-item--confirmation .ce-popover-item-label {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-popover-item--active {
-	color: var(--primary);
+	color: var(--theme--primary);
 	background: var(--v-list-background-color-active);
 }
 
@@ -86,17 +86,17 @@
 }
 
 .codex-editor .ce-popover-item-icon {
-	background: var(--background-page);
+	background: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	box-shadow: none;
 }
 
 .codex-editor .ce-popover-item-icon svg {
-	fill: var(--foreground-normal);
+	fill: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-popover-item-secondary-label {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .codex-editor .ce-popover__items:not(:first-child) {
@@ -106,7 +106,7 @@
 
 .codex-editor .image-tool--loading .image-tool__image,
 .codex-editor .ce-block--selected .ce-block__content {
-	background: var(--module-background-alt);
+	background: var(--background-normal);
 }
 
 .codex-editor .image-tool--loading .image-tool__image {
@@ -131,7 +131,7 @@
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm svg {
-	fill: var(--foreground-normal-alt) !important;
+	fill: var(--theme--form--field--input--foreground-accent) !important;
 }
 
 /* Tooltips */
@@ -160,7 +160,7 @@
 }
 
 .codex-editor .ce-toolbox__button.ce-toolbox__button--active svg {
-	fill: var(--primary);
+	fill: var(--theme--primary);
 }
 
 .codex-editor .ce-conversion-toolbar,
@@ -183,7 +183,7 @@
 .codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {
 	--webkit-box-shadow: unset;
 
-	color: var(--primary);
+	color: var(--theme--primary);
 	background-color: var(--v-list-item-background-color-hover) !important;
 	box-shadow: unset;
 }
@@ -197,7 +197,7 @@
 }
 
 .codex-editor .ce-conversion-toolbar__label {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .ce-conversion-tool__icon {
@@ -211,14 +211,14 @@
 }
 
 .codex-editor .ce-code__textarea {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .codex-editor .cdx-input,
 .codex-editor .ce-code__textarea {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	font-size: inherit;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	box-shadow: unset;
@@ -231,11 +231,11 @@
 
 .codex-editor .cdx-input:focus,
 .codex-editor .ce-code__textarea:focus {
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .codex-editor .ce-inline-tool-input {
-	color: var(--primary);
+	color: var(--theme--primary);
 	background: var(--background-normal);
 	border-top-color: var(--border-normal);
 }
@@ -263,7 +263,7 @@
 
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 	background: var(--background-normal);
 	border-color: var(--border-normal);
 	box-shadow: unset;
@@ -277,7 +277,7 @@
 }
 
 .codex-editor .ce-paragraph[data-placeholder]:empty::before {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 /* Quote block */
@@ -290,7 +290,7 @@
 
 .codex-editor .image-tool {
 	--bg-color: var(--background-normal-alt);
-	--front-color: var(--primary);
+	--front-color: var(--theme--primary);
 	--border-color: var(--border-normal);
 }
 
@@ -307,7 +307,7 @@
 }
 
 .codex-editor .cdx-personality__link {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-size: 0.72em;
 }
 
@@ -326,18 +326,18 @@
 
 /* Ripple effect when enabling a checkbox */
 .codex-editor .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check::before {
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check {
-	background: var(--primary);
-	border-color: var(--primary);
+	background: var(--theme--primary);
+	border-color: var(--theme--primary);
 }
 
 /* Checkbox color when hovered. We have to use !important here because the specificity of the default styling is higher */
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox:hover .cdx-checklist__item-checkbox-check {
-	background: var(--primary-125) !important;
-	border-color: var(--primary-125) !important;
+	background: var(--theme--primary-accent) !important;
+	border-color: var(--theme--primary-accent) !important;
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
@@ -374,7 +374,7 @@
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__title {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
@@ -391,7 +391,7 @@
 }
 
 .codex-editor .cdx-attaches__size {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 /* InlineCode */
@@ -426,8 +426,8 @@
 }
 
 .tc-toolbox {
-	--toggler-dots-color: var(--foreground-normal);
-	--toggler-dots-color-hovered: var(--foreground-normal-alt);
+	--toggler-dots-color: var(--theme--form--field--input--foreground);
+	--toggler-dots-color-hovered: var(--theme--form--field--input--foreground-accent);
 }
 
 .tc-toolbox__toggler:hover {
@@ -447,7 +447,7 @@
 
 .tc-add-column:hover,
 .tc-add-row:hover {
-	background-color: var(--primary-alt);
+	background-color: var(--theme--primary-background);
 }
 
 .tc-add-row:hover::before {
@@ -537,7 +537,7 @@
 }
 
 .codex-editor .ce-block a {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .codex-editor .ce-block a.btn {
@@ -560,7 +560,7 @@
 
 .codex-editor .ce-block b,
 .codex-editor .ce-block strong {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--form--field--input--foreground-accent);
 	font-weight: 600;
 }
 
@@ -624,10 +624,10 @@
 .codex-editor .ce-block figure figcaption {
 	display: block;
 	margin-top: 0.25rem;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	text-align: center;
 }
 
 .codex-editor .ce-inline-tool--active {
-	color: var(--primary);
+	color: var(--theme--primary);
 }

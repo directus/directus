@@ -65,6 +65,9 @@ describe('Integration Tests', () => {
 
 		// mock notifications update query in deleteOne/deleteMany/deleteByQuery methods
 		tracker.on.update('directus_notifications').response({});
+
+		// mock versions update query in deleteOne/deleteMany/deleteByQuery methods
+		tracker.on.update('directus_versions').response({});
 	});
 
 	afterEach(() => {

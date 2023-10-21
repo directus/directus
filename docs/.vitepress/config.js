@@ -405,6 +405,10 @@ function sidebar() {
 					text: 'Collections',
 				},
 				{
+					link: '/reference/system/versions',
+					text: 'Content Versions',
+				},
+				{
 					link: '/reference/system/dashboards',
 					text: 'Dashboards',
 				},

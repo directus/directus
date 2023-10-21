@@ -28,7 +28,7 @@ const { t } = useI18n();
 .v-button :deep(.button) {
 	background-color: var(--warning-10);
 	border: none;
-	color: var(--warning);
+	color: var(--theme--warning);
 	margin-right: 8px;
 }
 </style>

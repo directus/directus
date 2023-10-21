@@ -1,4 +1,4 @@
-import type { ApplyQueryFields, CollectionType, Query, SingletonCollections } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, QueryItem, SingletonCollections } from '../../../types/index.js';
 import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -22,7 +22,7 @@ export const readSingleton =
 	<
 		Schema extends object,
 		Collection extends SingletonCollections<Schema>,
-		const TQuery extends Query<Schema, Schema[Collection]>
+		const TQuery extends QueryItem<Schema, Schema[Collection]>
 	>(
 		collection: Collection,
 		query?: TQuery
