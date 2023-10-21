@@ -6,20 +6,16 @@
 	--border-normal-alt: #a2b5cd;
 	--border-subdued: #f0f4f9;
 
-	--foreground-normal: #4f5464; // Less contrast for improved hierarchy
-	--foreground-normal-alt: #172940; // More contrast for titles and labels
-	--foreground-subdued: #a2b5cd;
 	--foreground-inverted: #fff;
 
 	--background-normal: #f0f4f9;
 	--background-normal-alt: #e4eaf1;
 	--background-subdued: #f7fafc;
 	--background-highlight: #f7f9fd;
-	--background-page: #ffffff;
 	--background-input: #ffffff;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;
-	--background-mark: var(--primary-25);
+	--background-mark: var(--theme--primary-subdued);
 
 	--card-face-color: #fafcfd;
 	--card-shadow-color: 23, 41, 64;
@@ -29,11 +25,6 @@
 	--header-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 	--navigation-shadow: 4px 0 7px -4px rgb(0 0 0 / 0.2);
 	--sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2);
-
-	--module-background: #18222f;
-	--module-background-alt: var(--background-normal);
-	--module-icon: #8196b1;
-	--module-icon-alt: var(--foreground-normal-alt);
 
 	// Generate color variations
 	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
@@ -51,6 +42,6 @@
 	--danger-alt: var(--red-10);
 
 	.alt-colors {
-		--background-subdued: var(--background-page);
+		--background-subdued: var(--theme--background);
 	}
 }

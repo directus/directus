@@ -182,7 +182,7 @@ const options = computed({
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 }
 
 .save {
@@ -200,12 +200,12 @@ const options = computed({
 .toggle-advanced {
 	width: 100%;
 	margin-top: 20px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }
 </style>

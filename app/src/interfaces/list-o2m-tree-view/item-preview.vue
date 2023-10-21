@@ -66,25 +66,25 @@ div.preview {
 	}
 
 	.actions {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+		--v-icon-color-hover: var(--theme--form--field--input--foreground);
 
 		.v-icon + .v-icon {
 			margin-left: 4px;
 		}
 
 		.deselect {
-			--v-icon-color-hover: var(--danger);
+			--v-icon-color-hover: var(--theme--danger);
 		}
 	}
 
 	&.deleted {
-		color: var(--danger);
+		color: var(--theme--danger);
 		background-color: var(--danger-10);
 
 		.actions {
 			--v-icon-color: var(--danger-50);
-			--v-icon-color-hover: var(--danger);
+			--v-icon-color-hover: var(--theme--danger);
 		}
 	}
 }

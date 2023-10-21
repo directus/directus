@@ -9,7 +9,7 @@ import { getDatabaseClient } from '../database/index.js';
 import { ItemsService } from './index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
-import { InvalidPayloadError } from '../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import { DatabaseClients, type DatabaseClient } from '../types/database.js';
 
 vi.mock('../env', async () => {

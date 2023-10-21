@@ -1,0 +1,32 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1280_232)">
+        <g filter="url(#filter0_d_1280_232)">
+            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--card-face-color)" class="glow" />
+            <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--theme--primary)"
+                stroke-width="2" />
+        </g>
+        <rect x="30" y="20" width="96" height="8" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
+        <rect x="32" y="22" width="36" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="118" y="22" width="6" height="4" rx="1" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <rect x="30" y="30" width="91" height="8" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
+        <rect x="32" y="32" width="25" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="113" y="32" width="6" height="4" rx="1" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <rect x="30" y="40" width="81" height="8" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
+        <rect x="32" y="42" width="56" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="103" y="42" width="6" height="4" rx="1" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <rect x="30" y="50" width="67" height="8" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
+        <rect x="32" y="52" width="36" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="89" y="52" width="6" height="4" rx="1" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <rect x="30" y="60" width="58" height="8" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
+        <rect x="32" y="62" width="44" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="80" y="62" width="6" height="4" rx="1" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <rect x="30" y="70" width="48" height="8" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 25%)" />
+        <rect x="32" y="72" width="36" height="4" rx="1" fill="var(--theme--primary)" />
+        <rect x="70" y="72" width="6" height="4" rx="1" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+    </g>
+    <defs>
+        <clipPath id="clip0_1280_232">
+            <rect width="156" height="96" fill="var(--background-page)" class="glow" />
+        </clipPath>
+    </defs>
+</svg>

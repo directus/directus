@@ -10,7 +10,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,

@@ -422,7 +422,6 @@ dimensions: Mitat
 size: Koko
 created: Luotu
 modified: Muokattu
-checksum: Tarkistussumma
 owner: Omistaja
 edited_by: Muokannut
 folder: Kansio
@@ -1477,7 +1476,6 @@ interfaces:
     description: Valitse useita liittyviä kohteita
     no_collection: Kokoelmaa ei löytynyt
   system-folder:
-    folder: Kansio
     description: Valitse kansio
     root_name: Tiedostokirjaston juuri
     system_default: Järjestelmän oletukset

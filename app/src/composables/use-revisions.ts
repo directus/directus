@@ -4,7 +4,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { Filter } from '@directus/types';
+import { Filter, ContentVersion } from '@directus/types';
 import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { ref, Ref, unref, watch } from 'vue';
@@ -15,7 +15,12 @@ type UseRevisionsOptions = {
 	action?: Action;
 };
 
-export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | string>, options?: UseRevisionsOptions) {
+export function useRevisions(
+	collection: Ref<string>,
+	primaryKey: Ref<number | string>,
+	version: Ref<ContentVersion | null>,
+	options?: UseRevisionsOptions
+) {
 	const { t } = useI18n();
 	const { info } = useServerStore();
 
@@ -26,7 +31,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 	const created = ref<Revision>();
 	const pagesCount = ref(0);
 
-	watch([collection, primaryKey], () => getRevisions(), { immediate: true });
+	watch([collection, primaryKey, version], () => getRevisions(), { immediate: true });
 
 	return { created, revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount };
 
@@ -48,6 +53,13 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 						item: {
 							_eq: unref(primaryKey),
 						},
+					},
+					{
+						version: version.value
+							? {
+									_eq: version.value.id,
+							  }
+							: { _null: true },
 					},
 				],
 			};
@@ -98,9 +110,10 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 							item: {
 								_eq: unref(primaryKey),
 							},
+							version: { _null: true },
 							activity: {
 								action: {
-									_eq: Action.CREATE,
+									_eq: unref(version) ? Action.VERSION_SAVE : Action.CREATE,
 								},
 							},
 						},

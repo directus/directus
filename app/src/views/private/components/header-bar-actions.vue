@@ -48,7 +48,7 @@ const active = ref(false);
 }
 
 .actions .expand {
-	--v-icon-color: var(--foreground-normal);
+	--v-icon-color: var(--theme--foreground);
 
 	flex-shrink: 0;
 	margin-right: 8px;
@@ -66,7 +66,7 @@ const active = ref(false);
 }
 
 .actions .action-buttons .v-button.secondary {
-	--v-icon-color: var(--foreground-normal);
+	--v-icon-color: var(--theme--foreground);
 }
 
 .actions .action-buttons > :deep(*:not(:last-child)) {
@@ -93,7 +93,7 @@ const active = ref(false);
 	height: 100%;
 	padding: inherit;
 	padding-left: 8px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 }
 
 .actions.active .expand {

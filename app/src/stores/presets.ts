@@ -68,7 +68,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout_options: {
 			tabular: {
 				widths: {
-					action: 100,
+					action: 120,
 					collection: 210,
 					timestamp: 240,
 					user: 240,

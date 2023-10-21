@@ -30,13 +30,13 @@ const conditionalFormatting = ref([
 		value: 'active',
 		text: t('active'),
 		color: 'var(--foreground-inverted)',
-		background: 'var(--primary)',
+		background: 'var(--theme--primary)',
 	},
 	{
 		operator: 'eq',
 		value: 'inactive',
 		text: t('inactive'),
-		color: 'var(--foreground-subdued)',
+		color: 'var(--theme--foreground-subdued)',
 		background: 'var(--background-normal)',
 	},
 ]);
@@ -183,7 +183,7 @@ function onFlowDrawerCompletion(id: string) {
 			@update:sort="updateSort($event)"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--primary)'" />
+				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
 			</template>
 
 			<template #[`item.status`]="{ item }">
@@ -268,18 +268,18 @@ function onFlowDrawerCompletion(id: string) {
 }
 
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
 }
 </style>

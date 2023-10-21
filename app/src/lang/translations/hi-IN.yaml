@@ -342,7 +342,6 @@ dimensions: आयाम
 size: साइज़
 created: बनाया गया
 modified: संशोधन का समय
-checksum: चेकसम
 owner: मालिक
 edited_by: द्वारा संपादित
 folder: फ़ोल्डर
@@ -471,8 +470,6 @@ interfaces:
     display: दिखाएँ
   map:
     zoom: छोटा-बड़ा करें
-  system-folder:
-    folder: फ़ोल्डर
   list:
     sort: सॉर्ट
   boolean:

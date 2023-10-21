@@ -576,17 +576,17 @@ function useFileUpload() {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 .drop-border {
 	position: fixed;
 	z-index: 500;
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 
 	&.top,
 	&.bottom {

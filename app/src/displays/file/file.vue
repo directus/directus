@@ -59,7 +59,7 @@ img {
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	position: relative;
 	display: inline-flex;
@@ -72,12 +72,12 @@ img {
 	aspect-ratio: 1;
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;

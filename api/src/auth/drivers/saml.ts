@@ -7,7 +7,7 @@ import { COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { ErrorCode, InvalidCredentialsError, InvalidProviderError } from '../../errors/index.js';
+import { ErrorCode, InvalidCredentialsError, InvalidProviderError } from '@directus/errors';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';

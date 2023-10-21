@@ -270,7 +270,7 @@ function useFolder() {
 
 <style lang="scss" scoped>
 button {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .v-divider {

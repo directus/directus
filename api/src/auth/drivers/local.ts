@@ -5,7 +5,7 @@ import Joi from 'joi';
 import { performance } from 'perf_hooks';
 import { COOKIE_OPTIONS } from '../../constants.js';
 import env from '../../env.js';
-import { InvalidCredentialsError, InvalidPayloadError } from '../../errors/index.js';
+import { InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import type { User } from '../../types/index.js';

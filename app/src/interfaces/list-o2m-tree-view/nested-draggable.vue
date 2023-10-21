@@ -207,7 +207,7 @@ function stageEdits(item: Record<string, any>) {
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		:disabled="disabled"
-		:force-fallback="true"
+		force-fallback
 		@start="drag = true"
 		@end="drag = false"
 		@change="change($event as ChangeEvent)"
@@ -312,7 +312,7 @@ function stageEdits(item: Record<string, any>) {
 }
 
 .ghost .preview {
-	background-color: var(--primary-alt);
+	background-color: var(--theme--primary-background);
 	box-shadow: 0 !important;
 }
 

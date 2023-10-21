@@ -217,7 +217,7 @@ function getSystemFields() {
 							text: '$t:published',
 							value: 'published',
 							foreground: '#FFFFFF',
-							background: 'var(--primary)',
+							background: 'var(--theme--primary)',
 						},
 						{
 							text: '$t:draft',
@@ -229,7 +229,7 @@ function getSystemFields() {
 							text: '$t:archived',
 							value: 'archived',
 							foreground: '#FFFFFF',
-							background: 'var(--warning)',
+							background: 'var(--theme--warning)',
 						},
 					],
 				},
@@ -505,15 +505,15 @@ function getSystemRelations() {
 }
 
 .system :deep(.v-input .input) {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .system :deep(.v-input .active .input) {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .system .v-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 }
 
 .spacer {
@@ -521,11 +521,11 @@ function getSystemRelations() {
 }
 
 .v-input.monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 }
 
 .required {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .content {

@@ -421,7 +421,6 @@ dimensions: Dimensioner
 size: Størrelse
 created: Oprettet
 modified: Ændret
-checksum: Kontrolsum
 owner: Ejer
 edited_by: Redigeret af
 folder: Mappe
@@ -1591,7 +1590,6 @@ interfaces:
     description: Vælg flere relaterede elementer
     no_collection: Samlingen kunne ikke findes
   system-folder:
-    folder: Mappe
     description: Vælg en mappe
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder

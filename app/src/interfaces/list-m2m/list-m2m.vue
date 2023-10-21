@@ -516,7 +516,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 			<v-list v-else>
 				<draggable
-					:force-fallback="true"
+					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
@@ -694,7 +694,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.item-count {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		white-space: nowrap;
 	}
 
@@ -719,12 +719,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 }
 
 .item-link {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	&.disabled {
@@ -734,13 +734,13 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 	cursor: pointer;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 
@@ -751,7 +751,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	width: 120px;
 	padding: 10px 0;
 	margin-right: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		width: auto;
@@ -759,7 +759,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

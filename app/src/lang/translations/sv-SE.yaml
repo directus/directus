@@ -422,7 +422,6 @@ dimensions: Dimensioner
 size: Storlek
 created: Skapad
 modified: Ändrad
-checksum: Kontrollsumma
 owner: Ägare
 edited_by: Redigerad av
 folder: Mapp
@@ -1474,7 +1473,6 @@ interfaces:
     description: Välj flera relaterade objekt
     no_collection: Kollektionen kunde inte hittas
   system-folder:
-    folder: Mapp
     description: Välj en mapp
     root_name: Filbibliotek
     system_default: Systemstandard

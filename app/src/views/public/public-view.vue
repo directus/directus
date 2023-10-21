@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
-import { getTheme } from '@/utils/get-theme';
+import { getAppearance } from '@/utils/get-appearance';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';
 import { storeToRefs } from 'pinia';
@@ -22,9 +22,9 @@ const serverStore = useServerStore();
 const { info } = storeToRefs(serverStore);
 
 const colors = computed(() => {
-	const primary = info.value?.project?.project_color || 'var(--primary)';
+	const primary = info.value?.project?.project_color || 'var(--theme--primary)';
 	const primaryHex = primary.startsWith('var(--') ? cssVar(primary.substring(4, primary.length - 1)) : primary;
-	const isDark = getTheme() === 'dark';
+	const isDark = getAppearance() === 'dark';
 	const primaryColor = Color(primaryHex);
 
 	const primaryColorHSL = primaryColor.hsl() as unknown as {
@@ -174,7 +174,7 @@ const logoURL = computed<string | null>(() => {
 	height: 100%;
 
 	:slotted(.v-icon) {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		margin-left: 4px;
 	}
@@ -281,7 +281,7 @@ const logoURL = computed<string | null>(() => {
 
 	.notice {
 		display: flex;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	.title-box {
@@ -319,7 +319,7 @@ const logoURL = computed<string | null>(() => {
 
 			.subtitle {
 				width: 100%;
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 	}
@@ -331,7 +331,7 @@ const logoURL = computed<string | null>(() => {
 		justify-content: center;
 		width: 56px;
 		height: 56px;
-		background-color: var(--brand);
+		background-color: var(--project-color);
 		border-radius: calc(var(--border-radius) - 2px);
 
 		img {
@@ -343,18 +343,18 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	&.branded :deep(.v-button) {
-		--v-button-background-color: var(--foreground-normal-alt);
-		--v-button-background-color-hover: var(--foreground-normal-alt);
-		--v-button-background-color-active: var(--foreground-normal-alt);
+		--v-button-background-color: var(--theme--foreground-accent);
+		--v-button-background-color-hover: var(--theme--foreground-accent);
+		--v-button-background-color-active: var(--theme--foreground-accent);
 	}
 
 	&.branded :deep(.v-input) {
-		--v-input-border-color-focus: var(--foreground-normal);
-		--v-input-box-shadow-color-focus: var(--foreground-normal);
+		--v-input-border-color-focus: var(--theme--foreground);
+		--v-input-box-shadow-color-focus: var(--theme--foreground);
 	}
 
 	&.branded :deep(.v-input.solid) {
-		--v-input-border-color-focus: var(--foreground-subdued);
+		--v-input-border-color-focus: var(--theme--foreground-subdued);
 	}
 }
 
@@ -370,3 +370,4 @@ const logoURL = computed<string | null>(() => {
 	opacity: 0;
 }
 </style>
+@/utils/get-appearance

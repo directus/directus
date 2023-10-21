@@ -4,7 +4,7 @@ import type { Accountability } from '@directus/types';
 import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
 import env from '../env.js';
-import { ErrorCode } from '../errors/index.js';
+import { ErrorCode } from '@directus/errors';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';

@@ -436,7 +436,6 @@ dimensions: الأبعاد
 size: حجم
 created: تم الإنشاء
 modified: معدّل
-checksum: بصمة الملف
 owner: المالك
 edited_by: تم التحرير بواسطة
 folder: مجلد
@@ -1470,8 +1469,6 @@ interfaces:
     zoom: تكبير/تصغير
   list-o2m:
     description: حدد عدة عناصر ذات صلة
-  system-folder:
-    folder: مجلد
   select-radio:
     description: حدد اختيار واحد من خيارات متعددة
   list:

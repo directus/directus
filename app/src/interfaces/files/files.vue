@@ -294,7 +294,7 @@ const allowDrag = computed(
 
 		<v-list v-else>
 			<draggable
-				:force-fallback="true"
+				force-fallback
 				:model-value="displayItems"
 				item-key="id"
 				handle=".drag-handle"
@@ -438,13 +438,13 @@ const allowDrag = computed(
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	margin-right: 4px;
 	transition: color var(--fast) var(--transition);
 	cursor: pointer;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 

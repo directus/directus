@@ -267,7 +267,6 @@ dimensions: Matmenys
 size: Dydis
 created: Sukurta
 modified: Modifikuota
-checksum: Kontrolinė suma
 owner: Savininkas
 edited_by: Redaguota
 folder: Aplankas
@@ -855,8 +854,6 @@ interfaces:
     edit: Redaguoti
   map:
     zoom: Padidinti
-  system-folder:
-    folder: Aplankas
   list:
     sort: Rūšiuoti
   tags:

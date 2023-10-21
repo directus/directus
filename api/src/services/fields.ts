@@ -14,7 +14,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';

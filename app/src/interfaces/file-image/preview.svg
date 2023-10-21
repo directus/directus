@@ -1,7 +1,7 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="13" width="120" height="70" rx="6" fill="var(--background-page)" class="glow"/>
-	<rect x="19" y="14" width="118" height="68" rx="5" stroke="var(--primary)" stroke-width="2"/>
-	<rect x="24" y="19" width="108" height="58" rx="2" fill="var(--primary)" fill-opacity=".25"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" d="m125.294 69-35-29-25.213 20.891L52 49 30 69h95.294Z" fill="var(--primary)"/>
-	<path d="M50 35a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" fill="var(--primary)"/>
+	<rect x="18" y="13" width="120" height="70" rx="6" fill="var(--theme--background)" class="glow"/>
+	<rect x="19" y="14" width="118" height="68" rx="5" stroke="var(--theme--primary)" stroke-width="2"/>
+	<rect x="24" y="19" width="108" height="58" rx="2" fill="var(--theme--primary)" fill-opacity=".25"/>
+	<path fill-rule="evenodd" clip-rule="evenodd" d="m125.294 69-35-29-25.213 20.891L52 49 30 69h95.294Z" fill="var(--theme--primary)"/>
+	<path d="M50 35a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" fill="var(--theme--primary)"/>
 </svg>

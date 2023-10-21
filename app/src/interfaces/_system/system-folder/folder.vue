@@ -48,14 +48,7 @@ function folderParentPath(folder: Folder, folders: Folder[]) {
 
 <template>
 	<v-skeleton-loader v-if="loading" />
-	<v-menu
-		v-else
-		class="v-select"
-		:attached="true"
-		:show-arrow="false"
-		:disabled="disabled"
-		:close-on-content-click="true"
-	>
+	<v-menu v-else class="v-select" attached :show-arrow="false" :disabled="disabled" close-on-content-click>
 		<template #activator="{ toggle, active }">
 			<v-input
 				readonly

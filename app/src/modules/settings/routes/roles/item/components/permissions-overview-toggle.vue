@@ -165,8 +165,8 @@ async function openPermissions() {
 }
 
 .none {
-	--v-icon-color: var(--danger);
-	--v-icon-color-hover: var(--danger);
+	--v-icon-color: var(--theme--danger);
+	--v-icon-color-hover: var(--theme--danger);
 
 	&::before {
 		background-color: var(--danger-10);
@@ -175,8 +175,8 @@ async function openPermissions() {
 
 .partial,
 .custom {
-	--v-icon-color: var(--warning);
-	--v-icon-color-hover: var(--warning);
+	--v-icon-color: var(--theme--warning);
+	--v-icon-color-hover: var(--theme--warning);
 
 	&::before {
 		background-color: var(--warning-10);
@@ -184,8 +184,8 @@ async function openPermissions() {
 }
 
 .all {
-	--v-icon-color: var(--success);
-	--v-icon-color-hover: var(--success);
+	--v-icon-color: var(--theme--success);
+	--v-icon-color-hover: var(--theme--success);
 
 	&::before {
 		background-color: var(--success-10);

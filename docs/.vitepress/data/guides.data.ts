@@ -55,6 +55,7 @@ export default defineLoader({
 						title: 'Headless CMS',
 						items: [
 							{ display: 'Build Content Approval Workflows', path: '/guides/headless-cms/approval-workflows' },
+							{ display: 'Implement Content Versioning', path: '/guides/headless-cms/content-versioning' },
 							{ display: 'Create Re-Usable Page Components', path: '/guides/headless-cms/reusable-components' },
 							{ display: 'Create Content Translations', path: '/guides/headless-cms/content-translations' },
 							{

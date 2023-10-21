@@ -397,7 +397,6 @@ dimensions: Mõõtmed
 size: Suurus
 created: Loodud
 modified: Muudetud
-checksum: Kontrollsumma
 owner: Omanik
 edited_by: Muutis
 folder: Kaust
@@ -1205,7 +1204,6 @@ interfaces:
     description: Vali mitu seotud kirjet
     no_collection: Andmekogu ei leitud
   system-folder:
-    folder: Kaust
     description: Vali kaust
   select-radio:
     radio-buttons: Raadionupud

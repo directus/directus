@@ -446,7 +446,6 @@ dimensions: Dimensionen
 size: Größe
 created: Erstellt
 modified: Geändert
-checksum: Prüfsumme
 owner: Besitzer
 edited_by: Editiert von
 folder: Ordner
@@ -1159,7 +1158,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
-    mapping: Zuordnung
+    mapping: Kartografie
     basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -1671,7 +1670,6 @@ interfaces:
     description: Mehrere verwandte Elemente auswählen
     no_collection: Die Sammlung konnte nicht gefunden werden
   system-folder:
-    folder: Ordner
     description: Ordner auswählen
     field_hint: Standardordner für hochgeladene Dateien ohne Angabe eines Ordners. Vorhandene Dateien sind davon nicht betroffen.
     root_name: Stammordner für Dateien

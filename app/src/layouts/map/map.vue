@@ -136,7 +136,7 @@ limitWritable.value = selectedSize;
 <style lang="scss" scoped>
 .v-info {
 	padding: 40px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);
 	pointer-events: none;
@@ -184,11 +184,11 @@ limitWritable.value = selectedSize;
 	z-index: 1;
 	max-width: 80%;
 	padding: 6px 10px;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--family-sans-serif);
-	background-color: var(--background-page);
+	font-family: var(--theme--font-family-sans-serif);
+	background-color: var(--theme--background);
 	border-radius: var(--border-radius);
 	box-shadow: var(--card-shadow);
 	transform: translate(-50%, -140%);
@@ -205,9 +205,9 @@ limitWritable.value = selectedSize;
 	justify-content: space-between;
 	height: 36px;
 	padding: 10px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--background-page);
+	color: var(--theme--foreground-subdued);
+	background-color: var(--theme--background);
+	border: var(--border-width) solid var(--theme--background);
 	border-radius: var(--border-radius);
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
@@ -217,13 +217,13 @@ limitWritable.value = selectedSize;
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 
 .v-progress-circular {
-	--v-progress-circular-background-color: var(--primary-25);
-	--v-progress-circular-color: var(--primary-75);
+	--v-progress-circular-background-color: var(--theme--primary-background);
+	--v-progress-circular-color: var(--theme--primary);
 }
 
 .reset-preset {

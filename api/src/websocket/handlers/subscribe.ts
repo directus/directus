@@ -1,5 +1,5 @@
 import emitter from '../../emitter.js';
-import { InvalidPayloadError } from '../../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Messenger } from '../../messenger.js';
 import { getMessenger } from '../../messenger.js';
 import { getSchema } from '../../utils/get-schema.js';

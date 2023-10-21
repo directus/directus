@@ -411,7 +411,6 @@ dimensions: आयामहरू
 size: साइज
 created: सिर्जना गरियो
 modified: परिमार्जित
-checksum: चेकसम
 owner: मालिक
 edited_by: द्वारा सम्पादन गरिएको
 folder: फोल्‍डर
@@ -1487,7 +1486,6 @@ interfaces:
     one-to-many: एक देखि धेरै
     no_collection: "Collection फेला पार्न सकिएन\n"
   system-folder:
-    folder: फोल्‍डर
     description: फोल्डर चयन गर्नुहोस्
     system_default: पूर्वनिर्धारित प्रणाली
   select-radio:
