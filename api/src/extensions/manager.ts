@@ -45,13 +45,13 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { generateApiExtensionsSandboxEntrypoint } from './generate-api-extensions-sandbox-entrypoint.js';
-import { getExtensionsSettings } from './get-extensions-settings.js';
-import { getExtensions } from './get-extensions.js';
-import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
-import { instantiateSandboxSdk } from './instantiate-sandbox-sdk.js';
+import { getExtensionsSettings } from './lib/get-extensions-settings.js';
+import { getExtensions } from './lib/get-extensions.js';
+import { getSharedDepsMapping } from './lib/get-shared-deps-mapping.js';
+import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
+import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
+import { wrapEmbeds } from './lib/wrap-embeds.js';
 import type { BundleConfig, ExtensionManagerOptions } from './types.js';
-import { wrapEmbeds } from './wrap-embeds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;

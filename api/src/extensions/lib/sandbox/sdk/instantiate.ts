@@ -1,26 +1,9 @@
 import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import { numberGenerator } from '@directus/utils';
 import type { Isolate, Module } from 'isolated-vm';
-import { logGenerator, requestGenerator, sleepGenerator } from './api-sandbox-sdk.js';
-import { generateHostFunctionReference } from './generate-host-function-reference.js';
-
-function wrapUtil(util: any) {
-	return async (...args: any[]) => {
-		try {
-			return { result: await util(...args), error: false };
-		} catch (e) {
-			return { result: e, error: true };
-		}
-	};
-}
-
-function getSdk() {
-	return [
-		{ name: 'log', generator: logGenerator, args: ['message'], async: false },
-		{ name: 'sleep', generator: sleepGenerator, args: ['milliseconds'], async: true },
-		{ name: 'request', generator: requestGenerator, args: ['url', 'options'], async: true },
-	];
-}
+import { generateHostFunctionReference } from '../generate-host-function-reference.js';
+import { getSdk } from './sdk.js';
+import { wrap } from './utils/wrap.js';
 
 export async function instantiateSandboxSdk(
 	isolate: Isolate,
@@ -39,7 +22,7 @@ export async function instantiateSandboxSdk(
 
 	await apiContext.evalClosure(
 		handlerCode,
-		sdk.map(({ generator, async }) => (async ? wrapUtil(generator(requestedScopes)) : generator(requestedScopes))),
+		sdk.map(({ generator, async }) => (async ? wrap(generator(requestedScopes)) : generator(requestedScopes))),
 		{ filename: '<extensions-sdk>', arguments: { reference: true } }
 	);
 

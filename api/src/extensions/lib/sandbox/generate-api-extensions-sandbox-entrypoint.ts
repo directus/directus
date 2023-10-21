@@ -1,13 +1,13 @@
 import type { ApiExtensionType, HybridExtensionType } from '@directus/extensions';
 import { numberGenerator } from '@directus/utils';
 import type { Router } from 'express';
+import { generateHostFunctionReference } from './generate-host-function-reference.js';
 import {
 	registerActionGenerator,
 	registerFilterGenerator,
 	registerOperationGenerator,
 	registerRouteGenerator,
-} from './api-sandbox-registration.js';
-import { generateHostFunctionReference } from './generate-host-function-reference.js';
+} from './register/index.js';
 
 export function generateApiExtensionsSandboxEntrypoint(
 	type: ApiExtensionType | HybridExtensionType,
