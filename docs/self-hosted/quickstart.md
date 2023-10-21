@@ -36,7 +36,7 @@ Open a text editor such as Visual Studio Code, nano, Vim, TextEdit, or Notepad.
 Copy and paste the following and save the file as `docker-compose.yml`:
 
 ```yaml-vue
-version: '3'
+version: "3"
 services:
   directus:
     image: directus/directus:{{ directus.version.full }}
@@ -46,12 +46,12 @@ services:
       - ./database:/directus/database
       - ./uploads:/directus/uploads
     environment:
-      KEY: 'replace-with-random-value'
-      SECRET: 'replace-with-random-value'
-      ADMIN_EMAIL: 'admin@example.com'
-      ADMIN_PASSWORD: 'd1r3ctu5'
-      DB_CLIENT: 'sqlite3'
-      DB_FILENAME: '/directus/database/data.db'
+      KEY: "replace-with-random-value"
+      SECRET: "replace-with-random-value"
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "d1r3ctu5"
+      DB_CLIENT: "sqlite3"
+      DB_FILENAME: "/directus/database/data.db"
       WEBSOCKETS_ENABLED: true
 ```
 
