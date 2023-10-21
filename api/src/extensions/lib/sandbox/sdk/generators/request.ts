@@ -8,7 +8,7 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 	options: Reference<{
 		method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 		body?: Record<string, any> | string;
-		headers?: { header: string; value: string }[];
+		headers?: Record<string, string>;
 	}>
 ) => Promise<{
 	status: number;
@@ -55,19 +55,13 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 			throw new Error(`No permission to use request method "${methodCopied}"`);
 		}
 
-		const customHeaders =
-			headersCopied?.reduce((acc, { header, value }) => {
-				acc[header] = value;
-				return acc;
-			}, {} as Record<string, string>) ?? {};
-
 		const axios = await getAxios();
 
 		const result = await axios({
 			url: encodeUrl(urlCopied),
 			method: methodCopied ?? 'GET',
 			data: bodyCopied ?? null,
-			headers: customHeaders,
+			headers: headersCopied ?? {},
 		});
 
 		return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
