@@ -15,11 +15,13 @@
 	"exports": {
 		".": "./dist/index.js",
 		"./node": "./dist/node.js",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./api.d.ts": "./api.d.ts"
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist"
+		"dist",
+		"api.d.ts"
 	],
 	"scripts": {
 		"build": "concurrently --group 'pnpm:build:*'",
