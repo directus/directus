@@ -17,9 +17,11 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 	data: string;
 }> {
 	return async (url, options) => {
-		if (url.typeof !== 'string') throw new Error('Request url has to be of type string');
-		if (options.typeof !== 'undefined' && options.typeof !== 'object')
-			throw new Error('Request options has to be of type object');
+		if (url.typeof !== 'string') throw new TypeError('Request url has to be of type string');
+
+		if (options.typeof !== 'undefined' && options.typeof !== 'object') {
+			throw new TypeError('Request options has to be of type object');
+		}
 
 		const urlCopied = await url.copy();
 
@@ -33,19 +35,25 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 		const body = options.typeof !== 'undefined' ? await options.get('body', { reference: true }) : undefined;
 		const headers = options.typeof !== 'undefined' ? await options.get('headers', { reference: true }) : undefined;
 
-		if (method !== undefined && method.typeof !== 'undefined' && method.typeof !== 'string')
-			throw new Error('Request method has to be of type string');
-		if (body !== undefined && body.typeof !== 'undefined' && body.typeof !== 'string' && body.typeof !== 'object')
-			throw new Error('Request body has to be of type string or object');
-		if (headers !== undefined && headers.typeof !== 'undefined' && headers.typeof !== 'array')
-			throw new Error('Request headers has to be of type array');
+		if (method !== undefined && method.typeof !== 'undefined' && method.typeof !== 'string') {
+			throw new TypeError('Request method has to be of type string');
+		}
+
+		if (body !== undefined && body.typeof !== 'undefined' && body.typeof !== 'string' && body.typeof !== 'object') {
+			throw new TypeError('Request body has to be of type string or object');
+		}
+
+		if (headers !== undefined && headers.typeof !== 'undefined' && headers.typeof !== 'array') {
+			throw new TypeError('Request headers has to be of type array');
+		}
 
 		const methodCopied = await method?.copy();
 		const bodyCopied = await body?.copy();
 		const headersCopied = await headers?.copy();
 
-		if (!permissions.methods.includes(methodCopied ?? 'GET'))
+		if (!permissions.methods.includes(methodCopied ?? 'GET')) {
 			throw new Error(`No permission to use request method "${methodCopied}"`);
+		}
 
 		const customHeaders =
 			headersCopied?.reduce((acc, { header, value }) => {

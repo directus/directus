@@ -1,6 +1,4 @@
-import { logGenerator } from './generators/log.js';
-import { requestGenerator } from './generators/request.js';
-import { sleepGenerator } from './generators/sleep.js';
+import { logGenerator, requestGenerator, sleepGenerator } from './generators/index.js';
 
 export function getSdk() {
 	return [

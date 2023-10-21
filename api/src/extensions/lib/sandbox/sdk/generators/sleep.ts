@@ -6,7 +6,7 @@ export function sleepGenerator(
 	_requestedScopes: ExtensionSandboxRequestedScopes
 ): (milliseconds: Reference<number>) => Promise<void> {
 	return async (milliseconds) => {
-		if (milliseconds.typeof !== 'number') throw new Error('Sleep milliseconds has to be of type number');
+		if (milliseconds.typeof !== 'number') throw new TypeError('Sleep milliseconds has to be of type number');
 
 		const millisecondsCopied = await milliseconds.copy();
 
