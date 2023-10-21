@@ -425,8 +425,9 @@ export class ExtensionManager {
 		const sdkModule = await instantiateSandboxSdk(isolate, extension.sandbox?.requestedScopes ?? {});
 
 		await module.instantiate(context, (specifier) => {
-			if (specifier !== '@directus/extensions-sdk/api')
-				throw new Error('Imports other than "@directus/extensions-sdk/api" are prohibited in API extension sandboxes');
+			if (specifier !== 'directus:api') {
+				throw new Error('Imports other than "directus:api" are prohibited in API extension sandboxes');
+			}
 
 			return sdkModule;
 		});

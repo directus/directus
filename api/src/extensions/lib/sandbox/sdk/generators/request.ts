@@ -25,7 +25,7 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 
 		const urlCopied = await url.copy();
 
-		const permissions = requestedScopes.request?.permissions;
+		const permissions = requestedScopes.request;
 
 		if (permissions === undefined) throw new Error('No permission to access "request"');
 
