@@ -9,6 +9,13 @@ import {
 	registerRouteGenerator,
 } from './register/index.js';
 
+/**
+ * Generate the JS to run in the isolate to create the extension's entrypoint to the host
+ *
+ * @param type - Extension type to generate the entrypoint for
+ * @param name - Unique name of the extension
+ * @param endpointRouter - Scoped express router to register endpoint extension in
+ */
 export function generateApiExtensionsSandboxEntrypoint(
 	type: ApiExtensionType | HybridExtensionType,
 	name: string,
