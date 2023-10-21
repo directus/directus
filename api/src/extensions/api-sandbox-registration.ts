@@ -7,10 +7,36 @@ import type { IncomingHttpHeaders } from 'node:http';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import { getFlowManager } from '../flows.js';
+import logger from '../logger.js';
 
-export function registerFilterGenerator() {
+type Args<T> = T extends (...args: infer Args) => unknown ? Args : any[];
+type Result<T> = T extends (...args: any) => infer Result ? Result : unknown;
+
+async function callReference<T extends (...args: any[]) => unknown | Promise<unknown>>(
+	fn: Reference<T>,
+	args: Args<T>
+): Promise<Reference<Result<T>>> {
 	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 
+	try {
+		return await fn.apply(undefined, args, {
+			arguments: { copy: true },
+			result: { reference: true, promise: true },
+			timeout: sandboxTimeout,
+		});
+	} catch (e) {
+		if (e instanceof RangeError) {
+			logger.error(`Extension sandbox has reached the memory limit`);
+			logger.error(e);
+
+			process.abort();
+		}
+
+		throw e;
+	}
+}
+
+export function registerFilterGenerator() {
 	const unregisterFunctions: PromiseCallback[] = [];
 
 	const registerFilter = (
@@ -23,11 +49,7 @@ export function registerFilterGenerator() {
 		const eventCopied = event.copySync();
 
 		const handler: FilterHandler = async (payload) => {
-			const response = await cb.apply(undefined, [payload], {
-				arguments: { copy: true },
-				result: { reference: true, promise: true },
-				timeout: sandboxTimeout,
-			});
+			const response = await callReference(cb, [payload]);
 
 			return response.copy();
 		};
@@ -43,8 +65,6 @@ export function registerFilterGenerator() {
 }
 
 export function registerActionGenerator() {
-	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
-
 	const unregisterFunctions: PromiseCallback[] = [];
 
 	const registerAction = (event: Reference<string>, cb: Reference<(payload: unknown) => void | Promise<void>>) => {
@@ -53,12 +73,7 @@ export function registerActionGenerator() {
 
 		const eventCopied = event.copySync();
 
-		const handler: ActionHandler = (payload) =>
-			cb.apply(undefined, [payload], {
-				arguments: { copy: true },
-				result: { reference: true, promise: true },
-				timeout: sandboxTimeout,
-			});
+		const handler: ActionHandler = (payload) => callReference(cb, [payload]);
 
 		emitter.onAction(eventCopied, handler);
 
@@ -71,8 +86,6 @@ export function registerActionGenerator() {
 }
 
 export function registerRouteGenerator(endpointName: string, endpointRouter: Router) {
-	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
-
 	const router = express.Router();
 
 	endpointRouter.use(`/${endpointName}`, router);
@@ -98,11 +111,7 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 		const handler: RequestHandler = async (req, res) => {
 			const request = { url: req.url, headers: req.headers, body: req.body };
 
-			const response = await cb.apply(undefined, [request], {
-				arguments: { copy: true },
-				result: { reference: true, promise: true },
-				timeout: sandboxTimeout,
-			});
+			const response = await callReference(cb, [request]);
 
 			const responseCopied = await response.copy();
 
@@ -136,8 +145,6 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 }
 
 export function registerOperationGenerator() {
-	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
-
 	const flowManager = getFlowManager();
 
 	const unregisterFunctions: PromiseCallback[] = [];
@@ -151,12 +158,7 @@ export function registerOperationGenerator() {
 
 		const idCopied = id.copySync();
 
-		const handler: OperationHandler = async (data) =>
-			cb.apply(undefined, [data], {
-				arguments: { copy: true },
-				result: { reference: true, promise: true },
-				timeout: sandboxTimeout,
-			});
+		const handler: OperationHandler = async (data) => callReference(cb, [data]);
 
 		flowManager.addOperation(idCopied, handler);
 
