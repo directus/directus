@@ -8,5 +8,7 @@ export function generateHostFunctionReference(
 
 	return `(${argsList}) => $${i}.apply${
 		!async ? 'Sync' : ''
-	}(null, [${argsList}], { arguments: { reference: true }, result: { promise: ${async ? 'true' : 'false'} }});`;
+	}(null, [${argsList}], { arguments: { reference: true }, result: { copy: true, promise: ${
+		async ? 'true' : 'false'
+	} }});`;
 }
