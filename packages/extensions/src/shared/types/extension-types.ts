@@ -6,7 +6,7 @@ import type {
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
 } from '../constants/index.js';
-import type { SplitEntrypoint } from '../schemas/index.js';
+import type { SplitEntrypoint, ExtensionSandboxOptions } from '../schemas/index.js';
 
 export type AppExtensionType = (typeof APP_EXTENSION_TYPES)[number];
 export type ApiExtensionType = (typeof API_EXTENSION_TYPES)[number];
@@ -18,9 +18,9 @@ export type ExtensionType = (typeof EXTENSION_TYPES)[number];
 type ExtensionBase = {
 	path: string;
 	name: string;
+	local: boolean;
 	version?: string;
 	host?: string;
-	local: boolean;
 };
 
 export type AppExtension = ExtensionBase & {
@@ -31,11 +31,13 @@ export type AppExtension = ExtensionBase & {
 export type ApiExtension = ExtensionBase & {
 	type: ApiExtensionType;
 	entrypoint: string;
+	sandbox?: ExtensionSandboxOptions;
 };
 
 export type HybridExtension = ExtensionBase & {
 	type: HybridExtensionType;
 	entrypoint: SplitEntrypoint;
+	sandbox?: ExtensionSandboxOptions;
 };
 
 export interface BundleExtensionEntry {

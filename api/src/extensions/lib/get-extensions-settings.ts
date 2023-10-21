@@ -1,8 +1,8 @@
 import type { Extension } from '@directus/extensions';
 import { difference } from 'lodash-es';
-import getDatabase from '../database/index.js';
-import { ExtensionsService } from '../services/extensions.js';
-import { getSchema } from '../utils/get-schema.js';
+import getDatabase from '../../database/index.js';
+import { ExtensionsService } from '../../services/extensions.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 /**
  * Loads stored settings for all extensions. Creates empty new rows in extensions tables for
