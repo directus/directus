@@ -6,9 +6,9 @@ export function generateHostFunctionReference(
 	const argsList = args.join(', ');
 	const i = index.next().value;
 
-	return `(${argsList}) => $${i}.apply${
-		!async ? 'Sync' : ''
-	}(null, [${argsList}], { arguments: { reference: true }, result: { copy: true, promise: ${
-		async ? 'true' : 'false'
-	} }});`;
+	if (async) {
+		return `(${argsList}) => $${i}.apply(null, [${argsList}], { arguments: { reference: true }, result: { copy: true, promise: true } });`;
+	} else {
+		return `(${argsList}) => $${i}.applySync(null, [${argsList}], { arguments: { reference: true }, result: { copy: true } });`;
+	}
 }
