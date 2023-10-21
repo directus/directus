@@ -56,19 +56,19 @@ export function generateApiExtensionsSandboxEntrypoint(
 
 			const router = {
 				get: (path, handler) => {
-					registerRoute(path, 'get', handler);
+					registerRoute(path, 'GET', handler);
 				},
 				post: (path, handler) => {
-					registerRoute(path, 'post', handler);
+					registerRoute(path, 'POST', handler);
 				},
 				put: (path, handler) => {
-					registerRoute(path, 'put', handler);
+					registerRoute(path, 'PUT', handler);
 				},
 				patch: (path, handler) => {
-					registerRoute(path, 'patch', handler);
+					registerRoute(path, 'PATCH', handler);
 				},
 				delete: (path, handler) => {
-					registerRoute(path, 'delete', handler);
+					registerRoute(path, 'DELETE', handler);
 				}
 			};
 
