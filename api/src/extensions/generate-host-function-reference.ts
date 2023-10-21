@@ -7,7 +7,17 @@ export function generateHostFunctionReference(
 	const i = index.next().value;
 
 	if (async) {
-		return `(${argsList}) => $${i}.apply(null, [${argsList}], { arguments: { reference: true }, result: { copy: true, promise: true } });`;
+		return `
+			async (${argsList}) => {
+				const { result, error } = await $${i}.apply(null, [${argsList}], { arguments: { reference: true }, result: { copy: true, promise: true } });
+
+				if (error) {
+					throw result;
+				} else {
+					return result;
+				}
+			};
+		`;
 	} else {
 		return `(${argsList}) => $${i}.applySync(null, [${argsList}], { arguments: { reference: true }, result: { copy: true } });`;
 	}

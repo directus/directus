@@ -4,6 +4,16 @@ import type { Isolate, Module } from 'isolated-vm';
 import { logGenerator, requestGenerator, sleepGenerator } from './api-sandbox-sdk.js';
 import { generateHostFunctionReference } from './generate-host-function-reference.js';
 
+function wrapUtil(util: any) {
+	return async (...args: any[]) => {
+		try {
+			return { result: await util(...args), error: false };
+		} catch (e) {
+			return { result: e, error: true };
+		}
+	};
+}
+
 function getSdk() {
 	return [
 		{ name: 'log', generator: logGenerator, args: ['message'], async: false },
@@ -29,7 +39,7 @@ export async function instantiateSandboxSdk(
 
 	await apiContext.evalClosure(
 		handlerCode,
-		sdk.map(({ generator }) => generator(requestedScopes)),
+		sdk.map(({ generator, async }) => (async ? wrapUtil(generator(requestedScopes)) : generator(requestedScopes))),
 		{ filename: '<extensions-sdk>', arguments: { reference: true } }
 	);
 
