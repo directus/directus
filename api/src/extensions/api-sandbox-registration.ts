@@ -23,7 +23,7 @@ export function registerFilterGenerator() {
 		const eventCopied = event.copySync();
 
 		const handler: FilterHandler = async (payload) => {
-			const response = await cb.apply(null, [payload], {
+			const response = await cb.apply(undefined, [payload], {
 				arguments: { copy: true },
 				result: { reference: true, promise: true },
 				timeout: sandboxTimeout,
@@ -54,7 +54,7 @@ export function registerActionGenerator() {
 		const eventCopied = event.copySync();
 
 		const handler: ActionHandler = (payload) =>
-			cb.apply(null, [payload], {
+			cb.apply(undefined, [payload], {
 				arguments: { copy: true },
 				result: { reference: true, promise: true },
 				timeout: sandboxTimeout,
@@ -98,7 +98,7 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 		const handler: RequestHandler = async (req, res) => {
 			const request = { url: req.url, headers: req.headers, body: req.body };
 
-			const response = await cb.apply(null, [request], {
+			const response = await cb.apply(undefined, [request], {
 				arguments: { copy: true },
 				result: { reference: true, promise: true },
 				timeout: sandboxTimeout,
@@ -152,7 +152,7 @@ export function registerOperationGenerator() {
 		const idCopied = id.copySync();
 
 		const handler: OperationHandler = async (data) =>
-			cb.apply(null, [data], {
+			cb.apply(undefined, [data], {
 				arguments: { copy: true },
 				result: { reference: true, promise: true },
 				timeout: sandboxTimeout,

@@ -9,7 +9,7 @@ export function generateHostFunctionReference(
 	if (async) {
 		return `
 			async (${argsList}) => {
-				const { result, error } = await $${i}.apply(null, [${argsList}], { arguments: { reference: true }, result: { copy: true, promise: true } });
+				const { result, error } = await $${i}.apply(undefined, [${argsList}], { arguments: { reference: true }, result: { copy: true, promise: true } });
 
 				if (error) {
 					throw result;
@@ -19,6 +19,6 @@ export function generateHostFunctionReference(
 			};
 		`;
 	} else {
-		return `(${argsList}) => $${i}.applySync(null, [${argsList}], { arguments: { reference: true }, result: { copy: true } });`;
+		return `(${argsList}) => $${i}.applySync(undefined, [${argsList}], { arguments: { reference: true }, result: { copy: true } });`;
 	}
 }
