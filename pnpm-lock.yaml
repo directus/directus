@@ -179,6 +179,9 @@ importers:
       fs-extra:
         specifier: 11.1.1
         version: 11.1.1
+      glob-to-regexp:
+        specifier: 0.4.1
+        version: 0.4.1
       graphql:
         specifier: 16.6.0
         version: 16.6.0
@@ -418,6 +421,9 @@ importers:
       '@types/fs-extra':
         specifier: 11.0.1
         version: 11.0.1
+      '@types/glob-to-regexp':
+        specifier: 0.4.3
+        version: 0.4.3
       '@types/inquirer':
         specifier: 9.0.3
         version: 9.0.3
@@ -8624,6 +8630,10 @@ packages:
   /@types/geojson@7946.0.10:
     resolution: {integrity: sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==}
 
+  /@types/glob-to-regexp@0.4.3:
+    resolution: {integrity: sha512-/n3n1XCjkBcFA4gWflBOtMYBnDefmd8qCcUu9vBQWUmg1tKPU4jjn3cEHPAl0zVCQ8vVbuVUvcEF5uvU2+Iddw==}
+    dev: true
+
   /@types/glob@8.1.0:
     resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
     dependencies:
@@ -13878,7 +13888,6 @@ packages:
 
   /glob-to-regexp@0.4.1:
     resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
-    dev: true
 
   /glob@10.3.3:
     resolution: {integrity: sha512-92vPiMb/iqpmEgsOoIDvTjc50wf9CCCvMzsi6W0JLPeUKE8TWP1a73PgqSrqy7iAZxaSD1YdzU7QZR5LF51MJw==}
