@@ -2,6 +2,7 @@ import type { RequestHandler, Router } from 'express';
 import express from 'express';
 import type { Reference } from 'isolated-vm';
 import type { IncomingHttpHeaders } from 'node:http';
+import asyncHandler from '../../../../utils/async-handler.js';
 import { callReference } from './call-reference.js';
 
 export function registerRouteGenerator(endpointName: string, endpointRouter: Router) {
@@ -27,7 +28,7 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 		const pathCopied = path.copySync();
 		const methodCopied = method.copySync();
 
-		const handler: RequestHandler = async (req, res) => {
+		const handler: RequestHandler = asyncHandler(async (req, res) => {
 			const request = { url: req.url, headers: req.headers, body: req.body };
 
 			const response = await callReference(cb, [request]);
@@ -35,7 +36,7 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 			const responseCopied = await response.copy();
 
 			res.status(responseCopied.status).send(responseCopied.body);
-		};
+		});
 
 		switch (methodCopied) {
 			case 'GET':
