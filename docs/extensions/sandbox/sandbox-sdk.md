@@ -204,9 +204,12 @@ specifying the methods and URLs you want to use:
 		"requestedScopes": {
 			"request": {
 				"methods": ["GET"],
-				"urls": ["https://directus.io"]
+				"urls": ["https://directus.io/*"]
 			}
 		}
 	}
 }
 ```
+
+The URLs configuration in the requested scopes for the request operation supports wildcards. For example, if you want to
+allow any sub-path, use `https://directus.example.com/items/*`. 
