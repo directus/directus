@@ -599,12 +599,12 @@ function sidebar() {
 					collapsed: true,
 					items: [
 						{
-							link: '/extensions/secure/introduction',
+							link: '/extensions/sandbox/introduction',
 							text: 'Introduction',
 						},
 						{
-							link: '/extensions/secure/execution-types',
-							text: 'Execution Types',
+							link: '/extensions/sandbox/sandbox-sdk',
+							text: 'Sandbox SDK',
 						},
 					],
 				},
