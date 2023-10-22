@@ -40,8 +40,14 @@ set enabled to `true` as follows:
 }
 ```
 
+## Registering Extensions
+
+While the way individual extensions are instantiated is very similar to non-sandboxed extensions, there's some subtle
+differences to be aware of given the difference of runtime. Please refer to
+[Registering Extensions](/extensions/sandbox/register) for examples for each extension type.
+
 ## Permissions & Execution Types
 
 The `requestedScopes` object controls what function scopes your extension requests to use, and what permissions your
-extension needs for each of those scopes. Please refer to [Sandbox SDK](/extensions/sandbox/sandbox-sdk) for a
-reference of all supported scopes.
+extension needs for each of those scopes. Please refer to [Sandbox SDK](/extensions/sandbox/sandbox-sdk) for a reference
+of all supported scopes.

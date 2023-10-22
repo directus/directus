@@ -603,6 +603,10 @@ function sidebar() {
 							text: 'Introduction',
 						},
 						{
+							link: '/extensions/sandbox/register',
+							text: 'Registering Extensions',
+						},
+						{
 							link: '/extensions/sandbox/sandbox-sdk',
 							text: 'Sandbox SDK',
 						},
