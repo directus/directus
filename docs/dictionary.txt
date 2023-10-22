@@ -52,6 +52,7 @@
 (R|r)elink
 (R|r)epo
 (R|r)ollup
+(S|s)andboxed
 (S|s)chemas?
 (S|s)endmail
 (S|s)erverless
@@ -354,7 +355,6 @@ repurpose
 S3
 saml
 SAML
-sandboxed
 scalable
 Scalable
 SCSS
