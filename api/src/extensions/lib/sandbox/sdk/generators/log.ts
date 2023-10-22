@@ -2,7 +2,9 @@ import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import type { Reference } from 'isolated-vm';
 import logger from '../../../../../logger.js';
 
-export function logGenerator(_requestedScopes: ExtensionSandboxRequestedScopes): (message: Reference<string>) => void {
+export function logGenerator(requestedScopes: ExtensionSandboxRequestedScopes): (message: Reference<string>) => void {
+	if (requestedScopes.log === undefined) throw new Error('No permission to access "log"');
+
 	return (message) => {
 		if (message.typeof !== 'string') throw new TypeError('Log message has to be of type string');
 

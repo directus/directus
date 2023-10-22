@@ -17,6 +17,8 @@ export const ExtensionSandboxRequestedScopes = z.object({
 			),
 		})
 	),
+	log: z.optional(z.object({})),
+	sleep: z.optional(z.object({})),
 });
 
 export const ExtensionSandboxOptions = z.optional(
