@@ -1,5 +1,6 @@
 import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import encodeUrl from 'encodeurl';
+import globToRegExp from 'glob-to-regexp';
 import type { Reference } from 'isolated-vm';
 import { getAxios } from '../../../../../request/index.js';
 
@@ -29,7 +30,14 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 
 		if (permissions === undefined) throw new Error('No permission to access "request"');
 
-		if (!permissions.urls.includes(urlCopied)) throw new Error(`No permission to request "${urlCopied}"`);
+		const urlAllowed = permissions.urls.some((urlScope) => {
+			const regex = globToRegExp(urlScope);
+			return regex.test(urlCopied);
+		});
+
+		if (urlAllowed === false) {
+			throw new Error(`No permission to request "${urlCopied}"`);
+		}
 
 		const method = options.typeof !== 'undefined' ? await options.get('method', { reference: true }) : undefined;
 		const body = options.typeof !== 'undefined' ? await options.get('body', { reference: true }) : undefined;
