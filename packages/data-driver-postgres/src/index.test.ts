@@ -25,7 +25,7 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-function getStreamForMock(data: Record<string, any>[]): ReadableStream<Record<string, any>> {
+function getMockedStream(data: Record<string, any>[]): ReadableStream<Record<string, any>> {
 	return new ReadableStream({
 		start(controller) {
 			data.forEach((chunk) => controller.enqueue(chunk));
@@ -122,7 +122,7 @@ test('nested with local fields', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'queryDatabase').mockReturnValueOnce(getStreamForMock(mockedData));
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);
@@ -278,7 +278,7 @@ test('nested m2o field', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'queryDatabase').mockReturnValueOnce(getStreamForMock(mockedData));
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);

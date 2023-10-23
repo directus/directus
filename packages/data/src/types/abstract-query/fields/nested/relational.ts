@@ -49,12 +49,13 @@ export interface AbstractQueryFieldNodeRelationalOneToAny {
  * ```
  * const functionNode = {
  * 	local: {
- * 		fields: ['id']
- *  },
+ * 		fields: ['id'],
+ *    },
  * 	foreign: {
  * 		store: 'mongodb',
  * 		collection: 'some-collection',
- * }
+ *    },
+ * };
  * ```
  */
 export interface AbstractQueryFieldNodeRelationalJoinMany {

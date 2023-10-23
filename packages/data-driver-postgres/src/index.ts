@@ -4,12 +4,7 @@
  * @packageDocumentation
  */
 import type { AbstractQuery, AtLeastOneElement, DataDriver } from '@directus/data';
-import {
-	convertQuery,
-	getOrmTransformer,
-	type AbstractSqlQuery,
-	type ParameterizedSqlStatement,
-} from '@directus/data-sql';
+import { convertQuery, getExpander, type AbstractSqlQuery, type ParameterizedSqlStatement } from '@directus/data-sql';
 import { ReadableStream, type ReadableStreamDefaultReadResult } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
@@ -50,19 +45,21 @@ export default class DataDriverPostgres implements DataDriver {
 
 	// We might can move this function into data-sql and pass some functions from the driver to it (?)
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, any>>> {
-		// const abstractSql = convertQuery(query);
-		// console.log('querying database', abstractSql.clauses);
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
 		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
-		const ormTransformer = getOrmTransformer(abstractSql.aliasMapping);
-		return stream.pipeThrough(ormTransformer);
+		const ormExpander = getExpander(abstractSql.aliasMapping);
+		return stream.pipeThrough(ormExpander);
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
 		const abstractSql = convertQuery(query);
 		const queryDB = this.queryDatabase.bind(this);
 		const rootStream = await queryDB(abstractSql);
+
+		if (abstractSql.nestedManys.length === 0) {
+			return rootStream;
+		}
 
 		const stream = new ReadableStream({
 			start(controller) {
