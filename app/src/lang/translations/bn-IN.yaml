@@ -52,6 +52,8 @@ or: অথবা
 init: এটায়
 dataset_too_large_currently_showing_n_items: ডেটাসেটটি অনেক বড়ো। বর্তমানে শুধু মাত্র প্রথম {n} আইটেমটি দেখানো হচ্ছে।
 modifier: বাছাইকারী
+extension_hook: হুক
+extension_modules: মডিউল
 custom: ব্যক্তিগতকরণ
 hook: হুক
 fill_width: প্রস্থ পূরণ করুন

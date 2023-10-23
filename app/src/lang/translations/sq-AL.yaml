@@ -54,6 +54,14 @@ or: Ose
 init: Init
 dataset_too_large_currently_showing_n_items: Seti i të dhënave është shumë i madh. Tani po shfaqen {n} artikujt e parë.
 modifier: Modifikues
+extension_interface: Ndërfaqe
+extension_display: Shfaq
+extension_layout: Struktura
+extension_panel: Paneli
+extension_hook: Hook
+extension_operation: Operacion
+extension_modules: Module
+enable: Parashikoni përkthimet
 custom: Personalizuar
 hook: Hook
 fill_width: Plotëso Gjerësinë
@@ -101,6 +109,7 @@ rename_folder: Riemërto Dosjen
 delete_folder: Fshi Dosjen
 prefix: Prefiks
 suffix: Sufiks
+promote_version_preview: Parashiko
 reset_bookmark: Rikthe Shënuesin
 update_bookmark: Përditëso Shënuesin
 delete_bookmark: Fshi Shënuesin
@@ -616,7 +625,6 @@ errors:
   RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
   USER_SUSPENDED: Përdoruesi është pezulluar
   CONTAINS_NULL_VALUES: Fusha përmban vlera null
-  UNPROCESSABLE_ENTITY: Entitet i papërpunueshëm
   INTERNAL_SERVER_ERROR: Gabim i papritur
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
   ILLEGAL_ASSET_TRANSFORMATION: Burimi i imazhit është shumë i madh për të paraparë
@@ -974,12 +982,11 @@ editing_unit: 'Po modifikohet {unit}'
 editing_in_batch: 'Modifikim në masë i {count} artikujve'
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
-settings_permissions: Role dhe Leje
-settings_project: Cilësimet e Projektit
+settings_project: Parametra
 settings_webhooks: Webhooks
 settings_flows: Rrjedha
-settings_presets: Cilësimet e Paracaktuara dhe Faqerojtësit
-settings_translations: Përkthimet e Personalizuara
+settings_presets: Faqerojtësit
+settings_translations: Përkthimet
 one_or_more_options_are_missing: Mungon një ose më shumë opsione
 configure_field_key_to_continue: Konfiguro çelësin e fushës për të vazhduar
 scope: Shtrirje
@@ -1015,7 +1022,6 @@ page_help_files_collection: >-
   **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
 page_help_files_item: >-
   **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
-page_help_settings_project: "**Cilësimet e Projektit** — Opsionet globale të konfigurimit të projektit tënd."
 page_help_settings_extensions: '**Zgjerime** — Zgjerimet e instaluara në projektin tuaj.'
 page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
@@ -1141,10 +1147,6 @@ fields:
     tags: Etiketa
     user_preferences: Preferencat e Përdoruesit
     language: Gjuha
-    theme: Tema
-    theme_auto: Automatike (Bazuar në Sistemin)
-    theme_light: Mënyrë e Ndritshme
-    theme_dark: Mënyrë e Errët
     tfa_secret: Autentikimi me Dy Faktorë
     admin_options: Opsionet e Adminit
     status: Statusi
@@ -1183,7 +1185,6 @@ fields:
     project_color: Ngjyra e Projektit
     project_logo: Logoja e Projektit
     default_language: Gjuha e Parazgjedhur
-    branding: Branding & Stil
     public_foreground: Sfondi i Jashtëm
     public_background: Sfondi Publik
     public_note: Shënim Publik
@@ -1243,7 +1244,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Projekti im...
     project_color_note: Login & Mjedis i Logos
-    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: Një mesazh i shkurtër, publik që mbështet formatimin e markdown...
     security_divider_title: Siguria
     auth_password_policy:
@@ -1319,9 +1319,6 @@ field_options:
     collections_addLabel: Shto Koleksion...
   directus_users:
     preferences_divider: Preferencat e Përdoruesit
-    dropdown_auto: Automatike (Bazuar në Sistemin)
-    dropdown_light: Mënyrë e Ndritshme
-    dropdown_dark: Mënyrë e Errët
     admin_divider: Opsionet e Adminit
     status_dropdown_draft: Draft
     status_dropdown_invited: I Ftuar
@@ -1477,7 +1474,6 @@ translation: Përkthim
 translation_placeholder: Shkruani një përkthim...
 value: Vlerë
 view_project: Shiko Projektin
-weeks: { }
 report_error: Raporto Gabimin
 start: Fillim
 table: Tabela
@@ -2077,6 +2073,7 @@ panels:
     smooth: I butë
     straight: I drejtë
     step_line: Vijë Hapësire
+    show_legend: Shfaq legjendën
   meter:
     name: Metër
     description: Metër për gjurmimin e vlerave
@@ -2227,3 +2224,14 @@ operations:
     batch: Grup
     batch_size: Madhësia e Grupit
     cache: Cache
+standard: Standarde
+compact: E kompakt
+style: Stil
+fonts:
+  thin: I hollë
+  normal: Normal
+  medium: Mesatar
+  bold: Trashë
+  black: Zi
+  italic: Italik
+  auto: Automatik
