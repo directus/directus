@@ -1103,9 +1103,9 @@ importers:
 
   packages/create-directus-extension:
     dependencies:
-      '@directus/constants':
+      '@directus/extensions':
         specifier: workspace:*
-        version: link:../constants
+        version: link:../extensions
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../extensions-sdk
