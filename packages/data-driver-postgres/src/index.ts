@@ -95,26 +95,4 @@ export default class DataDriverPostgres implements DataDriver {
 
 		return stream;
 	}
-
-	// async queryAbstract(query: AbstractQuery): Promise<ReadableStream> {
-	// 	const rootQuery = getRootQuery(query);
-	// 	const rootStream = await this.queryDatabase(rootQuery);
-	// 	const nestedManyNodes = query.fields.filter((i) => i.type === 'nested-many') as AbstractQueryFieldNodeNestedMany[];
-
-	// 	const subStreams = [];
-
-	// 	for await (const rootChunk of rootStream) {
-	// 		for (const nestedMany of nestedManyNodes) {
-	// 			if (nestedMany.meta.type !== 'o2m') {
-	// 				throw new Error('o2a is not yet implemented');
-	// 			}
-
-	// 			const subQuery = convertManyNodeToAbstractQuery(nestedMany, rootChunk);
-	// 			const subStream = await this.queryDatabase(subQuery);
-	// 			subStreams.push(subStream);
-	// 		}
-	// 	}
-
-	// 	return rootStream;
-	// }
 }
