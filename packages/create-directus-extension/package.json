@@ -33,7 +33,7 @@
 		"lib/index.js"
 	],
 	"dependencies": {
-		"@directus/constants": "workspace:*",
+		"@directus/extensions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"inquirer": "9.2.4"
 	}
