@@ -595,6 +595,24 @@ function sidebar() {
 					],
 				},
 				{
+					text: 'Secure Extensions',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/sandbox/introduction',
+							text: 'Introduction',
+						},
+						{
+							link: '/extensions/sandbox/register',
+							text: 'Registering Extensions',
+						},
+						{
+							link: '/extensions/sandbox/sandbox-sdk',
+							text: 'Sandbox SDK',
+						},
+					],
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
