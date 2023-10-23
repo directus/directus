@@ -1,6 +1,6 @@
 import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
-import env from '../env.js';
+import env from '../../env.js';
 
 export const getExtensions = async () => {
 	const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);

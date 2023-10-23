@@ -1,5 +1,6 @@
 import type { Knex } from 'knex';
 import type { Accountability } from './accountability.js';
+import type { PromiseCallback } from './misc.js';
 import type { SchemaOverview } from './schema.js';
 
 export type EventContext = {
@@ -15,5 +16,5 @@ export type FilterHandler<T = unknown> = (
 ) => T | Promise<T>;
 export type ActionHandler = (meta: Record<string, any>, context: EventContext) => void;
 export type InitHandler = (meta: Record<string, any>) => void;
-export type ScheduleHandler = () => void | Promise<void>;
+export type ScheduleHandler = PromiseCallback;
 export type EmbedHandler = () => string;

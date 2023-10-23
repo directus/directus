@@ -2,9 +2,9 @@ import { resolvePackage } from '@directus/utils/node';
 import { escapeRegExp } from 'lodash-es';
 import { readdir } from 'node:fs/promises';
 import path from 'path';
-import env from '../env.js';
-import logger from '../logger.js';
-import { Url } from '../utils/url.js';
+import env from '../../env.js';
+import logger from '../../logger.js';
+import { Url } from '../../utils/url.js';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 

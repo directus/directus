@@ -15,11 +15,13 @@
 	"exports": {
 		".": "./dist/index.js",
 		"./node": "./dist/node.js",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./api.d.ts": "./api.d.ts"
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist"
+		"dist",
+		"api.d.ts"
 	],
 	"scripts": {
 		"build": "concurrently --group 'pnpm:build:*'",
@@ -33,7 +35,7 @@
 		"fs-extra": "11.1.1",
 		"lodash-es": "4.17.21",
 		"tmp": "0.2.1",
-		"zod": "3.21.4"
+		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"@directus/constants": "workspace:*",

@@ -66,9 +66,22 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 					api: extensionOptions.path.api,
 				},
 				host: extensionOptions.host,
+				sandbox: extensionOptions.sandbox,
+				local,
+			});
+		} else if (extensionOptions.type === 'hook' || extensionOptions.type === 'endpoint') {
+			extensions.push({
+				path: extensionPath,
+				name: parsedManifest.name,
+				version: parsedManifest.version,
+				type: extensionOptions.type,
+				entrypoint: extensionOptions.path,
+				host: extensionOptions.host,
+				sandbox: extensionOptions.sandbox,
 				local,
 			});
 		} else {
+			// App extensions
 			extensions.push({
 				path: extensionPath,
 				name: parsedManifest.name,
