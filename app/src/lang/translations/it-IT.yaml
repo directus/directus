@@ -1030,7 +1030,7 @@ editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
-settings_permissions: Controllo dell'accesso
+settings_permissions: Controllo Accessi
 settings_project: impostazioni
 settings_theming: Temi
 settings_webhooks: Webhooks
