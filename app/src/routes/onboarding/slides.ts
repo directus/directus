@@ -1,5 +1,6 @@
 import api from '@/api';
 import { FieldValues } from '@/components/v-form/types';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { DeepPartial, Field, SettingsOnboarding, User, UserOnboarding } from '@directus/types';
@@ -23,6 +24,7 @@ export function getSlides() {
 	const { t } = useI18n();
 	const settingsStore = useSettingsStore();
 	const userStore = useUserStore();
+	const serverStore = useServerStore();
 
 	const projectModel = ref({
 		project_name: settingsStore.settings?.project_name,
@@ -68,6 +70,8 @@ export function getSlides() {
 							project_use_case: projectModel.value.project_use_case ?? null,
 						} satisfies SettingsOnboarding),
 					});
+
+					await serverStore.hydrate({ isLanguageUpdated: false });
 				},
 			},
 		}),
