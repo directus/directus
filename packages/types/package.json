@@ -35,7 +35,7 @@
 		"pino": "8.14.1",
 		"vue": "3.3.4",
 		"vue-router": "4.2.0",
-		"zod": "3.21.4"
+		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
