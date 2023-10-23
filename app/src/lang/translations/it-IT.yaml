@@ -57,11 +57,23 @@ modifier: Modificatore
 extension_interface: Interfaccia
 extension_display: Mostra
 extension_layout: Layout
+extension_module: Modulo
 extension_panel: Pannello
 extension_hook: Hook
+extension_endpoint: Endpoint
 extension_operation: Operazione
+extension_bundle: Pacchetto
+extension_interfaces: Interfacce
+extension_displays: Visualizzazioni
+extension_layouts: Layout
 extension_modules: Moduli
+extension_panels: Pannelli
+extension_hooks: Hook
+extension_endpoints: Endpoint
+extension_operations: Operazioni
+extension_bundles: Pacchetti
 enable: Attivato
+disable: Disattiva
 custom: Personalizzato
 hook: Hook
 fill_width: Riempi larghezza
@@ -109,7 +121,31 @@ rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
+keep: Mantieni
+version: Versione
+version_key: Codice della versione
+version_name: Nome della versione
+main_version: Principale
+switch_version: Cambia Versione
+switch_version_copy: Sei sicuro di voler passare alla versione "{version}"? Le modifiche non salvate andranno perse.
+create_version: Crea versione
+rename_version: Rinomina versione
+compare_version: Confronta versioni
+save_version: Salva la versione
+promote_version: Promuovi versione
+promote_version_disabled: Nessuna modifica
+promote_version_drawer_title: Promuovi {version} a principale
+promote_version_changes: Novità
 promote_version_preview: Anteprima
+outdated_notice: >-
+  L'elemento principale è stato modificato da quando è stata creata questa versione. Verifica i valori di tutti i campi qui sotto e conferma quale versione deve essere usata promuovendo questa versione nell'elemento principale.
+promote_notice: >-
+  Verifica i valori di tutti i campi qui sotto e conferma quale versione deve essere usata promuovendo questa versione nell'elemento principale.
+delete_version: Elimina versione
+delete_version_copy: >-
+  Sei sicuro di voler eliminare la versione "{version}"? Questa azione è irreversibile.
+delete_on_promote_copy: >-
+  Vuoi eliminare o tenere la versione "{version}" dopo la promozione?
 reset_bookmark: Reimposta Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
@@ -270,6 +306,9 @@ geometry.Polygon: Polygon
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
+theme_auto: Automatico (in base al sistema)
+theme_light: Tema chiaro
+theme_dark: Tema scuro
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -365,6 +404,7 @@ revision_delta_created: Creato
 revision_delta_created_externally: Creato Esternamente
 revision_delta_updated: 'Aggiornato 1 Campo | Aggiornati {count} Campi'
 revision_delta_deleted: Eliminato
+revision_delta_version_saved: 'Salvataggio Versione (Aggiornato un campo) | Salvataggio Versione (Aggiornati {count} campi)'
 revision_delta_reverted: Ripristinato
 revision_delta_update_message: Questo campo è stato aggiornato, ma il suo valore è nascosto per motivi di sicurezza.
 revision_delta_other: Revisione
@@ -502,6 +542,7 @@ generated_uuid: UUID Generato
 manual_string: Stringa inserita manualmente
 save_and_create_new: Salva e Crea nuovo
 save_and_stay: Salva e rimani
+save_and_quit: Salva ed esci
 save_as_copy: Salva come copia
 add_existing: Aggiungi esistente
 creating_items: Creazione Oggetti
@@ -971,6 +1012,9 @@ choices: Scelta multipla
 choices_option_configured_incorrectly: Scelte configurate in modo errato
 deselect: Deseleziona
 deselect_all: Deseleziona Tutto
+appearance_auto: Automatico (in base al sistema)
+appearance_light: Tema chiaro
+appearance_dark: Tema scuro
 other: Altro...
 adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
