@@ -27,6 +27,7 @@ method: Метод
 published: Опубликовано
 draft: Черновик
 archived: Архивировано
+extensions: Расширения
 modules: Модули
 module_bar: Панель модулей
 logs: Журналы
@@ -56,9 +57,12 @@ modifier: Модификатор
 extension_interface: Интерфейс
 extension_display: Отображение
 extension_layout: Макет
+extension_module: Модуль
 extension_panel: Панель
 extension_hook: Хук
+extension_displays: Отображения
 extension_modules: Модули
+extension_panels: Панели
 enable: Включить
 custom: Пользовательский
 hook: Хук
@@ -107,6 +111,16 @@ rename_folder: Переименовать папку
 delete_folder: Удалить папку
 prefix: Префикс
 suffix: Суффикс
+version: Версия
+version_key: Ключ Версии
+version_name: Название Версии
+switch_version: Сменить Версию
+switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
+create_version: Создать Версию
+rename_version: Переименовать Версию
+compare_version: Сравнить Версии
+save_version: Сохранить Версию
+promote_version_changes: Изменения
 promote_version_preview: Предпросмотр
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
@@ -267,6 +281,8 @@ geometry.Polygon: Многоугольник
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: Мультиполигон
+theme_light: Светлая тема
+theme_dark: Тёмная тема
 not_available_for_type: Недоступно для этого типа
 create_translations: Создать переводы
 auto_refresh: Автообновление
@@ -349,6 +365,7 @@ clear_items: Очистить элементы
 reset_to_default: Сбросить до значений по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
+archive_all: Архивировать всё
 show_all_activity: Показать историю всех действий
 page_not_found: Страница не найдена
 page_not_found_body: Страница, которую вы ищете, кажется, не существует.
@@ -957,6 +974,8 @@ choices: Варианты
 choices_option_configured_incorrectly: Варианты настроены неправильно
 deselect: Снять выделение
 deselect_all: Снять всё выделение
+appearance_light: Светлая тема
+appearance_dark: Тёмная тема
 other: Другой...
 adding_user: Добавление пользователя
 unknown_user: Неизвестный пользователь
@@ -1093,6 +1112,7 @@ fields:
     unarchive_value: Значение для извлеченных из архива
     sort_field: Поле сортировки
     accountability: Отслеживание действий и редакций
+    versioning: Версионирование
     archive_field: Архивировать поле
     item_duplication_fields: Поля дублирования предметов
   directus_files:
@@ -1146,6 +1166,8 @@ fields:
     last_page: Последняя страница
     last_access: Последний доступ
     email_notifications: Уведомления по e-mail
+    theme_light_overrides: Настройка Светлой Темы
+    theme_dark_overrides: Настройка Тёмной Темы
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1186,6 +1208,8 @@ fields:
     transformations_presets: Ограничить преобразования для шаблонов ниже
     image_editor: Редактор изображений
     custom_aspect_ratios: Пользовательские пропорции
+    theme_light_overrides: Настройка Светлой Темы
+    theme_dark_overrides: Настройка Тёмной Темы
   directus_shares:
     name: Название
     role: Роль
@@ -2165,3 +2189,7 @@ fonts:
   black: Чёрный
   italic: Наклонный
   auto: Авто
+text_align: Выравнивание Текста
+font_weight: Толщина Шрифта
+font_style: Стиль Шрифта
+font_size: Размер Шрифта
