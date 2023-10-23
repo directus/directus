@@ -17,7 +17,7 @@ declare module 'directus:api' {
 		body: string | Record<string, unknown>;
 	}
 
-	export type SandboxEndpointRouteHandlerFn = (request: SandboxEndpointRequest) => Promise<SandboxEndpointResponse>;
+	export type SandboxEndpointRouteHandlerFn = (request: SandboxEndpointRequest) => Promise<SandboxEndpointResponse> | SandboxEndpointResponse;
 
 	export type SandboxEndpointRegisterFn = (path: string, handler: SandboxEndpointRouteHandlerFn) => void;
 
@@ -32,7 +32,7 @@ declare module 'directus:api' {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// Hooks
 
-	export type SandboxHookHandlerFn = (payload: unknown) => Promise<any>;
+	export type SandboxHookHandlerFn = (payload: unknown) => any;
 
 	export type SandboxHookRegisterFn = (event: string, handler: SandboxHookHandlerFn) => void;
 
@@ -44,7 +44,7 @@ declare module 'directus:api' {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// Operations
 
-	export type SandboxOperationHandlerFn = (data: Record<string, any>) => Promise<any>;
+	export type SandboxOperationHandlerFn = (data: Record<string, any>) => any;
 
 	export interface SandboxOperationConfig {
 		id: string;
