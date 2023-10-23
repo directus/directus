@@ -17,7 +17,9 @@ declare module 'directus:api' {
 		body: string | Record<string, unknown>;
 	}
 
-	export type SandboxEndpointRouteHandlerFn = (request: SandboxEndpointRequest) => Promise<SandboxEndpointResponse> | SandboxEndpointResponse;
+	export type SandboxEndpointRouteHandlerFn = (
+		request: SandboxEndpointRequest
+	) => Promise<SandboxEndpointResponse> | SandboxEndpointResponse;
 
 	export type SandboxEndpointRegisterFn = (path: string, handler: SandboxEndpointRouteHandlerFn) => void;
 
