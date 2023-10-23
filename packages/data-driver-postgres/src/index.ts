@@ -61,7 +61,7 @@ export default class DataDriverPostgres implements DataDriver {
 			return rootStream;
 		}
 
-		const stream = new ReadableStream({
+		const finalStream = new ReadableStream({
 			start(controller) {
 				const reader = rootStream.getReader();
 
@@ -93,6 +93,6 @@ export default class DataDriverPostgres implements DataDriver {
 			},
 		});
 
-		return stream;
+		return finalStream;
 	}
 }

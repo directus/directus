@@ -4,7 +4,7 @@ import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
-import { getSubQuery } from './create-nested-manys.js';
+import { getNestedMany } from './create-nested-manys.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 
 export type Result = {
@@ -100,8 +100,8 @@ export const convertFieldNodes = (
 			const index = parameterIndexGenerator();
 			const nestedOutput = convertFieldNodes(fieldMeta.join.foreign.collection, abstractField.fields, index);
 			const externalCollectionAlias = createUniqueAlias(fieldMeta.join.foreign.collection);
-			const abstractSqlSubQuery = getSubQuery(fieldMeta, nestedOutput, index, externalCollectionAlias);
-			nestedManys.push(abstractSqlSubQuery);
+			const nestedMany = getNestedMany(fieldMeta, nestedOutput, index, externalCollectionAlias);
+			nestedManys.push(nestedMany);
 			continue;
 		}
 

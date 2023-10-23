@@ -2,7 +2,7 @@ import type { AbstractQueryFieldNodeRelationalOneToMany } from '@directus/data';
 import type { Result } from './fields.js';
 import type { AbstractSqlNestedMany, AbstractSqlQueryConditionNode, AbstractSqlQueryWhereNode } from '../../index.js';
 
-export function getSubQuery(
+export function getNestedMany(
 	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
 	nestedOutput: Result,
 	idxGenerator: Generator<number, number, number>,

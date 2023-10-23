@@ -303,13 +303,25 @@ test('nested m2o field', async () => {
 	expect(actualResult).toEqual(expectedResult);
 });
 
-test.todo('nested o2m field', async () => {
-	const collectionToJoin = randomIdentifier();
-	const joinField1 = randomIdentifier();
-	const joinField1Alias = randomIdentifier();
-	const joinField2 = randomIdentifier();
-	const primaryKeyField = randomIdentifier();
-	const collectionToJoinForeignKeyField = randomIdentifier();
+test.skip('nested o2m field', async () => {
+	const localDesiredField = randomIdentifier();
+	const localDesiredFieldId = randomIdentifier();
+
+	const localPkField = randomIdentifier();
+	const localPkFieldId = randomIdentifier();
+
+	const foreignTable = 'foreignTable';
+	const foreignTableId = 'foreignTableId';
+
+	const foreignField1 = 'foreignField1';
+	const foreignField1Id = 'foreignField1Id';
+	const foreignField1Alias = 'foreignField1Alias';
+
+	const foreignField2 = 'foreignField2';
+	const foreignField2Id = 'foreignField2Id';
+
+	const localRelationalField = 'relationalField';
+	const foreignIdField = 'collectionToJoinForeignKeyField';
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -317,31 +329,35 @@ test.todo('nested o2m field', async () => {
 		fields: [
 			{
 				type: 'primitive',
-				field: firstField,
+				field: localDesiredField,
+			},
+			{
+				type: 'primitive',
+				field: localPkField,
 			},
 			{
 				type: 'nested-many',
 				fields: [
 					{
 						type: 'primitive',
-						field: joinField1,
-						alias: joinField1Alias,
+						field: foreignField1,
+						alias: foreignField1Alias,
 					},
 					{
 						type: 'primitive',
-						field: joinField2,
+						field: foreignField2,
 					},
 				],
 				meta: {
 					type: 'o2m',
 					join: {
 						local: {
-							fields: [primaryKeyField],
+							fields: [localRelationalField],
 						},
 						foreign: {
 							store: dataStore,
-							collection: collectionToJoin,
-							fields: [collectionToJoinForeignKeyField],
+							collection: foreignTable,
+							fields: [foreignIdField],
 						},
 					},
 				},
@@ -349,42 +365,180 @@ test.todo('nested o2m field', async () => {
 		],
 	};
 
+	// because we need to know the generated aliases we have to mock the convertQuery result
+
+	vi.mocked(convertQuery).mockReturnValue({
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: rootCollection,
+					column: localDesiredField,
+					as: localDesiredFieldId,
+				},
+				{
+					type: 'primitive',
+					table: rootCollection,
+					column: localPkField,
+					as: localDesiredFieldId,
+				},
+			],
+			from: rootCollection,
+			joins: [],
+		},
+		parameters: [],
+		aliasMapping: new Map([
+			[localDesiredFieldId, [localDesiredField]],
+			[localPkFieldId, [localPkFieldId]],
+		]),
+		nestedManys: [
+			{
+				internalIdentifierFields: [localRelationalField],
+				collection: foreignTable,
+				externalKeyFields: [foreignIdField],
+				alias: foreignTableId,
+				queryGenerator: (identifierValues) => ({
+					clauses: {
+						select: [
+							{
+								type: 'primitive',
+								table: foreignTableId,
+								column: foreignField1,
+								as: foreignField1Id,
+								alias: foreignField1Alias,
+							},
+							{
+								type: 'primitive',
+								table: foreignTableId,
+								column: foreignField2,
+								as: foreignField2Id,
+							},
+						],
+						from: foreignTable,
+						where: {
+							type: 'condition',
+							condition: {
+								type: 'condition-string',
+								operation: 'eq',
+								target: {
+									type: 'primitive',
+									table: foreignTable,
+									column: localRelationalField,
+								},
+								compareTo: {
+									type: 'value',
+									parameterIndex: 0,
+								},
+							},
+							negate: false,
+						},
+					},
+					parameters: identifierValues,
+					aliasMapping: new Map([
+						[foreignField1Id, [foreignTableId, foreignField1Alias]],
+						[foreignField2Id, [foreignTableId, foreignField2]],
+					]),
+					nestedManys: [],
+				}),
+			},
+		],
+	});
+
 	const driver = new DataDriverPostgres({
 		connectionString: 'postgres://postgres:postgres@localhost:5432/postgres',
 	});
 
-	const firstFieldDbResult1 = randomIdentifier();
-	const firstFieldDbResult2 = randomIdentifier();
-	const secondFieldDbResult1 = randomIdentifier();
-	const secondFieldDbResult2 = randomIdentifier();
-	const thirdFieldDbResult1 = randomIdentifier();
-	const thirdFieldDbResult2 = randomIdentifier();
+	// define database response mocks
+	// the first query gets all the IDs of the root collection
+	// here we assume to get two rows back, each containing the fields specified by the user and the primary key field value
 
-	/*
-	 * @TODO mock the database responses.
-	 * One mock for o part query, and multiple mocks for the m part.
-	 */
+	const localDesiredFieldResult1 = 'randomIdentifier()1';
+	const localDesiredFieldResult2 = 'randomIdentifier()2';
+	const localPkFieldValue1 = 'randomIdentifier()3';
+	const localPkFieldValue2 = 'randomIdentifier()4';
+
+	const mockedRootData = [
+		{
+			[localDesiredField]: localDesiredFieldResult1,
+			[localPkField]: localPkFieldValue1,
+		},
+		{
+			[localDesiredField]: localDesiredFieldResult2,
+			[localPkField]: localPkFieldValue2,
+		},
+	];
+
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedRootData));
+
+	// then for each resulting row, the driver queries the nested collection with the IDs of the root collection
+
+	// we assume that the first row has two associated rows in the nested collection
+	// and the second row has one associated row in the nested collection
+
+	const foreignField1Value1 = 'randomIdentifier()9';
+	const foreignField2Value1 = 'randomIdentifier()10';
+	const foreignField1Value2 = 'randomIdentifier()11';
+	const foreignField2Value2 = 'randomIdentifier()12';
+
+	const mockedDataFromNestedCollection1 = [
+		{
+			[foreignField1Id]: foreignField1Value1,
+			[foreignField2Id]: foreignField2Value1,
+		},
+		{
+			[foreignField1Id]: foreignField1Value2,
+			[foreignField2Id]: foreignField2Value2,
+		},
+	];
+
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedDataFromNestedCollection1));
+
+	const foreignField1Value3 = 'randomIdentifier()13';
+	const foreignField2Value3 = 'randomIdentifier()14';
+
+	const mockedDataFromNestedCollection2 = [
+		{
+			[foreignField1Id]: foreignField1Value3,
+			[foreignField2Id]: foreignField2Value3,
+		},
+	];
+
+	// @ts-ignore
+	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedDataFromNestedCollection2));
 
 	const readableStream = await driver.query(query);
-	const actualResult = getActualResult(readableStream);
+
+	// it seems there is no stream coming back from the driver..
+	const actualResult = await getActualResult(readableStream);
+
+	console.log('actualResult', actualResult);
 
 	const expectedResult = [
 		{
-			[firstField]: firstFieldDbResult1,
-			[collectionToJoin]: [
+			[localDesiredField]: localDesiredFieldResult1,
+			[localPkField]: localPkFieldValue1,
+			[foreignTable]: [
 				{
-					[joinField1Alias]: secondFieldDbResult1,
-					[joinField2]: thirdFieldDbResult1,
+					[foreignField1Alias]: foreignField1Value1,
+					[foreignField2]: foreignField2Value1,
 				},
 				{
-					[joinField1Alias]: secondFieldDbResult2,
-					[joinField2]: thirdFieldDbResult2,
+					[foreignField1Alias]: foreignField1Value2,
+					[foreignField2]: foreignField2Value2,
 				},
 			],
 		},
 		{
-			[firstField]: firstFieldDbResult2,
-			[collectionToJoin]: [],
+			[localDesiredField]: localDesiredFieldResult2,
+			[localPkField]: localPkFieldValue2,
+			[foreignTable]: [
+				{
+					[foreignField1Alias]: foreignField1Value3,
+					[foreignField2]: foreignField2Value3,
+				},
+			],
 		},
 	];
 
