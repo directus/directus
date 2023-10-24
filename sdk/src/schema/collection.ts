@@ -28,11 +28,10 @@ export type DirectusCollection<Schema extends object> = {
 			versioning: boolean;
 		}
 	>;
-	schema: {
-		schema: string;
+	schema: ({
 		name: string;
 		comment: string | null;
-	} | null;
+	} & Record<string, unknown>) | null;
 	fields?: NestedPartial<DirectusField<Schema>>[];
 };
 
