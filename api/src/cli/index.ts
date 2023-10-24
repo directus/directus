@@ -2,7 +2,6 @@ import { Command, Option } from 'commander';
 import { isInstalled } from '../database/index.js';
 import emitter from '../emitter.js';
 import { getExtensionManager } from '../extensions/index.js';
-import logger from '../logger.js';
 import { startServer } from '../server.js';
 import * as pkg from '../utils/package.js';
 import bootstrap from './commands/bootstrap/index.js';
@@ -22,13 +21,8 @@ export async function createCli(): Promise<Command> {
 	const program = new Command();
 
 	if ((await isInstalled()) === true) {
-		try {
-			const extensionManager = getExtensionManager();
-			await extensionManager.initialize({ schedule: false, watch: false });
-		} catch (err) {
-			logger.warn(`Couldn't load CLI extensions.`);
-			logger.trace(err);
-		}
+		const extensionManager = getExtensionManager();
+		await extensionManager.initialize({ schedule: false, watch: false });
 	}
 
 	await emitter.emitInit('cli.before', { program });
