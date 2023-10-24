@@ -41,7 +41,6 @@ export async function makeSubQueriesAndMergeWithRoot(
 			}
 
 			reader.read().then(mergeNestedData);
-			controller.close();
 		},
 	});
 }
