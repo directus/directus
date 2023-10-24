@@ -2,5 +2,5 @@
 '@directus/api': patch
 ---
 
-Fixed an issue that could cause the CLI to log traces on caught errors
+Don't load extensions in the CLI if the database hasn't been installed yet or is out of date
 
