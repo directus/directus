@@ -1,6 +1,7 @@
 import { isInstalled, validateMigrations } from '../database/index.js';
 import { getEnv } from '../env.js';
 import { getExtensionManager } from '../extensions/index.js';
+import logger from '../logger.js';
 
 export const loadExtensions = async () => {
 	const env = getEnv();
@@ -14,6 +15,7 @@ export const loadExtensions = async () => {
 	try {
 		await validateMigrations();
 	} catch {
+		logger.info('Database is out of date. Skipping CLI extensions initialization.');
 		return;
 	}
 
