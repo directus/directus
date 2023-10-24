@@ -305,7 +305,7 @@ test('nested m2o field', async () => {
 	expect(actualResult).toEqual(expectedResult);
 });
 
-test.todo('nested o2m field', async () => {
+test('nested o2m field', async () => {
 	const localDesiredField = 'localDesiredField';
 	const localDesiredFieldId = 'localDesiredFieldId';
 
@@ -368,6 +368,7 @@ test.todo('nested o2m field', async () => {
 	};
 
 	// because we need to know the generated aliases we have to mock the convertQuery result
+	// @todo because of this we should make the generation of aliases deterministic
 
 	vi.mocked(convertQuery).mockReturnValueOnce({
 		clauses: {
@@ -437,8 +438,8 @@ test.todo('nested o2m field', async () => {
 					},
 					parameters: identifierValues,
 					aliasMapping: new Map([
-						[foreignField1Id, [foreignTable, foreignField1Alias]],
-						[foreignField2Id, [foreignTable, foreignField2]],
+						[foreignField1Id, [foreignField1Alias]],
+						[foreignField2Id, [foreignField2]],
 					]),
 					nestedManys: [],
 				}),
@@ -508,8 +509,6 @@ test.todo('nested o2m field', async () => {
 		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection2));
 
 	const readableStream = await driver.query(query);
-
-	// it seems there is no stream coming back from the driver..
 	const actualResult = await getActualResult(readableStream);
 	await driver.destroy();
 
@@ -540,5 +539,5 @@ test.todo('nested o2m field', async () => {
 		},
 	];
 
-	expect(actualResult).toEqual(expectedResult);
+	expect(actualResult).toStrictEqual(expectedResult);
 });
