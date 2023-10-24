@@ -10,7 +10,8 @@ readTime: 2 min read
 The Directus App has been developed with customization and extensibility in mind. Colors and styles referenced within
 the codebase are based around theme rules which makes it easy to make comprehensive changes to the App styling.
 
-There are two themes included by default: Light and Dark. Each of the rules of these themes can be overridden through the settings in either Theming or User Settings.
+There are two themes included by default: Light and Dark. Each of the rules of these themes can be overridden through
+the settings in either Theming or User Settings.
 
 ## Branding
 
