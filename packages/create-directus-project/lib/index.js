@@ -1,19 +1,23 @@
 #!/usr/bin/env node
 'use strict';
 
-const commander = require('commander');
-const path = require('path');
-const chalk = require('chalk');
-const fse = require('fs-extra');
-const execa = require('execa');
-const ora = require('ora');
-const logSymbols = require('log-symbols');
+/* eslint-disable no-console */
 
-const pkg = require('../package.json');
-const checkRequirements = require('./check-requirements');
-const checkForUpdate = require('update-check');
+import chalk from 'chalk';
+import { Command } from 'commander';
+import { execa } from 'execa';
+import fse from 'fs-extra';
+import logSymbols from 'log-symbols';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import ora from 'ora';
+import checkForUpdate from 'update-check';
+import checkRequirements from './check-requirements.js';
 
-const program = new commander.Command(pkg.name);
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(await fse.readFile(join(__dirname, '../package.json')));
+
+const program = new Command(pkg.name);
 
 program
 	.version(pkg.version)
@@ -25,7 +29,7 @@ program
 async function create(directory) {
 	checkRequirements();
 
-	const rootPath = path.resolve(directory);
+	const rootPath = resolve(directory);
 
 	if (await fse.pathExists(rootPath)) {
 		const stat = await fse.stat(rootPath);
@@ -45,22 +49,25 @@ async function create(directory) {
 		await fse.mkdir(rootPath);
 	}
 
-	await fse.mkdir(path.join(rootPath, 'uploads'));
-	await fse.mkdir(path.join(rootPath, 'extensions'));
+	await fse.mkdir(join(rootPath, 'uploads'));
+	await fse.mkdir(join(rootPath, 'extensions'));
 
 	const extensionFolders = ['interfaces', 'displays', 'layouts', 'modules'];
 
 	for (const folderName of extensionFolders) {
-		await fse.mkdir(path.join(rootPath, 'extensions', folderName));
+		await fse.mkdir(join(rootPath, 'extensions', folderName));
 	}
 
 	// Let's get into the Directus mood while waiting
 	const bunnyFrames = [];
 	const numOfSpaces = 3;
+
 	for (let i = 0; i < numOfSpaces + 1; i++) {
 		bunnyFrames[i] = ' '.repeat(i) + '🐰' + ' '.repeat(numOfSpaces - i);
 	}
+
 	bunnyFrames.push(...bunnyFrames.slice(1, -1).reverse());
+
 	const spinner = ora({
 		spinner: {
 			interval: 520,
@@ -75,9 +82,11 @@ async function create(directory) {
 			symbol: logSymbols[symbol] + ' '.repeat(numOfSpaces + 1),
 			text: text ? chalk.bold(text) : undefined,
 		});
+
 		if (err) {
 			console.error(err.stderr || err.stdout || 'Unknown error');
 		}
+
 		if (exit) {
 			process.exit(1);
 		}
@@ -93,7 +102,7 @@ async function create(directory) {
 	}
 
 	try {
-		await execa('npm', ['install', 'directus', '--production'], {
+		await execa('npm', ['install', 'directus', '--omit=dev'], {
 			cwd: rootPath,
 			stdin: 'ignore',
 		});
@@ -114,6 +123,7 @@ async function create(directory) {
 
 	try {
 		const update = await checkForUpdate(pkg);
+
 		if (update) {
 			console.log();
 			console.log(chalk.yellow.bold(`A new version of \`${pkg.name}\` is available!`));
