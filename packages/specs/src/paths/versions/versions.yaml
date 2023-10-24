@@ -1,7 +1,7 @@
 get:
   summary: List Content Versions
   description: Get all content versions.
-  operationId: getVersions
+  operationId: getContentVersions
   responses:
     '200':
       description: Successful request
@@ -26,7 +26,7 @@ get:
 post:
   summary: Create a Content Version
   description: Create a new content version.
-  operationId: createVersion
+  operationId: createContentVersion
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
     - $ref: '../../openapi.yaml#/components/parameters/Meta'
@@ -101,7 +101,7 @@ patch:
 delete:
   summary: Delete Multiple Versions
   description: Delete multiple existing versions.
-  operationId: deleteVersions
+  operationId: deleteContentVersions
   responses:
     '200':
       description: Successful request
