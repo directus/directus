@@ -92,22 +92,22 @@ function deleteItem(elem: Record<string, any>) {
 	gap: var(--v-sheet-padding);
 
 	button {
-		color: var(--primary);
+		color: var(--theme--primary);
 		padding: 0 4px;
 
 		&:hover {
-			color: var(--primary-125);
+			color: var(--theme--primary-accent);
 		}
 	}
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 </style>

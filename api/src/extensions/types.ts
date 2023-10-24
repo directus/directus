@@ -6,11 +6,7 @@ export type BundleConfig = {
 	operations: { name: string; config: OperationApiConfig }[];
 };
 
-export type AppExtensions = string | null;
-
-export type ApiExtensions = { path: string }[];
-
-export interface Options {
+export interface ExtensionManagerOptions {
 	schedule: boolean;
 	watch: boolean;
 }

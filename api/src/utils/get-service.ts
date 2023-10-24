@@ -15,6 +15,7 @@ import {
 	SettingsService,
 	SharesService,
 	UsersService,
+	VersionsService,
 	WebhooksService,
 } from '../services/index.js';
 import type { AbstractServiceOptions } from '../types/services.js';
@@ -63,6 +64,8 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new UsersService(opts);
 		case 'directus_webhooks':
 			return new WebhooksService(opts);
+		case 'directus_versions':
+			return new VersionsService(opts);
 		default:
 			return new ItemsService(collection, opts);
 	}

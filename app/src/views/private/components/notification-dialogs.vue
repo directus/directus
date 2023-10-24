@@ -18,7 +18,7 @@ function done(id: string) {
 
 <template>
 	<div class="notification-dialogs">
-		<v-dialog v-for="notification in notifications" :key="notification.id" :model-value="true" persist>
+		<v-dialog v-for="notification in notifications" :key="notification.id" model-value persist>
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
 				<v-card-text v-if="notification.text || notification.error">

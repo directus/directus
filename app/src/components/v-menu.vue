@@ -23,8 +23,6 @@ interface Props {
 	closeOnContentClick?: boolean;
 	/** Attach the menu to an input */
 	attached?: boolean;
-	/** Should the menu have the same width as the input when attached */
-	isSameWidth?: boolean;
 	/** Show an arrow pointer */
 	showArrow?: boolean;
 	/** Menu does not appear */
@@ -48,16 +46,10 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	closeOnClick: true,
 	closeOnContentClick: true,
-	attached: false,
-	isSameWidth: true,
-	showArrow: false,
-	disabled: false,
 	trigger: null,
 	delay: 0,
 	offsetY: 8,
 	offsetX: 0,
-	fullHeight: false,
-	seamless: false,
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -88,12 +80,11 @@ const {
 	arrowStyles,
 	placement: popperPlacement,
 } = usePopper(
-	reference as any, // Fix as TS thinks Ref<HTMLElement | null> !== Ref<HTMLElement | null> 🙃
-	popper as any,
+	reference,
+	popper,
 	computed(() => ({
 		placement: props.placement,
 		attached: props.attached,
-		isSameWidth: props.isSameWidth,
 		arrow: props.showArrow,
 		offsetY: props.offsetY,
 		offsetX: props.offsetX,
@@ -227,7 +218,6 @@ function usePopper(
 			Readonly<{
 				placement: Placement;
 				attached: boolean;
-				isSameWidth: boolean;
 				arrow: boolean;
 				offsetY: number;
 				offsetX: number;
@@ -306,6 +296,34 @@ function usePopper(
 			flip,
 			eventListeners,
 			{
+				...arrow,
+				enabled: options.value.arrow === true,
+				options: {
+					padding: 6,
+				},
+			},
+			{
+				name: 'minWidth',
+				enabled: options.value.attached === true,
+				fn: ({ state }) => {
+					if (state.styles.popper) state.styles.popper.minWidth = `${state.rects.reference.width}px`;
+				},
+				phase: 'beforeWrite',
+				requires: ['computeStyles'],
+			},
+			{
+				name: 'applyStyles',
+				enabled: true,
+				phase: 'write',
+				fn({ state }) {
+					if (state.styles.popper) styles.value = state.styles.popper;
+
+					if (state.styles.arrow) arrowStyles.value = state.styles.arrow;
+
+					callback();
+				},
+			},
+			{
 				name: 'placementUpdater',
 				enabled: true,
 				phase: 'afterWrite',
@@ -313,46 +331,7 @@ function usePopper(
 					placement.value = state.placement;
 				},
 			},
-			{
-				name: 'applyStyles',
-				enabled: true,
-				phase: 'write',
-				fn({ state }) {
-					styles.value = state.styles.popper;
-					arrowStyles.value = state.styles.arrow;
-					callback();
-				},
-			},
-			{
-				name: 'minWidth',
-				enabled: true,
-				phase: 'beforeWrite',
-				fn({ state }) {
-					state.styles.popper.minWidth = `${state.rects.reference.width}px`;
-				},
-			},
 		];
-
-		if (options.value.arrow === true) {
-			modifiers.push({
-				...arrow,
-				options: {
-					padding: 6,
-				},
-			});
-		}
-
-		if (options.value.attached === true) {
-			modifiers.push({
-				name: 'sameWidth',
-				enabled: options.value.isSameWidth,
-				fn: ({ state }) => {
-					state.styles.popper.width = `${state.rects.reference.width}px`;
-				},
-				phase: 'beforeWrite',
-				requires: ['computeStyles'],
-			});
-		}
 
 		return modifiers;
 	}

@@ -4,14 +4,21 @@ import type {
 	BundleExtension,
 	EndpointConfig,
 	Extension,
-	ExtensionType,
+	ExtensionSettings,
 	HookConfig,
 	HybridExtension,
 	OperationApiConfig,
 } from '@directus/extensions';
 import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
 import { ensureExtensionDirs, generateExtensionsEntrypoint } from '@directus/extensions/node';
-import type { ActionHandler, EmbedHandler, FilterHandler, InitHandler, ScheduleHandler } from '@directus/types';
+import type {
+	ActionHandler,
+	EmbedHandler,
+	FilterHandler,
+	InitHandler,
+	PromiseCallback,
+	ScheduleHandler,
+} from '@directus/types';
 import { isIn, isTypeIn, pluralize } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
@@ -19,9 +26,9 @@ import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
+import ivm from 'isolated-vm';
 import { clone } from 'lodash-es';
-import { readdir } from 'node:fs/promises';
-import { createRequire } from 'node:module';
+import { readFile, readdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -32,65 +39,114 @@ import env from '../env.js';
 import { getFlowManager } from '../flows.js';
 import logger from '../logger.js';
 import * as services from '../services/index.js';
-import type { EventHandler } from '../types/index.js';
+import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
 import { getSchema } from '../utils/get-schema.js';
+import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { getExtensions } from './get-extensions.js';
-import { getSharedDepsMapping } from './get-shared-deps-mapping.js';
-import { normalizeExtensionInfo } from './normalize-extension-info.js';
-import type { ApiExtensions, AppExtensions, BundleConfig, Options } from './types.js';
-import { wrapEmbeds } from './wrap-embeds.js';
+import { getExtensionsSettings } from './lib/get-extensions-settings.js';
+import { getExtensions } from './lib/get-extensions.js';
+import { getSharedDepsMapping } from './lib/get-shared-deps-mapping.js';
+import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
+import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
+import { wrapEmbeds } from './lib/wrap-embeds.js';
+import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
 const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
 
-const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const defaultOptions: Options = {
-	schedule: true,
-	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
-};
-
 export class ExtensionManager {
-	private isLoaded = false;
-	private options: Options;
+	private options: ExtensionManagerOptions = {
+		schedule: true,
+		watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
+	};
 
+	/**
+	 * Whether or not the extensions have been read from disk and registered into the system
+	 */
+	private isLoaded = false;
+
+	/**
+	 * All extensions that are loaded within the current process
+	 */
 	private extensions: Extension[] = [];
 
-	private appExtensions: AppExtensions = null;
-	private appExtensionChunks: Map<string, string>;
-	private apiExtensions: ApiExtensions = [];
+	/**
+	 * Settings for the extensions that are loaded within the current process
+	 */
+	private extensionsSettings: ExtensionSettings[] = [];
 
-	private apiEmitter: Emitter;
-	private hookEvents: EventHandler[] = [];
-	private endpointRouter: Router;
+	/**
+	 * App extensions rolled up into a single bundle. Any chunks from the bundle will be available
+	 * under appExtensionChunks
+	 */
+	private appExtensionsBundle: string | null = null;
+
+	/**
+	 * Individual filename chunks from the rollup bundle. Used to improve the performance by allowing
+	 * extensions to split up their bundle into multiple smaller chunks
+	 */
+	private appExtensionChunks: Map<string, string> = new Map();
+
+	/**
+	 * Callbacks to be able to unregister extensions
+	 */
+	private unregisterFunctionMap: Map<string, PromiseCallback> = new Map();
+
+	/**
+	 * A local-to-extensions scoped emitter that can be used to fire and listen to custom events
+	 * between extensions. These events are completely isolated from the core events that trigger
+	 * hooks etc
+	 */
+	private localEmitter: Emitter = new Emitter();
+
+	/**
+	 * Locally scoped express router used for custom endpoints. Allows extensions to dynamically
+	 * register and de-register endpoints without affecting the regular global router
+	 */
+	private endpointRouter: Router = Router();
+
+	/**
+	 * Custom HTML to be injected at the end of the `<head>` tag of the app's index.html
+	 */
 	private hookEmbedsHead: string[] = [];
+
+	/**
+	 * Custom HTML to be injected at the end of the `<body>` tag of the app's index.html
+	 */
 	private hookEmbedsBody: string[] = [];
 
-	private reloadQueue: JobQueue;
+	/**
+	 * Used to prevent race conditions when reloading extensions. Forces each reload to happen in
+	 * sequence.
+	 */
+	private reloadQueue: JobQueue = new JobQueue();
+
+	/**
+	 * Optional file system watcher to auto-reload extensions when the local file system changes
+	 */
 	private watcher: FSWatcher | null = null;
 
-	constructor() {
-		this.options = defaultOptions;
+	/**
+	 * Load and register all extensions
+	 *
+	 * @param {ExtensionManagerOptions} options - Extension manager configuration options
+	 * @param {boolean} options.schedule - Whether or not to allow for scheduled (CRON) hook extensions
+	 * @param {boolean} options.watch - Whether or not to watch the local extensions folder for changes
+	 */
+	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
+		if (options.schedule !== undefined) {
+			this.options.schedule = options.schedule;
+		}
 
-		this.apiEmitter = new Emitter();
-		this.endpointRouter = Router();
-
-		this.reloadQueue = new JobQueue();
-
-		this.appExtensionChunks = new Map();
-	}
-
-	public async initialize(options: Partial<Options> = {}): Promise<void> {
-		this.options = {
-			...defaultOptions,
-			...options,
-		};
+		if (options.watch !== undefined) {
+			this.options.watch = options.watch;
+		}
 
 		const wasWatcherInitialized = this.watcher !== null;
 
@@ -103,10 +159,8 @@ export class ExtensionManager {
 		if (!this.isLoaded) {
 			await this.load();
 
-			const loadedExtensions = this.getExtensionsList();
-
-			if (loadedExtensions.length > 0) {
-				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
+			if (this.extensions.length > 0) {
+				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
 			}
 		}
 
@@ -115,6 +169,48 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Load all extensions from disk and register them in their respective places
+	 */
+	private async load(): Promise<void> {
+		try {
+			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
+
+			this.extensions = await getExtensions();
+			this.extensionsSettings = await getExtensionsSettings(this.extensions);
+		} catch (err: any) {
+			logger.warn(`Couldn't load extensions`);
+			logger.warn(err);
+		}
+
+		await this.registerHooks();
+		await this.registerEndpoints();
+		await this.registerOperations();
+		await this.registerBundles();
+
+		if (env['SERVE_APP']) {
+			this.appExtensionsBundle = await this.generateExtensionBundle();
+		}
+
+		this.isLoaded = true;
+	}
+
+	/**
+	 * Unregister all extensions from the current process
+	 */
+	private async unload(): Promise<void> {
+		await this.unregisterApiExtensions();
+
+		this.localEmitter.offAll();
+
+		this.appExtensionsBundle = null;
+
+		this.isLoaded = false;
+	}
+
+	/**
+	 * Reload all the extensions. Will unload if extensions have already been loaded
+	 */
 	public reload(): void {
 		this.reloadQueue.enqueue(async () => {
 			if (this.isLoaded) {
@@ -151,32 +247,30 @@ export class ExtensionManager {
 		});
 	}
 
-	public getExtensionsList(type?: ExtensionType) {
-		const extensionInfo = this.extensions.map(normalizeExtensionInfo);
-
-		if (type) {
-			return extensionInfo.filter((extension) => extension.type === type);
-		}
-
-		return extensionInfo;
+	/**
+	 * Return the previously generated app extensions bundle
+	 */
+	public getAppExtensionsBundle(): string | null {
+		return this.appExtensionsBundle;
 	}
 
-	public getExtension(name: string): Extension | undefined {
-		return this.extensions.find((extension) => extension.name === name);
-	}
-
-	public getAppExtensions(): string | null {
-		return this.appExtensions;
-	}
-
+	/**
+	 * Return the previously generated app extension bundle chunk by name
+	 */
 	public getAppExtensionChunk(name: string): string | null {
 		return this.appExtensionChunks.get(name) ?? null;
 	}
 
+	/**
+	 * Return the scoped router for custom endpoints
+	 */
 	public getEndpointRouter(): Router {
 		return this.endpointRouter;
 	}
 
+	/**
+	 * Return the custom HTML head and body embeds wrapped in a marker comment
+	 */
 	public getEmbeds() {
 		return {
 			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
@@ -184,40 +278,16 @@ export class ExtensionManager {
 		};
 	}
 
-	private async load(): Promise<void> {
-		try {
-			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
-
-			this.extensions = await getExtensions();
-		} catch (err: any) {
-			logger.warn(`Couldn't load extensions`);
-			logger.warn(err);
-		}
-
-		await this.registerHooks();
-		await this.registerEndpoints();
-		await this.registerOperations();
-		await this.registerBundles();
-
-		if (env['SERVE_APP']) {
-			this.appExtensions = await this.generateExtensionBundle();
-		}
-
-		this.isLoaded = true;
+	/**
+	 * Allow reading the installed extensions
+	 */
+	public getExtensions() {
+		return this.extensions;
 	}
 
-	private async unload(): Promise<void> {
-		await this.unregisterApiExtensions();
-
-		this.apiEmitter.offAll();
-
-		if (env['SERVE_APP']) {
-			this.appExtensions = null;
-		}
-
-		this.isLoaded = false;
-	}
-
+	/**
+	 * Start the chokidar watcher for extensions on the local filesystem
+	 */
 	private initializeWatcher(): void {
 		logger.info('Watching extensions for changes...');
 
@@ -249,6 +319,9 @@ export class ExtensionManager {
 			.on('unlink', () => this.reload());
 	}
 
+	/**
+	 * Close and destroy the local filesystem watcher if enabled
+	 */
 	private async closeWatcher(): Promise<void> {
 		if (this.watcher) {
 			await this.watcher.close();
@@ -257,6 +330,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Update the chokidar watcher configuration when new extensions are added or existing ones
+	 * removed
+	 */
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
 		if (this.watcher) {
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
@@ -279,6 +356,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Uses rollup to bundle the app extensions together into a single file the app can download and
+	 * run.
+	 */
 	private async generateExtensionBundle(): Promise<string | null> {
 		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 
@@ -316,22 +397,95 @@ export class ExtensionManager {
 		return null;
 	}
 
+	private async registerSandboxedApiExtension(extension: ApiExtension | HybridExtension) {
+		const sandboxMemory = Number(env['EXTENSIONS_SANDBOX_MEMORY']);
+		const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
+
+		const entrypointPath = path.resolve(
+			extension.path,
+			isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.api : extension.entrypoint
+		);
+
+		const extensionCode = await readFile(entrypointPath, 'utf-8');
+
+		const isolate = new ivm.Isolate({
+			memoryLimit: sandboxMemory,
+			onCatastrophicError: (e) => {
+				logger.error(`Error in API extension sandbox of ${extension.type} "${extension.name}"`);
+				logger.error(e);
+
+				process.abort();
+			},
+		});
+
+		const context = await isolate.createContext();
+
+		const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
+
+		const sdkModule = await instantiateSandboxSdk(isolate, extension.sandbox?.requestedScopes ?? {});
+
+		await module.instantiate(context, (specifier) => {
+			if (specifier !== 'directus:api') {
+				throw new Error('Imports other than "directus:api" are prohibited in API extension sandboxes');
+			}
+
+			return sdkModule;
+		});
+
+		await module.evaluate({ timeout: sandboxTimeout });
+
+		const cb = await module.namespace.get('default', { reference: true });
+
+		const { code, hostFunctions, unregisterFunction } = generateApiExtensionsSandboxEntrypoint(
+			extension.type,
+			extension.name,
+			this.endpointRouter
+		);
+
+		await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
+			timeout: sandboxTimeout,
+			filename: '<extensions-sandbox>',
+		});
+
+		this.unregisterFunctionMap.set(extension.name, async () => {
+			await unregisterFunction();
+
+			isolate.dispose();
+		});
+	}
+
+	/**
+	 * Import the hook module code for all hook extensions, and register them individually through
+	 * registerHook
+	 */
 	private async registerHooks(): Promise<void> {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
 
 		for (const hook of hooks) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === hook.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
-				const hookPath = path.resolve(hook.path, hook.entrypoint);
+				if (hook.sandbox?.enabled) {
+					await this.registerSandboxedApiExtension(hook);
+				} else {
+					const hookPath = path.resolve(hook.path, hook.entrypoint);
 
-				const hookInstance: HookConfig | { default: HookConfig } = await import(
-					`./${pathToRelativeUrl(hookPath, __dirname)}?t=${Date.now()}`
-				);
+					const hookInstance: HookConfig | { default: HookConfig } = await importFileUrl(hookPath, import.meta.url, {
+						fresh: true,
+					});
 
-				const config = getModuleDefault(hookInstance);
+					const config = getModuleDefault(hookInstance);
 
-				this.registerHook(config, hook.name);
+					const unregisterFunctions = this.registerHook(config, hook.name);
 
-				this.apiExtensions.push({ path: hookPath });
+					this.unregisterFunctionMap.set(hook.name, async () => {
+						await Promise.all(unregisterFunctions.map((fn) => fn()));
+
+						deleteFromRequireCache(hookPath);
+					});
+				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
 				logger.warn(error);
@@ -339,22 +493,42 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Import the endpoint module code for all endpoint extensions, and register them individually through
+	 * registerEndpoint
+	 */
 	private async registerEndpoints(): Promise<void> {
 		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
 
 		for (const endpoint of endpoints) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === endpoint.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
-				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				if (endpoint.sandbox?.enabled) {
+					await this.registerSandboxedApiExtension(endpoint);
+				} else {
+					const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
-					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
-				);
+					const endpointInstance: EndpointConfig | { default: EndpointConfig } = await importFileUrl(
+						endpointPath,
+						import.meta.url,
+						{
+							fresh: true,
+						}
+					);
 
-				const config = getModuleDefault(endpointInstance);
+					const config = getModuleDefault(endpointInstance);
 
-				this.registerEndpoint(config, endpoint.name);
+					const unregister = this.registerEndpoint(config, endpoint.name);
 
-				this.apiExtensions.push({ path: endpointPath });
+					this.unregisterFunctionMap.set(endpoint.name, async () => {
+						await unregister();
+
+						deleteFromRequireCache(endpointPath);
+					});
+				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 				logger.warn(error);
@@ -362,6 +536,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Import the operation module code for all operation extensions, and register them individually through
+	 * registerOperation
+	 */
 	private async registerOperations(): Promise<void> {
 		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
 
@@ -380,18 +558,34 @@ export class ExtensionManager {
 		);
 
 		for (const operation of operations) {
+			const { enabled } = this.extensionsSettings.find(({ name }) => name === operation.name) ?? { enabled: false };
+
+			if (!enabled) continue;
+
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				if (operation.sandbox?.enabled) {
+					await this.registerSandboxedApiExtension(operation);
+				} else {
+					const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
-				);
+					const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await importFileUrl(
+						operationPath,
+						import.meta.url,
+						{
+							fresh: true,
+						}
+					);
 
-				const config = getModuleDefault(operationInstance);
+					const config = getModuleDefault(operationInstance);
 
-				this.registerOperation(config);
+					const unregister = this.registerOperation(config);
 
-				this.apiExtensions.push({ path: operationPath });
+					this.unregisterFunctionMap.set(operation.name, async () => {
+						await unregister();
+
+						deleteFromRequireCache(operationPath);
+					});
+				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register operation "${operation.name}"`);
 				logger.warn(error);
@@ -399,6 +593,10 @@ export class ExtensionManager {
 		}
 	}
 
+	/**
+	 * Import the module code for all hook, endpoint, and operation extensions registered within a
+	 * bundle, and register them with their respective registration function
+	 */
 	private async registerBundles(): Promise<void> {
 		const bundles = this.extensions.filter((extension): extension is BundleExtension => extension.type === 'bundle');
 
@@ -406,25 +604,41 @@ export class ExtensionManager {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
-					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await importFileUrl(
+					bundlePath,
+					import.meta.url,
+					{
+						fresh: true,
+					}
 				);
 
 				const configs = getModuleDefault(bundleInstances);
 
+				const unregisterFunctions: PromiseCallback[] = [];
+
 				for (const { config, name } of configs.hooks) {
-					this.registerHook(config, name);
+					const unregisters = this.registerHook(config, name);
+
+					unregisterFunctions.push(...unregisters);
 				}
 
 				for (const { config, name } of configs.endpoints) {
-					this.registerEndpoint(config, name);
+					const unregister = this.registerEndpoint(config, name);
+
+					unregisterFunctions.push(unregister);
 				}
 
 				for (const { config } of configs.operations) {
-					this.registerOperation(config);
+					const unregister = this.registerOperation(config);
+
+					unregisterFunctions.push(unregister);
 				}
 
-				this.apiExtensions.push({ path: bundlePath });
+				this.unregisterFunctionMap.set(bundle.name, async () => {
+					await Promise.all(unregisterFunctions.map((fn) => fn()));
+
+					deleteFromRequireCache(bundlePath);
+				});
 			} catch (error: any) {
 				logger.warn(`Couldn't register bundle "${bundle.name}"`);
 				logger.warn(error);
@@ -432,35 +646,34 @@ export class ExtensionManager {
 		}
 	}
 
-	private registerHook(register: HookConfig, name: string): void {
+	/**
+	 * Register a single hook
+	 */
+	private registerHook(hookRegistrationCallback: HookConfig, name: string): PromiseCallback[] {
 		let scheduleIndex = 0;
 
-		const registerFunctions = {
+		const unregisterFunctions: PromiseCallback[] = [];
+
+		const hookRegistrationContext = {
 			filter: (event: string, handler: FilterHandler) => {
 				emitter.onFilter(event, handler);
 
-				this.hookEvents.push({
-					type: 'filter',
-					name: event,
-					handler,
+				unregisterFunctions.push(() => {
+					emitter.offFilter(event, handler);
 				});
 			},
 			action: (event: string, handler: ActionHandler) => {
 				emitter.onAction(event, handler);
 
-				this.hookEvents.push({
-					type: 'action',
-					name: event,
-					handler,
+				unregisterFunctions.push(() => {
+					emitter.offAction(event, handler);
 				});
 			},
 			init: (event: string, handler: InitHandler) => {
 				emitter.onInit(event, handler);
 
-				this.hookEvents.push({
-					type: 'init',
-					name: event,
-					handler,
+				unregisterFunctions.push(() => {
+					emitter.offInit(name, handler);
 				});
 			},
 			schedule: (cron: string, handler: ScheduleHandler) => {
@@ -477,9 +690,8 @@ export class ExtensionManager {
 
 					scheduleIndex++;
 
-					this.hookEvents.push({
-						type: 'schedule',
-						job,
+					unregisterFunctions.push(async () => {
+						await job.stop();
 					});
 				} else {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
@@ -488,84 +700,90 @@ export class ExtensionManager {
 			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
 				const content = typeof code === 'function' ? code() : code;
 
-				if (content.trim().length === 0) {
+				if (content.trim().length !== 0) {
+					if (position === 'head') {
+						const index = this.hookEmbedsHead.length;
+
+						this.hookEmbedsHead.push(content);
+
+						unregisterFunctions.push(() => {
+							this.hookEmbedsHead.splice(index, 1);
+						});
+					} else {
+						const index = this.hookEmbedsBody.length;
+
+						this.hookEmbedsBody.push(content);
+
+						unregisterFunctions.push(() => {
+							this.hookEmbedsBody.splice(index, 1);
+						});
+					}
+				} else {
 					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
-					return;
-				}
-
-				if (position === 'head') {
-					this.hookEmbedsHead.push(content);
-				}
-
-				if (position === 'body') {
-					this.hookEmbedsBody.push(content);
 				}
 			},
 		};
 
-		register(registerFunctions, {
+		hookRegistrationCallback(hookRegistrationContext, {
 			services,
 			env,
 			database: getDatabase(),
-			emitter: this.apiEmitter,
+			emitter: this.localEmitter,
 			logger,
 			getSchema,
 		});
+
+		return unregisterFunctions;
 	}
 
-	private registerEndpoint(config: EndpointConfig, name: string): void {
-		const register = typeof config === 'function' ? config : config.handler;
+	/**
+	 * Register an individual endpoint
+	 */
+	private registerEndpoint(config: EndpointConfig, name: string): PromiseCallback {
+		const endpointRegistrationCallback = typeof config === 'function' ? config : config.handler;
 		const routeName = typeof config === 'function' ? name : config.id;
 
 		const scopedRouter = express.Router();
+
 		this.endpointRouter.use(`/${routeName}`, scopedRouter);
 
-		register(scopedRouter, {
+		endpointRegistrationCallback(scopedRouter, {
 			services,
 			env,
 			database: getDatabase(),
-			emitter: this.apiEmitter,
+			emitter: this.localEmitter,
 			logger,
 			getSchema,
 		});
+
+		const unregisterFunction = () => {
+			this.endpointRouter.stack = this.endpointRouter.stack.filter((layer) => scopedRouter !== layer.handle);
+		};
+
+		return unregisterFunction;
 	}
 
-	private registerOperation(config: OperationApiConfig): void {
+	/**
+	 * Register an individual operation
+	 */
+	private registerOperation(config: OperationApiConfig): PromiseCallback {
 		const flowManager = getFlowManager();
 
 		flowManager.addOperation(config.id, config.handler);
+
+		const unregisterFunction = () => {
+			flowManager.removeOperation(config.id);
+		};
+
+		return unregisterFunction;
 	}
 
+	/**
+	 * Remove the registration for all API extensions
+	 */
 	private async unregisterApiExtensions(): Promise<void> {
-		for (const event of this.hookEvents) {
-			switch (event.type) {
-				case 'filter':
-					emitter.offFilter(event.name, event.handler);
-					break;
-				case 'action':
-					emitter.offAction(event.name, event.handler);
-					break;
-				case 'init':
-					emitter.offInit(event.name, event.handler);
-					break;
-				case 'schedule':
-					await event.job.stop();
-					break;
-			}
-		}
+		const unregisterFunctions = Array.from(this.unregisterFunctionMap.values());
 
-		this.hookEvents = [];
-
-		this.endpointRouter.stack = [];
-
-		const flowManager = getFlowManager();
-
-		flowManager.clearOperations();
-
-		for (const apiExtension of this.apiExtensions) {
-			delete require.cache[require.resolve(apiExtension.path)];
-		}
-
-		this.apiExtensions = [];
+		await Promise.all(unregisterFunctions.map((fn) => fn()));
 	}
 }

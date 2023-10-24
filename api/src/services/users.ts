@@ -7,8 +7,8 @@ import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { ForbiddenError } from '../errors/forbidden.js';
-import { InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '../errors/index.js';
+import { ForbiddenError } from '@directus/errors';
+import { InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -330,7 +330,9 @@ export class UsersService extends ItemsService {
 			(opts || (opts = {})).preMutationError = err;
 		}
 
+		// Manual constraint, see https://github.com/directus/directus/pull/19912
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
 		await super.deleteMany(keys, opts);
 		return keys;

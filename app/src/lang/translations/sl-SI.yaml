@@ -52,6 +52,11 @@ or: ali
 init: Inicializiraj
 dataset_too_large_currently_showing_n_items: Zbirka je prevelika. Trenutno prikazujem prvih {n} predmetov.
 modifier: Modifikator
+extension_interface: Vmesnik
+extension_display: Prikaz
+extension_layout: Postavitev
+extension_hook: Hook
+extension_modules: Moduli
 custom: Po meri
 hook: Hook
 fill_width: Zapolni širino
@@ -341,7 +346,6 @@ dimensions: Mere
 size: Velikost
 created: Ustvarjeno
 modified: Spremenjeno
-checksum: Kontrolna vsota
 owner: Lastnik
 edited_by: Uredil/a
 folder: Mapa
@@ -466,7 +470,6 @@ errors:
   RECORD_NOT_UNIQUE: Vrednost ni edinstvena (že obstaja)
   USER_SUSPENDED: Uporabnik suspendiran
   CONTAINS_NULL_VALUES: Polje vsebuje nične vrednosti
-  UNPROCESSABLE_ENTITY: Obdelava nemogoča
   INTERNAL_SERVER_ERROR: Nepričakovana napaka
   NOT_NULL_VIOLATION: Vrednost ne sme biti nična
   UNKNOWN: Nepričakovana napaka
@@ -692,10 +695,10 @@ editing_unit: 'Urejanje {unit}'
 editing_in_batch: 'Masovno urejanje {count} zapisov'
 no_options_available: Ni opcij
 settings_data_model: Podatkovni model
-settings_permissions: Vloge in dovoljenja
-settings_project: Nastavitve projekta
+settings_project: Nastavitve
 settings_webhooks: Prožilci
-settings_presets: Prednastavitve in zaznamki
+settings_presets: Zaznamki
+settings_translations: Prevodi
 one_or_more_options_are_missing: Manjka ena ali več opcij
 scope: Obseg
 actions: Dejanja
@@ -725,7 +728,6 @@ page_help_files_collection: >-
   **Knjižnjica datotek**  - Prikaz vseh naloženih datotek . Uredite postavitev, filtre in razvrščanje za prilagojen pogled in shranite kot zaznamek za hiter dostop.
 page_help_files_item: >-
   **Podrobnosti datoteke** - Obrazec za urejanje datoteke in njenih meta podatkov ter dostopa.
-page_help_settings_project: "**Nastavitve projekta** - Globalne nastavitve projekta."
 page_help_settings_datamodel_collections: >-
   **Podatkovni model: zbirke** - Spisek vse zbitk. Vključuje vidne, skrite in sistemske zbirke kot tudi neurejene tabele iz baze.
 page_help_settings_datamodel_fields: >-
@@ -817,10 +819,6 @@ fields:
     tags: Značke
     user_preferences: Uporabniške nastavitve
     language: Jezik
-    theme: Tema
-    theme_auto: Avtomatsko (sistemsko)
-    theme_light: Svetla tema
-    theme_dark: Temna tema
     tfa_secret: Dvojno preverjanja pristnosti
     admin_options: Administracijske opcije
     status: Stanje
@@ -1205,7 +1203,6 @@ interfaces:
     description: Izberite več povezanih zapisov
     no_collection: Zbirke ni mogoče najti
   system-folder:
-    folder: Mapa
     description: Izberi mapo
     root_name: Korenska mapa knjižnjice
     system_default: Sistemske privzete vrednosti
@@ -1463,3 +1460,11 @@ operations:
     data: Podatki
   trigger:
     data: Podatki
+standard: Običajno
+compact: Zgoščeno
+style: Slog
+fonts:
+  normal: Običajno
+  bold: Krepko
+  italic: Ležeče
+  auto: Samodejno

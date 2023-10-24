@@ -28,6 +28,8 @@ const headerMessage = computed(() => {
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
+		case 'version_save':
+			return t('revision_delta_version_saved', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -88,20 +90,24 @@ const user = computed(() => {
 			z-index: 2;
 			width: 12px;
 			height: 12px;
-			background-color: var(--warning);
+			background-color: var(--theme--warning);
 			border: 2px solid var(--background-normal);
 			border-radius: 8px;
 
 			&.create {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 			}
 
 			&.update {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
+			}
+
+			&.version_save {
+				background-color: var(--theme--primary);
 			}
 
 			&.delete {
-				background-color: var(--danger);
+				background-color: var(--theme--danger);
 			}
 		}
 	}
@@ -154,7 +160,7 @@ const user = computed(() => {
 .content {
 	position: relative;
 	z-index: 2;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 16px;
 
 	.time {
@@ -169,7 +175,7 @@ const user = computed(() => {
 		}
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }

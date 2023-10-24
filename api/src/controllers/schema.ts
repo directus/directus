@@ -3,7 +3,7 @@ import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { load as loadYaml } from 'js-yaml';
-import { InvalidPayloadError, UnsupportedMediaTypeError } from '../errors/index.js';
+import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';

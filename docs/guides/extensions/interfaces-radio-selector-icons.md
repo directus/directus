@@ -359,11 +359,11 @@ under the closing `script` tag:
 	border-radius: 0;
 	appearance: none;
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 		svg {
 			width: 100%;
 			height: 100%;
-			fill: var(--foreground-subdued);
+			fill: var(--theme--foreground-subdued);
 		}
 	}
     & > .v-icon {
@@ -395,10 +395,10 @@ under the closing `script` tag:
 	&:disabled {
 		cursor: not-allowed;
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&.block {
@@ -427,23 +427,23 @@ under the closing `script` tag:
 	}
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 			svg {
-				fill: var(--primary);
+				fill: var(--theme--primary);
 			}
 		}
 		&.block {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 			.label {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 			&::before {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 				opacity: 0.1;
 			}
 		}
@@ -686,11 +686,11 @@ export default {
 	border-radius: 0;
 	appearance: none;
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 		svg {
 			width: 100%;
 			height: 100%;
-			fill: var(--foreground-subdued);
+			fill: var(--theme--foreground-subdued);
 		}
 	}
     & > .v-icon {
@@ -722,10 +722,10 @@ export default {
 	&:disabled {
 		cursor: not-allowed;
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&.block {
@@ -754,23 +754,23 @@ export default {
 	}
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 			svg {
-				fill: var(--primary);
+				fill: var(--theme--primary);
 			}
 		}
 		&.block {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 			.label {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 			&::before {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 				opacity: 0.1;
 			}
 		}

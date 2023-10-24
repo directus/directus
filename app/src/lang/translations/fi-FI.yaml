@@ -51,6 +51,13 @@ and: Ja
 or: Tai
 init: Alusta
 dataset_too_large_currently_showing_n_items: Dataset on liian suuri, näytetään ensimmäiset {n} kohdetta.
+extension_interface: Käyttöliittymä
+extension_display: Näyttö
+extension_layout: Asettelu
+extension_panel: Paneeli
+extension_hook: Koukku
+extension_modules: Moduulit
+enable: Ota käyttöön
 custom: Mukautettu
 hook: Koukku
 fill_width: Täysleveä
@@ -94,6 +101,7 @@ rename_folder: Nimeä kansio uudelleen
 delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
+promote_version_preview: Esikatselu
 reset_bookmark: Nollaa kirjanmerkki
 update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
@@ -422,7 +430,6 @@ dimensions: Mitat
 size: Koko
 created: Luotu
 modified: Muokattu
-checksum: Tarkistussumma
 owner: Omistaja
 edited_by: Muokannut
 folder: Kansio
@@ -578,7 +585,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   USER_SUSPENDED: Käyttäjä jäädytetty
   CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
-  UNPROCESSABLE_ENTITY: Käsittelemätön entiteetti
   INTERNAL_SERVER_ERROR: Odottamaton virhe
   NOT_NULL_VIOLATION: Arvo ei voi olla null
   ILLEGAL_ASSET_TRANSFORMATION: Kuvan lähde on liian suuri esikatseltavaksi
@@ -900,11 +906,11 @@ editing_unit: 'Muokataan {unit}'
 editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
-settings_permissions: Roolit ja oikeudet
-settings_project: Projektin asetukset
+settings_project: Asetukset
 settings_webhooks: Webhookit
 settings_flows: Toiminnot
-settings_presets: Esiasetukset ja kirjanmerkit
+settings_presets: Kirjainmerkit
+settings_translations: Käännökset
 one_or_more_options_are_missing: Yksi tai useampi vaihtoehto puuttuu
 scope: Laajuus
 actions: Toiminnot
@@ -939,7 +945,6 @@ page_help_files_collection: >-
   **Tiedostokirjasto** — Listaa kaikki tiedostoassetit, jotka on ladattu tähän projektiin. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 page_help_files_item: >-
   **Tiedoston yksityiskohdat** — Lomake tiedostojen metatietojen hallintaan, alkuperäisen assettin muokkaamiseen ja käyttöoikeuksien päivittämiseen.
-page_help_settings_project: "**Projektin asetukset** — Projektisi yleiset konfiguraatioasetukset."
 page_help_settings_datamodel_collections: >-
   **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
 page_help_settings_datamodel_fields: >-
@@ -1049,10 +1054,6 @@ fields:
     tags: Tunnisteet
     user_preferences: Käyttäjän asetukset
     language: Kieli
-    theme: Teema
-    theme_auto: Automaattinen (perustuen järjestelmään)
-    theme_light: Vaalea teema
-    theme_dark: Tumma teema
     tfa_secret: Kaksivaiheinen todennus
     admin_options: Ylläpitäjän asetukset
     status: Tila
@@ -1083,7 +1084,6 @@ fields:
     project_color: Projektin väri
     project_logo: Projektin logo
     default_language: Oletuskieli
-    branding: Brändäys & tyyli
     public_foreground: Julkinen etuala
     public_background: Julkinen tausta
     public_note: Julkinen muistiinpano
@@ -1134,7 +1134,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Oma projekti...
     project_color_note: Kirjautumisen ja logon taustakuva
-    project_logo_note: Valkoinen- 40x40 SVG/PNG
     public_note_placeholder: Lyhyt, julkinen viesti, joka tukee markdown-muotoilua...
     security_divider_title: Turvallisuus
     auth_password_policy:
@@ -1477,7 +1476,6 @@ interfaces:
     description: Valitse useita liittyviä kohteita
     no_collection: Kokoelmaa ei löytynyt
   system-folder:
-    folder: Kansio
     description: Valitse kansio
     root_name: Tiedostokirjaston juuri
     system_default: Järjestelmän oletukset
@@ -1776,3 +1774,11 @@ operations:
     flows: Toiminnot
     flow: Vuo
     data: Tiedot
+standard: Vakio
+compact: Kompakti
+style: Tyyli
+fonts:
+  normal: Normaali
+  bold: Lihavoitu
+  italic: Kursiivi
+  auto: Automaattinen

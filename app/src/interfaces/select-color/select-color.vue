@@ -80,7 +80,7 @@ const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutV
 const lowContrast = computed(() => {
 	if (color.value === null) return true;
 
-	const pageColorString = cssVar('--background-page');
+	const pageColorString = cssVar('--theme--background');
 	const pageColor = Color(pageColorString);
 
 	return color.value.contrast(pageColor) < 1.1;
@@ -243,7 +243,7 @@ function useColor() {
 					/>
 					<v-button
 						class="swatch"
-						:icon="true"
+						icon
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
 							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
@@ -351,9 +351,9 @@ function useColor() {
 					:step="1"
 					:style="{
 						'--v-slider-color': 'none',
-						'--background-page': 'none',
+						'--theme--background': 'none',
 						'--v-slider-fill-color': 'none',
-						'--v-slider-thumb-color': 'var(--foreground-normal)',
+						'--v-slider-thumb-color': 'var(--theme--form--field--input--foreground)',
 						'--v-slider-track-background-image':
 							'linear-gradient(to right, transparent,' +
 							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +

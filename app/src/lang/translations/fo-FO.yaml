@@ -42,6 +42,8 @@ full_width: Full Breidd
 group: Bólkur
 and: Og
 or: Ella
+extension_interface: Takførisflati
+extension_modules: Modulir
 fill_width: Fyll Breiddina
 field_name_translations: Navna Teiga Umsetingar
 enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (2FA)
@@ -116,8 +118,6 @@ directus_collection:
   directus_roles: Bólkar av loyvum fyri kervisbrúkarum
   directus_users: Kervisbrúkarir til verkætlanina
 fields:
-  directus_users:
-    theme_auto: Sjálvvirkin (Grunda á Kervi)
   directus_settings:
     module_bar: Modul Bjálki
   directus_fields:
@@ -153,7 +153,6 @@ interfaces:
   system-interface-options:
     interface-options: Takførisflatastillingar
   system-folder:
-    folder: Faldari
     description: Vel ein faldara
     root_name: Fílasavns Rót
     system_default: Grundkervi

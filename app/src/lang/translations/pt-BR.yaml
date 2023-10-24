@@ -53,6 +53,13 @@ or: Ou
 init: Inicializador
 dataset_too_large_currently_showing_n_items: Conjunto de dados é muito grande. Mostrando os primeiros {n} itens.
 modifier: Modificador
+extension_interface: Interface
+extension_display: Exibir
+extension_layout: Layout
+extension_panel: Painel
+extension_hook: Gancho
+extension_modules: Módulos
+enable: Habilitar
 custom: Personalizado
 hook: Gancho
 fill_width: Preencher Largura
@@ -99,6 +106,7 @@ rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
 prefix: Prefixo
 suffix: Sufixo
+promote_version_preview: Pré-visualizar
 reset_bookmark: Redefinir Favoritos
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
@@ -434,7 +442,6 @@ dimensions: Dimensões
 size: Tamanho
 created: Criado
 modified: Modificado
-checksum: Checksum
 owner: Proprietário
 edited_by: Editado por
 folder: Pasta
@@ -594,7 +601,6 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Usuário suspenso
   CONTAINS_NULL_VALUES: O campo contém valores nulos
-  UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro inesperado
   NOT_NULL_VIOLATION: O valor não pode ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
@@ -943,12 +949,11 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
-settings_permissions: Funções & Permissões
-settings_project: Configurações do projeto
+settings_project: Configurações
 settings_webhooks: Webhooks
 settings_flows: Fluxos
-settings_presets: Predefinições & Marcadores
-settings_translations: Traduções personalizadas
+settings_presets: Favoritos
+settings_translations: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão faltando
 scope: Escopo
 actions: Ações
@@ -983,7 +988,6 @@ page_help_files_collection: >-
   **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 page_help_files_item: >-
   **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as configurações de acesso.
-page_help_settings_project: "**Configurações do projeto** — Opções de configuração globais do seu projeto."
 page_help_settings_datamodel_collections: >-
   **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
 page_help_settings_datamodel_fields: >-
@@ -1105,10 +1109,6 @@ fields:
     tags: Tags
     user_preferences: Preferências do Usuário
     language: Idioma
-    theme: Tema
-    theme_auto: Automático (Baseado no Sistema)
-    theme_light: Modo Claro
-    theme_dark: Modo Escuro
     tfa_secret: Autenticação em Duas Etapas
     admin_options: Opções do Admin
     status: Status
@@ -1146,7 +1146,6 @@ fields:
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
     default_language: Idioma padrão
-    branding: Marca e estilo
     public_foreground: Primeiro plano público
     public_background: Fundo público
     public_note: Nota pública
@@ -1206,7 +1205,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
     project_color_note: Fundo de Login & Logo
-    project_logo_note: 40x40 SVG/PNG (Branco)
     public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
     auth_password_policy:
@@ -1629,7 +1627,6 @@ interfaces:
     description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
   system-folder:
-    folder: Pasta
     description: Selecionar uma pasta
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
@@ -2005,3 +2002,12 @@ operations:
     batch: Lote
     batch_size: Tamanho do lote
     cache: Cache
+standard: Padrão
+compact: Compacto
+style: Estilo
+fonts:
+  normal: Normal
+  bold: Negrito
+  black: Preto
+  italic: Itálico
+  auto: Automático

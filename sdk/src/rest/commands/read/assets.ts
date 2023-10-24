@@ -4,7 +4,11 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
- * @returns ReadableStream<Uint8Array>
+ * Read the contents of a file as a ReadableStream<Uint8Array>
+ *
+ * @param {string} key
+ * @param {AssetsQuery} query
+ * @returns {ReadableStream<Uint8Array>}
  */
 export const readAssetRaw =
 	<Schema extends object>(
@@ -23,7 +27,11 @@ export const readAssetRaw =
 	};
 
 /**
- * @returns Blob
+ * Read the contents of a file as a Blob
+ *
+ * @param {string} key
+ * @param {AssetsQuery} query
+ * @returns {Blob}
  */
 export const readAssetBlob =
 	<Schema extends object>(key: DirectusFile<Schema>['id'], query?: AssetsQuery): RestCommand<Blob, Schema> =>
@@ -39,7 +47,11 @@ export const readAssetBlob =
 	};
 
 /**
- * @returns ArrayBuffer
+ * Read the contents of a file as a ArrayBuffer
+ *
+ * @param {string} key
+ * @param {AssetsQuery} query
+ * @returns {ArrayBuffer}
  */
 export const readAssetArrayBuffer =
 	<Schema extends object>(key: DirectusFile<Schema>['id'], query?: AssetsQuery): RestCommand<ArrayBuffer, Schema> =>

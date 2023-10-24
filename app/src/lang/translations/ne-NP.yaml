@@ -52,6 +52,13 @@ or: वा
 init: सुरु.
 dataset_too_large_currently_showing_n_items: डाटासेट धेरै ठूलो छ। हाल पहिलो {n} वस्तुहरू देखाउँदै . .
 modifier: परिमार्जक
+extension_interface: इन्टरफेस
+extension_display: डिस्प्ले
+extension_layout: लेआउट
+extension_panel: प्‍यानल
+extension_hook: हुक
+extension_modules: मोड्युलहरू
+enable: सक्षम गर्नुहोस्
 custom: आफ्नै
 hook: हुक
 fill_width: पूर्ण चौडाइ
@@ -95,6 +102,7 @@ rename_folder: फोल्डरको नाम बदल्नुहोस्
 delete_folder: फोल्डर मेटाउनुहोस्
 prefix: उपसर्ग
 suffix: प्रत्यय
+promote_version_preview: पूर्वावलोकन
 reset_bookmark: बुकमार्क रिसेट गर्नुहोस्
 update_bookmark: बुकमार्क अपडेट गर्नुहोस्
 delete_bookmark: बुकमार्क मेट्नुहोस्
@@ -411,7 +419,6 @@ dimensions: आयामहरू
 size: साइज
 created: सिर्जना गरियो
 modified: परिमार्जित
-checksum: चेकसम
 owner: मालिक
 edited_by: द्वारा सम्पादन गरिएको
 folder: फोल्‍डर
@@ -565,7 +572,6 @@ errors:
   RECORD_NOT_UNIQUE: डुप्लिकेट मान पत्ता लाग्यो
   USER_SUSPENDED: प्रयोगकर्ता निलम्बित
   CONTAINS_NULL_VALUES: फिल्डमा शून्य मानहरू छन्
-  UNPROCESSABLE_ENTITY: प्रशोधन गर्न नसकिने इन्टिटी
   INTERNAL_SERVER_ERROR: नसाेचेकाे समस्या
   NOT_NULL_VIOLATION: मूल्य शून्य हुन सक्दैन
   ILLEGAL_ASSET_TRANSFORMATION: पूर्वावलोकनको लागि तस्वीरको स्रोत धेरै ठूलो छ
@@ -906,12 +912,11 @@ editing_unit: '{unit} सम्पादन गर्दै'
 editing_in_batch: '{count} वस्तुहरू ब्याच सम्पादन गर्दै'
 no_options_available: कुनै विकल्प उपलब्ध छैन
 settings_data_model: डाटा मोडेल
-settings_permissions: भूमिका र अनुमतिहरू
-settings_project: प्रोजेक्ट सेटिंग्स
+settings_project: सेटिंग्सहरु
 settings_webhooks: वेबहुकहरू
 settings_flows: फ्लोहरु
-settings_presets: प्रिसेट र बुकमार्कहरू
-settings_translations: कस्टम अनुवादहरु
+settings_presets: बुकमार्कहरू
+settings_translations: अनुवादहरू
 one_or_more_options_are_missing: एक वा बढी विकल्पहरू छुटेका छन्
 scope: दायरा
 actions: कार्यहरू
@@ -946,7 +951,6 @@ page_help_files_collection: >-
   **फाइल लाइब्रेरी** — यस परियोजनामा अपलोड गरिएका सबै फाइल सम्पत्तिहरू सूचीबद्ध गर्दछ। लेआउट, फिल्टरहरू, र क्रमबद्ध तपाईंको दृश्यलाई अनुकूलित गर्नुहोस्, र द्रुत पहुँचको लागि यी फरक कन्फिगरेसनहरूको बुकमार्कहरू बचत गर्नुहोस्।
 page_help_files_item: >-
   **फाइल विवरण** — फाइल मेटाडेटा व्यवस्थापन गर्न, मूल सम्पत्ति सम्पादन गर्न र पहुँच सेटिङहरू अद्यावधिक गर्ने फारम।
-page_help_settings_project: "**प्रोजेक्ट सेटिङ्हरू** — तपाईंको प्रोजेक्टको ग्लोबल कन्फिगरेसन विकल्पहरू।"
 page_help_settings_datamodel_collections: >-
   **डेटा मोडेल: सङ्कलन** — उपलब्ध सबै सङ्कलनहरूको सूची बनाउँछ। यसमा दृश्यात्मक, लुकेका, र प्रणाली सङ्कलनहरू, साथै अव्यवस्थित डाटाबेस तालिकाहरू थप्न सकिन्छ।
 page_help_settings_roles_collection: '**भूमिकाहरू ब्राउज गर्नुहोस्** — प्रशासक, सार्वजनिक र अनुकूलन प्रयोगकर्ता भूमिकाहरू सूचीबद्ध गर्दछ।'
@@ -1054,10 +1058,6 @@ fields:
     tags: ट्याग
     user_preferences: प्रयोगकर्ता प्राथमिकताहरू
     language: भाषा
-    theme: थीम
-    theme_auto: स्वचालित (प्रणालीमा आधारित)
-    theme_light: उज्यालो मोड
-    theme_dark: अँध्यारो मोड
     tfa_secret: दुई-कारक प्रमाणीकरण
     admin_options: प्रशासन विकल्प
     status: स्थिति
@@ -1089,7 +1089,6 @@ fields:
     project_color: परियोजनाको रङ
     project_logo: "परियोजनाको लोगो\n"
     default_language: पूर्वनिर्धारित भाषा
-    branding: ब्रान्डिङ र शैली
     public_foreground: सार्वजनिक अग्रभूमि
     public_background: सार्वजनिक पृष्ठभूमि
     public_note: सार्वजनिक नोट
@@ -1147,7 +1146,6 @@ field_options:
   directus_settings:
     project_name_placeholder: मेरो परियोजना...
     project_color_note: लगइन र लोगो पृष्ठभूमि
-    project_logo_note: "सेतो 40x40 SVG/PNG\n"
     public_note_placeholder: "एउटा छोटो, सार्वजनिक सन्देश जुन मार्कडाउन ढाँचामा छ...\n"
     security_divider_title: सुरक्षा
     auth_password_policy:
@@ -1487,7 +1485,6 @@ interfaces:
     one-to-many: एक देखि धेरै
     no_collection: "Collection फेला पार्न सकिएन\n"
   system-folder:
-    folder: फोल्‍डर
     description: फोल्डर चयन गर्नुहोस्
     system_default: पूर्वनिर्धारित प्रणाली
   select-radio:
@@ -1754,6 +1751,7 @@ panels:
     curve_type: वक्र प्रकार
     smooth: चिल्लो
     straight: सीधा
+    show_legend: लेजेन्ड देखाउनुहोस्
   meter:
     name: मिटर
   piechart:
@@ -1878,3 +1876,14 @@ operations:
     batch: ब्याच
     batch_size: ब्याच साइज
     cache: क्यास
+standard: मानक
+compact: संकुचित
+style: शैली
+fonts:
+  thin: पातलो
+  normal: सामान्य
+  medium: मध्यम
+  bold: बोल्ड
+  black: कालो
+  italic: इटालिक
+  auto: स्वतः

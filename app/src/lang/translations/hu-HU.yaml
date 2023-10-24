@@ -52,6 +52,13 @@ or: Vagy
 init: Init
 dataset_too_large_currently_showing_n_items: Túlméretes adathalmaz. Jelenleg az első {n} adat jelenik meg.
 modifier: Módosító
+extension_interface: Kezelőfelület
+extension_display: Megjelenés
+extension_layout: Elrendezés
+extension_panel: Panel
+extension_hook: Beavatkozási rutin
+extension_modules: Modulok
+enable: Engedélyez
 custom: Egyedi
 hook: Beavatkozási rutin
 fill_width: Teret kitöltő
@@ -95,6 +102,7 @@ rename_folder: Mappa átnevezése
 delete_folder: Mappa törlése
 prefix: Előtag
 suffix: Utótag
+promote_version_preview: Előnézet
 reset_bookmark: Könyvjelző visszaállítása
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
@@ -424,7 +432,6 @@ dimensions: Méretek
 size: Méret
 created: Létrehozva
 modified: Módosítva
-checksum: Ellenőrző
 owner: Tulajdonos
 edited_by: Módosította
 folder: Könyvtár
@@ -580,7 +587,6 @@ errors:
   RECORD_NOT_UNIQUE: Ismétlődő értéket észleltem
   USER_SUSPENDED: Felhasználó felfüggesztve
   CONTAINS_NULL_VALUES: A mező null értékeket tartalmaz
-  UNPROCESSABLE_ENTITY: Feldolgozhatatlan entitás
   INTERNAL_SERVER_ERROR: Váratlan hiba történt
   NOT_NULL_VIOLATION: Az érték nem lehet null
   ILLEGAL_ASSET_TRANSFORMATION: A forráskép túl nagy az előnézethez
@@ -926,11 +932,11 @@ editing_unit: '{unit} szerkesztése'
 editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adatmodell
-settings_permissions: Szerepkörök és jogosultságok
-settings_project: Projekt beállításai
+settings_project: Beállítások
 settings_webhooks: Webhookok
 settings_flows: Folyamatok
-settings_presets: Alapértelmezések és Könyvjelzők
+settings_presets: Könyvjelzők
+settings_translations: Fordítások
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
 actions: Műveletek
@@ -965,7 +971,6 @@ page_help_files_collection: >-
   **Fájlok könyvtára** - A projektbe feltöltött összes fájleszköz listája. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
 page_help_files_item: >-
   **File Részletek** - A fájl metaadatainak kezelésére, az eredeti eszköz szerkesztésére és a hozzáférési beállítások frissítésére szolgáló űrlap.
-page_help_settings_project: "**Projektbeállítások** - A projektje globális konfigurációs beállításai."
 page_help_settings_datamodel_collections: >-
   **Adatmodell: Gyűjtemények** - Az összes elérhető gyűjtemény listája. Ide tartoznak a látható, rejtett és rendszergyűjtemények, valamint a hozzáadható nem kezelt adatbázis táblák.
 page_help_settings_datamodel_fields: >-
@@ -1087,10 +1092,6 @@ fields:
     tags: Címkék
     user_preferences: Felhasználói beállítások
     language: Nyelv
-    theme: Téma
-    theme_auto: Automatikus (A rendszeren alapuló)
-    theme_light: Világos mód
-    theme_dark: Sötét mód
     tfa_secret: Kétlépcsős hitelesítés
     admin_options: Admin beállítások
     status: Állapot
@@ -1128,7 +1129,6 @@ fields:
     project_color: Projekt színe
     project_logo: Projekt logója
     default_language: Alapértelmezett nyelv
-    branding: Márkaépítés és stílus
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
@@ -1188,7 +1188,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
     project_color_note: Bejelentkezés és logó háttér
-    project_logo_note: Fehér 40x40 SVG/PNG
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
@@ -1611,7 +1610,6 @@ interfaces:
     description: Több kapcsolódó elem választása
     no_collection: A gyűjtemény nem található
   system-folder:
-    folder: Könyvtár
     description: Válasszon egy mappát
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
@@ -1987,6 +1985,7 @@ panels:
     smooth: Gördülékeny
     straight: Egyenes
     step_line: Lécsőzetes
+    show_legend: Mutasd a magyarázatot
   meter:
     name: Mértékegység
     description: Értékek nyomonkövetése
@@ -2123,3 +2122,14 @@ operations:
     parallel: Párhuzamos
     batch: Tömeges
     batch_size: Darabszám
+standard: Normál
+compact: Kompakt
+style: Stílus
+fonts:
+  thin: Vékony
+  normal: Normál
+  medium: Közepes
+  bold: Félkövér
+  black: Fekete
+  italic: Dőlt
+  auto: Automatikus

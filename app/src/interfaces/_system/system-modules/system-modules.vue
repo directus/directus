@@ -213,7 +213,7 @@ function remove(id: string) {
 		<v-list class="list">
 			<draggable
 				v-model="valuesWithData"
-				:force-fallback="true"
+				force-fallback
 				:set-data="hideDragImage"
 				item-key="id"
 				handle=".drag-handle"
@@ -274,23 +274,23 @@ function remove(id: string) {
 }
 
 .v-list-item.enabled {
-	--v-list-item-border-color: var(--primary);
-	--v-list-item-color: var(--primary-125);
-	--v-list-item-background-color: var(--primary-10);
-	--v-list-item-border-color-hover: var(--primary-150);
-	--v-list-item-color-hover: var(--primary-125);
-	--v-list-item-background-color-hover: var(--primary-10);
-	--v-icon-color: var(--primary);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-list-item-border-color: var(--theme--primary);
+	--v-list-item-color: var(--theme--primary-accent);
+	--v-list-item-background-color: var(--theme--primary-background);
+	--v-list-item-border-color-hover: var(--theme--primary-accent);
+	--v-list-item-color-hover: var(--theme--primary-accent);
+	--v-list-item-background-color-hover: var(--theme--primary-background);
+	--v-icon-color: var(--theme--primary);
+	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 }
 
 .to {
-	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
+	color: var(--theme--form--field--input--foreground-subdued);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .enabled .to {
-	color: var(--primary-50);
+	color: var(--theme--primary-subdued);
 }
 
 .drawer-content {

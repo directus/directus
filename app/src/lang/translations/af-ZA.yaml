@@ -49,6 +49,8 @@ export_items: Voer items uit
 and: En
 or: Of
 modifier: Wysiger
+extension_hook: Haak
+extension_modules: Modules
 custom: Pasgemaak
 hook: Haak
 fill_width: Vulbreedte
@@ -106,7 +108,6 @@ auto_generate: Auto-Genereer
 add_note: Voeg 'n nuttige nota vir gebruikers...
 default_value: Standaard Waarde
 title: Titel
-checksum: Kontrolesom
 owner: Eienaar
 created_by: Geskep Deur
 created_on: Geskep Op
@@ -132,6 +133,7 @@ wysiwyg_options:
   codeblock: Kode
   table: Tafel
 choices: Keuses
+settings_presets: Boekmerke
 add_new: Voeg nuwe
 all: Alle
 batch_delete_confirm: >-
@@ -175,7 +177,6 @@ fields:
     description: Beskrywing
     tags: Sleutelwoorde
     language: Taal
-    theme: Tema
     tfa_secret: Twee-Faktor Verifikasie
     status: Status
     role: Rol
@@ -253,3 +254,4 @@ operations:
   notification:
     message: Boodskap
     subject: Onderwerp
+compact: Kompak

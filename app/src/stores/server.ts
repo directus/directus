@@ -22,8 +22,10 @@ export type Info = {
 		project_logo: string | null;
 		project_color: string | null;
 		default_language: string | null;
+		default_appearance: 'light' | 'dark' | 'auto';
 		public_foreground: string | null;
 		public_background: string | null;
+		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
 	};

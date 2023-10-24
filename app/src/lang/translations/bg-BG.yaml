@@ -52,6 +52,13 @@ or: Или
 init: Инициализиране
 dataset_too_large_currently_showing_n_items: Данните са твърде много. В момента се показват само първите {n} записа.
 modifier: Модификатор
+extension_interface: Интерфейс
+extension_display: Изглед
+extension_layout: Оформление
+extension_panel: Панел
+extension_hook: Кука
+extension_modules: Модули
+enable: Включване
 custom: Персонализиран
 hook: Кука
 fill_width: Изпълване по ширина
@@ -95,6 +102,7 @@ rename_folder: Преименуване на папката
 delete_folder: Изтриване на папката
 prefix: Представка
 suffix: Наставка
+promote_version_preview: Преглед
 reset_bookmark: Нулиране на отметки
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
@@ -423,7 +431,6 @@ dimensions: Размери
 size: Големина
 created: Създаден
 modified: Променен
-checksum: Контролна сума
 owner: Собственик
 edited_by: Променен от
 folder: Папка
@@ -579,7 +586,6 @@ errors:
   RECORD_NOT_UNIQUE: Вече съществува такава стойност
   USER_SUSPENDED: Потребителя е деактивиран
   CONTAINS_NULL_VALUES: Полето съдържа null стойност
-  UNPROCESSABLE_ENTITY: Необработен обект
   INTERNAL_SERVER_ERROR: Неочаквана грешка
   NOT_NULL_VIOLATION: Стойността не трябва да е null
   ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
@@ -921,11 +927,11 @@ editing_unit: 'Редактиране на {unit}'
 editing_in_batch: 'Множествено редактиране на {count} записи'
 no_options_available: Не са налични настройки
 settings_data_model: Модел на данните
-settings_permissions: Роли и позволения
-settings_project: Настройки на проекта
+settings_project: Настройки
 settings_webhooks: Уеб-куки
 settings_flows: Автоматизирани процеси
-settings_presets: Заготовки и отметки
+settings_presets: Отметки
+settings_translations: Преводи
 one_or_more_options_are_missing: Липсват една или повече настройки
 scope: Обхват
 actions: Действия
@@ -960,7 +966,6 @@ page_help_files_collection: >-
   **Файлова библиотека** — Показват се всички достъпни за вас файлове. Предоставена е възможност за персонализация на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори е възможно създаването на заготовка за бърз достъп от създадената конфигурация.
 page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
-page_help_settings_project: "**Настройки на проекта** — Глобална конфигурация и общи настройки за вашият проект."
 page_help_settings_datamodel_collections: >-
   **Модел на данните: Колекции** — Показват се всички налични колекции. Това включва всички видими, невидими, системни, както и все още не конфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
@@ -1082,10 +1087,6 @@ fields:
     tags: Етикети
     user_preferences: Потребителски настройки
     language: Език
-    theme: Тема
-    theme_auto: Автоматична (според системата)
-    theme_light: Светъл режим
-    theme_dark: Тъмен режим
     tfa_secret: Двуфакторна автентикация
     admin_options: Административни настройки
     status: Статус
@@ -1123,7 +1124,6 @@ fields:
     project_color: Цвят на проекта
     project_logo: Лого на проекта
     default_language: Език по подразбиране
-    branding: Стил и брандиране
     public_foreground: Публично изображение
     public_background: Публичен фон
     public_note: Публично съобщение
@@ -1183,7 +1183,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
     project_color_note: Фон на логото и вход-а
-    project_logo_note: Бяла 40x40, SVG или PNG картинка
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
@@ -1606,7 +1605,6 @@ interfaces:
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена
   system-folder:
-    folder: Папка
     description: Избор на папка
     root_name: Главна папка
     system_default: По подразбиране
@@ -2090,3 +2088,12 @@ operations:
     flows: Автоматизирани процеси
     flow: Процес
     data: Данни
+standard: Стандартно
+compact: Компактно
+style: Стил
+fonts:
+  normal: Нормален
+  bold: Удебеляване
+  black: Чер
+  italic: Курсив
+  auto: Автоматичен

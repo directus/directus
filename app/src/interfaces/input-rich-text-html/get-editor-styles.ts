@@ -27,10 +27,10 @@ export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospac
 	background: ${cssVar('--background-normal-alt')};
 }
 body {
-	color: ${cssVar('--foreground-normal')};
-	background-color: ${cssVar('--background-input')};
+	color: ${cssVar('--theme--form--field--input--foreground')};
+	background-color: ${cssVar('--theme--form--field--input--background')};
 	margin: 20px;
-	font-family: ${cssVar('--family-sans-serif')};
+	font-family: ${cssVar('--theme--font-family-sans-serif')};
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
@@ -44,7 +44,7 @@ body.mce-content-readonly {
 }
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${cssVar(`--family-${font}`)}, serif;
-	color: ${cssVar('--foreground-normal-alt')};
+	color: ${cssVar('--theme--form--field--input--foreground-accent')};
 	font-weight: 700;
 	margin-bottom: 0;
 }
@@ -89,7 +89,7 @@ p {
 	margin: 1.5em 0;
 }
 a {
-	color: ${cssVar('--primary-125')};
+	color: ${cssVar('--theme--primary-accent')};
 	text-decoration: none;
 }
 ul, ol {
@@ -113,7 +113,7 @@ code {
 	line-height: 24px;
 	font-weight: 500;
 	padding: 2px 4px;
-	font-family: ${cssVar('--family-monospace')}, monospace;
+	font-family: ${cssVar('--theme--font-family-monospace')}, monospace;
 	background-color: ${cssVar('--background-normal')};
 	border-radius: ${cssVar('--border-radius')};
 	overflow-wrap: break-word;
@@ -123,7 +123,7 @@ pre {
 	line-height: 24px;
 	font-weight: 500;
 	padding: 1em;
-	font-family: ${cssVar('--family-monospace')}, monospace;
+	font-family: ${cssVar('--theme--font-family-monospace')}, monospace;
 	background-color: ${cssVar('--background-normal')};
 	border-radius: ${cssVar('--border-radius')};
 	overflow: auto;

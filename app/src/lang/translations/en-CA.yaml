@@ -45,6 +45,12 @@ full_width: Full Width
 group: Group
 and: And
 or: Or
+extension_interface: Interface
+extension_display: Display
+extension_layout: Layout
+extension_panel: Panel
+extension_modules: Modules
+enable: Enable
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -85,6 +91,7 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+promote_version_preview: Preview
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -366,7 +373,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -506,7 +512,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
@@ -772,10 +777,10 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Roles & Permissions
-settings_project: Project Settings
+settings_project: Settings
 settings_webhooks: Webhooks
-settings_presets: Presets & Bookmarks
+settings_presets: Bookmarks
+settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 actions: Actions
@@ -810,7 +815,6 @@ page_help_files_collection: >-
   **File Library** — Lists all file assets uploaded to this project. Customise layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Project Settings** — Your project's global configuration options."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
@@ -926,10 +930,6 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
-    theme: Theme
-    theme_auto: Automatic (Based on System)
-    theme_light: Light Mode
-    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -966,7 +966,6 @@ fields:
     project_color: Project Colour
     project_logo: Project Logo
     default_language: Default Language
-    branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
@@ -1024,7 +1023,6 @@ field_options:
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -1412,7 +1410,6 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
     description: Select a folder
     root_name: File Library Root
     system_default: System Defaults
@@ -1714,3 +1711,11 @@ operations:
     header: Header
   trigger:
     data: Data
+standard: Standard
+compact: Compact
+style: Style
+fonts:
+  normal: Normal
+  bold: Bold
+  italic: Italic
+  auto: Auto

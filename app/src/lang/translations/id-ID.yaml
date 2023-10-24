@@ -52,6 +52,12 @@ or: Atau
 init: Awal
 dataset_too_large_currently_showing_n_items: Himpunan data terlalu besar. Saat ini menampilkan {n} item pertama.
 modifier: Pengubah
+extension_interface: Antarmuka
+extension_display: Tampilkan
+extension_layout: Tata letak
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Modul
 custom: Kustomisasi
 hook: Hook
 fill_width: Lebar Penuh
@@ -95,6 +101,7 @@ rename_folder: Ubah nama folder
 delete_folder: Hapus Folder
 prefix: Awalan
 suffix: Akhiran
+promote_version_preview: Pratinjau
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
@@ -432,7 +439,6 @@ dimensions: Dimensi
 size: Ukuran
 created: Dibuat
 modified: Telah dimodifikasi
-checksum: Checksum
 owner: Pemilik
 edited_by: Diedit oleh
 folder: Direktori
@@ -589,7 +595,6 @@ errors:
   RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
   USER_SUSPENDED: Pengguna Ditangguhkan
   CONTAINS_NULL_VALUES: Bidang berisi nilai nol
-  UNPROCESSABLE_ENTITY: Entitas yang tidak dapat diproses
   INTERNAL_SERVER_ERROR: Kesalahan Tidak Terduga
   NOT_NULL_VIOLATION: Nilai tidak boleh kosong
   ILLEGAL_ASSET_TRANSFORMATION: Sumber gambar terlalu besar untuk diratinjau
@@ -939,11 +944,11 @@ editing_unit: 'Mengedit {unit}'
 editing_in_batch: 'Mengedit Masal {count} item'
 no_options_available: Tidak ada opsi tersedia
 settings_data_model: Model Data
-settings_permissions: Peran dan Izin
-settings_project: Pengaturan Proyek
+settings_project: Pengaturan
 settings_webhooks: Webhooks
 settings_flows: Kumpulan Alur
-settings_presets: Preset & Markah
+settings_presets: Markah
+settings_translations: Terjemahan
 one_or_more_options_are_missing: Satu atau lebih opsi hilang
 scope: Lingkup
 actions: Aksi
@@ -978,7 +983,6 @@ page_help_files_collection: >-
   **Berkas Pustaka** — Daftar semua aset berkas yang diunggah ke proyek ini. Sesuaikan tata letak, filter, dan penyortiran untuk menyesuaikan tampilan Anda, dan bahkan simpan bookmark dari konfigurasi yang berbeda ini untuk akses cepat.
 page_help_files_item: >-
   **Detail Berkas** — Sebuah formulir untuk mengelola metadata berkas, mengedit aset asli, dan memperbarui pengaturan akses.
-page_help_settings_project: "**Konfigurasi Proyek** — Opsi konfigurasi global proyek Anda."
 page_help_settings_datamodel_collections: >-
   **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
 page_help_settings_datamodel_fields: >-
@@ -1098,10 +1102,6 @@ fields:
     tags: Tagar
     user_preferences: Preferensi Pengguna
     language: Bahasa
-    theme: Tema
-    theme_auto: Otomatis (Berdasarkan Sistem)
-    theme_light: Mode Terang
-    theme_dark: Mode Gelap
     tfa_secret: Otentikasi Dua Faktor
     admin_options: Opsi Admin
     status: Status
@@ -1138,7 +1138,6 @@ fields:
     project_color: Warna Proyek
     project_logo: Logo Proyek
     default_language: Bahasa bawaan
-    branding: Merk & Gaya
     public_foreground: Latar depan Publik
     public_background: Latar belakang Publik
     public_note: Catatan Publik
@@ -1449,7 +1448,6 @@ interfaces:
     map: Peta
     zoom: Perbesar
   system-folder:
-    folder: Direktori
     description: Pilih folder
   list:
     sort: Sortir
@@ -1557,3 +1555,11 @@ operations:
   trigger:
     flows: Kumpulan Alur
     flow: Alur
+standard: Standar
+compact: Rapat
+style: Gaya
+fonts:
+  normal: Normal
+  bold: Tebal
+  black: Hitam
+  italic: Miring

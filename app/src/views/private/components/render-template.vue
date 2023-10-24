@@ -194,6 +194,6 @@ function handleObject(fieldKey: string) {
 }
 
 .subdued {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 </style>

@@ -52,6 +52,13 @@ or: 또는
 init: 초기화
 dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
 modifier: 추가 항목
+extension_interface: 인터페이스
+extension_display: 표시하다
+extension_layout: 표시 방법
+extension_panel: 패널
+extension_hook: 후크
+extension_modules: 모듈
+enable: 활성화
 custom: 사용자 정의
 hook: 후크
 fill_width: 전체 폭
@@ -95,6 +102,7 @@ rename_folder: 폴더 이름 변경
 delete_folder: 폴더 삭제
 prefix: 접두사
 suffix: 접미사
+promote_version_preview: 미리보기
 reset_bookmark: 북마크 초기화
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
@@ -431,7 +439,6 @@ dimensions: 규격
 size: 용량
 created: 작성됨
 modified: 수정됨
-checksum: 체크섬
 owner: 소유자
 edited_by: 편집자
 folder: 폴더
@@ -588,7 +595,6 @@ errors:
   RECORD_NOT_UNIQUE: 중복 값 감지됨
   USER_SUSPENDED: 사용자 일시중지됨
   CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
-  UNPROCESSABLE_ENTITY: 처리할 수 없는 엔터티
   INTERNAL_SERVER_ERROR: 예기치 않은 오류
   NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
   ILLEGAL_ASSET_TRANSFORMATION: 이미지 소스가 너무 커서 미리보기 불가
@@ -938,11 +944,11 @@ editing_unit: '편집 {unit}'
 editing_in_batch: '일괄 편집 {count} 항목'
 no_options_available: 사용 가능한 옵션 없음
 settings_data_model: 데이터 모델
-settings_permissions: 역할 및 권한
-settings_project: 프로젝트 설정
+settings_project: 설정
 settings_webhooks: 웹후크
 settings_flows: 플로우
-settings_presets: 사전설정 및 북마크
+settings_presets: 북마크
+settings_translations: 번역
 one_or_more_options_are_missing: 하나 이상의 옵션이 없습니다.
 scope: 범위
 actions: 액션
@@ -977,7 +983,6 @@ page_help_files_collection: >-
   **파일 라이브러리** — 이 프로젝트에 업로드된 모든 파일 자산을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
 page_help_files_item: >-
   **파일 세부 정보** — 파일 메타데이터 관리, 원본 자산 편집 및 액세스 설정 업데이트를 위한 양식입니다.
-page_help_settings_project: "**프로젝트 설정** — 프로젝트의 전역 구성 옵션입니다."
 page_help_settings_datamodel_collections: >-
   **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
 page_help_settings_datamodel_fields: >-
@@ -1099,10 +1104,6 @@ fields:
     tags: 태그(Tags)
     user_preferences: 개인 설정
     language: 언어
-    theme: 화면테마
-    theme_auto: 자동(시스템 설정)
-    theme_light: 밝은 배경 테마
-    theme_dark: 어두운 배경 테마
     tfa_secret: 이중 인증
     admin_options: 관리 옵션
     status: 상태
@@ -1141,7 +1142,6 @@ fields:
     project_color: 테마컬러
     project_logo: 로고
     default_language: 기본 언어 설정
-    branding: 브랜딩 및 스타일
     public_foreground: 공개화면 전경(foreground)
     public_background: 공개화면 배경(background)
     public_note: 공개화면 표시글
@@ -1201,7 +1201,6 @@ field_options:
   directus_settings:
     project_name_placeholder: 내 프로젝트...
     project_color_note: 로그인/로고 화면 배경
-    project_logo_note: 흰색 40x40 SVG/PNG
     public_note_placeholder: 마크다운 서식을 지원하는 짧은 공개 메시지...
     security_divider_title: 보안
     auth_password_policy:
@@ -1628,7 +1627,6 @@ interfaces:
     description: 여러 관련 항목 선택
     no_collection: 컬렉션을 찾을 수 없습니다.
   system-folder:
-    folder: 폴더
     description: 폴더 선택
     field_hint: 폴더를 지정하지 않고 업로드된 파일의 기본 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     root_name: 파일 라이브러리 루트
@@ -2005,6 +2003,7 @@ panels:
     smooth: 매끄러운
     straight: 똑바로
     step_line: 스텝 라인
+    show_legend: 범례 표시
   meter:
     name: 미터
     description: 값 추적을 위한 미터
@@ -2144,3 +2143,14 @@ operations:
     batch: 일괄
     batch_size: 배치 크기
     cache: 캐시
+standard: 표준
+compact: 좁게
+style: 스타일
+fonts:
+  thin: 얇은
+  normal: 정상
+  medium: 중간
+  bold: 굵게
+  black: 검은색
+  italic: 이탤릭체
+  auto: 자동

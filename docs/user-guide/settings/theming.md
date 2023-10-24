@@ -10,17 +10,10 @@ readTime: 2 min read
 ## App Themes
 
 The Directus App has been developed with customization and extensibility in mind. Colors and styles referenced within
-the codebase all use CSS variables, and therefore it is easy to make comprehensive changes to the App styling.
+the codebase are based around theme rules which makes it easy to make comprehensive changes to the App styling.
 
-There are two themes included by default: Light and Dark. You can duplicate these files to create your own themes — with
-no limit to customization. Below are several code resources for key SCSS files.
-
-- **Themes** — See the [Light Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_light.scss)
-  or [Dark Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_dark.scss)
-- **Typography** — See the [Fonts](https://github.com/directus/directus/blob/main/app/src/styles/_type-styles.scss) and
-  [Type Styles](https://github.com/directus/directus/blob/main/app/src/styles/mixins/type-styles.scss)
-- **Variables** — See the
-  [Global Variables](https://github.com/directus/directus/blob/main/app/src/styles/_variables.scss)
+There are two themes included by default: Light and Dark. Each of the rules of these themes can be overridden through
+the settings in either Project Settings (Global) or User Settings.
 
 ## Custom CSS
 

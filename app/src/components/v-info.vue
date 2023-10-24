@@ -49,22 +49,22 @@ withDefaults(defineProps<Props>(), {
 }
 
 .info .icon {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-normal);
 }
 
 .success .icon {
-	color: var(--success);
+	color: var(--theme--success);
 	background-color: var(--success-alt);
 }
 
 .warning .icon {
-	color: var(--warning);
+	color: var(--theme--warning);
 	background-color: var(--warning-alt);
 }
 
 .danger .icon {
-	color: var(--danger);
+	color: var(--theme--danger);
 	background-color: var(--danger-alt);
 }
 
@@ -74,7 +74,7 @@ withDefaults(defineProps<Props>(), {
 
 .content {
 	max-width: 300px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 22px;
 
 	&:not(:last-child) {

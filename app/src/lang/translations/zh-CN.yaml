@@ -53,6 +53,14 @@ or: 或
 init: 初始化
 dataset_too_large_currently_showing_n_items: 数据集太大，目前显示前 {n} 项。
 modifier: 修改者
+extension_interface: 接口
+extension_display: 显示
+extension_layout: 布局
+extension_panel: 面板
+extension_hook: 钩子
+extension_operation: 操作
+extension_modules: 模块
+enable: 启用
 custom: 自定义
 hook: 钩子
 fill_width: 全宽
@@ -100,6 +108,7 @@ rename_folder: 重命名文件夹
 delete_folder: 删除文件夹
 prefix: 前缀
 suffix: 后缀
+promote_version_preview: 预览
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
@@ -446,7 +455,6 @@ dimensions: 尺寸
 size: 大小
 created: 已创建
 modified: 已修改
-checksum: 校验和
 owner: 所有者
 edited_by: 编辑者
 folder: 文件夹
@@ -612,7 +620,6 @@ errors:
   RECORD_NOT_UNIQUE: 检测到重复的值
   USER_SUSPENDED: 用户已禁用
   CONTAINS_NULL_VALUES: 字段包含空值
-  UNPROCESSABLE_ENTITY: 不可处理的实体
   INTERNAL_SERVER_ERROR: 未知错误
   NOT_NULL_VIOLATION: 值不能为null
   ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
@@ -969,12 +976,11 @@ editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
 no_options_available: 无可用的选项
 settings_data_model: 数据模型
-settings_permissions: 角色与权限
-settings_project: 项目设置
+settings_project: 设置
 settings_webhooks: Webhook
 settings_flows: 流程
-settings_presets: 预设&书签
-settings_translations: 自定义翻译
+settings_presets: 书签
+settings_translations: 翻译
 one_or_more_options_are_missing: 缺少一个或多个选项
 configure_field_key_to_continue: 配置字段关键字再继续
 scope: 范围
@@ -1010,7 +1016,6 @@ page_help_files_collection: >-
   **文件库** - 列出上传到此项目的所有相关内容。自定义布局、过滤器、排序以及调整视图，还可以保存这些不同配置的书签以便快速访问。
 page_help_files_item: >-
   **文件详情** - 管理文件元数据、编辑原始资产和更新访问设置的表格。
-page_help_settings_project: "**项目设置** — — 你的项目的全局配置选项。"
 page_help_settings_datamodel_collections: >-
   **数据模型: ** - 列出所有可用的模型。这包括可见、隐藏和系统模型，以及可以添加的数据库表（包括还未加入并管理的）。
 page_help_settings_datamodel_fields: >-
@@ -1135,10 +1140,6 @@ fields:
     tags: 标签
     user_preferences: 用户设置
     language: 语言
-    theme: 主题
-    theme_auto: 自动 (系统主题)
-    theme_light: 亮色模式
-    theme_dark: 暗色模式
     tfa_secret: 2FA（双因素身份验证）
     admin_options: 管理员设置
     status: 状态
@@ -1177,7 +1178,6 @@ fields:
     project_color: 项目颜色
     project_logo: 项目 Logo
     default_language: 默认语言
-    branding: 品牌和样式
     public_foreground: 公共前景
     public_background: 公共背景
     public_note: 公共便笺
@@ -1237,7 +1237,6 @@ field_options:
   directus_settings:
     project_name_placeholder: 我的项目
     project_color_note: 登录和标志背景
-    project_logo_note: 白色的40x40 SVG/PNG
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -1674,7 +1673,6 @@ interfaces:
     description: 选择多个相关项目
     no_collection: 找不到collection
   system-folder:
-    folder: 文件夹
     description: 选择文件夹
     field_hint: 默认文件夹，用于未指定文件夹的上传文件。不影响现有文件。
     root_name: 文件管理
@@ -2063,6 +2061,7 @@ panels:
     smooth: 平滑模式
     straight: 直线模式
     step_line: 分步线条
+    show_legend: 显示图例
   meter:
     name: 电表模式
     description: 跟踪值的仪表
@@ -2213,3 +2212,14 @@ operations:
     batch: 批处理
     batch_size: 批量大小
     cache: 缓存
+standard: 基本设置
+compact: 紧凑
+style: 样式
+fonts:
+  thin: 细
+  normal: 标准
+  medium: 中
+  bold: 加粗
+  black: 黑色
+  italic: 斜体
+  auto: 自动

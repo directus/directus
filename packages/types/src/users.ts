@@ -28,7 +28,11 @@ export type User = {
 	tfa_secret: string | null;
 	auth_data: Record<string, any> | null;
 	provider: string;
-	theme: string | null;
+	appearance: 'auto' | 'dark' | 'light' | null;
+	theme_light: string | null;
+	theme_dark: string | null;
+	theme_light_overrides: Record<string, unknown> | null;
+	theme_dark_overrides: Record<string, unknown> | null;
 	role: Role | null;
 	language: string | null;
 	avatar: Avatar | null;

@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
 import env from '../env.js';
-import { InvalidQueryError } from '../errors/index.js';
+import { InvalidQueryError } from '@directus/errors';
 import { calculateFieldDepth } from './calculate-field-depth.js';
 
 const querySchema = Joi.object({
@@ -20,6 +20,7 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('csv', 'json', 'xml', 'yaml'),
+	version: Joi.string(),
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),

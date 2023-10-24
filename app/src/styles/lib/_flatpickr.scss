@@ -33,7 +33,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	background: var(--background-normal);
 	fill: none;
 	padding: 20px 0;
@@ -50,12 +50,12 @@
 .flatpickr-months .flatpickr-next-month svg {
 	width: auto;
 	height: auto;
-	fill: var(--foreground-normal-alt);
+	fill: var(--theme--foreground-accent);
 }
 
 .flatpickr-months .flatpickr-prev-month:hover svg,
 .flatpickr-months .flatpickr-next-month:hover svg {
-	fill: var(--primary);
+	fill: var(--theme--primary);
 }
 
 .flatpickr-current-month {
@@ -76,13 +76,13 @@
 	font-size: 16px;
 	height: 20px;
 	font-weight: 600;
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .flatpickr-current-month input.cur-year {
 	font-size: 16px;
 	font-weight: 600;
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
@@ -148,14 +148,14 @@
 }
 
 span.flatpickr-weekday {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	font-weight: 600;
 }
 
 .flatpickr-day {
 	width: 100%;
 	max-width: none;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	line-height: 36px;
 	font-weight: 500;
 	transition: var(--fast) var(--transition);
@@ -174,21 +174,21 @@ span.flatpickr-weekday {
 .flatpickr-day:focus,
 .flatpickr-day.prevMonthDay:focus,
 .flatpickr-day.nextMonthDay:focus {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background: var(--background-highlight);
 	border-color: var(--background-highlight);
 }
 
 .flatpickr-day.today {
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 	border-width: var(--border-width);
 }
 
 .flatpickr-day.today:hover,
 .flatpickr-day.today:focus {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background: var(--background-normal-alt);
-	border-color: var(--primary);
+	border-color: var(--theme--primary);
 }
 
 .flatpickr-day.selected,
@@ -209,21 +209,21 @@ span.flatpickr-weekday {
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-	color: var(--primary-alt);
-	background: var(--primary);
-	border-color: var(--primary);
+	color: var(--theme--primary-background);
+	background: var(--theme--primary);
+	border-color: var(--theme--primary);
 	box-shadow: none;
 }
 
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
-	box-shadow: -10px 0 0 var(--primary);
+	box-shadow: -10px 0 0 var(--theme--primary);
 }
 
 .flatpickr-day.inRange {
 	border-radius: 0;
-	box-shadow: -5px 0 0 var(--foreground-normal-alt), 5px 0 0 var(--foreground-normal-alt);
+	box-shadow: -5px 0 0 var(--theme--foreground-accent), 5px 0 0 var(--theme--foreground-accent);
 }
 
 .flatpickr-day.flatpickr-disabled,
@@ -233,17 +233,17 @@ span.flatpickr-weekday {
 .flatpickr-day.notAllowed,
 .flatpickr-day.notAllowed.prevMonthDay,
 .flatpickr-day.notAllowed.nextMonthDay {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .flatpickr-day.week.selected {
 	border-radius: 0;
-	box-shadow: -5px 0 0 var(--primary), 5px 0 0 var(--primary);
+	box-shadow: -5px 0 0 var(--theme--primary), 5px 0 0 var(--theme--primary);
 }
 
 .flatpickr-weekwrapper span.flatpickr-day,
 .flatpickr-weekwrapper span.flatpickr-day:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 /* Time */
@@ -301,7 +301,7 @@ span.flatpickr-weekday {
 
 .flatpickr-time .flatpickr-time-separator,
 .flatpickr-time .flatpickr-am-pm {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 }
 
 .flatpickr-time input:hover,
@@ -311,9 +311,9 @@ span.flatpickr-weekday {
 
 .flatpickr-time input:focus,
 .flatpickr-time .flatpickr-am-pm:focus {
-	border: var(--border-width) solid var(--primary);
+	border: var(--border-width) solid var(--theme--primary);
 	border-radius: var(--border-radius);
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 }
 
 .flatpickr-time input::selection {
@@ -323,7 +323,7 @@ span.flatpickr-weekday {
 .flatpickr-calendar .set-to-now-button {
 	width: 100%;
 	padding: 8px 0;
-	color: var(--primary);
+	color: var(--theme--primary);
 	border-top: var(--border-width) solid var(--border-subdued);
 	transition: background-color var(--fast) var(--transition);
 }

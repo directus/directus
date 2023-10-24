@@ -7,6 +7,9 @@ duplicate_field: Eilañ ar vaezienn
 half_width: Hanter-vann
 full_width: Ledander ar bann
 group: Strollad
+extension_interface: Etrefas
+extension_display: Diskwel
+extension_layout: Pajennaozañ
 fill_width: Ledander leun
 field_name_translations: Troidigezhioù anv ar vaezienn
 enter_password_to_enable_tfa: Bizskrivit ho ker-tremen evit kaout an dilesa e div bazenn
@@ -268,7 +271,6 @@ dimensions: Mentoù
 size: Ment
 created: Krouet
 modified: Kemmet
-checksum: Kod gwiriañ
 owner: Perc'henn
 edited_by: Kemmet gant
 folder: Teuliad
@@ -601,10 +603,10 @@ editing_unit: 'Embann {unit}'
 editing_in_batch: 'Kemm a-stroll {count} elfenn'
 no_options_available: N'eus dibarzh ebet
 settings_data_model: Patrom roadennoù
-settings_permissions: Rolloù hag aotreoù
-settings_project: Arventennoù ar raktres
+settings_project: Arventennoù
 settings_webhooks: Webhookioù
-settings_presets: Rakreoliñ ha pennrolloù
+settings_presets: Pennrolloù
+settings_translations: Troidigezhioù
 one_or_more_options_are_missing: Mankout a ra un dibarzh pe meur a hini
 scope: Implijerien pe rolloù
 select: Dibab...
@@ -633,7 +635,6 @@ page_help_files_collection: >-
   **Teuliaoueg** — Roll an holl restroù treuzkaset d'ar raktres-mañ. Personelaat ar pajennaozañ, ar siloù hag ar rummañ hag enrollañ e pennroll meur a reoliañ evit adkavout pep tra buan.
 page_help_files_item: >-
   **Munudoù ar restr** — Feurmskrid evit merañ metaroadennoù ar restrooù, kemm ar restr orin ha hizivaat an arventennoù aotre.
-page_help_settings_project: "**Arventennoù ar raktres** — Dibarzhioù reoliñ hollek ho raktres."
 page_help_settings_datamodel_collections: >-
   **Patrom roadennoù : Dastumadoù** — Roll an holl dastumadoù hegerz. Da lâret eo an dastumadoù a c'heller gwelet, ar re kuzhet ha sistem, hag an taolennoù gant diazoù roadennoù nann meret a c'hell bezañ ouzhpennet.
 page_help_settings_datamodel_fields: >-
@@ -720,7 +721,6 @@ fields:
     description: Deskrivadur
     tags: Tikedennoù
     language: Yezh
-    theme: Tem
     tfa_secret: Dilesadur daou-faktor
     status: Stad
     status_active: Oberiat
@@ -996,8 +996,6 @@ interfaces:
     one-to-many: Unan da meur a hini
     description: Dibab meur a elfenn liammet
     no_collection: N'eo ket bet kavet an dastumad
-  system-folder:
-    folder: Teuliad
   select-radio:
     radio-buttons: Boutonoù radio
     description: Dibab unan eus ar choazoù kinniget
@@ -1215,3 +1213,9 @@ operations:
     template: Patrom
   notification:
     recipient: Implijer
+compact: Krennet
+style: Stil
+fonts:
+  bold: Tev
+  italic: Italek
+  auto: Emgefreek

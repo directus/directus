@@ -6,7 +6,7 @@ import { WebSocketController, getWebSocketController } from '../controllers/inde
 import { WebSocketMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
-import { ServiceUnavailableError } from '../../errors/service-unavailable.js';
+import { ServiceUnavailableError } from '@directus/errors';
 
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
 

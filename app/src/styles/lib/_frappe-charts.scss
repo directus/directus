@@ -1,11 +1,11 @@
 .chart-container {
 	position: relative;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 
 	.axis,
 	.chart-label {
 		font-size: 10px;
-		fill: var(--foreground-normal);
+		fill: var(--theme--foreground);
 
 		line {
 			stroke: var(--border-normal);
@@ -57,7 +57,7 @@
 
 	.legend-dataset-text {
 		font-weight: 600;
-		fill: var(--foreground-normal);
+		fill: var(--theme--foreground);
 	}
 }
 

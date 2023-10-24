@@ -52,6 +52,9 @@ or: या
 init: इसमें
 dataset_too_large_currently_showing_n_items: डेटासेट बहुत बड़ा है। पहले {n} आइटम दिखा रहा है।
 modifier: संशोधक
+extension_display: दिखाएँ
+extension_hook: हुक
+extension_modules: मॉड्यूल
 custom: निजीकृत
 hook: हुक
 fill_width: संपूर्ण चौड़ाई
@@ -342,7 +345,6 @@ dimensions: आयाम
 size: साइज़
 created: बनाया गया
 modified: संशोधन का समय
-checksum: चेकसम
 owner: मालिक
 edited_by: द्वारा संपादित
 folder: फ़ोल्डर
@@ -414,6 +416,7 @@ wysiwyg_options:
   backcolor: पृष्ठभूमि रंग
   selectall: सभी चुनें
 settings_webhooks: Webhooks
+settings_presets: पृष्टस्मृतियाँ
 fields:
   directus_collections:
     note: ध्यान दें
@@ -471,8 +474,6 @@ interfaces:
     display: दिखाएँ
   map:
     zoom: छोटा-बड़ा करें
-  system-folder:
-    folder: फ़ोल्डर
   list:
     sort: सॉर्ट
   boolean:
@@ -515,3 +516,4 @@ operations:
     subject: विषय
   request:
     url: URL
+standard: नार्मल फील्ड

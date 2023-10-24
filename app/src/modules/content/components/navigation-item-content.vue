@@ -8,7 +8,7 @@ withDefaults(
 	}>(),
 	{
 		icon: 'label',
-		color: 'var(--foreground-normal)',
+		color: 'var(--theme--foreground)',
 	}
 );
 </script>

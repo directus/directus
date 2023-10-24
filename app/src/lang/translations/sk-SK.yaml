@@ -53,6 +53,13 @@ or: Alebo
 init: Inicializácia
 dataset_too_large_currently_showing_n_items: Dataset je príliš veľký. Zobrazuje sa prvých {n} položiek.
 modifier: Modifikátor
+extension_interface: Rozhranie
+extension_display: Zobrazenie
+extension_layout: Rozloženie
+extension_panel: Panel
+extension_hook: Hák
+extension_modules: Moduly
+enable: Zapnúť
 custom: Vlastné
 hook: Hák
 fill_width: Vyplniť šírku
@@ -100,6 +107,7 @@ rename_folder: Premenovať priečinok
 delete_folder: Odstrániť priečinok
 prefix: Prefix
 suffix: Sufix
+promote_version_preview: Náhľad
 reset_bookmark: Obnoviť záložku
 update_bookmark: Aktualizovať záložku
 delete_bookmark: Odstrániť záložku
@@ -446,7 +454,6 @@ dimensions: Rozmery
 size: Veľkosť
 created: Vytvorené
 modified: Upravené
-checksum: Kontrolný súčet
 owner: Vlastník
 edited_by: Upravil
 folder: Priečinok
@@ -610,7 +617,6 @@ errors:
   RECORD_NOT_UNIQUE: Zistila sa duplicitná hodnota
   USER_SUSPENDED: Používateľ pozastavený
   CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
-  UNPROCESSABLE_ENTITY: Nespracovaná entita
   INTERNAL_SERVER_ERROR: Neočakávaná chyba
   NOT_NULL_VIOLATION: Hodnota nemôže byť null
   ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je príliš veľký na náhľad
@@ -967,12 +973,11 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
 no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
-settings_permissions: Role a oprávnenia
-settings_project: Nastavenia projektu
+settings_project: Nastavenia
 settings_webhooks: Webhooky
 settings_flows: Toky
-settings_presets: Presety a Záložky
-settings_translations: Vlastné preklady
+settings_presets: Záložky
+settings_translations: Preklady
 one_or_more_options_are_missing: Chýba jedna alebo viac možností
 configure_field_key_to_continue: Pred pokračovaním nastavte kľúč poľa
 scope: Rámec
@@ -1008,7 +1013,6 @@ page_help_files_collection: >-
   **Knižnica súborov** — Zoznamy všetkých súborov nahratých do tohoto projektu. Prispôsobte rozloženie, filtery a zoraďovanie, alebo si aj uložte záložky týchto rôznych konfigurácií na rýchly prístup.
 page_help_files_item: >-
   **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
-page_help_settings_project: "**Nastavenia projektu** — Globálne nastavenia vášho projektu."
 page_help_settings_datamodel_collections: >-
   **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
 page_help_settings_datamodel_fields: >-
@@ -1133,10 +1137,6 @@ fields:
     tags: Tagy
     user_preferences: Nastavenia používateľa
     language: Jazyk
-    theme: Téma
-    theme_auto: Automaticky (podľa systému)
-    theme_light: Svetlý režim
-    theme_dark: Tmavý režim
     tfa_secret: Dvojfaktorová autentifikácia
     admin_options: Možnosti admina
     status: Stav
@@ -1175,7 +1175,6 @@ fields:
     project_color: Farba projektu
     project_logo: Logo projektu
     default_language: Predvolený jazyk
-    branding: Branding a štýl
     public_foreground: Verejné popredie
     public_background: Verejné pozadie
     public_note: Verejná poznámka
@@ -1234,7 +1233,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Môj projekt...
     project_color_note: Prihlásenie a logo na pozadí
-    project_logo_note: Biele 40x40 SVG/PNG
     public_note_placeholder: Krátka, verejná správa s podporou markdown formátu...
     security_divider_title: Zabezpečenie
     auth_password_policy:
@@ -1668,7 +1666,6 @@ interfaces:
     description: Vyberie viacej súvisiacich položiek
     no_collection: Zbierka sa nenašla
   system-folder:
-    folder: Priečinok
     description: Vyberte priečinok
     field_hint: Predvolený priečinok na nahrávanie súborov bez určeného priečinka. Neovplyvní existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
@@ -2056,6 +2053,7 @@ panels:
     smooth: Hladké
     straight: Rovné
     step_line: Kroková čiara
+    show_legend: Zobraziť legendu
   meter:
     name: Merač
     description: Merač na sledovanie hodnôť
@@ -2196,3 +2194,14 @@ operations:
     batch: Dávkovo
     batch_size: Veľkosť dávky
     cache: Vyrovnávacia pamäť
+standard: Štandardné
+compact: Kompaktné
+style: Štýl
+fonts:
+  thin: Tenké
+  normal: Normálne
+  medium: Stredné
+  bold: Tučné
+  black: Čierna
+  italic: Kurzíva
+  auto: Auto

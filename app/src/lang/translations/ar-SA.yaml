@@ -53,6 +53,12 @@ or: أو
 init: إطلاق
 dataset_too_large_currently_showing_n_items: مجموعة البيانات كبيرة جداً. حالياً تظهر العناصر {n} الأولى.
 modifier: معدِل
+extension_interface: الواجهة
+extension_display: عرض
+extension_layout: نموذج العرض
+extension_panel: لوحة
+extension_hook: ربط
+extension_modules: الوحدات
 custom: تخصيص
 hook: ربط
 fill_width: العرض الكامل
@@ -436,7 +442,6 @@ dimensions: الأبعاد
 size: حجم
 created: تم الإنشاء
 modified: معدّل
-checksum: بصمة الملف
 owner: المالك
 edited_by: تم التحرير بواسطة
 folder: مجلد
@@ -592,7 +597,6 @@ errors:
   RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   USER_SUSPENDED: المستخدم موقوف
   CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
-  UNPROCESSABLE_ENTITY: كيان غير قابل للمعالجة
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
   ILLEGAL_ASSET_TRANSFORMATION: مصدر الصورة كبير جدًا للمعاينة
@@ -895,11 +899,11 @@ editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
 no_options_available: لا توجد خيارات متاحة
 settings_data_model: نموذج البيانات
-settings_permissions: الأدوار والأذونات
-settings_project: إعدادات المشروع
+settings_project: إعدادات
 settings_webhooks: روابط الويب (Webhooks)
 settings_flows: التدفقات
-settings_presets: الإعدادات المسبقة والعلامات
+settings_presets: محفوظات
+settings_translations: الترجمة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
 actions: الإجراءات
@@ -933,7 +937,6 @@ page_help_files_collection: >-
   **مكتبة الملفات** - قائمة جميع أصول الملفات التي تم تحميلها إلى هذا المشروع. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_files_item: >-
   **تفاصيل الملف** - نموذج لإدارة بيانات التعريف للملفات، تحرير الملف الأصلي، وتحديث إعدادات الوصول.
-page_help_settings_project: "**إعدادات المشروع** — عرض إعدادات المشروع."
 page_help_settings_datamodel_collections: >-
   **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
 page_help_settings_datamodel_fields: >-
@@ -1055,10 +1058,6 @@ fields:
     tags: الوسوم
     user_preferences: تفضيلات المستخدم
     language: لغة
-    theme: السمة
-    theme_auto: تلقائي (مبني على النظام)
-    theme_light: الوضع المضيء
-    theme_dark: الوضع المُعتِم
     tfa_secret: التحقق بخطوتين
     admin_options: خيارات المدير
     status: حالة
@@ -1090,7 +1089,6 @@ fields:
     project_color: لون المشروع
     project_logo: شعار المشروع
     default_language: اللغة الافتراضية
-    branding: نمط العلامة التجارية
     public_foreground: الصورة الأمامية العامة
     public_background: الخلفية العامة
     public_note: ملاحظة عامة
@@ -1144,7 +1142,6 @@ field_options:
   directus_settings:
     project_name_placeholder: مشروعي...
     project_color_note: خلفية تسجيل الدخول والشعار
-    project_logo_note: الأبيض 40x40 SVG/PNG
     public_note_placeholder: رسالة عامة قصيرة تدعم تنسيق مارك داون...
     security_divider_title: الأمان
     auth_password_policy:
@@ -1470,8 +1467,6 @@ interfaces:
     zoom: تكبير/تصغير
   list-o2m:
     description: حدد عدة عناصر ذات صلة
-  system-folder:
-    folder: مجلد
   select-radio:
     description: حدد اختيار واحد من خيارات متعددة
   list:
@@ -1684,3 +1679,11 @@ operations:
     flows: التدفقات
     flow: التدفق
     data: البيانات
+standard: قياسي
+compact: مضغوط
+fonts:
+  normal: عادي
+  bold: عريض
+  black: أسود
+  italic: خط مائل
+  auto: تلقائي

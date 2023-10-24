@@ -53,6 +53,13 @@ or: Або
 init: Ініціалізація
 dataset_too_large_currently_showing_n_items: Дані завеликі. Зараз показуються перші {n} елементів.
 modifier: Модифікатор
+extension_interface: Інтерфейс
+extension_display: Відображати
+extension_layout: Макет
+extension_panel: Панель
+extension_hook: Хук
+extension_modules: Модулі
+enable: Увімкнути
 custom: Власний
 hook: Хук
 fill_width: Ширина заповнення
@@ -96,6 +103,7 @@ rename_folder: Перейменувати папку
 delete_folder: Видалити папку
 prefix: Префікс
 suffix: Суфікс
+promote_version_preview: Перегляд
 reset_bookmark: Скинути закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
@@ -425,7 +433,6 @@ dimensions: Розміри
 size: Розмір
 created: Створено
 modified: Змінено
-checksum: Контрольна сума
 owner: Власник
 edited_by: Відредагували
 folder: Папка
@@ -581,7 +588,6 @@ errors:
   RECORD_NOT_UNIQUE: Виявлено ідентичне значення
   USER_SUSPENDED: Користувача призупинено
   CONTAINS_NULL_VALUES: Поле містить нульові значення
-  UNPROCESSABLE_ENTITY: Неможливо обробити запит
   INTERNAL_SERVER_ERROR: Неочікувана помилка
   NOT_NULL_VIOLATION: Значення не може бути null
   ILLEGAL_ASSET_TRANSFORMATION: Джерело зображення надто велике для попереднього перегляду
@@ -923,11 +929,11 @@ editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
 no_options_available: Варіанти недоступні
 settings_data_model: Модель даних
-settings_permissions: Ролі і Дозволи
-settings_project: Налаштування проекту
+settings_project: Налаштування
 settings_webhooks: Вебхуки
 settings_flows: Автоматизація
-settings_presets: Шаблони і закладки
+settings_presets: Закладки
+settings_translations: Переклади
 one_or_more_options_are_missing: Одно або більше налаштувань відсутні
 scope: Область застосування
 actions: Дії
@@ -962,7 +968,6 @@ page_help_files_collection: >-
   **Бібліотека файлів** — перелічує всі файли, завантажені до цього проекту. Налаштуйте макет, фільтри та сортування, щоб налаштувати свій вигляд, і навіть зберігайте закладки різних конфігурацій для швидкого доступу.
 page_help_files_item: >-
   **Відомості про файл** — форма для керування метаданими файлу, редагування вихідного об’єкта та оновлення налаштувань доступу.
-page_help_settings_project: "**Налаштування проекту** — глобальні параметри конфігурації вашого проекту."
 page_help_settings_datamodel_collections: >-
   **Модель даних: колекції** — перелічує всі доступні колекції. Це включає видимі, приховані та системні колекції, а також незмінені таблиці бази даних, які можна додавати.
 page_help_settings_datamodel_fields: >-
@@ -1084,10 +1089,6 @@ fields:
     tags: Теги
     user_preferences: Налаштування користувача
     language: Мова
-    theme: Тема
-    theme_auto: Автоматичний вибір (основано на системі)
-    theme_light: Світлий режим
-    theme_dark: Темний режим
     tfa_secret: Двофакторна автентифікація
     admin_options: Можливості адміністратора
     status: Статус
@@ -1125,7 +1126,6 @@ fields:
     project_color: Демонструвати колір
     project_logo: Демонструвати логотип
     default_language: Мова за замовчуванням
-    branding: Брендінг та стиль
     public_foreground: Публічний передній план
     public_background: Публічний фон
     public_note: Публічна нотатка
@@ -1185,7 +1185,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Мій проект...
     project_color_note: Фон входу та логотипу
-    project_logo_note: Білий 40x40 SVG/PNG
     public_note_placeholder: Коротке загальнодоступне повідомлення, яке підтримує розміткове форматування...
     security_divider_title: Захист
     auth_password_policy:
@@ -1608,7 +1607,6 @@ interfaces:
     description: Вибрати кілька пов'язаних об'єктів
     no_collection: Колекцію не знайдено
   system-folder:
-    folder: Папка
     description: Обрати теку
     root_name: Корінь файлової бібліотеки
     system_default: Стандартні налаштування
@@ -2058,3 +2056,12 @@ operations:
     parallel: Паралельно
     batch: Пакетно
     batch_size: Розмір пакету
+standard: Стандартний
+compact: Компактна
+style: Стиль
+fonts:
+  normal: Нормальний
+  bold: Напівжирний
+  black: Чорний
+  italic: Курсив
+  auto: Автоматично
