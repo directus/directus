@@ -306,24 +306,24 @@ test('nested m2o field', async () => {
 });
 
 test('nested o2m field', async () => {
-	const localDesiredField = 'localDesiredField';
-	const localDesiredFieldId = 'localDesiredFieldId';
+	const localDesiredField = randomIdentifier();
+	const localDesiredFieldId = randomIdentifier();
 
-	const localPkField = 'localPkField';
-	const localPkFieldId = 'localPkFieldId';
+	const localPkField = randomIdentifier();
+	const localPkFieldId = randomIdentifier();
 
-	const foreignTable = 'foreignTable';
-	const foreignTableId = 'foreignTableId';
+	const foreignTable = randomIdentifier();
+	const foreignTableId = randomIdentifier();
 
-	const foreignField1 = 'foreignField1';
-	const foreignField1Id = 'foreignField1Id';
-	const foreignField1Alias = 'foreignField1Alias';
+	const foreignField1 = randomIdentifier();
+	const foreignField1Id = randomIdentifier();
+	const foreignField1Alias = randomIdentifier();
 
-	const foreignField2 = 'foreignField2';
-	const foreignField2Id = 'foreignField2Id';
+	const foreignField2 = randomIdentifier();
+	const foreignField2Id = randomIdentifier();
 
-	const localRelationalField = 'relationalField';
-	const foreignIdField = 'collectionToJoinForeignKeyField';
+	const localRelationalField = randomIdentifier();
+	const foreignIdField = randomIdentifier();
 
 	const query: AbstractQuery = {
 		collection: rootCollection,
@@ -455,10 +455,10 @@ test('nested o2m field', async () => {
 	// the first query gets all the IDs of the root collection
 	// here we assume to get two rows back, each containing the fields specified by the user and the primary key field value
 
-	const localDesiredFieldResult1 = 'randomIdentifier()1';
-	const localDesiredFieldResult2 = 'randomIdentifier()2';
-	const localPkFieldValue1 = 'randomIdentifier()3';
-	const localPkFieldValue2 = 'randomIdentifier()4';
+	const localDesiredFieldResult1 = randomIdentifier();
+	const localDesiredFieldResult2 = randomIdentifier();
+	const localPkFieldValue1 = randomIdentifier();
+	const localPkFieldValue2 = randomIdentifier();
 
 	const mockedRootData = [
 		{
@@ -476,10 +476,10 @@ test('nested o2m field', async () => {
 	// we assume that the first row has two associated rows in the nested collection
 	// and the second row has one associated row in the nested collection
 
-	const foreignField1Value1 = 'randomIdentifier()9';
-	const foreignField2Value1 = 'randomIdentifier()10';
-	const foreignField1Value2 = 'randomIdentifier()11';
-	const foreignField2Value2 = 'randomIdentifier()12';
+	const foreignField1Value1 = randomIdentifier();
+	const foreignField2Value1 = randomIdentifier();
+	const foreignField1Value2 = randomIdentifier();
+	const foreignField2Value2 = randomIdentifier();
 
 	const mockedDataFromNestedCollection1 = [
 		{
@@ -492,8 +492,8 @@ test('nested o2m field', async () => {
 		},
 	];
 
-	const foreignField1Value3 = 'randomIdentifier()13';
-	const foreignField2Value3 = 'randomIdentifier()14';
+	const foreignField1Value3 = randomIdentifier();
+	const foreignField2Value3 = randomIdentifier();
 
 	const mockedDataFromNestedCollection2 = [
 		{
