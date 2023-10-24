@@ -4,9 +4,11 @@ import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
+import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { ActivityService } from './activity.js';
 import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
@@ -248,6 +250,12 @@ export class VersionsService extends ItemsService {
 			data: revisionDelta,
 			delta: revisionDelta,
 		});
+
+		const { cache } = getCache();
+
+		if (shouldClearCache(cache, undefined, version['collection'])) {
+			cache.clear();
+		}
 
 		return data;
 	}
