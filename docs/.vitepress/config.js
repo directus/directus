@@ -213,7 +213,7 @@ gtag('config', 'UA-24637628-7');
 });
 
 function typeDocSidebarFormat(item) {
-	if (item.link !== null && !item.link.startsWith('/packages')) {
+	if (item.link && !item.link.startsWith('/packages')) {
 		item.link = item.link.substring(item.link.indexOf('/packages'));
 	}
 
@@ -405,6 +405,10 @@ function sidebar() {
 					text: 'Collections',
 				},
 				{
+					link: '/reference/system/versions',
+					text: 'Content Versions',
+				},
+				{
 					link: '/reference/system/dashboards',
 					text: 'Dashboards',
 				},
@@ -533,11 +537,15 @@ function sidebar() {
 					text: 'Introduction',
 				},
 				{
+					link: '/extensions/installing-extensions',
+					text: 'Installing Extensions',
+				},
+				{
 					link: '/extensions/creating-extensions',
 					text: 'Creating Extensions',
 				},
 				{
-					text: 'Extension Types',
+					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
 						{
@@ -581,17 +589,31 @@ function sidebar() {
 							text: 'Panels',
 						},
 						{
-							link: '/extensions/themes',
-							text: 'Themes',
-						},
-						{
 							link: '/extensions/bundles',
 							text: 'Bundles',
 						},
 					],
 				},
 				{
-					text: 'Packages',
+					text: 'Secure Extensions',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/sandbox/introduction',
+							text: 'Introduction',
+						},
+						{
+							link: '/extensions/sandbox/register',
+							text: 'Registering Extensions',
+						},
+						{
+							link: '/extensions/sandbox/sandbox-sdk',
+							text: 'Sandbox SDK',
+						},
+					],
+				},
+				{
+					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
 			],
@@ -607,7 +629,7 @@ function sidebar() {
 						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
 						{ link: '/contributing/pull-request-process', text: 'Pull Request Process' },
 						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
-						{ link: '/contributing/running-locally', text: 'Running Locally' },
+						{ link: '/contributing/running-locally', text: 'Running Dev Environment' },
 						{ link: '/contributing/tests', text: 'Tests' },
 					],
 				},
@@ -825,6 +847,10 @@ function sidebarUserGuide() {
 				{
 					text: 'Project Settings',
 					link: '/user-guide/settings/project-settings',
+				},
+				{
+					text: 'Theming',
+					link: '/user-guide/settings/theming',
 				},
 				{
 					text: 'Preset and Bookmarks',

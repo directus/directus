@@ -56,7 +56,10 @@ const errorFormatted = computed(() => {
 });
 
 async function onSubmit() {
-	if (email.value === null || password.value === null) return;
+	if (email.value === null || password.value === null) {
+		error.value = 'INVALID_PAYLOAD';
+		return;
+	}
 
 	try {
 		loggingIn.value = true;
@@ -127,11 +130,11 @@ async function onSubmit() {
 }
 
 .forgot-password {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 </style>

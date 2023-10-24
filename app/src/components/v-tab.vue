@@ -37,10 +37,10 @@ function onClick() {
 
 <style>
 body {
-	--v-tab-color: var(--foreground-subdued);
-	--v-tab-background-color: var(--background-page);
-	--v-tab-color-active: var(--foreground-normal);
-	--v-tab-background-color-active: var(--background-page);
+	--v-tab-color: var(--theme--foreground-subdued);
+	--v-tab-background-color: var(--theme--background);
+	--v-tab-color-active: var(--theme--foreground);
+	--v-tab-background-color-active: var(--theme--background);
 }
 </style>
 

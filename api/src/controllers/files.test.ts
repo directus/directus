@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import FormData from 'form-data';
 import { PassThrough } from 'stream';
 import { describe, expect, it, vi } from 'vitest';
-import { InvalidPayloadError } from '../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import { multipartHandler } from './files.js';
 
 vi.mock('../../src/database');

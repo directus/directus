@@ -37,6 +37,8 @@ interface Props {
 	type?: string;
 	/** Hide the arrows that are used to increase or decrease a number */
 	hideArrows?: boolean;
+	/** The maximum amount of characters that can be entered */
+	maxLength?: number;
 	/** The maximum number that can be entered */
 	max?: number;
 	/** The minimum number that can be entered */
@@ -237,6 +239,7 @@ function stepDown() {
 					:placeholder="placeholder ? String(placeholder) : undefined"
 					:autocomplete="autocomplete"
 					:type="type"
+					:maxlength="maxLength"
 					:min="min"
 					:max="max"
 					:step="step"
@@ -278,17 +281,17 @@ function stepDown() {
 
 <style lang="scss" scoped>
 :global(body) {
-	--v-input-font-family: var(--family-sans-serif);
-	--v-input-placeholder-color: var(--foreground-subdued);
-	--v-input-box-shadow-color-focus: var(--primary);
-	--v-input-color: var(--foreground-normal);
-	--v-input-background-color: var(--background-input);
-	--v-input-border-color-focus: var(--primary);
+	--v-input-font-family: var(--theme--font-family-sans-serif);
+	--v-input-placeholder-color: var(--theme--foreground-subdued);
+	--v-input-box-shadow-color-focus: var(--theme--primary);
+	--v-input-color: var(--theme--foreground);
+	--v-input-background-color: var(--theme--form--field--input--background);
+	--v-input-border-color-focus: var(--theme--primary);
 }
 
 .v-input {
 	--arrow-color: var(--border-normal);
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -334,7 +337,7 @@ function stepDown() {
 			display: block;
 
 			&:hover:not(.disabled) {
-				--arrow-color: var(--primary);
+				--arrow-color: var(--theme--primary);
 			}
 
 			&:active:not(.disabled) {
@@ -352,7 +355,7 @@ function stepDown() {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-input);
+			background-color: var(--theme--form--field--input--background);
 			border-color: var(--border-normal-alt);
 		}
 
@@ -361,7 +364,7 @@ function stepDown() {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-input);
+			background-color: var(--theme--form--field--input--background);
 			border-color: var(--v-input-border-color-focus);
 			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
 		}
@@ -369,14 +372,14 @@ function stepDown() {
 		&.disabled {
 			--arrow-color: var(--border-normal);
 
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			background-color: var(--background-subdued);
 			border-color: var(--border-normal);
 		}
 
 		.prefix,
 		.suffix {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.append {
@@ -446,7 +449,7 @@ function stepDown() {
 
 			.prefix,
 			.suffix {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 

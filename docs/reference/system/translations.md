@@ -37,7 +37,7 @@ List all translations that exist in Directus.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `GET /translations`
@@ -73,7 +73,7 @@ available, data will be an empty array.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `GET /translations`
@@ -104,7 +104,7 @@ List an existing translation by primary key.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `GET /translations/:id`
@@ -133,7 +133,7 @@ Returns the requested [translation object](#the-translations-object).
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -162,7 +162,7 @@ Create a new translation.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `POST /translations`
@@ -197,7 +197,7 @@ Returns the [translation object](#the-translations-object) for the created trans
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `POST /translations`
@@ -236,7 +236,7 @@ Create multiple new translation.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `POST /translations`
@@ -271,7 +271,7 @@ Returns the [translation object](#the-translations-object) for the created trans
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `POST /translations`
@@ -324,7 +324,7 @@ Update an existing translation.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /translations/:id`
@@ -359,7 +359,7 @@ Returns the [translation object](#the-translations-object) for the updated trans
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -394,7 +394,7 @@ Update multiple existing translations.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /translations`
@@ -438,7 +438,7 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /translations`
@@ -476,7 +476,7 @@ Delete an existing translation.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /translations/:id`
@@ -501,7 +501,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba`
@@ -526,7 +526,7 @@ Delete multiple existing translations.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /translations`
@@ -557,7 +557,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /translations`

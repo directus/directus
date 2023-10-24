@@ -1,6 +1,6 @@
 {
 	"name": "@directus/validation",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
@@ -30,8 +30,8 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@vitest/coverage-c8": "0.31.1",
-		"tsup": "6.7.0",
-		"typescript": "5.0.4",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	},
 	"dependencies": {

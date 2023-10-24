@@ -7,6 +7,9 @@ duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
 full_width: Pilno pločio
 group: Grupė
+extension_interface: Sąsaja
+extension_display: Rodymas
+extension_layout: Išdėstymas
 fill_width: Užpildyti visą plotį
 field_name_translations: Laukų pavadinimų vertimai
 enter_password_to_enable_tfa: Norint įjungti dviejų veiksmų autentifikavimą, reikia įvesti savo slaptažodį
@@ -267,7 +270,6 @@ dimensions: Matmenys
 size: Dydis
 created: Sukurta
 modified: Modifikuota
-checksum: Kontrolinė suma
 owner: Savininkas
 edited_by: Redaguota
 folder: Aplankas
@@ -557,10 +559,10 @@ editing_in: 'Redaguojamas elementas kolekcijoje: {collection}'
 editing_in_batch: 'Redaguojami {count} elementai'
 no_options_available: Nėra parinkčių
 settings_data_model: Duomenų modelis
-settings_permissions: Grupės ir leidimai
-settings_project: Projekto nustatymai
+settings_project: Nustatymai
 settings_webhooks: '„Webhook“''ai'
-settings_presets: Ruošiniai ir žymos
+settings_presets: Žymės
+settings_translations: Vertimai
 scope: Apimtis
 layout: Išdėstymas
 changes_are_permanent: Pakeitimai neatstatomi
@@ -583,7 +585,6 @@ page_help_files_collection: >-
   ***Failų biblioteka** — rodomi visi projekto failai. Koreguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_files_item: >-
   **Failo duomenys** — forma failo meta duomenų tvarkymui, originalaus failo redagavimui ir prieigos nustatymų atnaujinimui.
-page_help_settings_project: "**Projekto nustatymai** — globali projekto konfigūracija."
 page_help_settings_datamodel_collections: >-
   **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
 page_help_settings_datamodel_fields: >-
@@ -661,7 +662,6 @@ fields:
     description: Aprašymas
     tags: Žymos
     language: Kalba
-    theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
     status: Būsena
     status_active: Aktyvus
@@ -855,8 +855,6 @@ interfaces:
     edit: Redaguoti
   map:
     zoom: Padidinti
-  system-folder:
-    folder: Aplankas
   list:
     sort: Rūšiuoti
   tags:
@@ -995,3 +993,10 @@ operations:
     recipient: Vartotojas
   request:
     url: URL
+standard: Standartinis
+compact: Kompaktiškas
+fonts:
+  normal: Normalus
+  bold: Paryškintas
+  italic: Pasviręs
+  auto: Automatiškai

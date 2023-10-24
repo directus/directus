@@ -140,7 +140,7 @@ function getLinkForItem(item: any) {
 }
 
 .subdued {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .links {

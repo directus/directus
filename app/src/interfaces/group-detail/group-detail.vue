@@ -36,6 +36,15 @@ const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
 
+// In case that conditions change the start prop after the group already got rendered
+// caused by the async loading of data to run the conditions against
+watch(
+	() => props.loading,
+	(newVal) => {
+		if (!newVal) detailOpen.value = props.start === 'open';
+	}
+);
+
 const edited = computed(() => {
 	if (!props.values) return false;
 
@@ -154,7 +163,7 @@ watch(validationMessages, (newVal, oldVal) => {
 	display: block;
 	width: 4px;
 	height: 4px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--theme--form--field--input--foreground-subdued);
 	border-radius: 4px;
 	content: '';
 }
@@ -165,6 +174,6 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 </style>

@@ -53,6 +53,13 @@ or: Of
 init: Initialiseren
 dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de eerste {n} items worden nu weergegeven.
 modifier: Aanpasser
+extension_interface: Interface
+extension_display: Toon
+extension_layout: Lay-out
+extension_panel: Paneel
+extension_hook: Hook
+extension_modules: Modules
+enable: Inschakelen
 custom: Aangepast
 hook: Hook
 fill_width: Vul Breedte
@@ -444,7 +451,6 @@ dimensions: Afmetingen
 size: Grootte
 created: Aangemaakt
 modified: Aangepast
-checksum: Checksum
 owner: Eigenaar
 edited_by: Aangepast door
 folder: Map
@@ -605,7 +611,6 @@ errors:
   RECORD_NOT_UNIQUE: Verdubbelde waarde gedetecteerd
   USER_SUSPENDED: Gebruiker geschorst
   CONTAINS_NULL_VALUES: Veld bevat NULL waarden
-  UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
   NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
   ILLEGAL_ASSET_TRANSFORMATION: Afbeeldingsbron te groot om een voorbeeld van te bekijken
@@ -952,11 +957,11 @@ editing_unit: '{unit} aan het bewerken'
 editing_in_batch: '{count} items aan het wijzigen'
 no_options_available: Geen opties beschikbaar
 settings_data_model: Datamodel
-settings_permissions: Rollen & Permissies
-settings_project: Projectinstellingen
+settings_project: Instellingen
 settings_webhooks: Webhooks
 settings_flows: Flows
-settings_presets: Voorkeuren & Bladwijzers
+settings_presets: Bladwijzers
+settings_translations: Vertalingen
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
 actions: Acties
@@ -991,7 +996,6 @@ page_help_files_collection: >-
   **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_files_item: >-
   **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele bestand en het bijwerken van toegangsinstellingen.
-page_help_settings_project: "**Projectinstellingen** - De algemene configuratieopties van je project."
 page_help_settings_datamodel_collections: >-
   **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
 page_help_settings_datamodel_fields: >-
@@ -1107,10 +1111,6 @@ fields:
     tags: Tags
     user_preferences: Gebruikersvoorkeuren
     language: Taal
-    theme: Thema
-    theme_auto: Automatisch (gebaseerd op systeem)
-    theme_light: Lichte modus
-    theme_dark: Donkere Modus
     tfa_secret: Twee-factor-authenticatie (2FA)
     admin_options: Admin opties
     status: Status
@@ -1139,7 +1139,6 @@ fields:
     project_color: Projectkleur
     project_logo: Projectlogo
     default_language: Standaardtaal
-    branding: Merk & Stijl
     public_foreground: Openbare voorgrond
     public_background: Openbare achtergrond
     public_note: Openbare notitie
@@ -1186,7 +1185,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mijn project...
     project_color_note: Inlog- en logoachtergrond
-    project_logo_note: Wit 40x40 SVG/PNG
     public_note_placeholder: Een kort, publiek bericht dat markdown formattering ondersteunt...
     security_divider_title: Beveiliging
     auth_password_policy:
@@ -1484,8 +1482,6 @@ interfaces:
     description: Een korte melding weergeven
   list-o2m:
     no_collection: Deze collectie is niet vindbaar
-  system-folder:
-    folder: Map
   select-radio:
     radio-buttons: Keuzerondjes
   list:
@@ -1726,6 +1722,7 @@ panels:
     horizontal: Horizontaal
   linechart:
     straight: Recht
+    show_legend: Legenda tonen
 triggers:
   webhook:
     name: Webhook
@@ -1770,3 +1767,14 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
+standard: Standaard
+compact: Compact
+style: Stijl
+fonts:
+  thin: Dun
+  normal: Normaal
+  medium: Middel
+  bold: Vetgedrukt
+  black: Zwart
+  italic: Cursief
+  auto: Automatisch

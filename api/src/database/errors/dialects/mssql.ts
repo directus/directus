@@ -5,7 +5,7 @@ import {
 	RecordNotUniqueError,
 	ValueOutOfRangeError,
 	ValueTooLongError,
-} from '../../../errors/index.js';
+} from '@directus/errors';
 
 import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';

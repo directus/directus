@@ -389,7 +389,7 @@ function useActions() {
 		</template>
 
 		<div class="drawer-item-content">
-			<file-preview-replace v-if="file" class="preview" :file="file" :in-modal="true" @replace="refresh" />
+			<file-preview-replace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
 
 			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
 				{{ t('no_visible_fields_copy') }}

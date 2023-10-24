@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-s3",
-	"version": "10.0.11",
+	"version": "10.0.13",
 	"description": "S3 file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -37,8 +37,8 @@
 		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@vitest/coverage-c8": "0.31.1",
-		"tsup": "7.1.0",
-		"typescript": "5.0.4",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	}
 }

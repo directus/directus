@@ -48,7 +48,7 @@ function update(newSelection: readonly (string | number)[]) {
 
 <style scoped>
 :global(body) {
-	--v-tabs-underline-color: var(--foreground-normal);
+	--v-tabs-underline-color: var(--theme--foreground);
 }
 
 .v-tabs.horizontal {

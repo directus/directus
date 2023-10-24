@@ -15,8 +15,8 @@ withDefaults(
 		label: () => i18n.global.t('enabled'),
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
-		colorOn: 'var(--primary)',
-		colorOff: 'var(--foreground-subdued)',
+		colorOn: 'var(--theme--primary)',
+		colorOff: 'var(--theme--form--field--input--foreground-subdued)',
 	}
 );
 

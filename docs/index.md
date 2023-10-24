@@ -26,12 +26,17 @@ import Badge from './.vitepress/components/Badge.vue'
 		</div>
 		<div :class="$style.heroToggler">
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API" :alwaysDark="true">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api" alwaysDark maintainHeight>
 <template #rest>
 
 ```js
-GET /items/products/4?
-	fields[]=id,status,title,category,image.id,image.name
+GET /items/products/4
+	?fields[]=id
+	&fields[]=status
+	&fields[]=title
+	&fields[]=category
+	&fields[]=image.id
+	&fields[]=image.name
 ```
 
 </template>

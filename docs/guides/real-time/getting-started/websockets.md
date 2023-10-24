@@ -57,7 +57,7 @@ connection.addEventListener('open', function () {
 });
 
 connection.addEventListener('message', function (message) {
-	const { data } = JSON.parse(message);
+	const data = JSON.parse(message.data);
 	console.log({ event: 'onmessage', data });
 });
 

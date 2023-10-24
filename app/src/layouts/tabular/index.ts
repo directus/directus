@@ -9,8 +9,8 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { defineLayout } from '@directus/utils';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -230,7 +230,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
-						const description: string | null = null;
+						let description: string | null = null;
+
+						const fieldParts = field.key.split('.');
+
+						if (fieldParts.length > 1) {
+							const fieldNames = fieldParts.map((fieldKey, index) => {
+								const pathPrefix = fieldParts.slice(0, index);
+								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
+								return field?.name ?? fieldKey;
+							});
+
+							description = fieldNames.join(' -> ');
+						}
 
 						return {
 							text: field.name,

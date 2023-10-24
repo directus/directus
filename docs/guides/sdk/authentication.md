@@ -53,7 +53,7 @@ import { createDirectus, realtime } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(realtime());
 
-client.send(JSON.stringify({ type: 'auth', email: email, password: password }));
+client.sendMessage({ type: 'auth', email: email, password: password });
 ```
 
 When using Directus Realtime's [default 'handshake' authentication strategy](/guides/real-time/authentication), the
@@ -103,9 +103,9 @@ import { createDirectus, realtime } from '@directus/sdk';
 const client = createDirectus('http://directus.example.com').with(realtime());
 
 // with access token or static token
-client.send(JSON.stringify({ type: 'auth', access_token: 'TOKEN' }));
+client.sendMessage({ type: 'auth', access_token: 'TOKEN' });
 // with refresh token
-client.send(JSON.stringify({ type: 'auth', refresh_token: 'TOKEN' }));
+client.sendMessage({ type: 'auth', refresh_token: 'TOKEN' });
 ```
 
 ## Get a Token

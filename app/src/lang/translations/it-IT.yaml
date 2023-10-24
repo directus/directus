@@ -27,6 +27,7 @@ method: Metodo
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+extensions: Estensioni
 modules: Moduli
 module_bar: Barra del modulo
 logs: Registri
@@ -53,6 +54,14 @@ or: O
 init: Inizializzazione
 dataset_too_large_currently_showing_n_items: Il dataset è troppo grande. Stai vedendo i primi {n} elementi.
 modifier: Modificatore
+extension_interface: Interfaccia
+extension_display: Mostra
+extension_layout: Layout
+extension_panel: Pannello
+extension_hook: Hook
+extension_operation: Operazione
+extension_modules: Moduli
+enable: Attivato
 custom: Personalizzato
 hook: Hook
 fill_width: Riempi larghezza
@@ -100,6 +109,7 @@ rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
+promote_version_preview: Anteprima
 reset_bookmark: Reimposta Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
@@ -145,6 +155,7 @@ validationError:
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
   unique: Il valore deve essere unico
+  email: Il valore deve essere un indirizzo email valido
   regex: Il valore non ha il formato corretto
   starts_with: Il valore deve iniziare con {substring}
   istarts_with: Il valore deve iniziare con {substring}
@@ -447,7 +458,6 @@ dimensions: Dimensioni
 size: Dimensione
 created: Creato
 modified: Modificato
-checksum: Checksum
 owner: Proprietario
 edited_by: Modificato da
 folder: Cartella
@@ -465,6 +475,7 @@ import_from_url: Importa File da URL
 replace_from_device: Sostituisci File dal Dispositivo
 replace_from_library: Sostituisci File dalla Libreria
 replace_from_url: Sostituisci File da URL
+no_image_selected: Nessuna immagine selezionata
 no_file_selected: Nessun File Selezionato
 download_file: Scarica File
 open_file_in_tab: Apri il file in una nuova scheda
@@ -584,6 +595,7 @@ bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è sta
 bookmark_doesnt_exist_cta: Ritorna alla raccolta
 select_an_item: Seleziona un elemento...
 edit: Modifica
+edit_item: Modifica elemento
 enabled: Abilitato
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
@@ -613,7 +625,6 @@ errors:
   RECORD_NOT_UNIQUE: Rilevato valore duplicato
   USER_SUSPENDED: Utente sospeso
   CONTAINS_NULL_VALUES: Il campo contiene valori nulli
-  UNPROCESSABLE_ENTITY: Entità non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
   ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
@@ -750,6 +761,7 @@ upload_pending: Caricamento In Attesa
 drag_file_here: Trascina e rilascia il file qui
 click_to_browse: Clicca per Sfogliare
 interface_options: Opzioni interfaccia
+display_options: Opzioni di visualizzazione
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
@@ -970,12 +982,11 @@ editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
-settings_permissions: Ruoli e permessi
-settings_project: Impostazioni progetto
+settings_project: impostazioni
 settings_webhooks: Webhooks
 settings_flows: Flussi
-settings_presets: Preset & Segnalibri
-settings_translations: Traduzioni personalizzate
+settings_presets: Segnalibri
+settings_translations: Traduzioni
 one_or_more_options_are_missing: Mancano una o più opzioni
 configure_field_key_to_continue: Imposta il nome del campo per continuare
 scope: Ambito
@@ -1011,7 +1022,7 @@ page_help_files_collection: >-
   **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
-page_help_settings_project: "**Impostazioni progetto** — Le opzioni di configurazione globale del tuo progetto."
+page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
 page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
 page_help_settings_datamodel_fields: >-
@@ -1136,10 +1147,6 @@ fields:
     tags: Tag
     user_preferences: Preferenze utente
     language: Lingua
-    theme: Tema
-    theme_auto: Automatico (in base al sistema)
-    theme_light: Tema chiaro
-    theme_dark: Tema scuro
     tfa_secret: Autenticazione a due fattori
     admin_options: Opzioni Amministratore
     status: Stato
@@ -1178,7 +1185,6 @@ fields:
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
     default_language: Lingua predefinita
-    branding: Branding e stile
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
@@ -1238,7 +1244,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Il mio progetto...
     project_color_note: Sfondo per l'accesso e il logo
-    project_logo_note: SVG/PNG 40x40 bianca
     public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
     security_divider_title: Sicurezza
     auth_password_policy:
@@ -1453,6 +1458,7 @@ search: Ricerca
 select_existing: Seleziona Esistente
 select_field_type: Seleziona un tipo di campo
 select_interface: Seleziona un'interfaccia
+select_display: Seleziona una visualizzazione
 settings: impostazioni
 sign_in: Accedi
 sign_out: Disconnessione
@@ -1623,6 +1629,11 @@ interfaces:
     description: Una modale per selezionare le opzioni di un'interfaccia
   system-display:
     display: Mostra
+    description: Sleziona una visualizzazione esistente
+    placeholder: Seleziona una visualizzazione...
+  system-display-options:
+    display-options: Opzioni di visualizzazione
+    description: Una modale per selezionare le opzioni di una visualizzazione
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
@@ -1675,7 +1686,7 @@ interfaces:
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta
   system-folder:
-    folder: Cartella
+    folder: Cartella radice
     description: Seleziona una cartella
     field_hint: Cartella predefinita per i file caricati senza una cartella specificata. Non influisce sui file esistenti.
     root_name: Radice libreria file
@@ -1693,6 +1704,7 @@ interfaces:
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
     interface_group: Opzioni interfaccia
+    display_group: Opzioni di visualizzazione
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore
@@ -2064,6 +2076,7 @@ panels:
     smooth: Arrotondato
     straight: Dritto
     step_line: A gradini
+    show_legend: Mostra legenda
   meter:
     name: Metro
     description: Metro per il rilevamento dei valori
@@ -2214,3 +2227,14 @@ operations:
     batch: A gruppi
     batch_size: Dimensione dei gruppi
     cache: Cache
+standard: Standard
+compact: Compatto
+style: Stile
+fonts:
+  thin: Sottile
+  normal: Normale
+  medium: Media
+  bold: Grassetto
+  black: Nero
+  italic: Corsivo
+  auto: Automatica

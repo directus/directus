@@ -301,7 +301,7 @@ function updateSort(newSort: Sort) {
 			<draggable
 				v-else
 				v-model="internalItems"
-				:force-fallback="true"
+				force-fallback
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
@@ -347,8 +347,8 @@ function updateSort(newSort: Sort) {
 :global(body) {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
-	--v-table-color: var(--foreground-normal);
-	--v-table-background-color: var(--background-input);
+	--v-table-color: var(--theme--foreground);
+	--v-table-background-color: var(--theme--form--field--input--background);
 }
 
 .v-table {
@@ -450,13 +450,13 @@ table :deep(.sortable-ghost .cell) {
 .loading-text,
 .no-items-text {
 	text-align: center;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 }
 
 .loading-text td,
 .no-items-text td {
 	padding: 16px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .inline {
@@ -469,7 +469,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .disabled {
-	--v-table-color: var(--foreground-subdued);
+	--v-table-color: var(--theme--foreground-subdued);
 	--v-table-background-color: var(--background-subdued);
 }
 </style>

@@ -6,7 +6,7 @@ readTime: 7 min read
 # Custom API Hooks <small></small>
 
 > Custom API Hooks allow running custom logic when a specified event occurs within your project. There are different
-> types of events to choose from.
+> types of events to choose from. They are developed using JavaScript / Node.js.
 
 ## Extension Entrypoint
 
@@ -191,24 +191,25 @@ export default ({ embed }, { env }) => {
 
 ### Filter Events
 
-| Name                          | Payload                              | Meta                                        |
-| ----------------------------- | ------------------------------------ | ------------------------------------------- |
-| `request.not_found`           | `false`                              | `request`, `response`                       |
-| `request.error`               | The request errors                   | --                                          |
-| `database.error`              | The database error                   | `client`                                    |
-| `auth.login`                  | The login payload                    | `status`, `user`, `provider`                |
-| `auth.jwt`                    | The auth token                       | `status`, `user`, `provider`, `type`        |
-| `auth.create`<sup>[1]</sup>   | The created user                     | `identifier`, `provider`, `providerPayload` |
-| `auth.update`<sup>[2]</sup>   | The updated auth token<sup>[3]</sup> | `identifier`, `provider`, `providerPayload` |
-| `authenticate`                | The empty accountability object      | `req`                                       |
-| `(<collection>.)items.query`  | The items query                      | `collection`                                |
-| `(<collection>.)items.read`   | The read item                        | `query`, `collection`                       |
-| `(<collection>.)items.create` | The new item                         | `collection`                                |
-| `(<collection>.)items.update` | The updated item                     | `keys`, `collection`                        |
-| `(<collection>.)items.delete` | The keys of the item                 | `collection`                                |
-| `<system-collection>.create`  | The new item                         | `collection`                                |
-| `<system-collection>.update`  | The updated item                     | `keys`, `collection`                        |
-| `<system-collection>.delete`  | The keys of the item                 | `collection`                                |
+| Name                           | Payload                              | Meta                                        |
+| ------------------------------ | ------------------------------------ | ------------------------------------------- |
+| `request.not_found`            | `false`                              | `request`, `response`                       |
+| `request.error`                | The request errors                   | --                                          |
+| `database.error`               | The database error                   | `client`                                    |
+| `auth.login`                   | The login payload                    | `status`, `user`, `provider`                |
+| `auth.jwt`                     | The auth token                       | `status`, `user`, `provider`, `type`        |
+| `auth.create`<sup>[1]</sup>    | The created user                     | `identifier`, `provider`, `providerPayload` |
+| `auth.update`<sup>[2]</sup>    | The updated auth token<sup>[3]</sup> | `identifier`, `provider`, `providerPayload` |
+| `authenticate`                 | The empty accountability object      | `req`                                       |
+| `(<collection>.)items.query`   | The items query                      | `collection`                                |
+| `(<collection>.)items.read`    | The read item                        | `query`, `collection`                       |
+| `(<collection>.)items.create`  | The new item                         | `collection`                                |
+| `(<collection>.)items.update`  | The updated item                     | `keys`, `collection`                        |
+| `(<collection>.)items.promote` | The promoted item                    | `collection`, `item`, `version`             |
+| `(<collection>.)items.delete`  | The keys of the item                 | `collection`                                |
+| `<system-collection>.create`   | The new item                         | `collection`                                |
+| `<system-collection>.update`   | The updated item                     | `keys`, `collection`                        |
+| `<system-collection>.delete`   | The keys of the item                 | `collection`                                |
 
 <sup>[1]</sup> Available for `ldap`, `oauth2`, `openid` and `saml` driver.
 
@@ -226,21 +227,22 @@ export default ({ embed }, { env }) => {
 
 ### Action Events
 
-| Name                          | Meta                                                |
-| ----------------------------- | --------------------------------------------------- |
-| `server.start`                | `server`                                            |
-| `server.stop`                 | `server`                                            |
-| `response`                    | `request`, `response`, `ip`, `duration`, `finished` |
-| `auth.login`                  | `payload`, `status`, `user`, `provider`             |
-| `files.upload`                | `payload`, `key`, `collection`                      |
-| `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
-| `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
-| `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
-| `(<collection>.)items.delete` | `keys`, `collection`                                |
-| `(<collection>.)items.sort`   | `collection`, `item`, `to`                          |
-| `<system-collection>.create`  | `payload`, `key`, `collection`                      |
-| `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
-| `<system-collection>.delete`  | `keys`, `collection`                                |
+| Name                           | Meta                                                |
+| ------------------------------ | --------------------------------------------------- |
+| `server.start`                 | `server`                                            |
+| `server.stop`                  | `server`                                            |
+| `response`                     | `request`, `response`, `ip`, `duration`, `finished` |
+| `auth.login`                   | `payload`, `status`, `user`, `provider`             |
+| `files.upload`                 | `payload`, `key`, `collection`                      |
+| `(<collection>.)items.read`    | `payload`, `query`, `collection`                    |
+| `(<collection>.)items.create`  | `payload`, `key`, `collection`                      |
+| `(<collection>.)items.update`  | `payload`, `keys`, `collection`                     |
+| `(<collection>.)items.promote` | `payload`, `collection`, `item`, `version`          |
+| `(<collection>.)items.delete`  | `keys`, `collection`                                |
+| `(<collection>.)items.sort`    | `collection`, `item`, `to`                          |
+| `<system-collection>.create`   | `payload`, `key`, `collection`                      |
+| `<system-collection>.update`   | `payload`, `keys`, `collection`                     |
+| `<system-collection>.delete`   | `keys`, `collection`                                |
 
 ::: tip System Collections
 

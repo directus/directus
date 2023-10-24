@@ -7,7 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { InvalidPayloadError } from '../../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import logger from '../../logger.js';
 import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';

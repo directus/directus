@@ -52,6 +52,13 @@ or: Eller
 init: Init
 dataset_too_large_currently_showing_n_items: Dataset är för stort. Visar för närvarande de första {n} objekten.
 modifier: Modifierare
+extension_interface: Gränssnitt
+extension_display: Visa
+extension_layout: Layout
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Moduler
+enable: Aktivera
 custom: Anpassad
 hook: Hook
 fill_width: Full bredd
@@ -95,6 +102,7 @@ rename_folder: Döp om mapp
 delete_folder: Ta bort mapp
 prefix: Prefix
 suffix: Suffix
+promote_version_preview: Förhandsgranska
 reset_bookmark: Återställ bokmärke
 update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
@@ -422,7 +430,6 @@ dimensions: Dimensioner
 size: Storlek
 created: Skapad
 modified: Ändrad
-checksum: Kontrollsumma
 owner: Ägare
 edited_by: Redigerad av
 folder: Mapp
@@ -575,7 +582,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   USER_SUSPENDED: Användare avstängd
   CONTAINS_NULL_VALUES: Fältet innehåller nullvärden
-  UNPROCESSABLE_ENTITY: Kan inte processa data
   INTERNAL_SERVER_ERROR: Oväntat fel
   NOT_NULL_VIOLATION: Värdet kan inte vara null
   ILLEGAL_ASSET_TRANSFORMATION: Bildkälla för stor för att förhandsgranska
@@ -882,11 +888,11 @@ editing_unit: 'Redigerar {unit}'
 editing_in_batch: 'Massredigerar {count} objekt'
 no_options_available: Inga tillgängliga alternativ
 settings_data_model: Datamodell
-settings_permissions: Roller & behörigheter
-settings_project: Projektinställningar
+settings_project: Inställningar
 settings_webhooks: Webhooks
 settings_flows: Flöden
-settings_presets: Förinställningar & bokmärken
+settings_presets: Bokmärken
+settings_translations: Översättningar
 one_or_more_options_are_missing: Ett eller flera alternativ saknas
 scope: Omfattning
 actions: Åtgärder
@@ -921,7 +927,6 @@ page_help_files_collection: >-
   **Filbibliotek** — Visar alla filer uppladdade till detta projekt. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
 page_help_files_item: >-
   **Detaljvy fil** — Ett formulär för att hantera filens metadata, redigera den ursprungliga filen och uppdatera åtkomstinställningar.
-page_help_settings_project: "**Projektinställningar** — Projektets globala konfigurationsalternativ."
 page_help_settings_datamodel_collections: >-
   **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
 page_help_settings_datamodel_fields: >-
@@ -1027,10 +1032,6 @@ fields:
     tags: Etiketter
     user_preferences: Användarinställningar
     language: Språk
-    theme: Tema
-    theme_auto: Automatisk (baserat på system)
-    theme_light: Ljust läge
-    theme_dark: Mörkt läge
     tfa_secret: Tvåfaktorsautentisering
     admin_options: Admin-alternativ
     status: Status
@@ -1107,7 +1108,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mitt projekt...
     project_color_note: Inloggning & logotyp bakgrund
-    project_logo_note: Vit 40x40 SVG/PNG
     public_note_placeholder: Ett kort, offentligt meddelande som stödjer formatering av markdown...
     security_divider_title: Säkerhet
     auth_password_policy:
@@ -1474,7 +1474,6 @@ interfaces:
     description: Välj flera relaterade objekt
     no_collection: Kollektionen kunde inte hittas
   system-folder:
-    folder: Mapp
     description: Välj en mapp
     root_name: Filbibliotek
     system_default: Systemstandard
@@ -1756,3 +1755,12 @@ operations:
     flows: Flöden
     flow: Flöde
     data: Data
+standard: Standard
+compact: Kompakt
+style: Stil
+fonts:
+  normal: Normal
+  bold: Fet
+  black: Svart
+  italic: Kursiv
+  auto: Automatisk

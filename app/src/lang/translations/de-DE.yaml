@@ -53,6 +53,13 @@ or: Oder
 init: Initialisierung
 dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit werden die ersten {n} Elemente angezeigt.
 modifier: Geändert von
+extension_interface: Benutzeroberfläche
+extension_display: Anzeige
+extension_layout: Ansicht
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Module
+enable: Aktivieren
 custom: Eigene
 hook: Hook
 fill_width: Breite füllen
@@ -100,6 +107,7 @@ rename_folder: Ordner umbenennen
 delete_folder: Ordner löschen
 prefix: Präfix
 suffix: Suffix
+promote_version_preview: Vorschau
 reset_bookmark: Lesezeichen zurücksetzen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
@@ -446,7 +454,6 @@ dimensions: Dimensionen
 size: Größe
 created: Erstellt
 modified: Geändert
-checksum: Prüfsumme
 owner: Besitzer
 edited_by: Editiert von
 folder: Ordner
@@ -612,7 +619,6 @@ errors:
   RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   USER_SUSPENDED: Benutzer gesperrt
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
-  UNPROCESSABLE_ENTITY: Unverarbeitbare Anfrage
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
@@ -968,12 +974,11 @@ editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
-settings_permissions: Rollen & Berechtigungen
-settings_project: Projekteinstellungen
+settings_project: Einstellungen
 settings_webhooks: Webhooks
 settings_flows: Flows
-settings_presets: Vorlagen & Lesezeichen
-settings_translations: Benutzerdefinierte Übersetzungen
+settings_presets: Lesezeichen
+settings_translations: Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 configure_field_key_to_continue: Feldschlüssel konfigurieren, um fortzufahren
 scope: Bereich
@@ -1009,7 +1014,6 @@ page_help_files_collection: >-
   **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
-page_help_settings_project: "**Projekteinstellungen** — die globalen Einstellungen Ihres Projekts."
 page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
@@ -1134,10 +1138,6 @@ fields:
     tags: Stichwörter
     user_preferences: Benutzereinstellungen
     language: Sprache
-    theme: Design
-    theme_auto: Automatisch (Systemeinstellung verwenden)
-    theme_light: Heller Modus
-    theme_dark: Nachtmodus
     tfa_secret: Zwei-Faktor-Authentifizierung
     admin_options: Admin-Optionen
     status: Status
@@ -1159,7 +1159,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
-    mapping: Zuordnung
+    mapping: Kartografie
     basemaps: Basiskarte
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
@@ -1176,7 +1176,6 @@ fields:
     project_color: Projektfarbe
     project_logo: Projektlogo
     default_language: Standardsprache
-    branding: Branding & Stil
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
@@ -1236,7 +1235,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
     project_color_note: Login & Logo Hintergrund
-    project_logo_note: Weiß 40x40 SVG/PNG
     public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
@@ -1671,7 +1669,6 @@ interfaces:
     description: Mehrere verwandte Elemente auswählen
     no_collection: Die Sammlung konnte nicht gefunden werden
   system-folder:
-    folder: Ordner
     description: Ordner auswählen
     field_hint: Standardordner für hochgeladene Dateien ohne Angabe eines Ordners. Vorhandene Dateien sind davon nicht betroffen.
     root_name: Stammordner für Dateien
@@ -2060,6 +2057,7 @@ panels:
     smooth: Weich
     straight: Gerade
     step_line: Schrittlinie
+    show_legend: Legende anzeigen
   meter:
     name: Meter
     description: Zähler für Tracking-Werte
@@ -2200,3 +2198,14 @@ operations:
     batch: Stapel
     batch_size: Stapelgröße
     cache: Cache
+standard: Standard
+compact: Kompakt
+style: Stil
+fonts:
+  thin: Dünn
+  normal: Normal
+  medium: Mittel
+  bold: Fett
+  black: Schwarz
+  italic: Kursiv
+  auto: Auto

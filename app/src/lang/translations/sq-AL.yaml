@@ -27,6 +27,7 @@ method: Metodë
 published: Publikuar
 draft: Draft
 archived: Arkivuar
+extensions: Zgjerime
 modules: Module
 module_bar: Shiriti i Moduleve
 logs: Regjistrime
@@ -53,8 +54,16 @@ or: Ose
 init: Init
 dataset_too_large_currently_showing_n_items: Seti i të dhënave është shumë i madh. Tani po shfaqen {n} artikujt e parë.
 modifier: Modifikues
+extension_interface: Ndërfaqe
+extension_display: Shfaq
+extension_layout: Struktura
+extension_panel: Paneli
+extension_hook: Hook
+extension_operation: Operacion
+extension_modules: Module
+enable: Parashikoni përkthimet
 custom: Personalizuar
-hook: Kancë
+hook: Hook
 fill_width: Plotëso Gjerësinë
 field_name_translations: Përkthimet e Emrit të Fushës
 enter_password_to_enable_tfa: Shkruaj fjalëkalimin për të aktivizuar Autentikimin me dy Faktorë
@@ -100,6 +109,7 @@ rename_folder: Riemërto Dosjen
 delete_folder: Fshi Dosjen
 prefix: Prefiks
 suffix: Sufiks
+promote_version_preview: Parashiko
 reset_bookmark: Rikthe Shënuesin
 update_bookmark: Përditëso Shënuesin
 delete_bookmark: Fshi Shënuesin
@@ -145,6 +155,7 @@ validationError:
   nnull: Vlera nuk mund të jetë null
   required: Vlera është e nevojshme
   unique: Vlera duhet të jetë unike
+  email: Vlera duhet të jetë një adresë email e vlefshme
   regex: Vlera nuk ka formatin e duhur
   starts_with: Vlera duhet të fillojë me {substring}
   istarts_with: Value has to start with {substring}
@@ -447,7 +458,6 @@ dimensions: Dimensionet
 size: Madhësia
 created: U krijua
 modified: Modifikuar
-checksum: Checksum
 owner: Pronari
 edited_by: Redaktuar nga
 folder: Dosje
@@ -465,6 +475,7 @@ import_from_url: Importo Skedar nga URL
 replace_from_device: Zëvendëso Skedarin nga Pajisja
 replace_from_library: Zëvendëso Skedarin nga Biblioteka
 replace_from_url: Zëvendëso Skedarin nga URL
+no_image_selected: Asnjë imazh nuk është zgjedhur
 no_file_selected: Asnjë Skedar i Zgjedhur
 download_file: Shkarko Skedarin
 open_file_in_tab: Hap skedarin në skedë të re
@@ -584,6 +595,7 @@ bookmark_doesnt_exist_copy: Faqerojtësi që po përpiqeni të hapni nuk mund t�
 bookmark_doesnt_exist_cta: Kthehu te koleksioni
 select_an_item: Zgjidh një artikull...
 edit: Modifiko
+edit_item: Redakto artikullin
 enabled: Aktivizuar
 disable_tfa: Çaktivizo 2FA
 admin_disable_tfa_text: Jeni i sigurt që doni të çaktivizoni 2FA për këtë përdorues?
@@ -613,7 +625,6 @@ errors:
   RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
   USER_SUSPENDED: Përdoruesi është pezulluar
   CONTAINS_NULL_VALUES: Fusha përmban vlera null
-  UNPROCESSABLE_ENTITY: Entitet i papërpunueshëm
   INTERNAL_SERVER_ERROR: Gabim i papritur
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
   ILLEGAL_ASSET_TRANSFORMATION: Burimi i imazhit është shumë i madh për të paraparë
@@ -750,6 +761,7 @@ upload_pending: Ngarkimi në Pritje
 drag_file_here: Tërhiqe dhe Lësho Skedarin Këtu
 click_to_browse: Kliko për të Shfletuar
 interface_options: Opsionet e Ndërfaqes
+display_options: Opsionet e Shfaqjes
 layout_options: Opsionet e Faqosjes
 rows: Rreshta
 columns: Kolona
@@ -970,12 +982,11 @@ editing_unit: 'Po modifikohet {unit}'
 editing_in_batch: 'Modifikim në masë i {count} artikujve'
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
-settings_permissions: Role dhe Leje
-settings_project: Cilësimet e Projektit
+settings_project: Parametra
 settings_webhooks: Webhooks
 settings_flows: Rrjedha
-settings_presets: Cilësimet e Paracaktuara dhe Faqerojtësit
-settings_translations: Përkthimet e Personalizuara
+settings_presets: Faqerojtësit
+settings_translations: Përkthimet
 one_or_more_options_are_missing: Mungon një ose më shumë opsione
 configure_field_key_to_continue: Konfiguro çelësin e fushës për të vazhduar
 scope: Shtrirje
@@ -1011,7 +1022,7 @@ page_help_files_collection: >-
   **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
 page_help_files_item: >-
   **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
-page_help_settings_project: "**Cilësimet e Projektit** — Opsionet globale të konfigurimit të projektit tënd."
+page_help_settings_extensions: '**Zgjerime** — Zgjerimet e instaluara në projektin tuaj.'
 page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
 page_help_settings_datamodel_fields: >-
@@ -1136,10 +1147,6 @@ fields:
     tags: Etiketa
     user_preferences: Preferencat e Përdoruesit
     language: Gjuha
-    theme: Tema
-    theme_auto: Automatike (Bazuar në Sistemin)
-    theme_light: Mënyrë e Ndritshme
-    theme_dark: Mënyrë e Errët
     tfa_secret: Autentikimi me Dy Faktorë
     admin_options: Opsionet e Adminit
     status: Statusi
@@ -1178,7 +1185,6 @@ fields:
     project_color: Ngjyra e Projektit
     project_logo: Logoja e Projektit
     default_language: Gjuha e Parazgjedhur
-    branding: Branding & Stil
     public_foreground: Sfondi i Jashtëm
     public_background: Sfondi Publik
     public_note: Shënim Publik
@@ -1238,7 +1244,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Projekti im...
     project_color_note: Login & Mjedis i Logos
-    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: Një mesazh i shkurtër, publik që mbështet formatimin e markdown...
     security_divider_title: Siguria
     auth_password_policy:
@@ -1314,9 +1319,6 @@ field_options:
     collections_addLabel: Shto Koleksion...
   directus_users:
     preferences_divider: Preferencat e Përdoruesit
-    dropdown_auto: Automatike (Bazuar në Sistemin)
-    dropdown_light: Mënyrë e Ndritshme
-    dropdown_dark: Mënyrë e Errët
     admin_divider: Opsionet e Adminit
     status_dropdown_draft: Draft
     status_dropdown_invited: I Ftuar
@@ -1453,6 +1455,7 @@ search: Kërko
 select_existing: Zgjidh Ekzistuesin
 select_field_type: Zgjidh llojin e fushës
 select_interface: Zgjidh ndërfaqen
+select_display: Zgjidh një shfaqje
 settings: Parametra
 sign_in: Hyni
 sign_out: Dil
@@ -1623,6 +1626,11 @@ interfaces:
     description: Një modal për zgjedhjen e opsioneve të një ndërfaqeje
   system-display:
     display: Shfaq
+    description: Zgjidh një shfaqje ekzistuese
+    placeholder: Zgjidh një shfaqje...
+  system-display-options:
+    display-options: Opsionet e Shfaqjes
+    description: Një modal për zgjedhjen e opsioneve të një shfaqjeje
   list-m2m:
     many-to-many: Shumë me Shumë
     description: Zgjidh artikuj të shumtë të lidhur në një udhëkryq
@@ -1675,7 +1683,7 @@ interfaces:
     description: Zgjidh artikuj të shumtë të lidhur
     no_collection: Koleksioni nuk mund të gjendet
   system-folder:
-    folder: Dosje
+    folder: Dosja kryesore
     description: Zgjidh një dosje
     field_hint: Dosja e paracaktuar për skedarët e ngarkuar pa një dosje të specifikuar. Nuk ndikon në skedarët ekzistues.
     root_name: Rrënja e Bibliotekës së Skedarëve
@@ -1693,6 +1701,7 @@ interfaces:
     field_note_placeholder: Fut shënim fushe...
     incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
     interface_group: Opsionet e Ndërfaqes
+    display_group: Opsionet e Shfaqjes
   slider:
     slider: Rrëshqitës
     description: Zgjidh një numër përmes një rrëshqitësi
@@ -2064,6 +2073,7 @@ panels:
     smooth: I butë
     straight: I drejtë
     step_line: Vijë Hapësire
+    show_legend: Shfaq legjendën
   meter:
     name: Metër
     description: Metër për gjurmimin e vlerave
@@ -2214,3 +2224,14 @@ operations:
     batch: Grup
     batch_size: Madhësia e Grupit
     cache: Cache
+standard: Standarde
+compact: E kompakt
+style: Stil
+fonts:
+  thin: I hollë
+  normal: Normal
+  medium: Mesatar
+  bold: Trashë
+  black: Zi
+  italic: Italik
+  auto: Automatik

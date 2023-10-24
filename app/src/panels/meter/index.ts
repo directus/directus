@@ -1,13 +1,15 @@
 import { useFieldsStore } from '@/stores/fields';
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import { cssVar } from '@directus/utils/browser';
 import PanelMeter from './panel-meter.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'meter',
 	name: '$t:panels.meter.name',
 	description: '$t:panels.meter.description',
 	icon: 'speed',
+	preview: PreviewSVG,
 	component: PanelMeter,
 	query: (options) => {
 		if (!options.collection || !options.field || !options.fn) return;
@@ -193,7 +195,7 @@ export default definePanel({
 				name: '$t:color',
 				type: 'string',
 				schema: {
-					default_value: 'var(--primary)',
+					default_value: 'var(--theme--primary)',
 				},
 				meta: {
 					interface: 'select-color',
@@ -205,6 +207,17 @@ export default definePanel({
 				name: '$t:rounded_stroke',
 				schema: {
 					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					width: 'half',
+				},
+			},
+			{
+				field: 'showPercentage',
+				name: '$t:show_percentage',
+				schema: {
+					default_value: true,
 				},
 				meta: {
 					interface: 'boolean',
@@ -289,6 +302,6 @@ export default definePanel({
 			},
 		];
 	},
-	minWidth: 10,
-	minHeight: 10,
+	minWidth: 6,
+	minHeight: 6,
 });

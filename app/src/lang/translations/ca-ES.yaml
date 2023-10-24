@@ -52,6 +52,11 @@ or: O
 init: Iniciar
 dataset_too_large_currently_showing_n_items: Conjunt de dades massa llarg. Actualment es mostren els primers {n} elements.
 modifier: Modificador
+extension_interface: Interfície
+extension_display: Mostra
+extension_layout: Disposició
+extension_hook: Ganxo
+extension_modules: Mòduls
 custom: Personalitzat
 hook: Ganxo
 fill_width: Amplada de l'emplenat
@@ -95,6 +100,7 @@ rename_folder: Renombra carpeta
 delete_folder: Suprimeix carpeta
 prefix: Prefix
 suffix: Sufix
+promote_version_preview: Vista prèvia
 reset_bookmark: Reinicia marcador
 update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
@@ -422,7 +428,6 @@ dimensions: Dimensions
 size: Mida
 created: Creat
 modified: Modificat
-checksum: Checksum
 owner: Propietari
 edited_by: Editat per
 folder: Carpeta
@@ -576,7 +581,6 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicat detectat
   USER_SUSPENDED: Usuari suspès
   CONTAINS_NULL_VALUES: El camp conté valors nuls
-  UNPROCESSABLE_ENTITY: Entitat no processable
   INTERNAL_SERVER_ERROR: Error inesperat
   NOT_NULL_VIOLATION: El valor no pot ser null
   ILLEGAL_ASSET_TRANSFORMATION: La imatge és massa llarg per previsualitzar-la
@@ -871,11 +875,11 @@ editing_unit: 'Editant {unit}'
 editing_in_batch: 'Editant {count} elements'
 no_options_available: Sense opcions disponibles
 settings_data_model: Model de dades
-settings_permissions: Rols i permisos
-settings_project: Ajustaments del projecte
+settings_project: Configuració
 settings_webhooks: Webhooks
 settings_flows: Fluxes
-settings_presets: Predefinits i Marcadors
+settings_presets: Favorits
+settings_translations: Traduccions
 one_or_more_options_are_missing: Falta una o més opcions
 scope: Abast
 actions: Accions
@@ -910,7 +914,6 @@ page_help_files_collection: >-
   ** Biblioteca de fitxers **: Llista de tots els recursos de fitxers carregats en aquest projecte. Personalitza el disseny, els filtres i l’ordenació per adaptar-la a la teva vista i, fins i tot, desa els marcadors d’aquestes configuracions per accedir-hi ràpidament.
 page_help_files_item: >-
   ** Detall de fitxer **: Formulari per gestionar metadades de fitxers, editar el recurs original i actualitzar la configuració d'accés.
-page_help_settings_project: "** Configuració del projecte **: Opcions de configuració global del vostre projecte."
 page_help_settings_datamodel_collections: >-
   ** Model de dades: Col·leccions **: Llista de totes les col·leccions disponibles. Això inclou col·leccions visibles, ocultes i del sistema, així com taules de bases de dades no gestionades que es poden afegir.
 page_help_settings_datamodel_fields: >-
@@ -1031,10 +1034,6 @@ fields:
     tags: Etiquetes
     user_preferences: Preferències de l'usuari
     language: Idioma
-    theme: Tema
-    theme_auto: Automàtic (basat en el sistema)
-    theme_light: Mode clar
-    theme_dark: Mode fosc
     tfa_secret: Autenticació de doble factor
     admin_options: Opcions d'administrador
     status: Estat
@@ -1072,7 +1071,6 @@ fields:
     project_color: Color del projecte
     project_logo: Logotip del projecte
     default_language: Idioma predeterminat
-    branding: Marca i estil
     public_foreground: Primer pla públic
     public_background: Fons públic
     public_note: Anotació de la vista pública
@@ -1132,7 +1130,6 @@ field_options:
   directus_settings:
     project_name_placeholder: El meu projecte...
     project_color_note: Inici de sessió i Logotip de fons
-    project_logo_note: Blanc 40x40 SVG/PNG
     public_note_placeholder: Un missatge breu i públic que admet el format markdown...
     security_divider_title: Seguretat
     auth_password_policy:
@@ -1500,7 +1497,6 @@ interfaces:
     description: Selecciona múltiples elements relacionats
     no_collection: No s'ha trobat la col·lecció
   system-folder:
-    folder: Carpeta
     description: Selecciona una carpeta
     root_name: Arrel de la biblioteca de fitxers
     system_default: Predeterminats del sistema
@@ -1769,3 +1765,12 @@ operations:
     flows: Fluxes
     flow: Fluxe
     data: Dades
+standard: Estàndard
+compact: Compacta
+style: Estil
+fonts:
+  normal: Normal
+  bold: Negreta
+  black: Negre
+  italic: Cursiva
+  auto: Auto

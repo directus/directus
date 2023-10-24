@@ -309,10 +309,10 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	padding: var(--input-padding);
 	padding-bottom: 32px;
 	overflow: hidden;
-	color: var(--foreground-normal);
-	font-family: var(--family-sans-serif);
+	color: var(--theme--foreground);
+	font-family: var(--theme--font-family-sans-serif);
 	white-space: nowrap;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: border-color var(--fast) var(--transition);
@@ -320,7 +320,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	&:empty::before {
 		pointer-events: none;
 		content: attr(placeholder);
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	&.multiline {
@@ -334,18 +334,18 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--primary);
 	}
 
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0px;
 		padding: 2px 4px;
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
 		vertical-align: -2px;
-		background: var(--primary-alt);
+		background: var(--theme--primary-background);
 		border-radius: var(--border-radius);
 		user-select: text;
 

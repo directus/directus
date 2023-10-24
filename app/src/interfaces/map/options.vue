@@ -89,7 +89,7 @@ onUnmounted(() => {
 			<v-select
 				v-model="geometryType"
 				:placeholder="t('any')"
-				:show-deselect="true"
+				show-deselect
 				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>

@@ -52,6 +52,10 @@ or: または
 init: 初期化
 dataset_too_large_currently_showing_n_items: データ量が多すぎるため、最初の {n} 件のみ表示しています。
 modifier: 修飾子
+extension_display: ディスプレイ
+extension_layout: レイアウト
+extension_hook: フック
+extension_modules: モジュール
 custom: カスタム
 hook: フック
 fill_width: 幅埋め
@@ -425,7 +429,6 @@ dimensions: ディメンション
 size: サイズ
 created: 作成
 modified: 修正されました
-checksum: チェックサム
 owner: 所有者
 edited_by: '編集者:'
 folder: フォルダ
@@ -573,7 +576,6 @@ errors:
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
   CONTAINS_NULL_VALUES: フィールドに null 値が含まれています
-  UNPROCESSABLE_ENTITY: 処理できないエンティティ
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
   NOT_NULL_VIOLATION: 値は Null 値にできません
   ILLEGAL_ASSET_TRANSFORMATION: 画像ソースが大きすぎるためプレビューできません
@@ -886,11 +888,11 @@ editing_unit: '{unit} を編集'
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 no_options_available: 利用できるオプションなし
 settings_data_model: データモデル
-settings_permissions: 役割・権限
-settings_project: プロジェクト設定
+settings_project: 設定
 settings_webhooks: Webhook
 settings_flows: フロー
-settings_presets: プリセットとブックマーク
+settings_presets: ブックマーク
+settings_translations: 翻訳
 one_or_more_options_are_missing: 1つ以上のオプションがありません
 scope: 適用範囲
 actions: 操作
@@ -925,7 +927,6 @@ page_help_files_collection: >-
   **ファイルのライブラリー** — このプロジェクトにアップロードされたすべてのファイルアセットを一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
 page_help_files_item: >-
   **ファイルの詳細** — ファイルメタデータの管理、元のアセットの編集、アクセス設定の更新のためのフォーム。
-page_help_settings_project: "**プロジェクトの設定** — プロジェクト全体の設定です。"
 page_help_settings_datamodel_collections: >-
   **データモデル: コレクション** — 利用可能なすべてのコレクション一覧です。表示、非表示、システムコレクション、および追加可能な管理されていないデータベーステーブルを含みます。
 page_help_settings_datamodel_fields: >-
@@ -1022,10 +1023,6 @@ fields:
     tags: タグ
     user_preferences: ユーザー設定
     language: 言語
-    theme: テーマ
-    theme_auto: 自動 (システムベース)
-    theme_light: ライトモード
-    theme_dark: ダークモード
     tfa_secret: 2要素認証
     admin_options: 管理者オプション
     status: ステータス
@@ -1074,7 +1071,6 @@ fields:
     collections: コレクション
 field_options:
   directus_settings:
-    project_logo_note: ホワイト 40x40 SVG/PNG
     public_note_placeholder: マークダウンに対応する公開メッセージ
     security_divider_title: セキュリティ
     auth_password_policy:
@@ -1342,8 +1338,6 @@ interfaces:
     edit: 編集
   map:
     zoom: 拡大
-  system-folder:
-    folder: フォルダ
   list:
     sort: 並べ替え
   tags:
@@ -1469,3 +1463,10 @@ operations:
   trigger:
     flows: フロー
     flow: フロー
+standard: 標準
+compact: コンパクト
+fonts:
+  normal: 正常
+  bold: 太字
+  black: 黒
+  italic: 斜体

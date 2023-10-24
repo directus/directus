@@ -1,9 +1,11 @@
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
+import { assign } from 'lodash-es';
 import { getCache, setCacheValue } from '../cache.js';
 import env from '../env.js';
 import logger from '../logger.js';
-import { ExportService } from '../services/import-export.js';
+import { ExportService } from '../services/import-export/index.js';
+import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
@@ -45,6 +47,21 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		// Don't cache anything by default
 		res.setHeader('Cache-Control', 'no-cache');
 		res.setHeader('Vary', 'Origin, Cache-Control');
+	}
+
+	if (
+		req.sanitizedQuery.version &&
+		req.collection &&
+		(req.singleton || req.params['pk']) &&
+		'data' in res.locals['payload']
+	) {
+		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
+
+		const saves = await versionsService.getVersionSaves(req.sanitizedQuery.version, req.collection, req.params['pk']);
+
+		if (saves) {
+			assign(res.locals['payload'].data, ...saves);
+		}
 	}
 
 	if (req.sanitizedQuery.export) {

@@ -53,6 +53,14 @@ or: Ili
 init: Init
 dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno prikazuje prvih {n} stavki.
 modifier: Modifikator
+extension_interface: Sučelje
+extension_display: Prikaz
+extension_layout: Raspored
+extension_panel: Panel
+extension_hook: Kuka
+extension_operation: Operacija
+extension_modules: Moduli
+enable: Omogući
 custom: Prilagođeno
 hook: Kuka
 fill_width: Širina ispune
@@ -100,6 +108,7 @@ rename_folder: Preimenuj mapu
 delete_folder: Izbriši mapu
 prefix: Prefiks
 suffix: Sufiks
+promote_version_preview: Pretpregled
 reset_bookmark: Poništi oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
@@ -145,6 +154,7 @@ validationError:
   nnull: Vrijednost ne smije biti null
   required: Vrijednost je obavezna
   unique: Vrijednost mora biti jedinsrvena
+  email: Vrijednost mora biti valjana adresa e-pošte
   regex: Vrijednost nije ispravno formatirana
   starts_with: Vrijednost mora zapoćeti sa {substring}
   istarts_with: Vrijednost mora zapoćeti sa {substring}
@@ -341,6 +351,7 @@ clear_items: Očisti Stavke
 reset_to_default: Vrati na zadano
 undo_changes: Poništi promjene
 notifications: Obavijesti
+archive_all: Arhiviraj Sve
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nije pronađena
 page_not_found_body: Stranica koju tražite ne postoji.
@@ -446,7 +457,6 @@ dimensions: Dimenzije
 size: Veličina
 created: Kreirano
 modified: Izmijenjeno
-checksum: Kontrolni broj
 owner: Vlasnik
 edited_by: Uredio/la
 folder: Mapa
@@ -583,6 +593,7 @@ bookmark_doesnt_exist_copy: Oznaka koju pokušavate otvoriti nije pronađena.
 bookmark_doesnt_exist_cta: Povratak u zbirku
 select_an_item: Odaberi stavku...
 edit: Uredi
+edit_item: Uredi Stavku
 enabled: Omogućeno
 disable_tfa: Onemogući 2FA
 admin_disable_tfa_text: Jeste li sigurni da želite onemogućiti dvofaktorsku autentifikaciju "2FA" za ovog korisnika?
@@ -612,7 +623,6 @@ errors:
   RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
   USER_SUSPENDED: Suspendirani korisnik
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
-  UNPROCESSABLE_ENTITY: Entitet koji se ne može obraditi
   INTERNAL_SERVER_ERROR: Neočekivana greška
   NOT_NULL_VIOLATION: Vrijednost ne smije biti null
   ILLEGAL_ASSET_TRANSFORMATION: Izvor slike prevelik za pregled
@@ -749,6 +759,7 @@ upload_pending: Prijenos na čekanju
 drag_file_here: Povucite i ispustite datoteku ovdje
 click_to_browse: Kliknite za pregledavanje
 interface_options: Opcije sučelja
+display_options: Prikaži Opcije
 layout_options: Mogućnosti izgleda
 rows: Retci
 columns: Stupci
@@ -969,12 +980,11 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
-settings_permissions: Uloge i dopuštenja
-settings_project: Postavke projekta
+settings_project: Postavke
 settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
-settings_presets: Zadane postavke i oznake
-settings_translations: Prilagođeni Prijevodi
+settings_presets: Oznake
+settings_translations: Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
 configure_field_key_to_continue: Uredi ključ polja za nastavak
 scope: Opseg
@@ -1010,7 +1020,6 @@ page_help_files_collection: >-
   **Biblioteka datoteka** — Navodi sve datotečne materijale prenesene u ovaj projekt. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i spremite oznake ovih različitih konfiguracija za brzi pristup.
 page_help_files_item: >-
   **Detalji datoteke** — Obrazac za upravljanje metapodacima datoteke, uređivanje izvornog materijala i ažuriranje postavki pristupa.
-page_help_settings_project: "**Postavke projekta** — Globalne opcije konfiguracije vašeg projekta."
 page_help_settings_datamodel_collections: >-
   **Model podataka: zbirke** — Navodi sve dostupne zbirke. To uključuje vidljive, skrivene i sustavne zbirke, kao i neupravljane tablice baze podataka koje se mogu dodati.
 page_help_settings_datamodel_fields: >-
@@ -1135,10 +1144,6 @@ fields:
     tags: Oznake
     user_preferences: Preferencije korisnika
     language: Jezik
-    theme: Tema
-    theme_auto: Automatski (na temelju sustava)
-    theme_light: Svijetli način
-    theme_dark: Tamni način
     tfa_secret: Dvofaktorska autentifikacija
     admin_options: Administratorske opcije
     status: Status
@@ -1177,7 +1182,6 @@ fields:
     project_color: Boja projekta
     project_logo: Logotip projekta
     default_language: Zadani jezik
-    branding: Brendiranje i stil
     public_foreground: Javni prvi plan
     public_background: Javna pozadina
     public_note: Javna napomena
@@ -1237,7 +1241,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Moj projekt...
     project_color_note: Pozadina i logotip za prijavu
-    project_logo_note: Bijela 40x40 SVG/PNG
     public_note_placeholder: Kratka, javna poruka koja podržava markdown formatiranje...
     security_divider_title: Sigurnost
     auth_password_policy:
@@ -1452,6 +1455,7 @@ search: Traži
 select_existing: Odaberi postojeće
 select_field_type: Odaberite vrstu polja
 select_interface: Odaberite sučelje
+select_display: Odaberi prikaz
 settings: Postavke
 sign_in: Prijava
 sign_out: Odjava
@@ -1622,6 +1626,11 @@ interfaces:
     description: Modal za odabir opcija sučelja
   system-display:
     display: Prikaz
+    description: Odaberite postojeći prikaz
+    placeholder: Odaberi prikaz...
+  system-display-options:
+    display-options: Prikaži Opcije
+    description: Modal za odabir opcija prikaza
   list-m2m:
     many-to-many: Many to Many
     description: Odaberite više povezanih spojnih stavki
@@ -1674,7 +1683,7 @@ interfaces:
     description: Odaberite više povezanih stavki
     no_collection: Zbirka nije pronađena
   system-folder:
-    folder: Mapa
+    folder: Korijenska Mapa
     description: Odaberite mapu
     field_hint: Zadani direktorij za prenesene datoteke bez navedenog direktorija. Ne utječe na postojeće datoteke.
     root_name: Korijen biblioteke datoteka
@@ -1692,6 +1701,7 @@ interfaces:
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutačni podaci nisu kompatibilni sa sučeljem repetitora i bit će nadjačani prilikom dodavanja stavki u repetitor
     interface_group: Opcije sučelja
+    display_group: Prikaži Opcije
   slider:
     slider: Klizač
     description: Odaberite broj pomoću klizača
@@ -2063,6 +2073,7 @@ panels:
     smooth: Glatko
     straight: Ravno
     step_line: Linija koraka
+    show_legend: Prikaži Legendu
   meter:
     name: Mjerač
     description: Mjerač za praćenje vrijednosti
@@ -2213,3 +2224,14 @@ operations:
     batch: Serija
     batch_size: Veličina Serije
     cache: Predmemorija
+standard: Standardno
+compact: Kompaktno
+style: Stil
+fonts:
+  thin: Tanak
+  normal: Normalno
+  medium: Srednji
+  bold: Podebljano
+  black: Crna
+  italic: Kurziv
+  auto: Automatski

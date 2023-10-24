@@ -1,14 +1,17 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { definePanel, getFieldsFromTemplate } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
+import { getFieldsFromTemplate } from '@directus/utils';
 import PanelList from './panel-list.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'list',
 	name: '$t:panels.list.name',
 	description: '$t:panels.list.description',
 	icon: 'list',
+	preview: PreviewSVG,
 	component: PanelList,
 	query(options) {
 		if (!options?.collection) return;

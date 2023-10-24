@@ -59,7 +59,7 @@ sections.item:videos.source
 
 In GraphQL, this can be achieved using Union Types.
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
@@ -152,7 +152,7 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 :::
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
@@ -232,7 +232,7 @@ root item's fields, related item fields are not included.
 Find all items that mention Directus\
 `Directus`
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `?search=Directus`
@@ -283,7 +283,7 @@ Sort by a "sort" field, followed by publish date descending\
 Sort by a "sort" field, followed by a nested author's name\
 `sort, -author.name`
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
@@ -344,7 +344,7 @@ with caution.
 
 :::
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `?limit=200`
@@ -387,7 +387,7 @@ Skip the first `n` items in the response. Can be used for pagination.
 Get items 101—200\
 `100`
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `?offset=100`
@@ -434,7 +434,7 @@ Get items 1-100\
 Get items 101-200\
 `2`
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `?page=2`
@@ -486,22 +486,11 @@ The following aggregation functions are available in Directus:
 | `max`           | Return the highest value in the field                         |
 | `countAll`      | Equivalent to `?aggregate[count]=*` (GraphQL only)            |
 
-### Grouping
-
-By default, the above aggregation functions run on the whole dataset. To allow for more flexible reporting, you can
-combine the above aggregation with grouping. Grouping allows for running the aggregation functions based on a shared
-value. This allows for things like _"Average rating per month"_ or _"Total sales of items in the jeans category"_.
-
-The `groupBy` query allows for grouping on multiple fields simultaneously. Combined with the [Functions](#functions),
-this allows for aggregate reporting per year-month-date.
-
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
-?aggregate[avg]=cost
-&groupBy[]=author
-&groupBy[]=year(publish_date)
+?aggregate[count]=*
 ```
 
 </template>
@@ -509,11 +498,8 @@ this allows for aggregate reporting per year-month-date.
 
 ```graphql
 query {
-	articles_aggregated(groupBy: ["author", "year(publish_date)"]) {
-		group
-		sum {
-			revenue
-		}
+	articles_aggregated {
+		countAll
 	}
 }
 ```
@@ -529,7 +515,60 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	aggregate('articles', {
 		aggregate: { count: '*' },
-		groupBy: 'authors',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+### Grouping
+
+By default, the above aggregation functions run on the whole dataset. To allow for more flexible reporting, you can
+combine the above aggregation with grouping. Grouping allows for running the aggregation functions based on a shared
+value. This allows for things like _"Average rating per month"_ or _"Total sales of items in the jeans category"_.
+
+The `groupBy` query allows for grouping on multiple fields simultaneously. Combined with the [Functions](#functions),
+this allows for aggregate reporting per year-month-date.
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+```
+?aggregate[count]=views,comments
+&groupBy[]=author
+&groupBy[]=year(publish_date)
+```
+
+</template>
+<template #graphql>
+
+```graphql
+query {
+	articles_aggregated(groupBy: ["author", "year(publish_date)"]) {
+		group
+		count {
+			views
+			comments
+		}
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, aggregate } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	aggregate('articles', {
+		aggregate: {
+			count: ['views', 'comments']
+		},
+		groupBy: ['authors', 'year(publish_date)'],
 	})
 );
 ```
@@ -567,7 +606,7 @@ Only get 3 related articles, with only the top rated comment nested
 }
 ```
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
@@ -631,7 +670,7 @@ Alias for nested fields, f.e. `field.nested`, will not work.
 
 :::
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
@@ -695,7 +734,7 @@ Save the current API response to a file.
 
 Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
@@ -757,7 +796,7 @@ function name as the nested field (see the example that follows).
 
 :::
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```
@@ -828,7 +867,7 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 
 :::
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```

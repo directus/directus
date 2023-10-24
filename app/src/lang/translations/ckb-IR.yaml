@@ -52,6 +52,13 @@ or: یان
 init: سەرەتا
 dataset_too_large_currently_showing_n_items: داتاسێت زۆر گەورەیە. یەکەم {n} مادە نیشاندەدەین لە ئێستادا.
 modifier: گۆڕەر
+extension_interface: ڕوکار
+extension_display: پیشاندان
+extension_layout: خشتە
+extension_panel: پانێڵ
+extension_hook: قولاپ
+extension_modules: یەکەکان
+enable: کاراکردن
 custom: تایبەتمەند
 hook: قولاپ
 fill_width: پڕکردنی پانی
@@ -95,6 +102,7 @@ rename_folder: ناولێنانەوەی بوخچە
 delete_folder: سڕینەوەی بوخچە
 prefix: پێشگر
 suffix: پاشگر
+promote_version_preview: بینین
 reset_bookmark: ڕێکخستنەوەی نیشانکەر
 update_bookmark: نوێکردنەوەی نیشانکەر
 delete_bookmark: سڕینەوەی نیشانکەر
@@ -423,7 +431,6 @@ dimensions: دوریەکان
 size: قەبارە
 created: دروستکرا
 modified: گۆڕدراو
-checksum: کۆی پشکنین
 owner: خاوەن
 edited_by: دەستکاریکراوە لەلایەن
 folder: بوخچە
@@ -579,7 +586,6 @@ errors:
   RECORD_NOT_UNIQUE: بەهای لەبەرگیراوە دۆزرایەوە
   USER_SUSPENDED: بەکارهێنەر ڕاگیراوە
   CONTAINS_NULL_VALUES: خانە بەهای هیچی تێدایە
-  UNPROCESSABLE_ENTITY: یەکەی جێبەجێنەکراو
   INTERNAL_SERVER_ERROR: هەڵەی پێشبینی نەکراو
   NOT_NULL_VIOLATION: بەها نابێت پوچ بێت
   ILLEGAL_ASSET_TRANSFORMATION: سەرچاوەی وێنە زۆر گەورەیە بۆ پیشاندان
@@ -921,11 +927,11 @@ editing_unit: 'دەستکاری {unit}'
 editing_in_batch: 'وەجبە دەستکاری {count} مادە'
 no_options_available: هیچ بژاردەیەک بەردەست نییە
 settings_data_model: مۆدێلی داتا
-settings_permissions: پلە و ڕێگەپێدانەکان
-settings_project: ڕێکخستنەکانی پڕۆژە
+settings_project: ڕێکخستنەکان
 settings_webhooks: وێبهووکەکان
 settings_flows: لێشاوەکان
-settings_presets: پێشسێتەکان و نیشانکردنەکان
+settings_presets: نیشانکراوەکان
+settings_translations: وەرگێڕانەکان
 one_or_more_options_are_missing: یەک یان چەند بژاردەیەک دیارنین
 scope: بوار
 actions: کردارەکان
@@ -960,7 +966,6 @@ page_help_files_collection: >-
   **پێشانگای پەڕگەکان** — هەموو پەڕگەکان دەخاتە ڕوو کە بۆ ئەم پڕۆژەیە بارکراون. شێواز و پاڵاوتن و ڕیزکردن بەپێی خواستی خۆت دابنێ بۆ ئەوەی دیمەنەکەت بەپێی خواستی خۆت بێت، تەنانەت ئنیشانکردنەکانی ئەم ڕێکخستنە جیاوازانە پاشەکەوت بکە بۆ دەستگەیشتنێکی خێرا.
 page_help_files_item: >-
   **وردەکاری پەڕگە** — شێوەیەکە بۆ بەڕێوەبردنی مێتاداتای پەڕگە، دەستکاریکردنی پەڕگەی ڕەسەن، وە نوێکردنەوەی ڕێکخستنەکانی دەستگەیشتن.
-page_help_settings_project: "**ڕێکخستنەکانی پڕۆژە** — بژاردەکانی ڕێکخستنی گشتی پڕۆژەکەت."
 page_help_settings_datamodel_collections: >-
   **مۆدێلی داتا: کۆمەڵەکان** — لیستی هەموو کۆمەڵەکان بەردەستە. ئەمە دیار و نادیار و کۆمەڵەکانی سیستەمیش لەخۆ دەگرێت، هەروەها خشتە بەڕێوەنەبراوەکانی بنکەدراویش دەتوانرێت زیادبکرێن.
 page_help_settings_datamodel_fields: >-
@@ -1082,10 +1087,6 @@ fields:
     tags: نیشانەکان
     user_preferences: هەڵبژاردنەکانی بەکارهێنەر
     language: زمان
-    theme: ڕووکار
-    theme_auto: خۆکار (بەپێی سیستەم)
-    theme_light: دۆخی ڕوناک
-    theme_dark: دۆخی تاریک
     tfa_secret: سەلمێنەری دووهۆکار
     admin_options: بژاردەکانی بەڕێوبەر
     status: دۆخەکان
@@ -1123,7 +1124,6 @@ fields:
     project_color: ڕەنگی پڕۆژە
     project_logo: لۆگۆی پڕۆژە
     default_language: زمانی بنەڕەتی
-    branding: شێواز و براندینگ
     public_foreground: ڕووبنەمای گشتی
     public_background: پاشبنەمای گشتی
     public_note: تێبینی گشتی
@@ -1183,7 +1183,6 @@ field_options:
   directus_settings:
     project_name_placeholder: پڕۆژەکەم...
     project_color_note: چونەژوورەوە و لۆگی پاشبنەما
-    project_logo_note: سپی 40x40 SVG/PNG
     public_note_placeholder: نامەیەکی کورت و گشتی کە پشتگیری داڕشتنی Markdown بکات...
     security_divider_title: پارێزراوی
     auth_password_policy:
@@ -1606,7 +1605,6 @@ interfaces:
     description: چەند ماددەی پەیوەندیدار دیاری بکە
     no_collection: کۆمەڵەکە نادۆزرێتەوە
   system-folder:
-    folder: بوخچە
     description: بوخچەیەک دیاریبکە
     root_name: ڕیشەی پێشانگای پەڕگە
     system_default: بنەڕەتیەکانی سیستەم
@@ -1955,3 +1953,12 @@ operations:
     flows: لێشاوەکان
     flow: لێشاو
     data: داتا
+standard: ستاندەر
+compact: پەستێوراو
+style: شێواز
+fonts:
+  normal: ئاسایی
+  bold: تۆخ
+  black: ڕەش
+  italic: لار
+  auto: خودکار

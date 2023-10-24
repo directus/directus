@@ -29,6 +29,7 @@ Butterfield
 (D|d)ropdowns
 (DN|dn)
 (E|e)ntrypoints?
+(F|f)avicon
 (F|f)ilesystem
 (F|f)ormatter
 (F|f)rontend
@@ -53,6 +54,7 @@ Butterfield
 (R|r)elink
 (R|r)epo
 (R|r)ollup
+(S|s)andboxed
 (S|s)chemas?
 (S|s)endmail
 (S|s)erverless
@@ -79,7 +81,7 @@ Butterfield
 (URL|url)
 (V|v)ite
 (V|v)itest
-(V|v)onage
+(V|v)onage[.]?
 (V|v)ue
 (W|w)alkthrough
 (W|w)ebhook.?
@@ -119,6 +121,7 @@ backend
 Base64
 Blackbox
 buildout
+Butterfield
 camelCase
 Capterra
 Cardgroup
@@ -140,6 +143,7 @@ CodeDeploy
 CommonJS
 composables
 config-options
+Corepack
 CORS
 CPUs?
 create-directus-extension
@@ -282,6 +286,7 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
+non-sandboxed
 NoSQL
 npm
 NPM
@@ -393,6 +398,7 @@ SVGs?
 TablePlus
 tfa
 TFA
+Theming
 TileJSON
 TinyMCE
 TLS
@@ -420,12 +426,12 @@ UUIDs
 UUIDv4
 UX
 v[0-9]{1,2}
+validator
 varchar
 vCPU
 Vercel
 viewability
 VitePress
-(V|v)onage[.]?
 volta
 VPC
 Vue

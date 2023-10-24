@@ -51,6 +51,10 @@ and: E
 or: Ou
 init: Init
 dataset_too_large_currently_showing_n_items: O conjunto de dados é muito grande. A mostrar os primeiros {n} itens.
+extension_interface: Interface
+extension_display: Visualização
+extension_hook: Gancho (hook)
+extension_modules: Módulos
 custom: Personalizado
 hook: Gancho (hook)
 fill_width: Ocupar a largura
@@ -371,7 +375,6 @@ dimensions: Dimensões
 size: Tamanho
 created: Criado
 modified: Modificado
-checksum: Soma de verificação
 owner: Proprietário
 edited_by: Editado por
 folder: Pasta
@@ -511,7 +514,6 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Utilizador suspenso
   CONTAINS_NULL_VALUES: Campo contém valores nulos
-  UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro Inesperado
   NOT_NULL_VIOLATION: O valor não pode ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: A imagem é muito grande para visualizar
@@ -681,10 +683,10 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
-settings_permissions: Perfis & Permissões
-settings_project: Definições do projeto
+settings_project: Configurações
 settings_webhooks: Webhooks
-settings_presets: Predefinições & Marcadores
+settings_presets: Favoritos
+settings_translations: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão em falta
 select: Selecionar...
 changes_are_permanent: As alterações são permanentes
@@ -753,8 +755,6 @@ fields:
     description: Descrição
     tags: Etiquetas
     language: Idioma
-    theme: Tema
-    theme_auto: Automático (baseado no sistema)
     tfa_secret: Autenticação em dois passos
     status: Estado
     status_active: Ativar
@@ -898,8 +898,6 @@ interfaces:
     edit: Editar
   map:
     zoom: Zoom
-  system-folder:
-    folder: Pasta
   list:
     sort: Ordenar
   tags:
@@ -979,3 +977,4 @@ operations:
     url_placeholder: https://exemplo.com/exemplo
   sleep:
     milliseconds: Milisegundos
+standard: Predefinido

@@ -1,6 +1,6 @@
 import { v5 as uuid } from 'uuid';
-import * as seedrandom from 'seedrandom';
-import { PrimaryKeyType } from '@common/types';
+import seedrandom from 'seedrandom';
+import type { PrimaryKeyType } from '@common/types';
 
 const SEED_UUID_NAMESPACE = 'e81a0012-568b-415c-96fa-66508f594067';
 const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
@@ -268,15 +268,16 @@ function generateDate(options: OptionsSeedGenerateDate) {
 	}
 
 	if (options.isDefaultValue && options.vendor === 'oracle') {
-		for (let i = 0; i < values.length; i++) {
-			values[i] = new Date(values[i])
-				.toLocaleDateString('en-GB', {
-					day: 'numeric',
-					month: 'short',
-					year: 'numeric',
-				})
-				.replace(/ /g, '-');
-		}
+		values.forEach(
+			(value, index) =>
+				(values[index] = new Date(value)
+					.toLocaleDateString('en-GB', {
+						day: 'numeric',
+						month: 'short',
+						year: 'numeric',
+					})
+					.replace(/ /g, '-'))
+		);
 	}
 
 	return values;
@@ -285,9 +286,7 @@ function generateDate(options: OptionsSeedGenerateDate) {
 function generateDateTime(options: OptionsSeedGenerateDateTime) {
 	const values = generateTimestamp(options);
 
-	for (let i = 0; i < values.length; i++) {
-		values[i] = values[i].slice(0, -5);
-	}
+	values.forEach((value, index) => (values[index] = value.slice(0, -5)));
 
 	if (options.isDefaultValue && options.vendor === 'oracle') {
 		for (let index = 0; index < values.length; index++) {
@@ -379,19 +378,15 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 
 	// Overcome MySQL / Maria created without decimal accuracy
 	// Overcome MSSQL specific accuracy up to 1/300th of a second
-	for (let index = 0; index < values.length; index++) {
-		values[index] = values[index].slice(0, 20) + '000Z';
-	}
+	values.forEach((value, index) => (values[index] = value.slice(0, 20) + '000Z'));
 
 	if (options.isDefaultValue && options.vendor) {
 		if (['mysql', 'mysql5', 'maria'].includes(options.vendor)) {
-			for (let index = 0; index < values.length; index++) {
-				values[index] = new Date(values[index]).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2');
-			}
+			values.forEach(
+				(value, index) => (values[index] = new Date(value).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2'))
+			);
 		} else if (options.vendor === 'oracle') {
-			for (let index = 0; index < values.length; index++) {
-				values[index] = 'CURRENT_TIMESTAMP';
-			}
+			values.forEach((_, index) => (values[index] = 'CURRENT_TIMESTAMP'));
 		}
 	}
 

@@ -51,6 +51,12 @@ and: Và
 or: Hoặc
 init: Khởi tạo
 dataset_too_large_currently_showing_n_items: Cơ sở dữ liệu quá lớn. Hiển thị {n} dòng đầu tiên.
+extension_interface: Giao diện
+extension_display: Hiển thị
+extension_layout: Bố cục
+extension_panel: Bảng
+extension_hook: Móc
+extension_modules: Mô đun
 custom: Tuỳ chỉnh
 hook: Móc
 fill_width: Rộng toàn bộ
@@ -391,7 +397,6 @@ dimensions: Kích thước
 size: Kích thước
 created: Đã tạo
 modified: Đã sửa đổi
-checksum: Giá trị checksum
 owner: Sở hữu bởi
 edited_by: Chỉnh sửa bởi
 folder: Thư mục
@@ -778,9 +783,10 @@ editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
 no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
-settings_permissions: Vai trò & Quyền hạn
-settings_project: Cài Đặt Chung
+settings_project: Cài đặt
 settings_webhooks: Webhooks
+settings_presets: Đánh dấu
+settings_translations: Các Bản Dịch
 one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
 scope: Phạm vi
 select: Chọn...
@@ -859,10 +865,6 @@ fields:
     tags: Tags
     user_preferences: Tuỳ chọn người dùng
     language: Ngôn ngữ
-    theme: Theme
-    theme_auto: Tự động (Dựa vào hệ thống)
-    theme_light: Chế độ Sáng
-    theme_dark: Chế độ Tối
     tfa_secret: Xác thực hai yếu tố
     status: Trạng thái
     status_draft: Bản nháp
@@ -1069,7 +1071,6 @@ interfaces:
   list-o2m:
     one-to-many: Quan hệ một - nhiều
   system-folder:
-    folder: Thư mục
     description: Chọn một thư mục
   list:
     sort: Sắp xếp
@@ -1197,3 +1198,9 @@ operations:
     header_placeholder: Đang xác thực...
   trigger:
     data: Dữ liệu
+standard: Tiêu chuẩn
+compact: Thu gọn
+fonts:
+  bold: In đậm
+  black: Đen
+  italic: Nghiêng

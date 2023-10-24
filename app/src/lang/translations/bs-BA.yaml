@@ -50,6 +50,12 @@ and: I
 or: Ili
 dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno prikazuje prvih {n} stavki.
 modifier: Modifikator
+extension_interface: Interfejs
+extension_display: Prikaz
+extension_layout: Raspored
+extension_hook: Kuka
+extension_modules: Moduli
+enable: Omogući
 custom: Prilagođeno
 hook: Kuka
 fill_width: Širina ispune
@@ -93,6 +99,7 @@ rename_folder: Preimenuj folder
 delete_folder: Izbriši folder
 prefix: Prefiks
 suffix: Sufiks
+promote_version_preview: Pretpregled
 reset_bookmark: Poništi bookmark
 update_bookmark: Ažuriraj bookmark
 delete_bookmark: Obriši bookmark
@@ -398,7 +405,6 @@ dimensions: Dimenzije
 size: Veličina
 created: Kreirano
 modified: Izmijenjeno
-checksum: Kontrolni broj
 owner: Vlasnik
 edited_by: Uredio/la
 zoom: Uvećaj
@@ -549,7 +555,6 @@ errors:
   RECORD_NOT_UNIQUE: Otkrivena je dvostruka vrijednost
   USER_SUSPENDED: Suspendovani korisnik
   CONTAINS_NULL_VALUES: Polje sadrži null vrijednosti
-  UNPROCESSABLE_ENTITY: Entitet koji se ne može obraditi
   INTERNAL_SERVER_ERROR: Neočekivana greška
   NOT_NULL_VIOLATION: Vrijednost ne smije biti null
   ILLEGAL_ASSET_TRANSFORMATION: Izvor slike prevelik za pregled
@@ -878,11 +883,10 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
-settings_permissions: Role i dozvole
-settings_project: Postavke projekta
+settings_project: Postavke
 settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
-settings_presets: Zadane postavke i oznake
+settings_translations: Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
 scope: Opseg
 actions: Akcije
@@ -917,7 +921,6 @@ page_help_files_collection: >-
   **Biblioteka fajlova** — Navodi sve fajlove prenesene u ovaj projekat. Prilagodite izgled, filtre i sortiranje kako biste prilagodili svoj prikaz, pa čak i sačuvajte oznake ovih različitih konfiguracija za brzi pristup.
 page_help_files_item: >-
   **Detalji fajla** — Obrazac za upravljanje metapodacima fajla, uređivanje izvornog materijala i ažuriranje postavki pristupa.
-page_help_settings_project: "**Postavke projekta** — Globalne opcije konfiguracije vašeg projekta."
 page_help_settings_datamodel_collections: >-
   **Model podataka: kolekcije** — Navodi sve dostupne kolekcije. To uključuje vidljive, skrivene i sistemske kolekcije, kao i neupravljane tablice baze podataka koje se mogu dodati.
 page_help_settings_datamodel_fields: >-
@@ -1035,10 +1038,6 @@ fields:
     tags: Oznake
     user_preferences: Preferencije korisnika
     language: Jezik
-    theme: Tema
-    theme_auto: Automatski (na temelju sistema)
-    theme_light: Svijetli način
-    theme_dark: Tamni način
     tfa_secret: Dvofaktorska autentifikacija
     admin_options: Administratorske opcije
     status_draft: Skica
@@ -1066,7 +1065,6 @@ fields:
     project_color: Boja projekta
     project_logo: Logotip projekta
     default_language: Zadani jezik
-    branding: Brendiranje i stil
     public_foreground: Javni prvi plan
     public_background: Javna pozadina
     public_note: Javna napomena
@@ -1123,7 +1121,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Moj projekat...
     project_color_note: Pozadina i logotip za prijavu
-    project_logo_note: Bijela 40x40 SVG/PNG
     public_note_placeholder: Kratka, javna poruka koja podržava markdown formatiranje...
     security_divider_title: Sigurnost
     auth_password_policy:
@@ -1966,3 +1963,12 @@ operations:
     flows: Tokovi
     flow: Tok
     data: Podaci
+standard: Standardno
+compact: Kompaktno
+style: Stil
+fonts:
+  normal: Normalno
+  bold: Podebljano
+  black: Crna
+  italic: Kurziv
+  auto: Automatski

@@ -1,13 +1,6 @@
 import { Action } from '@directus/constants';
-import type {
-	Accountability,
-	ActionHandler,
-	FilterHandler,
-	Flow,
-	Operation,
-	OperationHandler,
-	SchemaOverview,
-} from '@directus/types';
+import type { OperationHandler } from '@directus/extensions';
+import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
@@ -15,7 +8,7 @@ import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { ForbiddenError } from './errors/index.js';
+import { ForbiddenError } from '@directus/errors';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -56,7 +49,7 @@ const ENV_KEY = '$env';
 class FlowManager {
 	private isLoaded = false;
 
-	private operations: Record<string, OperationHandler> = {};
+	private operations: Map<string, OperationHandler> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
@@ -98,11 +91,11 @@ class FlowManager {
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
-		this.operations[id] = operation;
+		this.operations.set(id, operation);
 	}
 
-	public clearOperations(): void {
-		this.operations = {};
+	public removeOperation(id: string): void {
+		this.operations.delete(id);
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
@@ -405,12 +398,13 @@ class FlowManager {
 		data: unknown;
 		options: Record<string, any> | null;
 	}> {
-		if (!(operation.type in this.operations)) {
+		if (!this.operations.has(operation.type)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
+
 			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
-		const handler = this.operations[operation.type]!;
+		const handler = this.operations.get(operation.type)!;
 
 		const options = applyOptionsData(operation.options, keyedData);
 

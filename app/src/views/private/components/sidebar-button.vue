@@ -43,7 +43,7 @@ const { sidebarOpen } = toRefs(appStore);
 	flex-shrink: 0;
 	width: 100%;
 	height: 60px;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	background-color: var(--background-normal-alt);
 
 	.icon {

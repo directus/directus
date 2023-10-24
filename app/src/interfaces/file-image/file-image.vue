@@ -135,8 +135,8 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
-			{{ t('disabled') }}
+		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
+			{{ t('no_image_selected') }}
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
@@ -251,7 +251,7 @@ img {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--background-normal);
 	padding: 32px;
 
@@ -283,9 +283,9 @@ img {
 	}
 
 	.actions {
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--theme--form--field--input--foreground-subdued);
 		--v-button-background-color: var(--white);
-		--v-button-color-hover: var(--foreground-normal);
+		--v-button-color-hover: var(--theme--form--field--input--foreground);
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;

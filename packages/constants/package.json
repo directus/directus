@@ -1,6 +1,6 @@
 {
 	"name": "@directus/constants",
-	"version": "10.2.3",
+	"version": "11.0.1",
 	"description": "Shared constants for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -26,11 +26,11 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
-		"zod": "3.21.4"
+		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"tsup": "7.1.0",
-		"typescript": "5.0.4"
+		"tsup": "7.2.0",
+		"typescript": "5.2.2"
 	}
 }

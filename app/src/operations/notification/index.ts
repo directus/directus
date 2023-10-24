@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/utils';
+import { defineOperationApp } from '@directus/extensions';
 
 export default defineOperationApp({
 	id: 'notification',

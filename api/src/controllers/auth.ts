@@ -10,7 +10,7 @@ import {
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import env from '../env.js';
-import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
