@@ -15,7 +15,7 @@ export const loadExtensions = async () => {
 	const migrationsValid = await validateMigrations();
 
 	if (!migrationsValid) {
-		logger.info('Migrations required. Skipping CLI extensions initialization.');
+		logger.info('Skipping CLI extensions initialization due to outstanding migrations.');
 		return;
 	}
 
