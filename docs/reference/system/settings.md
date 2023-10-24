@@ -35,8 +35,26 @@ Foreground image for the Admin App's public pages. Many-to-one to [files](/refer
 `public_background` **many-to-one**\
 Background image for the Admin App's public pages. Many-to-one to [files](/reference/files).
 
+`public_favicon` **many-to-one**\
+Favicon for the Data Studio. Many-to-one to [files](/reference/files).
+
 `public_note` **string**\
 Note shown on the Admin App's public pages. Supports Markdown.
+
+`default_appearance` **string**\
+One of `auto`, `light`, `dark`.
+
+`default_theme_light` **string**\
+Default theme to use in `light` mode.
+
+`default_theme_dark` **string**\
+Default theme to use in `dark` mode.
+
+`theme_light_overrides` **json**\
+Default customization for `light` theme in use.
+
+`theme_dark_overrides` **json**\
+Default customization for `dark` theme in use.
 
 `auth_login_attempts` **integer**\
 How often a user is allowed to try to login. After which times the user will be suspended.
