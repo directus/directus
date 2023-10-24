@@ -74,7 +74,7 @@ test('nested with local fields', async () => {
 		],
 	};
 
-	vi.mocked(convertQuery).mockReturnValue({
+	vi.mocked(convertQuery).mockReturnValueOnce({
 		clauses: {
 			select: [
 				{
@@ -122,10 +122,11 @@ test('nested with local fields', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedData));
+	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);
+	await driver.destroy();
 
 	const expectedResult = [
 		{
@@ -193,7 +194,7 @@ test('nested m2o field', async () => {
 		],
 	};
 
-	vi.mocked(convertQuery).mockReturnValue({
+	vi.mocked(convertQuery).mockReturnValueOnce({
 		clauses: {
 			select: [
 				{
@@ -278,10 +279,11 @@ test('nested m2o field', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedData));
+	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
 	const actualResult = await getActualResult(readableStream);
+	await driver.destroy();
 
 	const expectedResult = [
 		{
@@ -303,12 +305,12 @@ test('nested m2o field', async () => {
 	expect(actualResult).toEqual(expectedResult);
 });
 
-test.skip('nested o2m field', async () => {
-	const localDesiredField = randomIdentifier();
-	const localDesiredFieldId = randomIdentifier();
+test.todo('nested o2m field', async () => {
+	const localDesiredField = 'localDesiredField';
+	const localDesiredFieldId = 'localDesiredFieldId';
 
-	const localPkField = randomIdentifier();
-	const localPkFieldId = randomIdentifier();
+	const localPkField = 'localPkField';
+	const localPkFieldId = 'localPkFieldId';
 
 	const foreignTable = 'foreignTable';
 	const foreignTableId = 'foreignTableId';
@@ -367,7 +369,7 @@ test.skip('nested o2m field', async () => {
 
 	// because we need to know the generated aliases we have to mock the convertQuery result
 
-	vi.mocked(convertQuery).mockReturnValue({
+	vi.mocked(convertQuery).mockReturnValueOnce({
 		clauses: {
 			select: [
 				{
@@ -389,7 +391,7 @@ test.skip('nested o2m field', async () => {
 		parameters: [],
 		aliasMapping: new Map([
 			[localDesiredFieldId, [localDesiredField]],
-			[localPkFieldId, [localPkFieldId]],
+			[localPkFieldId, [localPkField]],
 		]),
 		nestedManys: [
 			{
@@ -435,8 +437,8 @@ test.skip('nested o2m field', async () => {
 					},
 					parameters: identifierValues,
 					aliasMapping: new Map([
-						[foreignField1Id, [foreignTableId, foreignField1Alias]],
-						[foreignField2Id, [foreignTableId, foreignField2]],
+						[foreignField1Id, [foreignTable, foreignField1Alias]],
+						[foreignField2Id, [foreignTable, foreignField2]],
 					]),
 					nestedManys: [],
 				}),
@@ -459,17 +461,14 @@ test.skip('nested o2m field', async () => {
 
 	const mockedRootData = [
 		{
-			[localDesiredField]: localDesiredFieldResult1,
-			[localPkField]: localPkFieldValue1,
+			[localDesiredFieldId]: localDesiredFieldResult1,
+			[localPkFieldId]: localPkFieldValue1,
 		},
 		{
-			[localDesiredField]: localDesiredFieldResult2,
-			[localPkField]: localPkFieldValue2,
+			[localDesiredFieldId]: localDesiredFieldResult2,
+			[localPkFieldId]: localPkFieldValue2,
 		},
 	];
-
-	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedRootData));
 
 	// then for each resulting row, the driver queries the nested collection with the IDs of the root collection
 
@@ -492,9 +491,6 @@ test.skip('nested o2m field', async () => {
 		},
 	];
 
-	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedDataFromNestedCollection1));
-
 	const foreignField1Value3 = 'randomIdentifier()13';
 	const foreignField2Value3 = 'randomIdentifier()14';
 
@@ -506,14 +502,16 @@ test.skip('nested o2m field', async () => {
 	];
 
 	// @ts-ignore
-	vi.spyOn(driver, 'getDataFromSource').mockReturnValueOnce(getMockedStream(mockedDataFromNestedCollection2));
+	vi.spyOn(driver, 'getDataFromSource')
+		.mockResolvedValueOnce(getMockedStream(mockedRootData))
+		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection1))
+		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection2));
 
 	const readableStream = await driver.query(query);
 
 	// it seems there is no stream coming back from the driver..
 	const actualResult = await getActualResult(readableStream);
-
-	console.log('actualResult', actualResult);
+	await driver.destroy();
 
 	const expectedResult = [
 		{
