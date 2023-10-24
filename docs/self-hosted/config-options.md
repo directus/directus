@@ -480,7 +480,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                 | `false`                              |
 | `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                   | `5m`                                 |
 | `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`                                  |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`                              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on `create`/`update`/`delete` actions, Content Version saves, and the sort utility.  | `false`                              |
 | `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                      | `directus_activity,directus_presets` |
 | `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
