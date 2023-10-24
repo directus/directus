@@ -12,10 +12,10 @@ export const loadExtensions = async () => {
 
 	if (!installed) return;
 
-	try {
-		await validateMigrations();
-	} catch {
-		logger.info('Database is out of date. Skipping CLI extensions initialization.');
+	const migrationsValid = await validateMigrations();
+
+	if (!migrationsValid) {
+		logger.info('Migrations required. Skipping CLI extensions initialization.');
 		return;
 	}
 
