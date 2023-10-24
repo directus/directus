@@ -89,7 +89,7 @@ tags:
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
   - name: Versions
     description:
-      enables users to create unpublished copies of an item, modify them independently from the main version, and
+      Enables users to create unpublished copies of an item, modify them independently from the main version, and
       promote them to become the new main version when ready.
     x-collection: directus_versions
   - name: Webhooks
