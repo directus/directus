@@ -1,7 +1,8 @@
-import { getSchema } from '../../../utils/get-schema.js';
-import { UsersService } from '../../../services/users.js';
 import getDatabase from '../../../database/index.js';
+import { getExtensionManager } from '../../../extensions/index.js';
 import logger from '../../../logger.js';
+import { UsersService } from '../../../services/users.js';
+import { getSchema } from '../../../utils/get-schema.js';
 
 export default async function usersCreate({
 	email,
@@ -20,6 +21,9 @@ export default async function usersCreate({
 	}
 
 	try {
+		const extensionManager = getExtensionManager();
+		await extensionManager.initialize({ schedule: false, watch: false });
+
 		const schema = await getSchema();
 		const service = new UsersService({ schema, knex: database });
 

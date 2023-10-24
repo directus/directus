@@ -1,8 +1,9 @@
-import { getSchema } from '../../../utils/get-schema.js';
-import { generateHash } from '../../../utils/generate-hash.js';
-import { UsersService } from '../../../services/users.js';
 import getDatabase from '../../../database/index.js';
+import { getExtensionManager } from '../../../extensions/index.js';
 import logger from '../../../logger.js';
+import { UsersService } from '../../../services/users.js';
+import { generateHash } from '../../../utils/generate-hash.js';
+import { getSchema } from '../../../utils/get-schema.js';
 
 export default async function usersPasswd({ email, password }: { email?: string; password?: string }): Promise<void> {
 	const database = getDatabase();
@@ -13,6 +14,9 @@ export default async function usersPasswd({ email, password }: { email?: string;
 	}
 
 	try {
+		const extensionManager = getExtensionManager();
+		await extensionManager.initialize({ schedule: false, watch: false });
+
 		const passwordHashed = await generateHash(password);
 		const schema = await getSchema();
 		const service = new UsersService({ schema, knex: database });

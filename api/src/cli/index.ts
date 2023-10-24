@@ -1,7 +1,5 @@
 import { Command, Option } from 'commander';
-import { isInstalled } from '../database/index.js';
 import emitter from '../emitter.js';
-import { getExtensionManager } from '../extensions/index.js';
 import { startServer } from '../server.js';
 import * as pkg from '../utils/package.js';
 import bootstrap from './commands/bootstrap/index.js';
@@ -19,11 +17,6 @@ import usersPasswd from './commands/users/passwd.js';
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();
-
-	if ((await isInstalled()) === true) {
-		const extensionManager = getExtensionManager();
-		await extensionManager.initialize({ schedule: false, watch: false });
-	}
 
 	await emitter.emitInit('cli.before', { program });
 
