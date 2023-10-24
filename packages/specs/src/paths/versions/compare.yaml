@@ -2,6 +2,8 @@ get:
   summary: Compare a Content Version
   description: Compare an existing Content Version with the main version of the item.
   operationId: compareContentVersion
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/UUId'
   responses:
     '200':
       content:

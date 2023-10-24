@@ -2,6 +2,9 @@ get:
   summary: Retrieve a Content Version
   description: Retrieve a single Content Version by unique identifier.
   operationId: getContentVersion
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
   responses:
     '200':
       description: Successful request
@@ -60,7 +63,8 @@ delete:
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
       $ref: '../../openapi.yaml#/components/responses/NotFoundError'
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/UUId'
   tags:
     - Versions
+
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

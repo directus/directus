@@ -2,6 +2,15 @@ get:
   summary: List Content Versions
   description: Get all Content Versions.
   operationId: getContentVersions
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
   responses:
     '200':
       description: Successful request
@@ -24,8 +33,8 @@ get:
     - Versions
 
 post:
-  summary: Create a Content Version
-  description: Create a new Content Version.
+  summary: Create Multiple Content Versions
+  description: Create multiple new Content Versions.
   operationId: createContentVersion
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
