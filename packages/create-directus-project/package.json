@@ -17,7 +17,7 @@
 		"installer"
 	],
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
-	"license": "GPL-3.0-only",
+	"license": "MIT",
 	"dependencies": {
 		"chalk": "^4.1.1",
 		"commander": "^8.0.0",
