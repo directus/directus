@@ -845,12 +845,12 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
-					text: 'Theming',
-					link: '/user-guide/settings/theming',
-				},
-				{
 					text: 'Project Settings',
 					link: '/user-guide/settings/project-settings',
+				},
+				{
+					text: 'Theming',
+					link: '/user-guide/settings/theming',
 				},
 				{
 					text: 'Preset and Bookmarks',
