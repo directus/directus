@@ -3,9 +3,15 @@
  *
  * @packageDocumentation
  */
-import type { AbstractQuery, AtLeastOneElement, DataDriver } from '@directus/data';
-import { convertQuery, getExpander, type AbstractSqlQuery, type ParameterizedSqlStatement } from '@directus/data-sql';
-import { ReadableStream, type ReadableStreamDefaultReadResult } from 'node:stream/web';
+import type { AbstractQuery, DataDriver } from '@directus/data';
+import {
+	convertQuery,
+	getExpander,
+	makeSubQueriesAndMergeWithRoot,
+	type AbstractSqlQuery,
+	type ParameterizedSqlStatement,
+} from '@directus/data-sql';
+import { ReadableStream } from 'node:stream/web';
 import type { PoolClient } from 'pg';
 import pg from 'pg';
 import { convertToActualStatement } from './query/index.js';
@@ -16,8 +22,6 @@ import { convertParameters } from './query/parameters.js';
 export interface DataDriverPostgresConfig {
 	connectionString: string;
 }
-
-type SteamResult = ReadableStreamDefaultReadResult<Record<string, any>>;
 
 export default class DataDriverPostgres implements DataDriver {
 	#config: DataDriverPostgresConfig;
@@ -40,10 +44,10 @@ export default class DataDriverPostgres implements DataDriver {
 		const queryStream = new QueryStream(sql.statement, sql.parameters);
 		const stream = poolClient.query(queryStream);
 		stream.on('end', () => poolClient.release());
+		// @TODO release client also on error
 		return Readable.toWeb(stream);
 	}
 
-	// We might can move this function into data-sql and pass some functions from the driver to it (?)
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, any>>> {
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
@@ -61,38 +65,6 @@ export default class DataDriverPostgres implements DataDriver {
 			return rootStream;
 		}
 
-		const finalStream = new ReadableStream({
-			start(controller) {
-				const reader = rootStream.getReader();
-
-				async function mergeNestedData({ done, value }: SteamResult): Promise<SteamResult | void> {
-					if (done) {
-						controller.close();
-						return;
-					}
-
-					for (const nestedMany of abstractSql.nestedManys) {
-						const subQuery = nestedMany.queryGenerator(
-							nestedMany.internalIdentifierFields.map((field) => value[field]) as AtLeastOneElement<string | number>
-						);
-
-						const subStream = await queryDB(subQuery);
-						const subData = [];
-
-						for await (const subChunk of subStream) {
-							subData.push(subChunk);
-						}
-
-						controller.enqueue({ ...value, [nestedMany.collection]: subData });
-					}
-
-					return reader.read().then(mergeNestedData);
-				}
-
-				reader.read().then(mergeNestedData);
-			},
-		});
-
-		return finalStream;
+		return await makeSubQueriesAndMergeWithRoot(rootStream, abstractSql.nestedManys, queryDB);
 	}
 }
