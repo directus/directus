@@ -1,6 +1,6 @@
 get:
   summary: Retrieve a Content Version
-  description: Retrieve a single content version by unique identifier.
+  description: Retrieve a single Content Version by unique identifier.
   operationId: getContentVersion
   responses:
     '200':
@@ -21,7 +21,7 @@ get:
 
 patch:
   summary: Update a Content Version
-  description: Update an existing content version
+  description: Update an existing Content Version.
   operationId: updateContentVersion
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Fields'
@@ -51,7 +51,7 @@ patch:
 
 delete:
   summary: Delete a Content Version
-  description: Delete an existing content version
+  description: Delete an existing Content Version.
   operationId: deleteContentVersion
   responses:
     '200':
