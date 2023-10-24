@@ -595,6 +595,24 @@ function sidebar() {
 					],
 				},
 				{
+					text: 'Secure Extensions',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/sandbox/introduction',
+							text: 'Introduction',
+						},
+						{
+							link: '/extensions/sandbox/register',
+							text: 'Registering Extensions',
+						},
+						{
+							link: '/extensions/sandbox/sandbox-sdk',
+							text: 'Sandbox SDK',
+						},
+					],
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
@@ -827,12 +845,12 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
-					text: 'Theming',
-					link: '/user-guide/settings/theming',
-				},
-				{
 					text: 'Project Settings',
 					link: '/user-guide/settings/project-settings',
+				},
+				{
+					text: 'Theming',
+					link: '/user-guide/settings/theming',
 				},
 				{
 					text: 'Preset and Bookmarks',

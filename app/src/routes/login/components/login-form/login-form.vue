@@ -56,7 +56,10 @@ const errorFormatted = computed(() => {
 });
 
 async function onSubmit() {
-	if (email.value === null || password.value === null) return;
+	if (email.value === null || password.value === null) {
+		error.value = 'INVALID_PAYLOAD';
+		return;
+	}
 
 	try {
 		loggingIn.value = true;
