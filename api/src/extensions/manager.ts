@@ -180,7 +180,7 @@ export class ExtensionManager {
 			this.extensionsSettings = await getExtensionsSettings(this.extensions);
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
-			logger.trace(err);
+			logger.warn(err);
 		}
 
 		await this.registerHooks();
@@ -391,7 +391,7 @@ export class ExtensionManager {
 			return output[0].code;
 		} catch (error: any) {
 			logger.warn(`Couldn't bundle App extensions`);
-			logger.trace(error);
+			logger.warn(error);
 		}
 
 		return null;
@@ -488,7 +488,7 @@ export class ExtensionManager {
 				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
-				logger.trace(error);
+				logger.warn(error);
 			}
 		}
 	}
@@ -531,7 +531,7 @@ export class ExtensionManager {
 				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
-				logger.trace(error);
+				logger.warn(error);
 			}
 		}
 	}
@@ -588,7 +588,7 @@ export class ExtensionManager {
 				}
 			} catch (error: any) {
 				logger.warn(`Couldn't register operation "${operation.name}"`);
-				logger.trace(error);
+				logger.warn(error);
 			}
 		}
 	}
@@ -641,7 +641,7 @@ export class ExtensionManager {
 				});
 			} catch (error: any) {
 				logger.warn(`Couldn't register bundle "${bundle.name}"`);
-				logger.trace(error);
+				logger.warn(error);
 			}
 		}
 	}
