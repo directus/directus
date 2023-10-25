@@ -1,26 +1,3 @@
-<template>
-	<div class="display-labels">
-		<template v-if="!showAsDot">
-			<v-chip
-				v-for="item in items"
-				:key="item.value"
-				:style="{
-					'--v-chip-color': item.foreground,
-					'--v-chip-background-color': item.background,
-				}"
-				small
-				disabled
-				label
-			>
-				{{ item.text }}
-			</v-chip>
-		</template>
-		<template v-else>
-			<display-color v-for="item in items" :key="item.value" v-tooltip="item.text" :value="item.background" />
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { isEmpty } from 'lodash';
@@ -73,20 +50,43 @@ const items = computed(() => {
 			return {
 				value: item,
 				text: itemStringValue,
-				foreground: 'var(--foreground-normal)',
+				foreground: 'var(--theme--foreground)',
 				background: 'var(--background-normal)',
 			};
 		} else {
 			return {
 				value: item,
 				text: choice.text || itemStringValue,
-				foreground: choice.foreground || 'var(--foreground-normal)',
+				foreground: choice.foreground || 'var(--theme--foreground)',
 				background: choice.background || 'var(--background-normal)',
 			};
 		}
 	});
 });
 </script>
+
+<template>
+	<div class="display-labels">
+		<template v-if="!showAsDot">
+			<v-chip
+				v-for="item in items"
+				:key="item.value"
+				:style="{
+					'--v-chip-color': item.foreground,
+					'--v-chip-background-color': item.background,
+				}"
+				small
+				disabled
+				label
+			>
+				{{ item.text }}
+			</v-chip>
+		</template>
+		<template v-else>
+			<display-color v-for="item in items" :key="item.value" v-tooltip="item.text" :value="item.background" />
+		</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .display-labels {

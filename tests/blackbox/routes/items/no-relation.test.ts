@@ -1,11 +1,14 @@
 import config, { getUrl } from '@common/config';
 import { CreateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
-import { requestGraphQL } from '@common/index';
+import { createWebSocketConn, createWebSocketGql, requestGraphQL } from '@common/transport';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
 import { v4 as uuid } from 'uuid';
+import { describe, expect, it, test } from 'vitest';
 import { collectionArtists } from './no-relation.seed';
+import { without } from 'lodash-es';
 
 type Artist = {
 	id?: number | string;
@@ -13,7 +16,7 @@ type Artist = {
 	company?: string;
 };
 
-function createArtist(pkType: common.PrimaryKeyType): Artist {
+function createArtist(pkType: PrimaryKeyType): Artist {
 	const item: Artist = {
 		name: 'artist-' + uuid(),
 	};
@@ -25,7 +28,7 @@ function createArtist(pkType: common.PrimaryKeyType): Artist {
 	return item;
 }
 
-describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
+describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 	const localCollectionArtists = `${collectionArtists}_${pkType}`;
 
 	describe(`pkType: ${pkType}`, () => {
@@ -39,9 +42,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -71,9 +74,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/items/${localCollectionArtists}/invalid_id`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionArtists]: {
 									__args: {
@@ -125,9 +128,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/items/invalid_table/1`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								invalid_table: {
 									__args: {
@@ -162,9 +165,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 
 					const body = { name: 'updated' };
-					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const ws = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
-					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const wsGql = createWebSocketGql(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
@@ -181,14 +184,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.patch(`/items/${localCollectionArtists}/${insertedArtist.id}`)
 						.send(body)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const wsMessages = await ws.getMessages(1);
 					const wsGqlMessages = await wsGql.getMessages(1);
 
 					const mutationKey = `update_${localCollectionArtists}_item`;
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						mutation: {
 							[mutationKey]: {
 								__args: {
@@ -278,9 +281,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						item: createArtist(pkType),
 					});
 
-					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const ws = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
-					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const wsGql = createWebSocketGql(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
@@ -293,14 +296,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.delete(`/items/${localCollectionArtists}/${insertedArtist.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const wsMessages = await ws.getMessages(1);
 					const wsGqlMessages = await wsGql.getMessages(1);
 
 					const mutationKey = `delete_${localCollectionArtists}_item`;
 
-					await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						mutation: {
 							[mutationKey]: {
 								__args: {
@@ -314,7 +317,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const wsMessagesGql = await ws.getMessages(1);
 					const wsGqlMessagesGql = await wsGql.getMessages(1);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -387,9 +390,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArtists}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								id: true,
@@ -412,9 +415,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/items/invalid_table`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								invalid_table: {
 									id: true,
@@ -442,11 +445,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const artist2 = createArtist(pkType);
 						artist2.name = 'one-' + artist2.name;
 
-						const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+						const ws = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 						await ws.subscribe({ collection: localCollectionArtists });
 
-						const wsGql = common.createWebSocketGql(getUrl(vendor), {
-							auth: { access_token: common.USER.ADMIN.TOKEN },
+						const wsGql = createWebSocketGql(getUrl(vendor), {
+							auth: { access_token: USER.ADMIN.TOKEN },
 						});
 
 						const subscriptionKey = await wsGql.subscribe({
@@ -464,14 +467,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const response = await request(getUrl(vendor))
 							.post(`/items/${localCollectionArtists}`)
 							.send(artist)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const wsMessages = await ws.getMessages(1);
 						const wsGqlMessages = await wsGql.getMessages(1);
 
 						const mutationKey = `create_${localCollectionArtists}_item`;
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							mutation: {
 								[mutationKey]: {
 									__args: {
@@ -553,11 +556,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							artists2.push(artist2);
 						}
 
-						const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+						const ws = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 						await ws.subscribe({ collection: localCollectionArtists });
 
-						const wsGql = common.createWebSocketGql(getUrl(vendor), {
-							auth: { access_token: common.USER.ADMIN.TOKEN },
+						const wsGql = createWebSocketGql(getUrl(vendor), {
+							auth: { access_token: USER.ADMIN.TOKEN },
 						});
 
 						const subscriptionKey = await wsGql.subscribe({
@@ -575,14 +578,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const response = await request(getUrl(vendor))
 							.post(`/items/${localCollectionArtists}`)
 							.send(artists)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const wsMessages = await ws.getMessages(artistsCount);
 						const wsGqlMessages = await wsGql.getMessages(artistsCount);
 
 						const mutationKey = `create_${localCollectionArtists}_items`;
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							mutation: {
 								[mutationKey]: {
 									__args: {
@@ -643,7 +646,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											event: 'create',
 											data: {
 												id: expect.anything(),
-												name: list[i].name,
+												name: list[i]?.name,
 											},
 										},
 									},
@@ -665,11 +668,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const response = await request(getUrl(vendor))
 							.post(`/items/invalid_table`)
 							.send(artist)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const mutationKey = `create_invalid_table_item`;
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							mutation: {
 								[mutationKey]: {
 									__args: {
@@ -709,9 +712,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						data: { name: 'updated' },
 					};
 
-					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const ws = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
-					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const wsGql = createWebSocketGql(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
@@ -728,14 +731,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.patch(`/items/${localCollectionArtists}?fields=name`)
 						.send(body)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const wsMessages = await ws.getMessages(1);
 					const wsGqlMessages = await wsGql.getMessages(artistsCount);
 
 					const mutationKey = `update_${localCollectionArtists}_items`;
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						mutation: {
 							[mutationKey]: {
 								__args: {
@@ -841,9 +844,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const insertedArtists2 = await CreateItem(vendor, { collection: localCollectionArtists, item: artists2 });
 					const keys2 = Object.values(insertedArtists2 ?? []).map((item: any) => item.id);
 
-					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const ws = createWebSocketConn(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
-					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+					const wsGql = createWebSocketGql(getUrl(vendor), { auth: { access_token: USER.ADMIN.TOKEN } });
 
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
@@ -857,14 +860,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.delete(`/items/${localCollectionArtists}`)
 						.send(keys)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const wsMessages = await ws.getMessages(1);
 					const wsGqlMessages = await wsGql.getMessages(artistsCount);
 
 					const mutationKey = `delete_${localCollectionArtists}_items`;
 
-					await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						mutation: {
 							[mutationKey]: {
 								__args: {
@@ -880,7 +883,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const wsGqlMessagesGql = await wsGql.getMessages(artistsCount);
 					wsGql.client.dispose();
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -948,7 +951,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						}),
 					})
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				// Assert
 				expect(response.statusCode).toBe(200);
@@ -972,7 +975,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						}),
 					})
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				// Assert
 				expect(response.statusCode).toBe(200);
@@ -1010,9 +1013,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								_and: [{ name: { _eq: artistName } }, { company: { _eq: artistCompany } }],
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -1067,9 +1070,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								_or: [{ name: { _eq: artistName } }, { company: { _eq: artistCompany } }],
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -1119,11 +1122,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								name: { _eq: artistName },
 							},
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const queryKey = `${localCollectionArtists}_aggregated`;
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[queryKey]: {
 								__args: {
@@ -1144,6 +1147,88 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponse.statusCode).toBe(200);
 					expect(gqlResponse.body.data[queryKey][0].count.id).toEqual(count);
+				});
+			});
+
+			describe('sorts grouped items correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 50;
+					const artistName = 'aggregate-sort-group';
+					const artists = [];
+					const companies = ['a', 'b', 'c'];
+
+					// company a = count = 11
+					// company b = count = 15
+					// company c = count = 24
+
+					const companiesCount = [24, 15, 11];
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						// first 1-10 company a; 11-25 company b; 26-50 company c
+
+						if (i <= 10) {
+							artist.company = companies[0];
+						} else if (i <= 25) {
+							artist.company = companies[1];
+						} else {
+							artist.company = companies[2];
+						}
+
+						artists.push(artist);
+					}
+
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							groupBy: ['company'],
+							filter: {
+								name: { _eq: artistName },
+							},
+							sort: '-count.id',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									sort: '-count.id',
+									groupBy: ['company'],
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+
+					for (let i = 0; i < companies.length; i++) {
+						expect(parseInt(response.body.data[i].count.id)).toEqual(companiesCount[i]);
+					}
+
+					expect(gqlResponse.statusCode).toBe(200);
+
+					for (let i = 0; i < companies.length; i++) {
+						expect(parseInt(gqlResponse.body.data[queryKey][i].count.id)).toEqual(companiesCount[i]);
+					}
 				});
 			});
 		});
@@ -1174,9 +1259,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 							offset,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -1233,9 +1318,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							limit,
 							sort,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponseAsc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponseAsc = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -1262,9 +1347,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							limit,
 							sort: `-${sort}`,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponseDesc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponseDesc = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionArtists]: {
 								__args: {
@@ -1338,11 +1423,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							limit,
 							groupBy,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const queryKey = `${localCollectionArtists}_aggregated`;
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[queryKey]: {
 								__args: {
@@ -1374,9 +1459,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							limit,
 							groupBy,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[queryKey]: {
 								__args: {
@@ -1460,11 +1545,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							sort,
 							groupBy,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const queryKey = `${localCollectionArtists}_aggregated`;
 
-					const gqlResponseAsc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponseAsc = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[queryKey]: {
 								__args: {
@@ -1498,9 +1583,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							sort: `-${sort}`,
 							groupBy,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponseDesc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponseDesc = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[queryKey]: {
 								__args: {
@@ -1553,7 +1638,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
 							const artists = [];
 							const artists2 = [];
 
@@ -1566,11 +1651,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionArtists}`)
 								.send(artists)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `create_${localCollectionArtists}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -1597,7 +1682,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
 							const artists = [];
 							const artists2 = [];
 
@@ -1610,11 +1695,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionArtists}`)
 								.send(artists)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `create_${localCollectionArtists}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -1630,14 +1715,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 						},
 						120000
@@ -1651,7 +1736,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
 							const artists = [];
 							const artists2 = [];
 
@@ -1669,11 +1754,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionArtists}`)
 								.send(artists)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `update_${localCollectionArtists}_batch`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -1700,7 +1785,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
 							const artists = [];
 							const artists2 = [];
 
@@ -1718,11 +1803,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionArtists}`)
 								.send(artists)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `update_${localCollectionArtists}_batch`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -1738,14 +1823,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 						},
 						120000
@@ -1759,7 +1844,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
 							const artistIDs = [];
 							const artistIDs2 = [];
 
@@ -1777,11 +1862,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionArtists}`)
 								.send({ keys: artistIDs, data: { name: 'updated' } })
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `update_${localCollectionArtists}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -1809,7 +1894,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
 							const artistIDs = [];
 							const artistIDs2 = [];
 
@@ -1827,11 +1912,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionArtists}`)
 								.send({ keys: artistIDs, data: { name: 'updated' } })
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `update_${localCollectionArtists}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -1848,14 +1933,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 						},
 						120000
@@ -1869,7 +1954,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
 							const company = uuid();
 
 							for (let i = 0; i < count; i++) {
@@ -1888,7 +1973,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 									data: { name: 'updated' },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							// Assert
 							expect(response.statusCode).toBe(200);
@@ -1903,7 +1988,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
 							const company = uuid();
 
 							for (let i = 0; i < count; i++) {
@@ -1922,14 +2007,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 									data: { name: 'updated' },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 						},
 						120000
@@ -1943,7 +2028,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
 							const artistIDs = [];
 							const artistIDs2 = [];
 							const artistIDs3 = [];
@@ -1971,16 +2056,16 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.delete(`/items/${localCollectionArtists}`)
 								.send({ keys: artistIDs })
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.delete(`/items/${localCollectionArtists}`)
 								.send({ keys: artistIDs2 })
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `delete_${localCollectionArtists}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -1991,7 +2076,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2022,7 +2107,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
 							const artistIDs = [];
 							const artistIDs2 = [];
 							const artistIDs3 = [];
@@ -2050,16 +2135,16 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.delete(`/items/${localCollectionArtists}`)
 								.send({ keys: artistIDs })
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.delete(`/items/${localCollectionArtists}`)
 								.send({ keys: artistIDs2 })
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const mutationKey = `delete_${localCollectionArtists}_items`;
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2070,7 +2155,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								mutation: {
 									[mutationKey]: {
 										__args: {
@@ -2086,28 +2171,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 
 							expect(response2.statusCode).toBe(400);
 							expect(response2.body.errors).toBeDefined();
 
 							expect(response2.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 
 							expect(gqlResponse2.statusCode).toBe(200);
 							expect(gqlResponse2.body.errors).toBeDefined();
 
 							expect(gqlResponse2.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 						},
 						120000
@@ -2121,7 +2206,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
 							const company = uuid();
 
 							for (let i = 0; i < count; i++) {
@@ -2139,7 +2224,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										limit: -1,
 									},
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							// Assert
 							expect(response.statusCode).toBe(204);
@@ -2153,7 +2238,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) + 1;
 							const company = uuid();
 
 							for (let i = 0; i < count; i++) {
@@ -2171,14 +2256,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										limit: -1,
 									},
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
 							);
 						},
 						120000
@@ -2212,7 +2297,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 							meta: '*',
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);
@@ -2222,13 +2307,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe('Auto Increment Tests', () => {
-			if (pkType !== 'integer') return;
+		test('Auto Increment Tests', (ctx) => {
+			if (pkType !== 'integer') ctx.skip();
 
 			describe('updates the auto increment value correctly', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
-
+				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
 					// Setup
 					const name = 'test-auto-increment';
 					const largeIdArtist = 101111;
@@ -2252,7 +2335,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								name: { _eq: name },
 							}),
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);

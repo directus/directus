@@ -1,4 +1,4 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
 
 /**
@@ -8,7 +8,7 @@ import { escapeIdentifier } from '../utils/escape-identifier.js';
  * @param query - The abstract query
  * @returns The `ORDER BY x` part of a SQL statement
  */
-export function orderBy({ order }: AbstractSqlQuery): string | null {
+export function orderBy({ order }: AbstractSqlClauses): string | null {
 	if (order === undefined) {
 		return null;
 	}

@@ -1,3 +1,53 @@
+<script setup lang="ts">
+import { isAllowed } from '@/utils/is-allowed';
+import { Share } from '@directus/types';
+import { format } from 'date-fns';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	share: Share;
+}>();
+
+defineEmits<{
+	(e: 'copy'): void;
+	(e: 'edit'): void;
+	(e: 'invite'): void;
+	(e: 'delete'): void;
+}>();
+
+const { t } = useI18n();
+
+const editAllowed = computed(() => {
+	return isAllowed('directus_shares', 'update', props.share);
+});
+
+const deleteAllowed = computed(() => {
+	return isAllowed('directus_shares', 'delete', props.share);
+});
+
+const usesLeft = computed(() => {
+	if (props.share.max_uses === null) return null;
+	return props.share.max_uses - props.share.times_used;
+});
+
+const status = computed(() => {
+	if (props.share.date_end && new Date(props.share.date_end) < new Date()) {
+		return 'expired';
+	}
+
+	if (props.share.date_start && new Date(props.share.date_start) > new Date()) {
+		return 'upcoming';
+	}
+
+	return null;
+});
+
+const formattedTime = computed(() => {
+	return format(new Date(props.share.date_created), String(t('date-fns_date_short')));
+});
+</script>
+
 <template>
 	<div class="item">
 		<div class="item-header">
@@ -49,66 +99,16 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { isAllowed } from '@/utils/is-allowed';
-import { Share } from '@directus/types';
-import { format } from 'date-fns';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const props = defineProps<{
-	share: Share;
-}>();
-
-defineEmits<{
-	(e: 'copy'): void;
-	(e: 'edit'): void;
-	(e: 'invite'): void;
-	(e: 'delete'): void;
-}>();
-
-const { t } = useI18n();
-
-const editAllowed = computed(() => {
-	return isAllowed('directus_shares', 'update', props.share);
-});
-
-const deleteAllowed = computed(() => {
-	return isAllowed('directus_shares', 'delete', props.share);
-});
-
-const usesLeft = computed(() => {
-	if (props.share.max_uses === null) return null;
-	return props.share.max_uses - props.share.times_used;
-});
-
-const status = computed(() => {
-	if (props.share.date_end && new Date(props.share.date_end) < new Date()) {
-		return 'expired';
-	}
-
-	if (props.share.date_start && new Date(props.share.date_start) > new Date()) {
-		return 'upcoming';
-	}
-
-	return null;
-});
-
-const formattedTime = computed(() => {
-	return format(new Date(props.share.date_created), String(t('date-fns_date_short')));
-});
-</script>
-
 <style lang="scss" scoped>
 .item {
 	margin-bottom: 8px;
 	padding: 8px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border-radius: var(--border-radius);
 }
 
 .item-date {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-size: 12px;
 }
 
@@ -119,15 +119,15 @@ const formattedTime = computed(() => {
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .item-info {
 	display: flex;
 	align-items: center;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .share-uses {
@@ -135,7 +135,7 @@ const formattedTime = computed(() => {
 	font-size: 12px;
 
 	&.no-left {
-		color: var(--danger);
+		color: var(--theme--danger);
 	}
 }
 
@@ -146,7 +146,7 @@ const formattedTime = computed(() => {
 	text-transform: uppercase;
 
 	&.expired {
-		color: var(--warning);
+		color: var(--theme--warning);
 	}
 
 	&.upcoming {
@@ -157,7 +157,7 @@ const formattedTime = computed(() => {
 .header-right {
 	position: relative;
 	flex-basis: 24px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	.more {
 		cursor: pointer;
@@ -165,7 +165,7 @@ const formattedTime = computed(() => {
 		transition: all var(--slow) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.active {

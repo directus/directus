@@ -9,7 +9,7 @@ import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
 import env from '../env.js';
-import { ContentTooLargeError, ErrorCode, InvalidPayloadError } from '../errors/index.js';
+import { ContentTooLargeError, ErrorCode, InvalidPayloadError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -92,9 +92,9 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			if (!payload.title) {
 				payload.title = formatTitle(path.parse(filename).name);
 			}
-
-			payload.filename_download = filename;
 		}
+
+		payload.filename_download = filename;
 
 		const payloadWithRequiredFields = {
 			...payload,

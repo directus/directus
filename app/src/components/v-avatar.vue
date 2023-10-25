@@ -1,9 +1,3 @@
-<template>
-	<div class="v-avatar" :class="[{ tile }, sizeClass]">
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSizeClass } from '@directus/composables';
 
@@ -27,6 +21,12 @@ const props = withDefaults(defineProps<Props>(), {
 const sizeClass = useSizeClass(props);
 </script>
 
+<template>
+	<div class="v-avatar" :class="[{ tile }, sizeClass]">
+		<slot />
+	</div>
+</template>
+
 <style>
 body {
 	--v-avatar-color: var(--background-normal);
@@ -43,7 +43,7 @@ body {
 	width: var(--v-avatar-size);
 	height: var(--v-avatar-size);
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	background-color: var(--v-avatar-color);

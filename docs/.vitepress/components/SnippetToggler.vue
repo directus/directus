@@ -1,3 +1,54 @@
+<script setup lang="ts">
+import { useLocalStorage, type RemovableRef } from '@vueuse/core';
+import { onMounted, ref, watch, nextTick } from 'vue';
+
+const props = defineProps<{
+	choices: string[];
+	group?: string;
+	alwaysDark?: boolean;
+	maintainHeight?: boolean;
+}>();
+
+const selected = ref<string>();
+let localStorage: RemovableRef<string | undefined> | undefined;
+
+// Get local storage on client side (preventing SSR <-> client mismatch & flash)
+onMounted(() => {
+	if (props.group) {
+		localStorage = useLocalStorage(`toggler-${props.group}`, undefined);
+
+		const initialValue = localStorage.value;
+
+		selected.value = initialValue && props.choices.includes(initialValue) ? initialValue : props.choices[0];
+
+		watch(localStorage, (value) => {
+			if (value && !props.choices.includes(value)) return;
+
+			selected.value = value;
+		});
+	} else {
+		selected.value = props.choices[0];
+	}
+});
+
+const changeSelected = async (choice: string, el: HTMLElement) => {
+	const previousRelativeOffset = el.offsetTop - document.documentElement.scrollTop;
+
+	if (localStorage) {
+		localStorage.value = choice;
+	} else {
+		selected.value = choice;
+	}
+
+	if (props.group) {
+		await nextTick();
+
+		const newRelativeOffset = el.offsetTop - document.documentElement.scrollTop;
+		document.documentElement.scrollTop += newRelativeOffset - previousRelativeOffset;
+	}
+};
+</script>
+
 <template>
 	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
 		<div class="snippet-toggler-header">
@@ -6,8 +57,8 @@
 					v-for="choice in choices"
 					:key="choice"
 					class="button"
-					:class="{ active: selected == choice }"
-					@click="selected = choice"
+					:class="{ active: choice === selected }"
+					@click="changeSelected(choice, $el)"
 				>
 					{{ choice }}
 				</button>
@@ -16,51 +67,16 @@
 
 		<div class="content-area">
 			<template v-for="choice in choices" :key="choice">
-				<div v-if="choice === selected">
+				<div
+					v-if="maintainHeight || choice === selected"
+					:class="{ content: maintainHeight, active: maintainHeight && choice === selected }"
+				>
 					<slot :name="choice.toLowerCase()"></slot>
 				</div>
 			</template>
 		</div>
 	</div>
 </template>
-
-<script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue';
-
-const props = defineProps<{
-	choices: string[];
-	label?: string;
-	alwaysDark?: boolean;
-}>();
-
-const selected = ref();
-
-const useStorage = (key: string) => {
-	const getStorageValue = () => {
-		return localStorage.getItem(key);
-	};
-
-	const setStorageValue = (value: string) => localStorage.setItem(key, value);
-
-	return { getStorageValue, setStorageValue };
-};
-
-const { getStorageValue, setStorageValue } = useStorage('toggler-value');
-
-onBeforeMount(() => {
-	const value = getStorageValue();
-
-	if (value && props.choices.includes(value)) {
-		selected.value = value;
-	} else {
-		selected.value = props.choices[0];
-	}
-
-	watch(selected, (value) => {
-		setStorageValue(value);
-	});
-});
-</script>
 
 <style scoped>
 .snippet-toggler {
@@ -135,5 +151,17 @@ html.dark .snippet-toggler .button.active,
 	scrollbar-width: none;
 	overflow-y: auto;
 	tab-size: 2;
+	display: grid;
+	grid-template-columns: 100%;
+}
+
+.content {
+	visibility: hidden;
+	grid-row-start: 1;
+	grid-column-start: 1;
+}
+
+.content.active {
+	visibility: visible;
 }
 </style>

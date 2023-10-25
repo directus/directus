@@ -1,109 +1,3 @@
-<template>
-	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
-		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
-		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-		<template #actions>
-			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						v-if="primaryKey !== lastAdminRoleId"
-						v-tooltip.bottom="t('delete_label')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
-						:disabled="item === null"
-						@click="on"
-					>
-						<v-icon name="delete" />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-button
-				v-if="canInviteUsers"
-				v-tooltip.bottom="t('invite_users')"
-				rounded
-				icon
-				secondary
-				@click="userInviteModalActive = true"
-			>
-				<v-icon name="person_add" />
-			</v-button>
-
-			<v-button
-				v-tooltip.bottom="t('save')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="hasEdits === false"
-				@click="saveAndQuit"
-			>
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
-
-		<div class="roles">
-			<v-notice v-if="adminEnabled" type="info">
-				{{ t('admins_have_all_permissions') }}
-			</v-notice>
-
-			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
-
-			<v-form
-				v-model="edits"
-				collection="directus_roles"
-				:primary-key="primaryKey"
-				:loading="loading"
-				:initial-values="item"
-			/>
-		</div>
-
-		<template #sidebar>
-			<role-info-sidebar-detail :role="item" />
-			<revisions-drawer-detail ref="revisionsDrawerDetailRef" collection="directus_roles" :primary-key="primaryKey" />
-		</template>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
@@ -218,9 +112,115 @@ function discardAndLeave() {
 }
 </script>
 
+<template>
+	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/roles' }]" />
+		</template>
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+		<template #actions>
+			<v-dialog v-if="[1, 2].includes(+primaryKey) === false" v-model="confirmDelete" @esc="confirmDelete = false">
+				<template #activator="{ on }">
+					<v-button
+						v-if="primaryKey !== lastAdminRoleId"
+						v-tooltip.bottom="t('delete_label')"
+						rounded
+						icon
+						class="action-delete"
+						secondary
+						:disabled="item === null"
+						@click="on"
+					>
+						<v-icon name="delete" />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-button
+				v-if="canInviteUsers"
+				v-tooltip.bottom="t('invite_users')"
+				rounded
+				icon
+				secondary
+				@click="userInviteModalActive = true"
+			>
+				<v-icon name="person_add" />
+			</v-button>
+
+			<v-button
+				v-tooltip.bottom="t('save')"
+				rounded
+				icon
+				:loading="saving"
+				:disabled="hasEdits === false"
+				@click="saveAndQuit"
+			>
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
+
+		<div class="roles">
+			<v-notice v-if="adminEnabled" type="info">
+				{{ t('admins_have_all_permissions') }}
+			</v-notice>
+
+			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
+
+			<v-form
+				v-model="edits"
+				collection="directus_roles"
+				:primary-key="primaryKey"
+				:loading="loading"
+				:initial-values="item"
+			/>
+		</div>
+
+		<template #sidebar>
+			<role-info-sidebar-detail :role="item" />
+			<revisions-drawer-detail ref="revisionsDrawerDetailRef" collection="directus_roles" :primary-key="primaryKey" />
+		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</private-view>
+</template>
+
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
@@ -235,10 +235,10 @@ function discardAndLeave() {
 }
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .permissions-overview,

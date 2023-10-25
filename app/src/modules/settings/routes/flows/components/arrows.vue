@@ -1,19 +1,3 @@
-<template>
-	<div class="arrow-container">
-		<svg :width="size.width" :height="size.height" class="arrows">
-			<transition-group name="fade">
-				<path
-					v-for="arrow in arrows"
-					:key="arrow.id"
-					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
-					:d="arrow.d"
-					stroke-linecap="round"
-				/>
-			</transition-group>
-		</svg>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Vector2 } from '@/utils/vector2';
 import { computed } from 'vue';
@@ -263,6 +247,22 @@ const arrows = computed(() => {
 });
 </script>
 
+<template>
+	<div class="arrow-container">
+		<svg :width="size.width" :height="size.height" class="arrows">
+			<transition-group name="fade">
+				<path
+					v-for="arrow in arrows"
+					:key="arrow.id"
+					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
+					:d="arrow.d"
+					stroke-linecap="round"
+				/>
+			</transition-group>
+		</svg>
+	</div>
+</template>
+
 <style scoped lang="scss">
 .arrow-container {
 	position: relative;
@@ -276,17 +276,17 @@ const arrows = computed(() => {
 
 		path {
 			fill: transparent;
-			stroke: var(--primary);
+			stroke: var(--theme--primary);
 			stroke-width: 2px;
 			transition: stroke var(--fast) var(--transition);
 			transform: translateX(0);
 
 			&.reject {
-				stroke: var(--secondary);
+				stroke: var(--theme--secondary);
 			}
 
 			&.subdued {
-				stroke: var(--foreground-subdued);
+				stroke: var(--theme--foreground-subdued);
 			}
 
 			&.fade-enter-active,

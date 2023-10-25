@@ -1,3 +1,102 @@
+<script setup lang="ts">
+import api from '@/api';
+import { useExtension } from '@/composables/use-extension';
+import { usePreset } from '@/composables/use-preset';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useCollection, useLayout } from '@directus/composables';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+
+type Item = {
+	[field: string]: any;
+};
+
+const props = defineProps<{
+	bookmark?: string;
+	archive?: string;
+}>();
+
+const { t } = useI18n();
+
+const layoutRef = ref();
+
+const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
+
+const selection = ref<Item[]>([]);
+const { info: currentCollection } = useCollection('directus_translations');
+
+const addNewLink = computed<string>(() => {
+	return `/settings/translations/+`;
+});
+
+const { layout, layoutOptions, layoutQuery, filter, search, resetPreset, refreshInterval } = usePreset(
+	ref('directus_translations'),
+	bookmarkID
+);
+
+const { layoutWrapper } = useLayout(layout);
+
+const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+
+const currentLayout = useExtension('layout', layout);
+
+async function refresh() {
+	await layoutRef.value?.state?.refresh?.();
+}
+
+async function download() {
+	await layoutRef.value?.state?.download?.();
+}
+
+async function batchRefresh() {
+	selection.value = [];
+	await refresh();
+}
+
+function useBatch() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	const batchEditActive = ref(false);
+
+	const error = ref<any>(null);
+
+	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
+
+	async function batchDelete() {
+		deleting.value = true;
+
+		const batchPrimaryKeys = selection.value;
+
+		try {
+			await api.delete(`/translations`, {
+				data: batchPrimaryKeys,
+			});
+
+			selection.value = [];
+			await refresh();
+
+			confirmDelete.value = false;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			deleting.value = false;
+		}
+	}
+}
+
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
+}
+</script>
+
 <template>
 	<component
 		:is="layoutWrapper"
@@ -146,112 +245,13 @@
 	</component>
 </template>
 
-<script setup lang="ts">
-import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
-import { usePreset } from '@/composables/use-preset';
-import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
-import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
-import { useCollection, useLayout } from '@directus/composables';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-
-type Item = {
-	[field: string]: any;
-};
-
-const props = defineProps<{
-	bookmark?: string;
-	archive?: string;
-}>();
-
-const { t } = useI18n();
-
-const layoutRef = ref();
-
-const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
-
-const selection = ref<Item[]>([]);
-const { info: currentCollection } = useCollection('directus_translations');
-
-const addNewLink = computed<string>(() => {
-	return `/settings/translations/+`;
-});
-
-const { layout, layoutOptions, layoutQuery, filter, search, resetPreset, refreshInterval } = usePreset(
-	ref('directus_translations'),
-	bookmarkID
-);
-
-const { layoutWrapper } = useLayout(layout);
-
-const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-const currentLayout = useExtension('layout', layout);
-
-async function refresh() {
-	await layoutRef.value?.state?.refresh?.();
-}
-
-async function download() {
-	await layoutRef.value?.state?.download?.();
-}
-
-async function batchRefresh() {
-	selection.value = [];
-	await refresh();
-}
-
-function useBatch() {
-	const confirmDelete = ref(false);
-	const deleting = ref(false);
-
-	const batchEditActive = ref(false);
-
-	const error = ref<any>(null);
-
-	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
-
-	async function batchDelete() {
-		deleting.value = true;
-
-		const batchPrimaryKeys = selection.value;
-
-		try {
-			await api.delete(`/translations`, {
-				data: batchPrimaryKeys,
-			});
-
-			selection.value = [];
-			await refresh();
-
-			confirmDelete.value = false;
-		} catch (err: any) {
-			error.value = err;
-		} finally {
-			deleting.value = false;
-		}
-	}
-}
-
-function clearFilters() {
-	filter.value = null;
-	search.value = null;
-}
-</script>
-
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 </style>

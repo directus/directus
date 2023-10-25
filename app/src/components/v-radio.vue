@@ -1,19 +1,3 @@
-<template>
-	<button
-		class="v-radio"
-		type="button"
-		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled="disabled"
-		:class="{ checked: isChecked, block }"
-		@click="emitValue"
-	>
-		<v-icon :name="icon" />
-		<span class="label type-text">
-			<slot name="label">{{ label }}</slot>
-		</span>
-	</button>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -58,9 +42,25 @@ function emitValue(): void {
 }
 </script>
 
+<template>
+	<button
+		class="v-radio"
+		type="button"
+		:aria-pressed="isChecked ? 'true' : 'false'"
+		:disabled="disabled"
+		:class="{ checked: isChecked, block }"
+		@click="emitValue"
+	>
+		<v-icon :name="icon" />
+		<span class="label type-text">
+			<slot name="label">{{ label }}</slot>
+		</span>
+	</button>
+</template>
+
 <style>
 body {
-	--v-radio-color: var(--primary);
+	--v-radio-color: var(--theme--primary);
 }
 </style>
 
@@ -84,18 +84,18 @@ body {
 	}
 
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 	}
 
 	&:disabled {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
@@ -125,7 +125,7 @@ body {
 
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 

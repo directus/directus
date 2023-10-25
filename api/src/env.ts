@@ -167,6 +167,8 @@ const allowedEnvironmentVars = [
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
 	'EXTENSIONS_CACHE_TTL',
+	'EXTENSIONS_SANDBOX_MEMORY',
+	'EXTENSIONS_SANDBOX_TIMEOUT',
 	// messenger
 	'MESSENGER_STORE',
 	'MESSENGER_NAMESPACE',
@@ -278,6 +280,8 @@ const defaults: Record<string, any> = {
 	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
+	EXTENSIONS_SANDBOX_MEMORY: 100,
+	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
 
 	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
@@ -419,11 +423,11 @@ async function processConfiguration() {
 		);
 	}
 
-	if (fileExt === '.json') {
+	if (fileExt === 'json') {
 		return require(configPath);
 	}
 
-	if (fileExt === '.yaml' || fileExt === '.yml') {
+	if (fileExt === 'yaml' || fileExt === 'yml') {
 		const data = requireYAML(configPath);
 
 		if (typeof data === 'object') {

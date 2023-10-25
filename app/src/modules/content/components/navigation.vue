@@ -1,41 +1,3 @@
-<template>
-	<div class="content-navigation-wrapper">
-		<div v-if="showSearch" class="search-input">
-			<v-input v-model="search" type="search" :placeholder="t('search_collection')" />
-		</div>
-
-		<v-list
-			v-model="activeGroups"
-			v-context-menu="'contextMenu'"
-			scope="content-navigation"
-			class="content-navigation"
-			tabindex="-1"
-			nav
-			:mandatory="false"
-			:dense="dense"
-		>
-			<navigation-item
-				v-for="collection in rootItems"
-				:key="collection.collection"
-				:show-hidden="showHidden"
-				:collection="collection"
-				:search="search"
-			/>
-
-			<v-menu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
-				<v-list-item clickable @click="showHidden = !showHidden">
-					<v-list-item-icon>
-						<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="showHidden ? t('hide_hidden_collections') : t('show_hidden_collections')" />
-					</v-list-item-content>
-				</v-list-item>
-			</v-menu>
-		</v-list>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { isNil, orderBy } from 'lodash';
@@ -74,6 +36,44 @@ const hasHiddenCollections = computed(
 );
 </script>
 
+<template>
+	<div class="content-navigation-wrapper">
+		<div v-if="showSearch" class="search-input">
+			<v-input v-model="search" type="search" :placeholder="t('search_collection')" />
+		</div>
+
+		<v-list
+			v-model="activeGroups"
+			v-context-menu="'contextMenu'"
+			scope="content-navigation"
+			class="content-navigation"
+			tabindex="-1"
+			nav
+			:mandatory="false"
+			:dense="dense"
+		>
+			<navigation-item
+				v-for="collection in rootItems"
+				:key="collection.collection"
+				:show-hidden="showHidden"
+				:collection="collection"
+				:search="search"
+			/>
+
+			<v-menu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
+				<v-list-item clickable @click="showHidden = !showHidden">
+					<v-list-item-icon>
+						<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="showHidden ? t('hide_hidden_collections') : t('show_hidden_collections')" />
+					</v-list-item-content>
+				</v-list-item>
+			</v-menu>
+		</v-list>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .group-name {
 	padding-left: 8px;
@@ -82,9 +82,9 @@ const hasHiddenCollections = computed(
 
 .empty {
 	.v-button {
-		--v-button-color: var(--foreground-subdued);
-		--v-button-background-color: var(--foreground-subdued);
-		--v-button-background-color-hover: var(--primary);
+		--v-button-color: var(--theme--foreground-subdued);
+		--v-button-background-color: var(--theme--foreground-subdued);
+		--v-button-background-color-hover: var(--theme--primary);
 	}
 }
 
@@ -115,7 +115,7 @@ const hasHiddenCollections = computed(
 }
 
 .hidden-collection {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--theme--foreground-subdued);
 }
 
 .search-input {

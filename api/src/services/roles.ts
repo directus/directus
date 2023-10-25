@@ -1,5 +1,5 @@
 import type { Query } from '@directus/types';
-import { ForbiddenError, UnprocessableContentError } from '../errors/index.js';
+import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';

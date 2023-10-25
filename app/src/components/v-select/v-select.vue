@@ -1,9 +1,240 @@
+<script setup lang="ts">
+import { useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
+import { Placement } from '@popperjs/core';
+import { debounce, get } from 'lodash';
+import { computed, Ref, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SelectListItemGroup from './select-list-item-group.vue';
+import SelectListItem from './select-list-item.vue';
+import { Option } from './types';
+
+type ItemsRaw = (string | any)[];
+type InputValue = string[] | string | number | null;
+
+interface Props {
+	/** The items that should be selectable */
+	items: ItemsRaw;
+	/** Which key in items is used to display the text */
+	itemText?: string;
+	/** Which key in items is used to model the active state */
+	itemValue?: string;
+	/** Which key in items is used to show an icon */
+	itemIcon?: string | null;
+	/** Which font family to use for checkbox item label */
+	itemLabelFontFamily?: string;
+	/** Which key in items is used to model the disabled state */
+	itemDisabled?: string;
+	/** Which key in items is used to model the selectable state */
+	itemSelectable?: string;
+	/** Which key in items is used to render the children */
+	itemChildren?: string;
+	/** Which items should be shown as selected, depending on their value */
+	modelValue?: InputValue;
+	/** Allow to select multiple values */
+	multiple?: boolean;
+	/** Allow to select the parent of a group */
+	groupSelectable?: boolean;
+	/** Require a minimum selection of at least one element */
+	mandatory?: boolean;
+	/** Text that is displayed when no items are selected */
+	placeholder?: string | null;
+	/** Spreads the select element to it's maximal width */
+	fullWidth?: boolean;
+	/** Disables any interaction */
+	disabled?: boolean;
+	/** Allow to deselect all currently selected items */
+	showDeselect?: boolean;
+	/** Allow to enter custom values */
+	allowOther?: boolean;
+	/** Closes the dropdown after an items has been selected  */
+	closeOnContentClick?: boolean;
+	/** Renders the element inline, good for seamless selections */
+	inline?: boolean;
+	label?: boolean;
+	/** Limits the amount of items inside the preview */
+	multiplePreviewThreshold?: number;
+	/** The direction the menu should open */
+	placement?: Placement;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	itemText: 'text',
+	itemValue: 'value',
+	itemIcon: null,
+	itemDisabled: 'disabled',
+	itemSelectable: 'selectable',
+	itemChildren: 'children',
+	modelValue: null,
+	mandatory: true,
+	placeholder: null,
+	fullWidth: true,
+	closeOnContentClick: true,
+	multiplePreviewThreshold: 3,
+	placement: 'bottom',
+});
+
+const emit = defineEmits(['update:modelValue', 'group-toggle']);
+
+const { t } = useI18n();
+
+const { internalItems, internalItemsCount, internalSearch } = useItems();
+const { displayValue } = useDisplayValue();
+const { modelValue } = toRefs(props);
+
+const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
+	emit('update:modelValue', value)
+);
+
+const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
+	modelValue as Ref<string[]>,
+	internalItems,
+	(value) => emit('update:modelValue', value)
+);
+
+const search = ref<string | null>(null);
+
+watch(
+	search,
+	debounce((val: string | null) => {
+		internalSearch.value = val;
+	}, 250)
+);
+
+function useItems() {
+	const internalSearch = ref<string | null>(null);
+
+	const internalItems = computed(() => {
+		const parseItem = (item: Record<string, any> | string): Option => {
+			if (typeof item === 'string') {
+				return {
+					text: item,
+					value: item,
+					hidden: internalSearch.value ? !filterItem(item) : false,
+				};
+			}
+
+			if (item.divider === true) return { value: null, divider: true };
+
+			const text = get(item, props.itemText);
+			const value = get(item, props.itemValue);
+			const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
+
+			return {
+				text,
+				value,
+				icon: props.itemIcon ? get(item, props.itemIcon) : undefined,
+				disabled: get(item, props.itemDisabled),
+				selectable: get(item, props.itemSelectable),
+				children: children
+					? children.filter((childItem: Record<string, any>) =>
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+					  )
+					: children,
+				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
+			};
+		};
+
+		const filterItem = (
+			text: string | undefined,
+			value?: string | number | null,
+			children?: Record<string, any>[] | null
+		): boolean => {
+			if (!internalSearch.value) return true;
+
+			const searchValue = internalSearch.value.toLowerCase();
+
+			return children
+				? isMatchingCurrentItem(text, value, searchValue) ||
+						children.some((childItem: Record<string, any>) =>
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+						)
+				: isMatchingCurrentItem(text, value, searchValue);
+
+			function isMatchingCurrentItem(
+				text: string | undefined,
+				value: string | number | null | undefined,
+				searchValue: string
+			): boolean {
+				return (
+					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
+					(value ? String(value).toLowerCase().includes(searchValue) : false)
+				);
+			}
+		};
+
+		return props.items.map(parseItem);
+	});
+
+	const internalItemsCount = computed<number>(() => {
+		const countItems = (items: Option[]): number => {
+			const count = items.reduce((acc, item): number => {
+				if (item?.children) {
+					acc += countItems(item.children);
+				}
+
+				return acc + 1;
+			}, 0);
+
+			return count;
+		};
+
+		return countItems(props.items);
+	});
+
+	return { internalItems, internalItemsCount, internalSearch };
+}
+
+function useDisplayValue() {
+	const displayValue = computed(() => {
+		if (Array.isArray(props.modelValue)) {
+			if (props.modelValue.length < props.multiplePreviewThreshold) {
+				return props.modelValue
+					.map((value) => {
+						return getTextForValue(value) || value;
+					})
+					.join(', ');
+			} else {
+				const itemCount = internalItems.value.length + otherValues.value.length;
+				const selectionCount = props.modelValue.length;
+
+				if (itemCount === selectionCount) {
+					return t('all_items');
+				} else {
+					return t('item_count', selectionCount);
+				}
+			}
+		}
+
+		return getTextForValue(props.modelValue) || props.modelValue;
+	});
+
+	return { displayValue };
+
+	function getTextForValue(value: string | number | null) {
+		return findValue(internalItems.value);
+
+		function findValue(choices: Option[]): string | undefined {
+			let textValue: string | undefined = choices.find((item) => item.value === value)?.['text'];
+
+			for (const choice of choices) {
+				if (!textValue) {
+					if (choice.children) {
+						textValue = findValue(choice.children);
+					}
+				}
+			}
+
+			return textValue;
+		}
+	}
+}
+</script>
+
 <template>
 	<v-menu
 		class="v-select"
 		:disabled="disabled"
 		:attached="inline === false"
-		:is-same-width="isMenuSameWidth"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
@@ -135,237 +366,10 @@
 	</v-menu>
 </template>
 
-<script setup lang="ts">
-import { useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
-import { Placement } from '@popperjs/core';
-import { debounce, get } from 'lodash';
-import { computed, Ref, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SelectListItemGroup from './select-list-item-group.vue';
-import SelectListItem from './select-list-item.vue';
-import { Option } from './types';
-
-type ItemsRaw = (string | any)[];
-type InputValue = string[] | string | number | null;
-
-interface Props {
-	/** The items that should be selectable */
-	items: ItemsRaw;
-	/** Which key in items is used to display the text */
-	itemText?: string;
-	/** Which key in items is used to model the active state */
-	itemValue?: string;
-	/** Which key in items is used to show an icon */
-	itemIcon?: string | null;
-	/** Which font family to use for checkbox item label */
-	itemLabelFontFamily?: string;
-	/** Which key in items is used to model the disabled state */
-	itemDisabled?: string;
-	/** Which key in items is used to model the selectable state */
-	itemSelectable?: string;
-	/** Which key in items is used to render the children */
-	itemChildren?: string;
-	/** Which items should be shown as selected, depending on their value */
-	modelValue?: InputValue;
-	/** Allow to select multiple values */
-	multiple?: boolean;
-	/** Allow to select the parent of a group */
-	groupSelectable?: boolean;
-	/** Require a minimum selection of at least one element */
-	mandatory?: boolean;
-	/** Text that is displayed when no items are selected */
-	placeholder?: string | null;
-	/** Spreads the select element to it's maximal width */
-	fullWidth?: boolean;
-	/** Disables any interaction */
-	disabled?: boolean;
-	/** Allow to deselect all currently selected items */
-	showDeselect?: boolean;
-	/** Allow to enter custom values */
-	allowOther?: boolean;
-	/** Closes the dropdown after an items has been selected  */
-	closeOnContentClick?: boolean;
-	/** Renders the element inline, good for seamless selections */
-	inline?: boolean;
-	label?: boolean;
-	/** Limits the amount of items inside the preview */
-	multiplePreviewThreshold?: number;
-	/** The direction the menu should open */
-	placement?: Placement;
-	/** Should the menu be the same width as the select element */
-	isMenuSameWidth?: true;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	itemText: 'text',
-	itemValue: 'value',
-	itemIcon: null,
-	itemDisabled: 'disabled',
-	itemSelectable: 'selectable',
-	itemChildren: 'children',
-	modelValue: null,
-	multiple: false,
-	groupSelectable: false,
-	mandatory: true,
-	placeholder: null,
-	fullWidth: true,
-	disabled: false,
-	showDeselect: false,
-	allowOther: false,
-	closeOnContentClick: true,
-	inline: false,
-	label: false,
-	multiplePreviewThreshold: 3,
-	placement: 'bottom',
-	isMenuSameWidth: true,
-});
-
-const emit = defineEmits(['update:modelValue', 'group-toggle']);
-
-const { t } = useI18n();
-
-const { internalItems, internalItemsCount, internalSearch } = useItems();
-const { displayValue } = useDisplayValue();
-const { modelValue } = toRefs(props);
-
-const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
-	emit('update:modelValue', value)
-);
-
-const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
-	modelValue as Ref<string[]>,
-	internalItems,
-	(value) => emit('update:modelValue', value)
-);
-
-const search = ref<string | null>(null);
-
-watch(
-	search,
-	debounce((val: string | null) => {
-		internalSearch.value = val;
-	}, 250)
-);
-
-function useItems() {
-	const internalSearch = ref<string | null>(null);
-
-	const internalItems = computed(() => {
-		const parseItem = (item: Record<string, any>): Option => {
-			if (typeof item === 'string') {
-				return {
-					text: item,
-					value: item,
-				};
-			}
-
-			if (item.divider === true) return { value: null, divider: true };
-
-			const children = get(item, props.itemChildren) ? get(item, props.itemChildren).map(parseItem) : null;
-
-			return {
-				text: get(item, props.itemText),
-				value: get(item, props.itemValue),
-				icon: props.itemIcon ? get(item, props.itemIcon) : undefined,
-				disabled: get(item, props.itemDisabled),
-				selectable: get(item, props.itemSelectable),
-				children: children ? children.filter(filterItem) : children,
-				hidden: internalSearch.value ? !filterItem(item) : false,
-			};
-		};
-
-		const filterItem = (item: Record<string, any>): boolean => {
-			if (!internalSearch.value) return true;
-
-			const searchValue = internalSearch.value.toLowerCase();
-
-			return item?.children
-				? isMatchingCurrentItem(item, searchValue) ||
-						item.children.some((item: Record<string, any>) => filterItem(item))
-				: isMatchingCurrentItem(item, searchValue);
-
-			function isMatchingCurrentItem(item: Record<string, any>, searchValue: string): boolean {
-				const text = get(item, props.itemText);
-				const value = get(item, props.itemValue);
-				return (
-					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
-					(value ? String(value).toLowerCase().includes(searchValue) : false)
-				);
-			}
-		};
-
-		return props.items.map(parseItem);
-	});
-
-	const internalItemsCount = computed<number>(() => {
-		const countItems = (items: Option[]): number => {
-			const count = items.reduce((acc, item): number => {
-				if (item?.children) {
-					acc += countItems(item.children);
-				}
-
-				return acc + 1;
-			}, 0);
-
-			return count;
-		};
-
-		return countItems(props.items);
-	});
-
-	return { internalItems, internalItemsCount, internalSearch };
-}
-
-function useDisplayValue() {
-	const displayValue = computed(() => {
-		if (Array.isArray(props.modelValue)) {
-			if (props.modelValue.length < props.multiplePreviewThreshold) {
-				return props.modelValue
-					.map((value) => {
-						return getTextForValue(value) || value;
-					})
-					.join(', ');
-			} else {
-				const itemCount = internalItems.value.length + otherValues.value.length;
-				const selectionCount = props.modelValue.length;
-
-				if (itemCount === selectionCount) {
-					return t('all_items');
-				} else {
-					return t('item_count', selectionCount);
-				}
-			}
-		}
-
-		return getTextForValue(props.modelValue) || props.modelValue;
-	});
-
-	return { displayValue };
-
-	function getTextForValue(value: string | number | null) {
-		return findValue(internalItems.value);
-
-		function findValue(choices: Option[]): string | undefined {
-			let textValue: string | undefined = choices.find((item) => item.value === value)?.['text'];
-
-			for (const choice of choices) {
-				if (!textValue) {
-					if (choice.children) {
-						textValue = findValue(choice.children);
-					}
-				}
-			}
-
-			return textValue;
-		}
-	}
-}
-</script>
-
 <style scoped lang="scss">
 :global(body) {
-	--v-select-font-family: var(--family-sans-serif);
-	--v-select-placeholder-color: var(--foreground-subdued);
+	--v-select-font-family: var(--theme--font-family-sans-serif);
+	--v-select-placeholder-color: var(--theme--foreground-subdued);
 }
 
 .list {
@@ -412,7 +416,7 @@ function useDisplayValue() {
 .inline-display.label {
 	padding: 4px 8px;
 	padding-right: 26px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 	transition: color var(--fast) var(--transition);

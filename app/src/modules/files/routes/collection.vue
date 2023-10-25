@@ -1,194 +1,3 @@
-<template>
-	<component
-		:is="layoutWrapper"
-		ref="layoutRef"
-		v-slot="{ layoutState }"
-		v-model:selection="selection"
-		v-model:layout-options="layoutOptions"
-		v-model:layout-query="layoutQuery"
-		:filter="mergeFilters(filter, folderFilter)"
-		:filter-user="filter"
-		:filter-system="folderFilter"
-		:search="search"
-		collection="directus_files"
-		:reset-preset="resetPreset"
-	>
-		<private-view
-			:title="title"
-			:class="{ dragging }"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
-			<template v-if="breadcrumb" #headline>
-				<v-breadcrumb :items="breadcrumb" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="folder" outline />
-				</v-button>
-			</template>
-
-			<template #actions:prepend>
-				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
-			</template>
-
-			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
-
-				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
-
-				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
-					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
-							<v-icon name="folder_move" />
-						</v-button>
-					</template>
-
-					<v-card>
-						<v-card-title>{{ t('move_to_folder') }}</v-card-title>
-
-						<v-card-text>
-							<folder-picker v-model="selectedFolder" />
-						</v-card-text>
-
-						<v-card-actions>
-							<v-button secondary @click="moveToDialogActive = false">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button :loading="moving" @click="moveToFolder">
-								{{ t('move') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
-					<template #activator="{ on }">
-						<v-button
-							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
-							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
-							class="action-delete"
-							secondary
-							@click="on"
-						>
-							<v-icon name="delete" outline />
-						</v-button>
-					</template>
-
-					<v-card>
-						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
-
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-
-				<v-button
-					v-if="selection.length > 0"
-					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
-					rounded
-					icon
-					secondary
-					:disabled="batchEditAllowed === false"
-					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline />
-				</v-button>
-
-				<v-button
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
-					rounded
-					icon
-					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
-					:disabled="createAllowed === false"
-				>
-					<v-icon name="add" />
-				</v-button>
-			</template>
-
-			<template #navigation>
-				<files-navigation :current-folder="folder" :current-special="special" />
-			</template>
-
-			<component :is="`layout-${layout}`" v-bind="layoutState">
-				<template #no-results>
-					<v-info v-if="!filter && !search" :title="t('file_count', 0)" icon="folder" center>
-						{{ t('no_files_copy') }}
-
-						<template #append>
-							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
-								{{ t('add_file') }}
-							</v-button>
-						</template>
-					</v-info>
-
-					<v-info v-else :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
-
-						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
-						</template>
-					</v-info>
-				</template>
-
-				<template #no-items>
-					<v-info :title="t('file_count', 0)" icon="folder" center>
-						{{ t('no_files_copy') }}
-
-						<template #append>
-							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
-								{{ t('add_file') }}
-							</v-button>
-						</template>
-					</v-info>
-				</template>
-			</component>
-
-			<router-view name="addNew" :folder="folder" @upload="refresh" />
-
-			<drawer-batch
-				v-model:active="batchEditActive"
-				:primary-keys="selection"
-				collection="directus_files"
-				@refresh="refresh"
-			/>
-
-			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_files_collection')" class="page-description" />
-				</sidebar-detail>
-				<layout-sidebar-detail v-model="layout">
-					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
-				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
-				<export-sidebar-detail
-					collection="directus_files"
-					:layout-query="layoutQuery"
-					:filter="mergeFilters(filter, folderFilter)"
-					:search="search"
-					@refresh="refresh"
-				/>
-			</template>
-
-			<template v-if="showDropEffect">
-				<div class="drop-border top" />
-				<div class="drop-border right" />
-				<div class="drop-border bottom" />
-				<div class="drop-border left" />
-			</template>
-		</private-view>
-	</component>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useEventListener } from '@/composables/use-event-listener';
@@ -349,7 +158,7 @@ function useBreadcrumb() {
 function useMovetoFolder() {
 	const moveToDialogActive = ref(false);
 	const moving = ref(false);
-	const selectedFolder = ref<number | null>();
+	const selectedFolder = ref<string | null>(null);
 
 	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 
@@ -574,19 +383,210 @@ function useFileUpload() {
 }
 </script>
 
+<template>
+	<component
+		:is="layoutWrapper"
+		ref="layoutRef"
+		v-slot="{ layoutState }"
+		v-model:selection="selection"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		:filter="mergeFilters(filter, folderFilter)"
+		:filter-user="filter"
+		:filter-system="folderFilter"
+		:search="search"
+		collection="directus_files"
+		:reset-preset="resetPreset"
+	>
+		<private-view
+			:title="title"
+			:class="{ dragging }"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
+			<template v-if="breadcrumb" #headline>
+				<v-breadcrumb :items="breadcrumb" />
+			</template>
+
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded disabled icon secondary>
+					<v-icon name="folder" outline />
+				</v-button>
+			</template>
+
+			<template #actions:prepend>
+				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
+			</template>
+
+			<template #actions>
+				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
+
+				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
+
+				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
+					<template #activator="{ on }">
+						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
+							<v-icon name="folder_move" />
+						</v-button>
+					</template>
+
+					<v-card>
+						<v-card-title>{{ t('move_to_folder') }}</v-card-title>
+
+						<v-card-text>
+							<folder-picker v-model="selectedFolder" />
+						</v-card-text>
+
+						<v-card-actions>
+							<v-button secondary @click="moveToDialogActive = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button :loading="moving" @click="moveToFolder">
+								{{ t('move') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+							:disabled="batchDeleteAllowed !== true"
+							rounded
+							icon
+							class="action-delete"
+							secondary
+							@click="on"
+						>
+							<v-icon name="delete" outline />
+						</v-button>
+					</template>
+
+					<v-card>
+						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-if="selection.length > 0"
+					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
+					rounded
+					icon
+					secondary
+					:disabled="batchEditAllowed === false"
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					rounded
+					icon
+					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
+					:disabled="createAllowed === false"
+				>
+					<v-icon name="add" />
+				</v-button>
+			</template>
+
+			<template #navigation>
+				<files-navigation :current-folder="folder" :current-special="special" />
+			</template>
+
+			<component :is="`layout-${layout}`" v-bind="layoutState">
+				<template #no-results>
+					<v-info v-if="!filter && !search" :title="t('file_count', 0)" icon="folder" center>
+						{{ t('no_files_copy') }}
+
+						<template #append>
+							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+								{{ t('add_file') }}
+							</v-button>
+						</template>
+					</v-info>
+
+					<v-info v-else :title="t('no_results')" icon="search" center>
+						{{ t('no_results_copy') }}
+
+						<template #append>
+							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+						</template>
+					</v-info>
+				</template>
+
+				<template #no-items>
+					<v-info :title="t('file_count', 0)" icon="folder" center>
+						{{ t('no_files_copy') }}
+
+						<template #append>
+							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+								{{ t('add_file') }}
+							</v-button>
+						</template>
+					</v-info>
+				</template>
+			</component>
+
+			<router-view name="addNew" :folder="folder" @upload="refresh" />
+
+			<drawer-batch
+				v-model:active="batchEditActive"
+				:primary-keys="selection"
+				collection="directus_files"
+				@refresh="refresh"
+			/>
+
+			<template #sidebar>
+				<sidebar-detail icon="info" :title="t('information')" close>
+					<div v-md="t('page_help_files_collection')" class="page-description" />
+				</sidebar-detail>
+				<layout-sidebar-detail v-model="layout">
+					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
+				</layout-sidebar-detail>
+				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<export-sidebar-detail
+					collection="directus_files"
+					:layout-query="layoutQuery"
+					:filter="mergeFilters(filter, folderFilter)"
+					:search="search"
+					@refresh="refresh"
+				/>
+			</template>
+
+			<template v-if="showDropEffect">
+				<div class="drop-border top" />
+				<div class="drop-border right" />
+				<div class="drop-border bottom" />
+				<div class="drop-border left" />
+			</template>
+		</private-view>
+	</component>
+</template>
+
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 .drop-border {
 	position: fixed;
 	z-index: 500;
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 
 	&.top,
 	&.bottom {

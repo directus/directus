@@ -1,80 +1,3 @@
-<template>
-	<v-icon
-		v-if="type === 'boolean'"
-		:name="value === null ? 'indeterminate_check_box' : value ? 'check_box' : 'check_box_outline_blank'"
-		clickable
-		class="preview"
-		small
-		@click="$emit('input', !value)"
-	/>
-	<input
-		v-else-if="is === 'interface-input'"
-		ref="inputEl"
-		type="text"
-		:pattern="inputPattern"
-		:value="value"
-		:style="{ width }"
-		placeholder="--"
-		@input="emitValue(($event.target as HTMLInputElement).value)"
-	/>
-	<v-select
-		v-else-if="is === 'select'"
-		inline
-		:items="choices"
-		:model-value="value"
-		:placeholder="t('select')"
-		allow-other
-		group-selectable
-		@update:model-value="emitValue($event)"
-	/>
-	<template v-else-if="is === 'interface-datetime'">
-		<input
-			ref="inputEl"
-			type="text"
-			:pattern="inputPattern"
-			:value="value"
-			:style="{ width }"
-			placeholder="--"
-			@input="emitValue(($event.target as HTMLInputElement).value)"
-		/>
-		<v-menu
-			ref="dateTimeMenu"
-			:close-on-content-click="false"
-			:show-arrow="true"
-			placement="bottom-start"
-			seamless
-			full-height
-		>
-			<template #activator="{ toggle }">
-				<v-icon class="preview" name="event" small @click="toggle" />
-			</template>
-			<div class="date-input">
-				<v-date-picker
-					:type="type"
-					:model-value="value"
-					@update:model-value="emitValue"
-					@close="dateTimeMenu?.deactivate"
-				/>
-			</div>
-		</v-menu>
-	</template>
-	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
-		<template #activator="{ toggle }">
-			<v-icon
-				v-if="type.startsWith('geometry') || type === 'json'"
-				class="preview"
-				:name="type === 'json' ? 'integration_instructions' : 'map'"
-				small
-				@click="toggle"
-			/>
-			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
-		</template>
-		<div class="input" :class="type">
-			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
-		</div>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -158,19 +81,89 @@ function emitValue(val: string) {
 }
 </script>
 
+<template>
+	<v-icon
+		v-if="type === 'boolean'"
+		:name="value === null ? 'indeterminate_check_box' : value ? 'check_box' : 'check_box_outline_blank'"
+		clickable
+		class="preview"
+		small
+		@click="$emit('input', !value)"
+	/>
+	<input
+		v-else-if="is === 'interface-input'"
+		ref="inputEl"
+		type="text"
+		:pattern="inputPattern"
+		:value="value"
+		:style="{ width }"
+		placeholder="--"
+		@input="emitValue(($event.target as HTMLInputElement).value)"
+	/>
+	<v-select
+		v-else-if="is === 'select'"
+		inline
+		:items="choices"
+		:model-value="value"
+		:placeholder="t('select')"
+		allow-other
+		group-selectable
+		@update:model-value="emitValue($event)"
+	/>
+	<template v-else-if="is === 'interface-datetime'">
+		<input
+			ref="inputEl"
+			type="text"
+			:pattern="inputPattern"
+			:value="value"
+			:style="{ width }"
+			placeholder="--"
+			@input="emitValue(($event.target as HTMLInputElement).value)"
+		/>
+		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
+			<template #activator="{ toggle }">
+				<v-icon class="preview" name="event" small @click="toggle" />
+			</template>
+			<div class="date-input">
+				<v-date-picker
+					:type="type"
+					:model-value="value"
+					@update:model-value="emitValue"
+					@close="dateTimeMenu?.deactivate"
+				/>
+			</div>
+		</v-menu>
+	</template>
+	<v-menu v-else :close-on-content-click="false" show-arrow placement="bottom-start">
+		<template #activator="{ toggle }">
+			<v-icon
+				v-if="type.startsWith('geometry') || type === 'json'"
+				class="preview"
+				:name="type === 'json' ? 'integration_instructions' : 'map'"
+				small
+				@click="toggle"
+			/>
+			<div v-else class="preview" @click="toggle">{{ displayValue }}</div>
+		</template>
+		<div class="input" :class="type">
+			<component :is="is" class="input-component" small :type="type" :value="value" @input="emitValue($event)" />
+		</div>
+	</v-menu>
+</template>
+
 <style lang="scss" scoped>
 .preview {
 	display: flex;
 	justify-content: center;
-	color: var(--primary);
-	font-family: var(--family-monospace);
+	color: var(--theme--primary);
+	font-family: var(--theme--font-family-monospace);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	cursor: pointer;
 
 	&:empty {
 		&::after {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			content: '--';
 		}
 	}
@@ -193,16 +186,16 @@ function emitValue(val: string) {
 }
 
 input {
-	color: var(--primary);
-	font-family: var(--family-monospace);
+	color: var(--theme--primary);
+	font-family: var(--theme--font-family-monospace);
 	line-height: 1em;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: none;
 
 	&::placeholder {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		font-weight: 500;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 }
 

@@ -1,9 +1,3 @@
-<template>
-	<v-notice v-if="!field.field">{{ t('configure_field_key_to_continue') }}</v-notice>
-
-	<v-form v-else v-model="validationSync" :fields="fields" :loading="loading" />
-</template>
-
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -58,6 +52,12 @@ const fields = computed(() => [
 ]);
 </script>
 
+<template>
+	<v-notice v-if="!field.field">{{ t('configure_field_key_to_continue') }}</v-notice>
+
+	<v-form v-else v-model="validationSync" :fields="fields" :loading="loading" />
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
@@ -68,12 +68,12 @@ const fields = computed(() => [
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
-	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-notice {

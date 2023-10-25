@@ -15,8 +15,8 @@ import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { version } from '../utils/package.js';
-import { SettingsService } from './settings.js';
 import { toBoolean } from '../utils/to-boolean.js';
+import { SettingsService } from './settings.js';
 
 export class ServerService {
 	knex: Knex;
@@ -40,9 +40,11 @@ export class ServerService {
 				'project_descriptor',
 				'project_logo',
 				'project_color',
+				'default_appearance',
 				'default_language',
 				'public_foreground',
 				'public_background',
+				'public_favicon',
 				'public_note',
 				'custom_css',
 			],

@@ -1,38 +1,3 @@
-<template>
-	<div class="v-fancy-select">
-		<transition-group tag="div" name="option">
-			<template v-for="(item, index) in visibleItems" :key="index">
-				<v-divider v-if="item.divider === true" />
-				<div
-					v-else
-					class="v-fancy-select-option"
-					:class="{ active: item[itemValue] === modelValue, disabled }"
-					:style="{
-						'--index': index,
-					}"
-					@click="toggle(item)"
-				>
-					<div class="icon">
-						<v-icon :name="item.icon" />
-					</div>
-
-					<div class="content">
-						<div class="text">{{ item[itemText] }}</div>
-						<div class="description">{{ item[itemDescription] }}</div>
-					</div>
-
-					<v-icon
-						v-if="modelValue === item[itemValue] && disabled === false"
-						name="cancel"
-						@click.stop="toggle(item)"
-					/>
-					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
-				</div>
-			</template>
-		</transition-group>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -85,6 +50,41 @@ function toggle(item: Record<string, any>) {
 }
 </script>
 
+<template>
+	<div class="v-fancy-select">
+		<transition-group tag="div" name="option">
+			<template v-for="(item, index) in visibleItems" :key="index">
+				<v-divider v-if="item.divider === true" />
+				<div
+					v-else
+					class="v-fancy-select-option"
+					:class="{ active: item[itemValue] === modelValue, disabled }"
+					:style="{
+						'--index': index,
+					}"
+					@click="toggle(item)"
+				>
+					<div class="icon">
+						<v-icon :name="item.icon" />
+					</div>
+
+					<div class="content">
+						<div class="text">{{ item[itemText] }}</div>
+						<div class="description">{{ item[itemDescription] }}</div>
+					</div>
+
+					<v-icon
+						v-if="modelValue === item[itemValue] && disabled === false"
+						name="cancel"
+						@click.stop="toggle(item)"
+					/>
+					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
+				</div>
+			</template>
+		</transition-group>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-fancy-select {
 	position: relative;
@@ -122,7 +122,7 @@ function toggle(item: Record<string, any>) {
 		width: 44px;
 		height: 44px;
 		margin-right: 12px;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		border-radius: 50%;
 	}
 
@@ -136,16 +136,16 @@ function toggle(item: Record<string, any>) {
 
 	&.active {
 		z-index: 2;
-		color: var(--primary);
-		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-color: var(--theme--primary);
 
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		&:hover {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 		}
 	}
 }
@@ -169,7 +169,7 @@ function toggle(item: Record<string, any>) {
 }
 
 .icon-right {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 }
 
 .v-divider {

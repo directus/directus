@@ -51,6 +51,8 @@ and: ו
 or: או
 init: אתחל
 dataset_too_large_currently_showing_n_items: מערך הנתונים גדול מדי. מציג כעת את {n} הפריטים הראשונים.
+extension_hook: נקודת השחלה
+extension_modules: מודולים
 custom: מותאם אישית
 hook: נקודת השחלה
 fill_width: עמוד מלא
@@ -141,7 +143,6 @@ post_comment_success: תגובה פורסמה
 post_comment_updated: התגובה עודכנה
 functions:
   count: כמות
-checksum: מחרוזת בדיקה
 users: משתמשים
 activity: פעילות
 action: פעולה
@@ -153,6 +154,7 @@ errors:
 role: תפקיד
 width: רוחב
 height: גובה
+settings_translations: תרגומים
 collection: מאגר
 fields:
   directus_activity:
@@ -187,7 +189,6 @@ fields:
     description: תיאור
     tags: תגיות
     language: שפה
-    theme: ערכת נושא
     tfa_secret: אימות דו-שלבי
     status: סטטוס
     role: תפקיד

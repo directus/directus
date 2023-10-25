@@ -8,52 +8,36 @@
 npm install @directus/data
 ```
 
+The installation of a driver is also required.
+
 ## Usage
 
-Create a new manager:
-
-```js
-import { DataEngine } from '@directus/data';
-
-const data = new DataEngine();
-```
-
-Register drivers:
+### Setup
 
 ```js
 import { DataEngine } from '@directus/data';
 import { DataDriverPostgres } from '@directus/data-driver-postgres';
 
-const data = new DataEngine();
+// Instantiate the engine
+const engine = new DataEngine();
 
-await data.registerStore(
-	'postgres',
-	new DataDriverPostgres({
-		connectionString: 'postgresql://root:password@localhost/mydb',
-	})
-);
+// Instantiate a driver
+const pgDriver = new DataDriverPostgres({
+	connectionString: 'postgresql://root:password@localhost/mydb',
+});
+
+// register the driver to the engine
+await engine.registerStore('postgres', pgDriver);
 ```
 
-Query data:
+### Query data
 
 ```js
-import { DataEngine } from '@directus/data';
-import { DataDriverPostgres } from '@directus/data-driver-postgres';
-
-const data = new DataEngine();
-
-await data.registerStore(
-	'postgres',
-	new DataDriverPostgres({
-		connectionString: 'postgresql://root:password@localhost/mydb',
-	})
-);
-
-await data.query({
-	root: true,
+// query data
+await engine.query({
 	store: 'postgres',
 	collection: 'articles',
-	nodes: [
+	fields: [
 		{
 			type: 'primitive',
 			field: 'id',
@@ -62,16 +46,19 @@ await data.query({
 });
 ```
 
-## Flow
-
-This visualizes the general data flow regarding `data`.
+The above is resulting in the following flow.
 
 ```mermaid
-graph LR;
+graph TB;
     api --> data
-    data --> sql-adapter
-    data --> no-sql-adapter
-	sql-adapter ---> db1[(datastore)]
-	sql-adapter  --- data-sql
-	no-sql-adapter ---> db2[(datastore)]
+	subgraph da[data abstraction]
+		direction TB
+		data --> data-driver-x --> db1[(datastore)]
+		data --> data-driver-y --> db2[(datastore)]
+	end
 ```
+
+## Current architecture of this package
+
+To get an overview of how the package is organized regarding it's files, directories and the dependencies between them,
+run `pnpm run depcruise` and have a look in the created `dependency-graph.svg` image.

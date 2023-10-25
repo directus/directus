@@ -15,7 +15,7 @@ import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
-import { InvalidQueryError } from '../errors/index.js';
+import { InvalidQueryError } from '@directus/errors';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
@@ -50,7 +50,7 @@ export default function applyQuery(
 	}
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
-		const sortResult = applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
+		const sortResult = applySort(knex, schema, dbQuery, query, collection, aliasMap);
 
 		if (!hasJoins) {
 			hasJoins = sortResult.hasJoins;
@@ -260,11 +260,13 @@ export function applySort(
 	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
-	rootSort: string[],
+	query: Query,
 	collection: string,
 	aliasMap: AliasMap,
 	returnRecords = false
 ) {
+	const rootSort = query.sort!;
+	const aggregate = query?.aggregate;
 	const relations: Relation[] = schema.relations;
 	let hasJoins = false;
 	let hasMultiRelationalSort = false;
@@ -279,6 +281,37 @@ export function applySort(
 
 		if (column[0]!.startsWith('-')) {
 			column[0] = column[0]!.substring(1);
+		}
+
+		// Is the column name one of the aggregate functions used in the query if there is any?
+		if (Object.keys(aggregate ?? {}).includes(column[0]!)) {
+			// If so, return the column name without the order prefix
+			const operation = column[0]!;
+
+			// Get the field for the aggregate function
+			const field = column[1]!;
+
+			// If the operation is countAll there is no field.
+			if (operation === 'countAll') {
+				return {
+					order,
+					column: 'countAll',
+				};
+			}
+
+			// If the operation is a root count there is no field.
+			if (operation === 'count' && (field === '*' || !field)) {
+				return {
+					order,
+					column: 'count',
+				};
+			}
+
+			// Return the column name with the operation and field name
+			return {
+				order,
+				column: returnRecords ? column[0] : `${operation}->${field}`,
+			};
 		}
 
 		if (column.length === 1) {

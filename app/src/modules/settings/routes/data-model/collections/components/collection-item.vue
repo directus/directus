@@ -1,71 +1,3 @@
-<template>
-	<div v-show="visibilityTree.visible" class="collection-item">
-		<v-list-item
-			block
-			dense
-			clickable
-			:class="{ hidden: collection.meta?.hidden }"
-			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
-			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
-		>
-			<v-list-item-icon>
-				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
-			</v-list-item-icon>
-			<div class="collection-item-detail">
-				<v-icon
-					:color="collection.meta?.hidden ? 'var(--foreground-subdued)' : collection.color ?? 'var(--primary)'"
-					class="collection-icon"
-					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
-				/>
-				<v-highlight
-					ref="collectionName"
-					:query="visibilityTree.search"
-					:text="collection.collection"
-					class="collection-name"
-				/>
-				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
-			</div>
-
-			<v-icon
-				v-if="nestedCollections?.length"
-				v-tooltip="isCollectionExpanded ? t('collapse') : t('expand')"
-				:name="isCollectionExpanded ? 'unfold_less' : 'unfold_more'"
-				clickable
-				@click.stop.prevent="toggleCollapse"
-			/>
-			<collection-options
-				:has-nested-collections="nestedCollections.length > 0"
-				:collection="collection"
-				@collection-toggle="toggleCollapse"
-			/>
-		</v-list-item>
-
-		<transition-expand class="collection-items">
-			<draggable
-				v-if="isCollectionExpanded"
-				:force-fallback="true"
-				:model-value="nestedCollections"
-				:group="{ name: 'collections' }"
-				:swap-threshold="0.3"
-				class="drag-container"
-				item-key="collection"
-				handle=".drag-handle"
-				@update:model-value="onGroupSortChange"
-			>
-				<template #item="{ element }">
-					<collection-item
-						:collection="element"
-						:collections="collections"
-						:visibility-tree="visibilityTree.findChild(element.collection)!"
-						@edit-collection="$emit('editCollection', $event)"
-						@set-nested-sort="$emit('setNestedSort', $event)"
-					/>
-				</template>
-			</draggable>
-		</transition-expand>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { Collection } from '@/types/collections';
@@ -107,6 +39,76 @@ function onGroupSortChange(collections: Collection[]) {
 }
 </script>
 
+<template>
+	<div v-show="visibilityTree.visible" class="collection-item">
+		<v-list-item
+			block
+			dense
+			clickable
+			:class="{ hidden: collection.meta?.hidden }"
+			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
+			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
+		>
+			<v-list-item-icon>
+				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
+			</v-list-item-icon>
+			<div class="collection-item-detail">
+				<v-icon
+					:color="
+						collection.meta?.hidden ? 'var(--theme--foreground-subdued)' : collection.color ?? 'var(--theme--primary)'
+					"
+					class="collection-icon"
+					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
+				/>
+				<v-highlight
+					ref="collectionName"
+					:query="visibilityTree.search"
+					:text="collection.collection"
+					class="collection-name"
+				/>
+				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
+			</div>
+
+			<v-icon
+				v-if="nestedCollections?.length"
+				v-tooltip="isCollectionExpanded ? t('collapse') : t('expand')"
+				:name="isCollectionExpanded ? 'unfold_less' : 'unfold_more'"
+				clickable
+				@click.stop.prevent="toggleCollapse"
+			/>
+			<collection-options
+				:has-nested-collections="nestedCollections.length > 0"
+				:collection="collection"
+				@collection-toggle="toggleCollapse"
+			/>
+		</v-list-item>
+
+		<transition-expand class="collection-items">
+			<draggable
+				v-if="isCollectionExpanded"
+				force-fallback
+				:model-value="nestedCollections"
+				:group="{ name: 'collections' }"
+				:swap-threshold="0.3"
+				class="drag-container"
+				item-key="collection"
+				handle=".drag-handle"
+				@update:model-value="onGroupSortChange"
+			>
+				<template #item="{ element }">
+					<collection-item
+						:collection="element"
+						:collections="collections"
+						:visibility-tree="visibilityTree.findChild(element.collection)!"
+						@edit-collection="$emit('editCollection', $event)"
+						@set-nested-sort="$emit('setNestedSort', $event)"
+					/>
+				</template>
+			</draggable>
+		</transition-expand>
+	</div>
+</template>
+
 <style scoped>
 .drag-container {
 	margin-top: 8px;
@@ -123,7 +125,7 @@ function onGroupSortChange(collections: Collection[]) {
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	pointer-events: none;
 }
 
@@ -132,13 +134,13 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .hidden .collection-name {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .collection-note {
 	margin-left: 16px;
 	overflow: hidden;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	opacity: 0;

@@ -1,42 +1,3 @@
-<template>
-	<v-notice v-if="!choices" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
-	<div
-		v-else
-		class="radio-buttons"
-		:class="gridClass"
-		:style="{
-			'--v-radio-color': color,
-		}"
-	>
-		<v-radio
-			v-for="item in choices"
-			:key="item.value"
-			block
-			:value="item.value"
-			:label="item.text"
-			:disabled="disabled"
-			:icon-on="iconOn"
-			:icon-off="iconOff"
-			:model-value="value"
-			@update:model-value="$emit('input', $event)"
-		/>
-		<div
-			v-if="allowOther"
-			class="custom"
-			:class="{
-				active: !disabled && usesOtherValue,
-				'has-value': !disabled && otherValue,
-				disabled,
-			}"
-		>
-			<v-icon :disabled="disabled" :name="customIcon" clickable @click="$emit('input', otherValue)" />
-			<input v-model="otherValue" :placeholder="t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useCustomSelection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
@@ -63,7 +24,7 @@ const props = withDefaults(
 	{
 		iconOn: 'radio_button_checked',
 		iconOff: 'radio_button_unchecked',
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
 	}
 );
 
@@ -103,6 +64,45 @@ const customIcon = computed(() => {
 });
 </script>
 
+<template>
+	<v-notice v-if="!choices" type="warning">
+		{{ t('choices_option_configured_incorrectly') }}
+	</v-notice>
+	<div
+		v-else
+		class="radio-buttons"
+		:class="gridClass"
+		:style="{
+			'--v-radio-color': color,
+		}"
+	>
+		<v-radio
+			v-for="item in choices"
+			:key="item.value"
+			block
+			:value="item.value"
+			:label="item.text"
+			:disabled="disabled"
+			:icon-on="iconOn"
+			:icon-off="iconOff"
+			:model-value="value"
+			@update:model-value="$emit('input', $event)"
+		/>
+		<div
+			v-if="allowOther"
+			class="custom"
+			:class="{
+				active: !disabled && usesOtherValue,
+				'has-value': !disabled && otherValue,
+				disabled,
+			}"
+		>
+			<v-icon :disabled="disabled" :name="customIcon" clickable @click="$emit('input', otherValue)" />
+			<input v-model="otherValue" :placeholder="t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .radio-buttons {
 	--columns: 1;
@@ -131,7 +131,7 @@ const customIcon = computed(() => {
 }
 
 .custom {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -153,7 +153,7 @@ const customIcon = computed(() => {
 		border-radius: 0;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 		}
 	}
 
@@ -188,11 +188,11 @@ const customIcon = computed(() => {
 		cursor: not-allowed;
 
 		input {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			cursor: not-allowed;
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--theme--form--field--input--foreground-subdued);
 			}
 		}
 	}

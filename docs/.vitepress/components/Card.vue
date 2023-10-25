@@ -1,17 +1,3 @@
-<template>
-	<component :is="tagType" :href="url" class="card" :class="{ margin: addMargin }">
-		<div v-if="icon" class="icon">
-			<img v-if="iconIsImage" :src="icon" alt="" />
-			<span v-else mi>{{ icon }}</span>
-		</div>
-
-		<div class="text">
-			<component :is="headerType">{{ title }}</component>
-			<p>{{ text }}</p>
-		</div>
-	</component>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -34,6 +20,20 @@ const tagType = computed(() => (props.url ? 'a' : 'div'));
 const headerType = computed(() => 'h' + props.h);
 const iconIsImage = computed(() => props.icon.startsWith('/'));
 </script>
+
+<template>
+	<component :is="tagType" :href="url" class="card" :class="{ margin: addMargin }">
+		<div v-if="icon" class="icon">
+			<img v-if="iconIsImage" :src="icon" alt="" />
+			<span v-else mi>{{ icon }}</span>
+		</div>
+
+		<div class="text">
+			<component :is="headerType">{{ title }}</component>
+			<p>{{ text }}</p>
+		</div>
+	</component>
+</template>
 
 <style scoped>
 .card {

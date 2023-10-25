@@ -1,134 +1,3 @@
-<template>
-	<private-view :title="t('settings_data_model')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="list_alt" />
-			</v-button>
-		</template>
-
-		<template #actions>
-			<v-input
-				v-model="search"
-				class="search"
-				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
-				type="search"
-				:placeholder="t('search_collection')"
-				:full-width="false"
-			>
-				<template #prepend>
-					<v-icon name="search" outline />
-				</template>
-				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
-				</template>
-			</v-input>
-
-			<collection-dialog v-model="collectionDialogActive">
-				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
-						<v-icon name="create_new_folder" />
-					</v-button>
-				</template>
-			</collection-dialog>
-
-			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
-				<v-icon name="add" />
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<div class="padding-box">
-			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
-				{{ t('no_collections_copy_admin') }}
-
-				<template #append>
-					<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
-				</template>
-			</v-info>
-
-			<v-list v-else class="draggable-list">
-				<draggable
-					:force-fallback="true"
-					:model-value="rootCollections"
-					:group="{ name: 'collections' }"
-					:swap-threshold="0.3"
-					class="root-drag-container"
-					item-key="collection"
-					handle=".drag-handle"
-					@update:model-value="onSort($event, true)"
-				>
-					<template #item="{ element }">
-						<collection-item
-							:collection="element"
-							:collections="collections"
-							:visibility-tree="findVisibilityChild(element.collection)!"
-							@edit-collection="editCollection = $event"
-							@set-nested-sort="onSort"
-						/>
-					</template>
-				</draggable>
-			</v-list>
-
-			<v-list class="db-only">
-				<v-list-item
-					v-for="collection of tableCollections"
-					v-show="findVisibilityChild(collection.collection)!.visible"
-					:key="collection.collection"
-					v-tooltip="t('db_only_click_to_configure')"
-					class="collection-row hidden"
-					block
-					dense
-					clickable
-				>
-					<v-list-item-icon>
-						<v-icon name="add" />
-					</v-list-item-icon>
-
-					<router-link class="collection-name" :to="`/settings/data-model/${collection.collection}`">
-						<v-icon class="collection-icon" name="dns" />
-						<span class="collection-name">{{ collection.name }}</span>
-					</router-link>
-
-					<collection-options :collection="collection" />
-				</v-list-item>
-			</v-list>
-
-			<v-detail
-				v-show="systemCollections.some((collection) => findVisibilityChild(collection.collection)?.visible)"
-				:label="t('system_collections')"
-			>
-				<collection-item
-					v-for="collection of systemCollections"
-					:key="collection.collection"
-					:collection="collection"
-					:collections="systemCollections"
-					:visibility-tree="findVisibilityChild(collection.collection)!"
-					disable-drag
-				/>
-			</v-detail>
-		</div>
-
-		<router-view name="add" />
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
-		<collection-dialog
-			:model-value="!!editCollection"
-			:collection="editCollection"
-			@update:model-value="editCollection = null"
-		/>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
@@ -189,9 +58,11 @@ const visibilityTree = computed(() => {
 	function makeTree(parent: string | null = null): CollectionTree[] {
 		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
 
+		const normalizedSearch = search.value?.toLowerCase();
+
 		return children.map((collection) => ({
 			collection: collection.collection,
-			visible: collection.collection.includes(search.value ?? ''),
+			visible: normalizedSearch ? collection.collection.toLowerCase().includes(normalizedSearch) : true,
 			search: search.value,
 			children: makeTree(collection.collection),
 			findChild(collection: string) {
@@ -273,6 +144,137 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 </script>
 
+<template>
+	<private-view :title="t('settings_data_model')">
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon exact disabled>
+				<v-icon name="list_alt" />
+			</v-button>
+		</template>
+
+		<template #actions>
+			<v-input
+				v-model="search"
+				class="search"
+				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
+				type="search"
+				:placeholder="t('search_collection')"
+				:full-width="false"
+			>
+				<template #prepend>
+					<v-icon name="search" outline />
+				</template>
+				<template #append>
+					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+				</template>
+			</v-input>
+
+			<collection-dialog v-model="collectionDialogActive">
+				<template #activator="{ on }">
+					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
+						<v-icon name="create_new_folder" />
+					</v-button>
+				</template>
+			</collection-dialog>
+
+			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
+				<v-icon name="add" />
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<div class="padding-box">
+			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
+				{{ t('no_collections_copy_admin') }}
+
+				<template #append>
+					<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
+				</template>
+			</v-info>
+
+			<v-list v-else class="draggable-list">
+				<draggable
+					force-fallback
+					:model-value="rootCollections"
+					:group="{ name: 'collections' }"
+					:swap-threshold="0.3"
+					class="root-drag-container"
+					item-key="collection"
+					handle=".drag-handle"
+					@update:model-value="onSort($event, true)"
+				>
+					<template #item="{ element }">
+						<collection-item
+							:collection="element"
+							:collections="collections"
+							:visibility-tree="findVisibilityChild(element.collection)!"
+							@edit-collection="editCollection = $event"
+							@set-nested-sort="onSort"
+						/>
+					</template>
+				</draggable>
+			</v-list>
+
+			<v-list class="db-only">
+				<v-list-item
+					v-for="collection of tableCollections"
+					v-show="findVisibilityChild(collection.collection)!.visible"
+					:key="collection.collection"
+					v-tooltip="t('db_only_click_to_configure')"
+					class="collection-row hidden"
+					block
+					dense
+					clickable
+				>
+					<v-list-item-icon>
+						<v-icon name="add" />
+					</v-list-item-icon>
+
+					<router-link class="collection-name" :to="`/settings/data-model/${collection.collection}`">
+						<v-icon class="collection-icon" name="dns" />
+						<span class="collection-name">{{ collection.name }}</span>
+					</router-link>
+
+					<collection-options :collection="collection" :has-nested-collections="false" />
+				</v-list-item>
+			</v-list>
+
+			<v-detail
+				v-show="systemCollections.some((collection) => findVisibilityChild(collection.collection)?.visible)"
+				:label="t('system_collections')"
+			>
+				<collection-item
+					v-for="collection of systemCollections"
+					:key="collection.collection"
+					:collection="collection"
+					:collections="systemCollections"
+					:visibility-tree="findVisibilityChild(collection.collection)!"
+					disable-drag
+				/>
+			</v-detail>
+		</div>
+
+		<router-view name="add" />
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
+			</sidebar-detail>
+		</template>
+
+		<collection-dialog
+			:model-value="!!editCollection"
+			:collection="editCollection"
+			@update:model-value="editCollection = null"
+		/>
+	</private-view>
+</template>
+
 <style scoped lang="scss">
 .v-input.search {
 	height: var(--v-button-height);
@@ -301,14 +303,14 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .header-icon {
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .collection-item.hidden {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--theme--foreground-subdued);
 }
 
 .collection-icon {
@@ -316,16 +318,16 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .hidden .collection-name {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	flex-grow: 1;
 }
 
 .draggable-list :deep(.sortable-ghost) {
 	.v-list-item {
-		--v-list-item-background-color: var(--primary-alt);
-		--v-list-item-border-color: var(--primary);
-		--v-list-item-background-color-hover: var(--primary-alt);
-		--v-list-item-border-color-hover: var(--primary);
+		--v-list-item-background-color: var(--theme--primary-background);
+		--v-list-item-border-color: var(--theme--primary);
+		--v-list-item-background-color-hover: var(--theme--primary-background);
+		--v-list-item-border-color-hover: var(--theme--primary);
 
 		> * {
 			opacity: 0;

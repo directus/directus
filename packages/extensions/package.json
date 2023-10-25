@@ -1,0 +1,59 @@
+{
+	"name": "@directus/extensions",
+	"version": "0.1.0",
+	"description": "Utilities and types for Directus extensions",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/extensions"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./node": "./dist/node.js",
+		"./package.json": "./package.json",
+		"./api.d.ts": "./api.d.ts"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"api.d.ts"
+	],
+	"scripts": {
+		"build": "concurrently --group 'pnpm:build:*'",
+		"build:node": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm --dts",
+		"build:shared": "tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm --dts",
+		"dev": "concurrently 'pnpm:build:* --watch'",
+		"test": "vitest --watch=false"
+	},
+	"dependencies": {
+		"@directus/utils": "workspace:*",
+		"fs-extra": "11.1.1",
+		"lodash-es": "4.17.21",
+		"tmp": "0.2.1",
+		"zod": "3.22.4"
+	},
+	"devDependencies": {
+		"@directus/constants": "workspace:*",
+		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@types/express": "4.17.17",
+		"@types/fs-extra": "11.0.1",
+		"@types/lodash-es": "4.17.9",
+		"@types/node": "18.16.12",
+		"@types/tmp": "0.2.3",
+		"@vitest/coverage-c8": "0.31.1",
+		"concurrently": "8.2.1",
+		"knex": "2.4.2",
+		"pino": "8.14.1",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
+		"vitest": "0.31.1",
+		"vue": "3.3.4",
+		"vue-router": "4.2.0"
+	}
+}

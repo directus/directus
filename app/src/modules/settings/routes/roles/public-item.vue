@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+import PermissionsOverview from './item/components/permissions-overview.vue';
+import RoleInfoSidebarDetail from './item/components/role-info-sidebar-detail.vue';
+
+defineProps<{
+	permissionKey?: string;
+}>();
+
+const { t } = useI18n();
+</script>
+
 <template>
 	<private-view :title="t('public_label')">
 		<template #headline>{{ t('settings_permissions') }}</template>
@@ -21,25 +34,12 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../components/navigation.vue';
-import PermissionsOverview from './item/components/permissions-overview.vue';
-import RoleInfoSidebarDetail from './item/components/role-info-sidebar-detail.vue';
-
-defineProps<{
-	permissionKey?: string;
-}>();
-
-const { t } = useI18n();
-</script>
-
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .roles {

@@ -1,14 +1,3 @@
-<template>
-	<div class="v-info" :class="[type, { center }]">
-		<div v-if="icon !== false" class="icon">
-			<v-icon large :name="icon" />
-		</div>
-		<h2 class="title type-title">{{ title }}</h2>
-		<p class="content"><slot /></p>
-		<slot name="append" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import VIcon from './v-icon/v-icon.vue';
 
@@ -30,6 +19,17 @@ withDefaults(defineProps<Props>(), {
 });
 </script>
 
+<template>
+	<div class="v-info" :class="[type, { center }]">
+		<div v-if="icon !== false" class="icon">
+			<v-icon large :name="icon" />
+		</div>
+		<h2 class="title type-title">{{ title }}</h2>
+		<p class="content"><slot /></p>
+		<slot name="append" />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-info {
 	display: flex;
@@ -49,22 +49,22 @@ withDefaults(defineProps<Props>(), {
 }
 
 .info .icon {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-normal);
 }
 
 .success .icon {
-	color: var(--success);
+	color: var(--theme--success);
 	background-color: var(--success-alt);
 }
 
 .warning .icon {
-	color: var(--warning);
+	color: var(--theme--warning);
 	background-color: var(--warning-alt);
 }
 
 .danger .icon {
-	color: var(--danger);
+	color: var(--theme--danger);
 	background-color: var(--danger-alt);
 }
 
@@ -74,7 +74,7 @@ withDefaults(defineProps<Props>(), {
 
 .content {
 	max-width: 300px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 22px;
 
 	&:not(:last-child) {

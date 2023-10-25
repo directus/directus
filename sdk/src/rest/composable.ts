@@ -4,9 +4,7 @@ import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
 
-const defaultConfigValues: RestConfig = {
-	credentials: 'same-origin',
-};
+const defaultConfigValues: RestConfig = {};
 
 /**
  * Creates a client to communicate with the Directus REST API.
@@ -21,7 +19,9 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 				const options = getOptions();
 
 				// all api requests require this content type
-				if (!options.headers) options.headers = {};
+				if (!options.headers) {
+					options.headers = {};
+				}
 
 				if ('Content-Type' in options.headers === false) {
 					options.headers['Content-Type'] = 'application/json';
@@ -45,8 +45,11 @@ export const rest = (config: Partial<RestConfig> = {}) => {
 				let fetchOptions: RequestInit = {
 					method: options.method ?? 'GET',
 					headers: options.headers ?? {},
-					credentials: restConfig.credentials,
 				};
+
+				if ('credentials' in restConfig) {
+					fetchOptions.credentials = restConfig.credentials;
+				}
 
 				if (options.body) {
 					fetchOptions['body'] = options.body;

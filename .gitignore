@@ -24,6 +24,7 @@ debug
 .clinic
 
 # IDEs / Editors
+.devcontainer/
 .vscode/*
 !.vscode/extensions.json
 .idea/
@@ -47,5 +48,6 @@ TODO
 /api/extensions/
 /tests/blackbox/uploads/
 /tests/blackbox/server-log-*
+/tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
 /docs/packages/

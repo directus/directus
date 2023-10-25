@@ -1,35 +1,3 @@
-<template>
-	<div
-		class="card"
-		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
-		@click="handleClick"
-	>
-		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
-		<div class="header">
-			<div class="selection-fade"></div>
-			<v-skeleton-loader v-if="loading" />
-			<template v-else>
-				<v-icon-file v-if="type || imgError" :ext="type" />
-				<template v-else>
-					<v-image
-						v-if="showThumbnail"
-						:class="imageInfo?.fileType"
-						:src="imageInfo?.source"
-						:alt="item?.title"
-						role="presentation"
-					/>
-					<v-icon v-else large :name="icon" />
-				</template>
-			</template>
-		</div>
-		<v-skeleton-loader v-if="loading" type="text" />
-		<template v-else>
-			<div v-if="$slots.title" class="title"><slot name="title" /></div>
-			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
@@ -126,6 +94,38 @@ function handleClick() {
 }
 </script>
 
+<template>
+	<div
+		class="card"
+		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
+		@click="handleClick"
+	>
+		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
+		<div class="header">
+			<div class="selection-fade"></div>
+			<v-skeleton-loader v-if="loading" />
+			<template v-else>
+				<v-icon-file v-if="type || imgError" :ext="type" />
+				<template v-else>
+					<v-image
+						v-if="showThumbnail"
+						:class="imageInfo?.fileType"
+						:src="imageInfo?.source"
+						:alt="item?.title"
+						role="presentation"
+					/>
+					<v-icon v-else large :name="icon" />
+				</template>
+			</template>
+		</div>
+		<v-skeleton-loader v-if="loading" type="text" />
+		<template v-else>
+			<div v-if="$slots.title" class="title"><slot name="title" /></div>
+			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
+		</template>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .loading {
 	.header {
@@ -146,7 +146,7 @@ function handleClick() {
 		width: 100%;
 		overflow: hidden;
 		background-color: var(--background-normal);
-		border-color: var(--primary-50);
+		border-color: var(--theme--primary-subdued);
 		border-style: solid;
 		border-width: 0px;
 		border-radius: var(--border-radius);
@@ -175,12 +175,12 @@ function handleClick() {
 		}
 
 		.type {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			text-transform: uppercase;
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 
 		.v-skeleton-loader {
@@ -220,7 +220,7 @@ function handleClick() {
 		z-index: 2;
 		width: 18px;
 		height: 18px;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		border-radius: 24px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -262,8 +262,8 @@ function handleClick() {
 		}
 
 		.selector {
-			--v-icon-color: var(--primary);
-			--v-icon-color-hover: var(--primary);
+			--v-icon-color: var(--theme--primary);
+			--v-icon-color-hover: var(--theme--primary);
 
 			opacity: 1;
 		}
@@ -314,6 +314,6 @@ function handleClick() {
 
 .subtitle {
 	margin-top: 0px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 </style>

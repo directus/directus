@@ -1,65 +1,3 @@
-<template>
-	<component
-		:is="layoutWrapper"
-		v-slot="{ layoutState }"
-		v-model:selection="layoutSelection"
-		v-model:layout-options="localOptions"
-		v-model:layout-query="localQuery"
-		:filter="mergeFilters(presetFilter, filter)"
-		:filter-user="presetFilter"
-		:filter-system="filter"
-		:search="search"
-		:collection="collection"
-		select-mode
-		:show-select="multiple ? 'multiple' : 'one'"
-	>
-		<v-drawer
-			v-model="internalActive"
-			:title="t('select_item')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			v-bind="drawerProps"
-			@cancel="cancel"
-		>
-			<template v-for="(_, slot) of $slots" #[slot]="scope">
-				<slot :name="slot" v-bind="scope" />
-			</template>
-
-			<template #subtitle>
-				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="collectionInfo!.icon" :color="collectionInfo!.color" />
-				</v-button>
-			</template>
-
-			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
-
-			<template #actions>
-				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
-
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-
-			<div class="layout">
-				<component :is="`layout-${localLayout}`" v-bind="layoutState">
-					<template #no-results>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
-					</template>
-
-					<template #no-items>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
-					</template>
-				</component>
-			</div>
-		</v-drawer>
-	</component>
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
@@ -188,6 +126,68 @@ function useActions() {
 	}
 }
 </script>
+
+<template>
+	<component
+		:is="layoutWrapper"
+		v-slot="{ layoutState }"
+		v-model:selection="layoutSelection"
+		v-model:layout-options="localOptions"
+		v-model:layout-query="localQuery"
+		:filter="mergeFilters(presetFilter, filter)"
+		:filter-user="presetFilter"
+		:filter-system="filter"
+		:search="search"
+		:collection="collection"
+		select-mode
+		:show-select="multiple ? 'multiple' : 'one'"
+	>
+		<v-drawer
+			v-model="internalActive"
+			:title="t('select_item')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+			v-bind="drawerProps"
+			@cancel="cancel"
+		>
+			<template v-for="(_, slot) of $slots" #[slot]="scope">
+				<slot :name="slot" v-bind="scope" />
+			</template>
+
+			<template #subtitle>
+				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
+			</template>
+
+			<template #title-outer:prepend>
+				<v-button class="header-icon" rounded icon secondary disabled>
+					<v-icon :name="collectionInfo!.icon" :color="collectionInfo!.color" />
+				</v-button>
+			</template>
+
+			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
+
+			<template #actions>
+				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
+
+				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<div class="layout">
+				<component :is="`layout-${localLayout}`" v-bind="layoutState">
+					<template #no-results>
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
+					</template>
+
+					<template #no-items>
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
+					</template>
+				</component>
+			</div>
+		</v-drawer>
+	</component>
+</template>
 
 <style lang="scss" scoped>
 .layout {

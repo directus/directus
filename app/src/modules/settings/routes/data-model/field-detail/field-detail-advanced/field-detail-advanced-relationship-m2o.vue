@@ -1,75 +1,3 @@
-<template>
-	<div>
-		<div class="grid">
-			<div class="field">
-				<div class="type-label">{{ t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
-			</div>
-
-			<div class="field">
-				<div class="type-label">{{ t('related_collection') }}</div>
-
-				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
-			</div>
-
-			<v-input disabled :model-value="currentField" />
-			<v-input :model-value="relatedPrimaryKey" disabled :placeholder="t('primary_key') + '...'" />
-			<v-icon class="arrow" name="arrow_back" />
-		</div>
-
-		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
-
-		<div v-if="!isExisting" class="grid">
-			<div class="field">
-				<div class="type-label">{{ t('create_field') }}</div>
-				<v-checkbox v-model="hasCorresponding" block :label="correspondingLabel" />
-			</div>
-			<div class="field">
-				<div class="type-label">{{ t('field_name') }}</div>
-				<v-input
-					v-model="correspondingFieldKey"
-					:disabled="hasCorresponding === false"
-					:placeholder="t('field_name') + '...'"
-					db-safe
-				/>
-			</div>
-			<v-icon name="arrow_forward" class="arrow" />
-		</div>
-
-		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
-
-			<div class="field">
-				<div class="type-label">
-					{{
-						t('referential_action_field_label_m2o', {
-							collection: relatedCollection || 'related',
-						})
-					}}
-				</div>
-				<v-select
-					v-model="onDeleteRelated"
-					:disabled="collection === relatedCollection"
-					:placeholder="t('choose_action') + '...'"
-					:items="onDeleteOptions"
-				/>
-			</div>
-		</div>
-
-		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
-			<span>
-				{{ t('new_data_alert') }}
-
-				<ul>
-					<li v-for="(data, index) in generationInfo" :key="index">
-						<span class="field-name">{{ data.name }}</span>
-					</li>
-				</ul>
-			</span>
-		</v-notice>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
@@ -152,12 +80,84 @@ const onDeleteOptions = computed(() =>
 );
 </script>
 
+<template>
+	<div>
+		<div class="grid">
+			<div class="field">
+				<div class="type-label">{{ t('this_collection') }}</div>
+				<v-input disabled :model-value="collection" />
+			</div>
+
+			<div class="field">
+				<div class="type-label">{{ t('related_collection') }}</div>
+
+				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
+			</div>
+
+			<v-input disabled :model-value="currentField" />
+			<v-input :model-value="relatedPrimaryKey" disabled :placeholder="t('primary_key') + '...'" />
+			<v-icon class="arrow" name="arrow_back" />
+		</div>
+
+		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
+
+		<div v-if="!isExisting" class="grid">
+			<div class="field">
+				<div class="type-label">{{ t('create_field') }}</div>
+				<v-checkbox v-model="hasCorresponding" block :label="correspondingLabel" />
+			</div>
+			<div class="field">
+				<div class="type-label">{{ t('field_name') }}</div>
+				<v-input
+					v-model="correspondingFieldKey"
+					:disabled="hasCorresponding === false"
+					:placeholder="t('field_name') + '...'"
+					db-safe
+				/>
+			</div>
+			<v-icon name="arrow_forward" class="arrow" />
+		</div>
+
+		<div class="relational-triggers">
+			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
+
+			<div class="field">
+				<div class="type-label">
+					{{
+						t('referential_action_field_label_m2o', {
+							collection: relatedCollection || 'related',
+						})
+					}}
+				</div>
+				<v-select
+					v-model="onDeleteRelated"
+					:disabled="collection === relatedCollection"
+					:placeholder="t('choose_action') + '...'"
+					:items="onDeleteOptions"
+				/>
+			</div>
+		</div>
+
+		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
+			<span>
+				{{ t('new_data_alert') }}
+
+				<ul>
+					<li v-for="(data, index) in generationInfo" :key="index">
+						<span class="field-name">{{ data.name }}</span>
+					</li>
+				</ul>
+			</span>
+		</v-notice>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 
 	position: relative;
 	display: grid;
@@ -166,11 +166,11 @@ const onDeleteOptions = computed(() =>
 	margin-top: 48px;
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 
 	.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		bottom: 17px;
@@ -180,7 +180,7 @@ const onDeleteOptions = computed(() =>
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 
 .v-divider {
@@ -204,7 +204,7 @@ const onDeleteOptions = computed(() =>
 	}
 
 	.field-name {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 }
 

@@ -1,33 +1,13 @@
+import type { ExtensionItem } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-
-// TODO figure out the type here
-export interface ReadExtensionOutput {
-	name: string;
-	type: ExtensionTypes;
-	local: boolean;
-	entries: any[];
-}
-
-// not using the types from @directus/types because they're singular
-export type ExtensionTypes =
-	| 'interfaces'
-	| 'displays'
-	| 'layouts'
-	| 'modules'
-	| 'panels'
-	| 'hooks'
-	| 'endpoints'
-	| 'operation'
-	| 'bundles';
 
 /**
  * List the available extensions in the project.
- * @param type The extension type
- * @returns An array of interface extension keys.
+ * @returns An array of extensions.
  */
 export const readExtensions =
-	<Schema extends object>(type: ExtensionTypes): RestCommand<ReadExtensionOutput[], Schema> =>
+	<Schema extends object>(): RestCommand<ExtensionItem[], Schema> =>
 	() => ({
-		path: `/extensions/${type}`,
+		path: `/extensions/`,
 		method: 'GET',
 	});

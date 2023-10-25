@@ -1,9 +1,3 @@
-<template>
-	<ul class="v-list" :class="{ nav, dense }">
-		<slot />
-	</ul>
-</template>
-
 <script setup lang="ts">
 import { toRefs } from 'vue';
 import { useGroupableParent } from '@directus/composables';
@@ -54,6 +48,12 @@ useGroupableParent(
 );
 </script>
 
+<template>
+	<ul class="v-list" :class="{ nav, dense }">
+		<slot />
+	</ul>
+</template>
+
 <style scoped>
 :global(body) {
 	--v-list-padding: 4px 0;
@@ -62,9 +62,10 @@ useGroupableParent(
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;
 	--v-list-min-height: none;
-	--v-list-color: var(--foreground-normal-alt);
-	--v-list-color-hover: var(--foreground-normal-alt);
-	--v-list-color-active: var(--foreground-normal-alt);
+	--v-list-color: var(--theme--foreground-accent);
+	--v-list-color-hover: var(--theme--foreground-accent);
+	--v-list-color-active: var(--theme--foreground-accent);
+	--v-list-background-color: transparent;
 	--v-list-background-color-hover: var(--background-normal);
 	--v-list-background-color-active: var(--background-normal);
 }
@@ -86,7 +87,6 @@ useGroupableParent(
 
 .nav {
 	--v-list-padding: 12px;
-	--v-list-item-icon-color: var(--primary);
 }
 
 :slotted(.v-divider) {

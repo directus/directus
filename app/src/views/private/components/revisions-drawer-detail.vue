@@ -1,3 +1,53 @@
+<script setup lang="ts">
+import { useRevisions } from '@/composables/use-revisions';
+import { Version } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
+import { ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RevisionsDateGroup from './revisions-date-group.vue';
+import RevisionsDrawer from './revisions-drawer.vue';
+
+interface Props {
+	collection: string;
+	primaryKey: string | number;
+	version: Version | null;
+}
+
+const props = defineProps<Props>();
+
+defineEmits(['revert']);
+
+const { t } = useI18n();
+
+const { collection, primaryKey, version } = toRefs(props);
+
+const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
+	collection,
+	primaryKey,
+	version
+);
+
+const modalActive = ref(false);
+const modalCurrentRevision = ref<number | null>(null);
+const page = ref<number>(1);
+
+watch(
+	() => page.value,
+	(newPage) => {
+		refresh(newPage);
+	}
+);
+
+function openModal(id: number) {
+	modalCurrentRevision.value = id;
+	modalActive.value = true;
+}
+
+defineExpose({
+	refresh,
+});
+</script>
+
 <template>
 	<sidebar-detail
 		:title="t('revisions')"
@@ -35,53 +85,6 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
-import { useRevisions } from '@/composables/use-revisions';
-import { abbreviateNumber } from '@directus/utils';
-import { ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import RevisionsDateGroup from './revisions-date-group.vue';
-import RevisionsDrawer from './revisions-drawer.vue';
-
-interface Props {
-	collection: string;
-	primaryKey: string | number;
-}
-
-const props = defineProps<Props>();
-
-defineEmits(['revert']);
-
-const { t } = useI18n();
-
-const { collection, primaryKey } = toRefs(props);
-
-const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
-	collection,
-	primaryKey
-);
-
-const modalActive = ref(false);
-const modalCurrentRevision = ref<number | null>(null);
-const page = ref<number>(1);
-
-watch(
-	() => page.value,
-	(newPage) => {
-		refresh(newPage);
-	}
-);
-
-function openModal(id: number) {
-	modalCurrentRevision.value = id;
-	modalActive.value = true;
-}
-
-defineExpose({
-	refresh,
-});
-</script>
-
 <style lang="scss" scoped>
 .v-progress-linear {
 	margin: 24px 0;
@@ -112,18 +115,18 @@ defineExpose({
 	margin-top: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .external {
 	margin-left: 20px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .other {
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--theme--foreground-subdued);
 
 	font-style: italic;
 }

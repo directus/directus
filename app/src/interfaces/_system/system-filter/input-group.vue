@@ -1,76 +1,3 @@
-<template>
-	<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(comparator)">
-		<input-component
-			:is="interfaceType"
-			:choices="choices"
-			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as (string | number)"
-			@input="value = $event"
-		/>
-	</template>
-	<template
-		v-else-if="
-			[
-				'_contains',
-				'_ncontains',
-				'_icontains',
-				'_starts_with',
-				'_istarts_with',
-				'_nstarts_with',
-				'_nistarts_with',
-				'_ends_with',
-				'_iends_with',
-				'_nends_with',
-				'_niends_with',
-				'_regex',
-			].includes(comparator)
-		"
-	>
-		<input-component
-			is="interface-input"
-			:choices="choices"
-			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as (string | number)"
-			@input="value = $event"
-		/>
-	</template>
-
-	<div
-		v-else-if="['_in', '_nin'].includes(comparator)"
-		class="list"
-		:class="{ moveComma: interfaceType === 'interface-input' }"
-	>
-		<div v-for="(val, index) in value" :key="index" class="value">
-			<input-component
-				:is="interfaceType"
-				:type="fieldInfo?.type ?? 'unknown'"
-				:value="val"
-				:focus="false"
-				:choices="choices"
-				@input="setListValue(index, $event)"
-			/>
-		</div>
-	</div>
-
-	<template v-else-if="['_between', '_nbetween'].includes(comparator)">
-		<input-component
-			:is="interfaceType"
-			:choices="choices"
-			:type="fieldInfo?.type ?? 'unknown'"
-			:value="(value as (string | number)[])[0] ?? ''"
-			@input="setValueAt(0, $event)"
-		/>
-		<div class="and">{{ t('interfaces.filter.and') }}</div>
-		<input-component
-			:is="interfaceType"
-			:choices="choices"
-			:type="fieldInfo?.type ?? 'unknown'"
-			:value="(value as (string | number)[])[1] ?? ''"
-			@input="setValueAt(1, $event)"
-		/>
-	</template>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -189,6 +116,79 @@ function setListValue(index: number, newVal: any) {
 }
 </script>
 
+<template>
+	<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(comparator)">
+		<input-component
+			:is="interfaceType"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
+			:value="value as (string | number)"
+			@input="value = $event"
+		/>
+	</template>
+	<template
+		v-else-if="
+			[
+				'_contains',
+				'_ncontains',
+				'_icontains',
+				'_starts_with',
+				'_istarts_with',
+				'_nstarts_with',
+				'_nistarts_with',
+				'_ends_with',
+				'_iends_with',
+				'_nends_with',
+				'_niends_with',
+				'_regex',
+			].includes(comparator)
+		"
+	>
+		<input-component
+			is="interface-input"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
+			:value="value as (string | number)"
+			@input="value = $event"
+		/>
+	</template>
+
+	<div
+		v-else-if="['_in', '_nin'].includes(comparator)"
+		class="list"
+		:class="{ moveComma: interfaceType === 'interface-input' }"
+	>
+		<div v-for="(val, index) in value" :key="index" class="value">
+			<input-component
+				:is="interfaceType"
+				:type="fieldInfo?.type ?? 'unknown'"
+				:value="val"
+				:focus="false"
+				:choices="choices"
+				@input="setListValue(index, $event)"
+			/>
+		</div>
+	</div>
+
+	<template v-else-if="['_between', '_nbetween'].includes(comparator)">
+		<input-component
+			:is="interfaceType"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
+			:value="(value as (string | number)[])[0] ?? ''"
+			@input="setValueAt(0, $event)"
+		/>
+		<div class="and">{{ t('interfaces.filter.and') }}</div>
+		<input-component
+			:is="interfaceType"
+			:choices="choices"
+			:type="fieldInfo?.type ?? 'unknown'"
+			:value="(value as (string | number)[])[1] ?? ''"
+			@input="setValueAt(1, $event)"
+		/>
+	</template>
+</template>
+
 <style lang="scss" scoped>
 .value {
 	display: flex;
@@ -197,11 +197,11 @@ function setListValue(index: number, newVal: any) {
 	.v-icon {
 		margin-right: 8px;
 		margin-left: 12px;
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
 		&:hover {
-			color: var(--danger);
+			color: var(--theme--danger);
 		}
 	}
 }

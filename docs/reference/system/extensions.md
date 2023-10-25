@@ -9,17 +9,56 @@ pageClass: page-reference
 > The extensions endpoints are used by the Admin App to retrieve what extensions to install.
 > [Learn more about Extensions](/user-guide/overview/glossary#extensions).
 
+## The Extension Object
+
+`bundle` **string | null**\
+Name of the bundle the extension is in.
+
+`name` **string**\
+Unique name of the extension.
+
+#### Meta
+
+Directus metadata for the extension. Where the configuration for the extension in the current project is stored.
+
+`enabled` **boolean**\
+Whether or not the extension is enabled.
+
+#### Schema
+
+Information about the installed extension. Can't be changed.
+
+`type` **string**\
+Type of the extension. One of `'interface'`, `'display'`, `'layout'`, `'module'`, `'panel'`, `'hook'`, `'endpoint'`, `'operation'`,
+`'bundle'`.
+
+`local` **boolean**\
+Whether the extension exists in the local extensions folder or is loaded from `node_modules`.
+
+```json
+{
+  "name": "my-bundle-operation",
+  "bundle": "directus-extension-my-bundle",
+  "schema": {
+    "type": "operation",
+    "local": true
+  },
+  "meta": {
+    "enabled": true
+  }
+}
+```
+
 ## List Extensions
 
-List the available extensions in the project. The types of extensions that you can list are `interfaces`, `displays`,
-`layouts`, and `modules`.
+List the installed extensions and their configuration in the project.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`GET /extensions/:type`
+`GET /extensions/`
 
 </template>
 <template #graphql>
@@ -28,7 +67,7 @@ List the available extensions in the project. The types of extensions that you c
 
 ```graphql
 type Query {
-	extensions: extensions
+	extensions: [extension]
 }
 ```
 
@@ -40,7 +79,7 @@ import { createDirectus, rest, readExtensions } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readExtensions(extension_type));
+const result = await client.request(readExtensions());
 ```
 
 </template>
@@ -56,10 +95,10 @@ An array of interface extension keys.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`GET /extensions/interfaces`
+`GET /extensions/`
 
 </template>
 <template #graphql>
@@ -69,7 +108,8 @@ An array of interface extension keys.
 ```graphql
 query {
 	extensions {
-		interfaces
+		name
+		type
 	}
 }
 ```
@@ -82,7 +122,106 @@ import { createDirectus, rest, readExtensions } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(readExtensions('interfaces'));
+const result = await client.request(readExtensions());
+```
+
+</template>
+</SnippetToggler>
+
+## Update an Extension
+
+Update an existing extension.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /extension/:bundleOrName/:name?`
+
+Provide a partial [extension object](#the-extension-object) as the body of your request.
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_extensions_item(bundle: String, name: String!, data: update_directus_extensions_input!): directus_extensions
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateExtension } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateExtension(bundle, name, partial_extension_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Doesn't support any query parameters.
+
+#### Request Body
+
+A partial [extension object](#the-extension-object).
+
+### Response
+
+Returns the [extension object](#the-extension-object) for the updated extension.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /extensions/my-bundle/draw-interface`
+
+```json
+{
+	"meta": {
+		"enabled": false
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	update_extensions_item(bundle: null, name: "my-custom-display", data: { meta: { enabled: true } }) {
+		name
+		type
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateExtension } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateExtension('directus-extension-bundle', 'stock-display', {
+		meta: {
+			enabled: false
+		},
+	})
+);
 ```
 
 </template>

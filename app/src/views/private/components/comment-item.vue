@@ -1,21 +1,3 @@
-<template>
-	<div class="comment-item">
-		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
-
-		<comment-input
-			v-if="editing"
-			:existing-comment="activity"
-			:primary-key="primaryKey"
-			:collection="collection"
-			:refresh="refresh"
-			:previews="userPreviews"
-			@cancel="cancelEditing"
-		/>
-
-		<div v-else v-md="{ value: activity.display, target: '_blank' }" class="content selectable" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { Activity } from '@/types/activity';
@@ -78,12 +60,30 @@ function useEdits() {
 }
 </script>
 
+<template>
+	<div class="comment-item">
+		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
+
+		<comment-input
+			v-if="editing"
+			:existing-comment="activity"
+			:primary-key="primaryKey"
+			:collection="collection"
+			:refresh="refresh"
+			:previews="userPreviews"
+			@cancel="cancelEditing"
+		/>
+
+		<div v-else v-md="{ value: activity.display, target: '_blank' }" class="content selectable" />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .comment-item {
 	position: relative;
 	margin-bottom: 8px;
 	padding: 8px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border-radius: var(--border-radius);
 }
 
@@ -112,13 +112,13 @@ function useEdits() {
 }
 
 .comment-item .content :deep(a) {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .comment-item .content :deep(blockquote) {
 	margin: 8px 0;
 	padding-left: 6px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 	border-left: 2px solid var(--border-normal);
 }
@@ -140,9 +140,9 @@ function useEdits() {
 .comment-item .content :deep(mark) {
 	display: inline-block;
 	padding: 2px 4px;
-	color: var(--primary);
+	color: var(--theme--primary);
 	line-height: 1;
-	background: var(--primary-alt);
+	background: var(--theme--primary-background);
 	border-radius: var(--border-radius);
 	user-select: text;
 	pointer-events: none;
@@ -150,11 +150,11 @@ function useEdits() {
 
 .comment-item .content :deep(pre) {
 	padding: 2px 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 	margin: 2px 0;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 	white-space: nowrap;
 	max-width: 100%;
 	overflow-x: auto;
@@ -162,11 +162,11 @@ function useEdits() {
 
 .comment-item .content :deep(code) {
 	padding: 2px 4px;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 	margin: 2px 0;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .comment-item .content :deep(pre > code) {
@@ -179,7 +179,7 @@ function useEdits() {
 	margin-top: 12px;
 	font-weight: 600;
 	font-size: 16px;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 }
 
 .comment-item.expand .content::after {
@@ -211,7 +211,7 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text span {
 	padding: 4px 12px 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	font-size: 12px;
 	background-color: var(--background-normal);
@@ -221,7 +221,7 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text:hover span {
 	color: var(--foreground-inverted);
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 }
 
 .comment-item:hover :deep(.comment-header .header-right .time) {
@@ -233,7 +233,7 @@ function useEdits() {
 }
 
 .user-name {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .buttons {

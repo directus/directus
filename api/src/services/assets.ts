@@ -1,5 +1,5 @@
 import type { Range, Stat } from '@directus/storage';
-import type { Accountability } from '@directus/types';
+import type { Accountability, File } from '@directus/types';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
@@ -16,10 +16,10 @@ import {
 	IllegalAssetTransformationError,
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
-} from '../errors/index.js';
+} from '@directus/errors';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, File, Transformation, TransformationSet } from '../types/index.js';
+import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
@@ -37,13 +37,13 @@ export class AssetsService {
 
 	async getAsset(
 		id: string,
-		transformation: TransformationSet,
+		transformation?: TransformationSet,
 		range?: Range
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
-			.select('project_logo', 'public_background', 'public_foreground')
+			.select('project_logo', 'public_background', 'public_foreground', 'public_favicon')
 			.from('directus_settings')
 			.first();
 
@@ -109,7 +109,7 @@ export class AssetsService {
 		}
 
 		const type = file.type;
-		const transforms = TransformationUtils.resolvePreset(transformation, file);
+		const transforms = transformation ? TransformationUtils.resolvePreset(transformation, file) : [];
 
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);

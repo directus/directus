@@ -1,0 +1,41 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1280_73)">
+        <path
+            d="M114 39H98C96.8954 39 96 39.8954 96 41V43C96 44.1046 96.8954 45 98 45H114C115.105 45 116 44.1046 116 43V41C116 39.8954 115.105 39 114 39Z"
+            fill="var(--theme--primary-subdued)" />
+        <g filter="url(#filter0_d_1280_73)">
+            <rect x="18" y="14" width="120" height="68" rx="6" fill="var(--card-face-color)" class="glow" />
+            <rect x="19" y="15" width="118" height="66" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
+        </g>
+        <rect x="24" y="35" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="24" y="25" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="24" y="45" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="24" y="55" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="24" y="65" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="33" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="44" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="55" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="66" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="77" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="88" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="99" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="110" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="121" y="72" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <path opacity="0.45"
+            d="M39.203 54.6667L33 68H127L122.228 65.4603L116.503 48.9524L111.254 40.0635L109.345 33.0794L100.756 28L91.6904 31.1746L82.1472 42.6032L78.3299 50.2222L71.1726 46.4127L69.7411 42.6032H63.0609L60.198 34.9841L53.0406 40.0635L47.3147 50.2222L44.4518 59.746L39.203 54.6667Z"
+            fill="url(#paint0_linear_1280_73)" />
+        <path
+            d="M33 68L38.0179 57.2141C38.5979 55.9674 40.234 55.6643 41.2221 56.6206L42.0913 57.4617C43.1681 58.5037 44.9661 58.0352 45.3974 56.6002L47.2508 50.435C47.2933 50.2936 47.3513 50.1573 47.4238 50.0287L52.8208 40.4534C52.9656 40.1966 53.1653 39.975 53.4056 39.8044L58.0813 36.4863C59.151 35.7271 60.6496 36.1859 61.1109 37.4138L62.5737 41.3067C62.8668 42.0866 63.6127 42.6032 64.4459 42.6032H68.3561C69.1893 42.6032 69.9352 43.1197 70.2283 43.8997L70.9069 45.7056C71.0781 46.1613 71.4097 46.5389 71.8394 46.7676L76.5204 49.2591C77.5125 49.7871 78.7448 49.3943 79.2482 48.3895L82.0431 42.8109C82.1123 42.6729 82.1972 42.5433 82.2961 42.4249L91.3368 31.598C91.5682 31.3209 91.8703 31.1116 92.211 30.9923L99.8782 28.3075C100.435 28.1125 101.049 28.1733 101.557 28.4736L108.648 32.6668C109.095 32.9314 109.422 33.3597 109.559 33.8611L111.183 39.8048C111.23 39.9765 111.3 40.1412 111.39 40.2944L116.401 48.78C116.468 48.8946 116.525 49.0157 116.568 49.1415L121.971 64.7189C122.137 65.1955 122.476 65.592 122.921 65.829L127 68"
+            stroke="var(--theme--primary)" stroke-width="1.5" stroke-linecap="round" />
+    </g>
+    <defs>
+        <linearGradient id="paint0_linear_1280_73" x1="80" y1="28" x2="80" y2="68"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="var(--theme--primary)" stop-opacity="0.3" />
+            <stop offset="1" stop-color="var(--card-face-color)" stop-opacity="0" />
+        </linearGradient>
+        <clipPath id="clip0_1280_73">
+            <rect width="156" height="96" fill="var(--background-page)" class="glow" />
+        </clipPath>
+    </defs>
+</svg>

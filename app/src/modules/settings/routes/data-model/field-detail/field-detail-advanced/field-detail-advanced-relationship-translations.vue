@@ -1,3 +1,38 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
+import { storeToRefs } from 'pinia';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { useFieldsStore } from '@/stores/fields';
+
+const { t } = useI18n();
+
+const fieldDetailStore = useFieldDetailStore();
+const fieldsStore = useFieldsStore();
+
+const { field, collection, editing } = storeToRefs(fieldDetailStore);
+
+const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
+const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
+const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
+const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
+const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
+const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
+
+const type = computed(() => field.value.type);
+const isExisting = computed(() => editing.value !== '+');
+
+const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
+
+const relatedPrimaryKey = computed(
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+);
+</script>
+
 <template>
 	<div>
 		<div class="grid">
@@ -145,48 +180,13 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore } from '@/stores/fields';
-
-const { t } = useI18n();
-
-const fieldDetailStore = useFieldDetailStore();
-const fieldsStore = useFieldsStore();
-
-const { field, collection, editing } = storeToRefs(fieldDetailStore);
-
-const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
-const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
-const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
-const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
-const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
-const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
-
-const type = computed(() => field.value.type);
-const isExisting = computed(() => editing.value !== '+');
-
-const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
-
-const relatedPrimaryKey = computed(
-	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
-);
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 @import '@/styles/mixins/no-wrap';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 
 	position: relative;
 	display: grid;
@@ -195,11 +195,11 @@ const relatedPrimaryKey = computed(
 	margin-top: 48px;
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		transform: translateX(-50%);
@@ -228,7 +228,7 @@ const relatedPrimaryKey = computed(
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 
 .v-notice {

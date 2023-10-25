@@ -1,6 +1,5 @@
 import { Action, FUNCTIONS } from '@directus/constants';
-import type { DirectusError } from '@directus/errors';
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
@@ -44,13 +43,11 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { assign, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
-import { getExtensionManager } from '../../extensions.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
@@ -63,6 +60,7 @@ import { validateQuery } from '../../utils/validate-query.js';
 import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
+import { ExtensionsService } from '../extensions.js';
 import { FieldsService } from '../fields.js';
 import { FilesService } from '../files.js';
 import { RelationsService } from '../relations.js';
@@ -72,6 +70,7 @@ import { SpecificationService } from '../specifications.js';
 import { TFAService } from '../tfa.js';
 import { UsersService } from '../users.js';
 import { UtilsService } from '../utils.js';
+import { VersionsService } from '../versions.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
 import { createSubscriptionGenerator } from './subscription.js';
 import { GraphQLBigInt } from './types/bigint.js';
@@ -98,6 +97,7 @@ const SYSTEM_DENY_LIST = [
 	'directus_relations',
 	'directus_migrations',
 	'directus_sessions',
+	'directus_extensions',
 ];
 
 const READ_ONLY = ['directus_activity', 'directus_revisions'];
@@ -1031,6 +1031,12 @@ export class GraphQLService {
 							type: GraphQLString,
 						},
 					};
+				} else {
+					resolver.args = {
+						version: {
+							type: GraphQLString,
+						},
+					};
 				}
 
 				ReadCollectionTypes[collection.collection]!.addResolver(resolver);
@@ -1073,6 +1079,7 @@ export class GraphQLService {
 						type: ReadCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
+							version: GraphQLString,
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
@@ -1404,6 +1411,21 @@ export class GraphQLService {
 		}
 
 		const result = await this.read(collection, query);
+
+		if (args['version']) {
+			const versionsService = new VersionsService({ accountability: this.accountability, schema: this.schema });
+
+			const saves = await versionsService.getVersionSaves(args['version'], collection, args['id']);
+
+			if (saves) {
+				if (this.schema.collections[collection]!.singleton) {
+					return assign(result, ...saves);
+				} else {
+					if (result?.[0] === undefined) return null;
+					return assign(result[0], ...saves);
+				}
+			}
+		}
 
 		if (args['id']) {
 			return result?.[0] || null;
@@ -1969,27 +1991,6 @@ export class GraphQLService {
 
 		/** Globally available query */
 		schemaComposer.Query.addFields({
-			extensions: {
-				type: schemaComposer.createObjectTC({
-					name: 'extensions',
-					fields: {
-						interfaces: new GraphQLList(GraphQLString),
-						displays: new GraphQLList(GraphQLString),
-						layouts: new GraphQLList(GraphQLString),
-						modules: new GraphQLList(GraphQLString),
-					},
-				}),
-				resolve: async () => {
-					const extensionManager = getExtensionManager();
-
-					return {
-						interfaces: extensionManager.getExtensionsList('interface'),
-						displays: extensionManager.getExtensionsList('display'),
-						layouts: extensionManager.getExtensionsList('layout'),
-						modules: extensionManager.getExtensionsList('module'),
-					};
-				},
-			},
 			server_specs_oas: {
 				type: GraphQLJSON,
 				resolve: async () => {
@@ -2056,6 +2057,10 @@ export class GraphQLService {
 
 		const Relation = schemaComposer.createObjectTC({
 			name: 'directus_relations',
+		});
+
+		const Extension = schemaComposer.createObjectTC({
+			name: 'directus_extensions',
 		});
 
 		/**
@@ -2799,6 +2804,70 @@ export class GraphQLService {
 
 						await relationsService.deleteOne(args['collection'], args['field']);
 						return { collection: args['collection'], field: args['field'] };
+					},
+				},
+			});
+
+			Extension.addFields({
+				bundle: GraphQLString,
+				name: new GraphQLNonNull(GraphQLString),
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_extensions_schema',
+					fields: {
+						type: GraphQLString,
+						local: GraphQLBoolean,
+					},
+				}),
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_extensions_meta',
+					fields: {
+						enabled: GraphQLBoolean,
+					},
+				}),
+			});
+
+			schemaComposer.Query.addFields({
+				extensions: {
+					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Extension.getType()))),
+					resolve: async () => {
+						const service = new ExtensionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await service.readAll();
+					},
+				},
+			});
+
+			schemaComposer.Mutation.addFields({
+				update_extensions_item: {
+					type: Extension,
+					args: {
+						bundle: GraphQLString,
+						name: new GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(
+							schemaComposer.createObjectTC({
+								name: 'update_directus_extensions_input',
+								fields: {
+									meta: schemaComposer.createObjectTC({
+										name: 'update_directus_extensions_input_meta',
+										fields: {
+											enabled: GraphQLBoolean,
+										},
+									}),
+								},
+							})
+						),
+					},
+					resolve: async (_, args) => {
+						const extensionsService = new ExtensionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						await extensionsService.updateOne(args['bundle'], args['name'], args['data']);
+						return await extensionsService.readOne(args['bundle'], args['name']);
 					},
 				},
 			});

@@ -1,89 +1,3 @@
-<template>
-	<v-notice v-if="collectionRequired && !collectionField && !collection" type="warning">
-		{{ t('collection_field_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="collectionRequired && !collection" type="warning">
-		{{ t('select_a_collection') }}
-	</v-notice>
-
-	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
-		<v-list :mandatory="true">
-			<div v-if="innerValue.length === 0" class="no-rules">
-				{{ t('interfaces.filter.no_rules') }}
-			</div>
-
-			<nodes
-				v-else
-				v-model:filter="innerValue"
-				:collection="collection"
-				:field="fieldName"
-				:depth="1"
-				:include-validation="includeValidation"
-				:include-relations="includeRelations"
-				:relational-field-selectable="relationalFieldSelectable"
-				:raw-field-names="rawFieldNames"
-				@remove-node="removeNode($event)"
-				@change="emitValue"
-			/>
-		</v-list>
-
-		<div v-if="fieldName" class="buttons">
-			<button @click="addNode(fieldName!)">{{ t('interfaces.filter.add_filter') }}</button>
-			<button @click="addNode('$group')">{{ t('interfaces.filter.add_group') }}</button>
-		</div>
-		<div v-else class="buttons">
-			<v-menu ref="menuEl" placement="bottom-start" show-arrow>
-				<template #activator="{ toggle, active }">
-					<button class="add-filter" :class="{ active }" @click="toggle">
-						<v-icon v-if="inline" name="add" class="add" small />
-						<span>{{ t('interfaces.filter.add_filter') }}</span>
-						<v-icon name="expand_more" class="expand_more" />
-					</button>
-				</template>
-
-				<v-field-list
-					v-if="collectionRequired"
-					:collection="collection"
-					include-functions
-					:include-relations="includeRelations"
-					:relational-field-selectable="relationalFieldSelectable"
-					:allow-select-all="false"
-					:raw-field-names="rawFieldNames"
-					@add="addNode($event[0])"
-				>
-					<template #prepend>
-						<v-list-item clickable @click="addNode('$group')">
-							<v-list-item-content>
-								<v-text-overflow :text="t('interfaces.filter.add_group')" />
-							</v-list-item-content>
-						</v-list-item>
-						<v-divider />
-					</template>
-				</v-field-list>
-
-				<v-list v-else :mandatory="false">
-					<v-list-item clickable @click="addNode('$group')">
-						<v-list-item-content>
-							<v-text-overflow :text="t('interfaces.filter.add_group')" />
-						</v-list-item-content>
-					</v-list-item>
-					<v-divider />
-					<v-list-item @click.stop>
-						<v-list-item-content>
-							<input
-								v-model="newKey"
-								class="new-key-input"
-								:placeholder="t('interfaces.filter.add_key_placeholder')"
-								@keydown.enter="addKeyAsNode"
-							/>
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -237,6 +151,92 @@ function addKeyAsNode() {
 }
 </script>
 
+<template>
+	<v-notice v-if="collectionRequired && !collectionField && !collection" type="warning">
+		{{ t('collection_field_not_setup') }}
+	</v-notice>
+	<v-notice v-else-if="collectionRequired && !collection" type="warning">
+		{{ t('select_a_collection') }}
+	</v-notice>
+
+	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
+		<v-list mandatory>
+			<div v-if="innerValue.length === 0" class="no-rules">
+				{{ t('interfaces.filter.no_rules') }}
+			</div>
+
+			<nodes
+				v-else
+				v-model:filter="innerValue"
+				:collection="collection"
+				:field="fieldName"
+				:depth="1"
+				:include-validation="includeValidation"
+				:include-relations="includeRelations"
+				:relational-field-selectable="relationalFieldSelectable"
+				:raw-field-names="rawFieldNames"
+				@remove-node="removeNode($event)"
+				@change="emitValue"
+			/>
+		</v-list>
+
+		<div v-if="fieldName" class="buttons">
+			<button @click="addNode(fieldName!)">{{ t('interfaces.filter.add_filter') }}</button>
+			<button @click="addNode('$group')">{{ t('interfaces.filter.add_group') }}</button>
+		</div>
+		<div v-else class="buttons">
+			<v-menu ref="menuEl" placement="bottom-start" show-arrow>
+				<template #activator="{ toggle, active }">
+					<button class="add-filter" :class="{ active }" @click="toggle">
+						<v-icon v-if="inline" name="add" class="add" small />
+						<span>{{ t('interfaces.filter.add_filter') }}</span>
+						<v-icon name="expand_more" class="expand_more" />
+					</button>
+				</template>
+
+				<v-field-list
+					v-if="collectionRequired"
+					:collection="collection"
+					include-functions
+					:include-relations="includeRelations"
+					:relational-field-selectable="relationalFieldSelectable"
+					:allow-select-all="false"
+					:raw-field-names="rawFieldNames"
+					@add="addNode($event[0])"
+				>
+					<template #prepend>
+						<v-list-item clickable @click="addNode('$group')">
+							<v-list-item-content>
+								<v-text-overflow :text="t('interfaces.filter.add_group')" />
+							</v-list-item-content>
+						</v-list-item>
+						<v-divider />
+					</template>
+				</v-field-list>
+
+				<v-list v-else :mandatory="false">
+					<v-list-item clickable @click="addNode('$group')">
+						<v-list-item-content>
+							<v-text-overflow :text="t('interfaces.filter.add_group')" />
+						</v-list-item-content>
+					</v-list-item>
+					<v-divider />
+					<v-list-item @click.stop>
+						<v-list-item-content>
+							<input
+								v-model="newKey"
+								class="new-key-input"
+								:placeholder="t('interfaces.filter.add_key_placeholder')"
+								@keydown.enter="addKeyAsNode"
+							/>
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .system-filter {
 	:deep(ul),
@@ -278,13 +278,13 @@ function addKeyAsNode() {
 		}
 
 		.no-rules {
-			color: var(--foreground-subdued);
-			font-family: var(--family-monospace);
+			color: var(--theme--form--field--input--foreground-subdued);
+			font-family: var(--theme--font-family-monospace);
 		}
 	}
 
 	.add-filter {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	&.inline {
@@ -309,8 +309,8 @@ function addKeyAsNode() {
 			width: 100%;
 			height: 30px;
 			padding: 0;
-			color: var(--foreground-subdued);
-			background-color: var(--background-page);
+			color: var(--theme--form--field--input--foreground-subdued);
+			background-color: var(--theme--background);
 			border: var(--border-width) solid var(--border-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);
@@ -339,7 +339,7 @@ function addKeyAsNode() {
 
 .field .buttons {
 	button {
-		color: var(--primary);
+		color: var(--theme--primary);
 		display: inline-block;
 		cursor: pointer;
 	}

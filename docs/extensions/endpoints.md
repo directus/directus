@@ -6,7 +6,7 @@ readTime: 3 min read
 # Custom API Endpoints <small></small>
 
 > Custom API Endpoints register new API routes which can be used to infinitely extend the core functionality of the
-> platform.
+> platform. They are developed using JavaScript / Node.js.
 
 ## Extension Entrypoint
 

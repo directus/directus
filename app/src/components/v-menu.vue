@@ -1,62 +1,3 @@
-<template>
-	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
-		<div
-			ref="activator"
-			class="v-menu-activator"
-			:class="{ attached }"
-			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
-		>
-			<slot
-				name="activator"
-				v-bind="{
-					toggle: toggle,
-					active: isActive,
-					activate: activate,
-					deactivate: deactivate,
-				}"
-			/>
-		</div>
-
-		<teleport to="#menu-outlet">
-			<transition-bounce>
-				<div
-					v-if="isActive"
-					:id="id"
-					v-click-outside="{
-						handler: deactivate,
-						middleware: onClickOutsideMiddleware,
-						disabled: closeOnClick === false,
-						events: ['click'],
-					}"
-					class="v-menu-popper"
-					:class="{ active: isActive, attached }"
-					:data-placement="popperPlacement"
-					:style="styles"
-				>
-					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
-					<div
-						class="v-menu-content"
-						:class="{ 'full-height': fullHeight, seamless }"
-						v-on="{
-							...(closeOnContentClick ? { click: onContentClick } : {}),
-							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
-						}"
-					>
-						<slot
-							v-bind="{
-								toggle: toggle,
-								active: isActive,
-								activate: activate,
-								deactivate: deactivate,
-							}"
-						/>
-					</div>
-				</div>
-			</transition-bounce>
-		</teleport>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
@@ -82,8 +23,6 @@ interface Props {
 	closeOnContentClick?: boolean;
 	/** Attach the menu to an input */
 	attached?: boolean;
-	/** Should the menu have the same width as the input when attached */
-	isSameWidth?: boolean;
 	/** Show an arrow pointer */
 	showArrow?: boolean;
 	/** Menu does not appear */
@@ -107,16 +46,10 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	closeOnClick: true,
 	closeOnContentClick: true,
-	attached: false,
-	isSameWidth: true,
-	showArrow: false,
-	disabled: false,
 	trigger: null,
 	delay: 0,
 	offsetY: 8,
 	offsetX: 0,
-	fullHeight: false,
-	seamless: false,
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -147,12 +80,11 @@ const {
 	arrowStyles,
 	placement: popperPlacement,
 } = usePopper(
-	reference as any, // Fix as TS thinks Ref<HTMLElement | null> !== Ref<HTMLElement | null> 🙃
-	popper as any,
+	reference,
+	popper,
 	computed(() => ({
 		placement: props.placement,
 		attached: props.attached,
-		isSameWidth: props.isSameWidth,
 		arrow: props.showArrow,
 		offsetY: props.offsetY,
 		offsetX: props.offsetX,
@@ -286,7 +218,6 @@ function usePopper(
 			Readonly<{
 				placement: Placement;
 				attached: boolean;
-				isSameWidth: boolean;
 				arrow: boolean;
 				offsetY: number;
 				offsetX: number;
@@ -365,6 +296,34 @@ function usePopper(
 			flip,
 			eventListeners,
 			{
+				...arrow,
+				enabled: options.value.arrow === true,
+				options: {
+					padding: 6,
+				},
+			},
+			{
+				name: 'minWidth',
+				enabled: options.value.attached === true,
+				fn: ({ state }) => {
+					if (state.styles.popper) state.styles.popper.minWidth = `${state.rects.reference.width}px`;
+				},
+				phase: 'beforeWrite',
+				requires: ['computeStyles'],
+			},
+			{
+				name: 'applyStyles',
+				enabled: true,
+				phase: 'write',
+				fn({ state }) {
+					if (state.styles.popper) styles.value = state.styles.popper;
+
+					if (state.styles.arrow) arrowStyles.value = state.styles.arrow;
+
+					callback();
+				},
+			},
+			{
 				name: 'placementUpdater',
 				enabled: true,
 				phase: 'afterWrite',
@@ -372,51 +331,71 @@ function usePopper(
 					placement.value = state.placement;
 				},
 			},
-			{
-				name: 'applyStyles',
-				enabled: true,
-				phase: 'write',
-				fn({ state }) {
-					styles.value = state.styles.popper;
-					arrowStyles.value = state.styles.arrow;
-					callback();
-				},
-			},
-			{
-				name: 'minWidth',
-				enabled: true,
-				phase: 'beforeWrite',
-				fn({ state }) {
-					state.styles.popper.minWidth = `${state.rects.reference.width}px`;
-				},
-			},
 		];
-
-		if (options.value.arrow === true) {
-			modifiers.push({
-				...arrow,
-				options: {
-					padding: 6,
-				},
-			});
-		}
-
-		if (options.value.attached === true) {
-			modifiers.push({
-				name: 'sameWidth',
-				enabled: options.value.isSameWidth,
-				fn: ({ state }) => {
-					state.styles.popper.width = `${state.rects.reference.width}px`;
-				},
-				phase: 'beforeWrite',
-				requires: ['computeStyles'],
-			});
-		}
 
 		return modifiers;
 	}
 }
 </script>
+
+<template>
+	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
+		<div
+			ref="activator"
+			class="v-menu-activator"
+			:class="{ attached }"
+			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
+		>
+			<slot
+				name="activator"
+				v-bind="{
+					toggle: toggle,
+					active: isActive,
+					activate: activate,
+					deactivate: deactivate,
+				}"
+			/>
+		</div>
+
+		<teleport to="#menu-outlet">
+			<transition-bounce>
+				<div
+					v-if="isActive"
+					:id="id"
+					v-click-outside="{
+						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
+						disabled: closeOnClick === false,
+						events: ['click'],
+					}"
+					class="v-menu-popper"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
+				>
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div
+						class="v-menu-content"
+						:class="{ 'full-height': fullHeight, seamless }"
+						v-on="{
+							...(closeOnContentClick ? { click: onContentClick } : {}),
+							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
+						}"
+					>
+						<slot
+							v-bind="{
+								toggle: toggle,
+								active: isActive,
+								activate: activate,
+								deactivate: deactivate,
+							}"
+						/>
+					</div>
+				</div>
+			</transition-bounce>
+		</teleport>
+	</div>
+</template>
 
 <style>
 body {

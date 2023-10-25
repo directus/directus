@@ -208,3 +208,18 @@ steps:
 <video title="Live Preview an Item" autoplay playsinline muted loop controls>
 	<source src="https://marketing.directus.app/assets/48140637-b543-47c1-bad4-71e72b751c44.mp4" type="video/mp4" />
 </video>
+
+## Implement Content Versioning on an Item
+
+To implement Content Versioning on an item in your collection, follow these steps:
+
+1. Navigate to **Settings** > **Data Model** and choose the Collection.
+2. Locate the "**Content Versioning**" section and toggle to enable it.
+3. Go to the specific item for which you want to create a new version. You will see a "**Main**" version at the top of
+   your item view.
+4. Select "**Create Version**" from the dropdown.
+5. When prompted, give your new version a key and a name. For instance, you can use "draft" as the key and "My Draft" as
+   the name.
+6. Make the necessary updates and edits to the content in this new version. Your main version remains unaffected during
+   this process. Save the version after making your changes.
+7. From the dropdown, click "**Promote Version**". This allows you to review and promote changes as needed.

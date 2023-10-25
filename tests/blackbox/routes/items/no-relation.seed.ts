@@ -1,6 +1,7 @@
-import vendors from '@common/get-dbs-to-test';
 import { CreateCollection, CreateField, DeleteCollection } from '@common/functions';
+import vendors from '@common/get-dbs-to-test';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
+import { expect, it } from 'vitest';
 
 export const collectionArtists = 'test_items_no_relations_artists';
 
@@ -45,6 +46,6 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		300000
+		300_000
 	);
 };

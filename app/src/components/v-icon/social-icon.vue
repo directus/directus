@@ -1,7 +1,3 @@
-<template>
-	<render />
-</template>
-
 <script setup lang="ts">
 import { h } from 'vue';
 import { findIconDefinition, icon, IconName, library } from '@fortawesome/fontawesome-svg-core';
@@ -31,3 +27,7 @@ const render = () => {
 	return null;
 };
 </script>
+
+<template>
+	<render />
+</template>

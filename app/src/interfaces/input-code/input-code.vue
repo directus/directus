@@ -1,13 +1,3 @@
-<template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
-		<div ref="codemirrorEl"></div>
-
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
-			<v-icon name="playlist_add" />
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
@@ -290,6 +280,16 @@ function fillTemplate() {
 }
 </script>
 
+<template>
+	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
+		<div ref="codemirrorEl"></div>
+
+		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
+			<v-icon name="playlist_add" />
+		</v-button>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .input-code {
 	position: relative;
@@ -310,13 +310,13 @@ function fillTemplate() {
 	top: 10px;
 	right: 10px;
 	z-index: 4;
-	color: var(--primary);
+	color: var(--theme--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
 	user-select: none;
 
 	&:hover {
-		color: var(--primary-125);
+		color: var(--theme--primary-accent);
 		transition: none;
 	}
 }

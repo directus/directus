@@ -1,186 +1,3 @@
-<template>
-	<settings-not-found v-if="!flow && !loading" />
-	<private-view v-else :title="flow?.name ?? t('loading')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/flows">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
-		</template>
-
-		<template #title:append>
-			<display-color
-				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
-				class="status-dot"
-				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
-			/>
-		</template>
-
-		<template #actions>
-			<template v-if="editMode">
-				<v-button
-					v-tooltip.bottom="t('clear_changes')"
-					class="clear-changes"
-					rounded
-					icon
-					outlined
-					@click="attemptCancelChanges"
-				>
-					<v-icon name="clear" />
-				</v-button>
-
-				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-
-			<template v-else>
-				<v-button
-					v-tooltip.bottom="t('delete_flow')"
-					class="delete-flow"
-					rounded
-					icon
-					secondary
-					@click="confirmDelete = true"
-				>
-					<v-icon name="delete" />
-				</v-button>
-
-				<v-button v-tooltip.bottom="t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
-					<v-icon name="edit" />
-				</v-button>
-			</template>
-		</template>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
-			</sidebar-detail>
-
-			<logs-sidebar-detail v-if="flow" :flow="flow" />
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<div v-if="loading || !flow" class="container center">
-			<v-progress-circular indeterminate />
-		</div>
-		<div v-else class="container">
-			<arrows
-				:panels="panels"
-				:arrow-info="arrowInfo"
-				:parent-panels="parentPanels"
-				:edit-mode="editMode"
-				:hovered-panel="hoveredPanelID"
-				:subdued="flow.status === 'inactive'"
-			/>
-			<v-workspace :tiles="panels" :edit-mode="editMode">
-				<template #tile="{ tile }">
-					<operation
-						v-if="flow"
-						:edit-mode="editMode"
-						:panel="tile"
-						:type="tile.id === '$trigger' ? 'trigger' : 'operation'"
-						:parent="parentPanels[tile.id]"
-						:flow="flow"
-						:panels-to-be-deleted="panelsToBeDeleted"
-						:is-hovered="hoveredPanelID === tile.id"
-						:subdued="flow.status === 'inactive'"
-						@create="createPanel"
-						@edit="editPanel"
-						@move="movePanelID = $event"
-						@update="stageOperationEdits"
-						@delete="deletePanel"
-						@duplicate="duplicatePanel"
-						@arrow-move="arrowMove"
-						@arrow-stop="arrowStop"
-						@show-hint="hoveredPanelID = $event"
-						@hide-hint="hoveredPanelID = null"
-						@flow-status="stagedFlow.status = $event"
-					/>
-				</template>
-			</v-workspace>
-		</div>
-
-		<flow-drawer
-			v-if="flow"
-			:active="triggerDetailOpen"
-			:primary-key="flow.id"
-			:start-tab="'trigger_setup'"
-			@cancel="triggerDetailOpen = false"
-			@done="triggerDetailOpen = false"
-		/>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">{{ t('discard_changes') }}</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="cancelChanges">{{ t('discard_changes') }}</v-button>
-					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
-			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
-
-				<v-card-actions>
-					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
-					<v-button danger :loading="deleting" @click="deleteFlow">{{ t('delete_label') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = undefined" @esc="movePanelID = undefined">
-			<v-card>
-				<v-card-title>{{ t('copy_to') }}</v-card-title>
-
-				<v-card-text>
-					<v-notice v-if="movePanelChoices.length === 0">
-						{{ t('no_other_flows_copy') }}
-					</v-notice>
-					<v-select v-else v-model="movePanelTo" :items="movePanelChoices" item-text="name" item-value="id" />
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button secondary @click="movePanelID = undefined">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button :loading="movePanelLoading" :disabled="movePanelChoices.length === 0" @click="movePanel">
-						{{ t('copy') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<router-view
-			:operation="currentOperation"
-			:existing-operation-keys="exitingOperationKeys"
-			:flow="flow"
-			@save="stageOperation"
-			@cancel="cancelOperation"
-		/>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { AppTile } from '@/components/v-workspace-tile.vue';
@@ -711,12 +528,195 @@ function discardAndLeave() {
 }
 </script>
 
+<template>
+	<settings-not-found v-if="!flow && !loading" />
+	<private-view v-else :title="flow?.name ?? t('loading')">
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon exact to="/settings/flows">
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
+		</template>
+
+		<template #title:append>
+			<display-color
+				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
+				class="status-dot"
+				:value="flow?.status === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
+			/>
+		</template>
+
+		<template #actions>
+			<template v-if="editMode">
+				<v-button
+					v-tooltip.bottom="t('clear_changes')"
+					class="clear-changes"
+					rounded
+					icon
+					outlined
+					@click="attemptCancelChanges"
+				>
+					<v-icon name="clear" />
+				</v-button>
+
+				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<template v-else>
+				<v-button
+					v-tooltip.bottom="t('delete_flow')"
+					class="delete-flow"
+					rounded
+					icon
+					secondary
+					@click="confirmDelete = true"
+				>
+					<v-icon name="delete" />
+				</v-button>
+
+				<v-button v-tooltip.bottom="t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
+					<v-icon name="edit" />
+				</v-button>
+			</template>
+		</template>
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
+			</sidebar-detail>
+
+			<logs-sidebar-detail v-if="flow" :flow="flow" />
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<div v-if="loading || !flow" class="container center">
+			<v-progress-circular indeterminate />
+		</div>
+		<div v-else class="container">
+			<arrows
+				:panels="panels"
+				:arrow-info="arrowInfo"
+				:parent-panels="parentPanels"
+				:edit-mode="editMode"
+				:hovered-panel="hoveredPanelID"
+				:subdued="flow.status === 'inactive'"
+			/>
+			<v-workspace :tiles="panels" :edit-mode="editMode">
+				<template #tile="{ tile }">
+					<operation
+						v-if="flow"
+						:edit-mode="editMode"
+						:panel="tile"
+						:type="tile.id === '$trigger' ? 'trigger' : 'operation'"
+						:parent="parentPanels[tile.id]"
+						:flow="flow"
+						:panels-to-be-deleted="panelsToBeDeleted"
+						:is-hovered="hoveredPanelID === tile.id"
+						:subdued="flow.status === 'inactive'"
+						@create="createPanel"
+						@edit="editPanel"
+						@move="movePanelID = $event"
+						@update="stageOperationEdits"
+						@delete="deletePanel"
+						@duplicate="duplicatePanel"
+						@arrow-move="arrowMove"
+						@arrow-stop="arrowStop"
+						@show-hint="hoveredPanelID = $event"
+						@hide-hint="hoveredPanelID = null"
+						@flow-status="stagedFlow.status = $event"
+					/>
+				</template>
+			</v-workspace>
+		</div>
+
+		<flow-drawer
+			v-if="flow"
+			:active="triggerDetailOpen"
+			:primary-key="flow.id"
+			:start-tab="'trigger_setup'"
+			@cancel="triggerDetailOpen = false"
+			@done="triggerDetailOpen = false"
+		/>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">{{ t('discard_changes') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="cancelChanges">{{ t('discard_changes') }}</v-button>
+					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
+			<v-card>
+				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
+
+				<v-card-actions>
+					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
+					<v-button danger :loading="deleting" @click="deleteFlow">{{ t('delete_label') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="!!movePanelID" @update:model-value="movePanelID = undefined" @esc="movePanelID = undefined">
+			<v-card>
+				<v-card-title>{{ t('copy_to') }}</v-card-title>
+
+				<v-card-text>
+					<v-notice v-if="movePanelChoices.length === 0">
+						{{ t('no_other_flows_copy') }}
+					</v-notice>
+					<v-select v-else v-model="movePanelTo" :items="movePanelChoices" item-text="name" item-value="id" />
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="movePanelID = undefined">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button :loading="movePanelLoading" :disabled="movePanelChoices.length === 0" @click="movePanel">
+						{{ t('copy') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<router-view
+			:operation="currentOperation"
+			:existing-operation-keys="exitingOperationKeys"
+			:flow="flow"
+			@save="stageOperation"
+			@cancel="cancelOperation"
+		/>
+	</private-view>
+</template>
+
 <style scoped lang="scss">
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .status-dot {
@@ -736,12 +736,12 @@ function discardAndLeave() {
 }
 
 .clear-changes {
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-background-color: var(--theme--foreground-subdued);
+	--v-button-background-color-hover: var(--theme--foreground);
 }
 
 .delete-flow {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 

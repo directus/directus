@@ -2,7 +2,7 @@ import type { Accountability } from '@directus/types';
 import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { InvalidCredentialsError } from '../errors/index.js';
+import { InvalidCredentialsError } from '@directus/errors';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 import { getMilliseconds } from './get-milliseconds.js';

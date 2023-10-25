@@ -1,3 +1,70 @@
+<script setup lang="ts">
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { Collection } from '@/types/collections';
+import { getCollectionRoute } from '@/utils/get-route';
+import type { DeepPartial } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+type Props = {
+	collection: Collection;
+	hasNestedCollections: boolean;
+};
+
+const props = withDefaults(defineProps<Props>(), {});
+
+const { t } = useI18n();
+
+const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
+const { deleting, deleteActive, deleteCollection } = useDelete();
+
+const peerDependencies = computed(() => {
+	return relationsStore.relations
+		.filter((relation) => {
+			// a2o relations are ignored on purpose, to be able to select other collections afterwards
+			return (
+				relation.meta?.one_collection === props.collection.collection &&
+				relation.meta?.many_collection &&
+				relation.meta?.many_field
+			);
+		})
+		.map((relation) => ({
+			collection: relation.meta?.many_collection,
+			field: relation.meta?.many_field,
+		}));
+});
+
+function useDelete() {
+	const deleting = ref(false);
+	const deleteActive = ref(false);
+
+	return { deleting, deleteActive, deleteCollection };
+
+	async function deleteCollection() {
+		deleting.value = true;
+
+		try {
+			for (const dependency of peerDependencies.value) {
+				await fieldsStore.deleteField(dependency.collection!, dependency.field!);
+			}
+
+			await collectionsStore.deleteCollection(props.collection.collection);
+			deleteActive.value = false;
+		} finally {
+			deleting.value = false;
+		}
+	}
+}
+
+async function update(updates: DeepPartial<Collection>) {
+	await collectionsStore.updateCollection(props.collection.collection, updates);
+}
+</script>
+
 <template>
 	<div v-if="collection.collection.startsWith('directus_') === false">
 		<v-menu placement="left-start" show-arrow>
@@ -119,92 +186,25 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { Collection } from '@/types/collections';
-import { getCollectionRoute } from '@/utils/get-route';
-import type { DeepPartial } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-type Props = {
-	collection: Collection;
-	hasNestedCollections: boolean;
-};
-
-const props = withDefaults(defineProps<Props>(), {});
-
-const { t } = useI18n();
-
-const collectionsStore = useCollectionsStore();
-const fieldsStore = useFieldsStore();
-const relationsStore = useRelationsStore();
-const { deleting, deleteActive, deleteCollection } = useDelete();
-
-const peerDependencies = computed(() => {
-	return relationsStore.relations
-		.filter((relation) => {
-			// a2o relations are ignored on purpose, to be able to select other collections afterwards
-			return (
-				relation.meta?.one_collection === props.collection.collection &&
-				relation.meta?.many_collection &&
-				relation.meta?.many_field
-			);
-		})
-		.map((relation) => ({
-			collection: relation.meta?.many_collection,
-			field: relation.meta?.many_field,
-		}));
-});
-
-function useDelete() {
-	const deleting = ref(false);
-	const deleteActive = ref(false);
-
-	return { deleting, deleteActive, deleteCollection };
-
-	async function deleteCollection() {
-		deleting.value = true;
-
-		try {
-			for (const dependency of peerDependencies.value) {
-				await fieldsStore.deleteField(dependency.collection!, dependency.field!);
-			}
-
-			await collectionsStore.deleteCollection(props.collection.collection);
-			deleteActive.value = false;
-		} finally {
-			deleting.value = false;
-		}
-	}
-}
-
-async function update(updates: DeepPartial<Collection>) {
-	await collectionsStore.updateCollection(props.collection.collection, updates);
-}
-</script>
-
 <style lang="scss" scoped>
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	&:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground);
 	}
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .v-list-item.warning {
-	--v-list-item-color: var(--warning);
-	--v-list-item-color-hover: var(--warning);
-	--v-list-item-icon-color: var(--warning);
+	--v-list-item-color: var(--theme--warning);
+	--v-list-item-color-hover: var(--theme--warning);
+	--v-list-item-icon-color: var(--theme--warning);
 }
 
 .delete-dependencies {

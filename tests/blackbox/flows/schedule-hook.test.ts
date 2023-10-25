@@ -1,29 +1,30 @@
-import config, { Env, getUrl, paths } from '@common/config';
-import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
+import config, { getUrl, paths, type Env } from '@common/config';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { delayedSleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
+import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
 import { envTargetVariable, flowName, logPrefix, seedDBValues } from './schedule-hook.seed';
 
 let isSeeded = false;
 
 beforeAll(async () => {
 	isSeeded = await seedDBValues();
-}, 300000);
+}, 300_000);
 
 test('Seed Database Values', () => {
 	expect(isSeeded).toStrictEqual(true);
 });
 
 describe('Flows Schedule Hook Tests', () => {
-	const databases = new Map<string, Knex>();
-	const directusInstances = {} as { [vendor: string]: ChildProcess[] };
-	const envs = {} as { [vendor: string]: Env[] };
+	const databases = new Map<Vendor, Knex>();
+	const directusInstances = {} as Record<Vendor, ChildProcess[]>;
+	const envs = {} as Record<Vendor, Env[]>;
 	const flowIds = {} as { [vendor: string]: string };
 
 	beforeAll(async () => {
@@ -33,20 +34,20 @@ describe('Flows Schedule Hook Tests', () => {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
 			const envRedis1 = cloneDeep(config.envs);
-			envRedis1[vendor].FLOWS_ENV_ALLOW_LIST = envTargetVariable;
-			envRedis1[vendor].REDIS = `redis://localhost:6108/4`;
-			envRedis1[vendor].MESSENGER_STORE = 'redis';
-			envRedis1[vendor].MESSENGER_NAMESPACE = `directus-${vendor}`;
-			envRedis1[vendor].SYNCHRONIZATION_STORE = 'redis';
-			envRedis1[vendor].SYNCHRONIZATION_NAMESPACE = `directus-${vendor}`;
+			envRedis1[vendor]['FLOWS_ENV_ALLOW_LIST'] = envTargetVariable;
+			envRedis1[vendor]['REDIS'] = `redis://localhost:6108/4`;
+			envRedis1[vendor]['MESSENGER_STORE'] = 'redis';
+			envRedis1[vendor]['MESSENGER_NAMESPACE'] = `directus-${vendor}`;
+			envRedis1[vendor]['SYNCHRONIZATION_STORE'] = 'redis';
+			envRedis1[vendor]['SYNCHRONIZATION_NAMESPACE'] = `directus-${vendor}`;
 			envRedis1[vendor][envTargetVariable] = 'redis-1';
-			envRedis1[vendor].LOG_LEVEL = 'info';
+			envRedis1[vendor]['LOG_LEVEL'] = 'info';
 
 			const envRedis2 = cloneDeep(envRedis1);
 			envRedis2[vendor][envTargetVariable] = 'redis-2';
 
 			const envMemory = cloneDeep(envRedis1);
-			delete envMemory[vendor].SYNCHRONIZATION_STORE;
+			delete envMemory[vendor]['SYNCHRONIZATION_STORE'];
 			envMemory[vendor][envTargetVariable] = 'memory-1';
 
 			const newServerPort1 = Number(envRedis1[vendor]!.PORT) + 150;
@@ -79,10 +80,10 @@ describe('Flows Schedule Hook Tests', () => {
 					.query({
 						filter: JSON.stringify({ name: { _eq: flowName } }),
 					})
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 			).body.data[0].id;
 		}
-	}, 180000);
+	}, 180_000);
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
@@ -129,7 +130,7 @@ describe('Flows Schedule Hook Tests', () => {
 			await request(getUrl(vendor, env))
 				.patch(`/flows/${flowId}`)
 				.send({ status: 'active' })
-				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 			await sleep;
 
@@ -141,7 +142,7 @@ describe('Flows Schedule Hook Tests', () => {
 			await request(getUrl(vendor, env))
 				.patch(`/flows/${flowId}`)
 				.send({ status: 'inactive' })
-				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 			const redisExecutionCount = flowExecutions.filter((execution) => execution.includes('redis-')).length;
 			const memoryExecutionCount = flowExecutions.filter((execution) => execution.includes('memory-')).length;

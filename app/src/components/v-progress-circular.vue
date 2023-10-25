@@ -1,27 +1,3 @@
-<template>
-	<div class="v-progress-circular" :class="sizeClass">
-		<svg
-			class="circle"
-			viewBox="0 0 30 30"
-			:class="{ indeterminate }"
-			@animationiteration="$emit('animationiteration', $event)"
-		>
-			<path
-				class="circle-background"
-				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
-				transform="translate(2.5 2.5)"
-			/>
-			<path
-				class="circle-path"
-				:style="circleStyle"
-				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
-				transform="translate(2.5 2.5)"
-			/>
-		</svg>
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
@@ -55,9 +31,33 @@ const circleStyle = computed(() => ({
 }));
 </script>
 
+<template>
+	<div class="v-progress-circular" :class="sizeClass">
+		<svg
+			class="circle"
+			viewBox="0 0 30 30"
+			:class="{ indeterminate }"
+			@animationiteration="$emit('animationiteration', $event)"
+		>
+			<path
+				class="circle-background"
+				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
+				transform="translate(2.5 2.5)"
+			/>
+			<path
+				class="circle-path"
+				:style="circleStyle"
+				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
+				transform="translate(2.5 2.5)"
+			/>
+		</svg>
+		<slot />
+	</div>
+</template>
+
 <style>
 body {
-	--v-progress-circular-color: var(--foreground-normal);
+	--v-progress-circular-color: var(--theme--foreground);
 	--v-progress-circular-background-color: var(--border-normal);
 	--v-progress-circular-transition: 400ms;
 	--v-progress-circular-speed: 2s;

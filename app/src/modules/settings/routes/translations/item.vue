@@ -1,141 +1,3 @@
-<template>
-	<content-not-found v-if="error" />
-
-	<private-view v-else :title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')">
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-			>
-				<v-icon :name="collectionInfo.icon" />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb
-				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: t('content'), to: '/content' }]"
-			/>
-			<v-breadcrumb v-else :items="breadcrumb" />
-		</template>
-
-		<template #actions>
-			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button
-						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
-						v-tooltip.bottom="t('delete_label')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
-						:disabled="item === null"
-						@click="on"
-					>
-						<v-icon name="delete" outline />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" :disabled="!isSavable" @click="saveAndQuit">
-				<v-icon name="check" />
-
-				<template #append-outer>
-					<save-options
-						:disabled-options="disabledOptions"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
-						@save-as-copy="saveAsCopyAndNavigate"
-						@discard-and-stay="discardAndStay"
-					/>
-				</template>
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<SettingsNavigation current-collection="directus_translations" />
-		</template>
-
-		<v-form
-			ref="form"
-			v-model="edits"
-			:autofocus="isNew"
-			:loading="loading"
-			:initial-values="item"
-			collection="directus_translations"
-			:primary-key="internalPrimaryKey"
-			:validation-errors="validationErrors"
-		/>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_translations_item')" class="page-description" />
-			</sidebar-detail>
-			<template v-if="isNew === false && loading === false && internalPrimaryKey">
-				<revisions-drawer-detail
-					v-if="accountabilityScope === 'all'"
-					ref="revisionsDrawerDetailRef"
-					collection="directus_translations"
-					:primary-key="internalPrimaryKey"
-					:scope="accountabilityScope"
-					@revert="revert"
-				/>
-				<comments-sidebar-detail collection="directus_translations" :primary-key="internalPrimaryKey" />
-				<flow-sidebar-detail
-					location="item"
-					collection="directus_translations"
-					:primary-key="internalPrimaryKey"
-					:has-edits="hasEdits"
-					@refresh="refresh"
-				/>
-			</template>
-		</template>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -350,16 +212,154 @@ async function revert(values: Record<string, any>) {
 }
 </script>
 
+<template>
+	<content-not-found v-if="error" />
+
+	<private-view v-else :title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')">
+		<template #title-outer:prepend>
+			<v-button
+				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
+				class="header-icon"
+				rounded
+				icon
+				secondary
+				disabled
+			>
+				<v-icon :name="collectionInfo.icon" />
+			</v-button>
+
+			<v-button
+				v-else
+				v-tooltip.bottom="t('back')"
+				class="header-icon"
+				rounded
+				icon
+				secondary
+				exact
+				@click="navigateBack"
+			>
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+
+		<template #headline>
+			<v-breadcrumb
+				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
+				:items="[{ name: t('content'), to: '/content' }]"
+			/>
+			<v-breadcrumb v-else :items="breadcrumb" />
+		</template>
+
+		<template #actions>
+			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false">
+				<template #activator="{ on }">
+					<v-button
+						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
+						v-tooltip.bottom="t('delete_label')"
+						rounded
+						icon
+						class="action-delete"
+						secondary
+						:disabled="item === null"
+						@click="on"
+					>
+						<v-icon name="delete" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" :disabled="!isSavable" @click="saveAndQuit">
+				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						:disabled-options="disabledOptions"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<SettingsNavigation current-collection="directus_translations" />
+		</template>
+
+		<v-form
+			ref="form"
+			v-model="edits"
+			:autofocus="isNew"
+			:loading="loading"
+			:initial-values="item"
+			collection="directus_translations"
+			:primary-key="internalPrimaryKey"
+			:validation-errors="validationErrors"
+		/>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_settings_translations_item')" class="page-description" />
+			</sidebar-detail>
+			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+				<revisions-drawer-detail
+					v-if="accountabilityScope === 'all'"
+					ref="revisionsDrawerDetailRef"
+					collection="directus_translations"
+					:primary-key="internalPrimaryKey"
+					:scope="accountabilityScope"
+					@revert="revert"
+				/>
+				<comments-sidebar-detail collection="directus_translations" :primary-key="internalPrimaryKey" />
+				<flow-sidebar-detail
+					location="item"
+					collection="directus_translations"
+					:primary-key="internalPrimaryKey"
+					:has-edits="hasEdits"
+					@refresh="refresh"
+				/>
+			</template>
+		</template>
+	</private-view>
+</template>
+
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {
 	--v-button-background-color: var(--background-normal);
-	--v-button-color-disabled: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
 }
 
 .v-form {

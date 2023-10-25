@@ -1,3 +1,76 @@
+<script setup lang="ts">
+import { useCustomSelectionMultiple } from '@directus/composables';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+type Option = {
+	text: string;
+	value: string | number | boolean;
+};
+
+const props = withDefaults(
+	defineProps<{
+		value: string[] | null;
+		disabled?: boolean;
+		choices: Option[];
+		allowOther?: boolean;
+		width?: string;
+		iconOn?: string;
+		iconOff?: string;
+		color?: string;
+		itemsShown?: number;
+	}>(),
+	{
+		iconOn: 'check_box',
+		iconOff: 'check_box_outline_blank',
+		color: 'var(--theme--primary)',
+		itemsShown: 8,
+	}
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const { choices, value } = toRefs(props);
+const showAll = ref(false);
+
+const hideChoices = computed(() => props.choices!.length > props.itemsShown);
+
+const choicesDisplayed = computed(() => {
+	if (showAll.value || hideChoices.value === false) {
+		return props.choices;
+	}
+
+	return props.choices!.slice(0, props.itemsShown);
+});
+
+const hiddenCount = computed(() => props.choices!.length - props.itemsShown);
+
+const gridClass = computed(() => {
+	if (choices?.value === undefined) return null;
+
+	const widestOptionLength = choices.value.reduce((acc, val) => {
+		if (val.text.length > acc.length) acc = val.text;
+		return acc;
+	}, '').length;
+
+	if (props.width?.startsWith('half')) {
+		if (widestOptionLength <= 10) return 'grid-2';
+		return 'grid-1';
+	}
+
+	if (widestOptionLength <= 10) return 'grid-4';
+	if (widestOptionLength > 10 && widestOptionLength <= 15) return 'grid-3';
+	if (widestOptionLength > 15 && widestOptionLength <= 25) return 'grid-2';
+	return 'grid-1';
+});
+
+const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
+	emit('input', value)
+);
+</script>
+
 <template>
 	<v-notice v-if="!choices" type="warning">
 		{{ t('choices_option_configured_incorrectly') }}
@@ -61,79 +134,6 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useCustomSelectionMultiple } from '@directus/composables';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-type Option = {
-	text: string;
-	value: string | number | boolean;
-};
-
-const props = withDefaults(
-	defineProps<{
-		value: string[] | null;
-		disabled?: boolean;
-		choices: Option[];
-		allowOther?: boolean;
-		width?: string;
-		iconOn?: string;
-		iconOff?: string;
-		color?: string;
-		itemsShown?: number;
-	}>(),
-	{
-		iconOn: 'check_box',
-		iconOff: 'check_box_outline_blank',
-		color: 'var(--primary)',
-		itemsShown: 8,
-	}
-);
-
-const emit = defineEmits(['input']);
-
-const { t } = useI18n();
-
-const { choices, value } = toRefs(props);
-const showAll = ref(false);
-
-const hideChoices = computed(() => props.choices!.length > props.itemsShown);
-
-const choicesDisplayed = computed(() => {
-	if (showAll.value || hideChoices.value === false) {
-		return props.choices;
-	}
-
-	return props.choices!.slice(0, props.itemsShown);
-});
-
-const hiddenCount = computed(() => props.choices!.length - props.itemsShown);
-
-const gridClass = computed(() => {
-	if (choices?.value === undefined) return null;
-
-	const widestOptionLength = choices.value.reduce((acc, val) => {
-		if (val.text.length > acc.length) acc = val.text;
-		return acc;
-	}, '').length;
-
-	if (props.width?.startsWith('half')) {
-		if (widestOptionLength <= 10) return 'grid-2';
-		return 'grid-1';
-	}
-
-	if (widestOptionLength <= 10) return 'grid-4';
-	if (widestOptionLength > 10 && widestOptionLength <= 15) return 'grid-3';
-	if (widestOptionLength > 15 && widestOptionLength <= 25) return 'grid-2';
-	return 'grid-1';
-});
-
-const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
-	emit('input', value)
-);
-</script>
-
 <style lang="scss" scoped>
 .checkboxes {
 	--columns: 1;
@@ -187,7 +187,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 }
 
 .custom {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -240,11 +240,11 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 		cursor: not-allowed;
 
 		input {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			cursor: not-allowed;
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--theme--form--field--input--foreground-subdued);
 			}
 		}
 	}

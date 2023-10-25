@@ -1,23 +1,3 @@
-<template>
-	<div class="v-dialog">
-		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
-
-		<teleport to="#dialog-outlet">
-			<transition-dialog @after-leave="leave">
-				<component
-					:is="placement === 'right' ? 'div' : 'span'"
-					v-if="internalActive"
-					class="container"
-					:class="[className, placement]"
-				>
-					<v-overlay active absolute @click="emitToggle" />
-					<slot />
-				</component>
-			</transition-dialog>
-		</teleport>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -37,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['esc', 'update:modelValue']);
 
-useShortcut('escape', (event, cancelNext) => {
+useShortcut('escape', (_event, cancelNext) => {
 	if (internalActive.value) {
 		emit('esc');
 		cancelNext();
@@ -76,6 +56,26 @@ function nudge() {
 	}, 200);
 }
 </script>
+
+<template>
+	<div class="v-dialog">
+		<slot name="activator" v-bind="{ on: () => (internalActive = true) }" />
+
+		<teleport to="#dialog-outlet">
+			<transition-dialog @after-leave="leave">
+				<component
+					:is="placement === 'right' ? 'div' : 'span'"
+					v-if="internalActive"
+					class="container"
+					:class="[className, placement]"
+				>
+					<v-overlay active absolute @click="emitToggle" />
+					<slot />
+				</component>
+			</transition-dialog>
+		</teleport>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-dialog {
@@ -121,7 +121,7 @@ function nudge() {
 .container :slotted(.v-card) {
 	--v-card-min-width: calc(100vw - 40px);
 	--v-card-padding: 28px;
-	--v-card-background-color: var(--background-page);
+	--v-card-background-color: var(--theme--background);
 }
 
 .container :slotted(.v-card) .v-card-title {

@@ -1,43 +1,3 @@
-<template>
-	<div class="select-multiple-checkbox-tree">
-		<div v-if="choices.length > 10" class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
-				<template #prepend>
-					<v-icon name="search" />
-				</template>
-
-				<template v-if="search" #append>
-					<v-icon name="clear" clickable @click="search = ''" />
-				</template>
-			</v-input>
-		</div>
-
-		<v-checkbox-tree
-			:model-value="value"
-			:search="searchDebounced"
-			:disabled="disabled"
-			:choices="choices"
-			:value-combining="valueCombining"
-			:show-selection-only="showSelectionOnly"
-			@update:model-value="$emit('input', $event)"
-		/>
-
-		<div class="footer">
-			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
-				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
-			</button>
-			/
-			<button
-				:class="{ active: showSelectionOnly === true }"
-				:disabled="value == null || value.length === 0"
-				@click="showSelectionOnly = true"
-			>
-				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
-			</button>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { debounce } from 'lodash';
 import { ref, watch } from 'vue';
@@ -79,11 +39,51 @@ watch(search, setSearchDebounced);
 const searchDebounced = ref('');
 </script>
 
+<template>
+	<div class="select-multiple-checkbox-tree">
+		<div v-if="choices.length > 10" class="search">
+			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
+				<template #prepend>
+					<v-icon name="search" />
+				</template>
+
+				<template v-if="search" #append>
+					<v-icon name="clear" clickable @click="search = ''" />
+				</template>
+			</v-input>
+		</div>
+
+		<v-checkbox-tree
+			:model-value="value"
+			:search="searchDebounced"
+			:disabled="disabled"
+			:choices="choices"
+			:value-combining="valueCombining"
+			:show-selection-only="showSelectionOnly"
+			@update:model-value="$emit('input', $event)"
+		/>
+
+		<div class="footer">
+			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
+				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
+			</button>
+			/
+			<button
+				:class="{ active: showSelectionOnly === true }"
+				:disabled="value == null || value.length === 0"
+				@click="showSelectionOnly = true"
+			>
+				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
+			</button>
+		</div>
+	</div>
+</template>
+
 <style scoped>
 .select-multiple-checkbox-tree {
 	max-height: var(--input-height-max);
 	overflow: auto;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 }
@@ -97,7 +97,7 @@ const searchDebounced = ref('');
 }
 
 .search .v-input {
-	box-shadow: 0 0 4px 4px var(--background-page);
+	box-shadow: 0 0 4px 4px var(--theme--background);
 }
 
 .footer {
@@ -109,26 +109,26 @@ const searchDebounced = ref('');
 	width: max-content;
 	padding: 4px 8px;
 	text-align: right;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border-top-left-radius: var(--border-radius);
 }
 
 .footer > button {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
 
 .footer > button:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .footer > button.active {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .footer > button:disabled {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	cursor: not-allowed;
 }
 </style>

@@ -2,7 +2,7 @@ import type { RequestHandler } from 'express';
 import env from '../env.js';
 import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
-import { InvalidIpError } from '../errors/index.js';
+import { InvalidIpError } from '@directus/errors';
 import asyncHandler from '../utils/async-handler.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 

@@ -1,43 +1,3 @@
-<template>
-	<div class="content">
-		<div v-for="group of groups" :key="group.key" class="group">
-			<h2>{{ group.name }}</h2>
-
-			<div class="grid">
-				<button
-					v-for="inter of group.interfaces"
-					:key="inter.id"
-					class="interface"
-					:class="{ active: chosenInterface === inter.id, gray: chosenInterface && chosenInterface !== inter.id }"
-					@click="toggleInterface(inter.id)"
-				>
-					<div class="preview">
-						<template v-if="inter.preview">
-							<!-- eslint-disable-next-line vue/no-v-html -->
-							<span v-if="isSVG(inter.preview)" class="svg" v-html="inter.preview" />
-							<img v-else :src="inter.preview" alt="" />
-						</template>
-
-						<span v-else class="fallback">
-							<v-icon large :name="inter.icon" />
-						</span>
-					</div>
-					<v-text-overflow :text="inter.name" class="name" />
-				</button>
-
-				<transition-expand>
-					<field-configuration
-						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
-						:row="configRow"
-						@save="$emit('save')"
-						@toggle-advanced="$emit('toggleAdvanced')"
-					/>
-				</transition-expand>
-			</div>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, toRefs, watch } from 'vue';
 import { Collection } from '@directus/types';
@@ -172,6 +132,46 @@ function toggleInterface(id: string) {
 }
 </script>
 
+<template>
+	<div class="content">
+		<div v-for="group of groups" :key="group.key" class="group">
+			<h2>{{ group.name }}</h2>
+
+			<div class="grid">
+				<button
+					v-for="inter of group.interfaces"
+					:key="inter.id"
+					class="interface"
+					:class="{ active: chosenInterface === inter.id, gray: chosenInterface && chosenInterface !== inter.id }"
+					@click="toggleInterface(inter.id)"
+				>
+					<div class="preview">
+						<template v-if="inter.preview">
+							<!-- eslint-disable-next-line vue/no-v-html -->
+							<span v-if="isSVG(inter.preview)" class="svg" v-html="inter.preview" />
+							<img v-else :src="inter.preview" alt="" />
+						</template>
+
+						<span v-else class="fallback">
+							<v-icon large :name="inter.icon" />
+						</span>
+					</div>
+					<v-text-overflow :text="inter.name" class="name" />
+				</button>
+
+				<transition-expand>
+					<field-configuration
+						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
+						:row="configRow"
+						@save="$emit('save')"
+						@toggle-advanced="$emit('toggleAdvanced')"
+					/>
+				</transition-expand>
+			</div>
+		</div>
+	</div>
+</template>
+
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
@@ -217,7 +217,7 @@ function toggleInterface(id: string) {
 }
 
 .preview {
-	--v-icon-color: var(--background-page);
+	--v-icon-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;
@@ -247,18 +247,18 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-75);
+	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--background-page);
-	border: 2px solid var(--primary);
+	background-color: var(--theme--background);
+	border: 2px solid var(--theme--primary);
 	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
+	box-shadow: 0 0 8px var(--theme--primary-subdued);
 }
 
 .interface:hover .preview {
@@ -266,20 +266,20 @@ function toggleInterface(id: string) {
 }
 
 .interface.active .preview {
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	background-color: var(--theme--primary-background);
+	border-color: var(--theme--primary);
 }
 
 .interface.gray .preview {
-	--primary: var(--foreground-subdued);
-	--primary-50: var(--foreground-subdued);
+	--primary: var(--theme--foreground-subdued);
+	--primary-50: var(--theme--foreground-subdued);
 
 	background-color: var(--background-subdued);
 }
 
 .interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
-	box-shadow: 0 0 8px var(--foreground-subdued);
+	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 </style>

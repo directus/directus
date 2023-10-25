@@ -1,22 +1,22 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="19" y="9" width="56" height="36" rx="6" fill="var(--background-page)" class="glow" />
-	<rect x="20" y="10" width="54" height="34" rx="5" stroke="var(--primary)" stroke-width="2" />
-	<rect x="25" y="15" width="44" height="24" rx="4" fill="var(--primary)" fill-opacity=".25" />
-	<path d="M36.695 27.2L45.39 35H28l8.695-7.8z" fill="var(--primary)" />
-	<path d="M52.153 23L66 35H38.305l13.848-12z" fill="var(--primary)" />
-	<rect x="81" y="9" width="56" height="36" rx="6" fill="var(--background-page)" />
-	<rect x="82" y="10" width="54" height="34" rx="5" stroke="var(--primary)" stroke-opacity=".25" stroke-width="2" />
-	<rect x="87" y="15" width="44" height="24" rx="4" fill="var(--primary)" fill-opacity=".25" />
-	<path d="M98.695 27.2l8.695 7.8H90l8.695-7.8z" fill="var(--primary)" />
-	<path d="M114.153 23L128 35h-27.695l13.848-12z" fill="var(--primary)" />
-	<rect x="19" y="51" width="56" height="36" rx="6" fill="var(--background-page)" />
-	<rect x="20" y="52" width="54" height="34" rx="5" stroke="var(--primary)" stroke-opacity=".25" stroke-width="2" />
-	<rect x="25" y="57" width="44" height="24" rx="4" fill="var(--primary)" fill-opacity=".25" />
-	<path d="M36.695 69.2L45.39 77H28l8.695-7.8z" fill="var(--primary)" />
-	<path d="M52.153 65L66 77H38.305l13.848-12z" fill="var(--primary)" />
-	<rect x="81" y="51" width="56" height="36" rx="6" fill="var(--background-page)" />
-	<rect x="82" y="52" width="54" height="34" rx="5" stroke="var(--primary)" stroke-opacity=".25" stroke-width="2" />
-	<rect x="87" y="57" width="44" height="24" rx="4" fill="var(--primary)" fill-opacity=".25" />
-	<path d="M98.695 69.2l8.695 7.8H90l8.695-7.8z" fill="var(--primary)" />
-	<path d="M114.153 65L128 77h-27.695l13.848-12z" fill="var(--primary)" />
+	<rect x="19" y="9" width="56" height="36" rx="6" fill="var(--theme--background)" class="glow" />
+	<rect x="20" y="10" width="54" height="34" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
+	<rect x="25" y="15" width="44" height="24" rx="4" fill="var(--theme--primary)" fill-opacity=".25" />
+	<path d="M36.695 27.2L45.39 35H28l8.695-7.8z" fill="var(--theme--primary)" />
+	<path d="M52.153 23L66 35H38.305l13.848-12z" fill="var(--theme--primary)" />
+	<rect x="81" y="9" width="56" height="36" rx="6" fill="var(--theme--background)" />
+	<rect x="82" y="10" width="54" height="34" rx="5" stroke="var(--theme--primary)" stroke-opacity=".25" stroke-width="2" />
+	<rect x="87" y="15" width="44" height="24" rx="4" fill="var(--theme--primary)" fill-opacity=".25" />
+	<path d="M98.695 27.2l8.695 7.8H90l8.695-7.8z" fill="var(--theme--primary)" />
+	<path d="M114.153 23L128 35h-27.695l13.848-12z" fill="var(--theme--primary)" />
+	<rect x="19" y="51" width="56" height="36" rx="6" fill="var(--theme--background)" />
+	<rect x="20" y="52" width="54" height="34" rx="5" stroke="var(--theme--primary)" stroke-opacity=".25" stroke-width="2" />
+	<rect x="25" y="57" width="44" height="24" rx="4" fill="var(--theme--primary)" fill-opacity=".25" />
+	<path d="M36.695 69.2L45.39 77H28l8.695-7.8z" fill="var(--theme--primary)" />
+	<path d="M52.153 65L66 77H38.305l13.848-12z" fill="var(--theme--primary)" />
+	<rect x="81" y="51" width="56" height="36" rx="6" fill="var(--theme--background)" />
+	<rect x="82" y="52" width="54" height="34" rx="5" stroke="var(--theme--primary)" stroke-opacity=".25" stroke-width="2" />
+	<rect x="87" y="57" width="44" height="24" rx="4" fill="var(--theme--primary)" fill-opacity=".25" />
+	<path d="M98.695 69.2l8.695 7.8H90l8.695-7.8z" fill="var(--theme--primary)" />
+	<path d="M114.153 65L128 77h-27.695l13.848-12z" fill="var(--theme--primary)" />
 </svg>

@@ -1,204 +1,3 @@
-<template>
-	<insights-not-found v-if="!currentDashboard" />
-	<private-view v-else :title="currentDashboard.name">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon :name="currentDashboard.icon" />
-			</v-button>
-		</template>
-
-		<template #headline>
-			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
-		</template>
-
-		<template #actions>
-			<template v-if="editMode">
-				<v-button
-					v-tooltip.bottom="t('clear_changes')"
-					class="clear-changes"
-					rounded
-					icon
-					outlined
-					@click="cancelChanges"
-				>
-					<v-icon name="clear" />
-				</v-button>
-
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
-					<v-icon name="add" />
-				</v-button>
-
-				<v-button
-					v-tooltip.bottom="t('save')"
-					:disabled="!hasEdits"
-					rounded
-					icon
-					:loading="saving"
-					@click="saveChanges"
-				>
-					<v-icon name="check" />
-				</v-button>
-			</template>
-
-			<template v-else>
-				<v-button
-					v-tooltip.bottom="t('fit_to_screen')"
-					:active="zoomToFit"
-					class="zoom-to-fit"
-					rounded
-					icon
-					outlined
-					@click="toggleZoomToFit"
-				>
-					<v-icon name="aspect_ratio" />
-				</v-button>
-
-				<v-button
-					v-tooltip.bottom="t('full_screen')"
-					:active="fullScreen"
-					class="fullscreen"
-					rounded
-					icon
-					outlined
-					@click="toggleFullScreen"
-				>
-					<v-icon name="fullscreen" />
-				</v-button>
-
-				<v-button
-					v-tooltip.bottom="t('edit_panels')"
-					class="edit"
-					rounded
-					icon
-					outlined
-					:disabled="!updateAllowed"
-					@click="editMode = !editMode"
-				>
-					<v-icon name="edit" />
-				</v-button>
-			</template>
-		</template>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
-			</sidebar-detail>
-
-			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
-		</template>
-
-		<template #navigation>
-			<insights-navigation />
-		</template>
-
-		<v-workspace
-			:edit-mode="editMode"
-			:tiles="tiles"
-			:zoom-to-fit="zoomToFit"
-			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
-			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
-			@update="insightsStore.stagePanelUpdate"
-			@delete="insightsStore.stagePanelDelete"
-			@move="copyPanelID = $event"
-		>
-			<template #default="{ tile }">
-				<v-progress-circular
-					v-if="loading.includes(tile.id) && !data[tile.id]"
-					:class="{ 'header-offset': tile.showHeader }"
-					class="panel-loading"
-					indeterminate
-				/>
-				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
-					<div v-if="errors[tile.id]" class="panel-error">
-						<v-icon name="warning" />
-						{{ t('unexpected_error') }}
-						<v-error :error="errors[tile.id]" />
-					</div>
-					<div
-						v-else-if="tile.id in data && isEmpty(data[tile.id])"
-						class="panel-no-data type-note"
-						:class="{ 'header-offset': tile.showHeader }"
-					>
-						{{ t('no_data') }}
-					</div>
-					<v-error-boundary v-else :name="`panel-${tile.data.type}`">
-						<component
-							:is="`panel-${tile.data.type}`"
-							v-bind="tile.data.options"
-							:id="tile.id"
-							:dashboard="primaryKey"
-							:show-header="tile.showHeader"
-							:height="tile.height"
-							:width="tile.width"
-							:now="now"
-							:data="data[tile.id]"
-						/>
-
-						<template #fallback="{ error }">
-							<div class="panel-error">
-								<v-icon name="warning" />
-								{{ t('unexpected_error') }}
-								<v-error :error="error" />
-							</div>
-						</template>
-					</v-error-boundary>
-				</div>
-			</template>
-		</v-workspace>
-
-		<router-view name="detail" :dashboard-key="primaryKey" :panel-key="panelKey" />
-
-		<v-dialog :model-value="!!copyPanelID" @update:model-value="copyPanelID = null" @esc="copyPanelID = null">
-			<v-card>
-				<v-card-title>{{ t('copy_to') }}</v-card-title>
-
-				<v-card-text>
-					<v-notice v-if="copyPanelChoices.length === 0">
-						{{ t('no_other_dashboards_copy') }}
-					</v-notice>
-					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button secondary @click="copyPanelID = null">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button @click="copyPanel">
-						{{ t('copy') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="cancelChanges(true)">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -216,6 +15,7 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 
 interface Props {
 	primaryKey: string;
@@ -395,20 +195,223 @@ const refreshInterval = computed({
 });
 </script>
 
+<template>
+	<insights-not-found v-if="!currentDashboard" />
+	<private-view v-else :title="currentDashboard.name">
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded disabled icon secondary>
+				<v-icon :name="currentDashboard.icon" />
+			</v-button>
+		</template>
+
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
+		</template>
+
+		<template #actions>
+			<template v-if="editMode">
+				<v-button
+					v-tooltip.bottom="t('clear_changes')"
+					class="clear-changes"
+					rounded
+					icon
+					outlined
+					@click="cancelChanges"
+				>
+					<v-icon name="clear" />
+				</v-button>
+
+				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+					<v-icon name="add" />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="t('save')"
+					:disabled="!hasEdits"
+					rounded
+					icon
+					:loading="saving"
+					@click="saveChanges"
+				>
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<template v-else>
+				<v-button
+					v-tooltip.bottom="t('fit_to_screen')"
+					:active="zoomToFit"
+					class="zoom-to-fit"
+					rounded
+					icon
+					outlined
+					@click="toggleZoomToFit"
+				>
+					<v-icon name="aspect_ratio" />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="t('full_screen')"
+					:active="fullScreen"
+					class="fullscreen"
+					rounded
+					icon
+					outlined
+					@click="toggleFullScreen"
+				>
+					<v-icon name="fullscreen" />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="t('edit_panels')"
+					class="edit"
+					rounded
+					icon
+					outlined
+					:disabled="!updateAllowed"
+					@click="editMode = !editMode"
+				>
+					<v-icon name="edit" />
+				</v-button>
+			</template>
+		</template>
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
+			</sidebar-detail>
+
+			<comments-sidebar-detail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
+
+			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
+		</template>
+
+		<template #navigation>
+			<insights-navigation />
+		</template>
+
+		<v-workspace
+			:edit-mode="editMode"
+			:tiles="tiles"
+			:zoom-to-fit="zoomToFit"
+			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
+			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
+			@update="insightsStore.stagePanelUpdate"
+			@delete="insightsStore.stagePanelDelete"
+			@move="copyPanelID = $event"
+		>
+			<template #default="{ tile }">
+				<v-progress-circular
+					v-if="loading.includes(tile.id) && !data[tile.id]"
+					:class="{ 'header-offset': tile.showHeader }"
+					class="panel-loading"
+					indeterminate
+				/>
+				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
+					<div v-if="errors[tile.id]" class="panel-error">
+						<v-icon name="warning" />
+						{{ t('unexpected_error') }}
+						<v-error :error="errors[tile.id]" />
+					</div>
+					<div
+						v-else-if="tile.id in data && isEmpty(data[tile.id])"
+						class="panel-no-data type-note"
+						:class="{ 'header-offset': tile.showHeader }"
+					>
+						{{ t('no_data') }}
+					</div>
+					<v-error-boundary v-else :name="`panel-${tile.data.type}`">
+						<component
+							:is="`panel-${tile.data.type}`"
+							v-bind="tile.data.options"
+							:id="tile.id"
+							:dashboard="primaryKey"
+							:show-header="tile.showHeader"
+							:height="tile.height"
+							:width="tile.width"
+							:now="now"
+							:data="data[tile.id]"
+						/>
+
+						<template #fallback="{ error }">
+							<div class="panel-error">
+								<v-icon name="warning" />
+								{{ t('unexpected_error') }}
+								<v-error :error="error" />
+							</div>
+						</template>
+					</v-error-boundary>
+				</div>
+			</template>
+		</v-workspace>
+
+		<router-view name="detail" :dashboard-key="primaryKey" :panel-key="panelKey" />
+
+		<v-dialog :model-value="!!copyPanelID" @update:model-value="copyPanelID = null" @esc="copyPanelID = null">
+			<v-card>
+				<v-card-title>{{ t('copy_to') }}</v-card-title>
+
+				<v-card-text>
+					<v-notice v-if="copyPanelChoices.length === 0">
+						{{ t('no_other_dashboards_copy') }}
+					</v-notice>
+					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="copyPanelID = null">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button @click="copyPanel">
+						{{ t('copy') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="cancelChanges(true)">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</private-view>
+</template>
+
 <style scoped lang="scss">
 .fullscreen,
 .zoom-to-fit,
 .clear-changes {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-background-color: var(--theme--foreground-subdued);
+	--v-button-background-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--foreground-inverted);
-	--v-button-background-color-active: var(--primary);
+	--v-button-background-color-active: var(--theme--primary);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .panel-container {
@@ -442,7 +445,7 @@ const refreshInterval = computed({
 	width: 100%;
 	height: 100%;
 
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 
 	.v-error {
 		margin-top: 8px;

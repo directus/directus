@@ -1,3 +1,34 @@
+<script setup lang="ts">
+import { useClipboard } from '@/composables/use-clipboard';
+import { localizedFormat } from '@/utils/localized-format';
+import type { User } from '@directus/types';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	user: User | null;
+	isNew?: boolean;
+}>();
+
+const { t } = useI18n();
+
+const { isCopySupported, copyToClipboard } = useClipboard();
+
+const lastAccessDate = ref('');
+
+watch(
+	[() => props.user, () => props.isNew],
+	async () => {
+		if (!props.user) return;
+
+		if (props.user.last_access) {
+			lastAccessDate.value = localizedFormat(new Date(props.user.last_access), String(t('date-fns_date_short')));
+		}
+	},
+	{ immediate: true }
+);
+</script>
+
 <template>
 	<sidebar-detail icon="info" :title="t('information')" close>
 		<dl v-if="isNew === false && user">
@@ -31,37 +62,6 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
-import { useClipboard } from '@/composables/use-clipboard';
-import { localizedFormat } from '@/utils/localized-format';
-import type { User } from '@directus/types';
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const props = defineProps<{
-	user: User | null;
-	isNew?: boolean;
-}>();
-
-const { t } = useI18n();
-
-const { isCopySupported, copyToClipboard } = useClipboard();
-
-const lastAccessDate = ref('');
-
-watch(
-	[() => props.user, () => props.isNew],
-	async () => {
-		if (!props.user) return;
-
-		if (props.user.last_access) {
-			lastAccessDate.value = localizedFormat(new Date(props.user.last_access), String(t('date-fns_date_short')));
-		}
-	},
-	{ immediate: true }
-);
-</script>
-
 <style lang="scss" scoped>
 .v-divider {
 	margin: 20px 0;
@@ -72,8 +72,8 @@ watch(
 	align-items: center;
 
 	.clipboard-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground);
 
 		margin-left: 4px;
 	}

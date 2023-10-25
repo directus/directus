@@ -1,12 +1,3 @@
-<template>
-	<v-list-item v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" clickable @click="onClick">
-		<slot v-bind="{ active, toggle }" />
-	</v-list-item>
-	<div v-else class="v-tab horizontal" :class="{ active, disabled }" @click="onClick">
-		<slot v-bind="{ active, toggle }" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 import { useGroupable } from '@directus/composables';
@@ -35,12 +26,21 @@ function onClick() {
 }
 </script>
 
+<template>
+	<v-list-item v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" clickable @click="onClick">
+		<slot v-bind="{ active, toggle }" />
+	</v-list-item>
+	<div v-else class="v-tab horizontal" :class="{ active, disabled }" @click="onClick">
+		<slot v-bind="{ active, toggle }" />
+	</div>
+</template>
+
 <style>
 body {
-	--v-tab-color: var(--foreground-subdued);
-	--v-tab-background-color: var(--background-page);
-	--v-tab-color-active: var(--foreground-normal);
-	--v-tab-background-color-active: var(--background-page);
+	--v-tab-color: var(--theme--foreground-subdued);
+	--v-tab-background-color: var(--theme--background);
+	--v-tab-color-active: var(--theme--foreground);
+	--v-tab-background-color-active: var(--theme--background);
 }
 </style>
 

@@ -1,3 +1,95 @@
+<script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script setup lang="ts">
+import { addTokenToURL } from '@/api';
+import { getItemRoute } from '@/utils/get-route';
+import { getRootPath } from '@/utils/get-root-path';
+import type { Field } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
+
+const props = withDefaults(
+	defineProps<{
+		collection?: string | null;
+		groupCollection?: string | null;
+		fieldsInCollection?: Field[];
+		primaryKeyField?: Record<string, any> | null;
+		groupedItems?: Group[];
+		groupTitle?: string | null;
+		groupPrimaryKeyField?: Record<string, any> | null;
+		change: (group: Group, event: ChangeEvent<Item>) => void;
+		changeGroupSort: (event: ChangeEvent<Group>) => void;
+		addGroup: (title: string) => Promise<void>;
+		editGroup: (id: string | number, title: string) => Promise<void>;
+		deleteGroup: (id: string | number) => Promise<void>;
+		isRelational?: boolean;
+		sortField?: string | null;
+		userField?: string | null;
+		groupsSortField?: string | null;
+		layoutOptions: LayoutOptions;
+	}>(),
+	{
+		collection: null,
+		groupCollection: null,
+		fieldsInCollection: () => [],
+		primaryKeyField: null,
+		groupedItems: () => [],
+		groupTitle: null,
+		groupPrimaryKeyField: null,
+		isRelational: true,
+		sortField: null,
+		userField: null,
+		groupsSortField: null,
+	}
+);
+
+defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
+
+const { t } = useI18n();
+
+const editDialogOpen = ref<string | number | null>(null);
+const editTitle = ref('');
+
+function openEditGroup(group: Group) {
+	editDialogOpen.value = group.id;
+	editTitle.value = group.title;
+}
+
+function parseAvatar(file: Record<string, any>) {
+	if (!file || !file.type) return;
+	if (file.type.startsWith('image') === false) return;
+
+	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
+	return addTokenToURL(url);
+}
+
+function cancelChanges() {
+	editDialogOpen.value = null;
+	editTitle.value = '';
+}
+
+function saveChanges() {
+	if (editDialogOpen.value === '+') {
+		props.addGroup(editTitle.value);
+	} else if (editDialogOpen.value) {
+		props.editGroup(editDialogOpen.value, editTitle.value);
+	}
+
+	editDialogOpen.value = null;
+	editTitle.value = '';
+}
+
+const textFieldConfiguration = computed<Field | undefined>(() => {
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+});
+</script>
+
 <template>
 	<div class="kanban">
 		<draggable
@@ -110,98 +202,6 @@
 	</div>
 </template>
 
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
-<script setup lang="ts">
-import { addTokenToURL } from '@/api';
-import { getItemRoute } from '@/utils/get-route';
-import { getRootPath } from '@/utils/get-root-path';
-import type { Field } from '@directus/types';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
-import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
-
-const props = withDefaults(
-	defineProps<{
-		collection?: string | null;
-		groupCollection?: string | null;
-		fieldsInCollection?: Field[];
-		primaryKeyField?: Record<string, any> | null;
-		groupedItems?: Group[];
-		groupTitle?: string | null;
-		groupPrimaryKeyField?: Record<string, any> | null;
-		change: (group: Group, event: ChangeEvent<Item>) => void;
-		changeGroupSort: (event: ChangeEvent<Group>) => void;
-		addGroup: (title: string) => Promise<void>;
-		editGroup: (id: string | number, title: string) => Promise<void>;
-		deleteGroup: (id: string | number) => Promise<void>;
-		isRelational?: boolean;
-		sortField?: string | null;
-		userField?: string | null;
-		groupsSortField?: string | null;
-		layoutOptions: LayoutOptions;
-	}>(),
-	{
-		collection: null,
-		groupCollection: null,
-		fieldsInCollection: () => [],
-		primaryKeyField: null,
-		groupedItems: () => [],
-		groupTitle: null,
-		groupPrimaryKeyField: null,
-		isRelational: true,
-		sortField: null,
-		userField: null,
-		groupsSortField: null,
-	}
-);
-
-defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
-
-const { t } = useI18n();
-
-const editDialogOpen = ref<string | number | null>(null);
-const editTitle = ref('');
-
-function openEditGroup(group: Group) {
-	editDialogOpen.value = group.id;
-	editTitle.value = group.title;
-}
-
-function parseAvatar(file: Record<string, any>) {
-	if (!file || !file.type) return;
-	if (file.type.startsWith('image') === false) return;
-
-	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
-	return addTokenToURL(url);
-}
-
-function cancelChanges() {
-	editDialogOpen.value = null;
-	editTitle.value = '';
-}
-
-function saveChanges() {
-	if (editDialogOpen.value === '+') {
-		props.addGroup(editTitle.value);
-	} else if (editDialogOpen.value) {
-		props.editGroup(editDialogOpen.value, editTitle.value);
-	}
-
-	editDialogOpen.value = null;
-	editTitle.value = '';
-}
-
-const textFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
-});
-</script>
-
 <style lang="scss" scoped>
 .kanban {
 	display: flex;
@@ -245,7 +245,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 						overflow: hidden;
 						white-space: nowrap;
 						text-overflow: ellipsis;
-						color: var(--foreground-normal-alt);
+						color: var(--theme--foreground-accent);
 						margin-right: 6px;
 					}
 				}
@@ -265,7 +265,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 				}
 
 				.actions {
-					color: var(--foreground-subdued);
+					color: var(--theme--foreground-subdued);
 
 					.v-icon {
 						margin-left: 4px;
@@ -273,7 +273,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					}
 
 					.v-icon:hover {
-						color: var(--foreground-normal);
+						color: var(--theme--foreground);
 					}
 				}
 			}
@@ -287,18 +287,18 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					display: block;
 					margin: 2px 16px 6px 16px;
 					padding: 12px 16px;
-					background-color: var(--background-page);
+					background-color: var(--theme--background);
 					border-radius: var(--border-radius);
 					box-shadow: 0px 2px 4px 0px rgba(var(--card-shadow-color), 0.1);
 
 					&:hover .title {
-						// color: var(--primary);
+						// color: var(--theme--primary);
 						text-decoration: underline;
 					}
 				}
 
 				.title {
-					color: var(--primary);
+					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
 					line-height: 1.25;
@@ -351,7 +351,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					margin-bottom: 2px;
 					.datetime {
 						display: inline-block;
-						color: var(--foreground-subdued);
+						color: var(--theme--foreground-subdued);
 						font-size: 13px;
 						font-weight: 600;
 						line-height: 24px;
@@ -364,7 +364,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 						.avatar {
 							margin-left: calc(var(--user-spacing) * -1);
 							border-radius: 24px;
-							border: 4px solid var(--background-page);
+							border: 4px solid var(--theme--background);
 							height: 32px;
 							width: 32px;
 							margin-bottom: -4px;
@@ -373,7 +373,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 						.avatar-overflow {
 							align-self: center;
-							color: var(--foreground-subdued);
+							color: var(--theme--foreground-subdued);
 							margin-left: 2px;
 						}
 					}
@@ -390,23 +390,23 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 		transition: border-color var(--transition) var(--fast);
 
 		.v-icon {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			transition: color var(--transition) var(--fast);
 		}
 
 		&:hover {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 
 			.v-icon {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 		}
 	}
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 </style>

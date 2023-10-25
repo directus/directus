@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "10.1.6",
+	"version": "11.0.1",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -35,10 +35,10 @@
 		"pino": "8.14.1",
 		"vue": "3.3.4",
 		"vue-router": "4.2.0",
-		"zod": "3.21.4"
+		"zod": "3.22.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"typescript": "5.0.4"
+		"typescript": "5.2.2"
 	}
 }

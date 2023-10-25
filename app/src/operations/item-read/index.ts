@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/utils';
+import { defineOperationApp } from '@directus/extensions';
 import { toArray } from '@directus/utils';
 
 export default defineOperationApp({

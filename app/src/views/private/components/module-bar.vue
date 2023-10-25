@@ -1,33 +1,3 @@
-<template>
-	<div class="module-bar">
-		<module-bar-logo />
-
-		<div class="modules">
-			<v-button
-				v-for="modulePart in modules"
-				:key="modulePart.id"
-				v-tooltip.right="modulePart.name"
-				icon
-				x-large
-				:to="modulePart.to"
-				:href="modulePart.href"
-				tile
-				:style="
-					modulePart.color
-						? {
-								'--v-button-color-active': modulePart.color,
-						  }
-						: null
-				"
-			>
-				<v-icon :name="modulePart.icon" />
-			</v-button>
-		</div>
-
-		<module-bar-avatar />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import ModuleBarLogo from './module-bar-logo.vue';
@@ -75,13 +45,43 @@ const modules = computed(() => {
 });
 </script>
 
+<template>
+	<div class="module-bar">
+		<module-bar-logo />
+
+		<div class="modules">
+			<v-button
+				v-for="modulePart in modules"
+				:key="modulePart.id"
+				v-tooltip.right="modulePart.name"
+				icon
+				x-large
+				:to="modulePart.to"
+				:href="modulePart.href"
+				tile
+				:style="
+					modulePart.color
+						? {
+								'--v-button-color-active': modulePart.color,
+						  }
+						: null
+				"
+			>
+				<v-icon :name="modulePart.icon" />
+			</v-button>
+		</div>
+
+		<module-bar-avatar />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .module-bar {
 	display: flex;
 	flex-direction: column;
 	width: 60px;
 	height: 100%;
-	background-color: var(--module-background);
+	background-color: var(--theme--navigation--modules--background);
 
 	.modules {
 		flex-grow: 1;
@@ -90,12 +90,12 @@ const modules = computed(() => {
 	}
 
 	.v-button {
-		--v-button-color: var(--module-icon);
-		--v-button-color-hover: var(--white);
-		--v-button-color-active: var(--module-icon-alt);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
-		--v-button-background-color-active: var(--module-background-alt);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
+		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
+		--v-button-background-color: var(--theme--navigation--modules--button--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
+		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 	}
 }
 </style>
