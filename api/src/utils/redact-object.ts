@@ -129,15 +129,15 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 			};
 		}
 
-		if (!values || filteredValues.length === 0) {
-			return value;
-		}
-
 		if (typeof value !== 'string') {
 			if (isObject(value)) {
 				seen.delete(value);
 			}
 
+			return value;
+		}
+
+		if (!values || filteredValues.length === 0) {
 			return value;
 		}
 
