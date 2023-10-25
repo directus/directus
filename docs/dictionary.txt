@@ -10,6 +10,7 @@
 (B|b)asemap
 (B|b)lackbox
 (B|b)ugfixes
+Butterfield
 (C|)ancelling
 (C|c)ancelled
 (C|c)harset
@@ -318,6 +319,7 @@ Pinia-based
 pino
 Pino
 Plesk
+PM2
 PNG
 pnpm
 PokéAPI
@@ -370,6 +372,7 @@ SEO
 SES
 sexualized
 SFC
+SIGKILL
 siloed
 slugification
 slugify

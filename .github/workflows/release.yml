@@ -44,6 +44,8 @@ jobs:
     name: Publish to NPM
     runs-on: ubuntu-latest
     needs: check-version
+    permissions:
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -56,6 +58,7 @@ jobs:
       - name: Publish packages to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
         run: |
           pnpm --recursive publish \
             --access=public \

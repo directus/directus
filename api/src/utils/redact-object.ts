@@ -108,37 +108,53 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 		? Object.entries(values).filter(([_k, v]) => typeof v === 'string' && v.length > 0)
 		: [];
 
-	const seen = new WeakSet();
-
-	return (_key: string, value: unknown) => {
-		// Skip circular values
-		if (isObject(value)) {
-			if (seen.has(value)) {
-				return;
+	const replacer = (seen: WeakSet<object>) => {
+		return function (_key: string, value: unknown) {
+			if (value instanceof Error) {
+				return {
+					name: value.name,
+					message: value.message,
+					stack: value.stack,
+					cause: value.cause,
+				};
 			}
 
-			seen.add(value);
-		}
+			if (value !== null && typeof value === 'object') {
+				if (seen.has(value)) {
+					return '[Circular]';
+				}
 
-		if (value instanceof Error) {
-			return {
-				name: value.name,
-				message: value.message,
-				stack: value.stack,
-				cause: value.cause,
-			};
-		}
+				seen.add(value);
 
-		if (!values || filteredValues.length === 0 || typeof value !== 'string') return value;
+				const newValue: any = Array.isArray(value) ? [] : {};
 
-		let finalValue = value;
+				for (const [key2, value2] of Object.entries(value)) {
+					if (typeof value2 === 'string') {
+						newValue[key2] = value2;
+					} else {
+						newValue[key2] = replacer(seen)(key2, value2);
+					}
+				}
 
-		for (const [redactKey, valueToRedact] of filteredValues) {
-			if (finalValue.includes(valueToRedact)) {
-				finalValue = finalValue.replace(new RegExp(valueToRedact, 'g'), replacement(redactKey));
+				seen.delete(value);
+
+				return newValue;
 			}
-		}
 
-		return finalValue;
+			if (!values || filteredValues.length === 0 || typeof value !== 'string') return value;
+
+			let finalValue = value;
+
+			for (const [redactKey, valueToRedact] of filteredValues) {
+				if (finalValue.includes(valueToRedact)) {
+					finalValue = finalValue.replace(new RegExp(valueToRedact, 'g'), replacement(redactKey));
+				}
+			}
+
+			return finalValue;
+		};
 	};
+
+	const seen = new WeakSet();
+	return replacer(seen);
 }

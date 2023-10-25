@@ -60,11 +60,13 @@ const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.d
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const defaultOptions: ExtensionManagerOptions = {
+	schedule: true,
+	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
+};
+
 export class ExtensionManager {
-	private options: ExtensionManagerOptions = {
-		schedule: true,
-		watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
-	};
+	private options: ExtensionManagerOptions = defaultOptions;
 
 	/**
 	 * Whether or not the extensions have been read from disk and registered into the system
@@ -140,13 +142,10 @@ export class ExtensionManager {
 	 * @param {boolean} options.watch - Whether or not to watch the local extensions folder for changes
 	 */
 	public async initialize(options: Partial<ExtensionManagerOptions> = {}): Promise<void> {
-		if (options.schedule !== undefined) {
-			this.options.schedule = options.schedule;
-		}
-
-		if (options.watch !== undefined) {
-			this.options.watch = options.watch;
-		}
+		this.options = {
+			...defaultOptions,
+			...options,
+		};
 
 		const wasWatcherInitialized = this.watcher !== null;
 

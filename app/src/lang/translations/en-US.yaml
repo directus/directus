@@ -1029,9 +1029,10 @@ deselect: Deselect
 deselect_all: Deselect All
 theme: Theme
 select_a_theme: Select a Theme
-appearance_auto: Automatic (Based on System)
-appearance_light: Light Mode
-appearance_dark: Dark Mode
+appearance_global: Project Default
+appearance_auto: Automatic (Sync with System)
+appearance_light: Light
+appearance_dark: Dark
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
