@@ -45,8 +45,20 @@ Avatar file. Many-to-one to [files](/reference/files).
 Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
 translations.
 
-`theme` **string**\
+`appearance` **string**\
 One of `auto`, `light`, `dark`.
+
+`theme_light` **string**\
+Theme to use in `light` mode.
+
+`theme_dark` **string**\
+Theme to use in `dark` mode.
+
+`theme_light_overrides` **json**\
+Customization for `light` theme in use.
+
+`theme_dark_overrides` **json**\
+Customization for `dark` theme in use.
 
 `tfa_secret` **string**\
 When TFA is enabled, this holds the secret key for it.
@@ -91,7 +103,7 @@ When this is enabled, the user will receive emails for notifications.
 	"tags": null,
 	"avatar": null,
 	"language": "en-US",
-	"theme": "auto",
+	"appearance": "auto",
 	"tfa_secret": null,
 	"status": "active",
 	"role": "653925a9-970e-487a-bfc0-ab6c96affcdc",

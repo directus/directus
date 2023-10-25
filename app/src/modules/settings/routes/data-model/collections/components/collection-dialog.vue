@@ -9,7 +9,7 @@ import { Collection } from '@/types/collections';
 
 const props = defineProps<{
 	modelValue?: boolean;
-	collection?: Collection;
+	collection?: Collection | null;
 }>();
 
 const emit = defineEmits(['update:modelValue']);
@@ -58,7 +58,7 @@ async function save() {
 		}
 
 		emit('update:modelValue', false);
-	} catch (err) {
+	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
 		saving.value = false;

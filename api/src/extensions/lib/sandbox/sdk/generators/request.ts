@@ -1,5 +1,6 @@
 import type { ExtensionSandboxRequestedScopes } from '@directus/extensions';
 import encodeUrl from 'encodeurl';
+import globToRegExp from 'glob-to-regexp';
 import type { Reference } from 'isolated-vm';
 import { getAxios } from '../../../../../request/index.js';
 
@@ -8,7 +9,7 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 	options: Reference<{
 		method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 		body?: Record<string, any> | string;
-		headers?: { header: string; value: string }[];
+		headers?: Record<string, string>;
 	}>
 ) => Promise<{
 	status: number;
@@ -25,11 +26,18 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 
 		const urlCopied = await url.copy();
 
-		const permissions = requestedScopes.request?.permissions;
+		const permissions = requestedScopes.request;
 
 		if (permissions === undefined) throw new Error('No permission to access "request"');
 
-		if (!permissions.urls.includes(urlCopied)) throw new Error(`No permission to request "${urlCopied}"`);
+		const urlAllowed = permissions.urls.some((urlScope) => {
+			const regex = globToRegExp(urlScope);
+			return regex.test(urlCopied);
+		});
+
+		if (urlAllowed === false) {
+			throw new Error(`No permission to request "${urlCopied}"`);
+		}
 
 		const method = options.typeof !== 'undefined' ? await options.get('method', { reference: true }) : undefined;
 		const body = options.typeof !== 'undefined' ? await options.get('body', { reference: true }) : undefined;
@@ -55,19 +63,13 @@ export function requestGenerator(requestedScopes: ExtensionSandboxRequestedScope
 			throw new Error(`No permission to use request method "${methodCopied}"`);
 		}
 
-		const customHeaders =
-			headersCopied?.reduce((acc, { header, value }) => {
-				acc[header] = value;
-				return acc;
-			}, {} as Record<string, string>) ?? {};
-
 		const axios = await getAxios();
 
 		const result = await axios({
 			url: encodeUrl(urlCopied),
 			method: methodCopied ?? 'GET',
 			data: bodyCopied ?? null,
-			headers: customHeaders,
+			headers: headersCopied ?? {},
 		});
 
 		return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };

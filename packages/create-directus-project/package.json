@@ -1,0 +1,31 @@
+{
+	"name": "create-directus-project",
+	"version": "9.14.2",
+	"description": "A small installer util that will create a directory, add boilerplate folders, and install Directus through npm.",
+	"main": "lib/index.js",
+	"repository": "directus/create-directus-project",
+	"type": "module",
+	"exports": {
+		".": "./lib/index.js",
+		"./package.json": "./package.json"
+	},
+	"bin": {
+		"create-directus-project": "./lib/index.js",
+		"cdp": "./lib/index.js"
+	},
+	"keywords": [
+		"directus",
+		"installer"
+	],
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"license": "MIT",
+	"dependencies": {
+		"chalk": "5.3.0",
+		"commander": "11.1.0",
+		"execa": "8.0.1",
+		"fs-extra": "11.1.1",
+		"log-symbols": "6.0.0",
+		"ora": "7.0.1",
+		"update-check": "1.5.4"
+	}
+}

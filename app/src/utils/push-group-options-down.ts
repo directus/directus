@@ -7,7 +7,7 @@ export function pushGroupOptionsDown(fields: Field[]) {
 	const updatedGroups: string[] = [];
 	const fieldsQueue: Field[] = [...fields];
 
-	while (fieldsQueue.length > 0) {
+	while (fieldsQueue.length > 1) {
 		const field = fieldsQueue.shift();
 
 		if (!field) break;

@@ -130,6 +130,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			await api.post(`/versions/${currentVersion.value.id}/save`, unref(edits));
 		} catch (err: any) {
 			unexpectedError(err);
+			throw err;
 		} finally {
 			saveVersionLoading.value = false;
 		}

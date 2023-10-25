@@ -9,6 +9,8 @@ these to a minimum, but rest assured we only make them with good reason.
 
 [Learn more about Versioning ->](/getting-started/architecture#versioning)
 
+[Learn more about Upgrading your Instance ->](/self-hosted/upgrades-migrations)
+
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
 ## Version 10.6.2
