@@ -52,6 +52,7 @@ const Rules = Type.Object({
 		project: Type.Object({
 			background: Color,
 			foreground: Color,
+			fontFamily: FontFamily,
 		}),
 
 		modules: Type.Object({

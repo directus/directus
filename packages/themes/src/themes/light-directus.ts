@@ -46,6 +46,7 @@ export const theme: Theme = {
 			project: {
 				background: '#e4eaf1',
 				foreground: 'var(--theme--foreground-accent)',
+				fontFamily: 'var(--theme--font-family-sans-serif)',
 			},
 
 			modules: {
