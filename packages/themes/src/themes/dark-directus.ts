@@ -97,6 +97,7 @@ export const theme: Theme = {
 			field: {
 				label: {
 					foreground: 'var(--theme--foreground-accent)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
 				},
 				input: {
 					background: 'var(--theme--background)',

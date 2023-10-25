@@ -103,6 +103,7 @@ const Rules = Type.Object({
 		field: Type.Object({
 			label: Type.Object({
 				foreground: Color,
+				fontFamily: FontFamily,
 			}),
 			input: Type.Object({
 				background: Color,
