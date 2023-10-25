@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
@@ -8,7 +9,6 @@ import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { ForbiddenError } from '@directus/errors';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -358,7 +358,7 @@ class FlowManager {
 					data: {
 						steps: steps.map((step) => redactObject(step, { values: this.envs }, getRedactedString)),
 						data: redactObject(
-							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
+							omit(keyedData, '$accountability.permissions', '$last'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
 							{
 								keys: [
 									['**', 'headers', 'authorization'],
