@@ -404,6 +404,7 @@ revision_delta_created: Vytvorené
 revision_delta_created_externally: Vytvorené externe
 revision_delta_updated: 'Zmenené 1 pole | Zmenené {count} polia'
 revision_delta_deleted: Odstránené
+revision_delta_version_saved: 'Uložiť verziu (1 upravené pole) | Uložiť verziu ({count} upravených polí)'
 revision_delta_reverted: Vrátené
 revision_delta_update_message: Toto pole je zmenené, ale jeho hodnota je utajená z bezpečnostných dôvodov.
 revision_delta_other: Revízia
@@ -1361,6 +1362,8 @@ field_options:
     accountability_divider: Zodpovednosť
     duplication_divider: Duplikovanie
     preview_divider: Náhľad
+    content_versioning_divider: Verzie obsahu
+    enable_versioning: Zapnúť verzionovanie
   directus_files:
     title: Unikátny nadpis...
     description: Voliteľný popis...
@@ -1521,6 +1524,7 @@ search: Hľadať
 select_existing: Vybrať existujúce
 select_field_type: Vyberte typ poľa
 select_interface: Vybrať rozhranie
+select_display: Vyberte zobrazenie
 settings: Nastavenia
 sign_in: Prihlásiť sa
 sign_out: Odhlásiť sa
@@ -1552,6 +1556,8 @@ undo_removed_item: Vrátiť odstránenie položky
 remove_item: Odstrániť položku
 delete_item: Odstrániť položku
 interfaces:
+  list-m2a:
+    prefix_note: Predvolene sa použije názov súvisiacej zbierky.
   filter:
     name: Filter
     description: Konfigurácia objektu filtra.
@@ -1689,8 +1695,11 @@ interfaces:
     description: Modal pre vybratie možností rozhrania
   system-display:
     display: Zobrazenie
+    description: Vyberte existujúce zobrazenie
+    placeholder: Vyberte zobrazenie...
   system-display-options:
     display-options: Možnosti zobrazenia
+    description: Okno na výber možností zobrazenia
   list-m2m:
     many-to-many: Veľa na veľa
     description: Vyberie viacej súvisiacich položiek
@@ -1743,6 +1752,7 @@ interfaces:
     description: Vyberie viacej súvisiacich položiek
     no_collection: Zbierka sa nenašla
   system-folder:
+    folder: Koreňový priečinok
     description: Vyberte priečinok
     field_hint: Predvolený priečinok na nahrávanie súborov bez určeného priečinka. Neovplyvní existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
@@ -1833,6 +1843,7 @@ interfaces:
     description: Textový editor s HTML obsahom
     toolbar: Panel nástrojov
     custom_formats: Vlastné formáty
+    options_override: Prepísanie nastavení
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov
@@ -2103,6 +2114,9 @@ panels:
     name: Metrické
     description: Zobraziť jednu hodnotu na základe dotazu
     field: Pole
+  metric_list:
+    name: Zoznam metrík
+    description: Vypíše a vizualizuje agregované metriky zbierky
   time_series:
     name: Časové rady
     description: Vykresliť čiarový graf podľa hodnôt v čase
@@ -2216,9 +2230,19 @@ operations:
     payload: Payload
     query: Dotaz
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Podpisovanie a overovanie JSON Web tokenov
+    operation: Operácia
+    secret: Tajný kľúč
+    secret_placeholder: Zadajte tajný kľúč...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Možnosti
+    options_placeholder: 'Viac možností zistíte na https://www.npmjs.com/package/jsonwebtoken#usage'
+    sign: Podpisový token
+    verify: Verifikačný token
+    decode: Dekódovací token
   log:
     name: Logovať do konzoly
     description: Vypíše niečo do konzoly
@@ -2272,11 +2296,18 @@ operations:
     batch: Dávkovo
     batch_size: Veľkosť dávky
     cache: Vyrovnávacia pamäť
+unit: Jednotka
 standard: Štandardné
+scientific: Vedecké
+engineering: Inžinierske
 compact: Kompaktné
+currency: Mena
+notation: Zápis
 style: Štýl
 fonts:
   thin: Tenké
+  extra_light: Extra tenké
+  light: Tenké
   normal: Normálne
   medium: Stredné
   semi_bold: Polo tučné
