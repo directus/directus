@@ -1,25 +1,20 @@
 ---
-description: A guide on how to create a custom Theme in Directus.
+description: A guide on custom theming options in the Directus Data Studio.
 readTime: 2 min read
 ---
 
-# Theming
+# Custom Theming
 
-> Theming allows you to customize and style the visual appearance of your Directus App.
+The Directus Data Studio has been developed with customization and extensibility in mind. Colors and styles referenced within
+the codebase are based around theme rules which makes it easy to make comprehensive styling changes to the Data Studio.
 
-The Directus App has been developed with customization and extensibility in mind. Colors and styles referenced within
-the codebase are based around theme rules which makes it easy to make comprehensive changes to the App styling.
-
-There are two themes included by default: Light and Dark. Each of the rules of these themes can be overridden through
-the settings in either Theming or User Settings.
+Theming options can be found in dedicated section in the Settings Module.
 
 ## Branding
 
-<!-- <video title="How to Configure Branding and Style in Project Settings" autoplay playsinline muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/configuration/project-settings/project-settings-20220815/branding-and-style-20220811A.mp4" type="video/mp4" />
-</video> -->
+The branding section contains glboal settings that are applied as defaults throughout the Data Studio and favicon.
 
-- **Project Color** — Sets color on the project logo, FavIcon and login/public pages.
+- **Project Color** — Sets color on the project logo, favicon and login/public pages.
 - **Project Logo** — Adds a 40x40px logo at the top of the
   [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar) and on the login/public pages. The image is inset
   within a 64x64px square filled with the project color. We recommend using a PNG file for optimal compatibility.
@@ -33,30 +28,29 @@ the settings in either Theming or User Settings.
 
 ## Theming Defaults
 
-- **Light Theme Customization** — Default customization for `light` theme in use.
-- **Dark Theme Customization** — Default customization for `dark` theme in use.
-- **Custom CSS** — Applies custom CSS rules to override the Data Studio's default styling. Be aware that the Data
-  Studio's core code, and therefore its DOM selectors, can change at any time. These updates are not considered a
+The Directus Theming Engine contains two cutomizable themes - **Light Theme** and **Dark Theme**. If default values are changed, they will be automatically mapped to the correct elements in the Data Studio, even between upgrades.
+
+Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module). 
+
+![Theming options showing a solarized color theme and serif font throughout.](https://marketing.directus.app/assets/6f4a2cb4-2998-4fcd-bac2-17e6bf8f81a4.png)
+
+Any valid CSS values will be accepted by the Directus Theming Engine. The raw JSON values containing your changes can be seen by clicking the dropdown next to the theme customization labels. These can be saved and easily applied between projects or users.
+
+### Custom CSS
+
+The Custom CSS input allows you to override the Data Studio's default styling. Be aware that the Data
+  Studio's core code, and therefore its DOM selectors, may change in any release. These updates are not considered a
   breaking change.
 
-::: tip Browser FavIcon & Title
-
-The Project Color is also used to set a dynamic FavIcon and the Project Name is used in the browser's page title, making
-it easier to identify different Directus projects.
-
-:::
-
-## Custom CSS
-
-You can also override any core CSS directly within the App through Project Settings. This makes it easy to edit the CSS
-variables listed in the themes above.
-
-1. Navigate to **Settings Module > Project Settings**
-2. Scroll to the **Custom CSS** field
-3. Enter any **valid CSS**
-4. Click the **Save** action button in the header
-
 ### Example
+
+You may wish to remove UI elements from the Data Studio based on your use case. You can remove the notifications button by adding the following Custom CSS: 
+
+```css
+.v-button.notifications {
+  display: none;
+}
+```
 
 Since App styles are inserted/removed whenever a component is rendered, you'll need to be aware of CSS priority. Using
 `:root` or `body` likely isn't scoped enough, you'll need to define a more specific scope, such as `#app`, or use
@@ -69,14 +63,14 @@ body {
 }
 ```
 
-::: warning Action Styling
+This example is better served using the Theming Engine, but is a good example of Directus' flexibility of approach.
+
+#### Action Styling
 
 The `--primary` variable (and its shades) control call-to-actions and all other elements within the App using the
 "Directus Purple". While it may be tempting to override this variable with your brand's color, please first review the
 following warnings:
 
-- Avoid using yellow, orange, or red hues that give a sense of "danger"
-- Avoid low-contrast colors like yellows, grays, etc, that might not be easily visible
-- Avoid low-saturation colors like black, which might not properly highlight CTAs
-
-:::
+- Avoid using yellow, orange, or red hues that give a sense of "danger".
+- Avoid low-contrast colors like yellows, grays, etc, that might not be easily visible.
+- Avoid low-saturation colors like black, which might not properly highlight call-to-actions.
