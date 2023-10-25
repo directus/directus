@@ -12,7 +12,6 @@ import {
 	type ParameterizedSqlStatement,
 } from '@directus/data-sql';
 import { ReadableStream } from 'node:stream/web';
-import type { PoolClient } from 'pg';
 import pg from 'pg';
 import { convertToActualStatement } from './query/index.js';
 import QueryStream from 'pg-query-stream';
@@ -52,11 +51,13 @@ export default class DataDriverPostgres implements DataDriver {
 		sql: ParameterizedSqlStatement
 	): Promise<ReadableStream<Record<string, any>>> | never {
 		try {
-			const poolClient: PoolClient = await pool.connect();
+			const poolClient = await pool.connect();
 			const queryStream = new QueryStream(sql.statement, sql.parameters);
 			const stream = poolClient.query(queryStream);
+
 			stream.on('end', () => poolClient.release());
 			stream.on('error', () => poolClient.release());
+
 			return Readable.toWeb(stream);
 		} catch (error: any) {
 			throw new Error('Failed to query the database: ', error);
