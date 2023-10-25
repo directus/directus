@@ -1,6 +1,9 @@
-import type { AbstractQueryFieldNodeRelationalManyToOne } from '@directus/data';
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../types/index.js';
-import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
+import type { AbstractQueryFieldNodeRelationalManyToOne, AtLeastOneElement } from '@directus/data';
+import type {
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryJoinNode,
+	AbstractSqlQueryLogicalNode,
+} from '../../types/index.js';
 
 export const createJoin = (
 	currentCollection: string,
@@ -23,7 +26,7 @@ export const createJoin = (
 				}
 
 				return getJoinCondition(currentCollection, currentField, externalCollectionAlias, externalField);
-			}),
+			}) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
 		};
 	} else {
 		on = getJoinCondition(
