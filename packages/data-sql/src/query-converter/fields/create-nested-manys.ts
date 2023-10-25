@@ -1,6 +1,6 @@
-import type { AbstractQueryFieldNodeRelationalOneToMany } from '@directus/data';
-import type { Result } from './fields.js';
+import type { AbstractQueryFieldNodeRelationalOneToMany, AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlNestedMany, AbstractSqlQueryConditionNode, AbstractSqlQueryWhereNode } from '../../index.js';
+import type { Result } from './fields.js';
 
 export function getNestedMany(
 	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
@@ -38,10 +38,9 @@ function getWhereClause(
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: fieldMeta.join.foreign.fields.map((field) => getCondition(table, field, idxGenerator)) as [
-				AbstractSqlQueryConditionNode,
-				...AbstractSqlQueryConditionNode[]
-			],
+			childNodes: fieldMeta.join.foreign.fields.map((field) =>
+				getCondition(table, field, idxGenerator)
+			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
 		};
 	} else {
 		return getCondition(table, fieldMeta.join.foreign.fields[0], idxGenerator);
