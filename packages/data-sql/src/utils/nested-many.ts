@@ -5,6 +5,14 @@ import { ReadableStream } from 'node:stream/web';
 
 type SteamResult = ReadableStreamDefaultReadResult<Record<string, any>>;
 
+/**
+ * This logic handles o2m relational nodes which can be seen as default implementation/behavior for all SQL drivers.
+ *
+ * @param rootStream the stream of the root query
+ * @param nestedManys the nested many nodes which contain the sql query generator
+ * @param queryDB a function which is defined in the drivers which queries the database
+ * @returns the final stream which contains the m part results of the abstract query
+ */
 export async function makeSubQueriesAndMergeWithRoot(
 	rootStream: ReadableStream<Record<string, any>>,
 	nestedManys: AbstractSqlNestedMany[],
@@ -21,8 +29,6 @@ export async function makeSubQueriesAndMergeWithRoot(
 				}
 
 				for (const nestedMany of nestedManys) {
-					// @TODO do some error handling, extend tests
-
 					const subQuery = nestedMany.queryGenerator(
 						nestedMany.internalIdentifierFields.map((field) => value[field]) as AtLeastOneElement<string | number>
 					);
