@@ -27,7 +27,7 @@ export const getExpander = (paths: Map<string, string[]>): TransformStream => {
  * @param paths the lookup map from the aliases to the nested path
  * @returns an object which reflects the hierarchy from the initial query
  */
-export function expandChunk(chunk: Record<string, any>, paths: Map<string, string[]>): Record<string, any> {
+export function expandChunk(chunk: Record<string, unknown>, paths: Map<string, string[]>): Record<string, unknown> {
 	const result = {};
 
 	for (const [key, value] of Object.entries(chunk)) {

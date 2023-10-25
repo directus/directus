@@ -25,7 +25,7 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-function getMockedStream(data: Record<string, any>[]): ReadableStream<Record<string, any>> {
+function getMockedStream(data: Record<string, unknown>[]): ReadableStream<Record<string, unknown>> {
 	return new ReadableStream({
 		start(controller) {
 			data.forEach((chunk) => controller.enqueue(chunk));

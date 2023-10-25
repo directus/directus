@@ -5,7 +5,7 @@ import { ReadableStream } from 'node:stream/web';
 import { randomAlpha, randomIdentifier } from '@directus/random';
 import { loadAllResultIntoMemory } from './stream-consumer.js';
 
-function getStreamMock(data: Record<string, any>[]): ReadableStream<Record<string, any>> {
+function getStreamMock(data: Record<string, unknown>[]): ReadableStream<Record<string, unknown>> {
 	return new ReadableStream({
 		start(controller) {
 			data.forEach((chunk) => controller.enqueue(chunk));

@@ -7,9 +7,9 @@ import { ReadableStream } from 'node:stream/web';
  * @returns all the data from a stream
  */
 export async function loadAllResultIntoMemory(
-	readableStream: ReadableStream<Record<string, any>>
-): Promise<Record<string, any>[]> {
-	const actualResult: Record<string, any>[] = [];
+	readableStream: ReadableStream<Record<string, unknown>>
+): Promise<Record<string, unknown>[]> {
+	const actualResult: Record<string, unknown>[] = [];
 
 	for await (const chunk of readableStream) {
 		actualResult.push(chunk);

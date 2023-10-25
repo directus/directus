@@ -4,7 +4,7 @@ import type { AtLeastOneElement } from '@directus/data';
 import { ReadableStream } from 'node:stream/web';
 import { loadAllResultIntoMemory } from './stream-consumer.js';
 
-type SteamResult = ReadableStreamDefaultReadResult<Record<string, any>>;
+type SteamResult = ReadableStreamDefaultReadResult<Record<string, unknown>>;
 
 /**
  * This logic handles o2m relational nodes which can be seen as default implementation/behavior for all SQL drivers.
@@ -15,10 +15,10 @@ type SteamResult = ReadableStreamDefaultReadResult<Record<string, any>>;
  * @returns the final stream which contains the m part results of the abstract query
  */
 export async function makeSubQueriesAndMergeWithRoot(
-	rootStream: ReadableStream<Record<string, any>>,
+	rootStream: ReadableStream<Record<string, unknown>>,
 	nestedManys: AbstractSqlNestedMany[],
-	queryDatabase: (query: AbstractSqlQuery) => Promise<ReadableStream<Record<string, any>>>
-): Promise<ReadableStream<Record<string, any>>> {
+	queryDatabase: (query: AbstractSqlQuery) => Promise<ReadableStream<Record<string, unknown>>>
+): Promise<ReadableStream<Record<string, unknown>>> {
 	return new ReadableStream({
 		start(controller) {
 			const reader = rootStream.getReader();

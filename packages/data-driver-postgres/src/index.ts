@@ -49,7 +49,7 @@ export default class DataDriverPostgres implements DataDriver {
 	async getDataFromSource(
 		pool: pg.Pool,
 		sql: ParameterizedSqlStatement
-	): Promise<ReadableStream<Record<string, any>>> | never {
+	): Promise<ReadableStream<Record<string, unknown>>> | never {
 		try {
 			const poolClient = await pool.connect();
 			const queryStream = new QueryStream(sql.statement, sql.parameters);
@@ -71,7 +71,7 @@ export default class DataDriverPostgres implements DataDriver {
 	 * @returns The database results converted to a nested object
 	 * @throws An error when the conversion or the database request fails
 	 */
-	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, any>>> {
+	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, unknown>>> {
 		let statement;
 		let parameters;
 
@@ -92,7 +92,7 @@ export default class DataDriverPostgres implements DataDriver {
 		}
 	}
 
-	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
+	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, unknown>>> {
 		const abstractSql = convertQuery(query);
 
 		const rootStream = await this.queryDatabase(abstractSql);

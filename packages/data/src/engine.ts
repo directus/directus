@@ -27,7 +27,7 @@ export class DataEngine {
 	}
 
 	/** Execute a root abstract query */
-	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
+	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, unknown>>> {
 		return this.store(query.store).query(query);
 	}
 
