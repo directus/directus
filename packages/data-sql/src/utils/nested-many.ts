@@ -2,7 +2,7 @@ import type { ReadableStreamDefaultReadResult } from 'node:stream/web';
 import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../types/index.js';
 import type { AtLeastOneElement } from '@directus/data';
 import { ReadableStream } from 'node:stream/web';
-import { loadAllResultIntoMemory } from './stream-consumer.js';
+import { readToEnd } from './stream-consumer.js';
 
 type SteamResult = ReadableStreamDefaultReadResult<Record<string, unknown>>;
 
@@ -35,7 +35,7 @@ export async function makeSubQueriesAndMergeWithRoot(
 					);
 
 					const subStream = await queryDatabase(subQuery);
-					const subData = await loadAllResultIntoMemory(subStream);
+					const subData = await readToEnd(subStream);
 					controller.enqueue({ ...value, [nestedMany.collection]: subData });
 				}
 

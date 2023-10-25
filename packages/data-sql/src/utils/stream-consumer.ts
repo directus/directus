@@ -6,7 +6,7 @@ import { ReadableStream } from 'node:stream/web';
  * @param readableStream the stream to be consumed
  * @returns all the data from a stream
  */
-export async function loadAllResultIntoMemory(
+export async function readToEnd(
 	readableStream: ReadableStream<Record<string, unknown>>
 ): Promise<Record<string, unknown>[]> {
 	const actualResult: Record<string, unknown>[] = [];

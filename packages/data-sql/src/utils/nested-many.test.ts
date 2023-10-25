@@ -3,7 +3,7 @@ import { makeSubQueriesAndMergeWithRoot } from './nested-many.js';
 import type { AbstractSqlNestedMany } from '../index.js';
 import { ReadableStream } from 'node:stream/web';
 import { randomAlpha, randomIdentifier } from '@directus/random';
-import { loadAllResultIntoMemory } from './stream-consumer.js';
+import { readToEnd } from './stream-consumer.js';
 
 function getStreamMock(data: Record<string, unknown>[]): ReadableStream<Record<string, unknown>> {
 	return new ReadableStream({
@@ -113,7 +113,7 @@ test('nested-many logic', async () => {
 		.mockResolvedValueOnce(getStreamMock(secondDatabaseResponse));
 
 	const resultingStream = await makeSubQueriesAndMergeWithRoot(rootStream, nestedManys, queryDataBaseMockFn);
-	const actualResult = await loadAllResultIntoMemory(resultingStream);
+	const actualResult = await readToEnd(resultingStream);
 
 	const expectedResult = [
 		{

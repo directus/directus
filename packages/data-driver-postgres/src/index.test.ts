@@ -4,11 +4,11 @@
  */
 
 import type { AbstractQuery } from '@directus/data';
+import { convertQuery, readToEnd } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
+import { ReadableStream } from 'node:stream/web';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import DataDriverPostgres from './index.js';
-import { convertQuery, loadAllResultIntoMemory } from '@directus/data-sql';
-import { ReadableStream } from 'node:stream/web';
 
 beforeEach(() => {
 	vi.mock('@directus/data-sql', async (importOriginal) => {
@@ -112,7 +112,7 @@ test('nested with local fields', async () => {
 	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
-	const actualResult = await loadAllResultIntoMemory(readableStream);
+	const actualResult = await readToEnd(readableStream);
 	await driver.destroy();
 
 	const expectedResult = [
@@ -269,7 +269,7 @@ test('nested m2o field', async () => {
 	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
-	const actualResult = await loadAllResultIntoMemory(readableStream);
+	const actualResult = await readToEnd(readableStream);
 	await driver.destroy();
 
 	const expectedResult = [
@@ -496,7 +496,7 @@ test('nested o2m field', async () => {
 		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection2));
 
 	const readableStream = await driver.query(query);
-	const actualResult = await loadAllResultIntoMemory(readableStream);
+	const actualResult = await readToEnd(readableStream);
 	await driver.destroy();
 
 	const expectedResult = [
