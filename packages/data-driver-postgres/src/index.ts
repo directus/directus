@@ -39,21 +39,56 @@ export default class DataDriverPostgres implements DataDriver {
 		await this.#pool.end();
 	}
 
-	async getDataFromSource(pool: pg.Pool, sql: ParameterizedSqlStatement): Promise<ReadableStream<Record<string, any>>> {
-		const poolClient: PoolClient = await pool.connect();
-		const queryStream = new QueryStream(sql.statement, sql.parameters);
-		const stream = poolClient.query(queryStream);
-		stream.on('end', () => poolClient.release());
-		// @TODO release client also on error
-		return Readable.toWeb(stream);
+	/**
+	 * Opens a stream for the given SQL statement.
+	 *
+	 * @param pool the PostgreSQL client pool
+	 * @param sql A parameterized SQL statement
+	 * @returns A readable web stream for the query results
+	 * @throw An error when the query cannot be performed
+	 */
+	async getDataFromSource(
+		pool: pg.Pool,
+		sql: ParameterizedSqlStatement
+	): Promise<ReadableStream<Record<string, any>>> | never {
+		try {
+			const poolClient: PoolClient = await pool.connect();
+			const queryStream = new QueryStream(sql.statement, sql.parameters);
+			const stream = poolClient.query(queryStream);
+			stream.on('end', () => poolClient.release());
+			stream.on('error', () => poolClient.release());
+			return Readable.toWeb(stream);
+		} catch (error: any) {
+			throw new Error('Failed to query the database: ', error);
+		}
 	}
 
+	/**
+	 * Converts the abstract query into PostgreSQL and executes it.
+	 *
+	 * @param abstractSql The abstract query
+	 * @returns The database results converted to a nested object
+	 * @throws An error when the conversion or the database request fails
+	 */
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, any>>> {
-		const statement = convertToActualStatement(abstractSql.clauses);
-		const parameters = convertParameters(abstractSql.parameters);
+		let statement;
+		let parameters;
+
+		try {
+			statement = convertToActualStatement(abstractSql.clauses);
+			parameters = convertParameters(abstractSql.parameters);
+		} catch (error: any) {
+			throw new Error('Failed to convert the query the database: ', error);
+		}
+
 		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
-		const ormExpander = getExpander(abstractSql.aliasMapping);
-		return stream.pipeThrough(ormExpander);
+
+		try {
+			const ormExpander = getExpander(abstractSql.aliasMapping);
+			return stream.pipeThrough(ormExpander);
+		} catch (error: any) {
+			throw new Error('Failed to expand the database result: ', error);
+		}
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
