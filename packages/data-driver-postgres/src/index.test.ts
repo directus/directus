@@ -383,10 +383,6 @@ test('nested o2m field', async () => {
 		]),
 		nestedManys: [
 			{
-				internalIdentifierFields: [localRelationalField],
-				collection: foreignTable,
-				externalKeyFields: [foreignIdField],
-				alias: foreignTableId,
 				queryGenerator: (identifierValues) => ({
 					clauses: {
 						select: [
@@ -430,6 +426,9 @@ test('nested o2m field', async () => {
 					]),
 					nestedManys: [],
 				}),
+				localFields: [localRelationalField],
+				foreignFields: [foreignIdField],
+				alias: foreignTable,
 			},
 		],
 	});

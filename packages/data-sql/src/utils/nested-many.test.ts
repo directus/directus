@@ -46,10 +46,6 @@ test('nested-many logic', async () => {
 
 	const nestedManys: AbstractSqlNestedMany[] = [
 		{
-			internalIdentifierFields: [localPkField],
-			collection: foreignTable,
-			externalKeyFields: [foreignIdField],
-			alias: foreignTableId,
 			queryGenerator: (internalRelationalFieldValues) => ({
 				clauses: {
 					select: [
@@ -84,6 +80,9 @@ test('nested-many logic', async () => {
 				aliasMapping: new Map([[foreignFieldId, [foreignField]]]),
 				nestedManys: [],
 			}),
+			localFields: [localPkField],
+			foreignFields: [foreignIdField],
+			alias: foreignTable,
 		},
 	];
 

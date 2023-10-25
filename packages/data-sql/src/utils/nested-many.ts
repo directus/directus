@@ -31,12 +31,12 @@ export async function makeSubQueriesAndMergeWithRoot(
 
 				for (const nestedMany of nestedManys) {
 					const subQuery = nestedMany.queryGenerator(
-						nestedMany.internalIdentifierFields.map((field) => value[field]) as AtLeastOneElement<string | number>
+						nestedMany.localFields.map((field) => value[field]) as AtLeastOneElement<string>
 					);
 
 					const subStream = await queryDatabase(subQuery);
 					const subData = await readToEnd(subStream);
-					controller.enqueue({ ...value, [nestedMany.collection]: subData });
+					controller.enqueue({ ...value, [nestedMany.alias]: subData });
 				}
 
 				return reader.read().then(mergeNestedData);

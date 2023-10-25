@@ -10,7 +10,6 @@ test('getNestedMany', () => {
 	const foreignField = randomIdentifier();
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
-	const alias = randomIdentifier();
 
 	const fieldMeta: AbstractQueryFieldNodeRelationalOneToMany = {
 		type: 'o2m',
@@ -40,15 +39,14 @@ test('getNestedMany', () => {
 			nestedManys: [],
 		},
 		idxGen,
-		alias
+		foreignTable
 	);
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
-		alias,
-		externalKeyFields: [foreignField],
-		internalIdentifierFields: [localField],
-		collection: foreignTable,
+		localFields: [localField],
+		foreignFields: [foreignField],
+		alias: foreignTable,
 	};
 
 	expect(result).toStrictEqual(expected);

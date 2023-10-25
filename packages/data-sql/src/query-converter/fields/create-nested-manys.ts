@@ -9,6 +9,7 @@ export function getNestedMany(
 	alias: string
 ): AbstractSqlNestedMany {
 	const where = getWhereClause(fieldMeta, idxGenerator);
+
 	return {
 		queryGenerator: (identifierValues) => ({
 			clauses: {
@@ -20,10 +21,9 @@ export function getNestedMany(
 			aliasMapping: nestedOutput.aliasMapping,
 			nestedManys: nestedOutput.nestedManys,
 		}),
+		localFields: fieldMeta.join.local.fields,
+		foreignFields: fieldMeta.join.foreign.fields,
 		alias,
-		externalKeyFields: fieldMeta.join.foreign.fields,
-		internalIdentifierFields: fieldMeta.join.local.fields,
-		collection: fieldMeta.join.foreign.collection,
 	};
 }
 
