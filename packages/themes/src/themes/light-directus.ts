@@ -85,6 +85,7 @@ export const theme: Theme = {
 			background: 'var(--theme--background)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
+				fontFamily: 'var(--theme--font-family-sans-serif)',
 			},
 			title: {
 				foreground: 'var(--theme--foreground-accent)',

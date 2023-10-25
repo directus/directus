@@ -91,6 +91,7 @@ const Rules = Type.Object({
 		background: Color,
 		headline: Type.Object({
 			foreground: Color,
+			fontFamily: FontFamily,
 		}),
 		title: Type.Object({
 			foreground: Color,
