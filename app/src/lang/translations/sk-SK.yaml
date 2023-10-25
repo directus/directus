@@ -1016,9 +1016,7 @@ deselect: Odznačiť
 deselect_all: Odznačiť všetko
 theme: Téma
 select_a_theme: Vybrať tému
-appearance_auto: Automaticky (podľa systému)
-appearance_light: Svetlý režim
-appearance_dark: Tmavý režim
+appearance_light: Tenké
 other: Ostatné...
 adding_user: Pridávanie používateľa
 unknown_user: Neznámy používateľ
