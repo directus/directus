@@ -104,6 +104,8 @@ fields:
     interface: select-dropdown
     options:
       choices:
+        - value: null
+          text: $t:appearance_global
         - value: auto
           text: $t:appearance_auto
         - value: light
