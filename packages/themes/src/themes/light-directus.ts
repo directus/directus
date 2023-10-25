@@ -76,6 +76,8 @@ export const theme: Theme = {
 				background: 'transparent',
 				backgroundHover: '#e4eaf1',
 				backgroundActive: '#e4eaf1',
+
+				fontFamily: 'var(--theme--font-family-sans-serif)',
 			},
 		},
 

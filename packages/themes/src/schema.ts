@@ -82,6 +82,8 @@ const Rules = Type.Object({
 			background: Color,
 			backgroundHover: Color,
 			backgroundActive: Color,
+
+			fontFamily: FontFamily,
 		}),
 	}),
 
