@@ -13,7 +13,7 @@ Theming options can be found in dedicated section in the Settings Module.
 
 ## Branding
 
-The branding section contains glboal settings that are applied as defaults throughout the Data Studio and favicon.
+The branding section contains global settings that are applied as defaults throughout the Data Studio and favicon.
 
 - **Project Color** — Sets color on the project logo, favicon and login/public pages.
 - **Project Logo** — Adds a 40x40px logo at the top of the
@@ -29,12 +29,12 @@ The branding section contains glboal settings that are applied as defaults throu
 
 ## Theming Defaults
 
-The Directus Theming Engine contains two cutomizable themes - **Light Theme** and **Dark Theme**. If default values are
+The Directus Theming Engine contains two customizable themes - **Light Theme** and **Dark Theme**. If default values are
 changed, they will be automatically mapped to the correct elements in the Data Studio, even between upgrades.
 
 Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
 
-![Theming options showing a solarized color theme and serif font throughout.](https://marketing.directus.app/assets/6f4a2cb4-2998-4fcd-bac2-17e6bf8f81a4.png)
+![Theming options showing a yellow color theme and serif font throughout.](https://marketing.directus.app/assets/6f4a2cb4-2998-4fcd-bac2-17e6bf8f81a4.png)
 
 Any valid CSS values will be accepted by the Directus Theming Engine. The raw JSON values containing your changes can be
 seen by clicking the dropdown next to the theme customization labels. These can be saved and easily applied between
