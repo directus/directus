@@ -3,7 +3,7 @@ import { expect, it, test } from 'vitest';
 import { Field } from '@directus/types';
 import { pushGroupOptionsDown } from './push-group-options-down.js';
 
-test('pushGroupOptionsDown', () => {
+test('basic', () => {
 	const fields: Field[] = [
 		{
 			field: 'group1',
@@ -64,7 +64,26 @@ test('pushGroupOptionsDown', () => {
 	});
 });
 
-test('pushGroupOptionsDown with nested groups', () => {
+test('with < 2 fields', () => {
+	const fields: Field[] = [
+		{
+			field: 'group1',
+			type: 'alias',
+			collection: 'test',
+			meta: {
+				required: true,
+				readonly: true,
+				special: ['group'],
+			} as any,
+			schema: null,
+			name: 'Group 1',
+		},
+	];
+
+	expect(pushGroupOptionsDown(fields)).toBe(fields);
+});
+
+test('with nested groups', () => {
 	const fields: Field[] = [
 		{
 			field: 'group1',
@@ -170,22 +189,33 @@ test('pushGroupOptionsDown with nested groups', () => {
 	]);
 });
 
-// This happens e.g. when fields are nested in a accordion
-test('pushGroupOptionsDown with single field', () => {
+// Happens when accordion / detail fields are starting closed & are then opened
+// (only sub fields are passed to pushGroupOptionsDown)
+test('with missing referenced groups', () => {
 	const fields: Field[] = [
 		{
+			field: 'field_in_group1',
+			type: 'boolean',
 			collection: 'test',
-			field: 'detail',
-			type: 'alias',
-			schema: null,
 			meta: {
-				special: ['alias', 'no-data', 'group'],
-				interface: 'group-detail',
+				required: true,
 				readonly: false,
-				required: false,
-				group: 'accordion-3ml8h4',
+				group: 'group1',
 			} as any,
-			name: 'Detail',
+			schema: null,
+			name: 'Field in group 1',
+		},
+		{
+			field: 'field_in_group1_1',
+			type: 'boolean',
+			collection: 'test',
+			meta: {
+				required: true,
+				readonly: true,
+				group: 'group1_1',
+			} as any,
+			schema: null,
+			name: 'Field in group 1 1',
 		},
 	];
 
