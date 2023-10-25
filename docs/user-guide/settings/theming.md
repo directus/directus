@@ -5,8 +5,9 @@ readTime: 2 min read
 
 # Custom Theming
 
-The Directus Data Studio has been developed with customization and extensibility in mind. Colors and styles referenced within
-the codebase are based around theme rules which makes it easy to make comprehensive styling changes to the Data Studio.
+The Directus Data Studio has been developed with customization and extensibility in mind. Colors and styles referenced
+within the codebase are based around theme rules which makes it easy to make comprehensive styling changes to the Data
+Studio.
 
 Theming options can be found in dedicated section in the Settings Module.
 
@@ -28,23 +29,26 @@ The branding section contains glboal settings that are applied as defaults throu
 
 ## Theming Defaults
 
-The Directus Theming Engine contains two cutomizable themes - **Light Theme** and **Dark Theme**. If default values are changed, they will be automatically mapped to the correct elements in the Data Studio, even between upgrades.
+The Directus Theming Engine contains two cutomizable themes - **Light Theme** and **Dark Theme**. If default values are
+changed, they will be automatically mapped to the correct elements in the Data Studio, even between upgrades.
 
-Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module). 
+Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
 
 ![Theming options showing a solarized color theme and serif font throughout.](https://marketing.directus.app/assets/6f4a2cb4-2998-4fcd-bac2-17e6bf8f81a4.png)
 
-Any valid CSS values will be accepted by the Directus Theming Engine. The raw JSON values containing your changes can be seen by clicking the dropdown next to the theme customization labels. These can be saved and easily applied between projects or users.
+Any valid CSS values will be accepted by the Directus Theming Engine. The raw JSON values containing your changes can be
+seen by clicking the dropdown next to the theme customization labels. These can be saved and easily applied between
+projects or users.
 
 ### Custom CSS
 
-The Custom CSS input allows you to override the Data Studio's default styling. Be aware that the Data
-  Studio's core code, and therefore its DOM selectors, may change in any release. These updates are not considered a
-  breaking change.
+The Custom CSS input allows you to override the Data Studio's default styling. Be aware that the Data Studio's core
+code, and therefore its DOM selectors, may change in any release. These updates are not considered a breaking change.
 
 ### Example
 
-You may wish to remove UI elements from the Data Studio based on your use case. You can remove the notifications button by adding the following Custom CSS: 
+You may wish to remove UI elements from the Data Studio based on your use case. You can remove the notifications button
+by adding the following Custom CSS:
 
 ```css
 .v-button.notifications {
