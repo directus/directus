@@ -3,6 +3,7 @@ import { makeSubQueriesAndMergeWithRoot } from './nested-many.js';
 import type { AbstractSqlNestedMany } from '../index.js';
 import { ReadableStream } from 'node:stream/web';
 import { randomAlpha, randomIdentifier } from '@directus/random';
+import { loadAllResultIntoMemory } from './stream-consumer.js';
 
 function getStreamMock(data: Record<string, any>[]): ReadableStream<Record<string, any>> {
 	return new ReadableStream({
@@ -11,18 +12,6 @@ function getStreamMock(data: Record<string, any>[]): ReadableStream<Record<strin
 			controller.close();
 		},
 	});
-}
-
-async function loadAllResultIntoMemory(
-	readableStream: ReadableStream<Record<string, any>>
-): Promise<Record<string, any>[]> {
-	const actualResult: Record<string, any>[] = [];
-
-	for await (const chunk of readableStream) {
-		actualResult.push(chunk);
-	}
-
-	return actualResult;
 }
 
 test('nested-many logic', async () => {

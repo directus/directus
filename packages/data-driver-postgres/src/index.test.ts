@@ -7,7 +7,7 @@ import type { AbstractQuery } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import DataDriverPostgres from './index.js';
-import { convertQuery } from '@directus/data-sql';
+import { convertQuery, loadAllResultIntoMemory } from '@directus/data-sql';
 import { ReadableStream } from 'node:stream/web';
 
 beforeEach(() => {
@@ -32,19 +32,6 @@ function getMockedStream(data: Record<string, any>[]): ReadableStream<Record<str
 			controller.close();
 		},
 	});
-}
-
-/**
- * Receives all the data from a given stream.
- */
-async function getActualResult(readableStream: ReadableStream<Record<string, any>>): Promise<Record<string, any>[]> {
-	const actualResult: Record<string, any>[] = [];
-
-	for await (const chunk of readableStream) {
-		actualResult.push(chunk);
-	}
-
-	return actualResult;
 }
 
 // random user inputs for stuff which is used by all tests
@@ -125,7 +112,7 @@ test('nested with local fields', async () => {
 	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
-	const actualResult = await getActualResult(readableStream);
+	const actualResult = await loadAllResultIntoMemory(readableStream);
 	await driver.destroy();
 
 	const expectedResult = [
@@ -282,7 +269,7 @@ test('nested m2o field', async () => {
 	vi.spyOn(driver, 'getDataFromSource').mockResolvedValueOnce(getMockedStream(mockedData));
 
 	const readableStream = await driver.query(query);
-	const actualResult = await getActualResult(readableStream);
+	const actualResult = await loadAllResultIntoMemory(readableStream);
 	await driver.destroy();
 
 	const expectedResult = [
@@ -509,7 +496,7 @@ test('nested o2m field', async () => {
 		.mockResolvedValueOnce(getMockedStream(mockedDataFromNestedCollection2));
 
 	const readableStream = await driver.query(query);
-	const actualResult = await getActualResult(readableStream);
+	const actualResult = await loadAllResultIntoMemory(readableStream);
 	await driver.destroy();
 
 	const expectedResult = [
