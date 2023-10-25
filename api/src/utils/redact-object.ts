@@ -109,6 +109,15 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 		: [];
 
 	const seen = new WeakSet();
+	const parentStack: object[] = [];
+
+	function stepBack() {
+		const obj = parentStack.pop();
+
+		if (obj) {
+			seen.delete(obj);
+		}
+	}
 
 	return (_key: string, value: unknown) => {
 		// Skip circular values
@@ -117,6 +126,11 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 				return;
 			}
 
+			if (parentStack.some((obj) => obj === value)) {
+				return;
+			}
+
+			parentStack.push(value);
 			seen.add(value);
 		}
 
@@ -129,7 +143,14 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 			};
 		}
 
-		if (!values || filteredValues.length === 0 || typeof value !== 'string') return value;
+		if (!values || filteredValues.length === 0) {
+			return value;
+		}
+
+		if (typeof value !== 'string') {
+			stepBack();
+			return value;
+		}
 
 		let finalValue = value;
 
@@ -137,6 +158,10 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 			if (finalValue.includes(valueToRedact)) {
 				finalValue = finalValue.replace(new RegExp(valueToRedact, 'g'), replacement(redactKey));
 			}
+		}
+
+		if (isObject(value)) {
+			stepBack();
 		}
 
 		return finalValue;
