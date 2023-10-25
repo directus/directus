@@ -190,11 +190,13 @@ describe('getReplacer tests', () => {
 
 		obj['b'] = obj;
 		obj['c'] = { obj };
+		obj['d'] = [obj];
 
 		const expectedResult = {
 			a: 'foo',
 			b: '[Circular]',
 			c: { obj: '[Circular]' },
+			d: ['[Circular]'],
 		};
 
 		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));
