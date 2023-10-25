@@ -165,6 +165,7 @@ onUnmounted(() => {
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
+				font-family: var(--theme--header--title--font-family);
 			}
 
 			:deep(.type-title) {
