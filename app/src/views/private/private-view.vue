@@ -386,6 +386,7 @@ function getWidth(input: unknown, fallback: number): number {
 		font-size: 0;
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
+		font-family: var(--theme--navigation--list--font-family);
 
 		&.is-open {
 			transform: translateX(0);
