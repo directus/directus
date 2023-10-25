@@ -849,7 +849,7 @@ function sidebarUserGuide() {
 					link: '/user-guide/settings/project-settings',
 				},
 				{
-					text: 'Theming',
+					text: 'Custom Theming',
 					link: '/user-guide/settings/theming',
 				},
 				{
