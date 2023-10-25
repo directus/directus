@@ -94,13 +94,15 @@ export default class DataDriverPostgres implements DataDriver {
 
 	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, any>>> {
 		const abstractSql = convertQuery(query);
-		const queryDB = this.queryDatabase.bind(this);
-		const rootStream = await queryDB(abstractSql);
+
+		const rootStream = await this.queryDatabase(abstractSql);
 
 		if (abstractSql.nestedManys.length === 0) {
 			return rootStream;
 		}
 
-		return await makeSubQueriesAndMergeWithRoot(rootStream, abstractSql.nestedManys, queryDB);
+		return await makeSubQueriesAndMergeWithRoot(rootStream, abstractSql.nestedManys, (query) =>
+			this.queryDatabase(query)
+		);
 	}
 }

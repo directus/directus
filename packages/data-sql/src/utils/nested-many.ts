@@ -11,13 +11,13 @@ type SteamResult = ReadableStreamDefaultReadResult<Record<string, any>>;
  *
  * @param rootStream the stream of the root query
  * @param nestedManys the nested many nodes which contain the sql query generator
- * @param queryDB a function which is defined in the drivers which queries the database
+ * @param queryDatabase a function which is defined in the drivers which queries the database
  * @returns the final stream which contains the m part results of the abstract query
  */
 export async function makeSubQueriesAndMergeWithRoot(
 	rootStream: ReadableStream<Record<string, any>>,
 	nestedManys: AbstractSqlNestedMany[],
-	queryDB: (query: AbstractSqlQuery) => Promise<ReadableStream<Record<string, any>>>
+	queryDatabase: (query: AbstractSqlQuery) => Promise<ReadableStream<Record<string, any>>>
 ): Promise<ReadableStream<Record<string, any>>> {
 	return new ReadableStream({
 		start(controller) {
@@ -34,7 +34,7 @@ export async function makeSubQueriesAndMergeWithRoot(
 						nestedMany.internalIdentifierFields.map((field) => value[field]) as AtLeastOneElement<string | number>
 					);
 
-					const subStream = await queryDB(subQuery);
+					const subStream = await queryDatabase(subQuery);
 					const subData = await loadAllResultIntoMemory(subStream);
 					controller.enqueue({ ...value, [nestedMany.collection]: subData });
 				}
