@@ -149,10 +149,6 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 			}
 		}
 
-		if (isObject(value)) {
-			seen.delete(value);
-		}
-
 		return finalValue;
 	};
 }
