@@ -24,7 +24,7 @@ export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> ex
 							: never;
 				  }
 				: never
-		>
+	  >
 	: never;
 
 /**
@@ -32,9 +32,9 @@ export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> ex
  */
 export type NestedRelationalFilter<Schema extends object, Item, Field extends keyof Item> =
 	| (Field extends RelationalFields<Schema, Item>
-		? WrapRelationalFilters<NestedQueryFilter<Schema, Item[Field]>>
-		: never)
-	| FilterOperators<Item[Field]>
+			? WrapRelationalFilters<NestedQueryFilter<Schema, Item[Field]>>
+			: never)
+	| FilterOperators<Item[Field]>;
 
 /**
  * All regular filter operators
