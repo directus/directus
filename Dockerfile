@@ -32,6 +32,9 @@ RUN : \
 
 FROM node:18-alpine AS runtime
 
+RUN apk update && apk add tzdata && ln -sf /usr/share/zoneinfo/Europe/Rome /etc/localtime
+ENV TZ=Europe/Rome
+
 USER node
 
 WORKDIR /directus
@@ -47,6 +50,7 @@ ENV \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
 COPY --from=builder --chown=node:node /directus/dist .
+
 
 CMD : \
 	&& node /directus/cli.js bootstrap \
