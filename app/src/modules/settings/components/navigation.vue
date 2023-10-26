@@ -67,7 +67,7 @@ const externalItems = computed(() => {
 		{
 			icon: 'new_releases',
 			name: t('request_feature'),
-			href: 'https://github.com/directus/directus/discussions/new',
+			href: 'https://github.com/directus/directus/discussions/new?category=feature-requests',
 		},
 	];
 });
