@@ -23,7 +23,7 @@ export default definePanel({
 
 		// sort by the aggregate field
 		const sort =
-			options.sortDirection == 'asc'
+			options.sortDirection === 'asc'
 				? [`${options.aggregateFunction}.${options.aggregateField}`]
 				: ['-' + `${options.aggregateFunction}.${options.aggregateField}`];
 

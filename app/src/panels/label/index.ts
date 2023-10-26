@@ -17,7 +17,7 @@ export default definePanel({
 				type: 'string',
 				required: true,
 				meta: {
-					interface: options?.whiteSpace == 'nowrap' ? 'input' : 'input-multiline',
+					interface: options?.whiteSpace === 'nowrap' ? 'input' : 'input-multiline',
 				},
 			},
 			{

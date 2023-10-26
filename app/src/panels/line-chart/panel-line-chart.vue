@@ -110,7 +110,7 @@ function setUpChart() {
 		const seriesDifferentiators = [...new Set(props.data.map((d) => d['group'][props.grouping!]))]; // get the unique category differentiators
 
 		series = seriesDifferentiators.map((differentiator: string) => {
-			const seriesData = props.data.filter((item) => item['group'][props.grouping!] == differentiator);
+			const seriesData = props.data.filter((item) => item['group'][props.grouping!] === differentiator);
 
 			return {
 				name: differentiator,

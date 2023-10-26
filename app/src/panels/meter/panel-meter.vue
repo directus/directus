@@ -59,7 +59,7 @@ const radius = computed(() => {
 	// Determine the shorter dimension
 	const minDimension = Math.min(widthPx, heightPx);
 
-	if (props.size == 'half' && heightPx < widthPx) {
+	if (props.size === 'half' && heightPx < widthPx) {
 		// Added so half circles that have a shorter height than width can maximize the space up to the padding of the height
 		return Math.min(widthPx / 2 - strokeOffset, (props.height * 30) / 2 - 12);
 	}

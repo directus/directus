@@ -68,7 +68,7 @@ function adjustPadding() {
 
 	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
 
-	if (props.showHeader == true) {
+	if (props.showHeader) {
 		container.style.padding = '0px 12px 12px 12px';
 	} else {
 		container.style.padding = `${padding}px`;
