@@ -1,10 +1,3 @@
-<template>
-	<div class="color-dot">
-		<value-null v-if="value === null && defaultColor === null" />
-		<div class="dot" :style="styles"></div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
@@ -34,7 +27,7 @@ const styles = computed(() => {
 
 	if (value !== null) style['background-color'] = value;
 
-	const pageColorString = cssVar('--background-page');
+	const pageColorString = cssVar('--theme--background');
 
 	const pageColorRGB = Color(pageColorString);
 	const colorRGB = value === null ? Color(defaultColor) : Color(value);
@@ -44,6 +37,13 @@ const styles = computed(() => {
 	return style;
 });
 </script>
+
+<template>
+	<div class="color-dot">
+		<value-null v-if="value === null && defaultColor === null" />
+		<div class="dot" :style="styles"></div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .color-dot {

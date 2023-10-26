@@ -1,3 +1,129 @@
+<script setup lang="ts">
+import { useExtension } from '@/composables/use-extension';
+import { usePreset } from '@/composables/use-preset';
+import { usePermissionsStore } from '@/stores/permissions';
+import { usePresetsStore } from '@/stores/presets';
+import { useUserStore } from '@/stores/user';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useCollection, useLayout } from '@directus/composables';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../../components/navigation.vue';
+import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
+
+const layout = ref('tabular');
+const collection = ref('directus_presets');
+const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
+
+const { t } = useI18n();
+
+const userStore = useUserStore();
+const permissionsStore = usePermissionsStore();
+const layoutRef = ref();
+
+const { selection } = useSelection();
+const { info: currentCollection } = useCollection(collection);
+
+const { layoutWrapper } = useLayout(layout);
+
+const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+
+const currentLayout = useExtension('layout', layout);
+
+const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+
+const presetsStore = usePresetsStore();
+
+async function refresh() {
+	await layoutRef.value?.state?.refresh?.();
+}
+
+async function drawerBatchRefresh() {
+	selection.value = [];
+	await refresh();
+}
+
+function useSelection() {
+	const selection = ref<number[]>([]);
+
+	return { selection };
+}
+
+function useBatch() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	const batchEditActive = ref(false);
+
+	const error = ref<any>(null);
+
+	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
+
+	async function batchDelete() {
+		deleting.value = true;
+
+		try {
+			const batchPrimaryKeys = selection.value;
+			await presetsStore.delete(batchPrimaryKeys);
+
+			selection.value = [];
+			await refresh();
+
+			confirmDelete.value = false;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			deleting.value = false;
+		}
+	}
+}
+
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
+}
+
+function usePermissions() {
+	const batchEditAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const updatePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'update' && permission.collection === collection.value
+		);
+
+		return !!updatePermissions;
+	});
+
+	const batchDeleteAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const deletePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'delete' && permission.collection === collection.value
+		);
+
+		return !!deletePermissions;
+	});
+
+	const createAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const createPermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'create' && permission.collection === collection.value
+		);
+
+		return !!createPermissions;
+	});
+
+	return { batchEditAllowed, batchDeleteAllowed, createAllowed };
+}
+</script>
+
 <template>
 	<component
 		:is="layoutWrapper"
@@ -145,142 +271,16 @@
 	</component>
 </template>
 
-<script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { usePreset } from '@/composables/use-preset';
-import { usePermissionsStore } from '@/stores/permissions';
-import { usePresetsStore } from '@/stores/presets';
-import { useUserStore } from '@/stores/user';
-import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
-import { useCollection, useLayout } from '@directus/composables';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../../components/navigation.vue';
-import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
-
-const layout = ref('tabular');
-const collection = ref('directus_presets');
-const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
-
-const { t } = useI18n();
-
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
-const layoutRef = ref();
-
-const { selection } = useSelection();
-const { info: currentCollection } = useCollection(collection);
-
-const { layoutWrapper } = useLayout(layout);
-
-const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-const currentLayout = useExtension('layout', layout);
-
-const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
-
-const presetsStore = usePresetsStore();
-
-async function refresh() {
-	await layoutRef.value?.state?.refresh?.();
-}
-
-async function drawerBatchRefresh() {
-	selection.value = [];
-	await refresh();
-}
-
-function useSelection() {
-	const selection = ref<number[]>([]);
-
-	return { selection };
-}
-
-function useBatch() {
-	const confirmDelete = ref(false);
-	const deleting = ref(false);
-
-	const batchEditActive = ref(false);
-
-	const error = ref<any>(null);
-
-	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
-
-	async function batchDelete() {
-		deleting.value = true;
-
-		try {
-			const batchPrimaryKeys = selection.value;
-			await presetsStore.delete(batchPrimaryKeys);
-
-			selection.value = [];
-			await refresh();
-
-			confirmDelete.value = false;
-		} catch (err: any) {
-			error.value = err;
-		} finally {
-			deleting.value = false;
-		}
-	}
-}
-
-function clearFilters() {
-	filter.value = null;
-	search.value = null;
-}
-
-function usePermissions() {
-	const batchEditAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value
-		);
-
-		return !!updatePermissions;
-	});
-
-	const batchDeleteAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === collection.value
-		);
-
-		return !!deletePermissions;
-	});
-
-	const createAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === collection.value
-		);
-
-		return !!createPermissions;
-	});
-
-	return { batchEditAllowed, batchDeleteAllowed, createAllowed };
-}
-</script>
-
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 </style>

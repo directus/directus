@@ -1,3 +1,7 @@
+<script lang="ts">
+export default {};
+</script>
+
 <template>
 	<svg
 		viewBox="0 0 48 48"
@@ -15,7 +19,3 @@
 		<path d="M9.58 25.03l14.41 17.95.01.02.01-.02 14.41-17.95C37.7 24.47 32.2 20 24 20s-13.7 4.47-14.42 5.03z" />
 	</svg>
 </template>
-
-<script lang="ts">
-export default {};
-</script>

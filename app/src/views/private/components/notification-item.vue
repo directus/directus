@@ -1,20 +1,3 @@
-<template>
-	<div class="notification-item" :class="[type, { tail, dense }]" @click="close">
-		<div v-if="loading || progress || icon" class="icon">
-			<v-progress-circular v-if="loading" indeterminate small />
-			<v-progress-circular v-else-if="progress" small :value="progress" />
-			<v-icon v-else :name="icon" />
-		</div>
-
-		<div class="content">
-			<p class="title selectable">{{ title }}</p>
-			<p v-if="text" class="text selectable">{{ text }}</p>
-		</div>
-
-		<v-icon v-if="showClose" name="close" clickable class="close" @click="close" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
 
@@ -44,6 +27,23 @@ function close() {
 	}
 }
 </script>
+
+<template>
+	<div class="notification-item" :class="[type, { tail, dense }]" @click="close">
+		<div v-if="loading || progress || icon" class="icon">
+			<v-progress-circular v-if="loading" indeterminate small />
+			<v-progress-circular v-else-if="progress" small :value="progress" />
+			<v-icon v-else :name="icon" />
+		</div>
+
+		<div class="content">
+			<p class="title selectable">{{ title }}</p>
+			<p v-if="text" class="text selectable">{{ text }}</p>
+		</div>
+
+		<v-icon v-if="showClose" name="close" clickable class="close" @click="close" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .notification-item {
@@ -116,22 +116,22 @@ function close() {
 	}
 
 	&.info {
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 
 		&.tail::after {
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 		}
 
 		.text {
-			color: var(--primary-alt);
+			color: var(--theme--primary-background);
 		}
 	}
 
 	&.success {
-		background-color: var(--success);
+		background-color: var(--theme--success);
 
 		&.tail::after {
-			background-color: var(--success);
+			background-color: var(--theme--success);
 		}
 
 		.text {
@@ -140,10 +140,10 @@ function close() {
 	}
 
 	&.warning {
-		background-color: var(--warning);
+		background-color: var(--theme--warning);
 
 		&.tail::after {
-			background-color: var(--warning);
+			background-color: var(--theme--warning);
 		}
 
 		.text {
@@ -152,10 +152,10 @@ function close() {
 	}
 
 	&.error {
-		background-color: var(--danger);
+		background-color: var(--theme--danger);
 
 		&.tail::after {
-			background-color: var(--danger);
+			background-color: var(--theme--danger);
 		}
 
 		.text {

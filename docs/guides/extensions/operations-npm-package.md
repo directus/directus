@@ -13,8 +13,8 @@ process should be the same for any package.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose operation), and type a name for your extension (for example,
@@ -22,7 +22,7 @@ A list of options will appear (choose operation), and type a name for your exten
 
 Now the boilerplate has been created, install the lodash package, and then open the directory in your code editor.
 
-```
+```shell
 cd directus-operation-lodash
 npm install lodash
 ```
@@ -81,10 +81,10 @@ import { camelCase } from 'lodash'; // [!code ++]
 export default defineOperationApi({
 	id: 'operation-lodash-camelcase',
 	handler: ({ text }) => {
-		console.log(text) // [!code --]
+		console.log(text); // [!code --]
 		return { // [!code ++]
 			text: camelCase(text) // [!code ++]
-		} // [!code ++]
+		}; // [!code ++]
 	},
 });
 ```
@@ -135,7 +135,7 @@ technique for other packages to extend on the features of Directus Flows.
 
 ```js
 export default {
-	id: 'operation-lodash',
+	id: 'operation-lodash-camelcase',
 	name: 'Lodash Camel Case',
 	icon: 'electric_bolt',
 	description: 'Use Lodash Camel Case Function.',
@@ -169,8 +169,8 @@ export default defineOperationApi({
 	id: 'operation-lodash-camelcase',
 	handler: ({ text }) => {
 		return {
-			text: camelCase(text)
-		}
+			text: camelCase(text),
+		};
 	},
 });
 ```

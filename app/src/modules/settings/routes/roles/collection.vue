@@ -1,60 +1,3 @@
-<template>
-	<private-view :title="t('settings_permissions')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="admin_panel_settings" />
-			</v-button>
-		</template>
-
-		<template #actions>
-			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
-				<v-icon name="add" />
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
-		<div class="roles">
-			<v-table
-				v-model:headers="tableHeaders"
-				show-resize
-				:items="roles"
-				fixed-header
-				item-key="id"
-				:loading="loading"
-				@click:row="navigateToRole"
-			>
-				<template #[`item.icon`]="{ item }">
-					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
-				</template>
-
-				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
-				</template>
-
-				<template #[`item.count`]="{ item }">
-					<value-null v-if="item.public" />
-				</template>
-
-				<template #[`item.description`]="{ item }">
-					<v-text-overflow :text="item.description" class="description" />
-				</template>
-			</v-table>
-		</div>
-		<router-view name="add" />
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import { Header as TableHeader } from '@/components/v-table/types';
 import { fetchAll } from '@/utils/fetch-all';
@@ -177,12 +120,69 @@ function navigateToRole({ item }: { item: Role }) {
 }
 </script>
 
+<template>
+	<private-view :title="t('settings_permissions')">
+		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon exact disabled>
+				<v-icon name="admin_panel_settings" />
+			</v-button>
+		</template>
+
+		<template #actions>
+			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
+				<v-icon name="add" />
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
+			</sidebar-detail>
+		</template>
+
+		<div class="roles">
+			<v-table
+				v-model:headers="tableHeaders"
+				show-resize
+				:items="roles"
+				fixed-header
+				item-key="id"
+				:loading="loading"
+				@click:row="navigateToRole"
+			>
+				<template #[`item.icon`]="{ item }">
+					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
+				</template>
+
+				<template #[`item.name`]="{ item }">
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
+				</template>
+
+				<template #[`item.count`]="{ item }">
+					<value-null v-if="item.public" />
+				</template>
+
+				<template #[`item.description`]="{ item }">
+					<v-text-overflow :text="item.description" class="description" />
+				</template>
+			</v-table>
+		</div>
+		<router-view name="add" />
+	</private-view>
+</template>
+
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .roles {
@@ -192,18 +192,18 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .system {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .description {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .public {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 </style>

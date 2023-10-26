@@ -6,7 +6,7 @@ import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { InvalidQueryError, RangeNotSatisfiableError } from '../errors/index.js';
+import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
@@ -172,7 +172,7 @@ router.get(
 
 		let range: Range | undefined = undefined;
 
-		if (req.headers.range) {
+		if (req.headers.range && Object.keys(transformationParams).length === 0) {
 			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
 			if (rangeParts && rangeParts.length > 1) {

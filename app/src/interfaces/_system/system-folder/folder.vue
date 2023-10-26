@@ -1,68 +1,18 @@
-<template>
-	<v-skeleton-loader v-if="loading" />
-	<v-menu
-		v-else
-		class="v-select"
-		:attached="true"
-		:show-arrow="false"
-		:disabled="disabled"
-		:close-on-content-click="true"
-	>
-		<template #activator="{ toggle, active }">
-			<v-input
-				readonly
-				:active="active"
-				:model-value="folderPath"
-				:placeholder="placeholder"
-				:disabled="disabled"
-				@click="toggle"
-			>
-				<template #prepend><v-icon :name="!value ? 'folder_special' : 'folder_open'" /></template>
-				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
-			</v-input>
-		</template>
-		<v-list>
-			<v-list-item clickable :active="!value" @click="emitValue(null)">
-				<v-list-item-icon>
-					<v-icon name="folder_special" />
-				</v-list-item-icon>
-				<v-list-item-content>{{ t('interfaces.system-folder.root_name') }}</v-list-item-content>
-			</v-list-item>
-			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
-			<folder-list-item
-				v-for="folder in nestedFolders"
-				:key="folder.id!"
-				clickable
-				:folder="folder"
-				:current-folder="value"
-				:disabled="disabledFolders.includes(folder.id!)"
-				:disabled-folders="disabledFolders"
-				@click="emitValue"
-			/>
-		</v-list>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import { Folder, useFolders } from '@/composables/use-folders';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FolderListItem from './folder-list-item.vue';
 
-const props = withDefaults(
-	defineProps<{
-		value: string | null;
-		disabledFolders: string[];
-		disabled?: boolean;
-		placeholder?: string;
-	}>(),
-	{
-		disabledFolders: () => [],
-	}
-);
+const props = defineProps<{
+	value: string | null;
+	disabledFolders?: string[];
+	disabled?: boolean;
+	placeholder?: string;
+}>();
 
 const emit = defineEmits<{
-	(e: 'input', value: string | null): void;
+	input: [value: string | null];
 }>();
 
 const { t } = useI18n();
@@ -95,6 +45,44 @@ function folderParentPath(folder: Folder, folders: Folder[]) {
 	return folderParent(folder);
 }
 </script>
+
+<template>
+	<v-skeleton-loader v-if="loading" />
+	<v-menu v-else class="v-select" attached :show-arrow="false" :disabled="disabled" close-on-content-click>
+		<template #activator="{ toggle, active }">
+			<v-input
+				readonly
+				:active="active"
+				:model-value="folderPath"
+				:placeholder="placeholder"
+				:disabled="disabled"
+				@click="toggle"
+			>
+				<template #prepend><v-icon :name="!value ? 'folder_special' : 'folder_open'" /></template>
+				<template #append><v-icon name="expand_more" :class="{ active }" /></template>
+			</v-input>
+		</template>
+		<v-list>
+			<v-list-item clickable :active="!value" @click="emitValue(null)">
+				<v-list-item-icon>
+					<v-icon name="folder_special" />
+				</v-list-item-icon>
+				<v-list-item-content>{{ t('interfaces.system-folder.root_name') }}</v-list-item-content>
+			</v-list-item>
+			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
+			<folder-list-item
+				v-for="folder in nestedFolders"
+				:key="folder.id!"
+				clickable
+				:folder="folder"
+				:current-folder="value"
+				:disabled="disabledFolders?.includes(folder.id!)"
+				:disabled-folders="disabledFolders"
+				@click="emitValue"
+			/>
+		</v-list>
+	</v-menu>
+</template>
 
 <style lang="scss" scoped>
 .v-input {

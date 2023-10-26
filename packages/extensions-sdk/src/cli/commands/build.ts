@@ -1,3 +1,9 @@
+import type {
+	ApiExtensionType,
+	AppExtensionType,
+	ExtensionOptionsBundleEntry,
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/extensions';
 import {
 	API_SHARED_DEPS,
 	APP_EXTENSION_TYPES,
@@ -7,13 +13,7 @@ import {
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
-import type {
-	ApiExtensionType,
-	AppExtensionType,
-	ExtensionOptionsBundleEntry,
-	ExtensionManifest as TExtensionManifest,
-} from '@directus/types';
+} from '@directus/extensions';
 import { isIn, isTypeIn } from '@directus/utils';
 import commonjsDefault from '@rollup/plugin-commonjs';
 import jsonDefault from '@rollup/plugin-json';

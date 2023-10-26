@@ -1,30 +1,3 @@
-<template>
-	<div
-		class="v-progress-linear"
-		:class="[
-			{
-				absolute,
-				bottom,
-				fixed,
-				indeterminate,
-				rounded,
-				top,
-				colorful,
-			},
-			color,
-		]"
-		@animationiteration="$emit('animationiteration', $event)"
-	>
-		<div
-			class="inner"
-			:style="{
-				width: value + '%',
-			}"
-		/>
-		<slot :value="value" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -67,10 +40,37 @@ const color = computed(() => {
 });
 </script>
 
+<template>
+	<div
+		class="v-progress-linear"
+		:class="[
+			{
+				absolute,
+				bottom,
+				fixed,
+				indeterminate,
+				rounded,
+				top,
+				colorful,
+			},
+			color,
+		]"
+		@animationiteration="$emit('animationiteration', $event)"
+	>
+		<div
+			class="inner"
+			:style="{
+				width: value + '%',
+			}"
+		/>
+		<slot :value="value" />
+	</div>
+</template>
+
 <style>
 body {
 	--v-progress-linear-height: 4px;
-	--v-progress-linear-color: var(--foreground-normal);
+	--v-progress-linear-color: var(--theme--foreground);
 	--v-progress-linear-background-color: var(--border-normal);
 	--v-progress-linear-transition: 400ms;
 }
@@ -127,15 +127,15 @@ body {
 
 	&.colorful {
 		&.danger .inner {
-			background-color: var(--danger);
+			background-color: var(--theme--danger);
 		}
 
 		&.warning .inner {
-			background-color: var(--warning);
+			background-color: var(--theme--warning);
 		}
 
 		&.success .inner {
-			background-color: var(--success);
+			background-color: var(--theme--success);
 		}
 	}
 }

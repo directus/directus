@@ -1,43 +1,3 @@
-<template>
-	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
-		<slot name="prepend-outer" />
-		<component
-			:is="component"
-			v-focus="autofocus"
-			:download="download"
-			class="button"
-			:class="[
-				sizeClass,
-				`align-${align}`,
-				{
-					active: isActiveRoute,
-					icon,
-					outlined,
-					loading,
-					dashed,
-					tile,
-					'full-width': fullWidth,
-				},
-				kind,
-			]"
-			:type="type"
-			:disabled="disabled"
-			v-bind="additionalProps"
-			@click="onClick"
-		>
-			<span class="content" :class="{ invisible: loading }">
-				<slot v-bind="{ active, toggle }" />
-			</span>
-			<div class="spinner">
-				<slot v-if="loading" name="loading">
-					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
-				</slot>
-			</div>
-		</component>
-		<slot name="append-outer" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { RouteLocationRaw, useRoute, useLink } from 'vue-router';
@@ -99,32 +59,18 @@ interface Props {
 	large?: boolean;
 	/** Renders a larger button */
 	xLarge?: boolean;
+	/** Tooltip text to show on hover */
+	tooltip?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	autofocus: false,
 	kind: 'normal',
-	fullWidth: false,
-	rounded: false,
-	outlined: false,
-	icon: false,
 	type: 'button',
-	disabled: false,
-	loading: false,
 	to: '',
-	href: undefined,
 	target: '_blank',
-	active: undefined,
-	exact: false,
-	query: false,
-	secondary: false,
-	warning: false,
-	danger: false,
-	value: undefined,
-	dashed: false,
-	tile: false,
 	align: 'center',
-	download: undefined,
+	/** Must be explicitly undefined */
+	active: undefined,
 });
 
 const emit = defineEmits(['click']);
@@ -189,6 +135,47 @@ async function onClick(event: MouseEvent) {
 }
 </script>
 
+<template>
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
+		<slot name="prepend-outer" />
+		<component
+			:is="component"
+			v-focus="autofocus"
+			v-tooltip.bottom="tooltip"
+			:download="download"
+			class="button"
+			:class="[
+				sizeClass,
+				`align-${align}`,
+				{
+					active: isActiveRoute,
+					icon,
+					outlined,
+					loading,
+					dashed,
+					tile,
+					'full-width': fullWidth,
+				},
+				kind,
+			]"
+			:type="type"
+			:disabled="disabled"
+			v-bind="additionalProps"
+			@click="onClick"
+		>
+			<span class="content" :class="{ invisible: loading }">
+				<slot v-bind="{ active, toggle }" />
+			</span>
+			<div class="spinner">
+				<slot v-if="loading" name="loading">
+					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
+				</slot>
+			</div>
+		</component>
+		<slot name="append-outer" />
+	</div>
+</template>
+
 <style scoped>
 :global(body) {
 	--v-button-width: auto;
@@ -196,10 +183,10 @@ async function onClick(event: MouseEvent) {
 	--v-button-color: var(--foreground-inverted);
 	--v-button-color-hover: var(--foreground-inverted);
 	--v-button-color-active: var(--foreground-inverted);
-	--v-button-color-disabled: var(--foreground-subdued);
-	--v-button-background-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-125);
-	--v-button-background-color-active: var(--primary);
+	--v-button-color-disabled: var(--theme--foreground-subdued);
+	--v-button-background-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-accent);
+	--v-button-background-color-active: var(--theme--primary);
 	--v-button-background-color-disabled: var(--background-normal);
 	--v-button-font-size: 16px;
 	--v-button-font-weight: 600;
@@ -218,31 +205,31 @@ async function onClick(event: MouseEvent) {
 .success {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--success);
+	--v-button-background-color: var(--theme--success);
 	--v-button-background-color-hover: var(--success-125);
-	--v-button-background-color-active: var(--success);
+	--v-button-background-color-active: var(--theme--success);
 }
 
 .warning {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--warning);
+	--v-button-background-color: var(--theme--warning);
 	--v-button-background-color-hover: var(--warning-125);
-	--v-button-background-color-active: var(--warning);
+	--v-button-background-color-active: var(--theme--warning);
 }
 
 .danger {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--danger);
+	--v-button-background-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-125);
-	--v-button-background-color-active: var(--danger);
+	--v-button-background-color-active: var(--theme--danger);
 }
 
 .secondary {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
 	--v-button-background-color: var(--border-subdued);
 	--v-button-background-color-hover: var(--background-normal-alt);
 	--v-button-background-color-active: var(--background-normal-alt);
@@ -256,16 +243,16 @@ async function onClick(event: MouseEvent) {
 
 .warning.rounded {
 	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
+	--v-button-color: var(--theme--warning);
 	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-color-hover: var(--theme--warning);
 }
 
 .danger.rounded {
 	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
+	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-color-hover: var(--theme--danger);
 }
 
 .v-button {
@@ -348,7 +335,7 @@ async function onClick(event: MouseEvent) {
 }
 
 .outlined.secondary {
-	--v-button-color: var(--foreground-subdued);
+	--v-button-color: var(--theme--foreground-subdued);
 }
 
 .outlined.active {

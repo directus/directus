@@ -1,37 +1,3 @@
-<template>
-	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
-		<template #activator="{ toggle, active }">
-			<v-input
-				:active="active"
-				clickable
-				readonly
-				:model-value="displayValue"
-				:disabled="disabled"
-				:placeholder="!isValidValue ? value : t('enter_a_value')"
-				@click="toggle"
-			>
-				<template v-if="!disabled" #append>
-					<v-icon
-						:name="value ? 'clear' : 'today'"
-						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
-						v-on="{ click: value ? unsetValue : null }"
-					/>
-				</template>
-			</v-input>
-		</template>
-
-		<v-date-picker
-			:type="type"
-			:disabled="disabled"
-			:include-seconds="includeSeconds"
-			:use-24="use24"
-			:model-value="value"
-			@update:model-value="$emit('input', $event)"
-			@close="dateTimeMenu?.deactivate"
-		/>
-	</v-menu>
-</template>
-
 <script setup lang="ts">
 import { localizedFormat } from '@/utils/localized-format';
 import { isValid, parse, parseISO } from 'date-fns';
@@ -106,19 +72,53 @@ function unsetValue(e: any) {
 }
 </script>
 
+<template>
+	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+		<template #activator="{ toggle, active }">
+			<v-input
+				:active="active"
+				clickable
+				readonly
+				:model-value="displayValue"
+				:disabled="disabled"
+				:placeholder="!isValidValue ? value : t('enter_a_value')"
+				@click="toggle"
+			>
+				<template v-if="!disabled" #append>
+					<v-icon
+						:name="value ? 'clear' : 'today'"
+						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
+						v-on="{ click: value ? unsetValue : null }"
+					/>
+				</template>
+			</v-input>
+		</template>
+
+		<v-date-picker
+			:type="type"
+			:disabled="disabled"
+			:include-seconds="includeSeconds"
+			:use-24="use24"
+			:model-value="value"
+			@update:model-value="$emit('input', $event)"
+			@close="dateTimeMenu?.deactivate"
+		/>
+	</v-menu>
+</template>
+
 <style lang="scss" scoped>
 .v-icon {
 	&.today-icon {
 		&:hover,
 		&.active {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 
 	&.clear-icon {
 		&:hover,
 		&.active {
-			--v-icon-color: var(--danger);
+			--v-icon-color: var(--theme--danger);
 		}
 	}
 }

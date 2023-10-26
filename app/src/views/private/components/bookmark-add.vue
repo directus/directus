@@ -1,40 +1,3 @@
-<template>
-	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
-		<template #activator="slotBinding">
-			<slot name="activator" v-bind="slotBinding" />
-		</template>
-
-		<v-card>
-			<v-card-title>{{ t('create_bookmark') }}</v-card-title>
-
-			<v-card-text>
-				<div class="fields">
-					<interface-system-input-translated-string
-						:value="bookmarkValue.name"
-						class="full"
-						autofocus
-						trim
-						:placeholder="t('bookmark_name')"
-						@input="bookmarkValue.name = $event"
-						@keyup.enter="$emit('save', bookmarkValue)"
-					/>
-					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
-					<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
-				</div>
-			</v-card-text>
-
-			<v-card-actions>
-				<v-button secondary @click="cancel">
-					{{ t('cancel') }}
-				</v-button>
-				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="$emit('save', bookmarkValue)">
-					{{ t('save') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
-</template>
-
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -72,6 +35,43 @@ function cancel() {
 	emit('update:modelValue', false);
 }
 </script>
+
+<template>
+	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
+		<template #activator="slotBinding">
+			<slot name="activator" v-bind="slotBinding" />
+		</template>
+
+		<v-card>
+			<v-card-title>{{ t('create_bookmark') }}</v-card-title>
+
+			<v-card-text>
+				<div class="fields">
+					<interface-system-input-translated-string
+						:value="bookmarkValue.name"
+						class="full"
+						autofocus
+						trim
+						:placeholder="t('bookmark_name')"
+						@input="bookmarkValue.name = $event"
+						@keyup.enter="$emit('save', bookmarkValue)"
+					/>
+					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
+					<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
+				</div>
+			</v-card-text>
+
+			<v-card-actions>
+				<v-button secondary @click="cancel">
+					{{ t('cancel') }}
+				</v-button>
+				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="$emit('save', bookmarkValue)">
+					{{ t('save') }}
+				</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+</template>
 
 <style lang="scss" scoped>
 .fields {

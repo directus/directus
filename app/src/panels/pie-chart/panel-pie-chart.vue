@@ -1,9 +1,3 @@
-<template>
-	<div class="pie-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -140,8 +134,8 @@ async function setupChart() {
 			},
 			type: props.donut ? 'donut' : 'pie',
 			height: size,
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground-subdued)',
 			selection: {
 				enabled: false,
 			},
@@ -274,6 +268,12 @@ function checkMatchingConditionalFill(
 }
 </script>
 
+<template>
+	<div class="pie-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
+
 <style scoped>
 .pie-chart {
 	height: 100%;
@@ -317,7 +317,7 @@ function checkMatchingConditionalFill(
 
 .apexcharts-tooltip-text {
 	line-height: 1.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .apexcharts-yaxistooltip {

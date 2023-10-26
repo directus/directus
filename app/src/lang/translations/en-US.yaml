@@ -28,6 +28,7 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+extensions: Extensions
 modules: Modules
 module_bar: Module Bar
 logs: Logs
@@ -54,6 +55,26 @@ or: Or
 init: Init
 dataset_too_large_currently_showing_n_items: Dataset is too large. Currently showing the first {n} items.
 modifier: Modifier
+extension_interface: Interface
+extension_display: Display
+extension_layout: Layout
+extension_module: Module
+extension_panel: Panel
+extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operation
+extension_bundle: Bundle
+extension_interfaces: Interfaces
+extension_displays: Displays
+extension_layouts: Layouts
+extension_modules: Modules
+extension_panels: Panels
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Operations
+extension_bundles: Bundles
+enable: Enable
+disable: Disable
 custom: Custom
 hook: Hook
 fill_width: Fill Width
@@ -101,6 +122,33 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+keep: Keep
+version: Version
+version_key: Version Key
+version_name: Version Name
+main_version: Main
+switch_version: Switch Version
+switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
+create_version: Create Version
+rename_version: Rename Version
+compare_version: Compare Version
+save_version: Save Version
+promote_version: Promote Version
+promote_version_disabled: No Changes
+promote_version_drawer_title: Promote {version} into Main
+promote_version_changes: Changes
+promote_version_preview: Preview
+outdated_notice: >-
+  The main item has been updated since this version was created. Please review all the field values below, and confirm
+  which version should be used when promoting this version into the main item.
+promote_notice: >-
+  Please review all the field values below, and confirm which version should be used when promoting this version into
+  the main item.
+delete_version: Delete Version
+delete_version_copy: >-
+  Are you sure you want to delete the "{version}" version? This action cannot be undone.
+delete_on_promote_copy: >-
+  Do you want to delete or keep the "{version}" version after promoting?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -150,6 +198,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  email: Value has to be a valid email address
   regex: Value doesn't have the correct format
   starts_with: Value has to start with {substring}
   istarts_with: Value has to start with {substring}
@@ -264,6 +313,9 @@ geometry.Polygon: Polygon
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
+theme_auto: Automatic (Based on System)
+theme_light: Light Mode
+theme_dark: Dark Mode
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
@@ -360,6 +412,7 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
+revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
@@ -402,6 +455,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -452,7 +506,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -470,6 +523,7 @@ import_from_url: Import File from URL
 replace_from_device: Replace File from Device
 replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
+no_image_selected: No Image Selected
 no_file_selected: No File Selected
 download_file: Download File
 open_file_in_tab: Open file in new tab
@@ -497,6 +551,7 @@ generated_uuid: Generated UUID
 manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
+save_and_quit: Save and Quit
 save_as_copy: Save as Copy
 add_existing: Add Existing
 creating_items: Creating Items
@@ -590,6 +645,7 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
+edit_item: Edit Item
 enabled: Enabled
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
@@ -619,7 +675,7 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNPROCESSABLE_ENTITY: Unprocessable entity
+  UNPROCESSABLE_CONTENT: Unprocessable Content
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
@@ -640,6 +696,7 @@ security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
+create_default: Create Default
 edit_bookmark: Edit Bookmark
 edit_personal_bookmark: Edit Personal Bookmark
 edit_role_bookmark: Edit Role Bookmark
@@ -760,6 +817,7 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 interface_options: Interface Options
+display_options: Display Options
 layout_options: Layout Options
 rows: Rows
 columns: Columns
@@ -969,6 +1027,12 @@ choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
 deselect: Deselect
 deselect_all: Deselect All
+theme: Theme
+select_a_theme: Select a Theme
+appearance_global: Project Default
+appearance_auto: Automatic (Sync with System)
+appearance_light: Light
+appearance_dark: Dark
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
@@ -980,12 +1044,13 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Roles & Permissions
-settings_project: Project Settings
+settings_permissions: Access Control
+settings_project: Settings
+settings_theming: Theming
 settings_webhooks: Webhooks
 settings_flows: Flows
-settings_presets: Presets & Bookmarks
-settings_translations: Custom Translations
+settings_presets: Bookmarks
+settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
 configure_field_key_to_continue: Configure field key to continue
 scope: Scope
@@ -1000,6 +1065,7 @@ editing_preset: Editing Preset
 layout_preview: Layout Preview
 layout_setup: Layout Setup
 data: Data
+theme-overrides: Theme Overrides
 unsaved_changes: Unsaved Changes
 unsaved_changes_copy: Are you sure you want to leave this page?
 discard_changes: Discard Changes
@@ -1024,7 +1090,9 @@ page_help_files_collection: >-
   your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Project Settings** — Your project's global configuration options."
+page_help_settings_project: "**Settings** — Your project's global configuration options."
+page_help_settings_theming: "**Theming** — Your project's theming options."
+page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
@@ -1060,6 +1128,8 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 no_upscale: Don't upscale images
+no_extensions: No Extensions
+no_extensions_copy: No extensions have been installed yet.
 collection: Collection
 collections: Collections
 content: Content
@@ -1089,6 +1159,8 @@ directus_collection:
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
   directus_translations: Custom translations
+  directus_versions: Content Versions for items
+  directus_extensions: Configuration of extensions
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1115,6 +1187,7 @@ fields:
     unarchive_value: Unarchive Value
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
+    versioning: Versioning
     archive_field: Archive Field
     item_duplication_fields: Item Duplication Fields
   directus_files:
@@ -1153,10 +1226,6 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
-    theme: Theme
-    theme_auto: Automatic (Based on System)
-    theme_light: Light Mode
-    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -1172,6 +1241,8 @@ fields:
     last_page: Last Page
     last_access: Last Access
     email_notifications: Email Notifications
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1196,10 +1267,11 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
-    branding: Branding & Style
+    branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
+    theming: Theming Defaults
     auth_password_policy: Auth Password Policy
     auth_login_attempts: Auth Login Attempts
     files_and_thumbnails: Files & Storage
@@ -1214,6 +1286,8 @@ fields:
     transformations_presets: Limit transformations to presets below
     image_editor: Image Editor
     custom_aspect_ratios: Custom Aspect Ratios
+    theme_light_overrides: Light Theme Customization
+    theme_dark_overrides: Dark Theme Customization
   directus_shares:
     name: Name
     role: Role
@@ -1256,7 +1330,8 @@ field_options:
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
+    project_logo_note: White 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -1312,6 +1387,8 @@ field_options:
     accountability_divider: Accountability
     duplication_divider: Duplication
     preview_divider: Preview
+    content_versioning_divider: Content Versioning
+    enable_versioning: Enable Versioning
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1475,6 +1552,7 @@ search: Search
 select_existing: Select Existing
 select_field_type: Select a field type
 select_interface: Select an interface
+select_display: Select a display
 settings: Settings
 sign_in: Sign In
 sign_out: Sign Out
@@ -1644,6 +1722,13 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
+    description: Select an existing display
+    placeholder: Select an display...
+  system-display-options:
+    display-options: Display Options
+    description: A modal for selecting options of a display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1696,7 +1781,7 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
+    folder: Root Folder
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root
@@ -1715,6 +1800,9 @@ interfaces:
     incompatible_data:
       The current data is not compatible with the repeater interface and will be overridden when adding items to the
       repeater
+    interface_group: Interface Options
+    display_group: Display Options
+
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -2063,6 +2151,9 @@ panels:
     name: Metric
     description: Show a single value based on a query
     field: Field
+  metric_list:
+    name: Metric List
+    description: List and visualize aggregate metrics from a collection
   time_series:
     name: Time Series
     description: Render a line chart based on values over time
@@ -2091,6 +2182,7 @@ panels:
     smooth: Smooth
     straight: Straight
     step_line: Step Line
+    show_legend: Show Legend
   meter:
     name: Meter
     description: Meter for tracking values
@@ -2244,3 +2336,44 @@ operations:
     batch: Batch
     batch_size: Batch Size
     cache: Cache
+unit: Unit
+standard: Standard
+scientific: Scientific
+engineering: Engineering
+compact: Compact
+currency: Currency
+notation: Notation
+style: Style
+fonts:
+  thin: Thin
+  extra_light: Extra Light
+  light: Light
+  normal: Normal
+  medium: Medium
+  semi_bold: Semi Bold
+  bold: Bold
+  extra_bold: Extra Bold
+  black: Black
+  italic: Italic
+  oblique: Oblique
+  small: Small
+  large: Large
+  auto: Auto
+text_wrap: Text Wrap
+center: Center
+justify: Justify
+text_align: Text Align
+font_weight: Font Weight
+font_style: Font Style
+font_size: Font Size
+minimum_fraction_digits: Minimum Decimals
+maximum_fraction_digits: Maximum Decimals
+show_percentage: Show Percentage
+aggregation: Aggregation
+series_grouping: Series Grouping
+date_precision: Date Precision
+export_dashboard: Export Dashboard
+duplicate_dashboard: Duplicate Dashboard
+search_dashboard: Search Dashboard...
+search_flow: Search Flow...
+percent: Percent

@@ -18,8 +18,8 @@ As an example, this guide will proxy the Twilio API, but the same approach can b
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose endpoint), and type a name for your extension (for example,
@@ -58,6 +58,7 @@ const twilioSid = env.TWILIO_ACCOUNT_SID;
 const twilioToken = env.TWILIO_AUTH_TOKEN;
 
 const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
+
 const headers = {
 	Authorization: `Basic ${token}`,
 };
@@ -119,19 +120,13 @@ be combined with the twilio host to perform an API query.
 As Twilio is an API that requires authentication and costs money to use, you should also require authentication for your
 endpoint. Without this, any person on the internet could use it.
 
-At the top of your file, import the `createError` function and create a new error:
-
-```js
-import { createError } from '@directus/errors';
-const ForbiddenError = createError('TWILIO_FORBIDDEN', 'You need to be authenticated to access this endpoint');
-```
-
-Throw the function if `req.accountability` is `null`:
+A client is unauthenticated if `req.accountability.user` is `null`, use this check to protect both methods:
 
 ```js
 router.get('/*', async (req, res) => {
-	if(req.accountability == null) { // [!code ++]
-		throw new ForbiddenError(); // [!code ++]
+	if (req.accountability?.user == null) { // [!code ++]
+		res.status(403); // [!code ++]
+		return res.send(`You don't have permission to access this.`); // [!code ++]
 	} // [!code ++]
 
 	try {
@@ -150,8 +145,9 @@ router.get('/*', async (req, res) => {
 });
 
 router.post('/*', async (req, res) => {
-	if(req.accountability == null) { // [!code ++]
-		throw new ForbiddenError(); // [!code ++]
+	if (req.accountability?.user == null) { // [!code ++]
+		res.status(403); // [!code ++]
+		return res.send(`You don't have permission to access this.`); // [!code ++]
 	} // [!code ++]
 
 	try {
@@ -220,7 +216,7 @@ It will look something like:
 
 Change the method to as required (in this case POST) and add the following json to the body:
 
-```js
+```json
 {
 	"From": "+0123456789",
 	"Body": "Hi from Directus",
@@ -244,12 +240,6 @@ simplify your other extensions.
 `index.js`
 
 ```js
-import { createError } from '@directus/errors';
-const ForbiddenError = createError(
-	'TWILIO_FORBIDDEN',
-	'You need to be authenticated to access this endpoint'
-);
-
 export default {
 	id: 'twilio',
 	handler: (router, { env }) => {
@@ -257,14 +247,16 @@ export default {
 		const twilioSid = env.TWILIO_ACCOUNT_SID;
 		const twilioToken = env.TWILIO_AUTH_TOKEN;
 
-        const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
+		const token = Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64');
+
 		const headers = {
 			Authorization: `Basic ${token}`,
 		};
 
 		router.get('/*', async (req, res) => {
-			if (req.accountability == null) {
-				throw new ForbiddenError();
+			if (req.accountability?.user == null) {
+				res.status(403);
+				return res.send(`You don't have permission to access this.`);
 			}
 
 			try {
@@ -283,8 +275,9 @@ export default {
 		});
 
 		router.post('/*', async (req, res) => {
-			if (req.accountability == null) {
-				throw new ForbiddenError();
+			if (req.accountability?.user == null) {
+				res.status(403);
+				return res.send(`You don't have permission to access this.`);
 			}
 
 			try {

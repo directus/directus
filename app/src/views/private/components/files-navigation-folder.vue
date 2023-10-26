@@ -1,121 +1,3 @@
-<template>
-	<div>
-		<v-list-item
-			v-if="folder.children === undefined"
-			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
-			clickable
-			:active="currentFolder === folder.id"
-			@click="clickHandler({ folder: folder.id })"
-		>
-			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="folder.name" />
-			</v-list-item-content>
-		</v-list-item>
-
-		<v-list-group
-			v-else
-			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
-			clickable
-			:active="currentFolder === folder.id"
-			:value="folder.id"
-			scope="files-navigation"
-			disable-groupable-parent
-			@click="clickHandler({ folder: folder.id })"
-		>
-			<template #activator>
-				<v-list-item-icon>
-					<v-icon name="folder" />
-				</v-list-item-icon>
-				<v-list-item-content>
-					<v-text-overflow :text="folder.name" />
-				</v-list-item-content>
-			</template>
-
-			<navigation-folder
-				v-for="childFolder in folder.children"
-				:key="childFolder.id"
-				:folder="childFolder"
-				:current-folder="currentFolder"
-				:click-handler="clickHandler"
-				:actions-disabled="actionsDisabled"
-			/>
-		</v-list-group>
-
-		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
-			<v-list>
-				<v-list-item clickable @click="renameActive = true">
-					<v-list-item-icon>
-						<v-icon name="edit" outline />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t('rename_folder')" />
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item clickable @click="moveActive = true">
-					<v-list-item-icon>
-						<v-icon name="folder_move" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t('move_to_folder')" />
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item class="danger" clickable @click="deleteActive = true">
-					<v-list-item-icon>
-						<v-icon name="delete" outline />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t('delete_folder')" />
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-
-		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
-			<v-card>
-				<v-card-title>{{ t('rename_folder') }}</v-card-title>
-				<v-card-text>
-					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
-					<v-button :disabled="renameValue === null" :loading="renameSaving" @click="renameSave">
-						{{ t('save') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="moveActive" persistent @esc="moveActive = false">
-			<v-card>
-				<v-card-title>{{ t('move_to_folder') }}</v-card-title>
-				<v-card-text>
-					<folder-picker v-model="moveValue" :disabled-folders="[folder.id]" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="moveActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="moveSaving" @click="moveSave">{{ t('save') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
-			<v-card>
-				<v-card-title>{{ t('delete_folder') }}</v-card-title>
-				<v-card-text>
-					<v-notice>
-						{{ t('nested_files_folders_will_be_moved') }}
-					</v-notice>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button kind="danger" :loading="deleteSaving" @click="deleteSave">{{ t('delete_label') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
@@ -132,10 +14,10 @@ const props = withDefaults(
 		folder: Folder;
 		currentFolder?: string;
 		actionsDisabled?: boolean;
-		clickHandler: (target: FolderTarget) => void;
+		clickHandler?: (target: FolderTarget) => void;
 	}>(),
 	{
-		clickHandler: () => undefined,
+		clickHandler: () => () => undefined,
 	}
 );
 
@@ -271,10 +153,128 @@ function useDeleteFolder() {
 }
 </script>
 
+<template>
+	<div>
+		<v-list-item
+			v-if="folder.children === undefined"
+			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
+			clickable
+			:active="currentFolder === folder.id"
+			@click="clickHandler({ folder: folder.id })"
+		>
+			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
+			<v-list-item-content>
+				<v-text-overflow :text="folder.name" />
+			</v-list-item-content>
+		</v-list-item>
+
+		<v-list-group
+			v-else
+			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
+			clickable
+			:active="currentFolder === folder.id"
+			:value="folder.id"
+			scope="files-navigation"
+			disable-groupable-parent
+			@click="clickHandler({ folder: folder.id })"
+		>
+			<template #activator>
+				<v-list-item-icon>
+					<v-icon name="folder" />
+				</v-list-item-icon>
+				<v-list-item-content>
+					<v-text-overflow :text="folder.name" />
+				</v-list-item-content>
+			</template>
+
+			<navigation-folder
+				v-for="childFolder in folder.children"
+				:key="childFolder.id"
+				:folder="childFolder"
+				:current-folder="currentFolder"
+				:click-handler="clickHandler"
+				:actions-disabled="actionsDisabled"
+			/>
+		</v-list-group>
+
+		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+			<v-list>
+				<v-list-item clickable @click="renameActive = true">
+					<v-list-item-icon>
+						<v-icon name="edit" outline />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t('rename_folder')" />
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item clickable @click="moveActive = true">
+					<v-list-item-icon>
+						<v-icon name="folder_move" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t('move_to_folder')" />
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item class="danger" clickable @click="deleteActive = true">
+					<v-list-item-icon>
+						<v-icon name="delete" outline />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t('delete_folder')" />
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+
+		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
+			<v-card>
+				<v-card-title>{{ t('rename_folder') }}</v-card-title>
+				<v-card-text>
+					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
+					<v-button :disabled="renameValue === null" :loading="renameSaving" @click="renameSave">
+						{{ t('save') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="moveActive" persistent @esc="moveActive = false">
+			<v-card>
+				<v-card-title>{{ t('move_to_folder') }}</v-card-title>
+				<v-card-text>
+					<folder-picker v-model="moveValue" :disabled-folders="[folder.id]" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="moveActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="moveSaving" @click="moveSave">{{ t('save') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
+			<v-card>
+				<v-card-title>{{ t('delete_folder') }}</v-card-title>
+				<v-card-text>
+					<v-notice>
+						{{ t('nested_files_folders_will_be_moved') }}
+					</v-notice>
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
+					<v-button kind="danger" :loading="deleteSaving" @click="deleteSave">{{ t('delete_label') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</div>
+</template>
+
 <style scoped>
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 </style>

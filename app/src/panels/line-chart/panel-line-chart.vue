@@ -1,9 +1,3 @@
-<template>
-	<div class="line-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction } from '@/types/panels';
@@ -11,8 +5,10 @@ import type { Filter } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { isNil } from 'lodash';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { monoThemeGenerator } from '../pie-chart/color-generator';
 
 const props = withDefaults(
 	defineProps<{
@@ -20,17 +16,22 @@ const props = withDefaults(
 		height: number;
 		collection: string;
 		data?: Record<string, any>[];
-		group?: string;
+		aggregation?: string;
+		grouping?: string;
 		xAxis?: string;
 		function: PanelFunction;
 		yAxis: string;
 		color?: string;
-		filter: Filter;
+		filter?: Filter;
 		decimals?: number;
 		showAxisLabels?: string;
 		showLegend?: boolean;
 		showMarker?: boolean;
 		curveType?: string;
+		fillType?: string;
+		width: number;
+		min?: number;
+		max?: number;
 	}>(),
 	{
 		showHeader: false,
@@ -40,7 +41,8 @@ const props = withDefaults(
 		showMarker: true,
 		curveType: 'smooth',
 		decimals: 2,
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
+		fillType: 'gradient',
 	}
 );
 
@@ -53,18 +55,22 @@ const chart = ref<ApexCharts>();
 
 onMounted(setUpChart);
 
-onUnmounted(() => {
-	chart.value?.destroy();
-});
-
 watch(
 	[
-		() => props.showHeader,
 		() => props.data,
+		() => props.color,
+		() => props.fillType,
+		() => props.curveType,
+		() => props.decimals,
+		() => props.min,
+		() => props.max,
+		() => props.width,
+		() => props.height,
 		() => props.showAxisLabels,
 		() => props.showLegend,
 		() => props.showMarker,
-		() => props.curveType,
+		() => props.min,
+		() => props.max,
 	],
 	() => {
 		chart.value?.destroy();
@@ -73,43 +79,72 @@ watch(
 	{ deep: true }
 );
 
+onUnmounted(() => {
+	chart.value?.destroy();
+});
+
+const yAxisRange = computed(() => {
+	let min = isNil(props.min) ? undefined : Number(props.min);
+	let max = isNil(props.max) ? undefined : Number(props.max);
+
+	if (max !== undefined && !min) {
+		min = 0;
+	}
+
+	if (max !== undefined && min !== undefined && max < min) {
+		max = min;
+		min = Number(props.max);
+	}
+
+	return { max, min };
+});
+
 function setUpChart() {
-	if (props.group && !props.xAxis) return;
+	if (props.aggregation && !props.xAxis) return;
 
-	const series = props.group
-		? {
-				name: props.function,
-				data: props.data.map((d) => {
-					const yAxis = d[props.function]?.[props.xAxis!];
-					if (isNaN(Number(yAxis))) return yAxis;
-					return props.decimals ? n(Number(Number(yAxis).toFixed(props.decimals))) : n(Number(yAxis));
-				}),
-		  }
-		: {
+	const categories = [...new Set(props.data.map((d) => d['group'][props.xAxis!]))]; // get the unique categories
+
+	let series: any = [];
+
+	if (props.grouping) {
+		const seriesDifferentiators = [...new Set(props.data.map((d) => d['group'][props.grouping!]))]; // get the unique category differentiators
+
+		series = seriesDifferentiators.map((differentiator: string) => {
+			const seriesData = props.data.filter((item) => item['group'][props.grouping!] == differentiator);
+
+			return {
+				name: differentiator,
+				data: seriesData.map((item) => item[props.aggregation!][props.yAxis!]),
+			};
+		});
+	} else {
+		series = [
+			{
 				name: props.yAxis,
-				data: props.data.map((d) => {
-					const yAxis = d[props.yAxis];
-					return props.decimals ? Number(Number(yAxis).toFixed(props.decimals)) : yAxis;
-				}),
-		  };
+				data: props.data.map((item) => item[props.aggregation!][props.yAxis!]),
+			},
+		];
+	}
 
-	const categories = props.group
-		? props.data.map((d) => d['group'][props.group!])
-		: props.data.map((d) => d[props.xAxis!]);
-
-	const colors =
+	// Generate monochrome color scheme
+	const colors = monoThemeGenerator(
 		props.color && props.color.startsWith('var(--')
 			? cssVar(props.color.substring(4, props.color.length - 1))
-			: props.color ?? 'var(--primary)';
+			: props.color ?? 'var(--theme--primary)',
+		series.length
+	);
+
+	const isSparkline = props.width < 12 || props.height < 10;
 
 	chart.value = new ApexCharts(chartEl.value, {
-		colors: [colors],
+		colors: colors,
 		chart: {
+			type: props.fillType === 'disabled' ? 'line' : 'area',
 			animation: {
 				enabled: false,
 			},
 			height: '100%',
-			type: 'line',
+			width: '100%',
 			dropShadow: {
 				enabled: false,
 			},
@@ -122,15 +157,19 @@ function setUpChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground-subdued)',
+			sparkline: {
+				enabled: isSparkline,
+			},
 		},
-		series: [series],
+		series: series,
 		stroke: {
 			curve: props.curveType,
 			width: 2,
 			lineCap: 'round',
 		},
+
 		tooltip: {
 			theme: 'light',
 			marker: {
@@ -164,20 +203,37 @@ function setUpChart() {
 		dataLabels: {
 			enabled: false,
 		},
-
 		grid: {
 			borderColor: 'var(--border-subdued)',
 			padding: {
-				top: props.showHeader ? -20 : -2,
-				bottom: 5,
-				left: 20,
-				right: 20,
+				top: isSparkline ? (props.showHeader && 0) || 5 : (props.showHeader && -20) || -2,
+				bottom: isSparkline ? 5 : 0,
+				left: isSparkline ? 0 : 12,
+				right: isSparkline ? 0 : 12,
 			},
 		},
 		markers: {
-			size: 1,
 			colors: colors,
 			strokeColors: colors,
+		},
+		fill: {
+			type: props.fillType === 'disabled' ? 'solid' : props.fillType,
+			gradient: {
+				colorStops: colors.map((color) => {
+					return [
+						{
+							offset: 0,
+							color: color,
+							opacity: 0.25,
+						},
+						{
+							offset: 100,
+							color: color,
+							opacity: 0,
+						},
+					];
+				}),
+			},
 		},
 		xaxis: {
 			categories,
@@ -196,8 +252,8 @@ function setUpChart() {
 				show: ['both', 'xAxis'].includes(props.showAxisLabels),
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -218,7 +274,8 @@ function setUpChart() {
 			axisTicks: {
 				show: false,
 			},
-
+			min: yAxisRange.value.min,
+			max: yAxisRange.value.max,
 			labels: {
 				show: ['both', 'yAxis'].includes(props.showAxisLabels),
 				formatter: (value: number) => {
@@ -230,23 +287,23 @@ function setUpChart() {
 						  } as any);
 				},
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
 			},
 		},
 		legend: {
-			show: props.showLegend,
+			show: props.showLegend && !isSparkline,
 			position: 'bottom',
 			offsetY: -4,
 			markers: {
 				width: 8,
 				height: 8,
 			},
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-normal)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
 			fontSize: '10px',
 		},
@@ -255,6 +312,12 @@ function setUpChart() {
 	chart.value.render();
 }
 </script>
+
+<template>
+	<div class="line-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .line-chart {
@@ -297,7 +360,7 @@ function setUpChart() {
 
 .apexcharts-tooltip-text {
 	line-height: 0.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .apexcharts-tooltip-marker {

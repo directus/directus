@@ -1,79 +1,3 @@
-<template>
-	<sidebar-detail :title="t('shares')" icon="share" :badge="count">
-		<v-notice v-if="error" type="danger">{{ t('unexpected_error') }}</v-notice>
-		<v-progress-linear v-else-if="loading" indeterminate />
-
-		<div v-else-if="!shares || shares.length === 0" class="empty">
-			<div class="content">{{ t('no_shares') }}</div>
-		</div>
-
-		<template v-for="share in shares" :key="share.id">
-			<share-item
-				:share="share"
-				@copy="copy(share.id)"
-				@edit="select(share.id)"
-				@delete="shareToDelete = share"
-				@invite="shareToSend = share"
-			/>
-		</template>
-
-		<drawer-item
-			collection="directus_shares"
-			:primary-key="shareToEdit"
-			:active="!!shareToEdit"
-			@update:active="unselect"
-			@input="input"
-		/>
-
-		<v-dialog :model-value="!!shareToDelete" @update:model-value="shareToDelete = null" @esc="shareToDelete = null">
-			<v-card>
-				<v-card-title>{{ t('delete_share') }}</v-card-title>
-				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
-
-				<v-card-actions>
-					<v-button secondary @click="shareToDelete = null">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button kind="danger" :loading="deleting" @click="remove">
-						{{ t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog :model-value="!!shareToSend" @update:model-value="shareToSend = null" @esc="shareToSend = null">
-			<v-card>
-				<v-card-title>{{ t('share_send_link') }}</v-card-title>
-				<v-card-text>
-					<div class="grid">
-						<div class="field">
-							<v-input disabled :model-value="sendPublicLink" />
-						</div>
-
-						<div class="field">
-							<div class="type-label">{{ t('emails') }}</div>
-							<v-textarea v-model="sendEmails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
-						</div>
-					</div>
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button secondary @click="shareToSend = null">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button :loading="sending" @click="send">
-						{{ t('share_send_link') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-button v-if="allowed" full-width @click="select('+')">
-			{{ t('new_share') }}
-		</v-button>
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
@@ -225,11 +149,87 @@ async function send() {
 }
 </script>
 
+<template>
+	<sidebar-detail :title="t('shares')" icon="share" :badge="count">
+		<v-notice v-if="error" type="danger">{{ t('unexpected_error') }}</v-notice>
+		<v-progress-linear v-else-if="loading" indeterminate />
+
+		<div v-else-if="!shares || shares.length === 0" class="empty">
+			<div class="content">{{ t('no_shares') }}</div>
+		</div>
+
+		<template v-for="share in shares" :key="share.id">
+			<share-item
+				:share="share"
+				@copy="copy(share.id)"
+				@edit="select(share.id)"
+				@delete="shareToDelete = share"
+				@invite="shareToSend = share"
+			/>
+		</template>
+
+		<drawer-item
+			collection="directus_shares"
+			:primary-key="shareToEdit"
+			:active="!!shareToEdit"
+			@update:active="unselect"
+			@input="input"
+		/>
+
+		<v-dialog :model-value="!!shareToDelete" @update:model-value="shareToDelete = null" @esc="shareToDelete = null">
+			<v-card>
+				<v-card-title>{{ t('delete_share') }}</v-card-title>
+				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="shareToDelete = null">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button kind="danger" :loading="deleting" @click="remove">
+						{{ t('delete_label') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="!!shareToSend" @update:model-value="shareToSend = null" @esc="shareToSend = null">
+			<v-card>
+				<v-card-title>{{ t('share_send_link') }}</v-card-title>
+				<v-card-text>
+					<div class="grid">
+						<div class="field">
+							<v-input disabled :model-value="sendPublicLink" />
+						</div>
+
+						<div class="field">
+							<div class="type-label">{{ t('emails') }}</div>
+							<v-textarea v-model="sendEmails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
+						</div>
+					</div>
+				</v-card-text>
+
+				<v-card-actions>
+					<v-button secondary @click="shareToSend = null">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button :loading="sending" @click="send">
+						{{ t('share_send_link') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-button v-if="allowed" full-width @click="select('+')">
+			{{ t('new_share') }}
+		</v-button>
+	</sidebar-detail>
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .sidebar-detail {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--theme--primary);
 }
 
 .v-progress-linear {
@@ -252,7 +252,7 @@ async function send() {
 	margin-top: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 

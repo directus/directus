@@ -1,13 +1,3 @@
-<template>
-	<component
-		:is="isSingleton ? ItemRoute : CollectionRoute"
-		:collection="collection"
-		:bookmark="bookmark"
-		:archive="archive"
-		v-bind="isSingleton ? { singleton: isSingleton } : {}"
-	/>
-</template>
-
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import CollectionRoute from './collection.vue';
@@ -43,3 +33,13 @@ watch(
 	{ immediate: true }
 );
 </script>
+
+<template>
+	<component
+		:is="isSingleton ? ItemRoute : CollectionRoute"
+		:collection="collection"
+		:bookmark="bookmark"
+		:archive="archive"
+		v-bind="isSingleton ? { singleton: isSingleton } : {}"
+	/>
+</template>

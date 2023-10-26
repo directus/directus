@@ -1,43 +1,3 @@
-<template>
-	<template v-if="!collectionName">
-		<v-notice type="info">
-			{{ t('interfaces.system-fields.select_a_collection') }}
-		</v-notice>
-	</template>
-	<template v-else>
-		<v-list v-if="fields.length === 0">
-			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
-		</v-list>
-		<v-list v-else>
-			<draggable v-model="fields" :force-fallback="true" item-key="key" handle=".drag-handle">
-				<template #item="{ element: field }">
-					<v-list-item block>
-						<v-icon name="drag_handle" class="drag-handle" left />
-						<div class="name">{{ field.displayName }}</div>
-						<div class="spacer" />
-						<v-icon name="close" clickable @click="removeField(field.key)" />
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
-		<v-menu placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
-				<button class="toggle" @click="toggle">
-					{{ t('add_field') }}
-					<v-icon name="expand_more" />
-				</button>
-			</template>
-
-			<v-field-list
-				:disabled-fields="value"
-				:collection="collectionName"
-				:allow-select-all="allowSelectAll"
-				@add="addFields"
-			/>
-		</v-menu>
-	</template>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
@@ -125,9 +85,49 @@ const removeField = (field: string) => {
 };
 </script>
 
+<template>
+	<template v-if="!collectionName">
+		<v-notice type="info">
+			{{ t('interfaces.system-fields.select_a_collection') }}
+		</v-notice>
+	</template>
+	<template v-else>
+		<v-list v-if="fields.length === 0">
+			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
+		</v-list>
+		<v-list v-else>
+			<draggable v-model="fields" force-fallback item-key="key" handle=".drag-handle">
+				<template #item="{ element: field }">
+					<v-list-item block>
+						<v-icon name="drag_handle" class="drag-handle" left />
+						<div class="name">{{ field.displayName }}</div>
+						<div class="spacer" />
+						<v-icon name="close" clickable @click="removeField(field.key)" />
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
+		<v-menu placement="bottom-start" show-arrow>
+			<template #activator="{ toggle }">
+				<button class="toggle" @click="toggle">
+					{{ t('add_field') }}
+					<v-icon name="expand_more" />
+				</button>
+			</template>
+
+			<v-field-list
+				:disabled-fields="value"
+				:collection="collectionName"
+				:allow-select-all="allowSelectAll"
+				@add="addFields"
+			/>
+		</v-menu>
+	</template>
+</template>
+
 <style lang="scss" scoped>
 .toggle {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	margin-left: 10px;
 	margin-top: 6px;
@@ -138,7 +138,7 @@ const removeField = (field: string) => {
 }
 
 .v-notice.no-fields {
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--v-list-item-border-color);
 
 	&::after {

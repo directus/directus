@@ -1,33 +1,3 @@
-<template>
-	<v-notice v-if="!url" type="warning">
-		{{ t('one_or_more_options_are_missing') }}
-	</v-notice>
-	<div v-else>
-		<v-menu attached :disabled="disabled">
-			<template #activator="{ activate }">
-				<v-input
-					:placeholder="placeholder"
-					:disabled="disabled"
-					:class="font"
-					:model-value="value"
-					:dir="direction"
-					@update:model-value="onInput"
-					@focus="activate"
-				>
-					<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-					<template v-if="iconRight" #append><v-icon :name="iconRight" /></template>
-				</v-input>
-			</template>
-
-			<v-list v-if="results.length > 0">
-				<v-list-item v-for="result of results" :key="result.value" @click="() => emitValue(result.value)">
-					<v-list-item-content>{{ textPath ? result.text : result.value }}</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import axios from 'axios';
@@ -113,18 +83,48 @@ function emitValue(value: string) {
 }
 </script>
 
+<template>
+	<v-notice v-if="!url" type="warning">
+		{{ t('one_or_more_options_are_missing') }}
+	</v-notice>
+	<div v-else>
+		<v-menu attached :disabled="disabled">
+			<template #activator="{ activate }">
+				<v-input
+					:placeholder="placeholder"
+					:disabled="disabled"
+					:class="font"
+					:model-value="value"
+					:dir="direction"
+					@update:model-value="onInput"
+					@focus="activate"
+				>
+					<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
+					<template v-if="iconRight" #append><v-icon :name="iconRight" /></template>
+				</v-input>
+			</template>
+
+			<v-list v-if="results.length > 0">
+				<v-list-item v-for="result of results" :key="result.value" @click="() => emitValue(result.value)">
+					<v-list-item-content>{{ textPath ? result.text : result.value }}</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-input {
 	&.monospace {
-		--v-input-font-family: var(--family-monospace);
+		--v-input-font-family: var(--theme--font-family-monospace);
 	}
 
 	&.serif {
-		--v-input-font-family: var(--family-serif);
+		--v-input-font-family: var(--theme--font-family-serif);
 	}
 
 	&.sans-serif {
-		--v-input-font-family: var(--family-sans-serif);
+		--v-input-font-family: var(--theme--font-family-sans-serif);
 	}
 }
 </style>

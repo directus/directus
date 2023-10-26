@@ -1,3 +1,61 @@
+<script setup lang="ts">
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useCollection } from '@directus/composables';
+import { clone } from 'lodash';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
+import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const settingsStore = useSettingsStore();
+const serverStore = useServerStore();
+
+const { fields: allFields } = useCollection('directus_settings');
+
+const fields = computed(() =>
+	unref(allFields).filter((field) => field.meta?.group !== 'theming_group' && field.field !== 'theming_group')
+);
+
+const initialValues = ref(clone(settingsStore.settings));
+
+const edits = ref<{ [key: string]: any } | null>(null);
+
+const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
+
+const saving = ref(false);
+
+useShortcut('meta+s', () => {
+	if (hasEdits.value) save();
+});
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+async function save() {
+	if (edits.value === null) return;
+	saving.value = true;
+	await settingsStore.updateSettings(edits.value);
+	await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
+	edits.value = null;
+	saving.value = false;
+	initialValues.value = clone(settingsStore.settings);
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+</script>
+
 <template>
 	<private-view :title="t('settings_project')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
@@ -40,60 +98,6 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
-import { useCollection } from '@directus/composables';
-import { clone } from 'lodash';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import SettingsNavigation from '../../components/navigation.vue';
-import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
-
-const { t } = useI18n();
-
-const router = useRouter();
-
-const settingsStore = useSettingsStore();
-const serverStore = useServerStore();
-
-const { fields } = useCollection('directus_settings');
-
-const initialValues = ref(clone(settingsStore.settings));
-
-const edits = ref<{ [key: string]: any } | null>(null);
-
-const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
-
-const saving = ref(false);
-
-useShortcut('meta+s', () => {
-	if (hasEdits.value) save();
-});
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-async function save() {
-	if (edits.value === null) return;
-	saving.value = true;
-	await settingsStore.updateSettings(edits.value);
-	await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
-	edits.value = null;
-	saving.value = false;
-	initialValues.value = clone(settingsStore.settings);
-}
-
-function discardAndLeave() {
-	if (!leaveTo.value) return;
-	edits.value = {};
-	confirmLeave.value = false;
-	router.push(leaveTo.value);
-}
-</script>
-
 <style lang="scss" scoped>
 .settings {
 	padding: var(--content-padding);
@@ -101,9 +105,9 @@ function discardAndLeave() {
 }
 
 .header-icon {
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 </style>

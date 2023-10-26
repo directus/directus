@@ -1,12 +1,13 @@
-import request from 'supertest';
 import { getUrl } from '@common/config';
+import { ClearCaches, CreateField, DeleteField, DisableTestCachingSetup } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { CreateField, DeleteField } from '@common/functions';
-import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
-import * as common from '@common/index';
+import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
+import type { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
+import request from 'supertest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { collectionCountries, collectionStates, getTestsSchema, seedDBValues } from './change-fields.seed';
 
-const cachedSchema = common.PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
+const cachedSchema = PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
 	acc[pkType] = getTestsSchema(pkType);
 	return acc;
 }, {} as CachedTestsSchema);
@@ -15,7 +16,7 @@ const vendorSchemaValues: TestsSchemaVendorValues = {};
 
 beforeAll(async () => {
 	await seedDBValues(cachedSchema, vendorSchemaValues);
-}, 300000);
+}, 300_000);
 
 describe('Seed Database Values', () => {
 	it.each(vendors)('%s', async (vendor) => {
@@ -24,8 +25,8 @@ describe('Seed Database Values', () => {
 	});
 });
 
-describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
-	common.DisableTestCachingSetup();
+describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
+	DisableTestCachingSetup();
 
 	const localCollectionCountries = `${collectionCountries}_${pkType}`;
 	const localCollectionStates = `${collectionStates}_${pkType}`;
@@ -39,7 +40,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionStates}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const existingData = response.body.data;
 
@@ -57,7 +58,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionStates}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const updatedData = response2.body.data;
 
@@ -78,7 +79,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionStates}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const existingData = response.body.data;
 
@@ -92,7 +93,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							meta: { interface: 'file-image', special: ['file'] },
 							collection: localCollectionCountries,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					await request(getUrl(vendor))
 						.post(`/relations`)
@@ -103,11 +104,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							meta: { sort_field: null },
 							schema: { on_delete: 'SET NULL' },
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionStates}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const updatedData = response2.body.data;
 
@@ -137,11 +138,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							},
 							collection: localCollectionCountries,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/fields/${localCollectionCountries}/${fieldName}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -169,11 +170,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.patch(`/fields/${localCollectionCountries}`)
 						.send([{ field: 'test_divider', meta: { sort: updatedSort, group: null } }])
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/fields/${localCollectionCountries}/${fieldName}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -212,11 +213,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								options: { title: updatedTitle },
 							},
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/fields/${localCollectionCountries}/${fieldName}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -243,7 +244,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					const payload = (
 						await request(getUrl(vendor))
 							.get(`/fields/${localCollectionStates}/${fieldName}`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					).body.data;
 
 					payload.meta.options = { template: 'updated' };
@@ -252,11 +253,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.patch(`/fields/${localCollectionStates}/${fieldName}`)
 						.send(payload)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response2 = await request(getUrl(vendor))
 						.get(`/fields/${localCollectionStates}/${fieldName}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
@@ -267,5 +268,5 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 		});
 	});
 
-	common.ClearCaches();
+	ClearCaches();
 });

@@ -1,276 +1,3 @@
-<template>
-	<component
-		:is="layoutWrapper"
-		ref="layoutRef"
-		v-slot="{ layoutState }"
-		v-model:selection="selection"
-		v-model:layout-options="layoutOptions"
-		v-model:layout-query="layoutQuery"
-		:filter-user="filter"
-		:filter-system="archiveFilter"
-		:filter="mergeFilters(filter, archiveFilter)"
-		:search="search"
-		:collection="collection"
-		:reset-preset="resetPreset"
-		:clear-filters="clearFilters"
-	>
-		<content-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
-		<private-view
-			v-else
-			:title="bookmark ? bookmarkTitle : currentCollection.name"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			:sidebar-shadow="currentLayout?.sidebarShadow"
-		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
-					<v-icon :name="archive ? 'archive' : currentCollection.icon" :color="currentCollection.color" />
-				</v-button>
-			</template>
-
-			<template #headline>
-				<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
-				<v-breadcrumb v-else :items="[{ name: t('content'), to: '/content' }]" />
-			</template>
-
-			<template #title-outer:append>
-				<div class="bookmark-controls">
-					<bookmark-add
-						v-if="!bookmark"
-						v-model="bookmarkDialogActive"
-						class="add"
-						:saving="creatingBookmark"
-						@save="createBookmark"
-					>
-						<template #activator="{ on }">
-							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
-						</template>
-					</bookmark-add>
-
-					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled />
-
-					<template v-else-if="bookmarkIsMine">
-						<v-icon
-							v-tooltip.bottom="t('update_bookmark')"
-							class="save"
-							clickable
-							name="bookmark_save"
-							@click="savePreset()"
-						/>
-					</template>
-
-					<bookmark-add
-						v-else
-						v-model="bookmarkDialogActive"
-						class="add"
-						:saving="creatingBookmark"
-						@save="createBookmark"
-					>
-						<template #activator="{ on }">
-							<v-icon class="toggle" name="bookmark" clickable @click="on" />
-						</template>
-					</bookmark-add>
-
-					<v-icon
-						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
-						v-tooltip.bottom="t('reset_bookmark')"
-						name="settings_backup_restore"
-						clickable
-						class="clear"
-						@click="clearLocalSave"
-					/>
-				</div>
-			</template>
-
-			<template #actions:prepend>
-				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
-			</template>
-
-			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
-
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
-					<template #activator="{ on }">
-						<v-button
-							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
-							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
-							class="action-delete"
-							secondary
-							@click="on"
-						>
-							<v-icon name="delete" outline />
-						</v-button>
-					</template>
-
-					<v-card>
-						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
-
-						<v-card-actions>
-							<v-button secondary @click="confirmDelete = false">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ t('delete_label') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-
-				<v-dialog
-					v-if="
-						selection.length > 0 &&
-						currentCollection.meta &&
-						currentCollection.meta.archive_field &&
-						archive !== 'archived'
-					"
-					v-model="confirmArchive"
-					@esc="confirmArchive = false"
-				>
-					<template #activator="{ on }">
-						<v-button
-							v-tooltip.bottom="batchArchiveAllowed ? t('archive') : t('not_allowed')"
-							:disabled="batchArchiveAllowed !== true"
-							rounded
-							icon
-							secondary
-							@click="on"
-						>
-							<v-icon name="archive" outline />
-						</v-button>
-					</template>
-
-					<v-card>
-						<v-card-title>{{ t('archive_confirm_count', selection.length) }}</v-card-title>
-
-						<v-card-actions>
-							<v-button secondary @click="confirmArchive = false">
-								{{ t('cancel') }}
-							</v-button>
-							<v-button kind="warning" :loading="archiving" @click="archiveItems">
-								{{ t('archive') }}
-							</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
-
-				<v-button
-					v-if="selection.length > 0"
-					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
-					rounded
-					icon
-					secondary
-					:disabled="batchEditAllowed === false"
-					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline />
-				</v-button>
-
-				<v-button
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
-					rounded
-					icon
-					:to="addNewLink"
-					:disabled="createAllowed === false"
-				>
-					<v-icon name="add" />
-				</v-button>
-			</template>
-
-			<template #navigation>
-				<content-navigation :current-collection="collection" />
-			</template>
-
-			<v-info
-				v-if="bookmark && bookmarkExists === false"
-				type="warning"
-				:title="t('bookmark_doesnt_exist')"
-				icon="bookmark"
-				center
-			>
-				{{ t('bookmark_doesnt_exist_copy') }}
-
-				<template #append>
-					<v-button :to="currentCollectionLink">
-						{{ t('bookmark_doesnt_exist_cta') }}
-					</v-button>
-				</template>
-			</v-info>
-
-			<component :is="`layout-${layout || 'tabular'}`" v-else v-bind="layoutState">
-				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
-
-						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
-						</template>
-					</v-info>
-				</template>
-
-				<template #no-items>
-					<v-info :title="t('item_count', 0)" :icon="currentCollection.icon" center>
-						{{ t('no_items_copy') }}
-
-						<template v-if="createAllowed" #append>
-							<v-button :to="getItemRoute(collection, '+')">{{ t('create_item') }}</v-button>
-						</template>
-					</v-info>
-				</template>
-			</component>
-
-			<drawer-batch
-				v-model:active="batchEditActive"
-				:primary-keys="selection"
-				:collection="collection"
-				@refresh="batchRefresh"
-			/>
-
-			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div
-						v-md="t('page_help_collections_collection', { collection: currentCollection.name })"
-						class="page-description"
-					/>
-				</sidebar-detail>
-				<layout-sidebar-detail v-model="layout">
-					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
-				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<archive-sidebar-detail v-if="hasArchive" :collection="collection" :archive="archive" />
-				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail
-					:collection="collection"
-					:filter="mergeFilters(filter, archiveFilter)"
-					:search="search"
-					:layout-query="layoutQuery"
-					@download="download"
-					@refresh="refresh"
-				/>
-				<flow-sidebar-detail
-					location="collection"
-					:collection="collection"
-					:selection="selection"
-					@refresh="batchRefresh"
-				/>
-			</template>
-
-			<v-dialog :model-value="deleteError !== null">
-				<v-card>
-					<v-card-title>{{ t('something_went_wrong') }}</v-card-title>
-					<v-card-text>
-						<v-error :error="deleteError" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button @click="deleteError = null">{{ t('done') }}</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-		</private-view>
-	</component>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
@@ -604,14 +331,287 @@ function usePermissions() {
 }
 </script>
 
+<template>
+	<component
+		:is="layoutWrapper"
+		ref="layoutRef"
+		v-slot="{ layoutState }"
+		v-model:selection="selection"
+		v-model:layout-options="layoutOptions"
+		v-model:layout-query="layoutQuery"
+		:filter-user="filter"
+		:filter-system="archiveFilter"
+		:filter="mergeFilters(filter, archiveFilter)"
+		:search="search"
+		:collection="collection"
+		:reset-preset="resetPreset"
+		:clear-filters="clearFilters"
+	>
+		<content-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
+		<private-view
+			v-else
+			:title="bookmark ? bookmarkTitle : currentCollection.name"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+			:sidebar-shadow="currentLayout?.sidebarShadow"
+		>
+			<template #title-outer:prepend>
+				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
+					<v-icon :name="archive ? 'archive' : currentCollection.icon" :color="currentCollection.color" />
+				</v-button>
+			</template>
+
+			<template #headline>
+				<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
+				<v-breadcrumb v-else :items="[{ name: t('content'), to: '/content' }]" />
+			</template>
+
+			<template #title-outer:append>
+				<div class="bookmark-controls">
+					<bookmark-add
+						v-if="!bookmark"
+						v-model="bookmarkDialogActive"
+						class="add"
+						:saving="creatingBookmark"
+						@save="createBookmark"
+					>
+						<template #activator="{ on }">
+							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
+						</template>
+					</bookmark-add>
+
+					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled />
+
+					<template v-else-if="bookmarkIsMine">
+						<v-icon
+							v-tooltip.bottom="t('update_bookmark')"
+							class="save"
+							clickable
+							name="bookmark_save"
+							@click="savePreset()"
+						/>
+					</template>
+
+					<bookmark-add
+						v-else
+						v-model="bookmarkDialogActive"
+						class="add"
+						:saving="creatingBookmark"
+						@save="createBookmark"
+					>
+						<template #activator="{ on }">
+							<v-icon class="toggle" name="bookmark" clickable @click="on" />
+						</template>
+					</bookmark-add>
+
+					<v-icon
+						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+						v-tooltip.bottom="t('reset_bookmark')"
+						name="settings_backup_restore"
+						clickable
+						class="clear"
+						@click="clearLocalSave"
+					/>
+				</div>
+			</template>
+
+			<template #actions:prepend>
+				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
+			</template>
+
+			<template #actions>
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+							:disabled="batchDeleteAllowed !== true"
+							rounded
+							icon
+							class="action-delete"
+							secondary
+							@click="on"
+						>
+							<v-icon name="delete" outline />
+						</v-button>
+					</template>
+
+					<v-card>
+						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+
+						<v-card-actions>
+							<v-button secondary @click="confirmDelete = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button kind="danger" :loading="deleting" @click="batchDelete">
+								{{ t('delete_label') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-dialog
+					v-if="
+						selection.length > 0 &&
+						currentCollection.meta &&
+						currentCollection.meta.archive_field &&
+						archive !== 'archived'
+					"
+					v-model="confirmArchive"
+					@esc="confirmArchive = false"
+				>
+					<template #activator="{ on }">
+						<v-button
+							v-tooltip.bottom="batchArchiveAllowed ? t('archive') : t('not_allowed')"
+							:disabled="batchArchiveAllowed !== true"
+							rounded
+							icon
+							secondary
+							@click="on"
+						>
+							<v-icon name="archive" outline />
+						</v-button>
+					</template>
+
+					<v-card>
+						<v-card-title>{{ t('archive_confirm_count', selection.length) }}</v-card-title>
+
+						<v-card-actions>
+							<v-button secondary @click="confirmArchive = false">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button kind="warning" :loading="archiving" @click="archiveItems">
+								{{ t('archive') }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-button
+					v-if="selection.length > 0"
+					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
+					rounded
+					icon
+					secondary
+					:disabled="batchEditAllowed === false"
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
+					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					rounded
+					icon
+					:to="addNewLink"
+					:disabled="createAllowed === false"
+				>
+					<v-icon name="add" />
+				</v-button>
+			</template>
+
+			<template #navigation>
+				<content-navigation :current-collection="collection" />
+			</template>
+
+			<v-info
+				v-if="bookmark && bookmarkExists === false"
+				type="warning"
+				:title="t('bookmark_doesnt_exist')"
+				icon="bookmark"
+				center
+			>
+				{{ t('bookmark_doesnt_exist_copy') }}
+
+				<template #append>
+					<v-button :to="currentCollectionLink">
+						{{ t('bookmark_doesnt_exist_cta') }}
+					</v-button>
+				</template>
+			</v-info>
+
+			<component :is="`layout-${layout || 'tabular'}`" v-else v-bind="layoutState">
+				<template #no-results>
+					<v-info :title="t('no_results')" icon="search" center>
+						{{ t('no_results_copy') }}
+
+						<template #append>
+							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+						</template>
+					</v-info>
+				</template>
+
+				<template #no-items>
+					<v-info :title="t('item_count', 0)" :icon="currentCollection.icon" center>
+						{{ t('no_items_copy') }}
+
+						<template v-if="createAllowed" #append>
+							<v-button :to="getItemRoute(collection, '+')">{{ t('create_item') }}</v-button>
+						</template>
+					</v-info>
+				</template>
+			</component>
+
+			<drawer-batch
+				v-model:active="batchEditActive"
+				:primary-keys="selection"
+				:collection="collection"
+				@refresh="batchRefresh"
+			/>
+
+			<template #sidebar>
+				<sidebar-detail icon="info" :title="t('information')" close>
+					<div
+						v-md="t('page_help_collections_collection', { collection: currentCollection.name })"
+						class="page-description"
+					/>
+				</sidebar-detail>
+				<layout-sidebar-detail v-model="layout">
+					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
+				</layout-sidebar-detail>
+				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
+				<archive-sidebar-detail v-if="hasArchive" :collection="collection" :archive="archive" />
+				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
+				<export-sidebar-detail
+					:collection="collection"
+					:filter="mergeFilters(filter, archiveFilter)"
+					:search="search"
+					:layout-query="layoutQuery"
+					@download="download"
+					@refresh="refresh"
+				/>
+				<flow-sidebar-detail
+					location="collection"
+					:collection="collection"
+					:selection="selection"
+					@refresh="batchRefresh"
+				/>
+			</template>
+
+			<v-dialog :model-value="deleteError !== null">
+				<v-card>
+					<v-card-title>{{ t('something_went_wrong') }}</v-card-title>
+					<v-card-text>
+						<v-error :error="deleteError" />
+					</v-card-text>
+					<v-card-actions>
+						<v-button @click="deleteError = null">{{ t('done') }}</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+		</private-view>
+	</component>
+</template>
+
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .bookmark-controls {
@@ -631,15 +631,15 @@ function usePermissions() {
 	}
 
 	.add {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 
 	.save {
-		color: var(--warning);
+		color: var(--theme--warning);
 
 		&:hover {
 			color: var(--warning-125);
@@ -648,15 +648,15 @@ function usePermissions() {
 
 	.clear {
 		margin-left: 4px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		&:hover {
-			color: var(--warning);
+			color: var(--theme--warning);
 		}
 	}
 
 	.saved {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }
 </style>

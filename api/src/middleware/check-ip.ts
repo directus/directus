@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import getDatabase from '../database/index.js';
-import { InvalidIpError } from '../errors/index.js';
+import { InvalidIpError } from '@directus/errors';
 import asyncHandler from '../utils/async-handler.js';
 
 export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {

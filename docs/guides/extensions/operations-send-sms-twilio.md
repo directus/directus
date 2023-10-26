@@ -17,8 +17,8 @@ To follow this guide, you will need a Twilio API Key.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose operation), and type a name for your extension (for example,
@@ -26,7 +26,7 @@ A list of options will appear (choose operation), and type a name for your exten
 
 Now the boilerplate has been created, install the Twilio library, and then open the directory in your code editor.
 
-```
+```shell
 cd directus-operation-twilio-sms
 npm install twilio
 ```
@@ -144,15 +144,18 @@ will use the message variable from our handler, `to` will use the `phone_number`
 `TWILIO_PHONE_NUMBER`.
 
 ```js
-client.messages.create({
-	body: message,
-	to: toNumber,
-	from: fromNumber,
-}).then((response) => {
-	return response;
-}).catch((error) => {
-	return error;
-});
+client.messages
+	.create({
+		body: message,
+		to: toNumber,
+		from: fromNumber,
+	})
+	.then((response) => {
+		return response;
+	})
+	.catch((error) => {
+		return error;
+	});
 ```
 
 Make sure the return the `response` and `error` so they can be included in the Flow’s log.
@@ -262,15 +265,18 @@ export default {
 		const fromNumber = env.TWILIO_PHONE_NUMBER;
 		const client = new twilio(accountSid, authToken);
 
-		client.messages.create({
-			body: message,
-			to: toNumber,
-			from: fromNumber,
-		}).then((response) => {
-			return response;
-		}).catch((error) => {
-			return error;
-		});
+		client.messages
+			.create({
+				body: message,
+				to: toNumber,
+				from: fromNumber,
+			})
+			.then((response) => {
+				return response;
+			})
+			.catch((error) => {
+				return error;
+			});
 	},
 };
 ```

@@ -89,12 +89,29 @@ DB_PORT: 5432
 ### config.js
 
 Using a JavaScript file for your config allows you to dynamically generate the configuration of the project during
-startup. The JavaScript configuration supports two different formats, either an **Object Structure** where the key is
-the environment variable name:
+startup.
 
-```js
-// Object Syntax
+By default, the file is expected to be a ESM, while CommonJS is supported too by using `.cjs` as the file extension.
 
+The JavaScript configuration supports two different formats, either an **Object Structure** where the key is the
+environment variable name:
+
+::: code-group
+
+```js [config.js]
+export default {
+	HOST: '0.0.0.0',
+	PORT: 8055,
+
+	DB_CLIENT: 'pg',
+	DB_HOST: 'localhost',
+	DB_PORT: 5432,
+
+	// etc
+};
+```
+
+```js [config.cjs]
 module.exports = {
 	HOST: '0.0.0.0',
 	PORT: 8055,
@@ -107,12 +124,29 @@ module.exports = {
 };
 ```
 
+:::
+
 Or a **Function Structure** that _returns_ the same object format as above. The function gets `process.env` as its
 parameter.
 
-```js
-// Function Syntax
+::: code-group
 
+```js [config.js]
+export default function (env) {
+	return {
+		HOST: '0.0.0.0',
+		PORT: 8055,
+
+		DB_CLIENT: 'pg',
+		DB_HOST: 'localhost',
+		DB_PORT: 5432,
+
+		// etc
+	};
+}
+```
+
+```js [config.cjs]
 module.exports = function (env) {
 	return {
 		HOST: '0.0.0.0',
@@ -126,6 +160,8 @@ module.exports = function (env) {
 	};
 };
 ```
+
+:::
 
 ## Environment Variable Files
 
@@ -191,23 +227,23 @@ prefixing the value with `{type}:`. The following types are available:
 
 ## General
 
-| Variable                   | Description                                                                                                | Default Value                |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                         | `.env`                       |
-| `HOST`                     | IP or host the API listens on.                                                                             | `0.0.0.0`                    |
-| `PORT`                     | What port to run the API under.                                                                            | `8055`                       |
-| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                              | `/`                          |
-| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`                       |
-| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`                     |
-| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `1mb`                        |
-| `ROOT_REDIRECT`            | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                | Whether or not to serve the Admin App under `/admin`.                                                      | `true`                       |
-| `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`                       |
-| `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                      | `Infinity`                   |
-| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`                         |
-| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                          | `100`                        |
-| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                          | `-1`                         |
-| `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                              | `User-agent: *\nDisallow: /` |
+| Variable                   | Description                                                                                                                 | Default Value                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `CONFIG_PATH`              | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
+| `HOST`                     | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
+| `PORT`                     | What port to run the API under.                                                                                             | `8055`                       |
+| `PUBLIC_URL`<sup>[1]</sup> | URL where your API can be reached on the web.                                                                               | `/`                          |
+| `LOG_LEVEL`                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
+| `LOG_STYLE`                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
+| `MAX_PAYLOAD_SIZE`         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
+| `ROOT_REDIRECT`            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
+| `SERVE_APP`                | Whether or not to serve the Admin application                                                                               | `true`                       |
+| `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
+| `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
+| `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
+| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                                           | `100`                        |
+| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
+| `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -444,7 +480,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                 | `false`                              |
 | `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                   | `5m`                                 |
 | `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`                                  |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`                              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                 | `false`                              |
 | `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                      | `directus_activity,directus_presets` |
 | `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
@@ -583,7 +619,7 @@ Directus _won't_ rely on Cloudinary's asset transformations in the `/assets` end
 | `STORAGE_<LOCATION>_SERVICE_ROLE` | The admin service role JWT | --            |
 | `STORAGE_<LOCATION>_BUCKET`       | Storage bucket             | --            |
 | `STORAGE_<LOCATION>_PROJECT_ID`   | Project id                 | --            |
-| `STORAGE_<LOCATION>_ENDPOINT`     | Custom endpoint            | --            |
+| `STORAGE_<LOCATION>_ENDPOINT`     | Optional custom endpoint   | --            |
 
 ::: warning Endpoint
 
@@ -972,11 +1008,15 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 
 ## WebSockets
 
-| Variable                       | Description                                                                                                                      | Default Value |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `WEBSOCKETS_ENABLED`           | Whether or not to enable all WebSocket functionality.                                                                            | `false`       |
-| `WEBSOCKETS_HEARTBEAT_ENABLED` | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
-| `WEBSOCKETS_HEARTBEAT_PERIOD`  | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
+| Variable                                    | Description                                                                                                                      | Default Value |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_ENABLED`                        | Whether or not to enable all WebSocket functionality.                                                                            | `false`       |
+| `WEBSOCKETS_HEARTBEAT_ENABLED`              | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
+| `WEBSOCKETS_HEARTBEAT_PERIOD`<sup>[1]</sup> | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
+
+<sup>[1]</sup> It's recommended to keep this value between 30 and 120 seconds, otherwise the connections could be
+considered idle by other parties and therefore terminated. See
+https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 
 ### REST
 
@@ -997,3 +1037,29 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | `WEBSOCKETS_GRAPHQL_CONN_LIMIT`   | How many simultaneous connections are allowed.                                                                                                                                                          | `Infinity`    |
 | `WEBSOCKETS_GRAPHQL_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
 | `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
+
+---
+
+## PM2
+
+::: warning Requirements
+
+These environment variables only exist when you're using the official Docker Container, or are using the provided
+[`ecosystem.config.cjs`](https://github.com/directus/directus/blob/main/ecosystem.config.cjs) file with `pm2` directly.
+
+:::
+
+For more information on what these options do, please refer to
+[the `pm2` documentation](https://pm2.keymetrics.io/docs/usage/application-declaration/).
+
+| Variable                 | Description                                                        | Default     |
+| ------------------------ | ------------------------------------------------------------------ | ----------- |
+| `PM2_INSTANCES`          | Number of app instance to be launched                              | `1`         |
+| `PM2_EXEC_MODE`          | One of `fork`, `cluster`                                           | `'cluster'` |
+| `PM2_MAX_MEMORY_RESTART` | App will be restarted if it exceeds the amount of memory specified | —           |
+| `PM2_MIN_UPTIME`         | Min uptime of the app to be considered started                     | —           |
+| `PM2_LISTEN_TIMEOUT`     | Time in ms before forcing a reload if app not listening            | —           |
+| `PM2_KILL_TIMEOUT`       | Time in milliseconds before sending a final SIGKILL                | —           |
+| `PM2_MAX_RESTARTS`       | Number of failed restarts before the process is killed             |  —          |
+| `PM2_RESTART_DELAY`      | Time to wait before restarting a crashed app                       | `0`         |
+| `PM2_AUTO_RESTART`       | Automatically restart Directus if it crashes unexpectedly          | `false`     |

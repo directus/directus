@@ -1,25 +1,3 @@
-<template>
-	<component
-		:is="component"
-		class="v-list-item"
-		:class="{
-			active: isActiveRoute,
-			dense,
-			link: isLink,
-			disabled,
-			dashed,
-			block,
-			nav,
-			clickable,
-		}"
-		:download="download"
-		v-bind="additionalProps"
-		@click="onClick"
-	>
-		<slot />
-	</component>
-</template>
-
 <script setup lang="ts">
 import { RouteLocation, useLink, useRoute } from 'vue-router';
 import { computed } from 'vue';
@@ -132,6 +110,28 @@ function onClick(event: PointerEvent) {
 }
 </script>
 
+<template>
+	<component
+		:is="component"
+		class="v-list-item"
+		:class="{
+			active: isActiveRoute,
+			dense,
+			link: isLink,
+			disabled,
+			dashed,
+			block,
+			nav,
+			clickable,
+		}"
+		:download="download"
+		v-bind="additionalProps"
+		@click="onClick"
+	>
+		<slot />
+	</component>
+</template>
+
 <style>
 body {
 	--v-list-item-padding-nav: 0 var(--input-padding);
@@ -146,9 +146,10 @@ body {
 	--v-list-item-border-radius: var(--border-radius);
 	--v-list-item-border-color: var(--border-subdued);
 	--v-list-item-border-color-hover: var(--border-normal-alt);
-	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
-	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
-	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
+	--v-list-item-color: var(--v-list-color, var(--theme--foreground));
+	--v-list-item-color-hover: var(--v-list-color-hover, var(--theme--foreground));
+	--v-list-item-color-active: var(--v-list-color-active, var(--theme--foreground));
+	--v-list-item-background-color: var(--v-list-background-color, var(--background-normal));
 	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
 	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
 }
@@ -174,6 +175,7 @@ body {
 	color: var(--v-list-item-color);
 	text-decoration: none;
 	border-radius: var(--v-list-item-border-radius);
+	background-color: var(--v-list-item-background-color);
 
 	&.dashed {
 		&::after {
@@ -196,45 +198,53 @@ body {
 		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {
+			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-hover);
 			background-color: var(--v-list-item-background-color-hover);
+
+			&.active {
+				color: var(--v-list-item-color-active-hover, var(--v-list-item-color-hover));
+				background-color: var(--v-list-item-background-color-active-hover, var(--v-list-item-background-color-hover));
+			}
 		}
 
 		&:not(.disabled):not(.dense):not(.block):active {
+			--v-list-item-icon-color: var(--v-list-item-icon-color-active, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-active);
 			background-color: var(--v-list-item-background-color-active);
 		}
 	}
 
 	&:not(.dense).active {
+		--v-list-item-icon-color: var(--v-list-item-icon-color-active);
 		color: var(--v-list-item-color-active);
 		background-color: var(--v-list-item-background-color-active);
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--foreground-subdued) !important;
+		--v-list-item-color: var(--theme--foreground-subdued) !important;
 
 		cursor: not-allowed;
 	}
 
 	&.dense {
 		:deep(.v-text-overflow) {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&:hover,
 		&.active {
 			:deep(.v-text-overflow) {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 		}
 	}
 
 	&.block {
 		--v-list-item-border-color: var(--border-subdued);
-		--v-list-item-background-color: var(--background-page);
+		--v-list-item-background-color: var(--theme--background);
 		--v-list-item-background-color-hover: var(--card-face-color);
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		position: relative;
 		display: flex;
@@ -268,7 +278,7 @@ body {
 		}
 
 		&.sortable-chosen {
-			border: var(--border-width) solid var(--primary) !important;
+			border: var(--border-width) solid var(--theme--primary) !important;
 		}
 
 		&.sortable-ghost {

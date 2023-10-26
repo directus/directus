@@ -1,7 +1,7 @@
 import type { Accountability } from '@directus/types';
 import type { Mock } from 'vitest';
 import { describe, expect, test, vi } from 'vitest';
-import { InvalidCredentialsError } from '../errors/index.js';
+import { InvalidCredentialsError } from '@directus/errors';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { getPermissions } from '../utils/get-permissions.js';
 import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate.js';

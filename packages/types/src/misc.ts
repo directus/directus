@@ -36,3 +36,5 @@ export type GenericString<T> = T extends string ? string : T;
 export type Plural<T extends string> = `${T}s`;
 
 export type UnknownObject = Record<string | number | symbol, unknown>;
+
+export type PromiseCallback = () => void | Promise<void>;

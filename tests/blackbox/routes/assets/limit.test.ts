@@ -1,11 +1,12 @@
-import config, { getUrl } from '@common/config';
-import request from 'supertest';
+import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import { createReadStream } from 'fs';
-import path from 'path';
-import * as common from '@common/index';
+import { join } from 'path';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
 
-const assetsDirectory = [__dirname, '..', '..', 'assets'];
+const assetsDirectory = [paths.cwd, 'assets'];
 const storages = ['local', 'minio'];
 
 const imageFile = {
@@ -14,7 +15,7 @@ const imageFile = {
 	filesize: '7136',
 };
 
-const imageFilePath = path.join(...assetsDirectory, imageFile.name);
+const imageFilePath = join(...assetsDirectory, imageFile.name);
 
 describe('/assets', () => {
 	describe('GET /assets/:id', () => {
@@ -25,12 +26,12 @@ describe('/assets', () => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const count = Number(config.envs[vendor].ASSETS_TRANSFORM_MAX_CONCURRENT);
+							const count = Number(config.envs[vendor]['ASSETS_TRANSFORM_MAX_CONCURRENT']);
 
 							const uploadedFileID = (
 								await request(getUrl(vendor))
 									.post('/files')
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 									.field('storage', storage)
 									.attach('file', createReadStream(imageFilePath))
 							).body.data.id;
@@ -42,7 +43,7 @@ describe('/assets', () => {
 									.map((_, index) =>
 										request(getUrl(vendor))
 											.get(`/assets/${uploadedFileID}?width=${4000 + index}&height=${4000 + index}`)
-											.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 									)
 							);
 
@@ -51,7 +52,7 @@ describe('/assets', () => {
 								expect(response.statusCode).toBe(200);
 							}
 						},
-						60000
+						60_000
 					);
 				});
 			});
@@ -67,7 +68,7 @@ describe('/assets', () => {
 							const uploadedFileID = (
 								await request(getUrl(vendor))
 									.post('/files')
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 									.field('storage', storage)
 									.attach('file', createReadStream(imageFilePath))
 							).body.data.id;
@@ -79,7 +80,7 @@ describe('/assets', () => {
 									.map((_, index) =>
 										request(getUrl(vendor))
 											.get(`/assets/${uploadedFileID}?width=${4000 + index}&height=${4000 + index}`)
-											.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 									)
 							);
 
@@ -91,7 +92,7 @@ describe('/assets', () => {
 								attempts - unavailableCount
 							);
 						},
-						1200000
+						1_200_000
 					);
 				});
 			});

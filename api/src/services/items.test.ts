@@ -5,11 +5,11 @@ import { MockClient, Tracker, createTracker, type RawQuery } from 'knex-mock-cli
 import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getDatabaseClient } from '../../src/database/index.js';
-import { ItemsService } from '../../src/services/index.js';
+import { getDatabaseClient } from '../database/index.js';
+import { ItemsService } from './index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
-import { InvalidPayloadError } from '../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import { DatabaseClients, type DatabaseClient } from '../types/database.js';
 
 vi.mock('../env', async () => {

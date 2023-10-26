@@ -13,7 +13,7 @@
 	button {
 		width: 36px;
 		height: 36px;
-		background: var(--background-input) !important;
+		background: var(--theme--form--field--input--background) !important;
 		border: none !important;
 		transition: background-color var(--fast) var(--transition);
 
@@ -31,7 +31,7 @@
 
 		&.active {
 			color: var(--background-subdued) !important;
-			background: var(--foreground-normal) !important;
+			background: var(--theme--foreground) !important;
 		}
 
 		&.hidden {
@@ -79,8 +79,8 @@
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
 	min-height: 24px;
-	color: var(--foreground-normal);
-	background: var(--background-input) !important;
+	color: var(--theme--foreground);
+	background: var(--theme--form--field--input--background) !important;
 	box-shadow: var(--card-shadow);
 
 	button {
@@ -95,9 +95,9 @@
 	}
 
 	a {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 		&:hover {
-			color: var(--foreground-normal-alt);
+			color: var(--theme--foreground-accent);
 		}
 	}
 
@@ -110,16 +110,16 @@
 
 .mapboxgl-ctrl-attrib:not(.mapboxgl-compact) {
 	font-size: 0.8em;
-	color: var(--foreground-normal);
-	background: var(--background-input);
+	color: var(--theme--foreground);
+	background: var(--theme--form--field--input--background);
 	border-radius: 0 6px 0 0;
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
 	a {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 
 		&:hover {
-			color: var(--foreground-normal-alt);
+			color: var(--theme--foreground-accent);
 		}
 	}
 }
@@ -133,7 +133,7 @@
 	font-size: inherit !important;
 	font-family: inherit !important;
 	line-height: inherit !important;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 
 	&,
 	&.suggestions {
@@ -142,7 +142,7 @@
 }
 
 .mapboxgl-ctrl-geocoder--input {
-	color: var(--foreground-normal) !important;
+	color: var(--theme--foreground) !important;
 	border-radius: var(--border-radius);
 }
 
@@ -152,7 +152,7 @@
 }
 
 .mapboxgl-ctrl-geocoder .suggestions > li > a {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
@@ -174,7 +174,7 @@
 }
 
 .mapbox-gl-geocoder--error {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .map-selection-box {
@@ -193,6 +193,10 @@
 
 .maplibregl-ctrl-top-right {
 	max-width: 80%;
+}
+
+.mapbox-gl-draw_ctrl-draw-btn {
+	color: unset;
 }
 
 .mapboxgl-ctrl-zoom-in::after {

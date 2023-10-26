@@ -1,38 +1,3 @@
-<template>
-	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
-		<template #default="{ active, toggle }">
-			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
-				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				<span class="field-name">{{ field.name }}</span>
-				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
-			</div>
-
-			<transition-expand>
-				<div v-if="active" class="fields">
-					<v-form
-						:initial-values="initialValues"
-						:fields="fieldsInSection"
-						:model-value="values"
-						:primary-key="primaryKey"
-						:group="group"
-						:validation-errors="validationErrors"
-						:loading="loading"
-						:batch-mode="batchMode"
-						:disabled="disabled"
-						:direction="direction"
-						:show-no-visible-fields="false"
-						:show-validation-errors="false"
-						@update:model-value="$emit('apply', $event)"
-					/>
-				</div>
-			</transition-expand>
-		</template>
-	</v-item>
-</template>
-
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { isNil, merge } from 'lodash';
@@ -126,6 +91,41 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 </script>
 
+<template>
+	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
+		<template #default="{ active, toggle }">
+			<div class="label type-title" :class="{ active, edited }" @click="handleModifier($event, toggle)">
+				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+				<v-icon class="icon" :class="{ active }" name="expand_more" />
+				<span class="field-name">{{ field.name }}</span>
+				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
+				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
+			</div>
+
+			<transition-expand>
+				<div v-if="active" class="fields">
+					<v-form
+						:initial-values="initialValues"
+						:fields="fieldsInSection"
+						:model-value="values"
+						:primary-key="primaryKey"
+						:group="group"
+						:validation-errors="validationErrors"
+						:loading="loading"
+						:batch-mode="batchMode"
+						:disabled="disabled"
+						:direction="direction"
+						:show-no-visible-fields="false"
+						:show-validation-errors="false"
+						@update:model-value="$emit('apply', $event)"
+					/>
+				</div>
+			</transition-expand>
+		</template>
+	</v-item>
+</template>
+
 <style lang="scss" scoped>
 .accordion-section {
 	border-top: var(--border-width) solid var(--border-normal);
@@ -147,18 +147,18 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	&.active {
 		.field-name,
 		.icon {
-			color: var(--foreground-normal);
+			color: var(--theme--form--field--input--foreground);
 		}
 	}
 
 	.field-name,
 	.icon {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		margin-top: -12px;
 		margin-left: 2px;
@@ -176,7 +176,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 		display: block;
 		width: 4px;
 		height: 4px;
-		background-color: var(--foreground-subdued);
+		background-color: var(--theme--form--field--input--foreground-subdued);
 		border-radius: 4px;
 		content: '';
 	}
@@ -194,7 +194,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .fields {

@@ -71,6 +71,9 @@ What sort order of the collection relative to other collections of the same leve
 What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`,
 `locked`.
 
+`versioning` **boolean**\
+Whether or not Content Versioning is enabled for this collection.
+
 #### Schema
 
 "Raw" database information. Based on the database vendor used, different information might be returned. The following
@@ -148,7 +151,7 @@ List the available collections.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /collections`
@@ -194,7 +197,7 @@ An array of [collection objects](#the-collection-object).
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /collections`
@@ -234,7 +237,7 @@ Retrieve a single collection by table name.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /collections/:collection`
@@ -274,7 +277,7 @@ A [collection object](#the-collection-object).
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /collections/articles`
@@ -312,7 +315,7 @@ Create a new Collection. This will create a new table in the database as well.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /collections`
@@ -342,9 +345,19 @@ const client = createDirectus('directus_project_url').with(rest());
 const result = await client.request(
 	createCollection({
 		collection: 'collection_name',
-		field: {
-			sub_field: 'value',
-		},
+		fields: [
+			{
+				field: 'title',
+				type: 'string',
+				meta: {
+					icon: 'title'
+				},
+				schema: {
+					is_primary_key: true,
+					is_nullable: false
+				}
+			}
+		],
 	})
 );
 ```
@@ -371,7 +384,7 @@ The [collection object](#the-collection-object) for the collection created in th
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /collections`
@@ -425,7 +438,7 @@ Update the metadata for an existing collection.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /collections/:collection`
@@ -472,7 +485,7 @@ The [collection object](#the-collection-object) for the updated collection in th
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /collections/testimonials`
@@ -530,7 +543,7 @@ Be aware, this will delete the table from the database, including all items in i
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /collections/:collection`
@@ -562,7 +575,7 @@ const result = await client.request(deleteCollection(collection_name));
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /collections/articles`

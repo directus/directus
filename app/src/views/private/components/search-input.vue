@@ -1,47 +1,3 @@
-<template>
-	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
-		<div
-			v-click-outside="{
-				handler: disable,
-				middleware: onClickOutside,
-			}"
-			class="search-input"
-			:class="{ active, 'filter-active': filterActive, 'has-content': !!modelValue, 'filter-border': filterBorder }"
-			@click="active = true"
-		>
-			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
-			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
-			<v-icon
-				v-if="modelValue"
-				clickable
-				class="icon-empty"
-				name="close"
-				@click.stop="$emit('update:modelValue', null)"
-			/>
-
-			<v-icon
-				v-tooltip.bottom="t('filter')"
-				clickable
-				class="icon-filter"
-				name="filter_list"
-				@click="filterActive = !filterActive"
-			/>
-
-			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
-				<div v-show="filterActive" ref="filterElement" class="filter">
-					<interface-system-filter
-						class="filter-input"
-						inline
-						:value="filter"
-						:collection-name="collection"
-						@input="$emit('update:filter', $event)"
-					/>
-				</div>
-			</transition-expand>
-		</div>
-	</v-badge>
-</template>
-
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
@@ -151,9 +107,53 @@ function emitValue() {
 }
 </script>
 
+<template>
+	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
+		<div
+			v-click-outside="{
+				handler: disable,
+				middleware: onClickOutside,
+			}"
+			class="search-input"
+			:class="{ active, 'filter-active': filterActive, 'has-content': !!modelValue, 'filter-border': filterBorder }"
+			@click="active = true"
+		>
+			<v-icon v-tooltip.bottom="active ? null : t('search')" name="search" class="icon-search" :clickable="!active" />
+			<input ref="input" :value="modelValue" :placeholder="t('search_items')" @input="emitValue" @paste="emitValue" />
+			<v-icon
+				v-if="modelValue"
+				clickable
+				class="icon-empty"
+				name="close"
+				@click.stop="$emit('update:modelValue', null)"
+			/>
+
+			<v-icon
+				v-tooltip.bottom="t('filter')"
+				clickable
+				class="icon-filter"
+				name="filter_list"
+				@click="filterActive = !filterActive"
+			/>
+
+			<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
+				<div v-show="filterActive" ref="filterElement" class="filter">
+					<interface-system-filter
+						class="filter-input"
+						inline
+						:value="filter"
+						:collection-name="collection"
+						@input="$emit('update:filter', $event)"
+					/>
+				</div>
+			</transition-expand>
+		</div>
+	</v-badge>
+</template>
+
 <style lang="scss" scoped>
 .search-badge {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--theme--primary);
 	--v-badge-offset-y: 8px;
 	--v-badge-offset-x: 8px;
 }
@@ -171,19 +171,19 @@ function emitValue() {
 		border-bottom-right-radius var(--fast) var(--transition);
 
 	.icon-empty {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		display: none;
 		margin-left: 8px;
 
 		&:hover {
-			--v-icon-color: var(--danger);
+			--v-icon-color: var(--theme--danger);
 		}
 	}
 
 	.icon-search,
 	.icon-filter {
-		--v-icon-color-hover: var(--primary);
+		--v-icon-color-hover: var(--theme--primary);
 	}
 
 	.icon-search {
@@ -225,7 +225,7 @@ function emitValue() {
 		width: 200px;
 
 		.icon-filter {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		@media (min-width: 600px) {
@@ -268,14 +268,14 @@ function emitValue() {
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 		text-overflow: ellipsis;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		border: none;
 		border-radius: 0;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 }

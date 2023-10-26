@@ -10,6 +10,7 @@
 (B|b)asemap
 (B|b)lackbox
 (B|b)ugfixes
+Butterfield
 (C|)ancelling
 (C|c)ancelled
 (C|c)harset
@@ -28,6 +29,7 @@
 (D|d)ropdowns
 (DN|dn)
 (E|e)ntrypoints?
+(F|f)avicon
 (F|f)ilesystem
 (F|f)ormatter
 (F|f)rontend
@@ -37,16 +39,22 @@
 (H|h)ostname
 (I|i)nit
 (I|i)ntegrations
+(L|l)odash
 (M|m)emcache
 (M|m)imetype
 (M|m)isconfigured
 (M|m)ultitenancy
 (N|n)atively
+(P|p)olyfill
 (Q|q)uickstart
+(R|r)eal-(T|t)ime
+(R|r)ealtime
+(R|r)ealtime's
 (R|r)econfigures
 (R|r)elink
 (R|r)epo
 (R|r)ollup
+(S|s)andboxed
 (S|s)chemas?
 (S|s)endmail
 (S|s)erverless
@@ -54,10 +62,13 @@
 (S|s)ortable
 (S|s)tepline
 (S|s)ubheader
+(S|s)upabase
 (T|t)extarea
+(T|t)imeseries
 (T|t)ooltips?
 (T|t)riage
 (T|t)riaging
+(t|T)wilio
 (U|u)narchive
 (U|u)narchived
 (U|u)narchiving
@@ -70,6 +81,7 @@
 (URL|url)
 (V|v)ite
 (V|v)itest
+(V|v)onage[.]?
 (V|v)ue
 (W|w)alkthrough
 (W|w)ebhook.?
@@ -109,6 +121,7 @@ backend
 Base64
 Blackbox
 buildout
+Butterfield
 camelCase
 Capterra
 Cardgroup
@@ -130,6 +143,7 @@ CodeDeploy
 CommonJS
 composables
 config-options
+Corepack
 CORS
 CPUs?
 create-directus-extension
@@ -190,7 +204,6 @@ frontend
 G2
 Gantt
 gcloud
-graphql
 GCP
 GCS
 GDPR
@@ -202,10 +215,11 @@ GHCR
 glibc
 Gmail
 granularly
+graphql
 GraphQL
 greenlight
-GUIs?
 GUID
+GUIs?
 hardcoded
 headshot
 Heya
@@ -241,7 +255,6 @@ Kubernetes
 LDAP
 LiquidJS
 localhost
-(L|l)odash
 lowercased
 LTS
 M1
@@ -273,6 +286,7 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
+non-sandboxed
 NoSQL
 npm
 NPM
@@ -292,6 +306,7 @@ OracleDB
 OracleDB's
 OSS
 OTP
+overwriteable
 pageClass
 param
 paywalled
@@ -304,14 +319,14 @@ Pinia-based
 pino
 Pino
 Plesk
+PM2
 PNG
 pnpm
 PokéAPI
 Pokémon
+Polyfilling
 Postgres
 Postgres13
-(P|p)olyfill
-Polyfilling
 PR
 pre
 pre-configured
@@ -331,8 +346,6 @@ px.
 reactively
 readonly
 readTime
-(R|r)ealtime
-(R|r)eal-(T|t)ime
 rebase
 reconfigurations
 reconnection
@@ -359,6 +372,7 @@ SEO
 SES
 sexualized
 SFC
+SIGKILL
 siloed
 slugification
 slugify
@@ -376,7 +390,6 @@ stylization
 subdirectory
 subfolder
 substring
-(S|s)upabase
 SuperAdmins?
 superset
 Superset
@@ -385,8 +398,8 @@ SVGs?
 TablePlus
 tfa
 TFA
+Theming
 TileJSON
-(T|t)imeseries
 TinyMCE
 TLS
 toc
@@ -394,7 +407,6 @@ TrustRadius
 truthy
 TTL
 TTY
-(t|T)wilio
 TypeDoc
 UI
 UID
@@ -414,12 +426,12 @@ UUIDs
 UUIDv4
 UX
 v[0-9]{1,2}
+validator
 varchar
 vCPU
 Vercel
 viewability
 VitePress
-(V|v)onage
 volta
 VPC
 Vue

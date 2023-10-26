@@ -1,3 +1,136 @@
+<script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script setup lang="ts">
+import { HeaderRaw } from '@/components/v-table/types';
+import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
+import { usePageSize } from '@/composables/use-page-size';
+import { useShortcut } from '@/composables/use-shortcut';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { Collection } from '@/types/collections';
+import { useSync } from '@directus/composables';
+import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+interface Props {
+	collection: string;
+	selection?: Item[];
+	readonly: boolean;
+	tableHeaders: HeaderRaw[];
+	showSelect?: ShowSelect;
+	items: Item[];
+	loading: boolean;
+	error?: any;
+	totalPages: number;
+	tableSort?: { by: string; desc: boolean } | null;
+	onRowClick: (item: Item) => void;
+	tableRowHeight: number;
+	page: number;
+	toPage: (newPage: number) => void;
+	itemCount?: number;
+	fields: string[];
+	limit: number;
+	primaryKeyField?: Field;
+	info?: Collection;
+	sortField?: string;
+	changeManualSort: (data: any) => Promise<void>;
+	resetPresetAndRefresh: () => Promise<void>;
+	selectAll: () => void;
+	filterUser?: Filter;
+	search?: string;
+	aliasedFields: Record<string, AliasFields>;
+	aliasedKeys: string[];
+	onSortChange: (newSort: { by: string; desc: boolean }) => void;
+	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	selection: () => [],
+	showSelect: 'none',
+	error: null,
+	itemCount: undefined,
+	tableSort: undefined,
+	primaryKeyField: undefined,
+	info: undefined,
+	sortField: undefined,
+	filterUser: undefined,
+	search: undefined,
+	onAlignChange: () => undefined,
+});
+
+const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
+
+const { t } = useI18n();
+const { collection } = toRefs(props);
+
+const selectionWritable = useSync(props, 'selection', emit);
+const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
+const limitWritable = useSync(props, 'limit', emit);
+
+const mainElement = inject<Ref<Element | undefined>>('main-element');
+
+const table = ref<ComponentPublicInstance>();
+
+watch(
+	() => props.page,
+	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+);
+
+useShortcut(
+	'meta+a',
+	() => {
+		props.selectAll();
+	},
+	table
+);
+
+const permissionsStore = usePermissionsStore();
+const userStore = useUserStore();
+
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+	[25, 50, 100, 250, 500, 1000],
+	(value) => String(value),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
+
+const showManualSort = computed(() => {
+	if (!props.sortField) return false;
+
+	const isAdmin = userStore.currentUser?.role?.admin_access;
+
+	if (isAdmin) return true;
+
+	const permission = permissionsStore.getPermissionsForUser(props.collection, 'update');
+
+	if (!permission) return false;
+
+	if (Array.isArray(permission.fields) && permission.fields.length > 0) {
+		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
+	}
+
+	return true;
+});
+
+const fieldsWritable = useSync(props, 'fields', emit);
+
+const { getFromAliasedItem } = useAliasFields(fieldsWritable, collection);
+
+function addField(fieldKey: string) {
+	fieldsWritable.value = [...fieldsWritable.value, fieldKey];
+}
+
+function removeField(fieldKey: string) {
+	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
+}
+</script>
+
 <template>
 	<div class="layout-tabular">
 		<v-table
@@ -171,139 +304,6 @@
 	</div>
 </template>
 
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
-<script setup lang="ts">
-import { HeaderRaw } from '@/components/v-table/types';
-import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
-import { usePageSize } from '@/composables/use-page-size';
-import { useShortcut } from '@/composables/use-shortcut';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { Collection } from '@/types/collections';
-import { useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-interface Props {
-	collection: string;
-	selection?: Item[];
-	readonly: boolean;
-	tableHeaders: HeaderRaw[];
-	showSelect?: ShowSelect;
-	items: Item[];
-	loading: boolean;
-	error?: any;
-	totalPages: number;
-	tableSort?: { by: string; desc: boolean } | null;
-	onRowClick: (item: Item) => void;
-	tableRowHeight: number;
-	page: number;
-	toPage: (newPage: number) => void;
-	itemCount?: number;
-	fields: string[];
-	limit: number;
-	primaryKeyField?: Field;
-	info?: Collection;
-	sortField?: string;
-	changeManualSort: (data: any) => Promise<void>;
-	resetPresetAndRefresh: () => Promise<void>;
-	selectAll: () => void;
-	filterUser?: Filter;
-	search?: string;
-	aliasedFields: Record<string, AliasFields>;
-	aliasedKeys: string[];
-	onSortChange: (newSort: { by: string; desc: boolean }) => void;
-	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	selection: () => [],
-	showSelect: 'none',
-	error: null,
-	itemCount: undefined,
-	tableSort: undefined,
-	primaryKeyField: undefined,
-	info: undefined,
-	sortField: undefined,
-	filterUser: undefined,
-	search: undefined,
-	onAlignChange: () => undefined,
-});
-
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
-
-const { t } = useI18n();
-const { collection } = toRefs(props);
-
-const selectionWritable = useSync(props, 'selection', emit);
-const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
-const limitWritable = useSync(props, 'limit', emit);
-
-const mainElement = inject<Ref<Element | undefined>>('main-element');
-
-const table = ref<ComponentPublicInstance>();
-
-watch(
-	() => props.page,
-	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
-);
-
-useShortcut(
-	'meta+a',
-	() => {
-		props.selectAll();
-	},
-	table
-);
-
-const permissionsStore = usePermissionsStore();
-const userStore = useUserStore();
-
-const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
-	[25, 50, 100, 250, 500, 1000],
-	(value) => String(value),
-	props.limit
-);
-
-limitWritable.value = selectedSize;
-
-const showManualSort = computed(() => {
-	if (!props.sortField) return false;
-
-	const isAdmin = userStore.currentUser?.role?.admin_access;
-
-	if (isAdmin) return true;
-
-	const permission = permissionsStore.getPermissionsForUser(props.collection, 'update');
-
-	if (!permission) return false;
-
-	if (Array.isArray(permission.fields) && permission.fields.length > 0) {
-		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
-	}
-
-	return true;
-});
-
-const fieldsWritable = useSync(props, 'fields', emit);
-
-const { getFromAliasedItem } = useAliasFields(fieldsWritable, collection);
-
-function addField(fieldKey: string) {
-	fieldsWritable.value = [...fieldsWritable.value, fieldKey];
-}
-
-function removeField(fieldKey: string) {
-	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
-}
-</script>
-
 <style lang="scss" scoped>
 .layout-tabular {
 	display: contents;
@@ -344,7 +344,7 @@ function removeField(fieldKey: string) {
 		align-items: center;
 		justify-content: flex-end;
 		width: 240px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		span {
 			width: auto;
@@ -352,7 +352,7 @@ function removeField(fieldKey: string) {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }
@@ -362,10 +362,10 @@ function removeField(fieldKey: string) {
 }
 
 .add-field {
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--foreground);
 
 	&.active {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground);
 	}
 }
 

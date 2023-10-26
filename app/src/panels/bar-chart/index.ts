@@ -1,13 +1,15 @@
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelBarChart from './panel-bar-chart.vue';
 import { useFieldsStore } from '@/stores/fields';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'bar-chart',
 	name: '$t:panels.barchart.name',
 	description: '$t:panels.barchart.description',
 	icon: 'bar_chart',
+	preview: PreviewSVG,
 	component: PanelBarChart,
 	query: (options) => {
 		const requiredFields = ['collection', 'xAxis', 'yAxis'];
@@ -200,7 +202,7 @@ export default definePanel({
 				name: '$t:color',
 				type: 'string',
 				schema: {
-					default_value: 'var(--primary)',
+					default_value: 'var(--theme--primary)',
 				},
 				meta: {
 					interface: 'select-color',
@@ -443,7 +445,7 @@ export default definePanel({
 								name: '$t:color',
 								type: 'integer',
 								schema: {
-									default_value: 'var(--primary)',
+									default_value: 'var(--theme--primary)',
 								},
 								meta: {
 									interface: 'select-color',

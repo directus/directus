@@ -1,26 +1,3 @@
-<template>
-	<div
-		class="v-textarea"
-		:class="{
-			disabled,
-			'expand-on-focus': expandOnFocus,
-			'full-width': fullWidth,
-			'has-content': hasContent,
-		}"
-	>
-		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<textarea
-			v-focus="autofocus"
-			v-bind="$attrs"
-			:placeholder="placeholder"
-			:disabled="disabled"
-			:value="modelValue"
-			v-on="listeners"
-		/>
-		<div v-if="$slots.append" class="append"><slot name="append" /></div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -80,12 +57,35 @@ function trimIfEnabled() {
 }
 </script>
 
+<template>
+	<div
+		class="v-textarea"
+		:class="{
+			disabled,
+			'expand-on-focus': expandOnFocus,
+			'full-width': fullWidth,
+			'has-content': hasContent,
+		}"
+	>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
+		<textarea
+			v-focus="autofocus"
+			v-bind="$attrs"
+			:placeholder="placeholder"
+			:disabled="disabled"
+			:value="modelValue"
+			v-on="listeners"
+		/>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
+	</div>
+</template>
+
 <style>
 body {
 	--v-textarea-min-height: none;
 	--v-textarea-max-height: var(--input-height-tall);
 	--v-textarea-height: var(--input-height-tall);
-	--v-textarea-font-family: var(--family-sans-serif);
+	--v-textarea-font-family: var(--theme--font-family-sans-serif);
 }
 </style>
 
@@ -98,7 +98,7 @@ body {
 	height: var(--v-textarea-height);
 	min-height: var(--v-textarea-min-height);
 	max-height: var(--v-textarea-max-height);
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: border-color var(--fast) var(--transition);
@@ -142,8 +142,8 @@ body {
 
 	&:focus:not(.disabled),
 	&:focus-within:not(.disabled) {
-		border-color: var(--primary);
-		box-shadow: 0 0 16px -8px var(--primary);
+		border-color: var(--theme--primary);
+		box-shadow: 0 0 16px -8px var(--theme--primary);
 	}
 
 	textarea {
@@ -153,19 +153,19 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: var(--input-padding);
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 		font-family: var(--v-textarea-font-family);
 		background-color: transparent;
 		border: 0;
 		resize: none;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 
 	&.disabled textarea {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		background-color: var(--background-subdued);
 	}
 }

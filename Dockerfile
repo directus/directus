@@ -42,6 +42,8 @@ RUN : \
 
 FROM node:18-alpine AS runtime
 
+RUN npm install --global pm2@5
+
 USER node
 
 WORKDIR /directus
@@ -56,9 +58,10 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
+COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
 
 CMD : \
-	&& node /directus/cli.js bootstrap \
-	&& node /directus/cli.js start \
+	&& node cli.js bootstrap \
+	&& pm2-runtime start ecosystem.config.cjs \
 	;

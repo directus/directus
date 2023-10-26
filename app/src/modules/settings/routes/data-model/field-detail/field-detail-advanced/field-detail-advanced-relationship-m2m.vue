@@ -1,3 +1,82 @@
+<script setup lang="ts">
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
+
+const { t } = useI18n();
+
+const fieldDetailStore = useFieldDetailStore();
+const relationsStore = useRelationsStore();
+const fieldsStore = useFieldsStore();
+
+const { collection, editing, generationInfo, localType } = storeToRefs(fieldDetailStore);
+
+const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
+const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
+const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
+const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
+const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
+const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
+const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
+const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
+
+const isExisting = computed(() => editing.value !== '+');
+
+const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
+
+const relatedPrimaryKey = computed(
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+);
+
+const hasCorresponding = computed({
+	get() {
+		return !!correspondingField.value;
+	},
+	set(enabled: boolean) {
+		if (enabled) {
+			correspondingField.value = {
+				field: collection.value,
+				collection: relatedCollection.value,
+				type: 'alias',
+				meta: {
+					special: ['m2m'],
+					interface: 'list-m2m',
+				},
+			};
+		} else {
+			correspondingField.value = null;
+		}
+	},
+});
+
+const correspondingLabel = computed(() => {
+	if (junctionCollection.value) {
+		return t('add_m2m_to_collection', { collection: relatedCollection.value });
+	}
+
+	return t('add_field_related');
+});
+
+const unsortableJunctionFields = computed(() => {
+	const fields = [];
+
+	if (junctionCollection.value) {
+		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
+		fields.push(...relations.map((field) => field.field));
+	}
+
+	return fields;
+});
+</script>
+
 <template>
 	<div>
 		<div class="grid">
@@ -74,7 +153,7 @@
 				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
 				:placeholder="t('add_sort_field') + '...'"
-				:nullable="true"
+				nullable
 			/>
 		</div>
 
@@ -198,91 +277,12 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
-
-const { t } = useI18n();
-
-const fieldDetailStore = useFieldDetailStore();
-const relationsStore = useRelationsStore();
-const fieldsStore = useFieldsStore();
-
-const { collection, editing, generationInfo, localType } = storeToRefs(fieldDetailStore);
-
-const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
-const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
-const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
-const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
-const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
-const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
-const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
-const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
-const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
-
-const isExisting = computed(() => editing.value !== '+');
-
-const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
-
-const relatedPrimaryKey = computed(
-	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
-);
-
-const hasCorresponding = computed({
-	get() {
-		return !!correspondingField.value;
-	},
-	set(enabled: boolean) {
-		if (enabled) {
-			correspondingField.value = {
-				field: collection.value,
-				collection: relatedCollection.value,
-				type: 'alias',
-				meta: {
-					special: ['m2m'],
-					interface: 'list-m2m',
-				},
-			};
-		} else {
-			correspondingField.value = null;
-		}
-	},
-});
-
-const correspondingLabel = computed(() => {
-	if (junctionCollection.value) {
-		return t('add_m2m_to_collection', { collection: relatedCollection.value });
-	}
-
-	return t('add_field_related');
-});
-
-const unsortableJunctionFields = computed(() => {
-	const fields = [];
-
-	if (junctionCollection.value) {
-		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
-		fields.push(...relations.map((field) => field.field));
-	}
-
-	return fields;
-});
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 
 	position: relative;
 	display: grid;
@@ -291,7 +291,7 @@ const unsortableJunctionFields = computed(() => {
 	margin-top: 48px;
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		transform: translateX(-50%);
@@ -310,7 +310,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-input.matches {
-	--v-input-color: var(--primary);
+	--v-input-color: var(--theme--primary);
 }
 
 .type-label {
@@ -322,7 +322,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--font-family-monospace);
 }
 
 .corresponding {
@@ -332,7 +332,7 @@ const unsortableJunctionFields = computed(() => {
 	gap: 12px 32px;
 
 	.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		bottom: 17px;
@@ -354,12 +354,12 @@ const unsortableJunctionFields = computed(() => {
 	}
 
 	.field-name {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 }
 
 .sort-field {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 
 	.v-divider {
 		margin-top: 48px;

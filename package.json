@@ -1,6 +1,7 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
+	"homepage": "https://directus.io",
 	"scripts": {
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --cache --check .",
@@ -11,16 +12,16 @@
 	"devDependencies": {
 		"@changesets/cli": "2.26.1",
 		"@directus/release-notes-generator": "workspace:*",
-		"@typescript-eslint/eslint-plugin": "5.59.6",
-		"@typescript-eslint/parser": "5.59.6",
+		"@typescript-eslint/eslint-plugin": "6.7.3",
+		"@typescript-eslint/parser": "6.7.3",
 		"eslint": "8.40.0",
 		"eslint-config-prettier": "8.8.0",
 		"eslint-plugin-vue": "9.13.0",
 		"prettier": "2.8.8"
 	},
-	"packageManager": "pnpm@8.7.4",
+	"packageManager": "pnpm@8.9.0",
 	"engines": {
 		"node": ">=18.0.0",
-		"pnpm": "~8.7.4"
+		"pnpm": "~8.9.0"
 	}
 }

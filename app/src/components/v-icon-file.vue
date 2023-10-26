@@ -1,10 +1,3 @@
-<template>
-	<div class="icon" :class="{ right: ext.length >= 4 }">
-		<v-icon name="insert_drive_file" />
-		<span class="label">{{ ext }}</span>
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** The extension type of the file */
@@ -14,9 +7,16 @@ interface Props {
 defineProps<Props>();
 </script>
 
+<template>
+	<div class="icon" :class="{ right: ext.length >= 4 }">
+		<v-icon name="insert_drive_file" />
+		<span class="label">{{ ext }}</span>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 :global(body) {
-	--v-icon-file-color: var(--primary);
+	--v-icon-file-color: var(--theme--primary);
 	--v-icon-file-background-color: var(--background-normal);
 }
 

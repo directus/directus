@@ -1,10 +1,3 @@
-<template>
-	<div class="v-notice" :class="[type, { center }]">
-		<v-icon v-if="icon !== false" :name="iconName" left />
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -42,12 +35,19 @@ const iconName = computed(() => {
 });
 </script>
 
+<template>
+	<div class="v-notice" :class="[type, { center }]">
+		<v-icon v-if="icon !== false" :name="iconName" left />
+		<slot />
+	</div>
+</template>
+
 <style scoped>
 :global(body) {
-	--v-notice-color: var(--foreground-subdued);
+	--v-notice-color: var(--theme--foreground-subdued);
 	--v-notice-background-color: var(--background-subdued);
 	--v-notice-border-color: var(--background-subdued);
-	--v-notice-icon-color: var(--foreground-subdued);
+	--v-notice-icon-color: var(--theme--foreground-subdued);
 }
 
 .v-notice {
@@ -85,30 +85,30 @@ const iconName = computed(() => {
 }
 
 .info {
-	--v-notice-icon-color: var(--primary);
-	--v-notice-border-color: var(--primary);
-	--v-notice-color: var(--foreground-normal);
+	--v-notice-icon-color: var(--theme--primary);
+	--v-notice-border-color: var(--theme--primary);
+	--v-notice-color: var(--theme--foreground);
 	--v-notice-background-color: var(--background-normal);
 }
 
 .success {
-	--v-notice-icon-color: var(--success);
-	--v-notice-border-color: var(--success);
-	--v-notice-color: var(--success);
+	--v-notice-icon-color: var(--theme--success);
+	--v-notice-border-color: var(--theme--success);
+	--v-notice-color: var(--theme--success);
 	--v-notice-background-color: var(--background-normal);
 }
 
 .warning {
-	--v-notice-icon-color: var(--warning);
-	--v-notice-border-color: var(--warning);
-	--v-notice-color: var(--foreground-normal);
+	--v-notice-icon-color: var(--theme--warning);
+	--v-notice-border-color: var(--theme--warning);
+	--v-notice-color: var(--theme--foreground);
 	--v-notice-background-color: var(--background-normal);
 }
 
 .danger {
-	--v-notice-icon-color: var(--danger);
-	--v-notice-border-color: var(--danger);
-	--v-notice-color: var(--danger);
+	--v-notice-icon-color: var(--theme--danger);
+	--v-notice-border-color: var(--theme--danger);
+	--v-notice-color: var(--theme--danger);
 	--v-notice-background-color: var(--background-normal);
 }
 

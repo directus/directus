@@ -1,21 +1,3 @@
-<template>
-	<div class="presentation-links">
-		<v-button
-			v-for="(link, index) in linksParsed"
-			:key="index"
-			class="action"
-			:class="[link.type]"
-			:secondary="link.type !== 'primary'"
-			:icon="!link.label"
-			:href="link.href"
-			:to="link.to"
-		>
-			<v-icon v-if="link.icon" left :name="link.icon" />
-			<span v-if="link.label">{{ link.label }}</span>
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useItem } from '@/composables/use-item';
 import { useCollection } from '@directus/composables';
@@ -94,6 +76,24 @@ const linksParsed = computed(() => {
 });
 </script>
 
+<template>
+	<div class="presentation-links">
+		<v-button
+			v-for="(link, index) in linksParsed"
+			:key="index"
+			class="action"
+			:class="[link.type]"
+			:secondary="link.type !== 'primary'"
+			:icon="!link.label"
+			:href="link.href"
+			:to="link.to"
+		>
+			<v-icon v-if="link.icon" left :name="link.icon" />
+			<span v-if="link.label">{{ link.label }}</span>
+		</v-button>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .presentation-links {
 	display: flex;
@@ -110,14 +110,14 @@ const linksParsed = computed(() => {
 	}
 
 	&.success {
-		--v-button-background-color: var(--success);
+		--v-button-background-color: var(--theme--success);
 		--v-button-background-color-hover: var(--success-125);
 		--v-button-color: var(--success-alt);
 		--v-button-color-hover: var(--success-alt);
 	}
 
 	&.warning {
-		--v-button-background-color: var(--warning);
+		--v-button-background-color: var(--theme--warning);
 		--v-button-background-color-hover: var(--warning-125);
 		--v-button-color: var(--warning-alt);
 		--v-button-color-hover: var(--warning-alt);
@@ -125,7 +125,7 @@ const linksParsed = computed(() => {
 
 	&.danger {
 		--v-button-icon-color: var(--white);
-		--v-button-background-color: var(--danger);
+		--v-button-background-color: var(--theme--danger);
 		--v-button-background-color-hover: var(--danger-125);
 		--v-button-color: var(--danger-alt);
 		--v-button-color-hover: var(--danger-alt);

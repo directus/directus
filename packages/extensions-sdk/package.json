@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "10.1.9",
+	"version": "10.1.13",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -33,6 +33,7 @@
 	"dependencies": {
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
+		"@directus/extensions": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@rollup/plugin-commonjs": "25.0.0",
@@ -60,7 +61,7 @@
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "9.0.3",
 		"@vitest/coverage-c8": "0.31.1",
-		"typescript": "5.0.4",
+		"typescript": "5.2.2",
 		"vitest": "0.31.1"
 	},
 	"engines": {

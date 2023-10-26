@@ -35,6 +35,7 @@ tile_size: Failisuurus
 edit_field: Muuda Välja
 conditions: Tingimused
 location: Asukoht
+collection_names_are_case_sensitive: Andmekogude nimed on tõstutundlikud
 condition_rules: Tingimuse Reeglid
 input: Sisend
 maps: Kaardid
@@ -52,6 +53,11 @@ or: Või
 init: Init
 dataset_too_large_currently_showing_n_items: Andmekogum on liiga suur. Hetkel kuvatakse esimesed {n} üksust.
 modifier: Muutja
+extension_interface: Kasutajaliides
+extension_display: Vaade
+extension_layout: Paigutus
+extension_hook: Haak
+extension_modules: Moodulid
 custom: Kohandatud
 hook: Haak
 fill_width: Täislaius
@@ -64,6 +70,7 @@ leaf: Leht
 indeterminate: Määramatu
 edit_collection: Muuda Kogumikku
 exclusive: Eksklusiivne
+children: Tütred
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida'
 show_active_items: Näita Aktiivseid Kirjeid
 show_archived_items: Näita Arhiveeritud Üksuseid
@@ -98,6 +105,7 @@ rename_folder: Nimeta Kaust Ümber
 delete_folder: Kustuta Kaust
 prefix: Eesliide
 suffix: Järelliide
+promote_version_preview: Eelvaade
 reset_bookmark: Kustuta Järjehoidja
 update_bookmark: Järjehoidja Uuendamine
 delete_bookmark: Kustuta Järjehoidja
@@ -199,8 +207,11 @@ aggregate_function: Koondfunktsioon
 global: Üldine
 admins_have_all_permissions: Adminnidel on kõik õigused
 camera: Kaamera
+create_in_advanced_field_creation_mode: Loo Väli Täpsemas Režiimis
+continue_in_advanced_field_creation_mode: Jätkake Täpsemas Välja Loomises
 validation: Valideerimine
 sum: Summa
+sum_distinct: Summeerige Ainulaadsed
 avg: Keskmine
 count: Arv
 min: Miinimum
@@ -343,6 +354,7 @@ move: Liiguta
 system: Süsteem
 add_field_related: Lisa väli seotud andmekogusse
 interface_label: Kasutajaliides
+display_label: Vaade
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
@@ -391,7 +403,6 @@ dimensions: Mõõtmed
 size: Suurus
 created: Loodud
 modified: Muudetud
-checksum: Kontrollsumma
 owner: Omanik
 edited_by: Muutis
 folder: Kaust
@@ -770,10 +781,10 @@ editing_unit: '{unit} muutmine'
 editing_in_batch: '{count} kirje hulgi muutmine'
 no_options_available: Valikud puuduvad
 settings_data_model: Andmemudel
-settings_permissions: Rollid ja õigused
-settings_project: Projekti seaded
+settings_project: Seaded
 settings_webhooks: Webhooks
-settings_presets: Eelseaded ja järjehoidjad
+settings_presets: Järjehoidjad
+settings_translations: Tõlked
 one_or_more_options_are_missing: Üks või mitu valikut puuduvad
 scope: Ulatus
 select: Vali...
@@ -801,7 +812,6 @@ page_help_files_collection: >-
   **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
 page_help_files_item: >-
   **Faili detailid* — Vorm, milles saab muuta faili metaandmeid, ligipääse jm.
-page_help_settings_project: "**Projekti seaded** — Sinu projekti üldised seaded."
 page_help_settings_datamodel_collections: >-
   **Andmekogud** — Näitab olemasolevaid andmekogusid. Samuti ka nähtavaid, peidetud, ja süsteemi kogusid, lisaks ka haldamata andmebaaside tabeleid, mida saab lisada.
 page_help_settings_datamodel_fields: >-
@@ -893,7 +903,6 @@ fields:
     description: Kirjeldus
     tags: Sildid
     language: Keel
-    theme: Teema
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
     status_active: aktiivne
@@ -1164,6 +1173,8 @@ interfaces:
   system-interface-options:
     interface-options: Kasutajaliidese valikud
     description: Kasutajaliidese valikute tegemise hüpikaken
+  system-display:
+    display: Vaade
   list-m2m:
     many-to-many: Mitu mitmele
     description: Vali mitu seotud kirjet
@@ -1197,7 +1208,6 @@ interfaces:
     description: Vali mitu seotud kirjet
     no_collection: Andmekogu ei leitud
   system-folder:
-    folder: Kaust
     description: Vali kaust
   select-radio:
     radio-buttons: Raadionupud
@@ -1209,6 +1219,7 @@ interfaces:
     add_label: '"Lisa uus" nimetus'
     sort: Sorteeri
     field_note_placeholder: Sisesta välja märkus...
+    interface_group: Kasutajaliidese valikud
   slider:
     slider: Liugur
     description: Vali number slaiderilt
@@ -1431,3 +1442,12 @@ operations:
     subject: Teema
   request:
     url: URL
+standard: Standard
+compact: Kompaktne
+style: Stiil
+fonts:
+  normal: Tavaline
+  bold: Paks kiri
+  black: Must
+  italic: Kaldkiri
+  auto: Automaatne

@@ -1,9 +1,3 @@
-<template>
-	<div class="time-series">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction } from '@/types/panels';
@@ -155,8 +149,8 @@ function setupChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground-subdued)',
 			animations: {
 				enabled: false,
 			},
@@ -247,8 +241,8 @@ function setupChart() {
 				show: props.showXAxis ?? true,
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -295,8 +289,8 @@ function setupChart() {
 								  } as any);
 						},
 						style: {
-							fontFamily: 'var(--family-sans-serif)',
-							foreColor: 'var(--foreground-subdued)',
+							fontFamily: 'var(--theme--font-family-sans-serif)',
+							foreColor: 'var(--theme--foreground-subdued)',
 							fontWeight: 600,
 							fontSize: '10px',
 						},
@@ -333,6 +327,12 @@ function setupChart() {
 	}
 }
 </script>
+
+<template>
+	<div class="time-series">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .time-series {

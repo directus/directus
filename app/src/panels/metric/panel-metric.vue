@@ -1,49 +1,125 @@
-<template>
-	<div class="metric type-title selectable" :class="{ 'has-header': showHeader }">
-		<div :style="{ color }">
-			<span class="prefix">{{ prefix }}</span>
-			<span class="value">{{ displayValue }}</span>
-			<span class="suffix">{{ suffix }}</span>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Filter } from '@directus/types';
-import { abbreviateNumber } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAutoFontFit } from '@/composables/use-auto-fit-text';
+import { formatNumber } from '@/utils/format-number';
+import type { Style, Notation, Unit } from '@/utils/format-number';
 
 interface Props {
 	showHeader?: boolean;
-	abbreviate?: boolean;
 	sortField?: string;
 	collection: string;
 	field: string;
 	function: string;
 	filter?: Filter;
 	data?: Record<string, any>[];
-	decimals?: number;
-	conditionalFormatting?: Record<string, any>[];
+	notation?: Notation;
+	numberStyle?: Style;
+	unit?: Unit;
 	prefix?: string | null;
 	suffix?: string | null;
+	minimumFractionDigits?: number;
+	maximumFractionDigits?: number;
+	conditionalFormatting?: Record<string, any>[];
+	textAlign?: string | undefined;
+	fontSize?: string;
+	fontWeight?: number | undefined;
+	fontStyle?: string | undefined;
+	font?: 'sans-serif' | 'serif' | 'monospace';
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	showHeader: false,
-	abbreviate: false,
 	sortField: undefined,
 	data: () => [],
 	filter: () => ({}),
-	decimals: 0,
+	notation: 'standard',
+	numberStyle: 'decimal',
+	unit: undefined,
+	prefix: '',
+	suffix: '',
+	minimumFractionDigits: 0,
+	maximumFractionDigits: 0,
 	conditionalFormatting: () => [],
-	prefix: null,
-	suffix: null,
+	fontSize: 'auto',
+	fontWeight: 800,
+	font: 'sans-serif',
+	textAlign: 'center',
 });
 
-const { n } = useI18n();
+const { locale } = useI18n();
+
+const labelContainer = ref<HTMLDivElement | null>(null);
+const labelText = ref<HTMLParagraphElement | null>(null);
+
+const { adjustFontSize } = useAutoFontFit(labelContainer, labelText);
+
+let resizeObserver: ResizeObserver | null = null;
+
+function adjustPadding() {
+	const container = labelContainer.value;
+	if (!container) return;
+
+	const paddingWidth = container.offsetWidth * 0.05;
+	const paddingHeight = container.offsetHeight * 0.05;
+
+	const padding = Math.round(Math.max(8, Math.min(paddingWidth, paddingHeight)));
+
+	if (props.showHeader == true) {
+		container.style.padding = '0px 12px 12px 12px';
+	} else {
+		container.style.padding = `${padding}px`;
+	}
+
+	return;
+}
+
+function unmountResizeObserver() {
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+		resizeObserver = null;
+	}
+}
+
+async function updateFit() {
+	if (props.fontSize !== 'auto' || !props.data || props.data.length === 0) {
+		unmountResizeObserver();
+		return;
+	}
+
+	await document.fonts.ready;
+	adjustPadding();
+	adjustFontSize();
+
+	if (!resizeObserver) {
+		const container = labelContainer.value;
+		if (!container) return;
+
+		// Create a ResizeObserver to watch for changes in the container's dimensions
+		resizeObserver = new ResizeObserver(() => {
+			updateFit();
+		});
+
+		resizeObserver.observe(container);
+	}
+
+	adjustFontSize();
+}
+
+onMounted(() => {
+	updateFit();
+});
+
+onUpdated(() => {
+	updateFit();
+});
+
+onBeforeUnmount(() => {
+	unmountResizeObserver();
+});
 
 const metric = computed(() => {
 	if (!props.data || props.data.length === 0) return null;
@@ -63,22 +139,20 @@ const metric = computed(() => {
 	}
 });
 
-const displayValue = computed(() => {
-	if (isNil(metric.value)) return null;
-
-	if (typeof metric.value === 'string') {
-		return metric.value;
+function displayValue(value: number) {
+	if (value === null || value === undefined) {
+		return 0;
 	}
 
-	if (props.abbreviate) {
-		return abbreviateNumber(metric.value, props.decimals ?? 0);
-	}
-
-	return n(Number(metric.value), 'decimal', {
-		minimumFractionDigits: props.decimals ?? 0,
-		maximumFractionDigits: props.decimals ?? 0,
-	} as any);
-});
+	return formatNumber(Number(value), locale.value, {
+		notation: props.notation,
+		style: props.numberStyle,
+		unit: props.unit,
+		minimumFractionDigits: props.minimumFractionDigits,
+		maximumFractionDigits: props.maximumFractionDigits,
+		currency: props.numberStyle === 'currency' ? String(props.unit) : undefined,
+	});
+}
 
 const color = computed(() => {
 	if (isNil(metric.value)) return null;
@@ -123,23 +197,52 @@ const color = computed(() => {
 					return value < compareValue;
 			}
 		}
+
+		return false;
 	}
 });
 </script>
 
-<style scoped>
+<template>
+	<div ref="labelContainer" class="metric type-title selectable" :class="[font, { 'has-header': showHeader }]">
+		<p
+			ref="labelText"
+			class="metric-text"
+			:style="{ color, fontWeight, textAlign, fontStyle, fontSize: fontSize !== 'auto' ? fontSize : undefined }"
+		>
+			{{ prefix }}
+			{{ displayValue(metric) }}
+			{{ suffix }}
+		</p>
+	</div>
+</template>
+
+<style lang="scss" scoped>
+.metric-text {
+	min-width: min-content;
+	min-height: min-content;
+	width: 100%;
+}
 .metric {
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	width: 100%;
 	height: 100%;
 	font-weight: 800;
-	font-size: 42px;
-	line-height: 52px;
-}
+	white-space: nowrap;
+	line-height: 1.2;
+	padding: 12px;
 
-.metric.has-header {
-	height: calc(100% - 16px);
+	&.sans-serif {
+		font-family: var(--theme--font-family-sans-serif);
+	}
+
+	&.serif {
+		font-family: var(--theme--font-family-serif);
+	}
+
+	&.monospace {
+		font-family: var(--theme--font-family-monospace);
+	}
 }
 </style>

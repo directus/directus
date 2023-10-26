@@ -27,6 +27,7 @@ method: Μέθοδος
 published: Δημοσιευμένο
 draft: Πρόχειρο
 archived: Αρχειοθετήθηκε
+extensions: Επεκτάσεις
 modules: Ενότητες
 module_bar: Γραμμή Ενθεμάτων
 logs: Αρχεία καταγραφής (Logs)
@@ -35,6 +36,7 @@ tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
 location: Τοποθεσία
+collection_names_are_case_sensitive: Τα ονόματα των συλλογών εφαρμόζουν διάκριση πεζών - κεφαλαίων γραμμάτων
 condition_rules: Κανόνες Κατάστασης
 input: Εισαγωγή
 maps: Χάρτες
@@ -52,6 +54,21 @@ or: Ή
 init: '΄Εναρξη'
 dataset_too_large_currently_showing_n_items: Τα δεδομένα είναι πολλά. Αυτή τη στιγμή εμφανίζονται τα πρώτα {n} στοιχεία.
 modifier: Μετατροπέας
+extension_interface: Διεπαφή
+extension_display: Προβολή
+extension_layout: Διάταξη
+extension_module: Ενότητα
+extension_panel: Πίνακας Διαχείρισης
+extension_hook: Άγκιστρο
+extension_endpoint: Endpoint
+extension_operation: Λειτουργία
+extension_interfaces: Διεπαφές
+extension_modules: Ενότητες
+extension_panels: Πίνακες Διαχείρισης
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+enable: Ενεργοποίηση
+disable: Απενεργοποίηση
 custom: Προσαρμοσμένο
 hook: Άγκιστρο
 fill_width: Πλήρες Πλάτος
@@ -95,6 +112,14 @@ rename_folder: Μετονομασία Φακέλου
 delete_folder: Διαγραφή Φακέλου
 prefix: Πρόθεμα
 suffix: Επίθεμα
+version: Έκδοση
+rename_version: Μετονομασία Έκδοσης
+compare_version: Σύγκριση Έκδοσης
+save_version: Αποθήκευση Έκδοσης
+promote_version: Προώθηση Έκδοσης
+promote_version_disabled: Καμία Αλλαγή
+promote_version_changes: Αλλαγές
+promote_version_preview: Προεπισκόπηση
 reset_bookmark: Επαναφορά Σελιδοδείκτη
 update_bookmark: Ενημέρωση Σελιδοδείκτη
 delete_bookmark: Διαγραφή σελιδοδείκτη
@@ -159,6 +184,8 @@ max: Μέγιστο
 create_field: Δημιουργία πεδίου
 hidden_on_detail: Κρυφό στις λεπτομέρειες
 text: Κείμενο
+auto_refresh: Αυτόματη ανανέωση
+refresh_interval: Περίοδος ανανέωσης
 auto_generate: Αυτόματη δημιουργία
 this_will_auto_setup_fields_relations: Αυτό θα ρυθμίσει αυτόματα όλα τα απαιτούμενα πεδία και σχέσεις.
 click_here: Κλικ εδώ
@@ -167,14 +194,23 @@ click_to_manage_translated_fields: >-
   Δεν υπάρχουν ακόμα μεταφρασμένα πεδία. Κάντε κλικ εδώ για να τα δημιουργήσετε. | Υπάρχει ένα μεταφρασμένο πεδίο. Κάντε κλικ εδώ για να το διαχειριστείτε. | Υπάρχουν {count} μεταφρασμένα πεδία. Κάντε κλικ εδώ για να τα διαχειριστείτε.
 fields_group: Ομάδα Πεδίων
 no_collections_found: Δε βρέθηκαν συλλογές.
+search_collection: Αναζήτηση στη Συλλογή...
 add_note: Προσθέστε μια χρήσιμη σημείωση για τους χρήστες...
 default_value: Προεπιλεγμένη τιμή
 next: Επόμενο
 note: Σημείωση
 length: Μήκος
 unique: Μοναδικό
+notifications: Ειδοποιήσεις
 title: Τίτλος
+download_page_as_csv: 'Λήψη σελίδας ως CSV'
 leave_comment: Άφηστε ένα σχόλιο...
+import_data_input_placeholder: CSV ή JSON...
+import_data_button: Έναρξη εισαγωγής
+import_data_indeterminate: Εισαγωγή Δεδομένων...
+import_data_success: Τα δεδομένα εισήχθησαν επιτυχώς από το {filename}
+label_import: Εισαγωγή
+import_export: Εισαγωγή / Εξαγωγή
 submit: Υποβολή
 months:
   january: Ιανουάριος
@@ -189,14 +225,18 @@ months:
   october: Οκτώβριος
   november: Νοέμβριος
   december: Δεκέμβριος
-checksum: Έλεγχος αθροίσματος
+import_label: Εισαγωγή
 owner: Ιδιοκτήτης
 download: Λήψη
 name: Όνομα
+creating_new_collection: Δημιουργία νέας Συλλογής
 created_by: Δημιουργήθηκε από
 created_on: Δημιουργήθηκε στις
 save_and_stay: Αποθήκευση και Παραμονή
+creating_items: Δημιουργία Στοιχείων
 comments: Σχόλια
+information: Πληροφορίες
+activity_log: Αρχείο Δραστηριοτήτων
 create_collection: Δημιουργία Συλλογής
 users: Χρήστες
 activity: Δραστηριότητα
@@ -204,25 +244,36 @@ action: Ενέργεια
 ip_address: Διεύθυνση IP
 user_agent: Πράκτορας χρήστη
 field_width: Πλάτος πεδίου
+user_directory: Ευρετήριο χρηστών
 duration: Διάρκεια
 status: Κατάσταση
 remove: Διαγραφή
 errors:
   NOT_NULL_VIOLATION: Η τιμή δεν μπορεί να είναι μηδενική
+create_bookmark: Δημιουργία Σελιδοδείκτη
 bookmarks: Σελιδοδείκτες
+presets: Προεπιλογές
+unexpected_error: Μη Αναμενόμενο Σφάλμα
 back: Πίσω
+delete_collection_are_you_sure: >-
+  Είστε βέβαιοι ότι θέλετε να διαγράψετε τη συλλογή "{collection}"? Αυτό θα διαγράψει τη συλλογή και όλα τα στοιχεία σε αυτήν. Αυτή η ενέργεια είναι μόνιμη.
 operators:
   lt: Λιγότερο από
   gt: Μεγαλύτερο από
   gte: Μεγαλύτερο από ή ίσο με
   contains: Περιέχει
   empty: Είναι κενό
+layout_options: Επιλογές Διάταξης
 value_unique: Η τιμή πρέπει να είναι μοναδική
+create_folder: Δημιουργία φακέλου
 role: Ρόλος
 create: Δημιουργία
 read: Ανάγνωση
 update: Ενημέρωση
+delete: Διαγραφή
+flows: Ροές
 flow_name: Όνομα
+insights: Στατιστικά
 width: Πλάτος
 height: Ύψος
 wysiwyg_options:
@@ -230,9 +281,18 @@ wysiwyg_options:
   table: Πίνακας
 choices: Επιλογές
 deselect: Αποεπιλέξτε
+creating_in: 'Δημιουργία Στοιχείου: {collection}'
+creating_unit: 'Δημιουργία στοιχείου {unit}'
+editing_unit: 'Επεξεργασία στοιχείου {unit}'
 editing_in_batch: 'Μαζική Επεξεργασία {count} Στοιχείων'
-settings_project: Ρυθμίσεις Έργου
+settings_data_model: Μοντέλο Δεδομένων
+settings_project: Ρυθμίσεις
+settings_flows: Ροές
+settings_presets: Σελιδοδείκτες
+layout: Διάταξη
 discard_changes: Ακύρωση αλλαγών
+page_help_collections_collection: >-
+  **Εξερεύνηση αντικειμένων** — Εμφανίζει όλα τα {collection} αντικείμενα στα οποία έχετε πρόσβαση. Προσαρμόστε τη διάταξη, τα φίλτρα και τη διαλογή για να προσαρμόσετε την προβολή σας, και ακόμη και να αποθηκεύσετε σελιδοδείκτες αυτών των διαφορετικών διαμορφώσεων για γρήγορη πρόσβαση.
 add_new: Προσθήκη νέου
 all: Όλα
 batch_delete_confirm: >-
@@ -240,6 +300,9 @@ batch_delete_confirm: >-
 cancel: Ακύρωση
 collection: Συλλογή
 collections: Συλλογές
+content: Περιεχόμενο
+directus_collection:
+  directus_translations: Προσαρμοσμένες μεταφράσεις
 fields:
   directus_activity:
     item: Στοιχείο Πρωτεύον Κλειδί
@@ -281,7 +344,6 @@ fields:
     description: Περιγραφή
     tags: Ετικέτες
     language: Γλώσσα
-    theme: Θέμα
     tfa_secret: Έλεγχος ταυτότητας δυο παραγόντων
     status: Κατάσταση
     role: Ρόλος
@@ -308,6 +370,7 @@ field_options:
   directus_activity:
     create: Δημιουργία
     update: Ενημέρωση
+    delete: Διαγραφή
   directus_collections:
     language: Γλώσσα
     translation: Μετάφραση
@@ -320,9 +383,16 @@ field_options:
   directus_webhooks:
     actions_create: Δημιουργία
     actions_update: Ενημέρωση
+    actions_delete: Διαγραφή
     headers:
       value: Τιμή
 comment: Σχόλιο
+continue_label: Συνέχεια
+continue_as: >-
+  Ο χρήστης {name} είναι επί του παρόντος πιστοποιημένος. Αν αναγνωρίζετε αυτόν τον λογαριασμό, πατήστε συνέχεια.
+delete_label: Διαγραφή
+delete_are_you_sure: >-
+  Αυτή η ενέργεια είναι μόνιμη και δεν μπορεί να αναιρεθεί. Είστε σίγουροι ότι θα θέλατε να προχωρήσετε;
 delete_field_are_you_sure: >-
   Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.
 description: Περιγραφή
@@ -338,6 +408,8 @@ hidden: Κρυφό
 icon: Εικονίδιο
 info: Πληροφορίες
 latency: Καθυστέρηση
+not_authenticated: Μη Πιστοποιημένος
+authenticated: Πιστοποιημένος
 options: Επιλογές
 otp: Κωδικός μιάς χρήσης
 password: Κωδικός
@@ -348,6 +420,8 @@ reset_password: Επαναφορά Κωδικού
 save: Αποθήκευση
 search: Αναζήτηση
 settings: Ρυθμίσεις
+sign_in: Είσοδος
+sign_out: Αποσύνδεση
 translation: Μετάφραση
 value: Τιμή
 table: Πίνακας
@@ -401,6 +475,8 @@ layouts:
     comfortable: Άνετος
     compact: Συμπαγής
     cozy: Κανονικό
+  map:
+    cluster_options: Επιλογές ομαδοποίησης
 both: Και τα δύο
 operations:
   json-web-token:
@@ -421,3 +497,5 @@ operations:
     parallel: Παράλληλα
     batch: Δέσμη
     batch_size: Μέγεθος δέσμης
+standard: Τυπικό
+compact: Συμπαγής

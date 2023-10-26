@@ -1,15 +1,17 @@
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import PanelVariable from './panel-variable.vue';
 import { useI18n } from 'vue-i18n';
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'variable',
 	name: '$t:panels.variable.name',
 	description: '$t:panels.variable.description',
 	icon: 'science',
+	preview: PreviewSVG,
 	component: PanelVariable,
 	variable: true,
 	options: (panel) => {

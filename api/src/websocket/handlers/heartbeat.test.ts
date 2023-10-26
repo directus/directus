@@ -2,7 +2,7 @@ import type { EventContext } from '@directus/types';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
-import { WebSocketController, getWebSocketController } from '../controllers/index.js';
+import { type WebSocketController, getWebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';
 import { HeartbeatHandler } from './heartbeat.js';
 

@@ -1,19 +1,3 @@
-<template>
-	<span
-		v-if="internalActive"
-		class="v-chip"
-		:class="[sizeClass, { outlined, label, disabled, close }]"
-		@click="onClick"
-	>
-		<span class="chip-content">
-			<slot />
-			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
-				<v-icon class="close" :name="closeIcon" x-small />
-			</span>
-		</span>
-	</span>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
@@ -79,15 +63,31 @@ function onCloseClick(event: MouseEvent) {
 }
 </script>
 
+<template>
+	<span
+		v-if="internalActive"
+		class="v-chip"
+		:class="[sizeClass, { outlined, label, disabled, close }]"
+		@click="onClick"
+	>
+		<span class="chip-content">
+			<slot />
+			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
+				<v-icon class="close" :name="closeIcon" x-small />
+			</span>
+		</span>
+	</span>
+</template>
+
 <style>
 body {
-	--v-chip-color: var(--foreground-normal);
+	--v-chip-color: var(--theme--foreground);
 	--v-chip-background-color: var(--background-normal-alt);
 	--v-chip-color-hover: var(--white);
-	--v-chip-background-color-hover: var(--primary-125);
-	--v-chip-close-color: var(--danger);
-	--v-chip-close-color-disabled: var(--primary);
-	--v-chip-close-color-hover: var(--primary-125);
+	--v-chip-background-color-hover: var(--theme--primary-accent);
+	--v-chip-close-color: var(--theme--danger);
+	--v-chip-close-color-disabled: var(--theme--primary);
+	--v-chip-close-color-hover: var(--theme--primary-accent);
 }
 </style>
 

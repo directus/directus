@@ -1,51 +1,3 @@
-<template>
-	<div class="interface-tags">
-		<v-input
-			v-if="allowCustom"
-			:placeholder="placeholder || t('interfaces.tags.add_tags')"
-			:disabled="disabled"
-			:dir="direction"
-			@keydown="onInput"
-		>
-			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-			<template #append><v-icon :name="iconRight" /></template>
-		</v-input>
-		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
-			<span v-if="presetVals.length > 0" class="presets tag-container">
-				<v-chip
-					v-for="preset in presetVals"
-					:key="preset"
-					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
-					:disabled="disabled"
-					:dir="direction"
-					small
-					label
-					clickable
-					@click="toggleTag(preset)"
-				>
-					{{ preset }}
-				</v-chip>
-			</span>
-			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
-				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
-				<v-chip
-					v-for="val in customVals"
-					:key="val"
-					:disabled="disabled"
-					:dir="direction"
-					class="tag"
-					small
-					label
-					clickable
-					@click="removeTag(val)"
-				>
-					{{ val }}
-				</v-chip>
-			</span>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
@@ -162,6 +114,54 @@ function emitValue() {
 }
 </script>
 
+<template>
+	<div class="interface-tags">
+		<v-input
+			v-if="allowCustom"
+			:placeholder="placeholder || t('interfaces.tags.add_tags')"
+			:disabled="disabled"
+			:dir="direction"
+			@keydown="onInput"
+		>
+			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
+			<template #append><v-icon :name="iconRight" /></template>
+		</v-input>
+		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
+			<span v-if="presetVals.length > 0" class="presets tag-container">
+				<v-chip
+					v-for="preset in presetVals"
+					:key="preset"
+					:class="['tag', { inactive: !selectedVals.includes(preset) }]"
+					:disabled="disabled"
+					:dir="direction"
+					small
+					label
+					clickable
+					@click="toggleTag(preset)"
+				>
+					{{ preset }}
+				</v-chip>
+			</span>
+			<span v-if="customVals.length > 0 && allowCustom" class="custom tag-container">
+				<v-icon v-if="presetVals.length > 0" class="custom-tags-delimiter" name="chevron_right" />
+				<v-chip
+					v-for="val in customVals"
+					:key="val"
+					:disabled="disabled"
+					:dir="direction"
+					class="tag"
+					small
+					label
+					clickable
+					@click="removeTag(val)"
+				>
+					{{ val }}
+				</v-chip>
+			</span>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .tags {
 	display: flex;
@@ -182,15 +182,15 @@ function emitValue() {
 
 	.presets {
 		.v-chip {
-			--v-chip-background-color: var(--primary);
+			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
-			--v-chip-background-color-hover: var(--danger);
+			--v-chip-background-color-hover: var(--theme--danger);
 			--v-chip-color-hover: var(--foreground-inverted);
 
 			&.inactive {
 				--v-chip-background-color: var(--background-subdued);
-				--v-chip-color: var(--foreground-subdued);
-				--v-chip-background-color-hover: var(--primary);
+				--v-chip-color: var(--theme--form--field--input--foreground-subdued);
+				--v-chip-background-color-hover: var(--theme--primary);
 				--v-chip-color-hover: var(--foreground-inverted);
 			}
 		}
@@ -198,9 +198,9 @@ function emitValue() {
 
 	.custom {
 		.v-chip {
-			--v-chip-background-color: var(--primary);
+			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
-			--v-chip-background-color-hover: var(--danger);
+			--v-chip-background-color-hover: var(--theme--danger);
 			--v-chip-close-color: var(--v-chip-background-color);
 			--v-chip-close-color-hover: var(--white);
 
@@ -210,7 +210,7 @@ function emitValue() {
 				--v-chip-close-color: var(--white);
 
 				:deep(.chip-content .close-outline .close:hover) {
-					--v-icon-color: var(--danger);
+					--v-icon-color: var(--theme--danger);
 				}
 			}
 		}

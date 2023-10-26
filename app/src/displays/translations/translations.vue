@@ -1,38 +1,3 @@
-<template>
-	<value-null v-if="!relationInfo?.junctionCollection?.collection" />
-	<div v-else class="display-translations">
-		<render-template
-			:template="internalTemplate"
-			:item="displayItem"
-			:collection="relationInfo.junctionCollection.collection"
-		/>
-		<v-menu class="menu" show-arrow :disabled="value.length === 0">
-			<template #activator="{ toggle, deactivate, active }">
-				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
-			</template>
-
-			<v-list class="links">
-				<v-list-item v-for="item in translations" :key="item.id">
-					<v-list-item-content>
-						<div class="header">
-							<div class="lang">
-								<v-icon name="translate" small />
-								{{ item.lang }}
-							</div>
-							<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
-						</div>
-						<render-template
-							:template="internalTemplate"
-							:item="item.item"
-							:collection="relationInfo.junctionCollection.collection"
-						/>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useFieldsStore } from '@/stores/fields';
@@ -122,6 +87,41 @@ const translations = computed(() => {
 });
 </script>
 
+<template>
+	<value-null v-if="!relationInfo?.junctionCollection?.collection" />
+	<div v-else class="display-translations">
+		<render-template
+			:template="internalTemplate"
+			:item="displayItem"
+			:collection="relationInfo.junctionCollection.collection"
+		/>
+		<v-menu class="menu" show-arrow :disabled="value.length === 0">
+			<template #activator="{ toggle, deactivate, active }">
+				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
+			</template>
+
+			<v-list class="links">
+				<v-list-item v-for="item in translations" :key="item.id">
+					<v-list-item-content>
+						<div class="header">
+							<div class="lang">
+								<v-icon name="translate" small />
+								{{ item.lang }}
+							</div>
+							<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
+						</div>
+						<render-template
+							:template="internalTemplate"
+							:item="item.item"
+							:collection="relationInfo.junctionCollection.collection"
+						/>
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-list {
 	width: 300px;
@@ -133,7 +133,7 @@ const translations = computed(() => {
 	align-items: center;
 
 	.icon {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
@@ -149,7 +149,7 @@ const translations = computed(() => {
 	gap: 20px;
 	align-items: center;
 	justify-content: space-between;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-size: 12px;
 
 	.lang {

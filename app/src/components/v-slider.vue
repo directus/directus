@@ -1,37 +1,3 @@
-<template>
-	<div class="v-slider" :style="styles">
-		<div v-if="$slots.prepend" class="prepend">
-			<slot name="prepend" :value="modelValue" />
-		</div>
-		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
-			<input
-				:disabled="disabled"
-				type="range"
-				:value="modelValue"
-				:max="max"
-				:min="min"
-				:step="step"
-				@change="onChange"
-				@input="onInput"
-			/>
-			<div class="fill" />
-			<div v-if="showTicks" class="ticks">
-				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
-			</div>
-			<div v-if="showThumbLabel" class="thumb-label-wrapper">
-				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
-					<slot name="thumb-label type-text" :value="modelValue">
-						{{ modelValue }}
-					</slot>
-				</div>
-			</div>
-		</div>
-		<div v-if="$slots.append" class="append">
-			<slot name="append" :value="modelValue" />
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -86,11 +52,45 @@ function onInput(event: Event) {
 }
 </script>
 
+<template>
+	<div class="v-slider" :style="styles">
+		<div v-if="$slots.prepend" class="prepend">
+			<slot name="prepend" :value="modelValue" />
+		</div>
+		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
+			<input
+				:disabled="disabled"
+				type="range"
+				:value="modelValue"
+				:max="max"
+				:min="min"
+				:step="step"
+				@change="onChange"
+				@input="onInput"
+			/>
+			<div class="fill" />
+			<div v-if="showTicks" class="ticks">
+				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
+			</div>
+			<div v-if="showThumbLabel" class="thumb-label-wrapper">
+				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
+					<slot name="thumb-label type-text" :value="modelValue">
+						{{ modelValue }}
+					</slot>
+				</div>
+			</div>
+		</div>
+		<div v-if="$slots.append" class="append">
+			<slot name="append" :value="modelValue" />
+		</div>
+	</div>
+</template>
+
 <style>
 body {
 	--v-slider-color: var(--border-normal);
-	--v-slider-thumb-color: var(--primary);
-	--v-slider-fill-color: var(--primary);
+	--v-slider-thumb-color: var(--theme--primary);
+	--v-slider-fill-color: var(--theme--primary);
 }
 </style>
 
@@ -109,8 +109,8 @@ body {
 		flex-grow: 1;
 
 		&.disabled {
-			--v-slider-thumb-color: var(--foreground-subdued);
-			--v-slider-fill-color: var(--foreground-subdued);
+			--v-slider-thumb-color: var(--theme--foreground-subdued);
+			--v-slider-fill-color: var(--theme--foreground-subdued);
 		}
 
 		&.thumb-label-visible {
@@ -121,7 +121,7 @@ body {
 			width: 100%;
 			height: 4px;
 			padding: 8px 0;
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
 			border-radius: 10px;
 			cursor: pointer;
@@ -149,7 +149,7 @@ body {
 				width: 8px;
 				height: 8px;
 				margin-top: -2px;
-				background: var(--background-page);
+				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
@@ -231,7 +231,7 @@ body {
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 			border-radius: var(--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;

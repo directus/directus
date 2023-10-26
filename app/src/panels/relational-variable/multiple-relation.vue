@@ -1,32 +1,3 @@
-<template>
-	<div class="one-to-many">
-		<template v-if="loading">
-			<v-skeleton-loader v-for="n in limit" :key="n" type="block-list-item-dense" />
-		</template>
-
-		<v-notice v-else-if="displayItems.length === 0">
-			{{ t('no_items') }}
-		</v-notice>
-
-		<v-list v-else>
-			<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
-				<render-template :collection="collection" :item="element" :template="displayTemplate" />
-				<div class="spacer" />
-				<v-icon v-tooltip="t('remove_item')" class="deselect" name="delete" @click.stop="deleteItem(element)" />
-			</v-list-item>
-		</v-list>
-
-		<div class="actions list">
-			<button v-if="totalItemCount < limit" @click="$emit('select')">
-				{{ t('add_existing') }}
-			</button>
-			<button v-if="totalItemCount > 0" @click="$emit('input', undefined)">
-				{{ t('clear_items') }}
-			</button>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -57,6 +28,35 @@ function deleteItem(elem: Record<string, any>) {
 	);
 }
 </script>
+
+<template>
+	<div class="one-to-many">
+		<template v-if="loading">
+			<v-skeleton-loader v-for="n in limit" :key="n" type="block-list-item-dense" />
+		</template>
+
+		<v-notice v-else-if="displayItems.length === 0">
+			{{ t('no_items') }}
+		</v-notice>
+
+		<v-list v-else>
+			<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
+				<render-template :collection="collection" :item="element" :template="displayTemplate" />
+				<div class="spacer" />
+				<v-icon v-tooltip="t('remove_item')" class="deselect" name="delete" @click.stop="deleteItem(element)" />
+			</v-list-item>
+		</v-list>
+
+		<div class="actions list">
+			<button v-if="totalItemCount < limit" @click="$emit('select')">
+				{{ t('add_existing') }}
+			</button>
+			<button v-if="totalItemCount > 0" @click="$emit('input', undefined)">
+				{{ t('clear_items') }}
+			</button>
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .one-to-many {
@@ -92,22 +92,22 @@ function deleteItem(elem: Record<string, any>) {
 	gap: var(--v-sheet-padding);
 
 	button {
-		color: var(--primary);
+		color: var(--theme--primary);
 		padding: 0 4px;
 
 		&:hover {
-			color: var(--primary-125);
+			color: var(--theme--primary-accent);
 		}
 	}
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 </style>

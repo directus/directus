@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+const props = withDefaults(
+	defineProps<{
+		modelValue?: string;
+		items?: Record<string, any>[];
+		secondary?: boolean;
+	}>(),
+	{
+		items: () => [],
+	}
+);
+
+defineEmits(['update:modelValue']);
+
+const displayValue = computed(() => {
+	const item = props.items.find((item) => item.value === props.modelValue);
+	return item?.text ?? props.modelValue;
+});
+</script>
+
 <template>
 	<v-menu attached class="language-select" :class="{ secondary }">
 		<template #activator="{ toggle, active }">
@@ -28,41 +50,19 @@
 	</v-menu>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue';
-
-const props = withDefaults(
-	defineProps<{
-		modelValue?: string;
-		items?: Record<string, any>[];
-		secondary?: boolean;
-	}>(),
-	{
-		items: () => [],
-	}
-);
-
-defineEmits(['update:modelValue']);
-
-const displayValue = computed(() => {
-	const item = props.items.find((item) => item.value === props.modelValue);
-	return item?.text ?? props.modelValue;
-});
-</script>
-
 <style lang="scss" scoped>
 .toggle {
-	--v-icon-color: var(--primary);
-	--v-icon-color-hover: var(--primary-150);
+	--v-icon-color: var(--theme--primary);
+	--v-icon-color-hover: var(--theme--primary-accent);
 
 	display: flex;
 	align-items: center;
 	width: 100%;
 	height: var(--input-height);
 	padding: var(--input-padding);
-	color: var(--primary);
+	color: var(--theme--primary);
 	text-align: left;
-	background-color: var(--primary-alt);
+	background-color: var(--theme--primary-background);
 	border-radius: var(--border-radius);
 
 	.display-value {
@@ -76,8 +76,8 @@ const displayValue = computed(() => {
 }
 
 .v-input .input {
-	color: var(--primary);
-	background-color: var(--primary-alt);
+	color: var(--theme--primary);
+	background-color: var(--theme--primary-background);
 	border: 0px;
 }
 
@@ -87,10 +87,10 @@ const displayValue = computed(() => {
 
 .secondary {
 	.toggle {
-		--v-icon-color: var(--secondary);
+		--v-icon-color: var(--theme--secondary);
 		--v-icon-color-hover: var(--secondary-150);
 
-		color: var(--secondary);
+		color: var(--theme--secondary);
 		background-color: var(--secondary-alt);
 	}
 }
@@ -116,7 +116,7 @@ const displayValue = computed(() => {
 			gap: 10px;
 			align-items: center;
 			justify-content: flex-end;
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 		}
 
 		&:hover {
@@ -131,7 +131,7 @@ const displayValue = computed(() => {
 				display: block;
 				width: 4px;
 				height: 4px;
-				background-color: var(--foreground-subdued);
+				background-color: var(--theme--form--field--input--foreground-subdued);
 				border-radius: 2px;
 				content: '';
 			}

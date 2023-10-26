@@ -1,56 +1,3 @@
-<template>
-	<div class="cards-header">
-		<div class="start">
-			<div v-if="selectionSync.length > 0" class="selected" @click="selectionSync = []">
-				<v-icon name="cancel" outline />
-				<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
-			</div>
-			<button v-else class="select-all" @click="showSelect === 'multiple' ? $emit('select-all') : undefined">
-				<v-icon name="check_circle" outline />
-				<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
-			</button>
-		</div>
-		<div class="end">
-			<v-icon
-				v-tooltip.top="t('card_size')"
-				class="size-selector"
-				:name="`grid_${7 - size}`"
-				clickable
-				@click="toggleSize"
-			/>
-
-			<v-menu show-arrow placement="bottom">
-				<template #activator="{ toggle }">
-					<div v-tooltip.top="t('sort_field')" class="sort-selector" @click="toggle">
-						{{ sortField && sortField.name }}
-					</div>
-				</template>
-
-				<v-list>
-					<v-list-item
-						v-for="field in fieldsWithoutFake"
-						:key="field.field"
-						:disabled="field.disabled"
-						:active="field.field === sortKey"
-						clickable
-						@click="sortSync = [field.field]"
-					>
-						<v-list-item-content>{{ field.name }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-			<v-icon
-				v-tooltip.top="t('sort_direction')"
-				class="sort-direction"
-				:class="{ descending }"
-				name="sort"
-				clickable
-				@click="toggleDescending"
-			/>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { Field, ShowSelect } from '@directus/types';
@@ -114,6 +61,59 @@ function toggleDescending() {
 }
 </script>
 
+<template>
+	<div class="cards-header">
+		<div class="start">
+			<div v-if="selectionSync.length > 0" class="selected" @click="selectionSync = []">
+				<v-icon name="cancel" outline />
+				<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
+			</div>
+			<button v-else class="select-all" @click="showSelect === 'multiple' ? $emit('select-all') : undefined">
+				<v-icon name="check_circle" outline />
+				<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+			</button>
+		</div>
+		<div class="end">
+			<v-icon
+				v-tooltip.top="t('card_size')"
+				class="size-selector"
+				:name="`grid_${7 - size}`"
+				clickable
+				@click="toggleSize"
+			/>
+
+			<v-menu show-arrow placement="bottom">
+				<template #activator="{ toggle }">
+					<div v-tooltip.top="t('sort_field')" class="sort-selector" @click="toggle">
+						{{ sortField && sortField.name }}
+					</div>
+				</template>
+
+				<v-list>
+					<v-list-item
+						v-for="field in fieldsWithoutFake"
+						:key="field.field"
+						:disabled="field.disabled"
+						:active="field.field === sortKey"
+						clickable
+						@click="sortSync = [field.field]"
+					>
+						<v-list-item-content>{{ field.name }}</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+			<v-icon
+				v-tooltip.top="t('sort_direction')"
+				class="sort-direction"
+				:class="{ descending }"
+				name="sort"
+				clickable
+				@click="toggleDescending"
+			/>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .cards-header {
 	position: sticky;
@@ -126,10 +126,10 @@ function toggleDescending() {
 	height: 52px;
 	margin-bottom: 36px;
 	padding: 0 8px;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 	border-top: var(--border-width) solid var(--border-subdued);
 	border-bottom: var(--border-width) solid var(--border-subdued);
-	box-shadow: 0 0 0 2px var(--background-page);
+	box-shadow: 0 0 0 2px var(--theme--background);
 }
 
 .start {
@@ -140,11 +140,11 @@ function toggleDescending() {
 	}
 
 	.select-all {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 
@@ -156,14 +156,14 @@ function toggleDescending() {
 .end {
 	display: flex;
 	align-items: center;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	.size-selector {
 		margin-right: 16px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 
@@ -172,7 +172,7 @@ function toggleDescending() {
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 			cursor: pointer;
 		}
 	}
@@ -185,7 +185,7 @@ function toggleDescending() {
 		}
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 			cursor: pointer;
 		}
 	}

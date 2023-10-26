@@ -1,110 +1,3 @@
-<template>
-	<v-drawer
-		v-model="notificationsDrawerOpen"
-		icon="notifications"
-		:title="t('notifications')"
-		:sidebar-label="t('folders')"
-		@cancel="notificationsDrawerOpen = false"
-	>
-		<template #actions>
-			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
-			<v-button
-				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
-				icon
-				rounded
-				:disabled="selection.length === 0"
-				secondary
-				@click="toggleArchive"
-			>
-				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
-			</v-button>
-			<v-button
-				v-if="tab[0] === 'inbox'"
-				v-tooltip.bottom="t('archive_all')"
-				icon
-				rounded
-				:disabled="notifications.length === 0"
-				@click="archiveAll"
-			>
-				<v-icon name="done_all" />
-			</v-button>
-		</template>
-
-		<template #sidebar>
-			<v-tabs v-model="tab" vertical>
-				<v-tab value="inbox">
-					<v-list-item-icon>
-						<v-icon name="inbox" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ t('inbox') }}</v-list-item-content>
-				</v-tab>
-				<v-tab value="archived">
-					<v-list-item-icon>
-						<v-icon name="archive" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ t('archive') }}</v-list-item-content>
-				</v-tab>
-			</v-tabs>
-		</template>
-
-		<v-info v-if="!loading && notifications.length === 0" icon="notifications" :title="t('no_notifications')" center>
-			{{ t('no_notifications_copy') }}
-		</v-info>
-
-		<div v-else class="content">
-			<v-list v-if="loading" class="notifications">
-				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
-			</v-list>
-
-			<v-list v-else class="notifications">
-				<v-list-item
-					v-for="notification in notifications"
-					:key="notification.id"
-					block
-					:dense="totalPages > 1"
-					:clickable="Boolean(notification.message)"
-					@mousedown.left.self="({ target }: Event) => (mouseDownTarget = target)"
-					@mouseup.left.self="
-						({ target }: Event) => {
-							if (target === mouseDownTarget) toggleNotification(notification.id);
-							mouseDownTarget = null;
-						}
-					"
-				>
-					<div class="header" @click="toggleNotification(notification.id)">
-						<v-checkbox
-							:model-value="selection.includes(notification.id)"
-							@update:model-value="toggleSelected(notification.id)"
-						/>
-						<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
-						<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
-							<v-text-overflow class="datetime" :text="datetime" />
-						</use-datetime>
-						<v-icon
-							v-if="notification.to"
-							v-tooltip="t('goto_collection_content')"
-							clickable
-							name="open_in_new"
-							@click="onLinkClick(notification.to)"
-						/>
-						<v-icon
-							v-if="notification.message"
-							clickable
-							:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
-						/>
-					</div>
-					<div
-						v-if="openNotifications.includes(notification.id) && notification.message"
-						v-md="notification.message"
-						class="message"
-					/>
-				</v-list-item>
-			</v-list>
-			<v-pagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
-		</div>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import useDatetime from '@/components/use-datetime.vue';
@@ -258,6 +151,113 @@ function onLinkClick(to: string) {
 }
 </script>
 
+<template>
+	<v-drawer
+		v-model="notificationsDrawerOpen"
+		icon="notifications"
+		:title="t('notifications')"
+		:sidebar-label="t('folders')"
+		@cancel="notificationsDrawerOpen = false"
+	>
+		<template #actions>
+			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
+			<v-button
+				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
+				icon
+				rounded
+				:disabled="selection.length === 0"
+				secondary
+				@click="toggleArchive"
+			>
+				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
+			</v-button>
+			<v-button
+				v-if="tab[0] === 'inbox'"
+				v-tooltip.bottom="t('archive_all')"
+				icon
+				rounded
+				:disabled="notifications.length === 0"
+				@click="archiveAll"
+			>
+				<v-icon name="done_all" />
+			</v-button>
+		</template>
+
+		<template #sidebar>
+			<v-tabs v-model="tab" vertical>
+				<v-tab value="inbox">
+					<v-list-item-icon>
+						<v-icon name="inbox" />
+					</v-list-item-icon>
+					<v-list-item-content>{{ t('inbox') }}</v-list-item-content>
+				</v-tab>
+				<v-tab value="archived">
+					<v-list-item-icon>
+						<v-icon name="archive" />
+					</v-list-item-icon>
+					<v-list-item-content>{{ t('archive') }}</v-list-item-content>
+				</v-tab>
+			</v-tabs>
+		</template>
+
+		<v-info v-if="!loading && notifications.length === 0" icon="notifications" :title="t('no_notifications')" center>
+			{{ t('no_notifications_copy') }}
+		</v-info>
+
+		<div v-else class="content">
+			<v-list v-if="loading" class="notifications">
+				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
+			</v-list>
+
+			<v-list v-else class="notifications">
+				<v-list-item
+					v-for="notification in notifications"
+					:key="notification.id"
+					block
+					:dense="totalPages > 1"
+					:clickable="Boolean(notification.message)"
+					@mousedown.left.self="({ target }: Event) => (mouseDownTarget = target)"
+					@mouseup.left.self="
+						({ target }: Event) => {
+							if (target === mouseDownTarget) toggleNotification(notification.id);
+							mouseDownTarget = null;
+						}
+					"
+				>
+					<div class="header" @click="toggleNotification(notification.id)">
+						<v-checkbox
+							:model-value="selection.includes(notification.id)"
+							@update:model-value="toggleSelected(notification.id)"
+						/>
+						<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
+						<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
+							<v-text-overflow class="datetime" :text="datetime" />
+						</use-datetime>
+						<v-icon
+							v-if="notification.to"
+							v-tooltip="t('goto_collection_content')"
+							clickable
+							name="open_in_new"
+							@click="onLinkClick(notification.to)"
+						/>
+						<v-icon
+							v-if="notification.message"
+							clickable
+							:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
+						/>
+					</div>
+					<div
+						v-if="openNotifications.includes(notification.id) && notification.message"
+						v-md="notification.message"
+						class="message"
+					/>
+				</v-list-item>
+			</v-list>
+			<v-pagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
+		</div>
+	</v-drawer>
+</template>
+
 <style lang="scss" scoped>
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
@@ -296,7 +296,7 @@ function onLinkClick(to: string) {
 				flex-grow: 1;
 			}
 			.datetime {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 

@@ -1,20 +1,3 @@
-<template>
-	<v-image
-		v-if="imageThumbnail && !imgError"
-		:src="imageThumbnail"
-		:class="{ 'is-svg': value && value.type?.includes('svg') }"
-		:alt="value?.title"
-		@error="imgError = true"
-	/>
-	<div v-else ref="previewEl" class="preview">
-		<span v-if="fileExtension" class="extension">
-			{{ fileExtension }}
-		</span>
-
-		<v-icon v-else name="folder_open" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
@@ -50,6 +33,23 @@ const imageThumbnail = computed(() => {
 });
 </script>
 
+<template>
+	<v-image
+		v-if="imageThumbnail && !imgError"
+		:src="imageThumbnail"
+		:class="{ 'is-svg': value && value.type?.includes('svg') }"
+		:alt="value?.title"
+		@error="imgError = true"
+	/>
+	<div v-else ref="previewEl" class="preview">
+		<span v-if="fileExtension" class="extension">
+			{{ fileExtension }}
+		</span>
+
+		<v-icon v-else name="folder_open" />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 img {
 	height: 100%;
@@ -59,7 +59,7 @@ img {
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	position: relative;
 	display: inline-flex;
@@ -72,12 +72,12 @@ img {
 	aspect-ratio: 1;
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;

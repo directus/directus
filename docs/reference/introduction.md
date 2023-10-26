@@ -280,7 +280,7 @@ Below are the global error codes used within Directus, and what they mean.
 | `REQUESTS_EXCEEDED`      | 429         | Hit the rate limit                                              |
 | `ROUTE_NOT_FOUND`        | 404         | Endpoint does not exist                                         |
 | `SERVICE_UNAVAILABLE`    | 503         | Could not use external service                                  |
-| `UNPROCESSABLE_ENTITY`   | 422         | You tried doing something illegal                               |
+| `UNPROCESSABLE_CONTENT`  | 422         | You tried doing something illegal                               |
 
 ::: warning Security
 

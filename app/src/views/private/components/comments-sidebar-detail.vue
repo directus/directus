@@ -1,29 +1,3 @@
-<template>
-	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
-		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
-
-		<v-progress-linear v-if="loading" indeterminate />
-
-		<div v-else-if="!activity || activity.length === 0" class="empty">
-			<div class="content">{{ t('no_comments') }}</div>
-		</div>
-
-		<template v-for="group in activity" v-else :key="group.date.toString()">
-			<v-divider>{{ group.dateFormatted }}</v-divider>
-
-			<template v-for="item in group.activity" :key="item.id">
-				<comment-item
-					:refresh="refresh"
-					:activity="item"
-					:user-previews="userPreviews"
-					:primary-key="primaryKey"
-					:collection="collection"
-				/>
-			</template>
-		</template>
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
@@ -183,9 +157,35 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 }
 </script>
 
+<template>
+	<sidebar-detail :title="t('comments')" icon="chat_bubble_outline" :badge="count || null">
+		<comment-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
+
+		<v-progress-linear v-if="loading" indeterminate />
+
+		<div v-else-if="!activity || activity.length === 0" class="empty">
+			<div class="content">{{ t('no_comments') }}</div>
+		</div>
+
+		<template v-for="group in activity" v-else :key="group.date.toString()">
+			<v-divider>{{ group.dateFormatted }}</v-divider>
+
+			<template v-for="item in group.activity" :key="item.id">
+				<comment-item
+					:refresh="refresh"
+					:activity="item"
+					:user-previews="userPreviews"
+					:primary-key="primaryKey"
+					:collection="collection"
+				/>
+			</template>
+		</template>
+	</sidebar-detail>
+</template>
+
 <style lang="scss" scoped>
 .sidebar-detail {
-	--v-badge-background-color: var(--primary);
+	--v-badge-background-color: var(--theme--primary);
 }
 
 .v-progress-linear {
@@ -202,14 +202,14 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	padding-bottom: 4px;
 	background-color: var(--background-normal);
 	box-shadow: 0 0 4px 2px var(--background-normal);
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--theme--foreground-subdued);
 }
 
 .empty {
 	margin-top: 16px;
 	margin-bottom: 8px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 </style>

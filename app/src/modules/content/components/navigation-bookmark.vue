@@ -1,90 +1,3 @@
-<template>
-	<v-list-item
-		:to="`${getCollectionRoute(bookmark.collection)}?bookmark=${bookmark.id}`"
-		query
-		class="bookmark"
-		clickable
-		@contextmenu.stop=""
-	>
-		<v-list-item-icon><v-icon :name="bookmark.icon" :color="bookmark.color" /></v-list-item-icon>
-		<v-list-item-content>
-			<v-text-overflow :text="name" />
-		</v-list-item-content>
-
-		<v-menu placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
-				<v-icon
-					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
-					:name="hasPermission ? 'more_vert' : 'lock'"
-					:clickable="hasPermission"
-					small
-					class="ctx-toggle"
-					@click.prevent="hasPermission ? toggle() : null"
-				/>
-			</template>
-			<v-list>
-				<v-list-item
-					clickable
-					:to="scope !== 'personal' ? `/settings/presets/${bookmark.id}` : undefined"
-					@click="scope === 'personal' ? (editActive = true) : undefined"
-				>
-					<v-list-item-icon>
-						<v-icon name="edit" outline />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t(`edit_${scope}_bookmark`)" />
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item clickable class="danger" @click="deleteActive = true">
-					<v-list-item-icon>
-						<v-icon name="delete" outline />
-					</v-list-item-icon>
-					<v-list-item-content>
-						<v-text-overflow :text="t(`delete_${scope}_bookmark`)" />
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
-
-		<v-dialog v-model="editActive" persistent @esc="editCancel">
-			<v-card>
-				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
-				<v-card-text>
-					<div class="fields">
-						<interface-system-input-translated-string
-							:value="editValue.name"
-							class="full"
-							autofocus
-							@input="editValue.name = $event"
-							@keyup.enter="editSave"
-						/>
-						<interface-select-icon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
-						<interface-select-color width="half" :value="editValue.color" @input="editValue.color = $event" />
-					</div>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="editCancel">{{ t('cancel') }}</v-button>
-					<v-button :disabled="editValue.name === null" :loading="editSaving" @click="editSave">
-						{{ t('save') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
-			<v-card>
-				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
-				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-					<v-button :loading="deleteSaving" kind="danger" @click="deleteSave">
-						{{ t('delete_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</v-list-item>
-</template>
-
 <script setup lang="ts">
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
@@ -196,15 +109,102 @@ function useDeleteBookmark() {
 }
 </script>
 
+<template>
+	<v-list-item
+		:to="`${getCollectionRoute(bookmark.collection)}?bookmark=${bookmark.id}`"
+		query
+		class="bookmark"
+		clickable
+		@contextmenu.stop=""
+	>
+		<v-list-item-icon><v-icon :name="bookmark.icon" :color="bookmark.color" /></v-list-item-icon>
+		<v-list-item-content>
+			<v-text-overflow :text="name" />
+		</v-list-item-content>
+
+		<v-menu placement="bottom-start" show-arrow>
+			<template #activator="{ toggle }">
+				<v-icon
+					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
+					:name="hasPermission ? 'more_vert' : 'lock'"
+					:clickable="hasPermission"
+					small
+					class="ctx-toggle"
+					@click.prevent="hasPermission ? toggle() : null"
+				/>
+			</template>
+			<v-list>
+				<v-list-item
+					clickable
+					:to="scope !== 'personal' ? `/settings/presets/${bookmark.id}` : undefined"
+					@click="scope === 'personal' ? (editActive = true) : undefined"
+				>
+					<v-list-item-icon>
+						<v-icon name="edit" outline />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t(`edit_${scope}_bookmark`)" />
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item clickable class="danger" @click="deleteActive = true">
+					<v-list-item-icon>
+						<v-icon name="delete" outline />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t(`delete_${scope}_bookmark`)" />
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
+
+		<v-dialog v-model="editActive" persistent @esc="editCancel">
+			<v-card>
+				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
+				<v-card-text>
+					<div class="fields">
+						<interface-system-input-translated-string
+							:value="editValue.name"
+							class="full"
+							autofocus
+							@input="editValue.name = $event"
+							@keyup.enter="editSave"
+						/>
+						<interface-select-icon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
+						<interface-select-color width="half" :value="editValue.color" @input="editValue.color = $event" />
+					</div>
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="editCancel">{{ t('cancel') }}</v-button>
+					<v-button :disabled="editValue.name === null" :loading="editSaving" @click="editSave">
+						{{ t('save') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
+			<v-card>
+				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
+				<v-card-actions>
+					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
+					<v-button :loading="deleteSaving" kind="danger" @click="deleteSave">
+						{{ t('delete_label') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</v-list-item>
+</template>
+
 <style lang="scss" scoped>
 .danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .v-list-item {
 	.ctx-toggle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		opacity: 0;
 		user-select: none;

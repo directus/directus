@@ -1,23 +1,3 @@
-<template>
-	<component
-		:is="url ? 'a' : 'div'"
-		v-tooltip.right="urlTooltip"
-		:href="url"
-		:target="url ? '_blank' : undefined"
-		:rel="url ? 'noopener noreferrer' : undefined"
-		class="module-bar-logo"
-		:class="{ loading: showLoader }"
-	>
-		<template v-if="customLogoPath">
-			<transition name="fade">
-				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
-			</transition>
-			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
-		</template>
-		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />
-	</component>
-</template>
-
 <script setup lang="ts">
 import { useRequestsStore } from '@/stores/requests';
 import { useSettingsStore } from '@/stores/settings';
@@ -58,6 +38,26 @@ function stopSpinnerIfQueueIsEmpty() {
 }
 </script>
 
+<template>
+	<component
+		:is="url ? 'a' : 'div'"
+		v-tooltip.right="urlTooltip"
+		:href="url"
+		:target="url ? '_blank' : undefined"
+		:rel="url ? 'noopener noreferrer' : undefined"
+		class="module-bar-logo"
+		:class="{ loading: showLoader }"
+	>
+		<template v-if="customLogoPath">
+			<transition name="fade">
+				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
+			</transition>
+			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
+		</template>
+		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />
+	</component>
+</template>
+
 <style lang="scss" scoped>
 .module-bar-logo {
 	--v-progress-linear-height: 2px;
@@ -71,7 +71,7 @@ function stopSpinnerIfQueueIsEmpty() {
 	width: 60px;
 	height: 60px;
 	padding: 12px;
-	background-color: var(--brand);
+	background-color: var(--project-color);
 
 	.v-progress-linear {
 		position: absolute;

@@ -1,3 +1,59 @@
+<script setup lang="ts">
+import { i18n } from '@/lang';
+import HeaderBar from '@/views/private/components/header-bar.vue';
+import { computed, provide, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import VResizeable from './v-resizeable.vue';
+
+export interface Props {
+	title: string;
+	subtitle?: string | null;
+	modelValue?: boolean;
+	persistent?: boolean;
+	icon?: string;
+	sidebarResizeable?: boolean;
+	sidebarLabel?: string;
+	cancelable?: boolean;
+	headerShadow?: boolean;
+	smallHeader?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	subtitle: null,
+	modelValue: undefined,
+	persistent: false,
+	icon: 'box',
+	sidebarLabel: i18n.global.t('sidebar'),
+	cancelable: true,
+	headerShadow: true,
+	smallHeader: false,
+});
+
+const emit = defineEmits(['cancel', 'update:modelValue']);
+
+const { t } = useI18n();
+
+const localActive = ref(false);
+
+const mainEl = ref<Element>();
+
+provide('main-element', mainEl);
+
+const sidebarWidth = 220;
+// Half of the space of the drawer (856 / 2 = 428)
+const sidebarMaxWidth = 428;
+
+const internalActive = computed({
+	get() {
+		return props.modelValue === undefined ? localActive.value : props.modelValue;
+	},
+	set(newActive: boolean) {
+		localActive.value = newActive;
+		emit('update:modelValue', newActive);
+	},
+});
+</script>
+
 <template>
 	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
 		<template #activator="{ on }">
@@ -75,62 +131,6 @@
 	</v-dialog>
 </template>
 
-<script setup lang="ts">
-import { i18n } from '@/lang';
-import HeaderBar from '@/views/private/components/header-bar.vue';
-import { computed, provide, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import VResizeable from './v-resizeable.vue';
-
-export interface Props {
-	title: string;
-	subtitle?: string | null;
-	modelValue?: boolean;
-	persistent?: boolean;
-	icon?: string;
-	sidebarResizeable?: boolean;
-	sidebarLabel?: string;
-	cancelable?: boolean;
-	headerShadow?: boolean;
-	smallHeader?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	subtitle: null,
-	modelValue: undefined,
-	persistent: false,
-	icon: 'box',
-	sidebarLabel: i18n.global.t('sidebar'),
-	cancelable: true,
-	headerShadow: true,
-	smallHeader: false,
-});
-
-const emit = defineEmits(['cancel', 'update:modelValue']);
-
-const { t } = useI18n();
-
-const localActive = ref(false);
-
-const mainEl = ref<Element>();
-
-provide('main-element', mainEl);
-
-const sidebarWidth = 220;
-// Half of the space of the drawer (856 / 2 = 428)
-const sidebarMaxWidth = 428;
-
-const internalActive = computed({
-	get() {
-		return props.modelValue === undefined ? localActive.value : props.modelValue;
-	},
-	set(newActive: boolean) {
-		localActive.value = newActive;
-		emit('update:modelValue', newActive);
-	},
-});
-</script>
-
 <style>
 body {
 	--v-drawer-max-width: 856px;
@@ -145,7 +145,7 @@ body {
 	width: 100%;
 	max-width: var(--v-drawer-max-width);
 	height: 100%;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 
 	.cancel {
 		display: none;
@@ -166,7 +166,7 @@ body {
 		--v-button-background-color: var(--background-normal);
 		--v-button-background-color-active: var(--background-normal);
 		--v-button-background-color-hover: var(--background-normal-alt);
-		--v-button-color-disabled: var(--foreground-normal);
+		--v-button-color-disabled: var(--theme--foreground);
 	}
 
 	.content {

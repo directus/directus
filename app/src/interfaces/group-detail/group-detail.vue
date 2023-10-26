@@ -1,3 +1,91 @@
+<script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { Field, ValidationError } from '@directus/types';
+import { isEqual } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = withDefaults(
+	defineProps<{
+		field: Field;
+		fields: Field[];
+		primaryKey: number | string;
+		values: Record<string, unknown>;
+		initialValues: Record<string, unknown>;
+		disabled?: boolean;
+		batchMode?: boolean;
+		batchActiveFields?: string[];
+		loading?: boolean;
+		validationErrors?: ValidationError[];
+		badge?: string;
+		start?: 'open' | 'closed';
+		headerIcon?: string;
+		headerColor?: string;
+		direction?: string;
+	}>(),
+	{
+		batchActiveFields: () => [],
+		validationErrors: () => [],
+		start: 'open',
+	}
+);
+
+defineEmits(['apply']);
+
+const { t } = useI18n();
+
+const detailOpen = ref(props.start === 'open');
+
+// In case that conditions change the start prop after the group already got rendered
+// caused by the async loading of data to run the conditions against
+watch(
+	() => props.loading,
+	(newVal) => {
+		if (!newVal) detailOpen.value = props.start === 'open';
+	}
+);
+
+const edited = computed(() => {
+	if (!props.values) return false;
+
+	const editedFields = Object.keys(props.values);
+	return props.fields.some((field) => editedFields.includes(field.field));
+});
+
+const validationMessages = computed(() => {
+	if (!props.validationErrors) return;
+
+	const fields = props.fields.map((field) => field.field);
+
+	const errors = props.validationErrors.reduce((acc, validationError) => {
+		if (fields.includes(validationError.field) === false) return acc;
+
+		if (validationError.code === 'RECORD_NOT_UNIQUE') {
+			acc.push(`${formatTitle(validationError.field)} ${t('validationError.unique').toLowerCase()}`);
+		} else {
+			acc.push(
+				`${formatTitle(validationError.field)} ${t(
+					`validationError.${validationError.type}`,
+					validationError
+				).toLowerCase()}`
+			);
+		}
+
+		return acc;
+	}, [] as string[]);
+
+	if (errors.length === 0) return [];
+
+	return errors;
+});
+
+watch(validationMessages, (newVal, oldVal) => {
+	if (!validationMessages.value) return;
+	if (isEqual(newVal, oldVal)) return;
+	detailOpen.value = validationMessages.value.length > 0;
+});
+</script>
+
 <template>
 	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
@@ -45,85 +133,6 @@
 	</v-detail>
 </template>
 
-<script setup lang="ts">
-import formatTitle from '@directus/format-title';
-import { Field, ValidationError } from '@directus/types';
-import { isEqual } from 'lodash';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const props = withDefaults(
-	defineProps<{
-		field: Field;
-		fields: Field[];
-		primaryKey: number | string;
-		values: Record<string, unknown>;
-		initialValues: Record<string, unknown>;
-		disabled?: boolean;
-		batchMode?: boolean;
-		batchActiveFields?: string[];
-		loading?: boolean;
-		validationErrors?: ValidationError[];
-		badge?: string;
-		start?: 'open' | 'closed';
-		headerIcon?: string;
-		headerColor?: string;
-		direction?: string;
-	}>(),
-	{
-		batchActiveFields: () => [],
-		validationErrors: () => [],
-		start: 'open',
-	}
-);
-
-defineEmits(['apply']);
-
-const { t } = useI18n();
-
-const detailOpen = ref(props.start === 'open');
-
-const edited = computed(() => {
-	if (!props.values) return false;
-
-	const editedFields = Object.keys(props.values);
-	return props.fields.some((field) => editedFields.includes(field.field));
-});
-
-const validationMessages = computed(() => {
-	if (!props.validationErrors) return;
-
-	const fields = props.fields.map((field) => field.field);
-
-	const errors = props.validationErrors.reduce((acc, validationError) => {
-		if (fields.includes(validationError.field) === false) return acc;
-
-		if (validationError.code === 'RECORD_NOT_UNIQUE') {
-			acc.push(`${formatTitle(validationError.field)} ${t('validationError.unique').toLowerCase()}`);
-		} else {
-			acc.push(
-				`${formatTitle(validationError.field)} ${t(
-					`validationError.${validationError.type}`,
-					validationError
-				).toLowerCase()}`
-			);
-		}
-
-		return acc;
-	}, [] as string[]);
-
-	if (errors.length === 0) return [];
-
-	return errors;
-});
-
-watch(validationMessages, (newVal, oldVal) => {
-	if (!validationMessages.value) return;
-	if (isEqual(newVal, oldVal)) return;
-	detailOpen.value = validationMessages.value.length > 0;
-});
-</script>
-
 <style scoped>
 .v-form {
 	padding-top: calc(var(--form-vertical-gap) / 2);
@@ -154,7 +163,7 @@ watch(validationMessages, (newVal, oldVal) => {
 	display: block;
 	width: 4px;
 	height: 4px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--theme--form--field--input--foreground-subdued);
 	border-radius: 4px;
 	content: '';
 }
@@ -165,6 +174,6 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 </style>

@@ -7,6 +7,20 @@ import { WebSocketService } from './websocket.js';
 vi.mock('../emitter');
 vi.mock('../websocket/controllers/index');
 
+vi.mock('../env', async () => {
+	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+
+	const MOCK_ENV = {
+		...actual.default,
+		WEBSOCKETS_ENABLED: true,
+	};
+
+	return {
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
+	};
+});
+
 function mockClient(accountability: Accountability | null = null) {
 	return {
 		on: vi.fn(),

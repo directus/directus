@@ -1,12 +1,3 @@
-<template>
-	<div :class="type" class="v-skeleton-loader">
-		<template v-if="type === 'list-item-icon'">
-			<div class="icon" />
-			<div class="text" />
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 interface Props {
 	/** Name of another component to mirror */
@@ -18,9 +9,18 @@ withDefaults(defineProps<Props>(), {
 });
 </script>
 
+<template>
+	<div :class="type" class="v-skeleton-loader">
+		<template v-if="type === 'list-item-icon'">
+			<div class="icon" />
+			<div class="text" />
+		</template>
+	</div>
+</template>
+
 <style>
 body {
-	--v-skeleton-loader-color: var(--background-page);
+	--v-skeleton-loader-color: var(--theme--background);
 	--v-skeleton-loader-background-color: var(--background-subdued);
 }
 </style>

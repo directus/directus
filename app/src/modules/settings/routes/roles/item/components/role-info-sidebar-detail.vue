@@ -1,3 +1,20 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { useClipboard } from '@/composables/use-clipboard';
+
+interface Props {
+	role?: Record<string, any> | null;
+}
+
+withDefaults(defineProps<Props>(), {
+	role: () => null,
+});
+
+const { t } = useI18n();
+
+const { isCopySupported, copyToClipboard } = useClipboard();
+</script>
+
 <template>
 	<sidebar-detail icon="info" :title="t('information')" close>
 		<template v-if="role">
@@ -22,23 +39,6 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { useClipboard } from '@/composables/use-clipboard';
-
-interface Props {
-	role?: Record<string, any> | null;
-}
-
-withDefaults(defineProps<Props>(), {
-	role: () => null,
-});
-
-const { t } = useI18n();
-
-const { isCopySupported, copyToClipboard } = useClipboard();
-</script>
-
 <style lang="scss" scoped>
 .v-divider {
 	margin: 20px 0;
@@ -49,8 +49,8 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	align-items: center;
 
 	.clipboard-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground);
 
 		margin-left: 4px;
 	}

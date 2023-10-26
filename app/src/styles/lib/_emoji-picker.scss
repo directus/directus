@@ -1,18 +1,18 @@
 .emoji-picker__wrapper {
 	.emoji-picker {
-		--category-button-active-color: var(--primary);
-		--font: var(--family-sans-serif);
-		--text-color: var(--foreground-normal);
-		--dark-text-color: var(--foreground-normal);
-		--secondary-text-color: var(--foreground-normal-alt);
-		--dark-secondary-text-color: var(--foreground-normal-alt);
+		--category-button-active-color: var(--theme--primary);
+		--font: var(--theme--font-family-sans-serif);
+		--text-color: var(--theme--foreground);
+		--dark-text-color: var(--theme--foreground);
+		--secondary-text-color: var(--theme--foreground-accent);
+		--dark-secondary-text-color: var(--theme--foreground-accent);
 		--dark-border-color: var(--border-normal);
 		--dark-background-color: var(--background-subdued);
 
 		box-shadow: var(--card-shadow);
 		border-radius: var(--border-radius);
 		border: var(--border-width) solid var(--border-normal);
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 	}
 
 	.emoji-picker__search-container {
@@ -20,7 +20,7 @@
 		margin: 8px;
 
 		.emoji-picker__search-icon {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			top: calc(50% - 2px);
 			transform: translate(0, -50%);
 		}
@@ -28,7 +28,7 @@
 		input.emoji-picker__search {
 			border-radius: var(--border-radius);
 			border: var(--border-width) solid var(--border-normal);
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 
 			height: 100%;
 
@@ -37,11 +37,11 @@
 			}
 
 			&:focus {
-				border-color: var(--primary);
+				border-color: var(--theme--primary);
 			}
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 	}
@@ -57,11 +57,11 @@
 				transition: color var(--fast) var(--transition);
 
 				&:not(.active) {
-					color: var(--foreground-subdued);
+					color: var(--theme--foreground-subdued);
 				}
 
 				&:hover {
-					color: var(--foreground-normal);
+					color: var(--theme--foreground);
 				}
 			}
 		}

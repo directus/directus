@@ -26,7 +26,6 @@ export function redactObject(
 	const wildcardChars = ['*', '**'];
 
 	const clone = JSON.parse(JSON.stringify(input, getReplacer(replacement, redact.values)));
-	const visited = new WeakSet<UnknownObject>();
 
 	if (redact.keys) {
 		traverse(clone, redact.keys);
@@ -38,8 +37,6 @@ export function redactObject(
 		if (checkKeyPaths.length === 0) {
 			return;
 		}
-
-		visited.add(object);
 
 		const REDACTED_TEXT = replacement();
 		const globalCheckPaths = [];
@@ -96,7 +93,7 @@ export function redactObject(
 
 			const value = object[key];
 
-			if (isObject(value) && !visited.has(value)) {
+			if (isObject(value)) {
 				traverse(value, [...globalCheckPaths, ...localCheckPaths]);
 			}
 		}
@@ -111,26 +108,53 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 		? Object.entries(values).filter(([_k, v]) => typeof v === 'string' && v.length > 0)
 		: [];
 
-	return (_key: string, value: unknown) => {
-		if (value instanceof Error) {
-			return {
-				name: value.name,
-				message: value.message,
-				stack: value.stack,
-				cause: value.cause,
-			};
-		}
-
-		if (!values || filteredValues.length === 0 || typeof value !== 'string') return value;
-
-		let finalValue = value;
-
-		for (const [redactKey, valueToRedact] of filteredValues) {
-			if (finalValue.includes(valueToRedact)) {
-				finalValue = finalValue.replace(new RegExp(valueToRedact, 'g'), replacement(redactKey));
+	const replacer = (seen: WeakSet<object>) => {
+		return function (_key: string, value: unknown) {
+			if (value instanceof Error) {
+				return {
+					name: value.name,
+					message: value.message,
+					stack: value.stack,
+					cause: value.cause,
+				};
 			}
-		}
 
-		return finalValue;
+			if (value !== null && typeof value === 'object') {
+				if (seen.has(value)) {
+					return '[Circular]';
+				}
+
+				seen.add(value);
+
+				const newValue: any = Array.isArray(value) ? [] : {};
+
+				for (const [key2, value2] of Object.entries(value)) {
+					if (typeof value2 === 'string') {
+						newValue[key2] = value2;
+					} else {
+						newValue[key2] = replacer(seen)(key2, value2);
+					}
+				}
+
+				seen.delete(value);
+
+				return newValue;
+			}
+
+			if (!values || filteredValues.length === 0 || typeof value !== 'string') return value;
+
+			let finalValue = value;
+
+			for (const [redactKey, valueToRedact] of filteredValues) {
+				if (finalValue.includes(valueToRedact)) {
+					finalValue = finalValue.replace(new RegExp(valueToRedact, 'g'), replacement(redactKey));
+				}
+			}
+
+			return finalValue;
+		};
 	};
+
+	const seen = new WeakSet();
+	return replacer(seen);
 }

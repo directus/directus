@@ -1,100 +1,3 @@
-<template>
-	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
-		{{ t('no_app_access_copy') }}
-
-		<template #append>
-			<v-button to="/logout">{{ t('switch_user') }}</v-button>
-		</template>
-	</v-info>
-
-	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
-		<aside
-			id="navigation"
-			role="navigation"
-			aria-label="Module Navigation"
-			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
-		>
-			<module-bar />
-			<v-resizeable
-				v-model:width="navWidth"
-				:min-width="SIZES.minModuleNavWidth"
-				:max-width="maxWidthNav"
-				:options="navResizeOptions"
-				@dragging="(value) => (isDraggingNav = value)"
-				@transition-end="onNavTransitionEnd"
-			>
-				<div class="module-nav alt-colors">
-					<project-info />
-
-					<div class="module-nav-content">
-						<slot name="navigation" />
-					</div>
-				</div>
-			</v-resizeable>
-		</aside>
-		<div id="main-content" ref="contentEl" class="content">
-			<header-bar
-				ref="headerBarEl"
-				:small="smallHeader || splitView"
-				:shadow="headerShadow || splitView"
-				show-sidebar-toggle
-				:title="title"
-				@toggle:sidebar="sidebarOpen = !sidebarOpen"
-				@primary="navOpen = !navOpen"
-			>
-				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
-					<slot :name="scopedSlotName" v-bind="slotData" />
-				</template>
-			</header-bar>
-
-			<div class="content-wrapper">
-				<v-resizeable
-					v-model:width="mainWidth"
-					:min-width="SIZES.minContentWidth"
-					:max-width="maxWidthMain"
-					:disabled="!splitViewWritable"
-					:options="mainResizeOptions"
-					@dragging="(value) => (isDraggingMain = value)"
-				>
-					<main v-show="showMain">
-						<slot />
-					</main>
-				</v-resizeable>
-
-				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingMain }">
-					<slot name="splitView" />
-				</div>
-			</div>
-		</div>
-		<aside
-			id="sidebar"
-			ref="sidebarEl"
-			role="contentinfo"
-			class="alt-colors"
-			aria-label="Module Sidebar"
-			:class="{ 'is-open': sidebarOpen, 'has-shadow': sidebarShadow }"
-			@click="openSidebar"
-		>
-			<div class="flex-container">
-				<sidebar-detail-group :sidebar-open="sidebarOpen">
-					<slot name="sidebar" />
-				</sidebar-detail-group>
-
-				<div class="spacer" />
-
-				<notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" />
-			</div>
-		</aside>
-
-		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
-		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
-
-		<notifications-drawer />
-		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
-		<notification-dialogs />
-	</div>
-</template>
-
 <script setup lang="ts">
 import VResizeable, { ResizeableOptions } from '@/components/v-resizeable.vue';
 import { useLocalStorage } from '@/composables/use-local-storage';
@@ -322,8 +225,8 @@ const notificationsPreviewActive = ref(false);
 
 const { sidebarOpen, fullScreen } = storeToRefs(appStore);
 
-const theme = computed(() => {
-	return userStore.currentUser && 'theme' in userStore.currentUser ? userStore.currentUser.theme : 'auto';
+const appearance = computed(() => {
+	return userStore.currentUser && 'appearance' in userStore.currentUser ? userStore.currentUser.appearance : 'auto';
 });
 
 provide('main-element', contentEl);
@@ -348,6 +251,103 @@ function getWidth(input: unknown, fallback: number): number {
 }
 </script>
 
+<template>
+	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
+		{{ t('no_app_access_copy') }}
+
+		<template #append>
+			<v-button to="/logout">{{ t('switch_user') }}</v-button>
+		</template>
+	</v-info>
+
+	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
+		<aside
+			id="navigation"
+			role="navigation"
+			aria-label="Module Navigation"
+			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
+		>
+			<module-bar />
+			<v-resizeable
+				v-model:width="navWidth"
+				:min-width="SIZES.minModuleNavWidth"
+				:max-width="maxWidthNav"
+				:options="navResizeOptions"
+				@dragging="(value) => (isDraggingNav = value)"
+				@transition-end="onNavTransitionEnd"
+			>
+				<div class="module-nav alt-colors">
+					<project-info />
+
+					<div class="module-nav-content">
+						<slot name="navigation" />
+					</div>
+				</div>
+			</v-resizeable>
+		</aside>
+		<div id="main-content" ref="contentEl" class="content">
+			<header-bar
+				ref="headerBarEl"
+				:small="smallHeader || splitView"
+				:shadow="headerShadow || splitView"
+				show-sidebar-toggle
+				:title="title"
+				@toggle:sidebar="sidebarOpen = !sidebarOpen"
+				@primary="navOpen = !navOpen"
+			>
+				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
+					<slot :name="scopedSlotName" v-bind="slotData" />
+				</template>
+			</header-bar>
+
+			<div class="content-wrapper">
+				<v-resizeable
+					v-model:width="mainWidth"
+					:min-width="SIZES.minContentWidth"
+					:max-width="maxWidthMain"
+					:disabled="!splitViewWritable"
+					:options="mainResizeOptions"
+					@dragging="(value) => (isDraggingMain = value)"
+				>
+					<main v-show="showMain">
+						<slot />
+					</main>
+				</v-resizeable>
+
+				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingMain }">
+					<slot name="splitView" />
+				</div>
+			</div>
+		</div>
+		<aside
+			id="sidebar"
+			ref="sidebarEl"
+			role="contentinfo"
+			class="alt-colors"
+			aria-label="Module Sidebar"
+			:class="{ 'is-open': sidebarOpen, 'has-shadow': sidebarShadow }"
+			@click="openSidebar"
+		>
+			<div class="flex-container">
+				<sidebar-detail-group :sidebar-open="sidebarOpen">
+					<slot name="sidebar" />
+				</sidebar-detail-group>
+
+				<div class="spacer" />
+
+				<notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" />
+			</div>
+		</aside>
+
+		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
+		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
+
+		<notifications-drawer />
+		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
+		<notification-dialogs />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .private-view {
 	--content-padding: 12px;
@@ -358,7 +358,7 @@ function getWidth(input: unknown, fallback: number): number {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
@@ -400,11 +400,18 @@ function getWidth(input: unknown, fallback: number): number {
 			width: 220px;
 			height: 100%;
 			font-size: 1rem;
-			background-color: var(--background-normal);
+			background: var(--theme--navigation--background);
 
 			&-content {
-				--v-list-item-background-color-hover: var(--background-normal-alt);
-				--v-list-item-background-color-active: var(--background-normal-alt);
+				--v-list-item-color: var(--theme--navigation--list--foreground);
+				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
+				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
+				--v-list-item-background-color: var(--theme--navigation--list--background);
+				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
+				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
 
 				height: calc(100% - 64px);
 				overflow-x: hidden;
@@ -490,7 +497,7 @@ function getWidth(input: unknown, fallback: number): number {
 		width: 280px;
 		height: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 

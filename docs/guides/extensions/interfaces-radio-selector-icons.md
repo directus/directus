@@ -15,8 +15,8 @@ input using icons, SVGs or images where the user selects an option and the value
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your interface.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose interface), and type a name for your extension (for example,
@@ -37,7 +37,7 @@ import InterfaceIconRadio from './interface.vue';
 export default {
 	id: 'custom-radio-buttons',
 	name: 'Radio Icon Buttons',
-	type: "interface",
+	type: 'interface',
 	description: 'Radio selection group with icon buttons',
 	icon: 'view_carousel',
 	component: InterfaceIconRadio,
@@ -83,7 +83,7 @@ which is how the record is shown to users when presented in a list. Set this to 
 The raw essentials for a radio list is the text (label) and the value. Add these to the `fields` object:
 
 ```js
-fields: [
+[
 	{
 		field: 'text',
 		type: 'string',
@@ -105,16 +105,22 @@ fields: [
 			},
 		},
 	},
-]
+];
 ```
 
 Add a field or fields for an icon. For the most flexibility, include SVG, Image and an Icon Picker.
 
 ```js
-fields: [
-	{ /* field info */ },
-	{ /* field info */ },
-	{ /* field info */ },
+[
+	{
+		/* field info */
+	},
+	{
+		/* field info */
+	},
+	{
+		/* field info */
+	},
 	{
 		field: 'svg_icon',
 		type: 'text',
@@ -142,7 +148,7 @@ fields: [
 			interface: 'select-icon',
 		},
 	},
-]
+];
 ```
 
 For the SVG icon, use the code interface which allows the user to paste raw SVG code. The image upload uses the built-in
@@ -269,7 +275,7 @@ methods: {
 Add the following code to output an error if no choices are configured for the interface. This goes inside the
 `template` tag:
 
-```html
+```vue
 <v-notice v-if="!choices" type="warning">
 	No choices configured
 </v-notice>
@@ -278,17 +284,14 @@ Add the following code to output an error if no choices are configured for the i
 After the `v-notice`, add a `div` for the buttons and use `v-else` from the `if` statement above. The `class` added to
 this `div` will be used to style the radio buttons:
 
-```html
-<div
-	v-else
-	class="radio-icon-buttons"
-	:style="{ '--v-radio-color': color, }" >
+```vue
+<div v-else class="radio-icon-buttons" :style="{ '--v-radio-color': color, }">
 </div>
 ```
 
 Inside the `div`, add a hidden `input` field which will bind to the selected value.
 
-```html
+```vue
 <input
 	:value="value"
 	:field="field"
@@ -303,7 +306,7 @@ and the current `field` to the function. This is a fallback if anything outside 
 
 After the `input` field, add the buttons by looping through the `choices` array.
 
-```html
+```vue
 <button
 	v-for="choice in choices"
 	:key="choice.value"
@@ -312,7 +315,8 @@ After the `input` field, add the buttons by looping through the `choices` array.
 	:aria-pressed="isChecked(value, item.value) ? 'true' : 'false'"
 	:disabled="disabled"
 	:class="{ checked: isChecked(value, item.value), block }"
-	@click="selectOption(choice.value, field)">
+	@click="selectOption(choice.value, field)"
+>
 	<span class="label type-text">
 		<v-icon v-if="choice.icon" :name="choice.icon" filled />
 		<span v-else-if="choice.svg_icon" class="v-icon" v-html="choice.svg_icon"></span>
@@ -333,7 +337,7 @@ which take priority if present. This example orders the priority icon, then svg,
 The buttons currently have no indication that they are selected. At the bottom of `interface.vue`, add the following
 under the closing `script` tag:
 
-```html
+```vue
 <style lang="scss" scoped>
 .radio-icon-buttons {
 	--columns: 5;
@@ -355,11 +359,11 @@ under the closing `script` tag:
 	border-radius: 0;
 	appearance: none;
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 		svg {
 			width: 100%;
 			height: 100%;
-			fill: var(--foreground-subdued);
+			fill: var(--theme--foreground-subdued);
 		}
 	}
     & > .v-icon {
@@ -391,10 +395,10 @@ under the closing `script` tag:
 	&:disabled {
 		cursor: not-allowed;
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&.block {
@@ -423,23 +427,23 @@ under the closing `script` tag:
 	}
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 			svg {
-				fill: var(--primary);
+				fill: var(--theme--primary);
 			}
 		}
 		&.block {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 			.label {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 			&::before {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 				opacity: 0.1;
 			}
 		}
@@ -499,7 +503,7 @@ import InterfaceIconRadio from './interface.vue';
 export default {
 	id: 'icon-radio',
 	name: 'Icon Button Group',
-	type: "interface",
+	type: 'interface',
 	description: 'Radio selction group with icon buttons',
 	icon: 'view_carousel',
 	component: InterfaceIconRadio,
@@ -542,8 +546,8 @@ export default {
 							type: 'text',
 							name: 'SVG Icon',
 							meta: {
-							width: 'half',
-							interface: 'code',
+								width: 'half',
+								interface: 'code',
 							},
 						},
 						{
@@ -551,8 +555,8 @@ export default {
 							name: 'Image',
 							type: 'string',
 							meta: {
-							width: 'half',
-							interface: 'file-image',
+								width: 'half',
+								interface: 'file-image',
 							},
 						},
 						{
@@ -560,8 +564,8 @@ export default {
 							name: 'Icon',
 							type: 'string',
 							meta: {
-							width: 'half',
-							interface: 'select-icon',
+								width: 'half',
+								interface: 'select-icon',
 							},
 						},
 					],
@@ -574,11 +578,9 @@ export default {
 
 `interface.vue`
 
-```html
+```vue
 <template>
-	<v-notice v-if="!choices" type="warning">
-		No choices configured
-	</v-notice>
+	<v-notice v-if="!choices" type="warning">No choices configured</v-notice>
 	<div
 		v-else
 		class="radio-icon-buttons"
@@ -604,18 +606,19 @@ export default {
 			@click="selectOption(item.value, field)"
 		>
 			<span class="label type-text">
-        <v-icon v-if="choice.icon" :name="choice.icon" filled />
-        <span v-else-if="choice.svg_icon" class="v-icon" v-html="choice.svg_icon"></span>
-        <img v-else-if="choice.image" class="v-icon" :src="renderImage(choice.image)"/>
-        <slot name="label">{{ choice.text }}</slot>
-      </span>
+				<v-icon v-if="choice.icon" :name="choice.icon" filled />
+				<span v-else-if="choice.svg_icon" class="v-icon" v-html="choice.svg_icon"></span>
+				<img v-else-if="choice.image" class="v-icon" :src="renderImage(choice.image)" />
+				<slot name="label">{{ choice.text }}</slot>
+			</span>
 		</button>
 	</div>
 </template>
+
 <script>
 import useDirectusToken from './use-directus-token';
 export default {
-	emits: ['input'],
+	inject: ['api'],
 	props: {
 		field: String,
 		collection: String,
@@ -633,7 +636,12 @@ export default {
 			default: null,
 		},
 	},
-	inject: ['api'],
+	emits: ['input'],
+	mounted() {
+		console.log(`BatchMode: ${this.batchMode}`);
+		console.log(`Choices:`);
+		console.log(this.choices);
+	},
 	methods: {
 		selectOption(value, field){
 			if(field == this.field){
@@ -653,11 +661,6 @@ export default {
 				this.$emit('input', value);
 			}
 		},
-	},
-	mounted() {
-		console.log(`BatchMode: ${this.batchMode}`);
-		console.log(`Choices:`);
-		console.log(this.choices);
 	},
 };
 </script>
@@ -683,11 +686,11 @@ export default {
 	border-radius: 0;
 	appearance: none;
 	& .v-icon {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 		svg {
 			width: 100%;
 			height: 100%;
-			fill: var(--foreground-subdued);
+			fill: var(--theme--foreground-subdued);
 		}
 	}
     & > .v-icon {
@@ -719,10 +722,10 @@ export default {
 	&:disabled {
 		cursor: not-allowed;
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&.block {
@@ -751,23 +754,23 @@ export default {
 	}
 	&:not(:disabled):hover {
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 			svg {
-				fill: var(--primary);
+				fill: var(--theme--primary);
 			}
 		}
 		&.block {
-			border-color: var(--primary);
+			border-color: var(--theme--primary);
 			.label {
-				color: var(--primary);
+				color: var(--theme--primary);
 			}
 			&::before {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 				opacity: 0.1;
 			}
 		}

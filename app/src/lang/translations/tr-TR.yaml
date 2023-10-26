@@ -35,6 +35,7 @@ tile_size: Blok boyutu
 edit_field: Alanı Düzenle
 conditions: Koşullar
 location: Konum
+collection_names_are_case_sensitive: Koleksiyon adları büyük/küçük harfe duyarlıdır
 condition_rules: Durum Kuralları
 input: Girdi
 maps: Haritalar
@@ -52,6 +53,13 @@ or: Veya
 init: Başlangıç
 dataset_too_large_currently_showing_n_items: Veri kümesi çok büyük. Şu anda ilk {n} öğe gösteriliyor.
 modifier: Düzenleyici
+extension_interface: Arayüz
+extension_display: Göster
+extension_layout: Yerleşim
+extension_panel: Panel
+extension_hook: Kanca
+extension_modules: Modüller
+enable: Etkinleştir
 custom: Özel
 hook: Kanca
 fill_width: Genişliği Doldur
@@ -80,6 +88,10 @@ create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
+create_custom_translation: Özel Çeviri Oluştur
+edit_custom_translation: Özel Çeviriyi Düzenle
+no_custom_translations: Özel Çeviri Yok
+no_custom_translations_copy: Henüz bir özel çeviri bulunmamakta.
 invite_users: Kullanıcıları Davet Et
 invite: Davet Et
 email_already_invited: E-posta "{email}" zaten davet edildi
@@ -95,6 +107,7 @@ rename_folder: Klasörü Yeniden Adlandır
 delete_folder: Klasörü Sil
 prefix: Prefiks
 suffix: Suffiks
+promote_version_preview: Önizleme
 reset_bookmark: Yer İşaretini Sıfırla
 update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer İşaretini Kaldır
@@ -116,6 +129,7 @@ archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | Seçilen {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinlerin üstüne yazacaktır. Emin misiniz?
+the_following_are_minimum_permissions: '"Uygulama Erişimi" etkinleştirildiğinde aşağıdaki minimum izinler otomatik olarak uygulanır. Gerekirse ek izinler verebilirsiniz, ancak izinleri bu seviyenin altına düşüremezsiniz.'
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Varsayılanlar
 unarchive: Arşivden Çıkar
@@ -140,6 +154,14 @@ validationError:
   required: Değer gereklidir
   unique: Değer benzersiz olmalı
   regex: Değer doğru biçime sahip değil
+  starts_with: Değer {substring} ile başlamalıdır
+  istarts_with: Değer {substring} ile başlamalıdır
+  nstarts_with: Değer {substring} ile başlayamaz
+  nistarts_with: Değer {substring} ile başlayamaz
+  ends_with: Değer {substring} ile bitmelidir
+  iends_with: Değer {substring} ile bitmelidir
+  nends_with: Değer {substring} ile bitemez
+  niends_with: Değer {substring} ile bitemez
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş
@@ -166,6 +188,7 @@ permissions_for_role: '{role} rolünün, {action} yapabileceği öğeler.'
 fields_for_role: '{role} rolünün, {action} yapabileceği alanlar.'
 validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
 presets_for_role: '{role} rolü için varsayılan alan değeri.'
+presets_field_warning: '"{field}" alanı için ilişkisel ön ayarlar "ayrıntılı" sözdizimiyle yapılandırılmalıdır.'
 presentation_and_aliases: Sunumlar
 revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
@@ -221,6 +244,7 @@ bigInteger: Büyük Tamsayı
 boolean: Evet/Hayır
 date: Tarih
 date_range: Tarih Aralığı
+translation_key_placeholder: Bir anahtar girin...
 datetime: Tarih ve Zaman
 dateTime: Tarih ve Zaman
 precision: Hassasiyet
@@ -281,7 +305,9 @@ m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bire İlişki
 invalid_item: Geçersiz Öğe
 require_confirmation: Doğrulama Gerekiyor
+dialog: Diyalog
 modal: Açılır Pencere
+confirmation_description: Onay Açıklaması
 next: Sonraki
 field_name: Alan Adı
 translations: Çeviriler
@@ -374,6 +400,7 @@ move: Taşı
 system: Sistem
 add_field_related: İlişkili Koleksiyona Alan Ekle
 interface_label: Arayüz
+display_label: Göster
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu Sil
@@ -424,7 +451,6 @@ dimensions: Boyutlar
 size: Boyut
 created: Oluşturulma Tarihi
 modified: Değiştirildi
-checksum: Checksum
 owner: Sahip
 edited_by: Düzenleyen
 folder: Klasör
@@ -447,6 +473,8 @@ open_file_in_tab: Dosyayı yeni sekmede aç
 start_export: Dışa Aktarmayı Başlat
 not_available_for_local_downloads: Yerel indirmeler için mevcut değil
 exporting_all_items_in_collection: '{collection} içindeki tüm {total} öğe dışa aktarılıyor.'
+exporting_download_hint: '{format} dosyası oluşturulduktan sonra cihazınıza indirilecektir.'
+exporting_library_hint: '{format} dosyası oluşturulduktan sonra Dosya Kitaplığına kaydedilecektir.'
 collection_key: Koleksiyon Anahtarı
 name: İsim
 primary_key_field: Birincil Anahtar Alanı
@@ -580,7 +608,6 @@ errors:
   RECORD_NOT_UNIQUE: Yinelenen değer algılandı
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  UNPROCESSABLE_ENTITY: İşlenemeyen varlık
   INTERNAL_SERVER_ERROR: Beklenmeyen Hata
   NOT_NULL_VIOLATION: Değer null olamaz
   ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
@@ -923,11 +950,11 @@ editing_unit: '{unit} Düzenleniyor'
 editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
 no_options_available: Hiç seçenek yok
 settings_data_model: Veri Modeli
-settings_permissions: Roller ve Yetkiler
-settings_project: Proje Ayarları
+settings_project: Ayarlar
 settings_webhooks: Webhooklar
 settings_flows: Akışlar
-settings_presets: Ön Ayarlar ve Yer İşaretleri
+settings_presets: Yer İmleri
+settings_translations: Çeviriler
 one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
 scope: Kapsam
 actions: Aksiyonlar
@@ -962,7 +989,6 @@ page_help_files_collection: >-
   **Dosya Kütüphanesi** —Bu projeye yüklenen tüm dosyaları listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
 page_help_files_item: >-
   **Dosya Detayı** — Dosya metaverilerini yönetmek, orijinal dosyayı düzenlemek ve erişim seçeneklerini güncellemek için bir form/sayfa.
-page_help_settings_project: "**Proje Ayarları** — Projenin genel konfigürasyon seçenekleri."
 page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-
@@ -1084,10 +1110,6 @@ fields:
     tags: Etiketler
     user_preferences: Kullanıcı Tercihleri
     language: Dil
-    theme: Tema
-    theme_auto: Otomatik (Sisteme Göre)
-    theme_light: Açık Mod
-    theme_dark: Koyu Mod
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     admin_options: Yönetici Seçenekleri
     status: Durum
@@ -1125,7 +1147,6 @@ fields:
     project_color: Proje Rengi
     project_logo: Proje Logosu
     default_language: Varsayılan Dil
-    branding: Markalama ve Stil
     public_foreground: Herkese Açık Ön Plan
     public_background: Herkese Açık Arkaplan
     public_note: Herkese Açık Not
@@ -1185,7 +1206,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Benim projem...
     project_color_note: Oturum Açma ve Logo Arkaplanı
-    project_logo_note: Beyaz 40x40 SVG/PNG
     public_note_placeholder: Herkese açık markdown biçimlendirmesi destekleyen kısa bir mesaj...
     security_divider_title: Güvenlik
     auth_password_policy:
@@ -1558,6 +1578,8 @@ interfaces:
   system-interface-options:
     interface-options: Arayüz Seçenekleri
     description: Arayüz seçeneklerini seçmek için açılır pencere
+  system-display:
+    display: Göster
   list-m2m:
     many-to-many: Çoktan Çoka
     description: Birden fazla ilişkili kesişim öğesi seçin
@@ -1606,7 +1628,6 @@ interfaces:
     description: Birden fazla ilişkili öğe seçin
     no_collection: Koleksiyon bulunamadı
   system-folder:
-    folder: Klasör
     description: Bir klasör seçin
     root_name: Dosya Kütüphanesi Kökü
     system_default: Sistem Varsayılanları
@@ -1622,6 +1643,7 @@ interfaces:
     sort_placeholder: Elle
     field_note_placeholder: Alan notu girin...
     incompatible_data: Mevcut veriler tekrarlayıcı ile uyumlu değildir ve tekrarlayıcıya veri eklenirken üzerine yazılacaktır
+    interface_group: Arayüz Seçenekleri
   slider:
     slider: Kaydırgaç
     description: Kaydırgaçı kullanarak bir sayı seçin
@@ -2089,3 +2111,14 @@ operations:
     flow: Akış
     data: Veri
     serial: Seri No
+standard: Standart
+compact: Kompakt
+style: Stil
+fonts:
+  thin: İnce
+  normal: Normal
+  medium: Orta
+  bold: Kalın
+  black: Siyah
+  italic: İtalik
+  auto: Otomatik

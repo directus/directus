@@ -1,74 +1,3 @@
-<template>
-	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || itemCount! > 0">
-			<cards-header
-				v-model:size="sizeWritable"
-				v-model:selection="selectionWritable"
-				v-model:sort="sortWritable"
-				:fields="fieldsInCollection"
-				:show-select="showSelect"
-				@select-all="selectAll"
-			/>
-
-			<div class="grid" :class="{ 'single-row': isSingleRow }">
-				<card
-					v-for="item in items"
-					:key="item[primaryKeyField!.field]"
-					v-model="selectionWritable"
-					:item-key="primaryKeyField!.field"
-					:crop="imageFit === 'crop'"
-					:icon="icon"
-					:file="imageSource ? item[imageSource] : null"
-					:item="item"
-					:select-mode="selectMode || (selection && selection.length > 0)"
-					:to="getLinkForItem(item)"
-					:readonly="readonly"
-				>
-					<template v-if="title" #title>
-						<render-template :collection="collection" :item="item" :template="title" />
-					</template>
-					<template v-if="subtitle" #subtitle>
-						<render-template :collection="collection" :item="item" :template="subtitle" />
-					</template>
-				</card>
-			</div>
-
-			<div class="footer">
-				<div class="pagination">
-					<v-pagination
-						v-if="totalPages > 1"
-						:length="totalPages"
-						:total-visible="7"
-						show-first-last
-						:model-value="page"
-						@update:model-value="toPage"
-					/>
-				</div>
-
-				<div v-if="loading === false && items.length >= 25" class="per-page">
-					<span>{{ t('per_page') }}</span>
-					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
-				</div>
-			</div>
-		</template>
-
-		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
-
-			<template #append>
-				<v-error :error="error" />
-
-				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
-					{{ t('reset_page_preferences') }}
-				</v-button>
-			</template>
-		</v-info>
-
-		<slot v-else-if="itemCount === 0 && (filter || search)" name="no-results" />
-		<slot v-else-if="itemCount === 0" name="no-items" />
-	</div>
-</template>
-
 <script lang="ts">
 export default {
 	inheritAttrs: false,
@@ -156,6 +85,77 @@ watch(width, () => {
 });
 </script>
 
+<template>
+	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
+		<template v-if="loading || itemCount! > 0">
+			<cards-header
+				v-model:size="sizeWritable"
+				v-model:selection="selectionWritable"
+				v-model:sort="sortWritable"
+				:fields="fieldsInCollection"
+				:show-select="showSelect"
+				@select-all="selectAll"
+			/>
+
+			<div class="grid" :class="{ 'single-row': isSingleRow }">
+				<card
+					v-for="item in items"
+					:key="item[primaryKeyField!.field]"
+					v-model="selectionWritable"
+					:item-key="primaryKeyField!.field"
+					:crop="imageFit === 'crop'"
+					:icon="icon"
+					:file="imageSource ? item[imageSource] : null"
+					:item="item"
+					:select-mode="selectMode || (selection && selection.length > 0)"
+					:to="getLinkForItem(item)"
+					:readonly="readonly"
+				>
+					<template v-if="title" #title>
+						<render-template :collection="collection" :item="item" :template="title" />
+					</template>
+					<template v-if="subtitle" #subtitle>
+						<render-template :collection="collection" :item="item" :template="subtitle" />
+					</template>
+				</card>
+			</div>
+
+			<div class="footer">
+				<div class="pagination">
+					<v-pagination
+						v-if="totalPages > 1"
+						:length="totalPages"
+						:total-visible="7"
+						show-first-last
+						:model-value="page"
+						@update:model-value="toPage"
+					/>
+				</div>
+
+				<div v-if="loading === false && items.length >= 25" class="per-page">
+					<span>{{ t('per_page') }}</span>
+					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
+				</div>
+			</div>
+		</template>
+
+		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
+			{{ t('unexpected_error_copy') }}
+
+			<template #append>
+				<v-error :error="error" />
+
+				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
+					{{ t('reset_page_preferences') }}
+				</v-button>
+			</template>
+		</v-info>
+
+		<slot v-else-if="itemCount === 0 && (filter || search)" name="no-results" />
+		<slot v-else-if="itemCount === 0" name="no-items" />
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .layout-cards {
 	padding: var(--content-padding);
@@ -187,7 +187,7 @@ watch(width, () => {
 		align-items: center;
 		justify-content: flex-end;
 		width: 240px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		span {
 			width: auto;
@@ -195,7 +195,7 @@ watch(width, () => {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }

@@ -1,5 +1,9 @@
-import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType, ReadItem } from '@common/index';
-import { TestsFieldSchema } from '@query/filter';
+import { CreateField, CreateItem, ReadItem } from '@common/functions';
+import type { Vendor } from '@common/get-dbs-to-test';
+import { SeedFunctions } from '@common/seed-functions';
+import type { PrimaryKeyType } from '@common/types';
+import type { TestsFieldSchema } from '@query/filter';
+import { expect } from 'vitest';
 
 const valuesQuantity = 2;
 
@@ -22,7 +26,7 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 	return fieldSchema;
 }
 
-export const seedAllFieldTypesStructure = async (vendor: string, collection: string, setDefaultValues = false) => {
+export const seedAllFieldTypesStructure = async (vendor: Vendor, collection: string, setDefaultValues = false) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
 
@@ -63,7 +67,7 @@ export const seedAllFieldTypesStructure = async (vendor: string, collection: str
 	}
 };
 
-export const seedAllFieldTypesValues = async (vendor: string, collection: string, pkType: PrimaryKeyType) => {
+export const seedAllFieldTypesValues = async (vendor: Vendor, collection: string, pkType: PrimaryKeyType) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
 
@@ -116,7 +120,7 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 };
 
 export const seedO2MAliasAllFieldTypesValues = async (
-	vendor: string,
+	vendor: Vendor,
 	collection: string,
 	pkType: PrimaryKeyType,
 	aliasField: string,
@@ -175,7 +179,7 @@ export const seedO2MAliasAllFieldTypesValues = async (
 };
 
 export const seedM2MAliasAllFieldTypesValues = async (
-	vendor: string,
+	vendor: Vendor,
 	collection: string,
 	otherCollection: string,
 	junctionCollection: string,
@@ -212,7 +216,7 @@ export const seedM2MAliasAllFieldTypesValues = async (
 };
 
 export const seedM2AAliasAllFieldTypesValues = async (
-	vendor: string,
+	vendor: Vendor,
 	collection: string,
 	junctionCollection: string,
 	relatedCollection: string,

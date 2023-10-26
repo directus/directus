@@ -1,69 +1,3 @@
-<template>
-	<div class="v-pagination">
-		<v-button class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
-			<v-icon name="chevron_left" />
-		</v-button>
-
-		<v-button
-			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
-			class="page"
-			secondary
-			small
-			:disabled="disabled"
-			@click="toPage(1)"
-		>
-			1
-		</v-button>
-
-		<span
-			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1"
-			class="gap"
-		>
-			...
-		</span>
-
-		<v-button
-			v-for="page in visiblePages"
-			:key="page"
-			:class="{ active: modelValue === page }"
-			class="page"
-			secondary
-			small
-			:disabled="disabled"
-			@click="toPage(page)"
-		>
-			{{ page }}
-		</v-button>
-
-		<span
-			v-if="
-				showFirstLast && totalVisible && modelValue < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1
-			"
-			class="gap"
-		>
-			...
-		</span>
-
-		<v-button
-			v-if="
-				showFirstLast && totalVisible && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible
-			"
-			:class="{ active: modelValue === length }"
-			class="page"
-			secondary
-			small
-			:disabled="disabled"
-			@click="toPage(length)"
-		>
-			{{ length }}
-		</v-button>
-
-		<v-button class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
-			<v-icon name="chevron_right" />
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -140,9 +74,75 @@ function toPage(page: number) {
 }
 </script>
 
+<template>
+	<div class="v-pagination">
+		<v-button class="previous" :disabled="disabled || modelValue === 1" secondary icon small @click="toPrev">
+			<v-icon name="chevron_left" />
+		</v-button>
+
+		<v-button
+			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
+			class="page"
+			secondary
+			small
+			:disabled="disabled"
+			@click="toPage(1)"
+		>
+			1
+		</v-button>
+
+		<span
+			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1"
+			class="gap"
+		>
+			...
+		</span>
+
+		<v-button
+			v-for="page in visiblePages"
+			:key="page"
+			:class="{ active: modelValue === page }"
+			class="page"
+			secondary
+			small
+			:disabled="disabled"
+			@click="toPage(page)"
+		>
+			{{ page }}
+		</v-button>
+
+		<span
+			v-if="
+				showFirstLast && totalVisible && modelValue < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1
+			"
+			class="gap"
+		>
+			...
+		</span>
+
+		<v-button
+			v-if="
+				showFirstLast && totalVisible && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible
+			"
+			:class="{ active: modelValue === length }"
+			class="page"
+			secondary
+			small
+			:disabled="disabled"
+			@click="toPage(length)"
+		>
+			{{ length }}
+		</v-button>
+
+		<v-button class="next" :disabled="disabled || modelValue === length" secondary icon small @click="toNext">
+			<v-icon name="chevron_right" />
+		</v-button>
+	</div>
+</template>
+
 <style scoped>
 :global(body) {
-	--v-pagination-active-color: var(--primary);
+	--v-pagination-active-color: var(--theme--primary);
 }
 
 .v-pagination {
@@ -152,7 +152,7 @@ function toPage(page: number) {
 .gap {
 	display: none;
 	margin: 0 4px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 2em;
 }
 
@@ -165,7 +165,7 @@ function toPage(page: number) {
 .v-button {
 	--v-button-background-color-hover: var(--background-normal);
 	--v-button-background-color: var(--background-subdued);
-	--v-button-color: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
 
 	margin: 0 2px;
 	vertical-align: middle;
@@ -194,9 +194,9 @@ function toPage(page: number) {
 }
 
 .v-button.active {
-	--v-button-background-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--theme--primary);
 	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-background-color: var(--primary);
+	--v-button-background-color: var(--theme--primary);
 	--v-button-color: var(--foreground-inverted);
 }
 </style>

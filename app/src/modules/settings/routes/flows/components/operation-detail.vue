@@ -1,70 +1,3 @@
-<template>
-	<v-drawer
-		:model-value="isOpen"
-		:title="t(operationId === '+' ? 'create_operation' : 'edit_operation')"
-		:subtitle="flow.name"
-		icon="offline_bolt"
-		persistent
-		@cancel="$emit('cancel')"
-	>
-		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" @click="saveOperation">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="content">
-			<div class="grid">
-				<div class="field half">
-					<div class="type-label">
-						{{ t('name') }}
-					</div>
-					<v-input v-model="operationName" autofocus :placeholder="generatedName">
-						<template #append>
-							<v-icon name="title" />
-						</template>
-					</v-input>
-				</div>
-				<div class="field half">
-					<div class="type-label">
-						{{ t('key') }}
-					</div>
-					<v-input v-model="operationKey" db-safe :placeholder="generatedKey">
-						<template #append>
-							<v-icon name="vpn_key" />
-						</template>
-					</v-input>
-					<small v-if="!isOperationKeyUnique" class="error selectable">{{ t('operation_key_unique_error') }}</small>
-				</div>
-			</div>
-
-			<v-divider />
-
-			<v-fancy-select v-model="operationType" class="select" :items="displayOperations" />
-
-			<v-notice v-if="operationType && !selectedOperation" class="not-found" type="danger">
-				{{ t('operation_not_found', { operation: operationType }) }}
-				<div class="spacer" />
-				<button @click="operationType = null">{{ t('reset_interface') }}</button>
-			</v-notice>
-
-			<extension-options
-				v-if="operationType && selectedOperation && operationOptions"
-				v-model="options"
-				:extension="operationType"
-				:options="operationOptions"
-				raw-editor-enabled
-				type="operation"
-			></extension-options>
-			<component
-				:is="`operation-options-${operationType}`"
-				v-else-if="operationType && selectedOperation"
-				:options="operation"
-			/>
-		</div>
-	</v-drawer>
-</template>
-
 <script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
@@ -195,6 +128,73 @@ function saveOperation() {
 }
 </script>
 
+<template>
+	<v-drawer
+		:model-value="isOpen"
+		:title="t(operationId === '+' ? 'create_operation' : 'edit_operation')"
+		:subtitle="flow.name"
+		icon="offline_bolt"
+		persistent
+		@cancel="$emit('cancel')"
+	>
+		<template #actions>
+			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" @click="saveOperation">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<div class="content">
+			<div class="grid">
+				<div class="field half">
+					<div class="type-label">
+						{{ t('name') }}
+					</div>
+					<v-input v-model="operationName" autofocus :placeholder="generatedName">
+						<template #append>
+							<v-icon name="title" />
+						</template>
+					</v-input>
+				</div>
+				<div class="field half">
+					<div class="type-label">
+						{{ t('key') }}
+					</div>
+					<v-input v-model="operationKey" db-safe :placeholder="generatedKey">
+						<template #append>
+							<v-icon name="vpn_key" />
+						</template>
+					</v-input>
+					<small v-if="!isOperationKeyUnique" class="error selectable">{{ t('operation_key_unique_error') }}</small>
+				</div>
+			</div>
+
+			<v-divider />
+
+			<v-fancy-select v-model="operationType" class="select" :items="displayOperations" />
+
+			<v-notice v-if="operationType && !selectedOperation" class="not-found" type="danger">
+				{{ t('operation_not_found', { operation: operationType }) }}
+				<div class="spacer" />
+				<button @click="operationType = null">{{ t('reset_interface') }}</button>
+			</v-notice>
+
+			<extension-options
+				v-if="operationType && selectedOperation && operationOptions"
+				v-model="options"
+				:extension="operationType"
+				:options="operationOptions"
+				raw-editor-enabled
+				type="operation"
+			></extension-options>
+			<component
+				:is="`operation-options-${operationType}`"
+				v-else-if="operationType && selectedOperation"
+				:options="operation"
+			/>
+		</div>
+	</v-drawer>
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
@@ -235,7 +235,7 @@ function saveOperation() {
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
 	margin-top: -12px;
 	margin-left: -4px;
@@ -244,7 +244,7 @@ function saveOperation() {
 .error {
 	display: block;
 	margin-top: 4px;
-	color: var(--danger);
+	color: var(--theme--danger);
 	font-style: italic;
 }
 </style>

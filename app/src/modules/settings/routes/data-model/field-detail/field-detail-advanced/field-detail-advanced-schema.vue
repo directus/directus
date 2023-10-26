@@ -1,137 +1,3 @@
-<template>
-	<div>
-		<div class="form">
-			<div class="field">
-				<div class="label type-label">
-					{{ t('key') }}
-					<v-icon class="required" sup name="star" filled />
-				</div>
-
-				<v-input
-					v-model="field"
-					:disabled="isExisting"
-					autofocus
-					class="monospace"
-					:nullable="false"
-					db-safe
-					:placeholder="t('a_unique_column_name')"
-				/>
-
-				<small class="note">{{ t('schema_setup_key') }}</small>
-			</div>
-
-			<div class="field half">
-				<div class="label type-label">
-					{{ t('type') }}
-					<v-icon class="required" sup name="star" filled />
-				</div>
-				<v-input v-if="isAlias" :model-value="t('alias')" disabled />
-				<v-select
-					v-else
-					v-model="type"
-					:disabled="typeDisabled || isExisting"
-					:items="typesWithLabels"
-					:placeholder="typePlaceholder"
-				/>
-			</div>
-
-			<template v-if="['decimal', 'float'].includes(type) === false">
-				<div v-if="!isAlias" class="field half">
-					<div class="label type-label">{{ t('length') }}</div>
-					<v-input
-						v-model="maxLength"
-						type="number"
-						:min="1"
-						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
-						:disabled="isExisting || type !== 'string'"
-					/>
-				</div>
-			</template>
-
-			<template v-else>
-				<div v-if="!isAlias" class="field half">
-					<div class="label type-label">{{ t('precision_scale') }}</div>
-					<div class="precision-scale">
-						<v-input v-model="numericPrecision" type="number" :placeholder="10" />
-						<v-input v-model="numericScale" type="number" :placeholder="5" />
-					</div>
-				</div>
-			</template>
-
-			<template v-if="hasCreateUpdateTriggers">
-				<div class="field half-left">
-					<div class="label type-label">{{ t('on_create') }}</div>
-					<v-select v-model="onCreateValue" :items="onCreateOptions" />
-				</div>
-
-				<div class="field half-right">
-					<div class="label type-label">{{ t('on_update') }}</div>
-					<v-select v-model="onUpdateValue" :items="onUpdateOptions" />
-				</div>
-			</template>
-
-			<div v-if="!isAlias && !isPrimaryKey && !isGenerated" class="field full">
-				<div class="label type-label">{{ t('default_value') }}</div>
-
-				<v-input v-if="['string', 'uuid'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
-
-				<v-textarea v-else-if="['text'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
-				<v-input
-					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(type)"
-					v-model="defaultValue"
-					type="number"
-					class="monospace"
-					placeholder="NULL"
-				/>
-				<v-input
-					v-else-if="['timestamp', 'dateTime', 'date', 'time'].includes(type)"
-					v-model="defaultValue"
-					class="monospace"
-					placeholder="NULL"
-				/>
-				<v-select
-					v-else-if="type === 'boolean'"
-					v-model="defaultValue"
-					class="monospace"
-					:items="[
-						{
-							text: 'true',
-							value: true,
-						},
-						{
-							text: 'false',
-							value: false,
-						},
-						{
-							text: 'NULL',
-							value: null,
-						},
-					]"
-				/>
-				<interface-input-code
-					v-else-if="type === 'json'"
-					:value="defaultValue"
-					language="JSON"
-					placeholder="NULL"
-					type="json"
-					@input="defaultValue = $event"
-				/>
-				<v-input v-else v-model="defaultValue" class="monospace" disabled placeholder="NULL" />
-			</div>
-
-			<div v-if="!isAlias" class="field half-left">
-				<div class="label type-label">{{ t('nullable') }}</div>
-				<v-checkbox v-model="nullable" :disabled="isGenerated" :label="t('allow_null_value')" block />
-			</div>
-
-			<div v-if="!isAlias" class="field half-right">
-				<div class="label type-label">{{ t('unique') }}</div>
-				<v-checkbox v-model="unique" :disabled="isGenerated" :label="t('value_unique')" block />
-			</div>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { translate } from '@/utils/translate-object-values';
 import { Type } from '@directus/types';
@@ -450,6 +316,140 @@ function useOnUpdate() {
 }
 </script>
 
+<template>
+	<div>
+		<div class="form">
+			<div class="field">
+				<div class="label type-label">
+					{{ t('key') }}
+					<v-icon class="required" sup name="star" filled />
+				</div>
+
+				<v-input
+					v-model="field"
+					:disabled="isExisting"
+					autofocus
+					class="monospace"
+					:nullable="false"
+					db-safe
+					:placeholder="t('a_unique_column_name')"
+				/>
+
+				<small class="note">{{ t('schema_setup_key') }}</small>
+			</div>
+
+			<div class="field half">
+				<div class="label type-label">
+					{{ t('type') }}
+					<v-icon class="required" sup name="star" filled />
+				</div>
+				<v-input v-if="isAlias" :model-value="t('alias')" disabled />
+				<v-select
+					v-else
+					v-model="type"
+					:disabled="typeDisabled || isExisting"
+					:items="typesWithLabels"
+					:placeholder="typePlaceholder"
+				/>
+			</div>
+
+			<template v-if="['decimal', 'float'].includes(type) === false">
+				<div v-if="!isAlias" class="field half">
+					<div class="label type-label">{{ t('length') }}</div>
+					<v-input
+						v-model="maxLength"
+						type="number"
+						:min="1"
+						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
+						:disabled="isExisting || type !== 'string'"
+					/>
+				</div>
+			</template>
+
+			<template v-else>
+				<div v-if="!isAlias" class="field half">
+					<div class="label type-label">{{ t('precision_scale') }}</div>
+					<div class="precision-scale">
+						<v-input v-model="numericPrecision" type="number" :placeholder="10" />
+						<v-input v-model="numericScale" type="number" :placeholder="5" />
+					</div>
+				</div>
+			</template>
+
+			<template v-if="hasCreateUpdateTriggers">
+				<div class="field half-left">
+					<div class="label type-label">{{ t('on_create') }}</div>
+					<v-select v-model="onCreateValue" :items="onCreateOptions" />
+				</div>
+
+				<div class="field half-right">
+					<div class="label type-label">{{ t('on_update') }}</div>
+					<v-select v-model="onUpdateValue" :items="onUpdateOptions" />
+				</div>
+			</template>
+
+			<div v-if="!isAlias && !isPrimaryKey && !isGenerated" class="field full">
+				<div class="label type-label">{{ t('default_value') }}</div>
+
+				<v-input v-if="['string', 'uuid'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
+
+				<v-textarea v-else-if="['text'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
+				<v-input
+					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(type)"
+					v-model="defaultValue"
+					type="number"
+					class="monospace"
+					placeholder="NULL"
+				/>
+				<v-input
+					v-else-if="['timestamp', 'dateTime', 'date', 'time'].includes(type)"
+					v-model="defaultValue"
+					class="monospace"
+					placeholder="NULL"
+				/>
+				<v-select
+					v-else-if="type === 'boolean'"
+					v-model="defaultValue"
+					class="monospace"
+					:items="[
+						{
+							text: 'true',
+							value: true,
+						},
+						{
+							text: 'false',
+							value: false,
+						},
+						{
+							text: 'NULL',
+							value: null,
+						},
+					]"
+				/>
+				<interface-input-code
+					v-else-if="type === 'json'"
+					:value="defaultValue"
+					language="JSON"
+					placeholder="NULL"
+					type="json"
+					@input="defaultValue = $event"
+				/>
+				<v-input v-else v-model="defaultValue" class="monospace" disabled placeholder="NULL" />
+			</div>
+
+			<div v-if="!isAlias" class="field half-left">
+				<div class="label type-label">{{ t('nullable') }}</div>
+				<v-checkbox v-model="nullable" :disabled="isGenerated" :label="t('allow_null_value')" block />
+			</div>
+
+			<div v-if="!isAlias" class="field half-right">
+				<div class="label type-label">{{ t('unique') }}</div>
+				<v-checkbox v-model="unique" :disabled="isGenerated" :label="t('value_unique')" block />
+			</div>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
@@ -463,17 +463,17 @@ function useOnUpdate() {
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
-	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .precision-scale {

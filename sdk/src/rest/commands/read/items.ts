@@ -1,4 +1,5 @@
-import type { ApplyQueryFields, CollectionType, Query, RegularCollections } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, QueryItem, RegularCollections } from '../../../types/index.js';
+import { throwIfEmpty, throwIfCoreCollection } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadItemOutput<
@@ -14,6 +15,8 @@ export type ReadItemOutput<
  * @param query The query parameters
  *
  * @returns An array of up to limit item objects. If no items are available, data will be an empty array.
+ * @throws Will throw if collection is a core collection
+ * @throws Will throw if collection is empty
  */
 export const readItems =
 	<
@@ -25,14 +28,11 @@ export const readItems =
 		query?: TQuery
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
-		const _collection = String(collection);
-
-		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItems for core collections');
-		}
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfCoreCollection(collection, 'Cannot use readItems for core collections');
 
 		return {
-			path: `/items/${_collection}`,
+			path: `/items/${collection as string}`,
 			params: query ?? {},
 			method: 'GET',
 		};
@@ -46,26 +46,27 @@ export const readItems =
  * @param query The query parameters
  *
  * @returns Returns an item object if a valid primary key was provided.
+ * @throws Will throw if collection is a core collection
+ * @throws Will throw if collection is empty
+ * @throws Will throw if key is empty
  */
 export const readItem =
 	<
 		Schema extends object,
 		Collection extends RegularCollections<Schema>,
-		const TQuery extends Query<Schema, CollectionType<Schema, Collection>>
+		const TQuery extends QueryItem<Schema, CollectionType<Schema, Collection>>
 	>(
 		collection: Collection,
 		key: string | number,
 		query?: TQuery
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
-		const _collection = String(collection);
-
-		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItem for core collections');
-		}
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfCoreCollection(collection, 'Cannot use readItem for core collections');
+		throwIfEmpty(String(key), 'Key cannot be empty');
 
 		return {
-			path: `/items/${_collection}/${key}`,
+			path: `/items/${collection as string}/${key}`,
 			params: query ?? {},
 			method: 'GET',
 		};

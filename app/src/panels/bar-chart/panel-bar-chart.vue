@@ -1,9 +1,3 @@
-<template>
-	<div class="bar-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -120,8 +114,8 @@ function setUpChart() {
 			height: '100%',
 			width: '100%',
 			toolbar: { show: false },
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground-subdued)',
 			selection: { enabled: false },
 			zoom: { enabled: false },
 		},
@@ -200,8 +194,8 @@ function setUpChart() {
 				rotate: 0,
 				showDuplicates: true,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -230,8 +224,8 @@ function setUpChart() {
 				show: ['both', 'yOnly'].includes(props.showAxisLabels),
 				formatter: formatNumericValue,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -327,6 +321,12 @@ function setUpChart() {
 }
 </script>
 
+<template>
+	<div class="bar-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
+
 <style scoped>
 .bar-chart {
 	padding: 0px;
@@ -365,6 +365,6 @@ function setUpChart() {
 
 .apexcharts-tooltip-text {
 	line-height: 1.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 </style>

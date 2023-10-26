@@ -1,18 +1,3 @@
-<template>
-	<div class="change-line" :class="{ added, deleted, updated, 'no-highlight': wholeThing }">
-		<v-icon :name="added ? 'add' : deleted ? 'remove' : 'warning'" />
-		<div class="delta">
-			<span v-for="(part, index) in changesFiltered" :key="index" :class="{ changed: part.added || part.removed }">
-				<template v-if="part.updated">{{ t('revision_delta_update_message') }}</template>
-				<template v-else-if="part.value">{{ part.value }}</template>
-				<template v-else>
-					<span class="no-value">{{ t('no_value') }}</span>
-				</template>
-			</span>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
@@ -53,6 +38,21 @@ const wholeThing = computed(() => {
 });
 </script>
 
+<template>
+	<div class="change-line" :class="{ added, deleted, updated, 'no-highlight': wholeThing }">
+		<v-icon :name="added ? 'add' : deleted ? 'remove' : 'warning'" />
+		<div class="delta">
+			<span v-for="(part, index) in changesFiltered" :key="index" :class="{ changed: part.added || part.removed }">
+				<template v-if="part.updated">{{ t('revision_delta_update_message') }}</template>
+				<template v-else-if="part.value">{{ part.value }}</template>
+				<template v-else>
+					<span class="no-value">{{ t('no_value') }}</span>
+				</template>
+			</span>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .change-line {
 	position: relative;
@@ -67,7 +67,7 @@ const wholeThing = computed(() => {
 	}
 
 	&.added {
-		color: var(--success);
+		color: var(--theme--success);
 		background-color: var(--success-alt);
 		border-radius: 0 0 var(--border-radius) var(--border-radius);
 
@@ -77,7 +77,7 @@ const wholeThing = computed(() => {
 	}
 
 	&.deleted {
-		color: var(--danger);
+		color: var(--theme--danger);
 		background-color: var(--danger-alt);
 		border-radius: var(--border-radius) var(--border-radius) 0 0;
 
@@ -87,7 +87,7 @@ const wholeThing = computed(() => {
 	}
 
 	&.updated {
-		color: var(--warning);
+		color: var(--theme--warning);
 		background-color: var(--warning-alt);
 		border-radius: var(--border-radius);
 	}

@@ -1,3 +1,40 @@
+<script setup lang="ts">
+import { useCollectionsStore } from '@/stores/collections';
+import { LOCAL_TYPES } from '@directus/constants';
+import { orderBy } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty } from '../store';
+
+defineProps<{
+	localType: (typeof LOCAL_TYPES)[number];
+}>();
+
+const collectionsStore = useCollectionsStore();
+
+const { t } = useI18n();
+const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
+const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
+
+const availableCollections = computed(() => {
+	return [
+		...orderBy(collectionsStore.databaseCollections, ['collection'], ['asc']),
+		{
+			divider: true,
+		},
+		{
+			collection: t('system'),
+			selectable: false,
+			children: orderBy(collectionsStore.crudSafeSystemCollections, ['collection'], ['asc']),
+		},
+	];
+});
+</script>
+
 <template>
 	<div class="relationship">
 		<div v-if="localType === 'm2o'" class="field full">
@@ -59,7 +96,7 @@
 				:items="availableCollections"
 				item-value="collection"
 				item-text="collection"
-				item-label-font-family="var(--family-monospace)"
+				item-label-font-family="var(--theme--font-family-monospace)"
 				item-disabled="meta.singleton"
 				multiple
 				:multiple-preview-threshold="0"
@@ -68,58 +105,21 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useCollectionsStore } from '@/stores/collections';
-import { LOCAL_TYPES } from '@directus/constants';
-import { orderBy } from 'lodash';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { syncFieldDetailStoreProperty } from '../store';
-
-defineProps<{
-	localType: (typeof LOCAL_TYPES)[number];
-}>();
-
-const collectionsStore = useCollectionsStore();
-
-const { t } = useI18n();
-const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
-const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
-
-const availableCollections = computed(() => {
-	return [
-		...orderBy(collectionsStore.databaseCollections, ['collection'], ['asc']),
-		{
-			divider: true,
-		},
-		{
-			collection: t('system'),
-			selectable: false,
-			children: orderBy(collectionsStore.crudSafeSystemCollections, ['collection'], ['asc']),
-		},
-	];
-});
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .relationship {
 	@include form-grid;
 
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 
 	&:not(:empty) {
 		margin-bottom: 20px;
 	}
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 }
 </style>

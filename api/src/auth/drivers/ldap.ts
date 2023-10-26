@@ -15,7 +15,7 @@ import {
 	InvalidProviderConfigError,
 	ServiceUnavailableError,
 	UnexpectedResponseError,
-} from '../../errors/index.js';
+} from '@directus/errors';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -110,7 +110,8 @@ export class LDAPAuthDriver extends AuthDriver {
 
 				res.on('end', (result: LDAPResult | null) => {
 					// Handle edge case where authenticated bind user cannot read their own DN
-					if (result?.status === 0) {
+					// Status `0` is success
+					if (result?.status !== 0) {
 						logger.warn('[LDAP] Failed to find bind user record');
 						reject(new UnexpectedResponseError());
 					}

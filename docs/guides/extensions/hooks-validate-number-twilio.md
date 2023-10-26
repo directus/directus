@@ -13,8 +13,8 @@ a record from saving if a phone number is not valid using the Twilio Lookup API.
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your display.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose hook), and type a name for your extension (for example,
@@ -43,8 +43,7 @@ Create an initial export. This hook will need to intercept the save function wit
 environment variables and `exceptions` to throw an error when validation fails:
 
 ```js
-export default ({ filter }, { env, exceptions }) => {
-};
+export default ({ filter }, { env, exceptions }) => {};
 ```
 
 Inside the function, define the invalid payload function from the exceptions scope:
@@ -59,8 +58,7 @@ Next, capture the `items.create` stream using `filter` and include the `input` a
 stream:
 
 ```js
-filter('items.create', async (input, { collection }) => {
-});
+filter('items.create', async (input, { collection }) => {});
 ```
 
 When using filters and actions, it’s important to remember this will capture **all** events so you should set some
@@ -88,10 +86,10 @@ const accountSid = env.TWILIO_ACCOUNT_SID;
 const authToken = env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
 
-client.lookups.v2.phoneNumbers(input.phone_number).fetch()
-.then((phoneNumber) => {
-
-});
+client.lookups.v2
+	.phoneNumbers(input.phone_number)
+	.fetch()
+	.then((phoneNumber) => {});
 ```
 
 `env` looks inside the Directus environment variables for `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN`. In order to
@@ -105,13 +103,16 @@ provides a very helpful boolean response called `valid`.
 Use this to throw an exception if `false`, or return the input to the stream and end the hook if `true`:
 
 ```js
-client.lookups.v2.phoneNumbers(input.phone_number).fetch()
-.then((phoneNumber) => {
-	if(!phoneNumber.valid){  // [!code ++]
-		throw new InvalidPayloadException('Phone Number is not valid');  // [!code ++]
-	}  // [!code ++]
-	return input;  // [!code ++]
-});
+client.lookups.v2
+	.phoneNumbers(input.phone_number)
+	.fetch()
+	.then((phoneNumber) => {
+		if (!phoneNumber.valid) { // [!code ++]
+			throw new InvalidPayloadException('Phone Number is not valid'); // [!code ++]
+		} // [!code ++]
+// [!code ++]
+		return input; // [!code ++]
+	});
 ```
 
 Build the hook with the latest changes.
@@ -157,6 +158,7 @@ export default ({ filter }, { env, exceptions }) => {
 
 	filter('items.create', async (input, { collection }) => {
 		if (collection !== 'customers') return input;
+
 		if (input.phone_number === undefined) {
 			throw new InvalidPayloadException('No Phone Number has been provided');
 		}
@@ -165,12 +167,16 @@ export default ({ filter }, { env, exceptions }) => {
 		const authToken = env.TWILIO_AUTH_TOKEN;
 		const client = new twilio(accountSid, authToken);
 
-		client.lookups.v2.phoneNumbers(input.phone_number).fetch().then((phoneNumber) => {
-			if(!phoneNumber.valid){
-				throw new InvalidPayloadException('Phone Number is not valid');
-			}
-			return input;
-		});
+		client.lookups.v2
+			.phoneNumbers(input.phone_number)
+			.fetch()
+			.then((phoneNumber) => {
+				if (!phoneNumber.valid) {
+					throw new InvalidPayloadException('Phone Number is not valid');
+				}
+
+				return input;
+			});
 	});
 };
 ```
