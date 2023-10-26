@@ -623,13 +623,16 @@ export class PayloadService {
 						// If the related item is already associated to the current item, and there's no
 						// other updates (which is indicated by the fact that this is just the PK, we can
 						// ignore updating this item. This makes sure we don't trigger any update logic
-						// for items that aren't actually being updated. NOTE: We use == here, as the
-						// primary key might be reported as a string instead of number, coming from the
-						// http route, and or a bigInteger in the DB
+						// for items that aren't actually being updated.
 						if (
 							isNil(existingRecord[relation.field]) === false &&
-							(existingRecord[relation.field] === parent ||
-								existingRecord[relation.field] === payload[currentPrimaryKeyField])
+							// NOTE: We use == here, as the
+							// primary key might be reported as a string instead of number, coming from the
+							// http route, and or a bigInteger in the DB
+							/* eslint-disable eqeqeq  */
+							(existingRecord[relation.field] == parent ||
+								existingRecord[relation.field] == payload[currentPrimaryKeyField])
+							/* eslint-enable eqeqeq */
 						) {
 							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
 							continue;
