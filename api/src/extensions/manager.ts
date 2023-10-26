@@ -45,11 +45,13 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';
 import { getSharedDepsMapping } from './lib/get-shared-deps-mapping.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
+import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
 import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 
@@ -173,7 +175,8 @@ export class ExtensionManager {
 	 */
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
+			await syncExtensions();
+			await ensureExtensionDirs(getExtensionsPath(), NESTED_EXTENSION_TYPES);
 
 			this.extensions = await getExtensions();
 			this.extensionsSettings = await getExtensionsSettings(this.extensions);
@@ -290,7 +293,7 @@ export class ExtensionManager {
 	private initializeWatcher(): void {
 		logger.info('Watching extensions for changes...');
 
-		const extensionDirUrl = pathToRelativeUrl(env['EXTENSIONS_PATH']);
+		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
 
 		const localExtensionUrls = NESTED_EXTENSION_TYPES.flatMap((type) => {
 			const typeDir = path.posix.join(extensionDirUrl, pluralize(type));
