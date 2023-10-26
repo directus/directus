@@ -40,6 +40,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 
 	.name {
 		margin-right: 8px;
+		font-family: var(--theme--navigation--project--font-family);
 	}
 
 	.descriptor {

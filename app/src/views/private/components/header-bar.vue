@@ -146,6 +146,7 @@ onUnmounted(() => {
 			white-space: nowrap;
 			opacity: 1;
 			transition: opacity var(--fast) var(--transition);
+			font-family: var(--theme--header--headline--font-family);
 
 			@media (min-width: 600px) {
 				top: -2px;
@@ -165,6 +166,7 @@ onUnmounted(() => {
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
+				font-family: var(--theme--header--title--font-family);
 			}
 
 			:deep(.type-title) {
