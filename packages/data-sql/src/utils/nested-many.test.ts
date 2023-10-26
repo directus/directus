@@ -37,7 +37,6 @@ test('nested-many logic', async () => {
 
 	// foreign table specs
 	const foreignTable = randomIdentifier();
-	const foreignTableId = randomIdentifier();
 	const foreignIdField = randomIdentifier();
 
 	// foreign fields
@@ -51,7 +50,7 @@ test('nested-many logic', async () => {
 					select: [
 						{
 							type: 'primitive',
-							table: foreignTableId,
+							table: foreignTable,
 							column: foreignField,
 							as: foreignFieldId,
 						},

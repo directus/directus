@@ -300,7 +300,6 @@ test('nested o2m field', async () => {
 	const localPkFieldId = randomIdentifier();
 
 	const foreignTable = randomIdentifier();
-	const foreignTableId = randomIdentifier();
 
 	const foreignField1 = randomIdentifier();
 	const foreignField1Id = randomIdentifier();
@@ -388,14 +387,14 @@ test('nested o2m field', async () => {
 						select: [
 							{
 								type: 'primitive',
-								table: foreignTableId,
+								table: foreignTable,
 								column: foreignField1,
 								as: foreignField1Id,
 								alias: foreignField1Alias,
 							},
 							{
 								type: 'primitive',
-								table: foreignTableId,
+								table: foreignTable,
 								column: foreignField2,
 								as: foreignField2Id,
 							},
