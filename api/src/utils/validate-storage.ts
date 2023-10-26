@@ -1,9 +1,10 @@
-import env from '../env.js';
-import logger from '../logger.js';
-import { access } from 'node:fs/promises';
-import { constants } from 'fs';
-import path from 'path';
 import { toArray } from '@directus/utils';
+import { constants } from 'fs';
+import { access } from 'node:fs/promises';
+import path from 'path';
+import env from '../env.js';
+import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
+import logger from '../logger.js';
 
 export async function validateStorage(): Promise<void> {
 	if (env['DB_CLIENT'] === 'sqlite3') {
@@ -29,8 +30,8 @@ export async function validateStorage(): Promise<void> {
 	}
 
 	try {
-		await access(env['EXTENSIONS_PATH'], constants.R_OK);
+		await access(getExtensionsPath(), constants.R_OK);
 	} catch {
-		logger.warn(`Extensions directory (${path.resolve(env['EXTENSIONS_PATH'])}) is not readable!`);
+		logger.warn(`Extensions directory (${path.resolve(getExtensionsPath())}) is not readable!`);
 	}
 }

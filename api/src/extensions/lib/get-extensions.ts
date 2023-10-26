@@ -1,15 +1,16 @@
 import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
 import env from '../../env.js';
+import { getExtensionsPath } from './get-extensions-path.js';
 
 export const getExtensions = async () => {
-	const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
+	const localExtensions = await getLocalExtensions(getExtensionsPath());
 
 	const loadedNames = localExtensions.map(({ name }) => name);
 
 	const filterDuplicates = ({ name }: Extension) => loadedNames.includes(name) === false;
 
-	const localPackageExtensions = (await resolvePackageExtensions(env['EXTENSIONS_PATH'])).filter((extension) =>
+	const localPackageExtensions = (await resolvePackageExtensions(getExtensionsPath())).filter((extension) =>
 		filterDuplicates(extension)
 	);
 
