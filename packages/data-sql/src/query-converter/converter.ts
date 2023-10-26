@@ -23,20 +23,32 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 	const idGen = parameterIndexGenerator();
 	const parameters: ParameterTypes[] = [];
 
-	// fields
-	const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, idGen);
-	let clauses: AbstractSqlClauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
-	parameters.push(...convertedFieldNodes.parameters);
+	let clauses: AbstractSqlClauses;
+	let aliasMapping: AbstractSqlQuery['aliasMapping'];
+	let nestedManys: AbstractSqlQuery['nestedManys'];
 
-	// modifiers
-	const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
-	clauses = Object.assign(clauses, convertedModifiers.clauses);
-	parameters.push(...convertedModifiers.parameters);
+	try {
+		const convertedFieldNodes = convertFieldNodes(abstractQuery.collection, abstractQuery.fields, idGen);
+		clauses = { ...convertedFieldNodes.clauses, from: abstractQuery.collection };
+		parameters.push(...convertedFieldNodes.parameters);
+		aliasMapping = convertedFieldNodes.aliasMapping;
+		nestedManys = convertedFieldNodes.nestedManys;
+	} catch (error: any) {
+		throw new Error(`Failed to convert query fields: ${error.message}`);
+	}
+
+	try {
+		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
+		clauses = Object.assign(clauses, convertedModifiers.clauses);
+		parameters.push(...convertedModifiers.parameters);
+	} catch (error: any) {
+		throw new Error(`Failed to convert query modifiers: ${error.message}`);
+	}
 
 	return {
 		clauses,
 		parameters,
-		aliasMapping: convertedFieldNodes.aliasMapping,
-		nestedManys: convertedFieldNodes.nestedManys,
+		aliasMapping,
+		nestedManys,
 	};
 };

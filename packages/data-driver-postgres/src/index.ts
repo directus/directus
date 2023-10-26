@@ -72,16 +72,8 @@ export default class DataDriverPostgres implements DataDriver {
 	 * @throws An error when the conversion or the database request fails
 	 */
 	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, unknown>>> {
-		let statement;
-		let parameters;
-
-		try {
-			statement = convertToActualStatement(abstractSql.clauses);
-			parameters = convertParameters(abstractSql.parameters);
-		} catch (error: any) {
-			throw new Error('Failed to convert the query the database: ', error);
-		}
-
+		const statement = convertToActualStatement(abstractSql.clauses);
+		const parameters = convertParameters(abstractSql.parameters);
 		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
 
 		try {
