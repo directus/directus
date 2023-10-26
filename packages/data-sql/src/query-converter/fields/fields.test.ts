@@ -287,8 +287,8 @@ test('primitive, o2m', () => {
 		nestedManys: [
 			{
 				queryGenerator: expect.any(Function),
-				localFields: [randomJoinCurrentField],
-				foreignFields: [randomExternalField],
+				localJoinFields: [randomJoinCurrentField],
+				foreignJoinFields: [randomExternalField],
 				alias: randomExternalCollection,
 			},
 		],

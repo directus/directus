@@ -53,9 +53,9 @@ export interface AbstractSqlNestedMany {
 	 * The nested many sub queries cannot be generated complement, since they rely on the result of the root query
 	 * Therefore we use a function here instead, which takes the missing values as parameters to generate the actual sub query.
 	 */
-	queryGenerator: (internalRelationalFieldValues: AtLeastOneElement<string | number>) => AbstractSqlQuery;
-	localFields: AtLeastOneElement<string>;
-	foreignFields: AtLeastOneElement<string>;
+	queryGenerator: (joinFieldValues: AtLeastOneElement<string | number>) => AbstractSqlQuery;
+	localJoinFields: AtLeastOneElement<string>;
+	foreignJoinFields: AtLeastOneElement<string>;
 	alias: string;
 }
 

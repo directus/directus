@@ -79,8 +79,8 @@ test('nested-many logic', async () => {
 				aliasMapping: new Map([[foreignFieldId, [foreignField]]]),
 				nestedManys: [],
 			}),
-			localFields: [localPkField],
-			foreignFields: [foreignIdField],
+			localJoinFields: [localPkField],
+			foreignJoinFields: [foreignIdField],
 			alias: foreignTable,
 		},
 	];

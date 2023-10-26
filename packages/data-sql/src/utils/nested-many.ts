@@ -31,7 +31,7 @@ export async function makeSubQueriesAndMergeWithRoot(
 
 				for (const nestedMany of nestedManys) {
 					const subQuery = nestedMany.queryGenerator(
-						nestedMany.localFields.map((field) => value[field]) as AtLeastOneElement<string | number>
+						nestedMany.localJoinFields.map((field) => value[field]) as AtLeastOneElement<string | number>
 					);
 
 					const subStream = await queryDatabase(subQuery);

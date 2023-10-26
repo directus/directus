@@ -21,8 +21,8 @@ export function getNestedMany(
 			aliasMapping: nestedOutput.aliasMapping,
 			nestedManys: nestedOutput.nestedManys,
 		}),
-		localFields: fieldMeta.join.local.fields,
-		foreignFields: fieldMeta.join.foreign.fields,
+		localJoinFields: fieldMeta.join.local.fields,
+		foreignJoinFields: fieldMeta.join.foreign.fields,
 		alias,
 	};
 }

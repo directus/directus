@@ -44,8 +44,8 @@ test('getNestedMany', () => {
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
-		localFields: [localField],
-		foreignFields: [foreignField],
+		localJoinFields: [localField],
+		foreignJoinFields: [foreignField],
 		alias: foreignTable,
 	};
 
