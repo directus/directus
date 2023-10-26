@@ -27,6 +27,7 @@ method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
+extensions: Extensiones
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
@@ -56,10 +57,23 @@ modifier: Modificador
 extension_interface: Interfaz
 extension_display: Mostrar
 extension_layout: Diseño
+extension_module: Módulo
 extension_panel: Panel
 extension_hook: Gancho
+extension_endpoint: Endpoint
+extension_operation: Operación
+extension_bundle: Paquete
+extension_interfaces: Interfaces
+extension_displays: Displays
+extension_layouts: Layouts
 extension_modules: Módulos
+extension_panels: Paneles
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Operaciones
+extension_bundles: Paquetes
 enable: Habilitado
+disable: Desactivar
 custom: Personalizado
 hook: Gancho
 fill_width: Ancho completo
@@ -90,7 +104,7 @@ delete_panel: Eliminar panel
 create_webhook: Crear webhook
 create_custom_translation: Crear traducción personalizada
 edit_custom_translation: Editar traducción personalizada
-no_custom_translations: No hay traducciones personalizadas
+no_custom_translations: Sin traducciones personalizadas
 no_custom_translations_copy: Todavía no hay traducciones personalizadas.
 invite_users: Invitar usuarios
 invite: Invitar
@@ -107,6 +121,8 @@ rename_folder: Renombrar carpeta
 delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
+keep: Conservar
+version: Versión
 promote_version_preview: Vista previa
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
