@@ -42,6 +42,7 @@ full_width: Бүтэн өргөн
 group: Бүлэг
 and: Мөн
 or: Эсвэл
+extension_modules: Модуль
 fill_width: Өргөн дүүрэн
 field_name_translations: Талбарын нэрний орчуулга
 enter_password_to_enable_tfa: Нууц үгээ оруулж Хоёр-Давхар Нотолгоог идэвхижүүлнэ үү

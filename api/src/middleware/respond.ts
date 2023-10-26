@@ -25,6 +25,21 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	}
 
 	if (
+		req.sanitizedQuery.version &&
+		req.collection &&
+		(req.singleton || req.params['pk']) &&
+		'data' in res.locals['payload']
+	) {
+		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
+
+		const saves = await versionsService.getVersionSaves(req.sanitizedQuery.version, req.collection, req.params['pk']);
+
+		if (saves) {
+			assign(res.locals['payload'].data, ...saves);
+		}
+	}
+
+	if (
 		(req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
 		env['CACHE_ENABLED'] === true &&
 		cache &&
@@ -47,21 +62,6 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		// Don't cache anything by default
 		res.setHeader('Cache-Control', 'no-cache');
 		res.setHeader('Vary', 'Origin, Cache-Control');
-	}
-
-	if (
-		req.sanitizedQuery.version &&
-		req.collection &&
-		(req.singleton || req.params['pk']) &&
-		'data' in res.locals['payload']
-	) {
-		const versionsService = new VersionsService({ accountability: req.accountability ?? null, schema: req.schema });
-
-		const saves = await versionsService.getVersionSaves(req.sanitizedQuery.version, req.collection, req.params['pk']);
-
-		if (saves) {
-			assign(res.locals['payload'].data, ...saves);
-		}
 	}
 
 	if (req.sanitizedQuery.export) {

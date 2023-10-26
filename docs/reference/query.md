@@ -63,19 +63,41 @@ In GraphQL, this can be achieved using Union Types.
 <template #rest>
 
 ```
-?fields=title,body,featured_image.*
-
-// or
-
-?fields[]=title
-&fields[]=body
-&fields[]=featured_image.*
+GET /items/articles
+	?fields[]=title
+	&fields[]=sections.item:headings.title
+	&fields[]=sections.item:headings.level
+	&fields[]=sections.item:paragraphs.body
+	&fields[]=sections.item:videos.source
 ```
 
 </template>
 <template #graphql>
 
-` // Natively supported in GraphQL`
+```graphql
+# Using native GraphQL Union types
+
+query {
+	articles {
+		sections {
+			item {
+				... on headings {
+					title
+					level
+				}
+
+				... on paragraphs {
+					body
+				}
+
+				... on videos {
+					source
+				}
+			}
+		}
+	}
+}
+```
 
 </template>
 <template #sdk>
@@ -87,7 +109,20 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
-		fields: ['title', 'date_created', { authors: ['name'] }],
+		fields: [
+			'title',
+			{
+				sections: [
+					{
+						item: {
+							headings: ['title', 'level'],
+							paragraphs: ['body'],
+							videos: ['source'],
+						}
+					}
+				]
+			}
+		],
 	})
 );
 ```

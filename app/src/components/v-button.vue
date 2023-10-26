@@ -69,6 +69,8 @@ const props = withDefaults(defineProps<Props>(), {
 	to: '',
 	target: '_blank',
 	align: 'center',
+	/** Must be explicitly undefined */
+	active: undefined,
 });
 
 const emit = defineEmits(['click']);
