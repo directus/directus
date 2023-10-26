@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Only change items per page in table if necessary (otherwise triggers auto-save)
+Prevented auto-saves of presets when no layout changes have been made
