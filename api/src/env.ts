@@ -163,6 +163,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_SP.+',
 	// extensions
 	'PACKAGE_FILE_LOCATION',
+	'EXTENSIONS_LOCATION',
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
 	'EXTENSIONS_CACHE_TTL',
