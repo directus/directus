@@ -5,7 +5,7 @@ import type { MergeOptional, UnpackList } from './utils.js';
 /**
  * Filters
  */
-export type QueryFilter<_Schema extends object, _Item> = WrapLogicalFilters<{test: number}/*NestedQueryFilter<Schema, Item>*/>;
+export type QueryFilter<Schema extends object, Item> = WrapLogicalFilters<NestedQueryFilter<Schema, Item>>;
 
 /**
  * Query filters without logical filters
@@ -27,6 +27,9 @@ export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> ex
 		>
 	: never;
 
+/**
+ * Allow for relational filters
+ */
 export type NestedRelationalFilter<Schema extends object, Item, Field extends keyof Item> =
 	| (Field extends RelationalFields<Schema, Item>
 		? WrapRelationalFilters<NestedQueryFilter<Schema, Item[Field]>>
