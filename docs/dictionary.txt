@@ -42,6 +42,7 @@
 (M|m)isconfigured
 (M|m)ultitenancy
 (N|n)atively
+(O|o)nboarding
 (Q|q)uickstart
 (R|r)econfigures
 (R|r)elink
