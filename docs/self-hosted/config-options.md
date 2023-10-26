@@ -899,12 +899,12 @@ const publicUrl = process.env.PUBLIC_URL;
 
 ## Extensions
 
-| Variable                             | Description                                                                      | Default Value  |
-| ------------------------------------ | -------------------------------------------------------------------------------- | -------------- |
-| `EXTENSIONS_PATH`                    | Path to your local extensions folder.                                            | `./extensions` |
-| `EXTENSIONS_AUTO_RELOAD`             | Automatically reload extensions when they have changed.                          | `false`        |
-| `EXTENSIONS_CACHE_TTL`<sup>[1]</sup> | How long custom app Extensions get cached by browsers.                           | --             |
-| `EXTENSIONS_LOCATION`                | What configured storage location to use for extensions. Defaults to the local fs | --             |
+| Variable                             | Description                                                                              | Default Value  |
+| ------------------------------------ | ---------------------------------------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`                    | Path to your local extensions folder.                                                    | `./extensions` |
+| `EXTENSIONS_AUTO_RELOAD`             | Automatically reload extensions when they have changed.                                  | `false`        |
+| `EXTENSIONS_CACHE_TTL`<sup>[1]</sup> | How long custom app Extensions get cached by browsers.                                   | --             |
+| `EXTENSIONS_LOCATION`                | What configured storage location to use for extensions. Defaults to the local filesystem | --             |
 
 <sup>[1]</sup> The `EXTENSIONS_CACHE_TTL` environment variable controls for how long custom app extensions (e.t.,
 interface, display, layout, module, panel) are cached by browsers. Caching can speed-up the loading of the app as the
