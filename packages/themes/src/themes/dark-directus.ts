@@ -110,6 +110,7 @@ export const theme: Theme = {
 		sidebar: {
 			background: '#21262e',
 			foreground: 'var(--theme--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
 
 			section: {
 				toggle: {
@@ -126,6 +127,8 @@ export const theme: Theme = {
 					background: '#30363d',
 					backgroundHover: 'var(--theme--sidebar--section--toggle--background)',
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
+
+					fontFamily: 'var(--theme--font-family-sans-serif)',
 				},
 			},
 		},

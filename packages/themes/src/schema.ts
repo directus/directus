@@ -116,6 +116,7 @@ const Rules = Type.Object({
 	sidebar: Type.Object({
 		background: Color,
 		foreground: Color,
+		fontFamily: FontFamily,
 
 		section: Type.Object({
 			toggle: Type.Object({
@@ -132,6 +133,8 @@ const Rules = Type.Object({
 				background: Color,
 				backgroundHover: Color,
 				backgroundActive: Color,
+
+				fontFamily: FontFamily,
 			}),
 		}),
 	}),

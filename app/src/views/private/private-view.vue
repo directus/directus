@@ -501,6 +501,7 @@ function getWidth(input: unknown, fallback: number): number {
 		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
+		font-family: var(--theme--sidebar--font-family);
 
 		.spacer {
 			flex-grow: 1;
