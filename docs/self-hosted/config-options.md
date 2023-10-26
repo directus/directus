@@ -244,6 +244,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                                           | `100`                        |
 | `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
+| `TEMP_PATH`                | Where Directus' temporary files should be managed                                                                           | `./.directus`                |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -898,11 +899,12 @@ const publicUrl = process.env.PUBLIC_URL;
 
 ## Extensions
 
-| Variable                             | Description                                             | Default Value  |
-| ------------------------------------ | ------------------------------------------------------- | -------------- |
-| `EXTENSIONS_PATH`                    | Path to your local extensions folder.                   | `./extensions` |
-| `EXTENSIONS_AUTO_RELOAD`             | Automatically reload extensions when they have changed. | `false`        |
-| `EXTENSIONS_CACHE_TTL`<sup>[1]</sup> | How long custom app Extensions get cached by browsers.  | --             |
+| Variable                             | Description                                                                      | Default Value  |
+| ------------------------------------ | -------------------------------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`                    | Path to your local extensions folder.                                            | `./extensions` |
+| `EXTENSIONS_AUTO_RELOAD`             | Automatically reload extensions when they have changed.                          | `false`        |
+| `EXTENSIONS_CACHE_TTL`<sup>[1]</sup> | How long custom app Extensions get cached by browsers.                           | --             |
+| `EXTENSIONS_LOCATION`                | What configured storage location to use for extensions. Defaults to the local fs | --             |
 
 <sup>[1]</sup> The `EXTENSIONS_CACHE_TTL` environment variable controls for how long custom app extensions (e.t.,
 interface, display, layout, module, panel) are cached by browsers. Caching can speed-up the loading of the app as the
