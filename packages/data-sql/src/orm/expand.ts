@@ -9,7 +9,7 @@ export const getExpander = (paths: Map<string, string[]>): TransformStream => {
 	return new TransformStream({
 		transform(chunk, controller) {
 			if (chunk?.constructor !== Object) {
-				throw new Error(`Can't expand a non-object chunk`);
+				throw new Error(`Error while expanding a result chunk: Can't expand a non-object chunk`);
 			}
 
 			const outputChunk = expandChunk(chunk, paths);
@@ -34,7 +34,7 @@ export function expandChunk(chunk: Record<string, unknown>, paths: Map<string, s
 		const path = paths.get(key);
 
 		if (!path) {
-			throw new Error(`No path available for dot-notated key ${key}`);
+			throw new Error(`Error while expanding a result: No path available for dot-notated key ${key}`);
 		}
 
 		set(result, path, value);

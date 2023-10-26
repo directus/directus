@@ -75,13 +75,8 @@ export default class DataDriverPostgres implements DataDriver {
 		const statement = convertToActualStatement(abstractSql.clauses);
 		const parameters = convertParameters(abstractSql.parameters);
 		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
-
-		try {
-			const ormExpander = getExpander(abstractSql.aliasMapping);
-			return stream.pipeThrough(ormExpander);
-		} catch (error: any) {
-			throw new Error('Failed to expand the database result: ', error);
-		}
+		const ormExpander = getExpander(abstractSql.aliasMapping);
+		return stream.pipeThrough(ormExpander);
 	}
 
 	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, unknown>>> {
