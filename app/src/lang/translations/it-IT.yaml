@@ -1016,7 +1016,10 @@ deselect: Deseleziona
 deselect_all: Deseleziona Tutto
 theme: Tema
 select_a_theme: Seleziona un tema
+appearance_global: Progetto Predefinito
+appearance_auto: Automatico (Sincronizza con il Sistema)
 appearance_light: Chiaro
+appearance_dark: Tema scuro
 other: Altro...
 adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
@@ -1543,6 +1546,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
