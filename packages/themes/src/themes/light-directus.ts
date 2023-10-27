@@ -54,7 +54,6 @@ export const theme: Theme = {
 
 			modules: {
 				background: '#18222f',
-
 				borderColor: 'transparent',
 				borderWidth: '0',
 
