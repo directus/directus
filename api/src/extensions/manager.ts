@@ -28,7 +28,7 @@ import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
 import { clone } from 'lodash-es';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -87,7 +87,7 @@ export class ExtensionManager {
 	 * App extensions rolled up into a single bundle. Any chunks from the bundle will be available
 	 * under appExtensionChunks
 	 */
-	private appExtensionsBundle: string | null = null;
+	private appExtensionsBundle: Promise<string | null> | string | null = null;
 
 	/**
 	 * Individual filename chunks from the rollup bundle. Used to improve the performance by allowing
@@ -182,13 +182,19 @@ export class ExtensionManager {
 			logger.warn(err);
 		}
 
-		await this.registerHooks();
-		await this.registerEndpoints();
-		await this.registerOperations();
-		await this.registerBundles();
+		await Promise.all([
+			this.registerHooks(),
+			this.registerEndpoints(),
+			this.registerOperations(),
+			this.registerBundles(),
+		])
+
 
 		if (env['SERVE_APP']) {
-			this.appExtensionsBundle = await this.generateExtensionBundle();
+			this.appExtensionsBundle = this.generateExtensionBundle().then((bundle) => {
+				this.appExtensionsBundle = bundle;
+				return bundle;
+			});
 		}
 
 		this.isLoaded = true;
@@ -249,8 +255,8 @@ export class ExtensionManager {
 	/**
 	 * Return the previously generated app extensions bundle
 	 */
-	public getAppExtensionsBundle(): string | null {
-		return this.appExtensionsBundle;
+	public getAppExtensionsBundle(): Promise<string | null> {
+		return Promise.resolve(this.appExtensionsBundle);
 	}
 
 	/**
@@ -540,17 +546,26 @@ export class ExtensionManager {
 	 * registerOperation
 	 */
 	private async registerOperations(): Promise<void> {
-		const internalOperations = await readdir(path.join(__dirname, '..', 'operations'));
-
-		for (const operation of internalOperations) {
-			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-				`../operations/${operation}/index.js`
-			);
-
-			const config = getModuleDefault(operationInstance);
-
-			this.registerOperation(config);
-		}
+		Promise.all([
+			import('../operations/condition/index.js'),
+			import('../operations/exec/index.js'),
+			import('../operations/item-create/index.js'),
+			import('../operations/item-delete/index.js'),
+			import('../operations/item-read/index.js'),
+			import('../operations/item-update/index.js'),
+			import('../operations/json-web-token/index.js'),
+			import('../operations/log/index.js'),
+			import('../operations/mail/index.js'),
+			import('../operations/notification/index.js'),
+			import('../operations/request/index.js'),
+			import('../operations/sleep/index.js'),
+			import('../operations/transform/index.js'),
+			import('../operations/trigger/index.js')
+		]).then(operations => {
+			for (const operation of operations) {
+				this.registerOperation(operation.default);
+			}
+		})
 
 		const operations = this.extensions.filter(
 			(extension): extension is HybridExtension => extension.type === 'operation'

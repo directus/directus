@@ -63,7 +63,7 @@ router.get(
 		let source: string | null;
 
 		if (chunk === 'index.js') {
-			source = extensionManager.getAppExtensionsBundle();
+			source = await extensionManager.getAppExtensionsBundle();
 		} else {
 			source = extensionManager.getAppExtensionChunk(chunk);
 		}

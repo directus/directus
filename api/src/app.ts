@@ -1,3 +1,4 @@
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
@@ -42,12 +43,10 @@ import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
 	validateDatabaseConnection,
-	validateDatabaseExtensions,
-	validateMigrations,
+	validateMigrations
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
@@ -80,27 +79,33 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
-	await validateStorage();
+	await Promise.all([
+		validateStorage(),
+		validateDatabaseConnection(),
+	])
 
-	await validateDatabaseConnection();
-	await validateDatabaseExtensions();
-
-	if ((await isInstalled()) === false) {
-		logger.error(`Database doesn't have Directus tables installed.`);
-		process.exit(1);
-	}
-
-	if ((await validateMigrations()) === false) {
-		logger.warn(`Database migrations have not all been run`);
-	}
-
-	await registerAuthProviders();
+	await Promise.all([
+		isInstalled().then((installed) => {
+			if (installed === false) {
+				logger.error(`Directus is not installed.`);
+				process.exit(1);
+			}
+		}),
+		validateMigrations().then((migrated) => {
+			if (migrated === false) {
+				logger.warn(`Database migrations have not all been run`);
+			}
+		}),
+		registerAuthProviders()
+	]);
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
 
-	await extensionManager.initialize();
-	await flowManager.initialize();
+	await Promise.all([
+		extensionManager.initialize(),
+		flowManager.initialize()
+	])
 
 	const app = express();
 
