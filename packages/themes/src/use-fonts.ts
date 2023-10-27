@@ -14,7 +14,7 @@ export const useFonts = (rules: MaybeRef<Theme>) => {
 					find(value.properties as Record<string, unknown>, [...path, key]);
 				}
 
-				if ('$ref' in value && value.$ref === TypeId.FontFamily) {
+				if ('$ref' in value && value.$ref === TypeId.FamilyName) {
 					paths.push([...path, key]);
 				}
 			}

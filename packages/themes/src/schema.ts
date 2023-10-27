@@ -3,13 +3,19 @@ import { Type } from '@sinclair/typebox';
 
 export const TypeId = {
 	Color: 'Color',
-	FontFamily: 'FontFamily',
+	FamilyName: 'FamilyName',
+	Length: 'Length',
+	Percentage: 'Percentage',
 };
 
 const Color = Type.Ref(Type.String({ $id: TypeId.Color }));
-const FontFamily = Type.Ref(Type.String({ $id: TypeId.FontFamily }));
+const FamilyName = Type.Ref(Type.String({ $id: TypeId.FamilyName }));
+const Length = Type.Ref(Type.String({ $id: TypeId.Length }));
+const Percentage = Type.Ref(Type.String({ $id: TypeId.Percentage }));
 
 const Rules = Type.Object({
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base color palette
 	foreground: Color,
 	foregroundSubdued: Color,
 	foregroundAccent: Color,
@@ -41,18 +47,26 @@ const Rules = Type.Object({
 	dangerSubdued: Color,
 	dangerAccent: Color,
 
-	fontFamilyDisplay: FontFamily,
-	fontFamilySansSerif: FontFamily,
-	fontFamilySerif: FontFamily,
-	fontFamilyMonospace: FontFamily,
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base fonts
+	fontFamilyDisplay: FamilyName,
+	fontFamilySansSerif: FamilyName,
+	fontFamilySerif: FamilyName,
+	fontFamilyMonospace: FamilyName,
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base border styles
+	borderRadius: Type.Union([Length, Percentage]),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Scopes
 	navigation: Type.Object({
 		background: Color,
 
 		project: Type.Object({
 			background: Color,
 			foreground: Color,
-			fontFamily: FontFamily,
+			fontFamily: FamilyName,
 		}),
 
 		modules: Type.Object({
@@ -83,7 +97,7 @@ const Rules = Type.Object({
 			backgroundHover: Color,
 			backgroundActive: Color,
 
-			fontFamily: FontFamily,
+			fontFamily: FamilyName,
 		}),
 	}),
 
@@ -91,11 +105,11 @@ const Rules = Type.Object({
 		background: Color,
 		headline: Type.Object({
 			foreground: Color,
-			fontFamily: FontFamily,
+			fontFamily: FamilyName,
 		}),
 		title: Type.Object({
 			foreground: Color,
-			fontFamily: FontFamily,
+			fontFamily: FamilyName,
 		}),
 	}),
 
@@ -103,7 +117,7 @@ const Rules = Type.Object({
 		field: Type.Object({
 			label: Type.Object({
 				foreground: Color,
-				fontFamily: FontFamily,
+				fontFamily: FamilyName,
 			}),
 			input: Type.Object({
 				background: Color,
@@ -116,7 +130,7 @@ const Rules = Type.Object({
 	sidebar: Type.Object({
 		background: Color,
 		foreground: Color,
-		fontFamily: FontFamily,
+		fontFamily: FamilyName,
 
 		section: Type.Object({
 			toggle: Type.Object({
@@ -134,7 +148,7 @@ const Rules = Type.Object({
 				backgroundHover: Color,
 				backgroundActive: Color,
 
-				fontFamily: FontFamily,
+				fontFamily: FamilyName,
 			}),
 		}),
 	}),
@@ -146,6 +160,6 @@ export const ThemeSchema = Type.Object({
 	rules: Rules,
 });
 
-export const Definitions = { $defs: { [TypeId.Color]: Color, [TypeId.FontFamily]: FontFamily } };
+export const Definitions = { $defs: { [TypeId.Color]: Color, [TypeId.FamilyName]: FamilyName } };
 
 export type Theme = Static<typeof ThemeSchema>;
