@@ -423,8 +423,12 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	min-height: 300px;
 	overflow: hidden;
 	font-family: var(--theme--font-family-sans-serif);
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
+	box-shadow: var(--theme--form--field--input--box-shadow);
+	transition-duration: var(--fast);
+	transition-timing-function: var(--transition);
+	transition-property: box-shadow, border-color;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
@@ -435,9 +439,14 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	background-color: var(--background-subdued);
 }
 
+.interface-input-rich-text-md:not(.disabled):hover {
+	border-color: var(--theme--form--field--input--border-color-hover);
+	box-shadow: var(--theme--form--field--input--box-shadow-hover);
+}
+
 .interface-input-rich-text-md:not(.disabled):focus-within {
 	border-color: var(--theme--form--field--input--border-color-focus);
-	box-shadow: 0 0 16px -8px var(--theme--primary);
+	box-shadow: var(--theme--form--field--input--box-shadow-focus);
 }
 
 textarea {

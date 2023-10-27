@@ -101,7 +101,9 @@ body {
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	transition: border-color var(--fast) var(--transition);
+	transition: var(--fast) var(--transition);
+	transition-property: border-color, box-shadow;
+	box-shadow: var(--theme--form--field--input--box-shadow);
 
 	.append,
 	.prepend {
@@ -138,12 +140,13 @@ body {
 
 	&:hover:not(.disabled) {
 		border-color: var(--theme--form--field--input--border-color-hover);
+		box-shadow: var(--theme--form--field--input--box-shadow-hover);
 	}
 
 	&:focus:not(.disabled),
 	&:focus-within:not(.disabled) {
 		border-color: var(--theme--form--field--input--border-color-focus);
-		box-shadow: 0 0 16px -8px var(--theme--primary);
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
 	}
 
 	textarea {

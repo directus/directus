@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
 import { getAppearance } from '@/utils/get-appearance';
+import { getRootPath } from '@/utils/get-root-path';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';
 import { storeToRefs } from 'pinia';
@@ -62,10 +62,6 @@ const colors = computed(() => {
 	};
 });
 
-const isBranded = computed(() => {
-	return info.value?.project?.project_color ? true : false;
-});
-
 const hasCustomBackground = computed(() => {
 	return !!info.value?.project?.public_background;
 });
@@ -94,7 +90,7 @@ const logoURL = computed<string | null>(() => {
 </script>
 
 <template>
-	<div class="public-view" :class="{ branded: isBranded }">
+	<div class="public-view">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
@@ -315,21 +311,6 @@ const logoURL = computed<string | null>(() => {
 			object-fit: contain;
 			object-position: center center;
 		}
-	}
-
-	&.branded :deep(.v-button) {
-		--v-button-background-color: var(--theme--foreground-accent);
-		--v-button-background-color-hover: var(--theme--foreground-accent);
-		--v-button-background-color-active: var(--theme--foreground-accent);
-	}
-
-	&.branded :deep(.v-input) {
-		--v-input-border-color-focus: var(--theme--foreground);
-		--v-input-box-shadow-color-focus: var(--theme--foreground);
-	}
-
-	&.branded :deep(.v-input.solid) {
-		--v-input-border-color-focus: var(--theme--foreground-subdued);
 	}
 }
 

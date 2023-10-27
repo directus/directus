@@ -288,7 +288,6 @@ function stepDown() {
 	--v-input-border-color: var(--theme--form--field--input--border-color);
 	--v-input-border-color-hover: var(--theme--form--field--input--border-color-hover);
 	--v-input-border-color-focus: var(--theme--form--field--input--border-color-focus);
-	--v-input-box-shadow-color-focus: var(--theme--form--field--input--border-color-focus);
 	--v-input-border-radius: var(--theme--border-radius);
 }
 
@@ -319,7 +318,9 @@ function stepDown() {
 		background-color: var(--v-input-background-color);
 		border: var(--theme--border-width) solid var(--v-input-border-color);
 		border-radius: var(--v-input-border-radius);
-		transition: border-color var(--fast) var(--transition);
+		transition: var(--fast) var(--transition);
+		transition-property: border-color, box-shadow;
+		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
 			margin-right: 8px;
@@ -360,6 +361,7 @@ function stepDown() {
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
 			border-color: var(--v-input-border-color-hover);
+			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
 		&:focus-within,
@@ -369,7 +371,7 @@ function stepDown() {
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
 			border-color: var(--v-input-border-color-focus);
-			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
+			box-shadow: var(--theme--form--field--input--box-shadow-focus);
 		}
 
 		&.disabled {

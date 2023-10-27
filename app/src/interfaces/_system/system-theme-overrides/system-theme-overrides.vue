@@ -56,5 +56,18 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 	max-height: var(--input-height-max);
 	overflow-y: auto;
 	background-color: var(--theme--form--field--input--background);
+	transition-duration: var(--fast);
+	transition-timing-function: var(--transition);
+	transition-property: box-shadow, border-color;
+
+	&:hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+		box-shadow: var(--theme--form--field--input--box-shadow-hover);
+	}
+
+	&:focus-within {
+		border-color: var(--theme--form--field--input--border-color-focus);
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	}
 }
 </style>
