@@ -158,7 +158,7 @@ export class ExtensionsService {
 					schema = null;
 				}
 			} else {
-				schema = installed.find((extension) => extension.name === name) ?? null;
+				schema = installed.find((extension) => `${extension.name}:${extension.type}` === name) ?? null;
 			}
 
 			return {

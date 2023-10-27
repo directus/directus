@@ -127,7 +127,7 @@ export async function getLocalExtensions(root: string): Promise<Extension[]> {
 				if (isIn(extensionType, HYBRID_EXTENSION_TYPES)) {
 					extensions.push({
 						path: extensionPath,
-						name: `${extensionName}:${extensionType}`,
+						name: extensionName,
 						type: extensionType,
 						entrypoint: {
 							app: await findExtension(extensionPath, 'app'),
@@ -138,7 +138,7 @@ export async function getLocalExtensions(root: string): Promise<Extension[]> {
 				} else {
 					extensions.push({
 						path: extensionPath,
-						name: `${extensionName}:${extensionType}`,
+						name: extensionName,
 						type: extensionType as AppExtensionType | ApiExtensionType,
 						entrypoint: await findExtension(extensionPath, 'index'),
 						local: true,

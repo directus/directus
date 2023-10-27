@@ -25,7 +25,7 @@ export const getExtensionsSettings = async (extensions: Extension[]) => {
 				return [extension.name, ...extension.entries.map((entry) => `${extension.name}/${entry.name}`)];
 			}
 
-			return extension.name;
+			return `${extension.name}:${extension.type}`;
 		})
 		.flat();
 
