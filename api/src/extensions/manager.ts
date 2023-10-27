@@ -189,7 +189,6 @@ export class ExtensionManager {
 			this.registerBundles(),
 		])
 
-
 		if (env['SERVE_APP']) {
 			this.appExtensionsBundle = this.generateExtensionBundle().then((bundle) => {
 				this.appExtensionsBundle = bundle;
