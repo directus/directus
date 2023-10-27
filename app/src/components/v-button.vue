@@ -351,7 +351,6 @@ async function onClick(event: MouseEvent) {
 	--v-button-font-size: 12px;
 	--v-button-font-weight: 600;
 	--v-button-min-width: 60px;
-	--theme--border-radius: 4px;
 
 	padding: 0 12px;
 }
