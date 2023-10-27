@@ -461,7 +461,7 @@ table :deep(.sortable-ghost .cell) {
 
 .inline {
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .inline table :deep(.table-row:last-of-type .cell) {

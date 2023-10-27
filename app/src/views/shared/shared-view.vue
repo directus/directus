@@ -63,7 +63,7 @@ const logoURL = computed<string | null>(() => {
 
 <style scoped lang="scss">
 .shared {
-	--border-radius: 6px;
+	--theme--border-radius: 6px;
 	--input-height: 60px;
 	--input-padding: 16px;
 
@@ -122,7 +122,7 @@ header {
 	width: 60px;
 	height: 60px;
 	background-color: var(--project-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	img {
 		width: 40px;
@@ -135,7 +135,7 @@ header {
 .content {
 	padding: 32px;
 	background-color: var(--theme--background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 }
 
@@ -150,7 +150,7 @@ header {
 		max-width: 856px;
 		padding: 32px;
 		background-color: var(--theme--background);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 
 		@media (min-width: 618px) {

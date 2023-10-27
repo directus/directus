@@ -467,7 +467,7 @@ function handleKeyDown(event: any) {
 	position: relative;
 	overflow: hidden;
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.map {
 		position: relative;
@@ -492,7 +492,7 @@ function handleKeyDown(event: any) {
 	.v-info {
 		padding: 20px;
 		background-color: var(--theme--form--field--input--background);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		box-shadow: var(--card-shadow);
 	}
 
@@ -508,7 +508,7 @@ function handleKeyDown(event: any) {
 		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);
 		border: var(--border-width) solid var(--theme--background);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 
 		span {
 			width: auto;

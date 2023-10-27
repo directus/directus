@@ -100,7 +100,7 @@ code {
 	line-height: 24px;
 	overflow-wrap: break-word;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 pre {
@@ -111,7 +111,7 @@ pre {
 	font-family: var(--theme--font-family-monospace), monospace;
 	line-height: 24px;
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 blockquote {
@@ -132,7 +132,7 @@ iframe,
 img {
 	max-width: 100%;
 	height: auto;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 hr {

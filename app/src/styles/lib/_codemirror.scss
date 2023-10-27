@@ -10,7 +10,7 @@
 	direction: ltr;
 	background-color: var(--theme--form--field--input--background);
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: all var(--fast) var(--transition);
 }
 
@@ -286,7 +286,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	padding: 4px 8px;
 	color: var(--foreground-inverted);
 	background-color: var(--background-inverted);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	font-family: var(--theme--font-family-monospace);
 	white-space: pre-wrap;
 	overflow: hidden;

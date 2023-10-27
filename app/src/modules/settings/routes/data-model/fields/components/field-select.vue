@@ -376,7 +376,7 @@ async function onGroupSortChange(fields: Field[]) {
 	padding: var(--input-padding);
 	padding-top: 40px;
 	padding-bottom: 16px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	> * {
 		position: relative;
@@ -520,7 +520,7 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .sortable-ghost {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	outline: 2px dashed var(--theme--primary);
 
 	> * {

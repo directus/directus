@@ -91,7 +91,7 @@
 	min-height: 300px;
 	color: var(--theme--form--field--input--foreground);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color;
 }
@@ -233,7 +233,7 @@ body.dark .tox .tox-toolbar__overflow {
 	font-family: var(--theme--font-family-sans-serif);
 	background-color: var(--theme--background);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 }
 
@@ -256,11 +256,11 @@ body.dark .tox .tox-toolbar__overflow {
 	font-family: var(--theme--font-family-sans-serif);
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .tox .tox-collection__item {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .tox .tox-collection--list .tox-collection__item {
@@ -303,7 +303,7 @@ body.dark .tox .tox-toolbar__overflow {
 	border: 2px solid var(--theme--primary);
 	border: none;
 	border-color: var(--theme--primary);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	-webkit-transition: var(--fast) var(--transition);
 	transition: var(--fast) var(--transition);
@@ -362,7 +362,7 @@ body.dark .tox .tox-toolbar__overflow {
 	font-weight: 500;
 	font-size: 14px;
 	border-bottom: none;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;
 }

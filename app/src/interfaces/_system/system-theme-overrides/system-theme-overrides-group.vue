@@ -95,7 +95,7 @@ const collapsed = ref(true);
 
 	&:hover {
 		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.icon {

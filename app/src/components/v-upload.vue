@@ -331,7 +331,7 @@ function openFileBrowser() {
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color, background-color;
 

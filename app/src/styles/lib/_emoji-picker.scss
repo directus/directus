@@ -10,7 +10,7 @@
 		--dark-background-color: var(--background-subdued);
 
 		box-shadow: var(--card-shadow);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		border: var(--border-width) solid var(--border-normal);
 		background-color: var(--theme--background);
 	}
@@ -26,7 +26,7 @@
 		}
 
 		input.emoji-picker__search {
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			border: var(--border-width) solid var(--border-normal);
 			background-color: var(--theme--background);
 
@@ -82,7 +82,7 @@
 	.emoji-picker__emoji {
 		&:hover {
 			background-color: var(--background-normal);
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 		}
 	}
 }

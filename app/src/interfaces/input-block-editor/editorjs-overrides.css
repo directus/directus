@@ -8,7 +8,7 @@
 .codex-editor .ce-toolbar__settings-btn {
 	color: var(--theme--form--field--input--foreground);
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-toolbar__plus:hover,
@@ -41,7 +41,7 @@
 }
 
 .codex-editor .cdx-search-field {
-	border-radius: var(--border-radius) !important;
+	border-radius: var(--theme--border-radius) !important;
 	border: none;
 	background: var(--background-subdued);
 }
@@ -50,7 +50,7 @@
 	background: var(--theme--background);
 	border-color: var(--border-normal);
 	border-width: var(--border-width);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-popover-item__title {
@@ -169,7 +169,7 @@
 	background: var(--background-subdued);
 	border-color: var(--border-normal);
 	border-width: var(--border-width);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .cdx-settings-button:hover,
@@ -220,7 +220,7 @@
 	font-size: inherit;
 	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: unset;
 }
 
@@ -249,7 +249,7 @@
 	text-decoration: none;
 	background-color: var(--v-button-background-color);
 	border: var(--border-width) solid var(--v-button-background-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 }
 
@@ -361,7 +361,7 @@
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon {
 	padding: 5px;
 	background: var(--background-normal-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	margin-right: 12px;
 }
 
@@ -437,7 +437,7 @@
 .codex-editor .tc-toolbox__toggler svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
 	fill: var(--background-normal) !important;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .tc-toolbox__toggler:hover svg rect:first-child {

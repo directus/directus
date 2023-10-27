@@ -49,6 +49,6 @@ const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 <style scoped>
 .system-field-tree {
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 </style>

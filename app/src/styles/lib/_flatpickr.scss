@@ -9,7 +9,7 @@
 	overflow: hidden;
 	font-family: var(--v-input-font-family);
 	background: var(--card-face-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: none;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	appearance: none;
 	text-align: right;
 	font-size: 16px;
@@ -95,7 +95,7 @@
 
 .flatpickr-current-month .numInputWrapper {
 	background: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: background var(--fast) var(--transition);
 }
 
@@ -110,7 +110,7 @@
 }
 
 .flatpickr-current-month .numInputWrapper {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .flatpickr-current-month .numInputWrapper span.arrowUp {
@@ -312,7 +312,7 @@ span.flatpickr-weekday {
 .flatpickr-time input:focus,
 .flatpickr-time .flatpickr-am-pm:focus {
 	border: var(--border-width) solid var(--theme--primary);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--form--field--input--background);
 }
 

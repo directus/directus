@@ -598,7 +598,7 @@ function getLinkForItem(item: DisplayItem) {
 <style lang="scss" scoped>
 .bordered {
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	padding: var(--v-card-padding);
 }
 

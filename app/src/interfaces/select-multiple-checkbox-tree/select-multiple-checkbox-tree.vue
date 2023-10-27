@@ -85,7 +85,7 @@ const searchDebounced = ref('');
 	overflow: auto;
 	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .search {
@@ -110,7 +110,7 @@ const searchDebounced = ref('');
 	padding: 4px 8px;
 	text-align: right;
 	background-color: var(--theme--background);
-	border-top-left-radius: var(--border-radius);
+	border-top-left-radius: var(--theme--border-radius);
 }
 
 .footer > button {

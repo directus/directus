@@ -156,7 +156,7 @@ body {
 	}
 
 	&.label {
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.chip-content {

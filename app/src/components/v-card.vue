@@ -32,7 +32,7 @@ body {
 
 <style lang="scss" scoped>
 .v-card {
-	--border-radius: 6px;
+	--theme--border-radius: 6px;
 	--input-height: 60px;
 	--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 	--form-vertical-gap: 52px;
@@ -48,11 +48,11 @@ body {
 	font-size: 15px;
 	line-height: 24px;
 	background-color: var(--v-card-background-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	& > :first-child {
-		border-top-left-radius: var(--border-radius);
-		border-top-right-radius: var(--border-radius);
+		border-top-left-radius: var(--theme--border-radius);
+		border-top-right-radius: var(--theme--border-radius);
 	}
 
 	&.disabled {

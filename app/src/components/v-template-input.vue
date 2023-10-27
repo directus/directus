@@ -314,7 +314,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	white-space: nowrap;
 	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	&:empty::before {
@@ -346,7 +346,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		line-height: 1;
 		vertical-align: -2px;
 		background: var(--theme--primary-background);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		user-select: text;
 
 		&::before {

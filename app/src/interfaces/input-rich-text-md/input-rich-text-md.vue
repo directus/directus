@@ -424,7 +424,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	overflow: hidden;
 	font-family: var(--theme--font-family-sans-serif);
 	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {

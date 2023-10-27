@@ -105,7 +105,7 @@ body {
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
 		border: 2px solid var(--background-subdued);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 
 		&::before {
 			position: absolute;
@@ -114,7 +114,7 @@ body {
 			width: 100%;
 			height: 100%;
 			background-color: var(--background-subdued);
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			content: '';
 		}
 

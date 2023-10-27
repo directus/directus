@@ -120,7 +120,7 @@ const optionsFields = computed(() => {
 
 	padding: 12px;
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	:deep(.type-label) {
 		font-size: 1rem;

@@ -324,7 +324,7 @@ Lastly, replace the CSS at the bottom with this:
 	margin-bottom: var(--form-vertical-gap);
 }
 .form-response {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	border: var(--border-width) solid var(--border-normal);
 	margin: 1em 0;
 	min-width: 300px;
@@ -591,7 +591,7 @@ export default {
 	margin-bottom: var(--form-vertical-gap);
 }
 .form-response {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	border: var(--border-width) solid var(--border-normal);
 	margin: 1em 0;
 	min-width: 300px;

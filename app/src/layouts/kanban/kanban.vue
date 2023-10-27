@@ -221,7 +221,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			padding: 8px 0;
 			background-color: var(--background-normal);
 			border: var(--border-width) solid var(--border-normal);
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
 
@@ -261,7 +261,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					font-size: 12px;
 					line-height: 20px;
 					background-color: var(--background-normal-alt);
-					border-radius: 12px; //var(--border-radius);
+					border-radius: 12px; //var(--theme--border-radius);
 				}
 
 				.actions {
@@ -288,7 +288,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					margin: 2px 16px 6px 16px;
 					padding: 12px 16px;
 					background-color: var(--theme--background);
-					border-radius: var(--border-radius);
+					border-radius: var(--theme--border-radius);
 					box-shadow: 0px 2px 4px 0px rgba(var(--card-shadow-color), 0.1);
 
 					&:hover .title {
@@ -317,7 +317,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 				.image {
 					width: 100%;
 					margin-top: 10px;
-					border-radius: var(--border-radius);
+					border-radius: var(--theme--border-radius);
 					margin-top: 4px;
 					max-height: 300px;
 				}
@@ -386,7 +386,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 		cursor: pointer;
 		padding: 8px 8px;
 		border: var(--border-width) dashed var(--border-subdued);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);
 
 		.v-icon {

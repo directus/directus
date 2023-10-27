@@ -391,7 +391,7 @@ function useColor() {
 	width: calc(var(--input-height) - 20px);
 	max-height: calc(var(--input-height) - 20px);
 	overflow: hidden;
-	border-radius: calc(var(--border-radius) + 2px);
+	border-radius: calc(var(--theme--border-radius) + 2px);
 	cursor: pointer;
 }
 
@@ -441,7 +441,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input {
-	--border-radius: 0px;
+	--theme--border-radius: 0px;
 }
 
 .color-data-inputs .color-data-input :deep(.input:focus-within),
@@ -461,11 +461,11 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:first-child {
-	--border-radius: 4px 0px 0px 4px;
+	--theme--border-radius: 4px 0px 0px 4px;
 }
 
 .color-data-inputs .color-data-input:last-child {
-	--border-radius: 0px 4px 4px 0px;
+	--theme--border-radius: 0px 4px 4px 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
@@ -478,15 +478,15 @@ function useColor() {
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
-	--border-radius: 4px 4px 0px 0px;
+	--theme--border-radius: 4px 4px 0px 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:nth-child(2) {
-	--border-radius: 0px 0px 0px 4px;
+	--theme--border-radius: 0px 0px 0px 4px;
 }
 
 .color-data-inputs.stacked .color-data-input:last-child {
-	--border-radius: 0px 0px 4px 0px;
+	--theme--border-radius: 0px 0px 4px 0px;
 }
 
 .color-data-alphas {

@@ -137,7 +137,7 @@ limitWritable.value = selectedSize;
 .v-info {
 	padding: 40px;
 	background-color: var(--theme--background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: var(--card-shadow);
 	pointer-events: none;
 }
@@ -189,7 +189,7 @@ limitWritable.value = selectedSize;
 	font-size: 14px;
 	font-family: var(--theme--font-family-sans-serif);
 	background-color: var(--theme--background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: var(--card-shadow);
 	transform: translate(-50%, -140%);
 	pointer-events: none;
@@ -208,7 +208,7 @@ limitWritable.value = selectedSize;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--background);
 	border: var(--border-width) solid var(--theme--background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
 	span {

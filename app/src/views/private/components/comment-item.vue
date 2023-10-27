@@ -84,7 +84,7 @@ function useEdits() {
 	margin-bottom: 8px;
 	padding: 8px;
 	background-color: var(--theme--background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .comment-item:last-of-type {
@@ -126,7 +126,7 @@ function useEdits() {
 .comment-item .content :deep(img) {
 	max-width: 100%;
 	margin: 8px 0;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	display: block;
 }
 
@@ -143,7 +143,7 @@ function useEdits() {
 	color: var(--theme--primary);
 	line-height: 1;
 	background: var(--theme--primary-background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	user-select: text;
 	pointer-events: none;
 }
@@ -152,7 +152,7 @@ function useEdits() {
 	padding: 2px 4px;
 	color: var(--theme--foreground);
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	margin: 2px 0;
 	font-family: var(--theme--font-family-monospace);
 	white-space: nowrap;
@@ -164,7 +164,7 @@ function useEdits() {
 	padding: 2px 4px;
 	color: var(--theme--foreground);
 	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	margin: 2px 0;
 	font-family: var(--theme--font-family-monospace);
 }

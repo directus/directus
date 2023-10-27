@@ -365,7 +365,7 @@ function pressedEnter() {
 	white-space: pre;
 	background-color: var(--theme--form--field--input--background);
 	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 }
 

@@ -296,7 +296,7 @@ const stageChanges = () => {
 	height: 100px;
 	margin-bottom: 8px;
 	border: var(--border-width) solid var(--border-subdued);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
 }
@@ -327,7 +327,7 @@ const stageChanges = () => {
 	padding: 8px 16px;
 	background-color: var(--background-page);
 	border: 2px solid var(--theme--primary);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 8px var(--theme--primary-75);
 }
 

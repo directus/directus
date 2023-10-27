@@ -143,7 +143,7 @@ body {
 	--v-list-item-min-height-nav: 36px;
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
-	--v-list-item-border-radius: var(--border-radius);
+	--v-list-item-border-radius: var(--theme--border-radius);
 	--v-list-item-border-color: var(--border-subdued);
 	--v-list-item-border-color-hover: var(--border-normal-alt);
 	--v-list-item-color: var(--v-list-color, var(--theme--foreground));
@@ -253,7 +253,7 @@ body {
 		padding: 8px var(--input-padding);
 		background-color: var(--v-list-item-background-color);
 		border: var(--border-width) solid var(--v-list-item-border-color);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
 		:slotted(.drag-handle) {
