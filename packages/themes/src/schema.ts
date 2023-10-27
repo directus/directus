@@ -1,154 +1,152 @@
 import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 
-export const TypeId = {
-	Color: 'Color',
-	FamilyName: 'FamilyName',
-	Length: 'Length',
-	Percentage: 'Percentage',
-};
+const Color = Type.String({ $id: 'Color' });
+const FamilyName = Type.String({ $id: 'FamilyName' });
+const Length = Type.String({ $id: 'Length' });
+const Percentage = Type.String({ $id: 'Percentage' });
 
-const Color = Type.Ref(Type.String({ $id: TypeId.Color }));
-const FamilyName = Type.Ref(Type.String({ $id: TypeId.FamilyName }));
-const Length = Type.Ref(Type.String({ $id: TypeId.Length }));
-const Percentage = Type.Ref(Type.String({ $id: TypeId.Percentage }));
+const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal('medium'), Type.Literal('thick')], {
+	$id: 'LineWidth',
+});
 
 const Rules = Type.Object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base color palette
-	foreground: Color,
-	foregroundSubdued: Color,
-	foregroundAccent: Color,
+	foreground: Type.Ref(Color),
+	foregroundSubdued: Type.Ref(Color),
+	foregroundAccent: Type.Ref(Color),
 
-	background: Color,
+	background: Type.Ref(Color),
 
-	primary: Color,
-	primaryBackground: Color,
-	primarySubdued: Color,
-	primaryAccent: Color,
+	primary: Type.Ref(Color),
+	primaryBackground: Type.Ref(Color),
+	primarySubdued: Type.Ref(Color),
+	primaryAccent: Type.Ref(Color),
 
-	secondary: Color,
-	secondaryBackground: Color,
-	secondarySubdued: Color,
-	secondaryAccent: Color,
+	secondary: Type.Ref(Color),
+	secondaryBackground: Type.Ref(Color),
+	secondarySubdued: Type.Ref(Color),
+	secondaryAccent: Type.Ref(Color),
 
-	success: Color,
-	successBackground: Color,
-	successSubdued: Color,
-	successAccent: Color,
+	success: Type.Ref(Color),
+	successBackground: Type.Ref(Color),
+	successSubdued: Type.Ref(Color),
+	successAccent: Type.Ref(Color),
 
-	warning: Color,
-	warningBackground: Color,
-	warningSubdued: Color,
-	warningAccent: Color,
+	warning: Type.Ref(Color),
+	warningBackground: Type.Ref(Color),
+	warningSubdued: Type.Ref(Color),
+	warningAccent: Type.Ref(Color),
 
-	danger: Color,
-	dangerBackground: Color,
-	dangerSubdued: Color,
-	dangerAccent: Color,
+	danger: Type.Ref(Color),
+	dangerBackground: Type.Ref(Color),
+	dangerSubdued: Type.Ref(Color),
+	dangerAccent: Type.Ref(Color),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base fonts
-	fontFamilyDisplay: FamilyName,
-	fontFamilySansSerif: FamilyName,
-	fontFamilySerif: FamilyName,
-	fontFamilyMonospace: FamilyName,
+	fontFamilyDisplay: Type.Ref(FamilyName),
+	fontFamilySansSerif: Type.Ref(FamilyName),
+	fontFamilySerif: Type.Ref(FamilyName),
+	fontFamilyMonospace: Type.Ref(FamilyName),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base border styles
-	borderRadius: Type.Union([Length, Percentage]),
+	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
+	borderWidth: Type.Ref(LineWidth),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
 	navigation: Type.Object({
-		background: Color,
+		background: Type.Ref(Color),
 
 		project: Type.Object({
-			background: Color,
-			foreground: Color,
-			fontFamily: FamilyName,
+			background: Type.Ref(Color),
+			foreground: Type.Ref(Color),
+			fontFamily: Type.Ref(FamilyName),
 		}),
 
 		modules: Type.Object({
-			background: Color,
+			background: Type.Ref(Color),
 			button: Type.Object({
-				foreground: Color,
-				foregroundHover: Color,
-				foregroundActive: Color,
+				foreground: Type.Ref(Color),
+				foregroundHover: Type.Ref(Color),
+				foregroundActive: Type.Ref(Color),
 
-				background: Color,
-				backgroundHover: Color,
-				backgroundActive: Color,
+				background: Type.Ref(Color),
+				backgroundHover: Type.Ref(Color),
+				backgroundActive: Type.Ref(Color),
 			}),
 		}),
 
 		list: Type.Object({
 			icon: Type.Object({
-				foreground: Color,
-				foregroundHover: Color,
-				foregroundActive: Color,
+				foreground: Type.Ref(Color),
+				foregroundHover: Type.Ref(Color),
+				foregroundActive: Type.Ref(Color),
 			}),
 
-			foreground: Color,
-			foregroundHover: Color,
-			foregroundActive: Color,
+			foreground: Type.Ref(Color),
+			foregroundHover: Type.Ref(Color),
+			foregroundActive: Type.Ref(Color),
 
-			background: Color,
-			backgroundHover: Color,
-			backgroundActive: Color,
+			background: Type.Ref(Color),
+			backgroundHover: Type.Ref(Color),
+			backgroundActive: Type.Ref(Color),
 
-			fontFamily: FamilyName,
+			fontFamily: Type.Ref(FamilyName),
 		}),
 	}),
 
 	header: Type.Object({
-		background: Color,
+		background: Type.Ref(Color),
 		headline: Type.Object({
-			foreground: Color,
-			fontFamily: FamilyName,
+			foreground: Type.Ref(Color),
+			fontFamily: Type.Ref(FamilyName),
 		}),
 		title: Type.Object({
-			foreground: Color,
-			fontFamily: FamilyName,
+			foreground: Type.Ref(Color),
+			fontFamily: Type.Ref(FamilyName),
 		}),
 	}),
 
 	form: Type.Object({
 		field: Type.Object({
 			label: Type.Object({
-				foreground: Color,
-				fontFamily: FamilyName,
+				foreground: Type.Ref(Color),
+				fontFamily: Type.Ref(FamilyName),
 			}),
 			input: Type.Object({
-				background: Color,
-				foreground: Color,
-				foregroundSubdued: Color,
+				background: Type.Ref(Color),
+				foreground: Type.Ref(Color),
+				foregroundSubdued: Type.Ref(Color),
 			}),
 		}),
 	}),
 
 	sidebar: Type.Object({
-		background: Color,
-		foreground: Color,
-		fontFamily: FamilyName,
+		background: Type.Ref(Color),
+		foreground: Type.Ref(Color),
+		fontFamily: Type.Ref(FamilyName),
 
 		section: Type.Object({
 			toggle: Type.Object({
 				icon: Type.Object({
-					foreground: Color,
-					foregroundHover: Color,
-					foregroundActive: Color,
+					foreground: Type.Ref(Color),
+					foregroundHover: Type.Ref(Color),
+					foregroundActive: Type.Ref(Color),
 				}),
 
-				foreground: Color,
-				foregroundHover: Color,
-				foregroundActive: Color,
+				foreground: Type.Ref(Color),
+				foregroundHover: Type.Ref(Color),
+				foregroundActive: Type.Ref(Color),
 
-				background: Color,
-				backgroundHover: Color,
-				backgroundActive: Color,
+				background: Type.Ref(Color),
+				backgroundHover: Type.Ref(Color),
+				backgroundActive: Type.Ref(Color),
 
-				fontFamily: FamilyName,
+				fontFamily: Type.Ref(FamilyName),
 			}),
 		}),
 	}),
@@ -160,6 +158,14 @@ export const ThemeSchema = Type.Object({
 	rules: Rules,
 });
 
-export const Definitions = { $defs: { [TypeId.Color]: Color, [TypeId.FamilyName]: FamilyName } };
+export const Definitions = {
+	$defs: {
+		Color,
+		FamilyName,
+		Length,
+		Percentage,
+		LineWidth,
+	},
+};
 
 export type Theme = Static<typeof ThemeSchema>;
