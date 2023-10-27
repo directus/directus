@@ -33,7 +33,7 @@ function getWhereClause(
 ): AbstractSqlQueryWhereNode {
 	const table = fieldMeta.join.foreign.collection;
 
-	if (fieldMeta.join.foreign.fields.length > 1) {
+	if (fieldMeta.join.local.fields.length > 1 && fieldMeta.join.foreign.fields.length > 1) {
 		return {
 			type: 'logical',
 			operator: 'and',
