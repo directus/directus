@@ -40,7 +40,7 @@ export const theme: Theme = {
 		fontFamilySerif: '"Merriweather", serif',
 		fontFamilyMonospace: '"Fira Mono", monospace',
 
-		borderRadius: '4px',
+		borderRadius: '6px',
 
 		navigation: {
 			background: '#f0f4f9',
