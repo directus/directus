@@ -441,7 +441,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input {
-	--theme--border-radius: 0px;
+	--v-input-border-radius: 0px;
 }
 
 .color-data-inputs .color-data-input :deep(.input:focus-within),
@@ -461,11 +461,11 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:first-child {
-	--theme--border-radius: 4px 0px 0px 4px;
+	--v-input-border-radius: var(--theme--border-radius) 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs .color-data-input:last-child {
-	--theme--border-radius: 0px 4px 4px 0px;
+	--v-input-border-radius: 0px var(--theme--border-radius) var(--theme--border-radius) 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
@@ -478,15 +478,15 @@ function useColor() {
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
-	--theme--border-radius: 4px 4px 0px 0px;
+	--v-input-border-radius: var(--theme--border-radius) var(--theme--border-radius) 0px 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:nth-child(2) {
-	--theme--border-radius: 0px 0px 0px 4px;
+	--v-input-border-radius: 0px 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs.stacked .color-data-input:last-child {
-	--theme--border-radius: 0px 0px 4px 0px;
+	--v-input-border-radius: 0px 0px var(--theme--border-radius) 0px;
 }
 
 .color-data-alphas {
