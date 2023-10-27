@@ -110,6 +110,10 @@ export const theme: Theme = {
 					borderColor: '#21262e',
 					borderColorHover: '#30363d',
 					borderColorFocus: 'var(--theme--primary)',
+
+					boxShadow: 'none',
+					boxShadowHover: 'none',
+					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 				},
 			},
 		},

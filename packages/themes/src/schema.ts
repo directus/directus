@@ -5,6 +5,7 @@ const Color = Type.String({ $id: 'Color' });
 const FamilyName = Type.String({ $id: 'FamilyName' });
 const Length = Type.String({ $id: 'Length' });
 const Percentage = Type.String({ $id: 'Percentage' });
+const BoxShadow = Type.String({ $id: 'BoxShadow' });
 
 const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal('medium'), Type.Literal('thick')], {
 	$id: 'LineWidth',
@@ -125,6 +126,10 @@ const Rules = Type.Object({
 				borderColor: Type.Ref(Color),
 				borderColorHover: Type.Ref(Color),
 				borderColorFocus: Type.Ref(Color),
+
+				boxShadow: Type.Ref(BoxShadow),
+				boxShadowHover: Type.Ref(BoxShadow),
+				boxShadowFocus: Type.Ref(BoxShadow),
 			}),
 		}),
 	}),
@@ -169,6 +174,7 @@ export const Definitions = {
 		Length,
 		Percentage,
 		LineWidth,
+		BoxShadow,
 	},
 };
 
