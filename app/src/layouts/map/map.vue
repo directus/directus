@@ -207,7 +207,7 @@ limitWritable.value = selectedSize;
 	padding: 10px;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--background);
-	border: var(--border-width) solid var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--background);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 

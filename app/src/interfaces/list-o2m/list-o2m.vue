@@ -588,7 +588,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--border-width) solid var(--border-subdued);
+				border-left: var(--theme--border-width) solid var(--border-subdued);
 			}
 		}
 	}
@@ -597,7 +597,7 @@ function getLinkForItem(item: DisplayItem) {
 
 <style lang="scss" scoped>
 .bordered {
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	border-radius: var(--theme--border-radius);
 	padding: var(--v-card-padding);
 }

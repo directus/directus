@@ -443,19 +443,19 @@ async function onGroupSortChange(fields: Field[]) {
 
 	&.nested {
 		.field :deep(.input) {
-			border: var(--border-width) solid var(--theme--primary-subdued);
+			border: var(--theme--border-width) solid var(--theme--primary-subdued);
 		}
 	}
 }
 
 .field {
 	&.v-input :deep(.input) {
-		border: var(--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--border-subdued);
 	}
 
 	&.v-input :deep(.input:hover) {
 		background-color: var(--card-face-color);
-		border: var(--border-width) solid var(--border-normal-alt);
+		border: var(--theme--border-width) solid var(--border-normal-alt);
 	}
 
 	.label {

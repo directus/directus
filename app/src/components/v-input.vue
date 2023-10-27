@@ -315,7 +315,7 @@ function stepDown() {
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
 		background-color: var(--v-input-background-color);
-		border: var(--border-width) solid var(--border-normal);
+		border: var(--theme--border-width) solid var(--border-normal);
 		border-radius: var(--v-input-border-radius);
 		transition: border-color var(--fast) var(--transition);
 

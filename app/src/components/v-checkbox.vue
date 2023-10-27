@@ -174,7 +174,7 @@ body {
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--theme--background);
-		border: var(--border-width) solid var(--border-normal);
+		border: var(--theme--border-width) solid var(--border-normal);
 		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
 

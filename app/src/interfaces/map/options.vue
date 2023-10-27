@@ -110,7 +110,7 @@ onUnmounted(() => {
 .map {
 	height: 400px;
 	overflow: hidden;
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	border-radius: var(--theme--border-radius);
 }
 </style>

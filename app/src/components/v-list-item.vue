@@ -252,7 +252,7 @@ body {
 		margin: 0;
 		padding: 8px var(--input-padding);
 		background-color: var(--v-list-item-background-color);
-		border: var(--border-width) solid var(--v-list-item-border-color);
+		border: var(--theme--border-width) solid var(--v-list-item-border-color);
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
@@ -274,11 +274,11 @@ body {
 
 		&.clickable:hover {
 			background-color: var(--v-list-item-background-color-hover);
-			border: var(--border-width) solid var(--v-list-item-border-color-hover);
+			border: var(--theme--border-width) solid var(--v-list-item-border-color-hover);
 		}
 
 		&.sortable-chosen {
-			border: var(--border-width) solid var(--theme--primary) !important;
+			border: var(--theme--border-width) solid var(--theme--primary) !important;
 		}
 
 		&.sortable-ghost {

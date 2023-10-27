@@ -220,7 +220,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			width: 320px;
 			padding: 8px 0;
 			background-color: var(--background-normal);
-			border: var(--border-width) solid var(--border-normal);
+			border: var(--theme--border-width) solid var(--border-normal);
 			border-radius: var(--theme--border-radius);
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
@@ -385,7 +385,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 	.add-group {
 		cursor: pointer;
 		padding: 8px 8px;
-		border: var(--border-width) dashed var(--border-subdued);
+		border: var(--theme--border-width) dashed var(--border-subdued);
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);
 

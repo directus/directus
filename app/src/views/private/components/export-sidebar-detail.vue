@@ -641,7 +641,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	padding-bottom: 0px;
 	color: var(--white);
 	background-color: var(--theme--primary);
-	border: var(--border-width) solid var(--theme--primary);
+	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 
 	.type-text {

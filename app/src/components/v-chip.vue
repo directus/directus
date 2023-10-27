@@ -101,7 +101,7 @@ body {
 	font-weight: var(--weight-normal);
 	line-height: 22px;
 	background-color: var(--v-chip-background-color);
-	border: var(--border-width) solid var(--v-chip-background-color);
+	border: var(--theme--border-width) solid var(--v-chip-background-color);
 	border-radius: 16px;
 
 	&.clickable:hover {

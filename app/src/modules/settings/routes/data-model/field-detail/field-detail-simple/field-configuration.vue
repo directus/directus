@@ -166,8 +166,8 @@ const options = computed({
 
 	grid-column: 1 / span var(--columns);
 	background-color: var(--background-subdued);
-	border-top: var(--border-width) solid var(--border-normal);
-	border-bottom: var(--border-width) solid var(--border-normal);
+	border-top: var(--theme--border-width) solid var(--border-normal);
+	border-bottom: var(--theme--border-width) solid var(--border-normal);
 }
 
 .setup {

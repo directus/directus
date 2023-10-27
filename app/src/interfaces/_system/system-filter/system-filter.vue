@@ -247,14 +247,14 @@ function addKeyAsNode() {
 	:deep(.group) {
 		margin-left: 18px;
 		padding-left: 10px;
-		border-left: var(--border-width) solid var(--border-subdued);
+		border-left: var(--theme--border-width) solid var(--border-subdued);
 	}
 
 	.v-list {
 		min-width: auto;
 		margin: 0px 0px 10px;
 		padding: 20px 20px 12px;
-		border: var(--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--border-subdued);
 
 		& > :deep(.group) {
 			margin-left: 0px;
@@ -311,7 +311,7 @@ function addKeyAsNode() {
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
 			background-color: var(--theme--background);
-			border: var(--border-width) solid var(--border-subdued);
+			border: var(--theme--border-width) solid var(--border-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);
 			&:hover,

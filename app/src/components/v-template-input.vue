@@ -313,7 +313,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	font-family: var(--theme--font-family-sans-serif);
 	white-space: nowrap;
 	background-color: var(--theme--background);
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 

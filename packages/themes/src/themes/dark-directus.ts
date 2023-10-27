@@ -41,6 +41,7 @@ export const theme: Theme = {
 		fontFamilyMonospace: '"Fira Mono", monospace',
 
 		borderRadius: '6px',
+		borderWidth: '2px',
 
 		navigation: {
 			background: '#21262e',

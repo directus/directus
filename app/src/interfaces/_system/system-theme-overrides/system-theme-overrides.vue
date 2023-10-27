@@ -50,7 +50,7 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 
 <style scoped lang="scss">
 .theme-overrides {
-	border: 2px solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	padding: var(--input-padding);
 	border-radius: var(--theme--border-radius);
 	max-height: var(--input-height-max);

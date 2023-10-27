@@ -62,7 +62,7 @@ body {
 .input-tall {
 	width: 100%;
 	height: var(--input-height);
-	border: var(--border-width) solid var(--v-skeleton-loader-background-color);
+	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color);
 	border-radius: var(--theme--border-radius);
 
 	@include loader;

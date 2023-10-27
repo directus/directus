@@ -49,7 +49,7 @@
 .codex-editor .ce-popover {
 	background: var(--theme--background);
 	border-color: var(--border-normal);
-	border-width: var(--border-width);
+	border-width: var(--theme--border-width);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -87,7 +87,7 @@
 
 .codex-editor .ce-popover-item-icon {
 	background: var(--theme--background);
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	box-shadow: none;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .codex-editor .ce-popover__items:not(:first-child) {
-	border-top: var(--border-width) solid var(--border-normal);
+	border-top: var(--theme--border-width) solid var(--border-normal);
 	padding-top: 8px;
 }
 
@@ -168,7 +168,7 @@
 .codex-editor .ce-settings {
 	background: var(--background-subdued);
 	border-color: var(--border-normal);
-	border-width: var(--border-width);
+	border-width: var(--theme--border-width);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -219,7 +219,7 @@
 	color: var(--theme--form--field--input--foreground);
 	font-size: inherit;
 	background-color: var(--theme--background);
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	border-radius: var(--theme--border-radius);
 	box-shadow: unset;
 }
@@ -248,7 +248,7 @@
 	font-size: var(--v-button-font-size);
 	text-decoration: none;
 	background-color: var(--v-button-background-color);
-	border: var(--border-width) solid var(--v-button-background-color);
+	border: var(--theme--border-width) solid var(--v-button-background-color);
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 }
@@ -316,7 +316,7 @@
 .codex-editor .cdx-checklist__item-checkbox {
 	background: transparent;
 	border-color: var(--border-normal);
-	border-width: var(--border-width);
+	border-width: var(--theme--border-width);
 	border-radius: 4px;
 }
 
@@ -355,7 +355,7 @@
 /* Attaches */
 
 .codex-editor .cdx-attaches--with-file {
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon {
@@ -379,7 +379,7 @@
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
 	background: var(--background-subdued);
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button:hover {

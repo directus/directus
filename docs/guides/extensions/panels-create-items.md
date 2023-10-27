@@ -325,7 +325,7 @@ Lastly, replace the CSS at the bottom with this:
 }
 .form-response {
 	border-radius: var(--theme--border-radius);
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	margin: 1em 0;
 	min-width: 300px;
 }
@@ -592,7 +592,7 @@ export default {
 }
 .form-response {
 	border-radius: var(--theme--border-radius);
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--border-normal);
 	margin: 1em 0;
 	min-width: 300px;
 }
