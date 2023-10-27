@@ -121,6 +121,10 @@ const Rules = Type.Object({
 				background: Type.Ref(Color),
 				foreground: Type.Ref(Color),
 				foregroundSubdued: Type.Ref(Color),
+
+				borderColor: Type.Ref(Color),
+				borderColorHover: Type.Ref(Color),
+				borderColorFocus: Type.Ref(Color),
 			}),
 		}),
 	}),

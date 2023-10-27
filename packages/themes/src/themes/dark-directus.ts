@@ -106,6 +106,10 @@ export const theme: Theme = {
 					background: 'var(--theme--background)',
 					foreground: 'var(--theme--foreground)',
 					foregroundSubdued: 'var(--theme--foreground-subdued)',
+
+					borderColor: '#21262e',
+					borderColorHover: '#30363d',
+					borderColorFocus: 'var(--theme--primary)',
 				},
 			},
 		},
