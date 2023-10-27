@@ -406,10 +406,10 @@ under the closing `script` tag:
 		width: 100%;
 		height: auto;
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--border-normal);
+		border: 2px solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
         &:hover {
-            border-color: var(--border-normal-alt);
+            border-color: var(--theme--form--field--input--border-color-hover);
         }
 		&::before {
 			position: absolute;
@@ -733,10 +733,10 @@ export default {
 		width: 100%;
 		height: auto;
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--border-normal);
+		border: 2px solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
         &:hover {
-            border-color: var(--border-normal-alt);
+            border-color: var(--theme--form--field--input--border-color-hover);
         }
 		&::before {
 			position: absolute;

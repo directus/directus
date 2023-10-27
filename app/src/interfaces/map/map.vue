@@ -466,7 +466,7 @@ function handleKeyDown(event: any) {
 .interface-map {
 	position: relative;
 	overflow: hidden;
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	.map {

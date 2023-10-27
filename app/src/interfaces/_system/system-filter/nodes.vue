@@ -490,7 +490,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	&:hover {
-		border-color: var(--border-normal);
+		border-color: var(--theme--form--field--input--border-color);
 
 		.delete,
 		&:hover {
@@ -532,7 +532,7 @@ function isExistingField(node: Record<string, any>): boolean {
 .group :deep(.sortable-ghost) {
 	.node .header {
 		background-color: var(--theme--primary-background);
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		> * {
 			opacity: 0;

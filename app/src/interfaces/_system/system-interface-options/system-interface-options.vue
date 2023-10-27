@@ -119,7 +119,7 @@ const optionsFields = computed(() => {
 	--form-vertical-gap: 24px;
 
 	padding: 12px;
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.type-label) {

@@ -84,7 +84,7 @@ const searchDebounced = ref('');
 	max-height: var(--input-height-max);
 	overflow: auto;
 	background-color: var(--theme--background);
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 

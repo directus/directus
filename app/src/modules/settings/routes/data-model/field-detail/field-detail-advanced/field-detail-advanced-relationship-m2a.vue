@@ -287,7 +287,7 @@ const unsortableJunctionFields = computed(() => {
 	color: var(--theme--foreground-subdued);
 	font-family: var(--theme--font-family-monospace);
 	background-color: var(--background-subdued);
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 

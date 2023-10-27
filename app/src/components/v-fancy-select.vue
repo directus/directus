@@ -138,14 +138,14 @@ function toggle(item: Record<string, any>) {
 		z-index: 2;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		.v-icon {
 			--v-icon-color: var(--theme--primary);
 		}
 
 		&:hover {
-			border-color: var(--theme--primary);
+			border-color: var(--theme--form--field--input--border-color-focus);
 		}
 	}
 }

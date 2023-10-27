@@ -138,7 +138,7 @@ const customIcon = computed(() => {
 	width: 100%;
 	height: var(--input-height);
 	padding: 10px;
-	border: 2px dashed var(--border-normal);
+	border: 2px dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	input {

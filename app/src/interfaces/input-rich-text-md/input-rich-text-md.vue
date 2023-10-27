@@ -417,13 +417,13 @@ function edit(type: Alteration, options?: Record<string, any>) {
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
 	--v-button-color: var(--theme--form--field--input--foreground);
-	--v-button-background-color-hover: var(--border-normal);
+	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
 	min-height: 300px;
 	overflow: hidden;
 	font-family: var(--theme--font-family-sans-serif);
-	border: 2px solid var(--border-normal);
+	border: 2px solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -436,7 +436,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 }
 
 .interface-input-rich-text-md:not(.disabled):focus-within {
-	border-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 	box-shadow: 0 0 16px -8px var(--theme--primary);
 }
 
@@ -511,7 +511,7 @@ textarea {
 	min-height: 40px;
 	padding: 0 4px;
 	background-color: var(--background-subdued);
-	border-bottom: 2px solid var(--border-normal);
+	border-bottom: 2px solid var(--theme--form--field--input--border-color);
 
 	.v-button + .v-button {
 		margin-left: 2px;
@@ -524,9 +524,9 @@ textarea {
 	.view {
 		--v-button-background-color: var(--border-subdued);
 		--v-button-color: var(--theme--form--field--input--foreground-subdued);
-		--v-button-background-color-hover: var(--border-normal);
+		--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 		--v-button-color-hover: var(--theme--form--field--input--foreground);
-		--v-button-background-color-active: var(--border-normal);
+		--v-button-background-color-active: var(--theme--form--field--input--border-color);
 		--v-button-color-active: var(--theme--form--field--input--foreground);
 	}
 }

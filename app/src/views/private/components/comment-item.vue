@@ -120,7 +120,7 @@ function useEdits() {
 	padding-left: 6px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
-	border-left: 2px solid var(--border-normal);
+	border-left: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(img) {
@@ -134,7 +134,7 @@ function useEdits() {
 	height: 2px;
 	margin: 12px 0;
 	border: 0;
-	border-top: 2px solid var(--border-normal);
+	border-top: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(mark) {

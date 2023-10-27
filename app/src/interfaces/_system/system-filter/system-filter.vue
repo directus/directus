@@ -316,7 +316,7 @@ function addKeyAsNode() {
 			transition: border-color var(--fast) var(--transition);
 			&:hover,
 			&.active {
-				border-color: var(--border-normal);
+				border-color: var(--theme--form--field--input--border-color);
 			}
 			&.active {
 				.expand_more {

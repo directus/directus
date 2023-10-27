@@ -143,7 +143,7 @@ body {
 			width: 100%;
 			background-color: transparent;
 			border: none;
-			border-bottom: 2px solid var(--border-normal);
+			border-bottom: 2px solid var(--theme--form--field--input--border-color);
 			border-radius: 0;
 		}
 
@@ -174,7 +174,7 @@ body {
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--theme--background);
-		border: var(--theme--border-width) solid var(--border-normal);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
 
@@ -205,7 +205,7 @@ body {
 
 		&.block {
 			background-color: var(--background-subdued);
-			border-color: var(--border-normal-alt);
+			border-color: var(--theme--form--field--input--border-color-hover);
 		}
 	}
 

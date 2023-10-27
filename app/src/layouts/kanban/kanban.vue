@@ -220,13 +220,13 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			width: 320px;
 			padding: 8px 0;
 			background-color: var(--background-normal);
-			border: var(--theme--border-width) solid var(--border-normal);
+			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
 
 			&:active {
-				border-color: var(--border-normal-alt);
+				border-color: var(--theme--form--field--input--border-color-hover);
 				cursor: move;
 			}
 

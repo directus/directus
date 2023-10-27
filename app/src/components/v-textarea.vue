@@ -99,7 +99,7 @@ body {
 	min-height: var(--v-textarea-min-height);
 	max-height: var(--v-textarea-max-height);
 	background-color: var(--theme--form--field--input--background);
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
@@ -137,12 +137,12 @@ body {
 	}
 
 	&:hover:not(.disabled) {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus:not(.disabled),
 	&:focus-within:not(.disabled) {
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 		box-shadow: 0 0 16px -8px var(--theme--primary);
 	}
 

@@ -120,7 +120,7 @@ blockquote {
 	font-weight: 500;
 	font-size: 15px;
 	line-height: 24px;
-	border-left: 2px solid var(--border-normal);
+	border-left: 2px solid var(--theme--form--field--input--border-color);
 }
 
 blockquote blockquote {
@@ -139,7 +139,7 @@ hr {
 	height: 1px;
 	margin-top: 2em;
 	margin-bottom: 2em;
-	background-color: var(--border-normal);
+	background-color: var(--theme--form--field--input--border-color);
 	border: none;
 }
 
@@ -153,7 +153,7 @@ table {
 table th,
 table td {
 	padding: 0.4rem;
-	border: 1px solid var(--border-normal);
+	border: 1px solid var(--theme--form--field--input--border-color);
 }
 
 figure {

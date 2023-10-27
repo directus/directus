@@ -638,7 +638,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 <style lang="scss" scoped>
 .bordered {
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	padding: var(--v-card-padding);
 }

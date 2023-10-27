@@ -145,7 +145,7 @@ body {
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--theme--border-radius);
 	--v-list-item-border-color: var(--border-subdued);
-	--v-list-item-border-color-hover: var(--border-normal-alt);
+	--v-list-item-border-color-hover: var(--theme--form--field--input--border-color-hover);
 	--v-list-item-color: var(--v-list-color, var(--theme--foreground));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--theme--foreground));
 	--v-list-item-color-active: var(--v-list-color-active, var(--theme--foreground));
@@ -185,7 +185,7 @@ body {
 			left: 0;
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
-			border: 2px dashed var(--border-normal);
+			border: 2px dashed var(--theme--form--field--input--border-color);
 			content: '';
 			pointer-events: none;
 		}

@@ -246,7 +246,7 @@ function useColor() {
 						icon
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: lowContrast === false ? 'none' : 'var(--theme--border-width) solid var(--border-normal)',
+							border: lowContrast === false ? 'none' : 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
 						}"
 						@click="activateColorPicker"
 					>
@@ -413,7 +413,7 @@ function useColor() {
 	&.low-contrast {
 		--v-button-height: 18px;
 		--v-button-width: 18px;
-		border: 1px solid var(--border-normal-alt);
+		border: 1px solid var(--theme--form--field--input--border-color-hover);
 	}
 }
 

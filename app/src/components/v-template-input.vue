@@ -313,7 +313,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	font-family: var(--theme--font-family-sans-serif);
 	white-space: nowrap;
 	background-color: var(--theme--background);
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
@@ -330,11 +330,11 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 
 	:deep(.preview) {

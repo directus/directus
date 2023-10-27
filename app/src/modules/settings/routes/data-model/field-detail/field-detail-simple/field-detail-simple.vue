@@ -262,7 +262,7 @@ function toggleInterface(id: string) {
 }
 
 .interface:hover .preview {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .interface.active .preview {

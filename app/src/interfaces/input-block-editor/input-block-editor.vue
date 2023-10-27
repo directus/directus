@@ -195,22 +195,22 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 .disabled {
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--background-subdued);
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
 }
 
 .bordered {
 	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
 	background-color: var(--theme--background);
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 }
 

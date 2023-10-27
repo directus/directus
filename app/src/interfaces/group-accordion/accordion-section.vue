@@ -128,10 +128,10 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 
 <style lang="scss" scoped>
 .accordion-section {
-	border-top: var(--theme--border-width) solid var(--border-normal);
+	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	&:last-child {
-		border-bottom: var(--theme--border-width) solid var(--border-normal);
+		border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 }
 

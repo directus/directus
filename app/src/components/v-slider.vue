@@ -88,7 +88,7 @@ function onInput(event: Event) {
 
 <style>
 body {
-	--v-slider-color: var(--border-normal);
+	--v-slider-color: var(--theme--form--field--input--border-color);
 	--v-slider-thumb-color: var(--theme--primary);
 	--v-slider-fill-color: var(--theme--primary);
 }

@@ -350,19 +350,19 @@ function useDragDrop() {
 
 	&.editing {
 		&.draggable {
-			border-color: var(--border-normal);
-			box-shadow: 0 0 0 1px var(--border-normal);
+			border-color: var(--theme--form--field--input--border-color);
+			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color);
 			cursor: move;
 		}
 
 		&.draggable:hover {
-			border-color: var(--border-normal-alt);
-			box-shadow: 0 0 0 1px var(--border-normal-alt);
+			border-color: var(--theme--form--field--input--border-color-hover);
+			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color-hover);
 		}
 
 		&.dragging {
 			z-index: 3 !important;
-			border-color: var(--theme--primary);
+			border-color: var(--theme--form--field--input--border-color-focus);
 			box-shadow: 0 0 0 1px var(--theme--primary);
 		}
 

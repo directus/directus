@@ -9,7 +9,7 @@
 	line-height: 22px;
 	direction: ltr;
 	background-color: var(--theme--form--field--input--background);
-	border: var(--theme--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: all var(--fast) var(--transition);
 }
@@ -24,15 +24,15 @@
 }
 
 .CodeMirror:hover {
-	border-color: var(--border-normal-alt);
+	border-color: var(--theme--form--field--input--border-color-hover);
 }
 
 .disabled .CodeMirror:hover {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .CodeMirror.CodeMirror-focused {
-	border-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 	box-shadow: 0 0 16px -8px var(--theme--primary);
 }
 
@@ -56,7 +56,7 @@
 .CodeMirror-gutters {
 	white-space: nowrap;
 	background-color: var(--background-subdued);
-	border-right: 2px solid var(--border-normal);
+	border-right: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .CodeMirror-linenumber {
@@ -157,7 +157,7 @@
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	border-left: 1px solid var(--border-normal);
+	border-left: 1px solid var(--theme--form--field--input--border-color);
 }
 
 /* DEFAULT THEME */
@@ -240,7 +240,7 @@
 	color: var(--theme--primary);
 }
 .cm-s-default .cm-hr {
-	color: var(--border-normal);
+	color: var(--theme--form--field--input--border-color);
 }
 .cm-s-default .cm-link {
 	color: var(--theme--primary);
