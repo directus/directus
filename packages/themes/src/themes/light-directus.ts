@@ -45,6 +45,8 @@ export const theme: Theme = {
 
 		navigation: {
 			background: '#f0f4f9',
+			borderColor: 'transparent',
+			borderWidth: '0',
 
 			project: {
 				background: '#e4eaf1',
