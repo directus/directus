@@ -70,6 +70,9 @@ const Rules = Type.Object({
 
 		modules: Type.Object({
 			background: Type.Ref(Color),
+			borderWidth: Type.Ref(LineWidth),
+			borderColor: Type.Ref(Color),
+
 			button: Type.Object({
 				foreground: Type.Ref(Color),
 				foregroundHover: Type.Ref(Color),

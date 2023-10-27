@@ -54,6 +54,10 @@ export const theme: Theme = {
 
 			modules: {
 				background: 'var(--theme--background)',
+
+				borderColor: 'transparent',
+				borderWidth: '0',
+
 				button: {
 					foreground: 'var(--theme--foreground-subdued)',
 					foregroundHover: '#fff',
