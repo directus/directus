@@ -246,7 +246,10 @@ function useColor() {
 						icon
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: lowContrast === false ? 'none' : 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
+							border:
+								lowContrast === false
+									? 'none'
+									: 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
 						}"
 						@click="activateColorPicker"
 					>
