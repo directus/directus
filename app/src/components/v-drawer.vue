@@ -170,7 +170,6 @@ body {
 	}
 
 	.content {
-		--theme--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 		--form-vertical-gap: 52px;
