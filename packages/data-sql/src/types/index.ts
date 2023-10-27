@@ -14,6 +14,7 @@
  */
 import type { ParameterTypes } from './parameterized-statement.js';
 import type { AbstractSqlClauses } from './clauses/index.js';
+import type { AtLeastOneElement } from '@directus/data';
 
 /**
  * This is an abstract SQL query which can be passed to all SQL drivers.
@@ -22,18 +23,40 @@ import type { AbstractSqlClauses } from './clauses/index.js';
  * The following query gets the title of all articles and limits the result to 25 rows.
  * ```ts
  * const query: SqlStatement = {
- *  select: [title],
- *  from: 'articles',
- *  limit: 0, // this is the index of the parameter
+ * 	clauses: {
+ *     select: [title],
+ *     from: 'articles',
+ *     limit: 0, // this is the index of the parameter
+ *  },
  * 	parameters: [25],
+ * 	aliasMapping: ...,
+ *  nestedMany: [],
  * };
  * ```
  */
-
 export interface AbstractSqlQuery {
+	/* all clauses each and every driver will use */
 	clauses: AbstractSqlClauses;
+
+	/* the parameters which will be passed separately to the database for security reasons  */
 	parameters: ParameterTypes[];
+
+	/* a map from the generated, random alias to the actual path */
 	aliasMapping: Map<string, string[]>;
+
+	/* how o2m relations are handled is driver specific and hence just forwarded */
+	nestedManys: AbstractSqlNestedMany[];
+}
+
+export interface AbstractSqlNestedMany {
+	/*
+	 * The nested many sub queries cannot be generated complement, since they rely on the result of the root query
+	 * Therefore we use a function here instead, which takes the missing values as parameters to generate the actual sub query.
+	 */
+	queryGenerator: (joinFieldValues: AtLeastOneElement<string | number>) => AbstractSqlQuery;
+	localJoinFields: AtLeastOneElement<string>;
+	foreignJoinFields: AtLeastOneElement<string>;
+	alias: string;
 }
 
 export * from './clauses/index.js';

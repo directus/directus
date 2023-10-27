@@ -1,14 +1,17 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
+import type { AbstractSqlClauses, AbstractSqlNestedMany, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
+import { getNestedMany } from './create-nested-manys.js';
+import { parameterIndexGenerator } from '../param-index-generator.js';
 
 export type Result = {
 	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
+	nestedManys: AbstractSqlNestedMany[];
 };
 
 /**
@@ -37,6 +40,7 @@ export const convertFieldNodes = (
 	const joins: AbstractSqlClauses['joins'] = [];
 	const parameters: ParameterTypes[] = [];
 	const aliasRelationalMapping: Map<string, string[]> = new Map();
+	const nestedManys: AbstractSqlNestedMany[] = [];
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
@@ -60,12 +64,12 @@ export const convertFieldNodes = (
 			 */
 
 			if (abstractField.meta.type === 'm2o') {
-				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.external.collection);
+				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
 				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias, abstractField.alias);
 
 				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
 					...currentPath,
-					abstractField.meta.join.external.collection,
+					abstractField.meta.join.foreign.collection,
 				]);
 
 				nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
@@ -73,6 +77,30 @@ export const convertFieldNodes = (
 				select.push(...nestedOutput.clauses.select);
 			}
 
+			continue;
+		}
+
+		if (abstractField.type === 'nested-many') {
+			/*
+			 * nested many nodes are handled by the driver.
+			 * As a default behavior, we do separate queries for each o part result row.
+			 * The driver itself can use different technique if another technique is more performant,
+			 * like do a sub query in the statement or a join.
+			 */
+			const fieldMeta = abstractField.meta;
+
+			if (fieldMeta.type !== 'o2m') {
+				continue;
+			}
+
+			// @TODO
+			// we need to make sure, that the identifier field is included as primitive field node
+			// so we can use the returning value as parameter for the sub queries
+
+			const index = parameterIndexGenerator();
+			const nestedOutput = convertFieldNodes(fieldMeta.join.foreign.collection, abstractField.fields, index);
+			const nestedMany = getNestedMany(fieldMeta, nestedOutput, index, fieldMeta.join.foreign.collection);
+			nestedManys.push(nestedMany);
 			continue;
 		}
 
@@ -91,5 +119,5 @@ export const convertFieldNodes = (
 		}
 	}
 
-	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping };
+	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping, nestedManys };
 };
