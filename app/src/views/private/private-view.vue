@@ -502,6 +502,10 @@ function getWidth(input: unknown, fallback: number): number {
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--sidebar--font-family);
+		border-left: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+
+		/* Explicitly render the border outside of the width of the bar itself */
+		box-sizing: content-box;
 
 		.spacer {
 			flex-grow: 1;
@@ -522,7 +526,7 @@ function getWidth(input: unknown, fallback: number): number {
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 60px));
+			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
 		}
 
 		@media (min-width: 1260px) {

@@ -127,6 +127,8 @@ export const theme: Theme = {
 			background: '#21262e',
 			foreground: 'var(--theme--foreground-subdued)',
 			fontFamily: 'var(--theme--font-family-sans-serif)',
+			borderColor: 'transparent',
+			borderWidth: '0',
 
 			section: {
 				toggle: {

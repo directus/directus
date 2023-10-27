@@ -143,6 +143,8 @@ const Rules = Type.Object({
 		background: Type.Ref(Color),
 		foreground: Type.Ref(Color),
 		fontFamily: Type.Ref(FamilyName),
+		borderWidth: Type.Ref(LineWidth),
+		borderColor: Type.Ref(Color),
 
 		section: Type.Object({
 			toggle: Type.Object({
