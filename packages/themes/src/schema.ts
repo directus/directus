@@ -107,6 +107,9 @@ const Rules = Type.Object({
 
 	header: Type.Object({
 		background: Type.Ref(Color),
+		borderWidth: Type.Ref(LineWidth),
+		borderColor: Type.Ref(Color),
+		boxShadow: Type.Ref(BoxShadow),
 		headline: Type.Object({
 			foreground: Type.Ref(Color),
 			fontFamily: Type.Ref(FamilyName),
