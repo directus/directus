@@ -222,8 +222,8 @@ importers:
         specifier: 9.0.1
         version: 9.0.1
       keyv:
-        specifier: 4.5.2
-        version: 4.5.2
+        specifier: 4.5.4
+        version: 4.5.4
       knex:
         specifier: 2.4.2
         version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0)
@@ -346,8 +346,8 @@ importers:
         version: 1.0.1(zod@3.22.4)
     optionalDependencies:
       '@keyv/redis':
-        specifier: 2.5.8
-        version: 2.5.8
+        specifier: 2.8.0
+        version: 2.8.0
       mysql:
         specifier: 2.18.1
         version: 2.18.1
@@ -6247,9 +6247,9 @@ packages:
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
     dev: true
 
-  /@keyv/redis@2.5.8:
-    resolution: {integrity: sha512-WweuUZqZN2ETcseV6r1AEum1qG6eR5poNhkZ4CIpWBOjMasT2ArTKWyIPxxYllKUS2A8wKv1l8+AqH6Jpzk7Ug==}
-    engines: {node: '>= 12'}
+  /@keyv/redis@2.8.0:
+    resolution: {integrity: sha512-6k7wG/KKSIGpruKlsEB4sFjECJEyQsuJbWoWdoq9Uv2L6Mm/SEqEidekRZI/QljE1A4WQkFsIE8hHl1Oc3UNGg==}
+    engines: {node: '>= 14'}
     requiresBuild: true
     dependencies:
       ioredis: 5.3.2
@@ -10960,7 +10960,7 @@ packages:
       clone-response: 1.0.3
       get-stream: 5.2.0
       http-cache-semantics: 4.1.1
-      keyv: 4.5.2
+      keyv: 4.5.4
       lowercase-keys: 2.0.0
       normalize-url: 6.1.0
       responselike: 2.0.1
@@ -15639,6 +15639,7 @@ packages:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}
     dependencies:
       json-buffer: 3.0.1
+    dev: true
 
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}

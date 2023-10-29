@@ -126,7 +126,7 @@
 		"js2xmlparser": "5.0.0",
 		"json2csv": "5.0.7",
 		"jsonwebtoken": "9.0.1",
-		"keyv": "4.5.2",
+		"keyv": "4.5.4",
 		"knex": "2.4.2",
 		"ldapjs": "2.3.3",
 		"liquidjs": "10.7.1",
@@ -219,7 +219,7 @@
 		"vitest": "0.31.1"
 	},
 	"optionalDependencies": {
-		"@keyv/redis": "2.5.8",
+		"@keyv/redis": "2.8.0",
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
