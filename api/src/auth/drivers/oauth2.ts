@@ -80,7 +80,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 	generateAuthUrl(codeVerifier: string, prompt = false): string {
 		const { plainCodeChallenge } = this.config;
-		
+
 		try {
 			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};

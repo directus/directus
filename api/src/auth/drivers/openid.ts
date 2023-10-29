@@ -141,7 +141,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		try {
 			const client = await this.client;
-			const codeChallenge = plainCodeChallenge 
+
+			const codeChallenge = plainCodeChallenge
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
