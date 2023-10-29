@@ -131,6 +131,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge }
 			);
+
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
 		} catch (e) {
 			throw handleError(e);
