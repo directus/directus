@@ -1,3 +1,4 @@
+import type { AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlQueryConditionNode } from './conditions/index.js';
 
 /**
@@ -13,5 +14,5 @@ export interface AbstractSqlQueryLogicalNode {
 	negate: boolean;
 
 	/* A list of conditions or a nested group with another operator. */
-	childNodes: (AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode)[];
+	childNodes: AtLeastOneElement<AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode>;
 }

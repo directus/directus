@@ -10,7 +10,7 @@ export interface AbstractQueryFieldNodeNestedOne {
 
 	/* From the related collection the user can pick primitives, apply a function or add another nested node   */
 	fields: AbstractQueryFieldNode[];
-	alias?: string;
+	alias?: string; // make mandatory
 
 	meta: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
 }
@@ -20,6 +20,8 @@ export interface AbstractQueryFieldNodeNestedMany {
 
 	/* From the related collection the user can pick primitives, apply a function or add another nested node   */
 	fields: AbstractQueryFieldNode[];
+
+	/** need to be mandatory for queries which have a nested-many relation to the same collection as the root */
 	alias?: string;
 
 	/** For many, it's always possible to add modifiers to the foreign collection to adjust the results. */

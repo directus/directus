@@ -57,6 +57,7 @@ test('primitives only', () => {
 			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
 			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
 		]),
+		nestedManys: [],
 	};
 
 	const idGen = parameterIndexGenerator();
@@ -109,6 +110,7 @@ test('primitive and function', () => {
 			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
 			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
 		]),
+		nestedManys: [],
 	};
 
 	const idGen = parameterIndexGenerator();
@@ -142,10 +144,10 @@ test('primitive, fn, m2o', () => {
 			meta: {
 				type: 'm2o',
 				join: {
-					current: {
+					local: {
 						fields: [randomJoinCurrentField],
 					},
-					external: {
+					foreign: {
 						store: randomExternalStore,
 						collection: randomExternalCollection,
 						fields: [randomExternalField],
@@ -223,10 +225,75 @@ test('primitive, fn, m2o', () => {
 			[`${randomJoinNodeField}_RANDOM`, [randomExternalCollection, randomJoinNodeField]],
 			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFn]],
 		]),
+		nestedManys: [],
 	};
 
 	const result = convertFieldNodes(randomCollection, fields, idGen);
 	expect(result.clauses).toMatchObject(expected.clauses);
 	expect(result.parameters).toMatchObject(expected.parameters);
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
+});
+
+test('primitive, o2m', () => {
+	const randomJoinCurrentField = randomIdentifier();
+	const randomExternalCollection = randomIdentifier();
+	const randomExternalStore = randomIdentifier();
+	const randomExternalField = randomIdentifier();
+	const randomJoinNodeField = randomIdentifier();
+
+	const fields: AbstractQueryFieldNode[] = [
+		{
+			type: 'primitive',
+			field: randomPrimitiveField1,
+		},
+		{
+			type: 'nested-many',
+			fields: [
+				{
+					type: 'primitive',
+					field: randomJoinNodeField,
+				},
+			],
+			meta: {
+				type: 'o2m',
+				join: {
+					local: {
+						fields: [randomJoinCurrentField],
+					},
+					foreign: {
+						store: randomExternalStore,
+						collection: randomExternalCollection,
+						fields: [randomExternalField],
+					},
+				},
+			},
+		},
+	];
+
+	const expected: Result = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: randomCollection,
+					column: randomPrimitiveField1,
+					as: `${randomPrimitiveField1}_RANDOM`,
+				},
+			],
+			joins: [],
+		},
+		parameters: [],
+		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]]]),
+		nestedManys: [
+			{
+				queryGenerator: expect.any(Function),
+				localJoinFields: [randomJoinCurrentField],
+				foreignJoinFields: [randomExternalField],
+				alias: randomExternalCollection,
+			},
+		],
+	};
+
+	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
+	expect(result).toStrictEqual(expected);
 });

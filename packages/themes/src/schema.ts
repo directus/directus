@@ -52,6 +52,7 @@ const Rules = Type.Object({
 		project: Type.Object({
 			background: Color,
 			foreground: Color,
+			fontFamily: FontFamily,
 		}),
 
 		modules: Type.Object({
@@ -81,6 +82,8 @@ const Rules = Type.Object({
 			background: Color,
 			backgroundHover: Color,
 			backgroundActive: Color,
+
+			fontFamily: FontFamily,
 		}),
 	}),
 
@@ -88,6 +91,7 @@ const Rules = Type.Object({
 		background: Color,
 		headline: Type.Object({
 			foreground: Color,
+			fontFamily: FontFamily,
 		}),
 		title: Type.Object({
 			foreground: Color,
@@ -99,6 +103,7 @@ const Rules = Type.Object({
 		field: Type.Object({
 			label: Type.Object({
 				foreground: Color,
+				fontFamily: FontFamily,
 			}),
 			input: Type.Object({
 				background: Color,
@@ -111,6 +116,7 @@ const Rules = Type.Object({
 	sidebar: Type.Object({
 		background: Color,
 		foreground: Color,
+		fontFamily: FontFamily,
 
 		section: Type.Object({
 			toggle: Type.Object({
@@ -127,6 +133,8 @@ const Rules = Type.Object({
 				background: Color,
 				backgroundHover: Color,
 				backgroundActive: Color,
+
+				fontFamily: FontFamily,
 			}),
 		}),
 	}),
