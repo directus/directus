@@ -122,17 +122,15 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		let userInfo;
 
 		try {
+			const codeChallenge = plainCodeChallenge
+				? payload['codeVerifier']
+				: generators.codeChallenge(payload['codeVerifier']);
+			
 			tokenSet = await this.client.oauthCallback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'] },
-				{
-					code_verifier: payload['codeVerifier'],
-					state: plainCodeChallenge
-						? payload['codeVerifier']
-						: generators.codeChallenge(payload['codeVerifier'])
-				}
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge }
 			);
-
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
 		} catch (e) {
 			throw handleError(e);
