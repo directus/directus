@@ -13,6 +13,7 @@
 Butterfield
 (C|)ancelling
 (C|c)ancelled
+(C|c)hangesets?
 (C|c)harset
 (C|c)heckboxes
 (C|c)loudinary
@@ -128,9 +129,6 @@ Cardgroup
 cardinality
 CDNs?
 changelogs
-changeset
-changesets
-Changesets
 CLA
 CLI
 CloudFront

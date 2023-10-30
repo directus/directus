@@ -313,10 +313,10 @@ Sort by creation date descending\
 `-date_created`
 
 Sort by a "sort" field, followed by publish date descending\
-`sort, -publish_date`
+`sort,-publish_date`
 
 Sort by a "sort" field, followed by a nested author's name\
-`sort, -author.name`
+`sort,-author.name`
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
@@ -352,7 +352,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
-		sort: '-date_created', //Sort by creation date descending
+		sort: ['sort', '-date_created'], //Sort by sort field and creation date descending
 	})
 );
 ```
