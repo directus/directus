@@ -3,12 +3,25 @@ import { mkdir } from 'node:fs/promises';
 import { dirname, join, normalize } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
+import { getCache } from '../../cache.js';
 import { getEnv } from '../../env.js';
 import logger from '../../logger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
+import { getLockName } from './get-lock-name.js';
 
 export const syncExtensions = async () => {
+	const { lockCache } = getCache();
+
+	const lockName = getLockName();
+
+	if (await lockCache.get(lockName)) {
+		logger.trace('Extensions already being synced this container from another process.');
+		return;
+	}
+
+	await lockCache.set(lockName, true, 10000);
+
 	const env = getEnv();
 
 	if (!env['EXTENSIONS_LOCATION']) {
@@ -38,4 +51,6 @@ export const syncExtensions = async () => {
 
 		await queue.add(() => pipeline(readStream, writeStream));
 	}
+
+	await lockCache.delete(lockName);
 };
