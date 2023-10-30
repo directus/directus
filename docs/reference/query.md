@@ -372,10 +372,12 @@ Get the first 200 items\
 Get the maximum allowed items\
 `-1`
 
-::: warning All Items
+::: warning Maximum Items
 
-Depending on the size of your collection and configuration of your instance, fetching the maximum amount of data may
-result in degraded performance or timeouts, use with caution.
+Depending on the size of your collection, fetching the maximum amount of data may result in degraded performance or
+timeouts, use with caution.
+
+The maximum amount of items that can be requested on the API can be configured using the `QUERY_LIMIT_MAX` variable.
 
 :::
 
