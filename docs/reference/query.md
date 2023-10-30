@@ -369,13 +369,13 @@ Set the maximum number of items that will be returned. The default limit is set 
 Get the first 200 items\
 `200`
 
-Get all items\
+Get the maximum allowed items\
 `-1`
 
 ::: warning All Items
 
-Depending on the size of your collection, fetching unlimited data may result in degraded performance or timeouts, use
-with caution.
+Depending on the size of your collection and configuration of your instance, fetching the maximum amount of data may
+result in degraded performance or timeouts, use with caution.
 
 :::
 
