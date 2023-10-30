@@ -147,7 +147,7 @@ event handler for the connection's `open` event:
 ```js
 loginSubmit() {
 	this.connection = new WebSocket(this.url);
-	this.connection.addEventListener('open', this.authenticate(this.form)); // [!code ++]
+	this.connection.addEventListener('open', () => this.authenticate(this.form)); // [!code ++]
 },
 ```
 
@@ -168,7 +168,7 @@ In a WebSocket connection, all data sent from the server will trigger the connec
 ```js
 loginSubmit() {
 	this.connection = new WebSocket(this.url);
-	this.connection.addEventListener('open', this.authenticate(this.login));
+	this.connection.addEventListener('open', () => this.authenticate(this.form));
 	this.connection.addEventListener('message', (message) => this.receiveMessage(message)); // [!code ++]
 },
 ```
@@ -193,7 +193,7 @@ receiveMessage(message) {
 			type: 'subscribe', // [!code ++]
 			collection: 'messages', // [!code ++]
 			query: { // [!code ++]
-				fields: ['*', {'user_created': ['first_name']}], // [!code ++]
+				fields: ['text', 'user_created.first_name'], // [!code ++]
 				sort: 'date_created' // [!code ++]
 			} // [!code ++]
 		})); // [!code ++]
@@ -213,7 +213,7 @@ receiveMessage(message) {
 				type: 'subscribe',
 				collection: 'messages',
 				query: {
-					fields: ['*', {'user_created': ['first_name']}],
+					fields: ['text', 'user_created.first_name'],
 					sort: 'date_created',
 				},
 			})
@@ -378,7 +378,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 				methods: {
 					loginSubmit() {
 						this.connection = new WebSocket(this.url);
-						this.connection.addEventListener('open', this.authenticate(this.form));
+						this.connection.addEventListener('open', () => this.authenticate(this.form));
 						this.connection.addEventListener('message', (message) => this.receiveMessage(message));
 					},
 					messageSubmit() {
@@ -406,7 +406,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 									type: 'subscribe',
 									collection: 'messages',
 									query: {
-										fields: ['*', {'user_created': ['first_name']}],
+										fields: ['text', 'user_created.first_name'],
 										sort: 'date_created',
 									},
 								})
