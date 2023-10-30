@@ -369,15 +369,16 @@ Set the maximum number of items that will be returned. The default limit is set 
 Get the first 200 items\
 `200`
 
-Get the maximum allowed items\
+Get the maximum allowed number of items\
 `-1`
 
 ::: warning Maximum Items
 
-Depending on the size of your collection, fetching the maximum amount of data may result in degraded performance or
+Depending on the size of your collection, fetching the maximum amount of items may result in degraded performance or
 timeouts, use with caution.
 
-The maximum amount of items that can be requested on the API can be configured using the `QUERY_LIMIT_MAX` variable.
+The maximum amount of items that can be requested on the API can be configured using the
+[`QUERY_LIMIT_MAX` variable](/self-hosted/config-options.html#general).
 
 :::
 
