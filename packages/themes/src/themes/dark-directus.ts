@@ -46,7 +46,7 @@ export const theme: Theme = {
 		navigation: {
 			background: '#21262e',
 			borderColor: 'transparent',
-			borderWidth: '0',
+			borderWidth: '0px',
 
 			project: {
 				background: '#30363d',
@@ -57,7 +57,7 @@ export const theme: Theme = {
 			modules: {
 				background: 'var(--theme--background)',
 				borderColor: 'transparent',
-				borderWidth: '0',
+				borderWidth: '0px',
 
 				button: {
 					foreground: 'var(--theme--foreground-subdued)',
@@ -92,7 +92,7 @@ export const theme: Theme = {
 		header: {
 			background: 'var(--theme--background)',
 			borderColor: 'transparent',
-			borderWidth: '0',
+			borderWidth: '0px',
 			boxShadow: '0 4px 7px -4px rgb(var(--black) / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
@@ -131,7 +131,7 @@ export const theme: Theme = {
 			foreground: 'var(--theme--foreground-subdued)',
 			fontFamily: 'var(--theme--font-family-sans-serif)',
 			borderColor: 'transparent',
-			borderWidth: '0',
+			borderWidth: '0px',
 
 			section: {
 				toggle: {
