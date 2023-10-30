@@ -6,18 +6,25 @@ import Queue from 'p-queue';
 import { getCache } from '../../cache.js';
 import { getEnv } from '../../env.js';
 import logger from '../../logger.js';
+import { getMessenger } from '../../messenger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { getLockName } from './get-lock-name.js';
 
 export const syncExtensions = async () => {
+	const messenger = getMessenger();
 	const { lockCache } = getCache();
-
 	const lockName = getLockName();
 
 	if (await lockCache.get(lockName)) {
-		logger.trace('Extensions already being synced this container from another process.');
-		return;
+		logger.trace('Extensions already being synced to this machine from another process.');
+
+		return new Promise((resolve) => {
+			messenger.subscribe(lockName, resolve);
+
+			/** Continue after 10 seconds if the ready message hasn't been received yet */
+			setTimeout(resolve, 10000);
+		});
 	}
 
 	await lockCache.set(lockName, true, 10000);
@@ -53,4 +60,8 @@ export const syncExtensions = async () => {
 	}
 
 	await lockCache.delete(lockName);
+
+	messenger.publish(lockName, { ready: true });
+
+	return;
 };
