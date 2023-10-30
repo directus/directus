@@ -244,7 +244,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                                           | `100`                        |
 | `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
-| `TEMP_PATH`                | Where Directus' temporary files should be managed                                                                           | `./.directus`                |
+| `TEMP_PATH`                | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`                |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.

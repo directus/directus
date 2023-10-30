@@ -227,7 +227,7 @@ const defaults: Record<string, any> = {
 	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
-	TEMP_PATH: './.directus',
+	TEMP_PATH: './node_modules/.directus',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
