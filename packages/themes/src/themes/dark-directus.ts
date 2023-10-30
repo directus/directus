@@ -46,6 +46,7 @@ export const theme: Theme = {
 			project: {
 				background: '#30363d',
 				foreground: 'var(--theme--foreground-accent)',
+				fontFamily: 'var(--theme--font-family-sans-serif)',
 			},
 
 			modules: {
@@ -75,6 +76,8 @@ export const theme: Theme = {
 				background: 'transparent',
 				backgroundHover: '#30363d',
 				backgroundActive: '#30363d',
+
+				fontFamily: 'var(--theme--font-family-sans-serif)',
 			},
 		},
 
@@ -82,6 +85,7 @@ export const theme: Theme = {
 			background: 'var(--theme--background)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
+				fontFamily: 'var(--theme--font-family-sans-serif)',
 			},
 			title: {
 				foreground: 'var(--theme--foreground-accent)',
@@ -93,6 +97,7 @@ export const theme: Theme = {
 			field: {
 				label: {
 					foreground: 'var(--theme--foreground-accent)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
 				},
 				input: {
 					background: 'var(--theme--background)',
@@ -105,6 +110,7 @@ export const theme: Theme = {
 		sidebar: {
 			background: '#21262e',
 			foreground: 'var(--theme--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
 
 			section: {
 				toggle: {
@@ -121,6 +127,8 @@ export const theme: Theme = {
 					background: '#30363d',
 					backgroundHover: 'var(--theme--sidebar--section--toggle--background)',
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
+
+					fontFamily: 'var(--theme--font-family-sans-serif)',
 				},
 			},
 		},

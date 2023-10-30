@@ -27,6 +27,7 @@ method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
+extensions: Extensiones
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
@@ -56,10 +57,23 @@ modifier: Modificador
 extension_interface: Interfaz
 extension_display: Mostrar
 extension_layout: Diseño
+extension_module: Módulo
 extension_panel: Panel
 extension_hook: Gancho
+extension_endpoint: Endpoint
+extension_operation: Operación
+extension_bundle: Paquete
+extension_interfaces: Interfaces
+extension_displays: Displays
+extension_layouts: Layouts
 extension_modules: Módulos
+extension_panels: Paneles
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Operaciones
+extension_bundles: Paquetes
 enable: Habilitado
+disable: Desactivar
 custom: Personalizado
 hook: Gancho
 fill_width: Ancho completo
@@ -90,7 +104,7 @@ delete_panel: Eliminar panel
 create_webhook: Crear webhook
 create_custom_translation: Crear traducción personalizada
 edit_custom_translation: Editar traducción personalizada
-no_custom_translations: No hay traducciones personalizadas
+no_custom_translations: Sin traducciones personalizadas
 no_custom_translations_copy: Todavía no hay traducciones personalizadas.
 invite_users: Invitar usuarios
 invite: Invitar
@@ -107,7 +121,31 @@ rename_folder: Renombrar carpeta
 delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
+keep: Conservar
+version: Versión
+version_key: Version Key
+version_name: Version Name
+main_version: Principal
+switch_version: Cambiar versión
+switch_version_copy: '¿Está seguro que desea cambiar a la versión "{version}"? Se perderán los cambios no guardados.'
+create_version: Crear versión
+rename_version: Renombrar versión
+compare_version: Comparar versión
+save_version: Guardar versión
+promote_version: Promover versión
+promote_version_disabled: Sin cambios
+promote_version_drawer_title: Promover {version} como Main
+promote_version_changes: Cambios
 promote_version_preview: Vista previa
+outdated_notice: >-
+  El elemento principal ha sido actualizado desde la creación de esta versión. Por favor, revise todos los valores de campo a continuación, y confirme que versión debe utilizarse al promover esta versión al elemento principal.
+promote_notice: >-
+  Por favor, revise todos los valores de campo a continuación, y confirm que versión debe utilizarse para promover esta versión en el elemento principal.
+delete_version: Eleminar versión
+delete_version_copy: >-
+  ¿Está seguro que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
+delete_on_promote_copy: >-
+  ¿Desea eliminar o conservar la versión "{version}" después de promover?
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar marcador
@@ -153,6 +191,7 @@ validationError:
   nnull: El valor no puede ser nulo
   required: El valor es requerido
   unique: El valor tiene que ser único
+  email: El valor debe ser una dirección de correo electrónico válida
   regex: El valor no tiene el formato correcto
   starts_with: El valor debe comenzar con {substring}
   istarts_with: El valor debe comenzar con {substring}
@@ -188,6 +227,7 @@ permissions_for_role: 'Elementos que el rol {role} puede {action}.'
 fields_for_role: 'Campos que el rol {role} puede {action}.'
 validation_for_role: 'Reglas de campo al {action} que el rol {role} tiene que obedecer.'
 presets_for_role: 'Valores por defecto del campo para el rol {role}.'
+presets_field_warning: 'Las presets relacionales para el campo "{field}" deben configurarse con la sintaxis "detailed".'
 presentation_and_aliases: Presentación y alias
 revision_post_create: Este es el aspecto de este elemento cuando fue creado.
 revision_post_update: Este es el aspecto de este elemento después de la actualización.
@@ -243,6 +283,7 @@ bigInteger: Entero grande
 boolean: Booleano
 date: Fecha
 date_range: Rango de fechas
+translation_key_placeholder: Ingresar Key...
 datetime: Fecha y hora
 dateTime: Fecha y hora
 precision: Precisión
@@ -265,6 +306,9 @@ geometry.Polygon: Polígono
 geometry.MultiPoint: Multipunto
 geometry.MultiLineString: Multilinea
 geometry.MultiPolygon: Multipolígono
+theme_auto: Automático (basado en el sistema)
+theme_light: Modo claro
+theme_dark: Modo oscuro
 not_available_for_type: No disponible para este tipo
 create_translations: Crear traducciones
 auto_refresh: Actualización automática
@@ -347,6 +391,7 @@ clear_items: Limpiar elementos
 reset_to_default: Restablecer al valor predeterminado
 undo_changes: Deshacer cambios
 notifications: Notificaciones
+archive_all: Archivar todo
 show_all_activity: Mostrar toda la actividad
 page_not_found: Página no encontrada
 page_not_found_body: Parece que no existe la página que buscas.
@@ -359,6 +404,7 @@ revision_delta_created: Creado
 revision_delta_created_externally: Creado externamente
 revision_delta_updated: 'Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
+revision_delta_version_saved: 'Version guardada (1 campo actualizado) | Versión guardada ({count} campos actualizados)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
@@ -455,6 +501,7 @@ modified: Modificado
 owner: Propietario
 edited_by: Editado por
 folder: Carpeta
+folders: Directorios
 zoom: Zoom
 download: Descargar
 open: Abrir
@@ -468,12 +515,14 @@ import_from_url: Importar Archivo desde URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
 replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
+no_image_selected: Ninguna imagen seleccionada
 no_file_selected: No hay ningún archivo seleccionado
 download_file: Descargar archivo
 open_file_in_tab: Abrir archivo en nueva pestaña
 start_export: Comenzar exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
+exporting_limited_items_in_collection: '{count} de {total} elementos en {collection} serán exportados.'
 collection_key: Llave de Colección
 name: Nombre
 primary_key_field: Campo de Llave Primaria

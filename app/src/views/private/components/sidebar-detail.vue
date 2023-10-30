@@ -140,6 +140,7 @@ const { sidebarOpen } = toRefs(appStore);
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);
+		font-family: var(--theme--sidebar--section--toggle--font-family);
 	}
 
 	.scroll-container {

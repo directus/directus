@@ -179,4 +179,8 @@ const { t } = useI18n();
 		}
 	}
 }
+
+.type-label {
+	font-family: var(--theme--form--field--label--font-family);
+}
 </style>
