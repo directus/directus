@@ -19,6 +19,9 @@ export const syncExtensions = async () => {
 	if (await lockCache.get(lockName)) {
 		logger.trace('Extensions already being synced to this machine from another process.');
 
+		/**
+		 * Wait until the process that called the lock publishes a message that the syncing is complete
+		 */
 		return new Promise((resolve) => {
 			messenger.subscribe(lockName, resolve);
 
@@ -56,7 +59,7 @@ export const syncExtensions = async () => {
 
 		const writeStream = createWriteStream(destPath);
 
-		await queue.add(() => pipeline(readStream, writeStream));
+		queue.add(() => pipeline(readStream, writeStream));
 	}
 
 	await lockCache.delete(lockName);
