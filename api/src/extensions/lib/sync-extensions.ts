@@ -1,6 +1,6 @@
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname, join, normalize } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
 import { getEnv } from '../../env.js';
@@ -29,7 +29,7 @@ export const syncExtensions = async () => {
 
 		// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
 		// extensions path on disk from the start of the file path
-		const destPath = join(getExtensionsPath(), filepath.substring(env['EXTENSIONS_PATH'].length));
+		const destPath = join(getExtensionsPath(), filepath.substring(normalize(env['EXTENSIONS_PATH']).length));
 
 		// Ensure that the directory path exists
 		await mkdir(dirname(destPath), { recursive: true });
