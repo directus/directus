@@ -62,6 +62,8 @@ export const syncExtensions = async () => {
 		queue.add(() => pipeline(readStream, writeStream));
 	}
 
+	await queue.onIdle();
+
 	await lockCache.delete(lockName);
 
 	messenger.publish(lockName, { ready: true });
