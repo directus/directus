@@ -49,6 +49,8 @@ export const theme: Theme = {
 			borderWidth: '0px',
 
 			project: {
+				borderColor: 'transparent',
+				borderWidth: '0px',
 				background: '#30363d',
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--font-family-sans-serif)',
