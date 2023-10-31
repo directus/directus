@@ -1,4 +1,4 @@
-import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
+import type { AbstractQuery } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types/index.js';
 import { convertQuery } from './converter.js';
@@ -6,18 +6,22 @@ import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: AbstractQuery;
 
+const firstField = randomIdentifier();
+const secondField = randomIdentifier();
+const rootCollection = randomIdentifier();
+
 beforeEach(() => {
 	sample = {
 		store: randomIdentifier(),
-		collection: randomIdentifier(),
+		collection: rootCollection,
 		fields: [
 			{
 				type: 'primitive',
-				field: randomIdentifier(),
+				field: firstField,
 			},
 			{
 				type: 'primitive',
-				field: randomIdentifier(),
+				field: secondField,
 			},
 		],
 	};
@@ -31,16 +35,16 @@ test('Convert simple query', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[0] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: firstField,
 				},
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[1] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: secondField,
 				},
 			],
-			from: sample.collection,
+			from: rootCollection,
 		},
 		parameters: [],
 	};
@@ -75,16 +79,16 @@ test('Convert query with filter', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[0] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: firstField,
 				},
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[1] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: secondField,
 				},
 			],
-			from: sample.collection,
+			from: rootCollection,
 			where: {
 				type: 'condition',
 				negate: false,
@@ -92,7 +96,7 @@ test('Convert query with filter', () => {
 					type: 'condition-number',
 					target: {
 						column: randomField,
-						table: sample.collection,
+						table: rootCollection,
 						type: 'primitive',
 					},
 					operation: 'gt',
@@ -125,16 +129,16 @@ test('Convert query with a limit', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[0] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: firstField,
 				},
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[1] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: secondField,
 				},
 			],
-			from: sample.collection,
+			from: rootCollection,
 			limit: { type: 'value', parameterIndex: 0 },
 		},
 		parameters: [sample.modifiers.limit!.value],
@@ -163,16 +167,16 @@ test('Convert query with limit and offset', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[0] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: firstField,
 				},
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[1] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: secondField,
 				},
 			],
-			from: sample.collection,
+			from: rootCollection,
 			limit: { type: 'value', parameterIndex: 0 },
 			offset: { type: 'value', parameterIndex: 1 },
 		},
@@ -204,16 +208,16 @@ test('Convert query with a sort', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[0] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: firstField,
 				},
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[1] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: secondField,
 				},
 			],
-			from: sample.collection,
+			from: rootCollection,
 			order: [
 				{
 					type: 'order',
@@ -248,13 +252,13 @@ test('Convert a query with a function as field select', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[0] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: firstField,
 				},
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[1] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: secondField,
 				},
 				{
 					type: 'fn',
@@ -262,11 +266,11 @@ test('Convert a query with a function as field select', () => {
 						type: 'arrayFn',
 						fn: 'count',
 					},
-					table: sample.collection,
+					table: rootCollection,
 					column: randomField,
 				},
 			],
-			from: sample.collection,
+			from: rootCollection,
 		},
 		parameters: [],
 	};
@@ -304,16 +308,16 @@ test('Convert a query with all possible modifiers', () => {
 			select: [
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[0] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: firstField,
 				},
 				{
 					type: 'primitive',
-					table: sample.collection,
-					column: (sample.fields[1] as AbstractQueryFieldNodePrimitive).field,
+					table: rootCollection,
+					column: secondField,
 				},
 			],
-			from: sample.collection,
+			from: rootCollection,
 			order: [
 				{
 					type: 'order',
