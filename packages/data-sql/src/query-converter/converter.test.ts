@@ -441,7 +441,7 @@ test('Convert a query with a foreign/right string filter', () => {
 						table: foreignCollection,
 						column: targetField,
 					},
-					operation: 'contains',
+					operation: 'starts_with',
 					compareTo: {
 						type: 'value',
 						parameterIndex: 0,
