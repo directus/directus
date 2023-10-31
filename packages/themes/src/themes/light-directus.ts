@@ -122,8 +122,8 @@ export const theme: Theme = {
 					foreground: 'var(--theme--foreground)',
 					foregroundSubdued: 'var(--theme--foreground-subdued)',
 
-					borderColor: '#f0f4f9',
-					borderColorHover: '#e4eaf1',
+					borderColor: '#e4eaf1',
+					borderColorHover: '#d3dae4',
 					borderColorFocus: 'var(--theme--primary)',
 
 					boxShadow: 'none',
