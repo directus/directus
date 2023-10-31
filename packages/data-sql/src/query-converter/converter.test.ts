@@ -2,17 +2,18 @@ import type { AbstractQuery } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types/index.js';
 import { convertQuery } from './converter.js';
-import { randomIdentifier, randomInteger } from '@directus/random';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: AbstractQuery;
 
 const firstField = randomIdentifier();
 const secondField = randomIdentifier();
 const rootCollection = randomIdentifier();
+const rootStore = randomIdentifier();
 
 beforeEach(() => {
 	sample = {
-		store: randomIdentifier(),
+		store: rootStore,
 		collection: rootCollection,
 		fields: [
 			{
@@ -329,6 +330,126 @@ test('Convert a query with all possible modifiers', () => {
 			offset: { type: 'value', parameterIndex: 1 },
 		},
 		parameters: [sample.modifiers.limit!.value, sample.modifiers.offset!.value],
+	};
+
+	expect(res.clauses).toMatchObject(expected.clauses);
+	expect(res.parameters).toMatchObject(expected.parameters);
+});
+
+test('Convert a query with a foreign/right string filter', () => {
+	const foreignCollection = randomIdentifier();
+	const targetField = randomIdentifier();
+	const leftHandIdentifierField = randomIdentifier();
+	const rightHandIdentifierField = randomIdentifier();
+	const compareValue = randomAlpha(3);
+	const joinAlias = randomIdentifier();
+
+	const sampleAbstractQuery: AbstractQuery = {
+		store: rootStore,
+		collection: rootCollection,
+		fields: [
+			{
+				type: 'primitive',
+				field: firstField,
+			},
+			{
+				type: 'primitive',
+				field: secondField,
+			},
+		],
+		modifiers: {
+			filter: {
+				type: 'condition',
+				condition: {
+					type: 'condition-string',
+					target: {
+						type: 'nested-one-target',
+						field: {
+							type: 'primitive',
+							field: targetField,
+						},
+						meta: {
+							type: 'm2o',
+							join: {
+								local: {
+									fields: [leftHandIdentifierField],
+								},
+								foreign: {
+									store: rootStore,
+									fields: [rightHandIdentifierField],
+									collection: foreignCollection,
+								},
+							},
+						},
+					},
+					operation: 'starts_with',
+					compareTo: compareValue,
+				},
+			},
+		},
+	};
+
+	const res = convertQuery(sampleAbstractQuery);
+
+	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: rootCollection,
+					column: firstField,
+				},
+				{
+					type: 'primitive',
+					table: rootCollection,
+					column: secondField,
+				},
+			],
+			from: rootCollection,
+			joins: [
+				{
+					type: 'join',
+					table: foreignCollection,
+					on: {
+						type: 'condition',
+						condition: {
+							type: 'condition-field',
+							target: {
+								type: 'primitive',
+								table: foreignCollection,
+								column: targetField,
+							},
+							operation: 'eq',
+							compareTo: {
+								type: 'primitive',
+								table: rootCollection,
+								column: leftHandIdentifierField,
+							},
+						},
+						negate: false,
+					},
+					as: joinAlias,
+				},
+			],
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-string',
+					target: {
+						type: 'primitive',
+						table: foreignCollection,
+						column: targetField,
+					},
+					operation: 'contains',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
+		},
+		parameters: [compareValue],
 	};
 
 	expect(res.clauses).toMatchObject(expected.clauses);
