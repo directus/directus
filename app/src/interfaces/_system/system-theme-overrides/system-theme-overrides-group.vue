@@ -27,6 +27,10 @@ const rulesGrouped = computed(() => {
 		...Object.fromEntries(Object.entries(props.rules).filter(([_key, value]) => isPlainObject(value))),
 	};
 });
+
+const hasValue = computed(() => {
+	return !!props.value && (isPlainObject(props.value) ? Object.keys(props.value).length > 0 : true);
+});
 </script>
 
 <template>
@@ -34,7 +38,7 @@ const rulesGrouped = computed(() => {
 		<button
 			v-if="!root"
 			class="group-toggle"
-			:class="{ collapsed, 'has-value': !!value }"
+			:class="{ collapsed, 'has-value': hasValue }"
 			@click="collapsed = !collapsed"
 		>
 			<span>{{ group ?? 'globals' }}</span>
