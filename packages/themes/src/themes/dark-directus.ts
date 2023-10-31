@@ -152,6 +152,9 @@ export const theme: Theme = {
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
 
 					fontFamily: 'var(--theme--font-family-sans-serif)',
+
+					borderColor: 'transparent',
+					borderWidth: '0px',
 				},
 			},
 		},

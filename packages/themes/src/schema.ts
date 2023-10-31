@@ -168,6 +168,9 @@ const Rules = Type.Object({
 				backgroundActive: Type.Ref(Color),
 
 				fontFamily: Type.Ref(FamilyName),
+
+				borderWidth: Type.Ref(LineWidth),
+				borderColor: Type.Ref(Color),
 			}),
 		}),
 	}),
