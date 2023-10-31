@@ -13,6 +13,18 @@ const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal(
 
 const Rules = Type.Object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base fonts
+	fontFamilyDisplay: Type.Ref(FamilyName),
+	fontFamilySansSerif: Type.Ref(FamilyName),
+	fontFamilySerif: Type.Ref(FamilyName),
+	fontFamilyMonospace: Type.Ref(FamilyName),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base border styles
+	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
+	borderWidth: Type.Ref(LineWidth),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base color palette
 	foreground: Type.Ref(Color),
 	foregroundSubdued: Type.Ref(Color),
@@ -44,18 +56,6 @@ const Rules = Type.Object({
 	dangerBackground: Type.Ref(Color),
 	dangerSubdued: Type.Ref(Color),
 	dangerAccent: Type.Ref(Color),
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Base fonts
-	fontFamilyDisplay: Type.Ref(FamilyName),
-	fontFamilySansSerif: Type.Ref(FamilyName),
-	fontFamilySerif: Type.Ref(FamilyName),
-	fontFamilyMonospace: Type.Ref(FamilyName),
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Base border styles
-	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
-	borderWidth: Type.Ref(LineWidth),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
