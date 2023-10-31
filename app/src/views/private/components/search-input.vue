@@ -165,7 +165,7 @@ function emitValue() {
 	max-width: 100%;
 	height: 44px;
 	overflow: hidden;
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: calc(44px / 2);
 	transition: width var(--slow) var(--transition), border-bottom-left-radius var(--fast) var(--transition),
 		border-bottom-right-radius var(--fast) var(--transition);
@@ -294,7 +294,7 @@ function emitValue() {
 	min-width: 100%;
 	padding: 0;
 	background-color: var(--background-subdued);
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
 }

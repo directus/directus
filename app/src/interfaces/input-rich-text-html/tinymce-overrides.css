@@ -90,7 +90,7 @@
 .tox-tinymce {
 	min-height: 300px;
 	color: var(--theme--form--field--input--foreground);
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color;
@@ -113,7 +113,7 @@
 	min-height: 40px;
 	padding: 2px 0;
 	background: var(--background-subdued);
-	border-bottom: 2px solid var(--theme--form--field--input--border-color);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-pop__dialog .tox-toolbar {

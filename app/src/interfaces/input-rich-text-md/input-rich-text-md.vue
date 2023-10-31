@@ -520,7 +520,7 @@ textarea {
 	min-height: 40px;
 	padding: 0 4px;
 	background-color: var(--background-subdued);
-	border-bottom: 2px solid var(--theme--form--field--input--border-color);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	.v-button + .v-button {
 		margin-left: 2px;
