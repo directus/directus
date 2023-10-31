@@ -1,4 +1,4 @@
-import { machineId } from 'node-machine-id';
+import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { dirname, join, normalize } from 'node:path';
@@ -19,7 +19,7 @@ export const syncExtensions = async () => {
 
 	const isDone = (await getSyncStatus()) === SyncStatus.DONE;
 
-	const id = await machineId();
+	const id = await mid.machineId();
 
 	const message = `extensions-sync/${id}`;
 
