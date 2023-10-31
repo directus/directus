@@ -14,7 +14,10 @@ export function getKeyPath(node: Record<string, any>): string {
 }
 
 export function getField(node: Record<string, any>): string {
-	return getKeyPath(node).split('.').filter(key => !key.startsWith('_')).join('.');
+	return getKeyPath(node)
+		.split('.')
+		.filter((key) => !key.startsWith('_'))
+		.join('.');
 }
 
 export function getComparator(node: Record<string, any>): string {
@@ -30,7 +33,7 @@ export function isSome(node: Record<string, any>): boolean {
 }
 
 export function fieldToFilter(field: string, operator: string, value: any, some: boolean): Record<string, any> {
-	const initialSections = field.split('.')
+	const initialSections = field.split('.');
 	return fieldToFilterR([...initialSections]);
 
 	function fieldToFilterR(sections: string[]): Record<string, any> {
@@ -39,9 +42,9 @@ export function fieldToFilter(field: string, operator: string, value: any, some:
 		if (section && initialSections.length === sections.length + 1 && !some) {
 			return {
 				[section]: {
-					"_none": fieldToFilterR(sections),
-				}
-			}
+					_none: fieldToFilterR(sections),
+				},
+			};
 		} else if (section) {
 			return {
 				[section]: fieldToFilterR(sections),
