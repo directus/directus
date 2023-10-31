@@ -1595,6 +1595,8 @@ interfaces:
     add_value: Add Value
     logic_type_and: AND
     logic_type_or: OR
+    quantity_type_some: Some
+    quantity_type_none: None
     all: All
     any: Any
     and: and

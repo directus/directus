@@ -2,11 +2,11 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { FieldFilter } from '@directus/types';
-import { clone, get } from 'lodash';
+import { clone } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InputComponent from './input-component.vue';
-import { fieldToFilter, getComparator, getField } from './utils';
+import { fieldToFilter, getComparator, getField, isSome, getValue } from './utils';
 
 const props = defineProps<{
 	field: FieldFilter;
@@ -68,9 +68,7 @@ const interfaceType = computed(() => {
 
 const value = computed<unknown | unknown[]>({
 	get() {
-		const fieldPath = getField(props.field);
-
-		const value = get(props.field, `${fieldPath}.${comparator.value}`);
+		const value = getValue(props.field);
 
 		if (['_in', '_nin'].includes(comparator.value)) {
 			return [...(value as string[]).filter((val) => val !== null && val !== ''), null];
@@ -91,7 +89,7 @@ const value = computed<unknown | unknown[]>({
 			value = newVal;
 		}
 
-		emit('update:field', fieldToFilter(fieldPath, comparator.value, value));
+		emit('update:field', fieldToFilter(fieldPath, comparator.value, value, isSome(props.field)));
 	},
 });
 
