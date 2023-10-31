@@ -17,6 +17,12 @@ export const theme: Theme = {
 		foregroundSubdued: '#a2b5cd',
 
 		background: '#fff',
+		backgroundAccent: '#f0f4f9',
+		backgroundSubdued: '#f7fafc',
+
+		borderColor: '#e4eaf1',
+		borderColorAccent: '#d3dae4',
+		borderColorSubdued: '#f0f4f9',
 
 		primary: 'var(--project-color)',
 		primaryBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--primary) 10%)',
@@ -44,7 +50,7 @@ export const theme: Theme = {
 		dangerAccent: 'color-mix(in srgb, var(--theme--danger), #2e3c43 25%)',
 
 		navigation: {
-			background: '#f0f4f9',
+			background: 'var(--theme--background-accent)',
 			borderColor: 'transparent',
 			borderWidth: '0px',
 
@@ -68,7 +74,7 @@ export const theme: Theme = {
 
 					background: 'transparent',
 					backgroundHover: 'transparent',
-					backgroundActive: '#f0f4f9',
+					backgroundActive: 'var(--theme--background-accent)',
 				},
 			},
 
@@ -134,7 +140,7 @@ export const theme: Theme = {
 		},
 
 		sidebar: {
-			background: '#f0f4f9',
+			background: 'var(--theme--background-accent)',
 			foreground: 'var(--theme--foreground-subdued)',
 			fontFamily: 'var(--theme--font-family-sans-serif)',
 			borderColor: 'transparent',

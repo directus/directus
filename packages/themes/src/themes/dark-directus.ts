@@ -17,6 +17,12 @@ export const theme: Theme = {
 		foregroundSubdued: '#666672',
 
 		background: '#0d1117',
+		backgroundAccent: '#21262e',
+		backgroundSubdued: '#161b22',
+
+		borderColor: '#21262e',
+		borderColorAccent: '#30363d',
+		borderColorSubdued: '#21262d',
 
 		primary: 'var(--project-color)',
 		primaryBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--primary) 10%)',

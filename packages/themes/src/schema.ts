@@ -31,6 +31,12 @@ const Rules = Type.Object({
 	foregroundAccent: Type.Ref(Color),
 
 	background: Type.Ref(Color),
+	backgroundAccent: Type.Ref(Color),
+	backgroundSubdued: Type.Ref(Color),
+
+	borderColor: Type.Ref(Color),
+	borderColorAccent: Type.Ref(Color),
+	borderColorSubdued: Type.Ref(Color),
 
 	primary: Type.Ref(Color),
 	primaryBackground: Type.Ref(Color),
