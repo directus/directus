@@ -8,6 +8,6 @@ export function deleteFromRequireCache(modulePath: string): void {
 		const moduleCachePath = require.resolve(modulePath);
 		delete require.cache[moduleCachePath];
 	} catch (error) {
-		logger.warn(`Module cache not found for ${modulePath}, skipped cache delete.`);
+		logger.trace(`Module cache not found for ${modulePath}, skipped cache delete.`);
 	}
 }
