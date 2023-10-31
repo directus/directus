@@ -71,7 +71,8 @@ const { sidebarOpen } = toRefs(appStore);
 		height: calc(60px + var(--theme--sidebar--section--toggle--border-width));
 		color: var(--theme--sidebar--section--toggle--foreground);
 		background-color: var(--theme--sidebar--section--toggle--background);
-		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid var(--theme--sidebar--section--toggle--border-color);
+		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+			var(--theme--sidebar--section--toggle--border-color);
 
 		.icon {
 			--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
