@@ -274,7 +274,7 @@ function remove(id: string) {
 }
 
 .v-list-item.enabled {
-	--v-list-item-border-color: var(--theme--primary);
+	--v-list-item-border-color: var(--theme--form--field--input--border-color-focus);
 	--v-list-item-color: var(--theme--primary-accent);
 	--v-list-item-background-color: var(--theme--primary-background);
 	--v-list-item-border-color-hover: var(--theme--primary-accent);

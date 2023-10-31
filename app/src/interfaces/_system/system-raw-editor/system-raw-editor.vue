@@ -145,7 +145,7 @@ watch(
 	position: relative;
 	height: var(--input-height);
 	min-height: var(--input-height);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	:deep(.CodeMirror) {
 		width: 100%;

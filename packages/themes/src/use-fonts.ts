@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
-import { ThemeSchema, TypeId } from './schema.js';
+import { ThemeSchema } from './schema.js';
 
 export const useFonts = (rules: MaybeRef<Theme>) => {
 	const paths: string[][] = [];
@@ -14,7 +14,7 @@ export const useFonts = (rules: MaybeRef<Theme>) => {
 					find(value.properties as Record<string, unknown>, [...path, key]);
 				}
 
-				if ('$ref' in value && value.$ref === TypeId.FontFamily) {
+				if ('$ref' in value && value.$ref === 'FamilyName') {
 					paths.push([...path, key]);
 				}
 			}

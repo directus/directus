@@ -460,7 +460,7 @@ function revert(values: Record<string, any>) {
 	margin-bottom: var(--form-vertical-gap);
 	padding: 20px;
 	background-color: var(--background-normal);
-	border-radius: calc(var(--border-radius) + 4px);
+	border-radius: calc(var(--theme--border-radius) + 4px);
 
 	.avatar {
 		--v-icon-color: var(--theme--foreground-subdued);

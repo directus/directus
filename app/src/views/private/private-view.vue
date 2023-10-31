@@ -387,6 +387,7 @@ function getWidth(input: unknown, fallback: number): number {
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--navigation--list--font-family);
+		border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
 		&.is-open {
 			transform: translateX(0);
@@ -427,7 +428,6 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#main-content {
-		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px;
 		/* (60 - 4 - 24) / 2 */
@@ -502,6 +502,10 @@ function getWidth(input: unknown, fallback: number): number {
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--sidebar--font-family);
+		border-left: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+
+		/* Explicitly render the border outside of the width of the bar itself */
+		box-sizing: content-box;
 
 		.spacer {
 			flex-grow: 1;
@@ -522,7 +526,7 @@ function getWidth(input: unknown, fallback: number): number {
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 60px));
+			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
 		}
 
 		@media (min-width: 1260px) {

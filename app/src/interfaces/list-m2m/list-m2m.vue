@@ -629,7 +629,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--border-width) solid var(--border-subdued);
+				border-left: var(--theme--border-width) solid var(--border-subdued);
 			}
 		}
 	}
@@ -638,8 +638,8 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 <style lang="scss" scoped>
 .bordered {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius-outline);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	padding: var(--v-card-padding);
 }
 

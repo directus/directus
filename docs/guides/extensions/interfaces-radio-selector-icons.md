@@ -406,10 +406,10 @@ under the closing `script` tag:
 		width: 100%;
 		height: auto;
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--border-normal);
-		border-radius: var(--border-radius);
+		border: 2px solid var(--theme--form--field--input--border-color);
+		border-radius: var(--theme--border-radius);
         &:hover {
-            border-color: var(--border-normal-alt);
+            border-color: var(--theme--form--field--input--border-color-hover);
         }
 		&::before {
 			position: absolute;
@@ -418,7 +418,7 @@ under the closing `script` tag:
 			width: 100%;
 			height: 100%;
 			background-color: var(--background-subdued);
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			content: '';
 		}
 		.label {
@@ -733,10 +733,10 @@ export default {
 		width: 100%;
 		height: auto;
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--border-normal);
-		border-radius: var(--border-radius);
+		border: 2px solid var(--theme--form--field--input--border-color);
+		border-radius: var(--theme--border-radius);
         &:hover {
-            border-color: var(--border-normal-alt);
+            border-color: var(--theme--form--field--input--border-color-hover);
         }
 		&::before {
 			position: absolute;
@@ -745,7 +745,7 @@ export default {
 			width: 100%;
 			height: 100%;
 			background-color: var(--background-subdued);
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			content: '';
 		}
 		.label {

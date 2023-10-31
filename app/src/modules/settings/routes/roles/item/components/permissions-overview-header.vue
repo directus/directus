@@ -25,7 +25,7 @@ const { t } = useI18n();
 	display: flex;
 	padding: 12px;
 	background-color: var(--theme--form--field--input--background);
-	border-bottom: var(--border-width) solid var(--border-normal);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	.name {
 		flex-grow: 1;
