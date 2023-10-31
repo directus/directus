@@ -133,7 +133,7 @@ blockquote {
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
-	border-left: 2px solid ${cssVar('--border-normal')};
+	border-left: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-left: 1em;
 	margin-left: 0px;
 }
@@ -148,7 +148,7 @@ iframe {
 	border-radius: ${cssVar('--theme--border-radius')};
 }
 hr {
-	background-color: ${cssVar('--border-normal')};
+	background-color: ${cssVar('--theme--form--field--input--border-color')};
 	height: 1px;
 	border: none;
 	margin-top: 2em;
@@ -162,7 +162,7 @@ table {
 }
 table th,
 table td {
-	border: 1px solid ${cssVar('--border-normal')};
+	border: 1px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding: 0.4rem;
 }
 figure {
