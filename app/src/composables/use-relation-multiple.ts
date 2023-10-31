@@ -171,7 +171,7 @@ export function useRelationMultiple(
 						return (
 							itemCollection === editCollection &&
 							edit[relation.value.junctionField.field][editPkField] ===
-							item[relation.value.junctionField.field][itemPkField]
+								item[relation.value.junctionField.field][itemPkField]
 						);
 					}
 				}
@@ -206,7 +206,7 @@ export function useRelationMultiple(
 
 		function create(...items: Record<string, any>[]) {
 			for (const item of items) {
-				const finalItem = applySort(cleanItem(item))
+				const finalItem = applySort(cleanItem(item));
 
 				target.value.create.push(finalItem);
 			}
@@ -218,7 +218,7 @@ export function useRelationMultiple(
 			if (!relation.value) return;
 
 			for (const item of items) {
-				const finalItem = cleanItem(item)
+				const finalItem = cleanItem(item);
 
 				if (item.$type === undefined || item.$index === undefined) {
 					target.value.update.push(applySort(finalItem));
@@ -625,7 +625,6 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-
 		function applySort(item: Record<string, any>): Record<string, any> {
 			const sortField = relation.value?.sortField;
 
@@ -636,7 +635,6 @@ export function useRelationMultiple(
 				[sortField]: totalItemCount.value + 1,
 			};
 		}
-
 
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {

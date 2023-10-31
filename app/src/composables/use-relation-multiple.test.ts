@@ -514,7 +514,7 @@ describe('test m2a relation', () => {
 
 const relationO2MSort: RelationO2M = {
 	...relationO2M,
-	sortField: 'sort'
+	sortField: 'sort',
 };
 
 describe('test o2m relation with sort', () => {
@@ -542,7 +542,7 @@ describe('test o2m relation with sort', () => {
 				{
 					name: 'test5',
 					facility: 1,
-					sort: 5
+					sort: 5,
 				},
 			],
 			update: [],
@@ -569,7 +569,7 @@ describe('test o2m relation with sort', () => {
 			facility: 2,
 			$type: 'created',
 			$index: 0,
-			sort: 5
+			sort: 5,
 		});
 
 		await flushPromises();
@@ -584,7 +584,7 @@ describe('test o2m relation with sort', () => {
 				{
 					name: 'test5 edited',
 					facility: 2,
-					sort: 5
+					sort: 5,
 				},
 			],
 			update: [],
