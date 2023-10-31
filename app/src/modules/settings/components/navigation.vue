@@ -36,7 +36,7 @@ const dataItems = [
 
 const appItems = [
 	{
-		icon: 'settings',
+		icon: 'tune',
 		name: t('settings_project'),
 		to: `/settings/project`,
 	},
