@@ -740,7 +740,8 @@ export class ExtensionManager {
 	 */
 	private registerEndpoint(config: EndpointConfig, name: string): PromiseCallback {
 		const endpointRegistrationCallback = typeof config === 'function' ? config : config.handler;
-		const routeName = typeof config === 'function' ? name : config.id;
+		const nameWithoutType = name.includes(':') ? name.split(':')[0] : name;
+		const routeName = typeof config === 'function' ? nameWithoutType : config.id;
 
 		const scopedRouter = express.Router();
 

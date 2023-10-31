@@ -313,10 +313,10 @@ Sort by creation date descending\
 `-date_created`
 
 Sort by a "sort" field, followed by publish date descending\
-`sort, -publish_date`
+`sort,-publish_date`
 
 Sort by a "sort" field, followed by a nested author's name\
-`sort, -author.name`
+`sort,-author.name`
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
@@ -352,7 +352,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
-		sort: '-date_created', //Sort by creation date descending
+		sort: ['sort', '-date_created'], //Sort by sort field and creation date descending
 	})
 );
 ```
@@ -369,13 +369,16 @@ Set the maximum number of items that will be returned. The default limit is set 
 Get the first 200 items\
 `200`
 
-Get all items\
+Get the maximum allowed number of items\
 `-1`
 
-::: warning All Items
+::: warning Maximum Items
 
-Depending on the size of your collection, fetching unlimited data may result in degraded performance or timeouts, use
-with caution.
+Depending on the size of your collection, fetching the maximum amount of items may result in degraded performance or
+timeouts, use with caution.
+
+The maximum amount of items that can be requested on the API can be configured using the
+[`QUERY_LIMIT_MAX` variable](/self-hosted/config-options.html#general).
 
 :::
 
