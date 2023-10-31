@@ -104,6 +104,11 @@ const Rules = Type.Object({
 			backgroundActive: Type.Ref(Color),
 
 			fontFamily: Type.Ref(FamilyName),
+
+			divider: Type.Object({
+				borderColor: Type.Ref(Color),
+				borderWidth: Type.Ref(LineWidth),
+			}),
 		}),
 	}),
 

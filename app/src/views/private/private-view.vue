@@ -392,6 +392,7 @@ function getWidth(input: unknown, fallback: number): number {
 		&.is-open {
 			transform: translateX(0);
 		}
+
 		&.has-shadow {
 			box-shadow: var(--navigation-shadow);
 		}
@@ -414,6 +415,9 @@ function getWidth(input: unknown, fallback: number): number {
 				--v-list-item-background-color: var(--theme--navigation--list--background);
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
+
+				--v-divider-color: var(--theme--navigation--list--divider--border-color);
+				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
 				height: calc(100% - 64px);
 				overflow-x: hidden;

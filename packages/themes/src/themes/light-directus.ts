@@ -88,6 +88,11 @@ export const theme: Theme = {
 				backgroundActive: '#e4eaf1',
 
 				fontFamily: 'var(--theme--font-family-sans-serif)',
+
+				divider: {
+					borderColor: '#d3dae4',
+					borderWidth: 'var(--theme--border-width)',
+				},
 			},
 		},
 
