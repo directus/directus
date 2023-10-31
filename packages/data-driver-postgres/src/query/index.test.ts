@@ -217,7 +217,7 @@ test('statement with all filter on foreign field', () => {
 	};
 
 	expect(convertToActualStatement(clauses)).toEqual(
-		`SELECT "${rootCollection}"."${firstField}", "${rootCollection}"."${secondField}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" as ${joinAlias} ON ${joinAlias}.${targetField} = ${rootCollection}.${leftHandIdentifierField} WHERE "${foreignCollection}"."${targetField}" LIKE '$${
+		`SELECT "${rootCollection}"."${firstField}", "${rootCollection}"."${secondField}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" "${joinAlias}" ON "${foreignCollection}"."${targetField}" = "${rootCollection}"."${leftHandIdentifierField}" WHERE "${foreignCollection}"."${targetField}" LIKE '$${
 			parameterIndex + 1
 		}%';`
 	);
