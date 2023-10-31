@@ -4,6 +4,14 @@ export const theme: Theme = {
 	name: 'Dark (Directus)',
 	appearance: 'dark',
 	rules: {
+		fontFamilyDisplay: 'var(--theme--font-family-sans-serif)',
+		fontFamilySansSerif: '"Inter", system-ui',
+		fontFamilySerif: '"Merriweather", serif',
+		fontFamilyMonospace: '"Fira Mono", monospace',
+
+		borderRadius: '6px',
+		borderWidth: '2px',
+
 		foreground: '#c9d1d9',
 		foregroundAccent: '#f0f6fc',
 		foregroundSubdued: '#666672',
@@ -34,14 +42,6 @@ export const theme: Theme = {
 		dangerBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 10%)',
 		dangerSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 50%)',
 		dangerAccent: 'color-mix(in srgb, var(--theme--danger), #16151a 25%)',
-
-		fontFamilyDisplay: 'var(--theme--font-family-sans-serif)',
-		fontFamilySansSerif: '"Inter", system-ui',
-		fontFamilySerif: '"Merriweather", serif',
-		fontFamilyMonospace: '"Fira Mono", monospace',
-
-		borderRadius: '6px',
-		borderWidth: '2px',
 
 		navigation: {
 			background: '#21262e',
