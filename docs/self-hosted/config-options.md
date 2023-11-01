@@ -899,12 +899,12 @@ const publicUrl = process.env.PUBLIC_URL;
 
 ## Extensions
 
-| Variable                                 | Description                                                                              | Default Value  |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------- | -------------- |
-| `EXTENSIONS_PATH`                        | Path to your local extensions folder.                                                    | `./extensions` |
-| `EXTENSIONS_AUTO_RELOAD`<sup>[1]</sup> Ø | Automatically reload extensions when they have changed.                                  | `false`        |
-| `EXTENSIONS_CACHE_TTL`<sup>[2]</sup>     | How long custom app Extensions get cached by browsers.                                   | --             |
-| `EXTENSIONS_LOCATION`                    | What configured storage location to use for extensions. Defaults to the local filesystem | --             |
+| Variable                               | Description                                                                              | Default Value  |
+| -------------------------------------- | ---------------------------------------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`                      | Path to your local extensions folder.                                                    | `./extensions` |
+| `EXTENSIONS_AUTO_RELOAD`<sup>[1]</sup> | Automatically reload extensions when they have changed.                                  | `false`        |
+| `EXTENSIONS_CACHE_TTL`<sup>[2]</sup>   | How long custom app Extensions get cached by browsers.                                   | --             |
+| `EXTENSIONS_LOCATION`                  | What configured storage location to use for extensions. Defaults to the local filesystem | --             |
 
 <sup>[1]</sup> `EXTENSIONS_AUTO_RELOAD` will not work when the `EXTENSION_LOCATION` environment variable is set.
 
