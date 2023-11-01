@@ -158,8 +158,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 				to.name !== 'onboarding' &&
 				serverStore.info.showAdminOnboarding &&
 				userStore.currentUser.role.admin_access &&
-				!userStore.currentUser.onboarding &&
-				!userStore.skippedOnboarding
+				!userStore.currentUser.onboarding
 			) {
 				return { name: 'onboarding' };
 			}

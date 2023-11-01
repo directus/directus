@@ -5,12 +5,13 @@ import { useOnboarding } from './use-onboarding';
 const { t } = useI18n();
 
 const {
-	loading,
+	isLoading,
 	nextButtonDisabled,
 	validationErrors,
 	currentSlide,
 	progressPercent,
 	isFirstSlide,
+	isLastSlide,
 	nextSlide,
 	skipOnboarding,
 } = useOnboarding();
@@ -20,7 +21,7 @@ const {
 	<public-view wide>
 		<template #actions>
 			<Transition name="dialog">
-				<v-button v-if="!loading" secondary x-small kind="link" class="btn-skip" @click="skipOnboarding">
+				<v-button v-if="!isLoading" secondary x-small kind="link" class="btn-skip" @click="skipOnboarding">
 					{{ t('onboarding.action.skip') }}
 				</v-button>
 			</Transition>
@@ -29,7 +30,7 @@ const {
 		<div class="container">
 			<!-- Top Navbar -->
 			<div class="nav">
-				<v-progress-linear :value="progressPercent" rounded :indeterminate="loading" />
+				<v-progress-linear :value="progressPercent" rounded :indeterminate="isLoading" />
 			</div>
 
 			<!-- Content -->
@@ -59,7 +60,7 @@ const {
 				<div></div>
 				<!-- Right Actions -->
 				<div>
-					<v-button v-if="!loading" :disabled="nextButtonDisabled" @click="nextSlide">
+					<v-button v-if="!isLoading && !isLastSlide" :disabled="nextButtonDisabled" @click="nextSlide">
 						{{ isFirstSlide ? t('onboarding.action.first') : t('onboarding.action.saveAndContinue') }}
 					</v-button>
 				</div>

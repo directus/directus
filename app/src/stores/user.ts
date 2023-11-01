@@ -19,7 +19,6 @@ export const useUserStore = defineStore({
 	id: 'userStore',
 	state: () => ({
 		currentUser: null as User | ShareUser | null,
-		skippedOnboarding: false,
 		loading: false,
 		error: null,
 	}),

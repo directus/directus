@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/user';
 import { DeepPartial, Field, SettingsOnboarding, User, UserOnboarding } from '@directus/types';
 import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import { projectFields } from './fields/project';
 import { userFields } from './fields/user';
 
@@ -17,7 +18,7 @@ type OnboardingSlide = {
 		fields: DeepPartial<Field>[];
 		initialValues: FieldValues;
 	};
-	next?: (finishOnboarding: () => void) => Promise<any>;
+	next?: () => Promise<any>;
 };
 
 export function getSlides() {
@@ -25,6 +26,7 @@ export function getSlides() {
 	const settingsStore = useSettingsStore();
 	const userStore = useUserStore();
 	const serverStore = useServerStore();
+	const router = useRouter();
 
 	const projectModel = ref({
 		project_name: settingsStore.settings?.project_name,
@@ -83,7 +85,7 @@ export function getSlides() {
 				fields: userFields,
 				initialValues: userModel.value,
 			},
-			next: async function (finishOnboarding) {
+			next: async function () {
 				await api.patch(`/users/${currentUser.id}`, {
 					first_name: userModel.value.first_name,
 					last_name: userModel.value.last_name,
@@ -97,7 +99,10 @@ export function getSlides() {
 
 				await userStore.hydrate();
 
-				finishOnboarding();
+				// Proceed immediately and swallow any errors for seamless user experience
+				api.post(`/onboarding/${currentUser.id}/send`).catch(() => {});
+
+				router.replace('/content');
 			},
 		},
 		finish: {
