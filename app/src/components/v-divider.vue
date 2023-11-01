@@ -27,8 +27,9 @@ withDefaults(defineProps<Props>(), {
 
 <style>
 body {
-	--v-divider-color: var(--border-normal);
+	--v-divider-color: var(--theme--form--field--input--border-color);
 	--v-divider-label-color: var(--theme--foreground-accent);
+	--v-divider-thickness: var(--theme--border-width);
 }
 </style>
 
@@ -48,7 +49,7 @@ body {
 		margin-top: 8px;
 		border: solid;
 		border-color: var(--v-divider-color);
-		border-width: var(--border-width) 0 0 0;
+		border-width: var(--v-divider-thickness) 0 0 0;
 	}
 
 	span.wrapper {
@@ -98,7 +99,7 @@ body {
 		hr {
 			width: 0px;
 			max-width: 0px;
-			border-width: 0 var(--border-width) 0 0;
+			border-width: 0 var(--theme--border-width) 0 0;
 		}
 
 		span.wrapper {

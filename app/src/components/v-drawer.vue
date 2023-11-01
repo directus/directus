@@ -170,7 +170,6 @@ body {
 	}
 
 	.content {
-		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 		--form-vertical-gap: 52px;
@@ -247,7 +246,7 @@ body {
 
 	nav {
 		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	@media (min-width: 960px) {

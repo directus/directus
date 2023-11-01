@@ -143,12 +143,12 @@
 
 .mapboxgl-ctrl-geocoder--input {
 	color: var(--theme--foreground) !important;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
 	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .mapboxgl-ctrl-geocoder .suggestions > li > a {

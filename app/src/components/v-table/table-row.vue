@@ -87,7 +87,7 @@ const cssHeight = computed(() => {
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color);
-		border-bottom: var(--border-width) solid var(--border-subdued);
+		border-bottom: var(--theme--border-width) solid var(--border-subdued);
 
 		&:last-child {
 			padding: 0 12px;

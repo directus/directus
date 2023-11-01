@@ -45,7 +45,7 @@ services:
     volumes:
       - ./database:/directus/database
       - ./uploads:/directus/uploads
-			- ./extensions:/directus/extensions
+      - ./extensions:/directus/extensions
     environment:
       KEY: "replace-with-random-value"
       SECRET: "replace-with-random-value"

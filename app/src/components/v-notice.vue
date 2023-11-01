@@ -61,7 +61,7 @@ const iconName = computed(() => {
 	color: var(--v-notice-color);
 	line-height: 22px;
 	background-color: var(--v-notice-background-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	overflow: hidden;
 }
 

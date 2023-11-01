@@ -196,6 +196,14 @@ describe('sort', () => {
 
 		expect(sanitizedQuery.sort).toEqual(['field_a', 'field_b']);
 	});
+
+	test('should trim csv array results', () => {
+		const sort = 'field_a, field_b';
+
+		const sanitizedQuery = sanitizeQuery({ sort });
+
+		expect(sanitizedQuery.sort).toEqual(['field_a', 'field_b']);
+	});
 });
 
 describe('filter', () => {

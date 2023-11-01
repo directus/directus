@@ -519,7 +519,7 @@ function setFocus(val: boolean) {
 	height: var(--input-height-tall);
 	margin-bottom: 24px;
 	object-fit: cover;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .content {

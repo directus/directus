@@ -91,12 +91,13 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: var(--header-bar-height);
+	height: calc(var(--header-bar-height) + var(--theme--header--border-width));
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
 	box-shadow: 0;
 	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
+	border-bottom: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
 	.nav-toggle {
 		@media (min-width: 960px) {
@@ -191,7 +192,7 @@ onUnmounted(() => {
 
 	&.collapsed.shadow,
 	&.small.shadow {
-		box-shadow: var(--header-shadow);
+		box-shadow: var(--theme--header--box-shadow);
 
 		.title-container {
 			.headline {

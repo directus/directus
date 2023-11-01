@@ -149,7 +149,7 @@ function handleClick() {
 		border-color: var(--theme--primary-subdued);
 		border-style: solid;
 		border-width: 0px;
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		transition: border-width var(--fast) var(--transition);
 
 		&::after {

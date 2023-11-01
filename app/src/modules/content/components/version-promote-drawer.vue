@@ -283,7 +283,7 @@ function useTab() {
 	}
 
 	&.main {
-		border-radius: var(--border-radius) var(--border-radius) 0 0;
+		border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
 		&.active {
 			color: var(--theme--secondary);
 			background-color: var(--secondary-alt);
@@ -297,7 +297,7 @@ function useTab() {
 	}
 
 	&.current {
-		border-radius: 0 0 var(--border-radius) var(--border-radius);
+		border-radius: 0 0 var(--theme--border-radius) var(--theme--border-radius);
 		&.active {
 			color: var(--theme--primary);
 			background-color: var(--theme--primary-background);

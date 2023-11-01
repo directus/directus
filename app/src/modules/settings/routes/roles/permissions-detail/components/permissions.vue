@@ -71,7 +71,7 @@ const fields = computed(() => [
 		padding: 16px;
 		font-family: var(--theme--font-family-monospace);
 		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 }
 </style>

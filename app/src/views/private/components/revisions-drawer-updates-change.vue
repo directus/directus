@@ -58,7 +58,7 @@ const wholeThing = computed(() => {
 	position: relative;
 	width: 100%;
 	padding: 8px 12px 8px 40px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.v-icon {
 		position: absolute;
@@ -69,7 +69,7 @@ const wholeThing = computed(() => {
 	&.added {
 		color: var(--theme--success);
 		background-color: var(--success-alt);
-		border-radius: 0 0 var(--border-radius) var(--border-radius);
+		border-radius: 0 0 var(--theme--border-radius) var(--theme--border-radius);
 
 		.changed {
 			background-color: var(--success-25);
@@ -79,7 +79,7 @@ const wholeThing = computed(() => {
 	&.deleted {
 		color: var(--theme--danger);
 		background-color: var(--danger-alt);
-		border-radius: var(--border-radius) var(--border-radius) 0 0;
+		border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
 
 		.changed {
 			background-color: var(--danger-25);
@@ -89,7 +89,7 @@ const wholeThing = computed(() => {
 	&.updated {
 		color: var(--theme--warning);
 		background-color: var(--warning-alt);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 }
 
@@ -97,7 +97,7 @@ const wholeThing = computed(() => {
 	position: relative;
 	margin-right: 0.2em;
 	padding: 2px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .no-value {

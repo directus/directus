@@ -287,8 +287,8 @@ async function onClick(event: MouseEvent) {
 	line-height: var(--v-button-line-height);
 	text-decoration: none;
 	background-color: var(--v-button-background-color);
-	border: var(--border-width) solid var(--v-button-background-color);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--v-button-background-color);
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
@@ -320,7 +320,7 @@ async function onClick(event: MouseEvent) {
 .button:disabled {
 	color: var(--v-button-color-disabled);
 	background-color: var(--v-button-background-color-disabled);
-	border: var(--border-width) solid var(--v-button-background-color-disabled);
+	border: var(--theme--border-width) solid var(--v-button-background-color-disabled);
 	cursor: not-allowed;
 }
 
@@ -359,7 +359,6 @@ async function onClick(event: MouseEvent) {
 	--v-button-font-size: 12px;
 	--v-button-font-weight: 600;
 	--v-button-min-width: 60px;
-	--border-radius: 4px;
 
 	padding: 0 12px;
 }
