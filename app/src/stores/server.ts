@@ -40,6 +40,7 @@ export type Info = {
 		max: number;
 	};
 	showAdminOnboarding?: boolean;
+	telemetry?: boolean;
 };
 
 export type Auth = {
@@ -81,6 +82,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.showAdminOnboarding = serverInfoResponse.data.data?.showAdminOnboarding;
+		info.telemetry = serverInfoResponse.data.data?.telemetry;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
