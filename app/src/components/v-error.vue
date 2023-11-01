@@ -65,7 +65,7 @@ async function copyError() {
 	color: var(--theme--danger);
 	font-family: var(--theme--font-family-monospace);
 	background-color: var(--danger-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.copy-error {
 		margin-left: 12px;

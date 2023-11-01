@@ -95,7 +95,7 @@ const errorFormatted = computed(() => {
 	height: var(--input-height);
 	background-color: var(--background-normal);
 	border: $sso-link-border-width var(--background-normal) solid;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	.sso-icon {
@@ -105,7 +105,7 @@ const errorFormatted = computed(() => {
 		width: var(--input-height);
 		margin: -$sso-link-border-width;
 		background-color: var(--background-normal-alt);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 
 		span {
 			--v-icon-size: 28px;

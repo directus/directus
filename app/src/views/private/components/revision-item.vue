@@ -131,7 +131,7 @@ const user = computed(() => {
 		width: calc(100% + 32px);
 		height: calc(100% + 10px);
 		background-color: var(--background-normal-alt);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';

@@ -350,19 +350,19 @@ function useDragDrop() {
 
 	&.editing {
 		&.draggable {
-			border-color: var(--border-normal);
-			box-shadow: 0 0 0 1px var(--border-normal);
+			border-color: var(--theme--form--field--input--border-color);
+			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color);
 			cursor: move;
 		}
 
 		&.draggable:hover {
-			border-color: var(--border-normal-alt);
-			box-shadow: 0 0 0 1px var(--border-normal-alt);
+			border-color: var(--theme--form--field--input--border-color-hover);
+			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color-hover);
 		}
 
 		&.dragging {
 			z-index: 3 !important;
-			border-color: var(--theme--primary);
+			border-color: var(--theme--form--field--input--border-color-focus);
 			box-shadow: 0 0 0 1px var(--theme--primary);
 		}
 
@@ -389,9 +389,9 @@ function useDragDrop() {
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
-	border-top-right-radius: var(--border-radius-outline);
-	border-bottom-right-radius: var(--border-radius-outline);
-	border-top-left-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--theme--border-radius);
+	border-bottom-right-radius: var(--theme--border-radius);
+	border-top-left-radius: var(--theme--border-radius);
 	backdrop-filter: blur(3px);
 	background-color: rgba(var(--background-page-rgb), 0.5);
 	opacity: 0;
@@ -465,9 +465,9 @@ function useDragDrop() {
 	gap: 4px;
 	align-items: center;
 	padding: 7px;
-	border-top-right-radius: var(--border-radius-outline);
-	border-bottom-right-radius: var(--border-radius-outline);
-	border-bottom-left-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--theme--border-radius);
+	border-bottom-right-radius: var(--theme--border-radius);
+	border-bottom-left-radius: var(--theme--border-radius);
 	backdrop-filter: blur(3px);
 	background-color: rgba(var(--background-page-rgb), 0.5);
 }
@@ -540,18 +540,18 @@ function useDragDrop() {
 }
 
 .br-tl {
-	border-top-left-radius: var(--border-radius-outline);
+	border-top-left-radius: var(--theme--border-radius);
 }
 
 .br-tr {
-	border-top-right-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--theme--border-radius);
 }
 
 .br-br {
-	border-bottom-right-radius: var(--border-radius-outline);
+	border-bottom-right-radius: var(--theme--border-radius);
 }
 
 .br-bl {
-	border-bottom-left-radius: var(--border-radius-outline);
+	border-bottom-left-radius: var(--theme--border-radius);
 }
 </style>

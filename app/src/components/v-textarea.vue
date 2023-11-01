@@ -99,9 +99,11 @@ body {
 	min-height: var(--v-textarea-min-height);
 	max-height: var(--v-textarea-max-height);
 	background-color: var(--theme--form--field--input--background);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
-	transition: border-color var(--fast) var(--transition);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: border-color, box-shadow;
+	box-shadow: var(--theme--form--field--input--box-shadow);
 
 	.append,
 	.prepend {
@@ -137,13 +139,14 @@ body {
 	}
 
 	&:hover:not(.disabled) {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
+		box-shadow: var(--theme--form--field--input--box-shadow-hover);
 	}
 
 	&:focus:not(.disabled),
 	&:focus-within:not(.disabled) {
-		border-color: var(--theme--primary);
-		box-shadow: 0 0 16px -8px var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
 	}
 
 	textarea {
