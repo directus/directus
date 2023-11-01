@@ -47,6 +47,7 @@ const {
 							:initial-values="currentSlide.form.initialValues"
 							:fields="currentSlide.form.fields"
 							:validation-errors="validationErrors"
+							:loading="isLoading"
 							autofocus
 							:disabled-menu-options="['edit-raw']"
 						/>
