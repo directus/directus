@@ -1,3 +1,5 @@
+import { NESTED_EXTENSION_TYPES } from '@directus/extensions';
+import { ensureExtensionDirs } from '@directus/extensions/node';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
@@ -71,6 +73,8 @@ export const syncExtensions = async () => {
 	}
 
 	await queue.onIdle();
+
+	await ensureExtensionDirs(getExtensionsPath(), NESTED_EXTENSION_TYPES);
 
 	await setSyncStatus(SyncStatus.DONE);
 	messenger.publish(message, { ready: true });

@@ -10,7 +10,7 @@ import type {
 	OperationApiConfig,
 } from '@directus/extensions';
 import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/extensions';
-import { ensureExtensionDirs, generateExtensionsEntrypoint } from '@directus/extensions/node';
+import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
 	ActionHandler,
 	EmbedHandler,
@@ -176,7 +176,6 @@ export class ExtensionManager {
 	private async load(): Promise<void> {
 		try {
 			await syncExtensions();
-			await ensureExtensionDirs(getExtensionsPath(), NESTED_EXTENSION_TYPES);
 
 			this.extensions = await getExtensions();
 			this.extensionsSettings = await getExtensionsSettings(this.extensions);
