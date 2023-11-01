@@ -121,28 +121,30 @@ const logoURL = computed<string | null>(() => {
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
-			<svg v-if="!hasCustomBackground" viewBox="0 0 1152 1152" preserveAspectRatio="none" fill="none" class="fallback">
-				<rect width="1152" height="1152" :fill="colors.primary" />
-				<path
-					d="M1152 409.138C1148.61 406.92 1146.7 405.765 1146.7 405.765L6.87761e-07 958.424L-7.3277e-07 1152L506.681 1152C558.985 1126.93 614.88 1101.25 672.113 1074.95C839.401 998.085 1018.12 915.967 1152 828.591L1152 409.138Z"
-					:fill="colors.shades[0]"
-				/>
-				<path
-					d="M1152 159.866C1130.19 146.319 1114.45 138.98 1114.45 138.98L-6.09246e-07 759.421L-3.66364e-07 1152L88.7501 1152C131.867 1108.8 194.289 1054.33 281.936 993.927C371.847 931.97 507.23 864.306 651.138 792.382C828.097 703.939 1017.95 609.052 1152 510.407L1152 159.866Z"
-					:fill="colors.shades[1]"
-				/>
-				<path
-					d="M772.894 -0.000472457L-4.49523e-07 457.782L-5.22658e-07 953.071C22.142 919.082 94.6279 821.1 262.854 696.786C351.427 631.334 485.624 558.338 628.272 480.744C816.642 378.28 1019.75 267.8 1152 156.087L1152 -0.000477328L772.894 -0.000472457Z"
-					:fill="colors.shades[2]"
-				/>
-				<path
-					d="M286.365 -0.000483108L-1.73191e-07 176.373L2.43255e-06 662.21C33.488 615.87 106.028 529.959 243.326 424.909C331.205 357.671 464.771 281.956 606.749 201.473C720.914 136.756 840.519 68.9554 946.182 -0.000479285L286.365 -0.000483108Z"
-					:fill="colors.shades[3]"
-				/>
-				<path
-					d="M0.00195277 363.139C37.1564 313.499 107.096 233.66 228.181 137.623C281.94 94.9838 353.09 48.7594 432.872 9.43526e-06L0.00195595 0L0.00195277 363.139Z"
-					:fill="colors.shades[4]"
-				/>
+
+			<svg v-if="!hasCustomBackground" width="1152" height="1152" viewBox="0 0 1152 1152" preserveAspectRatio="none" fill="#000000" class="fallback" xmlns="http://www.w3.org/2000/svg">
+				<rect width="100%" height="100%" fill="#0E1C2F"/>
+				<g opacity="0.8" filter="url(#effect_0)">
+					<path
+						id="glow_2"
+						d="M1244.95 1024.64C1458.24 1232.7 1362.96 1641.34 1288.66 1819.65C1148.47 2092.65 792.036 2082.84 631.34 2043.82C514.214 2020.37 270.279 1854.02 231.549 1376.16C183.136 778.846 544.019 915.217 759.647 1223.22C975.275 1531.23 978.333 764.565 1244.95 1024.64Z"
+						:fill="colors.secondary"
+					/>
+				</g>
+				<g opacity="0.6" filter="url(#effect_0)">
+					<path
+						id="glow_1"
+						d="M619.661 1912.72C468.717 2211.44 -4.26421 2245.54 -221.887 2225.26C-564.154 2165.79 -675.964 1779.47 -689.086 1593.74C-704.037 1460.04 -608.551 1142.32 -106.997 941.082C519.946 689.531 496.915 1122.91 239.093 1457.52C-18.7299 1792.13 808.34 1539.33 619.661 1912.72Z"
+						:fill="colors.primary"
+					/>
+				</g>
+				<defs>
+					<filter id="effect_0" x="-200" y="-200" width="1552" height="1552" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+						<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+						<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+						<feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_397_96"/>
+					</filter>
+				</defs>
 			</svg>
 
 			<transition name="scale">
@@ -231,6 +233,23 @@ const logoURL = computed<string | null>(() => {
 			left: 0;
 			top: 0;
 			z-index: -1;
+
+			#glow_1 {
+				animation-name: floating_1;
+				animation-duration: 27s;
+				animation-iteration-count: infinite;
+				animation-timing-function: ease-in-out;
+				transform-origin: center center;
+			}
+
+			#glow_2 {
+				animation-name: floating_2;
+				animation-duration: 17s;
+				animation-iteration-count: infinite;
+				animation-timing-function: ease-in-out;
+				transform-origin: center center;
+			}
+
 		}
 
 		.foreground {
@@ -311,6 +330,45 @@ const logoURL = computed<string | null>(() => {
 			object-fit: contain;
 			object-position: center center;
 		}
+	}
+}
+
+@keyframes floating_1 {
+	0% {
+		transform: translate(0, 0px) rotate(0deg) scale(1.0, 1.0);
+	}
+	25% {
+		transform: translate(25%, -25%) rotate(45deg) scale(1.5, 1.0);
+	}
+	50% {
+		transform: translate(30%, -30%) rotate(0deg) scale(1.0, 1.5);
+	}
+	75% {
+		transform: translate(50%, 10%) rotate(25deg) scale(1.0, 1.5);
+	}
+	100% {
+		transform: translate(0, -0px) rotate(0deg) scale(1.0, 1.0);
+	}
+}
+
+@keyframes floating_2 {
+	0% {
+		transform: translate(0, 0px) rotate(0deg) scale(1.0, 1.0);
+	}
+	20% {
+		transform: translate(-10%, -25%) rotate(25deg) scale(1.5, 1.5);
+	}
+	40% {
+		transform: translate(0%, -15%) rotate(40deg) scale(1.5, 1.0);
+	}
+	60% {
+		transform: translate(-5%, -15%) rotate(30deg) scale(1.5, 1.5);
+	}
+	80% {
+		transform: translate(-10%, -30%) rotate(0deg) scale(2.5, 1.5);
+	}
+	100% {
+		transform: translate(0, -0px) rotate(0deg) scale(1.0, 1.0);
 	}
 }
 
