@@ -23,7 +23,10 @@ export const syncExtensions = async () => {
 
 	const message = `extensions-sync/${id}`;
 
-	if (isDone === false && isPrimaryProcess === false) {
+	if (isDone === true) {
+		logger.trace('Extensions syncing has already been completed.');
+		return;
+	} else if (isPrimaryProcess === false) {
 		logger.trace('Extensions already being synced to this machine from another process.');
 
 		/**
