@@ -81,7 +81,7 @@ header {
 	margin-bottom: 32px;
 	padding: 10px;
 	background-color: var(--theme--background);
-	border-bottom: var(--theme--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-subdued);
 }
 
 .container {

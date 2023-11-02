@@ -450,7 +450,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 .field {
 	&.v-input :deep(.input) {
-		border: var(--theme--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--theme--border-subdued);
 	}
 
 	&.v-input :deep(.input:hover) {

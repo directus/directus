@@ -368,8 +368,8 @@ function pointerLeave() {
 		}
 
 		&.subdued {
-			border-color: var(--border-subdued);
-			box-shadow: 0 0 0 1px var(--border-subdued);
+			border-color: var(--theme--border-subdued);
+			box-shadow: 0 0 0 1px var(--theme--border-subdued);
 
 			&::before {
 				box-shadow: 0 0 0 7px var(--background-subdued);

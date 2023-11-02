@@ -255,7 +255,7 @@ function emitValue() {
 			left: 2px;
 			width: auto;
 			height: 2px;
-			background-color: var(--border-subdued);
+			background-color: var(--theme--border-subdued);
 			content: '';
 			pointer-events: none;
 		}

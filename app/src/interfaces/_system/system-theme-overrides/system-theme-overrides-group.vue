@@ -77,7 +77,7 @@ const hasValue = computed(() => {
 	&:not(.root) {
 		.group-contents {
 			padding-left: 2ch;
-			border-left: 1px solid var(--border-subdued);
+			border-left: 1px solid var(--theme--border-subdued);
 		}
 	}
 }

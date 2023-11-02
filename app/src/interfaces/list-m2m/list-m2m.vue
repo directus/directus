@@ -629,7 +629,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--theme--border-width) solid var(--border-subdued);
+				border-left: var(--theme--border-width) solid var(--theme--border-subdued);
 			}
 		}
 	}
