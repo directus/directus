@@ -106,6 +106,9 @@ fields:
   - field: theme
     options:
       hidden: true
+    special:
+      - alias
+      - no-data
 
   - field: appearance
     interface: select-dropdown
