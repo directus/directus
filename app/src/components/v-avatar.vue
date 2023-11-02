@@ -29,7 +29,7 @@ const sizeClass = useSizeClass(props);
 
 <style>
 body {
-	--v-avatar-color: var(--background-normal);
+	--v-avatar-color: var(--theme--background-accent);
 	--v-avatar-size: 48px;
 }
 </style>

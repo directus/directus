@@ -252,7 +252,7 @@ img {
 	justify-content: center;
 	height: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	padding: 32px;
 
 	.v-icon {
@@ -378,7 +378,7 @@ img {
 }
 
 .fallback {
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	display: flex;
 	align-items: center;
 	justify-content: center;

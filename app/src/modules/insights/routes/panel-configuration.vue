@@ -353,7 +353,7 @@ const stageChanges = () => {
 }
 
 .field-configuration {
-	--v-button-background-color-disabled: var(--background-normal);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 	--columns: 1;
 
 	@media (min-width: 400px) {

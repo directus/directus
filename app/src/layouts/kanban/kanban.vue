@@ -219,7 +219,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			flex-direction: column;
 			width: 320px;
 			padding: 8px 0;
-			background-color: var(--background-normal);
+			background-color: var(--theme--background-accent);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
 			margin-right: 20px;
@@ -329,7 +329,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 					:deep(.v-chip) {
 						border: none;
-						background-color: var(--background-normal);
+						background-color: var(--theme--background-accent);
 						font-size: 12px;
 						font-weight: 600;
 						margin-top: 4px;

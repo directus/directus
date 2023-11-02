@@ -289,7 +289,7 @@ function useURLImport() {
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	border-radius: var(--theme--border-radius);
 
 	img {

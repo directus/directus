@@ -91,7 +91,7 @@ const user = computed(() => {
 			width: 12px;
 			height: 12px;
 			background-color: var(--theme--warning);
-			border: 2px solid var(--background-normal);
+			border: 2px solid var(--theme--background-accent);
 			border-radius: 8px;
 
 			&.create {

@@ -151,7 +151,7 @@ function useEdits() {
 .comment-item .content :deep(pre) {
 	padding: 2px 4px;
 	color: var(--theme--foreground);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	border-radius: var(--theme--border-radius);
 	margin: 2px 0;
 	font-family: var(--theme--font-family-monospace);
@@ -163,7 +163,7 @@ function useEdits() {
 .comment-item .content :deep(code) {
 	padding: 2px 4px;
 	color: var(--theme--foreground);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	border-radius: var(--theme--border-radius);
 	margin: 2px 0;
 	font-family: var(--theme--font-family-monospace);
@@ -214,7 +214,7 @@ function useEdits() {
 	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	font-size: 12px;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	border-radius: 12px;
 	transition: color var(--fast) var(--transition), background-color var(--fast) var(--transition);
 }

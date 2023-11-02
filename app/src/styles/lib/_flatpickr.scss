@@ -22,11 +22,11 @@
 }
 
 .flatpickr-calendar .flatpickr-calendar.arrowTop::after {
-	border-bottom-color: var(--background-normal);
+	border-bottom-color: var(--theme--background-accent);
 }
 
 .flatpickr-calendar.arrowBottom::after {
-	border-top-color: var(--background-normal);
+	border-top-color: var(--theme--background-accent);
 }
 
 .flatpickr-months .flatpickr-month {
@@ -34,7 +34,7 @@
 	align-items: center;
 	justify-content: center;
 	color: var(--theme--foreground-accent);
-	background: var(--background-normal);
+	background: var(--theme--background-accent);
 	fill: none;
 	padding: 20px 0;
 }
@@ -90,11 +90,11 @@
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 }
 
 .flatpickr-current-month .numInputWrapper {
-	background: var(--background-normal);
+	background: var(--theme--background-accent);
 	border-radius: var(--theme--border-radius);
 	transition: background var(--fast) var(--transition);
 }
@@ -123,7 +123,7 @@
 
 .flatpickr-weekdays {
 	padding: 10px 4px;
-	background: var(--background-normal);
+	background: var(--theme--background-accent);
 }
 
 .flatpickr-innerContainer,
@@ -306,7 +306,7 @@ span.flatpickr-weekday {
 
 .flatpickr-time input:hover,
 .flatpickr-time .flatpickr-am-pm:hover {
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 }
 
 .flatpickr-time input:focus,
@@ -329,5 +329,5 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-calendar .set-to-now-button:hover {
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 }

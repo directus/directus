@@ -319,14 +319,14 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-button--secondary {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--background-normal);
-	border-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
+	border-color: var(--theme--background-accent);
 }
 
 .tox .tox-button--secondary:hover:not(:disabled) {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--background-normal);
-	border-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
+	border-color: var(--theme--background-accent);
 }
 
 .tox .tox-button--naked {

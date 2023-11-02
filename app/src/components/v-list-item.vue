@@ -149,9 +149,9 @@ body {
 	--v-list-item-color: var(--v-list-color, var(--theme--foreground));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--theme--foreground));
 	--v-list-item-color-active: var(--v-list-color-active, var(--theme--foreground));
-	--v-list-item-background-color: var(--v-list-background-color, var(--background-normal));
-	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
-	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
+	--v-list-item-background-color: var(--v-list-background-color, var(--theme--background-accent));
+	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--theme--background-accent));
+	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--theme--background-accent));
 }
 </style>
 

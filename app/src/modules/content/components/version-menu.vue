@@ -426,7 +426,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	display: flex;
 	margin-left: 16px;
 	padding: 2px;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	color: var(--theme--foreground);
 	border-radius: 24px;
 

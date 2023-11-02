@@ -163,7 +163,7 @@ function toPage(page: number) {
 }
 
 .v-button {
-	--v-button-background-color-hover: var(--background-normal);
+	--v-button-background-color-hover: var(--theme--background-accent);
 	--v-button-background-color: var(--background-subdued);
 	--v-button-color: var(--theme--foreground);
 

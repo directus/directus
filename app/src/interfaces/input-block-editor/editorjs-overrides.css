@@ -1,5 +1,5 @@
 .codex-editor {
-	--bg-color: var(--background-normal) !important;
+	--bg-color: var(--theme--background-accent) !important;
 	--front-color: var(--theme--form--field--input--foreground) !important;
 	--border-color: var(--theme--form--field--input--border-color) !important;
 }
@@ -7,7 +7,7 @@
 .codex-editor .ce-toolbar__plus,
 .codex-editor .ce-toolbar__settings-btn {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-accent);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -106,7 +106,7 @@
 
 .codex-editor .image-tool--loading .image-tool__image,
 .codex-editor .ce-block--selected .ce-block__content {
-	background: var(--background-normal);
+	background: var(--theme--background-accent);
 }
 
 .codex-editor .image-tool--loading .image-tool__image {
@@ -236,7 +236,7 @@
 
 .codex-editor .ce-inline-tool-input {
 	color: var(--theme--primary);
-	background: var(--background-normal);
+	background: var(--theme--background-accent);
 	border-top-color: var(--theme--form--field--input--border-color);
 }
 
@@ -264,7 +264,7 @@
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
 	color: var(--theme--form--field--input--foreground);
-	background: var(--background-normal);
+	background: var(--theme--background-accent);
 	border-color: var(--theme--form--field--input--border-color);
 	box-shadow: unset;
 }
@@ -413,8 +413,8 @@
 }
 
 .codex-editor .tc-popover {
-	--color-background: var(--background-normal);
-	--color-border: var(--background-normal);
+	--color-background: var(--theme--background-accent);
+	--color-border: var(--theme--background-accent);
 	--color-background-hover: var(--background-normal-alt);
 }
 
@@ -436,7 +436,7 @@
 
 .codex-editor .tc-toolbox__toggler svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
-	fill: var(--background-normal) !important;
+	fill: var(--theme--background-accent) !important;
 	border-radius: var(--theme--border-radius);
 }
 
