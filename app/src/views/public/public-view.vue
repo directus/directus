@@ -122,30 +122,11 @@ const logoURL = computed<string | null>(() => {
 		</div>
 		<div class="art" :style="artStyles">
 
-			<svg v-if="!hasCustomBackground" width="1152" height="1152" viewBox="0 0 1152 1152" preserveAspectRatio="none" fill="#000000" class="fallback" xmlns="http://www.w3.org/2000/svg">
-				<rect width="100%" height="100%" fill="#0E1C2F"/>
-				<g opacity="0.8" filter="url(#effect_0)">
-					<path
-						id="glow_2"
-						d="M1244.95 1024.64C1458.24 1232.7 1362.96 1641.34 1288.66 1819.65C1148.47 2092.65 792.036 2082.84 631.34 2043.82C514.214 2020.37 270.279 1854.02 231.549 1376.16C183.136 778.846 544.019 915.217 759.647 1223.22C975.275 1531.23 978.333 764.565 1244.95 1024.64Z"
-						:fill="colors.secondary"
-					/>
-				</g>
-				<g opacity="0.6" filter="url(#effect_0)">
-					<path
-						id="glow_1"
-						d="M619.661 1912.72C468.717 2211.44 -4.26421 2245.54 -221.887 2225.26C-564.154 2165.79 -675.964 1779.47 -689.086 1593.74C-704.037 1460.04 -608.551 1142.32 -106.997 941.082C519.946 689.531 496.915 1122.91 239.093 1457.52C-18.7299 1792.13 808.34 1539.33 619.661 1912.72Z"
-						:fill="colors.primary"
-					/>
-				</g>
-				<defs>
-					<filter id="effect_0" x="-200" y="-200" width="1552" height="1552" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-						<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-						<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-						<feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_397_96"/>
-					</filter>
-				</defs>
-			</svg>
+			<div v-if="!hasCustomBackground" class="fallback">
+				<div id="glow_1"><div></div></div>
+				<div id="glow_2"><div></div></div>
+				<div id="glow_3"><div></div></div>
+			</div>
 
 			<transition name="scale">
 				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
@@ -227,27 +208,122 @@ const logoURL = computed<string | null>(() => {
 		background-size: cover;
 
 		.fallback {
+			position: absolute;
+			background-color: #0E1C2F;
 			width: 100%;
 			height: 100%;
-			position: absolute;
 			left: 0;
 			top: 0;
 			z-index: -1;
+			overflow: hidden;
 
 			#glow_1 {
-				animation-name: floating_1;
-				animation-duration: 27s;
-				animation-iteration-count: infinite;
-				animation-timing-function: ease-in-out;
-				transform-origin: center center;
+				position: absolute;
+				bottom: -25%;
+				left: -25%;
+				height: 50%;
+				width: 50%;
+				filter: blur(100px);
+				z-index: 3;
+				div {
+					content: "";
+					background-color: var(--theme--primary);
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					opacity: 0.5;
+					animation-name: floating_1;
+					animation-duration: 33s;
+					animation-iteration-count: infinite;
+					animation-timing-function: ease-in-out;
+					transform-origin: center center;
+				}
 			}
 
 			#glow_2 {
-				animation-name: floating_2;
-				animation-duration: 17s;
-				animation-iteration-count: infinite;
-				animation-timing-function: ease-in-out;
-				transform-origin: center center;
+				position: absolute;
+				bottom: -25%;
+				left: 15%;
+				height: 40%;
+				width: 60%;
+				filter: blur(150px);
+				z-index: 2;
+				div {
+					content: "";
+					background: linear-gradient(107.7deg, var(--theme--primary) 0%, var(--theme--secondary) 50%);
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					opacity: 0.7;
+					animation-name: floating_2;
+					animation-duration: 19s;
+					animation-iteration-count: infinite;
+					animation-timing-function: ease-in-out;
+					transform-origin: center center;
+				}
+			}
+
+			#glow_3 {
+				position: absolute;
+				bottom: -20%;
+				left: 75%;
+				height: 20%;
+				width: 40%;
+				filter: blur(50px);
+				z-index: 1;
+				div {
+					content: "";
+					background-color: var(--theme--primary);
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					opacity: 0.6;
+					animation-name: floating_3;
+					animation-duration: 27s;
+					animation-iteration-count: infinite;
+					animation-timing-function: ease-in-out;
+					transform-origin: center center;
+				}
+			}
+
+			@keyframes floating_1 {
+				0%   { transform: translate(00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+				10%  { transform: translate(25%, -20%) scale(1.5, 1.0) rotate(0deg); }
+				20%  { transform: translate(10%, -25%) scale(1.0, 1.5) rotate(0deg); }
+				30%  { transform: translate(00%, -20%) scale(1.0, 1.5) rotate(-45deg); }
+				40%  { transform: translate(10%, -30%) scale(1.0, 2.0) rotate(0deg); }
+				50%  { transform: translate(15%, -35%) scale(2.0, 0.5) rotate(45deg); }
+				60%  { transform: translate(10%, -30%) scale(1.0, 2.0) rotate(90deg); }
+				70%  { transform: translate(25%, -10%) scale(1.0, 1.5) rotate(45deg); }
+				80%  { transform: translate(40%,  20%) scale(1.5, 0.5) rotate(-45deg); }
+				90%  { transform: translate(15%, -20%) scale(2.0, 1.5) rotate(0deg); }
+				100% { transform: translate(00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+			}
+
+			@keyframes floating_2 {
+				0%   { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+				20%  { transform: translate(-10%, -05%) scale(1.5, 1.5) rotate(15deg); }
+				40%  { transform: translate( 00%, -15%) scale(2.0, 0.5) rotate(-45deg); }
+				60%  { transform: translate(-15%, -10%) scale(1.5, 1.0) rotate(45deg); }
+				80%  { transform: translate(-25%, -05%) scale(2.5, 0.5) rotate(180deg); }
+				100% { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+			}
+
+			@keyframes floating_3 {
+				0%   { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+				25%  { transform: translate(-10%, -10%) scale(2.0, 1.0) rotate(-15deg); }
+				50%  { transform: translate(-20%, -05%) scale(1.0, 0.5) rotate(45deg); }
+				75%  { transform: translate(-15%, -15%) scale(2.0, 1.5) rotate(180deg); }
+				100% { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
 			}
 
 		}
@@ -330,45 +406,6 @@ const logoURL = computed<string | null>(() => {
 			object-fit: contain;
 			object-position: center center;
 		}
-	}
-}
-
-@keyframes floating_1 {
-	0% {
-		transform: translate(0, 0px) rotate(0deg) scale(1.0, 1.0);
-	}
-	25% {
-		transform: translate(25%, -25%) rotate(45deg) scale(1.5, 1.0);
-	}
-	50% {
-		transform: translate(30%, -30%) rotate(0deg) scale(1.0, 1.5);
-	}
-	75% {
-		transform: translate(50%, 10%) rotate(25deg) scale(1.0, 1.5);
-	}
-	100% {
-		transform: translate(0, -0px) rotate(0deg) scale(1.0, 1.0);
-	}
-}
-
-@keyframes floating_2 {
-	0% {
-		transform: translate(0, 0px) rotate(0deg) scale(1.0, 1.0);
-	}
-	20% {
-		transform: translate(-10%, -25%) rotate(25deg) scale(1.5, 1.5);
-	}
-	40% {
-		transform: translate(0%, -15%) rotate(40deg) scale(1.5, 1.0);
-	}
-	60% {
-		transform: translate(-5%, -15%) rotate(30deg) scale(1.5, 1.5);
-	}
-	80% {
-		transform: translate(-10%, -30%) rotate(0deg) scale(2.5, 1.5);
-	}
-	100% {
-		transform: translate(0, -0px) rotate(0deg) scale(1.0, 1.0);
 	}
 }
 
