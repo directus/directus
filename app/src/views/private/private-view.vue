@@ -291,6 +291,7 @@ function getWidth(input: unknown, fallback: number): number {
 				:small="smallHeader || splitView"
 				:shadow="headerShadow || splitView"
 				show-sidebar-toggle
+				class="header"
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
 				@primary="navOpen = !navOpen"
@@ -440,16 +441,24 @@ function getWidth(input: unknown, fallback: number): number {
 		flex-grow: 1;
 		width: 100%;
 		height: 100%;
-		overflow: auto;
-		scroll-padding-top: 100px;
+
+		display: flex;
+		flex-direction: column;
 
 		/* Page Content Spacing (Could be converted to Project Setting toggle) */
 		font-size: 15px;
 		line-height: 24px;
 
-		.content-wrapper,
-		main {
+		.header {
+			flex-shrink: 0;
+		}
+
+		.content-wrapper {
 			display: contents;
+		}
+
+		main {
+			overflow: auto;
 		}
 
 		/* Offset for partially visible sidebar */
