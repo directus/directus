@@ -1,6 +1,19 @@
-import type { AbstractQueryFieldNodePrimitive, ActualConditionNodes } from '@directus/data';
-import type { ParameterTypes, AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from '../../../../types/index.js';
+import type {
+	AbstractQueryFieldNodeNestedTarget,
+	AbstractQueryFieldNodePrimitive,
+	ActualConditionNodes,
+} from '@directus/data';
+import type {
+	ParameterTypes,
+	AbstractSqlQueryFnNode,
+	AbstractSqlQuerySelectNode,
+	AbstractSqlClauses,
+	AbstractSqlQuery,
+	AbstractSqlQueryJoinNode,
+} from '../../../../types/index.js';
 import { convertFn } from '../../../functions.js';
+import { createJoin } from '../../../fields/create-join.js';
+import { createUniqueAlias } from '../../../../orm/create-unique-alias.js';
 
 /**
  * It adds the table name to the node.
@@ -42,4 +55,30 @@ export function convertTarget(
 	}
 
 	return target;
+}
+
+/**
+ * Convert a nested one target node into a join and where clause.
+ * @param nestedTarget
+ */
+export function convertNestedOneTarget(
+	currentCollection: string,
+	nestedTarget: AbstractQueryFieldNodeNestedTarget
+): {
+	target: AbstractSqlQuerySelectNode;
+	join: AbstractSqlQueryJoinNode;
+} {
+	const externalCollectionAlias = createUniqueAlias(nestedTarget.meta.join.foreign.collection);
+
+	return {
+		target: {
+			type: 'primitive',
+			// @ts-ignore the collection does not exist on AbstractQueryFieldNodeRelationalJoinAny
+			table: nestedTarget.meta.join.foreign.collection,
+			// @ts-ignore @TODO: fix this, why is there a type mismatch?
+			column: nestedTarget.field.field,
+		},
+		// @ts-ignore a2o and m2o mismatch
+		join: createJoin(currentCollection, nestedTarget.meta, externalCollectionAlias),
+	};
 }
