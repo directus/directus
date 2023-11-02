@@ -37,18 +37,7 @@ export const useUserStore = defineStore({
 
 			try {
 				const fields = [
-					'id',
-					'language',
-					'first_name',
-					'last_name',
-					'email',
-					'last_page',
-					'appearance',
-					'theme_light',
-					'theme_dark',
-					'theme_light_overrides',
-					'theme_dark_overrides',
-					'tfa_secret',
+					'*',
 					'avatar.id',
 					'role.admin_access',
 					'role.app_access',
