@@ -117,7 +117,11 @@ router.get(
 
 			throw new InvalidQueryError({ reason: `Only configured presets can be used in asset generation` });
 		} else {
-			if (transformation['key'] && systemKeys.includes(transformation['key'] as string) && Object.keys(transformation).length === 1) {
+			if (
+				transformation['key'] &&
+				systemKeys.includes(transformation['key'] as string) &&
+				Object.keys(transformation).length === 1
+			) {
 				return next();
 			}
 
@@ -153,7 +157,9 @@ router.get(
 		const vary = ['Origin', 'Cache-Control'];
 
 		const transformationPresets = res.locals['transformation'].key
-			? ((res.locals['shortcuts'] as TransformationParams[]).find((transformation) => transformation['key'] === res.locals['transformation'].key) ?? {})
+			? (res.locals['shortcuts'] as TransformationParams[]).find(
+					(transformation) => transformation['key'] === res.locals['transformation'].key
+			  ) ?? {}
 			: {};
 
 		const transformationParams: TransformationParams = { ...transformationPresets, ...res.locals['transformation'] };
