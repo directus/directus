@@ -244,8 +244,8 @@ async function send() {
 	margin-bottom: 8px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
+	background-color: var(--theme--background);
+	box-shadow: 0 0 4px 2px var(--theme--background);
 }
 
 .empty {

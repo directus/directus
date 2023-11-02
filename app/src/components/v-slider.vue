@@ -121,7 +121,7 @@ body {
 			width: 100%;
 			height: 4px;
 			padding: 8px 0;
-			background-color: var(--theme--background);
+			background-color: var(--theme--background-page);
 			background-image: var(--v-slider-track-background-image);
 			border-radius: 10px;
 			cursor: pointer;
@@ -149,7 +149,7 @@ body {
 				width: 8px;
 				height: 8px;
 				margin-top: -2px;
-				background: var(--theme--background);
+				background: var(--theme--background-page);
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;

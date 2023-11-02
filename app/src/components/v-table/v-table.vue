@@ -348,7 +348,7 @@ function updateSort(newSort: Sort) {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--theme--foreground);
-	--v-table-background-color: var(--theme--form--field--input--background);
+	--v-table-background-color: transparent;
 }
 
 .v-table {

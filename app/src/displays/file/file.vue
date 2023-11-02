@@ -67,7 +67,7 @@ img {
 	justify-content: center;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
 

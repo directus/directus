@@ -44,7 +44,7 @@ const { sidebarOpen } = toRefs(appStore);
 	width: 100%;
 	height: 60px;
 	color: var(--theme--foreground-accent);
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 
 	.icon {
 		display: flex;
@@ -64,7 +64,7 @@ const { sidebarOpen } = toRefs(appStore);
 	}
 
 	&.active {
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 	}
 }
 </style>

@@ -147,7 +147,7 @@ async function setupChart() {
 		labels,
 		colors,
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top,
 				bottom,
@@ -302,7 +302,7 @@ function checkMatchingConditionalFill(
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 

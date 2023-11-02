@@ -26,7 +26,7 @@
 		}
 
 		&:hover {
-			background: var(--background-normal) !important;
+			background: var(--theme--background) !important;
 		}
 
 		&.active {
@@ -133,7 +133,7 @@
 	font-size: inherit !important;
 	font-family: inherit !important;
 	line-height: inherit !important;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 
 	&,
 	&.suggestions {
@@ -158,7 +158,7 @@
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
 .mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
 	color: var(--v-list-item-color-active);
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .mapboxgl-ctrl-geocoder--button {

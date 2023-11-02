@@ -87,6 +87,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 		min-width: 5ch;
 		width: v-bind(valueLength);
 		max-width: 100%;
+		background: transparent;
 
 		&::placeholder {
 			color: var(--theme--form--field--input--foreground-subdued);

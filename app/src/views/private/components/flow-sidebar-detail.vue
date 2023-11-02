@@ -230,7 +230,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .v-icon {
