@@ -16,8 +16,10 @@ export const theme: Theme = {
 		foregroundAccent: '#f0f6fc',
 		foregroundSubdued: '#666672',
 
-		background: '#0d1117',
-		backgroundAccent: '#21262e',
+		backgroundPage: '#0d1117',
+
+		background: '#21262e',
+		backgroundAccent: '#30363d',
 		backgroundSubdued: '#161b22',
 
 		borderColor: '#21262e',
@@ -25,28 +27,28 @@ export const theme: Theme = {
 		borderColorSubdued: '#21262d',
 
 		primary: 'var(--project-color)',
-		primaryBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--primary) 10%)',
-		primarySubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--primary) 50%)',
+		primaryBackground: 'color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 10%)',
+		primarySubdued: 'color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 50%)',
 		primaryAccent: 'color-mix(in srgb, var(--theme--primary), #16151a 25%)',
 
 		secondary: '#ff99dd',
-		secondaryBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--secondary) 10%)',
-		secondarySubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--secondary) 50%)',
+		secondaryBackground: 'color-mix(in srgb, var(--theme--background-page), var(--theme--secondary) 10%)',
+		secondarySubdued: 'color-mix(in srgb, var(--theme--background-page), var(--theme--secondary) 50%)',
 		secondaryAccent: 'color-mix(in srgb, var(--theme--secondary), #16151a 25%)',
 
 		success: '#2ecda7',
-		successBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--success) 10%)',
-		successSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--success) 50%)',
+		successBackground: 'color-mix(in srgb, var(--theme--background-page), var(--theme--success) 10%)',
+		successSubdued: 'color-mix(in srgb, var(--theme--background-page), var(--theme--success) 50%)',
 		successAccent: 'color-mix(in srgb, var(--theme--success), #16151a 25%)',
 
 		warning: '#ffa439',
-		warningBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--warning) 10%)',
-		warningSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--warning) 50%)',
+		warningBackground: 'color-mix(in srgb, var(--theme--background-page), var(--theme--warning) 10%)',
+		warningSubdued: 'color-mix(in srgb, var(--theme--background-page), var(--theme--warning) 50%)',
 		warningAccent: 'color-mix(in srgb, var(--theme--warning), #16151a 25%)',
 
 		danger: '#e35169',
-		dangerBackground: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 10%)',
-		dangerSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 50%)',
+		dangerBackground: 'color-mix(in srgb, var(--theme--background-page), var(--theme--danger) 10%)',
+		dangerSubdued: 'color-mix(in srgb, var(--theme--background-page), var(--theme--danger) 50%)',
 		dangerAccent: 'color-mix(in srgb, var(--theme--danger), #16151a 25%)',
 
 		navigation: {
@@ -65,7 +67,7 @@ export const theme: Theme = {
 			},
 
 			modules: {
-				background: 'var(--theme--background)',
+				background: 'var(--theme--background-page)',
 				borderColor: 'transparent',
 				borderWidth: '0px',
 
@@ -105,7 +107,7 @@ export const theme: Theme = {
 		},
 
 		header: {
-			background: 'var(--theme--background)',
+			background: 'var(--theme--background-page)',
 			borderColor: 'transparent',
 			borderWidth: '0px',
 			boxShadow: '0 4px 7px -4px rgb(var(--black) / 0.2)',
@@ -126,7 +128,7 @@ export const theme: Theme = {
 					fontFamily: 'var(--theme--font-family-sans-serif)',
 				},
 				input: {
-					background: 'var(--theme--background)',
+					background: 'var(--theme--background-page)',
 					foreground: 'var(--theme--foreground)',
 					foregroundSubdued: 'var(--theme--foreground-subdued)',
 

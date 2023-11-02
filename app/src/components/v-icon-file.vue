@@ -17,7 +17,7 @@ defineProps<Props>();
 <style lang="scss" scoped>
 :global(body) {
 	--v-icon-file-color: var(--theme--primary);
-	--v-icon-file-background-color: var(--theme--background-accent);
+	--v-icon-file-background-color: var(--theme--background);
 }
 
 .icon {

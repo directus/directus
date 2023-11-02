@@ -107,7 +107,7 @@ function setIcon(icon: string | null) {
 	}
 
 	.v-divider {
-		--v-divider-color: var(--theme--background-accent);
+		--v-divider-color: var(--theme--background);
 
 		margin: 0 22px;
 	}

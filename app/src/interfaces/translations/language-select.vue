@@ -120,7 +120,7 @@ const displayValue = computed(() => {
 		}
 
 		&:hover {
-			background-color: var(--theme--background-accent);
+			background-color: var(--theme--background);
 		}
 
 		.dot {

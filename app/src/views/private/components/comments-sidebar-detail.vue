@@ -200,8 +200,8 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	margin-bottom: 2px;
 	padding-top: 4px;
 	padding-bottom: 4px;
-	background-color: var(--theme--background-accent);
-	box-shadow: 0 0 4px 2px var(--theme--background-accent);
+	background-color: var(--theme--background);
+	box-shadow: 0 0 4px 2px var(--theme--background);
 	--v-divider-label-color: var(--theme--foreground-subdued);
 }
 

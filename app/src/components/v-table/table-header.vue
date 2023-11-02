@@ -441,7 +441,7 @@ function toggleManualSort() {
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
-	border: var(--theme--background) 6px solid;
+	border: var(--theme--background-page) 6px solid;
 	box-sizing: content-box;
 	margin-right: 8px;
 	vertical-align: middle;

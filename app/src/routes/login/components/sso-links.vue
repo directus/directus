@@ -93,8 +93,8 @@ const errorFormatted = computed(() => {
 	display: flex;
 	width: 100%;
 	height: var(--input-height);
-	background-color: var(--theme--background-accent);
-	border: $sso-link-border-width var(--theme--background-accent) solid;
+	background-color: var(--theme--background);
+	border: $sso-link-border-width var(--theme--background) solid;
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 

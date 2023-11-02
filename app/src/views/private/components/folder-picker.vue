@@ -143,7 +143,7 @@ function parseFolder(id: string) {
 
 <style lang="scss" scoped>
 :global(body) {
-	--folder-picker-background-color: var(--theme--background-accent);
+	--folder-picker-background-color: var(--theme--background);
 	--folder-picker-color: var(--background-normal-alt);
 }
 

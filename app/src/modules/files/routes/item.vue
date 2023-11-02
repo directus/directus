@@ -373,7 +373,7 @@ function useMovetoFolder() {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--theme--background-accent);
+	--v-button-background-color: var(--theme--background);
 }
 
 .file-item {

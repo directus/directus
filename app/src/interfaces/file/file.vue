@@ -289,7 +289,7 @@ function useURLImport() {
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--theme--background-accent);
+	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 
 	img {
@@ -304,7 +304,6 @@ function useURLImport() {
 
 	&.is-svg {
 		padding: 4px;
-		background-color: var(--background-normal-alt);
 
 		img {
 			object-fit: contain;

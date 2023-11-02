@@ -30,6 +30,8 @@ const Rules = Type.Object({
 	foregroundSubdued: Type.Ref(Color),
 	foregroundAccent: Type.Ref(Color),
 
+	backgroundPage: Type.Ref(Color),
+
 	background: Type.Ref(Color),
 	backgroundAccent: Type.Ref(Color),
 	backgroundSubdued: Type.Ref(Color),

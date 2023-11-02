@@ -187,7 +187,7 @@ async function onClick(event: MouseEvent) {
 	--v-button-background-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-accent);
 	--v-button-background-color-active: var(--theme--primary);
-	--v-button-background-color-disabled: var(--theme--background-accent);
+	--v-button-background-color-disabled: var(--theme--background);
 	--v-button-font-size: 16px;
 	--v-button-font-weight: 600;
 	--v-button-line-height: 22px;
@@ -236,8 +236,8 @@ async function onClick(event: MouseEvent) {
 }
 
 .secondary.rounded {
-	--v-button-background-color: var(--theme--background-accent);
-	--v-button-background-color-active: var(--theme--background-accent);
+	--v-button-background-color: var(--theme--background);
+	--v-button-background-color-active: var(--theme--background);
 	--v-button-background-color-hover: var(--background-normal-alt);
 }
 

@@ -50,7 +50,7 @@ withDefaults(defineProps<Props>(), {
 
 .info .icon {
 	color: var(--theme--foreground-subdued);
-	background-color: var(--theme--background-accent);
+	background-color: var(--theme--background);
 }
 
 .success .icon {

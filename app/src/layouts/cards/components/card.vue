@@ -145,7 +145,7 @@ function handleClick() {
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		background-color: var(--theme--background-accent);
+		background-color: var(--theme--background);
 		border-color: var(--theme--primary-subdued);
 		border-style: solid;
 		border-width: 0px;
@@ -220,7 +220,7 @@ function handleClick() {
 		z-index: 2;
 		width: 18px;
 		height: 18px;
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-page);
 		border-radius: 24px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);

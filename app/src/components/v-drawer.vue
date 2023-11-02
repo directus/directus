@@ -145,7 +145,7 @@ body {
 	width: 100%;
 	max-width: var(--v-drawer-max-width);
 	height: 100%;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 
 	.cancel {
 		display: none;
@@ -163,9 +163,9 @@ body {
 	}
 
 	.header-icon {
-		--v-button-background-color: var(--theme--background-accent);
-		--v-button-background-color-active: var(--theme--background-accent);
-		--v-button-background-color-hover: var(--background-normal-alt);
+		--v-button-background-color: var(--theme--background);
+		--v-button-background-color-active: var(--theme--background);
+		--v-button-background-color-hover: var(--theme--background);
 		--v-button-color-disabled: var(--theme--foreground);
 	}
 
@@ -195,7 +195,7 @@ body {
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
-				background-color: var(--theme--background-accent);
+				background-color: var(--theme--background);
 			}
 
 			.sidebar-content {
