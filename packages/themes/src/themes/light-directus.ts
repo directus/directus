@@ -50,7 +50,9 @@ export const theme: Theme = {
 		dangerAccent: 'color-mix(in srgb, var(--theme--danger), #2e3c43 25%)',
 
 		navigation: {
-			background: 'var(--theme--background-accent)',
+			background: '#f0f4f9',
+			backgroundAccent: '#e4eaf1',
+
 			borderColor: 'transparent',
 			borderWidth: '0px',
 

@@ -204,7 +204,7 @@ function setUpChart() {
 			enabled: false,
 		},
 		grid: {
-			borderColor: 'var(--theme--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: isSparkline ? (props.showHeader && 0) || 5 : (props.showHeader && -20) || -2,
 				bottom: isSparkline ? 5 : 0,

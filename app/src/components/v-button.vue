@@ -230,7 +230,7 @@ async function onClick(event: MouseEvent) {
 	--v-button-color: var(--theme--foreground);
 	--v-button-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--theme--foreground);
-	--v-button-background-color: var(--theme--border-subdued);
+	--v-button-background-color: var(--theme--border-color-subdued);
 	--v-button-background-color-hover: var(--background-normal-alt);
 	--v-button-background-color-active: var(--background-normal-alt);
 }

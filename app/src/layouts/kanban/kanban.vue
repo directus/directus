@@ -385,7 +385,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 	.add-group {
 		cursor: pointer;
 		padding: 8px 8px;
-		border: var(--theme--border-width) dashed var(--theme--border-subdued);
+		border: var(--theme--border-width) dashed var(--theme--border-color-subdued);
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);
 

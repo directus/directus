@@ -251,7 +251,7 @@ const steps = computed(() => {
 			width: var(--theme--border-width);
 			left: -11px;
 			top: 0;
-			background-color: var(--theme--border-subdued);
+			background-color: var(--theme--border-color-subdued);
 			height: 100%;
 		}
 

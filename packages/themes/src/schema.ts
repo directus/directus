@@ -67,6 +67,8 @@ const Rules = Type.Object({
 	// Scopes
 	navigation: Type.Object({
 		background: Type.Ref(Color),
+		backgroundAccent: Type.Ref(Color),
+
 		borderWidth: Type.Ref(LineWidth),
 		borderColor: Type.Ref(Color),
 

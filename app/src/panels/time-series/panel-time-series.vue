@@ -192,7 +192,7 @@ function setupChart() {
 			},
 		},
 		grid: {
-			borderColor: 'var(--theme--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: props.showHeader ? -20 : -4,
 				bottom: 0,

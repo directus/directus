@@ -129,7 +129,7 @@ function isLoading(action: string) {
 	}
 
 	& + .permissions-overview-row {
-		border-top: var(--theme--border-width) solid var(--theme--border-subdued);
+		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

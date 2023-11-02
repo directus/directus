@@ -147,7 +147,7 @@ async function setupChart() {
 		labels,
 		colors,
 		grid: {
-			borderColor: 'var(--theme--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top,
 				bottom,
