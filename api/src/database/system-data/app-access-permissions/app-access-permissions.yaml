@@ -107,3 +107,8 @@
     - tfa_secret
     - status
     - role
+
+    # This is a temporary field to help people migrate from
+    # 10.6.4 to 10.7.0 and should be removed in 10.7.3
+    # @TODO remove
+    - theme

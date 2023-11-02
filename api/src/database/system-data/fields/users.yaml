@@ -100,16 +100,6 @@ fields:
       - no-data
     width: full
 
-  # This is a temporary field to help people migrate from
-  # 10.6.4 to 10.7.0 and should be removed in 10.7.3
-  # @TODO remove
-  - field: theme
-    options:
-      hidden: true
-    special:
-      - alias
-      - no-data
-
   - field: appearance
     interface: select-dropdown
     options:
