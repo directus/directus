@@ -107,29 +107,10 @@ describe('getters', () => {
 
 describe('actions', () => {
 	describe('hydrate', () => {
-		test('should fetch required fields and set current user as the returned value', async () => {
+		test('should fetch user fields and set current user as the returned value', async () => {
 			const userStore = useUserStore();
 			await userStore.hydrate();
-
-			const requiredFields = [
-				'id',
-				'language',
-				'first_name',
-				'last_name',
-				'email',
-				'last_page',
-				'appearance',
-				'theme_light',
-				'theme_dark',
-				'tfa_secret',
-				'avatar.id',
-				'role.admin_access',
-				'role.app_access',
-				'role.id',
-				'role.enforce_tfa',
-			];
-
-			expect(userStore.currentUser).toEqual(pick(mockAdminUser, requiredFields));
+			expect(userStore.currentUser).toEqual(mockAdminUser);
 		});
 	});
 
