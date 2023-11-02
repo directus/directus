@@ -231,14 +231,14 @@ async function onClick(event: MouseEvent) {
 	--v-button-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--theme--foreground);
 	--v-button-background-color: var(--theme--border-color-subdued);
-	--v-button-background-color-hover: var(--background-normal-alt);
-	--v-button-background-color-active: var(--background-normal-alt);
+	--v-button-background-color-hover: var(--theme--background-accent);
+	--v-button-background-color-active: var(--theme--background-accent);
 }
 
 .secondary.rounded {
 	--v-button-background-color: var(--theme--background);
 	--v-button-background-color-active: var(--theme--background);
-	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-background-color-hover: var(--theme--background-accent);
 }
 
 .warning.rounded {

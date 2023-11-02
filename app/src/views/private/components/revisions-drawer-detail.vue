@@ -91,7 +91,7 @@ defineExpose({
 }
 
 .v-divider {
-	--v-divider-color: var(--background-normal-alt);
+	--v-divider-color: var(--theme--background-accent);
 
 	position: sticky;
 	top: 0;

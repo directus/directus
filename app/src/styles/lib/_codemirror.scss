@@ -525,10 +525,10 @@ div.CodeMirror-dragcursors {
 }
 
 .CodeMirror-selected {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 .CodeMirror-focused .CodeMirror-selected {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 .CodeMirror-crosshair {
 	cursor: crosshair;
@@ -536,12 +536,12 @@ div.CodeMirror-dragcursors {
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 .CodeMirror-line::-moz-selection,
 .CodeMirror-line > span::-moz-selection,
 .CodeMirror-line > span > span::-moz-selection {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 .cm-searching {

@@ -135,7 +135,7 @@ function getLinkForItem(item: any) {
 	}
 
 	&:not(.subdued):active::before {
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 	}
 }
 

@@ -184,8 +184,8 @@ body {
 		line-height: 24px;
 
 		.sidebar {
-			--v-list-item-background-color-hover: var(--background-normal-alt);
-			--v-list-item-background-color-active: var(--background-normal-alt);
+			--v-list-item-background-color-hover: var(--theme--background-accent);
+			--v-list-item-background-color-active: var(--theme--background-accent);
 
 			display: none;
 

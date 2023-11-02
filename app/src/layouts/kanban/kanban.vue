@@ -260,7 +260,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					text-align: center;
 					font-size: 12px;
 					line-height: 20px;
-					background-color: var(--background-normal-alt);
+					background-color: var(--theme--background-accent);
 					border-radius: 12px; //var(--theme--border-radius);
 				}
 

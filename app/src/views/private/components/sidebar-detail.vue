@@ -51,7 +51,7 @@ const { sidebarOpen } = toRefs(appStore);
 .sidebar-detail {
 	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
-	--v-badge-border-color: var(--background-normal-alt);
+	--v-badge-border-color: var(--theme--background-accent);
 	--v-badge-background-color: var(--theme--primary);
 	--v-badge-color: var(--theme--background);
 

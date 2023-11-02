@@ -435,7 +435,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	}
 
 	&:hover {
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 	}
 
 	&.main {

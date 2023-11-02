@@ -202,7 +202,7 @@ const steps = computed(() => {
 		z-index: 1;
 		width: calc(100% + 8px);
 		height: calc(100% + 8px);
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -215,7 +215,7 @@ const steps = computed(() => {
 
 		.header {
 			.dot {
-				border-color: var(--background-normal-alt);
+				border-color: var(--theme--background-accent);
 			}
 		}
 

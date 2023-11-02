@@ -86,7 +86,7 @@
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
@@ -106,7 +106,7 @@
 }
 
 .flatpickr-current-month .numInputWrapper:hover {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 .flatpickr-current-month .numInputWrapper {
@@ -187,7 +187,7 @@ span.flatpickr-weekday {
 .flatpickr-day.today:hover,
 .flatpickr-day.today:focus {
 	color: var(--theme--foreground);
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 	border-color: var(--theme--primary);
 }
 

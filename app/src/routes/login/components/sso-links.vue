@@ -104,7 +104,7 @@ const errorFormatted = computed(() => {
 		justify-content: center;
 		width: var(--input-height);
 		margin: -$sso-link-border-width;
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 
 		span {
@@ -120,7 +120,7 @@ const errorFormatted = computed(() => {
 	}
 
 	&:hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--theme--background-accent);
 	}
 
 	& + & {

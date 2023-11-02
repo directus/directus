@@ -272,7 +272,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-collection--list .tox-collection__item--enabled,
 .tox .tox-collection--list .tox-collection__item--active {
 	color: var(--theme--form--field--input--foreground) !important;
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 }
 
 .tox .tox-collection__item-label {
@@ -370,15 +370,15 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog__body-nav-item:hover {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .tox .tox-dialog__body-nav-item--active {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .tox .tox-dialog__body-nav-item--active:focus {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .tox .tox-pop__dialog,

@@ -269,7 +269,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .download-local {
