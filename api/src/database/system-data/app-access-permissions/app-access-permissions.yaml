@@ -108,7 +108,7 @@
     - status
     - role
 
-    # This is a temporary field to help people migrate from
-    # 10.6.4 to 10.7.0 and should be removed in 10.7.3
+    # This is a temporary allowed field to help people migrate from
+    # 10.6 to 10.7 and should be removed in 10.8
     # @TODO remove
     - theme
