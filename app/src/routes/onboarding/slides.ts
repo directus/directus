@@ -3,6 +3,7 @@ import { FieldValues } from '@/components/v-form/types';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
+import { translate } from '@/utils/translate-object-values';
 import { DeepPartial, Field, SettingsOnboarding, User, UserOnboarding } from '@directus/types';
 import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -59,7 +60,7 @@ export function getSlides() {
 				text: t('onboarding.project.text'),
 				form: {
 					model: projectModel,
-					fields: projectFields,
+					fields: translate(projectFields),
 					initialValues: projectModel.value,
 				},
 				next: async function () {
@@ -82,7 +83,7 @@ export function getSlides() {
 			text: t('onboarding.user.text'),
 			form: {
 				model: userModel,
-				fields: userFields,
+				fields: translate(userFields),
 				initialValues: userModel.value,
 			},
 			next: async function () {
