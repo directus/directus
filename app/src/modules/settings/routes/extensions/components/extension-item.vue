@@ -49,6 +49,7 @@ const toggleEnabled = async () => {
 	<v-list-item block :class="{ disabled: !extension.meta.enabled }">
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content class="monospace">{{ extension.name }}</v-list-item-content>
+		<v-chip v-if="extension.schema?.version" class="label" small>{{ extension.schema.version }}</v-chip>
 
 		<template v-if="extension.schema?.type !== 'bundle'">
 			<v-progress-circular v-if="changingEnabledState" indeterminate />
@@ -88,5 +89,9 @@ const toggleEnabled = async () => {
 
 .options {
 	margin-left: 12px;
+}
+
+.label {
+	margin-right: 8px;
 }
 </style>
