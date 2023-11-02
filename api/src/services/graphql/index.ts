@@ -1986,6 +1986,8 @@ export class GraphQLService {
 						},
 					}),
 				},
+				showAdminOnboarding: GraphQLBoolean,
+				telemetry: GraphQLBoolean,
 			});
 		}
 
