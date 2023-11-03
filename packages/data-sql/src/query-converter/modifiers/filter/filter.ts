@@ -1,4 +1,4 @@
-import type { AbstractQueryConditionNode, AbstractQueryFilterNode } from '@directus/data';
+import type { AbstractQueryConditionNode, AbstractQueryFilterNode, AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQuery } from '../../../types/index.js';
 import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
@@ -30,7 +30,10 @@ export const convertFilter = (
 	} else if (filter.type === 'negate') {
 		return convertFilter(filter.childNode, collection, generator, !negate);
 	} else if (filter.type === 'logical') {
-		const children = filter.childNodes.map((childNode) => convertFilter(childNode, collection, generator, false));
+		const children = filter.childNodes.map((childNode) =>
+			convertFilter(childNode, collection, generator, false)
+		) as AtLeastOneElement<FilterResult>;
+
 		return convertLogical(children, filter.operator, negate);
 	} else {
 		throw new Error(`Unknown filter type`);

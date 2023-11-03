@@ -2,6 +2,7 @@ import { expect, test, beforeEach } from 'vitest';
 import { convertLogical } from './logical.js';
 import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 import type { FilterResult } from './filter.js';
+import type { AtLeastOneElement } from '@directus/data';
 
 // first condition (with nested target)
 let localCollection: string;
@@ -25,7 +26,7 @@ beforeEach(() => {
 });
 
 test('Convert logical node with two conditions', () => {
-	const children: FilterResult[] = [
+	const children: AtLeastOneElement<FilterResult> = [
 		{
 			clauses: {
 				where: {
