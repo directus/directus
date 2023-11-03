@@ -1,15 +1,19 @@
-import type { WhereUnion } from '../../../types/index.js';
+import type { FilterResult } from './filter.js';
 
-export function convertLogical(children: WhereUnion[], operator: 'and' | 'or', negate: boolean): WhereUnion {
-	const childNodes = children.map((child) => child.where);
+export function convertLogical(children: FilterResult[], operator: 'and' | 'or', negate: boolean): FilterResult {
+	const childWhereClauses = children.map((child) => child.clauses.where);
 	const parameters = children.flatMap((child) => child.parameters);
+	const joins = children.flatMap((child) => child.clauses.joins);
 
 	return {
-		where: {
-			type: 'logical',
-			negate,
-			operator,
-			childNodes,
+		clauses: {
+			where: {
+				type: 'logical',
+				negate,
+				operator,
+				childNodes: childWhereClauses,
+			},
+			joins,
 		},
 		parameters,
 	};
