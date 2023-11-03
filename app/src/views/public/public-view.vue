@@ -120,6 +120,7 @@ const logoURL = computed<string | null>(() => {
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
+		background: var(--theme--public--background);
 
 		/* Page Content Spacing */
 		font-size: 15px;

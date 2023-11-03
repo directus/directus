@@ -192,6 +192,8 @@ const Rules = Type.Object({
 	}),
 
 	public: Type.Object({
+		background: Type.Ref(Color),
+
 		art: Type.Object({
 			background: Type.Ref(Color),
 			primary: Type.Ref(Color),

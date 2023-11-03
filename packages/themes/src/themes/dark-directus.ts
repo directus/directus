@@ -175,6 +175,8 @@ export const theme: Theme = {
 		},
 
 		public: {
+			background: 'var(--theme--background-page)',
+
 			art: {
 				background: '#0e1c2f',
 				primary: 'var(--theme--primary)',
