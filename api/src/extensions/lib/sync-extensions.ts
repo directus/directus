@@ -3,6 +3,7 @@ import { ensureExtensionDirs } from '@directus/extensions/node';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
+import { uptime } from 'node:os';
 import { dirname, join, normalize, resolve } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
@@ -12,6 +13,7 @@ import { getMessenger } from '../../messenger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
+import { getSyncTimestamp, setSyncTimestamp } from './sync-timestamp.js';
 
 export const syncExtensions = async () => {
 	const messenger = getMessenger();
@@ -25,10 +27,7 @@ export const syncExtensions = async () => {
 
 	const message = `extensions-sync/${id}`;
 
-	if (isDone === true) {
-		logger.trace('Extensions syncing has already been completed.');
-		return;
-	} else if (isPrimaryProcess === false) {
+	if (isDone === false && isPrimaryProcess === false) {
 		logger.trace('Extensions already being synced to this machine from another process.');
 
 		/**
@@ -44,6 +43,17 @@ export const syncExtensions = async () => {
 	if (!env['EXTENSIONS_LOCATION']) {
 		return;
 	}
+
+	const currentTime = new Date();
+	currentTime.setMilliseconds(0);
+	const systemStartTimestamp = new Date(currentTime.getTime() - uptime() * 1000).toISOString();
+	const isSyncRequired = (await getSyncTimestamp()) !== systemStartTimestamp;
+
+	if (!isSyncRequired) {
+		return;
+	}
+
+	await setSyncStatus(SyncStatus.SYNCING);
 
 	logger.trace('Syncing extensions from configured storage location...');
 
@@ -76,6 +86,7 @@ export const syncExtensions = async () => {
 
 	await ensureExtensionDirs(getExtensionsPath(), NESTED_EXTENSION_TYPES);
 
+	await setSyncTimestamp(systemStartTimestamp);
 	await setSyncStatus(SyncStatus.DONE);
 	messenger.publish(message, { ready: true });
 
