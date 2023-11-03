@@ -121,6 +121,7 @@ const logoURL = computed<string | null>(() => {
 		overflow-x: hidden;
 		overflow-y: auto;
 		background: var(--theme--public--background);
+		color: var(--theme--public--foreground);
 
 		/* Page Content Spacing */
 		font-size: 15px;
@@ -132,6 +133,7 @@ const logoURL = computed<string | null>(() => {
 			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
+			color: var(--theme--public--foreground-accent);
 		}
 
 		.content {

@@ -193,6 +193,8 @@ const Rules = Type.Object({
 
 	public: Type.Object({
 		background: Type.Ref(Color),
+		foreground: Type.Ref(Color),
+		foregroundAccent: Type.Ref(Color),
 
 		art: Type.Object({
 			background: Type.Ref(Color),

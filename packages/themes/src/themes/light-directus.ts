@@ -176,6 +176,8 @@ export const theme: Theme = {
 
 		public: {
 			background: 'var(--theme--background-page)',
+			foreground: 'var(--theme--foreground)',
+			foregroundAccent: 'var(--theme--foreground-accent)',
 
 			art: {
 				background: '#0e1c2f',
