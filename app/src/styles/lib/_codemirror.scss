@@ -57,8 +57,8 @@
 
 .CodeMirror-gutters {
 	white-space: nowrap;
-	background-color: var(--background-subdued);
-	border-right: 2px solid var(--theme--form--field--input--border-color);
+	background-color: var(--theme--background-subdued);
+	border-right: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .CodeMirror-linenumber {

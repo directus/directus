@@ -202,6 +202,24 @@ const Rules = Type.Object({
 			secondary: Type.Ref(Color),
 			speed: Type.Ref(Number),
 		}),
+
+		form: Type.Object({
+			field: Type.Object({
+				input: Type.Object({
+					background: Type.Ref(Color),
+					foreground: Type.Ref(Color),
+					foregroundSubdued: Type.Ref(Color),
+
+					borderColor: Type.Ref(Color),
+					borderColorHover: Type.Ref(Color),
+					borderColorFocus: Type.Ref(Color),
+
+					boxShadow: Type.Ref(BoxShadow),
+					boxShadowHover: Type.Ref(BoxShadow),
+					boxShadowFocus: Type.Ref(BoxShadow),
+				}),
+			}),
+		}),
 	}),
 });
 
