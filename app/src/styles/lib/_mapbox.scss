@@ -166,11 +166,11 @@
 }
 
 .mapboxgl-ctrl-geocoder--icon {
-	fill: var(--v-icon-color, currentColor));
+	fill: var(--v-icon-color, currentColor);
 }
 
 .mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {
-	fill: var(--v-icon-color-hover, currentColor));
+	fill: var(--v-icon-color-hover, currentColor);
 }
 
 .mapbox-gl-geocoder--error {
