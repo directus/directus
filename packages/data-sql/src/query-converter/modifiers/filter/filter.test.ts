@@ -2,7 +2,7 @@ import type { AbstractQueryFilterNode } from '@directus/data';
 import { randomIdentifier, randomInteger, randomAlpha } from '@directus/random';
 import { beforeEach, expect, test, describe } from 'vitest';
 import { parameterIndexGenerator } from '../../param-index-generator.js';
-import { convertFilter } from './filter.js';
+import { convertFilter, type FilterResult } from './filter.js';
 import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from '../../../types/clauses/where/index.js';
 
 let randomCollection: string;
@@ -55,10 +55,15 @@ test('Convert single filter', () => {
 		},
 	};
 
-	expect(convertFilter(sampleFilter, randomCollection, idxGen, true)).toStrictEqual({
-		where: expectedWhere,
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: expectedWhere,
+			joins: [],
+		},
 		parameters: [randomCompareTo],
-	});
+	};
+
+	expect(convertFilter(sampleFilter, randomCollection, idxGen, true)).toStrictEqual(expectedResult);
 });
 
 describe('convert multiple conditions', () => {
@@ -136,10 +141,15 @@ describe('convert multiple conditions', () => {
 			],
 		};
 
-		expect(convertFilter(sampleFilter, randomCollection, idxGen)).toStrictEqual({
-			where: expectedWhere,
+		const expectedResult: FilterResult = {
+			clauses: {
+				where: expectedWhere,
+				joins: [],
+			},
 			parameters: [randomNumber1, randomString1],
-		});
+		};
+
+		expect(convertFilter(sampleFilter, randomCollection, idxGen)).toStrictEqual(expectedResult);
 	});
 
 	test('Convert logical node with nested conditions and with negation', () => {
@@ -310,9 +320,14 @@ describe('convert multiple conditions', () => {
 			],
 		};
 
-		expect(result).toStrictEqual({
-			where: expectedWhere,
+		const expectedResults: FilterResult = {
+			clauses: {
+				where: expectedWhere,
+				joins: [],
+			},
 			parameters: [randomNumber1, randomString1, randomNumber2, randomNumber3],
-		});
+		};
+
+		expect(result).toStrictEqual(expectedResults);
 	});
 });

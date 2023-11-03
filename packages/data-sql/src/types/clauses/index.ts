@@ -1,4 +1,4 @@
-import type { ParameterTypes, ValueNode } from '../parameterized-statement.js';
+import type { ValueNode } from '../parameterized-statement.js';
 import type { AbstractSqlQueryJoinNode } from './joins/join.js';
 import type { AbstractSqlQueryOrderNode } from './order.js';
 import type { AbstractSqlQueryFnNode } from './selects/fn.js';
