@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
-import { getAppearance } from '@/utils/get-appearance';
 import { getRootPath } from '@/utils/get-root-path';
-import { cssVar } from '@directus/utils/browser';
-import Color from 'color';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -20,47 +17,6 @@ const { t } = useI18n();
 const serverStore = useServerStore();
 
 const { info } = storeToRefs(serverStore);
-
-const colors = computed(() => {
-	const primary = info.value?.project?.project_color || 'var(--theme--primary)';
-	const primaryHex = primary.startsWith('var(--') ? cssVar(primary.substring(4, primary.length - 1)) : primary;
-	const isDark = getAppearance() === 'dark';
-	const primaryColor = Color(primaryHex);
-
-	const primaryColorHSL = primaryColor.hsl() as unknown as {
-		model: 'hsl';
-		color: [number, number, number];
-		valpha: number;
-	};
-
-	/**
-	 * The default light mode secondary color is based on the standard difference between Directus purple and pink, which is:
-	 * primary = 250.9, 100, 63.3
-	 * secondary = 320, 100, 80
-	 * diff = +69.1, 0, +16.7
-	 *
-	 * For dark mode, we greatly reduce the lightness value to -50
-	 */
-
-	const secondaryColor = Color({
-		h: primaryColorHSL.color[0] + (isDark ? -69.1 : 69.1),
-		s: primaryColorHSL.color[1] + 0,
-		l: primaryColorHSL.color[2] + (isDark ? -50 : 16.7),
-	});
-
-	const shades = [];
-
-	for (let i = 1; i < 6; i++) {
-		const color = Color(primaryColor).mix(secondaryColor, i / 10);
-		shades.push(color.hex().toString());
-	}
-
-	return {
-		primary: primaryColor.hex().toString(),
-		secondary: secondaryColor.hex().toString(),
-		shades: shades,
-	};
-});
 
 const hasCustomBackground = computed(() => {
 	return !!info.value?.project?.public_background;
@@ -121,11 +77,10 @@ const logoURL = computed<string | null>(() => {
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
-
 			<div v-if="!hasCustomBackground" class="fallback">
-				<div id="glow_1"><div></div></div>
-				<div id="glow_2"><div></div></div>
-				<div id="glow_3"><div></div></div>
+				<div><div></div></div>
+				<div><div></div></div>
+				<div><div></div></div>
 			</div>
 
 			<transition name="scale">
@@ -209,7 +164,7 @@ const logoURL = computed<string | null>(() => {
 
 		.fallback {
 			position: absolute;
-			background-color: #0E1C2F;
+			background-color: #0e1c2f;
 			width: 100%;
 			height: 100%;
 			left: 0;
@@ -217,115 +172,144 @@ const logoURL = computed<string | null>(() => {
 			z-index: -1;
 			overflow: hidden;
 
-			#glow_1 {
+			> div {
 				position: absolute;
+
+				> div {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					animation-iteration-count: infinite;
+					animation-timing-function: ease-in-out;
+					transform-origin: center center;
+				}
+			}
+
+			> div:nth-child(1) {
 				bottom: -25%;
 				left: -25%;
 				height: 50%;
 				width: 50%;
 				filter: blur(100px);
 				z-index: 3;
-				div {
-					content: "";
+
+				> div {
 					background-color: var(--theme--primary);
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-					border-radius: 50%;
 					opacity: 0.5;
-					animation-name: floating_1;
+					animation-name: floating1;
 					animation-duration: 33s;
-					animation-iteration-count: infinite;
-					animation-timing-function: ease-in-out;
-					transform-origin: center center;
 				}
 			}
 
-			#glow_2 {
-				position: absolute;
+			> div:nth-child(2) {
 				bottom: -25%;
 				left: 15%;
 				height: 40%;
 				width: 60%;
 				filter: blur(150px);
 				z-index: 2;
-				div {
-					content: "";
+
+				> div {
 					background: linear-gradient(107.7deg, var(--theme--primary) 0%, var(--theme--secondary) 50%);
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-					border-radius: 50%;
 					opacity: 0.7;
-					animation-name: floating_2;
+					animation-name: floating2;
 					animation-duration: 19s;
-					animation-iteration-count: infinite;
-					animation-timing-function: ease-in-out;
-					transform-origin: center center;
 				}
 			}
 
-			#glow_3 {
-				position: absolute;
+			> div:nth-child(3) {
 				bottom: -20%;
 				left: 75%;
 				height: 20%;
 				width: 40%;
 				filter: blur(50px);
 				z-index: 1;
-				div {
-					content: "";
+
+				> div {
 					background-color: var(--theme--primary);
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-					border-radius: 50%;
 					opacity: 0.6;
-					animation-name: floating_3;
+					animation-name: floating3;
 					animation-duration: 27s;
-					animation-iteration-count: infinite;
-					animation-timing-function: ease-in-out;
-					transform-origin: center center;
 				}
 			}
 
-			@keyframes floating_1 {
-				0%   { transform: translate(00%,  00%) scale(1.0, 1.0) rotate(0deg); }
-				10%  { transform: translate(25%, -20%) scale(1.5, 1.0) rotate(0deg); }
-				20%  { transform: translate(10%, -25%) scale(1.0, 1.5) rotate(0deg); }
-				30%  { transform: translate(00%, -20%) scale(1.0, 1.5) rotate(-45deg); }
-				40%  { transform: translate(10%, -30%) scale(1.0, 2.0) rotate(0deg); }
-				50%  { transform: translate(15%, -35%) scale(2.0, 0.5) rotate(45deg); }
-				60%  { transform: translate(10%, -30%) scale(1.0, 2.0) rotate(90deg); }
-				70%  { transform: translate(25%, -10%) scale(1.0, 1.5) rotate(45deg); }
-				80%  { transform: translate(40%,  20%) scale(1.5, 0.5) rotate(-45deg); }
-				90%  { transform: translate(15%, -20%) scale(2.0, 1.5) rotate(0deg); }
-				100% { transform: translate(00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+			@keyframes floating1 {
+				0% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+				10% {
+					transform: translate(25%, -20%) scale(1.5, 1) rotate(0deg);
+				}
+				20% {
+					transform: translate(10%, -25%) scale(1, 1.5) rotate(0deg);
+				}
+				30% {
+					transform: translate(00%, -20%) scale(1, 1.5) rotate(-45deg);
+				}
+				40% {
+					transform: translate(10%, -30%) scale(1, 2) rotate(0deg);
+				}
+				50% {
+					transform: translate(15%, -35%) scale(2, 0.5) rotate(45deg);
+				}
+				60% {
+					transform: translate(10%, -30%) scale(1, 2) rotate(90deg);
+				}
+				70% {
+					transform: translate(25%, -10%) scale(1, 1.5) rotate(45deg);
+				}
+				80% {
+					transform: translate(40%, 20%) scale(1.5, 0.5) rotate(-45deg);
+				}
+				90% {
+					transform: translate(15%, -20%) scale(2, 1.5) rotate(0deg);
+				}
+				100% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
 			}
 
-			@keyframes floating_2 {
-				0%   { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
-				20%  { transform: translate(-10%, -05%) scale(1.5, 1.5) rotate(15deg); }
-				40%  { transform: translate( 00%, -15%) scale(2.0, 0.5) rotate(-45deg); }
-				60%  { transform: translate(-15%, -10%) scale(1.5, 1.0) rotate(45deg); }
-				80%  { transform: translate(-25%, -05%) scale(2.5, 0.5) rotate(180deg); }
-				100% { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+			@keyframes floating2 {
+				0% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+				20% {
+					transform: translate(-10%, -05%) scale(1.5, 1.5) rotate(15deg);
+				}
+				40% {
+					transform: translate(00%, -15%) scale(2, 0.5) rotate(-45deg);
+				}
+				60% {
+					transform: translate(-15%, -10%) scale(1.5, 1) rotate(45deg);
+				}
+				80% {
+					transform: translate(-25%, -05%) scale(2.5, 0.5) rotate(180deg);
+				}
+				100% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
 			}
 
-			@keyframes floating_3 {
-				0%   { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
-				25%  { transform: translate(-10%, -10%) scale(2.0, 1.0) rotate(-15deg); }
-				50%  { transform: translate(-20%, -05%) scale(1.0, 0.5) rotate(45deg); }
-				75%  { transform: translate(-15%, -15%) scale(2.0, 1.5) rotate(180deg); }
-				100% { transform: translate( 00%,  00%) scale(1.0, 1.0) rotate(0deg); }
+			@keyframes floating3 {
+				0% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+				25% {
+					transform: translate(-10%, -10%) scale(2, 1) rotate(-15deg);
+				}
+				50% {
+					transform: translate(-20%, -05%) scale(1, 0.5) rotate(45deg);
+				}
+				75% {
+					transform: translate(-15%, -15%) scale(2, 1.5) rotate(180deg);
+				}
+				100% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
 			}
-
 		}
 
 		.foreground {

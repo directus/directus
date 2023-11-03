@@ -67,7 +67,7 @@ export const theme: Theme = {
 			},
 
 			modules: {
-				background: '#18222f',
+				background: '#0e1c2f',
 				borderColor: 'transparent',
 				borderWidth: '0px',
 
