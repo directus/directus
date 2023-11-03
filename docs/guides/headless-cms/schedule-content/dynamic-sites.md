@@ -80,8 +80,7 @@ Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 
 ```js
 // Initialize the SDK.
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const directus = createDirectus('https://directus.example.com').with(rest());
 
