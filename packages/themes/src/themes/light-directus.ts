@@ -179,6 +179,7 @@ export const theme: Theme = {
 				background: '#0e1c2f',
 				primary: 'var(--theme--primary)',
 				secondary: 'var(--theme--secondary)',
+				speed: '1',
 			},
 		},
 	},

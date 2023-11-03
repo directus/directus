@@ -200,7 +200,7 @@ const logoURL = computed<string | null>(() => {
 					background-color: var(--theme--public--art--primary);
 					opacity: 0.5;
 					animation-name: floating1;
-					animation-duration: 33s;
+					animation-duration: calc(33s / var(--theme--public--art--speed));
 				}
 			}
 
@@ -213,10 +213,14 @@ const logoURL = computed<string | null>(() => {
 				z-index: 2;
 
 				> div {
-					background: linear-gradient(107.7deg, var(--theme--public--art--primary) 0%, var(--theme--public--art--secondary) 50%);
+					background: linear-gradient(
+						107.7deg,
+						var(--theme--public--art--primary) 0%,
+						var(--theme--public--art--secondary) 50%
+					);
 					opacity: 0.7;
 					animation-name: floating2;
-					animation-duration: 19s;
+					animation-duration: calc(19s / var(--theme--public--art--speed));
 				}
 			}
 
@@ -232,7 +236,7 @@ const logoURL = computed<string | null>(() => {
 					background-color: var(--theme--public--art--primary);
 					opacity: 0.6;
 					animation-name: floating3;
-					animation-duration: 27s;
+					animation-duration: calc(27s / var(--theme--public--art--speed));
 				}
 			}
 
