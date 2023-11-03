@@ -109,6 +109,16 @@ const logoURL = computed<string | null>(() => {
 		--input-height: 60px;
 		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 
+		--theme--form--field--input--background: var(--theme--public--form--field--input--background);
+		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
+		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
+		--theme--form--field--input--border-color: var(--theme--public--form--field--input--border-color);
+		--theme--form--field--input--border-color-hover: var(--theme--public--form--field--input--border-color-hover);
+		--theme--form--field--input--border-color-focus: var(--theme--public--form--field--input--border-color-focus);
+		--theme--form--field--input--box-shadow: var(--theme--public--form--field--input--box-shadow);
+		--theme--form--field--input--box-shadow-hover: var(--theme--public--form--field--input--box-shadow-hover);
+		--theme--form--field--input--box-shadow-focus: var(--theme--public--form--field--input--box-shadow-focus);
+
 		z-index: 2;
 		display: flex;
 		flex-shrink: 0;
@@ -120,6 +130,8 @@ const logoURL = computed<string | null>(() => {
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
+		background: var(--theme--public--background);
+		color: var(--theme--public--foreground);
 
 		/* Page Content Spacing */
 		font-size: 15px;
@@ -131,6 +143,7 @@ const logoURL = computed<string | null>(() => {
 			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
+			color: var(--theme--public--foreground-accent);
 		}
 
 		.content {
