@@ -1,3 +1,4 @@
+import type { AbstractSqlQueryFnNode } from '../../selects/fn.js';
 import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
 
 /**
@@ -7,6 +8,6 @@ import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
 export interface SqlConditionFieldNode {
 	type: 'condition-field';
 	operation: 'eq';
-	target: AbstractSqlQuerySelectNode;
-	compareTo: AbstractSqlQuerySelectNode;
+	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	compareTo: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 }
