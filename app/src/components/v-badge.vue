@@ -43,9 +43,9 @@ withDefaults(defineProps<Props>(), {
 
 	Available Variables:
 
-			--v-badge-color             [--white]
-			--v-badge-background-color  [--red]
-			--v-badge-border-color      [--theme--background-page]
+			--v-badge-color             [var(--white)]
+			--v-badge-background-color  [var(--red)]
+			--v-badge-border-color      [var(--theme--background-page)]
 			--v-badge-offset-x          [0px]
 			--v-badge-offset-y          [0px]
 			--v-badge-size              [16px]
