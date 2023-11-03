@@ -397,12 +397,6 @@ function usePopper(
 	</div>
 </template>
 
-<style>
-body {
-	--v-menu-min-width: 100px;
-}
-</style>
-
 <style lang="scss" scoped>
 .v-menu {
 	display: contents;
@@ -416,7 +410,7 @@ body {
 	position: fixed;
 	left: -999px;
 	z-index: 500;
-	min-width: var(--v-menu-min-width);
+	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
