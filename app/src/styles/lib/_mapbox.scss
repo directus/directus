@@ -157,7 +157,7 @@
 
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
 .mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
-	color: var(--v-list-item-color-active);
+	color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 	background-color: var(--theme--background-accent);
 }
 
