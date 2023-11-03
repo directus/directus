@@ -8,29 +8,25 @@ export function convertGeoCondition(
 	generator: Generator<number, number, number>,
 	negate: boolean
 ): FilterResult {
-	const convertedTarget = convertTarget(node.target, collection, generator);
-
-	const where = {
-		type: 'condition',
-		negate,
-		condition: {
-			type: 'condition-geo',
-			operation: node.operation,
-			target: convertedTarget.value,
-			compareTo: {
-				type: 'value',
-				parameterIndex: generator.next().value,
-			},
-		},
-	};
-
-	const parameters = [node.compareTo];
+	const { value, joins } = convertTarget(node.target, collection, generator);
 
 	return {
 		clauses: {
-			where,
-			joins: [],
+			where: {
+				type: 'condition',
+				negate,
+				condition: {
+					type: 'condition-geo',
+					operation: node.operation,
+					target: value,
+					compareTo: {
+						type: 'value',
+						parameterIndex: generator.next().value,
+					},
+				},
+			},
+			joins,
 		},
-		parameters,
+		parameters: [node.compareTo],
 	};
 }

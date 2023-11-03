@@ -26,6 +26,6 @@ export function convertCondition(
 		case 'condition-set':
 			return convertSetCondition(condition.condition, collection, generator, negate);
 		case 'condition-field':
-			return convertFieldCondition(condition.condition, collection, negate);
+			return convertFieldCondition(condition.condition, collection, generator, negate);
 	}
 }
