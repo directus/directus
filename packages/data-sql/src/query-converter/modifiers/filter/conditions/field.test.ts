@@ -3,8 +3,9 @@ import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import { convertFieldCondition } from './field.js';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
+import type { FilterResult } from '../filter.js';
 
-test('number', () => {
+test('convert field condition', () => {
 	const randomCollection1 = randomIdentifier();
 	const randomCollection2 = randomIdentifier();
 	const randomField1 = randomIdentifier();
@@ -20,7 +21,6 @@ test('number', () => {
 		compareTo: {
 			type: 'primitive',
 			field: randomField2,
-			collection: randomCollection2,
 		},
 	};
 
@@ -43,8 +43,13 @@ test('number', () => {
 		},
 	};
 
-	expect(convertFieldCondition(con, randomCollection1, false)).toStrictEqual({
-		where: expectedWhere,
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: expectedWhere,
+			joins: [],
+		},
 		parameters: [],
-	});
+	};
+
+	expect(convertFieldCondition(con, randomCollection1, false)).toStrictEqual(expectedResult);
 });

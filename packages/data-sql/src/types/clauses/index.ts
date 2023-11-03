@@ -17,10 +17,6 @@ export interface AbstractSqlClauses {
 
 export type AbstractSqlQueryWhereNode = AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 
-export type WhereUnion = {
-	where: AbstractSqlQueryWhereNode;
-	parameters: ParameterTypes[];
-};
 
 export * from './selects/fn.js';
 export * from './selects/primitive.js';

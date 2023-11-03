@@ -4,11 +4,8 @@ import type {
 	ActualConditionNodes,
 } from '@directus/data';
 import type {
-	ParameterTypes,
 	AbstractSqlQueryFnNode,
 	AbstractSqlQuerySelectNode,
-	AbstractSqlClauses,
-	AbstractSqlQuery,
 	AbstractSqlQueryJoinNode,
 } from '../../../../types/index.js';
 import { convertFn } from '../../../functions.js';
@@ -32,13 +29,18 @@ export function convertPrimitive(
 	};
 }
 
+export interface TargetConversionResult {
+	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	joins: AbstractSqlQueryJoinNode[];
+}
+
 export function convertTarget(
 	condition: ActualConditionNodes,
 	collection: string,
 	generator: Generator
-): AbstractSqlQueryFnNode | AbstractSqlQuerySelectNode {
+): TargetConversionResult {
 	let target: AbstractSqlQueryFnNode | AbstractSqlQuerySelectNode;
-	const parameters: ParameterTypes[] = [];
+	const joins: AbstractSqlQueryJoinNode[] = [];
 
 	if (condition.target.type === 'primitive') {
 		target = {
@@ -49,12 +51,15 @@ export function convertTarget(
 	} else if (condition.target.type === 'fn') {
 		const convertedFn = convertFn(collection, condition.target, generator);
 		target = convertedFn.fn;
-		parameters.push(...convertedFn.parameters);
+	} else if (condition.target.type === 'nested-one-target') {
+		const res = convertNestedOneTarget(collection, condition.target);
+		joins.push(res.join);
+		target = res.target;
 	} else {
 		throw new Error('The related field types are not yet supported.');
 	}
 
-	return target;
+	return { target, joins };
 }
 
 /**
@@ -68,6 +73,7 @@ export function convertNestedOneTarget(
 	target: AbstractSqlQuerySelectNode;
 	join: AbstractSqlQueryJoinNode;
 } {
+	// @ts-ignore we're currently operating only on m2o
 	const externalCollectionAlias = createUniqueAlias(nestedTarget.meta.join.foreign.collection);
 
 	return {

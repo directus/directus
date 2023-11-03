@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { convertNestedOneTarget, convertTarget } from './utils.js';
+import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './utils.js';
 import type { AbstractQueryFieldNodeNestedTarget, ConditionNumberNode, ConditionStringNode } from '@directus/data';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
@@ -23,10 +23,13 @@ test('convert primitive target', () => {
 		compareTo: compareValue,
 	};
 
-	const expected = {
-		type: 'primitive',
-		column: conditionTargetField,
-		table: collection,
+	const expected: TargetConversionResult = {
+		target: {
+			type: 'primitive',
+			column: conditionTargetField,
+			table: collection,
+		},
+		joins: [],
 	};
 
 	const idGen = parameterIndexGenerator();
@@ -54,15 +57,18 @@ test('convert function target', () => {
 		compareTo: compareValue,
 	};
 
-	const expected = {
-		type: 'fn',
-		fn: {
-			type: 'extractFn',
-			fn: 'year',
-			isTimestampType: false,
+	const expected: TargetConversionResult = {
+		target: {
+			type: 'fn',
+			fn: {
+				type: 'extractFn',
+				fn: 'year',
+				isTimestampType: false,
+			},
+			column: conditionTargetField,
+			table: collection,
 		},
-		column: conditionTargetField,
-		table: collection,
+		joins: [],
 	};
 
 	const idGen = parameterIndexGenerator();

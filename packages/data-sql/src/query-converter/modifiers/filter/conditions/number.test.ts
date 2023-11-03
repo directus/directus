@@ -4,6 +4,7 @@ import { expect, test, beforeEach } from 'vitest';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertNumberNode } from './number.js';
 import type { AbstractSqlQueryConditionNode } from '../../../../index.js';
+import type { FilterResult } from '../filter.js';
 
 let idGen: Generator<number, number, number>;
 let randomCollection: string;
@@ -46,10 +47,15 @@ test('convert number condition', () => {
 		},
 	};
 
-	expect(convertNumberNode(con, randomCollection, idGen, false)).toStrictEqual({
-		where: expectedWhere,
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: expectedWhere,
+			joins: [],
+		},
 		parameters: [randomValue],
-	});
+	};
+
+	expect(convertNumberNode(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
 });
 
 test('convert number condition with function', () => {
@@ -89,8 +95,13 @@ test('convert number condition with function', () => {
 		negate: false,
 	};
 
-	expect(convertNumberNode(con, randomCollection, idGen, false)).toStrictEqual({
-		where: expectedWhere,
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: expectedWhere,
+			joins: [],
+		},
 		parameters: [randomValue],
-	});
+	};
+
+	expect(convertNumberNode(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
 });

@@ -1,7 +1,12 @@
 import type { AbstractQueryConditionNode, AbstractQueryFilterNode } from '@directus/data';
-import type { WhereUnion } from '../../../types/index.js';
+import type { AbstractSqlClauses, AbstractSqlQuery } from '../../../types/index.js';
 import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
+
+export type FilterResult = {
+	clauses: Pick<AbstractSqlClauses, 'where' | 'joins'>;
+	parameters: AbstractSqlQuery['parameters'];
+};
 
 /**
  * Extracts the user provided filter values and puts them in the list of parameters.
@@ -19,7 +24,7 @@ export const convertFilter = (
 	collection: string,
 	generator: Generator<number, number, number>,
 	negate = false
-): WhereUnion => {
+): FilterResult => {
 	if (filter.type === 'condition') {
 		return convertCondition(filter as AbstractQueryConditionNode, collection, generator, negate);
 	} else if (filter.type === 'negate') {
