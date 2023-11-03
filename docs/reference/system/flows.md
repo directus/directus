@@ -90,8 +90,7 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, readFlows } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -140,8 +139,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, readFlows } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

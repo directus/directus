@@ -425,8 +425,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateComment } from '@directus/sdk/rest';
+import { createDirectus, rest, updateComment } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -498,8 +497,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteComment } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteComment } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
