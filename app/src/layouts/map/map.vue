@@ -136,7 +136,7 @@ limitWritable.value = selectedSize;
 <style lang="scss" scoped>
 .v-info {
 	padding: 40px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border-radius: var(--theme--border-radius);
 	box-shadow: var(--card-shadow);
 	pointer-events: none;
@@ -188,7 +188,7 @@ limitWritable.value = selectedSize;
 	font-weight: 500;
 	font-size: 14px;
 	font-family: var(--theme--font-family-sans-serif);
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border-radius: var(--theme--border-radius);
 	box-shadow: var(--card-shadow);
 	transform: translate(-50%, -140%);
@@ -206,8 +206,8 @@ limitWritable.value = selectedSize;
 	height: 36px;
 	padding: 10px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--theme--background);
-	border: var(--theme--border-width) solid var(--theme--background);
+	background-color: var(--theme--background-page);
+	border: var(--theme--border-width) solid var(--theme--background-page);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 

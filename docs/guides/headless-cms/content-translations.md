@@ -161,8 +161,7 @@ relational data . It's incredible powerful.
 **Sample Request**
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 // Initialize the SDK.
 const directus = createDirectus('https://directus.example.com').with(rest());

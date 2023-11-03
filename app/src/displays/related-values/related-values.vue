@@ -118,7 +118,7 @@ function getLinkForItem(item: any) {
 		z-index: 1;
 		width: calc(100% + 12px);
 		height: calc(100% + 12px);
-		background-color: var(--background-normal);
+		background-color: var(--theme--background);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -135,7 +135,7 @@ function getLinkForItem(item: any) {
 	}
 
 	&:not(.subdued):active::before {
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 	}
 }
 

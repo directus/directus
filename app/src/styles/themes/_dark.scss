@@ -11,11 +11,8 @@
 
 	color-scheme: dark;
 
-	--border-subdued: #21262d;
-
 	--foreground-inverted: #0d1117;
 
-	--background-normal: #21262e;
 	--background-normal-alt: #30363d;
 	--background-subdued: #161b22;
 	--background-highlight: #1d1d21;
@@ -48,6 +45,6 @@
 	--danger-alt: var(--red-10);
 
 	.alt-colors {
-		--background-subdued: var(--theme--background);
+		--background-subdued: var(--theme--background-page);
 	}
 }

@@ -1046,7 +1046,7 @@ no_options_available: No options available
 settings_data_model: Data Model
 settings_permissions: Access Control
 settings_project: Settings
-settings_theming: Theming
+settings_appearance: Appearance
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Bookmarks
@@ -1091,7 +1091,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
 page_help_settings_project: "**Settings** — Your project's global configuration options."
-page_help_settings_theming: "**Theming** — Your project's theming options."
+page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
 page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
