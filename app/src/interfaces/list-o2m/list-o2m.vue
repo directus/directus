@@ -599,7 +599,7 @@ function getLinkForItem(item: DisplayItem) {
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	padding: var(--v-card-padding);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-list {

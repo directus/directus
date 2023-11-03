@@ -241,7 +241,7 @@ const runManualFlow = async (flowId: string) => {
 	--form-horizontal-gap: 24px;
 	--form-vertical-gap: 24px;
 
-	margin-top: var(--v-card-padding);
+	margin-top: var(--v-card-padding, 16px);
 
 	:deep(.type-label) {
 		font-size: 1rem;
