@@ -43,12 +43,16 @@ const iconName = computed(() => {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-notice-color: var(--theme--foreground-subdued);
-	--v-notice-background-color: var(--background-subdued);
-	--v-notice-border-color: var(--background-subdued);
-	--v-notice-icon-color: var(--theme--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-notice-color             [var(--theme--foreground-subdued)]
+		--v-notice-background-color  [var(--background-subdued)]
+		--v-notice-border-color      [var(--background-subdued)]
+		--v-notice-icon-color        [var(--theme--foreground-subdued)]
+
+*/
 
 .v-notice {
 	position: relative;
@@ -58,9 +62,9 @@ const iconName = computed(() => {
 	width: auto;
 	min-height: var(--input-height);
 	padding: 12px 16px;
-	color: var(--v-notice-color);
+	color: var(--v-notice-color, var(--theme--foreground-subdued));
 	line-height: 22px;
-	background-color: var(--v-notice-background-color);
+	background-color: var(--v-notice-background-color, var(--background-subdued));
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;
 }
@@ -73,11 +77,11 @@ const iconName = computed(() => {
 	left: 0;
 	width: 4px;
 	height: 100%;
-	background-color: var(--v-notice-border-color);
+	background-color: var(--v-notice-border-color, var(--background-subdued));
 }
 
 .v-icon {
-	--v-icon-color: var(--v-notice-icon-color);
+	--v-icon-color: var(--v-notice-icon-color, var(--theme--foreground-subdued));
 }
 
 .v-icon.left {
