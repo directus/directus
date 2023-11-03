@@ -156,13 +156,12 @@ router.get(
 
 		const vary = ['Origin', 'Cache-Control'];
 
-		const transformationPresets = res.locals['transformation'].key
-			? (res.locals['shortcuts'] as TransformationParams[]).find(
-					(transformation) => transformation['key'] === res.locals['transformation'].key
-			  ) ?? {}
-			: {};
-
-		const transformationParams: TransformationParams = { ...transformationPresets, ...res.locals['transformation'] };
+		const transformationParams: TransformationParams = {
+			...(res.locals['shortcuts'] as TransformationParams[]).find(
+				(transformation) => transformation['key'] === res.locals['transformation']?.key
+			),
+			...res.locals['transformation'],
+		};
 
 		let acceptFormat: TransformationFormat | undefined;
 
