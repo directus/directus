@@ -1,7 +1,7 @@
 import type {
 	AbstractQueryFieldNodeNestedTarget,
 	AbstractQueryFieldNodePrimitive,
-	ActualConditionNodes,
+	AbstractQueryFieldNodeTarget,
 } from '@directus/data';
 import type {
 	AbstractSqlQueryFnNode,
@@ -30,36 +30,39 @@ export function convertPrimitive(
 }
 
 export interface TargetConversionResult {
-	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	value: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	joins: AbstractSqlQueryJoinNode[];
 }
 
 export function convertTarget(
-	condition: ActualConditionNodes,
+	target: AbstractQueryFieldNodeTarget,
 	collection: string,
-	generator: Generator
+	idxGenerator: Generator<number, number, number>
 ): TargetConversionResult {
-	let target: AbstractSqlQueryFnNode | AbstractSqlQuerySelectNode;
-	const joins: AbstractSqlQueryJoinNode[] = [];
-
-	if (condition.target.type === 'primitive') {
-		target = {
-			type: 'primitive',
-			table: collection,
-			column: condition.target.field,
+	if (target.type === 'primitive') {
+		return {
+			value: {
+				type: 'primitive',
+				table: collection,
+				column: target.field,
+			},
+			joins: [],
 		};
-	} else if (condition.target.type === 'fn') {
-		const convertedFn = convertFn(collection, condition.target, generator);
-		target = convertedFn.fn;
-	} else if (condition.target.type === 'nested-one-target') {
-		const res = convertNestedOneTarget(collection, condition.target);
-		joins.push(res.join);
-		target = res.target;
-	} else {
-		throw new Error('The related field types are not yet supported.');
-	}
+	} else if (target.type === 'fn') {
+		const convertedFn = convertFn(collection, target, idxGenerator);
 
-	return { target, joins };
+		return {
+			value: convertedFn.fn,
+			joins: [],
+		};
+	} else {
+		const { value, joins } = convertNestedOneTarget(collection, target, idxGenerator);
+
+		return {
+			value,
+			joins,
+		};
+	}
 }
 
 /**
@@ -68,23 +71,19 @@ export function convertTarget(
  */
 export function convertNestedOneTarget(
 	currentCollection: string,
-	nestedTarget: AbstractQueryFieldNodeNestedTarget
-): {
-	target: AbstractSqlQuerySelectNode;
-	join: AbstractSqlQueryJoinNode;
-} {
-	// @ts-ignore we're currently operating only on m2o
+	nestedTarget: AbstractQueryFieldNodeNestedTarget,
+	idxGenerator: Generator<number, number, number>
+): TargetConversionResult {
+	if (nestedTarget.meta.type === 'a2o') throw new Error('Sorting by a2o not yet implemented!');
+
 	const externalCollectionAlias = createUniqueAlias(nestedTarget.meta.join.foreign.collection);
 
+	const join = createJoin(currentCollection, nestedTarget.meta, externalCollectionAlias);
+
+	const { value, joins } = convertTarget(nestedTarget.field, externalCollectionAlias, idxGenerator);
+
 	return {
-		target: {
-			type: 'primitive',
-			// @ts-ignore the collection does not exist on AbstractQueryFieldNodeRelationalJoinAny
-			table: nestedTarget.meta.join.foreign.collection,
-			// @ts-ignore @TODO: fix this, why is there a type mismatch?
-			column: nestedTarget.field.field,
-		},
-		// @ts-ignore a2o and m2o mismatch
-		join: createJoin(currentCollection, nestedTarget.meta, externalCollectionAlias),
+		value,
+		joins: [join, ...joins],
 	};
 }

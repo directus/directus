@@ -8,7 +8,7 @@ export function convertGeoCondition(
 	generator: Generator<number, number, number>,
 	negate: boolean
 ): FilterResult {
-	const convertedTarget = convertTarget(node, collection, generator);
+	const convertedTarget = convertTarget(node.target, collection, generator);
 
 	const where = {
 		type: 'condition',
@@ -16,7 +16,7 @@ export function convertGeoCondition(
 		condition: {
 			type: 'condition-geo',
 			operation: node.operation,
-			target: convertedTarget.target,
+			target: convertedTarget.value,
 			compareTo: {
 				type: 'value',
 				parameterIndex: generator.next().value,

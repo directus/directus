@@ -8,7 +8,7 @@ export function convertSetCondition(
 	generator: Generator<number, number, number>,
 	negate: boolean
 ): FilterResult {
-	const convertedTarget = convertTarget(node, collection, generator);
+	const convertedTarget = convertTarget(node.target, collection, generator);
 
 	const where = {
 		type: 'condition',
@@ -16,7 +16,7 @@ export function convertSetCondition(
 		condition: {
 			type: 'condition-set',
 			operation: node.operation,
-			target: convertedTarget.target,
+			target: convertedTarget.value,
 			compareTo: {
 				type: 'values',
 				parameterIndexes: Array.from(node.compareTo).map(() => generator.next().value),

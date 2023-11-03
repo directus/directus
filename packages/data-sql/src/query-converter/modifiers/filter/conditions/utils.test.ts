@@ -24,7 +24,7 @@ test('convert primitive target', () => {
 	};
 
 	const expected: TargetConversionResult = {
-		target: {
+		value: {
 			type: 'primitive',
 			column: conditionTargetField,
 			table: collection,
@@ -33,7 +33,7 @@ test('convert primitive target', () => {
 	};
 
 	const idGen = parameterIndexGenerator();
-	const result = convertTarget(stringCondition, collection, idGen);
+	const result = convertTarget(stringCondition.target, collection, idGen);
 	expect(result).toStrictEqual(expected);
 });
 
@@ -58,7 +58,7 @@ test('convert function target', () => {
 	};
 
 	const expected: TargetConversionResult = {
-		target: {
+		value: {
 			type: 'fn',
 			fn: {
 				type: 'extractFn',
@@ -72,7 +72,7 @@ test('convert function target', () => {
 	};
 
 	const idGen = parameterIndexGenerator();
-	const result = convertTarget(condition, collection, idGen);
+	const result = convertTarget(condition.target, collection, idGen);
 	expect(result).toStrictEqual(expected);
 });
 
@@ -105,9 +105,15 @@ test('convert nested target', () => {
 		},
 	};
 
-	const res = convertNestedOneTarget(leftCollection, sample);
+	const idGen = parameterIndexGenerator();
+	const res = convertNestedOneTarget(leftCollection, sample, idGen);
 
 	const expected = {
+		value: {
+			type: 'primitive',
+			table: foreignCollection,
+			column: filterField,
+		},
 		join: {
 			type: 'join',
 			table: foreignCollection,
@@ -130,11 +136,6 @@ test('convert nested target', () => {
 					},
 				},
 			},
-		},
-		target: {
-			type: 'primitive',
-			table: foreignCollection,
-			column: filterField,
 		},
 	};
 
