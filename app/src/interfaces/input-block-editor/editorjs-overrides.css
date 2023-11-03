@@ -398,9 +398,9 @@
 
 .codex-editor .ce-block .inline-code {
 	padding: 4px;
-	color: var(--v-chip-background-color);
+	color: var(--v-chip-background-color, var(--theme--background));
 	font-family: monospace;
-	background-color: var(--v-chip-color);
+	background-color: var(--v-chip-color, var(--theme--foreground));
 	border-radius: 4px;
 }
 
