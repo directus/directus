@@ -189,6 +189,14 @@ const Rules = Type.Object({
 			}),
 		}),
 	}),
+
+	public: Type.Object({
+		art: Type.Object({
+			background: Type.Ref(Color),
+			primary: Type.Ref(Color),
+			secondary: Type.Ref(Color),
+		}),
+	}),
 });
 
 export const ThemeSchema = Type.Object({

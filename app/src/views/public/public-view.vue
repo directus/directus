@@ -164,7 +164,7 @@ const logoURL = computed<string | null>(() => {
 
 		.fallback {
 			position: absolute;
-			background-color: #0e1c2f;
+			background-color: var(--theme--public--art--background);
 			width: 100%;
 			height: 100%;
 			left: 0;
@@ -197,7 +197,7 @@ const logoURL = computed<string | null>(() => {
 				z-index: 3;
 
 				> div {
-					background-color: var(--theme--primary);
+					background-color: var(--theme--public--art--primary);
 					opacity: 0.5;
 					animation-name: floating1;
 					animation-duration: 33s;
@@ -213,7 +213,7 @@ const logoURL = computed<string | null>(() => {
 				z-index: 2;
 
 				> div {
-					background: linear-gradient(107.7deg, var(--theme--primary) 0%, var(--theme--secondary) 50%);
+					background: linear-gradient(107.7deg, var(--theme--public--art--primary) 0%, var(--theme--public--art--secondary) 50%);
 					opacity: 0.7;
 					animation-name: floating2;
 					animation-duration: 19s;
@@ -229,7 +229,7 @@ const logoURL = computed<string | null>(() => {
 				z-index: 1;
 
 				> div {
-					background-color: var(--theme--primary);
+					background-color: var(--theme--public--art--primary);
 					opacity: 0.6;
 					animation-name: floating3;
 					animation-duration: 27s;
