@@ -5,8 +5,8 @@ import type {
 	GeoJSONMultiPoint,
 	GeoJSONPoint,
 } from 'wellknown';
-import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
-import type { AbstractQueryFieldNodeNestedTarget } from '../../../fields/nested.js';
+
+import type { AbstractQueryFieldNodeTarget } from '../../../fields.js';
 
 /**
  * Checks if a non box geo object intersects with another.
@@ -33,9 +33,7 @@ import type { AbstractQueryFieldNodeNestedTarget } from '../../../fields/nested.
  */
 export interface ConditionGeoIntersectsNode {
 	type: 'condition-geo-intersects';
-	target:
-		| AbstractQueryFieldNodePrimitive
-		| AbstractQueryFieldNodeNestedTarget /** the type of the field needs to be a 'geometry' object */;
+	target: AbstractQueryFieldNodeTarget /** the type of the field needs to be a 'geometry' object */;
 	operation: 'intersects';
 	compareTo: GeoJSONPoint | GeoJSONMultiPoint | GeoJSONLineString | GeoJSONMultiLineString | GeoJSONGeometryCollection;
 }
