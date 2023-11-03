@@ -281,15 +281,16 @@ function stepDown() {
 
 <style lang="scss" scoped>
 /**
-	Available variables:
-		--v-input-font-family
-		--v-input-placeholder-color
-		--v-input-color
-		--v-input-background-color
-		--v-input-border-color
-		--v-input-border-color-hover
-		--v-input-border-color-focus
-		--v-input-border-radius
+	Available component overrides:
+
+	--v-input-font-family         [--theme--font-family-sans-serif]
+	--v-input-placeholder-color   [--theme--foreground-subdued]
+	--v-input-color               [--theme--foreground]
+	--v-input-background-color    [--theme--form--field--input--background]
+	--v-input-border-color        [--theme--form--field--input--border-color]
+	--v-input-border-color-hover  [--theme--form--field--input--border-color-hover]
+	--v-input-border-color-focus  [--theme--form--field--input--border-color-focus]
+	--v-input-border-radius       [--theme--border-radius]
 */
 
 .v-input {
