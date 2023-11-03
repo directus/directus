@@ -54,7 +54,7 @@ const ratingPercentage = computed(() => ({
 		color: #ffc107;
 		font-weight: 600;
 		background-color: rgb(255 193 7 / 0.15);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 
 		.v-icon {
 			margin-right: 4px;

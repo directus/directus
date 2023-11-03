@@ -283,14 +283,16 @@ function stepDown() {
 :global(body) {
 	--v-input-font-family: var(--theme--font-family-sans-serif);
 	--v-input-placeholder-color: var(--theme--foreground-subdued);
-	--v-input-box-shadow-color-focus: var(--theme--primary);
 	--v-input-color: var(--theme--foreground);
 	--v-input-background-color: var(--theme--form--field--input--background);
-	--v-input-border-color-focus: var(--theme--primary);
+	--v-input-border-color: var(--theme--form--field--input--border-color);
+	--v-input-border-color-hover: var(--theme--form--field--input--border-color-hover);
+	--v-input-border-color-focus: var(--theme--form--field--input--border-color-focus);
+	--v-input-border-radius: var(--theme--border-radius);
 }
 
 .v-input {
-	--arrow-color: var(--border-normal);
+	--arrow-color: var(--theme--form--field--input--border-color);
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
@@ -314,9 +316,11 @@ function stepDown() {
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
 		background-color: var(--v-input-background-color);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
-		transition: border-color var(--fast) var(--transition);
+		border: var(--theme--border-width) solid var(--v-input-border-color);
+		border-radius: var(--v-input-border-radius);
+		transition: var(--fast) var(--transition);
+		transition-property: border-color, box-shadow;
+		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
 			margin-right: 8px;
@@ -345,36 +349,37 @@ function stepDown() {
 			}
 
 			&.disabled {
-				--arrow-color: var(--border-normal);
+				--arrow-color: var(--v-input-border-color);
 
 				cursor: auto;
 			}
 		}
 
 		&:hover {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--v-input-border-color-hover);
 
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
-			border-color: var(--border-normal-alt);
+			border-color: var(--v-input-border-color-hover);
+			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
 		&:focus-within,
 		&.active {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--v-input-border-color-hover);
 
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
 			border-color: var(--v-input-border-color-focus);
-			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
+			box-shadow: var(--theme--form--field--input--box-shadow-focus);
 		}
 
 		&.disabled {
-			--arrow-color: var(--border-normal);
+			--arrow-color: var(--v-input-border-color);
 
 			color: var(--theme--foreground-subdued);
 			background-color: var(--background-subdued);
-			border-color: var(--border-normal);
+			border-color: var(--v-input-border-color);
 		}
 
 		.prefix,

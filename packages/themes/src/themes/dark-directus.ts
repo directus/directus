@@ -40,10 +40,17 @@ export const theme: Theme = {
 		fontFamilySerif: '"Merriweather", serif',
 		fontFamilyMonospace: '"Fira Mono", monospace',
 
+		borderRadius: '6px',
+		borderWidth: '2px',
+
 		navigation: {
 			background: '#21262e',
+			borderColor: 'transparent',
+			borderWidth: '0px',
 
 			project: {
+				borderColor: 'transparent',
+				borderWidth: '0px',
 				background: '#30363d',
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--font-family-sans-serif)',
@@ -51,6 +58,9 @@ export const theme: Theme = {
 
 			modules: {
 				background: 'var(--theme--background)',
+				borderColor: 'transparent',
+				borderWidth: '0px',
+
 				button: {
 					foreground: 'var(--theme--foreground-subdued)',
 					foregroundHover: '#fff',
@@ -78,11 +88,19 @@ export const theme: Theme = {
 				backgroundActive: '#30363d',
 
 				fontFamily: 'var(--theme--font-family-sans-serif)',
+
+				divider: {
+					borderColor: '#30363d',
+					borderWidth: 'var(--theme--border-width)',
+				},
 			},
 		},
 
 		header: {
 			background: 'var(--theme--background)',
+			borderColor: 'transparent',
+			borderWidth: '0px',
+			boxShadow: '0 4px 7px -4px rgb(var(--black) / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
 				fontFamily: 'var(--theme--font-family-sans-serif)',
@@ -103,6 +121,14 @@ export const theme: Theme = {
 					background: 'var(--theme--background)',
 					foreground: 'var(--theme--foreground)',
 					foregroundSubdued: 'var(--theme--foreground-subdued)',
+
+					borderColor: '#21262e',
+					borderColorHover: '#30363d',
+					borderColorFocus: 'var(--theme--primary)',
+
+					boxShadow: 'none',
+					boxShadowHover: 'none',
+					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 				},
 			},
 		},
@@ -111,6 +137,8 @@ export const theme: Theme = {
 			background: '#21262e',
 			foreground: 'var(--theme--foreground-subdued)',
 			fontFamily: 'var(--theme--font-family-sans-serif)',
+			borderColor: 'transparent',
+			borderWidth: '0px',
 
 			section: {
 				toggle: {
@@ -129,6 +157,9 @@ export const theme: Theme = {
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
 
 					fontFamily: 'var(--theme--font-family-sans-serif)',
+
+					borderColor: 'transparent',
+					borderWidth: '0px',
 				},
 			},
 		},

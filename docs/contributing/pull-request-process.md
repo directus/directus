@@ -43,3 +43,17 @@ To properly generate changelogs and determine the right version number after a c
 [changesets](https://github.com/changesets/changesets). Each pull request should include a changeset that describes
 whether the change is a patch/minor/major version bump, and describe what the change is. Changesets should be written in
 past tense.
+
+A changeset can be generated via the following command:
+
+```shell
+pnpm changeset
+```
+
+### Changeset Bump Definitions
+
+The following are the types of version bumps that can be specified in a changeset:
+
+- Major (x.0.0) - A change has been made that is incompatible with previous versions.
+- Minor (0.x.0) - A feature has been added that is backwards compatible with previous versions.
+- Patch (0.0.x) - A bug has been fixed that is backwards compatible with previous versions.

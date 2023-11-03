@@ -47,7 +47,7 @@ body {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	background-color: var(--v-avatar-color);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .tile {

@@ -429,7 +429,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator .v-progress-linear {
 	--v-progress-linear-height: 2px;
-	--v-progress-linear-color: var(--border-normal-alt);
+	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
 	top: -2px;
@@ -460,8 +460,8 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline {
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: 2px solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 
 .inline table :deep(.table-row:last-of-type .cell) {

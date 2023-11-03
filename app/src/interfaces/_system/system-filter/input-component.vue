@@ -47,10 +47,10 @@ const inputPattern = computed(() => {
 	switch (props.type) {
 		case 'integer':
 		case 'bigInteger':
-			return '[+-]?[0-9]+';
+			return '[+\\-]?[0-9]+';
 		case 'decimal':
 		case 'float':
-			return '[+-]?[0-9]+\\.?[0-9]*';
+			return '[+\\-]?[0-9]+\\.?[0-9]*';
 		case 'uuid':
 			return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
 		default:

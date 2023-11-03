@@ -88,7 +88,7 @@ function onInput(event: Event) {
 
 <style>
 body {
-	--v-slider-color: var(--border-normal);
+	--v-slider-color: var(--theme--form--field--input--border-color);
 	--v-slider-thumb-color: var(--theme--primary);
 	--v-slider-fill-color: var(--theme--primary);
 }
@@ -232,7 +232,7 @@ body {
 			color: var(--foreground-inverted);
 			font-weight: 600;
 			background-color: var(--theme--primary);
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);

@@ -40,10 +40,17 @@ export const theme: Theme = {
 		fontFamilySerif: '"Merriweather", serif',
 		fontFamilyMonospace: '"Fira Mono", monospace',
 
+		borderRadius: '6px',
+		borderWidth: '2px',
+
 		navigation: {
 			background: '#f0f4f9',
+			borderColor: 'transparent',
+			borderWidth: '0px',
 
 			project: {
+				borderColor: 'transparent',
+				borderWidth: '0px',
 				background: '#e4eaf1',
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--font-family-sans-serif)',
@@ -51,6 +58,9 @@ export const theme: Theme = {
 
 			modules: {
 				background: '#18222f',
+				borderColor: 'transparent',
+				borderWidth: '0px',
+
 				button: {
 					foreground: '#8196b1',
 					foregroundHover: '#fff',
@@ -78,11 +88,19 @@ export const theme: Theme = {
 				backgroundActive: '#e4eaf1',
 
 				fontFamily: 'var(--theme--font-family-sans-serif)',
+
+				divider: {
+					borderColor: '#d3dae4',
+					borderWidth: 'var(--theme--border-width)',
+				},
 			},
 		},
 
 		header: {
 			background: 'var(--theme--background)',
+			borderColor: 'transparent',
+			borderWidth: '0px',
+			boxShadow: '0 4px 7px -4px rgb(0 0 0 / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
 				fontFamily: 'var(--theme--font-family-sans-serif)',
@@ -103,6 +121,14 @@ export const theme: Theme = {
 					background: 'var(--theme--background)',
 					foreground: 'var(--theme--foreground)',
 					foregroundSubdued: 'var(--theme--foreground-subdued)',
+
+					borderColor: '#e4eaf1',
+					borderColorHover: '#d3dae4',
+					borderColorFocus: 'var(--theme--primary)',
+
+					boxShadow: 'none',
+					boxShadowHover: 'none',
+					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 				},
 			},
 		},
@@ -111,6 +137,8 @@ export const theme: Theme = {
 			background: '#f0f4f9',
 			foreground: 'var(--theme--foreground-subdued)',
 			fontFamily: 'var(--theme--font-family-sans-serif)',
+			borderColor: 'transparent',
+			borderWidth: '0px',
 
 			section: {
 				toggle: {
@@ -129,6 +157,9 @@ export const theme: Theme = {
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
 
 					fontFamily: 'var(--theme--font-family-sans-serif)',
+
+					borderColor: 'transparent',
+					borderWidth: '0px',
 				},
 			},
 		},

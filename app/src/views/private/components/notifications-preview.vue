@@ -73,7 +73,9 @@ const { lastFour } = storeToRefs(notificationsStore);
 }
 
 .sidebar-button {
-	background-color: var(--background-normal-alt);
+	color: var(--theme--sidebar--section--toggle--foreground);
+	background-color: var(--theme--sidebar--section--toggle--background);
+	--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
 }
 
 .inline {

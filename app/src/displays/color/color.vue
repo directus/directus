@@ -32,7 +32,8 @@ const styles = computed(() => {
 	const pageColorRGB = Color(pageColorString);
 	const colorRGB = value === null ? Color(defaultColor) : Color(value);
 
-	if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--border-normal)';
+	if (colorRGB.contrast(pageColorRGB) < 1.1)
+		style['border'] = '1px solid var(--theme--form--field--input--border-color)';
 
 	return style;
 });

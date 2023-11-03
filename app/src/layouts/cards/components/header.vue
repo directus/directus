@@ -127,8 +127,8 @@ function toggleDescending() {
 	margin-bottom: 36px;
 	padding: 0 8px;
 	background-color: var(--theme--background);
-	border-top: var(--border-width) solid var(--border-subdued);
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-top: var(--theme--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--border-subdued);
 	box-shadow: 0 0 0 2px var(--theme--background);
 }
 

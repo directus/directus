@@ -418,7 +418,7 @@ function useDisplayValue() {
 	padding-right: 26px;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: color var(--fast) var(--transition);
 
 	&:hover,

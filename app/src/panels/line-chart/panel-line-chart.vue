@@ -260,7 +260,7 @@ function setUpChart() {
 			},
 			crosshairs: {
 				stroke: {
-					color: 'var(--border-normal)',
+					color: 'var(--theme--form--field--input--border-color)',
 				},
 			},
 		},
@@ -329,11 +329,11 @@ function setUpChart() {
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
