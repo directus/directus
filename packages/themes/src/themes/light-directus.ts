@@ -67,7 +67,7 @@ export const theme: Theme = {
 			},
 
 			modules: {
-				background: '#18222f',
+				background: '#0e1c2f',
 				borderColor: 'transparent',
 				borderWidth: '0px',
 
@@ -171,6 +171,15 @@ export const theme: Theme = {
 					borderColor: 'transparent',
 					borderWidth: '0px',
 				},
+			},
+		},
+
+		public: {
+			art: {
+				background: '#0e1c2f',
+				primary: 'var(--theme--primary)',
+				secondary: 'var(--theme--secondary)',
+				speed: '1',
 			},
 		},
 	},

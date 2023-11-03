@@ -6,6 +6,7 @@ const FamilyName = Type.String({ $id: 'FamilyName' });
 const Length = Type.String({ $id: 'Length' });
 const Percentage = Type.String({ $id: 'Percentage' });
 const BoxShadow = Type.String({ $id: 'BoxShadow' });
+const Number = Type.String({ $id: 'Number' });
 
 const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal('medium'), Type.Literal('thick')], {
 	$id: 'LineWidth',
@@ -189,6 +190,15 @@ const Rules = Type.Object({
 			}),
 		}),
 	}),
+
+	public: Type.Object({
+		art: Type.Object({
+			background: Type.Ref(Color),
+			primary: Type.Ref(Color),
+			secondary: Type.Ref(Color),
+			speed: Type.Ref(Number),
+		}),
+	}),
 });
 
 export const ThemeSchema = Type.Object({
@@ -205,6 +215,7 @@ export const Definitions = {
 		Percentage,
 		LineWidth,
 		BoxShadow,
+		Number,
 	},
 };
 
