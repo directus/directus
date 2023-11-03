@@ -47,10 +47,6 @@ function update(newSelection: readonly (string | number)[]) {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-tabs-underline-color: var(--theme--foreground);
-}
-
 .v-tabs.horizontal {
 	position: relative;
 	display: inline-flex;
