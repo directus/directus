@@ -4,7 +4,7 @@ import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
 
 export type FilterResult = {
-	clauses: Pick<AbstractSqlClauses, 'where' | 'joins'>;
+	clauses: Required<Pick<AbstractSqlClauses, 'where' | 'joins'>>;
 	parameters: AbstractSqlQuery['parameters'];
 };
 
