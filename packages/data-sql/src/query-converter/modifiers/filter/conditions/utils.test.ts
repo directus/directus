@@ -1,14 +1,14 @@
 import { expect, test, vi } from 'vitest';
 import { convertNestedOneTarget, convertTarget } from './utils.js';
-import type { AbstractQueryFieldNodeNestedTarget, ConditionStringNode } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedTarget, ConditionNumberNode, ConditionStringNode } from '@directus/data';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 
 vi.mock('../../../../orm/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
-test('convert target', () => {
+test('convert primitive target', () => {
 	const conditionTargetField = randomIdentifier();
 	const compareValue = randomIdentifier();
 	const collection = randomIdentifier();
@@ -31,6 +31,42 @@ test('convert target', () => {
 
 	const idGen = parameterIndexGenerator();
 	const result = convertTarget(stringCondition, collection, idGen);
+	expect(result).toStrictEqual(expected);
+});
+
+test('convert function target', () => {
+	const conditionTargetField = randomIdentifier();
+	const compareValue = randomInteger(2, 500);
+	const collection = randomIdentifier();
+
+	const condition: ConditionNumberNode = {
+		type: 'condition-number',
+		operation: 'eq',
+		target: {
+			type: 'fn',
+			field: conditionTargetField,
+			fn: {
+				type: 'extractFn',
+				fn: 'year',
+				isTimestampType: false,
+			},
+		},
+		compareTo: compareValue,
+	};
+
+	const expected = {
+		type: 'fn',
+		fn: {
+			type: 'extractFn',
+			fn: 'year',
+			isTimestampType: false,
+		},
+		column: conditionTargetField,
+		table: collection,
+	};
+
+	const idGen = parameterIndexGenerator();
+	const result = convertTarget(condition, collection, idGen);
 	expect(result).toStrictEqual(expected);
 });
 
