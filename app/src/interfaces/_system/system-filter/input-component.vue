@@ -189,7 +189,7 @@ input {
 	color: var(--theme--primary);
 	font-family: var(--theme--font-family-monospace);
 	line-height: 1em;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border: none;
 
 	&::placeholder {

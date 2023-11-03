@@ -279,7 +279,7 @@ function toggleManualSort() {
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color);
-		border-bottom: var(--theme--border-width) solid var(--border-subdued);
+		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select,
 		&.manual {
@@ -397,7 +397,7 @@ function toggleManualSort() {
 			display: block;
 			width: var(--theme--border-width);
 			height: 60%;
-			background-color: var(--border-subdued);
+			background-color: var(--theme--border-color-subdued);
 			content: '';
 			transition: background-color var(--fast) var(--transition);
 		}
@@ -441,7 +441,7 @@ function toggleManualSort() {
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
-	border: var(--theme--background) 6px solid;
+	border: var(--theme--background-page) 6px solid;
 	box-sizing: content-box;
 	margin-right: 8px;
 	vertical-align: middle;

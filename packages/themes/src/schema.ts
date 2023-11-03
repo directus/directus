@@ -13,12 +13,32 @@ const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal(
 
 const Rules = Type.Object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base fonts
+	fontFamilyDisplay: Type.Ref(FamilyName),
+	fontFamilySansSerif: Type.Ref(FamilyName),
+	fontFamilySerif: Type.Ref(FamilyName),
+	fontFamilyMonospace: Type.Ref(FamilyName),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base border styles
+	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
+	borderWidth: Type.Ref(LineWidth),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base color palette
 	foreground: Type.Ref(Color),
 	foregroundSubdued: Type.Ref(Color),
 	foregroundAccent: Type.Ref(Color),
 
+	backgroundPage: Type.Ref(Color),
+
 	background: Type.Ref(Color),
+	backgroundAccent: Type.Ref(Color),
+	backgroundSubdued: Type.Ref(Color),
+
+	borderColor: Type.Ref(Color),
+	borderColorAccent: Type.Ref(Color),
+	borderColorSubdued: Type.Ref(Color),
 
 	primary: Type.Ref(Color),
 	primaryBackground: Type.Ref(Color),
@@ -46,21 +66,11 @@ const Rules = Type.Object({
 	dangerAccent: Type.Ref(Color),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Base fonts
-	fontFamilyDisplay: Type.Ref(FamilyName),
-	fontFamilySansSerif: Type.Ref(FamilyName),
-	fontFamilySerif: Type.Ref(FamilyName),
-	fontFamilyMonospace: Type.Ref(FamilyName),
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Base border styles
-	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
-	borderWidth: Type.Ref(LineWidth),
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
 	navigation: Type.Object({
 		background: Type.Ref(Color),
+		backgroundAccent: Type.Ref(Color),
+
 		borderWidth: Type.Ref(LineWidth),
 		borderColor: Type.Ref(Color),
 

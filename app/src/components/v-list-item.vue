@@ -144,14 +144,14 @@ body {
 	--v-list-item-min-height: 32px;
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--theme--border-radius);
-	--v-list-item-border-color: var(--border-subdued);
+	--v-list-item-border-color: var(--theme--border-color-subdued);
 	--v-list-item-border-color-hover: var(--theme--form--field--input--border-color-hover);
 	--v-list-item-color: var(--v-list-color, var(--theme--foreground));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--theme--foreground));
 	--v-list-item-color-active: var(--v-list-color-active, var(--theme--foreground));
-	--v-list-item-background-color: var(--v-list-background-color, var(--background-normal));
-	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
-	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
+	--v-list-item-background-color: var(--v-list-background-color, var(--theme--background));
+	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--theme--background));
+	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--theme--background));
 }
 </style>
 
@@ -241,8 +241,8 @@ body {
 	}
 
 	&.block {
-		--v-list-item-border-color: var(--border-subdued);
-		--v-list-item-background-color: var(--theme--background);
+		--v-list-item-border-color: var(--theme--border-color-subdued);
+		--v-list-item-background-color: var(--theme--background-page);
 		--v-list-item-background-color-hover: var(--card-face-color);
 		--v-icon-color: var(--theme--foreground-subdued);
 

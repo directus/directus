@@ -36,14 +36,14 @@ const dataItems = [
 
 const appItems = [
 	{
-		icon: 'settings',
+		icon: 'tune',
 		name: t('settings_project'),
 		to: `/settings/project`,
 	},
 	{
 		icon: 'palette',
-		name: t('settings_theming'),
-		to: `/settings/theming`,
+		name: t('settings_appearance'),
+		to: `/settings/appearance`,
 	},
 	{
 		icon: 'bookmark',

@@ -5,8 +5,8 @@
             <rect x="19" y="29" width="118" height="52" rx="5" stroke="var(--theme--primary)"
                 stroke-width="2" />
         </g>
-        <rect x="28" y="39" width="100" height="15" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
-        <rect x="28" y="56" width="80" height="15" rx="2" fill="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" />
+        <rect x="28" y="39" width="100" height="15" rx="2" fill="color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 75%)" />
+        <rect x="28" y="56" width="80" height="15" rx="2" fill="color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 75%)" />
     </g>
     <defs>
         <clipPath id="clip0_1308_5">

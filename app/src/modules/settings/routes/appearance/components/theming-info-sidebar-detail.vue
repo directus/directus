@@ -6,7 +6,7 @@ const { t } = useI18n();
 
 <template>
 	<sidebar-detail icon="info" :title="t('information')" close>
-		<div v-md="t('page_help_settings_theming')" class="page-description" />
+		<div v-md="t('page_help_settings_appearance')" class="page-description" />
 	</sidebar-detail>
 </template>
 

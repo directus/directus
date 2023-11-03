@@ -201,7 +201,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .bordered {
 	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
@@ -234,7 +234,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .uploader-preview-image {
 	margin-bottom: var(--form-vertical-gap);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 }
 

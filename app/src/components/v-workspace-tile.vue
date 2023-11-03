@@ -338,9 +338,9 @@ function useDragDrop() {
 	display: block;
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
-	background-color: var(--theme--background);
-	border: 1px solid var(--border-subdued);
-	box-shadow: 0 0 0 1px var(--border-subdued);
+	background-color: var(--theme--background-page);
+	border: 1px solid var(--theme--border-color-subdued);
+	box-shadow: 0 0 0 1px var(--theme--border-color-subdued);
 	z-index: 1;
 	transition: border var(--fast) var(--transition);
 
@@ -420,7 +420,7 @@ function useDragDrop() {
 
 .footer {
 	padding: 0 12px;
-	border-top: 2px solid var(--border-subdued);
+	border-top: 2px solid var(--theme--border-color-subdued);
 	margin-top: auto;
 	padding-top: 8px;
 }

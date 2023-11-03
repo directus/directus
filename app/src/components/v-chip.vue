@@ -82,7 +82,7 @@ function onCloseClick(event: MouseEvent) {
 <style>
 body {
 	--v-chip-color: var(--theme--foreground);
-	--v-chip-background-color: var(--background-normal-alt);
+	--v-chip-background-color: var(--theme--background);
 	--v-chip-color-hover: var(--white);
 	--v-chip-background-color-hover: var(--theme--primary-accent);
 	--v-chip-close-color: var(--theme--danger);
