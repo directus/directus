@@ -94,7 +94,8 @@ withDefaults(defineProps<Props>(), {
 
 		&.bordered {
 			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background-page)))
-				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background-page))) drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background-page)))
+				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background-page)))
+				drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background-page)))
 				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background-page)));
 		}
 

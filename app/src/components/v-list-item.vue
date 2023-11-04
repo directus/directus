@@ -199,25 +199,40 @@ function onClick(event: PointerEvent) {
 		&:not(.disabled):not(.dense):not(.block):hover {
 			--v-list-item-icon-color: var(--v-list-item-icon-color-hover, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
-			background-color: var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background)));
+			background-color: var(
+				--v-list-item-background-color-hover,
+				var(--v-list-background-color-hover, var(--theme--background))
+			);
 
 			&.active {
-				color: var(--v-list-item-color-active-hover, var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground))));
-				background-color: var(--v-list-item-background-color-active-hover, var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background))));
+				color: var(
+					--v-list-item-color-active-hover,
+					var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)))
+				);
+				background-color: var(
+					--v-list-item-background-color-active-hover,
+					var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background)))
+				);
 			}
 		}
 
 		&:not(.disabled):not(.dense):not(.block):active {
 			--v-list-item-icon-color: var(--v-list-item-icon-color-active, var(--theme--foreground-subdued));
 			color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
-			background-color: var(--v-list-item-background-color-active, var(--v-list-background-color-active, var(--theme--background)));
+			background-color: var(
+				--v-list-item-background-color-active,
+				var(--v-list-background-color-active, var(--theme--background))
+			);
 		}
 	}
 
 	&:not(.dense).active {
 		--v-list-item-icon-color: var(--v-list-item-icon-color-active);
 		color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
-		background-color: var(--v-list-item-background-color-active, var(--v-list-background-color-active, var(--theme--background)));
+		background-color: var(
+			--v-list-item-background-color-active,
+			var(--v-list-background-color-active, var(--theme--background))
+		);
 	}
 
 	&.disabled {
@@ -272,7 +287,10 @@ function onClick(event: PointerEvent) {
 		}
 
 		&.clickable:hover {
-			background-color: var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background)));
+			background-color: var(
+				--v-list-item-background-color-hover,
+				var(--v-list-background-color-hover, var(--theme--background))
+			);
 			border: var(--theme--border-width) solid
 				var(--v-list-item-border-color-hover, var(--theme--form--field--input--border-color-hover));
 		}

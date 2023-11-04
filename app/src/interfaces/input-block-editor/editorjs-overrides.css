@@ -184,7 +184,10 @@
 	--webkit-box-shadow: unset;
 
 	color: var(--theme--primary);
-	background-color: var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background))) !important;
+	background-color: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background))
+	) !important;
 	box-shadow: unset;
 }
 
@@ -192,7 +195,10 @@
 	--webkit-box-shadow: unset;
 
 	color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
-	background-color: var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background))) !important;
+	background-color: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background))
+	) !important;
 	box-shadow: unset;
 }
 
@@ -407,9 +413,15 @@
 /* tc module */
 
 .codex-editor .tc-wrap {
-	--color-background: var(--v-list-item-background-color-active, var(--v-list-background-color-active, var(--theme--background)));
+	--color-background: var(
+		--v-list-item-background-color-active,
+		var(--v-list-background-color-active, var(--theme--background))
+	);
 	--color-border: var(--theme--form--field--input--border-color);
-	--color-background-hover: var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background)));
+	--color-background-hover: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background))
+	);
 }
 
 .codex-editor .tc-popover {
@@ -451,7 +463,10 @@
 }
 
 .tc-add-row:hover::before {
-	background-color: var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background)));
+	background-color: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background))
+	);
 }
 
 .interface.subdued .codex-editor {
