@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useI18n } from 'vue-i18n';
@@ -45,7 +45,7 @@ const batchDeleteAllowed = computed<boolean>(() => {
 	return permissionsStore.hasPermission('directus_dashboards', 'delete');
 });
 
-const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
+const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 function refresh() {
 	insightsStore.hydrate();
