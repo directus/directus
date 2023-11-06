@@ -111,32 +111,34 @@ test('convert nested target', () => {
 	const expected = {
 		value: {
 			type: 'primitive',
-			table: foreignCollection,
+			table: foreignCollection + '_RANDOM',
 			column: filterField,
 		},
-		join: {
-			type: 'join',
-			table: foreignCollection,
-			as: foreignCollection + '_RANDOM',
-			on: {
-				type: 'condition',
-				negate: false,
-				condition: {
-					type: 'condition-field',
-					target: {
-						type: 'primitive',
-						table: leftCollection,
-						column: leftIdentifierField,
-					},
-					operation: 'eq',
-					compareTo: {
-						type: 'primitive',
-						table: foreignCollection + '_RANDOM',
-						column: rightIdentifierField,
+		joins: [
+			{
+				type: 'join',
+				table: foreignCollection,
+				as: foreignCollection + '_RANDOM',
+				on: {
+					type: 'condition',
+					negate: false,
+					condition: {
+						type: 'condition-field',
+						target: {
+							type: 'primitive',
+							table: leftCollection,
+							column: leftIdentifierField,
+						},
+						operation: 'eq',
+						compareTo: {
+							type: 'primitive',
+							table: foreignCollection + '_RANDOM',
+							column: rightIdentifierField,
+						},
 					},
 				},
 			},
-		},
+		],
 	};
 
 	expect(res).toStrictEqual(expected);
