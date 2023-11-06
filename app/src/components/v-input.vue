@@ -285,7 +285,7 @@ function stepDown() {
 
 	--v-input-font-family         [--theme--font-family-sans-serif]
 	--v-input-placeholder-color   [--theme--foreground-subdued]
-	--v-input-color               [--theme--foreground]
+	--v-input-color               [--theme--form--field--input--foreground]
 	--v-input-background-color    [--theme--form--field--input--background]
 	--v-input-border-color        [--theme--form--field--input--border-color]
 	--v-input-border-color-hover  [--theme--form--field--input--border-color-hover]
@@ -381,7 +381,7 @@ function stepDown() {
 
 			color: var(--theme--foreground-subdued);
 			background-color: var(--background-subdued);
-			border-color: var(--v-input-border-color);
+			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 
 		.prefix,
