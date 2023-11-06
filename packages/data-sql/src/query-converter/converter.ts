@@ -10,6 +10,7 @@ import type { ParameterTypes } from '../types/parameterized-statement.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
 import { convertFieldNodes } from './fields/index.js';
 import { convertModifiers } from './modifiers/modifiers.js';
+import { uniqWith, isEqual } from 'lodash-es';
 
 /**
  * Here the abstract query gets converted into the abstract SQL query.
@@ -39,12 +40,17 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 
 	try {
 		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
-		const joins = [...clauses.joins ?? [], ...convertedModifiers.clauses.joins ?? []];
-		clauses = {...clauses, ...convertedModifiers.clauses, joins };
+		const joins = [...(clauses.joins ?? []), ...(convertedModifiers.clauses.joins ?? [])];
+		clauses = { ...clauses, ...convertedModifiers.clauses, joins };
 		parameters.push(...convertedModifiers.parameters);
 	} catch (error: any) {
 		throw new Error(`Failed to convert query modifiers: ${error.message}`);
 	}
+
+	// join clauses can be returned by field conversion and modifier conversion.
+	// Here we make sure that a specific join can also exit once.
+	const uniqueJoins = uniqWith(clauses.joins, isEqual);
+	clauses = { ...clauses, joins: uniqueJoins };
 
 	return {
 		clauses,
