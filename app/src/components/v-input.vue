@@ -381,7 +381,7 @@ function stepDown() {
 
 			color: var(--theme--foreground-subdued);
 			background-color: var(--background-subdued);
-			border-color: var(--v-input-border-color);
+			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 
 		.prefix,
