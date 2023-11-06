@@ -7,13 +7,11 @@ import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
 
-interface Props {
+const props = defineProps<{
 	collection: string;
 	primaryKey: string | number;
 	version: Version | null;
-}
-
-const props = defineProps<Props>();
+}>();
 
 defineEmits(['revert']);
 

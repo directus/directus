@@ -10,24 +10,25 @@ type FieldInfo = FieldNode & {
 	children?: FieldInfo[];
 };
 
-interface Props {
-	field: FieldInfo;
-	search?: string;
-	includeFunctions?: boolean;
-	relationalFieldSelectable?: boolean;
-	allowSelectAll?: boolean;
-	parent?: string | null;
-	rawFieldNames?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	search: undefined,
-	includeFunctions: false,
-	relationalFieldSelectable: true,
-	allowSelectAll: false,
-	parent: null,
-	rawFieldNames: false,
-});
+const props = withDefaults(
+	defineProps<{
+		field: FieldInfo;
+		search?: string;
+		includeFunctions?: boolean;
+		relationalFieldSelectable?: boolean;
+		allowSelectAll?: boolean;
+		parent?: string | null;
+		rawFieldNames?: boolean;
+	}>(),
+	{
+		search: undefined,
+		includeFunctions: false,
+		relationalFieldSelectable: true,
+		allowSelectAll: false,
+		parent: null,
+		rawFieldNames: false,
+	}
+);
 
 const emit = defineEmits(['add']);
 
