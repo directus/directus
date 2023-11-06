@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'VFieldListItem',
-};
-</script>
-
 <script setup lang="ts">
 import { FieldNode } from '@/composables/use-field-tree';
 import formatTitle from '@directus/format-title';

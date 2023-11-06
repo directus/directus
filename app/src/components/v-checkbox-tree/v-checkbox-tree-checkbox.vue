@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'VCheckboxTreeCheckbox',
-};
-</script>
-
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import { difference } from 'lodash';

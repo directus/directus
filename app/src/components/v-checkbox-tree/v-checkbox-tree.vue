@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'VCheckboxTree',
-};
-</script>
-
 <script setup lang="ts">
 import { remove as removeDiacritics } from 'diacritics';
 import { computed, ref, toRefs, watch } from 'vue';

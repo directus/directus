@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'NestedDraggable',
-};
-</script>
-
 <script setup lang="ts">
 import {
 	ChangesItem,
