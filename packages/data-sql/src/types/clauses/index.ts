@@ -17,7 +17,6 @@ export interface AbstractSqlClauses {
 
 export type AbstractSqlQueryWhereNode = AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 
-
 export * from './selects/fn.js';
 export * from './selects/primitive.js';
 export * from './joins/join.js';
