@@ -672,7 +672,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: var(--v-sheet-padding, 8px);
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -681,7 +681,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
+		margin-top: var(--v-sheet-padding, 8px);
 	}
 
 	.spacer {
