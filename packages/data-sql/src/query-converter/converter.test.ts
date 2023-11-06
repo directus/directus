@@ -1,339 +1,34 @@
 import type { AbstractQuery } from '@directus/data';
-import { beforeEach, expect, test } from 'vitest';
+import { expect, test, vi, afterEach } from 'vitest';
 import type { AbstractSqlQuery } from '../types/index.js';
 import { convertQuery } from './converter.js';
-import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { randomAlpha, randomIdentifier } from '@directus/random';
+import { convertFieldNodes, type FieldConversionResult } from './fields/fields.js';
+import { convertModifiers, type ModifierConversionResult } from './modifiers/modifiers.js';
 
-let sample: AbstractQuery;
+vi.mock('./fields/fields.js', (importOriginal) => {
+	const mod = importOriginal();
+	return {
+		...mod,
+		convertFieldNodes: vi.fn(),
+	};
+});
+
+vi.mock('./modifiers/modifiers.js', (importOriginal) => {
+	const mod = importOriginal();
+	return {
+		...mod,
+		convertModifiers: vi.fn(),
+	};
+});
 
 const firstField = randomIdentifier();
 const secondField = randomIdentifier();
 const rootCollection = randomIdentifier();
 const rootStore = randomIdentifier();
 
-beforeEach(() => {
-	sample = {
-		store: rootStore,
-		collection: rootCollection,
-		fields: [
-			{
-				type: 'primitive',
-				field: firstField,
-			},
-			{
-				type: 'primitive',
-				field: secondField,
-			},
-		],
-	};
-});
-
-test('Convert simple query', () => {
-	const res = convertQuery(sample);
-
-	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-				},
-			],
-			from: rootCollection,
-		},
-		parameters: [],
-	};
-
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
-});
-
-test('Convert query with filter', () => {
-	const randomField = randomIdentifier();
-	const compareToValue = randomInteger(1, 100);
-
-	sample.modifiers = {
-		filter: {
-			type: 'condition',
-			condition: {
-				type: 'condition-number',
-				target: {
-					type: 'primitive',
-					field: randomField,
-				},
-				operation: 'gt',
-				compareTo: compareToValue,
-			},
-		},
-	};
-
-	const res = convertQuery(sample);
-
-	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-				},
-			],
-			from: rootCollection,
-			where: {
-				type: 'condition',
-				negate: false,
-				condition: {
-					type: 'condition-number',
-					target: {
-						column: randomField,
-						table: rootCollection,
-						type: 'primitive',
-					},
-					operation: 'gt',
-					compareTo: {
-						type: 'value',
-						parameterIndex: 0,
-					},
-				},
-			},
-		},
-		parameters: [compareToValue],
-	};
-
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
-});
-
-test('Convert query with a limit', () => {
-	sample.modifiers = {
-		limit: {
-			type: 'limit',
-			value: randomInteger(1, 100),
-		},
-	};
-
-	const res = convertQuery(sample);
-
-	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-				},
-			],
-			from: rootCollection,
-			limit: { type: 'value', parameterIndex: 0 },
-		},
-		parameters: [sample.modifiers.limit!.value],
-	};
-
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
-});
-
-test('Convert query with limit and offset', () => {
-	sample.modifiers = {
-		limit: {
-			type: 'limit',
-			value: randomInteger(1, 100),
-		},
-		offset: {
-			type: 'offset',
-			value: randomInteger(1, 100),
-		},
-	};
-
-	const res = convertQuery(sample);
-
-	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-				},
-			],
-			from: rootCollection,
-			limit: { type: 'value', parameterIndex: 0 },
-			offset: { type: 'value', parameterIndex: 1 },
-		},
-		parameters: [sample.modifiers.limit!.value, sample.modifiers.offset!.value],
-	};
-
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
-});
-
-test('Convert query with a sort', () => {
-	sample.modifiers = {
-		sort: [
-			{
-				type: 'sort',
-				direction: 'ascending',
-				target: {
-					type: 'primitive',
-					field: randomIdentifier(),
-				},
-			},
-		],
-	};
-
-	const res = convertQuery(sample);
-
-	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-				},
-			],
-			from: rootCollection,
-			order: [
-				{
-					type: 'order',
-					orderBy: sample.modifiers.sort![0]!.target,
-					direction: 'ASC',
-				},
-			],
-		},
-		parameters: [],
-	};
-
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
-});
-
-test('Convert a query with a function as field select', () => {
-	const randomField = randomIdentifier();
-
-	sample.fields.push({
-		type: 'fn',
-		fn: {
-			type: 'arrayFn',
-			fn: 'count',
-		},
-		field: randomField,
-	});
-
-	const res = convertQuery(sample);
-
-	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-				},
-				{
-					type: 'fn',
-					fn: {
-						type: 'arrayFn',
-						fn: 'count',
-					},
-					table: rootCollection,
-					column: randomField,
-				},
-			],
-			from: rootCollection,
-		},
-		parameters: [],
-	};
-
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
-});
-
-test('Convert a query with all possible modifiers', () => {
-	sample.modifiers = {
-		limit: {
-			type: 'limit',
-			value: randomInteger(1, 100),
-		},
-		offset: {
-			type: 'offset',
-			value: randomInteger(1, 100),
-		},
-		sort: [
-			{
-				type: 'sort',
-				direction: 'ascending',
-				target: {
-					type: 'primitive',
-					field: randomIdentifier(),
-				},
-			},
-		],
-	};
-
-	const res = convertQuery(sample);
-
-	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: firstField,
-				},
-				{
-					type: 'primitive',
-					table: rootCollection,
-					column: secondField,
-				},
-			],
-			from: rootCollection,
-			order: [
-				{
-					type: 'order',
-					orderBy: sample.modifiers.sort![0]!.target,
-					direction: 'ASC',
-				},
-			],
-			limit: { type: 'value', parameterIndex: 0 },
-			offset: { type: 'value', parameterIndex: 1 },
-		},
-		parameters: [sample.modifiers.limit!.value, sample.modifiers.offset!.value],
-	};
-
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 test('Convert a query with a foreign/right string filter', () => {
@@ -342,7 +37,6 @@ test('Convert a query with a foreign/right string filter', () => {
 	const leftHandIdentifierField = randomIdentifier();
 	const rightHandIdentifierField = randomIdentifier();
 	const compareValue = randomAlpha(3);
-	const joinAlias = randomIdentifier();
 
 	const sampleAbstractQuery: AbstractQuery = {
 		store: rootStore,
@@ -389,6 +83,81 @@ test('Convert a query with a foreign/right string filter', () => {
 		},
 	};
 
+	const fieldConversionResult: FieldConversionResult = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: rootCollection,
+					column: firstField,
+					as: `${firstField}_RANDOM`,
+				},
+				{
+					type: 'primitive',
+					table: rootCollection,
+					column: secondField,
+					as: `${secondField}_RANDOM`,
+				},
+			],
+			joins: [],
+		},
+		parameters: [],
+		aliasMapping: new Map(),
+		nestedManys: [],
+	};
+
+	vi.mocked(convertFieldNodes).mockReturnValueOnce(fieldConversionResult);
+
+	const modifierConversionResult: ModifierConversionResult = {
+		clauses: {
+			joins: [
+				{
+					type: 'join',
+					table: foreignCollection,
+					on: {
+						type: 'condition',
+						condition: {
+							type: 'condition-field',
+							target: {
+								type: 'primitive',
+								table: foreignCollection,
+								column: targetField,
+							},
+							operation: 'eq',
+							compareTo: {
+								type: 'primitive',
+								table: rootCollection,
+								column: leftHandIdentifierField,
+							},
+						},
+						negate: false,
+					},
+					as: `${foreignCollection}_RANDOM`,
+				},
+			],
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-string',
+					target: {
+						type: 'primitive',
+						table: foreignCollection,
+						column: targetField,
+					},
+					operation: 'starts_with',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+			},
+		},
+		parameters: [compareValue],
+	};
+
+	vi.mocked(convertModifiers).mockReturnValueOnce(modifierConversionResult);
+
 	const res = convertQuery(sampleAbstractQuery);
 
 	const expected: Required<Pick<AbstractSqlQuery, 'clauses' | 'parameters'>> = {
@@ -398,11 +167,13 @@ test('Convert a query with a foreign/right string filter', () => {
 					type: 'primitive',
 					table: rootCollection,
 					column: firstField,
+					as: `${firstField}_RANDOM`,
 				},
 				{
 					type: 'primitive',
 					table: rootCollection,
 					column: secondField,
+					as: `${secondField}_RANDOM`,
 				},
 			],
 			from: rootCollection,
@@ -428,7 +199,7 @@ test('Convert a query with a foreign/right string filter', () => {
 						},
 						negate: false,
 					},
-					as: joinAlias,
+					as: `${foreignCollection}_RANDOM`,
 				},
 			],
 			where: {
@@ -452,6 +223,6 @@ test('Convert a query with a foreign/right string filter', () => {
 		parameters: [compareValue],
 	};
 
-	expect(res.clauses).toMatchObject(expected.clauses);
-	expect(res.parameters).toMatchObject(expected.parameters);
+	expect(res.clauses).toStrictEqual(expected.clauses);
+	expect(res.parameters).toStrictEqual(expected.parameters);
 });
