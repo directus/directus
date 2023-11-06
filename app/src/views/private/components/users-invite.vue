@@ -77,7 +77,7 @@ async function loadRoles() {
 	}));
 
 	if (roles.value.length > 0 && !roleSelected.value) {
-		roleSelected.value = roles.value[0].value;
+		roleSelected.value = roles.value[0]?.value;
 	}
 }
 </script>

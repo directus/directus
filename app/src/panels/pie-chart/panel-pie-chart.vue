@@ -216,7 +216,7 @@ function getPercentage(value: number) {
 		: n(value);
 }
 
-function formatColor(color: string | number, value: string | number) {
+function formatColor(color: string | number, value?: string | number) {
 	if (isNil(value) || props.conditionalFill.length === 0) return color;
 	let formattedColor = color;
 
