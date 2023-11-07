@@ -1249,6 +1249,8 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    heif: HEIF
+    heic: HEIF
     mapping: Mapping
     basemaps: Basemaps
     basemaps_raster: Raster

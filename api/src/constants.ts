@@ -70,7 +70,15 @@ export const COOKIE_OPTIONS: CookieOptions = {
 export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
 
 /** Formats from which transformation is supported */
-export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'];
+export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/tiff',
+	'image/avif',
+	'image/heif',
+	'image/heic',
+];
 
 /** Formats where metadata extraction is supported */
 export const SUPPORTED_IMAGE_METADATA_FORMATS = [
@@ -80,4 +88,6 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/gif',
 	'image/tiff',
 	'image/avif',
+	'image/heif',
+	'image/heic',
 ];

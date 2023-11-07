@@ -12,6 +12,7 @@ export const TransformationMethods /*: readonly (keyof Sharp)[]*/ = [
 	'tiff',
 	'webp',
 	'avif',
+	'heif',
 
 	// Resizing
 	// https://sharp.pixelplumbing.com/api-resize
@@ -67,7 +68,7 @@ export type Transformation = TransformationMap[keyof TransformationMap];
 
 export type TransformationResize = Pick<ResizeOptions, 'width' | 'height' | 'fit' | 'withoutEnlargement'>;
 
-export type TransformationFormat = 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
+export type TransformationFormat = 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif' | 'heif' | 'heic';
 
 export type TransformationParams = {
 	key?: string;
