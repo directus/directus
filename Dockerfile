@@ -30,6 +30,8 @@ RUN <<EOF
 	npm_config_workspace_concurrency=1 pnpm run build
 	pnpm --filter directus deploy --prod dist
 	cd dist
+	# Regenerate package.json file with essential fields only
+	# (see https://github.com/directus/directus/pull/20346)
 	node -e '
 		const f = "package.json", {name, version, type, exports, bin} = require(`./${f}`), {packageManager} = require(`../${f}`);
 		fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin, packageManager}, null, 2));
