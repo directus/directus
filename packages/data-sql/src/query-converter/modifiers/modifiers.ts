@@ -13,14 +13,14 @@ export const convertModifiers = (
 	idxGenerator: Generator<number, number, number>
 ): ModifierConversionResult => {
 	const result: ModifierConversionResult = {
-		clauses: {},
+		clauses: { joins: [] },
 		parameters: [],
 	};
 
 	if (modifiers?.filter) {
 		const convertedFilter = convertFilter(modifiers.filter, collection, idxGenerator);
 		result.clauses.where = convertedFilter.clauses.where;
-		result.clauses.joins = convertedFilter.clauses.joins;
+		result.clauses.joins!.push(...convertedFilter.clauses.joins);
 		result.parameters.push(...convertedFilter.parameters);
 	}
 
