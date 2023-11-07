@@ -30,10 +30,7 @@ RUN : \
 	&& npm_config_workspace_concurrency=1 pnpm run build \
 	&& pnpm --filter directus deploy --prod dist \
 	&& cd dist \
-	&& pnpm pack \
-	&& tar -zxvf *.tgz package/package.json \
-	&& mv package/package.json package.json \
-	&& rm -r *.tgz package \
+	&& node -e 'const f = "./package.json", {name, version, type, exports, bin} = require(f); fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin}, null, 2))' \
 	&& mkdir -p database extensions uploads \
 	;
 
