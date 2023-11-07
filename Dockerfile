@@ -24,7 +24,6 @@ COPY pnpm-lock.yaml .
 RUN pnpm fetch
 
 COPY . .
-
 RUN <<EOF
 	pnpm install --recursive --offline --frozen-lockfile
 	npm_config_workspace_concurrency=1 pnpm run build
