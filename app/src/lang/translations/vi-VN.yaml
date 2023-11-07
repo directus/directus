@@ -27,6 +27,7 @@ method: Phương thức
 published: Đã xuất bản
 draft: Bản nháp
 archived: Đã lưu trữ
+extensions: Tiện ích mở rộng
 modules: Mô đun
 module_bar: Thanh công cụ
 logs: Nhật ký
@@ -35,6 +36,7 @@ tile_size: Kích thước tệp
 edit_field: Sửa trường
 conditions: Điều kiện
 location: Vị trí
+collection_names_are_case_sensitive: Tên bộ sưu tập có phân biệt chữ hoa chữ thường
 condition_rules: Điều kiện
 input: Nhập
 maps: Bản đồ
@@ -51,12 +53,27 @@ and: Và
 or: Hoặc
 init: Khởi tạo
 dataset_too_large_currently_showing_n_items: Cơ sở dữ liệu quá lớn. Hiển thị {n} dòng đầu tiên.
+modifier: Người sửa
 extension_interface: Giao diện
 extension_display: Hiển thị
 extension_layout: Bố cục
+extension_module: Mô-đun
 extension_panel: Bảng
 extension_hook: Móc
+extension_endpoint: Endpoint
+extension_operation: Thao tác
+extension_bundle: Đóng gói
+extension_interfaces: Giao diện
+extension_displays: Hiển thị
+extension_layouts: Bố cục
 extension_modules: Mô đun
+extension_panels: Bảng điều khiển
+extension_hooks: Hooks
+extension_endpoints: Endpoints
+extension_operations: Vận hành
+extension_bundles: Đóng gói
+enable: Kích hoạt
+disable: Vô hiệu
 custom: Tuỳ chỉnh
 hook: Móc
 fill_width: Rộng toàn bộ
@@ -65,6 +82,7 @@ enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt
 add_field: Thêm trường
 role_name: Tên Quyền
 branch: Chọn nhánh
+leaf: Lá
 indeterminate: Không xác định
 edit_collection: Chỉnh sửa Bộ sưu tập
 exclusive: Độc nhất
@@ -84,6 +102,10 @@ create_user: Tạo Người dùng
 message: Tin nhắn
 delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
+create_custom_translation: Tạo bản dịch tùy chỉnh
+edit_custom_translation: Chỉnh sửa bản dịch tùy chỉnh
+no_custom_translations: Không có bản dịch tùy chỉnh
+no_custom_translations_copy: Chưa có bản dịch tùy chỉnh nào.
 invite_users: Mời Người dùng
 invite: Mời
 email_already_invited: Email "{email}" đã được mời
@@ -99,6 +121,31 @@ rename_folder: Đổi Tên Thư Mục
 delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
+keep: Giữ
+version: Phiên bản
+version_key: Mã phiên bản
+version_name: Tên phiên bản
+main_version: Chính
+switch_version: Chuyển đổi phiên bản
+switch_version_copy: Bạn có chắc chắn muốn chuyển sang phiên bản "{version}" không? Những thay đổi chưa được lưu sẽ bị mất.
+create_version: Tạo phiên bản
+rename_version: Đổi tên phiên bản
+compare_version: So sánh phiên bản
+save_version: Lưu phiên bản
+promote_version: Quảng bá phiên bản
+promote_version_disabled: Không thay đổi
+promote_version_drawer_title: Nâng cấp {version} lên Chính
+promote_version_changes: Thay đổi
+promote_version_preview: Xem trước
+outdated_notice: >-
+  Mục chính đã được cập nhật kể từ khi phiên bản này được tạo. Vui lòng xem lại tất cả các giá trị trường bên dưới và xác nhận phiên bản nào sẽ được sử dụng khi quảng bá phiên bản này vào mục chính.
+promote_notice: >-
+  Vui lòng xem lại tất cả các giá trị trường bên dưới và xác nhận phiên bản nào sẽ được sử dụng khi quảng bá phiên bản này vào mục chính.
+delete_version: Xóa phiên bản
+delete_version_copy: >-
+  Bạn có chắc chắn muốn xóa phiên bản "{version}" không? Hành động này không thể được hoàn tác.
+delete_on_promote_copy: >-
+  Bạn muốn xóa hoặc giữ lại phiên bản "{version}" sau khi quảng bá?
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
@@ -144,6 +191,7 @@ validationError:
   nnull: Dữ liệu không thể để rỗng
   required: Dữ liệu là bắt buộc
   unique: Giá trị phải là duy nhất
+  email: Giá trị phải là địa chỉ email hợp lệ
   regex: Giá trị không có định dạng đúng
   starts_with: Giá trị phải bắt đầu với {substring}
   istarts_with: Giá trị phải bắt đầu với {substring}
@@ -159,6 +207,7 @@ use_custom: Chọn Lọc
 nullable: Có thể rỗng
 allow_null_value: Cho phép NULL
 allow_multiple: Cho phép nhiều
+allow_multiple_to_be_open: Cho phép mở nhiều
 enter_value_to_replace_nulls: Vui lòng nhập một giá trị mới để thay thế giá trị NULL hiện có trong trường này.
 field_standard: Tiêu chuẩn
 field_presentation: Trình Bày và Bí Danh
@@ -174,7 +223,17 @@ item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
 field_validation: Xác Thực Trường
 field_presets: Các Mẫu Trường Tạo Sẵn
+permissions_for_role: 'Các mục mà vai trò {role} có thể {action}.'
+fields_for_role: 'Các trường mà vai trò {role} có thể {action}.'
+validation_for_role: 'Các quy tắc của trường {action} mà Vai trò {role} phải tuân theo.'
+presets_for_role: 'Giá trị mặc định của trường cho Vai trò {role}.'
+presets_field_warning: 'Các giá trị đặt trước quan hệ cho trường "{field}" phải được định cấu hình bằng cú pháp "chi tiết".'
+presentation_and_aliases: Trình bày & Bí danh
+revision_post_create: Đây là giao diện của mục này khi nó được tạo ra.
+revision_post_update: Đây là giao diện của mục này sau khi cập nhật.
 changes_made: Các thay đổi trong phiên bản này hiển thị bên dưới.
+no_relational_data: Hãy nhớ rằng dữ liệu quan hệ không được đưa vào đây.
+junction_field_location: Vị trí trường nối
 top: Trên cùng
 bottom: Dưới cùng
 hide_field: Ẩn trường
@@ -188,14 +247,22 @@ duplicate_where_to: Bạn muốn nhân bản trường này đến đâu?
 language: Ngôn ngữ
 language_placeholder: Chọn một ngôn ngữ...
 aggregate_function: Hàm tập hợp
+aggregate_precision: Độ chính xác tập hợp
+group_aggregation: Tập hợp nhóm
+group_precision: Độ chính xác của nhóm
 global: Toàn cục
 admins_have_all_permissions: Các quản trị viên có toàn quyền
 camera: Camera
 show_zero: Hiển số không
 create_in_advanced_field_creation_mode: Tạo trường trong chế độ nâng cao
 continue_in_advanced_field_creation_mode: Tiếp tục tạo trường trong chế độ nâng cao
+validation: Thẩm định
 sum: Tổng
+sum_distinct: Tổng riêng biệt
 avg: Trung bình
+avg_distinct: Trung bình khác biệt
+count: Đếm
+count_distinct: Đếm riêng biệt
 min: Tối thiểu
 max: Tối đa
 exposure: Độ phơi sáng
@@ -216,6 +283,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Ngày tháng
 date_range: Khoảng thời gian
+translation_key_placeholder: Nhập khóa...
 datetime: Ngày Giờ
 dateTime: Ngày Giờ
 precision: Độ chính xác
@@ -224,16 +292,23 @@ float: Số thực
 integer: Số nguyên
 json: JSON
 xml: XML
+yaml: YAML
 string: Chuỗi
 text: Đoạn văn bản
 time: Thời gian
 timestamp: Mốc thời gian
 uuid: UUID
 hash: Hash
+geometry: Hình học (Tất cả)
 geometry.Point: Point
 geometry.LineString: LineString
 geometry.Polygon: Polygon
 geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: Chuỗi nhiều dòng
+geometry.MultiPolygon: Đa giác
+theme_auto: Tự động (Dựa trên hệ thống)
+theme_light: Chế độ sáng
+theme_dark: Chế độ tối
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
 auto_refresh: Tự động Làm mới
@@ -369,6 +444,7 @@ functions:
   hour: Giờ
   minute: Phút
   second: Giây
+  count: Đếm
 minutes: Phút
 hours: Giờ
 month: Tháng
@@ -564,6 +640,10 @@ value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
 create_bookmark: Tạo Dấu trang
 edit_bookmark: Chỉnh sửa Dấu trang
+edit_role_bookmark: Chỉnh sửa dấu trang vai trò
+edit_global_bookmark: Chỉnh sửa dấu trang toàn app
+cannot_edit_role_bookmarks: Không thể chỉnh sửa dấu trang vai trò
+cannot_edit_global_bookmarks: Không thể chỉnh sửa dấu trang toàn app
 bookmarks: Đánh dấu
 presets: Mẫu thiết lập
 unexpected_error: Lỗi Bất Thường
@@ -606,10 +686,12 @@ hidden_collections: Bảng Ẩn
 show_hidden_collections: Hiện các Bảng Ẩn
 hide_hidden_collections: Ẩn các Bảng Ẩn
 show_header: Hiện Tiêu đề
+unmanaged_collections: Bộ sưu tập chưa được định cấu hình
 system_collections: Các Bảng Hệ Thống
 placeholder: Chỗ điền
 icon_left: Biểu tượng bên trái
 icon_right: Biểu tượng bên phải
+count_other_revisions: '{count} bản sửa đổi khác'
 font: Phông chữ
 sans_serif: Sans Serif
 serif: Serif
@@ -619,9 +701,11 @@ color: Màu sắc
 circle: Vòng tròn
 empty_item: Mục trống
 log_in_with: 'Đăng nhập với {provider}'
+conditional_styles: Kiểu có điều kiện
 advanced_settings: Cài đặt Nâng cao
 advanced_filter: Bộ Lọc Nâng Cao
 delete_advanced_filter: Xoá Bộ Lọc
+change_advanced_filter_operator: Thay đổi toán tử
 advanced: Nâng cao
 operators:
   eq: Bằng
@@ -639,14 +723,28 @@ operators:
   icontains: Chứa
   starts_with: Bắt đầu với
   nstarts_with: Không bắt đầu với
+  istarts_with: Bắt đầu bằng (không phân biệt chữ hoa chữ thường)
+  nistarts_with: Không bắt đầu bằng (không phân biệt chữ hoa chữ thường)
   ends_with: Kết thúc với
   nends_with: Không kết thúc với
+  iends_with: Kết thúc bằng (không phân biệt chữ hoa chữ thường)
+  niends_with: Không kết thúc bằng (không phân biệt chữ hoa chữ thường)
   between: Trong khoảng
   nbetween: Ngoài khoảng
   empty: Bị rỗng
   nempty: Không rỗng
+  all: Chứa các key này
+  has: Chứa một số key này
+  intersects: Giao nhau
+  nintersects: Không giao nhau
+  intersects_bbox: Giao nhau với hộp giới hạn
+  nintersects_bbox: Không giao nhau với hộp giới hạn
+  regex: Khớp RegExp
+custom_validation_message: Thông báo kiểm tra tùy chỉnh
 loading: Đang tải...
 drop_to_upload: Kéo vào để tải lên
+item: Item
+items: Items
 upload_file: Tải lên tập tin
 upload_file_indeterminate: Đang tải tệp lên...
 upload_file_success: Tệp tin được tải lên
@@ -656,14 +754,18 @@ upload_pending: Đang chờ tải lên
 drag_file_here: Kéo & thả tệp vào đây
 click_to_browse: Bấm để Tìm kiếm
 interface_options: Tùy chọn giao diện
+display_options: Tùy chọn Hiển thị
 layout_options: Các Tuỳ Chọn Bố Cục
 rows: Các hàng
 columns: Các cột
 collection_setup: Cài đặt Bộ sưu tập
+optional_system_fields: Các trường hệ thống tùy chọn
 value_unique: Giá trị phải là duy nhất
 all_activity: Tất cả hoạt động
 create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
+language_display_template: Mẫu hiển thị ngôn ngữ
+translations_display_template: Mẫu hiển thị bản dịch
 n_items_selected: '0 bản ghi được chọn | 1 bản ghi được chọn | {n} bản ghi được chọn'
 per_page: Mỗi trang
 all_files: Tất cả các tệp
@@ -677,12 +779,18 @@ add_file: Thêm tập tin
 replace_file: Thay thế tập tin
 no_results: Không có kết quả
 no_results_copy: Điều chỉnh hoặc xóa bộ lọc tìm kiếm để tìm được kết quả.
+no_visible_fields: Mẫu trống
+no_visible_fields_copy: Biểu mẫu này không có trường hiển thị.
 clear_filters: Xoá các bộ lọc
 saves_automatically: Lưu tự động
 role: Phân quyền
 edit_role: Sửa phân quyền
 rule: Quy tắc
 user: Người dùng
+no_presets: Không có tuỳ chọn sẵn
+no_presets_copy: Chưa có cài đặt trước hoặc đánh dấu nào được lưu lại.
+no_presets_cta: Thêm cài đặt trước
+presets_only: Chỉ cài đặt trước
 create: Tạo
 on_create: Khi khởi tạo
 on_update: Khi cập nhật
@@ -692,15 +800,33 @@ delete: Xoá
 select_fields: Chọn trường
 format_text: Định dạng văn bản
 format_value: Định dạng giá trị
+abbreviate_value: Giá trị viết tắt
+operator: Nhà điều hành
 bold: In đậm
+toggle: Thay đổi trạng thái
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
+flows: Quy trình
+flow: Quy trình
+select_a_flow: Chọn một Quy trình
 run_flow_confirm: Bạn có muốn thực thi luồng này không?
 run_flow_on_current_collection: Chạy luồng trên collection hiện tại
+run_flow_on_current: Chạy quy trình trên mục hiện tại
+run_flow_on_current_edited_confirm: Mục này có thể được cập nhật theo quy trình này, bạn có chắc chắn muốn thực thi nó không?
+run_flow_on_selected: Chọn một hoặc nhiều mục trước | Chạy quy trình trên 1 mục đã chọn | Chạy quy trình trên {n} mục đã chọn
 run_flow: Chạy
+run_flow_success: Quy trình "{flow}" đã chạy thành công
 field_name_placeholder: Nhập tên trường...
 field_key_placeholder: Nhập field key...
+trigger: Kích hoạt
+trigger_options: Tùy chỉnh kích hoạt
+view_trigger: Xem trình kích hoạt
+create_trigger: Tạo yếu tố kích hoạt
+trigger_setup: Thiết lập kích hoạt
+change_trigger: Thay đổi trình kích hoạt
+flow_delete_confirm: Bạn có chắc chắn muốn xóa Quy trình "{flow}" không? Hành động này không thể được hoàn tác.
+set_flow_active: Đặt luồng thành Kích hoạt
 flow_name: Tên
 flow_tracking_null: Không theo dõi bất cứ điều gì
 code: Mã nguồn
@@ -722,9 +848,18 @@ width: Độ rộng
 height: Độ dài
 source: Nguồn
 url_placeholder: Nhập một địa chỉ...
+interface_group_relational: Có quan hệ
+interface_group_presentation: Trình chiếu
+interface_group_groups: Các nhóm
+interface_group_other: Khác
+tooltip: Tooltip
+tooltip_placeholder: Nhập Tooltip...
 unlimited: Không giới hạn
+open_link_in: Mở liên kết trong
+new_tab: Tab mới
 current_tab: Thẻ hiện tại
 save_image: Lưu ảnh
+save_media: Lưu đa phương tiện
 wysiwyg_options:
   aligncenter: Canh giữa
   alignjustify: Canh đều hai bên
@@ -763,42 +898,66 @@ wysiwyg_options:
   indent: Canh lề
   outdent: Lề ngoài
   undo: Hoàn tác
+  redo: Khôi phục
   remove: Xoá
   removeformat: Xóa bỏ định dạng
   selectall: Chọn Tất Cả
   table: Bảng
+  visualaid: Xem các yếu tố vô hình
   source_code: Chỉnh sửa mã nguồn
   fullscreen: Toàn màn hình
+  directionality: Tính định hướng
+  lazy_loading: Tải hình ảnh lười
+  lazy_loading_label: Kích hoạt tính năng tải lười
 dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
+choices_option_configured_incorrectly: Lựa chọn được định cấu hình không chính xác
 deselect: Bỏ chọn
 deselect_all: Bỏ chọn tất cả
+theme: Chủ đề
+select_a_theme: Chọn một Chủ đề
+appearance_global: Chế độ mặc định của dự án
+appearance_auto: Tự động (Đồng bộ với hệ thống)
+appearance_light: Sáng
+appearance_dark: Tối
 other: Khác...
 adding_user: Đã thêm người dùng
 unknown_user: Người dùng không xác định
 creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
 editing_in: 'Chỉnh sửa mục trong {collection}'
+viewing_in: 'Xem mục trong {collection}'
 creating_unit: 'Đang tạo {unit}'
 editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
 no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
+settings_permissions: Kiểm soát truy cập
 settings_project: Cài đặt
+settings_appearance: Diện mạo
 settings_webhooks: Webhooks
+settings_flows: Quy trình
 settings_presets: Đánh dấu
 settings_translations: Các Bản Dịch
 one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
+configure_field_key_to_continue: Cấu hình trường key để tiếp tục
 scope: Phạm vi
+actions: Hành động
 select: Chọn...
 layout: Bố cục
+tree_view: Chế độ xem hình cây
 changes_are_permanent: Thay đổi là lâu dài
+preset_name_placeholder: Phục vụ như mặc định khi trống...
 preset_search_placeholder: Tìm kiếm truy vấn...
+editing_preset: Chỉnh sửa cài sẵn
 layout_preview: Xem Trước Bố Cục
 layout_setup: Cài Đặt Bố Cục
 data: Dữ liệu
+theme-overrides: Ghi đè chủ đề
 unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
+discard_all_changes: Hủy bỏ tất cả thay đổi
+discard_changes_copy: Bạn có chắc chắn muốn hủy tất cả các thay đổi đã thực hiện không?
 keep_editing: Tiếp tục chỉnh sửa
 page_help_collections_collection: >-
   ** Duyệt các mục ** - Liệt kê tất cả các mục trong {collection} mà bạn có quyền truy cập. Tùy chỉnh bố cục, bộ lọc và sắp xếp để điều chỉnh chế độ xem của bạn và thậm chí lưu dấu trang của các cấu hình khác nhau này để truy cập nhanh.
@@ -1058,6 +1217,8 @@ interfaces:
     interface: Giao diện
   system-display:
     display: Hiển thị
+  system-display-options:
+    display-options: Tùy chọn Hiển thị
   list-m2m:
     many-to-many: Quan hệ nhiều - nhiều
   select-dropdown-m2o:
@@ -1075,6 +1236,7 @@ interfaces:
   list:
     sort: Sắp xếp
     sort_placeholder: Thủ công
+    display_group: Tùy chọn Hiển thị
   slider:
     slider: Thanh trượt
   tags:
@@ -1085,6 +1247,7 @@ interfaces:
   input-translated-string:
     search_placeholder: Tìm kiếm...
   boolean:
+    toggle: Thay đổi trạng thái
     label_default: Đã kích hoạt
   translations:
     display_template: Mẫu hiển thị
@@ -1197,6 +1360,8 @@ operations:
     data: Dữ liệu
     header_placeholder: Đang xác thực...
   trigger:
+    flows: Quy trình
+    flow: Quy trình
     data: Dữ liệu
 standard: Tiêu chuẩn
 compact: Thu gọn
