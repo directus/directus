@@ -80,8 +80,8 @@ const logoURL = computed<string | null>(() => {
 header {
 	margin-bottom: 32px;
 	padding: 10px;
-	background-color: var(--theme--background);
-	border-bottom: var(--theme--border-width) solid var(--border-subdued);
+	background-color: var(--theme--background-page);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .container {
@@ -133,7 +133,7 @@ header {
 
 .content {
 	padding: 32px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 }
@@ -148,7 +148,7 @@ header {
 		width: 100%;
 		max-width: 856px;
 		padding: 32px;
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-page);
 		border-radius: var(--theme--border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 

@@ -228,7 +228,7 @@ function onPointerUp() {
 				right: 1px;
 				bottom: 0;
 				left: 1px;
-				background-color: var(--background-normal-alt);
+				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}
 

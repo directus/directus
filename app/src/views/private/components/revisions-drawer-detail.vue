@@ -91,7 +91,7 @@ defineExpose({
 }
 
 .v-divider {
-	--v-divider-color: var(--background-normal-alt);
+	--v-divider-color: var(--theme--background-accent);
 
 	position: sticky;
 	top: 0;
@@ -103,8 +103,8 @@ defineExpose({
 	padding-top: 8px;
 	padding-right: 8px;
 	padding-left: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 2px 2px var(--background-normal);
+	background-color: var(--theme--background);
+	box-shadow: 0 0 2px 2px var(--theme--background);
 
 	&:first-of-type {
 		margin-top: 0;

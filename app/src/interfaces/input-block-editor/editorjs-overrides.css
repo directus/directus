@@ -1,5 +1,5 @@
 .codex-editor {
-	--bg-color: var(--background-normal) !important;
+	--bg-color: var(--theme--background) !important;
 	--front-color: var(--theme--form--field--input--foreground) !important;
 	--border-color: var(--theme--form--field--input--border-color) !important;
 }
@@ -7,13 +7,13 @@
 .codex-editor .ce-toolbar__plus,
 .codex-editor .ce-toolbar__settings-btn {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-toolbar__plus:hover,
 .codex-editor .ce-toolbar__settings-btn:hover {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .codex-editor .ce-toolbar__plus svg,
@@ -36,7 +36,7 @@
 }
 
 .codex-editor .cdx-loader::before {
-	border: 3px solid var(--background-normal-alt);
+	border: 3px solid var(--theme--background-accent);
 	border-left-color: var(--theme--primary);
 }
 
@@ -47,7 +47,7 @@
 }
 
 .codex-editor .ce-popover {
-	background: var(--theme--background);
+	background: var(--theme--background-page);
 	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
 	border-radius: var(--theme--border-radius);
@@ -86,7 +86,7 @@
 }
 
 .codex-editor .ce-popover-item-icon {
-	background: var(--theme--background);
+	background: var(--theme--background-page);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	box-shadow: none;
 }
@@ -106,7 +106,7 @@
 
 .codex-editor .image-tool--loading .image-tool__image,
 .codex-editor .ce-block--selected .ce-block__content {
-	background: var(--background-normal);
+	background: var(--theme--background);
 }
 
 .codex-editor .image-tool--loading .image-tool__image {
@@ -156,7 +156,7 @@
 /* Button balloons */
 
 .codex-editor .ce-toolbox__button.ce-toolbox__button--active {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 .codex-editor .ce-toolbox__button.ce-toolbox__button--active svg {
@@ -177,7 +177,7 @@
 .codex-editor .ce-inline-toolbar__dropdown:hover,
 .codex-editor .ce-inline-toolbar .ce-inline-tool:hover,
 .codex-editor .ce-settings .ce-settings__button:hover {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 .codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {
@@ -218,7 +218,7 @@
 .codex-editor .ce-code__textarea {
 	color: var(--theme--form--field--input--foreground);
 	font-size: inherit;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	box-shadow: unset;
@@ -236,7 +236,7 @@
 
 .codex-editor .ce-inline-tool-input {
 	color: var(--theme--primary);
-	background: var(--background-normal);
+	background: var(--theme--background);
 	border-top-color: var(--theme--form--field--input--border-color);
 }
 
@@ -264,7 +264,7 @@
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
 	color: var(--theme--form--field--input--foreground);
-	background: var(--background-normal);
+	background: var(--theme--background);
 	border-color: var(--theme--form--field--input--border-color);
 	box-shadow: unset;
 }
@@ -289,7 +289,7 @@
 /* Image Tool */
 
 .codex-editor .image-tool {
-	--bg-color: var(--background-normal-alt);
+	--bg-color: var(--theme--background-accent);
 	--front-color: var(--theme--primary);
 	--border-color: var(--theme--form--field--input--border-color);
 }
@@ -360,7 +360,7 @@
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon {
 	padding: 5px;
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 	border-radius: var(--theme--border-radius);
 	margin-right: 12px;
 }
@@ -413,9 +413,9 @@
 }
 
 .codex-editor .tc-popover {
-	--color-background: var(--background-normal);
-	--color-border: var(--background-normal);
-	--color-background-hover: var(--background-normal-alt);
+	--color-background: var(--theme--background);
+	--color-border: var(--theme--background);
+	--color-background-hover: var(--theme--background-accent);
 }
 
 .tc-cell--selected,
@@ -431,18 +431,18 @@
 }
 
 .tc-toolbox__toggler:hover {
-	fill: var(--background-normal-alt) !important;
+	fill: var(--theme--background-accent) !important;
 }
 
 .codex-editor .tc-toolbox__toggler svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
-	fill: var(--background-normal) !important;
+	fill: var(--theme--background) !important;
 	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .tc-toolbox__toggler:hover svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
-	fill: var(--background-normal-alt) !important;
+	fill: var(--theme--background-accent) !important;
 }
 
 .tc-add-column:hover,
@@ -569,7 +569,7 @@
 	overflow: auto;
 	font-size: 18px;
 	line-height: 24px;
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 	border-radius: 4px;
 }
 

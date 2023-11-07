@@ -6,6 +6,7 @@ const FamilyName = Type.String({ $id: 'FamilyName' });
 const Length = Type.String({ $id: 'Length' });
 const Percentage = Type.String({ $id: 'Percentage' });
 const BoxShadow = Type.String({ $id: 'BoxShadow' });
+const Number = Type.String({ $id: 'Number' });
 
 const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal('medium'), Type.Literal('thick')], {
 	$id: 'LineWidth',
@@ -13,12 +14,32 @@ const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal(
 
 const Rules = Type.Object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base fonts
+	fontFamilyDisplay: Type.Ref(FamilyName),
+	fontFamilySansSerif: Type.Ref(FamilyName),
+	fontFamilySerif: Type.Ref(FamilyName),
+	fontFamilyMonospace: Type.Ref(FamilyName),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base border styles
+	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
+	borderWidth: Type.Ref(LineWidth),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base color palette
 	foreground: Type.Ref(Color),
 	foregroundSubdued: Type.Ref(Color),
 	foregroundAccent: Type.Ref(Color),
 
+	backgroundPage: Type.Ref(Color),
+
 	background: Type.Ref(Color),
+	backgroundAccent: Type.Ref(Color),
+	backgroundSubdued: Type.Ref(Color),
+
+	borderColor: Type.Ref(Color),
+	borderColorAccent: Type.Ref(Color),
+	borderColorSubdued: Type.Ref(Color),
 
 	primary: Type.Ref(Color),
 	primaryBackground: Type.Ref(Color),
@@ -46,21 +67,11 @@ const Rules = Type.Object({
 	dangerAccent: Type.Ref(Color),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Base fonts
-	fontFamilyDisplay: Type.Ref(FamilyName),
-	fontFamilySansSerif: Type.Ref(FamilyName),
-	fontFamilySerif: Type.Ref(FamilyName),
-	fontFamilyMonospace: Type.Ref(FamilyName),
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Base border styles
-	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
-	borderWidth: Type.Ref(LineWidth),
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
 	navigation: Type.Object({
 		background: Type.Ref(Color),
+		backgroundAccent: Type.Ref(Color),
+
 		borderWidth: Type.Ref(LineWidth),
 		borderColor: Type.Ref(Color),
 
@@ -179,6 +190,37 @@ const Rules = Type.Object({
 			}),
 		}),
 	}),
+
+	public: Type.Object({
+		background: Type.Ref(Color),
+		foreground: Type.Ref(Color),
+		foregroundAccent: Type.Ref(Color),
+
+		art: Type.Object({
+			background: Type.Ref(Color),
+			primary: Type.Ref(Color),
+			secondary: Type.Ref(Color),
+			speed: Type.Ref(Number),
+		}),
+
+		form: Type.Object({
+			field: Type.Object({
+				input: Type.Object({
+					background: Type.Ref(Color),
+					foreground: Type.Ref(Color),
+					foregroundSubdued: Type.Ref(Color),
+
+					borderColor: Type.Ref(Color),
+					borderColorHover: Type.Ref(Color),
+					borderColorFocus: Type.Ref(Color),
+
+					boxShadow: Type.Ref(BoxShadow),
+					boxShadowHover: Type.Ref(BoxShadow),
+					boxShadowFocus: Type.Ref(BoxShadow),
+				}),
+			}),
+		}),
+	}),
 });
 
 export const ThemeSchema = Type.Object({
@@ -195,6 +237,7 @@ export const Definitions = {
 		Percentage,
 		LineWidth,
 		BoxShadow,
+		Number,
 	},
 };
 

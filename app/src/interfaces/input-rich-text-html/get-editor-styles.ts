@@ -114,7 +114,7 @@ code {
 	font-weight: 500;
 	padding: 2px 4px;
 	font-family: ${cssVar('--theme--font-family-monospace')}, monospace;
-	background-color: ${cssVar('--background-normal')};
+	background-color: ${cssVar('--theme--background-accent')};
 	border-radius: ${cssVar('--theme--border-radius')};
 	overflow-wrap: break-word;
 }
@@ -124,7 +124,7 @@ pre {
 	font-weight: 500;
 	padding: 1em;
 	font-family: ${cssVar('--theme--font-family-monospace')}, monospace;
-	background-color: ${cssVar('--background-normal')};
+	background-color: ${cssVar('--theme--background-accent')};
 	border-radius: ${cssVar('--theme--border-radius')};
 	overflow: auto;
 }

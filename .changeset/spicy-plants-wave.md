@@ -3,4 +3,4 @@
 '@directus/app': minor
 ---
 
-Added support for configurable navigation dividers
+Added support for overriding global backgrounds

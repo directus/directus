@@ -20,7 +20,7 @@ withDefaults(defineProps<Props>(), {
 
 <style>
 body {
-	--v-skeleton-loader-color: var(--theme--background);
+	--v-skeleton-loader-color: var(--theme--background-page);
 	--v-skeleton-loader-background-color: var(--background-subdued);
 }
 </style>

@@ -103,7 +103,7 @@ const formattedTime = computed(() => {
 .item {
 	margin-bottom: 8px;
 	padding: 8px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border-radius: var(--theme--border-radius);
 }
 

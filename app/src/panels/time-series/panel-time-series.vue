@@ -192,7 +192,7 @@ function setupChart() {
 			},
 		},
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: props.showHeader ? -20 : -4,
 				bottom: 0,
@@ -362,7 +362,7 @@ function setupChart() {
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal) !important;
+	background-color: var(--theme--background) !important;
 	padding: 0;
 }
 

@@ -432,7 +432,7 @@ function pressedEnter() {
 	}
 
 	.post-comment {
-		--v-button-background-color-disabled: var(--background-normal-alt);
+		--v-button-background-color-disabled: var(--theme--background-accent);
 	}
 }
 
