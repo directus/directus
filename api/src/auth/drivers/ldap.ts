@@ -283,16 +283,13 @@ export class LDAPAuthDriver extends AuthDriver {
 				{
 					first_name: userInfo.firstName,
 					last_name: userInfo.lastName,
-					email: userInfo.email
+					email: userInfo.email,
+					// Only sync roles if the AD groups are configured
+					role: groupDn ? userRole?.id ?? defaultRoleId ?? null : undefined
 				},
 				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
 				{ database: getDatabase(), schema: this.schema, accountability: null }
 			);
-
-			// Only sync roles if the AD groups are configured
-			if (groupDn) {
-				updatedUserPayload = { role: userRole?.id ?? defaultRoleId ?? null, ...updatedUserPayload };
-			}
 
 			// Update user to update properties that might have changed
 			await this.usersService.updateOne(userId, updatedUserPayload);
