@@ -174,7 +174,7 @@ function onClick(event: PointerEvent) {
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
 	text-decoration: none;
 	border-radius: var(--v-list-item-border-radius, var(--theme--border-radius));
-	background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--background)));
+	background-color: var(--v-list-item-background-color, var(--v-list-background-color, transparent));
 
 	&.dashed {
 		&::after {
