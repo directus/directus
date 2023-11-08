@@ -24,6 +24,7 @@ import { pathToRelativeUrl } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
+import replaceDefault from '@rollup/plugin-replace';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
@@ -57,6 +58,7 @@ import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
 const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
+const replace = replaceDefault as unknown as typeof replaceDefault.default;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -369,12 +371,19 @@ export class ExtensionManager {
 
 		const entrypoint = generateExtensionsEntrypoint(this.extensions);
 
+		const replacements = { 'process.env.NODE_ENV': '"production"' };
+
 		try {
 			const bundle = await rollup({
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
+				plugins: [
+					replace({ values: replacements, preventAssignment: true }),
+					virtual({ entry: entrypoint }),
+					alias({ entries: internalImports }),
+					nodeResolve({ browser: true }),
+				],
 			});
 
 			const { output } = await bundle.generate({ format: 'es', compact: true });

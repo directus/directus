@@ -88,6 +88,7 @@
 		"@rollup/plugin-alias": "5.0.0",
 		"@rollup/plugin-node-resolve": "15.0.2",
 		"@rollup/plugin-virtual": "3.0.1",
+		"@rollup/plugin-replace": "5.0.2",
 		"argon2": "0.31.1",
 		"async": "3.2.4",
 		"axios": "1.4.0",
