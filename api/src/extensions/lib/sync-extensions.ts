@@ -53,6 +53,10 @@ export const syncExtensions = async () => {
 		return;
 	}
 
+	const extensionsPath = getExtensionsPath();
+
+	// Ensure that the local extensions cache path exists
+	await mkdir(extensionsPath, { recursive: true });
 	await setSyncStatus(SyncStatus.SYNCING);
 
 	logger.trace('Syncing extensions from configured storage location...');
@@ -70,7 +74,7 @@ export const syncExtensions = async () => {
 		// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
 		// extensions path on disk from the start of the file path
 		const destPath = join(
-			getExtensionsPath(),
+			extensionsPath,
 			filepath.substring(resolve('/', normalize(env['EXTENSIONS_PATH'])).length - 1)
 		);
 
@@ -84,7 +88,7 @@ export const syncExtensions = async () => {
 
 	await queue.onIdle();
 
-	await ensureExtensionDirs(getExtensionsPath(), NESTED_EXTENSION_TYPES);
+	await ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 
 	await setSyncTimestamp(systemStartTimestamp);
 	await setSyncStatus(SyncStatus.DONE);
