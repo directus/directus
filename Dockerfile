@@ -30,7 +30,7 @@ RUN <<EOF
 	pnpm --filter directus deploy --prod dist
 	cd dist
 	# Regenerate package.json file with essential fields only
-	# (see https://github.com/directus/directus/pull/20346)
+	# (see https://github.com/directus/directus/issues/20338)
 	node -e '
 		const f = "package.json", {name, version, type, exports, bin} = require(`./${f}`), {packageManager} = require(`../${f}`);
 		fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin, packageManager}, null, 2));
