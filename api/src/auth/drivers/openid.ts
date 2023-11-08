@@ -199,7 +199,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 					auth_data: userPayload.auth_data ?? null,
 					first_name: userPayload.first_name,
 					last_name: userPayload.last_name,
-					email: userPayload.email
+					email: userPayload.email,
 				},
 				{
 					identifier,

@@ -285,7 +285,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					last_name: userInfo.lastName,
 					email: userInfo.email,
 					// Only sync roles if the AD groups are configured
-					role: groupDn ? userRole?.id ?? defaultRoleId ?? null : undefined
+					role: groupDn ? userRole?.id ?? defaultRoleId ?? null : undefined,
 				},
 				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
 				{ database: getDatabase(), schema: this.schema, accountability: null }
