@@ -626,7 +626,7 @@ function getLinkForItem(item: DisplayItem) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding, 8px);
+	gap: 8px;
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -635,7 +635,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding, 8px);
+		margin-top: 8px;
 	}
 
 	.spacer {
