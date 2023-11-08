@@ -278,7 +278,7 @@ function toggleManualSort() {
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
-		background-color: var(--v-table-background-color, transparent);
+		background-color: var(--v-table-background-color, var(--theme--background-page));
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select,
