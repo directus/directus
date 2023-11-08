@@ -1,12 +1,6 @@
 name: Check
 
 on:
-  push:
-    branches:
-      - main
-      - next
-    paths-ignore:
-      - docs/**
   pull_request:
     branches:
       - main
