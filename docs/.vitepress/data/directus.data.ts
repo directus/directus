@@ -11,15 +11,12 @@ export default defineLoader({
 		const { version: fullVersion } = await readPackageJson(join(rootDir, 'directus'));
 		const splitVersion = fullVersion.split('.');
 
-		const { packageManager } = await readPackageJson(rootDir);
-
 		return {
 			version: {
 				full: fullVersion,
 				major: splitVersion[0],
 				minor: splitVersion.slice(0, 2).join('.'),
 			},
-			pnpmVersion: packageManager.slice(5),
 		};
 	},
 });
