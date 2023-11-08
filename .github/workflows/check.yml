@@ -29,7 +29,7 @@ jobs:
         uses: tj-actions/changed-files@v40
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -58,6 +58,11 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: github.base_ref
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
