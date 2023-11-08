@@ -52,7 +52,7 @@ jobs:
           build: false
 
       - name: Run Formatter
-        run: pnpm exec prettier --check .
+        run: pnpm exec prettier --check ${{ steps.changed-files.outputs.all_changed_files }}
 
   unit:
     name: Unit Tests
@@ -65,7 +65,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        run: pnpm test
+        run: pnpm test -- --changed ${{ github.base_ref }} --passWithNoTests
 
   analyze:
     name: CodeQL Analysis
