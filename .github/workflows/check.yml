@@ -61,7 +61,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: github.base_ref
+          ref: ${{ github.base_ref }}
 
       - name: Checkout repository
         uses: actions/checkout@v3
