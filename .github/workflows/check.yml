@@ -66,7 +66,3 @@ jobs:
 
       - name: Run Tests
         run: pnpm test -- -- --changed ${{ github.base_ref }} --passWithNoTests
-
-  analyze:
-    name: CodeQL Analysis
-    uses: ./.github/workflows/codeql-analysis.yml
