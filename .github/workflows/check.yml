@@ -33,9 +33,11 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          build: false
 
       - name: Run Linter
-        run: pnpm exec eslint steps.changed-files.outputs.all_changed_files
+        run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
 
   format:
     name: Format
