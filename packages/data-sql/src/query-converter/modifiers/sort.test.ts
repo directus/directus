@@ -31,7 +31,6 @@ beforeEach(() => {
 });
 
 test('convert ascending sort with a single field', () => {
-
 	const mock: TargetConversionResult = {
 		value: {
 			type: 'primitive',

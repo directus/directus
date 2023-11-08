@@ -6,17 +6,19 @@ export type SortConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'order' | 'joins'>>;
 };
 
-
 /**
  * @param abstractSorts
  * @returns the converted sort nodes
  */
-export const convertSort = (abstractSorts: AbstractQueryNodeSort[], collection: string, idxGenerator: Generator<number, number, number>): SortConversionResult => {
-
+export const convertSort = (
+	abstractSorts: AbstractQueryNodeSort[],
+	collection: string,
+	idxGenerator: Generator<number, number, number>
+): SortConversionResult => {
 	const result: SortConversionResult = {
 		clauses: {
 			joins: [],
-			order: []
+			order: [],
 		},
 	};
 
@@ -37,4 +39,3 @@ export const convertSort = (abstractSorts: AbstractQueryNodeSort[], collection: 
 
 	return result;
 };
-
