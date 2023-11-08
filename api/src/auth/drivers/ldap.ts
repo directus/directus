@@ -278,7 +278,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
-			let updatedUserPayload = await emitter.emitFilter(
+			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
 				{
 					first_name: userInfo.firstName,
