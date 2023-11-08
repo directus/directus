@@ -67,4 +67,4 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        run: pnpm test -- -- --changed ${{ github.base_ref }} --passWithNoTests
+        run: pnpm test -- -- --changed origin/${{ github.base_ref }} --passWithNoTests
