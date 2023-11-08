@@ -278,7 +278,7 @@ function toggleManualSort() {
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
-		background-color: var(--v-table-background-color);
+		background-color: var(--v-table-background-color, var(--theme--background-page));
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select,
@@ -363,7 +363,7 @@ function toggleManualSort() {
 
 	.fixed {
 		position: sticky;
-		top: var(--v-table-sticky-offset-top);
+		top: var(--v-table-sticky-offset-top, 0);
 		z-index: 3;
 	}
 

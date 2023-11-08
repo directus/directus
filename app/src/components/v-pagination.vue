@@ -141,10 +141,6 @@ function toPage(page: number) {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-pagination-active-color: var(--theme--primary);
-}
-
 .v-pagination {
 	display: flex;
 }

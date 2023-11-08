@@ -131,19 +131,13 @@ const internalActive = computed({
 	</v-dialog>
 </template>
 
-<style>
-body {
-	--v-drawer-max-width: 856px;
-}
-</style>
-
 <style lang="scss" scoped>
 .v-drawer {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: var(--v-drawer-max-width);
+	max-width: 856px;
 	height: 100%;
 	background-color: var(--theme--background-page);
 
