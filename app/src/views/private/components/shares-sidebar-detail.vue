@@ -228,10 +228,6 @@ async function send() {
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.sidebar-detail {
-	--v-badge-background-color: var(--theme--primary);
-}
-
 .v-progress-linear {
 	margin: 24px 0;
 }
