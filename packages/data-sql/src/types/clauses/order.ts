@@ -1,10 +1,9 @@
-interface AbstractSqlOrderPrimitive {
-	type: 'primitive';
-	field: string;
-}
-
 export interface AbstractSqlQueryOrderNode {
 	type: 'order';
-	orderBy: AbstractSqlOrderPrimitive;
+	orderBy: {
+		type: 'primitive';
+		column: string;
+		table: string;
+	};
 	direction: 'ASC' | 'DESC';
 }
