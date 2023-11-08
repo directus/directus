@@ -341,7 +341,7 @@ export class FilesService extends ItemsService {
 
 		for (const file of files) {
 			const disk = storage.location(file['storage']);
-			const filePrefix = path.basename(file['filename_disk'], path.extname(file['filename_disk']));
+			const filePrefix = path.parse(file['filename_disk']).name;
 
 			// Delete file + thumbnails
 			for await (const filepath of disk.list(filePrefix)) {
