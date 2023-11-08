@@ -974,8 +974,6 @@ choices: Варианты
 choices_option_configured_incorrectly: Варианты настроены неправильно
 deselect: Снять выделение
 deselect_all: Снять всё выделение
-appearance_light: Светлая тема
-appearance_dark: Тёмная тема
 other: Другой...
 adding_user: Добавление пользователя
 unknown_user: Неизвестный пользователь

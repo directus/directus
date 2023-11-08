@@ -79,7 +79,7 @@ export class Emitter {
 		}
 	}
 
-	public onFilter(event: string, handler: FilterHandler): void {
+	public onFilter<T = unknown>(event: string, handler: FilterHandler<T>): void {
 		this.filterEmitter.on(event, handler);
 	}
 
@@ -91,7 +91,7 @@ export class Emitter {
 		this.initEmitter.on(event, handler);
 	}
 
-	public offFilter(event: string, handler: FilterHandler): void {
+	public offFilter<T = unknown>(event: string, handler: FilterHandler<T>): void {
 		this.filterEmitter.off(event, handler);
 	}
 

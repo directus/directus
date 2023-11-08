@@ -54,7 +54,7 @@ const imageThumbnail = computed(() => {
 img {
 	height: 100%;
 	object-fit: cover;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
 }
 
@@ -67,8 +67,8 @@ img {
 	justify-content: center;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
 
 	&.has-file {

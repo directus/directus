@@ -368,7 +368,13 @@ function useActions() {
 </script>
 
 <template>
-	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
+	<v-drawer
+		v-model="internalActive"
+		:title="title"
+		:icon="collectionInfo?.meta?.icon ?? undefined"
+		persistent
+		@cancel="cancel"
+	>
 		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
 			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 

@@ -44,18 +44,18 @@ export class FilesService extends ItemsService {
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		let existingFile = {};
+		let existingFile: Record<string, any> | null = null;
 
 		if (primaryKey !== undefined) {
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download')
+					.select('folder', 'filename_download', 'filename_disk')
 					.from('directus_files')
 					.where({ id: primaryKey })
-					.first()) ?? {};
+					.first()) ?? null;
 		}
 
-		const payload = { ...existingFile, ...clone(data) };
+		const payload = { ...(existingFile ?? {}), ...clone(data) };
 
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
@@ -65,14 +65,15 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (primaryKey !== undefined) {
+		if (existingFile !== null && primaryKey !== undefined) {
 			await this.updateOne(primaryKey, payload, { emitEvents: false });
 
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
 			const disk = storage.location(payload.storage);
+			const filePrefix = path.parse(existingFile['filename_disk']).name;
 
-			for await (const filepath of disk.list(String(primaryKey))) {
+			for await (const filepath of disk.list(filePrefix)) {
 				await disk.delete(filepath);
 			}
 		} else {
@@ -330,7 +331,7 @@ export class FilesService extends ItemsService {
 	 */
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
-		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
+		const files = await super.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
 
 		if (!files) {
 			throw new ForbiddenError();
@@ -340,9 +341,10 @@ export class FilesService extends ItemsService {
 
 		for (const file of files) {
 			const disk = storage.location(file['storage']);
+			const filePrefix = path.parse(file['filename_disk']).name;
 
 			// Delete file + thumbnails
-			for await (const filepath of disk.list(file['id'])) {
+			for await (const filepath of disk.list(filePrefix)) {
 				await disk.delete(filepath);
 			}
 		}

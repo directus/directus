@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { Theme, useTheme } from '@directus/themes';
-import { clone, setWith, unset, isEmpty, get } from 'lodash';
+import { clone, get, isEmpty, setWith, unset } from 'lodash';
 import SystemThemeOverridesGroup from './system-theme-overrides-group.vue';
 import type { SetValueFn } from './types.js';
 
@@ -50,11 +50,24 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 
 <style scoped lang="scss">
 .theme-overrides {
-	border: 2px solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	padding: var(--input-padding);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	max-height: var(--input-height-max);
 	overflow-y: auto;
 	background-color: var(--theme--form--field--input--background);
+	transition-duration: var(--fast);
+	transition-timing-function: var(--transition);
+	transition-property: box-shadow, border-color;
+
+	&:hover {
+		border-color: var(--theme--form--field--input--border-color-hover);
+		box-shadow: var(--theme--form--field--input--box-shadow-hover);
+	}
+
+	&:focus-within {
+		border-color: var(--theme--form--field--input--border-color-focus);
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	}
 }
 </style>

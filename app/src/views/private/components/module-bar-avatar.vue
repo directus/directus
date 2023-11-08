@@ -116,7 +116,7 @@ const userFullName = userStore.fullName ?? undefined;
 				top: -1px;
 				right: 8px;
 				left: 8px;
-				height: 2px;
+				height: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
 				content: '';

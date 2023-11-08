@@ -131,21 +131,15 @@ const internalActive = computed({
 	</v-dialog>
 </template>
 
-<style>
-body {
-	--v-drawer-max-width: 856px;
-}
-</style>
-
 <style lang="scss" scoped>
 .v-drawer {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: var(--v-drawer-max-width);
+	max-width: 856px;
 	height: 100%;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 
 	.cancel {
 		display: none;
@@ -163,14 +157,13 @@ body {
 	}
 
 	.header-icon {
-		--v-button-background-color: var(--background-normal);
-		--v-button-background-color-active: var(--background-normal);
-		--v-button-background-color-hover: var(--background-normal-alt);
+		--v-button-background-color: var(--theme--background);
+		--v-button-background-color-active: var(--theme--background);
+		--v-button-background-color-hover: var(--theme--background);
 		--v-button-color-disabled: var(--theme--foreground);
 	}
 
 	.content {
-		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 		--form-vertical-gap: 52px;
@@ -185,8 +178,8 @@ body {
 		line-height: 24px;
 
 		.sidebar {
-			--v-list-item-background-color-hover: var(--background-normal-alt);
-			--v-list-item-background-color-active: var(--background-normal-alt);
+			--v-list-item-background-color-hover: var(--theme--background-accent);
+			--v-list-item-background-color-active: var(--theme--background-accent);
 
 			display: none;
 
@@ -196,7 +189,7 @@ body {
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
-				background-color: var(--background-normal);
+				background-color: var(--theme--background);
 			}
 
 			.sidebar-content {
@@ -247,7 +240,7 @@ body {
 
 	nav {
 		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	@media (min-width: 960px) {

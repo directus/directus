@@ -1015,9 +1015,7 @@ deselect: Odznacz
 deselect_all: Odznacz Wszystko
 theme: Motyw
 select_a_theme: Wybierz motyw
-appearance_auto: Automatyczne (Oparte na systemie)
-appearance_light: Tryb jasny
-appearance_dark: Tryb ciemny
+appearance_light: Jasny
 other: Inne...
 adding_user: Dodawanie użytkownika
 unknown_user: Nieznany użytkownik

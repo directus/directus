@@ -120,7 +120,24 @@ export class ExtensionsService {
 			let name = meta.name;
 
 			if (name.includes('/')) {
-				[bundleName, name] = name.split('/') as [string, string];
+				const parts = name.split('/');
+
+				// NPM packages can have an optional organization scope in the format
+				// `@<org>/<package>`. This is limited to a single `/`.
+				//
+				// `foo` -> extension
+				// `foo/bar` -> bundle
+				// `@rijk/foo` -> extension
+				// `@rijk/foo/bar -> bundle
+
+				const hasOrg = parts.at(0)!.startsWith('@');
+
+				if (hasOrg && parts.length > 2) {
+					name = parts.pop() as string;
+					bundleName = parts.join('/');
+				} else if (hasOrg === false) {
+					[bundleName, name] = parts as [string, string];
+				}
 			}
 
 			let schema;
@@ -147,7 +164,7 @@ export class ExtensionsService {
 			return {
 				name,
 				bundle: bundleName,
-				schema: schema ? pick(schema, 'type', 'local') : null,
+				schema: schema ? pick(schema, 'type', 'local', 'version') : null,
 				meta: omit(meta, 'name'),
 			};
 		});

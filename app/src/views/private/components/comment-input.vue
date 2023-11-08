@@ -364,15 +364,15 @@ function pressedEnter() {
 	overflow: scroll;
 	white-space: pre;
 	background-color: var(--theme--form--field--input--background);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 }
 
 .new-comment:focus {
 	position: relative;
 	overflow: scroll;
-	border-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 	transition: margin-bottom var(--fast) var(--transition);
 }
 
@@ -432,7 +432,7 @@ function pressedEnter() {
 	}
 
 	.post-comment {
-		--v-button-background-color-disabled: var(--background-normal-alt);
+		--v-button-background-color-disabled: var(--theme--background-accent);
 	}
 }
 

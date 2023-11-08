@@ -183,7 +183,7 @@ function toggleInterface(id: string) {
 	margin-bottom: 40px;
 	padding-bottom: 2px;
 	font-weight: 700;
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
@@ -217,7 +217,7 @@ function toggleInterface(id: string) {
 }
 
 .preview {
-	--v-icon-color: var(--theme--background);
+	--v-icon-color: var(--theme--background-page);
 
 	display: flex;
 	align-items: center;
@@ -225,8 +225,8 @@ function toggleInterface(id: string) {
 	width: 160px;
 	height: 100px;
 	margin-bottom: 8px;
-	border: var(--border-width) solid var(--border-subdued);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
 }
@@ -255,14 +255,14 @@ function toggleInterface(id: string) {
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 	border: 2px solid var(--theme--primary);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 8px var(--theme--primary-subdued);
 }
 
 .interface:hover .preview {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .interface.active .preview {

@@ -149,7 +149,7 @@ function setOpenFolders() {
 
 <style lang="scss" scoped>
 .v-skeleton-loader {
-	--v-skeleton-loader-background-color: var(--background-normal-alt);
+	--v-skeleton-loader-background-color: var(--theme--background-accent);
 }
 
 .folders {

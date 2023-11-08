@@ -789,8 +789,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteDashboards } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

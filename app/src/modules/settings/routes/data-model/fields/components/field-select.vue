@@ -376,7 +376,7 @@ async function onGroupSortChange(fields: Field[]) {
 	padding: var(--input-padding);
 	padding-top: 40px;
 	padding-bottom: 16px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	> * {
 		position: relative;
@@ -443,19 +443,19 @@ async function onGroupSortChange(fields: Field[]) {
 
 	&.nested {
 		.field :deep(.input) {
-			border: var(--border-width) solid var(--theme--primary-subdued);
+			border: var(--theme--border-width) solid var(--theme--primary-subdued);
 		}
 	}
 }
 
 .field {
 	&.v-input :deep(.input) {
-		border: var(--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	&.v-input :deep(.input:hover) {
 		background-color: var(--card-face-color);
-		border: var(--border-width) solid var(--border-normal-alt);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color-hover);
 	}
 
 	.label {
@@ -520,7 +520,7 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .sortable-ghost {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	outline: 2px dashed var(--theme--primary);
 
 	> * {

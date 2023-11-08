@@ -25,6 +25,6 @@ const icon = computed(() => iconMap[props.type]);
 
 <style scoped lang="scss">
 .divider {
-	--v-divider-color: var(--border-subdued);
+	--v-divider-color: var(--theme--border-color-subdued);
 }
 </style>

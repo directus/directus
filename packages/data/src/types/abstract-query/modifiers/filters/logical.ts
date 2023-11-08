@@ -1,3 +1,4 @@
+import type { AtLeastOneElement } from '../../../misc.js';
 import type { AbstractQueryConditionNode } from './conditions.js';
 import type { AbstractQueryNodeNegate } from './negate.js';
 
@@ -57,5 +58,5 @@ export interface AbstractQueryNodeLogical {
 	operator: 'and' | 'or';
 
 	/** the values for the operation. */
-	childNodes: (AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate)[];
+	childNodes: AtLeastOneElement<AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate>;
 }

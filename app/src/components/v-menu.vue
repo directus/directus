@@ -397,12 +397,6 @@ function usePopper(
 	</div>
 </template>
 
-<style>
-body {
-	--v-menu-min-width: 100px;
-}
-</style>
-
 <style lang="scss" scoped>
 .v-menu {
 	display: contents;
@@ -416,7 +410,7 @@ body {
 	position: fixed;
 	left: -999px;
 	z-index: 500;
-	min-width: var(--v-menu-min-width);
+	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
@@ -494,7 +488,7 @@ body {
 	overflow-y: auto;
 	background-color: var(--card-face-color);
 	border: none;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgb(var(--card-shadow-color), 0.05);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);

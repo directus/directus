@@ -4,9 +4,14 @@
  * @packageDocumentation
  */
 import type { AbstractQuery, DataDriver } from '@directus/data';
-import { convertQuery, getOrmTransformer, type ParameterizedSqlStatement } from '@directus/data-sql';
-import type { ReadableStream } from 'node:stream/web';
-import type { PoolClient } from 'pg';
+import {
+	convertQuery,
+	getExpander,
+	makeSubQueriesAndMergeWithRoot,
+	type AbstractSqlQuery,
+	type ParameterizedSqlStatement,
+} from '@directus/data-sql';
+import { ReadableStream } from 'node:stream/web';
 import pg from 'pg';
 import { convertToActualStatement } from './query/index.js';
 import QueryStream from 'pg-query-stream';
@@ -33,35 +38,58 @@ export default class DataDriverPostgres implements DataDriver {
 		await this.#pool.end();
 	}
 
-	async getDataFromSource(pool: pg.Pool, sql: ParameterizedSqlStatement): Promise<{ poolClient: any; stream: any }> {
-		const poolClient: PoolClient = await pool.connect();
-		const queryStream = new QueryStream(sql.statement, sql.parameters);
-		const stream = poolClient.query(queryStream);
-		stream.on('end', () => poolClient?.release());
-		const webStream = Readable.toWeb(stream);
+	/**
+	 * Opens a stream for the given SQL statement.
+	 *
+	 * @param pool the PostgreSQL client pool
+	 * @param sql A parameterized SQL statement
+	 * @returns A readable web stream for the query results
+	 * @throw An error when the query cannot be performed
+	 */
+	async getDataFromSource(
+		pool: pg.Pool,
+		sql: ParameterizedSqlStatement
+	): Promise<ReadableStream<Record<string, unknown>>> | never {
+		try {
+			const poolClient = await pool.connect();
+			const queryStream = new QueryStream(sql.statement, sql.parameters);
+			const stream = poolClient.query(queryStream);
 
-		return {
-			poolClient,
-			stream: webStream,
-		};
+			stream.on('end', () => poolClient.release());
+			stream.on('error', () => poolClient.release());
+
+			return Readable.toWeb(stream);
+		} catch (error: any) {
+			throw new Error('Failed to query the database: ', error);
+		}
 	}
 
-	async query(query: AbstractQuery): Promise<ReadableStream> {
-		let client: PoolClient | null = null;
+	/**
+	 * Converts the abstract query into PostgreSQL and executes it.
+	 *
+	 * @param abstractSql The abstract query
+	 * @returns The database results converted to a nested object
+	 * @throws An error when the conversion or the database request fails
+	 */
+	private async queryDatabase(abstractSql: AbstractSqlQuery): Promise<ReadableStream<Record<string, unknown>>> {
+		const statement = convertToActualStatement(abstractSql.clauses);
+		const parameters = convertParameters(abstractSql.parameters);
+		const stream = await this.getDataFromSource(this.#pool, { statement, parameters });
+		const ormExpander = getExpander(abstractSql.aliasMapping);
+		return stream.pipeThrough(ormExpander);
+	}
 
-		try {
-			const conversionResult = convertQuery(query);
-			const statement = convertToActualStatement(conversionResult.clauses);
-			const parameters = convertParameters(conversionResult.parameters);
+	async query(query: AbstractQuery): Promise<ReadableStream<Record<string, unknown>>> {
+		const abstractSql = convertQuery(query);
 
-			const { poolClient, stream } = await this.getDataFromSource(this.#pool, { statement, parameters });
-			client = poolClient;
+		const rootStream = await this.queryDatabase(abstractSql);
 
-			const ormTransformer = getOrmTransformer(conversionResult.aliasMapping);
-			return stream.pipeThrough(ormTransformer);
-		} catch (err) {
-			client?.release();
-			throw new Error('Failed to perform the query: ' + err);
+		if (abstractSql.nestedManys.length === 0) {
+			return rootStream;
 		}
+
+		return await makeSubQueriesAndMergeWithRoot(rootStream, abstractSql.nestedManys, (query) =>
+			this.queryDatabase(query)
+		);
 	}
 }

@@ -165,7 +165,7 @@ function emitValue() {
 	max-width: 100%;
 	height: 44px;
 	overflow: hidden;
-	border: 2px solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: calc(44px / 2);
 	transition: width var(--slow) var(--transition), border-bottom-left-radius var(--fast) var(--transition),
 		border-bottom-right-radius var(--fast) var(--transition);
@@ -197,7 +197,7 @@ function emitValue() {
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&.has-content {
@@ -214,7 +214,7 @@ function emitValue() {
 
 	&.active {
 		width: 300px;
-		border-color: var(--border-normal);
+		border-color: var(--theme--form--field--input--border-color);
 
 		.icon-empty {
 			display: block;
@@ -255,7 +255,7 @@ function emitValue() {
 			left: 2px;
 			width: auto;
 			height: 2px;
-			background-color: var(--border-subdued);
+			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
 		}
@@ -270,7 +270,7 @@ function emitValue() {
 		overflow: hidden;
 		color: var(--theme--foreground);
 		text-overflow: ellipsis;
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-page);
 		border: none;
 		border-radius: 0;
 
@@ -294,7 +294,7 @@ function emitValue() {
 	min-width: 100%;
 	padding: 0;
 	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
 }

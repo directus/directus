@@ -217,7 +217,7 @@ function openNewCustomTranslationDrawer() {
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
 		user-select: none;
