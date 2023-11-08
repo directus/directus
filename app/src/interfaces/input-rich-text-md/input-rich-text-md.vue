@@ -531,7 +531,7 @@ textarea {
 	}
 
 	.view {
-		--v-button-background-color: var(--border-subdued);
+		--v-button-background-color: var(--theme--border-color-subdued);
 		--v-button-color: var(--theme--form--field--input--foreground-subdued);
 		--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 		--v-button-color-hover: var(--theme--form--field--input--foreground);

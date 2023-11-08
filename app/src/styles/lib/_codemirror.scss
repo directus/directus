@@ -50,15 +50,15 @@
 
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-	background-color: var(--theme--background); /* The little square between H and V scrollbars */
+	background-color: var(--theme--background-page); /* The little square between H and V scrollbars */
 }
 
 /* GUTTER */
 
 .CodeMirror-gutters {
 	white-space: nowrap;
-	background-color: var(--background-subdued);
-	border-right: 2px solid var(--theme--form--field--input--border-color);
+	background-color: var(--theme--background-subdued);
+	border-right: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .CodeMirror-linenumber {
@@ -525,10 +525,10 @@ div.CodeMirror-dragcursors {
 }
 
 .CodeMirror-selected {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 .CodeMirror-focused .CodeMirror-selected {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 .CodeMirror-crosshair {
 	cursor: crosshair;
@@ -536,12 +536,12 @@ div.CodeMirror-dragcursors {
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 .CodeMirror-line::-moz-selection,
 .CodeMirror-line > span::-moz-selection,
 .CodeMirror-line > span > span::-moz-selection {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 .cm-searching {

@@ -93,8 +93,8 @@ const errorFormatted = computed(() => {
 	display: flex;
 	width: 100%;
 	height: var(--input-height);
-	background-color: var(--background-normal);
-	border: $sso-link-border-width var(--background-normal) solid;
+	background-color: var(--theme--background);
+	border: $sso-link-border-width var(--theme--background) solid;
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
@@ -104,7 +104,7 @@ const errorFormatted = computed(() => {
 		justify-content: center;
 		width: var(--input-height);
 		margin: -$sso-link-border-width;
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 
 		span {
@@ -120,7 +120,7 @@ const errorFormatted = computed(() => {
 	}
 
 	&:hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--theme--background-accent);
 	}
 
 	& + & {

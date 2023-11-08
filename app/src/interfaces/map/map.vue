@@ -506,8 +506,8 @@ function handleKeyDown(event: any) {
 		height: 36px;
 		padding: 10px;
 		color: var(--theme--form--field--input--foreground-subdued);
-		background-color: var(--theme--background);
-		border: var(--theme--border-width) solid var(--theme--background);
+		background-color: var(--theme--background-page);
+		border: var(--theme--border-width) solid var(--theme--background-page);
 		border-radius: var(--theme--border-radius);
 
 		span {

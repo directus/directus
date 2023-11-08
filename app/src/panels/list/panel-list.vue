@@ -95,10 +95,10 @@ async function saveEdits(item: Record<string, any>) {
 
 .v-list-item {
 	height: 48px;
-	border-top: var(--theme--border-width) solid var(--border-subdued);
+	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .v-list-item:last-child {
-	border-bottom: var(--theme--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 </style>

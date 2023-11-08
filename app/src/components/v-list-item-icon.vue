@@ -15,9 +15,13 @@ withDefaults(defineProps<Props>(), {
 </template>
 
 <style lang="scss" scoped>
-:global(body) {
-	--v-list-item-icon-color: var(--theme--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-list-item-icon-color  [var(--theme--foreground-subdued)]
+
+*/
 
 .v-list-item-icon {
 	$this: &;
@@ -40,7 +44,7 @@ withDefaults(defineProps<Props>(), {
 		.v-list,
 		.v-list-item {
 			#{$this} {
-				--v-icon-color: var(--v-list-item-icon-color);
+				--v-icon-color: var(--v-list-item-icon-color, var(--theme--foreground-subdued));
 
 				margin-top: 4px;
 				margin-bottom: 4px;

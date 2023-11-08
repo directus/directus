@@ -204,7 +204,7 @@ function setUpChart() {
 			enabled: false,
 		},
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: isSparkline ? (props.showHeader && 0) || 5 : (props.showHeader && -20) || -2,
 				bottom: isSparkline ? 5 : 0,
@@ -348,7 +348,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 

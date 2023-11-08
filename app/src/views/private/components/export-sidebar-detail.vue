@@ -614,7 +614,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 
 .export-fields {
 	--folder-picker-background-color: var(--background-subdued);
-	--folder-picker-color: var(--background-normal);
+	--folder-picker-color: var(--theme--background);
 
 	margin-top: 24px;
 	padding: var(--content-padding);
@@ -666,7 +666,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 
 	&.has-file {
@@ -706,7 +706,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .download-local {

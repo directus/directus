@@ -58,14 +58,16 @@ function emitValue(): void {
 	</button>
 </template>
 
-<style>
-body {
-	--v-radio-color: var(--theme--primary);
-}
-</style>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/no-wrap';
+
+/*
+
+	Available Variables:
+
+		--v-radio-color  [var(--theme--primary)]
+
+*/
 
 .v-radio {
 	display: flex;
@@ -131,18 +133,18 @@ body {
 
 	&:not(:disabled).checked {
 		.v-icon {
-			--v-icon-color: var(--v-radio-color);
+			--v-icon-color: var(--v-radio-color, var(--theme--primary));
 		}
 
 		&.block {
-			border-color: var(--v-radio-color);
+			border-color: var(--v-radio-color, var(--theme--primary));
 
 			.label {
-				color: var(--v-radio-color);
+				color: var(--v-radio-color, var(--theme--primary));
 			}
 
 			&::before {
-				background-color: var(--v-radio-color);
+				background-color: var(--v-radio-color, var(--theme--primary));
 				opacity: 0.1;
 			}
 		}

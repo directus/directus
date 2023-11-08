@@ -255,7 +255,7 @@ function emitValue() {
 			left: 2px;
 			width: auto;
 			height: 2px;
-			background-color: var(--border-subdued);
+			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
 		}
@@ -270,7 +270,7 @@ function emitValue() {
 		overflow: hidden;
 		color: var(--theme--foreground);
 		text-overflow: ellipsis;
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-page);
 		border: none;
 		border-radius: 0;
 

@@ -18,14 +18,15 @@ withDefaults(defineProps<Props>(), {
 	</div>
 </template>
 
-<style>
-body {
-	--v-skeleton-loader-color: var(--theme--background);
-	--v-skeleton-loader-background-color: var(--background-subdued);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-skeleton-loader-background-color  [var(--background-subdued)]
+
+*/
+
 .v-skeleton-loader {
 	position: relative;
 	overflow: hidden;
@@ -35,7 +36,7 @@ body {
 @mixin loader {
 	position: relative;
 	overflow: hidden;
-	background-color: var(--v-skeleton-loader-background-color);
+	background-color: var(--v-skeleton-loader-background-color, var(--background-subdued));
 
 	&::after {
 		position: absolute;
@@ -44,7 +45,7 @@ body {
 		left: 0;
 		z-index: 1;
 		height: 100%;
-		background: linear-gradient(90deg, transparent, var(--v-skeleton-loader-color), transparent);
+		background: linear-gradient(90deg, transparent, var(--theme--background-page), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
 		animation: loading 1.5s infinite;
@@ -62,7 +63,7 @@ body {
 .input-tall {
 	width: 100%;
 	height: var(--input-height);
-	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color);
+	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color, var(--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	@include loader;

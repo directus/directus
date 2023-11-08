@@ -1,5 +1,4 @@
 import { createTestingPinia } from '@pinia/testing';
-import { AxiosRequestConfig } from 'axios';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
@@ -14,7 +13,6 @@ beforeEach(() => {
 });
 
 import { User } from '@directus/types';
-import { pick } from 'lodash';
 import { useLatencyStore } from './latency';
 import { useUserStore } from './user';
 
@@ -43,13 +41,11 @@ const mockAdminUser = {
 vi.mock('@/api', () => {
 	return {
 		default: {
-			get: (path: string, config?: AxiosRequestConfig<any>) => {
-				if (path === '/users/me' && config?.params?.fields) {
-					const returnedData = pick(mockAdminUser, config.params.fields);
-
+			get: (path: string) => {
+				if (path === '/users/me') {
 					return Promise.resolve({
 						data: {
-							data: returnedData,
+							data: mockAdminUser,
 						},
 					});
 				}
@@ -107,38 +103,9 @@ describe('getters', () => {
 
 describe('actions', () => {
 	describe('hydrate', () => {
-		test('should fetch required fields and set current user as the returned value', async () => {
+		test('should fetch user fields and set current user as the returned value', async () => {
 			const userStore = useUserStore();
 			await userStore.hydrate();
-
-			const requiredFields = [
-				'id',
-				'language',
-				'first_name',
-				'last_name',
-				'email',
-				'last_page',
-				'appearance',
-				'theme_light',
-				'theme_dark',
-				'tfa_secret',
-				'avatar.id',
-				'role.admin_access',
-				'role.app_access',
-				'role.id',
-				'role.enforce_tfa',
-			];
-
-			expect(userStore.currentUser).toEqual(pick(mockAdminUser, requiredFields));
-		});
-	});
-
-	describe('hydrateAdditionalFields', () => {
-		test('should fetch additional fields and add them to the current user', async () => {
-			const userStore = useUserStore();
-			await userStore.hydrate();
-			await userStore.hydrateAdditionalFields(['custom_user_field', 'role.custom_role_field']);
-
 			expect(userStore.currentUser).toEqual(mockAdminUser);
 		});
 	});

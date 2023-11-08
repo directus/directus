@@ -55,34 +55,38 @@ useGroupableParent(
 </template>
 
 <style scoped>
-:global(body) {
-	--v-list-padding: 4px 0;
-	--v-list-border-radius: var(--theme--border-radius);
-	--v-list-max-height: none;
-	--v-list-max-width: none;
-	--v-list-min-width: 220px;
-	--v-list-min-height: none;
-	--v-list-color: var(--theme--foreground-accent);
-	--v-list-color-hover: var(--theme--foreground-accent);
-	--v-list-color-active: var(--theme--foreground-accent);
-	--v-list-background-color: transparent;
-	--v-list-background-color-hover: var(--background-normal);
-	--v-list-background-color-active: var(--background-normal);
-}
+/*
+
+	Available Variables:
+
+		--v-list-padding                  [4px 0]
+		--v-list-border-radius            [var(--theme--border-radius)]
+		--v-list-max-height               [none]
+		--v-list-max-width                [none]
+		--v-list-min-width                [220px]
+		--v-list-min-height               [none]
+		--v-list-color                    [var(--theme--foreground-accent)]
+		--v-list-color-hover              [var(--theme--foreground-accent)]
+		--v-list-color-active             [var(--theme--foreground-accent)]
+		--v-list-background-color         [transparent]
+		--v-list-background-color-hover   [var(--theme--background)]
+		--v-list-background-color-active  [var(--theme--background)]
+
+*/
 
 .v-list {
 	position: static;
 	display: block;
-	min-width: var(--v-list-min-width);
-	max-width: var(--v-list-max-width);
-	min-height: var(--v-list-min-height);
-	max-height: var(--v-list-max-height);
-	padding: var(--v-list-padding);
+	min-width: var(--v-list-min-width, 220px);
+	max-width: var(--v-list-max-width, none);
+	min-height: var(--v-list-min-height, none);
+	max-height: var(--v-list-max-height, none);
+	padding: var(--v-list-padding, 4px 0);
 	overflow: auto;
-	color: var(--v-list-color);
+	color: var(--v-list-color, var(--theme--foreground-accent));
 	line-height: 22px;
 	list-style: none;
-	border-radius: var(--v-list-border-radius);
+	border-radius: var(--v-list-border-radius, var(--theme--border-radius));
 }
 
 .nav {

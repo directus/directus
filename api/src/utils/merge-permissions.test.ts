@@ -76,24 +76,34 @@ describe('merging permissions', () => {
 		});
 	});
 
-	test('{} supersedes conditional permissions in _or', () => {
+	test('{} is removed from conditional permissions in _or', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, permissions: fullFilter },
 			{ ...permissionTemplate, permissions: conditionalFilter }
 		);
 
-		expect(mergedPermission).toStrictEqual({ ...permissionTemplate, permissions: fullFilter });
+		expect(mergedPermission).toStrictEqual({
+			...permissionTemplate,
+			permissions: {
+				_or: [conditionalFilter],
+			},
+		});
 	});
 
-	test('{} supersedes conditional validations in _or', () => {
+	test('{} is removed from conditional validations in _or', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, validation: fullFilter },
 			{ ...permissionTemplate, validation: conditionalFilter }
 		);
 
-		expect(mergedPermission).toStrictEqual({ ...permissionTemplate, validation: fullFilter });
+		expect(mergedPermission).toStrictEqual({
+			...permissionTemplate,
+			validation: {
+				_or: [conditionalFilter],
+			},
+		});
 	});
 
 	test('{} does not supersede conditional permissions in _and', () => {

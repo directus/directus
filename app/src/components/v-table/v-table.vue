@@ -344,16 +344,19 @@ function updateSort(newSort: Sort) {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-table-height: auto;
-	--v-table-sticky-offset-top: 0;
-	--v-table-color: var(--theme--foreground);
-	--v-table-background-color: var(--theme--form--field--input--background);
-}
+/*
+
+	Available Variables:
+
+		--v-table-sticky-offset-top  [0]
+		--v-table-color              [var(--theme--foreground)]
+		--v-table-background-color   [transparent]
+
+*/
 
 .v-table {
 	position: relative;
-	height: var(--v-table-height);
+	height: auto;
 	overflow-y: auto;
 }
 
@@ -377,7 +380,7 @@ table :deep(thead) {
 
 table :deep(td),
 table :deep(th) {
-	color: var(--v-table-color);
+	color: var(--v-table-color, var(--theme--foreground));
 }
 
 table :deep(tr),
