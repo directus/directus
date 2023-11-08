@@ -24,6 +24,10 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -31,7 +35,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Linter
-        run: pnpm exec eslint .
+        run: pnpm exec eslint steps.changed-files.outputs.all_changed_files
 
   format:
     name: Format
