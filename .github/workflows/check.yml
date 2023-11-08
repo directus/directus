@@ -61,6 +61,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
+          # Vitest uses `git diff` under the hood to find the changed files in it's `--changed`
+          # option, which in turn means we need to fetch the full git history so git is able to diff
           fetch-depth: 0
 
       - name: Prepare
