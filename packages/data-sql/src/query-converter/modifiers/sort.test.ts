@@ -28,34 +28,33 @@ beforeEach(() => {
 			},
 		},
 	];
-
 });
 
 test('convert ascending sort with a single field', () => {
 
-	vi.mocked(convertTarget).mockReturnValueOnce({
+	const mock: TargetConversionResult = {
 		value: {
 			type: 'primitive',
 			table: localCollection,
 			column: targetField,
 		},
 		joins: [],
-	});
+	};
+
+	vi.mocked(convertTarget).mockReturnValueOnce(mock);
 
 	const res = convertSort(sample, localCollection, parameterIndexGenerator());
 
 	const expected: SortConversionResult = {
 		clauses: {
 			joins: [],
-			order: [{
-				type: 'order',
-				orderBy: {
-					type: 'primitive',
-					table: localCollection,
-					column: targetField,
+			order: [
+				{
+					type: 'order',
+					orderBy: mock.value,
+					direction: 'ASC',
 				},
-				direction: 'ASC',
-			}],
+			],
 		},
 	};
 
@@ -65,54 +64,50 @@ test('convert ascending sort with a single field', () => {
 test('convert descending sort with a single field', () => {
 	sample[0]!.direction = 'descending';
 
-	vi.mocked(convertTarget).mockReturnValueOnce({
+	const mock: TargetConversionResult = {
 		value: {
 			type: 'primitive',
-			table: localCollection,
-			column: targetField,
+			table: randomIdentifier(),
+			column: randomIdentifier(),
 		},
 		joins: [],
-	});
+	};
+
+	vi.mocked(convertTarget).mockReturnValueOnce(mock);
 
 	const res = convertSort(sample, localCollection, parameterIndexGenerator());
 
 	const expected: SortConversionResult = {
 		clauses: {
 			joins: [],
-			order: [{
-				type: 'order',
-				orderBy: {
-					type: 'primitive',
-					table: localCollection,
-					column: targetField,
+			order: [
+				{
+					type: 'order',
+					orderBy: mock.value,
+					direction: 'DESC',
 				},
-				direction: 'DESC',
-			}],
+			],
 		},
 	};
 
 	expect(res).toStrictEqual(expected);
-
-
 });
 
 test('convert ascending sort with multiple fields', () => {
-	const secondSortField = randomIdentifier();
-
 	sample.push({
 		type: 'sort',
 		direction: 'ascending',
 		target: {
 			type: 'primitive',
-			field: secondSortField,
+			field: randomIdentifier(),
 		},
 	});
 
 	const mock1: TargetConversionResult = {
 		value: {
 			type: 'primitive',
-			table: localCollection,
-			column: targetField,
+			table: randomIdentifier(),
+			column: randomIdentifier(),
 		},
 		joins: [],
 	};
@@ -122,8 +117,8 @@ test('convert ascending sort with multiple fields', () => {
 	const mock2: TargetConversionResult = {
 		value: {
 			type: 'primitive',
-			table: localCollection,
-			column: secondSortField,
+			table: randomIdentifier(),
+			column: randomIdentifier(),
 		},
 		joins: [],
 	};
@@ -145,7 +140,7 @@ test('convert ascending sort with multiple fields', () => {
 					type: 'order',
 					orderBy: mock2.value,
 					direction: 'ASC',
-				}
+				},
 			],
 		},
 	};
@@ -154,71 +149,65 @@ test('convert ascending sort with multiple fields', () => {
 });
 
 test('convert sort on nested item', () => {
-	const leftIdField = randomIdentifier();
-	const rightIdField = randomIdentifier();
-	const rightCollection = randomIdentifier();
-	const rightStore = randomIdentifier();
-	const foreignSortField = randomIdentifier();
-
-	const nestedSortSample: AbstractQueryNodeSort =
-	{
+	const nestedSortSample: AbstractQueryNodeSort = {
 		type: 'sort',
 		direction: 'ascending',
 		target: {
 			type: 'nested-one-target',
 			field: {
 				type: 'primitive',
-				field: foreignSortField,
+				field: randomIdentifier(),
 			},
 			meta: {
 				type: 'm2o',
 				join: {
 					local: {
-						fields: [leftIdField],
+						fields: [randomIdentifier()],
 					},
 					foreign: {
-						store: rightStore,
-						collection: rightCollection,
-						fields: [rightIdField],
-					}
-				}
-			}
-		}
+						store: randomIdentifier(),
+						collection: randomIdentifier(),
+						fields: [randomIdentifier()],
+					},
+				},
+			},
+		},
 	};
 
 	const mock: TargetConversionResult = {
 		value: {
 			type: 'primitive',
-			table: rightCollection,
-			column: foreignSortField,
+			table: randomIdentifier(),
+			column: randomIdentifier(),
 		},
-		joins: [{
-			type: 'join',
-			table: rightCollection,
-			as: rightStore + 'RANDOM',
-			on: {
-				type: 'condition',
-				negate: false,
-				condition: {
-					type: 'condition-field',
-					target: {
-						type: 'primitive',
-						table: rightCollection,
-						column: rightIdField,
-					},
-					operation: 'eq',
-					compareTo: {
-						type: 'primitive',
-						table: rightStore,
-						column: rightIdField,
+		joins: [
+			{
+				type: 'join',
+				table: randomIdentifier(),
+				as: randomIdentifier(),
+				on: {
+					type: 'condition',
+					negate: false,
+					condition: {
+						type: 'condition-field',
+						target: {
+							type: 'primitive',
+							table: randomIdentifier(),
+							column: randomIdentifier(),
+						},
+						operation: 'eq',
+						compareTo: {
+							type: 'primitive',
+							table: randomIdentifier(),
+							column: randomIdentifier(),
+						},
 					},
 				},
-			}
-		}],
+			},
+		],
 	};
 
 	vi.mocked(convertTarget).mockReturnValueOnce(mock);
-
 	const res = convertSort([nestedSortSample], localCollection, parameterIndexGenerator());
 
 	const expected: SortConversionResult = {
