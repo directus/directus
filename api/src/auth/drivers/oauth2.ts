@@ -168,7 +168,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{ auth_data: userPayload.auth_data ?? null },
+				{
+					auth_data: userPayload.auth_data ?? null,
+					first_name: userPayload.first_name,
+					last_name: userPayload.last_name,
+					email: userPayload.email
+				},
 				{
 					identifier,
 					provider: this.config['provider'],

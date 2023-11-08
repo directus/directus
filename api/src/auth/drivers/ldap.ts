@@ -280,7 +280,11 @@ export class LDAPAuthDriver extends AuthDriver {
 			// user that is about to be updated
 			let updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{},
+				{
+					first_name: userInfo.firstName,
+					last_name: userInfo.lastName,
+					email: userInfo.email
+				},
 				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
 				{ database: getDatabase(), schema: this.schema, accountability: null }
 			);
