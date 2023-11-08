@@ -71,7 +71,7 @@ export class FilesService extends ItemsService {
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
 			const disk = storage.location(payload.storage);
-			const filePrefix = path.basename(existingFile['filename_disk'], path.extname(existingFile['filename_disk']));
+			const filePrefix = path.parse(existingFile['filename_disk']).name;
 
 			for await (const filepath of disk.list(filePrefix)) {
 				await disk.delete(filepath);
