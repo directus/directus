@@ -29,7 +29,7 @@ Below is a list of commonly used services you would find handy:
 
 Majority of the services extend the `ItemsService`, providing a unified approach to manipulating data. However, there
 are also standalone services. It's important to use the matching service for core collections data type. For example,
-passwords are only hashed when used with `UsersService` and not `ItemsService`.
+user passwords are only hashed when used with `UsersService` and not `ItemsService`.
 
 ::: tip List of Available Services
 
