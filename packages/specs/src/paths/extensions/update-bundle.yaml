@@ -1,7 +1,23 @@
-get:
-  summary: List Displays
-  description: List all installed custom displays.
-  operationId: getDisplays
+patch:
+  summary: Update an Extension
+  description: Update an existing extension.
+  operationId: updateExtensions
+  parameters:
+    - in: path
+      name: bundle
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: name
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
   responses:
     '200':
       content:

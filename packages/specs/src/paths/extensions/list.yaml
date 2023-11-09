@@ -1,7 +1,7 @@
 get:
-  summary: List Modules
-  description: List all installed custom modules.
-  operationId: getModules
+  summary: List Extensions
+  description: List the installed extensions and their configuration in the project.
+  operationId: listExtensions
   responses:
     '200':
       content:
@@ -16,7 +16,5 @@ get:
       description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Extensions

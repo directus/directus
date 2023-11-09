@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: Directus
   description: A real-time API and App dashboard for managing SQL database content.
@@ -145,14 +145,12 @@ paths:
     $ref: './paths/collections/collection.yaml'
 
   # Extensions
-  /extensions/interfaces:
-    $ref: './paths/extensions/interfaces.yaml'
-  /extensions/layouts:
-    $ref: './paths/extensions/layouts.yaml'
-  /extensions/displays:
-    $ref: './paths/extensions/displays.yaml'
-  /extensions/modules:
-    $ref: './paths/extensions/modules.yaml'
+  /extensions:
+    $ref: './paths/extensions/list.yaml'
+  /extensions/{name}:
+    $ref: './paths/extensions/update.yaml'
+  /extensions/{bundle}/{name}:
+    $ref: './paths/extensions/update-bundle.yaml'
 
   # Fields
   /fields:

@@ -1,10 +1,20 @@
-get:
-  summary: List Interfaces
-  description: List all installed custom interfaces.
-  operationId: getInterfaces
+patch:
+  summary: Update an Extension
+  description: Update an existing extension.
+  operationId: updateExtensions
+  parameters:
+    - in: path
+      name: name
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
   responses:
     '200':
-      description: Successful request
       content:
         application/json:
           schema:
@@ -14,6 +24,7 @@ get:
                 type: array
                 items:
                   type: object
+      description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':
