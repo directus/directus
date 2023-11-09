@@ -28,8 +28,8 @@ Below is a list of commonly used services you would find handy:
 - **FieldsService:** Provides access to perform CRUD operations to fields used in collections and item records.
 
 Majority of the services extend the `ItemsService`, providing a unified approach to manipulating data. However, there
-are also standalone services. However, it's important to use the matching service for core collections data type. For
-example, passwords are only hashed when used with `UsersService` and not `ItemsService`.
+are also standalone services. It's important to use the matching service for core collections data type. For example,
+passwords are only hashed when used with `UsersService` and not `ItemsService`.
 
 ::: tip List of Available Services
 
