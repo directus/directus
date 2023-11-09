@@ -1,5 +1,6 @@
 import { REDACTED_TEXT, toArray } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
+import type { IncomingMessage } from 'http';
 import { merge } from 'lodash-es';
 import type { LoggerOptions } from 'pino';
 import { pino } from 'pino';
@@ -101,6 +102,22 @@ if (loggerEnvConfig['levels']) {
 const logger = pino(merge(pinoOptions, loggerEnvConfig));
 
 const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
+
+if (httpLoggerEnvConfig['ignorePaths']) {
+	const ignorePathsSet = new Set(httpLoggerEnvConfig['ignorePaths']);
+	httpLoggerEnvConfig['autoLogging'] = {
+		ignore: function (req: IncomingMessage) {
+			if (!req.url) {
+				return false;
+			}
+
+			const { pathname } = new URL(req.url, 'http://example.com/');
+			return ignorePathsSet.has(pathname);
+		},
+	};
+
+	delete httpLoggerEnvConfig['ignorePaths'];
+}
 
 export const expressLogger = pinoHttp({
 	logger: pino(merge(httpLoggerOptions, loggerEnvConfig)),
