@@ -1,6 +1,7 @@
 import type { AbstractQueryModifiers } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQuery } from '../../types/index.js';
-import { convertFilter, convertSort } from './index.js';
+import { convertFilter } from './filter/filter.js';
+import { convertSort } from './sort.js';
 
 export type ModifierConversionResult = {
 	clauses: Pick<AbstractSqlClauses, 'joins' | 'where' | 'limit' | 'offset' | 'order'>;
