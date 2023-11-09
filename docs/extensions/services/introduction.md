@@ -17,6 +17,21 @@ core functionalities for your specific development needs.
 
 Various services are available within Directus, such as `ItemsService`, `CollectionService`, `FilesService`, and others.
 
+To get started to create endpoints with any service, extract it from `services`.
+
+```js
+export default defineEndpoint((router, context) => {
+  const { services, getSchema } = context;
+  const { ItemsService } = services;
+
+})
+```
+
+This allows each endpoint implementations to initialize an instance of that service and leverage its methods to perform
+CRUD operations.
+
+## Commonly Used Services
+
 Below is a list of commonly used services you would find handy:
 
 - **ItemsService:** Provides access to perform CRUD operations on items in a database. Nearly all other services extend
