@@ -88,14 +88,6 @@ export function usePreset(
 
 	function updatePreset(preset: Partial<Preset>, immediate?: boolean) {
 		localPreset.value = assign({}, localPreset.value, preset);
-
-		const hasChanged = Object.keys(preset.layout_query ?? {}).some((key) => {
-			const query = (preset.layout_query ?? {})[key];
-			return !(Object.keys(query).length === 1 && 'page' in query);
-		});
-
-		if (!hasChanged) return;
-
 		immediate ? savePreset() : handleChanges();
 	}
 
