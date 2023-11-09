@@ -28,11 +28,12 @@ Below is a list of commonly used services you would find handy:
 - **FieldsService:** Provides access to perform CRUD operations to fields used in collections and item records.
 
 Majority of the services extend the `ItemsService`, providing a unified approach to manipulating data. However, there
-are also standalone services.
+are also standalone services. However, it's important to use the matching service for core collections data type. For
+example, passwords are only hashed when used with `UsersService` and not `ItemsService`.
 
 ::: tip List of Available Services
 
-Directus provides a number of built-in services. Check out the full list
+Directus provides a number of built-in services. Refer to the full list
 [here](https://github.com/directus/directus/tree/bbefc62ef4727edb0b25eaafb6bb44273f79f834/api/src/services).
 
 :::
