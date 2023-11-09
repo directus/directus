@@ -40,17 +40,13 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 
 	try {
 		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
-		const joins = [...(clauses.joins ?? []), ...(convertedModifiers.clauses.joins ?? [])];
-		clauses = { ...clauses, ...convertedModifiers.clauses, joins };
+		clauses = { ...clauses, ...convertedModifiers.clauses };
 		parameters.push(...convertedModifiers.parameters);
 	} catch (error: any) {
 		throw new Error(`Failed to convert query modifiers: ${error.message}`);
 	}
 
-	// join clauses can be returned by field conversion and modifier conversion.
-	// Here we make sure that a specific join can also exit once.
-	const uniqueJoins = uniqWith(clauses.joins, isEqual);
-	clauses = { ...clauses, joins: uniqueJoins };
+	clauses = removeDuplicatedJoins(clauses);
 
 	return {
 		clauses,
@@ -59,3 +55,15 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 		nestedManys,
 	};
 };
+
+/**
+ * Both the field conversion and the modifier conversion return a join clause.
+ * Since those join clauses can be exactly the same, we need to remove the duplicates.
+ *
+ * @param clauses all the generated clauses
+ * @returns all the clauses with only unique joins
+ */
+function removeDuplicatedJoins(clauses: AbstractSqlClauses): AbstractSqlClauses {
+	const uniqueJoins = uniqWith(clauses.joins, isEqual);
+	return { ...clauses, joins: uniqueJoins };
+}

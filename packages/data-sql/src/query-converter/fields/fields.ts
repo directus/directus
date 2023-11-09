@@ -8,7 +8,7 @@ import { getNestedMany } from './create-nested-manys.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 
 export type FieldConversionResult = {
-	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
+	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
 	nestedManys: AbstractSqlNestedMany[];
