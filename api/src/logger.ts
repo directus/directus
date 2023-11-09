@@ -105,6 +105,7 @@ const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER
 
 if (httpLoggerEnvConfig['ignorePaths']) {
 	const ignorePathsSet = new Set(httpLoggerEnvConfig['ignorePaths']);
+
 	httpLoggerEnvConfig['autoLogging'] = {
 		ignore: function (req: IncomingMessage) {
 			if (!req.url) {
