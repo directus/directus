@@ -60,8 +60,8 @@ router.get('/items/:collection/:id', async (req, res) => {
     const { collection, id } = req.params;
     const service = new ItemsService(collection, { schema });
 
-    const data = await service.deleteOne(id);
-    res.json(data);
+    await service.deleteOne(id);
+    res.json();
   });
 ```
 
