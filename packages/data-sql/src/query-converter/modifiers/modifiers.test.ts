@@ -5,12 +5,21 @@ import { convertFilter, type FilterResult } from './filter/filter.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import type { AbstractSqlQueryJoinNode } from '../../index.js';
+import { convertSort, type SortConversionResult } from './sort.js';
 
 vi.mock('./filter/filter.js', (importOriginal) => {
 	const mod = importOriginal();
 	return {
 		...mod,
 		convertFilter: vi.fn(),
+	};
+});
+
+vi.mock('./sort.js', (importOriginal) => {
+	const mod = importOriginal();
+	return {
+		...mod,
+		convertSort: vi.fn(),
 	};
 });
 
@@ -111,6 +120,48 @@ test('Convert nested, primitive filter', () => {
 			where: filterConversionMock.clauses.where,
 		},
 		parameters: filterConversionMock.parameters,
+	};
+
+	expect(res).toStrictEqual(expected);
+});
+
+test('Convert nested sort', () => {
+	const sampleModifiers = { sort: {} } as AbstractQueryModifiers;
+
+	const sortConversionMock: SortConversionResult = {
+		clauses: {
+			order: [
+				{
+					type: 'order',
+					direction: 'ASC',
+					orderBy: {
+						type: 'primitive',
+						column: randomIdentifier(),
+						table: randomIdentifier(),
+					},
+				},
+			],
+			// in case of nested filter, a join clause is returned as well from the filter module
+			joins: [
+				{
+					type: 'join',
+					/*... */
+				} as AbstractSqlQueryJoinNode,
+			],
+		},
+	};
+
+	vi.mocked(convertSort).mockReturnValueOnce(sortConversionMock);
+	const randomCollection = randomIdentifier();
+
+	const res = convertModifiers(sampleModifiers, randomCollection, parameterIndexGenerator());
+
+	const expected: ModifierConversionResult = {
+		clauses: {
+			joins: sortConversionMock.clauses.joins,
+			order: sortConversionMock.clauses.order,
+		},
+		parameters: [],
 	};
 
 	expect(res).toStrictEqual(expected);
