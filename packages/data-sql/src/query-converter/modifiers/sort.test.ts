@@ -4,6 +4,7 @@ import { randomIdentifier } from '@directus/random';
 import { convertSort, type SortConversionResult } from './sort.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { convertTarget, type TargetConversionResult } from './filter/conditions/utils.js';
+import type { AbstractSqlQuerySelectNode } from '../../index.js';
 
 vi.mock('./filter/conditions/utils.js', (importOriginal) => {
 	const original = importOriginal();
@@ -50,7 +51,7 @@ test('convert ascending sort with a single field', () => {
 			order: [
 				{
 					type: 'order',
-					orderBy: mock.value,
+					orderBy: mock.value as AbstractSqlQuerySelectNode,
 					direction: 'ASC',
 				},
 			],
@@ -82,7 +83,7 @@ test('convert descending sort with a single field', () => {
 			order: [
 				{
 					type: 'order',
-					orderBy: mock.value,
+					orderBy: mock.value as AbstractSqlQuerySelectNode,
 					direction: 'DESC',
 				},
 			],
@@ -132,12 +133,12 @@ test('convert ascending sort with multiple fields', () => {
 			order: [
 				{
 					type: 'order',
-					orderBy: mock1.value,
+					orderBy: mock1.value as AbstractSqlQuerySelectNode,
 					direction: 'ASC',
 				},
 				{
 					type: 'order',
-					orderBy: mock2.value,
+					orderBy: mock2.value as AbstractSqlQuerySelectNode,
 					direction: 'ASC',
 				},
 			],
@@ -215,7 +216,7 @@ test('convert sort on nested item', () => {
 			order: [
 				{
 					type: 'order',
-					orderBy: mock.value,
+					orderBy: mock.value as AbstractSqlQuerySelectNode,
 					direction: 'ASC',
 				},
 			],

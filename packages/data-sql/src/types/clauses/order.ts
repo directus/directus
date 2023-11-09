@@ -1,9 +1,7 @@
+import type { AbstractSqlQuerySelectNode } from "./index.js";
+
 export interface AbstractSqlQueryOrderNode {
 	type: 'order';
-	orderBy: {
-		type: 'primitive';
-		column: string;
-		table: string;
-	};
+	orderBy: AbstractSqlQuerySelectNode;
 	direction: 'ASC' | 'DESC';
 }
