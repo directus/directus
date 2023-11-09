@@ -625,6 +625,14 @@ function sidebar() {
 							link: '/extensions/services/authoring-database',
 							text: 'Authoring the Database',
 						},
+						{
+							link: '/extensions/services/interacting-with-files',
+							text: 'Interacting with Files',
+						},
+						{
+							link: '/extensions/services/working-with-users',
+							text: 'Working with Users',
+						},
 					],
 				},
 				{
