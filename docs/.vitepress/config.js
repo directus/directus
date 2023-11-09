@@ -613,6 +613,17 @@ function sidebar() {
 					],
 				},
 				{
+					text: 'Extension Services',
+					collapsed: true,
+					link: '/extensions/services/introduction',
+					items: [
+						{
+							link: '/extensions/services/accessing-database',
+							text: 'Accessing the Database',
+						},
+					],
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
