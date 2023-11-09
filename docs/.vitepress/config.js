@@ -621,6 +621,10 @@ function sidebar() {
 							link: '/extensions/services/accessing-database',
 							text: 'Accessing the Database',
 						},
+						{
+							link: '/extensions/services/authoring-database',
+							text: 'Authoring the Database',
+						},
 					],
 				},
 				{
