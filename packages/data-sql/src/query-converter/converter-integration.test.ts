@@ -189,6 +189,8 @@ test('Convert query with limit and offset', () => {
 });
 
 test('Convert query with a sort', () => {
+	const sortField = randomIdentifier();
+
 	sample.modifiers = {
 		sort: [
 			{
@@ -196,7 +198,7 @@ test('Convert query with a sort', () => {
 				direction: 'ascending',
 				target: {
 					type: 'primitive',
-					field: randomIdentifier(),
+					field: sortField,
 				},
 			},
 		],
@@ -222,7 +224,11 @@ test('Convert query with a sort', () => {
 			order: [
 				{
 					type: 'order',
-					orderBy: sample.modifiers.sort![0]!.target,
+					orderBy: {
+						type: 'primitive',
+						table: rootCollection,
+						column: sortField,
+					},
 					direction: 'ASC',
 				},
 			],
@@ -281,6 +287,8 @@ test('Convert a query with a function as field select', () => {
 });
 
 test('Convert a query with all possible modifiers', () => {
+	const sortField = randomIdentifier();
+
 	sample.modifiers = {
 		limit: {
 			type: 'limit',
@@ -296,7 +304,7 @@ test('Convert a query with all possible modifiers', () => {
 				direction: 'ascending',
 				target: {
 					type: 'primitive',
-					field: randomIdentifier(),
+					field: sortField,
 				},
 			},
 		],
@@ -322,7 +330,11 @@ test('Convert a query with all possible modifiers', () => {
 			order: [
 				{
 					type: 'order',
-					orderBy: sample.modifiers.sort![0]!.target,
+					orderBy: {
+						type: 'primitive',
+						table: rootCollection,
+						column: sortField,
+					},
 					direction: 'ASC',
 				},
 			],

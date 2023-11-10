@@ -1,10 +1,7 @@
-interface AbstractSqlOrderPrimitive {
-	type: 'primitive';
-	field: string;
-}
+import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from './index.js';
 
 export interface AbstractSqlQueryOrderNode {
 	type: 'order';
-	orderBy: AbstractSqlOrderPrimitive;
+	orderBy: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	direction: 'ASC' | 'DESC';
 }
