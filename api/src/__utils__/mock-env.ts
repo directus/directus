@@ -47,13 +47,9 @@ export function doMockEnv(options?: { env?: Record<string, string>; withDefaults
 		env = { ...initialEnv };
 	});
 
-	return { env, setEnv, replaceEnv };
+	return { env, setEnv };
 
 	function setEnv(newEnv: Record<string, string>) {
 		env = { ...env, ...newEnv };
-	}
-
-	function replaceEnv(newEnv: Record<string, string>) {
-		env = { ...newEnv };
 	}
 }
