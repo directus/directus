@@ -30,7 +30,10 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 			queue.pause();
 			resolve(requestConfig);
 		} else {
-			queue.add(() => resolve(requestConfig));
+			queue.add(() => {
+				requestConfig.headers['Authorization'] = api.defaults.headers.common['Authorization'];
+				return resolve(requestConfig);
+			});
 		}
 	});
 };
