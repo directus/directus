@@ -37,6 +37,7 @@ tags:
     description:
       Directus can easily be extended through the addition of several types of extensions, including layouts,
       interfaces, and modules.
+    x-collection: directus_extensions
   - name: Fields
     description: Fields are individual pieces of content within an item. They are mapped to columns in the database.
     x-collection: directus_fields
@@ -290,6 +291,8 @@ components:
       $ref: './components/collection.yaml'
     Diff:
       $ref: './components/diff.yaml'
+    Extensions:
+      $ref: './components/extension.yaml'
     Fields:
       $ref: './components/field.yaml'
     Files:

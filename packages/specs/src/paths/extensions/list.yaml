@@ -12,7 +12,7 @@ get:
               data:
                 type: array
                 items:
-                  type: object
+                  $ref: '../../openapi.yaml#/components/schemas/Extensions'
       description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
