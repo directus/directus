@@ -1,26 +1,24 @@
+import { InvalidCredentialsError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { afterEach, expect, test, vi } from 'vitest';
-import '../types/express.d.ts';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
+import '../types/express.d.ts';
 import { handler } from './authenticate.js';
-import { InvalidCredentialsError } from '@directus/errors';
 
 vi.mock('../database/index');
 
-vi.mock('../env', () => {
-	const MOCK_ENV = {
-		SECRET: 'test',
-		EXTENSIONS_PATH: './extensions',
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv({
+		env: {
+			SECRET: 'test',
+			EXTENSIONS_PATH: './extensions',
+		},
+	});
 });
 
 afterEach(() => {

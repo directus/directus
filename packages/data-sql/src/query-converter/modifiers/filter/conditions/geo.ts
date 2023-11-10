@@ -1,26 +1,31 @@
 import type { ConditionGeoIntersectsNode, ConditionGeoIntersectsBBoxNode } from '@directus/data';
-import type { WhereUnion } from '../../../../types/index.js';
-import { convertPrimitive } from './utils.js';
+import { convertTarget } from './utils.js';
+import type { FilterResult } from '../filter.js';
 
 export function convertGeoCondition(
 	node: ConditionGeoIntersectsNode | ConditionGeoIntersectsBBoxNode,
 	collection: string,
 	generator: Generator<number, number, number>,
 	negate: boolean
-): WhereUnion {
+): FilterResult {
+	const { value, joins } = convertTarget(node.target, collection, generator);
+
 	return {
-		where: {
-			type: 'condition',
-			negate,
-			condition: {
-				type: 'condition-geo',
-				operation: node.operation,
-				target: convertPrimitive(collection, node.target),
-				compareTo: {
-					type: 'value',
-					parameterIndex: generator.next().value,
+		clauses: {
+			where: {
+				type: 'condition',
+				negate,
+				condition: {
+					type: 'condition-geo',
+					operation: node.operation,
+					target: value,
+					compareTo: {
+						type: 'value',
+						parameterIndex: generator.next().value,
+					},
 				},
 			},
+			joins,
 		},
 		parameters: [node.compareTo],
 	};

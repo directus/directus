@@ -4,14 +4,16 @@
 	</div>
 </template>
 
-<style>
-body {
-	--v-list-item-content-padding: 9px 0;
-	--v-list-item-content-font-family: inherit;
-}
-</style>
-
 <style scoped>
+/*
+
+	Available Variables:
+
+		--v-list-item-content-padding      [9px 0]
+		--v-list-item-content-font-family  [inherit]
+
+*/
+
 .v-list-item-content {
 	display: flex;
 	flex-basis: 0;
@@ -20,9 +22,9 @@ body {
 	flex-wrap: wrap;
 	align-items: center;
 	align-self: center;
-	padding: var(--v-list-item-content-padding);
+	padding: var(--v-list-item-content-padding, 9px 0);
 	overflow: hidden;
-	font-family: var(--v-list-item-content-font-family);
+	font-family: var(--v-list-item-content-font-family, inherit);
 }
 
 .v-list.three-line .v-list-item-content,

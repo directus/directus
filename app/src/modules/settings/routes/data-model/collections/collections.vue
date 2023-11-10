@@ -278,7 +278,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 <style scoped lang="scss">
 .v-input.search {
 	--v-input-border-radius: calc(44px / 2);
-	height: var(--v-button-height);
+	height: 44px;
 	width: 200px;
 	margin-left: auto;
 

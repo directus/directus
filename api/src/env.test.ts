@@ -1,17 +1,17 @@
-import { describe, test, expect, vi } from 'vitest';
-
-const testEnv = {
-	NUMBER: '1234',
-	NUMBER_CAST_AS_STRING: 'string:1234',
-	REGEX: 'regex:\\.example\\.com$',
-	CSV: 'one,two,three,four',
-	CSV_CAST_AS_STRING: 'string:one,two,three,four',
-	MULTIPLE: 'array:string:https://example.com,regex:\\.example2\\.com$',
-};
+import { describe, expect, test } from 'vitest';
+import { processValues } from './env.js';
 
 describe('env processed values', async () => {
-	process.env = { ...testEnv };
-	const env = ((await vi.importActual('../src/env')) as { default: Record<string, any> }).default;
+	const testEnv = {
+		NUMBER: '1234',
+		NUMBER_CAST_AS_STRING: 'string:1234',
+		REGEX: 'regex:\\.example\\.com$',
+		CSV: 'one,two,three,four',
+		CSV_CAST_AS_STRING: 'string:one,two,three,four',
+		MULTIPLE: 'array:string:https://example.com,regex:\\.example2\\.com$',
+	};
+
+	const env = processValues(testEnv);
 
 	test('Number value should be a number', () => {
 		expect(env['NUMBER']).toStrictEqual(1234);

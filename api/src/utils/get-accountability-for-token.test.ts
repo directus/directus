@@ -4,16 +4,14 @@ import env from '../env.js';
 import { getAccountabilityForToken } from './get-accountability-for-token.js';
 import getDatabase from '../database/index.js';
 
-vi.mock('../env', () => {
-	const MOCK_ENV = {
-		SECRET: 'super-secure-secret',
-		EXTENSIONS_PATH: './extensions',
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv({
+		env: {
+			SECRET: 'super-secure-secret',
+			EXTENSIONS_PATH: './extensions',
+		},
+	});
 });
 
 vi.mock('../database/index', () => {

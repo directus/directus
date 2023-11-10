@@ -30,20 +30,20 @@ beforeEach(() => {
 
 test('letter condition starts_with', () => {
 	const res = stringCondition(sampleCondition, false);
-	const expected = `"${randomTable}"."${randomColumn}" LIKE '$${parameterIndex + 1}%'`;
+	const expected = `"${randomTable}"."${randomColumn}" LIKE $${parameterIndex + 1}||'%'`;
 	expect(res).toStrictEqual(expected);
 });
 
 test('letter condition contains', () => {
 	sampleCondition.operation = 'contains';
 	const res = stringCondition(sampleCondition, false);
-	const expected = `"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}%'`;
+	const expected = `"${randomTable}"."${randomColumn}" LIKE '%'||$${parameterIndex + 1}||'%'`;
 	expect(res).toStrictEqual(expected);
 });
 
 test('letter condition contains', () => {
 	sampleCondition.operation = 'ends_with';
 	const res = stringCondition(sampleCondition, false);
-	const expected = `"${randomTable}"."${randomColumn}" LIKE '%$${parameterIndex + 1}'`;
+	const expected = `"${randomTable}"."${randomColumn}" LIKE '%'||$${parameterIndex + 1}`;
 	expect(res).toStrictEqual(expected);
 });

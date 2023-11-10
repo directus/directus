@@ -1,4 +1,4 @@
-import type { ParameterTypes, ValueNode } from '../parameterized-statement.js';
+import type { ValueNode } from '../parameterized-statement.js';
 import type { AbstractSqlQueryJoinNode } from './joins/join.js';
 import type { AbstractSqlQueryOrderNode } from './order.js';
 import type { AbstractSqlQueryFnNode } from './selects/fn.js';
@@ -16,11 +16,6 @@ export interface AbstractSqlClauses {
 }
 
 export type AbstractSqlQueryWhereNode = AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
-
-export type WhereUnion = {
-	where: AbstractSqlQueryWhereNode;
-	parameters: ParameterTypes[];
-};
 
 export * from './selects/fn.js';
 export * from './selects/primitive.js';

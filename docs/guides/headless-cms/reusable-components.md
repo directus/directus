@@ -210,8 +210,7 @@ how to properly fetch nested relational M2A data without over-fetching data that
 **Sample Request**
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 // Initialize the SDK.
 const directus = createDirectus('https://directus.example.com').with(rest());

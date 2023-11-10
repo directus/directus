@@ -51,7 +51,7 @@ export class FilesService extends ItemsService {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download', 'title', 'description', 'metadata')
+					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata')
 					.from('directus_files')
 					.where({ id: primaryKey })
 					.first()) ?? null;
@@ -408,7 +408,7 @@ export class FilesService extends ItemsService {
 	 */
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
-		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
+		const files = await super.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
 
 		if (!files) {
 			throw new ForbiddenError();
@@ -418,9 +418,10 @@ export class FilesService extends ItemsService {
 
 		for (const file of files) {
 			const disk = storage.location(file['storage']);
+			const filePrefix = path.parse(file['filename_disk']).name;
 
 			// Delete file + thumbnails
-			for await (const filepath of disk.list(file['id'])) {
+			for await (const filepath of disk.list(filePrefix)) {
 				await disk.delete(filepath);
 			}
 		}

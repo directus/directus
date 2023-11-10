@@ -89,7 +89,7 @@ function deleteItem(elem: Record<string, any>) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	button {
 		color: var(--theme--primary);

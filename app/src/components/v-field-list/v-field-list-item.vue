@@ -49,15 +49,7 @@ const selectAllDisabled = computed(() => props.field.children?.every((field: Fie
 const addAll = () => {
 	if (!props.field.children) return;
 
-	const selectedFields = props.field.children.map((selectableField) => {
-		let res = `${props.field.field}.${selectableField.field}`;
-
-		if (props.parent) {
-			res = `${props.parent}.${res}`;
-		}
-
-		return res;
-	});
+	const selectedFields = props.field.children.map((selectableField) => selectableField.key);
 
 	emit('add', selectedFields);
 };

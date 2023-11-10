@@ -179,7 +179,7 @@ body.dark .tox .tox-toolbar__overflow {
 /* Modal */
 
 .tox .tox-dialog-wrap__backdrop {
-	background-color: var(--v-overlay-color);
+	background-color: var(--overlay-color);
 }
 
 .tox.tox-tinymce-aux {

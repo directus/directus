@@ -1,5 +1,5 @@
 import { expect, test, vi, afterAll, beforeEach } from 'vitest';
-import { convertFieldNodes, type Result } from './fields.js';
+import { convertFieldNodes, type FieldConversionResult } from './fields.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
@@ -34,7 +34,7 @@ test('primitives only', () => {
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -83,7 +83,7 @@ test('primitive and function', () => {
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -167,7 +167,7 @@ test('primitive, fn, m2o', () => {
 
 	const idGen = parameterIndexGenerator();
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -270,7 +270,7 @@ test('primitive, o2m', () => {
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{

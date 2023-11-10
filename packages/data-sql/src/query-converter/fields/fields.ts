@@ -7,8 +7,8 @@ import { createUniqueAlias } from '../../orm/create-unique-alias.js';
 import { getNestedMany } from './create-nested-manys.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 
-export type Result = {
-	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
+export type FieldConversionResult = {
+	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
 	nestedManys: AbstractSqlNestedMany[];
@@ -35,7 +35,7 @@ export const convertFieldNodes = (
 	abstractFields: AbstractQueryFieldNode[],
 	idxGenerator: Generator<number, number, number>,
 	currentPath: string[] = []
-): Result => {
+): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
 	const parameters: ParameterTypes[] = [];
