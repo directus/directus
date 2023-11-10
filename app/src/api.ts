@@ -28,13 +28,13 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 	return new Promise((resolve) => {
 		if (config.url && config.url === '/auth/refresh') {
 			queue.pause();
-			resolve(requestConfig);
-		} else {
-			queue.add(() => {
-				requestConfig.headers['Authorization'] = api.defaults.headers.common['Authorization'];
-				return resolve(requestConfig);
-			});
+			return resolve(requestConfig);
 		}
+
+		queue.add(() => {
+			requestConfig.headers['Authorization'] = api.defaults.headers.common['Authorization'];
+			return resolve(requestConfig);
+		});
 	});
 };
 
