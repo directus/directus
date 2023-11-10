@@ -16,10 +16,8 @@ export function orderBy({ order }: AbstractSqlClauses): string | null {
 	const sortExpressions = order.map((o) => {
 		switch (o.orderBy.type) {
 			case 'primitive':
-				return `${escapeIdentifier(o.orderBy.field)} ${o.direction}`;
-			case 'fn':
-			case 'm2o':
-			case 'a2o':
+				return `${escapeIdentifier(o.orderBy.table)}.${escapeIdentifier(o.orderBy.column)} ${o.direction}`;
+			// @TODO: support functions˝
 			default:
 				throw new Error(`Type ${o.orderBy.type} hasn't been implemented yet`);
 		}
