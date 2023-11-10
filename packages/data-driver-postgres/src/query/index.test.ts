@@ -72,7 +72,7 @@ test('statement with order', () => {
 	);
 });
 
-test('statement with all possible modifiers', () => {
+test('statement with all possible local modifiers', () => {
 	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
 	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
 
@@ -145,5 +145,80 @@ test('statement with all possible modifiers', () => {
 		} AND "${secondConditionTable}"."${secondConditionColumn}" < $${
 			secondConditionParameterIndex + 1
 		} ORDER BY "${orderField}" ASC LIMIT $1 OFFSET $2;`
+	);
+});
+
+test('statement with all filter on foreign field', () => {
+	const foreignCollection = randomIdentifier();
+	const targetField = randomIdentifier();
+	const leftHandIdentifierField = randomIdentifier();
+	const joinAlias = randomIdentifier();
+	const firstField = randomIdentifier();
+	const secondField = randomIdentifier();
+	const rootCollection = randomIdentifier();
+	const parameterIndex = 0;
+
+	const clauses: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'primitive',
+				table: rootCollection,
+				column: firstField,
+			},
+			{
+				type: 'primitive',
+				table: rootCollection,
+				column: secondField,
+			},
+		],
+		from: rootCollection,
+		joins: [
+			{
+				type: 'join',
+				table: foreignCollection,
+				on: {
+					type: 'condition',
+					condition: {
+						type: 'condition-field',
+						target: {
+							type: 'primitive',
+							table: foreignCollection,
+							column: targetField,
+						},
+						operation: 'eq',
+						compareTo: {
+							type: 'primitive',
+							table: rootCollection,
+							column: leftHandIdentifierField,
+						},
+					},
+					negate: false,
+				},
+				as: joinAlias,
+			},
+		],
+		where: {
+			type: 'condition',
+			negate: false,
+			condition: {
+				type: 'condition-string',
+				target: {
+					type: 'primitive',
+					table: foreignCollection,
+					column: targetField,
+				},
+				operation: 'starts_with',
+				compareTo: {
+					type: 'value',
+					parameterIndex,
+				},
+			},
+		},
+	};
+
+	expect(convertToActualStatement(clauses)).toEqual(
+		`SELECT "${rootCollection}"."${firstField}", "${rootCollection}"."${secondField}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" "${joinAlias}" ON "${foreignCollection}"."${targetField}" = "${rootCollection}"."${leftHandIdentifierField}" WHERE "${foreignCollection}"."${targetField}" LIKE $${
+			parameterIndex + 1
+		}||'%';`
 	);
 });

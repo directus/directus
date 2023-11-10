@@ -5,8 +5,9 @@ import type { GeoJSONGeometry } from 'wellknown';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertGeoCondition } from './geo.js';
+import type { FilterResult } from '../filter.js';
 
-test('geo', () => {
+test('convert geo condition', () => {
 	const idGen = parameterIndexGenerator();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
@@ -70,8 +71,13 @@ test('geo', () => {
 		negate: false,
 	};
 
-	expect(convertGeoCondition(con, randomCollection, idGen, false)).toStrictEqual({
-		where: expectedWhere,
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: expectedWhere,
+			joins: [],
+		},
 		parameters: [gisValue],
-	});
+	};
+
+	expect(convertGeoCondition(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
 });

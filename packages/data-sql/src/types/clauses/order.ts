@@ -1,7 +1,10 @@
-import type { AbstractQueryNodeSortTargets } from '@directus/data';
+interface AbstractSqlOrderPrimitive {
+	type: 'primitive';
+	field: string;
+}
 
 export interface AbstractSqlQueryOrderNode {
 	type: 'order';
-	orderBy: AbstractQueryNodeSortTargets;
+	orderBy: AbstractSqlOrderPrimitive;
 	direction: 'ASC' | 'DESC';
 }
