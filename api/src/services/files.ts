@@ -37,7 +37,7 @@ export class FilesService extends ItemsService {
 	 * Upload a single new file to the configured storage adapter
 	 */
 	async uploadOne(
-		stream: FileStream,
+		stream: FileStream | Readable,
 		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
@@ -124,6 +124,7 @@ export class FilesService extends ItemsService {
 			}
 
 			// Check if the file was truncated (if the stream ended early) and throw limit error if it was
+			// @ts-expect-error
 			if (stream.truncated === true) {
 				await cleanUp();
 				throw new ContentTooLargeError();
@@ -222,7 +223,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(stream: FileStream, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
+	async getMetadata(stream: Readable, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
 		return new Promise((resolve, reject) => {
 			pipeline(
 				stream,
