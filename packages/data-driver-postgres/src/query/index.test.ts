@@ -1,4 +1,3 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
 import type { AbstractSqlClauses } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
