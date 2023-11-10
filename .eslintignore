@@ -8,3 +8,4 @@ dist/
 /docs/.vitepress/dist/
 *.yml
 *.yaml
+*.md
