@@ -166,14 +166,24 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
-			const updatedUserPayload = await emitter.emitFilter(
-				`auth.update`,
-				{
+			let emitPayload;
+
+			if (env['AUTH_SYNC_USER_INFO']) {
+				emitPayload = {
 					auth_data: userPayload.auth_data ?? null,
 					first_name: userPayload.first_name,
 					last_name: userPayload.last_name,
 					email: userPayload.email,
-				},
+				};
+			} else {
+				emitPayload = {
+					auth_data: userPayload.auth_data ?? null,
+				};
+			}
+
+			const updatedUserPayload = await emitter.emitFilter(
+				`auth.update`,
+				emitPayload,
 				{
 					identifier,
 					provider: this.config['provider'],

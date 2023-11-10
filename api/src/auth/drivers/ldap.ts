@@ -278,15 +278,27 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
-			const updatedUserPayload = await emitter.emitFilter(
-				`auth.update`,
-				{
+			let emitPayload = {};
+
+			// Only sync roles if the AD groups are configured
+			if (groupDn) {
+				emitPayload = {
+					role: userRole?.id ?? defaultRoleId ?? null,
+				};
+			}
+
+			if (env['AUTH_SYNC_USER_INFO']) {
+				emitPayload = {
+					...emitPayload,
 					first_name: userInfo.firstName,
 					last_name: userInfo.lastName,
 					email: userInfo.email,
-					// Only sync roles if the AD groups are configured
-					role: groupDn ? userRole?.id ?? defaultRoleId ?? null : undefined,
-				},
+				};
+			}
+
+			const updatedUserPayload = await emitter.emitFilter(
+				`auth.update`,
+				emitPayload,
 				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
 				{ database: getDatabase(), schema: this.schema, accountability: null }
 			);

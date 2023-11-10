@@ -129,6 +129,7 @@ const allowedEnvironmentVars = [
 	// auth
 	'AUTH_PROVIDERS',
 	'AUTH_DISABLE_DEFAULT',
+	'AUTH_SYNC_USER_INFO',
 	'AUTH_.+_DRIVER',
 	'AUTH_.+_CLIENT_ID',
 	'AUTH_.+_CLIENT_SECRET',
@@ -274,6 +275,7 @@ const defaults: Record<string, any> = {
 
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
+	AUTH_SYNC_USER_INFO: false,
 
 	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
