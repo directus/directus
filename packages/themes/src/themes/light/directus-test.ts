@@ -12,19 +12,19 @@ export const theme: Theme = {
 		borderRadius: '6px',
 		borderWidth: '2px',
 
-		foreground: '#4f5464',
-		foregroundAccent: '#172940',
-		foregroundSubdued: '#a2b5cd',
+		foreground: 'blue',
+		foregroundAccent: 'red',
+		foregroundSubdued: 'yellow',
 
 		backgroundPage: 'hotpink',
 
-		background: '#f0f4f9',
-		backgroundAccent: '#e4eaf1',
-		backgroundSubdued: '#f7fafc',
+		background: 'papayawhip',
+		backgroundAccent: 'tomato',
+		backgroundSubdued: 'skyblue',
 
-		borderColor: '#e4eaf1',
-		borderColorAccent: '#d3dae4',
-		borderColorSubdued: '#f0f4f9',
+		borderColor: 'tomato',
+		borderColorAccent: 'gray',
+		borderColorSubdued: 'papayawhip',
 
 		primary: 'var(--project-color)',
 		primaryBackground: 'color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 10%)',
@@ -67,12 +67,12 @@ export const theme: Theme = {
 			},
 
 			modules: {
-				background: '#0e1c2f',
+				background: 'gold',
 				borderColor: 'transparent',
 				borderWidth: '0px',
 
 				button: {
-					foreground: '#8196b1',
+					foreground: 'blue',
 					foregroundHover: '#fff',
 					foregroundActive: 'var(--theme--foreground-accent)',
 
@@ -108,7 +108,7 @@ export const theme: Theme = {
 
 		header: {
 			background: 'red',
-			borderColor: 'transparent',
+			borderColor: 'green',
 			borderWidth: '0px',
 			boxShadow: '0 4px 7px -4px rgb(0 0 0 / 0.2)',
 			headline: {
@@ -128,7 +128,7 @@ export const theme: Theme = {
 					fontFamily: 'var(--theme--font-family-sans-serif)',
 				},
 				input: {
-					background: 'var(--theme--background-page)',
+					background: '#fafa66',
 					foreground: 'var(--theme--foreground)',
 					foregroundSubdued: 'var(--theme--foreground-subdued)',
 
@@ -144,7 +144,7 @@ export const theme: Theme = {
 		},
 
 		sidebar: {
-			background: 'var(--theme--background)',
+			background: 'papayawhip',
 			foreground: 'var(--theme--foreground-subdued)',
 			fontFamily: 'var(--theme--font-family-sans-serif)',
 			borderColor: 'transparent',
@@ -180,7 +180,7 @@ export const theme: Theme = {
 			foregroundAccent: 'var(--theme--foreground-accent)',
 
 			art: {
-				background: '#0e1c2f',
+				background: 'gold',
 				primary: 'var(--theme--primary)',
 				secondary: 'var(--theme--secondary)',
 				speed: '1',
