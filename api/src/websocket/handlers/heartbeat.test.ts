@@ -2,29 +2,19 @@ import type { EventContext } from '@directus/types';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../../emitter.js';
-import { type WebSocketController, getWebSocketController } from '../controllers/index.js';
+import { getWebSocketController, type WebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';
 import { HeartbeatHandler } from './heartbeat.js';
 
-// mocking
 vi.mock('../controllers', () => ({
 	getWebSocketController: vi.fn(() => ({
 		clients: new Set(),
 	})),
 }));
 
-vi.mock('../../env', async () => {
-	const actual = (await vi.importActual('../../env')) as { default: Record<string, any> };
-
-	const MOCK_ENV = {
-		...actual.default,
-		WEBSOCKETS_HEARTBEAT_PERIOD: 1,
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
+vi.mock('../../env.js', async () => {
+	const { mockEnv } = await import('../../__utils__/mock-env.js');
+	return mockEnv({ env: { WEBSOCKETS_HEARTBEAT_PERIOD: '1' } });
 });
 
 function mockClient() {
