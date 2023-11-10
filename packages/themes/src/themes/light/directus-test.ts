@@ -26,7 +26,7 @@ export const theme: Theme = {
 		borderColorAccent: 'gray',
 		borderColorSubdued: 'papayawhip',
 
-		primary: 'var(--project-color)',
+		primary: 'red',
 		primaryBackground: 'color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 10%)',
 		primarySubdued: 'color-mix(in srgb, var(--theme--background-page), var(--theme--primary) 50%)',
 		primaryAccent: 'color-mix(in srgb, var(--theme--primary), #2e3c43 25%)',
