@@ -156,7 +156,7 @@ that Twilio has to offer.
 import { createError } from "@directus/errors";
 const InvalidPayloadException = createError(
   "INVALID_PAYLOAD_ERROR",
-  (message) => message,
+  (message) => { return message; },
   500
 );
 export default ({ filter }, { env, exceptions }) => {
