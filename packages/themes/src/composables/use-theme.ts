@@ -3,10 +3,10 @@ import { merge } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
-import type { Theme } from './schema.js';
-import { useThemeStore } from './store.js';
-import { theme as themeDefaultDark } from './themes/dark/directus-default.js';
-import { theme as themeDefaultLight } from './themes/light/directus-default.js';
+import type { Theme } from '../schemas/theme.js';
+import { useThemeStore } from '../stores/theme.js';
+import { theme as themeDefaultDark } from '../themes/dark/directus-default.js';
+import { theme as themeDefaultLight } from '../themes/light/directus-default.js';
 
 export const useTheme = (
 	darkMode: MaybeRef<boolean>,

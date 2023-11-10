@@ -1,4 +1,4 @@
-import type { Theme } from '../../schema.js';
+import type { Theme } from '../../schemas/theme.js';
 
 export const theme: Theme = {
 	name: 'Directus TEST',
@@ -107,7 +107,7 @@ export const theme: Theme = {
 		},
 
 		header: {
-			background: 'var(--theme--background-page)',
+			background: 'red',
 			borderColor: 'transparent',
 			borderWidth: '0px',
 			boxShadow: '0 4px 7px -4px rgb(0 0 0 / 0.2)',

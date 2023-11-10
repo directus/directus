@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { reactive } from 'vue';
-import type { Theme } from './schema.js';
+import type { Theme } from '../schemas/theme.js';
 
-import { theme as themeDirectusDefaultLight } from './themes/light/directus-default.js';
-import { theme as themeDirectusTEST } from './themes/light/directus-test.js';
+import { theme as themeDirectusDefaultLight } from '../themes/light/directus-default.js';
+import { theme as themeDirectusTEST } from '../themes/light/directus-test.js';
 
-import { theme as themeDirectusDefaultDark } from './themes/dark/directus-default.js';
+import { theme as themeDirectusDefaultDark } from '../themes/dark/directus-default.js';
 
 const defaultLightThemes: Theme[] = [themeDirectusDefaultLight, themeDirectusTEST];
 const defaultDarkThemes: Theme[] = [themeDirectusDefaultDark];

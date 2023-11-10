@@ -1,4 +1,4 @@
-import type { Theme } from '../../schema.js';
+import type { Theme } from '../../schemas/theme.js';
 
 export const theme: Theme = {
 	name: 'Directus Default',

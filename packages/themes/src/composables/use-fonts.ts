@@ -1,8 +1,8 @@
 import { get } from 'lodash-es';
 import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
-import type { Theme } from './schema.js';
-import { ThemeSchema } from './schema.js';
+import type { Theme } from '../schemas/theme.js';
+import { ThemeSchema } from '../schemas/theme.js';
 
 export const useFonts = (rules: MaybeRef<Theme>) => {
 	const paths: string[][] = [];
