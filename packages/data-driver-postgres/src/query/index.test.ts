@@ -54,21 +54,23 @@ test('statement with limit and offset', () => {
 });
 
 test('statement with order', () => {
+	const orderField = randomIdentifier();
+	const table = randomIdentifier();
+
 	sample.clauses.order = [
 		{
 			type: 'order',
 			orderBy: {
 				type: 'primitive',
-				field: randomIdentifier(),
+				column: orderField,
+				table: table,
 			},
 			direction: 'ASC',
 		},
 	];
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
-			sample.clauses.from
-		}" ORDER BY "${(sample.clauses.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field}" ASC;`
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" ORDER BY "${table}"."${orderField}" ASC;`
 	);
 });
 
@@ -126,12 +128,15 @@ test('statement with all possible local modifiers', () => {
 		],
 	};
 
+	const sortTable = randomIdentifier();
+
 	sample.clauses.order = [
 		{
 			type: 'order',
 			orderBy: {
 				type: 'primitive',
-				field: orderField,
+				column: orderField,
+				table: sortTable,
 			},
 			direction: 'ASC',
 		},
@@ -144,7 +149,7 @@ test('statement with all possible local modifiers', () => {
 			firstConditionParameterIndex + 1
 		} AND "${secondConditionTable}"."${secondConditionColumn}" < $${
 			secondConditionParameterIndex + 1
-		} ORDER BY "${orderField}" ASC LIMIT $1 OFFSET $2;`
+		} ORDER BY "${sortTable}"."${orderField}" ASC LIMIT $1 OFFSET $2;`
 	);
 });
 
