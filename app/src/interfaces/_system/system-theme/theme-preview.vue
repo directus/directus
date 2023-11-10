@@ -216,8 +216,8 @@ const localVars = computed(() => {
 .theme-preview {
 	svg {
 		width: 100%;
-		box-shadow: inset 0 0 0 var(--theme--border-width) var(--theme--border-color-subdued);
-		border-radius: var(--theme--border-radius);
+		border: 1px solid var(--theme--border-color-subdued);
+		border-radius: 4px;
 	}
 }
 </style>
