@@ -25,6 +25,7 @@ beforeEach(() => {
 				field: secondField,
 			},
 		],
+		modifiers: {}
 	};
 });
 

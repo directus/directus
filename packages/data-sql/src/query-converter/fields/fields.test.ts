@@ -267,6 +267,7 @@ test('primitive, o2m', () => {
 					},
 				},
 			},
+			modifiers: {}
 		},
 	];
 
