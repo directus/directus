@@ -1,5 +1,5 @@
 import type { AbstractQueryNodeSort } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQueryOrderNode, AbstractSqlQuerySelectNode } from '../../types/index.js';
+import type { AbstractSqlClauses, AbstractSqlQueryOrderNode } from '../../types/index.js';
 import { convertTarget } from './filter/conditions/utils.js';
 
 export type SortConversionResult = {
@@ -23,15 +23,11 @@ export const convertSort = (
 	};
 
 	abstractSorts.forEach((abstractSort) => {
-		if (abstractSort.target.type === 'fn') {
-			throw new Error('Sorting by function is not supported');
-		}
-
 		const targetConversionResult = convertTarget(abstractSort.target, collection, idxGenerator);
 
 		const orderBy: AbstractSqlQueryOrderNode = {
 			type: 'order',
-			orderBy: targetConversionResult.value as AbstractSqlQuerySelectNode,
+			orderBy: targetConversionResult.value,
 			direction: abstractSort.direction === 'descending' ? 'DESC' : 'ASC',
 		};
 
