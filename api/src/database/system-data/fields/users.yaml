@@ -119,20 +119,18 @@ fields:
     interface: system-theme
     options:
       appearance: light
-    hidden: true
-
-  - field: theme_dark
-    width: half
-    interface: system-theme
-    options:
-      appearance: dark
-    hidden: true
 
   - field: theme_light_overrides
     width: full
     interface: system-theme-overrides
     special:
       - cast-json
+
+  - field: theme_dark
+    width: half
+    interface: system-theme
+    options:
+      appearance: dark
 
   - field: theme_dark_overrides
     width: full
