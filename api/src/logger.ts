@@ -2,10 +2,9 @@ import { REDACTED_TEXT, toArray } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
 import type { IncomingMessage } from 'http';
 import { merge } from 'lodash-es';
-import type { LoggerOptions } from 'pino';
-import { pino } from 'pino';
-import { pinoHttp, stdSerializers } from 'pino-http';
-import { URL } from 'url';
+import { URL } from 'node:url';
+import { pino, type LoggerOptions } from 'pino';
+import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
 import env from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
@@ -101,7 +100,21 @@ if (loggerEnvConfig['levels']) {
 
 const logger = pino(merge(pinoOptions, loggerEnvConfig));
 
-const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
+export const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
+
+if (httpLoggerEnvConfig['ignorePaths']) {
+	const ignorePathsSet = new Set(httpLoggerEnvConfig['ignorePaths']);
+
+	httpLoggerEnvConfig['autoLogging'] = {
+		ignore: (req) => {
+			if (!req.url) return false;
+			const { pathname } = new URL(req.url, 'http://example.com/');
+			return ignorePathsSet.has(pathname);
+		},
+	} as AutoLoggingOptions;
+
+	delete httpLoggerEnvConfig['ignorePaths'];
+}
 
 if (httpLoggerEnvConfig['ignorePaths']) {
 	const ignorePathsSet = new Set(httpLoggerEnvConfig['ignorePaths']);
