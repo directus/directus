@@ -677,10 +677,11 @@ we recommend lowering the allowed concurrent transformations to prevent you from
 
 ## Authentication
 
-| Variable               | Description                               | Default Value |
-| ---------------------- | ----------------------------------------- | ------------- |
-| `AUTH_PROVIDERS`       | A comma-separated list of auth providers. | --            |
-| `AUTH_DISABLE_DEFAULT` | Disable the default auth provider         | `false`       |
+| Variable               | Description                                                                                                   | Default Value |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- | ------------- |
+| `AUTH_PROVIDERS`       | A comma-separated list of auth providers.                                                                     | --            |
+| `AUTH_DISABLE_DEFAULT` | Disable the default auth provider                                                                             | `false`       |
+| `AUTH_SYNC_USER_INFO`  | Set user's first name, last name and email from provider's user info on each login (OpenID, OAuth2 and LDAP). | `false`       |
 
 For each auth provider you list, you must also provide the following configuration:
 
