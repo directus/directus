@@ -1,6 +1,5 @@
 import { REDACTED_TEXT, toArray } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
-import type { IncomingMessage } from 'http';
 import { merge } from 'lodash-es';
 import { URL } from 'node:url';
 import { pino, type LoggerOptions } from 'pino';
