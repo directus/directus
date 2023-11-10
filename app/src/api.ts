@@ -29,7 +29,6 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 		if (config.url && config.url === '/auth/refresh') {
 			queue.pause();
 			resolve(requestConfig);
-			queue.start();
 		} else {
 			queue.add(() => resolve(requestConfig));
 		}
@@ -101,6 +100,11 @@ export function addTokenToURL(url: string, token?: string): string {
 	if (!accessToken) return url;
 
 	return addQueryToPath(url, { access_token: accessToken });
+}
+
+export function resumeQueue() {
+	if (!queue.isPaused) return;
+	queue.start();
 }
 
 export async function replaceQueue(options?: Options<any, DefaultAddOptions>) {
