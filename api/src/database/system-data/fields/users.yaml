@@ -115,7 +115,7 @@ fields:
     width: half
 
   - field: theme_light
-    width: half
+    width: full
     interface: system-theme
     options:
       appearance: light
@@ -127,7 +127,7 @@ fields:
       - cast-json
 
   - field: theme_dark
-    width: half
+    width: full
     interface: system-theme
     options:
       appearance: dark
