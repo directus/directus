@@ -1,6 +1,6 @@
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
-import type { Accountability, Field, FieldOverview, Permission, Relation, SchemaOverview, Type } from '@directus/types';
+import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
@@ -14,13 +14,10 @@ import type {
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import type { AbstractServiceOptions, Collection } from '../types/index.js';
+import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { version } from '../utils/package.js';
-import { CollectionsService } from './collections.js';
-import { FieldsService } from './fields.js';
 import { GraphQLService } from './graphql/index.js';
-import { RelationsService } from './relations.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 
 export class SpecificationService {
@@ -28,29 +25,15 @@ export class SpecificationService {
 	knex: Knex;
 	schema: SchemaOverview;
 
-	fieldsService: FieldsService;
-	collectionsService: CollectionsService;
-	relationsService: RelationsService;
-
 	oas: OASSpecsService;
 	graphql: GraphQLSpecsService;
 
 	constructor({ accountability, knex, schema }: AbstractServiceOptions) {
 		this.accountability = accountability || null;
 		this.knex = knex || getDatabase();
+		this.schema = schema;
 
-		this.schema = this.accountability?.admin === true
-			? schema : reduceSchema(schema, accountability?.permissions || null);
-
-		this.fieldsService = new FieldsService({ knex, schema });
-		this.collectionsService = new CollectionsService({ knex, schema });
-		this.relationsService = new RelationsService({ knex, schema });
-
-		this.oas = new OASSpecsService({ knex, schema, accountability }, {
-			fieldsService: this.fieldsService,
-			collectionsService: this.collectionsService,
-			relationsService: this.relationsService,
-		});
+		this.oas = new OASSpecsService({ knex, schema, accountability });
 
 		this.graphql = new GraphQLSpecsService({ knex, schema });
 	}
@@ -65,38 +48,18 @@ class OASSpecsService implements SpecificationSubService {
 	knex: Knex;
 	schema: SchemaOverview;
 
-	fieldsService: FieldsService;
-	collectionsService: CollectionsService;
-	relationsService: RelationsService;
+	constructor({ knex, schema, accountability }: AbstractServiceOptions) {
+		this.accountability = accountability || null;
+		this.knex = knex || getDatabase();
 
-	constructor(
-		options: AbstractServiceOptions,
-		{
-			fieldsService,
-			collectionsService,
-			relationsService,
-		}: {
-			fieldsService: FieldsService;
-			collectionsService: CollectionsService;
-			relationsService: RelationsService;
-		}
-	) {
-		this.accountability = options.accountability || null;
-		this.knex = options.knex || getDatabase();
-		this.schema = options.schema;
-
-		// console.log(JSON.stringify(this.schema, null, 2));
-
-		this.fieldsService = fieldsService;
-		this.collectionsService = collectionsService;
-		this.relationsService = relationsService;
+		this.schema = this.accountability?.admin === true
+			? schema : reduceSchema(schema, accountability?.permissions || null)
 	}
 
 	async generate() {
 		const permissions = this.accountability?.permissions ?? [];
 
 		const tags = await this.generateTags();
-		// console.log(tags);
 		const paths = await this.generatePaths(permissions, tags);
 		const components = await this.generateComponents(tags);
 
@@ -126,8 +89,6 @@ class OASSpecsService implements SpecificationSubService {
 	private async generateTags(): Promise<OpenAPIObject['tags']> {
 		const systemTags = cloneDeep(spec.tags)!;
 		const collections = Object.values(this.schema.collections);
-		console.log('collections', JSON.stringify(collections, null, 2));
-
 		const tags: OpenAPIObject['tags'] = [];
 
 		// System tags that don't have an associated collection are always readable to the user
