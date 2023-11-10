@@ -1,10 +1,9 @@
 get:
-  summary: List Interfaces
-  description: List all installed custom interfaces.
-  operationId: getInterfaces
+  summary: List Extensions
+  description: List the installed extensions and their configuration in the project.
+  operationId: listExtensions
   responses:
     '200':
-      description: Successful request
       content:
         application/json:
           schema:
@@ -13,10 +12,9 @@ get:
               data:
                 type: array
                 items:
-                  type: object
+                  $ref: '../../openapi.yaml#/components/schemas/Extensions'
+      description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
   tags:
     - Extensions
