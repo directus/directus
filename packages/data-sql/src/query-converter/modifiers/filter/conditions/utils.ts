@@ -55,15 +55,13 @@ export function convertTarget(
 			value: convertedFn.fn,
 			joins: [],
 		};
-	} else if (target.type === 'nested-one-target') {
+	} else {
 		const { value, joins } = convertNestedOneTarget(collection, target, idxGenerator);
 
 		return {
 			value,
 			joins,
 		};
-	} else {
-		throw new Error('Unknown target type');
 	}
 }
 
