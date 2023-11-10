@@ -23,7 +23,27 @@ const rules = computed(() => {
 
 	if (!rules) return null;
 
-	return rules;
+	return pick(rules, [
+		'background',
+		'backgroundPage',
+		'form.field.input.background',
+		'form.field.input.borderColor',
+		'form.field.label.foreground',
+		'header.background',
+		'header.borderColor',
+		'navigation.background',
+		'navigation.list.backgroundActive',
+		'navigation.modules.background',
+		'navigation.modules.button.backgroundActive',
+		'navigation.modules.button.foreground',
+		'navigation.modules.button.foregroundActive',
+		'navigation.project.background',
+		'navigation.project.foreground',
+		'primary',
+		'sidebar.background',
+		'sidebar.section.toggle.background',
+		'sidebar.section.toggle.foreground',
+	]);
 });
 
 const localVars = computed(() => {
@@ -56,19 +76,75 @@ const localVars = computed(() => {
 			/>
 
 			<!-- Input -->
-			<rect x="63.5" y="81.5" width="123" height="35" rx="3.5" fill="var(--theme--form--field--input--background)" stroke="var(--theme--form--field--input--border-color)" />
-			<rect x="63.5" y="45.5" width="59" height="11" rx="3.5" fill="var(--theme--form--field--input--background)" stroke="var(--theme--primary)" />
-			<rect x="127.5" y="45.5" width="59" height="11" rx="3.5" fill="var(--theme--form--field--input--background)" stroke="var(--theme--form--field--input--border-color)" />
+			<rect
+				x="63.5"
+				y="81.5"
+				width="123"
+				height="35"
+				rx="3.5"
+				fill="var(--theme--form--field--input--background)"
+				stroke="var(--theme--form--field--input--border-color)"
+			/>
+			<rect
+				x="63.5"
+				y="45.5"
+				width="59"
+				height="11"
+				rx="3.5"
+				fill="var(--theme--form--field--input--background)"
+				stroke="var(--theme--primary)"
+			/>
+			<rect
+				x="127.5"
+				y="45.5"
+				width="59"
+				height="11"
+				rx="3.5"
+				fill="var(--theme--form--field--input--background)"
+				stroke="var(--theme--form--field--input--border-color)"
+			/>
 
 			<!-- Field Label -->
-			<rect x="63" y="33" width="24" height="8" rx="4" fill="var(--theme--form--field--label--foreground)" fill-opacity="0.2" />
-			<rect x="63" y="69" width="32" height="8" rx="4" fill="var(--theme--form--field--label--foreground)" fill-opacity="0.2" />
-			<rect x="127" y="33" width="24" height="8" rx="4" fill="var(--theme--form--field--label--foreground)" fill-opacity="0.2" />
+			<rect
+				x="63"
+				y="33"
+				width="24"
+				height="8"
+				rx="4"
+				fill="var(--theme--form--field--label--foreground)"
+				fill-opacity="0.2"
+			/>
+			<rect
+				x="63"
+				y="69"
+				width="32"
+				height="8"
+				rx="4"
+				fill="var(--theme--form--field--label--foreground)"
+				fill-opacity="0.2"
+			/>
+			<rect
+				x="127"
+				y="33"
+				width="24"
+				height="8"
+				rx="4"
+				fill="var(--theme--form--field--label--foreground)"
+				fill-opacity="0.2"
+			/>
 
-			<rect x="77" y="5" width="32" height="8" rx="4" fill="#172940" fill-opacity="0.2" />
+			<rect x="77" y="5" width="32" height="8" rx="4" fill="var(--theme--background)" fill-opacity="0.2" />
 
 			<!-- Project Info Foreground -->
-			<rect x="21" y="5" width="32" height="8" rx="4" fill="var(--theme--navigation--project--foreground)" fill-opacity="0.2" />
+			<rect
+				x="21"
+				y="5"
+				width="32"
+				height="8"
+				rx="4"
+				fill="var(--theme--navigation--project--foreground)"
+				fill-opacity="0.2"
+			/>
 
 			<!-- Navigation Item -->
 			<rect x="21" y="21" width="24" height="8" rx="4" fill="var(--theme--navigation--list--background-active)" />
@@ -89,7 +165,14 @@ const localVars = computed(() => {
 			<rect x="1" y="17" width="16" height="16" fill="var(--theme--navigation--modules--button--background-active)" />
 
 			<!-- Module Bar Button Foreground Active -->
-			<rect x="5" y="21" width="8" height="8" rx="4" fill="var(--theme--navigation--modules--button--foreground-active)" />
+			<rect
+				x="5"
+				y="21"
+				width="8"
+				height="8"
+				rx="4"
+				fill="var(--theme--navigation--modules--button--foreground-active)"
+			/>
 
 			<!-- Module Bar Button Foreground -->
 			<rect x="5" y="37" width="8" height="8" rx="4" fill="var(--theme--navigation--modules--button--foreground)" />
@@ -102,17 +185,47 @@ const localVars = computed(() => {
 			<rect x="165" y="5" width="8" height="8" rx="4" fill="var(--theme--background)" />
 
 			<!-- Sidebar Background -->
-			<path d="M193 1H205C207.209 1 209 2.79086 209 5V137C209 139.209 207.209 141 205 141H193V1Z" fill="var(--theme--sidebar--background)" />
+			<path
+				d="M193 1H205C207.209 1 209 2.79086 209 5V137C209 139.209 207.209 141 205 141H193V1Z"
+				fill="var(--theme--sidebar--background)"
+			/>
 
 			<!-- Sidebar Toggle Background -->
-			<path d="M193 1H205C207.209 1 209 2.79086 209 5V17H193V1Z" fill="var(--theme--sidebar--section--toggle--background)" />
+			<path
+				d="M193 1H205C207.209 1 209 2.79086 209 5V17H193V1Z"
+				fill="var(--theme--sidebar--section--toggle--background)"
+			/>
 			<path d="M193 17H209V33H193V17Z" fill="var(--theme--sidebar--section--toggle--background)" />
 			<path d="M193 33H209V49H193V33Z" fill="var(--theme--sidebar--section--toggle--background)" />
 
 			<!-- Sidebar Toggle Foreground -->
-			<rect x="197" y="5" width="8" height="8" rx="4" fill="var(--theme--sidebar--section--toggle--foreground)" fill-opacity="0.2" />
-			<rect x="197" y="21" width="8" height="8" rx="4" fill="var(--theme--sidebar--section--toggle--foreground)" fill-opacity="0.2" />
-			<rect x="197" y="37" width="8" height="8" rx="4" fill="var(--theme--sidebar--section--toggle--foreground)" fill-opacity="0.2" />
+			<rect
+				x="197"
+				y="5"
+				width="8"
+				height="8"
+				rx="4"
+				fill="var(--theme--sidebar--section--toggle--foreground)"
+				fill-opacity="0.2"
+			/>
+			<rect
+				x="197"
+				y="21"
+				width="8"
+				height="8"
+				rx="4"
+				fill="var(--theme--sidebar--section--toggle--foreground)"
+				fill-opacity="0.2"
+			/>
+			<rect
+				x="197"
+				y="37"
+				width="8"
+				height="8"
+				rx="4"
+				fill="var(--theme--sidebar--section--toggle--foreground)"
+				fill-opacity="0.2"
+			/>
 
 			<!-- Header Border -->
 			<rect x="57" y="17" width="136" height="1" fill="var(--theme--header--border-color)" />
