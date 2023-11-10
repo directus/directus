@@ -1,7 +1,16 @@
 import type { AbstractSqlClauses } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { orderBy } from './orderBy.js';
+import { applyFunction } from '../utils/functions.js';
+
+vi.mock('../utils/functions.js', (importOriginal) => {
+	const mod = importOriginal();
+	return {
+		...mod,
+		applyFunction: vi.fn(),
+	};
+});
 
 let sample: AbstractSqlClauses;
 
@@ -65,5 +74,30 @@ test('Returns order part for multiple primitive fields', () => {
 
 	const expected = `ORDER BY "${randomTable}"."${field1}" ASC, "${randomTable}"."${field2}" DESC`;
 
+	expect(orderBy(sample)).toStrictEqual(expected);
+});
+
+test('Returns order part when a function was applied', () => {
+	const field1 = randomIdentifier();
+
+	sample.order = [
+		{
+			orderBy: {
+				type: 'fn',
+				column: field1,
+				table: randomTable,
+				fn: {
+					type: 'arrayFn',
+					fn: 'count',
+				},
+			},
+			type: 'order',
+			direction: 'ASC',
+		},
+	];
+
+	const fnMock = `COUNT("${randomTable}"."${field1}")`;
+	vi.mocked(applyFunction).mockReturnValueOnce(fnMock);
+	const expected = `ORDER BY ${fnMock} ASC`;
 	expect(orderBy(sample)).toStrictEqual(expected);
 });
