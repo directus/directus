@@ -5,8 +5,8 @@ import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
 import type { Theme } from './schema.js';
 import { useThemeStore } from './store.js';
-import { theme as themeDefaultDark } from './themes/dark-directus.js';
-import { theme as themeDefaultLight } from './themes/light-directus.js';
+import { theme as themeDefaultDark } from './themes/dark/directus-default.js';
+import { theme as themeDefaultLight } from './themes/light/directus-default.js';
 
 export const useTheme = (
 	darkMode: MaybeRef<boolean>,
@@ -22,7 +22,7 @@ export const useTheme = (
 		const defaultTheme = unref(darkMode) ? themeDefaultDark : themeDefaultLight;
 		const overrides = unref(darkMode) ? unref(themeDarkOverrides) : unref(themeLightOverrides);
 
-		const theme = unref(themes)[darkMode ? 'dark' : 'light'].find((theme) => theme.name === themeName);
+		const theme = unref(themes)[unref(darkMode) ? 'dark' : 'light'].find((theme) => theme.name === themeName);
 
 		if (!theme) {
 			if (themeName && themeName !== defaultTheme.name) {

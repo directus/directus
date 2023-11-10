@@ -6,8 +6,8 @@ import { flatten } from 'flat';
 import { mapKeys } from 'lodash-es';
 import { computed, toRefs, unref } from 'vue';
 import type { Theme } from './schema.js';
-import { theme as themeDefaultDark } from './themes/dark-directus.js';
-import { theme as themeDefaultLight } from './themes/light-directus.js';
+import { theme as themeDefaultLight } from './themes/light/directus-default.js';
+import { theme as themeDefaultDark } from './themes/dark/directus-default.js';
 import { useFonts } from './use-fonts.js';
 import { useTheme } from './use-theme.js';
 
@@ -74,3 +74,5 @@ const cssString = computed(() => {
 <template>
 	<teleport to="#theme">{{ cssString }}</teleport>
 </template>
+./themes/directus-default.js
+./themes/directus-default-dark.js
