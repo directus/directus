@@ -189,7 +189,7 @@ describe('ignored paths', () => {
 	});
 
 	test('should not log request when it matches ignored path', async () => {
-		setEnv({ LOGGER_HTTP_IGNORE_PATHS: '/server/ping' });
+		setEnv({ LOG_HTTP_IGNORE_PATHS: '/server/ping' });
 
 		const { httpLoggerEnvConfig } = await import('./logger.js');
 

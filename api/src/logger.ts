@@ -102,8 +102,8 @@ const logger = pino(merge(pinoOptions, loggerEnvConfig));
 
 export const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
 
-if (httpLoggerEnvConfig['ignorePaths']) {
-	const ignorePathsSet = new Set(httpLoggerEnvConfig['ignorePaths']);
+if (env['LOG_HTTP_IGNORE_PATHS']) {
+	const ignorePathsSet = new Set(env['LOG_HTTP_IGNORE_PATHS']);
 
 	httpLoggerEnvConfig['autoLogging'] = {
 		ignore: (req) => {
@@ -112,25 +112,6 @@ if (httpLoggerEnvConfig['ignorePaths']) {
 			return ignorePathsSet.has(pathname);
 		},
 	} as AutoLoggingOptions;
-
-	delete httpLoggerEnvConfig['ignorePaths'];
-}
-
-if (httpLoggerEnvConfig['ignorePaths']) {
-	const ignorePathsSet = new Set(httpLoggerEnvConfig['ignorePaths']);
-
-	httpLoggerEnvConfig['autoLogging'] = {
-		ignore: function (req: IncomingMessage) {
-			if (!req.url) {
-				return false;
-			}
-
-			const { pathname } = new URL(req.url, 'http://example.com/');
-			return ignorePathsSet.has(pathname);
-		},
-	};
-
-	delete httpLoggerEnvConfig['ignorePaths'];
 }
 
 export const expressLogger = pinoHttp({
