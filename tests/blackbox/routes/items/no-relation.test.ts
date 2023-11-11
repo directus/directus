@@ -1095,39 +1095,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe('Query parameters with array indices larger than 20', () => {
-			describe('large _in query parameter should return result', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const artists = [];
-					const artistsCount = 30;
-
-					for (let i = 0; i < artistsCount; i++) {
-						artists.push(createArtist(pkType));
-					}
-
-					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
-
-					// Generates a filter that looks like this:
-					// filter[id][_in][0]=1&filter[id][_in][1]=2&filter[id][_in][2]=3...
-					const filter = Array.from(
-						{ length: artistsCount },
-						(_, index) => `filter[id][_in][${index}]=${index + 1}`
-					).join('&');
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionArtists}`)
-						.query(filter)
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data.length).toEqual(artistsCount);
-				});
-			});
-		});
-
 		describe('Aggregation Tests', () => {
 			describe('retrieves count correctly', () => {
 				it.each(vendors)('%s', async (vendor) => {
@@ -2380,5 +2347,41 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+	});
+});
+
+describe('Query parameters with array indices larger than 20', () => {
+	it.each(vendors)('%s', async (vendor) => {
+		// Setup
+		const pkType = 'integer';
+		const localCollectionArtists = `${collectionArtists}_${pkType}`;
+		const artists = [];
+		const artistsCount = 30;
+
+		for (let i = 0; i < artistsCount; i++) {
+			artists.push(createArtist(pkType));
+		}
+
+		const items = await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+		// Generate a filter that looks like this:
+		// filter[id][_in][0]=1&filter[id][_in][1]=2&filter[id][_in][2]=3...
+		const filters = [];
+
+		for (const [index, value] of items.entries()) {
+			filters.push(`filter[id][_in][${index}]=${value.id}`);
+		}
+
+		const filter = filters.join('&');
+
+		// Action
+		const response = await request(getUrl(vendor))
+			.get(`/items/${localCollectionArtists}`)
+			.query(filter)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		// Assert
+		expect(response.statusCode).toEqual(200);
+		expect(response.body.data.length).toEqual(artistsCount);
 	});
 });
