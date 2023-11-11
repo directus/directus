@@ -135,7 +135,7 @@ export class FilesService extends ItemsService {
 
 			await cleanUp();
 
-			if(err instanceof ContentTooLargeError) {
+			if (err instanceof ContentTooLargeError) {
 				throw err;
 			} else {
 				throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
