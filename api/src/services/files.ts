@@ -100,7 +100,7 @@ export class FilesService extends ItemsService {
 			}
 
 			try {
-				if(isReplacement === true ){
+				if (isReplacement === true ){
 					// If this is a replacement that failed, we need to delete the temp file
 					await disk.delete(tempFilenameDisk);
 				} else {
