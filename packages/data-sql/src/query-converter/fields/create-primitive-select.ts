@@ -18,9 +18,5 @@ export const createPrimitiveSelect = (
 		as: generatedAlias,
 	};
 
-	if (abstractPrimitive.alias) {
-		primitive.alias = abstractPrimitive.alias;
-	}
-
 	return primitive;
 };

@@ -45,10 +45,12 @@ test('Convert a query with a foreign/right string filter', () => {
 			{
 				type: 'primitive',
 				field: firstField,
+				alias: randomIdentifier(),
 			},
 			{
 				type: 'primitive',
 				field: secondField,
+				alias: randomIdentifier(),
 			},
 		],
 		modifiers: {
@@ -240,6 +242,7 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 			{
 				type: 'primitive',
 				field: firstField,
+				alias: randomIdentifier(),
 			},
 			{
 				type: 'nested-one',
@@ -247,8 +250,10 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 					{
 						type: 'primitive',
 						field: secondField,
+						alias: randomIdentifier(),
 					},
 				],
+				alias: randomIdentifier(),
 				meta: {
 					type: 'm2o',
 					join: {

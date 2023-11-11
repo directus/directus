@@ -27,10 +27,12 @@ test('primitives only', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveField1,
 		},
 		{
 			type: 'primitive',
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveField2,
 		},
 	];
 
@@ -72,6 +74,7 @@ test('primitive and function', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveField1,
 		},
 		{
 			type: 'fn',
@@ -80,6 +83,7 @@ test('primitive and function', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveField2,
 		},
 	];
 
@@ -132,6 +136,7 @@ test('primitive, fn, m2o', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveField1,
 		},
 		{
 			type: 'nested-one',
@@ -139,6 +144,7 @@ test('primitive, fn, m2o', () => {
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeField,
 				},
 			],
 			meta: {
@@ -154,6 +160,7 @@ test('primitive, fn, m2o', () => {
 					},
 				},
 			},
+			alias: randomExternalCollection,
 		},
 		{
 			type: 'fn',
@@ -162,6 +169,7 @@ test('primitive, fn, m2o', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveFieldFn,
+			alias: randomPrimitiveFieldFn,
 		},
 	];
 
@@ -245,6 +253,7 @@ test('primitive, o2m', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveField1,
 		},
 		{
 			type: 'nested-many',
@@ -252,8 +261,10 @@ test('primitive, o2m', () => {
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeField,
 				},
 			],
+			alias: randomExternalCollection,
 			meta: {
 				type: 'o2m',
 				join: {
@@ -267,7 +278,7 @@ test('primitive, o2m', () => {
 					},
 				},
 			},
-			modifiers: {}
+			modifiers: {},
 		},
 	];
 

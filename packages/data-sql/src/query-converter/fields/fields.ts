@@ -65,7 +65,7 @@ export const convertFieldNodes = (
 
 			if (abstractField.meta.type === 'm2o') {
 				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
-				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias, abstractField.alias);
+				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias);
 
 				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
 					...currentPath,
