@@ -95,7 +95,7 @@ container found in the `tests/blackbox/docker-compose.yml` file.
 
 ### Server Logs
 
-For debugging purposes, server logs can be enabled by specificing a log level using the `TEST_SAVE_LOGS` flag, for
+For debugging purposes, server logs can be enabled by specifying a log level using the `TEST_SAVE_LOGS` flag, for
 example:
 
 ```bash
