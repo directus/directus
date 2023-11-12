@@ -1156,7 +1156,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const count = 50;
 					const artistName = 'aggregate-sort-group';
 					const artists = [];
-					const companies = ['a', 'b', 'c'];
+					const companies = ['a', 'b', 'c'] as const;
 
 					// company a = count = 11
 					// company b = count = 15
