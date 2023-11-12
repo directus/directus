@@ -17,7 +17,7 @@ describe('Seed Database Structure', async () => {
 		});
 	} else if (sequentialTestsList.only.length > 0) {
 		const requiredPaths = sequentialTestsList.only.map((testEntry) => {
-			return testEntry.testFilePath.slice(1).replace('.test.ts', '.seed.ts');
+			return testEntry.slice(1).replace('.test.ts', '.seed.ts');
 		});
 
 		seeds = seeds.filter((path) => {
