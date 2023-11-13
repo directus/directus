@@ -23,6 +23,6 @@ module.exports = [
 		wait_ready: true,
 		max_restarts: parseInt(process.env.PM2_MAX_RESTARTS) || undefined,
 		restart_delay: parseInt(process.env.PM2_RESTART_DELAY) || 0,
-		autorestart: ['1', 'true'].includes(process.env.PM2_AUTO_RESTART?.toLowerCase()),
+		autorestart: ['1', 'true'].includes(String(process.env.PM2_AUTO_RESTART).toLowerCase()),
 	},
 ];
