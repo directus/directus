@@ -4,7 +4,7 @@ import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { uptime } from 'node:os';
-import { dirname, join, normalize, resolve } from 'node:path';
+import { dirname, join, normalize, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
 import { getEnv } from '../../env.js';
@@ -75,7 +75,7 @@ export const syncExtensions = async () => {
 		// extensions path on disk from the start of the file path
 		const destPath = join(
 			extensionsPath,
-			filepath.substring(resolve('/', normalize(env['EXTENSIONS_PATH'])).length - 1)
+			filepath.substring(resolve(sep, normalize(env['EXTENSIONS_PATH'])).length - 1)
 		);
 
 		// Ensure that the directory path exists
