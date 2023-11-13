@@ -12,17 +12,17 @@ module.exports = [
 		args: ['start'],
 
 		// General
-		instances: parseInt(process.env.PM2_INSTANCES) || 1,
+		instances: process.env.PM2_INSTANCES ?? 1,
 		exec_mode: process.env.PM2_EXEC_MODE ?? 'cluster',
 		max_memory_restart: process.env.PM2_MAX_MEMORY_RESTART,
 
 		// Control flow
-		min_uptime: parseInt(process.env.PM2_MIN_UPTIME) || undefined,
-		listen_timeout: parseInt(process.env.PM2_LISTEN_TIMEOUT) || undefined,
-		kill_timeout: parseInt(process.env.PM2_KILL_TIMEOUT) || undefined,
+		min_uptime: process.env.PM2_MIN_UPTIME,
+		listen_timeout: process.env.PM2_LISTEN_TIMEOUT,
+		kill_timeout: process.env.PM2_KILL_TIMEOUT,
 		wait_ready: true,
-		max_restarts: parseInt(process.env.PM2_MAX_RESTARTS) || undefined,
-		restart_delay: parseInt(process.env.PM2_RESTART_DELAY) || 0,
+		max_restarts: process.env.PM2_MAX_RESTARTS,
+		restart_delay: process.env.PM2_RESTART_DELAY ?? 0,
 		autorestart: process.env.PM2_AUTO_RESTART === 'true',
 	},
 ];
