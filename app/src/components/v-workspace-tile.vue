@@ -339,9 +339,11 @@ function useDragDrop() {
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
 	background-color: var(--theme--background-page);
-	box-shadow: 0 0 0 var(--theme--border-width) var(--theme--border-color-subdued);
+	border: calc(var(--theme--border-width) / 2) solid var(--theme--border-color-subdued);
+	box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--border-color-subdued);
 	z-index: 1;
-	transition: border var(--fast) var(--transition);
+	transition: var(--fast) var(--transition);
+	transition-property: border, box-shadow;
 
 	&:hover {
 		z-index: 3;
@@ -350,19 +352,19 @@ function useDragDrop() {
 	&.editing {
 		&.draggable {
 			border-color: var(--theme--form--field--input--border-color);
-			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--form--field--input--border-color);
 			cursor: move;
 		}
 
 		&.draggable:hover {
 			border-color: var(--theme--form--field--input--border-color-hover);
-			box-shadow: 0 0 0 1px var(--theme--form--field--input--border-color-hover);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--form--field--input--border-color-hover);
 		}
 
 		&.dragging {
 			z-index: 3 !important;
 			border-color: var(--theme--form--field--input--border-color-focus);
-			box-shadow: 0 0 0 1px var(--theme--primary);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
 		}
 
 		&.dragging .resize-details {
