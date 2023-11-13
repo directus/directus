@@ -94,17 +94,16 @@ export class FilesService extends ItemsService {
 
 		// Used to clean up if something goes wrong
 		const cleanUp = async () => {
-			// If this is a new file upload that failed, we need to delete the DB record
-			if (isReplacement === false) {
-				await this.deleteOne(primaryKey!);
-			}
 
 			try {
-				if(isReplacement === true ){
+				if (isReplacement === true ){
 					// If this is a replacement that failed, we need to delete the temp file
 					await disk.delete(tempFilenameDisk);
 				} else {
-					// If this is a new file upload that failed, we need to delete the final file
+					// If this is a new file that failed
+					// delete the DB record
+					await this.deleteOne(primaryKey!);
+					// delete the final file
 					await disk.delete(payload.filename_disk!);
 				}
 
@@ -135,7 +134,7 @@ export class FilesService extends ItemsService {
 
 			await cleanUp();
 
-			if(err instanceof ContentTooLargeError) {
+			if (err instanceof ContentTooLargeError) {
 				throw err;
 			} else {
 				throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
