@@ -48,8 +48,8 @@ const iconName = computed(() => {
 	Available Variables:
 
 		--v-notice-color             [var(--theme--foreground-subdued)]
-		--v-notice-background-color  [var(--background-subdued)]
-		--v-notice-border-color      [var(--background-subdued)]
+		--v-notice-background-color  [var(--theme--form--field--input--background-subdued)]
+		--v-notice-border-color      [var(--theme--form--field--input--background-subdued)]
 		--v-notice-icon-color        [var(--theme--foreground-subdued)]
 
 */
@@ -64,7 +64,7 @@ const iconName = computed(() => {
 	padding: 12px 16px;
 	color: var(--v-notice-color, var(--theme--foreground-subdued));
 	line-height: 22px;
-	background-color: var(--v-notice-background-color, var(--background-subdued));
+	background-color: var(--v-notice-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;
 }
@@ -77,7 +77,7 @@ const iconName = computed(() => {
 	left: 0;
 	width: 4px;
 	height: 100%;
-	background-color: var(--v-notice-border-color, var(--background-subdued));
+	background-color: var(--v-notice-border-color, var(--theme--form--field--input--background-subdued));
 }
 
 .v-icon {

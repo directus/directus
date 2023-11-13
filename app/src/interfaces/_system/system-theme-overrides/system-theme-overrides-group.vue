@@ -107,7 +107,7 @@ const hasValue = computed(() => {
 	}
 
 	&:hover {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}
 

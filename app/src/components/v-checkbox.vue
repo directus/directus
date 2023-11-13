@@ -181,7 +181,7 @@ function toggleInput(): void {
 		transition: all var(--fast) var(--transition);
 
 		&:disabled {
-			background-color: var(--background-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 		}
 
 		&::before {
@@ -206,7 +206,7 @@ function toggleInput(): void {
 		}
 
 		&.block {
-			background-color: var(--background-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 			border-color: var(--theme--form--field--input--border-color-hover);
 		}
 	}

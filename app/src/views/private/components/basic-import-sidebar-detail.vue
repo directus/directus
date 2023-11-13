@@ -176,7 +176,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .export-fields {
-	--folder-picker-background-color: var(--background-subdued);
+	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background);
 
 	margin-top: 24px;

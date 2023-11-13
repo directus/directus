@@ -210,8 +210,8 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	}
 
 	&.has-value {
-		background-color: var(--background-subdued);
-		border: 2px solid var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border: 2px solid var(--theme--form--field--input--background-subdued);
 	}
 
 	&.active {
@@ -235,7 +235,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	}
 
 	&.disabled {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
 		cursor: not-allowed;
 

@@ -421,7 +421,7 @@ function useDisplayValue() {
 	padding: 4px 8px;
 	padding-right: 26px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: color var(--fast) var(--transition);
 

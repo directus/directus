@@ -146,6 +146,8 @@ const Rules = Type.Object({
 			}),
 			input: Type.Object({
 				background: Type.Ref(Color),
+				backgroundSubdued: Type.Ref(Color),
+
 				foreground: Type.Ref(Color),
 				foregroundSubdued: Type.Ref(Color),
 

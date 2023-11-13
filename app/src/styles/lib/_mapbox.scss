@@ -30,7 +30,7 @@
 		}
 
 		&.active {
-			color: var(--background-subdued) !important;
+			color: var(--theme--background-subdued) !important;
 			background: var(--theme--foreground) !important;
 		}
 
@@ -147,7 +147,7 @@
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -162,7 +162,7 @@
 }
 
 .mapboxgl-ctrl-geocoder--button {
-	background: var(--background-subdued);
+	background: var(--theme--background-subdued);
 }
 
 .mapboxgl-ctrl-geocoder--icon {

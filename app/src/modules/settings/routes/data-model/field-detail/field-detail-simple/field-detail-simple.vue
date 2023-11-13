@@ -274,7 +274,7 @@ function toggleInterface(id: string) {
 	--primary: var(--theme--foreground-subdued);
 	--primary-50: var(--theme--foreground-subdued);
 
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .interface.gray .preview .fallback {

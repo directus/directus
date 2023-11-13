@@ -417,7 +417,7 @@ under the closing `script` tag:
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
+			background-color: var(--theme--background-subdued);
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}
@@ -744,7 +744,7 @@ export default {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
+			background-color: var(--theme--background-subdued);
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}

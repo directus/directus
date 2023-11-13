@@ -188,7 +188,7 @@ function emitValue() {
 			--v-chip-color-hover: var(--foreground-inverted);
 
 			&.inactive {
-				--v-chip-background-color: var(--background-subdued);
+				--v-chip-background-color: var(--theme--form--field--input--background-subdued);
 				--v-chip-color: var(--theme--form--field--input--foreground-subdued);
 				--v-chip-background-color-hover: var(--theme--primary);
 				--v-chip-color-hover: var(--foreground-inverted);

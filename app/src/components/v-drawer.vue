@@ -239,7 +239,7 @@ const internalActive = computed({
 	margin: var(--content-padding);
 
 	nav {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}
 

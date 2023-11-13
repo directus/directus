@@ -230,7 +230,7 @@ const steps = computed(() => {
 }
 
 .json {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	font-family: var(--theme--font-family-monospace);
 	border-radius: var(--theme--border-radius);
 	padding: 20px;

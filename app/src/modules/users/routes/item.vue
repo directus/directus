@@ -510,9 +510,9 @@ function revert(values: Record<string, any>) {
 
 		.v-chip {
 			--v-chip-color: var(--theme--foreground-subdued);
-			--v-chip-background-color: var(--background-subdued);
+			--v-chip-background-color: var(--theme--background-subdued);
 			--v-chip-color-hover: var(--theme--foreground-subdued);
-			--v-chip-background-color-hover: var(--background-subdued);
+			--v-chip-background-color-hover: var(--theme--background-subdued);
 
 			margin-top: 4px;
 

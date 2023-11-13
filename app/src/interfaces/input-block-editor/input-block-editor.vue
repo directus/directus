@@ -194,7 +194,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .disabled {
 	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
 }

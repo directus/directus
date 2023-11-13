@@ -218,7 +218,7 @@ function useReset() {
 	width: 100%;
 	height: 48px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 
 	.v-icon {
 		vertical-align: -7px;

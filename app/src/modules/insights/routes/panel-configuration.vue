@@ -343,7 +343,7 @@ const stageChanges = () => {
 .interface.gray .preview {
 	filter: grayscale(1);
 
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .interface.gray .preview .fallback {
@@ -369,7 +369,7 @@ const stageChanges = () => {
 	}
 
 	grid-column: 1 / span var(--columns);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }

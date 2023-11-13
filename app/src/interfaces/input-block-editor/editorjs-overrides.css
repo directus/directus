@@ -43,7 +43,7 @@
 .codex-editor .cdx-search-field {
 	border-radius: var(--theme--border-radius) !important;
 	border: none;
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 }
 
 .codex-editor .ce-popover {
@@ -166,7 +166,7 @@
 .codex-editor .ce-conversion-toolbar,
 .codex-editor .ce-inline-toolbar,
 .codex-editor .ce-settings {
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
 	border-radius: var(--theme--border-radius);
@@ -384,7 +384,7 @@
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 

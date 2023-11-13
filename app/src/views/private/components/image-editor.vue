@@ -485,7 +485,7 @@ function setAspectRatio() {
 	width: 100%;
 	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 
 	.editor {
 		flex-grow: 1;

@@ -417,7 +417,7 @@ table :deep(.loading-indicator > th) {
 }
 
 table :deep(.sortable-ghost .cell) {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .loading table {
@@ -473,6 +473,6 @@ table :deep(.sortable-ghost .cell) {
 
 .disabled {
 	--v-table-color: var(--theme--foreground-subdued);
-	--v-table-background-color: var(--background-subdued);
+	--v-table-background-color: var(--theme--background-subdued);
 }
 </style>

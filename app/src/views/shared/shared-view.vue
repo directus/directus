@@ -70,7 +70,7 @@ const logoURL = computed<string | null>(() => {
 	height: 100%;
 	padding-bottom: 64px;
 	overflow: auto;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .inline-container {

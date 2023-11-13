@@ -104,7 +104,7 @@ const cssHeight = computed(() => {
 	}
 
 	&.clickable:not(.subdued):hover .cell {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--background-subdued);
 		cursor: pointer;
 	}
 

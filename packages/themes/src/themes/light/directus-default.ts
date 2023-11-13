@@ -129,6 +129,8 @@ export const theme: Theme = {
 				},
 				input: {
 					background: 'var(--theme--background-page)',
+					backgroundSubdued: 'var(--theme--background-subdued)',
+
 					foreground: 'var(--theme--foreground)',
 					foregroundSubdued: 'var(--theme--foreground-subdued)',
 

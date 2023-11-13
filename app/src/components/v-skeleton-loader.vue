@@ -23,7 +23,7 @@ withDefaults(defineProps<Props>(), {
 
 	Available Variables:
 
-		--v-skeleton-loader-background-color  [var(--background-subdued)]
+		--v-skeleton-loader-background-color  [var(--theme--form--field--input--background-subdued)]
 
 */
 
@@ -36,7 +36,7 @@ withDefaults(defineProps<Props>(), {
 @mixin loader {
 	position: relative;
 	overflow: hidden;
-	background-color: var(--v-skeleton-loader-background-color, var(--background-subdued));
+	background-color: var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 
 	&::after {
 		position: absolute;
@@ -63,7 +63,7 @@ withDefaults(defineProps<Props>(), {
 .input-tall {
 	width: 100%;
 	height: var(--input-height);
-	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color, var(--background-subdued));
+	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	@include loader;

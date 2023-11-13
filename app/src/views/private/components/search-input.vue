@@ -293,7 +293,7 @@ function emitValue() {
 	width: auto;
 	min-width: 100%;
 	padding: 0;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;

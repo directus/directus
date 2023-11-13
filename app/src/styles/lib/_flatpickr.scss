@@ -276,7 +276,7 @@ span.flatpickr-weekday {
 
 .flatpickr-time input {
 	color: var(--v-input-color);
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 	transition: var(--fast) var(--transition);
 	transition-property: color, background;
 }

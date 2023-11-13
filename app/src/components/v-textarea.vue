@@ -166,7 +166,7 @@ function trimIfEnabled() {
 
 	&.disabled textarea {
 		color: var(--theme--foreground-subdued);
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 	}
 }
 </style>
