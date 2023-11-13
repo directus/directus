@@ -255,9 +255,10 @@ function onClick(event: PointerEvent) {
 	}
 
 	&.block {
-		--v-list-item-border-color: var(--theme--border-color-subdued);
-		--v-list-item-background-color: var(--theme--background-page);
-		--v-list-item-background-color-hover: var(--card-face-color);
+		--v-list-item-border-color: var(--theme--form--field--input--border-color);
+		--v-list-item-border-color-hover: var(--theme--form--field--input--border-color-hover);
+		--v-list-item-background-color: var(--theme--form--field--input--background);
+		--v-list-item-background-color-hover: var(--theme--form--field--input--background);
 		--v-icon-color: var(--theme--foreground-subdued);
 
 		position: relative;

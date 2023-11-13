@@ -175,7 +175,7 @@ function toggleInput(): void {
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		background-color: var(--theme--background-page);
+		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
@@ -206,7 +206,6 @@ function toggleInput(): void {
 		}
 
 		&.block {
-			background-color: var(--theme--form--field--input--background-subdued);
 			border-color: var(--theme--form--field--input--border-color-hover);
 		}
 	}
