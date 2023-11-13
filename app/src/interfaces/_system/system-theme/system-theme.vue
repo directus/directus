@@ -43,7 +43,7 @@ const valueWithDefault = computed(() => props.value ?? themeStore.themes[props.a
 .interface-system-theme {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, 240px);
-	gap: 20px;
+	gap: 36px;
 }
 
 .theme {
