@@ -52,6 +52,13 @@ or: Sau
 init: Inițializare
 dataset_too_large_currently_showing_n_items: Baza de date este prea mare. În prezent se afișează primele {n} elemente.
 modifier: Modificator
+extension_interface: Interfață
+extension_display: Afişare
+extension_layout: Aspect
+extension_panel: Panou
+extension_hook: Cârlig
+extension_modules: Module
+enable: Activare
 custom: Personalizat
 hook: Cârlig
 fill_width: Umple lățimea
@@ -95,6 +102,7 @@ rename_folder: Redenumește dosarul
 delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
+promote_version_preview: Previzualizare
 reset_bookmark: Resetează semnul de carte
 update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
@@ -418,7 +426,6 @@ dimensions: Dimensiuni
 size: Mărime
 created: Creat
 modified: Modificat
-checksum: Sumă de control
 owner: Proprietar
 edited_by: Editat de
 folder: Dosar
@@ -560,7 +567,6 @@ errors:
   RECORD_NOT_UNIQUE: Valoare duplicat detectată
   USER_SUSPENDED: Utilizator suspendat
   CONTAINS_NULL_VALUES: Câmpul conține valori null
-  UNPROCESSABLE_ENTITY: Entitate neprocesabilă
   INTERNAL_SERVER_ERROR: Eroare neașteptată
   NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
   ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
@@ -833,10 +839,10 @@ editing_unit: 'Editare {unit}'
 editing_in_batch: 'Editare lot de {count} elemente'
 no_options_available: Nicio opțiune disponibilă
 settings_data_model: Model de date
-settings_permissions: Roluri şi permisiuni
-settings_project: Setările proiectului
+settings_project: Setări
 settings_webhooks: Webhook-uri
-settings_presets: Presetări și semne de carte
+settings_presets: Semne de carte
+settings_translations: Traduceri
 one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
 scope: Scope
 actions: Acțiuni
@@ -871,7 +877,6 @@ page_help_files_collection: >-
   **Bibliotecă de fișiere** - Listează toate activele fișierelor încărcate în acest proiect. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
 page_help_files_item: >-
   **Detaliile fișierului** - Un formular pentru gestionarea metadatelor fișierelor, editarea activului original și actualizarea setărilor de acces.
-page_help_settings_project: "**Setări proiect** — Opțiuni de configurare globală a proiectului tău."
 page_help_settings_datamodel_collections: >-
   **Modelul de date: Colecții** — Listează toate colecțiile disponibile. Aceasta include colecții vizibile, ascunse și de sistem, precum și tabele de baze de date negestionate care pot fi adăugate.
 page_help_settings_datamodel_fields: >-
@@ -988,10 +993,6 @@ fields:
     tags: Etichete
     user_preferences: Preferințe utilizator
     language: Limba
-    theme: Temă
-    theme_auto: Automat (bazat pe sistem)
-    theme_light: Mod luminos
-    theme_dark: Mod întunecat
     tfa_secret: Autentificare în doi pași
     admin_options: Opţiuni Admin
     status: Stare
@@ -1029,7 +1030,6 @@ fields:
     project_color: Culoare proiect
     project_logo: Logo proiect
     default_language: Limba implicită
-    branding: Branding și stil
     public_foreground: Prim-plan public
     public_background: Fundal public
     public_note: Notă publică
@@ -1087,7 +1087,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Proiectul meu...
     project_color_note: Logo și fundal logo
-    project_logo_note: 'Alb: 40x40 SVG/PNG'
     public_note_placeholder: Un mesaj public scurt care acceptă formatarea markdown...
     security_divider_title: Securitate
     auth_password_policy:
@@ -1490,7 +1489,6 @@ interfaces:
     description: Selectați mai multe elemente asociate
     no_collection: Colecția nu a putut fi găsită
   system-folder:
-    folder: Dosar
     description: Selectați un dosar
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
@@ -1809,3 +1807,12 @@ operations:
     flows: Fluxuri
     flow: Flux
     data: Date
+standard: Standard
+compact: Compact
+style: Stil
+fonts:
+  normal: Normal
+  bold: Bold
+  black: Negru
+  italic: Cursiv
+  auto: Automat

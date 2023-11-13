@@ -96,7 +96,7 @@ const removeField = (field: string) => {
 			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
 		</v-list>
 		<v-list v-else>
-			<draggable v-model="fields" :force-fallback="true" item-key="key" handle=".drag-handle">
+			<draggable v-model="fields" force-fallback item-key="key" handle=".drag-handle">
 				<template #item="{ element: field }">
 					<v-list-item block>
 						<v-icon name="drag_handle" class="drag-handle" left />
@@ -127,7 +127,7 @@ const removeField = (field: string) => {
 
 <style lang="scss" scoped>
 .toggle {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	margin-left: 10px;
 	margin-top: 6px;
@@ -138,8 +138,8 @@ const removeField = (field: string) => {
 }
 
 .v-notice.no-fields {
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--v-list-item-border-color);
+	background-color: var(--theme--background-page);
+	border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--border-color-subdued));
 
 	&::after {
 		display: none;

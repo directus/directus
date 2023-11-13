@@ -37,6 +37,7 @@ import sharesRouter from './controllers/shares.js';
 import translationsRouter from './controllers/translations.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
+import versionsRouter from './controllers/versions.js';
 import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
@@ -46,8 +47,8 @@ import {
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { InvalidPayloadError, ServiceUnavailableError } from './errors/index.js';
-import { getExtensionManager } from './extensions.js';
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
 import authenticate from './middleware/authenticate.js';
@@ -291,6 +292,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
+	app.use('/versions', versionsRouter);
 	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints

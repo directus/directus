@@ -186,20 +186,23 @@ async function onGroupSortChange(fields: Field[]) {
 				v-if="localType === 'group'"
 				class="field-grid group full nested"
 				:model-value="nestedFields"
-				:force-fallback="true"
+				force-fallback
 				handle=".drag-handle"
 				:group="{ name: 'fields' }"
 				:set-data="hideDragImage"
 				:animation="150"
 				item-key="field"
-				:fallback-on-body="true"
-				:invert-swap="true"
+				fallback-on-body
+				invert-swap
 				@update:model-value="onGroupSortChange"
 			>
 				<template #header>
 					<div class="header full">
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
-						<span class="name">{{ field.field }}</span>
+						<span class="name">
+							{{ field.field }}
+							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
+						</span>
 						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"
@@ -327,33 +330,29 @@ async function onGroupSortChange(fields: Field[]) {
 	grid-column: 1 / span 2;
 }
 
-.v-input.hidden {
-	--background-page: var(--background-subdued);
-}
-
 .v-input.monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
 }
 
 .v-select.monospace {
-	--v-select-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
 }
 
 .v-icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--foreground);
 
 	&.hidden-icon {
-		--v-icon-color-hover: var(--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground-subdued);
 	}
 
 	&.unmanaged {
-		--v-icon-color: var(--warning);
-		--v-icon-color-hover: var(--warning);
+		--v-icon-color: var(--theme--warning);
+		--v-icon-color-hover: var(--theme--warning);
 	}
 
 	&.link-icon:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground);
 	}
 }
 
@@ -377,7 +376,7 @@ async function onGroupSortChange(fields: Field[]) {
 	padding: var(--input-padding);
 	padding-top: 40px;
 	padding-bottom: 16px;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	> * {
 		position: relative;
@@ -391,7 +390,7 @@ async function onGroupSortChange(fields: Field[]) {
 		z-index: 1;
 		width: 4px;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		border-radius: 2px;
 		content: '';
 	}
@@ -403,7 +402,7 @@ async function onGroupSortChange(fields: Field[]) {
 		z-index: 1;
 		width: 100%;
 		height: 100%;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		opacity: 0.1;
 		content: '';
 	}
@@ -417,11 +416,11 @@ async function onGroupSortChange(fields: Field[]) {
 		width: 100%;
 		margin-bottom: 8px;
 		padding-top: 8px;
-		color: var(--primary);
-		font-family: var(--family-monospace);
+		color: var(--theme--primary);
+		font-family: var(--theme--font-family-monospace);
 
 		.drag-handle {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 
 			margin-right: 8px;
 		}
@@ -444,19 +443,19 @@ async function onGroupSortChange(fields: Field[]) {
 
 	&.nested {
 		.field :deep(.input) {
-			border: var(--border-width) solid var(--primary-25);
+			border: var(--theme--border-width) solid var(--theme--primary-subdued);
 		}
 	}
 }
 
 .field {
 	&.v-input :deep(.input) {
-		border: var(--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	&.v-input :deep(.input:hover) {
 		background-color: var(--card-face-color);
-		border: var(--border-width) solid var(--border-normal-alt);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color-hover);
 	}
 
 	.label {
@@ -474,13 +473,13 @@ async function onGroupSortChange(fields: Field[]) {
 
 			.name {
 				margin-right: 8px;
-				font-family: var(--family-monospace);
+				font-family: var(--theme--font-family-monospace);
 			}
 
 			.interface {
 				display: none;
-				color: var(--foreground-subdued);
-				font-family: var(--family-monospace);
+				color: var(--theme--foreground-subdued);
+				font-family: var(--theme--font-family-monospace);
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);
 
@@ -517,12 +516,12 @@ async function onGroupSortChange(fields: Field[]) {
 .required {
 	position: relative;
 	left: -8px;
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .sortable-ghost {
-	border-radius: var(--border-radius);
-	outline: 2px dashed var(--primary);
+	border-radius: var(--theme--border-radius);
+	outline: 2px dashed var(--theme--primary);
 
 	> * {
 		opacity: 0;

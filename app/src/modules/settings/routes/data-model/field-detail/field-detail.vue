@@ -132,11 +132,11 @@ async function save() {
 
 <style lang="scss" scoped>
 :deep(.required-mark) {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-input.search {
-	--border-radius: calc(44px / 2);
+	--v-input-border-radius: calc(44px / 2);
 	width: 200px;
 	margin-left: auto;
 

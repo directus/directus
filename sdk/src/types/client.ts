@@ -1,3 +1,5 @@
+import type { FetchInterface, UrlInterface, WebSocketConstructor } from './globals.js';
+
 /**
  * empty directus client
  */
@@ -10,15 +12,15 @@ export interface DirectusClient<Schema extends object> {
 /**
  * All used globals for the client
  */
-export interface ClientGlobals {
-	fetch: typeof globalThis.fetch;
-	WebSocket: typeof globalThis.WebSocket;
-	URL: typeof globalThis.URL;
-}
+export type ClientGlobals = {
+	fetch: FetchInterface;
+	WebSocket: WebSocketConstructor;
+	URL: UrlInterface;
+};
 
 /**
  * Available options on the client
  */
-export interface ClientOptions {
+export type ClientOptions = {
 	globals?: Partial<ClientGlobals>;
-}
+};

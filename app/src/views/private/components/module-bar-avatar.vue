@@ -97,9 +97,9 @@ const userFullName = userStore.fullName ?? undefined;
 	position: relative;
 
 	.v-avatar {
-		--v-button-color: var(--module-icon);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
 		--v-button-color-hover: var(--white);
-		--v-avatar-color: var(--module-background);
+		--v-avatar-color: var(--theme--navigation--modules--background);
 
 		position: relative;
 		z-index: 3;
@@ -116,15 +116,15 @@ const userFullName = userStore.fullName ?? undefined;
 				top: -1px;
 				right: 8px;
 				left: 8px;
-				height: 2px;
-				background-color: var(--module-icon);
+				height: var(--theme--border-width);
+				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
 				content: '';
 			}
 		}
 
 		.v-icon {
-			--v-icon-color: var(--module-icon);
+			--v-icon-color: var(--theme--navigation--modules--button--foreground);
 		}
 
 		&:hover {
@@ -144,16 +144,16 @@ const userFullName = userStore.fullName ?? undefined;
 	}
 
 	.notifications {
-		--v-button-color: var(--module-icon);
-		--v-button-color-hover: var(--white);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
+		--v-button-background-color: var(--theme--navigation--modules--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 	}
 
 	.sign-out {
-		--v-button-color: var(--module-icon);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-background-color: var(--theme--navigation--modules--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 
 		position: absolute;
 		top: 0;
@@ -163,7 +163,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 		&:hover {
 			.v-icon {
-				--v-icon-color: var(--primary);
+				--v-icon-color: var(--theme--primary);
 			}
 		}
 	}

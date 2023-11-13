@@ -228,10 +228,6 @@ async function send() {
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.sidebar-detail {
-	--v-badge-background-color: var(--primary);
-}
-
 .v-progress-linear {
 	margin: 24px 0;
 }
@@ -244,15 +240,15 @@ async function send() {
 	margin-bottom: 8px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
+	background-color: var(--theme--background);
+	box-shadow: 0 0 4px 2px var(--theme--background);
 }
 
 .empty {
 	margin-top: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 

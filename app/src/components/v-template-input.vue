@@ -309,18 +309,18 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	padding: var(--input-padding);
 	padding-bottom: 32px;
 	overflow: hidden;
-	color: var(--foreground-normal);
-	font-family: var(--family-sans-serif);
+	color: var(--theme--foreground);
+	font-family: var(--theme--font-family-sans-serif);
 	white-space: nowrap;
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-page);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	&:empty::before {
 		pointer-events: none;
 		content: attr(placeholder);
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	&.multiline {
@@ -330,23 +330,23 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0px;
 		padding: 2px 4px;
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
 		vertical-align: -2px;
-		background: var(--primary-alt);
-		border-radius: var(--border-radius);
+		background: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
 		user-select: text;
 
 		&::before {

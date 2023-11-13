@@ -86,15 +86,15 @@ function isLoading(action: string) {
 	align-items: center;
 	height: 48px;
 	padding: 0 12px;
-	background-color: var(--background-input);
+	background-color: var(--theme--form--field--input--background);
 
 	.name {
 		flex-grow: 1;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 
 		.actions {
 			margin-left: 8px;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			font-size: 12px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -104,11 +104,11 @@ function isLoading(action: string) {
 
 				&:hover {
 					&.all {
-						color: var(--success);
+						color: var(--theme--success);
 					}
 
 					&.none {
-						color: var(--danger);
+						color: var(--theme--danger);
 					}
 				}
 			}
@@ -129,7 +129,7 @@ function isLoading(action: string) {
 	}
 
 	& + .permissions-overview-row {
-		border-top: var(--border-width) solid var(--border-subdued);
+		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

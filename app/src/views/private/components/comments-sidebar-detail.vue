@@ -184,10 +184,6 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 </template>
 
 <style lang="scss" scoped>
-.sidebar-detail {
-	--v-badge-background-color: var(--primary);
-}
-
 .v-progress-linear {
 	margin: 24px 0;
 }
@@ -200,16 +196,16 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 	margin-bottom: 2px;
 	padding-top: 4px;
 	padding-bottom: 4px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 4px 2px var(--background-normal);
-	--v-divider-label-color: var(--foreground-subdued);
+	background-color: var(--theme--background);
+	box-shadow: 0 0 4px 2px var(--theme--background);
+	--v-divider-label-color: var(--theme--foreground-subdued);
 }
 
 .empty {
 	margin-top: 16px;
 	margin-bottom: 8px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 </style>

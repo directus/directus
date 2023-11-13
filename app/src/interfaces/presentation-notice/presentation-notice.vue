@@ -26,10 +26,10 @@ withDefaults(
 
 <style lang="scss" scoped>
 :deep(a) {
-	color: var(--primary);
+	color: var(--theme--primary);
 
 	&:hover {
-		color: var(--primary-125);
+		color: var(--theme--primary-accent);
 	}
 }
 </style>

@@ -528,18 +528,18 @@ function setAspectRatio() {
 
 .dimensions {
 	margin-right: 12px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .toolbar-button {
 	padding: 8px;
 	background-color: rgb(255 255 255 / 0.2);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: background-color var(--fast) var(--transition);
 

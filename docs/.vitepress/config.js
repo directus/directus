@@ -405,6 +405,10 @@ function sidebar() {
 					text: 'Collections',
 				},
 				{
+					link: '/reference/system/versions',
+					text: 'Content Versions',
+				},
+				{
 					link: '/reference/system/dashboards',
 					text: 'Dashboards',
 				},
@@ -587,6 +591,24 @@ function sidebar() {
 						{
 							link: '/extensions/bundles',
 							text: 'Bundles',
+						},
+					],
+				},
+				{
+					text: 'Secure Extensions',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/sandbox/introduction',
+							text: 'Introduction',
+						},
+						{
+							link: '/extensions/sandbox/register',
+							text: 'Registering Extensions',
+						},
+						{
+							link: '/extensions/sandbox/sandbox-sdk',
+							text: 'Sandbox SDK',
 						},
 					],
 				},
@@ -823,12 +845,12 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
-					text: 'Theming',
-					link: '/user-guide/settings/theming',
-				},
-				{
 					text: 'Project Settings',
 					link: '/user-guide/settings/project-settings',
+				},
+				{
+					text: 'Custom Theming',
+					link: '/user-guide/settings/theming',
 				},
 				{
 					text: 'Preset and Bookmarks',

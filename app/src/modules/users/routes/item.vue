@@ -437,12 +437,12 @@ function revert(values: Record<string, any>) {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--theme--background);
 }
 
 .user-item {
@@ -451,7 +451,7 @@ function revert(values: Record<string, any>) {
 }
 
 .user-box {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;
@@ -459,11 +459,11 @@ function revert(values: Record<string, any>) {
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
 	padding: 20px;
-	background-color: var(--background-normal);
-	border-radius: calc(var(--border-radius) + 4px);
+	background-color: var(--theme--background);
+	border-radius: calc(var(--theme--border-radius) + 4px);
 
 	.avatar {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		display: flex;
 		flex-shrink: 0;
@@ -473,7 +473,7 @@ function revert(values: Record<string, any>) {
 		height: 84px;
 		margin-right: 16px;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--background);
 		border: solid 6px var(--white);
 		border-radius: 100%;
 		box-shadow: var(--card-shadow);
@@ -509,25 +509,25 @@ function revert(values: Record<string, any>) {
 		}
 
 		.v-chip {
-			--v-chip-color: var(--foreground-subdued);
+			--v-chip-color: var(--theme--foreground-subdued);
 			--v-chip-background-color: var(--background-subdued);
-			--v-chip-color-hover: var(--foreground-subdued);
+			--v-chip-color-hover: var(--theme--foreground-subdued);
 			--v-chip-background-color-hover: var(--background-subdued);
 
 			margin-top: 4px;
 
 			&.active {
-				--v-chip-color: var(--primary);
-				--v-chip-background-color: var(--primary-25);
-				--v-chip-color-hover: var(--primary);
-				--v-chip-background-color-hover: var(--primary-25);
+				--v-chip-color: var(--theme--primary);
+				--v-chip-background-color: var(--theme--primary-subdued);
+				--v-chip-color-hover: var(--theme--primary);
+				--v-chip-background-color-hover: var(--theme--primary-subdued);
 			}
 		}
 
 		.title,
 		.email,
 		.location {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.name {

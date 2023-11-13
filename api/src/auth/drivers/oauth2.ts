@@ -17,7 +17,7 @@ import {
 	InvalidProviderConfigError,
 	InvalidTokenError,
 	ServiceUnavailableError,
-} from '../../errors/index.js';
+} from '@directus/errors';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -79,8 +79,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	generateAuthUrl(codeVerifier: string, prompt = false): string {
+		const { plainCodeChallenge } = this.config;
+
 		try {
-			const codeChallenge = generators.codeChallenge(codeVerifier);
+			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
 			return this.client.authorizationUrl({
@@ -89,7 +91,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				prompt: prompt ? 'consent' : undefined,
 				...paramsConfig,
 				code_challenge: codeChallenge,
-				code_challenge_method: 'S256',
+				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 			});
@@ -114,14 +116,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
+		const { plainCodeChallenge } = this.config;
+
 		let tokenSet;
 		let userInfo;
 
 		try {
+			const codeChallenge = plainCodeChallenge
+				? payload['codeVerifier']
+				: generators.codeChallenge(payload['codeVerifier']);
+
 			tokenSet = await this.client.oauthCallback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'] },
-				{ code_verifier: payload['codeVerifier'], state: generators.codeChallenge(payload['codeVerifier']) }
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge }
 			);
 
 			userInfo = await this.client.userinfo(tokenSet.access_token!);

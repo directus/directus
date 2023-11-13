@@ -1,6 +1,6 @@
 {
 	"name": "@directus/tsconfig",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "TSConfig files used in Directus projects",
 	"homepage": "https://directus.io",
 	"repository": {

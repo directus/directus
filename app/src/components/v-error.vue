@@ -62,10 +62,10 @@ async function copyError() {
 	max-height: 50vh;
 	padding: 6px 12px;
 	overflow: auto;
-	color: var(--danger);
-	font-family: var(--family-monospace);
+	color: var(--theme--danger);
+	font-family: var(--theme--font-family-monospace);
 	background-color: var(--danger-alt);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.copy-error {
 		margin-left: 12px;

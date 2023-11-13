@@ -80,28 +80,27 @@ function trimIfEnabled() {
 	</div>
 </template>
 
-<style>
-body {
-	--v-textarea-min-height: none;
-	--v-textarea-max-height: var(--input-height-tall);
-	--v-textarea-height: var(--input-height-tall);
-	--v-textarea-font-family: var(--family-sans-serif);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-textarea-font-family  [var(--theme--font-family-sans-serif)]
+
+*/
+
 .v-textarea {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	width: max-content;
-	height: var(--v-textarea-height);
-	min-height: var(--v-textarea-min-height);
-	max-height: var(--v-textarea-max-height);
-	background-color: var(--background-input);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
-	transition: border-color var(--fast) var(--transition);
+	height: var(--input-height-tall);
+	background-color: var(--theme--form--field--input--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: border-color, box-shadow;
+	box-shadow: var(--theme--form--field--input--box-shadow);
 
 	.append,
 	.prepend {
@@ -137,13 +136,14 @@ body {
 	}
 
 	&:hover:not(.disabled) {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
+		box-shadow: var(--theme--form--field--input--box-shadow-hover);
 	}
 
 	&:focus:not(.disabled),
 	&:focus-within:not(.disabled) {
-		border-color: var(--primary);
-		box-shadow: 0 0 16px -8px var(--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
 	}
 
 	textarea {
@@ -153,19 +153,19 @@ body {
 		width: 100%;
 		height: var(--input-height);
 		padding: var(--input-padding);
-		color: var(--foreground-normal);
-		font-family: var(--v-textarea-font-family);
+		color: var(--theme--foreground);
+		font-family: var(--v-textarea-font-family, var(--theme--font-family-sans-serif));
 		background-color: transparent;
 		border: 0;
 		resize: none;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 
 	&.disabled textarea {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		background-color: var(--background-subdued);
 	}
 }

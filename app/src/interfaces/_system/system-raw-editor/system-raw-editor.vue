@@ -145,7 +145,7 @@ watch(
 	position: relative;
 	height: var(--input-height);
 	min-height: var(--input-height);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	:deep(.CodeMirror) {
 		width: 100%;
@@ -153,11 +153,11 @@ watch(
 		padding: var(--input-padding);
 
 		.cm-tag {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 		}
 
 		.cm-variable-2 {
-			color: var(--secondary);
+			color: var(--theme--secondary);
 		}
 	}
 

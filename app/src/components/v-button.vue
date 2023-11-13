@@ -59,32 +59,18 @@ interface Props {
 	large?: boolean;
 	/** Renders a larger button */
 	xLarge?: boolean;
+	/** Tooltip text to show on hover */
+	tooltip?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	autofocus: false,
 	kind: 'normal',
-	fullWidth: false,
-	rounded: false,
-	outlined: false,
-	icon: false,
 	type: 'button',
-	disabled: false,
-	loading: false,
 	to: '',
-	href: undefined,
 	target: '_blank',
-	active: undefined,
-	exact: false,
-	query: false,
-	secondary: false,
-	warning: false,
-	danger: false,
-	value: undefined,
-	dashed: false,
-	tile: false,
 	align: 'center',
-	download: undefined,
+	/** Must be explicitly undefined */
+	active: undefined,
 });
 
 const emit = defineEmits(['click']);
@@ -155,6 +141,7 @@ async function onClick(event: MouseEvent) {
 		<component
 			:is="component"
 			v-focus="autofocus"
+			v-tooltip.bottom="tooltip"
 			:download="download"
 			class="button"
 			:class="[
@@ -190,22 +177,26 @@ async function onClick(event: MouseEvent) {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-button-width: auto;
-	--v-button-height: 44px;
-	--v-button-color: var(--foreground-inverted);
-	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-color-active: var(--foreground-inverted);
-	--v-button-color-disabled: var(--foreground-subdued);
-	--v-button-background-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-125);
-	--v-button-background-color-active: var(--primary);
-	--v-button-background-color-disabled: var(--background-normal);
-	--v-button-font-size: 16px;
-	--v-button-font-weight: 600;
-	--v-button-line-height: 22px;
-	--v-button-min-width: 140px;
-}
+/*
+
+	Available Variables:
+
+		--v-button-width                      [auto]
+		--v-button-height                     [44px]
+		--v-button-color                      [var(--foreground-inverted)]
+		--v-button-color-hover                [var(--foreground-inverted)]
+		--v-button-color-active               [var(--foreground-inverted)]
+		--v-button-color-disabled             [var(--theme--foreground-subdued)]
+		--v-button-background-color           [var(--theme--primary)]
+		--v-button-background-color-hover     [var(--theme--primary-accent)]
+		--v-button-background-color-active    [var(--theme--primary)]
+		--v-button-background-color-disabled  [var(--theme--background)]
+		--v-button-font-size                  [16px]
+		--v-button-font-weight                [600]
+		--v-button-line-height                [22px]
+		--v-button-min-width                  [140px]
+
+*/
 
 .info {
 	--v-button-color: var(--white);
@@ -218,54 +209,54 @@ async function onClick(event: MouseEvent) {
 .success {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--success);
+	--v-button-background-color: var(--theme--success);
 	--v-button-background-color-hover: var(--success-125);
-	--v-button-background-color-active: var(--success);
+	--v-button-background-color-active: var(--theme--success);
 }
 
 .warning {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--warning);
+	--v-button-background-color: var(--theme--warning);
 	--v-button-background-color-hover: var(--warning-125);
-	--v-button-background-color-active: var(--warning);
+	--v-button-background-color-active: var(--theme--warning);
 }
 
 .danger {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
-	--v-button-background-color: var(--danger);
+	--v-button-background-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-125);
-	--v-button-background-color-active: var(--danger);
+	--v-button-background-color-active: var(--theme--danger);
 }
 
 .secondary {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
-	--v-button-background-color: var(--border-subdued);
-	--v-button-background-color-hover: var(--background-normal-alt);
-	--v-button-background-color-active: var(--background-normal-alt);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
+	--v-button-background-color: var(--theme--background);
+	--v-button-background-color-hover: var(--theme--background-accent);
+	--v-button-background-color-active: var(--theme--background-accent);
 }
 
 .secondary.rounded {
-	--v-button-background-color: var(--background-normal);
-	--v-button-background-color-active: var(--background-normal);
-	--v-button-background-color-hover: var(--background-normal-alt);
+	--v-button-background-color: var(--theme--background);
+	--v-button-background-color-active: var(--theme--background);
+	--v-button-background-color-hover: var(--theme--background-accent);
 }
 
 .warning.rounded {
 	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
+	--v-button-color: var(--theme--warning);
 	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-color-hover: var(--theme--warning);
 }
 
 .danger.rounded {
 	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
+	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-color-hover: var(--theme--danger);
 }
 
 .v-button {
@@ -282,18 +273,18 @@ async function onClick(event: MouseEvent) {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: var(--v-button-width);
-	min-width: var(--v-button-min-width);
-	height: var(--v-button-height);
+	width: var(--v-button-width, auto);
+	min-width: var(--v-button-min-width, 140px);
+	height: var(--v-button-height, 44px);
 	padding: 0 19px;
-	color: var(--v-button-color);
-	font-weight: var(--v-button-font-weight);
-	font-size: var(--v-button-font-size);
-	line-height: var(--v-button-line-height);
+	color: var(--v-button-color, var(--foreground-inverted));
+	font-weight: var(--v-button-font-weight, 600);
+	font-size: var(--v-button-font-size, 16px);
+	line-height: var(--v-button-line-height, 22px);
 	text-decoration: none;
-	background-color: var(--v-button-background-color);
-	border: var(--border-width) solid var(--v-button-background-color);
-	border-radius: var(--border-radius);
+	background-color: var(--v-button-background-color, var(--theme--primary));
+	border: var(--theme--border-width) solid var(--v-button-background-color, var(--theme--primary));
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color border;
@@ -301,9 +292,9 @@ async function onClick(event: MouseEvent) {
 
 .button:focus,
 .button:hover {
-	color: var(--v-button-color-hover);
-	background-color: var(--v-button-background-color-hover);
-	border-color: var(--v-button-background-color-hover);
+	color: var(--v-button-color-hover, var(--foreground-inverted));
+	background-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
+	border-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
 }
 
 .align-left {
@@ -323,9 +314,9 @@ async function onClick(event: MouseEvent) {
 }
 
 .button:disabled {
-	color: var(--v-button-color-disabled);
-	background-color: var(--v-button-background-color-disabled);
-	border: var(--border-width) solid var(--v-button-background-color-disabled);
+	color: var(--v-button-color-disabled, var(--theme--foreground-subdued));
+	background-color: var(--v-button-background-color-disabled, var(--theme--background));
+	border: var(--theme--border-width) solid var(--v-button-background-color-disabled, var(--theme--background));
 	cursor: not-allowed;
 }
 
@@ -335,24 +326,24 @@ async function onClick(event: MouseEvent) {
 }
 
 .outlined {
-	--v-button-color: var(--v-button-background-color);
+	--v-button-color: var(--v-button-background-color, var(--theme--primary));
 
 	background-color: transparent;
 }
 
 .outlined:not(.active):not(:disabled):focus,
 .outlined:not(.active):not(:disabled):hover {
-	color: var(--v-button-background-color-hover);
+	color: var(--v-button-background-color-hover, var(--theme--primary-accent));
 	background-color: transparent;
-	border-color: var(--v-button-background-color-hover);
+	border-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
 }
 
 .outlined.secondary {
-	--v-button-color: var(--foreground-subdued);
+	--v-button-color: var(--theme--foreground-subdued);
 }
 
 .outlined.active {
-	background-color: var(--v-button-background-color);
+	background-color: var(--v-button-background-color, var(--theme--primary));
 }
 
 .dashed {
@@ -364,7 +355,6 @@ async function onClick(event: MouseEvent) {
 	--v-button-font-size: 12px;
 	--v-button-font-weight: 600;
 	--v-button-min-width: 60px;
-	--border-radius: 4px;
 
 	padding: 0 12px;
 }
@@ -393,7 +383,7 @@ async function onClick(event: MouseEvent) {
 }
 
 .icon {
-	width: var(--v-button-height);
+	width: var(--v-button-height, 44px);
 	min-width: 0;
 	padding: 0;
 }
@@ -429,15 +419,15 @@ async function onClick(event: MouseEvent) {
 }
 
 .spinner .v-progress-circular {
-	--v-progress-circular-color: var(--v-button-color);
+	--v-progress-circular-color: var(--v-button-color, var(--foreground-inverted));
 	--v-progress-circular-background-color: transparent;
 }
 
 .active {
-	--v-button-color: var(--v-button-color-active) !important;
-	--v-button-color-hover: var(--v-button-color-active) !important;
-	--v-button-background-color: var(--v-button-background-color-active) !important;
-	--v-button-background-color-hover: var(--v-button-background-color-active) !important;
+	--v-button-color: var(--v-button-color-active, var(--foreground-inverted)) !important;
+	--v-button-color-hover: var(--v-button-color-active, var(--foreground-inverted)) !important;
+	--v-button-background-color: var(--v-button-background-color-active, var(--theme--primary)) !important;
+	--v-button-background-color-hover: var(--v-button-background-color-active, var(--theme--primary)) !important;
 }
 
 .tile {

@@ -30,6 +30,7 @@ export const DIRECTUS_LOGO = `
 export const COLLECTIONS_DENY_LIST = [
 	'directus_activity',
 	'directus_collections',
+	'directus_extensions',
 	'directus_fields',
 	'directus_migrations',
 	'directus_relations',

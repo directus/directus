@@ -52,6 +52,13 @@ or: Ou
 init: Initialiser
 dataset_too_large_currently_showing_n_items: L'ensemble de données est trop grand. Il affiche actuellement les {n} premiers éléments.
 modifier: Modificateur
+extension_interface: Interface
+extension_display: Affichage
+extension_layout: Mise en page
+extension_panel: Panneau
+extension_hook: Crochet
+extension_modules: Modules
+enable: Activer
 custom: Personnalisé
 hook: Crochet
 fill_width: Remplir l'espace
@@ -95,6 +102,7 @@ rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
+promote_version_preview: Prévisualiser
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -432,7 +440,6 @@ dimensions: Dimensions
 size: Taille
 created: Créé
 modified: Modifié
-checksum: Code de vérification
 owner: Propriétaire
 edited_by: Modifié par
 folder: Dossier
@@ -589,7 +596,6 @@ errors:
   RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   USER_SUSPENDED: Utilisateur suspendu
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
-  UNPROCESSABLE_ENTITY: Cette entité ne peut être traitée
   INTERNAL_SERVER_ERROR: Erreur inconnue
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
   ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
@@ -939,11 +945,11 @@ editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
-settings_permissions: Rôles et autorisations
-settings_project: Paramètres du projet
+settings_project: Réglages
 settings_webhooks: Webhooks
 settings_flows: Flux
-settings_presets: Préréglages et favoris
+settings_presets: Favoris
+settings_translations: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 actions: Actions
@@ -978,7 +984,6 @@ page_help_files_collection: >-
   **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_files_item: >-
   **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
-page_help_settings_project: "**Paramètres du projet** — Les options de configuration globale de votre projet."
 page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
@@ -1100,10 +1105,6 @@ fields:
     tags: Étiquettes
     user_preferences: Préférences utilisateur
     language: Langue
-    theme: Thème
-    theme_auto: Automatique (Basé sur le système)
-    theme_light: Mode Clair
-    theme_dark: Mode sombre
     tfa_secret: Authentification à deux facteurs
     admin_options: Options d'Administration
     status: État
@@ -1142,7 +1143,6 @@ fields:
     project_color: Couleur du projet
     project_logo: Logo du projet
     default_language: Langue par défaut
-    branding: Apparence et style
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
@@ -1202,7 +1202,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
     project_color_note: Fond de connexion et de logo
-    project_logo_note: Blanc 40x40 SVG/PNG
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -1629,7 +1628,6 @@ interfaces:
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
   system-folder:
-    folder: Dossier
     description: Sélectionner un dossier
     field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
@@ -1647,6 +1645,7 @@ interfaces:
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
     interface_group: Options d'interface
+    display_group: Options d'affichage
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
@@ -2006,6 +2005,7 @@ panels:
     smooth: Lisse
     straight: Droit
     step_line: Pas
+    show_legend: Afficher la légende
   meter:
     name: Compteur
     description: Compteur pour les valeurs de suivi
@@ -2145,3 +2145,14 @@ operations:
     batch: Par lots
     batch_size: Taille de chaque lot
     cache: Cache
+standard: Standard
+compact: Compact
+style: Style
+fonts:
+  thin: Fin
+  normal: Normal
+  medium: Moyen
+  bold: Gras
+  black: Noir
+  italic: Italique
+  auto: Auto

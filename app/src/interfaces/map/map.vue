@@ -466,8 +466,8 @@ function handleKeyDown(event: any) {
 .interface-map {
 	position: relative;
 	overflow: hidden;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	.map {
 		position: relative;
@@ -491,8 +491,8 @@ function handleKeyDown(event: any) {
 
 	.v-info {
 		padding: 20px;
-		background-color: var(--background-input);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--form--field--input--background);
+		border-radius: var(--theme--border-radius);
 		box-shadow: var(--card-shadow);
 	}
 
@@ -505,10 +505,10 @@ function handleKeyDown(event: any) {
 		justify-content: space-between;
 		height: 36px;
 		padding: 10px;
-		color: var(--foreground-subdued);
-		background-color: var(--background-page);
-		border: var(--border-width) solid var(--background-page);
-		border-radius: var(--border-radius);
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--background-page);
+		border: var(--theme--border-width) solid var(--theme--background-page);
+		border-radius: var(--theme--border-radius);
 
 		span {
 			width: auto;
@@ -516,7 +516,7 @@ function handleKeyDown(event: any) {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--form--field--input--foreground);
 		}
 	}
 

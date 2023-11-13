@@ -89,25 +89,25 @@ function deleteItem(elem: Record<string, any>) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	button {
-		color: var(--primary);
+		color: var(--theme--primary);
 		padding: 0 4px;
 
 		&:hover {
-			color: var(--primary-125);
+			color: var(--theme--primary-accent);
 		}
 	}
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 </style>

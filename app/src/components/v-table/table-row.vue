@@ -86,8 +86,8 @@ const cssHeight = computed(() => {
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		background-color: var(--v-table-background-color);
-		border-bottom: var(--border-width) solid var(--border-subdued);
+		background-color: var(--v-table-background-color, transparent);
+		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&:last-child {
 			padding: 0 12px;
@@ -109,10 +109,10 @@ const cssHeight = computed(() => {
 	}
 
 	.drag-handle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		&.sorted-manually {
-			--v-icon-color: var(--foreground-normal);
+			--v-icon-color: var(--theme--foreground);
 
 			&:hover {
 				cursor: ns-resize;

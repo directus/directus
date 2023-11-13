@@ -225,8 +225,8 @@ const notificationsPreviewActive = ref(false);
 
 const { sidebarOpen, fullScreen } = storeToRefs(appStore);
 
-const theme = computed(() => {
-	return userStore.currentUser && 'theme' in userStore.currentUser ? userStore.currentUser.theme : 'auto';
+const appearance = computed(() => {
+	return userStore.currentUser && 'appearance' in userStore.currentUser ? userStore.currentUser.appearance : 'auto';
 });
 
 provide('main-element', contentEl);
@@ -260,7 +260,7 @@ function getWidth(input: unknown, fallback: number): number {
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
+	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
 		<aside
 			id="navigation"
 			role="navigation"
@@ -358,7 +358,7 @@ function getWidth(input: unknown, fallback: number): number {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--background-page);
+	background-color: var(--theme--background-page);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
@@ -386,10 +386,13 @@ function getWidth(input: unknown, fallback: number): number {
 		font-size: 0;
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
+		font-family: var(--theme--navigation--list--font-family);
+		border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
 		&.is-open {
 			transform: translateX(0);
 		}
+
 		&.has-shadow {
 			box-shadow: var(--navigation-shadow);
 		}
@@ -400,11 +403,21 @@ function getWidth(input: unknown, fallback: number): number {
 			width: 220px;
 			height: 100%;
 			font-size: 1rem;
-			background-color: var(--background-normal);
+			background: var(--theme--navigation--background);
 
 			&-content {
-				--v-list-item-background-color-hover: var(--background-normal-alt);
-				--v-list-item-background-color-active: var(--background-normal-alt);
+				--v-list-item-color: var(--theme--navigation--list--foreground);
+				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
+				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
+				--v-list-item-background-color: var(--theme--navigation--list--background);
+				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
+				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
+
+				--v-divider-color: var(--theme--navigation--list--divider--border-color);
+				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
 				height: calc(100% - 64px);
 				overflow-x: hidden;
@@ -419,7 +432,6 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#main-content {
-		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px;
 		/* (60 - 4 - 24) / 2 */
@@ -490,9 +502,14 @@ function getWidth(input: unknown, fallback: number): number {
 		width: 280px;
 		height: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
+		font-family: var(--theme--sidebar--font-family);
+		border-left: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+
+		/* Explicitly render the border outside of the width of the bar itself */
+		box-sizing: content-box;
 
 		.spacer {
 			flex-grow: 1;
@@ -513,7 +530,7 @@ function getWidth(input: unknown, fallback: number): number {
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 60px));
+			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
 		}
 
 		@media (min-width: 1260px) {

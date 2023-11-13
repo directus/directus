@@ -25,11 +25,12 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 60px;
+	height: calc(60px + var(--theme--navigation--project--border-width));
 	padding-left: 20px;
-	color: var(--foreground-normal-alt);
+	color: var(--theme--navigation--project--foreground);
 	text-align: left;
-	background-color: var(--background-normal-alt);
+	background: var(--theme--navigation--project--background);
+	border-bottom: var(--theme--navigation--project--border-width) solid var(--theme--navigation--project--border-color);
 
 	.name-container {
 		flex-grow: 1;
@@ -40,11 +41,12 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 
 	.name {
 		margin-right: 8px;
+		font-family: var(--theme--navigation--project--font-family);
 	}
 
 	.descriptor {
 		display: block;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 </style>

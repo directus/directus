@@ -15,10 +15,7 @@ accidentally work on the same issue at the same time.
 
 ## Choosing What to Implement
 
-We welcome PRs for any [Issue](https://github.com/directus/directus/issues). Issues labeled
-["Community"](https://github.com/directus/directus/issues?q=is:issue+is:open+label:Community) have been identified as
-good improvements or fixes for community members, as they're often a little more scoped in what they affect. This in
-turn makes it easier to implement the change and review the work. Issues labeled
+We welcome PRs for any open [Issue](https://github.com/directus/directus/issues). Issues labeled
 ["Good First Issue"](https://github.com/directus/directus/issues?q=is:issue+is:open+label:%22Good+First+Issue%22) are
 typically easier to resolve for those who haven't contributed to the codebase before, and are therefore a great starting
 point.
@@ -46,3 +43,17 @@ To properly generate changelogs and determine the right version number after a c
 [changesets](https://github.com/changesets/changesets). Each pull request should include a changeset that describes
 whether the change is a patch/minor/major version bump, and describe what the change is. Changesets should be written in
 past tense.
+
+A changeset can be generated via the following command:
+
+```shell
+pnpm changeset
+```
+
+### Changeset Bump Definitions
+
+The following are the types of version bumps that can be specified in a changeset:
+
+- Major (x.0.0) - A change has been made that is incompatible with previous versions.
+- Minor (0.x.0) - A feature has been added that is backwards compatible with previous versions.
+- Patch (0.0.x) - A bug has been fixed that is backwards compatible with previous versions.

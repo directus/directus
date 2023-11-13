@@ -53,6 +53,11 @@ or: Või
 init: Init
 dataset_too_large_currently_showing_n_items: Andmekogum on liiga suur. Hetkel kuvatakse esimesed {n} üksust.
 modifier: Muutja
+extension_interface: Kasutajaliides
+extension_display: Vaade
+extension_layout: Paigutus
+extension_hook: Haak
+extension_modules: Moodulid
 custom: Kohandatud
 hook: Haak
 fill_width: Täislaius
@@ -100,6 +105,7 @@ rename_folder: Nimeta Kaust Ümber
 delete_folder: Kustuta Kaust
 prefix: Eesliide
 suffix: Järelliide
+promote_version_preview: Eelvaade
 reset_bookmark: Kustuta Järjehoidja
 update_bookmark: Järjehoidja Uuendamine
 delete_bookmark: Kustuta Järjehoidja
@@ -397,7 +403,6 @@ dimensions: Mõõtmed
 size: Suurus
 created: Loodud
 modified: Muudetud
-checksum: Kontrollsumma
 owner: Omanik
 edited_by: Muutis
 folder: Kaust
@@ -776,10 +781,10 @@ editing_unit: '{unit} muutmine'
 editing_in_batch: '{count} kirje hulgi muutmine'
 no_options_available: Valikud puuduvad
 settings_data_model: Andmemudel
-settings_permissions: Rollid ja õigused
-settings_project: Projekti seaded
+settings_project: Seaded
 settings_webhooks: Webhooks
-settings_presets: Eelseaded ja järjehoidjad
+settings_presets: Järjehoidjad
+settings_translations: Tõlked
 one_or_more_options_are_missing: Üks või mitu valikut puuduvad
 scope: Ulatus
 select: Vali...
@@ -807,7 +812,6 @@ page_help_files_collection: >-
   **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
 page_help_files_item: >-
   **Faili detailid* — Vorm, milles saab muuta faili metaandmeid, ligipääse jm.
-page_help_settings_project: "**Projekti seaded** — Sinu projekti üldised seaded."
 page_help_settings_datamodel_collections: >-
   **Andmekogud** — Näitab olemasolevaid andmekogusid. Samuti ka nähtavaid, peidetud, ja süsteemi kogusid, lisaks ka haldamata andmebaaside tabeleid, mida saab lisada.
 page_help_settings_datamodel_fields: >-
@@ -899,7 +903,6 @@ fields:
     description: Kirjeldus
     tags: Sildid
     language: Keel
-    theme: Teema
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
     status_active: aktiivne
@@ -1205,7 +1208,6 @@ interfaces:
     description: Vali mitu seotud kirjet
     no_collection: Andmekogu ei leitud
   system-folder:
-    folder: Kaust
     description: Vali kaust
   select-radio:
     radio-buttons: Raadionupud
@@ -1440,3 +1442,12 @@ operations:
     subject: Teema
   request:
     url: URL
+standard: Standard
+compact: Kompaktne
+style: Stiil
+fonts:
+  normal: Tavaline
+  bold: Paks kiri
+  black: Must
+  italic: Kaldkiri
+  auto: Automaatne

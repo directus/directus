@@ -416,15 +416,19 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
-	--v-button-color: var(--foreground-normal);
-	--v-button-background-color-hover: var(--border-normal);
-	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color: var(--theme--form--field--input--foreground);
+	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
+	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
 	min-height: 300px;
 	overflow: hidden;
-	font-family: var(--family-sans-serif);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	font-family: var(--theme--font-family-sans-serif);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	box-shadow: var(--theme--form--field--input--box-shadow);
+	transition-duration: var(--fast);
+	transition-timing-function: var(--transition);
+	transition-property: box-shadow, border-color;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
@@ -435,9 +439,14 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	background-color: var(--background-subdued);
 }
 
+.interface-input-rich-text-md:not(.disabled):hover {
+	border-color: var(--theme--form--field--input--border-color-hover);
+	box-shadow: var(--theme--form--field--input--box-shadow-hover);
+}
+
 .interface-input-rich-text-md:not(.disabled):focus-within {
-	border-color: var(--primary);
-	box-shadow: 0 0 16px -8px var(--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
+	box-shadow: var(--theme--form--field--input--box-shadow-focus);
 }
 
 textarea {
@@ -458,7 +467,7 @@ textarea {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -466,15 +475,15 @@ textarea {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .interface-input-rich-text-md.disabled .preview-box {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror) {
@@ -511,7 +520,7 @@ textarea {
 	min-height: 40px;
 	padding: 0 4px;
 	background-color: var(--background-subdued);
-	border-bottom: 2px solid var(--border-normal);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	.v-button + .v-button {
 		margin-left: 2px;
@@ -522,12 +531,12 @@ textarea {
 	}
 
 	.view {
-		--v-button-background-color: var(--border-subdued);
-		--v-button-color: var(--foreground-subdued);
-		--v-button-background-color-hover: var(--border-normal);
-		--v-button-color-hover: var(--foreground-normal);
-		--v-button-background-color-active: var(--border-normal);
-		--v-button-color-active: var(--foreground-normal);
+		--v-button-background-color: var(--theme--border-color-subdued);
+		--v-button-color: var(--theme--form--field--input--foreground-subdued);
+		--v-button-background-color-hover: var(--theme--form--field--input--border-color);
+		--v-button-color-hover: var(--theme--form--field--input--foreground);
+		--v-button-background-color-active: var(--theme--form--field--input--border-color);
+		--v-button-color-active: var(--theme--form--field--input--foreground);
 	}
 }
 

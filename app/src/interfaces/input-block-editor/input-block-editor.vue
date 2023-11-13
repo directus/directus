@@ -155,7 +155,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 			:model-value="fileHandler !== null"
 			icon="image"
 			:title="t('upload_from_device')"
-			:cancelable="true"
+			cancelable
 			@update:model-value="unsetFileHandler"
 			@cancel="unsetFileHandler"
 		>
@@ -193,37 +193,37 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .disabled {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--background-subdued);
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
 }
 
 .bordered {
 	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-page);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 }
 
 .monospace {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--font-family-monospace);
 }
 
 .serif {
-	font-family: var(--family-serif);
+	font-family: var(--theme--font-family-serif);
 }
 
 .sans-serif {
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--font-family-sans-serif);
 }
 
 .uploader-drawer-content {
@@ -234,8 +234,8 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .uploader-preview-image {
 	margin-bottom: var(--form-vertical-gap);
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border-radius: var(--theme--border-radius);
 }
 
 .uploader-preview-image img {

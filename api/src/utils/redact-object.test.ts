@@ -179,7 +179,7 @@ describe('getReplacer tests', () => {
 		const replacer = getReplacer(getRedactedString);
 
 		for (const value of values) {
-			expect(replacer('', value)).toBe(value);
+			expect(replacer('', value)).toEqual(value);
 		}
 	});
 
@@ -190,10 +190,31 @@ describe('getReplacer tests', () => {
 
 		obj['b'] = obj;
 		obj['c'] = { obj };
+		obj['d'] = [obj];
 
 		const expectedResult = {
 			a: 'foo',
-			c: {},
+			b: '[Circular]',
+			c: { obj: '[Circular]' },
+			d: ['[Circular]'],
+		};
+
+		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));
+
+		expect(result).toStrictEqual(expectedResult);
+	});
+
+	test('Correctly parses object with repeatedly occurring same refs', () => {
+		const ref = {};
+
+		const obj: Record<string, any> = {
+			a: ref,
+			b: ref,
+		};
+
+		const expectedResult = {
+			a: ref,
+			b: ref,
 		};
 
 		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));

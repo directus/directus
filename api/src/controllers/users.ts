@@ -2,7 +2,7 @@ import { isDirectusError } from '@directus/errors';
 import type { Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { ErrorCode, ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';

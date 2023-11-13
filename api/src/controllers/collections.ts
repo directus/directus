@@ -1,6 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import { Router } from 'express';
-import { ErrorCode } from '../errors/index.js';
+import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { CollectionsService } from '../services/collections.js';

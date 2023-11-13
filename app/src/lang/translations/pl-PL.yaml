@@ -27,6 +27,7 @@ method: Metoda
 published: Opublikowany
 draft: Szkic
 archived: Zarchiwizowany
+extensions: Rozszerzenia
 modules: Moduły
 module_bar: Pasek modułu
 logs: Logi
@@ -53,6 +54,25 @@ or: Lub
 init: Rozpocznij
 dataset_too_large_currently_showing_n_items: Zbiór danych jest zbyt duży. Obecnie wyświetlane są pierwsze {n} elementów.
 modifier: Modyfikator
+extension_interface: Interfejs
+extension_display: Pokaż
+extension_layout: Układ
+extension_module: Moduł
+extension_panel: Panel
+extension_hook: Hook
+extension_endpoint: Punkt końcowy
+extension_operation: Operacja
+extension_bundle: Pakiet
+extension_interfaces: Interfejsy
+extension_displays: Wyświetlanie
+extension_layouts: Szablony
+extension_modules: Moduły
+extension_panels: Panele
+extension_endpoints: Punkty końcowe
+extension_operations: Operacje
+extension_bundles: Pakiety
+enable: Włącz
+disable: Wyłącz
 custom: Własny
 hook: Hook
 fill_width: Szerokość wypełnienia
@@ -100,6 +120,31 @@ rename_folder: Zmień nazwę folderu
 delete_folder: Usuń folder
 prefix: Przedrostek
 suffix: Przyrostek
+keep: Zachowaj
+version: Wersja
+version_key: Klucz wersji
+version_name: Nazwa wersji
+main_version: Główny
+switch_version: Przełącz wersję
+switch_version_copy: Czy na pewno chcesz przełączyć się na wersję "{version}"? Niezapisane zmiany zostaną utracone.
+create_version: Utwórz wersję
+rename_version: Zmień nazwę wersji
+compare_version: Porównaj wersję
+save_version: Zapisz wersję
+promote_version: Promuj wersję
+promote_version_disabled: Brak zmian
+promote_version_drawer_title: Promuj {version} do Głównej
+promote_version_changes: Zmiany
+promote_version_preview: Podgląd
+outdated_notice: >-
+  Główny element został zaktualizowany od czasu utworzenia tej wersji. Przejrzyj wszystkie wartości pól poniżej i potwierdź, która wersja powinna być użyta podczas promowania tej wersji w głównym elemencie.
+promote_notice: >-
+  Przejrzyj wszystkie wartości pól poniżej i potwierdź, która wersja powinna być użyta podczas promowania tej wersji w głównym elemencie.
+delete_version: Usuń wersję
+delete_version_copy: >-
+  Czy na pewno chcesz usunąć wersję "{version}"? Tej akcji nie można cofnąć.
+delete_on_promote_copy: >-
+  Czy chcesz usunąć lub zachować wersję "{version}" po promowaniu?
 reset_bookmark: Zresetuj zakładkę
 update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
@@ -145,6 +190,7 @@ validationError:
   nnull: Wartość nie może być pusta
   required: Wartość jest wymagana
   unique: Wartość musi być unikalna
+  email: Wartość musi być prawidłowym adresem e-mail
   regex: Wartość nie ma poprawnego formatu
   starts_with: Wartość musi zaczynać się od {substring}
   istarts_with: Wartość musi zaczynać się od {substring}
@@ -259,6 +305,9 @@ geometry.Polygon: Wielokąt
 geometry.MultiPoint: Wielopunktowy
 geometry.MultiLineString: Ciąg multilinii
 geometry.MultiPolygon: Wielokąt
+theme_auto: Automatyczne (Oparte na systemie)
+theme_light: Tryb jasny
+theme_dark: Tryb ciemny
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
 auto_refresh: Automatyczne odświeżanie
@@ -341,6 +390,7 @@ clear_items: Wyczyść elementy
 reset_to_default: Przywróć domyślne
 undo_changes: Cofnij zmiany
 notifications: Powiadomienia
+archive_all: Zarchiwizuj wszystko
 show_all_activity: Pokaż wszystkie aktywności
 page_not_found: Nie odnaleziono strony
 page_not_found_body: Strona, której poszukujesz, nie istnieje.
@@ -353,6 +403,7 @@ revision_delta_created: Utworzony
 revision_delta_created_externally: Utworzono zewnętrznie
 revision_delta_updated: 'Zaktualizowano 1 pole | Zaktualizowano {count} pól'
 revision_delta_deleted: Usunięty
+revision_delta_version_saved: 'Zapisywanie wersji (zaktualizowane 1 pola) | Zapisywanie wersji (zaktualizowane pola {count})'
 revision_delta_reverted: Odwrócony
 revision_delta_update_message: To pole zostało zaktualizowane, ale jego wartość jest ukrywana ze względów bezpieczeństwa.
 revision_delta_other: Rewizja
@@ -446,7 +497,6 @@ dimensions: Wymiary
 size: Wielkość
 created: Utworzony
 modified: Zmodyfikowane
-checksum: Suma kontrolna
 owner: Właściciel
 edited_by: Edytowane przez
 folder: Folder
@@ -464,6 +514,7 @@ import_from_url: Załaduj za pośrednictwem adresu URL
 replace_from_device: Zastąp plik z urządzenia
 replace_from_library: Zastąp plik z biblioteki
 replace_from_url: Zastąp plik z URL
+no_image_selected: Nie wybrano obrazu
 no_file_selected: Nie wybrano pliku
 download_file: Pobierz plik
 open_file_in_tab: Otwórz plik w nowej karcie
@@ -490,6 +541,7 @@ generated_uuid: Wygenerowane UUID
 manual_string: Wprowadzony ręcznie ciąg znaków
 save_and_create_new: Zapisz i utwórz nowy
 save_and_stay: Zapisz i zostań
+save_and_quit: Zapisz i wyjdź
 save_as_copy: Zapisz jako kopię
 add_existing: Dodaj istniejący
 creating_items: Tworzenie elementów
@@ -503,6 +555,7 @@ expand: Rozwiń
 collapse: Zwiń
 select_item: Wybierz element
 no_items: Brak elementów
+search_items: Szukaj elementów...
 disabled: Wyłączony
 information: Informacja
 report_bug: Zgłoś błąd
@@ -582,6 +635,7 @@ bookmark_doesnt_exist_copy: Nie znaleziono zakładki, którą próbujesz otworzy
 bookmark_doesnt_exist_cta: Wróć do kolekcji
 select_an_item: Wybierz element...
 edit: Edytuj
+edit_item: Edytuj element
 enabled: Włączone
 disable_tfa: Wyłącz weryfikację dwuetapową
 admin_disable_tfa_text: Czy na pewno chcesz wyłączyć 2FA dla tego użytkownika?
@@ -611,7 +665,7 @@ errors:
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
   CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
-  UNPROCESSABLE_ENTITY: Jednostka niemożliwa do przetworzenia
+  UNPROCESSABLE_CONTENT: Zawartość niemożliwa do przetworzenia
   INTERNAL_SERVER_ERROR: Nieoczekiwany błąd
   NOT_NULL_VIOLATION: Wartość nie może być pusta
   ILLEGAL_ASSET_TRANSFORMATION: Źródło obrazu jest zbyt duże, aby wyświetlić podgląd
@@ -632,6 +686,7 @@ security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
+create_default: Utwórz domyślne
 edit_bookmark: Edytuj zakładkę
 edit_personal_bookmark: Edytuj Osobistą Zakładkę
 edit_role_bookmark: Edytuj zakładkę roli
@@ -748,6 +803,7 @@ upload_pending: Prześlij oczekujące
 drag_file_here: Przeciągnij i upuść plik tutaj
 click_to_browse: Kliknij, aby przeglądać
 interface_options: Opcje interfejsu
+display_options: Opcje wyświetlania
 layout_options: Opcje Układu
 rows: Wiersze
 columns: Kolumny
@@ -957,6 +1013,9 @@ choices: Opcje
 choices_option_configured_incorrectly: Wybór skonfigurowany nieprawidłowo
 deselect: Odznacz
 deselect_all: Odznacz Wszystko
+theme: Motyw
+select_a_theme: Wybierz motyw
+appearance_light: Jasny
 other: Inne...
 adding_user: Dodawanie użytkownika
 unknown_user: Nieznany użytkownik
@@ -968,12 +1027,13 @@ editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
 no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
-settings_permissions: Role i uprawnienia
-settings_project: Ustawienia projektu
+settings_permissions: Kontrola dostępu
+settings_project: Ustawienia
+settings_theming: Motywy
 settings_webhooks: Webhooki
 settings_flows: Przepływy
-settings_presets: Szablony i zakładki
-settings_translations: Własne tłumaczenia
+settings_presets: Zakładki
+settings_translations: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 configure_field_key_to_continue: Skonfiguruj klucz pola, aby kontynuować
 scope: Zakres
@@ -988,6 +1048,7 @@ editing_preset: Edycja szablonu
 layout_preview: Podgląd układu
 layout_setup: Ustawienia układu
 data: Dane
+theme-overrides: Nadpisywanie motywu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
@@ -1009,7 +1070,9 @@ page_help_files_collection: >-
   **Biblioteka plików** — Lista wszystkich zasobów plików przesłanych do tego projektu. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
 page_help_files_item: >-
   **Szczegóły pliku** — Formularz do zarządzania metadanymi plików, edycji oryginalnego zasobu i aktualizacji ustawień dostępu.
-page_help_settings_project: "**Ustawienia projektu** — globalne opcje konfiguracji projektu."
+page_help_settings_project: "**Ustawienia** — Ogólne opcje konfiguracji Twojego projektu."
+page_help_settings_theming: "**Motywy** — opcje motywu Twojego projektu."
+page_help_settings_extensions: '**Rozszerzenia** — Rozszerzenia zainstalowane w Twoim projekcie.'
 page_help_settings_datamodel_collections: >-
   **Model danych: Kolekcje** — Lista wszystkich dostępnych kolekcji. Obejmuje to widoczne, ukryte i systemowe kolekcje, jak również niezarządzane tabele bazy danych, które mogą być dodane.
 page_help_settings_datamodel_fields: >-
@@ -1041,6 +1104,8 @@ batch_delete_confirm: >-
   Żaden element nie został zaznaczony | Na pewno chcesz usunąć ten element? Tej akcji nie będzie można cofnąć. | Na pewno chcesz usunąć {count} elementów? Tej akcji nie będzie można cofnąć.
 cancel: Anuluj
 no_upscale: Nie skaluj obrazów
+no_extensions: Brak rozszerzeń
+no_extensions_copy: Nie zainstalowano jeszcze żadnych rozszerzeń.
 collection: Kolekcja
 collections: Kolekcje
 content: Zawartość
@@ -1070,6 +1135,8 @@ directus_collection:
   directus_users: Użytkownicy systemu dla platformy
   directus_webhooks: Konfiguracja dla żądań HTTP opartych na zdarzeniach
   directus_translations: Własne tłumaczenia
+  directus_versions: Wersje zawartości dla elementów
+  directus_extensions: Konfiguracja rozszerzeń
 fields:
   directus_activity:
     item: Klucz główny produktu
@@ -1096,6 +1163,7 @@ fields:
     unarchive_value: Niezarchiwizowane wartości
     sort_field: Pole sortowania
     accountability: Śledzenie Aktywności i Wersji
+    versioning: Wersjonowanie
     archive_field: Pole archiwum
     item_duplication_fields: Pola Duplikacji Produktu
   directus_files:
@@ -1134,10 +1202,6 @@ fields:
     tags: Etykiety
     user_preferences: Ustawienia użytkownika
     language: Język
-    theme: Motyw
-    theme_auto: Automatyczne (Oparte na systemie)
-    theme_light: Tryb jasny
-    theme_dark: Tryb ciemny
     tfa_secret: Uwierzytelnianie dwuetapowe
     admin_options: Opcje administratora
     status: Status
@@ -1153,6 +1217,8 @@ fields:
     last_page: Ostatnia strona
     last_access: Ostatni dostęp
     email_notifications: Powiadomienia e-mail
+    theme_light_overrides: Dostosowanie jasnego motywu
+    theme_dark_overrides: Dostosowanie ciemnego motywu
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1176,10 +1242,11 @@ fields:
     project_color: Kolor projektu
     project_logo: Logo projektu
     default_language: Domyślny język
-    branding: Marka i Styl
+    branding: Marka
     public_foreground: Publiczny Foreground
     public_background: Tło publiczne
     public_note: Notatka publiczna
+    theming: Ustawienia domyślne motywu
     auth_password_policy: Zasady haseł
     auth_login_attempts: Próby logowania
     files_and_thumbnails: Pliki i pamięć
@@ -1194,6 +1261,8 @@ fields:
     transformations_presets: Ogranicz transformacje do poniższych ustawień
     image_editor: Edytor obrazu
     custom_aspect_ratios: Niestandardowe proporcje
+    theme_light_overrides: Dostosowanie jasnego motywu
+    theme_dark_overrides: Dostosowanie ciemnego motywu
   directus_shares:
     name: Nazwa
     role: Rola
@@ -1236,7 +1305,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Mój projekt...
     project_color_note: Tło logowania i logo
-    project_logo_note: Biały 40x40 SVG/PNG
+    project_logo_note: Biały 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Krótka, publiczna wiadomość, która obsługuje formatowanie markdown...
     security_divider_title: Bezpieczeństwo
     auth_password_policy:
@@ -1291,6 +1361,8 @@ field_options:
     accountability_divider: Odpowiedzialność
     duplication_divider: Duplikacja
     preview_divider: Podgląd
+    content_versioning_divider: Wersja treści
+    enable_versioning: Włącz wersjonowanie
   directus_files:
     title: Unikalny tytuł...
     description: Opcjonalny opis...
@@ -1451,6 +1523,7 @@ search: Wyszukaj
 select_existing: Wybierz istniejące
 select_field_type: Wybierz typ pola
 select_interface: Wybierz interfejs
+select_display: Wybierz wyświetlanie
 settings: Ustawienia
 sign_in: Zaloguj się
 sign_out: Wyloguj się
@@ -1482,6 +1555,8 @@ undo_removed_item: Cofnij usunięcie elementu
 remove_item: Usuń element
 delete_item: Usuń element
 interfaces:
+  list-m2a:
+    prefix_note: Domyślnie używa nazwy kolekcji powiązanych elementów.
   filter:
     name: Filtr
     description: Skonfiguruj filtr obiektu.
@@ -1619,6 +1694,11 @@ interfaces:
     description: Okno do wyboru opcji interfejsu
   system-display:
     display: Pokaż
+    description: Wybierz istniejący interfejs
+    placeholder: Wybierz wyświetlanie...
+  system-display-options:
+    display-options: Opcje wyświetlania
+    description: Okno do wyboru opcji interfejsu
   list-m2m:
     many-to-many: Wiele do wielu
     description: Wybierz wiele powiązanych elementów
@@ -1671,7 +1751,7 @@ interfaces:
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
   system-folder:
-    folder: Folder
+    folder: Katalog główny
     description: Wybierz folder
     field_hint: Domyślny katalog przesłanych plików bez określonego folderu. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
@@ -1689,6 +1769,7 @@ interfaces:
     field_note_placeholder: Wprowadź opis pola...
     incompatible_data: Bieżące dane nie są kompatybilne z interfejsem iteratora i zostaną nadpisane podczas dodawania elementów do iteratora
     interface_group: Opcje interfejsu
+    display_group: Opcje wyświetlania
   slider:
     slider: Suwak
     description: Wybierz numer używając suwaka
@@ -2032,6 +2113,9 @@ panels:
     name: Metryczny
     description: Pokaż pojedynczą wartość na podstawie zapytania
     field: Pole
+  metric_list:
+    name: Lista metryczna
+    description: Listuj i wizualizuj zagregowane metryki z kolekcji
   time_series:
     name: Seria czasowa
     description: Renderowanie wykresu liniowego na podstawie wartości w czasie
@@ -2060,6 +2144,7 @@ panels:
     smooth: Gładki
     straight: Prosta
     step_line: Linia kroku
+    show_legend: Pokaż Legendę
   meter:
     name: Licznik
     description: Licznik wartości śledzenia
@@ -2144,9 +2229,19 @@ operations:
     payload: Ładunek
     query: Zapytanie
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Podpisz i zweryfikuj tokeny sieciowe JSON
+    operation: Operacja
+    secret: Sekretny
+    secret_placeholder: Wprowadź sekretny klucz...
     payload: Ładunek
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opcje
+    options_placeholder: 'Zobacz https://www.npmjs.com/package/jsonwebtoken#use dla dostępnych opcji'
+    sign: Token podpisu
+    verify: Weryfikuj token
+    decode: Odszyfrowany token
   log:
     name: Logi do konsoli
     description: Wyjście czegoś do konsoli
@@ -2200,3 +2295,43 @@ operations:
     batch: Partia
     batch_size: Rozmiar partii
     cache: Cache
+unit: Jednostka
+standard: Standardowy
+scientific: Naukowy
+engineering: Inżynieria
+compact: Kompaktowy
+currency: Waluta
+notation: Notacja
+style: Style
+fonts:
+  thin: Cienka
+  extra_light: Ekstra jasny
+  light: Jasny
+  normal: Normalny
+  medium: Średni
+  semi_bold: Półpogrubiona
+  bold: Pogrubiony
+  extra_bold: Ekstra pogrubione
+  black: Czarny
+  italic: Kursywa
+  oblique: Ukośna
+  small: Mały
+  large: Duży
+  auto: Automatycznie
+text_wrap: Zawijanie tekstu
+center: Wyśrodkowany
+justify: Wyjustuj
+text_align: Wyrównanie tekstu
+font_weight: Grubość czcionki
+font_style: Styl czcionki
+font_size: Rozmiar czcionki
+minimum_fraction_digits: Minimalna liczba miejsc po przecinku
+maximum_fraction_digits: Maksymalna liczba miejsc po przecinku
+show_percentage: Pokaż procent
+aggregation: Agregacja
+series_grouping: Grupowanie serii
+date_precision: Precyzja daty
+export_dashboard: Eksportuj pulpit
+duplicate_dashboard: Duplikuj pulpit
+search_flow: Szukaj przepływu...
+percent: Procent

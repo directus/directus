@@ -463,17 +463,17 @@ function useOnUpdate() {
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
-	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--font-family-monospace);
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .precision-scale {

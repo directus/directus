@@ -52,6 +52,11 @@ or: Ili
 init: Inicijalizuj
 dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno se prikazuje prvih {n} stavki.
 modifier: Modifikator
+extension_interface: Interfejs
+extension_display: Prikaz
+extension_layout: Izgled
+extension_hook: Hook
+extension_modules: Moduli
 custom: Prilagođeno
 hook: Hook
 fill_width: Popunjeno
@@ -334,7 +339,6 @@ dimensions: Dimenzije
 size: Veličina
 created: Kreiran
 modified: Izmijenjeno
-checksum: Kontrolni zbir
 owner: Vlasnik
 edited_by: Izmijenjeno od
 folder: Fascikla
@@ -666,10 +670,10 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Grupna izmjena {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model Podataka
-settings_permissions: Uloge & Dozvole
-settings_project: Podešavanje Projekta
+settings_project: Podešavanja
 settings_webhooks: Webhooks
-settings_presets: Izgledi & Oznake
+settings_presets: Oznake
+settings_translations: Prevodi
 one_or_more_options_are_missing: Jedna ili više opcija nedostaje
 scope: Opseg
 select: Odaberite...
@@ -697,7 +701,6 @@ page_help_files_collection: >-
   **Biblioteka Fajlova** — Lista svih stavki koje su skladištene unutar ovog projekta. Prilagodite izgled, filtere, i način sortiranja kako odgovara vašim potrebama, pa čak sačuvajte i oznake ovih različitih konfiguracija za brzi pristup.
 page_help_files_item: >-
   **Detalji Fajla** — Forma za uređivanje metapodataka fajla, izmjena originalnog stanja, i ažuriranje podešavanja pristupa.
-page_help_settings_project: "**Podešavanje Projekta** — Globalna konfiguraciona podešavanja projekta."
 page_help_settings_datamodel_collections: >-
   **Model Podataka: Kolekcije** — Lista svih dostupnih kolekcija. Ovo uključuje vidljive, sakrivene, i sistemske kolekcije, kao i neuređene tabele baze podataka koje mogu biti dodane.
 page_help_settings_datamodel_fields: >-
@@ -787,7 +790,6 @@ fields:
     description: Opis
     tags: Tagovi
     language: Jezik
-    theme: Tema
     tfa_secret: Dvostruka potvrda Autentičnosti
     status: Status
     status_active: Aktivan
@@ -1064,8 +1066,6 @@ interfaces:
     one-to-many: One to Many
     description: Odaberi više povezanih stavki
     no_collection: Kolekciju nije moguće pronaći
-  system-folder:
-    folder: Fascikla
   select-radio:
     radio-buttons: Radio dugmići
     description: Odaberi jednu od više ponuđenih opcija
@@ -1292,3 +1292,11 @@ operations:
     subject: Naslov
   request:
     url: URL adresa
+standard: Uobičajeno
+compact: Kompaktno
+style: Stil
+fonts:
+  normal: Normalno
+  bold: Podebljano
+  italic: Kurziv
+  auto: Automatski

@@ -47,6 +47,13 @@ and: Kaj
 or: Aŭ
 dataset_too_large_currently_showing_n_items: La datumaro estas tro granda. Nur la unuaj {n} eroj estas nun montrataj.
 modifier: Ŝanĝilo
+extension_interface: Interfaco
+extension_display: Montri
+extension_layout: Aranĝo
+extension_panel: Panelo
+extension_hook: Hoko
+extension_modules: Moduloj
+enable: Ŝalti
 custom: Propra
 hook: Hoko
 enter_password_to_enable_tfa: Entajpu vian pasvorton por ŝalti dufaktoran kontroladon
@@ -300,7 +307,6 @@ dimensions: Dimensioj
 size: Grando
 created: Kreita
 modified: Ŝanĝita
-checksum: Kontrolsumo
 owner: Posedanto
 edited_by: Redaktita de
 folder: Dosierujo
@@ -593,11 +599,11 @@ other: Alia...
 adding_user: Aldoni uzanton
 unknown_user: Nekonata uzanto
 settings_data_model: Datummodelo
-settings_permissions: Roloj kaj permesoj
-settings_project: Agordoj de la projekto
+settings_project: Agordoj
 settings_webhooks: Rethokoj
 settings_flows: Fluoj
-settings_presets: Antaŭagordoj kaj legosignoj
+settings_presets: Legosignoj
+settings_translations: Tradukoj
 actions: Agoj
 select: Elekti...
 layout: Aranĝo
@@ -675,10 +681,6 @@ fields:
     description: Priskribo
     tags: Etikedoj
     language: Lingvo
-    theme: Aspekto
-    theme_auto: Aŭtomata (bazita je la sistemo)
-    theme_light: Hela reĝimo
-    theme_dark: Malhela reĝimo
     tfa_secret: Dufaktora kontrolado
     admin_options: Opcioj por administrantoj
     status: Stato
@@ -745,7 +747,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mia projekto...
-    project_logo_note: Blanka 40x40 SVG/PNG
     security_divider_title: Sekureco
     auth_password_policy:
       none_text: Neniu – ne rekomendata
@@ -979,7 +980,6 @@ interfaces:
   list-o2m:
     one-to-many: Unu-al-pluraj-rilato
   system-folder:
-    folder: Dosierujo
     description: Elekti dosierujon
   list:
     repeater: Ripetilo
@@ -1266,3 +1266,13 @@ operations:
     data: Datumoj
     serial: Seria
     parallel: Paralela
+compact: Kompakta
+style: Stilo
+fonts:
+  thin: Mallarĝa
+  normal: Normala
+  medium: Meza
+  bold: Grasa
+  black: Nigra
+  italic: Kursiva
+  auto: Aŭtomata

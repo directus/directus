@@ -53,6 +53,13 @@ or: Nebo
 init: Init
 dataset_too_large_currently_showing_n_items: Datový soubor je příliš velký. V současné době se zobrazuje prvních {n} položek.
 modifier: Modifikátor
+extension_interface: Rozhraní
+extension_display: Zobrazení
+extension_layout: Rozvržení
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Moduly
+enable: Povolit
 custom: Vlastní
 hook: Hook
 fill_width: Celá šířka
@@ -100,6 +107,7 @@ rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
 prefix: Prefix
 suffix: Přípona
+promote_version_preview: Náhled
 reset_bookmark: Obnovit záložku
 update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
@@ -436,7 +444,6 @@ dimensions: Rozměry
 size: Velikost
 created: Vytvořena
 modified: Upraveno
-checksum: Kontrolní součet
 owner: Vlastník
 edited_by: Upravil/a
 folder: Složka
@@ -588,7 +595,6 @@ errors:
   RECORD_NOT_UNIQUE: Zjištěna duplicitní hodnota
   USER_SUSPENDED: Uživatel pozastaven
   CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
-  UNPROCESSABLE_ENTITY: Nezpracovatelná entita
   INTERNAL_SERVER_ERROR: Neočekávaná chyba
   NOT_NULL_VIOLATION: Hodnota nesmí být null
   ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je příliš velký pro náhled
@@ -920,11 +926,11 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položek'
 no_options_available: Žádné možnosti nejsou k dispozici
 settings_data_model: Datový model
-settings_permissions: Role a oprávnění
-settings_project: Nastavení projektu
+settings_project: Nastavení
 settings_webhooks: Webhooky
 settings_flows: Toky
-settings_presets: Předvolby a záložky
+settings_presets: Záložky
+settings_translations: Překlady
 one_or_more_options_are_missing: Chybí jedna nebo více možností
 scope: Rozsah
 actions: Akce
@@ -959,7 +965,6 @@ page_help_files_collection: >-
   **Knihovna souborů** — Zobrazí všechny soubory nahrané do tohoto projektu. Přizpůsobte si rozvržení, filtry a třídění, abyste mohli přizpůsobit zobrazení a dokonce uložit záložky z těchto různých konfigurací pro rychlý přístup.
 page_help_files_item: >-
   **Detail souboru** – Formulář pro správu metadat souboru, úpravu původního aktiva a aktualizaci nastavení přístupu.
-page_help_settings_project: "**Nastavení projektu** – Možnosti globální konfigurace vašeho projektu."
 page_help_settings_datamodel_collections: >-
   **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
 page_help_settings_datamodel_fields: >-
@@ -1080,10 +1085,6 @@ fields:
     tags: Štítky
     user_preferences: Nastavení uživatele
     language: Jazyk
-    theme: Téma
-    theme_auto: Automaticky (použít dle systému)
-    theme_light: Světlý režim
-    theme_dark: Tmavý režim
     tfa_secret: Dvoufázové ověření
     admin_options: Možnosti správce
     status: Stav
@@ -1121,7 +1122,6 @@ fields:
     project_color: Barva projektu
     project_logo: Logo projektu
     default_language: Výchozí jazyk
-    branding: Branding a styl
     public_foreground: Veřejné popředí
     public_background: Veřejné pozadí
     public_note: Veřejná poznámka
@@ -1179,7 +1179,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Můj projekt...
     project_color_note: Pozadí přihlášení a loga
-    project_logo_note: Bílé 40x40 SVG/PNG
     public_note_placeholder: Krátká, veřejná zpráva, která podporuje formátování markdown...
     security_divider_title: Zabezpečení
     auth_password_policy:
@@ -1591,7 +1590,6 @@ interfaces:
     description: Vyberte více souvisejících položek
     no_collection: Kolekce nebyla nalezena
   system-folder:
-    folder: Složka
     description: Vyberte složku
     root_name: Kořenový adresář knihovny souborů
     system_default: Výchozí nastavení systému
@@ -2003,3 +2001,12 @@ operations:
     flows: Toky
     flow: Tok
     data: Údaje
+standard: Standardní
+compact: Kompaktní
+style: Styl
+fonts:
+  normal: Normální
+  bold: Tučné
+  black: Černá
+  italic: Kurzíva
+  auto: Automatický

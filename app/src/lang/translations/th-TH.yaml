@@ -52,6 +52,12 @@ or: หรือ
 init: ริเริ่ม
 dataset_too_large_currently_showing_n_items: ฐานข้อมูลใหญ่เกินไป. สามารถแสดงได้เพียง {n} รายการ.
 modifier: แก้ไขโดย
+extension_interface: อินเทอร์เฟซ
+extension_display: การแสดงผล
+extension_layout: เค้าโครง
+extension_panel: แพแนล
+extension_hook: ฮุก
+extension_modules: โมดูล
 custom: กำหนดเอง
 hook: ฮุก
 fill_width: กว้างเติมเต็ม
@@ -93,6 +99,7 @@ rename_folder: เปลี่ยนชื่อโฟลเดอร์
 delete_folder: ลบโฟลเดอร์
 prefix: คำนำหน้า
 suffix: คำต่อท้าย
+promote_version_preview: ดูตัวอย่าง
 reset_bookmark: รีเซ็ตบุ๊คมาร์ค
 update_bookmark: ปรับปรุงบุ๊คมาร์ค
 delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
@@ -376,7 +383,6 @@ dimensions: ขนาด
 size: ขนาด
 created: สร้างแล้ว
 modified: ถูกแก้ไข
-checksum: Checksum
 owner: เจ้าของ
 edited_by: แก้ไขโดย
 folder: โฟลเดอร์
@@ -513,7 +519,6 @@ errors:
   RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
   USER_SUSPENDED: ผู้ใช้ถูกระงับ
   CONTAINS_NULL_VALUES: ฟิลด์มีค่าว่าง
-  UNPROCESSABLE_ENTITY: เอ็นติตี้ที่ประมวลผลไม่ได้
   INTERNAL_SERVER_ERROR: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
   NOT_NULL_VIOLATION: ต้องไม่เป็นค่า null
   ILLEGAL_ASSET_TRANSFORMATION: ขนาดของภาพเกินกำหนด
@@ -765,10 +770,10 @@ editing_unit: 'แก้ไข {unit}'
 editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
 no_options_available: ไม่มีตัวเลือกให้ใช้
 settings_data_model: รูปแบบข้อมูล
-settings_permissions: บทบาทและสิทธิ
-settings_project: การตั้งค่าโครงการ
+settings_project: การตั้งค่า
 settings_webhooks: Webhooks
-settings_presets: ค่าที่ตั้งไว้ล่วงหน้าและบุ๊คมาร์ก
+settings_presets: บุ๊กมาร์ก
+settings_translations: การแปลภาษา
 one_or_more_options_are_missing: ไม่พบตัวเลือกรายการ
 scope: ขอบเขต
 select: เลือก...
@@ -799,7 +804,6 @@ page_help_files_collection: >-
   **ไฟล์ไลบรารี** — แสดงทุกไฟล์ที่ถูกอัพโหลดมาที่โปรเจ็คนี้ สามารถแก้ไขเค้าโครง, การกรอง, และการเรียงลำดับให้สอดคล้องกับมุมมองที่ต้องการ และบันทึกเป็นบุ๊คมาร์กของการตั้งค่าแต่ละแบบเพื่อความรวดเร็วในการเข้าถึงได้
 page_help_files_item: >-
   **รายละเอียดไฟล์** — ฟอร์มสำหรับการจัดการ metadata ของไฟล์, แก้ไขไฟล์ต้นแบบ และปรับปรุงการตั้งค่าการเข้าถึง
-page_help_settings_project: "**การตั้งค่าโครงการ** — การตั้งค่าทั่วไปของโปรเจ็ค"
 page_help_settings_datamodel_collections: >-
   **คอลเลกชัน** — แสดงทุกคอลเลกชัน รวมถึงคอลเลกชันที่ซ่อน คอลเลกชันของระบบ และตารางในฐานข้อมูลที่ถูกเพิ่มเข้ามาภายหลัง
 page_help_settings_datamodel_fields: >-
@@ -890,7 +894,6 @@ fields:
     description: รายละเอียด
     tags: แท็ก
     language: ภาษา
-    theme: ธีม
     tfa_secret: การยืนยันตัวตนแบบสองปัจจัย
     status: สถานะ
     status_draft: ฉบับร่าง
@@ -1225,7 +1228,6 @@ interfaces:
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
     no_collection: ไม่พบตาราง
   system-folder:
-    folder: โฟลเดอร์
     description: เลือกแฟ้ม
   select-radio:
     radio-buttons: ปุ่มตัวเลือก
@@ -1496,3 +1498,11 @@ operations:
     header: เฮดเดอร์
   trigger:
     data: ข้อมูล
+standard: มาตรฐาน
+compact: กระชับ
+style: สไตล์
+fonts:
+  normal: ปกติ
+  bold: ตัวหนา
+  italic: ตัวเอียง
+  auto: อัตโนมัติ

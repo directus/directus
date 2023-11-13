@@ -52,6 +52,13 @@ or: یا
 init: شروع
 dataset_too_large_currently_showing_n_items: مجموعه داده خیلی بزرگ است. در حال حاضر {n} مورد اول نشان داده می شود.
 modifier: اصلاح شده
+extension_interface: رابط کاربری
+extension_display: نحوه نمایش
+extension_layout: چیدمان
+extension_panel: پنل
+extension_hook: هوک
+extension_modules: ماژول‌ها
+enable: فعال سازی
 custom: سفارشی
 hook: هوک
 fill_width: عرض کامل
@@ -99,6 +106,7 @@ rename_folder: تغییر نام پوشه
 delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
+promote_version_preview: پيش نمايش
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
@@ -436,7 +444,6 @@ dimensions: ابعاد
 size: سایز
 created: ایجاد شد
 modified: دستکاری شده
-checksum: Checksum
 owner: مالک
 edited_by: ویرایش شده توسط
 folder: پوشه
@@ -596,7 +603,6 @@ errors:
   RECORD_NOT_UNIQUE: موارد تکراری یافت شد
   USER_SUSPENDED: کاربر معلق شد
   CONTAINS_NULL_VALUES: فیلد حاوی مقدار null است
-  UNPROCESSABLE_ENTITY: موجودیت غیرقابل پردازش
   INTERNAL_SERVER_ERROR: خطای غیر منتظره
   NOT_NULL_VIOLATION: مقدار نمی تواند خالی (نال) باشد
   ILLEGAL_ASSET_TRANSFORMATION: منبع تصویر برای پیش نمایش بیش از حد بزرگ است
@@ -947,12 +953,11 @@ editing_unit: 'در حال ویرایش {unit}'
 editing_in_batch: 'در حال ویرایش جمعی {count} آیتم'
 no_options_available: هیچ گزینه ای وجود ندارد
 settings_data_model: مدل داده
-settings_permissions: نقش ها و اجازه ها
-settings_project: تنظیمات پروژه
+settings_project: تنظیمات
 settings_webhooks: هوک های تحت وب
 settings_flows: اتوماسیون
-settings_presets: الگوها و نشانک ها
-settings_translations: ایجاد ترجمه سفارشی
+settings_presets: نشانک‌ها
+settings_translations: ترجمه‌ها
 one_or_more_options_are_missing: یک یا چند مورد از تنظیمات، وجود ندارد
 scope: محدوده در دسترس
 actions: فعالیت ها
@@ -987,7 +992,6 @@ page_help_files_collection: >-
   **مجموعه فایلها** - تمامی محتوای آپلود شده برای این پروژه را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
 page_help_files_item: >-
   **جزئیات فایل** - فرمی برای مدیریت متادیتای فایل، ویرایش محتوای اصلی و بروزرسانی تنظیمات دسترسی.
-page_help_settings_project: "**تنظیمات پروژه** - گزینه های مربوط به بالاترین سطح تنظیمات پروژه شما."
 page_help_settings_datamodel_collections: >-
   **مدل داده: مجموعه ها** - تمامی مجموعه های موجود را لیست می کند. این شامل مجموعه های پیدا و نهان و مجموعه های سیستمی و همچنین جداول پایگاه داده مدیریت نشده ای است که میتوانند اضافه شوند.
 page_help_settings_datamodel_fields: >-
@@ -1110,10 +1114,6 @@ fields:
     tags: برچسب ها
     user_preferences: تنظیمات مربوط به کاربر
     language: زبان
-    theme: پوسته
-    theme_auto: انتخاب خودکار پوسته (توسط سیستم)
-    theme_light: تم روشن
-    theme_dark: تم شبانه (تاریک)
     tfa_secret: احراز هویت دو عاملی
     admin_options: تنظیمات ادمین
     status: وضعیت
@@ -1152,7 +1152,6 @@ fields:
     project_color: رنگ پروژه
     project_logo: نماد پروژه
     default_language: زبان پیش‎فرض
-    branding: برندینگ و استایل
     public_foreground: رنگ پیش زمینه عمومی
     public_background: رنگ پس زمینه عمومی
     public_note: یادداشت عمومی
@@ -1212,7 +1211,6 @@ field_options:
   directus_settings:
     project_name_placeholder: پروژه من...
     project_color_note: نماد برگه ورود
-    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: یک پیام کوتاه و عمومی که از قالب بندی علامت گذاری پشتیبانی می کند...
     security_divider_title: امنیت
     auth_password_policy:
@@ -1646,7 +1644,6 @@ interfaces:
     description: انتخاب چندین آیتم مرتبط
     no_collection: گزینه مورد نظر یافت نشد.
   system-folder:
-    folder: پوشه
     description: یک پوشه انتخاب کنید
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: پوشه اصلی مجموعه فایلها
@@ -2163,3 +2160,14 @@ operations:
     batch: دسته
     batch_size: اندازه دسته
     cache: Cache
+standard: استاندارد
+compact: جمع و جور
+style: استایل
+fonts:
+  thin: نازک
+  normal: عادی
+  medium: میانه
+  bold: توپُر
+  black: سیاه
+  italic: ایتالیک
+  auto: Auto

@@ -25,3 +25,6 @@ fields:
 
   - field: parent
     width: half
+
+  - field: version
+    width: half

@@ -2,7 +2,7 @@ import { Action } from '@directus/constants';
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';

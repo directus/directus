@@ -26,10 +26,10 @@ Version-locking is available on Enterprise Projects.
 
 ## Backups
 
-By default, file assets and databases are backed up once per day on all Standard and Enterprise Projects. Additionally,
-Enterprise customers can work with our team for more tailored backup solutions. In the event of an emergency, such as
-your project crashing, don't worry! Your data will be safe. If you need access to your backed-up data,
-[contact us](https://directus.io/contact).
+By default, file assets and databases are backed up once per day on all Professional and Enterprise Projects.
+Additionally, Enterprise customers can work with our team for more tailored backup solutions. In the event of an
+emergency, such as your project crashing, don't worry! Your data will be safe. If you need access to your backed-up
+data, [contact us](https://directus.io/contact).
 
 ## Caching
 
@@ -51,14 +51,14 @@ The Directus Team will help you work through this process on all [Enterprise Pro
 ## Datacenter Regions
 
 The location you choose to host your Project in can have a measurable impact. To help optimize your Project and meet any
-local data compliance laws such as GDPR, Standard and Enterprise offer multiple Datacenter regions to host from. There
-are 19 regions available for Enterprise Projects, and 3 for Standard Projects:
+local data compliance laws such as GDPR, Professional and Enterprise offer multiple Datacenter regions to host from.
+There are 19 regions available for Enterprise Projects, and 3 for Professional Projects:
 
 <table>
   <tr>
     <th>Region</th>
     <th>Enterprise</th>
-    <th>Standard</th>
+    <th>Professional</th>
   </tr>
   <tr>
     <td>United States, East</td>
@@ -195,10 +195,10 @@ Project tier. Please refer to [Projects](/user-guide/cloud/projects) as well as 
 Rate limiting refers to technical limitations within Directus Cloud as well as Cloud Projects. You will encounter the
 following API request limits:
 
-| Tier       | Limit                          |
-| ---------- | ------------------------------ |
-| Standard   | 50 requests per second per IP  |
-| Enterprise | 100 requests per second per IP |
+| Tier         | Limit                          |
+| ------------ | ------------------------------ |
+| Professional | 50 requests per second per IP  |
+| Enterprise   | 100 requests per second per IP |
 
 ::: tip Learn More
 
@@ -252,12 +252,12 @@ Tenancy refers to how client data is stored within a database. In single-tenancy
 from only one tenant. In multi-tenancy architecture, a database stores data from multiple tenants, with mechanisms in
 place to protect data privacy. In the context of Directus Cloud, each Project represents a tenant.
 
-**Standard**\
-Standard Projects are created using a multi-tenant architecture. However, if your neighbor's Project gets busy, it will not
-impact your Project, because each Standard Project is scoped to one container per Project with dedicated minimum resources.
-Projects also have the ability to scale beyond this minimum allocation based on currently available resources within the
-multitenant pool. However, these additional resources are not guaranteed and are offered on a dynamic first-come, first-serve
-basis. For end-to-end, single-tenant infrastructure with fully dedicated resources, [contact us about our Enterprise Tier](https://directus.io/contact)
+**Professional**\
+Professional Projects are created using a multi-tenant architecture. However, if your neighbor's Project gets busy, it will
+not impact your Project, because each Professional Project is scoped to one container per Project with dedicated minimum
+resources. Projects also have the ability to scale beyond this minimum allocation based on currently available resources
+within the multitenant pool. However, these additional resources are not guaranteed and are offered on a dynamic first-come,
+first-serve basis. For end-to-end, single-tenant infrastructure with fully dedicated resources, [contact us about our Enterprise Tier](https://directus.io/contact)
 
 **Enterprise**\
 Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project - no neighbors! Ready to upgrade to Enterprise?

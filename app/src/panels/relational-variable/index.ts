@@ -1,11 +1,13 @@
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import PanelRelationalVariable from './panel-relational-variable.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'relational-variable',
 	name: '$t:panels.relational-variable.name',
 	description: '$t:panels.relational-variable.description',
 	icon: 'science',
+	preview: PreviewSVG,
 	component: PanelRelationalVariable,
 	variable: true,
 	options: [

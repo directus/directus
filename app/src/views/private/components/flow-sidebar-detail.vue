@@ -230,7 +230,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .v-icon {
@@ -241,7 +241,7 @@ const runManualFlow = async (flowId: string) => {
 	--form-horizontal-gap: 24px;
 	--form-vertical-gap: 24px;
 
-	margin-top: var(--v-card-padding);
+	margin-top: var(--v-card-padding, 16px);
 
 	:deep(.type-label) {
 		font-size: 1rem;

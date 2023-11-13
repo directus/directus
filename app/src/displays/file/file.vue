@@ -54,12 +54,12 @@ const imageThumbnail = computed(() => {
 img {
 	height: 100%;
 	object-fit: cover;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	position: relative;
 	display: inline-flex;
@@ -67,17 +67,17 @@ img {
 	justify-content: center;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;

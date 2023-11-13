@@ -52,6 +52,13 @@ or: 或
 init: 初始化
 dataset_too_large_currently_showing_n_items: 資料集過長，目前只顯示前 {n} 個物件
 modifier: 修改器
+extension_interface: 介面
+extension_display: 顯示
+extension_layout: 版面配置
+extension_panel: 面板
+extension_hook: 掛鉤
+extension_modules: 模組
+enable: 啟用
 custom: 自訂
 hook: 掛鉤
 fill_width: 填滿寬度
@@ -95,6 +102,7 @@ rename_folder: 重新命名資料夾
 delete_folder: 刪除資料夾
 prefix: 前綴
 suffix: 後綴
+promote_version_preview: 預覽
 reset_bookmark: 重設書籤
 update_bookmark: 更新書籤
 delete_bookmark: 刪除書籤
@@ -415,7 +423,6 @@ dimensions: 尺寸
 size: 尺寸
 created: 已建立
 modified: 已修改
-checksum: 校驗和
 owner: 擁有者
 edited_by: 編輯者
 folder: 資料夾
@@ -569,7 +576,6 @@ errors:
   RECORD_NOT_UNIQUE: 偵測到重複資料
   USER_SUSPENDED: 用戶已停用
   CONTAINS_NULL_VALUES: 欄位含有空白值
-  UNPROCESSABLE_ENTITY: 無法處理的項目
   INTERNAL_SERVER_ERROR: 未預期的錯誤
   NOT_NULL_VIOLATION: 值不能為null
   ILLEGAL_ASSET_TRANSFORMATION: 原始檔案過大，無法預覽
@@ -911,11 +917,11 @@ editing_unit: '編輯 {unit}'
 editing_in_batch: '批次編輯 {count} 個項目'
 no_options_available: 沒有可用的選項
 settings_data_model: 資料模型
-settings_permissions: 角色和權限
-settings_project: 專案設定
+settings_project: 設定
 settings_webhooks: Webhooks
 settings_flows: 流程
-settings_presets: 預設與書籤
+settings_presets: 書籤
+settings_translations: 翻譯
 one_or_more_options_are_missing: 一或多個選項遺失
 scope: 範圍
 actions: 操作
@@ -950,7 +956,6 @@ page_help_files_collection: >-
   **檔案庫** - 列出所有上傳至此專案的檔案。自訂顯示方式、篩選器以及排序方式。您也可將不同的顯示方式建立為書籤以供日後快速存取。
 page_help_files_item: >-
   **檔案細節** - 管理檔案元資料、編輯原始資源以及更新存取設定。
-page_help_settings_project: "**專案設定** - 專案的全域設定選項"
 page_help_settings_datamodel_collections: >-
   **資料模型：資料集** - 列出所有可用的資料集。包含可見、隱藏以及系統資料集，以及尚未加入管理介面的資料庫。
 page_help_settings_datamodel_fields: >-
@@ -1063,10 +1068,6 @@ fields:
     tags: 標籤
     user_preferences: 使用者喜好設定
     language: 語言
-    theme: 主題
-    theme_auto: 自動 (根據系統設定)
-    theme_light: 淺色模式
-    theme_dark: 深色模式
     tfa_secret: 雙重身份驗證
     admin_options: 管理選項
     status: 狀態
@@ -1103,7 +1104,6 @@ fields:
     project_color: 專案顏色
     project_logo: 專案 Logo
     default_language: 預設語言
-    branding: 品牌識別與形象
     public_foreground: 公開前臺
     public_background: 公開後臺
     public_note: 公開頁面底部文字
@@ -1163,7 +1163,6 @@ field_options:
   directus_settings:
     project_name_placeholder: 我的專案...
     project_color_note: 登入及 Logo 背景
-    project_logo_note: 白底 40x40 SVG/PNG
     public_note_placeholder: 可使用 markdown 格式撰寫
     security_divider_title: 安全
     auth_password_policy:
@@ -1586,7 +1585,6 @@ interfaces:
     description: 選擇多個關聯項目
     no_collection: 找不到該集合
   system-folder:
-    folder: 資料夾
     description: 選擇一個資料夾
     root_name: 檔案庫的基礎位置
     system_default: 系統預設值
@@ -2041,3 +2039,12 @@ operations:
     flows: 流程
     flow: 流程
     data: 資料
+standard: 標準
+compact: 精簡
+style: 樣式
+fonts:
+  normal: 一般
+  bold: 粗體
+  black: 黑色
+  italic: 斜體
+  auto: 自動

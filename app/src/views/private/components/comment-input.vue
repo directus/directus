@@ -363,16 +363,16 @@ function pressedEnter() {
 	padding: 5px;
 	overflow: scroll;
 	white-space: pre;
-	background-color: var(--background-input);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--form--field--input--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 }
 
 .new-comment:focus {
 	position: relative;
 	overflow: scroll;
-	border-color: var(--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 	transition: margin-bottom var(--fast) var(--transition);
 }
 
@@ -396,7 +396,7 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 8px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
@@ -405,14 +405,14 @@ function pressedEnter() {
 	position: absolute;
 	bottom: 8px;
 	left: 36px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
 
 .new-comment .add-mention:hover,
 .new-comment .add-emoji:hover {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .buttons {
@@ -423,16 +423,16 @@ function pressedEnter() {
 	.mention,
 	.emoji-button {
 		--v-button-background-color: transparent;
-		--v-button-color: var(--foreground-subdued);
-		--v-button-color-hover: var(--primary);
+		--v-button-color: var(--theme--foreground-subdued);
+		--v-button-color-hover: var(--theme--primary);
 	}
 
 	.cancel {
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--theme--foreground-subdued);
 	}
 
 	.post-comment {
-		--v-button-background-color-disabled: var(--background-normal-alt);
+		--v-button-background-color-disabled: var(--theme--background-accent);
 	}
 }
 

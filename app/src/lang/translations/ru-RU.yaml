@@ -27,6 +27,7 @@ method: Метод
 published: Опубликовано
 draft: Черновик
 archived: Архивировано
+extensions: Расширения
 modules: Модули
 module_bar: Панель модулей
 logs: Журналы
@@ -53,6 +54,16 @@ or: или
 init: Инициализация
 dataset_too_large_currently_showing_n_items: Набор данных слишком большой. Показано первые {n} элементов.
 modifier: Модификатор
+extension_interface: Интерфейс
+extension_display: Отображение
+extension_layout: Макет
+extension_module: Модуль
+extension_panel: Панель
+extension_hook: Хук
+extension_displays: Отображения
+extension_modules: Модули
+extension_panels: Панели
+enable: Включить
 custom: Пользовательский
 hook: Хук
 fill_width: В ширину
@@ -100,6 +111,17 @@ rename_folder: Переименовать папку
 delete_folder: Удалить папку
 prefix: Префикс
 suffix: Суффикс
+version: Версия
+version_key: Ключ Версии
+version_name: Название Версии
+switch_version: Сменить Версию
+switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
+create_version: Создать Версию
+rename_version: Переименовать Версию
+compare_version: Сравнить Версии
+save_version: Сохранить Версию
+promote_version_changes: Изменения
+promote_version_preview: Предпросмотр
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -145,7 +167,16 @@ validationError:
   nnull: Значение не может быть NULL
   required: Значение обязательно
   unique: Значение должно быть уникальным
+  email: Значение должно быть действительным email адресом
   regex: Значение имеет неправильный формат
+  starts_with: Значение должно начинаться с "{substring}"
+  istarts_with: Значение должно начинаться с "{substring}"
+  nstarts_with: Значение не может начинаться с "{substring}"
+  nistarts_with: Значение не может начинаться с "{substring}"
+  ends_with: Значение должно заканчиваться на "{substring}"
+  iends_with: Значение должно заканчиваться на "{substring}"
+  nends_with: Значение не может заканчиваться на "{substring}"
+  niends_with: Значение не может заканчиваться на "{substring}"
 all_access: Полный доступ
 no_access: Без доступа
 use_custom: Настраиваемый
@@ -250,6 +281,8 @@ geometry.Polygon: Многоугольник
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: Мультиполигон
+theme_light: Светлая тема
+theme_dark: Тёмная тема
 not_available_for_type: Недоступно для этого типа
 create_translations: Создать переводы
 auto_refresh: Автообновление
@@ -332,6 +365,7 @@ clear_items: Очистить элементы
 reset_to_default: Сбросить до значений по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
+archive_all: Архивировать всё
 show_all_activity: Показать историю всех действий
 page_not_found: Страница не найдена
 page_not_found_body: Страница, которую вы ищете, кажется, не существует.
@@ -437,7 +471,6 @@ dimensions: Размеры
 size: Размер
 created: Создано
 modified: Изменено
-checksum: Контрольная сумма
 owner: Владелец
 edited_by: Изменено
 folder: Папка
@@ -597,7 +630,6 @@ errors:
   RECORD_NOT_UNIQUE: Обнаружен дубликат значения
   USER_SUSPENDED: Пользователь заблокирован
   CONTAINS_NULL_VALUES: Поле содержит значения NULL
-  UNPROCESSABLE_ENTITY: Необрабатываемый объект
   INTERNAL_SERVER_ERROR: Неожиданная ошибка
   NOT_NULL_VIOLATION: Значение не может быть NULL
   ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
@@ -734,6 +766,7 @@ upload_pending: Ожидание загрузки
 drag_file_here: Перетащите файлы сюда
 click_to_browse: Нажмите для просмотра
 interface_options: Параметры интерфейса
+display_options: Параметры отображения
 layout_options: Параметры макета
 rows: Записи
 columns: Колонки
@@ -952,12 +985,11 @@ editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
 no_options_available: Нет доступных вариантов
 settings_data_model: Модель данных
-settings_permissions: Роли и права доступа
-settings_project: Настройки проекта
+settings_project: Настройки
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
-settings_presets: Шаблоны и закладки
-settings_translations: Пользовательские Переводы
+settings_presets: Закладки
+settings_translations: Переводы
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
 scope: Область применения
 actions: Действия
@@ -992,7 +1024,6 @@ page_help_files_collection: >-
   **Библиотека файлов** — список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_files_item: >-
   **Карточка файла** — форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
-page_help_settings_project: "**Настройки проекта** — глобальные параметры конфигурации проекта."
 page_help_settings_datamodel_collections: >-
   **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
@@ -1079,6 +1110,7 @@ fields:
     unarchive_value: Значение для извлеченных из архива
     sort_field: Поле сортировки
     accountability: Отслеживание действий и редакций
+    versioning: Версионирование
     archive_field: Архивировать поле
     item_duplication_fields: Поля дублирования предметов
   directus_files:
@@ -1117,10 +1149,6 @@ fields:
     tags: Теги
     user_preferences: Пользовательские настройки
     language: Язык
-    theme: Тема
-    theme_auto: Автоматически (как в системе)
-    theme_light: Светлая тема
-    theme_dark: Тёмная тема
     tfa_secret: Двухфакторная аутентификация
     admin_options: Параметры администратора
     status: Статус
@@ -1136,6 +1164,8 @@ fields:
     last_page: Последняя страница
     last_access: Последний доступ
     email_notifications: Уведомления по e-mail
+    theme_light_overrides: Настройка Светлой Темы
+    theme_dark_overrides: Настройка Тёмной Темы
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1159,7 +1189,6 @@ fields:
     project_color: Цвет проекта
     project_logo: Логотип проекта
     default_language: Язык по умолчанию
-    branding: Фирменный стиль
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
@@ -1177,6 +1206,8 @@ fields:
     transformations_presets: Ограничить преобразования для шаблонов ниже
     image_editor: Редактор изображений
     custom_aspect_ratios: Пользовательские пропорции
+    theme_light_overrides: Настройка Светлой Темы
+    theme_dark_overrides: Настройка Тёмной Темы
   directus_shares:
     name: Название
     role: Роль
@@ -1219,7 +1250,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Мой проект...
     project_color_note: Фон страницы входа и логотипа
-    project_logo_note: Белый 40х40 SVG/PNG
     public_note_placeholder: Короткое сообщение, видимое для всех (поддерживается форматирование с помощью Markdown)...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -1350,6 +1380,7 @@ share: Поделиться
 share_item: Поделиться элементом
 shared_with_you: С вами поделились элементом
 shared_enter_passcode: Для продолжения введите пароль...
+shared_leave_blank_for_passwordless_access: Оставьте пустым для безпарольного доступа
 shared_leave_blank_for_unlimited: Оставьте пустым для неограниченного
 shared_times_remaining: Ссылка может быть использована {n} раз
 shared_last_remaining: Одноразовая ссылка
@@ -1433,6 +1464,7 @@ search: Поиск
 select_existing: Выбрать из существующего
 select_field_type: Выберите тип поля
 select_interface: Выберите интерфейс
+select_display: Выберите отображение
 settings: Настройки
 sign_in: Войти
 sign_out: Выйти
@@ -1459,6 +1491,7 @@ search_filter: Поиск и фильтрация
 enable_search_filter: Включить поиск и фильтрацию
 item_link: Ссылка на элемент
 show_link_to_item: Показывать ссылку на элемент
+navigate_to_item: Перейти к Элементу
 undo_removed_item: Отменить удаление элемента
 remove_item: Удалить элемент
 delete_item: Удалить элемент
@@ -1515,6 +1548,7 @@ interfaces:
     code: Код
     description: Написать или поделиться фрагментами кода
     line_number: Номер строки
+    line_wrapping: Перенос строк
     placeholder: Введите код сюда...
   system-collection:
     collection: Коллекция
@@ -1598,6 +1632,8 @@ interfaces:
     description: Окно выбора параметров интерфейса
   system-display:
     display: Отображение
+  system-display-options:
+    display-options: Параметры отображения
   list-m2m:
     many-to-many: Многие ко Многим
     description: Выберите несколько связанных элементов
@@ -1650,7 +1686,6 @@ interfaces:
     description: Выберите связанные элементы
     no_collection: Коллекция не найдена
   system-folder:
-    folder: Папка
     description: Выбрать папку
     field_hint: Папка по умолчанию для загруженных файлов без указания папки. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
@@ -1668,6 +1703,7 @@ interfaces:
     field_note_placeholder: Примечание к полю...
     incompatible_data: Текущие данные не совместимы с интерфейсом репитера и будут переопределены при добавлении элементов в репитер
     interface_group: Параметры интерфейса
+    display_group: Параметры отображения
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
@@ -2019,6 +2055,7 @@ panels:
     smooth: Гладкий
     straight: Прямой
     step_line: Ступенчатая линия
+    show_legend: Показать легенду
   meter:
     name: Счётчик
   piechart:
@@ -2139,3 +2176,18 @@ operations:
     data: Данные
     parallel: Параллельно
     cache: Кэш
+standard: Стандартный
+compact: Компактный
+style: Стиль
+fonts:
+  thin: Тонкий
+  normal: Нормальный
+  medium: Средний
+  bold: Жирный
+  black: Чёрный
+  italic: Наклонный
+  auto: Авто
+text_align: Выравнивание Текста
+font_weight: Толщина Шрифта
+font_style: Стиль Шрифта
+font_size: Размер Шрифта

@@ -266,7 +266,7 @@ async function save() {
 }
 
 .v-icon.required {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .content {

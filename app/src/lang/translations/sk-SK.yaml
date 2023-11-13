@@ -27,6 +27,7 @@ method: Metóda
 published: Zverejnené
 draft: Koncept
 archived: Archivované
+extensions: Rozšírenia
 modules: Moduly
 module_bar: Panel modulov
 logs: Logy
@@ -53,6 +54,26 @@ or: Alebo
 init: Inicializácia
 dataset_too_large_currently_showing_n_items: Dataset je príliš veľký. Zobrazuje sa prvých {n} položiek.
 modifier: Modifikátor
+extension_interface: Rozhranie
+extension_display: Zobrazenie
+extension_layout: Rozloženie
+extension_module: Modul
+extension_panel: Panel
+extension_hook: Hák
+extension_endpoint: Koncový bod
+extension_operation: Operácia
+extension_bundle: Balík
+extension_interfaces: Rozhranie
+extension_displays: Displeje
+extension_layouts: Rozloženia
+extension_modules: Moduly
+extension_panels: Panely
+extension_hooks: Háky
+extension_endpoints: Koncové body
+extension_operations: Operácie
+extension_bundles: Balíky
+enable: Zapnúť
+disable: Vypnúť
 custom: Vlastné
 hook: Hák
 fill_width: Vyplniť šírku
@@ -100,6 +121,31 @@ rename_folder: Premenovať priečinok
 delete_folder: Odstrániť priečinok
 prefix: Prefix
 suffix: Sufix
+keep: Ponechať
+version: Verzia
+version_key: Kľúč verzie
+version_name: Názov verzie
+main_version: Hlavné
+switch_version: Prepnúť verziu
+switch_version_copy: Naozaj chcete prepnúť na verziu "{version}"? Neuložené zmeny sa stratia.
+create_version: Vytvoriť verziu
+rename_version: Premenovať verziu
+compare_version: Porovnať verzie
+save_version: Uložiť verziu
+promote_version: Povýšiť verziu
+promote_version_disabled: Žiadne zmeny
+promote_version_drawer_title: Povýšiť {version} ako hlavnú
+promote_version_changes: Zmeny
+promote_version_preview: Náhľad
+outdated_notice: >-
+  Od vytvorenia tejto verzie bola hlavná položka upravená. Prosím prezrite všetky nasledujúce polia a potvrďte, ktorá verzia sa má použiť pri povýšení tejto verzie do hlavnej.
+promote_notice: >-
+  Prosím prezrite všetky nasledujúce hodnoty polí a potvrďte ktorá verzia sa má použiť pri povýšení tejto verzie do hlavnej.
+delete_version: Odstrániť verziu
+delete_version_copy: >-
+  Naozaj chcete odstrániť verziu "{version}"? Táto akcia sa nedá vrátiť.
+delete_on_promote_copy: >-
+  Prajete si odstrániť alebo ponechať verziu "{version}" po jej povýšení?
 reset_bookmark: Obnoviť záložku
 update_bookmark: Aktualizovať záložku
 delete_bookmark: Odstrániť záložku
@@ -145,6 +191,7 @@ validationError:
   nnull: Hodnota nemôže byť null
   required: Hodnota je povinná
   unique: Hodnota musí byť unikátna
+  email: Hodnota musí byť platná emailová adresa
   regex: Hodnota nemá správny formát
   starts_with: Hodnota musí začínať na {substring}
   istarts_with: Hodnota musí začínať na {substring}
@@ -259,6 +306,9 @@ geometry.Polygon: Polygón
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
+theme_auto: Automaticky (podľa systému)
+theme_light: Svetlý režim
+theme_dark: Tmavý režim
 not_available_for_type: Nedostupné pre tento typ
 create_translations: Vytvoriť preklady
 auto_refresh: Auto obnovenie
@@ -341,6 +391,7 @@ clear_items: Vyčistiť položky
 reset_to_default: Resetovať predvolené
 undo_changes: Vrátiť zmeny
 notifications: Notifikácie
+archive_all: Archivovať všetko
 show_all_activity: Zobraziť všetky aktivity
 page_not_found: Stránka sa nenašla
 page_not_found_body: Stránka, ktorú hľadáte neexistuje.
@@ -353,6 +404,7 @@ revision_delta_created: Vytvorené
 revision_delta_created_externally: Vytvorené externe
 revision_delta_updated: 'Zmenené 1 pole | Zmenené {count} polia'
 revision_delta_deleted: Odstránené
+revision_delta_version_saved: 'Uložiť verziu (1 upravené pole) | Uložiť verziu ({count} upravených polí)'
 revision_delta_reverted: Vrátené
 revision_delta_update_message: Toto pole je zmenené, ale jeho hodnota je utajená z bezpečnostných dôvodov.
 revision_delta_other: Revízia
@@ -446,7 +498,6 @@ dimensions: Rozmery
 size: Veľkosť
 created: Vytvorené
 modified: Upravené
-checksum: Kontrolný súčet
 owner: Vlastník
 edited_by: Upravil
 folder: Priečinok
@@ -464,6 +515,7 @@ import_from_url: Import súboru z URL
 replace_from_device: Nahradiť súbor zo zariadenia
 replace_from_library: Nahradiť súbor z knižnice
 replace_from_url: Nahradiť súbor z URL
+no_image_selected: Nie je vybratý žiadny obrázok
 no_file_selected: Nevybrali ste žiadny súbor
 download_file: Stiahnuť súbor
 open_file_in_tab: Otvoriť súbor v novej záložke
@@ -490,6 +542,7 @@ generated_uuid: Generované UUID
 manual_string: Ručne zadaný text
 save_and_create_new: Uložiť a vytvoriť nové
 save_and_stay: Uložiť a zostať
+save_and_quit: Uložiť a odísť
 save_as_copy: Uložiť ako kópiu
 add_existing: Pridať existujúce
 creating_items: Tvorba položiek
@@ -503,6 +556,7 @@ expand: Rozbaliť
 collapse: Zbaliť
 select_item: Vybrať položku
 no_items: Žiadne položky
+search_items: Hľadať položky...
 disabled: Vypnuté
 information: Informácia
 report_bug: Nahlásiť chybu
@@ -513,6 +567,7 @@ operation_not_found: 'Operácia "{operation}" sa nenašla.'
 reset_interface: Obnoviť rozhranie
 display_not_found: 'Zobrazenie "{display}" sa nenašlo.'
 reset_display: Obnoviť zobrazenie
+list-m2a: Skladateľ (M2A)
 item_count: 'Žiadne položky | Jedna položka | {count} položiek'
 no_items_copy: V zbierke zatiaľ nie sú žiadne položky.
 file_count: 'Žiadne súbory | Jeden súbor | {count} súborov'
@@ -581,6 +636,7 @@ bookmark_doesnt_exist_copy: Záložka, ktorú sa snažíte otvoriť sa nenašla.
 bookmark_doesnt_exist_cta: Vrátiť sa do zbierky
 select_an_item: Vyberte položku...
 edit: Upraviť
+edit_item: Upraviť položku
 enabled: Zapnuté
 disable_tfa: Vypnúť 2FA
 admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
@@ -610,7 +666,7 @@ errors:
   RECORD_NOT_UNIQUE: Zistila sa duplicitná hodnota
   USER_SUSPENDED: Používateľ pozastavený
   CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
-  UNPROCESSABLE_ENTITY: Nespracovaná entita
+  UNPROCESSABLE_CONTENT: Nespracovateľný obsah
   INTERNAL_SERVER_ERROR: Neočakávaná chyba
   NOT_NULL_VIOLATION: Hodnota nemôže byť null
   ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je príliš veľký na náhľad
@@ -631,6 +687,7 @@ security: Zabezpečenie
 value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
 create_bookmark: Vytvoriť záložku
+create_default: Vytvoriť predvolené
 edit_bookmark: Upraviť záložku
 edit_personal_bookmark: Upraviť osobnú záložku
 edit_role_bookmark: Upraviť záložku role
@@ -747,6 +804,7 @@ upload_pending: Čaká na nahratie
 drag_file_here: Pretiahnute a pustite súbor sem
 click_to_browse: Kliknite na prehliadanie
 interface_options: Možnosti rozhrania
+display_options: Možnosti zobrazenia
 layout_options: Možnosti rozloženia
 rows: Riadky
 columns: Stĺpce
@@ -956,6 +1014,9 @@ choices: Možnosti
 choices_option_configured_incorrectly: Možnosti sú nesprávne nastavené
 deselect: Odznačiť
 deselect_all: Odznačiť všetko
+theme: Téma
+select_a_theme: Vybrať tému
+appearance_light: Tenké
 other: Ostatné...
 adding_user: Pridávanie používateľa
 unknown_user: Neznámy používateľ
@@ -967,12 +1028,13 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
 no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
-settings_permissions: Role a oprávnenia
-settings_project: Nastavenia projektu
+settings_permissions: Riadenie prístupu
+settings_project: Nastavenia
+settings_theming: Témy
 settings_webhooks: Webhooky
 settings_flows: Toky
-settings_presets: Presety a Záložky
-settings_translations: Vlastné preklady
+settings_presets: Záložky
+settings_translations: Preklady
 one_or_more_options_are_missing: Chýba jedna alebo viac možností
 configure_field_key_to_continue: Pred pokračovaním nastavte kľúč poľa
 scope: Rámec
@@ -987,6 +1049,7 @@ editing_preset: Úprava presetu
 layout_preview: Náhľad rozloženia
 layout_setup: Nastavenia rozloženia
 data: Údaje
+theme-overrides: Prepísanie témy
 unsaved_changes: Neuložené zmeny
 unsaved_changes_copy: Naozaj chcete opustiť túto stránku?
 discard_changes: Zahodiť zmeny
@@ -1008,7 +1071,9 @@ page_help_files_collection: >-
   **Knižnica súborov** — Zoznamy všetkých súborov nahratých do tohoto projektu. Prispôsobte rozloženie, filtery a zoraďovanie, alebo si aj uložte záložky týchto rôznych konfigurácií na rýchly prístup.
 page_help_files_item: >-
   **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
-page_help_settings_project: "**Nastavenia projektu** — Globálne nastavenia vášho projektu."
+page_help_settings_project: "**Nastavenia** — Globálne nastavenia vášho projektu."
+page_help_settings_theming: "**Témy** - Nastavenia tém vášho projektu."
+page_help_settings_extensions: '**Rozšírenia** - Rozšírenia nainštalované vo vašom projekte.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
 page_help_settings_datamodel_fields: >-
@@ -1040,6 +1105,8 @@ batch_delete_confirm: >-
   Nie sú označené žiadne položky | Naozaj chcete odstrániť túto položku? Táto akcia sa nedá vrátiť. | Naozaj chcete odstrániť týchto {count} položiek? Táto akcia sa nedá vrátiť.
 cancel: Zrušiť
 no_upscale: Nezväčšovať obrázky
+no_extensions: Žiadne rozšírenia
+no_extensions_copy: Zatiaľ nie je nainštalované žiadne rozšírenie.
 collection: Zbierka
 collections: Zbierky
 content: Obsah
@@ -1069,6 +1136,8 @@ directus_collection:
   directus_users: Systémoví používatelia na platforme
   directus_webhooks: Konfigurácia HTTP požiadavkov z udalostí
   directus_translations: Vlastné preklady
+  directus_versions: Verzie obsahu položiek
+  directus_extensions: Nastavenia rozšírení
 fields:
   directus_activity:
     item: Primárny kľúč položky
@@ -1095,6 +1164,7 @@ fields:
     unarchive_value: Hodnota pri odarchivovaní
     sort_field: Zoraďovacie pole
     accountability: Sledovanie aktivity a revízií
+    versioning: Verzionovanie
     archive_field: Archivačné pole
     item_duplication_fields: Duplikované polia položky
   directus_files:
@@ -1133,10 +1203,6 @@ fields:
     tags: Tagy
     user_preferences: Nastavenia používateľa
     language: Jazyk
-    theme: Téma
-    theme_auto: Automaticky (podľa systému)
-    theme_light: Svetlý režim
-    theme_dark: Tmavý režim
     tfa_secret: Dvojfaktorová autentifikácia
     admin_options: Možnosti admina
     status: Stav
@@ -1152,6 +1218,8 @@ fields:
     last_page: Posledná strana
     last_access: Posledný prístup
     email_notifications: E-mailové upozornenia
+    theme_light_overrides: Úpravy svetlej témy
+    theme_dark_overrides: Úpravy tmavej témy
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1175,10 +1243,11 @@ fields:
     project_color: Farba projektu
     project_logo: Logo projektu
     default_language: Predvolený jazyk
-    branding: Branding a štýl
+    branding: Úprava značky
     public_foreground: Verejné popredie
     public_background: Verejné pozadie
     public_note: Verejná poznámka
+    theming: Predvolená téma
     auth_password_policy: Politika prihlasovacieho hesla
     auth_login_attempts: Počet pokusov o prihlásenie
     files_and_thumbnails: Súbory a úložisko
@@ -1192,6 +1261,8 @@ fields:
     transformations_presets: Obmedziť transformácie na presety nižšie
     image_editor: Editor obrázkov
     custom_aspect_ratios: Vlastné pomery strán
+    theme_light_overrides: Úpravy svetlej témy
+    theme_dark_overrides: Úpravy tmavej témy
   directus_shares:
     name: Názov
     role: Rola
@@ -1235,6 +1306,7 @@ field_options:
     project_name_placeholder: Môj projekt...
     project_color_note: Prihlásenie a logo na pozadí
     project_logo_note: Biele 40x40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Krátka, verejná správa s podporou markdown formátu...
     security_divider_title: Zabezpečenie
     auth_password_policy:
@@ -1288,6 +1360,8 @@ field_options:
     accountability_divider: Zodpovednosť
     duplication_divider: Duplikovanie
     preview_divider: Náhľad
+    content_versioning_divider: Verzie obsahu
+    enable_versioning: Zapnúť verzionovanie
   directus_files:
     title: Unikátny nadpis...
     description: Voliteľný popis...
@@ -1448,6 +1522,7 @@ search: Hľadať
 select_existing: Vybrať existujúce
 select_field_type: Vyberte typ poľa
 select_interface: Vybrať rozhranie
+select_display: Vyberte zobrazenie
 settings: Nastavenia
 sign_in: Prihlásiť sa
 sign_out: Odhlásiť sa
@@ -1479,6 +1554,8 @@ undo_removed_item: Vrátiť odstránenie položky
 remove_item: Odstrániť položku
 delete_item: Odstrániť položku
 interfaces:
+  list-m2a:
+    prefix_note: Predvolene sa použije názov súvisiacej zbierky.
   filter:
     name: Filter
     description: Konfigurácia objektu filtra.
@@ -1616,6 +1693,11 @@ interfaces:
     description: Modal pre vybratie možností rozhrania
   system-display:
     display: Zobrazenie
+    description: Vyberte existujúce zobrazenie
+    placeholder: Vyberte zobrazenie...
+  system-display-options:
+    display-options: Možnosti zobrazenia
+    description: Okno na výber možností zobrazenia
   list-m2m:
     many-to-many: Veľa na veľa
     description: Vyberie viacej súvisiacich položiek
@@ -1668,7 +1750,7 @@ interfaces:
     description: Vyberie viacej súvisiacich položiek
     no_collection: Zbierka sa nenašla
   system-folder:
-    folder: Priečinok
+    folder: Koreňový priečinok
     description: Vyberte priečinok
     field_hint: Predvolený priečinok na nahrávanie súborov bez určeného priečinka. Neovplyvní existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
@@ -1686,6 +1768,7 @@ interfaces:
     field_note_placeholder: Zadajte poznámku poľa...
     incompatible_data: Aktuálne údaje nie sú kompatibilné s rozhraním opakovača a prepíšu sa pri pridaní položiek do opakovača
     interface_group: Možnosti rozhrania
+    display_group: Možnosti zobrazenia
   slider:
     slider: Posuvník
     description: Vyberie číslo pomocou posuvníka
@@ -1758,6 +1841,7 @@ interfaces:
     description: Textový editor s HTML obsahom
     toolbar: Panel nástrojov
     custom_formats: Vlastné formáty
+    options_override: Prepísanie nastavení
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov
@@ -2028,6 +2112,9 @@ panels:
     name: Metrické
     description: Zobraziť jednu hodnotu na základe dotazu
     field: Pole
+  metric_list:
+    name: Zoznam metrík
+    description: Vypíše a vizualizuje agregované metriky zbierky
   time_series:
     name: Časové rady
     description: Vykresliť čiarový graf podľa hodnôt v čase
@@ -2056,6 +2143,7 @@ panels:
     smooth: Hladké
     straight: Rovné
     step_line: Kroková čiara
+    show_legend: Zobraziť legendu
   meter:
     name: Merač
     description: Merač na sledovanie hodnôť
@@ -2140,9 +2228,19 @@ operations:
     payload: Payload
     query: Dotaz
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Podpisovanie a overovanie JSON Web tokenov
+    operation: Operácia
+    secret: Tajný kľúč
+    secret_placeholder: Zadajte tajný kľúč...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Možnosti
+    options_placeholder: 'Viac možností zistíte na https://www.npmjs.com/package/jsonwebtoken#usage'
+    sign: Podpisový token
+    verify: Verifikačný token
+    decode: Dekódovací token
   log:
     name: Logovať do konzoly
     description: Vypíše niečo do konzoly
@@ -2196,3 +2294,44 @@ operations:
     batch: Dávkovo
     batch_size: Veľkosť dávky
     cache: Vyrovnávacia pamäť
+unit: Jednotka
+standard: Štandardné
+scientific: Vedecké
+engineering: Inžinierske
+compact: Kompaktné
+currency: Mena
+notation: Zápis
+style: Štýl
+fonts:
+  thin: Tenké
+  extra_light: Extra tenké
+  light: Tenké
+  normal: Normálne
+  medium: Stredné
+  semi_bold: Polo tučné
+  bold: Tučné
+  extra_bold: Extra tučné
+  black: Čierna
+  italic: Kurzíva
+  oblique: Šikmé
+  small: Malé
+  large: Veľké
+  auto: Auto
+text_wrap: Zalamovanie textu
+center: Stred
+justify: Vyplniť
+text_align: Zarovnanie textu
+font_weight: Hrúbka písma
+font_style: Štýl písma
+font_size: Veľkosť písma
+minimum_fraction_digits: Najmenej desatinných miest
+maximum_fraction_digits: Najviac desatinných miest
+show_percentage: Zobraziť percento
+aggregation: Agregácia
+series_grouping: Zoskupenie sérií
+date_precision: Presnosť dátumu
+export_dashboard: Exportovať tabuľu
+duplicate_dashboard: Duplikovať tabuľu
+search_dashboard: Hľadať v tabuli...
+search_flow: Hľadať tok...
+percent: Percent

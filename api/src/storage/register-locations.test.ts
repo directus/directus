@@ -1,12 +1,16 @@
-import { toArray } from '@directus/utils';
 import type { StorageManager } from '@directus/storage';
+import { toArray } from '@directus/utils';
 import { randNumber, randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getEnv } from '../env.js';
+import { setEnv } from '../__utils__/mock-env.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { registerLocations } from './register-locations.js';
 
-vi.mock('../env.js');
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv();
+});
+
 vi.mock('@directus/utils');
 vi.mock('../utils/get-config-from-env.js');
 
@@ -44,7 +48,7 @@ beforeEach(() => {
 
 	vi.mocked(getConfigFromEnv).mockImplementation((name) => sample.options[name]!);
 
-	vi.mocked(getEnv).mockReturnValue({
+	setEnv({
 		STORAGE_LOCATIONS: sample.locations.join(', '),
 	});
 

@@ -14,6 +14,7 @@ import { pong } from './commands/pong.js';
 import { auth } from './commands/auth.js';
 import type { AuthenticationClient } from '../auth/types.js';
 import { sleep } from './index.js';
+import type { WebSocketInterface } from '../index.js';
 
 type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -26,6 +27,11 @@ const defaultRealTimeConfig: WebSocketConfig = {
 	},
 };
 
+const WebSocketState = {
+	OPEN: 1,
+	CLOSED: 3,
+} as const;
+
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
  *
@@ -36,7 +42,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
 export function realtime(config: WebSocketConfig = {}) {
 	return <Schema extends object>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
-		let socket: WebSocket | null = null;
+		let socket: WebSocketInterface | null = null;
 		let uid = generateUid();
 		let reconnectAttempts = 0;
 		let reconnecting = false;
@@ -102,8 +108,8 @@ export function realtime(config: WebSocketConfig = {}) {
 			message: new Set<WebSocketEventHandler>([]),
 		};
 
-		const handleMessages = async (ws: WebSocket, currentClient: AuthWSClient<Schema>) => {
-			while (ws.readyState !== WebSocket.CLOSED) {
+		const handleMessages = async (ws: WebSocketInterface, currentClient: AuthWSClient<Schema>) => {
+			while (ws.readyState !== WebSocketState.CLOSED) {
 				const message = await messageCallback(ws).catch(() => {
 					/* ignore invalid messages */
 				});
@@ -183,16 +189,16 @@ export function realtime(config: WebSocketConfig = {}) {
 				});
 			},
 			disconnect() {
-				if (socket && socket?.readyState === WebSocket.OPEN) {
+				if (socket && socket?.readyState === WebSocketState.OPEN) {
 					socket.close();
 				}
 
 				socket = null;
 			},
-			onWebSocket(event: WebSocketEvents, callback: (this: WebSocket, ev: Event | CloseEvent | any) => any) {
+			onWebSocket(event: WebSocketEvents, callback: (this: WebSocketInterface, ev: Event | CloseEvent | any) => any) {
 				if (event === 'message') {
 					// add some message parsing
-					const updatedCallback = function (this: WebSocket, event: MessageEvent<any>) {
+					const updatedCallback = function (this: WebSocketInterface, event: MessageEvent<any>) {
 						if (typeof event.data !== 'string') return callback.call(this, event);
 
 						try {
@@ -210,7 +216,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				return () => eventHandlers[event].delete(callback);
 			},
 			sendMessage(message: string | Record<string, any>) {
-				if (!socket || socket?.readyState !== WebSocket.OPEN) {
+				if (!socket || socket?.readyState !== WebSocketState.OPEN) {
 					// TODO use directus error
 					throw new Error('websocket connection not OPEN');
 				}
@@ -230,7 +236,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				collection: Collection,
 				options = {} as Options
 			) {
-				if (!socket || socket.readyState !== WebSocket.OPEN) await this.connect();
+				if (!socket || socket.readyState !== WebSocketState.OPEN) await this.connect();
 				if ('uid' in options === false) options.uid = uid.next().value;
 
 				let subscribed = true;
@@ -244,7 +250,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					void,
 					unknown
 				> {
-					while (subscribed && ws && ws.readyState === WebSocket.OPEN) {
+					while (subscribed && ws && ws.readyState === WebSocketState.OPEN) {
 						const message = await messageCallback(ws).catch(() => {
 							/* let the loop continue */
 						});
@@ -273,7 +279,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					if (config.reconnect && reconnecting) {
 						while (reconnecting) await sleep(10);
 
-						if (socket && socket.readyState === WebSocket.OPEN) {
+						if (socket && socket.readyState === WebSocketState.OPEN) {
 							// re-subscribe on the new connection
 							socket.send(JSON.stringify({ ...options, collection, type: 'subscribe' }));
 

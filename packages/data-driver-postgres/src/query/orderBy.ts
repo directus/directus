@@ -1,5 +1,6 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlClauses } from '@directus/data-sql';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
+import { applyFunction } from '../utils/functions.js';
 
 /**
  * Generates the `ORDER BY x` part of a SQL statement.
@@ -8,20 +9,16 @@ import { escapeIdentifier } from '../utils/escape-identifier.js';
  * @param query - The abstract query
  * @returns The `ORDER BY x` part of a SQL statement
  */
-export function orderBy({ order }: AbstractSqlQuery): string | null {
+export function orderBy({ order }: AbstractSqlClauses): string | null {
 	if (order === undefined) {
 		return null;
 	}
 
 	const sortExpressions = order.map((o) => {
-		switch (o.orderBy.type) {
-			case 'primitive':
-				return `${escapeIdentifier(o.orderBy.field)} ${o.direction}`;
-			case 'fn':
-			case 'm2o':
-			case 'a2o':
-			default:
-				throw new Error(`Type ${o.orderBy.type} hasn't been implemented yet`);
+		if (o.orderBy.type === 'primitive') {
+			return `${escapeIdentifier(o.orderBy.table)}.${escapeIdentifier(o.orderBy.column)} ${o.direction}`;
+		} else {
+			return `${applyFunction(o.orderBy)} ${o.direction}`;
 		}
 	});
 

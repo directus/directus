@@ -103,12 +103,12 @@ const formattedTime = computed(() => {
 .item {
 	margin-bottom: 8px;
 	padding: 8px;
-	background-color: var(--background-page);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-page);
+	border-radius: var(--theme--border-radius);
 }
 
 .item-date {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-size: 12px;
 }
 
@@ -119,15 +119,15 @@ const formattedTime = computed(() => {
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .item-info {
 	display: flex;
 	align-items: center;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .share-uses {
@@ -135,7 +135,7 @@ const formattedTime = computed(() => {
 	font-size: 12px;
 
 	&.no-left {
-		color: var(--danger);
+		color: var(--theme--danger);
 	}
 }
 
@@ -146,7 +146,7 @@ const formattedTime = computed(() => {
 	text-transform: uppercase;
 
 	&.expired {
-		color: var(--warning);
+		color: var(--theme--warning);
 	}
 
 	&.upcoming {
@@ -157,7 +157,7 @@ const formattedTime = computed(() => {
 .header-right {
 	position: relative;
 	flex-basis: 24px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 
 	.more {
 		cursor: pointer;
@@ -165,7 +165,7 @@ const formattedTime = computed(() => {
 		transition: all var(--slow) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.active {

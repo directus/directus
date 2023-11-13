@@ -23,7 +23,7 @@ const props = withDefaults(
 	{
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
-		color: 'var(--primary)',
+		color: 'var(--theme--primary)',
 		itemsShown: 8,
 	}
 );
@@ -187,15 +187,15 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 }
 
 .custom {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
 	width: 100%;
 	height: var(--input-height);
 	padding: 10px;
-	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
+	border: 2px dashed var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	input {
 		display: block;
@@ -215,11 +215,11 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	}
 
 	&.active {
-		--v-icon-color: var(--v-radio-color);
+		--v-icon-color: var(--v-radio-color, var(--theme--primary));
 
 		position: relative;
 		background-color: transparent;
-		border-color: var(--v-radio-color);
+		border-color: var(--v-radio-color, var(--theme--primary));
 
 		&::before {
 			position: absolute;
@@ -227,7 +227,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--v-radio-color);
+			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;
 			content: '';
 			pointer-events: none;
@@ -240,11 +240,11 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 		cursor: not-allowed;
 
 		input {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			cursor: not-allowed;
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--theme--form--field--input--foreground-subdued);
 			}
 		}
 	}

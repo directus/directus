@@ -1,5 +1,5 @@
 import emitter from '../../emitter.js';
-import { InvalidPayloadError } from '../../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Messenger } from '../../messenger.js';
 import { getMessenger } from '../../messenger.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -10,7 +10,7 @@ import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
-import { getMultiPayload, getSinglePayload } from '../utils/items.js';
+import { getPayload } from '../utils/items.js';
 
 /**
  * Handler responsible for subscriptions
@@ -118,15 +118,17 @@ export class SubscribeHandler {
 				continue; // skip filtered events
 			}
 
+			if ('item' in subscription) {
+				if ('keys' in event && !event.keys.includes(subscription.item)) continue;
+				if ('key' in event && event.key !== subscription.item) continue;
+			}
+
 			try {
 				client.accountability = await refreshAccountability(client.accountability);
 
-				const result =
-					'item' in subscription
-						? await getSinglePayload(subscription, client.accountability, schema, event)
-						: await getMultiPayload(subscription, client.accountability, schema, event);
+				const result = await getPayload(subscription, client.accountability, schema, event);
 
-				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) return;
+				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
@@ -175,16 +177,8 @@ export class SubscribeHandler {
 					this.unsubscribe(client, subscription.uid);
 				}
 
-				let data: Record<string, any>;
-
-				if (subscription.event === undefined) {
-					data =
-						'item' in subscription
-							? await getSinglePayload(subscription, accountability, schema)
-							: await getMultiPayload(subscription, accountability, schema);
-				} else {
-					data = { event: 'init' };
-				}
+				const data =
+					subscription.event === undefined ? await getPayload(subscription, accountability, schema) : { event: 'init' };
 
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);

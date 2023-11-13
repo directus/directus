@@ -53,6 +53,13 @@ or: O
 init: Inicializador
 dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente mostraremos los primeros {n} elementos.
 modifier: Modificador
+extension_interface: Interfaz
+extension_display: Mostrar
+extension_layout: Diseño
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Módulos
+enable: Habilitado
 custom: Personalizar
 hook: Hook
 fill_width: Llenar Ancho
@@ -100,6 +107,7 @@ rename_folder: Renombrar carpeta
 delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
+promote_version_preview: Vista previa
 reset_bookmark: Restablecer Marcador
 update_bookmark: Actualizar Marcador
 delete_bookmark: Eliminar Marcador
@@ -437,7 +445,6 @@ dimensions: Dimensiones
 size: Tamaño
 created: Creado
 modified: Modificado
-checksum: Checksum
 owner: Propietario
 edited_by: Editado por
 folder: Directorio
@@ -593,7 +600,6 @@ errors:
   RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
   USER_SUSPENDED: Usuario Suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
-  UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
   NOT_NULL_VIOLATION: El valor no puede ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
@@ -935,11 +941,11 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando {count} Elementos por lote'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de Datos
-settings_permissions: Roles y Permisos
-settings_project: Configuración del Proyecto
+settings_project: Ajustes
 settings_webhooks: Webhooks
 settings_flows: Flujos
-settings_presets: Predefinidos y Marcadores
+settings_presets: Marcadores
+settings_translations: Traducciones
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
 actions: Acciones
@@ -974,7 +980,6 @@ page_help_files_collection: >-
   **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_files_item: >-
   **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes de acceso.
-page_help_settings_project: "**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto."
 page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
@@ -1096,10 +1101,6 @@ fields:
     tags: Etiquetas
     user_preferences: Preferencias de usuario
     language: Idioma
-    theme: Tema
-    theme_auto: Automático (basado en el sistema)
-    theme_light: Modo luz
-    theme_dark: Modo Oscuro
     tfa_secret: Autentificación en 2 Pasos
     admin_options: Opciones de Admin
     status: Estado
@@ -1137,7 +1138,6 @@ fields:
     project_color: Color del Proyecto
     project_logo: Logo del Proyecto
     default_language: Idioma predeterminado
-    branding: Marca y estilo
     public_foreground: Superficie Pública
     public_background: Fondo Público
     public_note: Notas Públicas
@@ -1197,7 +1197,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mi proyecto...
     project_color_note: Inicio de sesión y fondo de Logo
-    project_logo_note: Blanco 40x40 SVG/PNG
     public_note_placeholder: Un mensaje corto y público que soporta formato markdown...
     security_divider_title: Seguridad
     auth_password_policy:
@@ -1620,7 +1619,6 @@ interfaces:
     description: Seleccionar varios elementos relacionados
     no_collection: No se encontró la colección
   system-folder:
-    folder: Directorio
     description: Seleccione una carpeta
     root_name: Raíz de la Biblioteca de Archivos
     system_default: Valores por defecto del sistema
@@ -1956,6 +1954,7 @@ panels:
     smooth: Suave
     straight: Recto
     step_line: Línea de paso
+    show_legend: Mostrar leyenda
   meter:
     name: Medidor
     description: Medidor para los valores de seguimiento
@@ -2082,3 +2081,12 @@ operations:
     flows: Flujos
     flow: Flujo
     data: Datos
+standard: Estándar
+compact: Compacto
+style: Estilo
+fonts:
+  normal: Normal
+  bold: Negrita
+  black: Negro
+  italic: Cursiva
+  auto: Automático

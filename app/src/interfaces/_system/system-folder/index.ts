@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import InterfaceSystemFolder from './folder.vue';
 
 export default defineInterface({

@@ -1,6 +1,7 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
+	"homepage": "https://directus.io",
 	"scripts": {
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --cache --check .",
@@ -18,9 +19,9 @@
 		"eslint-plugin-vue": "9.13.0",
 		"prettier": "2.8.8"
 	},
-	"packageManager": "pnpm@8.8.0",
+	"packageManager": "pnpm@8.9.0",
 	"engines": {
 		"node": ">=18.0.0",
-		"pnpm": "~8.8.0"
+		"pnpm": "~8.9.0"
 	}
 }

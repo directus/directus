@@ -27,6 +27,7 @@ method: Metodo
 published: Pubblicato
 draft: Bozza
 archived: Archiviato
+extensions: Estensioni
 modules: Moduli
 module_bar: Barra del modulo
 logs: Registri
@@ -53,6 +54,26 @@ or: O
 init: Inizializzazione
 dataset_too_large_currently_showing_n_items: Il dataset è troppo grande. Stai vedendo i primi {n} elementi.
 modifier: Modificatore
+extension_interface: Interfaccia
+extension_display: Mostra
+extension_layout: Layout
+extension_module: Modulo
+extension_panel: Pannello
+extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operazione
+extension_bundle: Pacchetto
+extension_interfaces: Interfacce
+extension_displays: Visualizzazioni
+extension_layouts: Layout
+extension_modules: Moduli
+extension_panels: Pannelli
+extension_hooks: Hook
+extension_endpoints: Endpoint
+extension_operations: Operazioni
+extension_bundles: Pacchetti
+enable: Attivato
+disable: Disattiva
 custom: Personalizzato
 hook: Hook
 fill_width: Riempi larghezza
@@ -100,6 +121,31 @@ rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
 suffix: Suffisso
+keep: Mantieni
+version: Versione
+version_key: Codice della versione
+version_name: Nome della versione
+main_version: Principale
+switch_version: Cambia Versione
+switch_version_copy: Sei sicuro di voler passare alla versione "{version}"? Le modifiche non salvate andranno perse.
+create_version: Crea versione
+rename_version: Rinomina versione
+compare_version: Confronta versioni
+save_version: Salva la versione
+promote_version: Promuovi versione
+promote_version_disabled: Nessuna modifica
+promote_version_drawer_title: Promuovi {version} a principale
+promote_version_changes: Novità
+promote_version_preview: Anteprima
+outdated_notice: >-
+  L'elemento principale è stato modificato da quando è stata creata questa versione. Verifica i valori di tutti i campi qui sotto e conferma quale versione deve essere usata promuovendo questa versione nell'elemento principale.
+promote_notice: >-
+  Verifica i valori di tutti i campi qui sotto e conferma quale versione deve essere usata promuovendo questa versione nell'elemento principale.
+delete_version: Elimina versione
+delete_version_copy: >-
+  Sei sicuro di voler eliminare la versione "{version}"? Questa azione è irreversibile.
+delete_on_promote_copy: >-
+  Vuoi eliminare o tenere la versione "{version}" dopo la promozione?
 reset_bookmark: Reimposta Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
@@ -145,6 +191,7 @@ validationError:
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
   unique: Il valore deve essere unico
+  email: Il valore deve essere un indirizzo email valido
   regex: Il valore non ha il formato corretto
   starts_with: Il valore deve iniziare con {substring}
   istarts_with: Il valore deve iniziare con {substring}
@@ -259,6 +306,9 @@ geometry.Polygon: Polygon
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
+theme_auto: Automatico (in base al sistema)
+theme_light: Tema chiaro
+theme_dark: Tema scuro
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_refresh: Aggiornamento automatico
@@ -354,6 +404,7 @@ revision_delta_created: Creato
 revision_delta_created_externally: Creato Esternamente
 revision_delta_updated: 'Aggiornato 1 Campo | Aggiornati {count} Campi'
 revision_delta_deleted: Eliminato
+revision_delta_version_saved: 'Salvataggio Versione (Aggiornato un campo) | Salvataggio Versione (Aggiornati {count} campi)'
 revision_delta_reverted: Ripristinato
 revision_delta_update_message: Questo campo è stato aggiornato, ma il suo valore è nascosto per motivi di sicurezza.
 revision_delta_other: Revisione
@@ -447,7 +498,6 @@ dimensions: Dimensioni
 size: Dimensione
 created: Creato
 modified: Modificato
-checksum: Checksum
 owner: Proprietario
 edited_by: Modificato da
 folder: Cartella
@@ -465,6 +515,7 @@ import_from_url: Importa File da URL
 replace_from_device: Sostituisci File dal Dispositivo
 replace_from_library: Sostituisci File dalla Libreria
 replace_from_url: Sostituisci File da URL
+no_image_selected: Nessuna immagine selezionata
 no_file_selected: Nessun File Selezionato
 download_file: Scarica File
 open_file_in_tab: Apri il file in una nuova scheda
@@ -491,6 +542,7 @@ generated_uuid: UUID Generato
 manual_string: Stringa inserita manualmente
 save_and_create_new: Salva e Crea nuovo
 save_and_stay: Salva e rimani
+save_and_quit: Salva ed esci
 save_as_copy: Salva come copia
 add_existing: Aggiungi esistente
 creating_items: Creazione Oggetti
@@ -584,6 +636,7 @@ bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è sta
 bookmark_doesnt_exist_cta: Ritorna alla raccolta
 select_an_item: Seleziona un elemento...
 edit: Modifica
+edit_item: Modifica elemento
 enabled: Abilitato
 disable_tfa: Disabilita 2FA
 admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
@@ -613,7 +666,7 @@ errors:
   RECORD_NOT_UNIQUE: Rilevato valore duplicato
   USER_SUSPENDED: Utente sospeso
   CONTAINS_NULL_VALUES: Il campo contiene valori nulli
-  UNPROCESSABLE_ENTITY: Entità non elaborabile
+  UNPROCESSABLE_CONTENT: Contenuto non elaborabile
   INTERNAL_SERVER_ERROR: Errore Imprevisto
   NOT_NULL_VIOLATION: Il valore non può essere nullo
   ILLEGAL_ASSET_TRANSFORMATION: Immagine troppo grande per l'anteprima
@@ -634,6 +687,7 @@ security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
+create_default: Crea predefinito
 edit_bookmark: Modifica Segnalibro
 edit_personal_bookmark: Modifica segnalibro personale
 edit_role_bookmark: Modifica segnalibro del ruolo
@@ -750,6 +804,7 @@ upload_pending: Caricamento In Attesa
 drag_file_here: Trascina e rilascia il file qui
 click_to_browse: Clicca per Sfogliare
 interface_options: Opzioni interfaccia
+display_options: Opzioni di visualizzazione
 layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
@@ -959,6 +1014,12 @@ choices: Scelta multipla
 choices_option_configured_incorrectly: Scelte configurate in modo errato
 deselect: Deseleziona
 deselect_all: Deseleziona Tutto
+theme: Tema
+select_a_theme: Seleziona un tema
+appearance_global: Progetto Predefinito
+appearance_auto: Automatico (Sincronizza con il Sistema)
+appearance_light: Chiaro
+appearance_dark: Tema scuro
 other: Altro...
 adding_user: Aggiunta Utente
 unknown_user: Utente Sconosciuto
@@ -970,12 +1031,13 @@ editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
-settings_permissions: Ruoli e permessi
-settings_project: Impostazioni progetto
+settings_permissions: Controllo Accessi
+settings_project: Impostazioni
+settings_theming: Temi
 settings_webhooks: Webhooks
 settings_flows: Flussi
-settings_presets: Preset & Segnalibri
-settings_translations: Traduzioni personalizzate
+settings_presets: Segnalibri
+settings_translations: Traduzioni
 one_or_more_options_are_missing: Mancano una o più opzioni
 configure_field_key_to_continue: Imposta il nome del campo per continuare
 scope: Ambito
@@ -990,6 +1052,7 @@ editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
 data: Dati
+theme-overrides: Sostituzione del tema
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
@@ -1011,7 +1074,9 @@ page_help_files_collection: >-
   **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
-page_help_settings_project: "**Impostazioni progetto** — Le opzioni di configurazione globale del tuo progetto."
+page_help_settings_project: "**Impostazioni** — Opzioni di configurazione globale del tuo progetto."
+page_help_settings_theming: "**Temi** — Opzioni del tema del tuo progetto."
+page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
 page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
 page_help_settings_datamodel_fields: >-
@@ -1043,6 +1108,8 @@ batch_delete_confirm: >-
   Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
 no_upscale: Non ingrandire le immagini
+no_extensions: Nessuna estensione
+no_extensions_copy: Non sono ancora state installate estensioni.
 collection: Raccolta
 collections: Raccolte
 content: Contenuti
@@ -1072,6 +1139,8 @@ directus_collection:
   directus_users: Utenti di sistema per la piattaforma
   directus_webhooks: Configurazione per le richieste HTTP basate su eventi
   directus_translations: Traduzioni personalizzate
+  directus_versions: Versioni del contenuto per gli elementi
+  directus_extensions: Configurazione delle estensioni
 fields:
   directus_activity:
     item: Chiave primaria elemento
@@ -1098,6 +1167,7 @@ fields:
     unarchive_value: Valore ripristino
     sort_field: Ordina per
     accountability: Monitoraggio Attività e Revisione
+    versioning: Versioni
     archive_field: Campo archiviazione
     item_duplication_fields: Campi coinvolti nella duplicazione
   directus_files:
@@ -1136,10 +1206,6 @@ fields:
     tags: Tag
     user_preferences: Preferenze utente
     language: Lingua
-    theme: Tema
-    theme_auto: Automatico (in base al sistema)
-    theme_light: Tema chiaro
-    theme_dark: Tema scuro
     tfa_secret: Autenticazione a due fattori
     admin_options: Opzioni Amministratore
     status: Stato
@@ -1155,6 +1221,8 @@ fields:
     last_page: Ultima Pagina
     last_access: Ultimo Acesso
     email_notifications: Notifiche email
+    theme_light_overrides: Personalizzazione del tema chiaro
+    theme_dark_overrides: Personalizzazione del tema scuro
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1178,10 +1246,11 @@ fields:
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
     default_language: Lingua predefinita
-    branding: Branding e stile
+    branding: Marchio
     public_foreground: Primo Piano Pubblico
     public_background: Sfondo Pubblico
     public_note: Nota Pubblica
+    theming: Impostazioni predefinite dei temi
     auth_password_policy: Sicurezza della password
     auth_login_attempts: Tentativi di accesso
     files_and_thumbnails: File e archiviazione
@@ -1196,6 +1265,8 @@ fields:
     transformations_presets: Limita le trasformazioni ai preset preimpostati
     image_editor: Editor di immagini
     custom_aspect_ratios: Rapporti d'aspetto personalizzati
+    theme_light_overrides: Personalizzazione del tema chiaro
+    theme_dark_overrides: Personalizzazione del tema scuro
   directus_shares:
     name: Nome
     role: Ruolo
@@ -1238,7 +1309,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Il mio progetto...
     project_color_note: Sfondo per l'accesso e il logo
-    project_logo_note: SVG/PNG 40x40 bianca
+    project_logo_note: Immagine SVG/PNG 40x40 bianca
+    project_favicon_note: File ICO 32x32
     public_note_placeholder: Un breve messaggio pubblico che supporta la formattazione markdown...
     security_divider_title: Sicurezza
     auth_password_policy:
@@ -1293,6 +1365,8 @@ field_options:
     accountability_divider: Autorizzazioni
     duplication_divider: Duplicazione
     preview_divider: Anteprima
+    content_versioning_divider: Versioni del contenuto
+    enable_versioning: Abilita le versioni
   directus_files:
     title: Un titolo unico...
     description: Una descrizione opzionale...
@@ -1453,6 +1527,7 @@ search: Ricerca
 select_existing: Seleziona Esistente
 select_field_type: Seleziona un tipo di campo
 select_interface: Seleziona un'interfaccia
+select_display: Seleziona una visualizzazione
 settings: impostazioni
 sign_in: Accedi
 sign_out: Disconnessione
@@ -1471,6 +1546,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1623,6 +1699,11 @@ interfaces:
     description: Una modale per selezionare le opzioni di un'interfaccia
   system-display:
     display: Mostra
+    description: Sleziona una visualizzazione esistente
+    placeholder: Seleziona una visualizzazione...
+  system-display-options:
+    display-options: Opzioni di visualizzazione
+    description: Una modale per selezionare le opzioni di una visualizzazione
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
@@ -1675,7 +1756,7 @@ interfaces:
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta
   system-folder:
-    folder: Cartella
+    folder: Cartella radice
     description: Seleziona una cartella
     field_hint: Cartella predefinita per i file caricati senza una cartella specificata. Non influisce sui file esistenti.
     root_name: Radice libreria file
@@ -1693,6 +1774,7 @@ interfaces:
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
     interface_group: Opzioni interfaccia
+    display_group: Opzioni di visualizzazione
   slider:
     slider: Cursore
     description: Seleziona un numero usando un cursore
@@ -2036,6 +2118,9 @@ panels:
     name: Metrica
     description: Mostra un singolo valore basato su una query
     field: Campo
+  metric_list:
+    name: Elenco metriche
+    description: Elenca e visualizza metriche aggregate da una raccolta
   time_series:
     name: Serie temporali
     description: Disegna un grafico a linee basato su valori nel tempo
@@ -2064,6 +2149,7 @@ panels:
     smooth: Arrotondato
     straight: Dritto
     step_line: A gradini
+    show_legend: Mostra legenda
   meter:
     name: Metro
     description: Metro per il rilevamento dei valori
@@ -2214,3 +2300,44 @@ operations:
     batch: A gruppi
     batch_size: Dimensione dei gruppi
     cache: Cache
+unit: Unità di misura
+standard: Standard
+scientific: Scientifica
+engineering: Ingegneria
+compact: Compatto
+currency: Valuta
+notation: Notazione
+style: Stile
+fonts:
+  thin: Sottile
+  extra_light: Molto chiaro
+  light: Chiaro
+  normal: Normale
+  medium: Media
+  semi_bold: Semi grassetto
+  bold: Grassetto
+  extra_bold: Extra grassetto
+  black: Nero
+  italic: Corsivo
+  oblique: Corsivo
+  small: Piccolo
+  large: Grande
+  auto: Automatica
+text_wrap: A capo automatico
+center: Centrato
+justify: Giustificato
+text_align: Allineamento del testo
+font_weight: Spessore del carattere
+font_style: Stile del Carattere
+font_size: Dimensione del carattere
+minimum_fraction_digits: Decimali minimi
+maximum_fraction_digits: Decimali massimi
+show_percentage: Mostra percentuale
+aggregation: Aggregazione
+series_grouping: Raggruppamento serie
+date_precision: Precisione date
+export_dashboard: Esporta bacheca
+duplicate_dashboard: Duplica bacheca
+search_dashboard: Cerca bacheca...
+search_flow: Cerca flusso...
+percent: Percentuale

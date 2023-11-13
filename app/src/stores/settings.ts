@@ -2,9 +2,9 @@ import api from '@/api';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { Settings } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
-import { Settings } from '@directus/types';
 import { useUserStore } from './user';
 
 export const useSettingsStore = defineStore({

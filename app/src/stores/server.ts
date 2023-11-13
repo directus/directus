@@ -22,8 +22,14 @@ export type Info = {
 		project_logo: string | null;
 		project_color: string | null;
 		default_language: string | null;
+		default_appearance: 'light' | 'dark' | 'auto';
+		default_theme_light: string;
+		default_theme_dark: string;
+		theme_light_overrides: Record<string, unknown> | null;
+		theme_dark_overrides: Record<string, unknown> | null;
 		public_foreground: string | null;
 		public_background: string | null;
+		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
 	};

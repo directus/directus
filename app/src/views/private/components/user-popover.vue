@@ -119,7 +119,7 @@ function navigateToUser() {
 		margin-right: 4px;
 
 		&.active {
-			--v-chip-color: var(--success);
+			--v-chip-color: var(--theme--success);
 			--v-chip-background-color: var(--success-25);
 		}
 
@@ -129,23 +129,23 @@ function navigateToUser() {
 		}
 
 		&.invited {
-			--v-chip-color: var(--primary);
-			--v-chip-background-color: var(--primary-25);
+			--v-chip-color: var(--theme--primary);
+			--v-chip-background-color: var(--theme--primary-subdued);
 		}
 
 		&.suspended {
-			--v-chip-color: var(--warning);
+			--v-chip-color: var(--theme--warning);
 			--v-chip-background-color: var(--warning-25);
 		}
 
 		&.archived {
-			--v-chip-color: var(--danger);
+			--v-chip-color: var(--theme--danger);
 			--v-chip-background-color: var(--danger-25);
 		}
 	}
 
 	.email {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 
@@ -153,12 +153,12 @@ function navigateToUser() {
 	cursor: help;
 
 	&:hover {
-		border-bottom: 2px dotted var(--foreground-subdued);
+		border-bottom: 2px dotted var(--theme--foreground-subdued);
 	}
 }
 
 .loading {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;

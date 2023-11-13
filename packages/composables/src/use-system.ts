@@ -1,5 +1,6 @@
 import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '@directus/constants';
-import type { AppExtensionConfigs, RefRecord } from '@directus/types';
+import type { AppExtensionConfigs } from '@directus/extensions';
+import type { RefRecord } from '@directus/types';
 import type { AxiosInstance } from 'axios';
 import { inject } from 'vue';
 

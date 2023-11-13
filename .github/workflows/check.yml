@@ -1,12 +1,6 @@
 name: Check
 
 on:
-  push:
-    branches:
-      - main
-      - next
-    paths-ignore:
-      - docs/**
   pull_request:
     branches:
       - main
@@ -24,14 +18,20 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          build: false
 
       - name: Run Linter
-        run: pnpm exec eslint .
+        run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
 
   format:
     name: Format
@@ -46,7 +46,7 @@ jobs:
           build: false
 
       - name: Run Formatter
-        run: pnpm exec prettier --check .
+        run: pnpm exec prettier --check ${{ steps.changed-files.outputs.all_changed_files }}
 
   unit:
     name: Unit Tests
@@ -54,13 +54,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          # Vitest uses `git diff` under the hood to find the changed files in it's `--changed`
+          # option, which in turn means we need to fetch the full git history so git is able to diff
+          fetch-depth: 0
 
       - name: Prepare
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        run: pnpm test
-
-  analyze:
-    name: CodeQL Analysis
-    uses: ./.github/workflows/codeql-analysis.yml
+        run: pnpm test -- -- --changed origin/${{ github.base_ref }} --passWithNoTests

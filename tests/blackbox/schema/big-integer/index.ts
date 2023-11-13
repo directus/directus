@@ -1,7 +1,7 @@
-import { getFilterOperatorsForType } from '../../utils/get-filter-operators-for-type';
 import type { ClientFilterOperator } from '@directus/types';
-import { FilterValidator, FilterEmptyValidator } from '@query/filter';
-import { GeneratedFilter } from '..';
+import { getFilterOperatorsForType } from '@directus/utils';
+import type { FilterEmptyValidator, FilterValidator } from '@query/filter';
+import type { GeneratedFilter } from '..';
 
 export const type = 'bigInteger';
 export const filterOperatorList = getFilterOperatorsForType(type);

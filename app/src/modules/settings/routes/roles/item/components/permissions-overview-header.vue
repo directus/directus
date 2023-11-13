@@ -17,15 +17,15 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .permissions-overview-header {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	position: sticky;
 	top: calc(var(--header-bar-height) - 1px); // minus 1px to avoid gaps
 	z-index: 4;
 	display: flex;
 	padding: 12px;
-	background-color: var(--background-input);
-	border-bottom: var(--border-width) solid var(--border-normal);
+	background-color: var(--theme--form--field--input--background);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	.name {
 		flex-grow: 1;

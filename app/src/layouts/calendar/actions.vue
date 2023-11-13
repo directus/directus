@@ -24,7 +24,7 @@ defineProps<{
 	position: relative;
 	display: none;
 	margin: 0 8px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 
 	@media (min-width: 600px) {

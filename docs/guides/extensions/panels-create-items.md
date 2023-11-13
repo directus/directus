@@ -164,7 +164,7 @@ the final POST request.
 
 You will also need to capture a response to present to the user. The `responseFormat` contains a string where the user
 can create their own response with data from the API. A `v-dialog` can show an important message to the user. This
-requires a boolean value (here `responseDialoge`) to control the visibility of the dialog box.
+requires a boolean value (here `responseDialog`) to control the visibility of the dialog box.
 
 Create a `getFields` function to fetch the detailed information for each selected field then call the function
 afterwards so it populates the variable when the panel loads:
@@ -324,8 +324,8 @@ Lastly, replace the CSS at the bottom with this:
 	margin-bottom: var(--form-vertical-gap);
 }
 .form-response {
-	border-radius: var(--border-radius);
-	border: var(--border-width) solid var(--border-normal);
+	border-radius: var(--theme--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	margin: 1em 0;
 	min-width: 300px;
 }
@@ -591,8 +591,8 @@ export default {
 	margin-bottom: var(--form-vertical-gap);
 }
 .form-response {
-	border-radius: var(--border-radius);
-	border: var(--border-width) solid var(--border-normal);
+	border-radius: var(--theme--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	margin: 1em 0;
 	min-width: 300px;
 }

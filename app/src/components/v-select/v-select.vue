@@ -55,8 +55,6 @@ interface Props {
 	multiplePreviewThreshold?: number;
 	/** The direction the menu should open */
 	placement?: Placement;
-	/** Should the menu be the same width as the select element */
-	isMenuSameWidth?: true;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -73,7 +71,6 @@ const props = withDefaults(defineProps<Props>(), {
 	closeOnContentClick: true,
 	multiplePreviewThreshold: 3,
 	placement: 'bottom',
-	isMenuSameWidth: true,
 });
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
@@ -238,7 +235,6 @@ function useDisplayValue() {
 		class="v-select"
 		:disabled="disabled"
 		:attached="inline === false"
-		:is-same-width="isMenuSameWidth"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
@@ -371,17 +367,21 @@ function useDisplayValue() {
 </template>
 
 <style scoped lang="scss">
-:global(body) {
-	--v-select-font-family: var(--family-sans-serif);
-	--v-select-placeholder-color: var(--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-select-font-family        [var(--theme--font-family-sans-serif)]
+		--v-select-placeholder-color  [var(--theme--foreground-subdued)]
+
+*/
 
 .list {
 	--v-list-min-width: 0;
 }
 
 .v-input {
-	--v-input-font-family: var(--v-select-font-family);
+	--v-input-font-family: var(--v-select-font-family, var(--theme--font-family-sans-serif));
 
 	cursor: pointer;
 }
@@ -420,9 +420,9 @@ function useDisplayValue() {
 .inline-display.label {
 	padding: 4px 8px;
 	padding-right: 26px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: color var(--fast) var(--transition);
 
 	&:hover,
@@ -436,6 +436,6 @@ function useDisplayValue() {
 }
 
 .inline-display.placeholder {
-	color: var(--v-select-placeholder-color);
+	color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
 }
 </style>

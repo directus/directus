@@ -1,4 +1,4 @@
-import { ForbiddenError } from '../errors/index.js';
+import { ForbiddenError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import validateUUID from 'uuid-validate';
 import type { PrimaryKey } from '../types/index.js';

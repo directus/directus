@@ -198,7 +198,7 @@ function onPointerUp() {
 		bottom: 0;
 		width: 4px;
 		z-index: 10;
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		cursor: ew-resize;
 		opacity: 0;
 		transform: translate(50%, 0);
@@ -228,16 +228,16 @@ function onPointerUp() {
 				right: 1px;
 				bottom: 0;
 				left: 1px;
-				background-color: var(--background-normal-alt);
+				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}
 
 			&:hover,
 			&:active {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 
 				&::before {
-					background-color: var(--primary);
+					background-color: var(--theme--primary);
 				}
 			}
 		}

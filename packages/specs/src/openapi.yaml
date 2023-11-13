@@ -37,6 +37,7 @@ tags:
     description:
       Directus can easily be extended through the addition of several types of extensions, including layouts,
       interfaces, and modules.
+    x-collection: directus_extensions
   - name: Fields
     description: Fields are individual pieces of content within an item. They are mapped to columns in the database.
     x-collection: directus_fields
@@ -87,6 +88,11 @@ tags:
     x-collection: directus_users
   - name: Utilities
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
+  - name: Versions
+    description:
+      Enables users to create unpublished copies of an item, modify them independently from the main version, and
+      promote them to become the new main version when ready.
+    x-collection: directus_versions
   - name: Webhooks
     description: Webhooks.
     x-collection: directus_webhooks
@@ -140,14 +146,12 @@ paths:
     $ref: './paths/collections/collection.yaml'
 
   # Extensions
-  /extensions/interfaces:
-    $ref: './paths/extensions/interfaces.yaml'
-  /extensions/layouts:
-    $ref: './paths/extensions/layouts.yaml'
-  /extensions/displays:
-    $ref: './paths/extensions/displays.yaml'
-  /extensions/modules:
-    $ref: './paths/extensions/modules.yaml'
+  /extensions:
+    $ref: './paths/extensions/list.yaml'
+  /extensions/{name}:
+    $ref: './paths/extensions/update.yaml'
+  /extensions/{bundle}/{name}:
+    $ref: './paths/extensions/update-bundle.yaml'
 
   # Fields
   /fields:
@@ -259,6 +263,18 @@ paths:
   /utils/random/string:
     $ref: './paths/utils/random.yaml'
 
+  # Versions
+  /versions:
+    $ref: './paths/versions/versions.yaml'
+  /versions/{id}:
+    $ref: './paths/versions/version.yaml'
+  /versions/{id}/save:
+    $ref: './paths/versions/save.yaml'
+  /versions/{id}/compare:
+    $ref: './paths/versions/compare.yaml'
+  /versions/{id}/promote:
+    $ref: './paths/versions/promote.yaml'
+
   # Webhooks
   /webhooks:
     $ref: './paths/webhooks/webhooks.yaml'
@@ -275,6 +291,8 @@ components:
       $ref: './components/collection.yaml'
     Diff:
       $ref: './components/diff.yaml'
+    Extensions:
+      $ref: './components/extension.yaml'
     Fields:
       $ref: './components/field.yaml'
     Files:
@@ -303,6 +321,8 @@ components:
       $ref: './components/user.yaml'
     Query:
       $ref: './definitions/query.yaml'
+    Versions:
+      $ref: './components/version.yaml'
     Webhooks:
       $ref: './components/webhook.yaml'
     x-metadata:
@@ -346,6 +366,8 @@ components:
       $ref: './parameters/mode.yaml'
     Export:
       $ref: './parameters/export.yaml'
+    Version:
+      $ref: './parameters/version.yaml'
   responses:
     NotFoundError:
       $ref: './responses/notFoundError.yaml'

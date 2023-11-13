@@ -352,14 +352,14 @@ async function revert(values: Record<string, any>) {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
-	--v-button-color-disabled: var(--foreground-normal);
-	--v-button-color-active: var(--foreground-normal);
+	--v-button-background-color: var(--theme--background);
+	--v-button-color-disabled: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
 }
 
 .v-form {

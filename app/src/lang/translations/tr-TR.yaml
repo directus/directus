@@ -53,6 +53,13 @@ or: Veya
 init: Başlangıç
 dataset_too_large_currently_showing_n_items: Veri kümesi çok büyük. Şu anda ilk {n} öğe gösteriliyor.
 modifier: Düzenleyici
+extension_interface: Arayüz
+extension_display: Göster
+extension_layout: Yerleşim
+extension_panel: Panel
+extension_hook: Kanca
+extension_modules: Modüller
+enable: Etkinleştir
 custom: Özel
 hook: Kanca
 fill_width: Genişliği Doldur
@@ -100,6 +107,7 @@ rename_folder: Klasörü Yeniden Adlandır
 delete_folder: Klasörü Sil
 prefix: Prefiks
 suffix: Suffiks
+promote_version_preview: Önizleme
 reset_bookmark: Yer İşaretini Sıfırla
 update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer İşaretini Kaldır
@@ -443,7 +451,6 @@ dimensions: Boyutlar
 size: Boyut
 created: Oluşturulma Tarihi
 modified: Değiştirildi
-checksum: Checksum
 owner: Sahip
 edited_by: Düzenleyen
 folder: Klasör
@@ -601,7 +608,6 @@ errors:
   RECORD_NOT_UNIQUE: Yinelenen değer algılandı
   USER_SUSPENDED: Kullanıcı Askıya Alındı
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
-  UNPROCESSABLE_ENTITY: İşlenemeyen varlık
   INTERNAL_SERVER_ERROR: Beklenmeyen Hata
   NOT_NULL_VIOLATION: Değer null olamaz
   ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
@@ -944,11 +950,11 @@ editing_unit: '{unit} Düzenleniyor'
 editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
 no_options_available: Hiç seçenek yok
 settings_data_model: Veri Modeli
-settings_permissions: Roller ve Yetkiler
-settings_project: Proje Ayarları
+settings_project: Ayarlar
 settings_webhooks: Webhooklar
 settings_flows: Akışlar
-settings_presets: Ön Ayarlar ve Yer İşaretleri
+settings_presets: Yer İmleri
+settings_translations: Çeviriler
 one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
 scope: Kapsam
 actions: Aksiyonlar
@@ -983,7 +989,6 @@ page_help_files_collection: >-
   **Dosya Kütüphanesi** —Bu projeye yüklenen tüm dosyaları listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
 page_help_files_item: >-
   **Dosya Detayı** — Dosya metaverilerini yönetmek, orijinal dosyayı düzenlemek ve erişim seçeneklerini güncellemek için bir form/sayfa.
-page_help_settings_project: "**Proje Ayarları** — Projenin genel konfigürasyon seçenekleri."
 page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-
@@ -1105,10 +1110,6 @@ fields:
     tags: Etiketler
     user_preferences: Kullanıcı Tercihleri
     language: Dil
-    theme: Tema
-    theme_auto: Otomatik (Sisteme Göre)
-    theme_light: Açık Mod
-    theme_dark: Koyu Mod
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     admin_options: Yönetici Seçenekleri
     status: Durum
@@ -1146,7 +1147,6 @@ fields:
     project_color: Proje Rengi
     project_logo: Proje Logosu
     default_language: Varsayılan Dil
-    branding: Markalama ve Stil
     public_foreground: Herkese Açık Ön Plan
     public_background: Herkese Açık Arkaplan
     public_note: Herkese Açık Not
@@ -1206,7 +1206,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Benim projem...
     project_color_note: Oturum Açma ve Logo Arkaplanı
-    project_logo_note: Beyaz 40x40 SVG/PNG
     public_note_placeholder: Herkese açık markdown biçimlendirmesi destekleyen kısa bir mesaj...
     security_divider_title: Güvenlik
     auth_password_policy:
@@ -1629,7 +1628,6 @@ interfaces:
     description: Birden fazla ilişkili öğe seçin
     no_collection: Koleksiyon bulunamadı
   system-folder:
-    folder: Klasör
     description: Bir klasör seçin
     root_name: Dosya Kütüphanesi Kökü
     system_default: Sistem Varsayılanları
@@ -2113,3 +2111,14 @@ operations:
     flow: Akış
     data: Veri
     serial: Seri No
+standard: Standart
+compact: Kompakt
+style: Stil
+fonts:
+  thin: İnce
+  normal: Normal
+  medium: Orta
+  bold: Kalın
+  black: Siyah
+  italic: İtalik
+  auto: Otomatik

@@ -141,10 +141,6 @@ function toPage(page: number) {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-pagination-active-color: var(--primary);
-}
-
 .v-pagination {
 	display: flex;
 }
@@ -152,7 +148,7 @@ function toPage(page: number) {
 .gap {
 	display: none;
 	margin: 0 4px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 2em;
 }
 
@@ -163,9 +159,9 @@ function toPage(page: number) {
 }
 
 .v-button {
-	--v-button-background-color-hover: var(--background-normal);
+	--v-button-background-color-hover: var(--theme--background);
 	--v-button-background-color: var(--background-subdued);
-	--v-button-color: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
 
 	margin: 0 2px;
 	vertical-align: middle;
@@ -194,9 +190,9 @@ function toPage(page: number) {
 }
 
 .v-button.active {
-	--v-button-background-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--theme--primary);
 	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-background-color: var(--primary);
+	--v-button-background-color: var(--theme--primary);
 	--v-button-color: var(--foreground-inverted);
 }
 </style>

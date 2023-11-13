@@ -183,7 +183,7 @@ function toggleInterface(id: string) {
 	margin-bottom: 40px;
 	padding-bottom: 2px;
 	font-weight: 700;
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
@@ -217,7 +217,7 @@ function toggleInterface(id: string) {
 }
 
 .preview {
-	--v-icon-color: var(--background-page);
+	--v-icon-color: var(--theme--background-page);
 
 	display: flex;
 	align-items: center;
@@ -225,8 +225,8 @@ function toggleInterface(id: string) {
 	width: 160px;
 	height: 100px;
 	margin-bottom: 8px;
-	border: var(--border-width) solid var(--border-subdued);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
 }
@@ -247,39 +247,39 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--primary-50));
+	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
 }
 
 .preview .fallback {
-	--v-icon-color: var(--primary-75);
+	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--background-page);
-	border: 2px solid var(--primary);
-	border-radius: var(--border-radius);
-	box-shadow: 0 0 8px var(--primary-75);
+	background-color: var(--theme--background-page);
+	border: 2px solid var(--theme--primary);
+	border-radius: var(--theme--border-radius);
+	box-shadow: 0 0 8px var(--theme--primary-subdued);
 }
 
 .interface:hover .preview {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .interface.active .preview {
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	background-color: var(--theme--primary-background);
+	border-color: var(--theme--primary);
 }
 
 .interface.gray .preview {
-	--primary: var(--foreground-subdued);
-	--primary-50: var(--foreground-subdued);
+	--primary: var(--theme--foreground-subdued);
+	--primary-50: var(--theme--foreground-subdued);
 
 	background-color: var(--background-subdued);
 }
 
 .interface.gray .preview .fallback {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
-	box-shadow: 0 0 8px var(--foreground-subdued);
+	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 </style>

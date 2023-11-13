@@ -1,6 +1,6 @@
 {
 	"name": "create-directus-extension",
-	"version": "10.0.12",
+	"version": "10.0.15",
 	"description": "A small util that will scaffold a Directus extension",
 	"keywords": [
 		"directus",
@@ -33,7 +33,7 @@
 		"lib/index.js"
 	],
 	"dependencies": {
-		"@directus/constants": "workspace:*",
+		"@directus/extensions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"inquirer": "9.2.4"
 	}

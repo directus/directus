@@ -480,7 +480,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                 | `false`                              |
 | `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                   | `5m`                                 |
 | `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`                                  |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`                              |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                 | `false`                              |
 | `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                      | `directus_activity,directus_presets` |
 | `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
@@ -1037,3 +1037,29 @@ https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 | `WEBSOCKETS_GRAPHQL_CONN_LIMIT`   | How many simultaneous connections are allowed.                                                                                                                                                          | `Infinity`    |
 | `WEBSOCKETS_GRAPHQL_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
 | `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
+
+---
+
+## PM2
+
+::: warning Requirements
+
+These environment variables only exist when you're using the official Docker Container, or are using the provided
+[`ecosystem.config.cjs`](https://github.com/directus/directus/blob/main/ecosystem.config.cjs) file with `pm2` directly.
+
+:::
+
+For more information on what these options do, please refer to
+[the `pm2` documentation](https://pm2.keymetrics.io/docs/usage/application-declaration/).
+
+| Variable                 | Description                                                        | Default     |
+| ------------------------ | ------------------------------------------------------------------ | ----------- |
+| `PM2_INSTANCES`          | Number of app instance to be launched                              | `1`         |
+| `PM2_EXEC_MODE`          | One of `fork`, `cluster`                                           | `'cluster'` |
+| `PM2_MAX_MEMORY_RESTART` | App will be restarted if it exceeds the amount of memory specified | —           |
+| `PM2_MIN_UPTIME`         | Min uptime of the app to be considered started                     | —           |
+| `PM2_LISTEN_TIMEOUT`     | Time in ms before forcing a reload if app not listening            | —           |
+| `PM2_KILL_TIMEOUT`       | Time in milliseconds before sending a final SIGKILL                | —           |
+| `PM2_MAX_RESTARTS`       | Number of failed restarts before the process is killed             |  —          |
+| `PM2_RESTART_DELAY`      | Time to wait before restarting a crashed app                       | `0`         |
+| `PM2_AUTO_RESTART`       | Automatically restart Directus if it crashes unexpectedly          | `false`     |

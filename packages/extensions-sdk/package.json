@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "10.1.11",
+	"version": "10.1.14",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -33,6 +33,7 @@
 	"dependencies": {
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
+		"@directus/extensions": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@rollup/plugin-commonjs": "25.0.0",

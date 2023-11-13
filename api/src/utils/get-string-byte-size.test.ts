@@ -1,4 +1,4 @@
-import { stringByteSize } from '../../src/utils/get-string-byte-size.js';
+import { stringByteSize } from './get-string-byte-size.js';
 import { test, expect } from 'vitest';
 
 test('Returns correct byte size for given input string', () => {

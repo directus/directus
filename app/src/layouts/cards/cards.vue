@@ -73,7 +73,9 @@ const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	props.limit
 );
 
-limitWritable.value = selectedSize;
+if (limitWritable.value !== selectedSize) {
+	limitWritable.value = selectedSize;
+}
 
 watch(
 	() => props.page,
@@ -187,7 +189,7 @@ watch(width, () => {
 		align-items: center;
 		justify-content: flex-end;
 		width: 240px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		span {
 			width: auto;
@@ -195,7 +197,7 @@ watch(width, () => {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }
