@@ -384,7 +384,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);

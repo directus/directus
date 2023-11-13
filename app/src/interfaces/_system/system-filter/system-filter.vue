@@ -310,7 +310,7 @@ function addKeyAsNode() {
 			height: 30px;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
-			background-color: var(--theme--background);
+			background-color: var(--theme--form--field--input--background);
 			border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			border-radius: 100px;
 			transition: border-color var(--fast) var(--transition);

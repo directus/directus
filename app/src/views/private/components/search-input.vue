@@ -36,14 +36,6 @@ watch(
 
 		const searchElement = filterElement.value.parentElement!;
 		const minWidth = searchElement.offsetWidth - 4;
-
-		if (filterElementWidth.value > minWidth) {
-			filterElement.value.style.borderTopLeftRadius =
-				filterElementWidth.value > minWidth + 22 ? 22 + 'px' : filterElementWidth.value - minWidth + 'px';
-		} else {
-			filterElement.value.style.borderTopLeftRadius = '0px';
-		}
-
 		const headerElement = mainElement?.value?.firstElementChild;
 
 		if (!headerElement) return;
@@ -242,7 +234,7 @@ function emitValue() {
 	}
 
 	&.filter-border {
-		padding-bottom: 2px;
+		padding-bottom: var(--theme--border-width);
 		border-bottom: none;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
@@ -250,11 +242,11 @@ function emitValue() {
 
 		&::after {
 			position: absolute;
-			right: 2px;
-			bottom: -2px;
-			left: 2px;
+			right: var(--theme--border-width);
+			bottom: calc(-1 * var(--theme--border-width));
+			left: var(--theme--border-width);
 			width: auto;
-			height: 2px;
+			height: var(--theme--border-width);
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
@@ -270,7 +262,7 @@ function emitValue() {
 		overflow: hidden;
 		color: var(--theme--foreground);
 		text-overflow: ellipsis;
-		background-color: var(--theme--background);
+		background-color: var(--theme--form--field--input--background);
 		border: none;
 		border-radius: 0;
 
@@ -295,6 +287,7 @@ function emitValue() {
 	padding: 0;
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-top-right-radius: 0;
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
 }
