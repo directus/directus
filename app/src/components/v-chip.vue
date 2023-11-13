@@ -138,7 +138,7 @@ function onCloseClick(event: MouseEvent) {
 
 	&.small {
 		height: 24px;
-		padding: 0 4px;
+		padding: 0 8px;
 		font-size: 14px;
 		border-radius: 12px;
 	}
