@@ -153,12 +153,12 @@ function emitValue() {
 .search-input {
 	display: flex;
 	align-items: center;
-	width: 72px;
+	width: 68px;
 	max-width: 100%;
-	height: 44px;
+	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc(44px / 2);
+	border-radius: calc((40px + var(--theme--border-width) * 2) / 2);
 	transition: width var(--slow) var(--transition), border-bottom-left-radius var(--fast) var(--transition),
 		border-bottom-right-radius var(--fast) var(--transition);
 
@@ -204,6 +204,24 @@ function emitValue() {
 		}
 	}
 
+	input {
+		width: 0px;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		color: var(--theme--foreground);
+		text-overflow: ellipsis;
+		background-color: var(--theme--form--field--input--background);
+		border: none;
+		border-radius: 0;
+		flex-grow: 1;
+
+		&::placeholder {
+			color: var(--theme--foreground-subdued);
+		}
+	}
+
 	&.active {
 		width: 300px;
 		border-color: var(--theme--form--field--input--border-color);
@@ -238,7 +256,7 @@ function emitValue() {
 		border-bottom: none;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
-		transition: border-bottom-left-radius none, border-bottom-right-radius none;
+		transition: border-bottom-left-radius 0, border-bottom-right-radius 0;
 
 		&::after {
 			position: absolute;
@@ -250,24 +268,6 @@ function emitValue() {
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
-		}
-	}
-
-	input {
-		flex-grow: 1;
-		width: 0px;
-		height: 100%;
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-		color: var(--theme--foreground);
-		text-overflow: ellipsis;
-		background-color: var(--theme--form--field--input--background);
-		border: none;
-		border-radius: 0;
-
-		&::placeholder {
-			color: var(--theme--foreground-subdued);
 		}
 	}
 }
