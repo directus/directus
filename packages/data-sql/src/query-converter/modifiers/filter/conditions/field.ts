@@ -1,18 +1,29 @@
 import type { ConditionFieldNode } from '@directus/data';
-import type { WhereUnion } from '../../../../types/index.js';
-import { convertPrimitive } from './utils.js';
+import type { FilterResult } from '../filter.js';
+import { convertTarget } from './utils.js';
 
-export function convertFieldCondition(node: ConditionFieldNode, collection: string, negate: boolean): WhereUnion {
+export function convertFieldCondition(
+	node: ConditionFieldNode,
+	collection: string,
+	generator: Generator<number, number, number>,
+	negate: boolean
+): FilterResult {
+	const { value: value1, joins: joins1 } = convertTarget(node.target, collection, generator);
+	const { value: value2, joins: joins2 } = convertTarget(node.compareTo, collection, generator);
+
 	return {
-		where: {
-			type: 'condition',
-			negate,
-			condition: {
-				type: 'condition-field',
-				operation: node.operation,
-				target: convertPrimitive(collection, node.target),
-				compareTo: convertPrimitive(node.compareTo.collection, node.compareTo),
+		clauses: {
+			where: {
+				type: 'condition',
+				negate,
+				condition: {
+					type: 'condition-field',
+					operation: node.operation,
+					target: value1,
+					compareTo: value2,
+				},
 			},
+			joins: [...joins1, ...joins2],
 		},
 		parameters: [],
 	};

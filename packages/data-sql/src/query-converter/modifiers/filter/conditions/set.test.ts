@@ -4,8 +4,9 @@ import { expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertSetCondition } from './set.js';
+import type { FilterResult } from '../filter.js';
 
-test('set', () => {
+test('convert set condition', () => {
 	const idGen = parameterIndexGenerator();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
@@ -39,8 +40,13 @@ test('set', () => {
 		negate: false,
 	};
 
-	expect(convertSetCondition(con, randomCollection, idGen, false)).toStrictEqual({
-		where: expectedWhere,
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: expectedWhere,
+			joins: [],
+		},
 		parameters: randomValues,
-	});
+	};
+
+	expect(convertSetCondition(con, randomCollection, idGen, false)).toStrictEqual(expectedResult);
 });
