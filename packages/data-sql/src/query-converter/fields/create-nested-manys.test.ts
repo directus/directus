@@ -6,7 +6,7 @@ import { randomIdentifier } from '@directus/random';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { FieldConversionResult } from './fields.js';
 
-test('getNestedMany wit a single identifier column', () => {
+test('getNestedMany with a single identifier', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
 	const foreignIdFieldId = randomIdentifier();
@@ -94,7 +94,7 @@ test('getNestedMany wit a single identifier column', () => {
 	expect(result.queryGenerator([randomPkValue])).toStrictEqual(expectedGeneratedQuery);
 });
 
-test('getNestedMany with a multiple identifier columns (composite keys)', () => {
+test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	const localIdField1 = randomIdentifier();
 	const localIdField2 = randomIdentifier();
 
@@ -215,4 +215,92 @@ test('getNestedMany with a multiple identifier columns (composite keys)', () => 
 
 	expect(result).toStrictEqual(expected);
 	expect(result.queryGenerator([randomPkValue1, randomPkValue2])).toMatchObject(expectedGeneratedQuery);
+});
+
+test('getNestedMany with a single identifier and modifiers', () => {
+	const localIdField = randomIdentifier();
+	const foreignIdField = randomIdentifier();
+	const foreignIdFieldId = randomIdentifier();
+	const foreignTable = randomIdentifier();
+	const foreignStore = randomIdentifier();
+	const randomPkValue = randomIdentifier();
+
+	const fieldMeta: AbstractQueryFieldNodeRelationalOneToMany = {
+		type: 'o2m',
+		join: {
+			local: {
+				fields: [localIdField],
+			},
+			foreign: {
+				store: foreignStore,
+				collection: foreignTable,
+				fields: [foreignIdField],
+			},
+		},
+	};
+
+	const idxGen = parameterIndexGenerator();
+
+	const nestedResult: FieldConversionResult = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: foreignTable,
+					column: foreignIdField,
+					as: foreignIdFieldId,
+				},
+			],
+			joins: [],
+		},
+		parameters: [],
+		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
+		nestedManys: [],
+	};
+
+	const result = getNestedMany(fieldMeta, nestedResult, idxGen, foreignTable);
+
+	const expected: AbstractSqlNestedMany = {
+		queryGenerator: expect.any(Function),
+		localJoinFields: [localIdField],
+		foreignJoinFields: [foreignIdField],
+		alias: foreignTable,
+	};
+
+	const expectedGeneratedQuery: AbstractSqlQuery = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: foreignTable,
+					column: foreignIdField,
+					as: foreignIdFieldId,
+				},
+			],
+			from: foreignTable,
+			where: {
+				type: 'condition',
+				condition: {
+					type: 'condition-string',
+					operation: 'eq',
+					target: {
+						type: 'primitive',
+						table: foreignTable,
+						column: foreignIdField,
+					},
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
+				},
+				negate: false,
+			},
+		},
+		parameters: [randomPkValue],
+		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
+		nestedManys: [],
+	};
+
+	expect(result).toStrictEqual(expected);
+	expect(result.queryGenerator([randomPkValue])).toStrictEqual(expectedGeneratedQuery);
 });

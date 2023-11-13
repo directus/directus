@@ -50,7 +50,7 @@ export interface AbstractSqlQuery {
 
 export interface AbstractSqlNestedMany {
 	/*
-	 * The nested many sub queries cannot be generated complement, since they rely on the result of the root query
+	 * The nested many sub queries cannot be generated completely, since they rely on the result of the root query.
 	 * Therefore we use a function here instead, which takes the missing values as parameters to generate the actual sub query.
 	 */
 	queryGenerator: (joinFieldValues: AtLeastOneElement<string | number>) => AbstractSqlQuery;
