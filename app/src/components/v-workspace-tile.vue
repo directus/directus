@@ -339,8 +339,7 @@ function useDragDrop() {
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
 	background-color: var(--theme--background-page);
-	border: 1px solid var(--theme--border-color-subdued);
-	box-shadow: 0 0 0 1px var(--theme--border-color-subdued);
+	box-shadow: 0 0 0 var(--theme--border-width) var(--theme--border-color-subdued);
 	z-index: 1;
 	transition: border var(--fast) var(--transition);
 
