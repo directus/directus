@@ -44,12 +44,6 @@ router.get(
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
-		if ('key' in transformation && Object.keys(transformation).length > 1) {
-			throw new InvalidQueryError({
-				reason: `You can't combine the "key" query parameter with any other transformation`,
-			});
-		}
-
 		if ('transforms' in transformation) {
 			let transforms: unknown;
 
@@ -117,10 +111,20 @@ router.get(
 
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'presets') {
-			if (allKeys.includes(transformation['key'] as string)) return next();
+			if (allKeys.includes(transformation['key'] as string) && Object.keys(transformation).length === 1) {
+				return next();
+			}
+
 			throw new InvalidQueryError({ reason: `Only configured presets can be used in asset generation` });
 		} else {
-			if (transformation['key'] && systemKeys.includes(transformation['key'] as string)) return next();
+			if (
+				transformation['key'] &&
+				systemKeys.includes(transformation['key'] as string) &&
+				Object.keys(transformation).length === 1
+			) {
+				return next();
+			}
+
 			throw new InvalidQueryError({ reason: `Dynamic asset generation has been disabled for this project` });
 		}
 	}),
@@ -152,11 +156,12 @@ router.get(
 
 		const vary = ['Origin', 'Cache-Control'];
 
-		const transformationParams: TransformationParams = res.locals['transformation'].key
-			? (res.locals['shortcuts'] as TransformationParams[]).find(
-					(transformation) => transformation['key'] === res.locals['transformation'].key
-			  )
-			: res.locals['transformation'];
+		const transformationParams: TransformationParams = {
+			...(res.locals['shortcuts'] as TransformationParams[]).find(
+				(transformation) => transformation['key'] === res.locals['transformation']?.key
+			),
+			...res.locals['transformation'],
+		};
 
 		let acceptFormat: TransformationFormat | undefined;
 

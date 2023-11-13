@@ -1,18 +1,16 @@
+import { describe, expect, test, vi } from 'vitest';
 import { getConfigFromEnv } from './get-config-from-env.js';
-import { describe, test, expect, vi } from 'vitest';
 
-vi.mock('../../src/env', () => {
-	const MOCK_ENV = {
-		OBJECT_BRAND__COLOR: 'purple',
-		OBJECT_BRAND__HEX: '#6644FF',
-		CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
-		CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv({
+		env: {
+			OBJECT_BRAND__COLOR: 'purple',
+			OBJECT_BRAND__HEX: '#6644FF',
+			CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
+			CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
+		},
+	});
 });
 
 describe('get config from env', () => {

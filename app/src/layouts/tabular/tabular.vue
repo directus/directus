@@ -98,7 +98,9 @@ const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	props.limit
 );
 
-limitWritable.value = selectedSize;
+if (limitWritable.value !== selectedSize) {
+	limitWritable.value = selectedSize;
+}
 
 const showManualSort = computed(() => {
 	if (!props.sortField) return false;

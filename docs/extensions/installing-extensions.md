@@ -40,10 +40,9 @@ At the root of your project, create a `Dockerfile` if one doesn't already exist 
 FROM directus/directus:{{ directus.version.major }}.x.y
 
 USER root
-RUN corepack enable \
- && corepack prepare pnpm@{{ directus.pnpmVersion }} --activate
-
+RUN corepack enable
 USER node
+
 RUN pnpm install directus-extension-package-name
 ```
 

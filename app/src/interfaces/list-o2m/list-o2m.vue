@@ -599,7 +599,7 @@ function getLinkForItem(item: DisplayItem) {
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	padding: var(--v-card-padding);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-list {
@@ -626,7 +626,7 @@ function getLinkForItem(item: DisplayItem) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -635,7 +635,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
+		margin-top: 8px;
 	}
 
 	.spacer {

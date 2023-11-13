@@ -157,7 +157,7 @@
 
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
 .mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
-	color: var(--v-list-item-color-active);
+	color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 	background-color: var(--theme--background-accent);
 }
 
@@ -166,11 +166,11 @@
 }
 
 .mapboxgl-ctrl-geocoder--icon {
-	fill: var(--v-icon-color);
+	fill: var(--v-icon-color, currentColor);
 }
 
 .mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {
-	fill: var(--v-icon-color-hover);
+	fill: var(--v-icon-color-hover, currentColor);
 }
 
 .mapbox-gl-geocoder--error {

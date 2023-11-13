@@ -30,7 +30,7 @@ import Badge from './.vitepress/components/Badge.vue'
 <template #rest>
 
 ```js
-GET /items/products/4
+GET /items/articles/4
 	?fields[]=id
 	&fields[]=status
 	&fields[]=title
