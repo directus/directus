@@ -202,8 +202,8 @@ const steps = computed(() => {
 		z-index: 1;
 		width: calc(100% + 8px);
 		height: calc(100% + 8px);
-		background-color: var(--background-normal-alt);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background-accent);
+		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';
@@ -215,7 +215,7 @@ const steps = computed(() => {
 
 		.header {
 			.dot {
-				border-color: var(--background-normal-alt);
+				border-color: var(--theme--background-accent);
 			}
 		}
 
@@ -232,7 +232,7 @@ const steps = computed(() => {
 .json {
 	background-color: var(--background-subdued);
 	font-family: var(--theme--font-family-monospace);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	padding: 20px;
 	margin-top: 20px;
 	white-space: pre-wrap;
@@ -248,10 +248,10 @@ const steps = computed(() => {
 		&::after {
 			content: '';
 			position: absolute;
-			width: var(--border-width);
+			width: var(--theme--border-width);
 			left: -11px;
 			top: 0;
-			background-color: var(--border-subdued);
+			background-color: var(--theme--border-color-subdued);
 			height: 100%;
 		}
 
@@ -291,7 +291,7 @@ const steps = computed(() => {
 		width: 12px;
 		height: 12px;
 		background-color: var(--theme--primary);
-		border: 2px solid var(--theme--background);
+		border: 2px solid var(--theme--background-page);
 		border-radius: 8px;
 
 		&.resolve {

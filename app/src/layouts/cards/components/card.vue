@@ -145,11 +145,11 @@ function handleClick() {
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--background);
 		border-color: var(--theme--primary-subdued);
 		border-style: solid;
 		border-width: 0px;
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		transition: border-width var(--fast) var(--transition);
 
 		&::after {
@@ -220,7 +220,7 @@ function handleClick() {
 		z-index: 2;
 		width: 18px;
 		height: 18px;
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-page);
 		border-radius: 24px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);

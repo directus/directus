@@ -51,9 +51,9 @@ const { sidebarOpen } = toRefs(appStore);
 .sidebar-detail {
 	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
-	--v-badge-border-color: var(--background-normal-alt);
+	--v-badge-border-color: var(--theme--background-accent);
 	--v-badge-background-color: var(--theme--primary);
-	--v-badge-color: var(--background-normal);
+	--v-badge-color: var(--theme--background);
 
 	display: contents;
 
@@ -68,9 +68,11 @@ const { sidebarOpen } = toRefs(appStore);
 		flex-shrink: 0;
 		justify-content: space-between;
 		width: 100%;
-		height: 60px;
+		height: calc(60px + var(--theme--sidebar--section--toggle--border-width));
 		color: var(--theme--sidebar--section--toggle--foreground);
 		background-color: var(--theme--sidebar--section--toggle--background);
+		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+			var(--theme--sidebar--section--toggle--border-color);
 
 		.icon {
 			--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);

@@ -280,6 +280,7 @@ export default defineLayout<LayoutOptions>({
 
 		function createCalendar(calendarElement: HTMLElement) {
 			calendar.value = new Calendar(calendarElement, fullFullCalendarOptions.value);
+			calendar.value.render();
 
 			calendar.value.on('datesSet', (args) => {
 				viewInfo.value = {
@@ -287,8 +288,6 @@ export default defineLayout<LayoutOptions>({
 					startDateStr: formatISO(args.view.currentStart),
 				};
 			});
-
-			calendar.value.render();
 		}
 
 		function destroyCalendar() {

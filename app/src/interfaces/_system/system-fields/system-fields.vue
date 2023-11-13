@@ -138,8 +138,8 @@ const removeField = (field: string) => {
 }
 
 .v-notice.no-fields {
-	background-color: var(--theme--background);
-	border: var(--border-width) solid var(--v-list-item-border-color);
+	background-color: var(--theme--background-page);
+	border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--border-color-subdued));
 
 	&::after {
 		display: none;

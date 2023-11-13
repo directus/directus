@@ -344,16 +344,19 @@ function updateSort(newSort: Sort) {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-table-height: auto;
-	--v-table-sticky-offset-top: 0;
-	--v-table-color: var(--theme--foreground);
-	--v-table-background-color: var(--theme--form--field--input--background);
-}
+/*
+
+	Available Variables:
+
+		--v-table-sticky-offset-top  [0]
+		--v-table-color              [var(--theme--foreground)]
+		--v-table-background-color   [transparent]
+
+*/
 
 .v-table {
 	position: relative;
-	height: var(--v-table-height);
+	height: auto;
 	overflow-y: auto;
 }
 
@@ -377,7 +380,7 @@ table :deep(thead) {
 
 table :deep(td),
 table :deep(th) {
-	color: var(--v-table-color);
+	color: var(--v-table-color, var(--theme--foreground));
 }
 
 table :deep(tr),
@@ -429,7 +432,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator .v-progress-linear {
 	--v-progress-linear-height: 2px;
-	--v-progress-linear-color: var(--border-normal-alt);
+	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
 	top: -2px;
@@ -460,8 +463,8 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline {
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: 2px solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 
 .inline table :deep(.table-row:last-of-type .cell) {

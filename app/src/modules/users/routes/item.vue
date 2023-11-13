@@ -442,7 +442,7 @@ function revert(values: Record<string, any>) {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--theme--background);
 }
 
 .user-item {
@@ -451,7 +451,7 @@ function revert(values: Record<string, any>) {
 }
 
 .user-box {
-	--v-skeleton-loader-background-color: var(--background-normal);
+	--v-skeleton-loader-background-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;
@@ -459,8 +459,8 @@ function revert(values: Record<string, any>) {
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
 	padding: 20px;
-	background-color: var(--background-normal);
-	border-radius: calc(var(--border-radius) + 4px);
+	background-color: var(--theme--background);
+	border-radius: calc(var(--theme--border-radius) + 4px);
 
 	.avatar {
 		--v-icon-color: var(--theme--foreground-subdued);
@@ -473,7 +473,7 @@ function revert(values: Record<string, any>) {
 		height: 84px;
 		margin-right: 16px;
 		overflow: hidden;
-		background-color: var(--background-normal);
+		background-color: var(--theme--background);
 		border: solid 6px var(--white);
 		border-radius: 100%;
 		box-shadow: var(--card-shadow);

@@ -63,7 +63,7 @@ const displayValue = computed(() => {
 	color: var(--theme--primary);
 	text-align: left;
 	background-color: var(--theme--primary-background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.display-value {
 		flex-grow: 1;
@@ -120,7 +120,7 @@ const displayValue = computed(() => {
 		}
 
 		&:hover {
-			background-color: var(--background-normal);
+			background-color: var(--theme--background);
 		}
 
 		.dot {

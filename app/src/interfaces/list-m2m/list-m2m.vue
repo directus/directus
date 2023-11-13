@@ -629,7 +629,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--border-width) solid var(--border-subdued);
+				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
@@ -638,9 +638,9 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 <style lang="scss" scoped>
 .bordered {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius-outline);
-	padding: var(--v-card-padding);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-list {
@@ -672,7 +672,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -681,7 +681,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
+		margin-top: 8px;
 	}
 
 	.spacer {

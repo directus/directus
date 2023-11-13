@@ -358,7 +358,7 @@ function getWidth(input: unknown, fallback: number): number {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-page);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
@@ -387,10 +387,12 @@ function getWidth(input: unknown, fallback: number): number {
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--navigation--list--font-family);
+		border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
 		&.is-open {
 			transform: translateX(0);
 		}
+
 		&.has-shadow {
 			box-shadow: var(--navigation-shadow);
 		}
@@ -414,6 +416,9 @@ function getWidth(input: unknown, fallback: number): number {
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
 
+				--v-divider-color: var(--theme--navigation--list--divider--border-color);
+				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
+
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
@@ -427,7 +432,6 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#main-content {
-		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px;
 		/* (60 - 4 - 24) / 2 */
@@ -502,6 +506,10 @@ function getWidth(input: unknown, fallback: number): number {
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--sidebar--font-family);
+		border-left: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+
+		/* Explicitly render the border outside of the width of the bar itself */
+		box-sizing: content-box;
 
 		.spacer {
 			flex-grow: 1;
@@ -522,7 +530,7 @@ function getWidth(input: unknown, fallback: number): number {
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 60px));
+			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
 		}
 
 		@media (min-width: 1260px) {

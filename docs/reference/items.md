@@ -219,7 +219,7 @@ const result = await client.request(readItem('articles', '15'));
 
 For a specific Content Version:
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```http
@@ -351,7 +351,7 @@ const result = await client.request(readSingleton('about'));
 
 For a specific Content Version:
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 ```http

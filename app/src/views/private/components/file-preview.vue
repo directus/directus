@@ -91,13 +91,13 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 		max-width: 100%;
 		max-height: v-bind(maxHeight);
 		object-fit: contain;
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.image,
 	.video {
-		background-color: var(--background-normal);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.image {
@@ -119,12 +119,12 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 	}
 
 	.fallback {
-		background-color: var(--background-normal);
+		background-color: var(--theme--background);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		height: var(--input-height-tall);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 	}
 
 	&.svg,

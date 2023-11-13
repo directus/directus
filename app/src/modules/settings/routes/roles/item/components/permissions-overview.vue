@@ -210,8 +210,8 @@ function useReset() {
 .table {
 	max-width: 792px;
 	background-color: var(--theme--form--field--input--background);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 
 .system-toggle {

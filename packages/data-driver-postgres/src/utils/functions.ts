@@ -8,7 +8,7 @@ import type { ExtractFn } from '@directus/data';
  * @param fnNode - The function node which holds the function name and the column
  * @returns	Basically FN("table"."column")
  */
-export function applyFunction(fnNode: AbstractSqlQueryFnNode) {
+export function applyFunction(fnNode: AbstractSqlQueryFnNode): string {
 	const wrappedColumn = wrapColumn(fnNode.table, fnNode.column);
 
 	if (fnNode.fn.type === 'arrayFn') {

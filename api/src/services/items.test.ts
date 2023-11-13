@@ -1,3 +1,4 @@
+import { InvalidPayloadError } from '@directus/errors';
 import type { CollectionsOverview, NestedDeepQuery, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -5,25 +6,15 @@ import { MockClient, Tracker, createTracker, type RawQuery } from 'knex-mock-cli
 import { cloneDeep } from 'lodash-es';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getDatabaseClient } from '../database/index.js';
-import { ItemsService } from './index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
-import { InvalidPayloadError } from '@directus/errors';
+import { getDatabaseClient } from '../database/index.js';
 import { DatabaseClients, type DatabaseClient } from '../types/database.js';
+import { ItemsService } from './index.js';
 
-vi.mock('../env', async () => {
-	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
-
-	const MOCK_ENV = {
-		...actual.default,
-		CACHE_AUTO_PURGE: true,
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv({ env: { CACHE_AUTO_PURGE: 'true' } });
 });
 
 vi.mock('../../src/database/index', () => ({

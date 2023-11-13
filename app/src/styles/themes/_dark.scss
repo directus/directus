@@ -11,13 +11,8 @@
 
 	color-scheme: dark;
 
-	--border-normal: #30363d;
-	--border-normal-alt: #484f58;
-	--border-subdued: #21262d;
-
 	--foreground-inverted: #0d1117;
 
-	--background-normal: #21262e;
 	--background-normal-alt: #30363d;
 	--background-subdued: #161b22;
 	--background-highlight: #1d1d21;
@@ -31,7 +26,6 @@
 	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 	--overlay-color: rgba(0, 0, 0, 0.9);
 
-	--header-shadow: 0 4px 7px -4px rgb(var(--black) / 0.2);
 	--navigation-shadow: 0px 0px 12px var(--black);
 	--sidebar-shadow: var(--navigation-shadow);
 
@@ -51,6 +45,6 @@
 	--danger-alt: var(--red-10);
 
 	.alt-colors {
-		--background-subdued: var(--theme--background);
+		--background-subdued: var(--theme--background-page);
 	}
 }

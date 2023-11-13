@@ -138,8 +138,8 @@ const customIcon = computed(() => {
 	width: 100%;
 	height: var(--input-height);
 	padding: 10px;
-	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
+	border: 2px dashed var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	input {
 		display: block;
@@ -163,11 +163,11 @@ const customIcon = computed(() => {
 	}
 
 	&.active {
-		--v-icon-color: var(--v-radio-color);
+		--v-icon-color: var(--v-radio-color, var(--theme--primary));
 
 		position: relative;
 		background-color: transparent;
-		border-color: var(--v-radio-color);
+		border-color: var(--v-radio-color, var(--theme--primary));
 
 		&::before {
 			position: absolute;
@@ -175,7 +175,7 @@ const customIcon = computed(() => {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--v-radio-color);
+			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;
 			content: '';
 			pointer-events: none;

@@ -330,8 +330,8 @@ function openFileBrowser() {
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
-	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
+	border: 2px dashed var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color, background-color;
 
@@ -340,7 +340,7 @@ function openFileBrowser() {
 	}
 
 	&:not(.uploading):hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 }
 
@@ -373,7 +373,7 @@ function openFileBrowser() {
 .dragging {
 	color: var(--theme--primary);
 	background-color: var(--theme--primary-background);
-	border-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 
 	* {
 		pointer-events: none;
@@ -392,7 +392,7 @@ function openFileBrowser() {
 
 	color: var(--white);
 	background-color: var(--theme--primary);
-	border-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 	border-style: solid;
 
 	.v-progress-linear {

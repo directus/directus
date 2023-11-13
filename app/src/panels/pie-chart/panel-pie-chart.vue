@@ -147,7 +147,7 @@ async function setupChart() {
 		labels,
 		colors,
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top,
 				bottom,
@@ -283,11 +283,11 @@ function checkMatchingConditionalFill(
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
@@ -302,7 +302,7 @@ function checkMatchingConditionalFill(
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 

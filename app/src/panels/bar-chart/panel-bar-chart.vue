@@ -130,7 +130,7 @@ function setUpChart() {
 			opacity: 1,
 		},
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: props.showHeader ? -20 : -5,
 				bottom: 5,
@@ -184,7 +184,7 @@ function setUpChart() {
 				show: !props.horizontal,
 				height: 0.5,
 				width: '1px',
-				color: 'var(--border-subdued)',
+				color: 'var(--theme--border-color-subdued)',
 			},
 			axisTicks: {
 				show: false,
@@ -215,7 +215,7 @@ function setUpChart() {
 				show: props.horizontal,
 				height: 0.5,
 				width: '1px',
-				color: 'var(--border-subdued)',
+				color: 'var(--theme--border-color-subdued)',
 			},
 			axisTicks: {
 				show: false,
@@ -337,11 +337,11 @@ function setUpChart() {
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
@@ -350,7 +350,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 

@@ -4,7 +4,7 @@ import { getNestedMany } from './create-nested-manys.js';
 import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../../index.js';
 import { randomIdentifier } from '@directus/random';
 import { parameterIndexGenerator } from '../param-index-generator.js';
-import type { Result } from './fields.js';
+import type { FieldConversionResult } from './fields.js';
 
 test('getNestedMany wit a single identifier column', () => {
 	const localIdField = randomIdentifier();
@@ -30,7 +30,7 @@ test('getNestedMany wit a single identifier column', () => {
 
 	const idxGen = parameterIndexGenerator();
 
-	const nestedResult: Result = {
+	const nestedResult: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -129,7 +129,7 @@ test('getNestedMany with a multiple identifier columns (composite keys)', () => 
 
 	const idxGen = parameterIndexGenerator();
 
-	const nestedResult: Result = {
+	const nestedResult: FieldConversionResult = {
 		clauses: {
 			select: [
 				{

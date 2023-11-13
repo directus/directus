@@ -204,7 +204,7 @@ function setUpChart() {
 			enabled: false,
 		},
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: isSparkline ? (props.showHeader && 0) || 5 : (props.showHeader && -20) || -2,
 				bottom: isSparkline ? 5 : 0,
@@ -260,7 +260,7 @@ function setUpChart() {
 			},
 			crosshairs: {
 				stroke: {
-					color: 'var(--border-normal)',
+					color: 'var(--theme--form--field--input--border-color)',
 				},
 			},
 		},
@@ -329,11 +329,11 @@ function setUpChart() {
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
@@ -348,7 +348,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 

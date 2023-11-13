@@ -43,12 +43,16 @@ const iconName = computed(() => {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-notice-color: var(--theme--foreground-subdued);
-	--v-notice-background-color: var(--background-subdued);
-	--v-notice-border-color: var(--background-subdued);
-	--v-notice-icon-color: var(--theme--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-notice-color             [var(--theme--foreground-subdued)]
+		--v-notice-background-color  [var(--background-subdued)]
+		--v-notice-border-color      [var(--background-subdued)]
+		--v-notice-icon-color        [var(--theme--foreground-subdued)]
+
+*/
 
 .v-notice {
 	position: relative;
@@ -58,10 +62,10 @@ const iconName = computed(() => {
 	width: auto;
 	min-height: var(--input-height);
 	padding: 12px 16px;
-	color: var(--v-notice-color);
+	color: var(--v-notice-color, var(--theme--foreground-subdued));
 	line-height: 22px;
-	background-color: var(--v-notice-background-color);
-	border-radius: var(--border-radius);
+	background-color: var(--v-notice-background-color, var(--background-subdued));
+	border-radius: var(--theme--border-radius);
 	overflow: hidden;
 }
 
@@ -73,11 +77,11 @@ const iconName = computed(() => {
 	left: 0;
 	width: 4px;
 	height: 100%;
-	background-color: var(--v-notice-border-color);
+	background-color: var(--v-notice-border-color, var(--background-subdued));
 }
 
 .v-icon {
-	--v-icon-color: var(--v-notice-icon-color);
+	--v-icon-color: var(--v-notice-icon-color, var(--theme--foreground-subdued));
 }
 
 .v-icon.left {
@@ -88,28 +92,28 @@ const iconName = computed(() => {
 	--v-notice-icon-color: var(--theme--primary);
 	--v-notice-border-color: var(--theme--primary);
 	--v-notice-color: var(--theme--foreground);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--theme--background);
 }
 
 .success {
 	--v-notice-icon-color: var(--theme--success);
 	--v-notice-border-color: var(--theme--success);
 	--v-notice-color: var(--theme--success);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--theme--background);
 }
 
 .warning {
 	--v-notice-icon-color: var(--theme--warning);
 	--v-notice-border-color: var(--theme--warning);
 	--v-notice-color: var(--theme--foreground);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--theme--background);
 }
 
 .danger {
 	--v-notice-icon-color: var(--theme--danger);
 	--v-notice-border-color: var(--theme--danger);
 	--v-notice-color: var(--theme--danger);
-	--v-notice-background-color: var(--background-normal);
+	--v-notice-background-color: var(--theme--background);
 }
 
 .center {

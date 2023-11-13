@@ -5,6 +5,7 @@ import { adjustDate } from './adjust-date.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';
 import { isDynamicVariable } from './is-dynamic-variable.js';
+import { isObject } from './is-object.js';
 import { parseJSON } from './parse-json.js';
 import { toArray } from './to-array.js';
 
@@ -102,7 +103,11 @@ function parseFilterEntry(
 	if (['_or', '_and'].includes(String(key))) {
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
-		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
+		// When array indices are above 20 (default value),
+		// the query parser (qs) parses them as a key-value pair object instead of an array,
+		// so we will need to convert them back to an array
+		const val = isObject(value) ? Object.values(value) : value;
+		return { [key]: toArray(val).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
 	} else if (['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'].includes(String(key))) {
 		// Geometry filters always expect to operate against a GeoJSON object. Parse the
 		// value to JSON in case a stringified JSON blob is passed
