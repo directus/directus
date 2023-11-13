@@ -393,7 +393,6 @@ function useDragDrop() {
 	border-top-right-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
 	border-top-left-radius: var(--theme--border-radius);
-	backdrop-filter: blur(3px);
 	background-color: var(--theme--background-page);
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
@@ -470,7 +469,6 @@ function useDragDrop() {
 	border-top-right-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
 	border-bottom-left-radius: var(--theme--border-radius);
-	backdrop-filter: blur(3px);
 	background-color: var(--theme--background-page);
 }
 

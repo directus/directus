@@ -145,7 +145,7 @@ const stageChanges = () => {
 					v-for="pan of panelTypes"
 					:key="pan.id"
 					class="interface"
-					:class="{ active: panel.type === pan.id, gray: panel.type && panel.type !== pan.id }"
+					:class="{ active: panel.type === pan.id, subdued: panel.type && panel.type !== pan.id }"
 					@click="togglePanel(pan.id)"
 				>
 					<div class="preview">
@@ -340,13 +340,11 @@ const stageChanges = () => {
 	border-color: var(--theme--primary);
 }
 
-.interface.gray .preview {
-	filter: grayscale(1);
-
+.interface.subdued .preview {
 	background-color: var(--theme--background-subdued);
 }
 
-.interface.gray .preview .fallback {
+.interface.subdued .preview .fallback {
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	box-shadow: 0 0 8px var(--theme--foreground-subdued);
