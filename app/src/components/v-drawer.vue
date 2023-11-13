@@ -189,10 +189,24 @@ const internalActive = computed({
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
-				background-color: var(--theme--background);
+				background: var(--theme--navigation--background);
+				border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 			}
 
 			.sidebar-content {
+				--v-list-item-color: var(--theme--navigation--list--foreground);
+				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
+				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
+				--v-list-item-background-color: var(--theme--navigation--list--background);
+				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
+				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
+
+				--v-divider-color: var(--theme--navigation--list--divider--border-color);
+				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
+
 				height: 100%;
 				overflow-x: hidden;
 				overflow-y: auto;
