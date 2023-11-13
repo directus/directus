@@ -9,3 +9,4 @@ dist/
 *.yml
 *.yaml
 *.md
+*.json
