@@ -152,10 +152,7 @@ export class FilesService extends ItemsService {
 			}
 
 			// Upgrade the temp file to the final filename
-			await disk.copy(tempFilenameDisk, payload.filename_disk);
-
-			// Delete the temp file
-			await disk.delete(tempFilenameDisk);
+			await disk.move(tempFilenameDisk, payload.filename_disk);
 		}
 
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
