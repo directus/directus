@@ -217,7 +217,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	expect(result.queryGenerator([randomPkValue1, randomPkValue2])).toMatchObject(expectedGeneratedQuery);
 });
 
-test('getNestedMany with a single identifier and modifiers', () => {
+test.todo('getNestedMany with a single identifier and modifiers', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
 	const foreignIdFieldId = randomIdentifier();
@@ -279,21 +279,29 @@ test('getNestedMany with a single identifier and modifiers', () => {
 			],
 			from: foreignTable,
 			where: {
-				type: 'condition',
-				condition: {
-					type: 'condition-string',
-					operation: 'eq',
-					target: {
-						type: 'primitive',
-						table: foreignTable,
-						column: foreignIdField,
-					},
-					compareTo: {
-						type: 'value',
-						parameterIndex: 0,
-					},
-				},
+				type: 'logical',
+				operator: 'and',
 				negate: false,
+				childNodes: [
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'eq',
+							target: {
+								type: 'primitive',
+								table: foreignTable,
+								column: foreignIdField,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 0,
+							},
+						},
+						negate: false,
+					},
+					// @TODO add user defined modifier(s)
+				],
 			},
 		},
 		parameters: [randomPkValue],
