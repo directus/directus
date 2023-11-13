@@ -152,6 +152,8 @@ const { sidebarOpen } = toRefs(appStore);
 
 	.content {
 		padding: 16px;
+		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+			var(--theme--sidebar--section--toggle--border-color);
 
 		:deep(.page-description) {
 			margin-bottom: 8px;
