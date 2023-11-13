@@ -24,6 +24,6 @@ export type File = {
 	metadata: Record<string, any> | null;
 };
 
-export type FileStream = {
+export type BusboyFileStream = {
 	truncated: boolean;
 } & Readable;

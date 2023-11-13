@@ -1,5 +1,5 @@
 import formatTitle from '@directus/format-title';
-import type { File, FileStream } from '@directus/types';
+import type { File, BusboyFileStream } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
@@ -37,7 +37,7 @@ export class FilesService extends ItemsService {
 	 * Upload a single new file to the configured storage adapter
 	 */
 	async uploadOne(
-		stream: FileStream | Readable,
+		stream: BusboyFileStream | Readable,
 		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
@@ -102,13 +102,19 @@ export class FilesService extends ItemsService {
 				} else {
 					// If this is a new file that failed
 					// delete the DB record
-					await this.deleteOne(primaryKey!);
+					await super.deleteMany([primaryKey!]);
+
 					// delete the final file
 					await disk.delete(payload.filename_disk!);
 				}
 
 			} catch (err: any) {
-				logger.warn(`Couldn't delete temp file ${tempFilenameDisk}`);
+				if (isReplacement === true ){
+					logger.warn(`Couldn't delete temp file ${tempFilenameDisk}`);
+				} else {
+					logger.warn(`Couldn't delete file ${payload.filename_disk}`);
+				}
+
 				logger.warn(err);
 			}
 		};
@@ -124,7 +130,6 @@ export class FilesService extends ItemsService {
 
 			// Check if the file was truncated (if the stream ended early) and throw limit error if it was
 			if ('truncated' in stream && stream.truncated === true) {
-				await cleanUp();
 				throw new ContentTooLargeError();
 			}
 		} catch (err: any) {
