@@ -103,8 +103,8 @@ defineExpose({
 	padding-top: 8px;
 	padding-right: 8px;
 	padding-left: 8px;
-	background-color: var(--theme--background);
-	box-shadow: 0 0 2px 2px var(--theme--background);
+	background-color: var(--theme--background-normal);
+	box-shadow: 0 0 2px 2px var(--theme--background-normal);
 
 	&:first-of-type {
 		margin-top: 0;

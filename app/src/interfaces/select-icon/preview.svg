@@ -1,7 +1,7 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="13" width="120" height="70" rx="6" fill="var(--theme--background-page)" />
+	<rect x="18" y="13" width="120" height="70" rx="6" fill="var(--theme--background)" />
 	<rect x="19" y="14" width="118" height="68" rx="5" stroke="var(--theme--primary)" stroke-opacity=".25" stroke-width="2" />
-	<rect x="18" y="13" width="120" height="26" rx="6" fill="var(--theme--background-page)" class="glow" />
+	<rect x="18" y="13" width="120" height="26" rx="6" fill="var(--theme--background)" class="glow" />
 	<rect x="19" y="14" width="118" height="24" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
 	<rect x="46" y="23" width="50" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
 	<path

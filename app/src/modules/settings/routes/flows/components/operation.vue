@@ -412,7 +412,7 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: var(--theme--background-page);
+		background-color: var(--theme--background);
 		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
 
 		--v-icon-color: var(--theme--primary);

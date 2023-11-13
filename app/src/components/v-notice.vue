@@ -92,28 +92,28 @@ const iconName = computed(() => {
 	--v-notice-icon-color: var(--theme--primary);
 	--v-notice-border-color: var(--theme--primary);
 	--v-notice-color: var(--theme--foreground);
-	--v-notice-background-color: var(--theme--background);
+	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .success {
 	--v-notice-icon-color: var(--theme--success);
 	--v-notice-border-color: var(--theme--success);
 	--v-notice-color: var(--theme--success);
-	--v-notice-background-color: var(--theme--background);
+	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .warning {
 	--v-notice-icon-color: var(--theme--warning);
 	--v-notice-border-color: var(--theme--warning);
 	--v-notice-color: var(--theme--foreground);
-	--v-notice-background-color: var(--theme--background);
+	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .danger {
 	--v-notice-icon-color: var(--theme--danger);
 	--v-notice-border-color: var(--theme--danger);
 	--v-notice-color: var(--theme--danger);
-	--v-notice-background-color: var(--theme--background);
+	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .center {

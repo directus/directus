@@ -45,7 +45,7 @@ withDefaults(defineProps<Props>(), {
 		left: 0;
 		z-index: 1;
 		height: 100%;
-		background: linear-gradient(90deg, transparent, var(--theme--background-page), transparent);
+		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
 		animation: loading 1.5s infinite;

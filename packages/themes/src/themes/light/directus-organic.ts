@@ -8,8 +8,8 @@ export const theme: Theme = {
 	rules: merge({}, defaultTheme.rules, {
 		primary: '#006666',
 
-		backgroundPage: '#F0F7F7',
 		background: '#F0F7F7',
+		backgroundNormal: '#F0F7F7',
 		backgroundAccent: '#AEDADA',
 		backgroundSubdued: '#F0F7F7',
 

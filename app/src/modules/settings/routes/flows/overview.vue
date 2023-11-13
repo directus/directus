@@ -37,7 +37,7 @@ const conditionalFormatting = ref([
 		value: 'inactive',
 		text: t('inactive'),
 		color: 'var(--theme--foreground-subdued)',
-		background: 'var(--theme--background)',
+		background: 'var(--theme--background-normal)',
 	},
 ]);
 

@@ -270,7 +270,7 @@ function emitValue() {
 		overflow: hidden;
 		color: var(--theme--foreground);
 		text-overflow: ellipsis;
-		background-color: var(--theme--background-page);
+		background-color: var(--theme--background);
 		border: none;
 		border-radius: 0;
 

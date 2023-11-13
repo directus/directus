@@ -146,9 +146,9 @@ function onClick(event: PointerEvent) {
 		--v-list-item-color                    [var(--v-list-color, var(--theme--foreground))]
 		--v-list-item-color-hover              [var(--v-list-color-hover, var(--theme--foreground))]
 		--v-list-item-color-active             [var(--v-list-color-active, var(--theme--foreground))]
-		--v-list-item-background-color         [var(--v-list-background-color, var(--theme--background))]
-		--v-list-item-background-color-hover   [var(--v-list-background-color-hover, var(--theme--background))]
-		--v-list-item-background-color-active  [var(--v-list-background-color-active, var(--theme--background))]
+		--v-list-item-background-color         [var(--v-list-background-color, var(--theme--background-normal))]
+		--v-list-item-background-color-hover   [var(--v-list-background-color-hover, var(--theme--background-normal))]
+		--v-list-item-background-color-active  [var(--v-list-background-color-active, var(--theme--background-normal))]
 
 */
 
@@ -201,7 +201,7 @@ function onClick(event: PointerEvent) {
 			color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
 			background-color: var(
 				--v-list-item-background-color-hover,
-				var(--v-list-background-color-hover, var(--theme--background))
+				var(--v-list-background-color-hover, var(--theme--background-normal))
 			);
 
 			&.active {
@@ -211,7 +211,7 @@ function onClick(event: PointerEvent) {
 				);
 				background-color: var(
 					--v-list-item-background-color-active-hover,
-					var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background)))
+					var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background-normal)))
 				);
 			}
 		}
@@ -221,7 +221,7 @@ function onClick(event: PointerEvent) {
 			color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 			background-color: var(
 				--v-list-item-background-color-active,
-				var(--v-list-background-color-active, var(--theme--background))
+				var(--v-list-background-color-active, var(--theme--background-normal))
 			);
 		}
 	}
@@ -231,7 +231,7 @@ function onClick(event: PointerEvent) {
 		color: var(--v-list-item-color-active, var(--v-list-color-active, var(--theme--foreground)));
 		background-color: var(
 			--v-list-item-background-color-active,
-			var(--v-list-background-color-active, var(--theme--background))
+			var(--v-list-background-color-active, var(--theme--background-normal))
 		);
 	}
 
@@ -266,7 +266,7 @@ function onClick(event: PointerEvent) {
 		height: var(--input-height);
 		margin: 0;
 		padding: 8px var(--input-padding);
-		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--background)));
+		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--background-normal)));
 		border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--border-color-subdued));
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--fast) var(--transition);
@@ -290,7 +290,7 @@ function onClick(event: PointerEvent) {
 		&.clickable:hover {
 			background-color: var(
 				--v-list-item-background-color-hover,
-				var(--v-list-background-color-hover, var(--theme--background))
+				var(--v-list-background-color-hover, var(--theme--background-normal))
 			);
 			border: var(--theme--border-width) solid
 				var(--v-list-item-border-color-hover, var(--theme--form--field--input--border-color-hover));

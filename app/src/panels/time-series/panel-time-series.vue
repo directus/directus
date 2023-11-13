@@ -362,7 +362,7 @@ function setupChart() {
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--theme--background) !important;
+	background-color: var(--theme--background-normal) !important;
 	padding: 0;
 }
 

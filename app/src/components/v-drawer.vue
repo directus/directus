@@ -139,7 +139,7 @@ const internalActive = computed({
 	width: 100%;
 	max-width: 856px;
 	height: 100%;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 
 	.cancel {
 		display: none;
@@ -157,9 +157,9 @@ const internalActive = computed({
 	}
 
 	.header-icon {
-		--v-button-background-color: var(--theme--background);
-		--v-button-background-color-active: var(--theme--background);
-		--v-button-background-color-hover: var(--theme--background);
+		--v-button-background-color: var(--theme--background-normal);
+		--v-button-background-color-active: var(--theme--background-normal);
+		--v-button-background-color-hover: var(--theme--background-normal);
 		--v-button-color-disabled: var(--theme--foreground);
 	}
 

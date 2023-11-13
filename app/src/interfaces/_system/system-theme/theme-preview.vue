@@ -36,7 +36,7 @@ const localVars = computed(() => {
 
 		<svg v-else class="theme-preview" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<!-- Page Background -->
-			<rect width="208" height="140" rx="4" fill="var(--theme--background-page)" />
+			<rect width="208" height="140" rx="4" fill="var(--theme--background)" />
 
 			<!-- Header Bar -->
 			<rect x="56" width="136" height="16" fill="var(--theme--header--background)" />
@@ -165,9 +165,9 @@ const localVars = computed(() => {
 			<rect x="4" y="68" width="8" height="8" rx="4" fill="var(--theme--navigation--modules--button--foreground)" />
 
 			<!-- Header Bar Buttons -->
-			<rect x="62" y="4" width="8" height="8" rx="4" fill="var(--theme--background)" />
+			<rect x="62" y="4" width="8" height="8" rx="4" fill="var(--theme--background-normal)" />
 			<rect x="170" y="4" width="8" height="8" rx="4" fill="var(--theme--primary)" />
-			<rect x="156" y="4" width="8" height="8" rx="4" fill="var(--theme--background)" />
+			<rect x="156" y="4" width="8" height="8" rx="4" fill="var(--theme--background-normal)" />
 
 			<!-- Sidebar Background -->
 			<rect x="184" width="16" height="140" fill="var(--theme--sidebar--background)" />

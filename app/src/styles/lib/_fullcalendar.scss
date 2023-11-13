@@ -11,7 +11,7 @@
 	--fc-button-text-color: var(--theme--foreground-subdued);
 	--fc-border-color: var(--theme--form--field--input--border-color);
 	--fc-highlight-color: var(--theme--primary-background);
-	--fc-neutral-bg-color: var(--theme--background);
+	--fc-neutral-bg-color: var(--theme--background-normal);
 	--fc-list-event-hover-bg-color: var(--theme--form--field--input--background-subdued);
 
 	.fc-more-popover {
@@ -105,10 +105,10 @@
 			padding: 0 8px;
 			font-weight: inherit !important;
 			font-size: inherit !important;
-			background-color: var(--theme--background-page);
+			background-color: var(--theme--background);
 			border-top: 2px solid var(--theme--border-color-subdued);
 			border-bottom: 2px solid var(--theme--border-color-subdued);
-			box-shadow: 0 0 0 2px var(--theme--background-page);
+			box-shadow: 0 0 0 2px var(--theme--background);
 		}
 	}
 

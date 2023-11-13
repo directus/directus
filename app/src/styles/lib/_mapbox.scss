@@ -26,7 +26,7 @@
 		}
 
 		&:hover {
-			background: var(--theme--background) !important;
+			background: var(--theme--background-normal) !important;
 		}
 
 		&.active {
@@ -133,7 +133,7 @@
 	font-size: inherit !important;
 	font-family: inherit !important;
 	line-height: inherit !important;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 
 	&,
 	&.suggestions {
