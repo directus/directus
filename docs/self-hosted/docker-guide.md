@@ -84,7 +84,7 @@ While the [Self-Hosting Quickstart](/self-hosted/quickstart.html) aims to show y
 project:
 
 ```yaml-vue
-version: '3'
+version: "3"
 services:
   database:
     image: postgis/postgis:13-master
@@ -93,9 +93,9 @@ services:
     volumes:
       - ./data/database:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: 'directus'
-      POSTGRES_PASSWORD: 'directus'
-      POSTGRES_DB: 'directus'
+      POSTGRES_USER: "directus"
+      POSTGRES_PASSWORD: "directus"
+      POSTGRES_DB: "directus"
 
   cache:
     image: redis:6
@@ -112,26 +112,26 @@ services:
       - cache
       - database
     environment:
-      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
-      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+      KEY: "255d861b-5ea1-5996-9aa3-922530ec40b1"
+      SECRET: "6116487b-cda1-52c2-b5b5-c8022c45e263"
 
-      DB_CLIENT: 'pg'
-      DB_HOST: 'database'
-      DB_PORT: '5432'
-      DB_DATABASE: 'directus'
-      DB_USER: 'directus'
-      DB_PASSWORD: 'directus'
+      DB_CLIENT: "pg"
+      DB_HOST: "database"
+      DB_PORT: "5432"
+      DB_DATABASE: "directus"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus"
 
-      CACHE_ENABLED: 'true'
-      CACHE_STORE: 'redis'
-      REDIS: 'redis://cache:6379'
+      CACHE_ENABLED: "true"
+      CACHE_STORE: "redis"
+      REDIS: "redis://cache:6379"
 
-      ADMIN_EMAIL: 'admin@example.com'
-      ADMIN_PASSWORD: 'd1r3ctu5'
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "d1r3ctu5"
 
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
-      # PUBLIC_URL: 'https://directus.example.com'
+      # PUBLIC_URL: "https://directus.example.com"
 ```
 
 ### Updating With Docker Compose
