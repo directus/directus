@@ -330,7 +330,7 @@ function openFileBrowser() {
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
-	border: 2px dashed var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color, background-color;

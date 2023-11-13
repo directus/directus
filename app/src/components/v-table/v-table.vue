@@ -463,7 +463,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline {
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 

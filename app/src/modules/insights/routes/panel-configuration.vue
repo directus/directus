@@ -326,7 +326,7 @@ const stageChanges = () => {
 	display: block;
 	padding: 8px 16px;
 	background-color: var(--background-page);
-	border: 2px solid var(--theme--primary);
+	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 8px var(--theme--primary-75);
 }

@@ -184,7 +184,7 @@ function onClick(event: PointerEvent) {
 			left: 0;
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
-			border: 2px dashed var(--theme--form--field--input--border-color);
+			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 			content: '';
 			pointer-events: none;
 		}
