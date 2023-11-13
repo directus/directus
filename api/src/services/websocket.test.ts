@@ -1,24 +1,15 @@
-import { describe, expect, test, vi } from 'vitest';
-import type { WebSocketClient } from '../websocket/types.js';
-import { WebSocketController, getWebSocketController } from '../websocket/controllers/index.js';
 import type { Accountability } from '@directus/types';
+import { describe, expect, test, vi } from 'vitest';
+import { WebSocketController, getWebSocketController } from '../websocket/controllers/index.js';
+import type { WebSocketClient } from '../websocket/types.js';
 import { WebSocketService } from './websocket.js';
 
 vi.mock('../emitter');
 vi.mock('../websocket/controllers/index');
 
-vi.mock('../env', async () => {
-	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
-
-	const MOCK_ENV = {
-		...actual.default,
-		WEBSOCKETS_ENABLED: true,
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv({ env: { WEBSOCKETS_ENABLED: 'true' } });
 });
 
 function mockClient(accountability: Accountability | null = null) {

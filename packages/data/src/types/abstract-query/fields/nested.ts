@@ -1,5 +1,5 @@
 import type { AbstractQueryModifiers } from '../modifiers.js';
-import type { AbstractQueryFieldNode } from '../fields.js';
+import type { AbstractQueryFieldNode, AbstractQueryFieldNodeTarget } from '../fields.js';
 import type {
 	AbstractQueryFieldNodeNestedRelationalMany,
 	AbstractQueryFieldNodeNestedRelationalOne,
@@ -15,10 +15,19 @@ export interface AbstractQueryFieldNodeNestedOne {
 	meta: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
 }
 
+export interface AbstractQueryFieldNodeNestedTarget {
+	type: 'nested-one-target';
+
+	/* From the related collection the user can pick primitives, apply a function or add another nested node */
+	field: AbstractQueryFieldNodeTarget;
+
+	meta: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
+}
+
 export interface AbstractQueryFieldNodeNestedMany {
 	type: 'nested-many';
 
-	/* From the related collection the user can pick primitives, apply a function or add another nested node   */
+	/* From the related collection the user can pick primitives, apply a function or add another nested node */
 	fields: AbstractQueryFieldNode[];
 
 	/** need to be mandatory for queries which have a nested-many relation to the same collection as the root */

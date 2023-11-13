@@ -1,26 +1,31 @@
 import type { ConditionNumberNode } from '@directus/data';
-import type { WhereUnion } from '../../../../types/index.js';
 import { convertTarget } from './utils.js';
+import type { FilterResult } from '../filter.js';
 
 export function convertNumberNode(
 	node: ConditionNumberNode,
 	collection: string,
 	generator: Generator<number, number, number>,
 	negate: boolean
-): WhereUnion {
+): FilterResult {
+	const { value, joins } = convertTarget(node.target, collection, generator);
+
 	return {
-		where: {
-			type: 'condition',
-			negate,
-			condition: {
-				type: node.type,
-				operation: node.operation,
-				target: convertTarget(node, collection, generator),
-				compareTo: {
-					type: 'value',
-					parameterIndex: generator.next().value,
+		clauses: {
+			where: {
+				type: 'condition',
+				negate,
+				condition: {
+					type: node.type,
+					operation: node.operation,
+					target: value,
+					compareTo: {
+						type: 'value',
+						parameterIndex: generator.next().value,
+					},
 				},
 			},
+			joins,
 		},
 		parameters: [node.compareTo],
 	};

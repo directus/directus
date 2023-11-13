@@ -1,13 +1,16 @@
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
 
-import { validateEnv } from './validate-env.js';
 import logger from '../logger.js';
+import { validateEnv } from './validate-env.js';
 
-vi.mock('../env', () => ({
-	getEnv: vi.fn().mockReturnValue({
-		PRESENT_TEST_VARIABLE: true,
-	}),
-}));
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv({
+		env: {
+			PRESENT_TEST_VARIABLE: 'true',
+		},
+	});
+});
 
 vi.mock('../logger', () => ({
 	default: {
