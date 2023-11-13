@@ -123,8 +123,7 @@ export class FilesService extends ItemsService {
 			}
 
 			// Check if the file was truncated (if the stream ended early) and throw limit error if it was
-			// @ts-expect-error
-			if (stream.truncated === true) {
+			if ('truncated' in stream && stream.truncated === true) {
 				await cleanUp();
 				throw new ContentTooLargeError();
 			}
