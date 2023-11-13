@@ -7,7 +7,7 @@ import { uptime } from 'node:os';
 import { dirname, join, normalize, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
-import { getEnv } from '../../env.js';
+import env from '../../env.js';
 import logger from '../../logger.js';
 import { getMessenger } from '../../messenger.js';
 import { getStorage } from '../../storage/index.js';
@@ -37,8 +37,6 @@ export const syncExtensions = async () => {
 			messenger.subscribe(message, resolve);
 		});
 	}
-
-	const env = getEnv();
 
 	if (!env['EXTENSIONS_LOCATION']) {
 		return;
