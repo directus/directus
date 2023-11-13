@@ -16,6 +16,10 @@ import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
 import { getSyncTimestamp, setSyncTimestamp } from './sync-timestamp.js';
 
 export const syncExtensions = async () => {
+	if (!env['EXTENSIONS_LOCATION']) {
+		return;
+	}
+
 	const messenger = getMessenger();
 
 	const isPrimaryProcess =
@@ -36,10 +40,6 @@ export const syncExtensions = async () => {
 		return new Promise((resolve) => {
 			messenger.subscribe(message, resolve);
 		});
-	}
-
-	if (!env['EXTENSIONS_LOCATION']) {
-		return;
 	}
 
 	const currentTime = new Date();
