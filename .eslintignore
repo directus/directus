@@ -10,3 +10,5 @@ dist/
 *.yaml
 *.md
 *.json
+*.scss
+*.css
