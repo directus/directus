@@ -1,19 +1,18 @@
-import { defineStore } from 'pinia';
-import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
-import { InterfaceConfig, DisplayConfig, DeepPartial, Field, Relation, Collection, LocalType } from '@directus/types';
-import { LOCAL_TYPES } from '@directus/constants';
-import { computed } from 'vue';
-import { get, set } from 'lodash';
-import { unexpectedError } from '@/utils/unexpected-error';
+import api from '@/api';
+import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-
-import * as alterations from './alterations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
-import api from '@/api';
-import { useExtensions } from '@/extensions';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { LOCAL_TYPES } from '@directus/constants';
+import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
+import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
+import { cloneDeep, get, has, isEmpty, orderBy, set } from 'lodash';
+import { defineStore } from 'pinia';
+import { computed } from 'vue';
+import * as alterations from './alterations';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -228,8 +227,8 @@ export const useFieldDetailStore = defineStore({
 				}
 
 				await fieldsStore.hydrate();
-			} catch (err: any) {
-				unexpectedError(err);
+			} catch (error) {
+				unexpectedError(error);
 			} finally {
 				this.saving = false;
 			}

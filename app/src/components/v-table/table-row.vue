@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { ShowSelect } from '@directus/extensions';
 import { computed } from 'vue';
-import { ShowSelect } from '@directus/types';
-import { Header, Item } from './types';
+import type { Header, Item } from './types';
 
 interface Props {
 	headers: Header[];

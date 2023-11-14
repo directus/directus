@@ -103,8 +103,8 @@ function useCreateDialog() {
 			emit('add', version);
 
 			closeCreateDialog();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			creating.value = false;
 		}
@@ -145,8 +145,8 @@ function useRenameDialog() {
 			emit('update', updates);
 
 			closeRenameDialog();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			updating.value = false;
 		}
@@ -183,8 +183,8 @@ function useDelete() {
 			await api.delete(`/versions/${currentVersion.value.id}`);
 
 			emit('delete');
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			deleting.value = false;
 		}

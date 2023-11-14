@@ -36,7 +36,7 @@ const changes = computed(() => {
 			if (!name) return null;
 
 			const currentValue = props.revision.delta?.[fieldKey];
-			const previousValue = previousRevision.value.data?.[fieldKey];
+			const previousValue = previousRevision.value?.data?.[fieldKey];
 
 			let changes;
 			let updated = false;

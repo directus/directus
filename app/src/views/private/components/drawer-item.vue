@@ -242,8 +242,8 @@ function useItem() {
 			const response = await api.get(endpoint, { params: { fields } });
 
 			initialValues.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -269,8 +269,8 @@ function useItem() {
 				...(initialValues.value || {}),
 				[junctionFieldInfo.value.field]: response.data.data,
 			};
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}

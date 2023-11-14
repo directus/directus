@@ -9,7 +9,7 @@ import { useHead } from '@unhead/vue';
 import { useEventListener } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
-import { computed, provide, ref, toRefs, watch } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
@@ -31,7 +31,7 @@ const SIZES = {
 
 const props = withDefaults(
 	defineProps<{
-		title?: string | null;
+		title?: string;
 		smallHeader?: boolean;
 		headerShadow?: boolean;
 		splitView?: boolean;
@@ -39,7 +39,6 @@ const props = withDefaults(
 		sidebarShadow?: boolean;
 	}>(),
 	{
-		title: null,
 		headerShadow: true,
 		splitViewMinWidth: 0,
 	}
@@ -50,7 +49,7 @@ const emit = defineEmits(['update:splitView']);
 const { t } = useI18n();
 
 const router = useRouter();
-const { title } = toRefs(props);
+const headTitle = computed(() => props.title ?? null);
 
 const splitViewWritable = useSync(props, 'splitView', emit);
 
@@ -237,7 +236,7 @@ router.afterEach(() => {
 });
 
 useHead({
-	title: title,
+	title: headTitle,
 });
 
 function openSidebar(event: MouseEvent) {

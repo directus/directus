@@ -87,8 +87,8 @@ async function fetchFolders() {
 				sort: 'name',
 			},
 		});
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}

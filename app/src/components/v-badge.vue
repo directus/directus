@@ -1,30 +1,26 @@
 <script setup lang="ts">
-interface Props {
-	/** The value that will be displayed inside the badge Only 2 characters allowed) */
-	value?: string | number | boolean | null;
-	/** Only will show a small dot without any content */
-	dot?: boolean;
-	/** Aligns the badge on the left side */
-	left?: boolean;
-	/** Aligns the badge on the bottom side */
-	bottom?: boolean;
-	/** Shows an icon instead of text */
-	icon?: string | null;
-	/** Shows a border around the badge */
-	bordered?: boolean;
-	/** Hide the badge */
-	disabled?: boolean;
-}
-
-withDefaults(defineProps<Props>(), {
-	value: null,
-	dot: false,
-	left: false,
-	bottom: false,
-	icon: null,
-	bordered: false,
-	disabled: false,
-});
+withDefaults(
+	defineProps<{
+		/** The value that will be displayed inside the badge Only 2 characters allowed) */
+		value?: string | number | boolean | null;
+		/** Only will show a small dot without any content */
+		dot?: boolean;
+		/** Aligns the badge on the left side */
+		left?: boolean;
+		/** Aligns the badge on the bottom side */
+		bottom?: boolean;
+		/** Shows an icon instead of text */
+		icon?: string | null;
+		/** Shows a border around the badge */
+		bordered?: boolean;
+		/** Hide the badge */
+		disabled?: boolean;
+	}>(),
+	{
+		value: null,
+		icon: null,
+	}
+);
 </script>
 
 <template>

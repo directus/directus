@@ -165,8 +165,8 @@ function useImage() {
 					emit('refresh');
 					internalActive.value = false;
 					randomId.value = nanoid();
-				} catch (err: any) {
-					unexpectedError(err);
+				} catch (error) {
+					unexpectedError(error);
 				} finally {
 					saving.value = false;
 				}
