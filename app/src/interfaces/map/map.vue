@@ -80,6 +80,7 @@ const { basemap } = toRefs(appStore);
 
 const style = computed(() => {
 	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+	if (!source) return;
 	return basemap.value, getStyleFromBasemapSource(source);
 });
 
@@ -243,7 +244,7 @@ function updateValue(value: any) {
 
 function updateStyle() {
 	map.removeControl(controls.draw as any);
-	map.setStyle(style.value, { diff: false });
+	if (style.value) map.setStyle(style.value, { diff: false });
 	controls.draw = new MapboxDraw(getDrawOptions(geometryType));
 	map.addControl(controls.draw as any, 'top-left');
 	loadValueFromProps();
@@ -348,13 +349,13 @@ function getCurrentGeometry(): Geometry | null {
 	const geometries = features.map((f) => f.geometry) as (SimpleGeometry | MultiGeometry)[];
 	let result: Geometry;
 
-	if (geometries.length == 0) {
+	if (geometries.length === 0) {
 		return null;
 	} else if (!geometryType) {
 		if (geometries.length > 1) {
 			result = { type: 'GeometryCollection', geometries };
 		} else {
-			result = geometries[0];
+			result = geometries[0] as Geometry;
 		}
 	} else if (geometryType.startsWith('Multi')) {
 		const coordinates = geometries
@@ -363,7 +364,7 @@ function getCurrentGeometry(): Geometry | null {
 
 		result = { type: geometryType, coordinates } as Geometry;
 	} else {
-		result = geometries[geometries.length - 1];
+		result = geometries[geometries.length - 1] as Geometry;
 	}
 
 	return result;

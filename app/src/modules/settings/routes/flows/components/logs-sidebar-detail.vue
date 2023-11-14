@@ -7,15 +7,13 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 
-const { t } = useI18n();
-
-interface Props {
+const props = defineProps<{
 	flow: FlowRaw;
-}
-
-const props = defineProps<Props>();
+}>();
 
 const { flow } = toRefs(props);
+
+const { t } = useI18n();
 
 const { triggers } = getTriggers();
 const { operations } = useExtensions();

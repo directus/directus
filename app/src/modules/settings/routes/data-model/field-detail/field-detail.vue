@@ -80,8 +80,8 @@ async function cancel() {
 async function save() {
 	try {
 		await fieldDetail.save();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 		return;
 	}
 

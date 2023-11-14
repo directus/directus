@@ -21,8 +21,6 @@ const props = withDefaults(
 		font?: 'sans-serif' | 'monospace' | 'serif';
 	}>(),
 	{
-		disabled: false,
-		autofocus: false,
 		value: null,
 		bordered: true,
 		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
@@ -108,8 +106,8 @@ watch(
 			} else {
 				editorjsRef.value.clear();
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
 	}
 );
@@ -130,8 +128,8 @@ async function emitValue(context: EditorJS.API) {
 		if (isEqual(result.blocks, props.value?.blocks)) return;
 
 		emit('input', result);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 }
 

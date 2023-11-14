@@ -1,8 +1,7 @@
 import { Focus } from '@/__utils__/focus';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { describe, expect, test } from 'vitest';
-
 import VInput from './v-input.vue';
 
 const global: GlobalMountOptions = {

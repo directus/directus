@@ -69,7 +69,7 @@ const isOpen = useDialogRoute();
 
 const currentTab = ref(['collection_setup']);
 
-const collectionName = ref(null);
+const collectionName = ref<string | null>(null);
 const singleton = ref(false);
 const primaryKeyFieldName = ref('id');
 const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
@@ -126,8 +126,8 @@ async function save() {
 		});
 
 		router.replace(`/settings/data-model/${collectionName.value}`);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}
@@ -370,7 +370,7 @@ function getSystemRelations() {
 		:model-value="isOpen"
 		class="new-collection"
 		persistent
-		:sidebar-label="t(currentTab[0])"
+		:sidebar-label="currentTab[0] && t(currentTab[0])"
 		@cancel="router.push('/settings/data-model')"
 	>
 		<template #sidebar>

@@ -2,7 +2,7 @@
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { TriggerType } from '@directus/types';
+import type { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from './triggers';
@@ -18,13 +18,14 @@ interface Values {
 	options: Record<string, any>;
 }
 
-interface Props {
-	primaryKey?: string;
-	active: boolean;
-	startTab?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), { primaryKey: '+', startTab: 'flow_setup' });
+const props = withDefaults(
+	defineProps<{
+		primaryKey?: string;
+		active: boolean;
+		startTab?: string;
+	}>(),
+	{ primaryKey: '+', startTab: 'flow_setup' }
+);
 
 const emit = defineEmits(['cancel', 'done']);
 
@@ -71,7 +72,7 @@ watch(
 			values.status = existing.status;
 			values.accountability = existing.accountability;
 			values.trigger = existing.trigger;
-			values.options = existing.options;
+			values.options = existing.options ?? {};
 		}
 	},
 	{ immediate: true }
@@ -130,8 +131,8 @@ async function save() {
 		await flowsStore.hydrate();
 
 		emit('done', id);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}
@@ -144,7 +145,7 @@ async function save() {
 		class="new-flow"
 		persistent
 		:model-value="active"
-		:sidebar-label="t(currentTab[0])"
+		:sidebar-label="t(currentTab[0] as string)"
 		@cancel="$emit('cancel')"
 		@esc="$emit('cancel')"
 	>

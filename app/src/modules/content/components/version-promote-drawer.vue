@@ -109,8 +109,8 @@ async function getComparison() {
 		const comparedFieldsKeys = comparedFields.value.map((field) => field.field);
 
 		selectedFields.value = Object.keys(result.current).filter((fieldKey) => comparedFieldsKeys.includes(fieldKey));
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -136,8 +136,8 @@ function usePromoteDialog() {
 			confirmDeleteOnPromoteDialogActive.value = false;
 
 			emit('promote', deleteOnPromote);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			promoting.value = false;
 		}

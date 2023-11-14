@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Panel } from '@directus/types';
-import { computed, ref, reactive, StyleValue } from 'vue';
+import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
+import { StyleValue, computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export type AppTile = {

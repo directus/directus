@@ -1,6 +1,6 @@
-import { App } from 'vue';
-import { OperationAppConfig } from '@directus/types';
+import type { OperationAppConfig } from '@directus/extensions';
 import { sortBy } from 'lodash';
+import { App } from 'vue';
 
 export function getInternalOperations(): OperationAppConfig[] {
 	const operations = import.meta.glob<OperationAppConfig>('./*/index.ts', { import: 'default', eager: true });
