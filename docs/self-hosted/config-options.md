@@ -899,12 +899,12 @@ const publicUrl = process.env.PUBLIC_URL;
 
 ## Extensions
 
-| Variable                               | Description                                                                              | Default Value  |
-| -------------------------------------- | ---------------------------------------------------------------------------------------- | -------------- |
-| `EXTENSIONS_PATH`                      | Path to your local extensions folder.                                                    | `./extensions` |
-| `EXTENSIONS_AUTO_RELOAD`<sup>[1]</sup> | Automatically reload extensions when they have changed.                                  | `false`        |
-| `EXTENSIONS_CACHE_TTL`<sup>[2]</sup>   | How long custom app Extensions get cached by browsers.                                   | --             |
-| `EXTENSIONS_LOCATION`                  | What configured storage location to use for extensions. Defaults to the local filesystem | --             |
+| Variable                               | Description                                             | Default Value  |
+| -------------------------------------- | ------------------------------------------------------- | -------------- |
+| `EXTENSIONS_PATH`                      | Path to your local extensions folder.                   | `./extensions` |
+| `EXTENSIONS_AUTO_RELOAD`<sup>[1]</sup> | Automatically reload extensions when they have changed. | `false`        |
+| `EXTENSIONS_CACHE_TTL`<sup>[2]</sup>   | How long custom app Extensions get cached by browsers.  | --             |
+| `EXTENSIONS_LOCATION`<sup>[3]</sup>    | What configured storage location to use for extensions. | --             |
 
 <sup>[1]</sup> `EXTENSIONS_AUTO_RELOAD` will not work when the `EXTENSION_LOCATION` environment variable is set.
 
@@ -914,6 +914,9 @@ code for the extensions doesn't need to be re-fetched from the server on each ap
 that code changes to app extensions won't be taken into account by the browser until `EXTENSIONS_CACHE_TTL` has expired.
 By default, extensions are not cached. The input data type for this environment variable is the same as
 [`CACHE_TTL`](#cache).
+
+<sup>[3]</sup> Extensions defaults to the local filesystem. When `EXTENSIONS_LOCATION` is configured, the extensions are
+copied into a local directory within `TEMP_PATH`.
 
 ## Messenger
 
