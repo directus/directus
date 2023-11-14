@@ -2,7 +2,7 @@ import type { AbstractQueryFieldNodeNestedMany } from '@directus/data';
 import { expect, test } from 'vitest';
 import { getNestedMany } from './create-nested-manys.js';
 import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../../index.js';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { FieldConversionResult } from './fields.js';
 
@@ -233,7 +233,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	expect(result.queryGenerator([randomPkValue1, randomPkValue2])).toMatchObject(expectedGeneratedQuery);
 });
 
-test('getNestedMany with a single identifier and modifiers', () => {
+test('getNestedMany with a single identifier and some modifiers', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
 	const foreignIdFieldId = randomIdentifier();
@@ -241,6 +241,7 @@ test('getNestedMany with a single identifier and modifiers', () => {
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
 	const randomCompareValue = randomIdentifier();
+	const randomLimit = randomInteger(1, 100);
 
 	const field: AbstractQueryFieldNodeNestedMany = {
 		type: 'nested-many',
@@ -276,6 +277,20 @@ test('getNestedMany with a single identifier and modifiers', () => {
 					compareTo: randomCompareValue,
 				},
 			},
+			limit: {
+				type: 'limit',
+				value: randomLimit,
+			},
+			sort: [
+				{
+					type: 'sort',
+					direction: 'ascending',
+					target: {
+						type: 'primitive',
+						field: foreignIdField,
+					},
+				},
+			],
 		},
 	};
 
@@ -357,8 +372,23 @@ test('getNestedMany with a single identifier and modifiers', () => {
 					},
 				],
 			},
+			limit: {
+				type: 'value',
+				parameterIndex: 2,
+			},
+			order: [
+				{
+					type: 'order',
+					orderBy: {
+						type: 'primitive',
+						table: foreignTable,
+						column: foreignIdField,
+					},
+					direction: 'ASC',
+				},
+			],
 		},
-		parameters: [randomPkValue, randomCompareValue],
+		parameters: [randomPkValue, randomCompareValue, randomLimit],
 		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
 		nestedManys: [],
 	};
