@@ -1,15 +1,12 @@
-import { merge } from 'lodash-es';
 import type { Theme } from '../../schemas/theme.js';
-import { theme as defaultTheme } from './directus-default.js';
 
 export const theme: Theme = {
 	name: 'Directus Color Match',
 	appearance: 'light',
-	rules: merge({}, defaultTheme.rules, {
+	rules: {
 		background: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',
 		backgroundAccent: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 20%)',
 		backgroundNormal: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 15%)',
-		backgroundPage: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',
 		backgroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',
 
 		borderColor: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 20%)',
@@ -76,5 +73,5 @@ export const theme: Theme = {
 			},
 			background: '#FFFFFF',
 		},
-	}),
+	},
 };
