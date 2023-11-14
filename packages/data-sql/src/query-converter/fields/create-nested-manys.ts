@@ -18,14 +18,29 @@ export function getNestedMany(
 	idxGenerator: Generator<number, number, number>,
 	alias: string
 ): AbstractSqlNestedMany {
-	const where = getWhereClause(fieldMeta, idxGenerator);
+	const relationalConditions = fieldMeta.join.foreign.fields.map((field) =>
+		getRelationCondition(fieldMeta.join.foreign.collection, field, idxGenerator)
+	) as AtLeastOneElement<AbstractSqlQueryConditionNode>;
+
+	let whereClause: AbstractSqlQueryWhereNode;
+
+	if (relationalConditions.length > 1) {
+		whereClause = {
+			type: 'logical',
+			operator: 'and',
+			negate: false,
+			childNodes: relationalConditions,
+		};
+	} else {
+		whereClause = relationalConditions[0];
+	}
 
 	return {
 		queryGenerator: (identifierValues) => ({
 			clauses: {
 				select: nestedOutput.clauses.select,
 				from: fieldMeta.join.foreign.collection,
-				where,
+				where: whereClause,
 			},
 			parameters: [...nestedOutput.parameters, ...identifierValues],
 			aliasMapping: nestedOutput.aliasMapping,
@@ -37,27 +52,15 @@ export function getNestedMany(
 	};
 }
 
-function getWhereClause(
-	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
-	idxGenerator: Generator<number, number, number>
-): AbstractSqlQueryWhereNode {
-	const table = fieldMeta.join.foreign.collection;
-
-	if (fieldMeta.join.local.fields.length > 1 && fieldMeta.join.foreign.fields.length > 1) {
-		return {
-			type: 'logical',
-			operator: 'and',
-			negate: false,
-			childNodes: fieldMeta.join.foreign.fields.map((field) =>
-				getCondition(table, field, idxGenerator)
-			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
-		};
-	} else {
-		return getCondition(table, fieldMeta.join.foreign.fields[0], idxGenerator);
-	}
-}
-
-function getCondition(
+/**
+ * Create the condition to match the foreign key with the local key
+ *
+ * @param table
+ * @param column
+ * @param idxGenerator
+ * @returns
+ */
+function getRelationCondition(
 	table: string,
 	column: string,
 	idxGenerator: Generator<number, number, number>
