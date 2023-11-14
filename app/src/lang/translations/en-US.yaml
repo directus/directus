@@ -1029,7 +1029,7 @@ deselect: Deselect
 deselect_all: Deselect All
 theme: Theme
 select_a_theme: Select a Theme
-appearance_global: Project Default
+appearance_global: Default (Sync with Project)
 appearance_auto: Automatic (Sync with System)
 appearance_light: Light
 appearance_dark: Dark
