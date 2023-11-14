@@ -233,13 +233,14 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	expect(result.queryGenerator([randomPkValue1, randomPkValue2])).toMatchObject(expectedGeneratedQuery);
 });
 
-test.todo('getNestedMany with a single identifier and modifiers', () => {
+test('getNestedMany with a single identifier and modifiers', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
 	const foreignIdFieldId = randomIdentifier();
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
+	const randomCompareValue = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedMany = {
 		type: 'nested-many',
@@ -259,6 +260,20 @@ test.todo('getNestedMany with a single identifier and modifiers', () => {
 					store: foreignStore,
 					collection: foreignTable,
 					fields: [foreignIdField],
+				},
+			},
+		},
+		modifiers: {
+			filter: {
+				type: 'condition',
+				condition: {
+					type: 'condition-string',
+					operation: 'starts_with',
+					target: {
+						type: 'primitive',
+						field: foreignIdField,
+					},
+					compareTo: randomCompareValue,
 				},
 			},
 		},
@@ -323,11 +338,27 @@ test.todo('getNestedMany with a single identifier and modifiers', () => {
 						},
 						negate: false,
 					},
-					// @TODO add user defined modifier(s)
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'starts_with',
+							target: {
+								type: 'primitive',
+								table: foreignTable,
+								column: foreignIdField,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 1,
+							},
+						},
+						negate: false,
+					},
 				],
 			},
 		},
-		parameters: [randomPkValue],
+		parameters: [randomPkValue, randomCompareValue],
 		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
 		nestedManys: [],
 	};

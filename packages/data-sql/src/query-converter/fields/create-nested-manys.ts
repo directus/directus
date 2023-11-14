@@ -3,8 +3,14 @@ import type {
 	AbstractQueryFieldNodeRelationalOneToMany,
 	AtLeastOneElement,
 } from '@directus/data';
-import type { AbstractSqlNestedMany, AbstractSqlQueryConditionNode, AbstractSqlQueryWhereNode } from '../../index.js';
+import type {
+	AbstractSqlNestedMany,
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryWhereNode,
+	ParameterTypes,
+} from '../../index.js';
 import type { FieldConversionResult } from './fields.js';
+import { convertFilter } from '../modifiers/index.js';
 
 /**
  * Converts a nested many node from the abstract query into a function which creates abstract SQL.
@@ -26,7 +32,15 @@ export function getNestedMany(
 
 	const relationalConditions = fieldMeta.join.foreign.fields.map((f) =>
 		getRelationCondition(fieldMeta.join.foreign.collection, f, idxGenerator)
-	) as AtLeastOneElement<AbstractSqlQueryConditionNode>;
+	) as AtLeastOneElement<AbstractSqlQueryWhereNode>;
+
+	const params: ParameterTypes[] = [];
+
+	if (field.modifiers?.filter) {
+		const conditions = convertFilter(field.modifiers.filter, fieldMeta.join.foreign.collection, idxGenerator);
+		relationalConditions.push(conditions.clauses.where);
+		params.push(...conditions.parameters);
+	}
 
 	let whereClause: AbstractSqlQueryWhereNode;
 
@@ -48,7 +62,7 @@ export function getNestedMany(
 				from: fieldMeta.join.foreign.collection,
 				where: whereClause,
 			},
-			parameters: [...nestedOutput.parameters, ...identifierValues],
+			parameters: [...nestedOutput.parameters, ...identifierValues, ...params],
 			aliasMapping: nestedOutput.aliasMapping,
 			nestedManys: nestedOutput.nestedManys,
 		}),
