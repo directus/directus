@@ -29,9 +29,11 @@ export async function validateStorage(): Promise<void> {
 		}
 	}
 
-	try {
-		await access(getExtensionsPath(), constants.R_OK);
-	} catch {
-		logger.warn(`Extensions directory (${path.resolve(getExtensionsPath())}) is not readable!`);
+	if (!env['EXTENSIONS_LOCATION']) {
+		try {
+			await access(getExtensionsPath(), constants.R_OK);
+		} catch {
+			logger.warn(`Extensions directory (${path.resolve(getExtensionsPath())}) is not readable!`);
+		}
 	}
 }
