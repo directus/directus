@@ -1,4 +1,8 @@
-import type { AbstractQueryFieldNodeRelationalOneToMany, AtLeastOneElement } from '@directus/data';
+import type {
+	AbstractQueryFieldNodeNestedMany,
+	AbstractQueryFieldNodeRelationalOneToMany,
+	AtLeastOneElement,
+} from '@directus/data';
 import type { AbstractSqlNestedMany, AbstractSqlQueryConditionNode, AbstractSqlQueryWhereNode } from '../../index.js';
 import type { FieldConversionResult } from './fields.js';
 
@@ -13,13 +17,15 @@ import type { FieldConversionResult } from './fields.js';
  * @returns A function to create a query with and information about the relation
  */
 export function getNestedMany(
-	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
+	field: AbstractQueryFieldNodeNestedMany,
 	nestedOutput: FieldConversionResult,
-	idxGenerator: Generator<number, number, number>,
-	alias: string
+	idxGenerator: Generator<number, number, number>
 ): AbstractSqlNestedMany {
-	const relationalConditions = fieldMeta.join.foreign.fields.map((field) =>
-		getRelationCondition(fieldMeta.join.foreign.collection, field, idxGenerator)
+	// it cannot be anything else than o2m at this point.
+	const fieldMeta = field.meta as AbstractQueryFieldNodeRelationalOneToMany;
+
+	const relationalConditions = fieldMeta.join.foreign.fields.map((f) =>
+		getRelationCondition(fieldMeta.join.foreign.collection, f, idxGenerator)
 	) as AtLeastOneElement<AbstractSqlQueryConditionNode>;
 
 	let whereClause: AbstractSqlQueryWhereNode;
@@ -48,7 +54,7 @@ export function getNestedMany(
 		}),
 		localJoinFields: fieldMeta.join.local.fields,
 		foreignJoinFields: fieldMeta.join.foreign.fields,
-		alias,
+		alias: fieldMeta.join.foreign.collection,
 	};
 }
 

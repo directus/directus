@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeRelationalOneToMany } from '@directus/data';
+import type { AbstractQueryFieldNodeNestedMany } from '@directus/data';
 import { expect, test } from 'vitest';
 import { getNestedMany } from './create-nested-manys.js';
 import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../../index.js';
@@ -14,21 +14,28 @@ test('getNestedMany with a single identifier', () => {
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
 
-	const fieldMeta: AbstractQueryFieldNodeRelationalOneToMany = {
-		type: 'o2m',
-		join: {
-			local: {
-				fields: [localIdField],
+	const field: AbstractQueryFieldNodeNestedMany = {
+		type: 'nested-many',
+		fields: [
+			{
+				type: 'primitive',
+				field: foreignIdField,
 			},
-			foreign: {
-				store: foreignStore,
-				collection: foreignTable,
-				fields: [foreignIdField],
+		],
+		meta: {
+			type: 'o2m',
+			join: {
+				local: {
+					fields: [localIdField],
+				},
+				foreign: {
+					store: foreignStore,
+					collection: foreignTable,
+					fields: [foreignIdField],
+				},
 			},
 		},
 	};
-
-	const idxGen = parameterIndexGenerator();
 
 	const nestedResult: FieldConversionResult = {
 		clauses: {
@@ -47,7 +54,7 @@ test('getNestedMany with a single identifier', () => {
 		nestedManys: [],
 	};
 
-	const result = getNestedMany(fieldMeta, nestedResult, idxGen, foreignTable);
+	const result = getNestedMany(field, nestedResult, parameterIndexGenerator());
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
@@ -113,16 +120,25 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	const randomPkValue1 = randomIdentifier();
 	const randomPkValue2 = randomIdentifier();
 
-	const fieldMeta: AbstractQueryFieldNodeRelationalOneToMany = {
-		type: 'o2m',
-		join: {
-			local: {
-				fields: [localIdField1, localIdField2],
+	const field: AbstractQueryFieldNodeNestedMany = {
+		type: 'nested-many',
+		fields: [
+			{
+				type: 'primitive',
+				field: desiredForeignField,
 			},
-			foreign: {
-				store: foreignStore,
-				collection: foreignTable,
-				fields: [foreignIdField1, foreignIdField2],
+		],
+		meta: {
+			type: 'o2m',
+			join: {
+				local: {
+					fields: [localIdField1, localIdField2],
+				},
+				foreign: {
+					store: foreignStore,
+					collection: foreignTable,
+					fields: [foreignIdField1, foreignIdField2],
+				},
 			},
 		},
 	};
@@ -146,7 +162,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 		nestedManys: [],
 	};
 
-	const result = getNestedMany(fieldMeta, nestedResult, idxGen, foreignTable);
+	const result = getNestedMany(field, nestedResult, idxGen);
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
@@ -225,21 +241,28 @@ test.todo('getNestedMany with a single identifier and modifiers', () => {
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
 
-	const fieldMeta: AbstractQueryFieldNodeRelationalOneToMany = {
-		type: 'o2m',
-		join: {
-			local: {
-				fields: [localIdField],
+	const field: AbstractQueryFieldNodeNestedMany = {
+		type: 'nested-many',
+		fields: [
+			{
+				type: 'primitive',
+				field: foreignIdField,
 			},
-			foreign: {
-				store: foreignStore,
-				collection: foreignTable,
-				fields: [foreignIdField],
+		],
+		meta: {
+			type: 'o2m',
+			join: {
+				local: {
+					fields: [localIdField],
+				},
+				foreign: {
+					store: foreignStore,
+					collection: foreignTable,
+					fields: [foreignIdField],
+				},
 			},
 		},
 	};
-
-	const idxGen = parameterIndexGenerator();
 
 	const nestedResult: FieldConversionResult = {
 		clauses: {
@@ -258,7 +281,7 @@ test.todo('getNestedMany with a single identifier and modifiers', () => {
 		nestedManys: [],
 	};
 
-	const result = getNestedMany(fieldMeta, nestedResult, idxGen, foreignTable);
+	const result = getNestedMany(field, nestedResult, parameterIndexGenerator());
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),

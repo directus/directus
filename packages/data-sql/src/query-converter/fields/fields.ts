@@ -99,7 +99,7 @@ export const convertFieldNodes = (
 
 			const index = parameterIndexGenerator();
 			const nestedOutput = convertFieldNodes(fieldMeta.join.foreign.collection, abstractField.fields, index);
-			const nestedMany = getNestedMany(fieldMeta, nestedOutput, index, fieldMeta.join.foreign.collection);
+			const nestedMany = getNestedMany(abstractField, nestedOutput, index);
 			nestedManys.push(nestedMany);
 			continue;
 		}
