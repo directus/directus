@@ -138,6 +138,7 @@ CloudSQL
 CMS
 CockroachDB
 CodeDeploy
+CollectionsService
 CommonJS
 composables
 config-options
@@ -196,7 +197,9 @@ EXIF
 fallbacks
 falsy
 FavIcon
+FieldsService
 filepath
+FilesService
 free-form
 frontend
 G2
@@ -234,6 +237,7 @@ intwined
 IoT
 ISO8601
 iss
+ItemsService
 iteratively
 Jamstack
 Javascript
@@ -351,6 +355,7 @@ reframe
 REKT
 relationally
 relationally-linked
+RelationsService
 repo
 repurpose
 S3
