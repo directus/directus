@@ -22,9 +22,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "vite build && npm run generate-json-schema",
-		"dev": "vite build --watch",
-		"generate-json-schema": "node generate-json-schema.js"
+		"build": "vite build",
+		"dev": "vite build --watch"
 	},
 	"dependencies": {
 		"@sinclair/typebox": "0.31.17",

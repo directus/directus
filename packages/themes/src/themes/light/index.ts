@@ -1,3 +1,3 @@
-export { theme as directusColorMatch } from './directus-color-match.js';
-export { theme as directusDefault } from './directus-default.js';
-export { theme as directusMinimal } from './directus-minimal.js';
+export { default as directusColorMatch } from './color-match.js';
+export { default as directusDefault } from './default.js';
+export { default as directusMinimal } from './minimal.js';

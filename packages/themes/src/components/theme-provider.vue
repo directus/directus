@@ -6,8 +6,8 @@ import { useFonts, useTheme } from '../composables/index.js';
 import type { Theme } from '../schemas/index.js';
 import { rulesToCssVars } from '../utils/index.js';
 
-import { theme as themeDefaultDark } from '../themes/dark/directus-default.js';
-import { theme as themeDefaultLight } from '../themes/light/directus-default.js';
+import themeDefaultDark from '../themes/dark/default.js';
+import themeDefaultLight from '../themes/light/default.js';
 
 const props = withDefaults(
 	defineProps<{

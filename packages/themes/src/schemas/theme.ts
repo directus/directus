@@ -15,214 +15,258 @@ const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal(
 const Rules = Type.Object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base fonts
-	fontFamilyDisplay: Type.Ref(FamilyName),
-	fontFamilySansSerif: Type.Ref(FamilyName),
-	fontFamilySerif: Type.Ref(FamilyName),
-	fontFamilyMonospace: Type.Ref(FamilyName),
+	fontFamilyDisplay: Type.Optional(Type.Ref(FamilyName)),
+	fontFamilySansSerif: Type.Optional(Type.Ref(FamilyName)),
+	fontFamilySerif: Type.Optional(Type.Ref(FamilyName)),
+	fontFamilyMonospace: Type.Optional(Type.Ref(FamilyName)),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base border styles
-	borderRadius: Type.Union([Type.Ref(Length), Type.Ref(Percentage)]),
-	borderWidth: Type.Ref(LineWidth),
+	borderRadius: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
+	borderWidth: Type.Optional(Type.Ref(LineWidth)),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base color palette
-	foreground: Type.Ref(Color),
-	foregroundSubdued: Type.Ref(Color),
-	foregroundAccent: Type.Ref(Color),
+	foreground: Type.Optional(Type.Ref(Color)),
+	foregroundSubdued: Type.Optional(Type.Ref(Color)),
+	foregroundAccent: Type.Optional(Type.Ref(Color)),
 
-	background: Type.Ref(Color),
+	background: Type.Optional(Type.Ref(Color)),
 
-	backgroundNormal: Type.Ref(Color),
-	backgroundAccent: Type.Ref(Color),
-	backgroundSubdued: Type.Ref(Color),
+	backgroundNormal: Type.Optional(Type.Ref(Color)),
+	backgroundAccent: Type.Optional(Type.Ref(Color)),
+	backgroundSubdued: Type.Optional(Type.Ref(Color)),
 
-	borderColor: Type.Ref(Color),
-	borderColorAccent: Type.Ref(Color),
-	borderColorSubdued: Type.Ref(Color),
+	borderColor: Type.Optional(Type.Ref(Color)),
+	borderColorAccent: Type.Optional(Type.Ref(Color)),
+	borderColorSubdued: Type.Optional(Type.Ref(Color)),
 
-	primary: Type.Ref(Color),
-	primaryBackground: Type.Ref(Color),
-	primarySubdued: Type.Ref(Color),
-	primaryAccent: Type.Ref(Color),
+	primary: Type.Optional(Type.Ref(Color)),
+	primaryBackground: Type.Optional(Type.Ref(Color)),
+	primarySubdued: Type.Optional(Type.Ref(Color)),
+	primaryAccent: Type.Optional(Type.Ref(Color)),
 
-	secondary: Type.Ref(Color),
-	secondaryBackground: Type.Ref(Color),
-	secondarySubdued: Type.Ref(Color),
-	secondaryAccent: Type.Ref(Color),
+	secondary: Type.Optional(Type.Ref(Color)),
+	secondaryBackground: Type.Optional(Type.Ref(Color)),
+	secondarySubdued: Type.Optional(Type.Ref(Color)),
+	secondaryAccent: Type.Optional(Type.Ref(Color)),
 
-	success: Type.Ref(Color),
-	successBackground: Type.Ref(Color),
-	successSubdued: Type.Ref(Color),
-	successAccent: Type.Ref(Color),
+	success: Type.Optional(Type.Ref(Color)),
+	successBackground: Type.Optional(Type.Ref(Color)),
+	successSubdued: Type.Optional(Type.Ref(Color)),
+	successAccent: Type.Optional(Type.Ref(Color)),
 
-	warning: Type.Ref(Color),
-	warningBackground: Type.Ref(Color),
-	warningSubdued: Type.Ref(Color),
-	warningAccent: Type.Ref(Color),
+	warning: Type.Optional(Type.Ref(Color)),
+	warningBackground: Type.Optional(Type.Ref(Color)),
+	warningSubdued: Type.Optional(Type.Ref(Color)),
+	warningAccent: Type.Optional(Type.Ref(Color)),
 
-	danger: Type.Ref(Color),
-	dangerBackground: Type.Ref(Color),
-	dangerSubdued: Type.Ref(Color),
-	dangerAccent: Type.Ref(Color),
+	danger: Type.Optional(Type.Ref(Color)),
+	dangerBackground: Type.Optional(Type.Ref(Color)),
+	dangerSubdued: Type.Optional(Type.Ref(Color)),
+	dangerAccent: Type.Optional(Type.Ref(Color)),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
-	navigation: Type.Object({
-		background: Type.Ref(Color),
-		backgroundAccent: Type.Ref(Color),
+	navigation: Type.Optional(
+		Type.Object({
+			background: Type.Optional(Type.Ref(Color)),
+			backgroundAccent: Type.Optional(Type.Ref(Color)),
 
-		borderWidth: Type.Ref(LineWidth),
-		borderColor: Type.Ref(Color),
+			borderWidth: Type.Optional(Type.Ref(LineWidth)),
+			borderColor: Type.Optional(Type.Ref(Color)),
 
-		project: Type.Object({
-			background: Type.Ref(Color),
-			foreground: Type.Ref(Color),
-			fontFamily: Type.Ref(FamilyName),
-			borderWidth: Type.Ref(LineWidth),
-			borderColor: Type.Ref(Color),
-		}),
+			project: Type.Optional(
+				Type.Object({
+					background: Type.Optional(Type.Ref(Color)),
+					foreground: Type.Optional(Type.Ref(Color)),
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					borderWidth: Type.Optional(Type.Ref(LineWidth)),
+					borderColor: Type.Optional(Type.Ref(Color)),
+				})
+			),
 
-		modules: Type.Object({
-			background: Type.Ref(Color),
-			borderWidth: Type.Ref(LineWidth),
-			borderColor: Type.Ref(Color),
+			modules: Type.Optional(
+				Type.Object({
+					background: Type.Optional(Type.Ref(Color)),
+					borderWidth: Type.Optional(Type.Ref(LineWidth)),
+					borderColor: Type.Optional(Type.Ref(Color)),
 
-			button: Type.Object({
-				foreground: Type.Ref(Color),
-				foregroundHover: Type.Ref(Color),
-				foregroundActive: Type.Ref(Color),
+					button: Type.Optional(
+						Type.Object({
+							foreground: Type.Optional(Type.Ref(Color)),
+							foregroundHover: Type.Optional(Type.Ref(Color)),
+							foregroundActive: Type.Optional(Type.Ref(Color)),
 
-				background: Type.Ref(Color),
-				backgroundHover: Type.Ref(Color),
-				backgroundActive: Type.Ref(Color),
-			}),
-		}),
+							background: Type.Optional(Type.Ref(Color)),
+							backgroundHover: Type.Optional(Type.Ref(Color)),
+							backgroundActive: Type.Optional(Type.Ref(Color)),
+						})
+					),
+				})
+			),
 
-		list: Type.Object({
-			icon: Type.Object({
-				foreground: Type.Ref(Color),
-				foregroundHover: Type.Ref(Color),
-				foregroundActive: Type.Ref(Color),
-			}),
+			list: Type.Optional(
+				Type.Object({
+					icon: Type.Optional(
+						Type.Object({
+							foreground: Type.Optional(Type.Ref(Color)),
+							foregroundHover: Type.Optional(Type.Ref(Color)),
+							foregroundActive: Type.Optional(Type.Ref(Color)),
+						})
+					),
 
-			foreground: Type.Ref(Color),
-			foregroundHover: Type.Ref(Color),
-			foregroundActive: Type.Ref(Color),
+					foreground: Type.Optional(Type.Ref(Color)),
+					foregroundHover: Type.Optional(Type.Ref(Color)),
+					foregroundActive: Type.Optional(Type.Ref(Color)),
 
-			background: Type.Ref(Color),
-			backgroundHover: Type.Ref(Color),
-			backgroundActive: Type.Ref(Color),
+					background: Type.Optional(Type.Ref(Color)),
+					backgroundHover: Type.Optional(Type.Ref(Color)),
+					backgroundActive: Type.Optional(Type.Ref(Color)),
 
-			fontFamily: Type.Ref(FamilyName),
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 
-			divider: Type.Object({
-				borderColor: Type.Ref(Color),
-				borderWidth: Type.Ref(LineWidth),
-			}),
-		}),
-	}),
+					divider: Type.Object({
+						borderColor: Type.Optional(Type.Ref(Color)),
+						borderWidth: Type.Optional(Type.Ref(LineWidth)),
+					}),
+				})
+			),
+		})
+	),
 
-	header: Type.Object({
-		background: Type.Ref(Color),
-		borderWidth: Type.Ref(LineWidth),
-		borderColor: Type.Ref(Color),
-		boxShadow: Type.Ref(BoxShadow),
-		headline: Type.Object({
-			foreground: Type.Ref(Color),
-			fontFamily: Type.Ref(FamilyName),
-		}),
-		title: Type.Object({
-			foreground: Type.Ref(Color),
-			fontFamily: Type.Ref(FamilyName),
-		}),
-	}),
+	header: Type.Optional(
+		Type.Object({
+			background: Type.Optional(Type.Ref(Color)),
+			borderWidth: Type.Optional(Type.Ref(LineWidth)),
+			borderColor: Type.Optional(Type.Ref(Color)),
+			boxShadow: Type.Optional(Type.Ref(BoxShadow)),
+			headline: Type.Optional(
+				Type.Object({
+					foreground: Type.Optional(Type.Ref(Color)),
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+				})
+			),
+			title: Type.Optional(
+				Type.Object({
+					foreground: Type.Optional(Type.Ref(Color)),
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+				})
+			),
+		})
+	),
 
-	form: Type.Object({
-		field: Type.Object({
-			label: Type.Object({
-				foreground: Type.Ref(Color),
-				fontFamily: Type.Ref(FamilyName),
-			}),
-			input: Type.Object({
-				background: Type.Ref(Color),
-				backgroundSubdued: Type.Ref(Color),
+	form: Type.Optional(
+		Type.Object({
+			field: Type.Optional(
+				Type.Object({
+					label: Type.Optional(
+						Type.Object({
+							foreground: Type.Optional(Type.Ref(Color)),
+							fontFamily: Type.Optional(Type.Ref(FamilyName)),
+						})
+					),
+					input: Type.Optional(
+						Type.Object({
+							background: Type.Optional(Type.Ref(Color)),
+							backgroundSubdued: Type.Optional(Type.Ref(Color)),
 
-				foreground: Type.Ref(Color),
-				foregroundSubdued: Type.Ref(Color),
+							foreground: Type.Optional(Type.Ref(Color)),
+							foregroundSubdued: Type.Optional(Type.Ref(Color)),
 
-				borderColor: Type.Ref(Color),
-				borderColorHover: Type.Ref(Color),
-				borderColorFocus: Type.Ref(Color),
+							borderColor: Type.Optional(Type.Ref(Color)),
+							borderColorHover: Type.Optional(Type.Ref(Color)),
+							borderColorFocus: Type.Optional(Type.Ref(Color)),
 
-				boxShadow: Type.Ref(BoxShadow),
-				boxShadowHover: Type.Ref(BoxShadow),
-				boxShadowFocus: Type.Ref(BoxShadow),
-			}),
-		}),
-	}),
+							boxShadow: Type.Optional(Type.Ref(BoxShadow)),
+							boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
+							boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
+						})
+					),
+				})
+			),
+		})
+	),
 
-	sidebar: Type.Object({
-		background: Type.Ref(Color),
-		foreground: Type.Ref(Color),
-		fontFamily: Type.Ref(FamilyName),
-		borderWidth: Type.Ref(LineWidth),
-		borderColor: Type.Ref(Color),
+	sidebar: Type.Optional(
+		Type.Object({
+			background: Type.Optional(Type.Ref(Color)),
+			foreground: Type.Optional(Type.Ref(Color)),
+			fontFamily: Type.Optional(Type.Ref(FamilyName)),
+			borderWidth: Type.Optional(Type.Ref(LineWidth)),
+			borderColor: Type.Optional(Type.Ref(Color)),
 
-		section: Type.Object({
-			toggle: Type.Object({
-				icon: Type.Object({
-					foreground: Type.Ref(Color),
-					foregroundHover: Type.Ref(Color),
-					foregroundActive: Type.Ref(Color),
-				}),
+			section: Type.Optional(
+				Type.Object({
+					toggle: Type.Optional(
+						Type.Object({
+							icon: Type.Optional(
+								Type.Object({
+									foreground: Type.Optional(Type.Ref(Color)),
+									foregroundHover: Type.Optional(Type.Ref(Color)),
+									foregroundActive: Type.Optional(Type.Ref(Color)),
+								})
+							),
 
-				foreground: Type.Ref(Color),
-				foregroundHover: Type.Ref(Color),
-				foregroundActive: Type.Ref(Color),
+							foreground: Type.Optional(Type.Ref(Color)),
+							foregroundHover: Type.Optional(Type.Ref(Color)),
+							foregroundActive: Type.Optional(Type.Ref(Color)),
 
-				background: Type.Ref(Color),
-				backgroundHover: Type.Ref(Color),
-				backgroundActive: Type.Ref(Color),
+							background: Type.Optional(Type.Ref(Color)),
+							backgroundHover: Type.Optional(Type.Ref(Color)),
+							backgroundActive: Type.Optional(Type.Ref(Color)),
 
-				fontFamily: Type.Ref(FamilyName),
+							fontFamily: Type.Optional(Type.Ref(FamilyName)),
 
-				borderWidth: Type.Ref(LineWidth),
-				borderColor: Type.Ref(Color),
-			}),
-		}),
-	}),
+							borderWidth: Type.Optional(Type.Ref(LineWidth)),
+							borderColor: Type.Optional(Type.Ref(Color)),
+						})
+					),
+				})
+			),
+		})
+	),
 
-	public: Type.Object({
-		background: Type.Ref(Color),
-		foreground: Type.Ref(Color),
-		foregroundAccent: Type.Ref(Color),
+	public: Type.Optional(
+		Type.Object({
+			background: Type.Optional(Type.Ref(Color)),
+			foreground: Type.Optional(Type.Ref(Color)),
+			foregroundAccent: Type.Optional(Type.Ref(Color)),
 
-		art: Type.Object({
-			background: Type.Ref(Color),
-			primary: Type.Ref(Color),
-			secondary: Type.Ref(Color),
-			speed: Type.Ref(Number),
-		}),
+			art: Type.Optional(
+				Type.Object({
+					background: Type.Optional(Type.Ref(Color)),
+					primary: Type.Optional(Type.Ref(Color)),
+					secondary: Type.Optional(Type.Ref(Color)),
+					speed: Type.Optional(Type.Ref(Number)),
+				})
+			),
 
-		form: Type.Object({
-			field: Type.Object({
-				input: Type.Object({
-					background: Type.Ref(Color),
-					foreground: Type.Ref(Color),
-					foregroundSubdued: Type.Ref(Color),
+			form: Type.Optional(
+				Type.Object({
+					field: Type.Optional(
+						Type.Object({
+							input: Type.Optional(
+								Type.Object({
+									background: Type.Optional(Type.Ref(Color)),
+									foreground: Type.Optional(Type.Ref(Color)),
+									foregroundSubdued: Type.Optional(Type.Ref(Color)),
 
-					borderColor: Type.Ref(Color),
-					borderColorHover: Type.Ref(Color),
-					borderColorFocus: Type.Ref(Color),
+									borderColor: Type.Optional(Type.Ref(Color)),
+									borderColorHover: Type.Optional(Type.Ref(Color)),
+									borderColorFocus: Type.Optional(Type.Ref(Color)),
 
-					boxShadow: Type.Ref(BoxShadow),
-					boxShadowHover: Type.Ref(BoxShadow),
-					boxShadowFocus: Type.Ref(BoxShadow),
-				}),
-			}),
-		}),
-	}),
+									boxShadow: Type.Optional(Type.Ref(BoxShadow)),
+									boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
+									boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
+								})
+							),
+						})
+					),
+				})
+			),
+		})
+	),
 });
 
 export const ThemeSchema = Type.Object({
