@@ -49,6 +49,6 @@ user passwords are only hashed when used with `UsersService` and not `ItemsServi
 ::: tip List of Available Services
 
 Directus provides a number of built-in services. Refer to the full list
-[here](https://github.com/directus/directus/tree/bbefc62ef4727edb0b25eaafb6bb44273f79f834/api/src/services).
+[here](https://github.com/directus/directus/tree/main/api/src/services).
 
 :::

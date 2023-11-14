@@ -5,7 +5,7 @@ contributors: Esther Agbaje
 
 # Interacting With Files
 
-Directus exposes services that allow you to perform file operations programmatically.
+Directus exposes services that allow you to perform operations programmatically on your files.
 
 ## FilesService
 
@@ -58,7 +58,6 @@ router.get('/files/:id', async (req, res) => {
 
 ::: tip Explore FilesService In-depth
 
-Check out the full list
-[here](https://github.com/directus/directus/blob/bbefc62ef4727edb0b25eaafb6bb44273f79f834/api/src/services/files.ts).
+Check out the full list [here](https://github.com/directus/directus/blob/main/api/src/services/files.ts).
 
 :::

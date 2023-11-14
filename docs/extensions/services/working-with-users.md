@@ -1,5 +1,5 @@
 ---
-description: Learn about the UsersService in Directus and how to utilize them when building extensions.
+description: Learn about the required services when working with users and granting them access control.
 contributors: Esther Agbaje
 ---
 
@@ -99,7 +99,6 @@ router.post('/permissions/:role', async (req, res) => {
 
 ::: tip Explore Services In-depth
 
-Check out the full list
-[here](https://github.com/directus/directus/blob/bbefc62ef4727edb0b25eaafb6bb44273f79f834/api/src/services/users.ts).
+Check out the full list [here](https://github.com/directus/main/api/src/services/users.ts).
 
 :::

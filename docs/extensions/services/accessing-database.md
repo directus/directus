@@ -67,7 +67,6 @@ router.get('/items/:collection/:id', async (req, res) => {
 
 ::: tip Explore ItemsService In-depth
 
-Check out the full list
-[here](https://github.com/directus/directus/blob/bbefc62ef4727edb0b25eaafb6bb44273f79f834/api/src/services/items.ts).
+Check out the full list [here](https://github.com/directus/directus/blob/main/api/src/services/items.ts).
 
 :::
