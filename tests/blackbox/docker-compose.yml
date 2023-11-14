@@ -112,7 +112,7 @@ services:
       - 'host.docker.internal:host-gateway'
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio
     command: server /data/minio/ --console-address :9001
     ports:
       - 8881:9000

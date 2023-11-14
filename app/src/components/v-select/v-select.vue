@@ -367,17 +367,21 @@ function useDisplayValue() {
 </template>
 
 <style scoped lang="scss">
-:global(body) {
-	--v-select-font-family: var(--theme--font-family-sans-serif);
-	--v-select-placeholder-color: var(--theme--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-select-font-family        [var(--theme--font-family-sans-serif)]
+		--v-select-placeholder-color  [var(--theme--foreground-subdued)]
+
+*/
 
 .list {
 	--v-list-min-width: 0;
 }
 
 .v-input {
-	--v-input-font-family: var(--v-select-font-family);
+	--v-input-font-family: var(--v-select-font-family, var(--theme--font-family-sans-serif));
 
 	cursor: pointer;
 }
@@ -417,7 +421,7 @@ function useDisplayValue() {
 	padding: 4px 8px;
 	padding-right: 26px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: color var(--fast) var(--transition);
 
@@ -432,6 +436,6 @@ function useDisplayValue() {
 }
 
 .inline-display.placeholder {
-	color: var(--v-select-placeholder-color);
+	color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
 }
 </style>

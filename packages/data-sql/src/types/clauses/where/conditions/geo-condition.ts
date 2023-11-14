@@ -1,4 +1,5 @@
 import type { ValueNode } from '../../../parameterized-statement.js';
+import type { AbstractSqlQueryFnNode } from '../../selects/fn.js';
 import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
 
 /**
@@ -11,7 +12,7 @@ export interface SqlConditionGeoNode {
 	type: 'condition-geo';
 
 	/* The column in question */
-	target: AbstractSqlQuerySelectNode;
+	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 
 	/**
 	 * The operation to apply. Get only those rows where the targeting column

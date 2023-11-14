@@ -40,7 +40,7 @@ Panels that are in this dashboard. One-to-may to [panels](/reference/system/pane
 {
 	"id": "a79bd1b2-beb2-49fc-8a26-0b3eec0e2697",
 	"name": "My Dashboard",
-	"icon": "dashboard",
+	"icon": "space_dashboard",
 	"note": "Test",
 	"date_created": "2023-01-05T19:03:15.051Z",
 	"user_created": "fd066644-c8e5-499d-947b-fe6c6e1a1473",
@@ -282,7 +282,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 ```json
 {
 	"name": "My Dashboard",
-	"icon": "dashboard"
+	"icon": "space_dashboard"
 }
 ```
 
@@ -380,7 +380,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 [
 	{
 		"name": "My Dashboard",
-		"icon": "dashboard"
+		"icon": "space_dashboard"
 	},
 	{
 		"name": "Another Dashboard",
@@ -789,8 +789,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteDashboards } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

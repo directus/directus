@@ -2,9 +2,9 @@ import api from '@/api';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { Settings } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
-import { Settings } from '@directus/types';
 import { useUserStore } from './user';
 
 export const useSettingsStore = defineStore({
@@ -41,9 +41,9 @@ export const useSettingsStore = defineStore({
 						title: i18n.global.t('settings_update_success'),
 					});
 				}
-			} catch (err: any) {
+			} catch (error) {
 				this.settings = settingsCopy;
-				unexpectedError(err);
+				unexpectedError(error);
 			}
 		},
 	},

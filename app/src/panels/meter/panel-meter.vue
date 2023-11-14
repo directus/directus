@@ -140,7 +140,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 				:stroke-width="strokeWidth"
 				:stroke-linecap="roundedStroke ? 'round' : 'inherit'"
 				:r="radius"
-				stroke="var(--background-subdued)"
+				stroke="var(--theme--background-subdued)"
 			/>
 			<circle
 				cx="50%"

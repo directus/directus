@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useAutoFontFit } from '@/composables/use-auto-fit-text';
 import { formatNumber } from '@/utils/format-number';
 import type { Style, Notation, Unit } from '@/utils/format-number';
+import { CSSProperties } from 'vue';
 
 interface Props {
 	showHeader?: boolean;
@@ -24,7 +25,7 @@ interface Props {
 	minimumFractionDigits?: number;
 	maximumFractionDigits?: number;
 	conditionalFormatting?: Record<string, any>[];
-	textAlign?: string | undefined;
+	textAlign?: CSSProperties['text-align'];
 	fontSize?: string;
 	fontWeight?: number | undefined;
 	fontStyle?: string | undefined;

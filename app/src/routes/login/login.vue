@@ -9,13 +9,14 @@ import ContinueAs from './components/continue-as.vue';
 import { LdapForm, LoginForm } from './components/login-form/';
 import SsoLinks from './components/sso-links.vue';
 
-interface Props {
-	logoutReason?: string | null;
-}
-
-withDefaults(defineProps<Props>(), {
-	logoutReason: null,
-});
+withDefaults(
+	defineProps<{
+		logoutReason?: string | null;
+	}>(),
+	{
+		logoutReason: null,
+	}
+);
 
 const { t, te } = useI18n();
 

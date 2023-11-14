@@ -1,11 +1,12 @@
 import type { ConditionFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
+import { parameterIndexGenerator } from '../../../param-index-generator.js';
+import type { FilterResult } from '../filter.js';
 import { convertFieldCondition } from './field.js';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 
-test('number', () => {
-	const randomCollection1 = randomIdentifier();
+test('convert field condition', () => {
+	const idGen = parameterIndexGenerator();
 	const randomCollection2 = randomIdentifier();
 	const randomField1 = randomIdentifier();
 	const randomField2 = randomIdentifier();
@@ -20,31 +21,33 @@ test('number', () => {
 		compareTo: {
 			type: 'primitive',
 			field: randomField2,
-			collection: randomCollection2,
 		},
 	};
 
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'condition',
-		negate: false,
-		condition: {
-			type: 'condition-field',
-			target: {
-				type: 'primitive',
-				table: randomCollection1,
-				column: randomField1,
+	const expectedResult: FilterResult = {
+		clauses: {
+			where: {
+				type: 'condition',
+				negate: false,
+				condition: {
+					type: 'condition-field',
+					target: {
+						type: 'primitive',
+						table: randomCollection2,
+						column: randomField1,
+					},
+					operation: 'eq',
+					compareTo: {
+						type: 'primitive',
+						table: randomCollection2,
+						column: randomField2,
+					},
+				},
 			},
-			operation: 'eq',
-			compareTo: {
-				type: 'primitive',
-				table: randomCollection2,
-				column: randomField2,
-			},
+			joins: [],
 		},
-	};
-
-	expect(convertFieldCondition(con, randomCollection1, false)).toStrictEqual({
-		where: expectedWhere,
 		parameters: [],
-	});
+	};
+
+	expect(convertFieldCondition(con, randomCollection2, idGen, false)).toStrictEqual(expectedResult);
 });

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useSync } from '@directus/composables';
-import { Field, Permission, Role } from '@directus/types';
+import type { Field, Permission, Role } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	permission: Permission;
 	role?: Role;
-	appMinimal?: Partial<Permission>;
+	appMinimal?: Permission['fields'];
 }>();
 
 const emit = defineEmits(['update:permission']);
@@ -108,7 +108,7 @@ const fields = computed({
 	.app-minimal-preview {
 		padding: 16px;
 		font-family: var(--theme--font-family-monospace);
-		background-color: var(--background-subdued);
+		background-color: var(--theme--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}
 }

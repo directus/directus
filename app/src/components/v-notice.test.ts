@@ -1,9 +1,8 @@
-import { test, expect } from 'vitest';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
-import VNotice from './v-notice.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { zip } from 'lodash';
+import { expect, test } from 'vitest';
+import VNotice from './v-notice.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],

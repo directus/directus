@@ -10,19 +10,18 @@ import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 
 const translationPrefix = '$t:';
 
-interface Props {
-	value?: string | null;
-	autofocus?: boolean;
-	disabled?: boolean;
-	placeholder?: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	value: null,
-	autofocus: false,
-	disabled: false,
-	placeholder: null,
-});
+const props = withDefaults(
+	defineProps<{
+		value?: string | null;
+		autofocus?: boolean;
+		disabled?: boolean;
+		placeholder?: string | null;
+	}>(),
+	{
+		value: null,
+		placeholder: null,
+	}
+);
 
 const emit = defineEmits(['input']);
 
@@ -51,8 +50,8 @@ const fetchTranslationsKeys = async () => {
 		});
 
 		translationsKeys.value = response.map((t) => t.key);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}

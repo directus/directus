@@ -104,9 +104,9 @@ function useBatch() {
 			await refresh();
 
 			selection.value = [];
-		} catch (err: any) {
-			unexpectedError(err);
-			error.value = err;
+		} catch (e) {
+			unexpectedError(e);
+			error.value = e;
 		} finally {
 			confirmDelete.value = false;
 			deleting.value = false;
@@ -181,8 +181,8 @@ function useMovetoFolder() {
 
 			await nextTick();
 			await refresh();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			moveToDialogActive.value = false;
 			moving.value = false;

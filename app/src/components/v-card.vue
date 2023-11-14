@@ -18,35 +18,32 @@ withDefaults(defineProps<Props>(), {
 	</div>
 </template>
 
-<style>
-body {
-	--v-card-min-width: none;
-	--v-card-max-width: 400px;
-	--v-card-height: auto;
-	--v-card-min-height: none;
-	--v-card-max-height: 90vh;
-	--v-card-padding: 16px;
-	--v-card-background-color: var(--background-subdued);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-card-min-width         [none]
+		--v-card-padding           [16px]
+		--v-card-background-color  [var(--theme--form--field--input--background-subdued)]
+
+*/
+
 .v-card {
 	--input-height: 60px;
 	--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 	--form-vertical-gap: 52px;
 
-	min-width: var(--v-card-min-width);
-	max-width: var(--v-card-max-width);
-	height: var(--v-card-height);
-	min-height: var(--v-card-min-height);
-	max-height: var(--v-card-max-height);
+	min-width: var(--v-card-min-width, none);
+	max-width: 400px;
+	height: auto;
+	max-height: 90vh;
 	overflow: auto;
 
 	/* Page Content Spacing */
 	font-size: 15px;
 	line-height: 24px;
-	background-color: var(--v-card-background-color);
+	background-color: var(--v-card-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	& > :first-child {

@@ -1,110 +1,175 @@
 import { expect, test, beforeEach } from 'vitest';
 import { convertLogical } from './logical.js';
-import type { AbstractSqlQueryLogicalNode, WhereUnion } from '../../../index.js';
 import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import type { FilterResult } from './filter.js';
+import type { AtLeastOneElement } from '@directus/data';
 
-let randomCollection: string;
+// first condition (with nested target)
+let localCollection: string;
 let randomField1: string;
+let randomNumber: number;
+let joinAlias: string;
+
+// second condition
+let foreignCollection: string;
 let randomField2: string;
-let randomNumber1: number;
-let randomString1: string;
+let randomString: string;
 
 beforeEach(() => {
-	randomCollection = randomIdentifier();
+	localCollection = randomIdentifier();
 	randomField1 = randomIdentifier();
+	joinAlias = randomIdentifier();
 	randomField2 = randomIdentifier();
-	randomNumber1 = randomInteger(1, 100);
-	randomString1 = randomAlpha(5);
+	randomNumber = randomInteger(1, 100);
+	randomString = randomAlpha(5);
+	foreignCollection = randomIdentifier();
 });
 
 test('Convert logical node with two conditions', () => {
-	const children: WhereUnion[] = [
+	const children: AtLeastOneElement<FilterResult> = [
 		{
-			where: {
-				type: 'condition',
-				condition: {
-					type: 'condition-number',
-					target: {
-						type: 'primitive',
-						column: randomField1,
-						table: randomCollection,
+			clauses: {
+				where: {
+					type: 'condition',
+					condition: {
+						type: 'condition-number',
+						target: {
+							type: 'primitive',
+							column: randomField1,
+							table: foreignCollection,
+						},
+						operation: 'eq',
+						compareTo: {
+							type: 'value',
+							parameterIndex: 0,
+						},
 					},
-					operation: 'eq',
-					compareTo: {
-						type: 'value',
-						parameterIndex: 0,
-					},
+					negate: false,
 				},
-				negate: false,
+				joins: [
+					{
+						type: 'join',
+						table: localCollection,
+						on: {
+							type: 'condition',
+							condition: {
+								type: 'condition-field',
+								target: {
+									type: 'primitive',
+									column: randomField1,
+									table: localCollection,
+								},
+								operation: 'eq',
+								compareTo: {
+									type: 'primitive',
+									column: randomField1,
+									table: localCollection,
+								},
+							},
+							negate: false,
+						},
+						as: joinAlias,
+					},
+				],
 			},
-			parameters: [randomNumber1],
+			parameters: [randomNumber],
 		},
 		{
-			where: {
-				type: 'condition',
-				condition: {
-					type: 'condition-string',
-					target: {
-						type: 'primitive',
-						column: randomField2,
-						table: randomCollection,
+			clauses: {
+				where: {
+					type: 'condition',
+					condition: {
+						type: 'condition-string',
+						target: {
+							type: 'primitive',
+							column: randomField2,
+							table: localCollection,
+						},
+						operation: 'starts_with',
+						compareTo: {
+							type: 'value',
+							parameterIndex: 1,
+						},
 					},
-					operation: 'starts_with',
-					compareTo: {
-						type: 'value',
-						parameterIndex: 1,
-					},
+					negate: false,
 				},
-				negate: false,
+				joins: [],
 			},
-			parameters: [randomString1],
+			parameters: [randomString],
 		},
 	];
 
-	const expectedWhere: AbstractSqlQueryLogicalNode = {
-		type: 'logical',
-		negate: false,
-		operator: 'and',
-		childNodes: [
-			{
-				type: 'condition',
-				condition: {
-					type: 'condition-number',
-					target: {
-						type: 'primitive',
-						column: randomField1,
-						table: randomCollection,
+	const expectedResult: FilterResult = {
+		clauses: {
+			joins: [
+				{
+					type: 'join',
+					table: localCollection,
+					on: {
+						type: 'condition',
+						condition: {
+							type: 'condition-field',
+							target: {
+								type: 'primitive',
+								column: randomField1,
+								table: localCollection,
+							},
+							operation: 'eq',
+							compareTo: {
+								type: 'primitive',
+								column: randomField1,
+								table: localCollection,
+							},
+						},
+						negate: false,
 					},
-					operation: 'eq',
-					compareTo: {
-						type: 'value',
-						parameterIndex: 0,
-					},
+					as: joinAlias,
 				},
+			],
+			where: {
+				type: 'logical',
 				negate: false,
-			},
-			{
-				type: 'condition',
-				condition: {
-					type: 'condition-string',
-					target: {
-						type: 'primitive',
-						column: randomField2,
-						table: randomCollection,
+				operator: 'and',
+				childNodes: [
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-number',
+							target: {
+								type: 'primitive',
+								column: randomField1,
+								table: foreignCollection,
+							},
+							operation: 'eq',
+							compareTo: {
+								type: 'value',
+								parameterIndex: 0,
+							},
+						},
+						negate: false,
 					},
-					operation: 'starts_with',
-					compareTo: {
-						type: 'value',
-						parameterIndex: 1,
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							target: {
+								type: 'primitive',
+								column: randomField2,
+								table: localCollection,
+							},
+							operation: 'starts_with',
+							compareTo: {
+								type: 'value',
+								parameterIndex: 1,
+							},
+						},
+						negate: false,
 					},
-				},
-				negate: false,
+				],
 			},
-		],
+		},
+		parameters: [randomNumber, randomString],
 	};
 
-	expect(convertLogical(children, 'and', false)).toStrictEqual({
-		where: expectedWhere,
-		parameters: [randomNumber1, randomString1],
-	});
+	expect(convertLogical(children, 'and', false)).toStrictEqual(expectedResult);
 });

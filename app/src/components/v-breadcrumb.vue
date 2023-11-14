@@ -32,16 +32,18 @@ withDefaults(defineProps<Props>(), {
 	</span>
 </template>
 
-<style>
-body {
-	--v-breadcrumb-color: var(--theme--foreground-subdued);
-	--v-breadcrumb-color-hover: var(--theme--foreground);
-	--v-breadcrumb-color-disabled: var(--theme--foreground-subdued);
-	--v-breadcrumb-divider-color: var(--theme--foreground-subdued);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-breadcrumb-color           [var(--theme--foreground-subdued)]
+		--v-breadcrumb-color-hover     [var(--theme--foreground)]
+		--v-breadcrumb-color-disabled  [var(--theme--foreground-subdued)]
+		--v-breadcrumb-divider-color   [var(--theme--foreground-subdued)]
+
+*/
+
 .v-breadcrumb {
 	display: flex;
 	align-items: center;
@@ -50,7 +52,7 @@ body {
 		display: contents;
 
 		.v-icon {
-			--v-icon-color: var(--v-breadcrumb-divider-color);
+			--v-icon-color: var(--v-breadcrumb-divider-color, var(--theme--foreground-subdued));
 
 			margin: 0 4px;
 		}
@@ -58,20 +60,20 @@ body {
 		&-link {
 			display: inline-flex;
 			align-items: center;
-			color: var(--v-breadcrumb-color);
+			color: var(--v-breadcrumb-color, var(--theme--foreground-subdued));
 			text-decoration: none;
 
 			.v-icon {
-				--v-icon-color: var(--v-breadcrumb-color);
+				--v-icon-color: var(--v-breadcrumb-color, var(--theme--foreground-subdued));
 
 				margin: 0 2px;
 			}
 
 			&:hover {
-				color: var(--v-breadcrumb-color-hover);
+				color: var(--v-breadcrumb-color-hover, var(--theme--foreground));
 
 				.v-icon {
-					--v-icon-color: var(--v-breadcrumb-color-hover);
+					--v-icon-color: var(--v-breadcrumb-color-hover, var(--theme--foreground));
 				}
 			}
 		}
@@ -80,7 +82,7 @@ body {
 			.section-link,
 			.section-link:hover,
 			.section-link .v-icon {
-				color: var(--v-breadcrumb-color-disabled);
+				color: var(--v-breadcrumb-color-disabled, var(--theme--foreground-subdued));
 				cursor: default;
 			}
 		}

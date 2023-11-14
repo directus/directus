@@ -1,7 +1,7 @@
 import api from '@/api';
-import { Permission, Collection } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { inject, ref, Ref } from 'vue';
+import { Collection, Permission } from '@directus/types';
+import { inject, ref, type Ref } from 'vue';
 
 const ACTIONS = ['create', 'read', 'update', 'delete', 'share'] as const;
 type Action = (typeof ACTIONS)[number];
@@ -50,8 +50,8 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err: any) {
-				unexpectedError(err);
+			} catch (error) {
+				unexpectedError(error);
 			} finally {
 				await refresh?.();
 				saving.value = false;
@@ -66,8 +66,8 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err: any) {
-				unexpectedError(err);
+			} catch (error) {
+				unexpectedError(error);
 			} finally {
 				await refresh?.();
 				saving.value = false;
@@ -86,8 +86,8 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete(`/permissions/${permission.id}`);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			await refresh?.();
 			saving.value = false;
@@ -118,8 +118,8 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err: any) {
-						unexpectedError(err);
+					} catch (error) {
+						unexpectedError(error);
 					}
 				} else {
 					try {
@@ -131,8 +131,8 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err: any) {
-						unexpectedError(err);
+					} catch (error) {
+						unexpectedError(error);
 					}
 				}
 			})
@@ -149,8 +149,8 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			await refresh?.();
 			saving.value = false;

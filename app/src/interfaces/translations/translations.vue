@@ -31,12 +31,12 @@ const props = withDefaults(
 		disabled?: boolean;
 	}>(),
 	{
-		languageField: () => null,
-		languageDirectionField: () => 'direction',
+		languageField: null,
+		languageDirectionField: 'direction',
 		value: () => [],
 		autofocus: false,
 		disabled: false,
-		defaultLanguage: () => null,
+		defaultLanguage: null,
 		userLanguage: false,
 	}
 );
@@ -243,8 +243,8 @@ function useLanguages() {
 			if (!secondLang.value) {
 				secondLang.value = languages.value[1]?.[pkField];
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
