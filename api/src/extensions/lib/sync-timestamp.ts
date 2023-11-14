@@ -16,14 +16,15 @@ export const checkIsSyncRequired = async () => {
 
 	const timestamp = await readFile(timestampFilePath, 'utf8');
 
-	return timestamp !== getSystemStartTimestamp();
+	// Allow difference of 1 second as os.uptime() might return a float
+	return Math.abs(new Date(timestamp).getTime() - getSystemStartTimestamp().getTime()) < 1;
 };
 
 /**
  * Sets the system start timestamp to the `.timestamp` file
  */
 export const setSyncTimestamp = async () => {
-	await writeFile(getTimestampFilePath(), getSystemStartTimestamp());
+	await writeFile(getTimestampFilePath(), getSystemStartTimestamp().toISOString());
 };
 
 const getTimestampFilePath = () => {
@@ -33,5 +34,5 @@ const getTimestampFilePath = () => {
 const getSystemStartTimestamp = () => {
 	const currentTime = new Date();
 	currentTime.setMilliseconds(0);
-	return new Date(currentTime.getTime() - uptime() * 1000).toISOString();
+	return new Date(currentTime.getTime() - uptime() * 1000);
 };
