@@ -117,8 +117,6 @@ function toggleDescending() {
 
 <style lang="scss" scoped>
 .cards-header {
-	position: sticky;
-	top: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
 	align-items: center;

@@ -97,7 +97,6 @@
 	.fc-toolbar {
 		&.fc-header-toolbar {
 			position: sticky;
-			top: var(--layout-offset-top);
 			z-index: 4;
 			width: 100%;
 			height: 52px;

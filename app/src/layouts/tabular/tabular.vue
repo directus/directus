@@ -311,8 +311,6 @@ function removeField(fieldKey: string) {
 }
 
 .v-table {
-	--v-table-sticky-offset-top: var(--layout-offset-top);
-
 	display: contents;
 
 	& > :deep(table) {

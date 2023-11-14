@@ -352,7 +352,6 @@ function getWidth(input: unknown, fallback: number): number {
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
-	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 
 	display: flex;
 	width: 100%;
@@ -481,7 +480,6 @@ function getWidth(input: unknown, fallback: number): number {
 	&.splitView {
 		#main-content .content-wrapper {
 			display: flex;
-			height: calc(100% - var(--layout-offset-top));
 
 			main {
 				display: block;
@@ -554,7 +552,7 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	@media (min-width: 600px) {
-		--content-padding: 32px;
+		--content-padding: 16px;
 		--content-padding-bottom: 132px;
 	}
 

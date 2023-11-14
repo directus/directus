@@ -175,7 +175,7 @@ onUnmounted(() => {
 	}
 
 	@media (min-width: 600px) {
-		padding: 0 32px;
+		padding: 0 16px;
 	}
 }
 </style>

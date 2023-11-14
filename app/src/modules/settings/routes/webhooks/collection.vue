@@ -181,8 +181,4 @@ function clearFilters() {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
-
-.layout {
-	--layout-offset-top: 64px;
-}
 </style>
