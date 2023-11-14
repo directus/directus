@@ -1,4 +1,4 @@
-import { defineTheme } from '../../index.js';
+import { defineTheme } from '../../utils/define-theme.js';
 
 export default defineTheme({
 	name: 'Directus Minimal',
