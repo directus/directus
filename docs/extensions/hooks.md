@@ -191,8 +191,12 @@ export default ({ embed }, { env }) => {
 
 ### Filter Events
 
-| Name                           | Payload                              | Meta                                        |
+| Event                          | Payload                              | Meta                                        |
 | ------------------------------ | ------------------------------------ | ------------------------------------------- |
+| `websocket.message`            | The message send over the websocket  |                                             |
+| `fields.create`                | The raw field you created            | `collection`                                |
+| `fields.update`                | The raw field you updated            | `keys`, `collection`                        |
+| `fields.delete`                | The raw field you deleted            | `collection`                                |
 | `request.not_found`            | `false`                              | `request`, `response`                       |
 | `request.error`                | The request errors                   | --                                          |
 | `database.error`               | The database error                   | `client`                                    |
@@ -207,6 +211,8 @@ export default ({ embed }, { env }) => {
 | `(<collection>.)items.update`  | The updated item                     | `keys`, `collection`                        |
 | `(<collection>.)items.promote` | The promoted item                    | `collection`, `item`, `version`             |
 | `(<collection>.)items.delete`  | The keys of the item                 | `collection`                                |
+| `<system-collection>.query`    | The items query                      | `collection`                                |
+| `<system-collection>.read`     | The read item                        | `query`, `collection`                       |
 | `<system-collection>.create`   | The new item                         | `collection`                                |
 | `<system-collection>.update`   | The updated item                     | `keys`, `collection`                        |
 | `<system-collection>.delete`   | The keys of the item                 | `collection`                                |
@@ -227,8 +233,17 @@ export default ({ embed }, { env }) => {
 
 ### Action Events
 
-| Name                           | Meta                                                |
+| Event                          | Meta                                                |
 | ------------------------------ | --------------------------------------------------- |
+| `websocket.message`            | `message`, `client`                                 |
+| `websocket.error`              | `client`, `event`                                   |
+| `websocket.close`              | `client`, `event`                                   |
+| `websocket.connect`            | `client`                                            |
+| `websocket.auth.success`       | `client`                                            |
+| `websocket.auth.failure`       | `client`                                            |
+| `fields.create`                | `payload`, `key`, `collection`                      |
+| `fields.update`                | `payload`, `keys`, `collection`                     |
+| `fields.delete`                | `payload`, `collection`                             |
 | `server.start`                 | `server`                                            |
 | `server.stop`                  | `server`                                            |
 | `response`                     | `request`, `response`, `ip`, `duration`, `finished` |
@@ -240,6 +255,7 @@ export default ({ embed }, { env }) => {
 | `(<collection>.)items.promote` | `payload`, `collection`, `item`, `version`          |
 | `(<collection>.)items.delete`  | `keys`, `collection`                                |
 | `(<collection>.)items.sort`    | `collection`, `item`, `to`                          |
+| `<system-collection>.read`     | `payload`, `query`, `collection`                    |
 | `<system-collection>.create`   | `payload`, `key`, `collection`                      |
 | `<system-collection>.update`   | `payload`, `keys`, `collection`                     |
 | `<system-collection>.delete`   | `keys`, `collection`                                |
