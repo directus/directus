@@ -255,19 +255,15 @@ function onClick(event: PointerEvent) {
 	}
 
 	&.block {
-		--v-list-item-border-color: var(--theme--form--field--input--border-color);
-		--v-list-item-border-color-hover: var(--theme--form--field--input--border-color-hover);
-		--v-list-item-background-color: var(--theme--form--field--input--background);
-		--v-list-item-background-color-hover: var(--theme--form--field--input--background);
-		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
 
 		position: relative;
 		display: flex;
 		height: var(--input-height);
 		margin: 0;
 		padding: 8px var(--input-padding);
-		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--background-normal)));
-		border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--border-color-subdued));
+		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--form--field--input--background)));
+		border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--fast) var(--transition);
 
@@ -290,7 +286,7 @@ function onClick(event: PointerEvent) {
 		&.clickable:hover {
 			background-color: var(
 				--v-list-item-background-color-hover,
-				var(--v-list-background-color-hover, var(--theme--background-normal))
+				var(--v-list-background-color-hover, var(--theme--form--field--input--background))
 			);
 			border: var(--theme--border-width) solid
 				var(--v-list-item-border-color-hover, var(--theme--form--field--input--border-color-hover));
