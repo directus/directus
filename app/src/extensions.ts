@@ -7,6 +7,7 @@ import { getInternalLayouts, registerLayouts } from './layouts';
 import { getInternalModules, registerModules } from './modules';
 import { getInternalOperations, registerOperations } from './operations';
 import { getInternalPanels, registerPanels } from './panels';
+import { registerThemes } from './themes/register';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
 
@@ -19,6 +20,7 @@ const extensions: RefRecord<AppExtensionConfigs> = {
 	modules: shallowRef([]),
 	panels: shallowRef([]),
 	operations: shallowRef([]),
+	themes: shallowRef([]),
 };
 
 const onHydrateCallbacks: (() => Promise<void>)[] = [];
@@ -44,6 +46,7 @@ export function registerExtensions(app: App): void {
 	const modules = getInternalModules();
 	const panels = getInternalPanels();
 	const operations = getInternalOperations();
+	const themes = []; // Themes is the first extension type that doesn't rely on internally scoped extensions
 
 	if (customExtensions !== null) {
 		interfaces.push(...customExtensions.interfaces);
@@ -52,6 +55,7 @@ export function registerExtensions(app: App): void {
 		modules.push(...customExtensions.modules);
 		panels.push(...customExtensions.panels);
 		operations.push(...customExtensions.operations);
+		themes.push(...customExtensions.themes);
 	}
 
 	registerInterfaces(interfaces, app);
@@ -59,6 +63,7 @@ export function registerExtensions(app: App): void {
 	registerLayouts(layouts, app);
 	registerPanels(panels, app);
 	registerOperations(operations, app);
+	registerThemes(themes);
 
 	watch(
 		i18n.global.locale,
