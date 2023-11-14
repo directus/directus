@@ -6,6 +6,7 @@ dist/
 !/docs/.typedocs/
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
+/docs/dictionary.txt
 *.yml
 *.yaml
 *.md
