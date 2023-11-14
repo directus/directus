@@ -906,7 +906,8 @@ const publicUrl = process.env.PUBLIC_URL;
 | `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.  | --             |
 | `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions. | --             |
 
-<sup>[1]</sup> If `EXTENSIONS_LOCATION` is configured, this is the path within the selected storage location.
+<sup>[1]</sup> If `EXTENSIONS_LOCATION` is configured, this is the path to the extensions folder within the selected
+storage location.
 
 <sup>[2]</sup> `EXTENSIONS_AUTO_RELOAD` will not work when the `EXTENSION_LOCATION` environment variable is set.
 
