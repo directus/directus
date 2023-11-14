@@ -357,7 +357,7 @@ function getWidth(input: unknown, fallback: number): number {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;

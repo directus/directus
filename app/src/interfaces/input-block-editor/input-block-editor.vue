@@ -192,14 +192,14 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .disabled {
 	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
 }
 
 .bordered {
 	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
@@ -232,7 +232,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .uploader-preview-image {
 	margin-bottom: var(--form-vertical-gap);
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 

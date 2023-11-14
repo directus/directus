@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import type { DeepPartial } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import decamelize from 'decamelize';
-import { flatten } from 'flat';
-import { mapKeys } from 'lodash-es';
 import { computed, toRefs, unref } from 'vue';
-import type { Theme } from './schema.js';
-import { theme as themeDefaultDark } from './themes/dark-directus.js';
-import { theme as themeDefaultLight } from './themes/light-directus.js';
-import { useFonts } from './use-fonts.js';
-import { useTheme } from './use-theme.js';
+import { useFonts, useTheme } from '../composables/index.js';
+import type { Theme } from '../schemas/index.js';
+import { rulesToCssVars } from '../utils/index.js';
+
+import { theme as themeDefaultDark } from '../themes/dark/directus-default.js';
+import { theme as themeDefaultLight } from '../themes/light/directus-default.js';
 
 const props = withDefaults(
 	defineProps<{
@@ -32,11 +30,7 @@ const { darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides
 const { theme } = useTheme(darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides);
 
 const cssVariables = computed(() => {
-	const rules = flatten<Theme['rules'], Record<string, string | number>>(unref(theme).rules, { delimiter: '--' });
-
-	const getRuleName = (name: string) => `--theme--${decamelize(name, { separator: '-' })}`;
-
-	return mapKeys(rules, (_value, key) => getRuleName(key));
+	return rulesToCssVars(unref(theme).rules);
 });
 
 const { googleFonts } = useFonts(theme);

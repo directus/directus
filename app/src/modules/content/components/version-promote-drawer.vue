@@ -271,7 +271,7 @@ function useTab() {
 	padding: 8px;
 	gap: 8px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	cursor: pointer;
 
 	.field-content {

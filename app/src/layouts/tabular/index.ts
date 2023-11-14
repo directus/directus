@@ -22,7 +22,7 @@ import { LayoutOptions, LayoutQuery } from './types';
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
 	name: '$t:layouts.tabular.tabular',
-	icon: 'reorder',
+	icon: 'table_rows',
 	component: TabularLayout,
 	slots: {
 		options: TabularOptions,

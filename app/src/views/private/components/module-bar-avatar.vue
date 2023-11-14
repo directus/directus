@@ -160,12 +160,6 @@ const userFullName = userStore.fullName ?? undefined;
 		left: 0;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);
-
-		&:hover {
-			.v-icon {
-				--v-icon-color: var(--theme--primary);
-			}
-		}
 	}
 
 	.sign-out-enter-active,

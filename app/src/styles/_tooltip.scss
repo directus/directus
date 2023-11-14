@@ -20,7 +20,7 @@
 
 	&.inverted {
 		--tooltip-foreground-color: var(--theme--foreground);
-		--tooltip-background-color: var(--background-subdued);
+		--tooltip-background-color: var(--theme--background-subdued);
 	}
 
 	&.monospace {

@@ -31,9 +31,9 @@ const Rules = Type.Object({
 	foregroundSubdued: Type.Ref(Color),
 	foregroundAccent: Type.Ref(Color),
 
-	backgroundPage: Type.Ref(Color),
-
 	background: Type.Ref(Color),
+
+	backgroundNormal: Type.Ref(Color),
 	backgroundAccent: Type.Ref(Color),
 	backgroundSubdued: Type.Ref(Color),
 
@@ -146,6 +146,8 @@ const Rules = Type.Object({
 			}),
 			input: Type.Object({
 				background: Type.Ref(Color),
+				backgroundSubdued: Type.Ref(Color),
+
 				foreground: Type.Ref(Color),
 				foregroundSubdued: Type.Ref(Color),
 

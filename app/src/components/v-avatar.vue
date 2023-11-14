@@ -32,7 +32,7 @@ const sizeClass = useSizeClass(props);
 
 	Available Variables:
 
-		--v-avatar-color  [var(--theme--background)]
+		--v-avatar-color  [var(--theme--background-normal)]
 		--v-avatar-size   [48px]
 
 */
@@ -48,7 +48,7 @@ const sizeClass = useSizeClass(props);
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	background-color: var(--v-avatar-color, var(--theme--background));
+	background-color: var(--v-avatar-color, var(--theme--background-normal));
 	border-radius: var(--theme--border-radius);
 }
 

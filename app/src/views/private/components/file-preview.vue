@@ -96,7 +96,7 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 
 	.image,
 	.video {
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 	}
 
@@ -119,7 +119,7 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 	}
 
 	.fallback {
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-normal);
 		display: flex;
 		align-items: center;
 		justify-content: center;
