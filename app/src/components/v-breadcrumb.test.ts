@@ -1,8 +1,7 @@
-import { test, expect } from 'vitest';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
+import { expect, test } from 'vitest';
 import VBreadcrumb from './v-breadcrumb.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon', 'router-link'],

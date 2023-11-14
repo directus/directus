@@ -81,8 +81,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			});
 
 			versions.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -128,9 +128,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		try {
 			await api.post(`/versions/${currentVersion.value.id}/save`, unref(edits));
-		} catch (err: any) {
-			unexpectedError(err);
-			throw err;
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
 		} finally {
 			saveVersionLoading.value = false;
 		}

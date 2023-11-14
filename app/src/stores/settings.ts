@@ -41,9 +41,9 @@ export const useSettingsStore = defineStore({
 						title: i18n.global.t('settings_update_success'),
 					});
 				}
-			} catch (err: any) {
+			} catch (error) {
 				this.settings = settingsCopy;
-				unexpectedError(err);
+				unexpectedError(error);
 			}
 		},
 	},

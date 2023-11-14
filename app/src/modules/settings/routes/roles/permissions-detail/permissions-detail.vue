@@ -86,7 +86,7 @@ const tabsValue = computed(() => {
 	return tabs;
 });
 
-const currentTab = ref<string[]>([]);
+const currentTab = ref<string>();
 
 const currentTabInfo = computed(() => {
 	const tabKey = currentTab.value?.[0];
@@ -98,7 +98,7 @@ watch(
 	tabsValue,
 	(newTabs, oldTabs) => {
 		if (newTabs && oldTabs && newTabs.length === oldTabs.length) return;
-		currentTab.value = [tabsValue?.value?.[0]?.value];
+		currentTab.value = tabsValue.value?.[0]?.value;
 	},
 	{ immediate: true }
 );
@@ -135,11 +135,11 @@ async function load() {
 
 		const response = await api.get(`/permissions/${props.permissionKey}`);
 		permission.value = response.data.data;
-	} catch (err: any) {
-		if (err?.response?.status === 403) {
+	} catch (error: any) {
+		if (error?.response?.status === 403) {
 			router.push(`/settings/roles/${props.roleKey || 'public'}`);
 		} else {
-			unexpectedError(err);
+			unexpectedError(error);
 		}
 	} finally {
 		loading.value = false;
@@ -160,34 +160,24 @@ async function load() {
 			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />
 		</template>
 
-		<div v-if="!loading" class="content">
+		<div v-if="!loading && permission" class="content">
 			<permissions
-				v-if="currentTab[0] === 'permissions'"
+				v-if="currentTab === 'permissions'"
 				v-model:permission="permission"
 				:role="role"
-				:app-minimal="appMinimal && appMinimal.permissions"
+				:app-minimal="appMinimal?.permissions"
 			/>
 			<fields
-				v-if="currentTab[0] === 'fields'"
+				v-if="currentTab === 'fields'"
 				v-model:permission="permission"
 				:role="role"
-				:app-minimal="appMinimal && appMinimal.fields"
+				:app-minimal="appMinimal?.fields"
 			/>
-			<validation
-				v-if="currentTab[0] === 'validation'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.validation"
-			/>
-			<presets
-				v-if="currentTab[0] === 'presets'"
-				v-model:permission="permission"
-				:role="role"
-				:app-minimal="appMinimal && appMinimal.presets"
-			/>
+			<validation v-if="currentTab === 'validation'" v-model:permission="permission" :role="role" />
+			<presets v-if="currentTab === 'presets'" v-model:permission="permission" :role="role" />
 		</div>
 
-		<template v-if="!loading" #actions>
+		<template v-if="!loading && permission" #actions>
 			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', Number(permissionKey))" />
 		</template>
 	</v-drawer>

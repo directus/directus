@@ -138,8 +138,8 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				};
 			})
 		);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 }
 </script>

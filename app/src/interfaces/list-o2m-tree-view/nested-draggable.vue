@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'NestedDraggable',
-};
-</script>
-
 <script setup lang="ts">
 import {
 	ChangesItem,
@@ -63,7 +57,7 @@ const props = withDefaults(
 	}>(),
 	{
 		disabled: false,
-		filter: () => null,
+		filter: null,
 		root: false,
 		modelValue: undefined,
 	}

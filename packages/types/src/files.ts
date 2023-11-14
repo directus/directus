@@ -1,3 +1,5 @@
+import type { Readable } from 'node:stream';
+
 export type File = {
 	id: string;
 	storage: string;
@@ -21,3 +23,7 @@ export type File = {
 	tags: string | null;
 	metadata: Record<string, any> | null;
 };
+
+export type BusboyFileStream = {
+	truncated: boolean;
+} & Readable;
