@@ -4,13 +4,14 @@ import type {
 	AtLeastOneElement,
 } from '@directus/data';
 import type {
+	AbstractSqlClauses,
 	AbstractSqlNestedMany,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryWhereNode,
 	ParameterTypes,
 } from '../../index.js';
 import type { FieldConversionResult } from './fields.js';
-import { convertFilter } from '../modifiers/index.js';
+import { convertModifiers } from '../modifiers/modifiers.js';
 
 /**
  * Converts a nested many node from the abstract query into a function which creates abstract SQL.
@@ -34,34 +35,50 @@ export function getNestedMany(
 		getRelationCondition(fieldMeta.join.foreign.collection, f, idxGenerator)
 	) as AtLeastOneElement<AbstractSqlQueryWhereNode>;
 
-	const params: ParameterTypes[] = [];
-
-	if (field.modifiers?.filter) {
-		const conditions = convertFilter(field.modifiers.filter, fieldMeta.join.foreign.collection, idxGenerator);
-		relationalConditions.push(conditions.clauses.where);
-		params.push(...conditions.parameters);
-	}
-
-	let whereClause: AbstractSqlQueryWhereNode;
+	let mandatoryCondition: AbstractSqlQueryWhereNode;
 
 	if (relationalConditions.length > 1) {
-		whereClause = {
+		mandatoryCondition = {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
 			childNodes: relationalConditions,
 		};
 	} else {
-		whereClause = relationalConditions[0];
+		mandatoryCondition = relationalConditions[0];
+	}
+
+	const params: ParameterTypes[] = [];
+
+	let clauses: AbstractSqlClauses = {
+		select: nestedOutput.clauses.select,
+		from: fieldMeta.join.foreign.collection,
+	};
+
+	if (field.modifiers) {
+		const c = convertModifiers(field.modifiers, fieldMeta.join.foreign.collection, idxGenerator);
+		clauses = { ...clauses, ...c.clauses };
+		params.push(...c.parameters);
+	}
+
+	if (clauses.where) {
+		if (clauses.where.type === 'logical') {
+			clauses.where.childNodes.push(mandatoryCondition);
+		} else {
+			clauses.where = {
+				type: 'logical',
+				operator: 'and',
+				negate: false,
+				childNodes: [mandatoryCondition, clauses.where],
+			};
+		}
+	} else {
+		clauses.where = mandatoryCondition;
 	}
 
 	return {
 		queryGenerator: (identifierValues) => ({
-			clauses: {
-				select: nestedOutput.clauses.select,
-				from: fieldMeta.join.foreign.collection,
-				where: whereClause,
-			},
+			clauses,
 			parameters: [...nestedOutput.parameters, ...identifierValues, ...params],
 			aliasMapping: nestedOutput.aliasMapping,
 			nestedManys: nestedOutput.nestedManys,
