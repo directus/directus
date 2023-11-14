@@ -1,23 +1,37 @@
 import { exists } from 'fs-extra';
 import { readFile, writeFile } from 'node:fs/promises';
+import { uptime } from 'node:os';
 import { join } from 'node:path';
 import { getExtensionsPath } from './get-extensions-path.js';
 
 /**
- * Retrieves the sync timestamp from the `.timestamp` file in the local extensions folder
+ * Checks if sync is required from the `.timestamp` file in the local extensions folder
  */
-export const getSyncTimestamp = async () => {
-	const timestampFilePath = join(getExtensionsPath(), '.timestamp');
+export const checkIsSyncRequired = async () => {
+	const timestampFilePath = getTimestampFilePath();
 
-	if (await exists(timestampFilePath)) {
-		const timestamp = await readFile(timestampFilePath, 'utf8');
-		return timestamp;
+	if (!(await exists(timestampFilePath))) {
+		return true;
 	}
 
-	return null;
+	const timestamp = await readFile(timestampFilePath, 'utf8');
+
+	return timestamp !== getSystemStartTimestamp();
 };
 
-export const setSyncTimestamp = async (timestamp: string) => {
-	const timestampFilePath = join(getExtensionsPath(), '.timestamp');
-	await writeFile(timestampFilePath, timestamp);
+/**
+ * Sets the system start timestamp to the `.timestamp` file
+ */
+export const setSyncTimestamp = async () => {
+	await writeFile(getTimestampFilePath(), getSystemStartTimestamp());
+};
+
+const getTimestampFilePath = () => {
+	return join(getExtensionsPath(), '.timestamp');
+};
+
+const getSystemStartTimestamp = () => {
+	const currentTime = new Date();
+	currentTime.setMilliseconds(0);
+	return new Date(currentTime.getTime() - uptime() * 1000).toISOString();
 };

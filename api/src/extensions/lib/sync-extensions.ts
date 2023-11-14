@@ -3,7 +3,6 @@ import { ensureExtensionDirs } from '@directus/extensions/node';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
-import { uptime } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
@@ -12,26 +11,27 @@ import logger from '../../logger.js';
 import { getMessenger } from '../../messenger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
-import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
-import { getSyncTimestamp, setSyncTimestamp } from './sync-timestamp.js';
+import { checkIsSyncRequired, setSyncTimestamp } from './sync-timestamp.js';
 
 export const syncExtensions = async () => {
 	if (!env['EXTENSIONS_LOCATION']) {
 		return;
 	}
 
+	const isSyncRequired = await checkIsSyncRequired();
+
+	if (!isSyncRequired) return;
+
 	const messenger = getMessenger();
 
 	const isPrimaryProcess =
 		String(process.env['NODE_APP_INSTANCE']) === '0' || process.env['NODE_APP_INSTANCE'] === undefined;
 
-	const isDone = (await getSyncStatus()) === SyncStatus.DONE;
-
 	const id = await mid.machineId();
 
 	const message = `extensions-sync/${id}`;
 
-	if (isDone === false && isPrimaryProcess === false) {
+	if (isPrimaryProcess === false) {
 		logger.trace('Extensions already being synced to this machine from another process.');
 
 		/**
@@ -42,20 +42,10 @@ export const syncExtensions = async () => {
 		});
 	}
 
-	const currentTime = new Date();
-	currentTime.setMilliseconds(0);
-	const systemStartTimestamp = new Date(currentTime.getTime() - uptime() * 1000).toISOString();
-	const isSyncRequired = (await getSyncTimestamp()) !== systemStartTimestamp;
-
-	if (!isSyncRequired) {
-		return;
-	}
-
 	const extensionsPath = getExtensionsPath();
 
 	// Ensure that the local extensions cache path exists
 	await mkdir(extensionsPath, { recursive: true });
-	await setSyncStatus(SyncStatus.SYNCING);
 
 	logger.trace('Syncing extensions from configured storage location...');
 
@@ -85,8 +75,7 @@ export const syncExtensions = async () => {
 
 	await ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 
-	await setSyncTimestamp(systemStartTimestamp);
-	await setSyncStatus(SyncStatus.DONE);
+	await setSyncTimestamp();
 	messenger.publish(message, { ready: true });
 
 	return;
