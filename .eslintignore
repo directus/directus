@@ -12,3 +12,4 @@ dist/
 *.json
 *.scss
 *.css
+*.svg
