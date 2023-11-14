@@ -11,27 +11,27 @@ import logger from '../../logger.js';
 import { getMessenger } from '../../messenger.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
-import { checkIsSyncRequired, setSyncTimestamp } from './sync-timestamp.js';
+import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
 
 export const syncExtensions = async () => {
 	if (!env['EXTENSIONS_LOCATION']) {
 		return;
 	}
 
-	const isSyncRequired = await checkIsSyncRequired();
-
-	if (!isSyncRequired) return;
-
 	const messenger = getMessenger();
 
 	const isPrimaryProcess =
 		String(process.env['NODE_APP_INSTANCE']) === '0' || process.env['NODE_APP_INSTANCE'] === undefined;
+
+	const isDone = (await getSyncStatus()) === SyncStatus.DONE;
 
 	const id = await mid.machineId();
 
 	const message = `extensions-sync/${id}`;
 
 	if (isPrimaryProcess === false) {
+		if (isDone) return;
+
 		logger.trace('Extensions already being synced to this machine from another process.');
 
 		/**
@@ -46,6 +46,7 @@ export const syncExtensions = async () => {
 
 	// Ensure that the local extensions cache path exists
 	await mkdir(extensionsPath, { recursive: true });
+	await setSyncStatus(SyncStatus.SYNCING);
 
 	logger.trace('Syncing extensions from configured storage location...');
 
@@ -75,7 +76,7 @@ export const syncExtensions = async () => {
 
 	await ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 
-	await setSyncTimestamp();
+	await setSyncStatus(SyncStatus.DONE);
 	messenger.publish(message, { ready: true });
 
 	return;
