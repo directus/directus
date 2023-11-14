@@ -1,6 +1,6 @@
-import type { Theme } from '../../schemas/theme.js';
+import { defineTheme } from '../../index.js';
 
-export const theme: Theme = {
+export default defineTheme({
 	name: 'Directus Default',
 	appearance: 'light',
 	rules: {
@@ -206,4 +206,4 @@ export const theme: Theme = {
 			},
 		},
 	},
-};
+});
