@@ -6,7 +6,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { Ref, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -26,7 +26,7 @@ const avatarURL = computed<string | null>(() => {
 	return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 });
 
-const avatarError: Ref<null | Event> = ref(null);
+const avatarError = ref<null | Event>(null);
 
 const userProfileLink = computed<string>(() => {
 	const id = (userStore.currentUser as User).id;

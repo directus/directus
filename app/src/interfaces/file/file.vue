@@ -124,8 +124,8 @@ function useURLImport() {
 			activeDialog.value = null;
 			url.value = '';
 			update(file.value?.id);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}

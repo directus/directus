@@ -1,9 +1,8 @@
-import { it, test, expect } from 'vitest';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
+import { expect, it, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
-
 import formFieldRawEditor from './form-field-raw-editor.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
 const i18n = createI18n({ legacy: false });
 

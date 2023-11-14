@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
-import { Field, ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
+import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -26,9 +27,9 @@ const sizeSync = useSync(props, 'size', emit);
 const sortSync = useSync(props, 'sort', emit);
 const selectionSync = useSync(props, 'selection', emit);
 
-const descending = computed(() => props.sort[0].startsWith('-'));
+const descending = computed(() => props.sort[0]?.startsWith('-'));
 
-const sortKey = computed(() => (props.sort[0].startsWith('-') ? props.sort[0].substring(1) : props.sort[0]));
+const sortKey = computed(() => (props.sort[0]?.startsWith('-') ? props.sort[0].substring(1) : props.sort[0]));
 
 const sortField = computed(() => {
 	return props.fields.find((field) => field.field === sortKey.value);

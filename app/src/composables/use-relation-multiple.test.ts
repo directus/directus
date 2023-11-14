@@ -42,7 +42,7 @@ vi.mock('@/api', () => {
 
 vi.mock('@/utils/unexpected-error', () => {
 	return {
-		unexpectedError: (error: any) => {
+		unexpectedError: (error: unknown) => {
 			throw error;
 		},
 	};
