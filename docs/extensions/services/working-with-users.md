@@ -99,6 +99,6 @@ router.post('/permissions/:role', async (req, res) => {
 
 ::: tip Explore Services In-depth
 
-Check out the full list [here](https://github.com/directus/main/api/src/services/users.ts).
+Check out the full list [here](https://github.com/directus/directus/blob/main/api/src/services).
 
 :::
