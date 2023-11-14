@@ -18,6 +18,12 @@ utility will create a folder with the recommended file structure to create an ex
 If you want to combine and share dependencies between one or more extensions, use the
 [bundle extension type](/extensions/bundles).
 
+::: tip Extension Name
+
+The extension name should begin with `directus-extension-` to ensure that it can be located by the load mechanism.
+
+:::
+
 ## Building Your Extension
 
 Before your extension can be used by Directus, it has to be built. If you used the `create-directus-extension` utility
