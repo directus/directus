@@ -145,13 +145,13 @@ export class RelationsService {
 
 		const collectionSchema = this.schema.collections[relation.collection];
 
-		if (collectionSchema === undefined) {
+		if (!collectionSchema) {
 			throw new InvalidPayloadError({ reason: `Collection "${relation.collection}" doesn't exist` });
 		}
 
 		const fieldSchema = collectionSchema.fields[relation.field];
 
-		if (fieldSchema === undefined) {
+		if (!fieldSchema) {
 			throw new InvalidPayloadError({
 				reason: `Field "${relation.field}" doesn't exist in collection "${relation.collection}"`,
 			});
@@ -261,13 +261,13 @@ export class RelationsService {
 
 		const collectionSchema = this.schema.collections[collection];
 
-		if (collectionSchema === undefined) {
+		if (!collectionSchema) {
 			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't exist` });
 		}
 
 		const fieldSchema = collectionSchema.fields[field];
 
-		if (fieldSchema === undefined) {
+		if (!fieldSchema) {
 			throw new InvalidPayloadError({ reason: `Field "${field}" doesn't exist in collection "${collection}"` });
 		}
 
@@ -574,7 +574,7 @@ export class RelationsService {
 	 *
 	 * @TODO This is a bit of a hack, and might be better of abstracted elsewhere
 	 */
-	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>, is_nullable: boolean = false) {
+	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>, nullable: boolean) {
 		const m2oFieldDBType = this.schema.collections[relation.collection!]!.fields[relation.field!]!.dbType;
 
 		const relatedFieldDBType =
@@ -585,8 +585,8 @@ export class RelationsService {
 		if (m2oFieldDBType !== relatedFieldDBType && m2oFieldDBType === 'int' && relatedFieldDBType === 'int unsigned') {
 			const alterField = table.specificType(relation.field!, 'int unsigned');
 
-			// Keeps the field non-nullable if it was nullable before
-			if (!is_nullable) {
+			// Maintains the non-nullable state
+			if (!nullable) {
 				alterField.notNullable();
 			}
 
