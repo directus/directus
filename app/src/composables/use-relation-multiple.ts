@@ -365,8 +365,8 @@ export function useRelationMultiple(
 
 				fetchedItems.value = response.data.data;
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}

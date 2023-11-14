@@ -7,20 +7,21 @@ import { ref, watch } from 'vue';
 import CommentInput from './comment-input.vue';
 import CommentItemHeader from './comment-item-header.vue';
 
-interface Props {
-	activity: Activity & {
-		display: string;
-		user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
-	};
-	refresh: () => void;
-	collection: string;
-	primaryKey: string | number;
-	userPreviews: Record<string, any>;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	userPreviews: () => ({}),
-});
+const props = withDefaults(
+	defineProps<{
+		activity: Activity & {
+			display: string;
+			user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
+		};
+		refresh: () => Promise<void>;
+		collection: string;
+		primaryKey: string | number;
+		userPreviews: Record<string, any>;
+	}>(),
+	{
+		userPreviews: () => ({}),
+	}
+);
 
 const { editing, cancelEditing } = useEdits();
 
@@ -45,8 +46,8 @@ function useEdits() {
 			});
 
 			props.refresh();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			savingEdits.value = false;
 			editing.value = false;

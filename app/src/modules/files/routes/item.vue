@@ -198,8 +198,8 @@ function useMovetoFolder() {
 				title: t('file_moved', { folder }),
 				icon: 'folder_move',
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			moveToDialogActive.value = false;
 			moving.value = false;

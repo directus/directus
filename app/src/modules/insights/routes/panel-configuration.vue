@@ -3,7 +3,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import { CreatePanel, useInsightsStore } from '@/stores/insights';
-import { Panel } from '@directus/types';
+import type { Panel } from '@directus/extensions';
 import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
@@ -12,12 +12,10 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 
-interface Props {
+const props = defineProps<{
 	dashboardKey: string;
 	panelKey: string;
-}
-
-const props = defineProps<Props>();
+}>();
 
 const { t } = useI18n();
 
@@ -57,10 +55,10 @@ const currentTypeInfo = useExtension(
 
 const customOptionsFields = computed(() => {
 	if (typeof currentTypeInfo.value?.options === 'function') {
-		return currentTypeInfo.value?.options(unref(panel)) ?? null;
+		return currentTypeInfo.value.options(unref(panel)) ?? undefined;
 	}
 
-	return null;
+	return undefined;
 });
 
 function isSVG(path: string) {

@@ -22,7 +22,7 @@ const permissionsStore = usePermissionsStore();
 
 const confirmDelete = ref<string | null>(null);
 const deletingDashboard = ref(false);
-const editDashboard = ref<Dashboard | null>(null);
+const editDashboard = ref<Dashboard>();
 
 const selection = ref<string[]>([]);
 const search = ref<string | null>(null);
@@ -175,8 +175,8 @@ async function deleteDashboard() {
 		await api.delete(`/dashboards/${confirmDelete.value}`);
 		await insightsStore.hydrate();
 		confirmDelete.value = null;
-	} catch (err) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		deletingDashboard.value = false;
 	}
@@ -197,8 +197,8 @@ async function batchDelete() {
 
 		selection.value = [];
 		await refresh();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		confirmBatchDelete.value = false;
 		batchDeleting.value = false;
@@ -413,7 +413,7 @@ async function batchDelete() {
 		<dashboard-dialog
 			:model-value="!!editDashboard"
 			:dashboard="editDashboard"
-			@update:model-value="editDashboard = null"
+			@update:model-value="editDashboard = undefined"
 		/>
 	</private-view>
 </template>

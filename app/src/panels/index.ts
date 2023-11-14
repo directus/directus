@@ -1,6 +1,6 @@
-import { App } from 'vue';
-import { PanelConfig } from '@directus/types';
+import type { PanelConfig } from '@directus/extensions';
 import { sortBy } from 'lodash';
+import { App } from 'vue';
 
 export function getInternalPanels(): PanelConfig[] {
 	const panels = import.meta.glob<PanelConfig>('./*/index.ts', { import: 'default', eager: true });
