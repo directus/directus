@@ -1,9 +1,9 @@
 import type { AbstractQueryFunction } from '@directus/data';
 import { randomAlpha, randomIdentifier } from '@directus/random';
-import { describe, expect, test, beforeEach } from 'vitest';
-import type { AbstractSqlQueryFnNode } from '../types/clauses/selects/fn.js';
-import { parameterIndexGenerator } from './param-index-generator.js';
+import { beforeEach, describe, expect, test } from 'vitest';
+import type { AbstractSqlQueryFnNode } from '../types/index.js';
 import { convertFn } from './functions.js';
+import { parameterIndexGenerator } from './param-index-generator.js';
 
 let randomCollection: string;
 let idGen: Generator<number, number, number>;
