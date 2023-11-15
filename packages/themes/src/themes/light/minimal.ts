@@ -49,17 +49,19 @@ export default defineTheme({
 		background: '#FFFFFF',
 		foreground: '#1E293B',
 		foregroundAccent: '#0F172A',
-		foregroundSubdued: '#CBD5E1',
+		foregroundSubdued: '#94A3B8',
 		borderRadius: '4px',
 		borderColor: '#E2E8F0',
 		borderColorAccent: '#CBD5E1',
 		borderColorSubdued: '#F1F5F9',
 		form: {
+			rowGap: '32px',
 			field: {
 				input: {
 					background: '#FFFFFF',
 					backgroundSubdued: '#F8FAFC',
 					boxShadowFocus: 'none',
+					height: '52px',
 				},
 			},
 		},
@@ -81,6 +83,13 @@ export default defineTheme({
 						foregroundActive: 'var(--theme--foreground-accent)',
 					},
 				},
+				form: {
+					field: {
+						input: {
+							height: '42px',
+						}
+					}
+				}
 			},
 		},
 		fontFamilyDisplay: 'system-ui',
