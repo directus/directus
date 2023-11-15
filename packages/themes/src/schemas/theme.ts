@@ -262,6 +262,8 @@ const Rules = Type.Object({
 									boxShadow: Type.Optional(Type.Ref(BoxShadow)),
 									boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
 									boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
+
+									height: Type.Optional(Type.Ref(Size)),
 								})
 							),
 						})

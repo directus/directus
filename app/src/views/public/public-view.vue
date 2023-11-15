@@ -106,8 +106,6 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	.container {
-		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
-
 		--theme--form--field--input--background: var(--theme--public--form--field--input--background);
 		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
 		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
@@ -117,6 +115,7 @@ const logoURL = computed<string | null>(() => {
 		--theme--form--field--input--box-shadow: var(--theme--public--form--field--input--box-shadow);
 		--theme--form--field--input--box-shadow-hover: var(--theme--public--form--field--input--box-shadow-hover);
 		--theme--form--field--input--box-shadow-focus: var(--theme--public--form--field--input--box-shadow-focus);
+		--theme--form--field--input--height: var(--theme--public--form--field--input--height);
 
 		z-index: 2;
 		display: flex;
