@@ -227,6 +227,8 @@ const Rules = Type.Object({
 							borderColor: Type.Optional(Type.Ref(Color)),
 						})
 					),
+
+					form: FormRules,
 				})
 			),
 		})

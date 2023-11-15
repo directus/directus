@@ -174,6 +174,31 @@ export default defineTheme({
 					borderColor: 'transparent',
 					borderWidth: '0px',
 				},
+
+				form: {
+					label: {
+						foreground: 'var(--theme--form--field--label--foreground)',
+						fontFamily: 'var(--theme--form--field--label--font-family)',
+					},
+
+					field: {
+						input: {
+							background: 'var(--theme--form--field--input--background)',
+							foreground: 'var(--theme--form--field--input--foreground)',
+							foregroundSubdued: 'var(--theme--form--field--input--foreground-subdued)',
+
+							borderColor: 'var(--theme--form--field--input--border-color)',
+							borderColorHover: 'var(--theme--form--field--input--border-color-hover)',
+							borderColorFocus: 'var(--theme--form--field--input--border-color-focus)',
+
+							boxShadow: 'var(--theme--form--field--input--box-shadow)',
+							boxShadowHover: 'var(--theme--form--field--input--box-shadow-hover)',
+							boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
+
+							height: '52px',
+						},
+					},
+				},
 			},
 		},
 

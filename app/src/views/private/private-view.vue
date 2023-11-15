@@ -493,6 +493,20 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#sidebar {
+		--theme--form--field--input--background-subdued: var(--theme--sidebar--section--form--field--input--background);
+		--theme--form--field--input--background: var(--theme--sidebar--section--form--field--input--background);
+		--theme--form--field--input--border-color-focus: var(--theme--sidebar--section--form--field--input--border-color-focus);
+		--theme--form--field--input--border-color-hover: var(--theme--sidebar--section--form--field--input--border-color-hover);
+		--theme--form--field--input--border-color: var(--theme--sidebar--section--form--field--input--border-color);
+		--theme--form--field--input--box-shadow-focus: var(--theme--sidebar--section--form--field--input--box-shadow-focus);
+		--theme--form--field--input--box-shadow-hover: var(--theme--sidebar--section--form--field--input--box-shadow-hover);
+		--theme--form--field--input--box-shadow: var(--theme--sidebar--section--form--field--input--box-shadow);
+		--theme--form--field--input--foreground-subdued: var(--theme--sidebar--section--form--field--input--foreground-subdued);
+		--theme--form--field--input--foreground: var(--theme--sidebar--section--form--field--input--foreground);
+		--theme--form--field--input--height: var(--theme--sidebar--section--form--field--input--height);
+		--theme--form--field--label--foreground: var(--theme--sidebar--section--form--field--label--foreground);
+		--theme--form--field--label--font-family: var(--theme--sidebar--section--form--field--label--font-family);
+
 		position: fixed;
 		top: 0;
 		right: 0;
