@@ -44,3 +44,9 @@ Because each rule is used as a CSS variable, each rule value should be valid CSS
 functions in the rules. For example, CSS'
 [`color-mix`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color-mix) is a great way to theme palette
 alternatives.
+
+## Using "Overrides" as a dev-tool
+
+The Theme Overrides interface found in Settings > Appearance or on the user detail page uses the same rules available to
+the theme extensions. For easier extension development, you can use that interface to configure your ideal theme, and
+then save the output to your theme extension by using the "Copy Raw Value" option.
