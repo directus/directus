@@ -476,7 +476,6 @@ function revert(values: Record<string, any>) {
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
 		border-radius: 100%;
-		box-shadow: var(--card-shadow);
 
 		.v-skeleton-loader {
 			width: 100%;

@@ -138,7 +138,6 @@ limitWritable.value = selectedSize;
 	padding: 40px;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
-	box-shadow: var(--card-shadow);
 	pointer-events: none;
 }
 
@@ -171,14 +170,6 @@ limitWritable.value = selectedSize;
 	transform: translate(-50%, -50%);
 }
 
-.location-filter {
-	position: absolute;
-	top: 10px;
-	left: 50%;
-	box-shadow: var(--card-shadow);
-	transform: translate(-50%, 0%);
-}
-
 .popup {
 	position: fixed;
 	z-index: 1;
@@ -188,9 +179,9 @@ limitWritable.value = selectedSize;
 	font-weight: 500;
 	font-size: 14px;
 	font-family: var(--theme--font-family-sans-serif);
-	background-color: var(--theme--background);
-	border-radius: var(--theme--border-radius);
-	box-shadow: var(--card-shadow);
+	background: var(--theme--popover--menu--background);
+	border-radius: var(--theme--popover--menu--border-radius);
+	box-shadow: var(--theme--popover--menu--box-shadow);
 	transform: translate(-50%, -140%);
 	pointer-events: none;
 }
@@ -206,10 +197,10 @@ limitWritable.value = selectedSize;
 	height: 36px;
 	padding: 10px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--theme--background);
+	background: var(--theme--popover--menu--background);
+	border-radius: var(--theme--popover--menu--border-radius);
+	box-shadow: var(--theme--popover--menu--box-shadow);
 	border: var(--theme--border-width) solid var(--theme--background);
-	border-radius: var(--theme--border-radius);
-	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
 	span {
 		width: auto;
