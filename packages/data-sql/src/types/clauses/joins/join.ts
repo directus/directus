@@ -19,7 +19,4 @@ export interface AbstractSqlQueryJoinNode {
 
 	/* the generated alias which will be part of the actual query */
 	as: string;
-
-	/* an alias provided by the user */
-	alias?: string;
 }

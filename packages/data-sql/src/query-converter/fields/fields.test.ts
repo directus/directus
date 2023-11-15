@@ -14,11 +14,15 @@ vi.mock('../../orm/create-unique-alias.js', () => ({
 
 let randomPrimitiveField1: string;
 let randomPrimitiveField2: string;
+let randomPrimitiveFieldAlias1: string;
+let randomPrimitiveFieldAlias2: string;
 let randomCollection: string;
 
 beforeEach(() => {
 	randomPrimitiveField1 = randomIdentifier();
 	randomPrimitiveField2 = randomIdentifier();
+	randomPrimitiveFieldAlias1 = randomIdentifier();
+	randomPrimitiveFieldAlias2 = randomIdentifier();
 	randomCollection = randomIdentifier();
 });
 
@@ -27,10 +31,12 @@ test('primitives only', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'primitive',
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveFieldAlias2,
 		},
 	];
 
@@ -54,8 +60,8 @@ test('primitives only', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]],
+			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveFieldAlias2]],
 		]),
 		nestedManys: [],
 	};
@@ -72,6 +78,7 @@ test('primitive and function', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'fn',
@@ -80,6 +87,7 @@ test('primitive and function', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveFieldAlias2,
 		},
 	];
 
@@ -107,8 +115,8 @@ test('primitive and function', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]],
+			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveFieldAlias2]],
 		]),
 		nestedManys: [],
 	};
@@ -126,12 +134,16 @@ test('primitive, fn, m2o', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
 	const randomPrimitiveFieldFn = randomIdentifier();
+	const randomPrimitiveFieldFnAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'nested-one',
@@ -139,6 +151,7 @@ test('primitive, fn, m2o', () => {
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeFieldAlias,
 				},
 			],
 			meta: {
@@ -154,6 +167,7 @@ test('primitive, fn, m2o', () => {
 					},
 				},
 			},
+			alias: randomNestedAlias,
 		},
 		{
 			type: 'fn',
@@ -162,6 +176,7 @@ test('primitive, fn, m2o', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveFieldFn,
+			alias: randomPrimitiveFieldFnAlias,
 		},
 	];
 
@@ -221,9 +236,9 @@ test('primitive, fn, m2o', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`${randomJoinNodeField}_RANDOM`, [randomExternalCollection, randomJoinNodeField]],
-			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFn]],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]],
+			[`${randomJoinNodeField}_RANDOM`, [randomNestedAlias, randomJoinNodeFieldAlias]],
+			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFnAlias]],
 		]),
 		nestedManys: [],
 	};
@@ -240,11 +255,14 @@ test('primitive, o2m', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'nested-many',
@@ -252,8 +270,10 @@ test('primitive, o2m', () => {
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeFieldAlias,
 				},
 			],
+			alias: randomNestedAlias,
 			meta: {
 				type: 'o2m',
 				join: {
@@ -267,6 +287,7 @@ test('primitive, o2m', () => {
 					},
 				},
 			},
+			modifiers: {},
 		},
 	];
 
@@ -283,13 +304,13 @@ test('primitive, o2m', () => {
 			joins: [],
 		},
 		parameters: [],
-		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]]]),
+		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]]]),
 		nestedManys: [
 			{
 				queryGenerator: expect.any(Function),
 				localJoinFields: [randomJoinCurrentField],
 				foreignJoinFields: [randomExternalField],
-				alias: randomExternalCollection,
+				alias: randomNestedAlias,
 			},
 		],
 	};
