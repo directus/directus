@@ -1,7 +1,7 @@
 <svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_1280_232)">
         <g filter="url(#filter0_d_1280_232)">
-            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--card-face-color)" class="glow" />
+            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--theme--background)" class="glow" />
             <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--theme--primary)"
                 stroke-width="2" />
         </g>
