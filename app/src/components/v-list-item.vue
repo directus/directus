@@ -257,11 +257,12 @@ function onClick(event: PointerEvent) {
 	&.block {
 		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
 
+		--v-list-item-padding: var(--theme--form--field--input--padding);
+
 		position: relative;
 		display: flex;
 		height: var(--theme--form--field--input--height);
 		margin: 0;
-		padding: 8px 8px;
 		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--form--field--input--background)));
 		border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
