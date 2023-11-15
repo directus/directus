@@ -1,4 +1,4 @@
-import type { AbstractQueryNodeSort } from '@directus/data';
+import type { AbstractQueryNodeSort, AtLeastOneElement } from '@directus/data';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { randomIdentifier } from '@directus/random';
 import { convertSort, type SortConversionResult } from './sort.js';
@@ -14,7 +14,7 @@ vi.mock('./filter/conditions/utils.js', (importOriginal) => {
 	};
 });
 
-let sample: AbstractQueryNodeSort[];
+let sample: AtLeastOneElement<AbstractQueryNodeSort>;
 const localCollection = randomIdentifier();
 const targetField = randomIdentifier();
 
