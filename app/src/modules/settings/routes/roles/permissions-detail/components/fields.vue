@@ -58,7 +58,7 @@ const fields = computed({
 
 <template>
 	<div>
-		<v-notice type="info">
+		<v-notice>
 			{{
 				t('fields_for_role', {
 					role: role ? role.name : t('public_label'),

@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 interface Props {
 	/** Renders the components in each of it styles */
-	type?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
+	type?: 'info' | 'success' | 'warning' | 'danger';
 	/** Custom icon name, or false if you want to hide the icon completely */
 	icon?: string | boolean | null;
 	/** Render notice content centered */
@@ -12,7 +12,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	icon: null,
-	type: 'normal',
+	type: 'info',
 	center: false,
 });
 
@@ -47,11 +47,10 @@ const iconName = computed(() => {
 
 	Available Variables:
 
-		--v-notice-color             [var(--theme--foreground-subdued)]
-		--v-notice-background-color  [var(--theme--form--field--input--background-subdued)]
-		--v-notice-border-color      [var(--theme--form--field--input--background-subdued)]
-		--v-notice-icon-color        [var(--theme--foreground-subdued)]
-
+		--v-notice-color             [var(--theme--foreground)]
+		--v-notice-background-color  [var(--theme--background-normal)]
+		--v-notice-border-color      [var(--theme--primary)]
+		--v-notice-icon-color        [var(--theme--primary)]
 */
 
 .v-notice {
@@ -62,9 +61,9 @@ const iconName = computed(() => {
 	width: auto;
 	min-height: var(--input-height);
 	padding: 12px 16px;
-	color: var(--v-notice-color, var(--theme--foreground-subdued));
+	color: var(--v-notice-color, var(--theme--foreground));
 	line-height: 22px;
-	background-color: var(--v-notice-background-color, var(--theme--form--field--input--background-subdued));
+	background-color: var(--v-notice-background-color, var(--theme--background-normal));
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;
 }
@@ -77,22 +76,15 @@ const iconName = computed(() => {
 	left: 0;
 	width: 4px;
 	height: 100%;
-	background-color: var(--v-notice-border-color, var(--theme--form--field--input--background-subdued));
+	background-color: var(--v-notice-border-color, var(--theme--primary));
 }
 
 .v-icon {
-	--v-icon-color: var(--v-notice-icon-color, var(--theme--foreground-subdued));
+	--v-icon-color: var(--v-notice-icon-color, var(--theme--primary));
 }
 
 .v-icon.left {
 	margin-right: 16px;
-}
-
-.info {
-	--v-notice-icon-color: var(--theme--primary);
-	--v-notice-border-color: var(--theme--primary);
-	--v-notice-color: var(--theme--foreground);
-	--v-notice-background-color: var(--theme--background-normal);
 }
 
 .success {

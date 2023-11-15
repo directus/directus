@@ -96,7 +96,7 @@ function emitValue(newValue: string | null) {
 			</template>
 		</v-input>
 
-		<v-notice v-if="isNewTokenGenerated && value" type="info">
+		<v-notice v-if="isNewTokenGenerated && value">
 			{{ t('interfaces.system-token.generate_success_copy') }}
 		</v-notice>
 	</div>
