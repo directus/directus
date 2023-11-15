@@ -1,0 +1,46 @@
+---
+description: A guide on how to build custom Themes in Directus.
+readTime: 2 min read
+---
+
+# Custom Themes <small></small>
+
+> Custom Themes allow you to create a new app design that's tailored to your brand or aesthetic.
+
+## Extension Entrypoint
+
+The entrypoint of your theme is the `index` file inside the `src/` folder of your extension package. It exports the
+theme configuration and its' rules. When loading your theme, this rule set is imported by the Directus host app.
+
+Example of a theme:
+
+```js
+import { defineTheme } from '@directus/extensions-sdk';
+
+export default defineTheme({
+	name: 'My Custom Theme',
+	appearance: 'dark',
+	rules: {
+		background: 'tomato',
+	}
+});
+```
+
+### Available Rules
+
+Rules that are configured in the `rules` property have to adhere to the rules defined in the theme schema:
+
+https://github.com/directus/directus/blob/main/packages/themes/src/schemas/theme.ts
+
+We recommend using TypeScript for this extension type. The `defineTheme` function is typed to properly auto-complete all
+available rules.
+
+Every rule is automatically inserted in the app's root element as a CSS variable which are used across the app's
+components. For example, the JSON path `navigation.modules.button.foregroundActive` will be available as
+`var(--theme--navigation--modules--button--foreground-active)`. Note that nested objects are separated by `--`, and
+camelCase values are transformed to hyphen-case (so `foregroundActive` -> `foreground-active`).
+
+Because each rule is used as a CSS variable, each rule value should be valid CSS. This also means you can use any CSS
+functions in the rules. For example, CSS'
+[`color-mix`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color-mix) is a great way to theme palette
+alternatives.
