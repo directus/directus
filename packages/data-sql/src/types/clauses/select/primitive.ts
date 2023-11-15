@@ -1,7 +1,4 @@
-export interface AbstractSqlQueryColumn {
-	table: string;
-	column: string;
-}
+import type { AbstractSqlQueryColumn } from './column.js';
 
 /**
  * Used to select a specific column from a table.
