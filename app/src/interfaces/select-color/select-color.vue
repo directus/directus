@@ -93,7 +93,7 @@ const lowContrast = computed(() => {
 const getPresetContrast = (hex: string) => {
 	if (hex.startsWith('--')) hex = cssVar(hex);
 	const color = Color(hex);
-	return color.contrast(Color(cssVar('--card-face-color'))) < 1.1;
+	return color.contrast(Color(cssVar('--theme--popover--menu--background'))) < 1.1;
 };
 
 const { hsl, rgb, hex, alpha, color } = useColor();
