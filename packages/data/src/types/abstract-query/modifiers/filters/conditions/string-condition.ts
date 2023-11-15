@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeTarget } from '../../../fields.js';
+import type { AbstractQueryTarget } from '../../target.js';
 
 /**
  * Used to compare a string field with a string value.
@@ -18,7 +18,7 @@ import type { AbstractQueryFieldNodeTarget } from '../../../fields.js';
 export interface ConditionStringNode {
 	type: 'condition-string';
 
-	target: AbstractQueryFieldNodeTarget;
+	target: AbstractQueryTarget;
 
 	/** @TODO maybe also regex? */
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';

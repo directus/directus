@@ -4,12 +4,15 @@ import { useI18n } from 'vue-i18n';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-interface Props {
-	value?: string | null;
-	disabled?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), { value: () => null, disabled: false });
+const props = withDefaults(
+	defineProps<{
+		value?: string | null;
+		disabled?: boolean;
+	}>(),
+	{
+		value: null,
+	}
+);
 
 const emit = defineEmits(['input']);
 
@@ -48,8 +51,8 @@ async function generateToken() {
 		const response = await api.get('/utils/random/string');
 		emitValue(response.data.data);
 		isNewTokenGenerated.value = true;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}

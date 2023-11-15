@@ -17,7 +17,7 @@
 
 .disabled .CodeMirror {
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .CodeMirror .CodeMirror-placeholder {
@@ -50,14 +50,14 @@
 
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-	background-color: var(--theme--background-page); /* The little square between H and V scrollbars */
+	background-color: var(--theme--background); /* The little square between H and V scrollbars */
 }
 
 /* GUTTER */
 
 .CodeMirror-gutters {
 	white-space: nowrap;
-	background-color: var(--theme--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-right: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 

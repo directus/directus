@@ -46,7 +46,7 @@ export const convertFieldNodes = (
 		if (abstractField.type === 'primitive') {
 			// ORM aliasing and mapping
 			const generatedAlias = createUniqueAlias(abstractField.field);
-			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
+			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias]);
 
 			// query conversion
 			const selectNode = createPrimitiveSelect(collection, abstractField, generatedAlias);
@@ -65,11 +65,11 @@ export const convertFieldNodes = (
 
 			if (abstractField.meta.type === 'm2o') {
 				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
-				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias, abstractField.alias);
+				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias);
 
 				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
 					...currentPath,
-					abstractField.meta.join.foreign.collection,
+					abstractField.alias,
 				]);
 
 				nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
@@ -109,7 +109,7 @@ export const convertFieldNodes = (
 
 			// ORM aliasing and mapping
 			const generatedAlias = createUniqueAlias(`${fnField.fn.fn}_${fnField.field}`);
-			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
+			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias]);
 
 			// query conversion
 			const fn = convertFn(collection, fnField, idxGenerator, generatedAlias);

@@ -25,7 +25,7 @@ withDefaults(defineProps<Props>(), {
 
 		--v-card-min-width         [none]
 		--v-card-padding           [16px]
-		--v-card-background-color  [var(--background-subdued)]
+		--v-card-background-color  [var(--theme--form--field--input--background-subdued)]
 
 */
 
@@ -43,7 +43,7 @@ withDefaults(defineProps<Props>(), {
 	/* Page Content Spacing */
 	font-size: 15px;
 	line-height: 24px;
-	background-color: var(--v-card-background-color, var(--background-subdued));
+	background-color: var(--v-card-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	& > :first-child {

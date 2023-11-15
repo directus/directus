@@ -4,16 +4,16 @@ import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit } from 'lodash';
-import { ComputedRef, computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
 import type { FormField as TFormField } from './types';
 import ValidationErrors from './validation-errors.vue';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
-import type { MenuOptions } from './form-field-menu.vue';
 
 type FieldValues = {
 	[field: string]: any;
@@ -163,7 +163,7 @@ function useForm() {
 		return fields;
 	});
 
-	const fieldsMap: ComputedRef<Record<string, TFormField | undefined>> = computed(() => {
+	const fieldsMap = computed<Record<string, TFormField | undefined>>(() => {
 		return Object.fromEntries(fieldsWithConditions.value.map((field) => [field.field, field]));
 	});
 

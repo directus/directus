@@ -17,7 +17,7 @@ import { LayoutOptions, LayoutQuery } from './types';
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
 	name: '$t:layouts.cards.cards',
-	icon: 'grid_4',
+	icon: 'grid_view',
 	component: CardsLayout,
 	headerShadow: false,
 	slots: {

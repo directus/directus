@@ -33,7 +33,7 @@ watch(
 	(newValue, oldValue) => {
 		if (isEqual(newValue, oldValue) === false) {
 			values.name = props.dashboard?.name ?? null;
-			values.icon = props.dashboard?.icon ?? 'dashboard';
+			values.icon = props.dashboard?.icon ?? 'space_dashboard';
 			values.color = props.dashboard?.color ?? null;
 			values.note = props.dashboard?.note ?? null;
 		}
@@ -60,8 +60,8 @@ async function save() {
 		}
 
 		emit('update:modelValue', false);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}

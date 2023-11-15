@@ -1,18 +1,19 @@
 import api from '@/api';
+import { useExtensions } from '@/extensions';
 import { usePermissionsStore } from '@/stores/permissions';
+import { Dashboard } from '@/types/insights';
+import { fetchAll } from '@/utils/fetch-all';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Item, Panel } from '@directus/types';
-import { getSimpleHash, toArray, applyOptionsData } from '@directus/utils';
+import type { Panel } from '@directus/extensions';
+import type { Item } from '@directus/types';
+import { applyOptionsData, getSimpleHash, toArray } from '@directus/utils';
 import { AxiosResponse } from 'axios';
+import escapeStringRegexp from 'escape-string-regexp';
 import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
-import { Dashboard } from '@/types/insights';
-import escapeStringRegexp from 'escape-string-regexp';
-import { useExtensions } from '@/extensions';
-import { fetchAll } from '@/utils/fetch-all';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -264,7 +265,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 					const { panel, length } = queries.get(key);
 					if (length === 1) results[panel] = data;
 					else if (!results[panel]) results[panel] = [data];
-					else results[panel].push(data);
+					else results[panel]?.push(data);
 				}
 
 				if (Array.isArray(data.errors)) {
@@ -276,15 +277,15 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			const succeededPanels = Object.keys(results);
 			errors.value = omit(errors.value, ...succeededPanels);
-		} catch (err: any) {
+		} catch (error: any) {
 			/**
 			 * A thrown error means the request failed completely. This can happen for a wide variety
 			 * of reasons, but there's one common one we need to account for: misconfigured panels. A
 			 * GraphQL validation error will throw a 400 rather than a 200+partial data, so we need to
 			 * retry the request without the failed panels */
 
-			if (err.response.status === 400 && Array.isArray(err.response.data?.errors)) {
-				const failedIDs = setErrorsFromResponseData(err.response.data.errors);
+			if (error.response.status === 400 && Array.isArray(error.response.data?.errors)) {
+				const failedIDs = setErrorsFromResponseData(error.response.data.errors);
 
 				const panelsToTryAgain = panels.filter(({ id }) => failedIDs.includes(id) === false);
 
@@ -292,10 +293,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				if (panels.length !== panelsToTryAgain.length) {
 					await loadPanelData(panelsToTryAgain);
 				} else {
-					unexpectedError(err);
+					unexpectedError(error);
 				}
 			} else {
-				unexpectedError(err);
+				unexpectedError(error);
 			}
 		} finally {
 			loading.value = pull(unref(loading), ...Array.from(queries.values()).map(({ panel }) => panel));
@@ -458,8 +459,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			loadPanelData(panelsToLoad);
 
 			clearEdits();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			saving.value = false;
 		}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
-import { ExtensionOptionsContext } from '@directus/types';
+import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -99,7 +99,7 @@ code {
 	font-family: var(--theme--font-family-monospace), monospace;
 	line-height: 24px;
 	overflow-wrap: break-word;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -110,7 +110,7 @@ pre {
 	font-size: 15px;
 	font-family: var(--theme--font-family-monospace), monospace;
 	line-height: 24px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 

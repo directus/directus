@@ -1,6 +1,6 @@
-import { App } from 'vue';
-import { LayoutConfig } from '@directus/types';
+import type { LayoutConfig } from '@directus/extensions';
 import { sortBy } from 'lodash';
+import { App } from 'vue';
 
 export function getInternalLayouts(): LayoutConfig[] {
 	const layouts = import.meta.glob<LayoutConfig>('./*/index.ts', { import: 'default', eager: true });

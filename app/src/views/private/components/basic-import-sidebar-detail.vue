@@ -76,8 +76,8 @@ function useUpload() {
 			notify({
 				title: t('import_data_success', { filename: file.name }),
 			});
-		} catch (err: any) {
-			const code = err?.response?.data?.errors?.[0]?.extensions?.code;
+		} catch (error: any) {
+			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
 
 			notify({
 				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
@@ -85,7 +85,7 @@ function useUpload() {
 			});
 
 			if (code === 'INTERNAL_SERVER_ERROR') {
-				unexpectedError(err);
+				unexpectedError(error);
 			}
 		} finally {
 			uploading.value = false;
@@ -176,8 +176,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .export-fields {
-	--folder-picker-background-color: var(--background-subdued);
-	--folder-picker-color: var(--theme--background);
+	--folder-picker-background-color: var(--theme--background-subdued);
+	--folder-picker-color: var(--theme--background-normal);
 
 	margin-top: 24px;
 	padding: var(--content-padding);
@@ -229,7 +229,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 
 	&.has-file {

@@ -9,7 +9,6 @@ export const createJoin = (
 	currentCollection: string,
 	relationalField: AbstractQueryFieldNodeRelationalManyToOne,
 	externalCollectionAlias: string,
-	fieldAlias?: string
 ): AbstractSqlQueryJoinNode => {
 	let on: AbstractSqlQueryLogicalNode | AbstractSqlQueryConditionNode;
 
@@ -43,10 +42,6 @@ export const createJoin = (
 		as: externalCollectionAlias,
 		on,
 	};
-
-	if (fieldAlias) {
-		result.alias = fieldAlias;
-	}
 
 	return result;
 };

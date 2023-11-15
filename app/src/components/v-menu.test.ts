@@ -1,8 +1,7 @@
-import { mount } from '@vue/test-utils';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
-import { beforeEach, expect, test, vi } from 'vitest';
-
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { directive } from '@/directives/click-outside';
+import { mount } from '@vue/test-utils';
+import { beforeEach, expect, test, vi } from 'vitest';
 import TransitionBounce from './transition/bounce.vue';
 import VMenu from './v-menu.vue';
 

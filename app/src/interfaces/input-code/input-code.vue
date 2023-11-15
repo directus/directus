@@ -268,7 +268,7 @@ watch(
 );
 
 function fillTemplate() {
-	if (props.type === 'json') {
+	if (props.type === 'json' && props.template) {
 		try {
 			emit('input', JSON.parse(props.template));
 		} finally {
