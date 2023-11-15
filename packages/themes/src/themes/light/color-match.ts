@@ -7,24 +7,19 @@ export default defineTheme({
 		background: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',
 		backgroundAccent: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 20%)',
 		backgroundNormal: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 15%)',
-		backgroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',
-
+		backgroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 10%)',
 		borderColor: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 20%)',
 		borderColorAccent: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 40%)',
 		borderColorSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 15%)',
-
 		borderRadius: '12px',
 		borderWidth: '1px',
-
 		fontFamilyDisplay: '"Montserrat", system-ui',
-
 		foreground: 'color-mix(in srgb, #000000, var(--theme--primary) 70%)',
 		foregroundAccent: 'color-mix(in srgb, #000000, var(--theme--primary) 50%)',
-		foregroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 40%)',
-
+		foregroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 60%)',
 		form: {
 			field: {
-				input: { background: '#FFFFFF', backgroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)' },
+				input: { background: '#FFFFFF', backgroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 13%)' },
 			},
 		},
 		navigation: {
@@ -34,10 +29,20 @@ export default defineTheme({
 			borderColor: 'var(--theme--border-color-subdued)',
 			modules: {
 				background: 'color-mix(in srgb, #000000, var(--theme--primary) 90%)',
-				button: { backgroundActive: '#FFFFFF', foreground: 'var(--theme--foreground-subdued)' },
+				button: {
+					backgroundActive: '#FFFFFF',
+					foreground: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 20%)',
+					foregroundActive: 'var(--theme--primary)',
+				},
 			},
 			project: { borderWidth: '1px', background: '#FFFFFF', borderColor: 'var(--theme--border-color-subdued)' },
-			list: { divider: { borderColor: 'var(--theme--border-color-subdued)' } },
+			list: {
+				divider: { borderColor: 'var(--theme--border-color-subdued)' },
+				icon: { foreground: 'var(--theme--foreground)' },
+				foreground: 'var(--theme--foreground)',
+				foregroundHover: 'var(--theme--foreground)',
+				foregroundActive: 'var(--theme--foreground)',
+			},
 		},
 		header: {
 			background: '#FFFFFF',
@@ -54,11 +59,11 @@ export default defineTheme({
 					borderColor: 'var(--theme--border-color-subdued)',
 					borderWidth: '1px',
 					background: '#FFFFFF',
-					foreground: 'var(--theme--foreground-subdued)',
+					foreground: 'var(--theme--foreground)',
 					foregroundHover: 'var(--theme--foreground)',
 					foregroundActive: 'var(--theme--foreground-accent)',
 					icon: {
-						foreground: 'var(--theme--foreground-subdued)',
+						foreground: 'var(--theme--foreground)',
 						foregroundHover: 'var(--theme--foreground)',
 						foregroundActive: 'var(--theme--foreground-accent)',
 					},
