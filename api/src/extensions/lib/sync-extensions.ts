@@ -13,9 +13,11 @@ import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
 
-export const syncExtensions = async () => {
+export const syncExtensions = async (): Promise<void> => {
+	const extensionsPath = getExtensionsPath();
+
 	if (!env['EXTENSIONS_LOCATION']) {
-		return;
+		return ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 	}
 
 	const messenger = getMessenger();
@@ -23,13 +25,13 @@ export const syncExtensions = async () => {
 	const isPrimaryProcess =
 		String(process.env['NODE_APP_INSTANCE']) === '0' || process.env['NODE_APP_INSTANCE'] === undefined;
 
-	const isDone = (await getSyncStatus()) === SyncStatus.DONE;
-
 	const id = await mid.machineId();
 
 	const message = `extensions-sync/${id}`;
 
 	if (isPrimaryProcess === false) {
+		const isDone = (await getSyncStatus()) === SyncStatus.DONE;
+
 		if (isDone) return;
 
 		logger.trace('Extensions already being synced to this machine from another process.');
@@ -38,11 +40,9 @@ export const syncExtensions = async () => {
 		 * Wait until the process that called the lock publishes a message that the syncing is complete
 		 */
 		return new Promise((resolve) => {
-			messenger.subscribe(message, resolve);
+			messenger.subscribe(message, () => resolve());
 		});
 	}
-
-	const extensionsPath = getExtensionsPath();
 
 	// Ensure that the local extensions cache path exists
 	await mkdir(extensionsPath, { recursive: true });
@@ -78,6 +78,4 @@ export const syncExtensions = async () => {
 
 	await setSyncStatus(SyncStatus.DONE);
 	messenger.publish(message, { ready: true });
-
-	return;
 };
