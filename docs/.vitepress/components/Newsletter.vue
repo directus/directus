@@ -12,6 +12,7 @@
   background-color: var(--vp-c-purple-lightest);
   border-radius: var(--rounded-lg);
   padding: 1rem;
+  border: 1px solid var(--vp-c-purple-lighter);
 }
 
 h2 {
