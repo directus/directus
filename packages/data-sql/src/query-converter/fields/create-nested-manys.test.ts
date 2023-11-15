@@ -78,6 +78,7 @@ test('getNestedMany with a single identifier', () => {
 				},
 			],
 			from: foreignTable,
+			joins: [],
 			where: {
 				type: 'condition',
 				condition: {
@@ -189,6 +190,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 				},
 			],
 			from: foreignTable,
+			joins: [],
 			where: {
 				type: 'logical',
 				operator: 'and',
@@ -341,6 +343,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 				},
 			],
 			from: foreignTable,
+			joins: [],
 			where: {
 				type: 'logical',
 				operator: 'and',

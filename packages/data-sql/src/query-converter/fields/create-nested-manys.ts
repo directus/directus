@@ -51,7 +51,7 @@ export function getNestedMany(
 	const params: ParameterTypes[] = [];
 
 	let clauses: AbstractSqlClauses = {
-		select: nestedOutput.clauses.select,
+		...nestedOutput.clauses,
 		from: fieldMeta.join.foreign.collection,
 	};
 
