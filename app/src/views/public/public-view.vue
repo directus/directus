@@ -106,7 +106,6 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	.container {
-		--input-height: 60px;
 		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 
 		--theme--form--field--input--background: var(--theme--public--form--field--input--background);

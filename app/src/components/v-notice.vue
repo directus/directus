@@ -59,7 +59,7 @@ const iconName = computed(() => {
 	align-items: center;
 	justify-content: flex-start;
 	width: auto;
-	min-height: var(--input-height);
+	min-height: var(--theme--form--field--input--height);
 	padding: 12px 16px;
 	color: var(--v-notice-color, var(--theme--foreground));
 	line-height: 22px;

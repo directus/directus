@@ -140,6 +140,8 @@ export default defineTheme({
 					boxShadow: 'none',
 					boxShadowHover: 'none',
 					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
+
+					height: '60px',
 				},
 			},
 		},
@@ -203,6 +205,14 @@ export default defineTheme({
 						boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 					},
 				},
+			},
+		},
+
+		popover: {
+			menu: {
+				background: '#161b22',
+				borderRadius: 'var(--theme--border-radius)',
+				boxShadow: '0px 0px 6px 0px rgb(0, 0, 0, 0.2)',
 			},
 		},
 	},

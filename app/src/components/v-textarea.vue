@@ -108,7 +108,7 @@ function trimIfEnabled() {
 	}
 
 	&.expand-on-focus {
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		transition: height var(--medium) var(--transition);
 
 		.append,
@@ -151,7 +151,7 @@ function trimIfEnabled() {
 		display: block;
 		flex-grow: 1;
 		width: 100%;
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		padding: var(--input-padding);
 		color: var(--theme--foreground);
 		font-family: var(--v-textarea-font-family, var(--theme--font-family-sans-serif));

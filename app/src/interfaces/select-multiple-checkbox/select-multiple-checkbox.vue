@@ -192,7 +192,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	padding: 10px;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

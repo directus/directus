@@ -7,6 +7,7 @@ const Length = Type.String({ $id: 'Length' });
 const Percentage = Type.String({ $id: 'Percentage' });
 const BoxShadow = Type.String({ $id: 'BoxShadow' });
 const Number = Type.String({ $id: 'Number' });
+const Size = Type.String({ $id: 'Size' });
 
 const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal('medium'), Type.Literal('thick')], {
 	$id: 'LineWidth',
@@ -181,6 +182,8 @@ const Rules = Type.Object({
 							boxShadow: Type.Optional(Type.Ref(BoxShadow)),
 							boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
 							boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
+
+							height: Type.Optional(Type.Ref(Size)),
 						})
 					),
 				})
@@ -295,6 +298,7 @@ export const Definitions = {
 		Percentage,
 		LineWidth,
 		BoxShadow,
+		Size,
 		Number,
 	},
 };

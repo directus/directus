@@ -635,7 +635,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	padding: var(--input-padding);
 	padding-top: 0px;
 	padding-bottom: 0px;

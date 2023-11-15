@@ -321,7 +321,7 @@ async function onGroupSortChange(fields: Field[]) {
 @import '@/styles/mixins/form-grid';
 
 .field-select {
-	--input-height: 48px;
+	--input-height: 40px;
 	--input-padding: 8px;
 }
 
@@ -372,7 +372,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 .group {
 	position: relative;
-	min-height: var(--input-height);
+	min-height: var(--theme--form--field--input--height);
 	padding: var(--input-padding);
 	padding-top: 40px;
 	padding-bottom: 16px;

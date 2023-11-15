@@ -241,7 +241,7 @@ function openNewCustomTranslationDrawer() {
 	padding: 12px 8px 6px 8px;
 
 	.search-input {
-		--input-height: 48px;
+		--input-height: 40px;
 	}
 
 	.search-icon {

@@ -63,7 +63,6 @@ const logoURL = computed<string | null>(() => {
 
 <style scoped lang="scss">
 .shared {
-	--input-height: 60px;
 	--input-padding: 16px;
 
 	width: 100%;

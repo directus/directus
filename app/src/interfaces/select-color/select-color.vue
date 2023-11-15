@@ -395,8 +395,8 @@ function useColor() {
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
-	width: calc(var(--input-height) - 20px);
-	max-height: calc(var(--input-height) - 20px);
+	width: calc(var(--theme--form--field--input--height) - 20px);
+	max-height: calc(var(--theme--form--field--input--height) - 20px);
 	overflow: hidden;
 	border-radius: calc(var(--theme--border-radius) + 2px);
 	cursor: pointer;

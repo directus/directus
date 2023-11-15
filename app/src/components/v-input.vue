@@ -300,7 +300,7 @@ function stepDown() {
 	display: flex;
 	align-items: center;
 	width: max-content;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 
 	.prepend-outer {
 		margin-right: 8px;

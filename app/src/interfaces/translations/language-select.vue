@@ -58,7 +58,7 @@ const displayValue = computed(() => {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	padding: var(--input-padding);
 	color: var(--theme--primary);
 	text-align: left;

@@ -92,7 +92,7 @@ const errorFormatted = computed(() => {
 
 	display: flex;
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	background-color: var(--theme--background-normal);
 	border: $sso-link-border-width var(--theme--background-normal) solid;
 	border-radius: var(--theme--border-radius);
@@ -102,7 +102,7 @@ const errorFormatted = computed(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: var(--input-height);
+		width: var(--theme--form--field--input--height);
 		margin: -$sso-link-border-width;
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);

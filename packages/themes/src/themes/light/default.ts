@@ -140,6 +140,8 @@ export default defineTheme({
 					boxShadow: 'none',
 					boxShadowHover: 'none',
 					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
+
+					height: '60px',
 				},
 			},
 		},
