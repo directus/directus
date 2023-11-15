@@ -8,10 +8,10 @@ import type {
 	AbstractSqlNestedMany,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryWhereNode,
-	ParameterTypes,
 } from '../../index.js';
-import type { FieldConversionResult } from './fields.js';
 import { convertModifiers } from '../modifiers/modifiers.js';
+import { parameterIndexGenerator } from '../param-index-generator.js';
+import { convertFieldNodes } from './fields.js';
 
 /**
  * Converts a nested many node from the abstract query into a function which creates abstract SQL.
@@ -23,70 +23,63 @@ import { convertModifiers } from '../modifiers/modifiers.js';
  * @param alias - the alias of the foreign collection
  * @returns A function to create a query with and information about the relation
  */
-export function getNestedMany(
-	field: AbstractQueryFieldNodeNestedMany,
-	nestedOutput: FieldConversionResult,
-	idxGenerator: Generator<number, number, number>
-): AbstractSqlNestedMany {
-	// it cannot be anything else than o2m at this point.
-	const fieldMeta = field.meta as AbstractQueryFieldNodeRelationalOneToMany;
+export function getNestedMany(field: AbstractQueryFieldNodeNestedMany): AbstractSqlNestedMany {
+	if (field.meta.type !== 'o2m') throw new Error('Nested o2a not yet implemented!');
 
-	const relationalConditions = fieldMeta.join.foreign.fields.map((f) =>
-		getRelationCondition(fieldMeta.join.foreign.collection, f, idxGenerator)
-	) as AtLeastOneElement<AbstractSqlQueryWhereNode>;
+	const index = parameterIndexGenerator();
 
-	let mandatoryCondition: AbstractSqlQueryWhereNode;
+	const nestedFieldNodes = convertFieldNodes(field.meta.join.foreign.collection, field.fields, index);
+	const nestedModifiers = convertModifiers(field.modifiers, field.meta.join.foreign.collection, index);
 
-	if (relationalConditions.length > 1) {
-		mandatoryCondition = {
-			type: 'logical',
-			operator: 'and',
-			negate: false,
-			childNodes: relationalConditions,
-		};
-	} else {
-		mandatoryCondition = relationalConditions[0];
-	}
+	const joins = [...nestedFieldNodes.clauses.joins, ...(nestedModifiers.clauses.joins ?? [])];
+	const parameters = [...nestedFieldNodes.parameters, ...nestedModifiers.parameters];
 
-	const params: ParameterTypes[] = [];
-
-	let clauses: AbstractSqlClauses = {
-		...nestedOutput.clauses,
-		from: fieldMeta.join.foreign.collection,
+	const clauses: AbstractSqlClauses = {
+		select: nestedFieldNodes.clauses.select,
+		from: field.meta.join.foreign.collection,
+		...nestedModifiers.clauses,
+		joins: joins,
+		where: nestedModifiers.clauses.where
+			? {
+					type: 'logical',
+					operator: 'and',
+					negate: false,
+					childNodes: [nestedModifiers.clauses.where, getRelationConditions(field.meta, index)],
+			  }
+			: getRelationConditions(field.meta, index),
 	};
-
-	if (field.modifiers) {
-		const c = convertModifiers(field.modifiers, fieldMeta.join.foreign.collection, idxGenerator);
-		clauses = { ...clauses, ...c.clauses };
-		params.push(...c.parameters);
-	}
-
-	if (clauses.where) {
-		if (clauses.where.type === 'logical') {
-			clauses.where.childNodes.push(mandatoryCondition);
-		} else {
-			clauses.where = {
-				type: 'logical',
-				operator: 'and',
-				negate: false,
-				childNodes: [mandatoryCondition, clauses.where],
-			};
-		}
-	} else {
-		clauses.where = mandatoryCondition;
-	}
 
 	return {
 		queryGenerator: (identifierValues) => ({
 			clauses,
-			parameters: [...nestedOutput.parameters, ...identifierValues, ...params],
-			aliasMapping: nestedOutput.aliasMapping,
-			nestedManys: nestedOutput.nestedManys,
+			parameters: [...parameters, ...identifierValues],
+			aliasMapping: nestedFieldNodes.aliasMapping,
+			nestedManys: nestedFieldNodes.nestedManys,
 		}),
-		localJoinFields: fieldMeta.join.local.fields,
-		foreignJoinFields: fieldMeta.join.foreign.fields,
+		localJoinFields: field.meta.join.local.fields,
+		foreignJoinFields: field.meta.join.foreign.fields,
 		alias: field.alias,
 	};
+}
+
+function getRelationConditions(
+	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
+	idxGenerator: Generator<number, number, number>
+): AbstractSqlQueryWhereNode {
+	const table = fieldMeta.join.foreign.collection;
+
+	if (fieldMeta.join.foreign.fields.length > 1) {
+		return {
+			type: 'logical',
+			operator: 'and',
+			negate: false,
+			childNodes: fieldMeta.join.foreign.fields.map((field) =>
+				getRelationCondition(table, field, idxGenerator)
+			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
+		};
+	} else {
+		return getRelationCondition(table, fieldMeta.join.foreign.fields[0], idxGenerator);
+	}
 }
 
 /**

@@ -5,7 +5,6 @@ import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
 import { getNestedMany } from './create-nested-manys.js';
-import { parameterIndexGenerator } from '../param-index-generator.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
@@ -87,19 +86,12 @@ export const convertFieldNodes = (
 			 * The driver itself can use different technique if another technique is more performant,
 			 * like do a sub query in the statement or a join.
 			 */
-			const fieldMeta = abstractField.meta;
-
-			if (fieldMeta.type !== 'o2m') {
-				continue;
-			}
 
 			// @TODO
 			// we need to make sure, that the identifier field is included as primitive field node
 			// so we can use the returning value as parameter for the sub queries
 
-			const index = parameterIndexGenerator();
-			const nestedOutput = convertFieldNodes(fieldMeta.join.foreign.collection, abstractField.fields, index);
-			const nestedMany = getNestedMany(abstractField, nestedOutput, index);
+			const nestedMany = getNestedMany(abstractField);
 			nestedManys.push(nestedMany);
 			continue;
 		}

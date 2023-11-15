@@ -471,11 +471,11 @@ test('primitive and o2m field with nested modifiers', () => {
 						type: 'condition',
 						condition: {
 							type: 'condition-string',
-							operation: 'eq',
+							operation: 'starts_with',
 							target: {
 								type: 'primitive',
-								table: randomExternalCollection,
-								column: randomExternalField,
+								table: `${nestedExternalCollection}_RANDOM`,
+								column: nestedTargetField,
 							},
 							compareTo: {
 								type: 'value',
@@ -488,15 +488,15 @@ test('primitive and o2m field with nested modifiers', () => {
 						type: 'condition',
 						condition: {
 							type: 'condition-string',
-							operation: 'starts_with',
+							operation: 'eq',
 							target: {
 								type: 'primitive',
-								table: `${nestedExternalCollection}_RANDOM`,
-								column: nestedTargetField,
+								table: randomExternalCollection,
+								column: randomExternalField,
 							},
 							compareTo: {
 								type: 'value',
-								parameterIndex: 1,
+								parameterIndex: 2,
 							},
 						},
 						negate: false,
@@ -505,10 +505,10 @@ test('primitive and o2m field with nested modifiers', () => {
 			},
 			limit: {
 				type: 'value',
-				parameterIndex: 2,
+				parameterIndex: 1,
 			},
 		},
-		parameters: [randomPkValue, compareValue, randomLimit],
+		parameters: [compareValue, randomLimit, randomPkValue],
 		aliasMapping: new Map([[`${randomJoinNodeField}_RANDOM`, [randomJoinNodeFieldAlias]]]),
 		nestedManys: [],
 	};

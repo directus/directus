@@ -1,15 +1,21 @@
 import type { AbstractQueryFieldNodeNestedMany } from '@directus/data';
-import { expect, test } from 'vitest';
-import { getNestedMany } from './create-nested-manys.js';
-import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../../index.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { parameterIndexGenerator } from '../param-index-generator.js';
-import type { FieldConversionResult } from './fields.js';
+import { afterAll, expect, test, vi } from 'vitest';
+import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../../index.js';
+import { getNestedMany } from './create-nested-manys.js';
+
+afterAll(() => {
+	vi.restoreAllMocks();
+});
+
+vi.mock('../../orm/create-unique-alias.js', () => ({
+	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
+}));
 
 test('getNestedMany with a single identifier', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
-	const foreignIdFieldId = randomIdentifier();
+	const foreignIdFieldAlias = randomIdentifier();
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
@@ -21,7 +27,7 @@ test('getNestedMany with a single identifier', () => {
 			{
 				type: 'primitive',
 				field: foreignIdField,
-				alias: randomIdentifier(),
+				alias: foreignIdFieldAlias,
 			},
 		],
 		meta: {
@@ -41,24 +47,7 @@ test('getNestedMany with a single identifier', () => {
 		modifiers: {},
 	};
 
-	const nestedResult: FieldConversionResult = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: foreignTable,
-					column: foreignIdField,
-					as: foreignIdFieldId,
-				},
-			],
-			joins: [],
-		},
-		parameters: [],
-		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
-		nestedManys: [],
-	};
-
-	const result = getNestedMany(field, nestedResult, parameterIndexGenerator());
+	const result = getNestedMany(field);
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
@@ -74,7 +63,7 @@ test('getNestedMany with a single identifier', () => {
 					type: 'primitive',
 					table: foreignTable,
 					column: foreignIdField,
-					as: foreignIdFieldId,
+					as: `${foreignIdField}_RANDOM`,
 				},
 			],
 			from: foreignTable,
@@ -98,7 +87,7 @@ test('getNestedMany with a single identifier', () => {
 			},
 		},
 		parameters: [randomPkValue],
-		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
+		aliasMapping: new Map([[`${foreignIdField}_RANDOM`, [foreignIdFieldAlias]]]),
 		nestedManys: [],
 	};
 
@@ -112,7 +101,6 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 
 	// the field the user wants to be returned
 	const desiredForeignField = randomIdentifier();
-	const desiredForeignFieldId = randomIdentifier();
 	const desiredForeignFieldAlias = randomIdentifier();
 
 	// the foreign keys
@@ -153,24 +141,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 		alias: manyAlias,
 	};
 
-	const nestedResult: FieldConversionResult = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: foreignTable,
-					column: desiredForeignField,
-					as: desiredForeignFieldId,
-				},
-			],
-			joins: [],
-		},
-		parameters: [],
-		aliasMapping: new Map([[desiredForeignFieldId, [desiredForeignField]]]),
-		nestedManys: [],
-	};
-
-	const result = getNestedMany(field, nestedResult, parameterIndexGenerator());
+	const result = getNestedMany(field);
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
@@ -186,7 +157,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 					type: 'primitive',
 					table: foreignTable,
 					column: desiredForeignField,
-					as: desiredForeignFieldId,
+					as: `${desiredForeignField}_RANDOM`,
 				},
 			],
 			from: foreignTable,
@@ -234,7 +205,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 			},
 		},
 		parameters: [randomPkValue1, randomPkValue2],
-		aliasMapping: new Map([[desiredForeignFieldId, [desiredForeignField]]]),
+		aliasMapping: new Map([[`${desiredForeignField}_RANDOM`, [desiredForeignFieldAlias]]]),
 		nestedManys: [],
 	};
 
@@ -245,7 +216,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 test('getNestedMany with a single identifier and some modifiers', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
-	const foreignIdFieldId = randomIdentifier();
+	const foreignIdFieldAlias = randomIdentifier();
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
@@ -259,7 +230,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 			{
 				type: 'primitive',
 				field: foreignIdField,
-				alias: randomIdentifier(),
+				alias: foreignIdFieldAlias,
 			},
 		],
 		meta: {
@@ -306,24 +277,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 		alias: manyAlias,
 	};
 
-	const nestedResult: FieldConversionResult = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: foreignTable,
-					column: foreignIdField,
-					as: foreignIdFieldId,
-				},
-			],
-			joins: [],
-		},
-		parameters: [],
-		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
-		nestedManys: [],
-	};
-
-	const result = getNestedMany(field, nestedResult, parameterIndexGenerator());
+	const result = getNestedMany(field);
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
@@ -339,7 +293,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 					type: 'primitive',
 					table: foreignTable,
 					column: foreignIdField,
-					as: foreignIdFieldId,
+					as: `${foreignIdField}_RANDOM`,
 				},
 			],
 			from: foreignTable,
@@ -353,7 +307,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 						type: 'condition',
 						condition: {
 							type: 'condition-string',
-							operation: 'eq',
+							operation: 'starts_with',
 							target: {
 								type: 'primitive',
 								table: foreignTable,
@@ -370,7 +324,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 						type: 'condition',
 						condition: {
 							type: 'condition-string',
-							operation: 'starts_with',
+							operation: 'eq',
 							target: {
 								type: 'primitive',
 								table: foreignTable,
@@ -378,7 +332,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 							},
 							compareTo: {
 								type: 'value',
-								parameterIndex: 1,
+								parameterIndex: 2,
 							},
 						},
 						negate: false,
@@ -387,7 +341,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 			},
 			limit: {
 				type: 'value',
-				parameterIndex: 2,
+				parameterIndex: 1,
 			},
 			order: [
 				{
@@ -401,8 +355,8 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 				},
 			],
 		},
-		parameters: [randomPkValue, randomCompareValue, randomLimit],
-		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
+		parameters: [randomCompareValue, randomLimit, randomPkValue],
+		aliasMapping: new Map([[`${foreignIdField}_RANDOM`, [foreignIdFieldAlias]]]),
 		nestedManys: [],
 	};
 
