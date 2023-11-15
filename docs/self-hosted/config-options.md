@@ -918,8 +918,9 @@ that code changes to app extensions won't be taken into account by the browser u
 By default, extensions are not cached. The input data type for this environment variable is the same as
 [`CACHE_TTL`](#cache).
 
-<sup>[4]</sup> Extensions defaults to the local filesystem. When `EXTENSIONS_LOCATION` is configured, the extensions are
-copied into a local directory within `TEMP_PATH`.
+<sup>[4]</sup> By default extensions are loaded from the local filesystem. `EXTENSIONS_LOCATION` can be used to load
+extensions from a remote storage location instead. Under the hood, they are synced into a local directory within
+`TEMP_PATH` and loaded from there.
 
 ## Messenger
 
