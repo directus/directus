@@ -379,7 +379,7 @@ const stageChanges = () => {
 }
 
 .setup {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 	margin: 34px;
 }
 </style>

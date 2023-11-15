@@ -509,7 +509,7 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .form-grid {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 }
 
 .required {

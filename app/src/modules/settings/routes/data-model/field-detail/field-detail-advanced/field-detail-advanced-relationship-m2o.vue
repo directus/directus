@@ -209,8 +209,8 @@ const onDeleteOptions = computed(() =>
 }
 
 .relational-triggers {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 

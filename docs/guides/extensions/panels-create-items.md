@@ -321,7 +321,7 @@ Lastly, replace the CSS at the bottom with this:
 	grid-column: start/fill;
 }
 .panel-internal-form :deep(.v-form) {
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 }
 .form-response {
 	border-radius: var(--theme--border-radius);
@@ -588,7 +588,7 @@ export default {
 	grid-column: start/fill;
 }
 .panel-internal-form :deep(.v-form) {
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 }
 .form-response {
 	border-radius: var(--theme--border-radius);

@@ -15,6 +15,8 @@ const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal(
 
 const FormRules = Type.Optional(
 	Type.Object({
+		columnGap: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
+		rowGap: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
 		field: Type.Optional(
 			Type.Object({
 				label: Type.Optional(

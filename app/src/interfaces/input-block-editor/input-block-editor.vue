@@ -231,7 +231,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .uploader-preview-image {
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }

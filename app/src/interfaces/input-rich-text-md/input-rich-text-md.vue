@@ -543,8 +543,8 @@ textarea {
 .table-options {
 	@include form-grid;
 
-	--form-vertical-gap: 12px;
-	--form-horizontal-gap: 12px;
+	--theme--form--row-gap: 12px;
+	--theme--form--column-gap: 12px;
 
 	padding: 12px;
 

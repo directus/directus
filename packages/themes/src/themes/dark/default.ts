@@ -176,6 +176,9 @@ export default defineTheme({
 				},
 
 				form: {
+					columnGap: 'var(--theme--form--column-gap)',
+					rowGap: 'var(--theme--form--row-gap)',
+
 					label: {
 						foreground: 'var(--theme--form--field--label--foreground)',
 						fontFamily: 'var(--theme--form--field--label--font-family)',
@@ -215,6 +218,9 @@ export default defineTheme({
 			},
 
 			form: {
+				columnGap: 'var(--theme--form--column-gap)',
+				rowGap: 'var(--theme--form--row-gap)',
+
 				field: {
 					label: {
 						foreground: 'var(--theme--form--field--label--foreground)',
