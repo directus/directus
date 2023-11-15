@@ -87,8 +87,8 @@ async function fetchFolders() {
 				sort: 'name',
 			},
 		});
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -146,7 +146,7 @@ function parseFolder(id: string) {
 
 	Available Variables:
 
-		--folder-picker-background-color  [var(--theme--background)]
+		--folder-picker-background-color  [var(--theme--background-normal)]
 		--folder-picker-color             [var(--theme--background-accent)]
 
 */
@@ -156,7 +156,7 @@ function parseFolder(id: string) {
 	--v-list-item-background-color-active: var(--folder-picker-color, var(--theme--background-accent));
 
 	padding: 12px;
-	background-color: var(--folder-picker-background-color, var(--theme--background));
+	background-color: var(--folder-picker-background-color, var(--theme--background-normal));
 	border-radius: var(--theme--border-radius);
 	max-height: calc(var(--input-height-tall) * 2);
 	overflow: auto;

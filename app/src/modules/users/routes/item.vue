@@ -442,7 +442,7 @@ function revert(values: Record<string, any>) {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--theme--background);
+	--v-button-background-color: var(--theme--background-normal);
 }
 
 .user-item {
@@ -451,7 +451,7 @@ function revert(values: Record<string, any>) {
 }
 
 .user-box {
-	--v-skeleton-loader-background-color: var(--theme--background);
+	--v-skeleton-loader-background-color: var(--theme--background-normal);
 
 	display: flex;
 	align-items: center;
@@ -459,7 +459,7 @@ function revert(values: Record<string, any>) {
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
 	padding: 20px;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: calc(var(--theme--border-radius) + 4px);
 
 	.avatar {
@@ -473,7 +473,7 @@ function revert(values: Record<string, any>) {
 		height: 84px;
 		margin-right: 16px;
 		overflow: hidden;
-		background-color: var(--theme--background);
+		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
 		border-radius: 100%;
 		box-shadow: var(--card-shadow);
@@ -510,9 +510,9 @@ function revert(values: Record<string, any>) {
 
 		.v-chip {
 			--v-chip-color: var(--theme--foreground-subdued);
-			--v-chip-background-color: var(--background-subdued);
+			--v-chip-background-color: var(--theme--background-subdued);
 			--v-chip-color-hover: var(--theme--foreground-subdued);
-			--v-chip-background-color-hover: var(--background-subdued);
+			--v-chip-background-color-hover: var(--theme--background-subdued);
 
 			margin-top: 4px;
 

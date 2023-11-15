@@ -372,7 +372,7 @@ function pointerLeave() {
 			box-shadow: 0 0 0 1px var(--theme--border-color-subdued);
 
 			&::before {
-				box-shadow: 0 0 0 7px var(--background-subdued);
+				box-shadow: 0 0 0 7px var(--theme--background-subdued);
 				opacity: 1;
 			}
 		}
@@ -412,7 +412,7 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: var(--theme--background-page);
+		background-color: var(--theme--background);
 		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
 
 		--v-icon-color: var(--theme--primary);

@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
-import { Version } from '@directus/types';
+import { ContentVersion } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
 
-interface Props {
+const props = defineProps<{
 	collection: string;
 	primaryKey: string | number;
-	version: Version | null;
-}
-
-const props = defineProps<Props>();
+	version: ContentVersion | null;
+}>();
 
 defineEmits(['revert']);
 
@@ -103,8 +101,8 @@ defineExpose({
 	padding-top: 8px;
 	padding-right: 8px;
 	padding-left: 8px;
-	background-color: var(--theme--background);
-	box-shadow: 0 0 2px 2px var(--theme--background);
+	background-color: var(--theme--background-normal);
+	box-shadow: 0 0 2px 2px var(--theme--background-normal);
 
 	&:first-of-type {
 		margin-top: 0;

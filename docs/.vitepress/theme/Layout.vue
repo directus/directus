@@ -3,6 +3,7 @@ import { useData, useRoute } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import { computed } from 'vue';
 import Feedback from '../components/Feedback.vue';
+import Newsletter from '../components/Newsletter.vue';
 
 const { Layout } = DefaultTheme;
 const { page } = useData();
@@ -28,6 +29,9 @@ const path = computed(() => route.path);
 				</p>
 			</div>
 		</template>
+		<template #aside-outline-after>
+			<Newsletter class="newsletter" />
+		</template>
 		<template #doc-footer-before>
 			<Feedback :url="path" :title="title" />
 			<Meta v-if="contributors" id="contributors" title-left="Contributors">
@@ -40,6 +44,10 @@ const path = computed(() => route.path);
 </template>
 
 <style scoped>
+.newsletter {
+	margin-top: 2em;	
+}
+
 #contributors {
 	margin-bottom: 2em;
 }
@@ -47,4 +55,5 @@ const path = computed(() => route.path);
 .contributors {
 	font-weight: 700;
 }
+
 </style>

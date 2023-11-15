@@ -13,7 +13,7 @@ const props = defineProps<{
 		display: string;
 		user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
 	};
-	refresh: () => void;
+	refresh: () => Promise<void>;
 }>();
 
 defineEmits(['edit']);
@@ -50,8 +50,8 @@ function useDelete() {
 			await api.delete(`/activity/comment/${props.activity.id}`);
 			await props.refresh();
 			confirmDelete.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			deleting.value = false;
 		}

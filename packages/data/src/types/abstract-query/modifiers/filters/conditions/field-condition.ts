@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodeTarget } from '../../../fields.js';
+import type { AbstractQueryTarget } from '../../target.js';
 
 /**
  * It's mainly used to compare two fields for relational queries.
@@ -6,7 +6,7 @@ import type { AbstractQueryFieldNodeTarget } from '../../../fields.js';
  */
 export interface ConditionFieldNode {
 	type: 'condition-field';
-	target: AbstractQueryFieldNodeTarget;
+	target: AbstractQueryTarget;
 	operation: 'eq';
-	compareTo: AbstractQueryFieldNodeTarget;
+	compareTo: AbstractQueryTarget;
 }

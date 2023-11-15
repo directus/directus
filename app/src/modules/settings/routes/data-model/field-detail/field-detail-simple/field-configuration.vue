@@ -149,7 +149,7 @@ const options = computed({
 @import '@/styles/mixins/form-grid';
 
 .field-configuration {
-	--v-button-background-color-disabled: var(--theme--background);
+	--v-button-background-color-disabled: var(--theme--background-normal);
 	--columns: 1;
 
 	@media (min-width: 400px) {
@@ -165,7 +165,7 @@ const options = computed({
 	}
 
 	grid-column: 1 / span var(--columns);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }

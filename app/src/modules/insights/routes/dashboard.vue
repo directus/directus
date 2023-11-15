@@ -17,12 +17,13 @@ import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 
-interface Props {
-	primaryKey: string;
-	panelKey?: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), { panelKey: null });
+const props = withDefaults(
+	defineProps<{
+		primaryKey: string;
+		panelKey?: string | null;
+	}>(),
+	{ panelKey: null }
+);
 
 const { t } = useI18n();
 

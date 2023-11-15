@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '@/lang/';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
 import { clone, forEach, pick } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
@@ -417,7 +417,7 @@ table :deep(.loading-indicator > th) {
 }
 
 table :deep(.sortable-ghost .cell) {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .loading table {
@@ -463,7 +463,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline {
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -473,6 +473,6 @@ table :deep(.sortable-ghost .cell) {
 
 .disabled {
 	--v-table-color: var(--theme--foreground-subdued);
-	--v-table-background-color: var(--background-subdued);
+	--v-table-background-color: var(--theme--background-subdued);
 }
 </style>

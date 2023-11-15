@@ -2,7 +2,7 @@
 import { useEventListener } from '@/composables/use-event-listener';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
-import { ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
 import { clone, throttle } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -278,7 +278,7 @@ function toggleManualSort() {
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
-		background-color: var(--v-table-background-color, var(--theme--background-page));
+		background-color: var(--v-table-background-color, var(--theme--background));
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select,
@@ -441,7 +441,7 @@ function toggleManualSort() {
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
-	border: var(--theme--background-page) 6px solid;
+	border: var(--theme--background) 6px solid;
 	box-sizing: content-box;
 	margin-right: 8px;
 	vertical-align: middle;
