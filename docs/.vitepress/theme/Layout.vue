@@ -34,7 +34,6 @@ const path = computed(() => route.path);
 		</template>
 		<template #doc-footer-before>
 			<Feedback :url="path" :title="title" />
-			<Newsletter class="newsletter mobile" />
 			<Meta v-if="contributors" id="contributors" title-left="Contributors">
 				<template #left>
 					<div class="contributors">{{ contributors }}</div>
@@ -49,10 +48,6 @@ const path = computed(() => route.path);
 	margin-top: 2em;	
 }
 
-.newsletter.mobile {
-	display: none;
-}
-
 #contributors {
 	margin-bottom: 2em;
 }
@@ -61,10 +56,4 @@ const path = computed(() => route.path);
 	font-weight: 700;
 }
 
-@media screen and (max-width: 1280px) {
-		.newsletter.mobile {
-		display: block;
-		margin-bottom: 2em;
-	}
-}
 </style>
