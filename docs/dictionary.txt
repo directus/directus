@@ -31,7 +31,6 @@ Butterfield
 (DN|dn)
 (E|e)ntrypoints?
 (F|f)avicon
-(F|f)ilesystem
 (F|f)ormatter
 (F|f)rontend
 (F|f)rontmatter
@@ -197,6 +196,8 @@ fallbacks
 falsy
 FavIcon
 filepath
+Filesystem
+filesystem
 free-form
 frontend
 G2
