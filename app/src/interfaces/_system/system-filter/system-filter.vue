@@ -255,6 +255,7 @@ function addKeyAsNode() {
 		margin: 0px 0px 10px;
 		padding: 20px 20px 12px;
 		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		background: var(--theme--form--field--input--background);
 
 		& > :deep(.group) {
 			margin-left: 0px;
@@ -292,6 +293,7 @@ function addKeyAsNode() {
 			margin: 0;
 			padding: 0;
 			border: 0;
+			background: transparent;
 		}
 
 		&.empty .v-list {
