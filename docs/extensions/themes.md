@@ -35,6 +35,10 @@ https://github.com/directus/directus/blob/main/packages/themes/src/schemas/theme
 We recommend using TypeScript for this extension type. The `defineTheme` function is typed to properly auto-complete all
 available rules.
 
+Any rules that are not defined will fallback to the default theme for it's appearance.
+([dark](https://github.com/directus/directus/blob/main/packages/themes/src/themes/dark/default.ts) |
+[light](https://github.com/directus/directus/blob/main/packages/themes/src/themes/dark/default.ts))
+
 Every rule is automatically inserted in the app's root element as a CSS variable which are used across the app's
 components. For example, the JSON path `navigation.modules.button.foregroundActive` will be available as
 `var(--theme--navigation--modules--button--foreground-active)`. Note that nested objects are separated by `--`, and
