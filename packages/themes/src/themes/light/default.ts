@@ -190,6 +190,11 @@ export default defineTheme({
 			},
 
 			form: {
+				label: {
+					foreground: 'var(--theme--form--field--label--foreground)',
+					fontFamily: 'var(--theme--form--field--label--font-family)',
+				},
+
 				field: {
 					input: {
 						background: 'var(--theme--form--field--input--background)',

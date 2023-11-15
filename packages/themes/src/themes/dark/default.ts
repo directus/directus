@@ -191,6 +191,11 @@ export default defineTheme({
 
 			form: {
 				field: {
+					label: {
+						foreground: 'var(--theme--form--field--label--foreground)',
+						fontFamily: 'var(--theme--form--field--label--font-family)',
+					},
+
 					input: {
 						background: 'var(--theme--form--field--input--background)',
 						foreground: 'var(--theme--form--field--input--foreground)',
@@ -203,6 +208,8 @@ export default defineTheme({
 						boxShadow: 'var(--theme--form--field--input--box-shadow)',
 						boxShadowHover: 'var(--theme--form--field--input--box-shadow-hover)',
 						boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
+
+						height: 'var(--theme--form--field--input--height)',
 					},
 				},
 			},

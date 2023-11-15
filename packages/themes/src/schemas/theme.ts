@@ -13,6 +13,40 @@ const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal(
 	$id: 'LineWidth',
 });
 
+const FormRules = Type.Optional(
+	Type.Object({
+		field: Type.Optional(
+			Type.Object({
+				label: Type.Optional(
+					Type.Object({
+						foreground: Type.Optional(Type.Ref(Color)),
+						fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					})
+				),
+				input: Type.Optional(
+					Type.Object({
+						background: Type.Optional(Type.Ref(Color)),
+						backgroundSubdued: Type.Optional(Type.Ref(Color)),
+
+						foreground: Type.Optional(Type.Ref(Color)),
+						foregroundSubdued: Type.Optional(Type.Ref(Color)),
+
+						borderColor: Type.Optional(Type.Ref(Color)),
+						borderColorHover: Type.Optional(Type.Ref(Color)),
+						borderColorFocus: Type.Optional(Type.Ref(Color)),
+
+						boxShadow: Type.Optional(Type.Ref(BoxShadow)),
+						boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
+						boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
+
+						height: Type.Optional(Type.Ref(Size)),
+					})
+				),
+			})
+		),
+	})
+);
+
 const Rules = Type.Object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base fonts
@@ -157,39 +191,7 @@ const Rules = Type.Object({
 		})
 	),
 
-	form: Type.Optional(
-		Type.Object({
-			field: Type.Optional(
-				Type.Object({
-					label: Type.Optional(
-						Type.Object({
-							foreground: Type.Optional(Type.Ref(Color)),
-							fontFamily: Type.Optional(Type.Ref(FamilyName)),
-						})
-					),
-					input: Type.Optional(
-						Type.Object({
-							background: Type.Optional(Type.Ref(Color)),
-							backgroundSubdued: Type.Optional(Type.Ref(Color)),
-
-							foreground: Type.Optional(Type.Ref(Color)),
-							foregroundSubdued: Type.Optional(Type.Ref(Color)),
-
-							borderColor: Type.Optional(Type.Ref(Color)),
-							borderColorHover: Type.Optional(Type.Ref(Color)),
-							borderColorFocus: Type.Optional(Type.Ref(Color)),
-
-							boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-							boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
-							boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
-
-							height: Type.Optional(Type.Ref(Size)),
-						})
-					),
-				})
-			),
-		})
-	),
+	form: FormRules,
 
 	sidebar: Type.Optional(
 		Type.Object({
@@ -245,31 +247,7 @@ const Rules = Type.Object({
 				})
 			),
 
-			form: Type.Optional(
-				Type.Object({
-					field: Type.Optional(
-						Type.Object({
-							input: Type.Optional(
-								Type.Object({
-									background: Type.Optional(Type.Ref(Color)),
-									foreground: Type.Optional(Type.Ref(Color)),
-									foregroundSubdued: Type.Optional(Type.Ref(Color)),
-
-									borderColor: Type.Optional(Type.Ref(Color)),
-									borderColorHover: Type.Optional(Type.Ref(Color)),
-									borderColorFocus: Type.Optional(Type.Ref(Color)),
-
-									boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-									boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
-									boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
-
-									height: Type.Optional(Type.Ref(Size)),
-								})
-							),
-						})
-					),
-				})
-			),
+			form: FormRules,
 		})
 	),
 
