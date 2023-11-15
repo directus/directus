@@ -332,7 +332,7 @@ Lastly, replace the CSS at the bottom with this:
 .form-response a {
 	position: relative;
 	display: block;
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 }
 .form-response a:hover {
 	cursor: pointer;
@@ -340,8 +340,8 @@ Lastly, replace the CSS at the bottom with this:
 }
 .form-response a :deep(.v-icon) {
 	position: absolute;
-	right: var(--input-padding);
-	top: var(--input-padding);
+	right: var(--theme--form--field--input--padding);
+	top: var(--theme--form--field--input--padding);
 }
 </style>
 ```
@@ -599,7 +599,7 @@ export default {
 .form-response a {
 	position: relative;
 	display: block;
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 }
 .form-response a:hover {
 	cursor: pointer;
@@ -607,8 +607,8 @@ export default {
 }
 .form-response a :deep(.v-icon) {
 	position: absolute;
-	right: var(--input-padding);
-	top: var(--input-padding);
+	right: var(--theme--form--field--input--padding);
+	top: var(--theme--form--field--input--padding);
 }
 </style>
 ```

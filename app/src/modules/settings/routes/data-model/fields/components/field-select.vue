@@ -322,7 +322,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 .field-select {
 	--input-height: 40px;
-	--input-padding: 8px;
+	--theme--form--field--input--padding: 8px;
 }
 
 .full,
@@ -373,7 +373,7 @@ async function onGroupSortChange(fields: Field[]) {
 .group {
 	position: relative;
 	min-height: var(--theme--form--field--input--height);
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 	padding-top: 40px;
 	padding-bottom: 16px;
 	border-radius: var(--theme--border-radius);

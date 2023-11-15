@@ -282,7 +282,7 @@ const unsortableJunctionFields = computed(() => {
 .related-collections-preview {
 	grid-row: 2 / span 2;
 	grid-column: 3;
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 	overflow: auto;
 	color: var(--theme--foreground-subdued);
 	font-family: var(--theme--font-family-monospace);

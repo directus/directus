@@ -120,6 +120,7 @@ const logoURL = computed<string | null>(() => {
 		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
 		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--public--form--field--input--height);
+		--theme--form--field--input--padding: var(--theme--public--form--field--input--padding);
 
 		--theme--form--field--label--font-family: var(--theme--public--form--field--label--font-family);
 		--theme--form--field--label--foreground: var(--theme--public--form--field--label--foreground);

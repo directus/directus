@@ -59,7 +59,7 @@ const displayValue = computed(() => {
 	align-items: center;
 	width: 100%;
 	height: var(--theme--form--field--input--height);
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 	color: var(--theme--primary);
 	text-align: left;
 	background-color: var(--theme--primary-background);

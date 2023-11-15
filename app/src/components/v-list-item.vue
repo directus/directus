@@ -137,7 +137,7 @@ function onClick(event: PointerEvent) {
 
 	Available Variables:
 
-		--v-list-item-padding                  [0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px))]
+		--v-list-item-padding                  [0 var(--theme--form--field--input--padding) 0 calc(var(--theme--form--field--input--padding) + var(--v-list-item-indent, 0px))]
 		--v-list-item-margin                   [2px 0]
 		--v-list-item-min-height               [32px]
 		--v-list-item-border-radius            [var(--theme--border-radius)]
@@ -168,7 +168,7 @@ function onClick(event: PointerEvent) {
 	margin: var(--v-list-item-margin, 2px 0);
 	padding: var(
 		--v-list-item-padding,
-		0 var(--input-padding) 0 calc(var(--input-padding) + var(--v-list-item-indent, 0px))
+		0 var(--theme--form--field--input--padding) 0 calc(var(--theme--form--field--input--padding) + var(--v-list-item-indent, 0px))
 	);
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
@@ -261,7 +261,7 @@ function onClick(event: PointerEvent) {
 		display: flex;
 		height: var(--theme--form--field--input--height);
 		margin: 0;
-		padding: 8px var(--input-padding);
+		padding: 8px var(--theme--form--field--input--padding);
 		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--form--field--input--background)));
 		border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
@@ -321,7 +321,7 @@ function onClick(event: PointerEvent) {
 				--v-list-item-border-radius: 4px;
 
 				margin: 2px 0;
-				padding: 0 var(--input-padding);
+				padding: 0 var(--theme--form--field--input--padding);
 
 				&:first-child {
 					margin-top: 0;

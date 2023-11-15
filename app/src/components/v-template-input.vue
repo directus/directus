@@ -306,7 +306,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 .v-template-input {
 	position: relative;
 	height: var(--theme--form--field--input--height);
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 	padding-bottom: 32px;
 	overflow: hidden;
 	color: var(--theme--foreground);

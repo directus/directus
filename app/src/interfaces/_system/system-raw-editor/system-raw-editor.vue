@@ -150,7 +150,7 @@ watch(
 	:deep(.CodeMirror) {
 		width: 100%;
 		line-height: 18px;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 
 		.cm-tag {
 			color: var(--theme--form--field--input--foreground-subdued);

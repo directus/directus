@@ -42,6 +42,7 @@ const FormRules = Type.Optional(
 						boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
 
 						height: Type.Optional(Type.Ref(Size)),
+						padding: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
 					})
 				),
 			})

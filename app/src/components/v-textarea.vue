@@ -152,7 +152,7 @@ function trimIfEnabled() {
 		flex-grow: 1;
 		width: 100%;
 		height: var(--theme--form--field--input--height);
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 		color: var(--theme--foreground);
 		font-family: var(--v-textarea-font-family, var(--theme--font-family-sans-serif));
 		background-color: transparent;

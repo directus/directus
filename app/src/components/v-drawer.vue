@@ -164,7 +164,6 @@ const internalActive = computed({
 	}
 
 	.content {
-		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 		--theme--form--row-gap: 52px;
 
 		position: relative;

@@ -145,6 +145,7 @@ export default defineTheme({
 					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 
 					height: '60px',
+					padding: '16px',
 				},
 			},
 		},
@@ -202,6 +203,7 @@ export default defineTheme({
 							boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
 							height: '52px',
+							padding: '12px',
 						},
 					},
 				},
@@ -244,6 +246,7 @@ export default defineTheme({
 						boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
 						height: 'var(--theme--form--field--input--height)',
+						padding: 'var(--theme--form--field--input--padding)',
 					},
 				},
 			},

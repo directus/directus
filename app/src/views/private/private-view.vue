@@ -431,9 +431,6 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#main-content {
-		--input-padding: 16px;
-		/* (60 - 4 - 24) / 2 */
-
 		position: relative;
 		flex-grow: 1;
 		width: 100%;
@@ -507,6 +504,7 @@ function getWidth(input: unknown, fallback: number): number {
 		--theme--form--field--input--foreground-subdued: var(--theme--sidebar--section--form--field--input--foreground-subdued);
 		--theme--form--field--input--foreground: var(--theme--sidebar--section--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--sidebar--section--form--field--input--height);
+		--theme--form--field--input--padding: var(--theme--sidebar--section--form--field--input--padding);
 
 		--theme--form--field--label--foreground: var(--theme--sidebar--section--form--field--label--foreground);
 		--theme--form--field--label--font-family: var(--theme--sidebar--section--form--field--label--font-family);
