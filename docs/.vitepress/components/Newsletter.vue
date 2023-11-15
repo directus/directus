@@ -1,9 +1,8 @@
 <template>
   <div id="nl">
     <h2>Follow the White Rabbit 🐇</h2>
-    <p>Get insights, releases, and exciting news delivered directly to your inbox once a month.</p>
-    <input type="email" placeholder="Your email *">
-    <input type="submit" value="Subscribe">
+    <p>Get insights, releases, and product updates delivered directly to your inbox once a month.</p>
+    <div id="nl-form"></div>
   </div>
 </template>
 
@@ -28,8 +27,10 @@ p {
   margin: 0.75rem 0;
   font-weight: bold;
 }
+</style>
 
-input[type=email] {
+<style>
+#email-d57a69e4-6f43-4768-a600-5f7d30306260 {
   border-radius: var(--rounded-md);
   background: white;
   display: block;
@@ -37,12 +38,15 @@ input[type=email] {
   padding: 0.5em 1em;
   border: 1px solid var(--vp-c-gray-light-4);
 }
-
-input[type=email]:focus {
+#email-d57a69e4-6f43-4768-a600-5f7d30306260:focus {
   border-color: var(--vp-c-gray-light-2);
 }
-
-input[type=submit] {
+[data-form-id=d57a69e4-6f43-4768-a600-5f7d30306260] .hs-error-msgs li {
+  line-height: 1rem;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+[data-form-id=d57a69e4-6f43-4768-a600-5f7d30306260] input[type=submit] {
   background-color: var(--vp-c-purple);
   color: white;
   border-radius: var(--rounded-full);
@@ -50,5 +54,6 @@ input[type=submit] {
   width: 100%;
   padding: 0.25em;
   margin-top: 1em;
+  cursor: pointer;
 }
 </style>

@@ -72,6 +72,14 @@ gtag('js', new Date());
 gtag('config', 'UA-24637628-7');
 			`,
 		],
+		[
+			'script',
+			{
+				type: 'text/javascript',
+				src: 'https://js.hsforms.net/forms/embed/v2.js',
+				onload: `hbspt.forms.create({ region: "na1", portalId: "20534155", formId: "d57a69e4-6f43-4768-a600-5f7d30306260", target: "#nl-form" })`			
+			},
+		],
 		['link', { rel: 'shortcut icon', type: 'image/svg+xml', href: '/favicon.svg' }],
 		[
 			'link',
