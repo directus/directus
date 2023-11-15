@@ -918,7 +918,7 @@ that code changes to app extensions won't be taken into account by the browser u
 By default, extensions are not cached. The input data type for this environment variable is the same as
 [`CACHE_TTL`](#cache).
 
-<sup>[4]</sup> By default extensions are loaded from the local filesystem. `EXTENSIONS_LOCATION` can be used to load
+<sup>[4]</sup> By default extensions are loaded from the local file system. `EXTENSIONS_LOCATION` can be used to load
 extensions from a storage location instead. Under the hood, they are synced into a local directory within `TEMP_PATH`
 and then loaded from there.
 
