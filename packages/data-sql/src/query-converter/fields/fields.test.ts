@@ -180,8 +180,6 @@ test('primitive, fn, m2o', () => {
 		},
 	];
 
-	const idGen = parameterIndexGenerator();
-
 	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
@@ -243,7 +241,7 @@ test('primitive, fn, m2o', () => {
 		nestedManys: [],
 	};
 
-	const result = convertFieldNodes(randomCollection, fields, idGen);
+	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
 	expect(result.clauses).toMatchObject(expected.clauses);
 	expect(result.parameters).toMatchObject(expected.parameters);
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);

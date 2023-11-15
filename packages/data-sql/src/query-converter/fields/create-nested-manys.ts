@@ -85,7 +85,7 @@ export function getNestedMany(
 		}),
 		localJoinFields: fieldMeta.join.local.fields,
 		foreignJoinFields: fieldMeta.join.foreign.fields,
-		alias: fieldMeta.join.foreign.collection,
+		alias: field.alias,
 	};
 }
 

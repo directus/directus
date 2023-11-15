@@ -13,6 +13,7 @@ test('getNestedMany with a single identifier', () => {
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
+	const manyAlias = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedMany = {
 		type: 'nested-many',
@@ -20,6 +21,7 @@ test('getNestedMany with a single identifier', () => {
 			{
 				type: 'primitive',
 				field: foreignIdField,
+				alias: randomIdentifier(),
 			},
 		],
 		meta: {
@@ -35,6 +37,8 @@ test('getNestedMany with a single identifier', () => {
 				},
 			},
 		},
+		alias: manyAlias,
+		modifiers: {},
 	};
 
 	const nestedResult: FieldConversionResult = {
@@ -60,7 +64,7 @@ test('getNestedMany with a single identifier', () => {
 		queryGenerator: expect.any(Function),
 		localJoinFields: [localIdField],
 		foreignJoinFields: [foreignIdField],
-		alias: foreignTable,
+		alias: manyAlias,
 	};
 
 	const expectedGeneratedQuery: AbstractSqlQuery = {
@@ -108,6 +112,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	// the field the user wants to be returned
 	const desiredForeignField = randomIdentifier();
 	const desiredForeignFieldId = randomIdentifier();
+	const desiredForeignFieldAlias = randomIdentifier();
 
 	// the foreign keys
 	const foreignIdField1 = randomIdentifier();
@@ -119,6 +124,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	// the values of the local identifier fields, returned by the root query
 	const randomPkValue1 = randomIdentifier();
 	const randomPkValue2 = randomIdentifier();
+	const manyAlias = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedMany = {
 		type: 'nested-many',
@@ -126,6 +132,7 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 			{
 				type: 'primitive',
 				field: desiredForeignField,
+				alias: desiredForeignFieldAlias,
 			},
 		],
 		meta: {
@@ -141,9 +148,9 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 				},
 			},
 		},
+		modifiers: {},
+		alias: manyAlias,
 	};
-
-	const idxGen = parameterIndexGenerator();
 
 	const nestedResult: FieldConversionResult = {
 		clauses: {
@@ -162,13 +169,13 @@ test('getNestedMany with a multiple identifiers (a composite key)', () => {
 		nestedManys: [],
 	};
 
-	const result = getNestedMany(field, nestedResult, idxGen);
+	const result = getNestedMany(field, nestedResult, parameterIndexGenerator());
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
 		localJoinFields: [localIdField1, localIdField2],
 		foreignJoinFields: [foreignIdField1, foreignIdField2],
-		alias: foreignTable,
+		alias: manyAlias,
 	};
 
 	const expectedGeneratedQuery: AbstractSqlQuery = {
@@ -242,6 +249,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 	const randomPkValue = randomIdentifier();
 	const randomCompareValue = randomIdentifier();
 	const randomLimit = randomInteger(1, 100);
+	const manyAlias = randomIdentifier();
 
 	const field: AbstractQueryFieldNodeNestedMany = {
 		type: 'nested-many',
@@ -249,6 +257,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 			{
 				type: 'primitive',
 				field: foreignIdField,
+				alias: randomIdentifier(),
 			},
 		],
 		meta: {
@@ -292,6 +301,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 				},
 			],
 		},
+		alias: manyAlias,
 	};
 
 	const nestedResult: FieldConversionResult = {
@@ -317,7 +327,7 @@ test('getNestedMany with a single identifier and some modifiers', () => {
 		queryGenerator: expect.any(Function),
 		localJoinFields: [localIdField],
 		foreignJoinFields: [foreignIdField],
-		alias: foreignTable,
+		alias: manyAlias,
 	};
 
 	const expectedGeneratedQuery: AbstractSqlQuery = {
