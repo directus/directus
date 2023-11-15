@@ -454,7 +454,6 @@ async function onGroupSortChange(fields: Field[]) {
 	}
 
 	&.v-input :deep(.input:hover) {
-		background-color: var(--card-face-color);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color-hover);
 	}
 
