@@ -267,6 +267,18 @@ const Rules = Type.Object({
 			),
 		})
 	),
+
+	popover: Type.Optional(
+		Type.Object({
+			menu: Type.Optional(
+				Type.Object({
+					background: Type.Optional(Type.Ref(Color)),
+					borderRadius: Type.Optional(Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)]))),
+					boxShadow: Type.Optional(Type.Ref(BoxShadow)),
+				})
+			),
+		})
+	),
 });
 
 export const ThemeSchema = Type.Object({

@@ -205,5 +205,13 @@ export default defineTheme({
 				},
 			},
 		},
+
+		popover: {
+			menu: {
+				background: '#fafcfd',
+				borderRadius: 'var(--theme--border-radius)',
+				boxShadow: '0px 0px 6px 0px rgb(23, 41, 64, 0.2), 0px 0px 12px 2px rgb(23, 41, 64, 0.05)',
+			},
+		},
 	},
 });
