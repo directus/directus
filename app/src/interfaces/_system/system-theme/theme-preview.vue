@@ -4,7 +4,7 @@ import { computed } from 'vue';
 
 const props = defineProps<{
 	darkMode: boolean;
-	theme: string;
+	theme: string | null;
 }>();
 
 const { theme } = useTheme(props.darkMode, props.theme, props.theme, {}, {});
