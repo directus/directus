@@ -194,9 +194,6 @@ export default ({ embed }, { env }) => {
 | Event                          | Payload                              | Meta                                        |
 | ------------------------------ | ------------------------------------ | ------------------------------------------- |
 | `websocket.message`            | The message send over the websocket  |                                             |
-| `fields.create`                | The raw field you created            | `collection`                                |
-| `fields.update`                | The raw field you updated            | `keys`, `collection`                        |
-| `fields.delete`                | The raw field you deleted            | `collection`                                |
 | `request.not_found`            | `false`                              | `request`, `response`                       |
 | `request.error`                | The request errors                   | --                                          |
 | `database.error`               | The database error                   | `client`                                    |
@@ -241,9 +238,6 @@ export default ({ embed }, { env }) => {
 | `websocket.connect`            | `client`                                            |
 | `websocket.auth.success`       | `client`                                            |
 | `websocket.auth.failure`       | `client`                                            |
-| `fields.create`                | `payload`, `key`, `collection`                      |
-| `fields.update`                | `payload`, `keys`, `collection`                     |
-| `fields.delete`                | `payload`, `collection`                             |
 | `server.start`                 | `server`                                            |
 | `server.stop`                  | `server`                                            |
 | `response`                     | `request`, `response`, `ip`, `duration`, `finished` |
