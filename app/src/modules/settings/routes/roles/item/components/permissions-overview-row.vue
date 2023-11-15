@@ -86,7 +86,6 @@ function isLoading(action: string) {
 	align-items: center;
 	height: 48px;
 	padding: 0 12px;
-	background-color: var(--theme--form--field--input--background);
 
 	.name {
 		flex-grow: 1;
