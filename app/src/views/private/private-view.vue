@@ -267,6 +267,7 @@ function getWidth(input: unknown, fallback: number): number {
 			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
 		>
 			<module-bar />
+
 			<v-resizeable
 				v-model:width="navWidth"
 				:min-width="SIZES.minModuleNavWidth"
@@ -284,6 +285,7 @@ function getWidth(input: unknown, fallback: number): number {
 				</div>
 			</v-resizeable>
 		</aside>
+
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				ref="headerBarEl"
@@ -319,6 +321,7 @@ function getWidth(input: unknown, fallback: number): number {
 				</div>
 			</div>
 		</div>
+
 		<aside
 			id="sidebar"
 			ref="sidebarEl"
@@ -430,52 +433,48 @@ function getWidth(input: unknown, fallback: number): number {
 		}
 	}
 
-	#main-content {
-		--input-height: 60px;
-		--input-padding: 16px;
-		/* (60 - 4 - 24) / 2 */
+	// #main-content {
+	// 	--input-height: 60px;
+	// 	--input-padding: 16px;
+	// 	/* (60 - 4 - 24) / 2 */
 
-		position: relative;
-		flex-grow: 1;
-		width: 100%;
-		height: 100%;
+	// 	position: relative;
+	// 	flex-grow: 1;
+	// 	height: 100%;
 
-		display: flex;
-		flex-direction: column;
+	// 	display: flex;
+	// 	flex-direction: column;
 
-		/* Page Content Spacing (Could be converted to Project Setting toggle) */
-		font-size: 15px;
-		line-height: 24px;
+	// 	font-size: 15px;
+	// 	line-height: 24px;
 
-		.header {
-			flex-shrink: 0;
-		}
+	// 	.header {
+	// 		flex-shrink: 0;
+	// 	}
 
-		.content-wrapper {
-			display: contents;
-		}
+	// 	.content-wrapper {
+	// 		overflow: auto;
+	// 		width: 100%;
+	// 		height: 100%;
+	// 	}
 
-		main {
-			overflow: auto;
-		}
+	// 	/* Offset for partially visible sidebar */
+	// 	@media (min-width: 960px) {
+	// 		margin-right: 60px;
+	// 	}
 
-		/* Offset for partially visible sidebar */
-		@media (min-width: 960px) {
-			margin-right: 60px;
-		}
+	// 	@media (min-width: 1260px) {
+	// 		margin-right: 0;
+	// 	}
 
-		@media (min-width: 1260px) {
-			margin-right: 0;
-		}
+	// 	&.hide-overflow-x {
+	// 		overflow-x: hidden;
+	// 	}
 
-		&.hide-overflow-x {
-			overflow-x: hidden;
-		}
-
-		&.hide-overflow-y {
-			overflow-y: hidden;
-		}
-	}
+	// 	&.hide-overflow-y {
+	// 		overflow-y: hidden;
+	// 	}
+	// }
 
 	&.splitView {
 		#main-content .content-wrapper {
