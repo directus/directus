@@ -809,7 +809,6 @@ layout_options: Các Tuỳ Chọn Bố Cục
 rows: Các hàng
 columns: Các cột
 collection_setup: Cài đặt Bộ sưu tập
-optional_system_fields: Tùy chọn hệ thống trường
 value_unique: Giá trị phải là duy nhất
 all_activity: Tất cả hoạt động
 create_item: Tạo Bản Ghi
@@ -1016,7 +1015,6 @@ deselect: Bỏ chọn
 deselect_all: Bỏ chọn tất cả
 theme: Chủ đề
 select_a_theme: Chọn một chủ đề
-appearance_global: Mặc định chế độ của dự án
 appearance_auto: Auto (Đồng bộ với hệ thống)
 appearance_light: Hát
 appearance_dark: Tối ưu
@@ -1546,7 +1544,6 @@ translation: Bản dịch
 translation_placeholder: Nhập bản dịch...
 value: Giá trị
 view_project: Xem Kế hoạch
-weeks: { }
 report_error: Báo cáo lỗi
 start: Bắt đầu
 table: Bảng
