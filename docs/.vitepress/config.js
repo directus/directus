@@ -623,7 +623,7 @@ function sidebar() {
 						},
 						{
 							link: '/extensions/services/authoring-database',
-							text: 'Authoring the Database',
+							text: 'Configuring Collections, Fields, and Relations',
 						},
 						{
 							link: '/extensions/services/interacting-with-files',
