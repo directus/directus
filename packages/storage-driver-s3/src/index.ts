@@ -219,7 +219,7 @@ export class DriverS3 implements Driver {
 
 			if (response.Contents) {
 				for (const file of response.Contents) {
-					if (file.Key) {
+					if (file.Key && !file.Key.endsWith('/')) {
 						yield file.Key.substring(this.root.length);
 					}
 				}
