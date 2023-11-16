@@ -1,59 +1,59 @@
-import type { AbstractQueryFieldNodeRelationalOneToMany } from '@directus/data';
-import { expect, test } from 'vitest';
-import { getNestedMany } from './create-nested-manys.js';
+import type { AbstractQueryFieldNodeNestedMany } from '@directus/data';
+import { randomIdentifier, randomInteger } from '@directus/random';
+import { afterAll, expect, test, vi } from 'vitest';
 import type { AbstractSqlNestedMany, AbstractSqlQuery } from '../../index.js';
-import { randomIdentifier } from '@directus/random';
-import { parameterIndexGenerator } from '../param-index-generator.js';
-import type { Result } from './fields.js';
+import { getNestedMany } from './create-nested-manys.js';
 
-test('getNestedMany wit a single identifier column', () => {
+afterAll(() => {
+	vi.restoreAllMocks();
+});
+
+vi.mock('../../orm/create-unique-alias.js', () => ({
+	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
+}));
+
+test('getNestedMany with a single identifier', () => {
 	const localIdField = randomIdentifier();
 	const foreignIdField = randomIdentifier();
-	const foreignIdFieldId = randomIdentifier();
+	const foreignIdFieldAlias = randomIdentifier();
 	const foreignTable = randomIdentifier();
 	const foreignStore = randomIdentifier();
 	const randomPkValue = randomIdentifier();
+	const manyAlias = randomIdentifier();
 
-	const fieldMeta: AbstractQueryFieldNodeRelationalOneToMany = {
-		type: 'o2m',
-		join: {
-			local: {
-				fields: [localIdField],
+	const field: AbstractQueryFieldNodeNestedMany = {
+		type: 'nested-many',
+		fields: [
+			{
+				type: 'primitive',
+				field: foreignIdField,
+				alias: foreignIdFieldAlias,
 			},
-			foreign: {
-				store: foreignStore,
-				collection: foreignTable,
-				fields: [foreignIdField],
-			},
-		},
-	};
-
-	const idxGen = parameterIndexGenerator();
-
-	const nestedResult: Result = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: foreignTable,
-					column: foreignIdField,
-					as: foreignIdFieldId,
+		],
+		meta: {
+			type: 'o2m',
+			join: {
+				local: {
+					fields: [localIdField],
 				},
-			],
-			joins: [],
+				foreign: {
+					store: foreignStore,
+					collection: foreignTable,
+					fields: [foreignIdField],
+				},
+			},
 		},
-		parameters: [],
-		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
-		nestedManys: [],
+		alias: manyAlias,
+		modifiers: {},
 	};
 
-	const result = getNestedMany(fieldMeta, nestedResult, idxGen, foreignTable);
+	const result = getNestedMany(field);
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
 		localJoinFields: [localIdField],
 		foreignJoinFields: [foreignIdField],
-		alias: foreignTable,
+		alias: manyAlias,
 	};
 
 	const expectedGeneratedQuery: AbstractSqlQuery = {
@@ -63,10 +63,11 @@ test('getNestedMany wit a single identifier column', () => {
 					type: 'primitive',
 					table: foreignTable,
 					column: foreignIdField,
-					as: foreignIdFieldId,
+					as: `${foreignIdField}_RANDOM`,
 				},
 			],
 			from: foreignTable,
+			joins: [],
 			where: {
 				type: 'condition',
 				condition: {
@@ -86,7 +87,7 @@ test('getNestedMany wit a single identifier column', () => {
 			},
 		},
 		parameters: [randomPkValue],
-		aliasMapping: new Map([[foreignIdFieldId, [foreignIdField]]]),
+		aliasMapping: new Map([[`${foreignIdField}_RANDOM`, [foreignIdFieldAlias]]]),
 		nestedManys: [],
 	};
 
@@ -94,13 +95,13 @@ test('getNestedMany wit a single identifier column', () => {
 	expect(result.queryGenerator([randomPkValue])).toStrictEqual(expectedGeneratedQuery);
 });
 
-test('getNestedMany with a multiple identifier columns (composite keys)', () => {
+test('getNestedMany with a multiple identifiers (a composite key)', () => {
 	const localIdField1 = randomIdentifier();
 	const localIdField2 = randomIdentifier();
 
 	// the field the user wants to be returned
 	const desiredForeignField = randomIdentifier();
-	const desiredForeignFieldId = randomIdentifier();
+	const desiredForeignFieldAlias = randomIdentifier();
 
 	// the foreign keys
 	const foreignIdField1 = randomIdentifier();
@@ -112,47 +113,41 @@ test('getNestedMany with a multiple identifier columns (composite keys)', () => 
 	// the values of the local identifier fields, returned by the root query
 	const randomPkValue1 = randomIdentifier();
 	const randomPkValue2 = randomIdentifier();
+	const manyAlias = randomIdentifier();
 
-	const fieldMeta: AbstractQueryFieldNodeRelationalOneToMany = {
-		type: 'o2m',
-		join: {
-			local: {
-				fields: [localIdField1, localIdField2],
+	const field: AbstractQueryFieldNodeNestedMany = {
+		type: 'nested-many',
+		fields: [
+			{
+				type: 'primitive',
+				field: desiredForeignField,
+				alias: desiredForeignFieldAlias,
 			},
-			foreign: {
-				store: foreignStore,
-				collection: foreignTable,
-				fields: [foreignIdField1, foreignIdField2],
-			},
-		},
-	};
-
-	const idxGen = parameterIndexGenerator();
-
-	const nestedResult: Result = {
-		clauses: {
-			select: [
-				{
-					type: 'primitive',
-					table: foreignTable,
-					column: desiredForeignField,
-					as: desiredForeignFieldId,
+		],
+		meta: {
+			type: 'o2m',
+			join: {
+				local: {
+					fields: [localIdField1, localIdField2],
 				},
-			],
-			joins: [],
+				foreign: {
+					store: foreignStore,
+					collection: foreignTable,
+					fields: [foreignIdField1, foreignIdField2],
+				},
+			},
 		},
-		parameters: [],
-		aliasMapping: new Map([[desiredForeignFieldId, [desiredForeignField]]]),
-		nestedManys: [],
+		modifiers: {},
+		alias: manyAlias,
 	};
 
-	const result = getNestedMany(fieldMeta, nestedResult, idxGen, foreignTable);
+	const result = getNestedMany(field);
 
 	const expected: AbstractSqlNestedMany = {
 		queryGenerator: expect.any(Function),
 		localJoinFields: [localIdField1, localIdField2],
 		foreignJoinFields: [foreignIdField1, foreignIdField2],
-		alias: foreignTable,
+		alias: manyAlias,
 	};
 
 	const expectedGeneratedQuery: AbstractSqlQuery = {
@@ -162,10 +157,11 @@ test('getNestedMany with a multiple identifier columns (composite keys)', () => 
 					type: 'primitive',
 					table: foreignTable,
 					column: desiredForeignField,
-					as: desiredForeignFieldId,
+					as: `${desiredForeignField}_RANDOM`,
 				},
 			],
 			from: foreignTable,
+			joins: [],
 			where: {
 				type: 'logical',
 				operator: 'and',
@@ -209,10 +205,161 @@ test('getNestedMany with a multiple identifier columns (composite keys)', () => 
 			},
 		},
 		parameters: [randomPkValue1, randomPkValue2],
-		aliasMapping: new Map([[desiredForeignFieldId, [desiredForeignField]]]),
+		aliasMapping: new Map([[`${desiredForeignField}_RANDOM`, [desiredForeignFieldAlias]]]),
 		nestedManys: [],
 	};
 
 	expect(result).toStrictEqual(expected);
 	expect(result.queryGenerator([randomPkValue1, randomPkValue2])).toMatchObject(expectedGeneratedQuery);
+});
+
+test('getNestedMany with a single identifier and some modifiers', () => {
+	const localIdField = randomIdentifier();
+	const foreignIdField = randomIdentifier();
+	const foreignIdFieldAlias = randomIdentifier();
+	const foreignTable = randomIdentifier();
+	const foreignStore = randomIdentifier();
+	const randomPkValue = randomIdentifier();
+	const randomCompareValue = randomIdentifier();
+	const randomLimit = randomInteger(1, 100);
+	const manyAlias = randomIdentifier();
+
+	const field: AbstractQueryFieldNodeNestedMany = {
+		type: 'nested-many',
+		fields: [
+			{
+				type: 'primitive',
+				field: foreignIdField,
+				alias: foreignIdFieldAlias,
+			},
+		],
+		meta: {
+			type: 'o2m',
+			join: {
+				local: {
+					fields: [localIdField],
+				},
+				foreign: {
+					store: foreignStore,
+					collection: foreignTable,
+					fields: [foreignIdField],
+				},
+			},
+		},
+		modifiers: {
+			filter: {
+				type: 'condition',
+				condition: {
+					type: 'condition-string',
+					operation: 'starts_with',
+					target: {
+						type: 'primitive',
+						field: foreignIdField,
+					},
+					compareTo: randomCompareValue,
+				},
+			},
+			limit: {
+				type: 'limit',
+				value: randomLimit,
+			},
+			sort: [
+				{
+					type: 'sort',
+					direction: 'ascending',
+					target: {
+						type: 'primitive',
+						field: foreignIdField,
+					},
+				},
+			],
+		},
+		alias: manyAlias,
+	};
+
+	const result = getNestedMany(field);
+
+	const expected: AbstractSqlNestedMany = {
+		queryGenerator: expect.any(Function),
+		localJoinFields: [localIdField],
+		foreignJoinFields: [foreignIdField],
+		alias: manyAlias,
+	};
+
+	const expectedGeneratedQuery: AbstractSqlQuery = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: foreignTable,
+					column: foreignIdField,
+					as: `${foreignIdField}_RANDOM`,
+				},
+			],
+			from: foreignTable,
+			joins: [],
+			where: {
+				type: 'logical',
+				operator: 'and',
+				negate: false,
+				childNodes: [
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'starts_with',
+							target: {
+								type: 'primitive',
+								table: foreignTable,
+								column: foreignIdField,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 0,
+							},
+						},
+						negate: false,
+					},
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'eq',
+							target: {
+								type: 'primitive',
+								table: foreignTable,
+								column: foreignIdField,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 2,
+							},
+						},
+						negate: false,
+					},
+				],
+			},
+			limit: {
+				type: 'value',
+				parameterIndex: 1,
+			},
+			order: [
+				{
+					type: 'order',
+					orderBy: {
+						type: 'primitive',
+						table: foreignTable,
+						column: foreignIdField,
+					},
+					direction: 'ASC',
+				},
+			],
+		},
+		parameters: [randomCompareValue, randomLimit, randomPkValue],
+		aliasMapping: new Map([[`${foreignIdField}_RANDOM`, [foreignIdFieldAlias]]]),
+		nestedManys: [],
+	};
+
+	expect(result).toStrictEqual(expected);
+	expect(result.queryGenerator([randomPkValue])).toStrictEqual(expectedGeneratedQuery);
 });

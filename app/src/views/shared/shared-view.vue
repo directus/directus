@@ -63,14 +63,11 @@ const logoURL = computed<string | null>(() => {
 
 <style scoped lang="scss">
 .shared {
-	--input-height: 60px;
-	--input-padding: 16px;
-
 	width: 100%;
 	height: 100%;
 	padding-bottom: 64px;
 	overflow: auto;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .inline-container {
@@ -81,7 +78,7 @@ header {
 	margin-bottom: 32px;
 	padding: 10px;
 	background-color: var(--theme--background);
-	border-bottom: var(--theme--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .container {

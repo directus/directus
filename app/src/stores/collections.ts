@@ -67,7 +67,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	}
 
 	function prepareCollectionForApp(collection: CollectionRaw): Collection {
-		const icon = collection.meta?.icon || 'label';
+		const icon = collection.meta?.icon || 'database';
 		const color = collection.meta?.color;
 		let name = formatTitle(collection.collection);
 		const type = getCollectionType(collection);
@@ -83,10 +83,8 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 			}
 		}
 
-		if (collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)) {
-			for (let i = 0; i < collection.meta.translations.length; i++) {
-				const { language, translation, singular, plural } = collection.meta.translations[i];
-
+		if (collection.meta && Array.isArray(collection.meta.translations)) {
+			for (const { language, translation, singular, plural } of collection.meta.translations) {
 				i18n.global.mergeLocaleMessage(language, {
 					...(translation
 						? {
@@ -163,8 +161,8 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 
 				collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse.data.data)];
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
 	}
 
@@ -176,8 +174,8 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 			notify({
 				title: i18n.global.t('update_collection_success'),
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
 	}
 
@@ -191,8 +189,8 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 			notify({
 				title: i18n.global.t('delete_collection_success'),
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
 	}
 

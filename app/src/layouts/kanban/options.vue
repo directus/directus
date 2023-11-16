@@ -183,6 +183,6 @@ const userFieldSync = useSync(props, 'userField', emit);
 .nested-options {
 	display: grid;
 	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
-	gap: var(--form-vertical-gap) var(--form-horizontal-gap);
+	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
 }
 </style>

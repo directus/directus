@@ -1,11 +1,12 @@
-import { useSettingsStore } from '@/stores/settings';
+import type { Info } from '@/stores/server';
+import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
-import type { Settings, User } from '@directus/types';
+import type { User } from '@directus/types';
 import { merge } from 'lodash';
 import { computed, ref } from 'vue';
 
 export const useThemeConfiguration = () => {
-	const settingsStore = useSettingsStore();
+	const serverStore = useServerStore();
 	const userStore = useUserStore();
 
 	const browserAppearance = ref<'dark' | 'light'>(
@@ -17,10 +18,10 @@ export const useThemeConfiguration = () => {
 	});
 
 	const systemSettings = computed(() => {
-		let system: Settings | null = null;
+		let system: Info['project'] | null = null;
 
-		if (settingsStore.settings) {
-			system = settingsStore.settings;
+		if (serverStore.info?.project) {
+			system = serverStore.info.project;
 		}
 
 		return system;

@@ -299,10 +299,10 @@ function setContent() {
 	display: block;
 	flex-grow: 1;
 	height: 100%;
-	padding: var(--input-padding) 0;
+	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 
 	:deep(span) {

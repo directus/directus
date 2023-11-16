@@ -98,8 +98,8 @@ function toggle(item: Record<string, any>) {
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 12px;
-	background-color: var(--background-normal);
-	border: var(--theme--border-width) solid var(--background-normal);
+	background-color: var(--theme--background-normal);
+	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
 	cursor: pointer;
@@ -108,7 +108,7 @@ function toggle(item: Record<string, any>) {
 	transition-property: background-color, border-color;
 
 	&:not(.disabled):hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--theme--border-color-accent);
 	}
 
 	&.disabled {

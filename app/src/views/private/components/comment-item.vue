@@ -7,20 +7,21 @@ import { ref, watch } from 'vue';
 import CommentInput from './comment-input.vue';
 import CommentItemHeader from './comment-item-header.vue';
 
-interface Props {
-	activity: Activity & {
-		display: string;
-		user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
-	};
-	refresh: () => void;
-	collection: string;
-	primaryKey: string | number;
-	userPreviews: Record<string, any>;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	userPreviews: () => ({}),
-});
+const props = withDefaults(
+	defineProps<{
+		activity: Activity & {
+			display: string;
+			user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
+		};
+		refresh: () => Promise<void>;
+		collection: string;
+		primaryKey: string | number;
+		userPreviews: Record<string, any>;
+	}>(),
+	{
+		userPreviews: () => ({}),
+	}
+);
 
 const { editing, cancelEditing } = useEdits();
 
@@ -45,8 +46,8 @@ function useEdits() {
 			});
 
 			props.refresh();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			savingEdits.value = false;
 			editing.value = false;
@@ -151,10 +152,10 @@ function useEdits() {
 .comment-item .content :deep(pre) {
 	padding: 2px 4px;
 	color: var(--theme--foreground);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 	margin: 2px 0;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 	max-width: 100%;
 	overflow-x: auto;
@@ -163,10 +164,10 @@ function useEdits() {
 .comment-item .content :deep(code) {
 	padding: 2px 4px;
 	color: var(--theme--foreground);
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 	margin: 2px 0;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .comment-item .content :deep(pre > code) {
@@ -214,7 +215,7 @@ function useEdits() {
 	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	font-size: 12px;
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
 	border-radius: 12px;
 	transition: color var(--fast) var(--transition), background-color var(--fast) var(--transition);
 }

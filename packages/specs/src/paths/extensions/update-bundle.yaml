@@ -1,0 +1,47 @@
+patch:
+  summary: Update an Extension
+  description: Update an existing extension.
+  operationId: updateExtensions
+  parameters:
+    - in: path
+      name: bundle
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: name
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            meta:
+              type: object
+              description:
+                Directus metadata for the extension. Where the configuration for the extension in the current project is
+                stored.
+              properties:
+                enabled:
+                  description: Whether or not the extension is enabled.
+                  example: true
+                  type: boolean
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Extensions'
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Extensions

@@ -1,30 +1,26 @@
 <script setup lang="ts">
-interface Props {
-	/** The value that will be displayed inside the badge Only 2 characters allowed) */
-	value?: string | number | boolean | null;
-	/** Only will show a small dot without any content */
-	dot?: boolean;
-	/** Aligns the badge on the left side */
-	left?: boolean;
-	/** Aligns the badge on the bottom side */
-	bottom?: boolean;
-	/** Shows an icon instead of text */
-	icon?: string | null;
-	/** Shows a border around the badge */
-	bordered?: boolean;
-	/** Hide the badge */
-	disabled?: boolean;
-}
-
-withDefaults(defineProps<Props>(), {
-	value: null,
-	dot: false,
-	left: false,
-	bottom: false,
-	icon: null,
-	bordered: false,
-	disabled: false,
-});
+withDefaults(
+	defineProps<{
+		/** The value that will be displayed inside the badge Only 2 characters allowed) */
+		value?: string | number | boolean | null;
+		/** Only will show a small dot without any content */
+		dot?: boolean;
+		/** Aligns the badge on the left side */
+		left?: boolean;
+		/** Aligns the badge on the bottom side */
+		bottom?: boolean;
+		/** Shows an icon instead of text */
+		icon?: string | null;
+		/** Shows a border around the badge */
+		bordered?: boolean;
+		/** Hide the badge */
+		disabled?: boolean;
+	}>(),
+	{
+		value: null,
+		icon: null,
+	}
+);
 </script>
 
 <template>
@@ -39,14 +35,18 @@ withDefaults(defineProps<Props>(), {
 </template>
 
 <style lang="scss" scoped>
-:global(body) {
-	--v-badge-color: var(--white);
-	--v-badge-background-color: var(--red);
-	--v-badge-border-color: var(--theme--background);
-	--v-badge-offset-x: 0px;
-	--v-badge-offset-y: 0px;
-	--v-badge-size: 16px;
-}
+/*
+
+	Available Variables:
+
+			--v-badge-color             [var(--white)]
+			--v-badge-background-color  [var(--red)]
+			--v-badge-border-color      [var(--theme--background)]
+			--v-badge-offset-x          [0px]
+			--v-badge-offset-y          [0px]
+			--v-badge-size              [16px]
+
+*/
 
 .v-badge {
 	position: relative;
@@ -62,42 +62,43 @@ withDefaults(defineProps<Props>(), {
 
 	.badge {
 		position: absolute;
-		top: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-y));
-		right: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-x));
+		top: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
+		right: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
 		z-index: 1;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		width: max-content;
-		min-width: var(--v-badge-size);
-		height: var(--v-badge-size);
+		min-width: var(--v-badge-size, 16px);
+		height: var(--v-badge-size, 16px);
 		padding: 0 5px;
-		color: var(--v-badge-color);
+		color: var(--v-badge-color, var(--white));
 		font-weight: 800;
 		font-size: 9px;
-		background-color: var(--v-badge-background-color);
-		border-radius: calc(var(--v-badge-size) / 2);
+		background-color: var(--v-badge-background-color, var(--red));
+		border-radius: calc(var(--v-badge-size, 16px) / 2);
 
 		&.left {
 			right: unset;
-			left: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-x));
+			left: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
 		}
 
 		&.bottom {
 			top: unset;
-			bottom: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-y));
+			bottom: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
 		}
 
 		&.bordered {
-			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color))
-				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color)) drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color))
-				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color));
+			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background)))
+				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background)))
+				drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background)))
+				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background)));
 		}
 
 		&.dot {
-			width: var(--v-badge-size);
+			width: var(--v-badge-size, 16px);
 			min-width: 0;
-			height: var(--v-badge-size);
+			height: var(--v-badge-size, 16px);
 			border: 0;
 
 			* {

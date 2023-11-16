@@ -47,8 +47,8 @@ export async function uploadFile(
 		emitter.emit(Events.upload);
 
 		return response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 
 	function onUploadProgress(progressEvent: AxiosProgressEvent) {

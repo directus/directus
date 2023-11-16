@@ -114,7 +114,7 @@ function setUpChart() {
 			height: '100%',
 			width: '100%',
 			toolbar: { show: false },
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			selection: { enabled: false },
 			zoom: { enabled: false },
@@ -130,7 +130,7 @@ function setUpChart() {
 			opacity: 1,
 		},
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: props.showHeader ? -20 : -5,
 				bottom: 5,
@@ -184,7 +184,7 @@ function setUpChart() {
 				show: !props.horizontal,
 				height: 0.5,
 				width: '1px',
-				color: 'var(--border-subdued)',
+				color: 'var(--theme--border-color-subdued)',
 			},
 			axisTicks: {
 				show: false,
@@ -194,7 +194,7 @@ function setUpChart() {
 				rotate: 0,
 				showDuplicates: true,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -215,7 +215,7 @@ function setUpChart() {
 				show: props.horizontal,
 				height: 0.5,
 				width: '1px',
-				color: 'var(--border-subdued)',
+				color: 'var(--theme--border-color-subdued)',
 			},
 			axisTicks: {
 				show: false,
@@ -224,7 +224,7 @@ function setUpChart() {
 				show: ['both', 'yOnly'].includes(props.showAxisLabels),
 				formatter: formatNumericValue,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -346,11 +346,11 @@ function setUpChart() {
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 

@@ -6,3 +6,13 @@ dist/
 !/docs/.typedocs/
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
+*.yml
+*.yaml
+*.md
+*.txt
+*.json
+*.scss
+*.css
+*.svg
+*.liquid
+Dockerfile

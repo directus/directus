@@ -100,7 +100,7 @@ function displayValue(value: number) {
 	});
 }
 
-function getColor(input) {
+function getColor(input?: number) {
 	if (isNil(input)) return null;
 
 	let matchingFormat = null;
@@ -199,7 +199,7 @@ function getColor(input) {
 }
 .metric-list-item {
 	height: 36px;
-	border-bottom: var(--theme--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .metric-list-item:last-child {

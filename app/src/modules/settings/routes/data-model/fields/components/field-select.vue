@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, unref } from 'vue';
+import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
-import { useRouter } from 'vue-router';
-import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getSpecialForType } from '@/utils/get-special-for-type';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field } from '@directus/types';
-import FieldSelectMenu from './field-select-menu.vue';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import Draggable from 'vuedraggable';
 import formatTitle from '@directus/format-title';
-import { useExtension } from '@/composables/use-extension';
-import { getRelatedCollection } from '@/utils/get-related-collection';
+import type { Field, Width } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import Draggable from 'vuedraggable';
+import FieldSelectMenu from './field-select-menu.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -60,7 +60,7 @@ const showRelatedCollectionLink = computed(
 		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
 );
 
-function setWidth(width: string) {
+function setWidth(width: Width) {
 	fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
 }
 
@@ -131,8 +131,8 @@ function useDuplicate() {
 			});
 
 			duplicateActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			duplicating.value = false;
 		}
@@ -321,8 +321,8 @@ async function onGroupSortChange(fields: Field[]) {
 @import '@/styles/mixins/form-grid';
 
 .field-select {
-	--input-height: 48px;
-	--input-padding: 8px;
+	--input-height: 40px;
+	--theme--form--field--input--padding: 8px;
 }
 
 .full,
@@ -331,11 +331,11 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .v-input.monospace {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-select.monospace {
-	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-icon {
@@ -372,8 +372,8 @@ async function onGroupSortChange(fields: Field[]) {
 
 .group {
 	position: relative;
-	min-height: var(--input-height);
-	padding: var(--input-padding);
+	min-height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	padding-top: 40px;
 	padding-bottom: 16px;
 	border-radius: var(--theme--border-radius);
@@ -417,7 +417,7 @@ async function onGroupSortChange(fields: Field[]) {
 		margin-bottom: 8px;
 		padding-top: 8px;
 		color: var(--theme--primary);
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 
 		.drag-handle {
 			--v-icon-color: var(--theme--primary);
@@ -450,11 +450,10 @@ async function onGroupSortChange(fields: Field[]) {
 
 .field {
 	&.v-input :deep(.input) {
-		border: var(--theme--border-width) solid var(--border-subdued);
+		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	&.v-input :deep(.input:hover) {
-		background-color: var(--card-face-color);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color-hover);
 	}
 
@@ -473,13 +472,13 @@ async function onGroupSortChange(fields: Field[]) {
 
 			.name {
 				margin-right: 8px;
-				font-family: var(--theme--font-family-monospace);
+				font-family: var(--theme--fonts--monospace--font-family);
 			}
 
 			.interface {
 				display: none;
 				color: var(--theme--foreground-subdued);
-				font-family: var(--theme--font-family-monospace);
+				font-family: var(--theme--fonts--monospace--font-family);
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);
 
@@ -510,7 +509,7 @@ async function onGroupSortChange(fields: Field[]) {
 }
 
 .form-grid {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 }
 
 .required {

@@ -77,13 +77,13 @@ const hasValue = computed(() => {
 	&:not(.root) {
 		.group-contents {
 			padding-left: 2ch;
-			border-left: 1px solid var(--border-subdued);
+			border-left: 1px solid var(--theme--border-color-subdued);
 		}
 	}
 }
 
 .group-toggle {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground);
 	width: calc(100% + 16px);
 	text-align: left;
@@ -107,7 +107,7 @@ const hasValue = computed(() => {
 	}
 
 	&:hover {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}
 

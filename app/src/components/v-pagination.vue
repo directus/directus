@@ -141,10 +141,6 @@ function toPage(page: number) {
 </template>
 
 <style scoped>
-:global(body) {
-	--v-pagination-active-color: var(--theme--primary);
-}
-
 .v-pagination {
 	display: flex;
 }
@@ -163,8 +159,8 @@ function toPage(page: number) {
 }
 
 .v-button {
-	--v-button-background-color-hover: var(--background-normal);
-	--v-button-background-color: var(--background-subdued);
+	--v-button-background-color-hover: var(--theme--background-normal);
+	--v-button-background-color: var(--theme--form--field--input--background-subdued);
 	--v-button-color: var(--theme--foreground);
 
 	margin: 0 2px;

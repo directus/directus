@@ -68,7 +68,7 @@ span[mi][btn][warn] {
 
 span[mi][btn][outline] {
 	background-color: transparent;
-	border: 2px solid var(--vp-c-purple);
+	border: var(--theme--border-width) solid var(--vp-c-purple);
 	color: var(--vp-c-purple);
 }
 

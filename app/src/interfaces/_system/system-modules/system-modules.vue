@@ -268,29 +268,25 @@ function remove(id: string) {
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .icon {
 	margin: 0 12px;
 }
 
-.v-list-item.enabled {
-	--v-list-item-border-color: var(--theme--form--field--input--border-color-focus);
-	--v-list-item-color: var(--theme--primary-accent);
-	--v-list-item-background-color: var(--theme--primary-background);
-	--v-list-item-border-color-hover: var(--theme--primary-accent);
-	--v-list-item-color-hover: var(--theme--primary-accent);
-	--v-list-item-background-color-hover: var(--theme--primary-background);
-	--v-icon-color: var(--theme--primary);
-	--v-icon-color-hover: var(--theme--form--field--input--foreground);
+.system-modules {
+	--v-list-item-color: var(--theme--form--field--input--foreground-subdued);
+
+	.enabled {
+		--v-list-item-color: var(--theme--form--field--input--foreground);
+	}
+}
+
+.drag-handle {
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .to {
-	color: var(--theme--form--field--input--foreground-subdued);
-	font-family: var(--theme--font-family-monospace);
-}
-
-.enabled .to {
-	color: var(--theme--primary-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .drawer-content {

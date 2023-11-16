@@ -15,15 +15,19 @@ defineProps<Props>();
 </template>
 
 <style lang="scss" scoped>
-:global(body) {
-	--v-icon-file-color: var(--theme--primary);
-	--v-icon-file-background-color: var(--background-normal);
-}
+/*
+
+	Available Variables:
+
+		--v-icon-file-color             [var(--theme--primary)]
+		--v-icon-file-background-color  [var(--theme--background-normal)]
+
+*/
 
 .icon {
 	--v-icon-size: 64px;
-	--v-icon-color: var(--v-icon-file-color);
-	color: var(--v-icon-file-color);
+	--v-icon-color: var(--v-icon-file-color, var(--theme--primary));
+	color: var(--v-icon-file-color, var(--theme--primary));
 	position: relative;
 
 	.label {
@@ -41,7 +45,7 @@ defineProps<Props>();
 
 	&.right {
 		.label {
-			background-color: var(--v-icon-file-background-color);
+			background-color: var(--v-icon-file-background-color, var(--theme--background-normal));
 			left: calc(100% - 12px - 3ch);
 			text-align: left;
 			transform: none;

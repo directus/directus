@@ -1,25 +1,24 @@
 import { REDACTED_TEXT } from '@directus/utils';
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { Writable } from 'node:stream';
 import { pino } from 'pino';
+import { pinoHttp, type HttpLogger } from 'pino-http';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { doMockEnv } from './__utils__/mock-env.js';
 
 const REFRESH_TOKEN_COOKIE_NAME = 'directus_refresh_token';
 
-vi.doMock('./env', async () => {
-	const MOCK_ENV = {
-		AUTH_PROVIDERS: 'ranger,monospace',
-		AUTH_RANGER_DRIVER: 'oauth2',
-		AUTH_MONOSPACE_DRIVER: 'openid',
-		REFRESH_TOKEN_COOKIE_NAME,
-		LOG_LEVEL: 'info',
-		LOG_STYLE: 'raw',
-	};
+const MOCK_ENV = {
+	AUTH_PROVIDERS: 'ranger,monospace',
+	AUTH_RANGER_DRIVER: 'oauth2',
+	AUTH_MONOSPACE_DRIVER: 'openid',
+	REFRESH_TOKEN_COOKIE_NAME,
+	LOG_LEVEL: 'info',
+	LOG_STYLE: 'raw',
+};
 
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
-});
+const { setEnv } = doMockEnv({ env: MOCK_ENV });
 
 const { httpLoggerOptions } = await import('./logger.js');
 
@@ -147,5 +146,60 @@ describe('res.headers', () => {
 				},
 			},
 		});
+	});
+});
+
+describe('ignored paths', () => {
+	afterEach(() => {
+		vi.resetModules();
+	});
+
+	const doRequest = (logger: HttpLogger) =>
+		new Promise((resolve) => {
+			const server = http.createServer((req, res) => {
+				logger(req, res);
+				res.end();
+			});
+
+			server.listen(0, '127.0.0.1', () => {
+				const address = server.address() as AddressInfo;
+				const path = '/server/ping';
+
+				http.get('http://' + address.address + ':' + address.port + path, () => {
+					server.close(resolve);
+				});
+			});
+		});
+
+	test('should log request with no ignored paths specified', async () => {
+		const { httpLoggerEnvConfig } = await import('./logger.js');
+
+		const logger = pinoHttp({
+			logger: pino(httpLoggerOptions, stream),
+			...httpLoggerEnvConfig,
+		});
+
+		await doRequest(logger);
+
+		expect(logOutput.mock.calls[0][0]).toMatchObject({
+			req: {
+				url: '/server/ping',
+			},
+		});
+	});
+
+	test('should not log request when it matches ignored path', async () => {
+		setEnv({ LOG_HTTP_IGNORE_PATHS: '/server/ping' });
+
+		const { httpLoggerEnvConfig } = await import('./logger.js');
+
+		const logger = pinoHttp({
+			logger: pino(httpLoggerOptions, stream),
+			...httpLoggerEnvConfig,
+		});
+
+		await doRequest(logger);
+
+		expect(logOutput).not.toHaveBeenCalled();
 	});
 });

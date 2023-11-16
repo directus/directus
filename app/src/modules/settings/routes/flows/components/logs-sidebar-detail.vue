@@ -7,15 +7,13 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 
-const { t } = useI18n();
-
-interface Props {
+const props = defineProps<{
 	flow: FlowRaw;
-}
-
-const props = defineProps<Props>();
+}>();
 
 const { flow } = toRefs(props);
+
+const { t } = useI18n();
 
 const { triggers } = getTriggers();
 const { operations } = useExtensions();
@@ -202,7 +200,7 @@ const steps = computed(() => {
 		z-index: 1;
 		width: calc(100% + 8px);
 		height: calc(100% + 8px);
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -215,7 +213,7 @@ const steps = computed(() => {
 
 		.header {
 			.dot {
-				border-color: var(--background-normal-alt);
+				border-color: var(--theme--background-accent);
 			}
 		}
 
@@ -230,8 +228,8 @@ const steps = computed(() => {
 }
 
 .json {
-	background-color: var(--background-subdued);
-	font-family: var(--theme--font-family-monospace);
+	background-color: var(--theme--background-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
 	border-radius: var(--theme--border-radius);
 	padding: 20px;
 	margin-top: 20px;
@@ -251,7 +249,7 @@ const steps = computed(() => {
 			width: var(--theme--border-width);
 			left: -11px;
 			top: 0;
-			background-color: var(--border-subdued);
+			background-color: var(--theme--border-color-subdued);
 			height: 100%;
 		}
 
@@ -279,7 +277,7 @@ const steps = computed(() => {
 	}
 
 	.mono {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
 	}
 
@@ -291,7 +289,7 @@ const steps = computed(() => {
 		width: 12px;
 		height: 12px;
 		background-color: var(--theme--primary);
-		border: 2px solid var(--theme--background);
+		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: 8px;
 
 		&.resolve {

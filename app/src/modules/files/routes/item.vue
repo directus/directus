@@ -198,8 +198,8 @@ function useMovetoFolder() {
 				title: t('file_moved', { folder }),
 				icon: 'folder_move',
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			moveToDialogActive.value = false;
 			moving.value = false;
@@ -373,7 +373,7 @@ function useMovetoFolder() {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--background-normal);
+	--v-button-background-color: var(--theme--background-normal);
 }
 
 .file-item {
@@ -382,6 +382,6 @@ function useMovetoFolder() {
 }
 
 .preview {
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 }
 </style>

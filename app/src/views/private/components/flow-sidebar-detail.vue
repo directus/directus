@@ -10,19 +10,20 @@ import { useI18n } from 'vue-i18n';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';
 
-interface Props {
-	collection: string;
-	primaryKey?: string | number;
-	selection?: (number | string)[];
-	location: 'collection' | 'item';
-	hasEdits?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	primaryKey: undefined,
-	selection: () => [],
-	hasEdits: false,
-});
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		primaryKey?: string | number;
+		selection?: (number | string)[];
+		location: 'collection' | 'item';
+		hasEdits?: boolean;
+	}>(),
+	{
+		primaryKey: undefined,
+		selection: () => [],
+		hasEdits: false,
+	}
+);
 
 const emit = defineEmits(['refresh']);
 
@@ -153,8 +154,8 @@ const runManualFlow = async (flowId: string) => {
 		});
 
 		resetConfirm();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 	}
@@ -222,7 +223,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .fields {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;
@@ -230,7 +231,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .v-icon {
@@ -238,10 +239,10 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .confirm-form {
-	--form-horizontal-gap: 24px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 24px;
+	--theme--form--row-gap: 24px;
 
-	margin-top: var(--v-card-padding);
+	margin-top: var(--v-card-padding, 16px);
 
 	:deep(.type-label) {
 		font-size: 1rem;

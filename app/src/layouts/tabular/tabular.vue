@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { HeaderRaw } from '@/components/v-table/types';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
@@ -13,9 +7,12 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
+import type { Field, Filter, Item } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+defineOptions({ inheritAttrs: false });
 
 interface Props {
 	collection: string;
@@ -98,7 +95,9 @@ const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	props.limit
 );
 
-limitWritable.value = selectedSize;
+if (limitWritable.value !== selectedSize) {
+	limitWritable.value = selectedSize;
+}
 
 const showManualSort = computed(() => {
 	if (!props.sortField) return false;

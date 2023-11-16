@@ -55,7 +55,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 .rule {
 	display: flex;
 	align-items: center;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	transition: color var(--fast) var(--transition);
 
 	&.has-value {
@@ -87,6 +87,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 		min-width: 5ch;
 		width: v-bind(valueLength);
 		max-width: 100%;
+		background: transparent;
 
 		&::placeholder {
 			color: var(--theme--form--field--input--foreground-subdued);

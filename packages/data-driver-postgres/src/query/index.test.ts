@@ -1,4 +1,3 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
 import type { AbstractSqlClauses } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
@@ -54,25 +53,27 @@ test('statement with limit and offset', () => {
 });
 
 test('statement with order', () => {
+	const orderField = randomIdentifier();
+	const table = randomIdentifier();
+
 	sample.clauses.order = [
 		{
 			type: 'order',
 			orderBy: {
 				type: 'primitive',
-				field: randomIdentifier(),
+				column: orderField,
+				table: table,
 			},
 			direction: 'ASC',
 		},
 	];
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
-			sample.clauses.from
-		}" ORDER BY "${(sample.clauses.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field}" ASC;`
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" ORDER BY "${table}"."${orderField}" ASC;`
 	);
 });
 
-test('statement with all possible modifiers', () => {
+test('statement with all possible local modifiers', () => {
 	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
 	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
 
@@ -126,12 +127,15 @@ test('statement with all possible modifiers', () => {
 		],
 	};
 
+	const sortTable = randomIdentifier();
+
 	sample.clauses.order = [
 		{
 			type: 'order',
 			orderBy: {
 				type: 'primitive',
-				field: orderField,
+				column: orderField,
+				table: sortTable,
 			},
 			direction: 'ASC',
 		},
@@ -144,6 +148,81 @@ test('statement with all possible modifiers', () => {
 			firstConditionParameterIndex + 1
 		} AND "${secondConditionTable}"."${secondConditionColumn}" < $${
 			secondConditionParameterIndex + 1
-		} ORDER BY "${orderField}" ASC LIMIT $1 OFFSET $2;`
+		} ORDER BY "${sortTable}"."${orderField}" ASC LIMIT $1 OFFSET $2;`
+	);
+});
+
+test('statement with all filter on foreign field', () => {
+	const foreignCollection = randomIdentifier();
+	const targetField = randomIdentifier();
+	const leftHandIdentifierField = randomIdentifier();
+	const joinAlias = randomIdentifier();
+	const firstField = randomIdentifier();
+	const secondField = randomIdentifier();
+	const rootCollection = randomIdentifier();
+	const parameterIndex = 0;
+
+	const clauses: AbstractSqlClauses = {
+		select: [
+			{
+				type: 'primitive',
+				table: rootCollection,
+				column: firstField,
+			},
+			{
+				type: 'primitive',
+				table: rootCollection,
+				column: secondField,
+			},
+		],
+		from: rootCollection,
+		joins: [
+			{
+				type: 'join',
+				table: foreignCollection,
+				on: {
+					type: 'condition',
+					condition: {
+						type: 'condition-field',
+						target: {
+							type: 'primitive',
+							table: foreignCollection,
+							column: targetField,
+						},
+						operation: 'eq',
+						compareTo: {
+							type: 'primitive',
+							table: rootCollection,
+							column: leftHandIdentifierField,
+						},
+					},
+					negate: false,
+				},
+				as: joinAlias,
+			},
+		],
+		where: {
+			type: 'condition',
+			negate: false,
+			condition: {
+				type: 'condition-string',
+				target: {
+					type: 'primitive',
+					table: foreignCollection,
+					column: targetField,
+				},
+				operation: 'starts_with',
+				compareTo: {
+					type: 'value',
+					parameterIndex,
+				},
+			},
+		},
+	};
+
+	expect(convertToActualStatement(clauses)).toEqual(
+		`SELECT "${rootCollection}"."${firstField}", "${rootCollection}"."${secondField}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" "${joinAlias}" ON "${foreignCollection}"."${targetField}" = "${rootCollection}"."${leftHandIdentifierField}" WHERE "${foreignCollection}"."${targetField}" LIKE $${
+			parameterIndex + 1
+		}||'%';`
 	);
 });

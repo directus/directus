@@ -157,7 +157,7 @@ function setUpChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			sparkline: {
 				enabled: isSparkline,
@@ -204,7 +204,7 @@ function setUpChart() {
 			enabled: false,
 		},
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: isSparkline ? (props.showHeader && 0) || 5 : (props.showHeader && -20) || -2,
 				bottom: isSparkline ? 5 : 0,
@@ -252,7 +252,7 @@ function setUpChart() {
 				show: ['both', 'xAxis'].includes(props.showAxisLabels),
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -287,7 +287,7 @@ function setUpChart() {
 						  } as any);
 				},
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -302,7 +302,7 @@ function setUpChart() {
 				width: 8,
 				height: 8,
 			},
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
 			fontSize: '10px',
@@ -338,7 +338,7 @@ function setUpChart() {
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
@@ -348,7 +348,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 

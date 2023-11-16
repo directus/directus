@@ -188,7 +188,7 @@ function emitValue() {
 			--v-chip-color-hover: var(--foreground-inverted);
 
 			&.inactive {
-				--v-chip-background-color: var(--background-subdued);
+				--v-chip-background-color: var(--theme--form--field--input--background-subdued);
 				--v-chip-color: var(--theme--form--field--input--foreground-subdued);
 				--v-chip-background-color-hover: var(--theme--primary);
 				--v-chip-color-hover: var(--foreground-inverted);
@@ -201,7 +201,7 @@ function emitValue() {
 			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--theme--danger);
-			--v-chip-close-color: var(--v-chip-background-color);
+			--v-chip-close-color: var(--v-chip-background-color, var(--theme--background-normal));
 			--v-chip-close-color-hover: var(--white);
 
 			transition: all var(--fast) var(--transition);

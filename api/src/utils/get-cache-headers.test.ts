@@ -1,27 +1,19 @@
 import type { Request } from 'express';
-import { describe, expect, vi, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
+import { setEnv } from '../__utils__/mock-env.js';
 import { getCacheControlHeader } from './get-cache-headers.js';
 
-let factoryEnv: { [k: string]: any } = {};
-
-vi.mock('../../src/env', () => ({
-	default: new Proxy(
-		{},
-		{
-			get(_target, prop) {
-				return factoryEnv[prop as string];
-			},
-		}
-	),
-	getEnv: vi.fn().mockImplementation(() => factoryEnv),
-}));
+vi.mock('../env.js', async () => {
+	const { mockEnv } = await import('../__utils__/mock-env.js');
+	return mockEnv();
+});
 
 const scenarios = [
 	// Test the cache-control header
 	{
 		name: 'when cache-Control header includes no-store',
 		input: {
-			env: { CACHE_SKIP_ALLOWED: true },
+			env: { CACHE_SKIP_ALLOWED: 'true' },
 			headers: { 'Cache-Control': 'no-store' },
 			accountability: null,
 			ttl: 5678910,
@@ -33,7 +25,7 @@ const scenarios = [
 	{
 		name: 'when cache-Control header does not include no-store',
 		input: {
-			env: { CACHE_SKIP_ALLOWED: true },
+			env: { CACHE_SKIP_ALLOWED: 'true' },
 			headers: { other: 'value' },
 			accountability: null,
 			ttl: 5678910,
@@ -85,7 +77,7 @@ const scenarios = [
 		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is true',
 		input: {
 			env: {
-				CACHE_AUTO_PURGE: true,
+				CACHE_AUTO_PURGE: 'true',
 			},
 			headers: {},
 			accountability: null,
@@ -99,7 +91,7 @@ const scenarios = [
 		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is false',
 		input: {
 			env: {
-				CACHE_AUTO_PURGE: true,
+				CACHE_AUTO_PURGE: 'true',
 			},
 			headers: {},
 			accountability: null,
@@ -113,7 +105,7 @@ const scenarios = [
 		name: 'when CACHE_AUTO_PURGE is true and globalCacheSettings is true',
 		input: {
 			env: {
-				CACHE_AUTO_PURGE: false,
+				CACHE_AUTO_PURGE: 'false',
 			},
 			headers: {},
 			accountability: null,
@@ -121,7 +113,7 @@ const scenarios = [
 			globalCacheSettings: true,
 			personalized: false,
 		},
-		output: 'max-age=5679',
+		output: 'max-age=5679, s-maxage=0',
 	},
 
 	// Test personalized
@@ -169,7 +161,7 @@ const scenarios = [
 		name: 'when globalCacheSettings is true and CACHE_CONTROL_S_MAXAGE is set',
 		input: {
 			env: {
-				CACHE_CONTROL_S_MAXAGE: 123456,
+				CACHE_CONTROL_S_MAXAGE: '123456',
 			},
 			headers: {},
 			accountability: null,
@@ -180,9 +172,9 @@ const scenarios = [
 		output: 'max-age=5679, s-maxage=123456',
 	},
 	{
-		name: 'when globalCacheSettings is true and CACHE_CONTROL_S_MAXAGE is not set',
+		name: 'when globalCacheSettings is true and CACHE_CONTROL_S_MAXAGE is disabled',
 		input: {
-			env: {},
+			env: { CACHE_CONTROL_S_MAXAGE: '-1' },
 			headers: {},
 			accountability: null,
 			ttl: 5678910,
@@ -205,7 +197,8 @@ describe('get cache headers', () => {
 				}),
 			} as Partial<Request>;
 
-			factoryEnv = scenario.input.env;
+			setEnv(scenario.input.env);
+
 			const { ttl, globalCacheSettings, personalized } = scenario.input;
 
 			expect(getCacheControlHeader(mockRequest as Request, ttl, globalCacheSettings, personalized)).toEqual(
