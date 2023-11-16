@@ -182,7 +182,7 @@ const options = computed({
 }
 
 .monospace {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .save {

@@ -1827,6 +1827,9 @@ importers:
 
   packages/themes:
     dependencies:
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@sinclair/typebox':
         specifier: 0.31.17
         version: 0.31.17

@@ -310,7 +310,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	padding-bottom: 32px;
 	overflow: hidden;
 	color: var(--theme--foreground);
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	white-space: nowrap;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

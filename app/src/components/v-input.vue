@@ -283,7 +283,7 @@ function stepDown() {
 /**
 	Available component overrides:
 
-	--v-input-font-family         [--theme--font-family-sans-serif]
+	--v-input-font-family         [--theme--fonts--sans--font-family]
 	--v-input-placeholder-color   [--theme--foreground-subdued]
 	--v-input-color               [--theme--form--field--input--foreground]
 	--v-input-background-color    [--theme--form--field--input--background]
@@ -316,7 +316,7 @@ function stepDown() {
 		padding-top: 0px;
 		padding-bottom: 0px;
 		color: var(--v-input-color, var(--theme--form--field--input--foreground));
-		font-family: var(--v-input-font-family, var(--theme--font-family-sans-serif));
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: var(--v-input-background-color, var(--theme--form--field--input--background));
 		border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--v-input-border-radius, var(--theme--border-radius));
@@ -402,7 +402,7 @@ function stepDown() {
 		padding: var(--theme--form--field--input--padding);
 		padding-right: 0px;
 		padding-left: 0px;
-		font-family: var(--v-input-font-family, var(--theme--font-family-sans-serif));
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;
 		appearance: none;

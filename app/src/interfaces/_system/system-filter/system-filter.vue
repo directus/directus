@@ -280,7 +280,7 @@ function addKeyAsNode() {
 
 		.no-rules {
 			color: var(--theme--form--field--input--foreground-subdued);
-			font-family: var(--theme--font-family-monospace);
+			font-family: var(--theme--fonts--monospace--font-family);
 		}
 	}
 

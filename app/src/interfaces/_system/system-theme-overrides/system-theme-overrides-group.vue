@@ -83,7 +83,7 @@ const hasValue = computed(() => {
 }
 
 .group-toggle {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground);
 	width: calc(100% + 16px);
 	text-align: left;

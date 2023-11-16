@@ -104,7 +104,7 @@ function emitValue(newValue: string | null) {
 
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .saved {

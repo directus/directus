@@ -54,3 +54,19 @@ alternatives.
 The Theme Overrides interface found in Settings > Appearance or on the user detail page uses the same rules available to
 the theme extensions. For easier extension development, you can use that interface to configure your ideal theme, and
 then save the output to your theme extension by using the "Copy Raw Value" option.
+
+## Google Fonts
+
+The `fontFamily` rules take any standard CSS `font-family` value. To load in a font from Google Fonts, simply wrap the
+font-name in a set of quotes `""`. This is still valid CSS, but if the font-name is wrapped in quotes, Directus will
+automatically try downloading it through Google Fonts.
+
+For example:
+
+```
+// Use the locally installed font called "Comic Sans MS"
+fontFamily: 'Comic Sans MS, sans-serif'
+
+// Use the Google font "Yesteryear"
+fontFamily: '"Yesteryear", sans-serif'
+```

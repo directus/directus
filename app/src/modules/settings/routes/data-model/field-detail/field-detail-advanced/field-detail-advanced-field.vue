@@ -104,7 +104,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 }
 
 .monospace {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .required {

@@ -302,7 +302,7 @@ function setContent() {
 	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 
 	:deep(span) {

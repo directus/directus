@@ -3,6 +3,7 @@ import { Type } from '@sinclair/typebox';
 
 const Color = Type.String({ $id: 'Color' });
 const FamilyName = Type.String({ $id: 'FamilyName' });
+const FontWeight = Type.String({ $id: 'FontWeight' });
 const Length = Type.String({ $id: 'Length' });
 const Percentage = Type.String({ $id: 'Percentage' });
 const BoxShadow = Type.String({ $id: 'BoxShadow' });
@@ -52,13 +53,6 @@ const FormRules = Type.Optional(
 
 const Rules = Type.Object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Base fonts
-	fontFamilyDisplay: Type.Optional(Type.Ref(FamilyName)),
-	fontFamilySansSerif: Type.Optional(Type.Ref(FamilyName)),
-	fontFamilySerif: Type.Optional(Type.Ref(FamilyName)),
-	fontFamilyMonospace: Type.Optional(Type.Ref(FamilyName)),
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base border styles
 	borderRadius: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
 	borderWidth: Type.Optional(Type.Ref(LineWidth)),
@@ -103,6 +97,37 @@ const Rules = Type.Object({
 	dangerBackground: Type.Optional(Type.Ref(Color)),
 	dangerSubdued: Type.Optional(Type.Ref(Color)),
 	dangerAccent: Type.Optional(Type.Ref(Color)),
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Base fonts
+	fonts: Type.Optional(
+		Type.Object({
+			display: Type.Optional(
+				Type.Object({
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				})
+			),
+			sans: Type.Optional(
+				Type.Object({
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				})
+			),
+			serif: Type.Optional(
+				Type.Object({
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				})
+			),
+			monospace: Type.Optional(
+				Type.Object({
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				})
+			),
+		})
+	),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
@@ -189,6 +214,7 @@ const Rules = Type.Object({
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
 				})
 			),
 		})

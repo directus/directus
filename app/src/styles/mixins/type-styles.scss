@@ -2,7 +2,7 @@
 	color: var(--theme--foreground-accent);
 	font-weight: 700;
 	font-size: 24px;
-	font-family: var(--theme--font-family-display);
+	font-family: var(--theme--fonts--display--font-family);
 	font-style: normal;
 	line-height: 34px;
 
@@ -15,7 +15,7 @@
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 	line-height: 19px;
 }
@@ -24,7 +24,7 @@
 	color: var(--theme--foreground);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 	line-height: 22px;
 }
@@ -33,7 +33,7 @@
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 13px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	font-style: italic;
 	line-height: 18px;
 }

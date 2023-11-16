@@ -74,7 +74,7 @@ withDefaults(defineProps<Props>(), {
 	&.large .type-text {
 		font-weight: 700;
 		font-size: 24px;
-		font-family: var(--theme--font-family-display);
+		font-family: var(--theme--fonts--display--font-family);
 	}
 
 	&.inlineTitle {

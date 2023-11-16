@@ -468,8 +468,8 @@ function useOnUpdate() {
 }
 
 .monospace {
-	--v-input-font-family: var(--theme--font-family-monospace);
-	--v-select-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .required {

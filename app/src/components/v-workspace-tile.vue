@@ -386,7 +386,7 @@ function useDragDrop() {
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 12px;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
@@ -436,7 +436,7 @@ function useDragDrop() {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 }
 

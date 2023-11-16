@@ -437,7 +437,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	&.raw-field-names {
 		.plain-name,
 		.name {
-			font-family: var(--theme--font-family-monospace);
+			font-family: var(--theme--fonts--monospace--font-family);
 		}
 	}
 

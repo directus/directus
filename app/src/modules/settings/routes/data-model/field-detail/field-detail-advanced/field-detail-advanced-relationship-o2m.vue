@@ -155,8 +155,8 @@ const unsortableJunctionFields = computed(() => {
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--theme--font-family-monospace);
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	position: relative;
 	display: grid;
@@ -179,7 +179,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--theme--font-family-monospace);
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .type-label {
@@ -220,12 +220,12 @@ const unsortableJunctionFields = computed(() => {
 	}
 
 	.field-name {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 
 .sort-field {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	.v-divider {
 		margin-top: 48px;

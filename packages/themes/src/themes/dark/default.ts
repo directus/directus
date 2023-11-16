@@ -4,11 +4,6 @@ export default defineTheme({
 	name: 'Directus Default',
 	appearance: 'dark',
 	rules: {
-		fontFamilyDisplay: 'var(--theme--font-family-sans-serif)',
-		fontFamilySansSerif: '"Inter", system-ui',
-		fontFamilySerif: '"Merriweather", serif',
-		fontFamilyMonospace: '"Fira Mono", monospace',
-
 		borderRadius: '6px',
 		borderWidth: '2px',
 
@@ -50,6 +45,25 @@ export default defineTheme({
 		dangerSubdued: 'color-mix(in srgb, var(--theme--background), var(--theme--danger) 50%)',
 		dangerAccent: 'color-mix(in srgb, var(--theme--danger), #16151a 25%)',
 
+		fonts: {
+			display: {
+				fontFamily: '"Inter", system-ui',
+				fontWeight: '700',
+			},
+			sans: {
+				fontFamily: '"Inter", system-ui',
+				fontWeight: '500',
+			},
+			serif: {
+				fontFamily: '"Merriweather", serif',
+				fontWeight: '500',
+			},
+			monospace: {
+				fontFamily: '"Fira Mono", monospace',
+				fontWeight: '500',
+			},
+		},
+
 		navigation: {
 			background: '#21262e',
 			backgroundAccent: '#30363d',
@@ -62,7 +76,7 @@ export default defineTheme({
 				borderWidth: '0px',
 				background: '#30363d',
 				foreground: 'var(--theme--foreground-accent)',
-				fontFamily: 'var(--theme--font-family-sans-serif)',
+				fontFamily: 'var(--theme--fonts--sans--font-family)',
 			},
 
 			modules: {
@@ -96,7 +110,7 @@ export default defineTheme({
 				backgroundHover: '#30363d',
 				backgroundActive: '#30363d',
 
-				fontFamily: 'var(--theme--font-family-sans-serif)',
+				fontFamily: 'var(--theme--fonts--sans--font-family)',
 
 				divider: {
 					borderColor: '#30363d',
@@ -112,11 +126,11 @@ export default defineTheme({
 			boxShadow: '0 4px 7px -4px rgb(var(--black) / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
-				fontFamily: 'var(--theme--font-family-sans-serif)',
+				fontFamily: 'var(--theme--fonts--sans--font-family)',
 			},
 			title: {
 				foreground: 'var(--theme--foreground-accent)',
-				fontFamily: 'var(--theme--font-family-display)',
+				fontFamily: 'var(--theme--fonts--display--font-family)',
 			},
 		},
 
@@ -124,7 +138,7 @@ export default defineTheme({
 			field: {
 				label: {
 					foreground: 'var(--theme--foreground-accent)',
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 				},
 				input: {
 					background: 'var(--theme--background)',
@@ -149,7 +163,7 @@ export default defineTheme({
 		sidebar: {
 			background: '#21262e',
 			foreground: 'var(--theme--foreground-subdued)',
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			borderColor: 'transparent',
 			borderWidth: '0px',
 
@@ -169,7 +183,7 @@ export default defineTheme({
 					backgroundHover: 'var(--theme--sidebar--section--toggle--background)',
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
 
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 
 					borderColor: 'transparent',
 					borderWidth: '0px',
