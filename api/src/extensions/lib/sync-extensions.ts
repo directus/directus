@@ -17,6 +17,7 @@ export const syncExtensions = async (): Promise<void> => {
 	const extensionsPath = getExtensionsPath();
 
 	if (!env['EXTENSIONS_LOCATION']) {
+		// Safe to run with multiple instances since dirs are created with `recursive: true`
 		return ensureExtensionDirs(extensionsPath, NESTED_EXTENSION_TYPES);
 	}
 
