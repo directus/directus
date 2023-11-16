@@ -8,12 +8,9 @@ export interface CliOptions {
 	rootName: string;
 }
 
-export interface BuilderOptions {
-	nameTransform: string;
-}
-
 export interface RenderOptions {
 	rootName: string;
+	nameTransform: string;
 	indent: {
 		amount: number;
 		char: string;

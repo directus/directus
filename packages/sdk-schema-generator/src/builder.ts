@@ -1,13 +1,14 @@
-import type { BuilderOptions, DataModel, FieldDefinition, SchemaDefinition } from './types.js';
+import type { BuilderOptions, FieldDefinition, SchemaDefinition } from './types.js';
 import { fieldTypeMap } from './constants.js';
 import { getNamingFn } from './naming.js';
 import type { Field } from '@directus/types';
+import type { SchemaOverview } from '@directus/schema';
 
 const defaultOptions: BuilderOptions = {
 	nameTransform: 'database',
 };
 
-export function buildSchema(data: DataModel, options = defaultOptions) {
+export function buildSchema(data: SchemaOverview, options = defaultOptions) {
 	const nameFn = getNamingFn(options.nameTransform);
 	const result: SchemaDefinition = new Map();
 

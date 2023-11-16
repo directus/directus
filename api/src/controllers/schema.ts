@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/utils';
-import { buildSchema, renderSchema, type DataModel } from '@directus/sdk-schema-generator';
+import { renderSchema } from '@directus/sdk-schema-generator';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
@@ -11,11 +11,8 @@ import { SchemaService } from '../services/schema.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
-import { CollectionsService } from '../services/collections.js';
-import { FieldsService } from '../services/fields.js';
-import { RelationsService } from '../services/relations.js';
 import { getSchema } from '../utils/get-schema.js';
-import type { Collection } from '@directus/types';
+import { reduceSchema } from '../utils/reduce-schema.js';
 
 const router = express.Router();
 
@@ -135,35 +132,17 @@ router.post(
 router.get(
 	'/sdk',
 	asyncHandler(async (req, res) => {
-		const schema = await getSchema();
+		const fullSchema = await getSchema();
 		const accountability = req.accountability;
-		const collectionService = new CollectionsService({ accountability, schema });
-		const relationService = new RelationsService({ accountability, schema });
-		const fieldService = new FieldsService({ accountability, schema });
 
-		const dataModel = await Promise.all([
-			collectionService.readByQuery(),
-			relationService.readAll(),
-			fieldService.readAll(),
-		]).then(
-			([_collections, relations, fields]) =>
-				({
-					// Currently the CollectionsService doesnt return
-					// the Collection type from @directus/types
-					collections: _collections as Collection[],
-					fields,
-					relations,
-				} as DataModel)
-		);
+		const schema = accountability.admin === true ? fullSchema : reduceSchema(fullSchema, accountability.permissions ?? []);
 
-		const schemaObject = await buildSchema(dataModel, {
-			nameTransform: String(req.query['naming']) ?? 'database',
-		});
-
-		const schemaName = typeof req.query['root_name'] === 'string' ? req.query['root_name'] : 'MySchema';
+		// res.json(schema);
+		// return;
 
 		const schemaString = renderSchema(schemaObject, {
-			rootName: schemaName,
+			rootName: typeof req.query['root_name'] === 'string' ? req.query['root_name'] : 'MySchema',
+			nameTransform: String(req.query['naming']) ?? 'database',
 			// TODO support indentation options
 			indent: { amount: 4, char: ' ' },
 		});
