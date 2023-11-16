@@ -742,7 +742,6 @@ layout_options: Sayfa Yerleşimi Seçenekleri
 rows: Satırlar
 columns: Sütunlar
 collection_setup: Koleksiyon Ayarları
-optional_system_fields: Opsiyonel Sistem Alanları
 value_unique: Değer benzersiz olmalı
 all_activity: Tüm Etkinlikler
 create_item: Öğe Oluştur
