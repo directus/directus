@@ -39,7 +39,13 @@ export type IsAny<T> = IfAny<T, true, never>;
 export type IsNullable<T, Y = true, N = never> = T | null extends T ? Y : N;
 
 export type NestedPartial<Item extends object> = {
-	[Key in keyof Item]?: Item[Key] extends object ? NestedPartial<Item[Key]> : Item[Key];
+	[Key in keyof Item]?: NonNullable<Item[Key]> extends infer NestedItem
+		? NestedItem extends object[]
+			? NestedPartial<UnpackList<NestedItem>>[] | Exclude<Item[Key], NestedItem>
+			: NestedItem extends object
+				? NestedPartial<NestedItem> | Exclude<Item[Key], NestedItem>
+				: Item[Key]
+		: Item[Key];
 };
 
 /**
