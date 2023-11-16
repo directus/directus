@@ -100,7 +100,7 @@ function displayValue(value: number) {
 	});
 }
 
-function getColor(input) {
+function getColor(input?: number) {
 	if (isNil(input)) return null;
 
 	let matchingFormat = null;

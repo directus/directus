@@ -265,8 +265,8 @@ function useBookmarks() {
 			router.push(`${getCollectionRoute(newBookmark.collection)}?bookmark=${newBookmark.id}`);
 
 			bookmarkDialogActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			creatingBookmark.value = false;
 		}

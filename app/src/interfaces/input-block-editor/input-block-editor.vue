@@ -21,8 +21,6 @@ const props = withDefaults(
 		font?: 'sans-serif' | 'monospace' | 'serif';
 	}>(),
 	{
-		disabled: false,
-		autofocus: false,
 		value: null,
 		bordered: true,
 		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
@@ -108,8 +106,8 @@ watch(
 			} else {
 				editorjsRef.value.clear();
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
 	}
 );
@@ -130,8 +128,8 @@ async function emitValue(context: EditorJS.API) {
 		if (isEqual(result.blocks, props.value?.blocks)) return;
 
 		emit('input', result);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 }
 
@@ -194,14 +192,14 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .disabled {
 	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
 }
 
 .bordered {
 	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
@@ -234,7 +232,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .uploader-preview-image {
 	margin-bottom: var(--form-vertical-gap);
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 

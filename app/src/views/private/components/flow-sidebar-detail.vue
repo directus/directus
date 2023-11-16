@@ -10,19 +10,20 @@ import { useI18n } from 'vue-i18n';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';
 
-interface Props {
-	collection: string;
-	primaryKey?: string | number;
-	selection?: (number | string)[];
-	location: 'collection' | 'item';
-	hasEdits?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	primaryKey: undefined,
-	selection: () => [],
-	hasEdits: false,
-});
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		primaryKey?: string | number;
+		selection?: (number | string)[];
+		location: 'collection' | 'item';
+		hasEdits?: boolean;
+	}>(),
+	{
+		primaryKey: undefined,
+		selection: () => [],
+		hasEdits: false,
+	}
+);
 
 const emit = defineEmits(['refresh']);
 
@@ -153,8 +154,8 @@ const runManualFlow = async (flowId: string) => {
 		});
 
 		resetConfirm();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 	}

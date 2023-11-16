@@ -1,4 +1,4 @@
-export const APP_EXTENSION_TYPES = ['interface', 'display', 'layout', 'module', 'panel'] as const;
+export const APP_EXTENSION_TYPES = ['interface', 'display', 'layout', 'module', 'panel', 'theme'] as const;
 
 export const API_EXTENSION_TYPES = ['hook', 'endpoint'] as const;
 

@@ -45,8 +45,8 @@ function useRenameFolder() {
 			await api.patch(`/folders/${props.folder.id}`, {
 				name: renameValue.value,
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			renameSaving.value = false;
 			await fetchFolders();
@@ -69,8 +69,8 @@ function useMoveFolder() {
 			await api.patch(`/folders/${props.folder.id}`, {
 				parent: moveValue.value,
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			moveSaving.value = false;
 			await fetchFolders();
@@ -143,8 +143,8 @@ function useDeleteFolder() {
 			}
 
 			deleteActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			await fetchFolders();
 			deleteSaving.value = false;

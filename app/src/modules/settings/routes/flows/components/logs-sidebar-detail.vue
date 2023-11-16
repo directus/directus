@@ -7,15 +7,13 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 
-const { t } = useI18n();
-
-interface Props {
+const props = defineProps<{
 	flow: FlowRaw;
-}
-
-const props = defineProps<Props>();
+}>();
 
 const { flow } = toRefs(props);
+
+const { t } = useI18n();
 
 const { triggers } = getTriggers();
 const { operations } = useExtensions();
@@ -230,7 +228,7 @@ const steps = computed(() => {
 }
 
 .json {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	font-family: var(--theme--font-family-monospace);
 	border-radius: var(--theme--border-radius);
 	padding: 20px;
@@ -291,7 +289,7 @@ const steps = computed(() => {
 		width: 12px;
 		height: 12px;
 		background-color: var(--theme--primary);
-		border: 2px solid var(--theme--background-page);
+		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: 8px;
 
 		&.resolve {

@@ -45,8 +45,8 @@ function useSave() {
 			}
 
 			router.push(`/settings/roles/${roleResponse.data.data.id}`);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			saving.value = false;
 		}

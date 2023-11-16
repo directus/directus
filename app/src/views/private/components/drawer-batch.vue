@@ -84,14 +84,14 @@ function useActions() {
 
 			internalActive.value = false;
 			internalEdits.value = {};
-		} catch (err: any) {
-			validationErrors.value = err.response.data.errors
+		} catch (error: any) {
+			validationErrors.value = error.response.data.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 				.map((err: APIError) => {
 					return err.extensions;
 				});
 
-			const otherErrors = err.response.data.errors.filter(
+			const otherErrors = error.response.data.errors.filter(
 				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
 			);
 

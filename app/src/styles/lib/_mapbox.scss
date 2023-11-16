@@ -26,11 +26,11 @@
 		}
 
 		&:hover {
-			background: var(--theme--background) !important;
+			background: var(--theme--background-normal) !important;
 		}
 
 		&.active {
-			color: var(--background-subdued) !important;
+			color: var(--theme--background-subdued) !important;
 			background: var(--theme--foreground) !important;
 		}
 
@@ -133,7 +133,7 @@
 	font-size: inherit !important;
 	font-family: inherit !important;
 	line-height: inherit !important;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 
 	&,
 	&.suggestions {
@@ -147,7 +147,7 @@
 }
 
 .mapboxgl-ctrl-geocoder .suggestions {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -162,7 +162,7 @@
 }
 
 .mapboxgl-ctrl-geocoder--button {
-	background: var(--background-subdued);
+	background: var(--theme--background-subdued);
 }
 
 .mapboxgl-ctrl-geocoder--icon {

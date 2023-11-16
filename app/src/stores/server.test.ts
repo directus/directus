@@ -23,8 +23,14 @@ const mockServerInfo: Info = {
 		project_logo: null,
 		project_color: null,
 		default_language: 'de-DE',
+		default_appearance: 'auto',
+		default_theme_light: null,
+		default_theme_dark: null,
+		theme_light_overrides: null,
+		theme_dark_overrides: null,
 		public_foreground: null,
 		public_background: null,
+		public_favicon: null,
 		public_note: null,
 		custom_css: null,
 	},
@@ -74,6 +80,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -97,6 +105,8 @@ describe('hydrate action', async () => {
 					},
 				});
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -122,6 +132,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -144,6 +156,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -166,6 +180,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -191,6 +207,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -216,6 +234,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const userStore = useUserStore();
@@ -241,6 +261,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -263,6 +285,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -292,6 +316,8 @@ describe('hydrate action', async () => {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();
@@ -324,6 +350,8 @@ describe('dehydrate action', () => {
 					},
 				});
 			}
+
+			return;
 		});
 
 		const serverStore = useServerStore();

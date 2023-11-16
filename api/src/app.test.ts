@@ -12,23 +12,18 @@ vi.mock('./database', () => ({
 	validateMigrations: vi.fn(),
 }));
 
-vi.mock('./env', async () => {
-	const actual = (await vi.importActual('./env')) as { default: Record<string, any> };
-
-	const MOCK_ENV = {
-		...actual.default,
-		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
-		SECRET: 'abcdef',
-		SERVE_APP: true,
-		PUBLIC_URL: 'http://localhost:8055/directus',
-		TELEMETRY: false,
-		LOG_STYLE: 'raw',
-	};
-
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
+vi.mock('./env.js', async () => {
+	const { mockEnv } = await import('./__utils__/mock-env.js');
+	return mockEnv({
+		env: {
+			KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+			SECRET: 'abcdef',
+			SERVE_APP: 'true',
+			PUBLIC_URL: 'http://localhost:8055/directus',
+			TELEMETRY: 'false',
+			LOG_STYLE: 'raw',
+		},
+	});
 });
 
 const mockGetEndpointRouter = vi.fn().mockReturnValue(Router());

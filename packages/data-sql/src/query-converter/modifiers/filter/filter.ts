@@ -1,7 +1,12 @@
-import type { AbstractQueryConditionNode, AbstractQueryFilterNode } from '@directus/data';
-import type { WhereUnion } from '../../../types/index.js';
+import type { AbstractQueryConditionNode, AbstractQueryFilterNode, AtLeastOneElement } from '@directus/data';
+import type { AbstractSqlClauses, AbstractSqlQuery } from '../../../types/index.js';
 import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
+
+export type FilterResult = {
+	clauses: Required<Pick<AbstractSqlClauses, 'where' | 'joins'>>;
+	parameters: AbstractSqlQuery['parameters'];
+};
 
 /**
  * Extracts the user provided filter values and puts them in the list of parameters.
@@ -19,13 +24,16 @@ export const convertFilter = (
 	collection: string,
 	generator: Generator<number, number, number>,
 	negate = false
-): WhereUnion => {
+): FilterResult => {
 	if (filter.type === 'condition') {
 		return convertCondition(filter as AbstractQueryConditionNode, collection, generator, negate);
 	} else if (filter.type === 'negate') {
 		return convertFilter(filter.childNode, collection, generator, !negate);
 	} else if (filter.type === 'logical') {
-		const children = filter.childNodes.map((childNode) => convertFilter(childNode, collection, generator, false));
+		const children = filter.childNodes.map((childNode) =>
+			convertFilter(childNode, collection, generator, false)
+		) as AtLeastOneElement<FilterResult>;
+
 		return convertLogical(children, filter.operator, negate);
 	} else {
 		throw new Error(`Unknown filter type`);
