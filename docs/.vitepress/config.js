@@ -627,7 +627,7 @@ function sidebar() {
 						},
 						{
 							link: '/extensions/services/interacting-with-files',
-							text: 'Interacting with Files',
+							text: 'Accessing Files',
 						},
 						{
 							link: '/extensions/services/working-with-users',
