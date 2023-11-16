@@ -2,10 +2,10 @@ import { toArray } from '@directus/utils';
 import env from '../env.js';
 
 interface AuthProvider {
-	label: string;
 	name: string;
 	driver: string;
 	icon?: string;
+	label?: string;
 }
 
 export function getAuthProviders(): AuthProvider[] {

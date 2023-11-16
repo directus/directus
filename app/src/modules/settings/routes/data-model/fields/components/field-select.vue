@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, unref } from 'vue';
+import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
-import { useRouter } from 'vue-router';
-import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getSpecialForType } from '@/utils/get-special-for-type';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field } from '@directus/types';
-import FieldSelectMenu from './field-select-menu.vue';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import Draggable from 'vuedraggable';
 import formatTitle from '@directus/format-title';
-import { useExtension } from '@/composables/use-extension';
-import { getRelatedCollection } from '@/utils/get-related-collection';
+import type { Field, Width } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { computed, ref, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import Draggable from 'vuedraggable';
+import FieldSelectMenu from './field-select-menu.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -60,7 +60,7 @@ const showRelatedCollectionLink = computed(
 		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
 );
 
-function setWidth(width: string) {
+function setWidth(width: Width) {
 	fieldsStore.updateField(props.field.collection, props.field.field, { meta: { width } });
 }
 
@@ -131,8 +131,8 @@ function useDuplicate() {
 			});
 
 			duplicateActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			duplicating.value = false;
 		}

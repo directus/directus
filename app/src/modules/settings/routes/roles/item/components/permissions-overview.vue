@@ -12,7 +12,7 @@ import PermissionsOverviewRow from './permissions-overview-row.vue';
 
 const props = defineProps<{
 	role?: string;
-	// the permission row primary key in case we're on the permission detail modal view
+	/** the permission row primary key in case we're on the permission detail modal view */
 	permission?: string;
 	appAccess?: boolean;
 }>();
@@ -61,8 +61,8 @@ function usePermissions() {
 
 			const response = await api.get('/permissions', { params });
 			permissions.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -80,8 +80,8 @@ function usePermissions() {
 				if (permission.id === id) return response.data.data;
 				return permission;
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 		}
@@ -162,7 +162,9 @@ function useReset() {
 						:role="role"
 						:permissions="permissions.filter((p) => p.collection === collection.collection)"
 						:refreshing="refreshing"
-						:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
+						:app-minimal="
+							appAccess ? appMinimalPermissions.filter((p) => p.collection === collection.collection) : undefined
+						"
 					/>
 				</div>
 			</transition-expand>
@@ -218,7 +220,7 @@ function useReset() {
 	width: 100%;
 	height: 48px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 
 	.v-icon {
 		vertical-align: -7px;

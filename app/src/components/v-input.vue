@@ -380,7 +380,7 @@ function stepDown() {
 			--arrow-color: var(--v-input-border-color);
 
 			color: var(--theme--foreground-subdued);
-			background-color: var(--background-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 

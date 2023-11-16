@@ -80,10 +80,14 @@ const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutV
 const lowContrast = computed(() => {
 	if (color.value === null) return true;
 
-	const pageColorString = cssVar('--theme--background');
-	const pageColor = Color(pageColorString);
+	const pageColorString = cssVar('--theme--form--field--input--background');
 
-	return color.value.contrast(pageColor) < 1.1;
+	try {
+		const pageColor = Color(pageColorString);
+		return color.value.contrast(pageColor) < 1.1;
+	} catch {
+		return true;
+	}
 });
 
 const getPresetContrast = (hex: string) => {

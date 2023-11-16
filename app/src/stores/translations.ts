@@ -31,8 +31,8 @@ export const useTranslationsStore = defineStore('translations', () => {
 			});
 
 			lang.value = newLang;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -42,8 +42,8 @@ export const useTranslationsStore = defineStore('translations', () => {
 		try {
 			await api.post('/translations', translation);
 			await loadTranslations();
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
 	};
 

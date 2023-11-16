@@ -25,9 +25,8 @@ const props = withDefaults(
 	}>(),
 	{
 		value: () => ({ key: null, collection: '' }),
-		disabled: false,
-		template: () => null,
-		filter: () => null,
+		template: null,
+		filter: null,
 	}
 );
 
@@ -94,8 +93,8 @@ async function getDisplayItem() {
 		});
 
 		displayItem.value = response.data.data?.[0] ?? null;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}

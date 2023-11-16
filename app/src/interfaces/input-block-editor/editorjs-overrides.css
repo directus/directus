@@ -1,5 +1,5 @@
 .codex-editor {
-	--bg-color: var(--theme--background) !important;
+	--bg-color: var(--theme--background-normal) !important;
 	--front-color: var(--theme--form--field--input--foreground) !important;
 	--border-color: var(--theme--form--field--input--border-color) !important;
 }
@@ -7,7 +7,7 @@
 .codex-editor .ce-toolbar__plus,
 .codex-editor .ce-toolbar__settings-btn {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -43,11 +43,11 @@
 .codex-editor .cdx-search-field {
 	border-radius: var(--theme--border-radius) !important;
 	border: none;
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 }
 
 .codex-editor .ce-popover {
-	background: var(--theme--background-page);
+	background: var(--theme--background);
 	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
 	border-radius: var(--theme--border-radius);
@@ -86,7 +86,7 @@
 }
 
 .codex-editor .ce-popover-item-icon {
-	background: var(--theme--background-page);
+	background: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	box-shadow: none;
 }
@@ -106,7 +106,7 @@
 
 .codex-editor .image-tool--loading .image-tool__image,
 .codex-editor .ce-block--selected .ce-block__content {
-	background: var(--theme--background);
+	background: var(--theme--background-normal);
 }
 
 .codex-editor .image-tool--loading .image-tool__image {
@@ -166,7 +166,7 @@
 .codex-editor .ce-conversion-toolbar,
 .codex-editor .ce-inline-toolbar,
 .codex-editor .ce-settings {
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
 	border-radius: var(--theme--border-radius);
@@ -186,7 +186,7 @@
 	color: var(--theme--primary);
 	background-color: var(
 		--v-list-item-background-color-hover,
-		var(--v-list-background-color-hover, var(--theme--background))
+		var(--v-list-background-color-hover, var(--theme--background-normal))
 	) !important;
 	box-shadow: unset;
 }
@@ -197,7 +197,7 @@
 	color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
 	background-color: var(
 		--v-list-item-background-color-hover,
-		var(--v-list-background-color-hover, var(--theme--background))
+		var(--v-list-background-color-hover, var(--theme--background-normal))
 	) !important;
 	box-shadow: unset;
 }
@@ -224,7 +224,7 @@
 .codex-editor .ce-code__textarea {
 	color: var(--theme--form--field--input--foreground);
 	font-size: inherit;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	box-shadow: unset;
@@ -242,7 +242,7 @@
 
 .codex-editor .ce-inline-tool-input {
 	color: var(--theme--primary);
-	background: var(--theme--background);
+	background: var(--theme--background-normal);
 	border-top-color: var(--theme--form--field--input--border-color);
 }
 
@@ -270,7 +270,7 @@
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
 	color: var(--theme--form--field--input--foreground);
-	background: var(--theme--background);
+	background: var(--theme--background-normal);
 	border-color: var(--theme--form--field--input--border-color);
 	box-shadow: unset;
 }
@@ -384,7 +384,7 @@
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
@@ -404,7 +404,7 @@
 
 .codex-editor .ce-block .inline-code {
 	padding: 4px;
-	color: var(--v-chip-background-color, var(--theme--background));
+	color: var(--v-chip-background-color, var(--theme--background-normal));
 	font-family: monospace;
 	background-color: var(--v-chip-color, var(--theme--foreground));
 	border-radius: 4px;
@@ -415,18 +415,18 @@
 .codex-editor .tc-wrap {
 	--color-background: var(
 		--v-list-item-background-color-active,
-		var(--v-list-background-color-active, var(--theme--background))
+		var(--v-list-background-color-active, var(--theme--background-normal))
 	);
 	--color-border: var(--theme--form--field--input--border-color);
 	--color-background-hover: var(
 		--v-list-item-background-color-hover,
-		var(--v-list-background-color-hover, var(--theme--background))
+		var(--v-list-background-color-hover, var(--theme--background-normal))
 	);
 }
 
 .codex-editor .tc-popover {
-	--color-background: var(--theme--background);
-	--color-border: var(--theme--background);
+	--color-background: var(--theme--background-normal);
+	--color-border: var(--theme--background-normal);
 	--color-background-hover: var(--theme--background-accent);
 }
 
@@ -448,7 +448,7 @@
 
 .codex-editor .tc-toolbox__toggler svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
-	fill: var(--theme--background) !important;
+	fill: var(--theme--background-normal) !important;
 	border-radius: var(--theme--border-radius);
 }
 
@@ -465,7 +465,7 @@
 .tc-add-row:hover::before {
 	background-color: var(
 		--v-list-item-background-color-hover,
-		var(--v-list-background-color-hover, var(--theme--background))
+		var(--v-list-background-color-hover, var(--theme--background-normal))
 	);
 }
 

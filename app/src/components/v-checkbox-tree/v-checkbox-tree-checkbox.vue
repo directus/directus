@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'VCheckboxTreeCheckbox',
-};
-</script>
-
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import { difference } from 'lodash';
@@ -14,36 +8,37 @@ type Delta = {
 	removed?: (number | string)[];
 };
 
-interface Props {
-	text: string;
-	value: string | number;
-	valueCombining: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
-	children?: Record<string, any>[];
-	modelValue?: (string | number)[];
-	checked?: boolean | null;
-	search?: string | null;
-	hidden?: boolean;
-	itemText?: string;
-	itemValue?: string;
-	itemChildren?: string;
-	disabled?: boolean;
-	showSelectionOnly?: boolean;
-	parentValue?: string | number | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	children: () => [],
-	modelValue: () => [],
-	checked: null,
-	search: null,
-	hidden: false,
-	itemText: 'text',
-	itemValue: 'value',
-	itemChildren: 'children',
-	disabled: false,
-	showSelectionOnly: false,
-	parentValue: null,
-});
+const props = withDefaults(
+	defineProps<{
+		text: string;
+		value: string | number;
+		valueCombining: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+		children?: Record<string, any>[];
+		modelValue?: (string | number)[];
+		checked?: boolean | null;
+		search?: string | null;
+		hidden?: boolean;
+		itemText?: string;
+		itemValue?: string;
+		itemChildren?: string;
+		disabled?: boolean;
+		showSelectionOnly?: boolean;
+		parentValue?: string | number | null;
+	}>(),
+	{
+		children: () => [],
+		modelValue: () => [],
+		checked: null,
+		search: null,
+		hidden: false,
+		itemText: 'text',
+		itemValue: 'value',
+		itemChildren: 'children',
+		disabled: false,
+		showSelectionOnly: false,
+		parentValue: null,
+	}
+);
 
 const emit = defineEmits(['update:modelValue']);
 

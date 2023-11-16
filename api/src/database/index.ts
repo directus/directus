@@ -10,6 +10,7 @@ import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';
 import env from '../env.js';
+import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import logger from '../logger.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
@@ -258,7 +259,7 @@ export async function validateMigrations(): Promise<boolean> {
 	try {
 		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
 
-		const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
+		const customMigrationsPath = path.resolve(getExtensionsPath(), 'migrations');
 
 		let customMigrationFiles =
 			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];

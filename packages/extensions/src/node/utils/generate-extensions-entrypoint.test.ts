@@ -17,8 +17,8 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		];
 
-		expect(generateExtensionsEntrypoint(mockExtensions)).toBe(
-			`export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const operations = [];`
+		expect(generateExtensionsEntrypoint(mockExtensions)).toMatchInlineSnapshot(
+			'"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"'
 		);
 	});
 
@@ -27,8 +27,8 @@ describe('generateExtensionsEntrypoint', () => {
 			{ path: './extensions/panel', name: 'mock-panel-extension', type: 'panel', entrypoint: 'index.js', local: true },
 		];
 
-		expect(generateExtensionsEntrypoint(mockExtensions)).toBe(
-			`import panel0 from './extensions/panel/index.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0];export const operations = [];`
+		expect(generateExtensionsEntrypoint(mockExtensions)).toMatchInlineSnapshot(
+			'"import panel0 from \'./extensions/panel/index.js\';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0];export const themes = [];export const operations = [];"'
 		);
 	});
 
@@ -43,8 +43,8 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		];
 
-		expect(generateExtensionsEntrypoint(mockExtensions)).toBe(
-			`import operation0 from './extensions/operation/app.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const operations = [operation0];`
+		expect(generateExtensionsEntrypoint(mockExtensions)).toMatchInlineSnapshot(
+			'"import operation0 from \'./extensions/operation/app.js\';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0];"'
 		);
 	});
 
@@ -66,8 +66,8 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		];
 
-		expect(generateExtensionsEntrypoint(mockExtensions)).toBe(
-			`import {interfaces as interfaceBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [...interfaceBundle0];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const operations = [...operationBundle0];`
+		expect(generateExtensionsEntrypoint(mockExtensions)).toMatchInlineSnapshot(
+			'"import {interfaces as interfaceBundle0,operations as operationBundle0} from \'./extensions/bundle/app.js\';export const interfaces = [...interfaceBundle0];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [...operationBundle0];"'
 		);
 	});
 
@@ -113,8 +113,8 @@ describe('generateExtensionsEntrypoint', () => {
 			},
 		];
 
-		expect(generateExtensionsEntrypoint(mockExtensions)).toBe(
-			`import display0 from './extensions/display/index.js';import operation0 from './extensions/operation/app.js';import {layouts as layoutBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [];export const displays = [display0];export const layouts = [...layoutBundle0];export const modules = [];export const panels = [];export const operations = [operation0,...operationBundle0];`
+		expect(generateExtensionsEntrypoint(mockExtensions)).toMatchInlineSnapshot(
+			"\"import display0 from './extensions/display/index.js';import operation0 from './extensions/operation/app.js';import {layouts as layoutBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [];export const displays = [display0];export const layouts = [...layoutBundle0];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0,...operationBundle0];\""
 		);
 	});
 });
