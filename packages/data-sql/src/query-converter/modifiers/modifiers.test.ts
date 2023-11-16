@@ -61,7 +61,6 @@ test('Convert primitive filter', () => {
 
 	const expected: ModifierConversionResult = {
 		clauses: {
-			joins: [],
 			where: filterConversionMock.clauses.where,
 		},
 		parameters: filterConversionMock.parameters,
