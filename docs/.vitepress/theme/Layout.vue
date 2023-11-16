@@ -11,13 +11,14 @@ const route = useRoute();
 const title = computed(() => page.value.title);
 const contributors = computed(() => page.value.frontmatter['contributors']);
 const path = computed(() => route.path);
+const isPackagePage = RegExp('^/packages/.+$').test(path.value)
 </script>
 
 <template>
 	<Layout>
 		<template #doc-before>
 			<div
-				v-if="RegExp('^/packages/.+$').test(path)"
+				v-if="isPackagePage"
 				class="warning custom-block"
 				style="padding-bottom: 16px; margin-bottom: 16px"
 			>
@@ -33,7 +34,7 @@ const path = computed(() => route.path);
 			<Newsletter class="newsletter" />
 		</template>
 		<template #doc-footer-before>
-			<Feedback :url="path" :title="title" />
+			<Feedback v-if="!isPackagePage" :url="path" :title="title" />
 			<Meta v-if="contributors" id="contributors" title-left="Contributors">
 				<template #left>
 					<div class="contributors">{{ contributors }}</div>
