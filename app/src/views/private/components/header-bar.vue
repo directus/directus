@@ -168,6 +168,7 @@ onUnmounted(() => {
 				white-space: nowrap;
 				text-overflow: ellipsis;
 				font-family: var(--theme--header--title--font-family);
+				font-weight: var(--theme--header--title--font-weight);
 			}
 
 			:deep(.type-title) {
