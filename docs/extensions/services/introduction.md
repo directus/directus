@@ -16,7 +16,7 @@ use the services directly.
 
 Various services are available within Directus including `ItemsService`, `CollectionService`, `FilesService`.
 
-To get started to create endpoints with any service, extract it from `services`.
+Services are available as part of an extension's `context`. It is common to destructure the specific service you need as shown below in an example of an [endpoint extension](/extensions/endpoints).
 
 ```js
 export default defineEndpoint((router, context) => {
