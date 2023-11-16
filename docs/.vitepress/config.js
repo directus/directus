@@ -619,7 +619,7 @@ function sidebar() {
 					items: [
 						{
 							link: '/extensions/services/accessing-database',
-							text: 'Accessing the Database',
+							text: 'Accessing Items',
 						},
 						{
 							link: '/extensions/services/authoring-database',
