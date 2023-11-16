@@ -13,10 +13,15 @@ export default defineTheme({
 		borderColorSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 15%)',
 		borderRadius: '12px',
 		borderWidth: '1px',
-		fontFamilyDisplay: '"Montserrat", system-ui',
 		foreground: 'color-mix(in srgb, #000000, var(--theme--primary) 70%)',
 		foregroundAccent: 'color-mix(in srgb, #000000, var(--theme--primary) 50%)',
 		foregroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 60%)',
+		fonts: {
+			display: {
+				fontFamily: '"Montserrat", system-ui',
+				fontWeight: '400',
+			},
+		},
 		form: {
 			field: {
 				input: { background: '#FFFFFF', backgroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 13%)' },
