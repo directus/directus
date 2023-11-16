@@ -3,8 +3,8 @@
  * For all possible keys, see: https://docs.directus.io/self-hosted/config-options/
  */
 
-import { parseJSON, toArray } from '@directus/utils';
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
+import { parseJSON, toArray } from '@directus/utils';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash-es';
@@ -35,6 +35,7 @@ const allowedEnvironmentVars = [
 	'QUERY_LIMIT_MAX',
 	'QUERY_LIMIT_DEFAULT',
 	'ROBOTS_TXT',
+	'TEMP_PATH',
 	// server
 	'SERVER_.+',
 	// database
@@ -163,6 +164,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_SP.+',
 	// extensions
 	'PACKAGE_FILE_LOCATION',
+	'EXTENSIONS_LOCATION',
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
 	'EXTENSIONS_CACHE_TTL',
@@ -224,6 +226,8 @@ export const defaults: Record<string, any> = {
 	QUERY_LIMIT_DEFAULT: 100,
 	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+
+	TEMP_PATH: './node_modules/.directus',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 

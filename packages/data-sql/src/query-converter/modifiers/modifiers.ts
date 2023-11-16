@@ -21,7 +21,11 @@ export const convertModifiers = (
 	if (modifiers.filter) {
 		const convertedFilter = convertFilter(modifiers.filter, collection, idxGenerator);
 		result.clauses.where = convertedFilter.clauses.where;
-		result.clauses.joins = convertedFilter.clauses.joins;
+
+		if (convertedFilter.clauses.joins.length > 0) {
+			result.clauses.joins = convertedFilter.clauses.joins;
+		}
+
 		result.parameters.push(...convertedFilter.parameters);
 	}
 
