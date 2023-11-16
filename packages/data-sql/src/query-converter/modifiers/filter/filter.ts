@@ -1,12 +1,7 @@
 import type { AbstractQueryConditionNode, AbstractQueryFilterNode, AtLeastOneElement } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery } from '../../../types/index.js';
 import { convertCondition } from './conditions/conditions.js';
 import { convertLogical } from './logical.js';
-
-export type FilterResult = {
-	clauses: Required<Pick<AbstractSqlClauses, 'where' | 'joins'>>;
-	parameters: AbstractSqlQuery['parameters'];
-};
+import type { FilterResult } from './utils.js';
 
 /**
  * Extracts the user provided filter values and puts them in the list of parameters.
