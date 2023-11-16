@@ -96,7 +96,7 @@ const availableCollections = computed(() => {
 				:items="availableCollections"
 				item-value="collection"
 				item-text="collection"
-				item-label-font-family="var(--theme--font-family-monospace)"
+				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				item-disabled="meta.singleton"
 				multiple
 				:multiple-preview-threshold="0"
@@ -111,8 +111,8 @@ const availableCollections = computed(() => {
 .relationship {
 	@include form-grid;
 
-	--v-select-font-family: var(--theme--font-family-monospace);
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	&:not(:empty) {
 		margin-bottom: 20px;

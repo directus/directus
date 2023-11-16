@@ -92,8 +92,8 @@ function getChildBookmarks(collection: Collection) {
 			<navigation-item-content
 				:search="search"
 				:name="collection.name"
-				:icon="collection.meta?.icon"
-				:color="collection.meta?.color"
+				:icon="collection.icon"
+				:color="collection.color"
 			/>
 		</template>
 		<navigation-item
@@ -117,8 +117,8 @@ function getChildBookmarks(collection: Collection) {
 		<navigation-item-content
 			:search="search"
 			:name="collection.name"
-			:icon="collection.meta?.icon"
-			:color="collection.meta?.color"
+			:icon="collection.icon"
+			:color="collection.color"
 		/>
 	</v-list-item>
 
@@ -126,7 +126,7 @@ function getChildBookmarks(collection: Collection) {
 		<v-list>
 			<v-list-item v-if="isAdmin" clickable :to="`/settings/data-model/${collection.collection}`">
 				<v-list-item-icon>
-					<v-icon name="list_alt" />
+					<v-icon name="database" />
 				</v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow :text="t('edit_collection')" />

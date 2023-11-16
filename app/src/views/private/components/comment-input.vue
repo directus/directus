@@ -359,7 +359,7 @@ function pressedEnter() {
 	flex-grow: 1;
 	width: 100%;
 	height: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	min-height: 100px;
 	padding: 5px;
 	overflow: scroll;

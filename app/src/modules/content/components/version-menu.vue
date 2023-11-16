@@ -406,7 +406,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--form-vertical-gap: 8px;
+	--theme--form--row-gap: 8px;
 
 	@include form-grid;
 }

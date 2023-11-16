@@ -143,14 +143,14 @@ watch(
 <style lang="scss" scoped>
 .system-raw-editor {
 	position: relative;
-	height: var(--input-height);
-	min-height: var(--input-height);
+	height: var(--theme--form--field--input--height);
+	min-height: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.CodeMirror) {
 		width: 100%;
 		line-height: 18px;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 
 		.cm-tag {
 			color: var(--theme--form--field--input--foreground-subdued);
@@ -163,7 +163,7 @@ watch(
 
 	:deep(.CodeMirror),
 	:deep(.CodeMirror-scroll) {
-		max-height: var(--input-height);
+		max-height: var(--theme--form--field--input--height);
 	}
 
 	&.multi-line {

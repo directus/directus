@@ -2,12 +2,11 @@
 withDefaults(
 	defineProps<{
 		name: string;
+		icon: string;
 		search?: string;
-		icon?: string;
 		color?: string;
 	}>(),
 	{
-		icon: 'label',
 		color: 'var(--theme--foreground)',
 	}
 );
@@ -15,7 +14,7 @@ withDefaults(
 
 <template>
 	<v-list-item-icon>
-		<v-icon :name="icon ?? 'label'" :color="color" />
+		<v-icon :name="icon" :color="color" />
 	</v-list-item-icon>
 	<v-list-item-content><v-text-overflow :text="name" :highlight="search" /></v-list-item-content>
 </template>

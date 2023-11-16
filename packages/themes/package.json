@@ -26,6 +26,7 @@
 		"dev": "vite build --watch"
 	},
 	"dependencies": {
+		"@directus/utils": "workspace:*",
 		"@sinclair/typebox": "0.31.17",
 		"@unhead/vue": "1.1.30",
 		"decamelize": "6.0.0",
