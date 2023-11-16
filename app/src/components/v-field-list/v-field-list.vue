@@ -75,7 +75,7 @@ const addAll = () => {
 	emit('add', unref(allFields));
 };
 
-function filter(field: Field, parent?: FieldNode): boolean {
+function filter(field: Field): boolean {
 	if (
 		!includeRelations.value &&
 		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
@@ -83,7 +83,9 @@ function filter(field: Field, parent?: FieldNode): boolean {
 		return false;
 	}
 
-	if (!search.value || isNil(parent) === false) return true;
+	if (!search.value) {
+		return true;
+	}
 
 	const children = isNil(field.schema?.foreign_key_table)
 		? fieldsStore.getFieldGroupChildren(field.collection, field.field)
