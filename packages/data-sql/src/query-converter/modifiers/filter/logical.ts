@@ -1,5 +1,5 @@
 import type { AtLeastOneElement } from '@directus/data';
-import type { AbstractSqlQueryWhereNode } from '../../../index.js';
+import type { AbstractSqlQueryWhereNode } from '../../../types/clauses/where.js';
 import type { FilterResult } from './filter.js';
 
 export function convertLogical(
