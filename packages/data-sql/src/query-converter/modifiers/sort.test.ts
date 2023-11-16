@@ -6,7 +6,7 @@ import { parameterIndexGenerator } from '../param-index-generator.js';
 import { convertTarget, type TargetConversionResult } from './target.js';
 import type { AbstractSqlQuerySelectNode } from '../../index.js';
 
-vi.mock('./filter/target.js', (importOriginal) => {
+vi.mock('./target.js', (importOriginal) => {
 	const original = importOriginal();
 	return {
 		...original,
