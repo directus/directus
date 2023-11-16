@@ -775,7 +775,6 @@ layout_options: Mogućnosti izgleda
 rows: Retci
 columns: Stupci
 collection_setup: Postavljanje zbirke
-optional_system_fields: Opcionalna sistemska polja
 value_unique: Vrijednost mora biti jedinsrvena
 all_activity: Sve aktivnosti
 create_item: Dodaj novu stavku
