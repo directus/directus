@@ -5,13 +5,12 @@ contributors: Esther Agbaje
 
 # Using Services in API Extensions
 
-Directus exposes its internal services to enable API extensions communicate between your Directus instance and any
-external service.
+Directus has a number of internal services that perform operations on system or user-created collections. These services
+can be used when building collections and automatically provide additional functionality like permission checks and
+password hashing.
 
-Using services helps to achieve a unified interface for your data in a way that is consistent, clean and predictable.
-
-Services are designed to map directly to the REST and GraphQL endpoints, providing a seamless integration to extend the
-core functionalities for your specific development needs.
+When using REST or GraphQL endpoints, Directus uses services to perform operations. When building extensions, you should
+use the services directly.
 
 ## Available Services
 
