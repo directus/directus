@@ -200,12 +200,17 @@ export class DriverS3 implements Driver {
 	}
 
 	async *list(prefix = '') {
+		let Prefix = this.fullPath(prefix);
+
+		// Current dir (`.`) isn't known to S3, needs to be an empty prefix instead
+		if (Prefix === '.') Prefix = '';
+
 		let continuationToken: string | undefined = undefined;
 
 		do {
 			const listObjectsV2CommandInput: ListObjectsV2CommandInput = {
 				Bucket: this.config.bucket,
-				Prefix: this.fullPath(prefix),
+				Prefix,
 				MaxKeys: 1000,
 			};
 
@@ -218,10 +223,14 @@ export class DriverS3 implements Driver {
 			continuationToken = response.NextContinuationToken;
 
 			if (response.Contents) {
-				for (const file of response.Contents) {
-					if (file.Key) {
-						yield file.Key.substring(this.root.length);
-					}
+				for (const object of response.Contents) {
+					if (!object.Key) continue;
+
+					const isDir = object.Key.endsWith('/');
+
+					if (isDir) continue;
+
+					yield object.Key.substring(this.root.length);
 				}
 			}
 		} while (continuationToken);
