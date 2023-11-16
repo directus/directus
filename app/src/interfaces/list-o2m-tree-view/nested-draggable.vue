@@ -1,91 +1,3 @@
-<template>
-	<draggable
-		v-bind="dragOptions"
-		class="drag-area"
-		:class="{ root, drag }"
-		tag="ul"
-		:model-value="filteredDisplayItems"
-		:group="{ name: 'g1' }"
-		item-key="id"
-		draggable=".draggable"
-		:set-data="hideDragImage"
-		:disabled="disabled"
-		:force-fallback="true"
-		@start="drag = true"
-		@end="drag = false"
-		@change="change($event as ChangeEvent)"
-	>
-		<template #item="{ element, index }">
-			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
-				<item-preview
-					:item="element"
-					:edits="getItemEdits(element)"
-					:template="template"
-					:collection="collection"
-					:disabled="disabled"
-					:relation-info="relationInfo"
-					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
-					:deleted="element.$type === 'deleted'"
-					:delete-icon="getDeselectIcon(element)"
-					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
-					@input="stageEdits"
-					@deselect="remove(element)"
-				/>
-				<nested-draggable
-					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
-					:model-value="element[field]"
-					:template="template"
-					:collection="collection"
-					:disabled="disabled"
-					:field="field"
-					:fields="fields"
-					:enable-create="enableCreate"
-					:enable-select="enableSelect"
-					:custom-filter="customFilter"
-					:relation-info="relationInfo"
-					:primary-key="element[relationInfo.relatedPrimaryKeyField.field]"
-					:items-moved="itemsMoved"
-					@update:model-value="updateModelValue($event, index)"
-				/>
-			</li>
-		</template>
-	</draggable>
-
-	<template v-if="root">
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect" @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
-		</div>
-
-		<drawer-item
-			v-if="!disabled"
-			:active="addNewActive"
-			:collection="collection"
-			:primary-key="'+'"
-			:edits="{}"
-			:circular-field="relationInfo.reverseJunctionField.field"
-			@input="addNew"
-			@update:active="addNewActive = false"
-		/>
-
-		<drawer-collection
-			v-if="!disabled"
-			v-model:active="selectDrawer"
-			:collection="collection"
-			:selection="[]"
-			:filter="customFilter"
-			multiple
-			@input="select"
-		/>
-	</template>
-</template>
-
-<script lang="ts">
-export default {
-	name: 'NestedDraggable',
-};
-</script>
-
 <script setup lang="ts">
 import {
 	ChangesItem,
@@ -145,7 +57,7 @@ const props = withDefaults(
 	}>(),
 	{
 		disabled: false,
-		filter: () => null,
+		filter: null,
 		root: false,
 		modelValue: undefined,
 	}
@@ -277,6 +189,88 @@ function stageEdits(item: Record<string, any>) {
 }
 </script>
 
+<template>
+	<draggable
+		v-bind="dragOptions"
+		class="drag-area"
+		:class="{ root, drag }"
+		tag="ul"
+		:model-value="filteredDisplayItems"
+		:group="{ name: 'g1' }"
+		item-key="id"
+		draggable=".draggable"
+		:set-data="hideDragImage"
+		:disabled="disabled"
+		force-fallback
+		@start="drag = true"
+		@end="drag = false"
+		@change="change($event as ChangeEvent)"
+	>
+		<template #item="{ element, index }">
+			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
+				<item-preview
+					:item="element"
+					:edits="getItemEdits(element)"
+					:template="template"
+					:collection="collection"
+					:disabled="disabled"
+					:relation-info="relationInfo"
+					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
+					:deleted="element.$type === 'deleted'"
+					:delete-icon="getDeselectIcon(element)"
+					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
+					@input="stageEdits"
+					@deselect="remove(element)"
+				/>
+				<nested-draggable
+					v-if="open[element[relationInfo.relatedPrimaryKeyField.field]]"
+					:model-value="element[field]"
+					:template="template"
+					:collection="collection"
+					:disabled="disabled"
+					:field="field"
+					:fields="fields"
+					:enable-create="enableCreate"
+					:enable-select="enableSelect"
+					:custom-filter="customFilter"
+					:relation-info="relationInfo"
+					:primary-key="element[relationInfo.relatedPrimaryKeyField.field]"
+					:items-moved="itemsMoved"
+					@update:model-value="updateModelValue($event, index)"
+				/>
+			</li>
+		</template>
+	</draggable>
+
+	<template v-if="root">
+		<div v-if="!disabled" class="actions">
+			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableSelect" @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
+		</div>
+
+		<drawer-item
+			v-if="!disabled"
+			:active="addNewActive"
+			:collection="collection"
+			:primary-key="'+'"
+			:edits="{}"
+			:circular-field="relationInfo.reverseJunctionField.field"
+			@input="addNew"
+			@update:active="addNewActive = false"
+		/>
+
+		<drawer-collection
+			v-if="!disabled"
+			v-model:active="selectDrawer"
+			:collection="collection"
+			:selection="[]"
+			:filter="customFilter"
+			multiple
+			@input="select"
+		/>
+	</template>
+</template>
+
 <style lang="scss" scoped>
 .drag-area {
 	min-height: 12px;
@@ -295,7 +289,7 @@ function stageEdits(item: Record<string, any>) {
 	.preview {
 		padding: 12px;
 		background-color: var(--card-face-color);
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2);
 		cursor: grab;
 		transition: var(--fast) var(--transition);
@@ -312,7 +306,7 @@ function stageEdits(item: Record<string, any>) {
 }
 
 .ghost .preview {
-	background-color: var(--primary-alt);
+	background-color: var(--theme--primary-background);
 	box-shadow: 0 !important;
 }
 

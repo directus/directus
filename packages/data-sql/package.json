@@ -1,0 +1,46 @@
+{
+	"name": "@directus/data-sql",
+	"version": "0.3.0",
+	"type": "module",
+	"sideEffects": false,
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false",
+		"depcruise": "depcruise src --include-only '^src' -x test.ts --output-type dot | dot -T svg > dependency-graph.svg"
+	},
+	"description": "Shared SQL helpers for SQL-based drivers",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/data-sql"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "BSUL-1.1",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"devDependencies": {
+		"@directus/data": "workspace:*",
+		"@directus/random": "workspace:*",
+		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@types/lodash-es": "4.17.7",
+		"@types/node": "18.16.12",
+		"@types/wellknown": "0.5.4",
+		"@vitest/coverage-c8": "0.31.1",
+		"dependency-cruiser": "13.1.4",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
+		"vitest": "0.31.1"
+	},
+	"dependencies": {
+		"lodash-es": "4.17.21"
+	}
+}

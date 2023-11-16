@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import { ComponentOptions } from 'vue';
 import InterfaceList from './list.vue';
 import RepeaterOptions from './options.vue';

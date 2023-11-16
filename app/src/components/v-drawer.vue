@@ -1,80 +1,3 @@
-<template>
-	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
-		<template #activator="{ on }">
-			<slot name="activator" v-bind="{ on }" />
-		</template>
-
-		<article class="v-drawer">
-			<v-button
-				v-if="cancelable"
-				v-tooltip.bottom="t('cancel')"
-				class="cancel"
-				icon
-				rounded
-				secondary
-				@click="$emit('cancel')"
-			>
-				<v-icon name="close" />
-			</v-button>
-
-			<div class="content">
-				<v-overlay v-if="$slots.sidebar" absolute />
-
-				<v-resizeable
-					v-if="$slots.sidebar"
-					:disabled="!sidebarResizeable"
-					:width="sidebarWidth"
-					:max-width="sidebarMaxWidth"
-				>
-					<nav class="sidebar">
-						<div class="sidebar-content">
-							<slot name="sidebar" />
-						</div>
-					</nav>
-				</v-resizeable>
-
-				<main ref="mainEl" class="main">
-					<header-bar
-						:title="title"
-						primary-action-icon="close"
-						:small="smallHeader"
-						:shadow="headerShadow"
-						@primary="$emit('cancel')"
-					>
-						<template #title><slot name="title" /></template>
-						<template #headline>
-							<slot name="subtitle">
-								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-							</slot>
-						</template>
-
-						<template #title-outer:prepend>
-							<slot name="title-outer:prepend">
-								<v-button class="header-icon" rounded icon secondary disabled>
-									<v-icon :name="icon" />
-								</v-button>
-							</slot>
-						</template>
-
-						<template #actions:prepend><slot name="actions:prepend" /></template>
-						<template #actions><slot name="actions" /></template>
-
-						<template #title:append><slot name="header:append" /></template>
-					</header-bar>
-
-					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
-						<nav>
-							<slot name="sidebar" />
-						</nav>
-					</v-detail>
-
-					<slot />
-				</main>
-			</div>
-		</article>
-	</v-dialog>
-</template>
-
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import HeaderBar from '@/views/private/components/header-bar.vue';
@@ -131,11 +54,82 @@ const internalActive = computed({
 });
 </script>
 
-<style>
-body {
-	--v-drawer-max-width: 856px;
-}
-</style>
+<template>
+	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
+		<template #activator="{ on }">
+			<slot name="activator" v-bind="{ on }" />
+		</template>
+
+		<article class="v-drawer">
+			<v-button
+				v-if="cancelable"
+				v-tooltip.bottom="t('cancel')"
+				class="cancel"
+				icon
+				rounded
+				secondary
+				@click="$emit('cancel')"
+			>
+				<v-icon name="close" />
+			</v-button>
+
+			<div class="content">
+				<v-overlay v-if="$slots.sidebar" absolute />
+
+				<v-resizeable
+					v-if="$slots.sidebar"
+					:disabled="!sidebarResizeable"
+					:width="sidebarWidth"
+					:max-width="sidebarMaxWidth"
+				>
+					<nav class="sidebar">
+						<div class="sidebar-content">
+							<slot name="sidebar" />
+						</div>
+					</nav>
+				</v-resizeable>
+
+				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
+					<header-bar
+						:title="title"
+						primary-action-icon="close"
+						:small="smallHeader"
+						:shadow="headerShadow"
+						@primary="$emit('cancel')"
+					>
+						<template #title><slot name="title" /></template>
+						<template #headline>
+							<slot name="subtitle">
+								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
+							</slot>
+						</template>
+
+						<template #title-outer:prepend>
+							<slot name="title-outer:prepend">
+								<v-button class="header-icon" rounded icon secondary disabled>
+									<v-icon :name="icon" />
+								</v-button>
+							</slot>
+						</template>
+
+						<template #actions:prepend><slot name="actions:prepend" /></template>
+						<template #actions><slot name="actions" /></template>
+
+						<template #title:append><slot name="header:append" /></template>
+					</header-bar>
+
+					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
+						<nav>
+							<slot name="sidebar" />
+						</nav>
+					</v-detail>
+
+					<slot />
+				</main>
+			</div>
+		</article>
+	</v-dialog>
+</template>
 
 <style lang="scss" scoped>
 .v-drawer {
@@ -143,9 +137,9 @@ body {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: var(--v-drawer-max-width);
+	max-width: 856px;
 	height: 100%;
-	background-color: var(--background-page);
+	background-color: var(--theme--background);
 
 	.cancel {
 		display: none;
@@ -163,14 +157,13 @@ body {
 	}
 
 	.header-icon {
-		--v-button-background-color: var(--background-normal);
-		--v-button-background-color-active: var(--background-normal);
-		--v-button-background-color-hover: var(--background-normal-alt);
-		--v-button-color-disabled: var(--foreground-normal);
+		--v-button-background-color: var(--theme--background-normal);
+		--v-button-background-color-active: var(--theme--background-normal);
+		--v-button-background-color-hover: var(--theme--background-normal);
+		--v-button-color-disabled: var(--theme--foreground);
 	}
 
 	.content {
-		--border-radius: 6px;
 		--input-height: 60px;
 		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
 		--form-vertical-gap: 52px;
@@ -185,8 +178,8 @@ body {
 		line-height: 24px;
 
 		.sidebar {
-			--v-list-item-background-color-hover: var(--background-normal-alt);
-			--v-list-item-background-color-active: var(--background-normal-alt);
+			--v-list-item-background-color-hover: var(--theme--background-accent);
+			--v-list-item-background-color-active: var(--theme--background-accent);
 
 			display: none;
 
@@ -196,10 +189,24 @@ body {
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
-				background-color: var(--background-normal);
+				background: var(--theme--navigation--background);
+				border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 			}
 
 			.sidebar-content {
+				--v-list-item-color: var(--theme--navigation--list--foreground);
+				--v-list-item-color-hover: var(--theme--navigation--list--foreground-hover);
+				--v-list-item-color-active: var(--theme--navigation--list--foreground-active);
+				--v-list-item-icon-color: var(--theme--navigation--list--icon--foreground);
+				--v-list-item-icon-color-hover: var(--theme--navigation--list--icon--foreground-hover);
+				--v-list-item-icon-color-active: var(--theme--navigation--list--icon--foreground-active);
+				--v-list-item-background-color: var(--theme--navigation--list--background);
+				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
+				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
+
+				--v-divider-color: var(--theme--navigation--list--divider--border-color);
+				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
+
 				height: 100%;
 				overflow-x: hidden;
 				overflow-y: auto;
@@ -229,6 +236,10 @@ body {
 				--content-padding-bottom: 132px;
 			}
 		}
+
+		.main.small-search-input:deep(.search-input.filter-active) {
+			width: 300px !important;
+		}
 	}
 
 	@media (min-width: 960px) {
@@ -242,8 +253,8 @@ body {
 	margin: var(--content-padding);
 
 	nav {
-		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background-subdued);
+		border-radius: var(--theme--border-radius);
 	}
 
 	@media (min-width: 960px) {

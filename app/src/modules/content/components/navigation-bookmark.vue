@@ -1,6 +1,117 @@
+<script setup lang="ts">
+import { usePresetsStore } from '@/stores/presets';
+import { useUserStore } from '@/stores/user';
+import { getCollectionRoute } from '@/utils/get-route';
+import { translate } from '@/utils/translate-literal';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Preset } from '@directus/types';
+import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+
+interface Props {
+	bookmark: Preset;
+}
+
+const props = defineProps<Props>();
+
+const { t } = useI18n();
+
+const router = useRouter();
+const route = useRoute();
+
+const { currentUser, isAdmin } = useUserStore();
+const presetsStore = usePresetsStore();
+
+const isMine = computed(() => props.bookmark.user === currentUser!.id);
+
+const hasPermission = computed(() => isMine.value || isAdmin);
+
+const scope = computed(() => {
+	if (props.bookmark.user && !props.bookmark.role) return 'personal';
+	if (!props.bookmark.user && props.bookmark.role) return 'role';
+	return 'global';
+});
+
+const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
+const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
+
+const name = computed(() => translate(props.bookmark.bookmark));
+
+function useEditBookmark() {
+	const editActive = ref(false);
+
+	const editValue = reactive({
+		name: props.bookmark.bookmark,
+		icon: props.bookmark?.icon ?? 'bookmark',
+		color: props.bookmark?.color ?? null,
+	});
+
+	const editSaving = ref(false);
+
+	return { editActive, editValue, editSave, editSaving, editCancel };
+
+	async function editSave() {
+		editSaving.value = true;
+
+		try {
+			await presetsStore.savePreset({
+				...props.bookmark,
+				bookmark: editValue.name,
+				icon: editValue.icon,
+				color: editValue.color,
+			});
+
+			editActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			editSaving.value = false;
+		}
+	}
+
+	function editCancel() {
+		editActive.value = false;
+		editValue.name = props.bookmark.bookmark;
+		editValue.icon = props.bookmark?.icon ?? 'bookmark';
+		editValue.color = props.bookmark?.color ?? null;
+	}
+}
+
+function useDeleteBookmark() {
+	const deleteActive = ref(false);
+	const deleteSaving = ref(false);
+
+	return { deleteActive, deleteSave, deleteSaving };
+
+	async function deleteSave() {
+		deleteSaving.value = true;
+
+		try {
+			let navigateTo: string | null = null;
+
+			if (route.query?.bookmark && +route.query.bookmark === props.bookmark.id) {
+				navigateTo = getCollectionRoute(props.bookmark.collection);
+			}
+
+			await presetsStore.delete([props.bookmark.id!]);
+			deleteActive.value = false;
+
+			if (navigateTo) {
+				router.replace(navigateTo);
+			}
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			deleteSaving.value = false;
+		}
+	}
+}
+</script>
+
 <template>
 	<v-list-item
-		:to="`/content/${bookmark.collection}?bookmark=${bookmark.id}`"
+		:to="`${getCollectionRoute(bookmark.collection)}?bookmark=${bookmark.id}`"
 		query
 		class="bookmark"
 		clickable
@@ -85,125 +196,15 @@
 	</v-list-item>
 </template>
 
-<script setup lang="ts">
-import { usePresetsStore } from '@/stores/presets';
-import { useUserStore } from '@/stores/user';
-import { translate } from '@/utils/translate-literal';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { Preset } from '@directus/types';
-import { computed, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
-
-interface Props {
-	bookmark: Preset;
-}
-
-const props = defineProps<Props>();
-
-const { t } = useI18n();
-
-const router = useRouter();
-const route = useRoute();
-
-const { currentUser, isAdmin } = useUserStore();
-const presetsStore = usePresetsStore();
-
-const isMine = computed(() => props.bookmark.user === currentUser!.id);
-
-const hasPermission = computed(() => isMine.value || isAdmin);
-
-const scope = computed(() => {
-	if (props.bookmark.user && !props.bookmark.role) return 'personal';
-	if (!props.bookmark.user && props.bookmark.role) return 'role';
-	return 'global';
-});
-
-const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
-const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
-
-const name = computed(() => translate(props.bookmark.bookmark));
-
-function useEditBookmark() {
-	const editActive = ref(false);
-
-	const editValue = reactive({
-		name: props.bookmark.bookmark,
-		icon: props.bookmark?.icon ?? 'bookmark',
-		color: props.bookmark?.color ?? null,
-	});
-
-	const editSaving = ref(false);
-
-	return { editActive, editValue, editSave, editSaving, editCancel };
-
-	async function editSave() {
-		editSaving.value = true;
-
-		try {
-			await presetsStore.savePreset({
-				...props.bookmark,
-				bookmark: editValue.name,
-				icon: editValue.icon,
-				color: editValue.color,
-			});
-
-			editActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
-		} finally {
-			editSaving.value = false;
-		}
-	}
-
-	function editCancel() {
-		editActive.value = false;
-		editValue.name = props.bookmark.bookmark;
-		editValue.icon = props.bookmark?.icon ?? 'bookmark';
-		editValue.color = props.bookmark?.color ?? null;
-	}
-}
-
-function useDeleteBookmark() {
-	const deleteActive = ref(false);
-	const deleteSaving = ref(false);
-
-	return { deleteActive, deleteSave, deleteSaving };
-
-	async function deleteSave() {
-		deleteSaving.value = true;
-
-		try {
-			let navigateTo: string | null = null;
-
-			if (route.query?.bookmark && +route.query.bookmark === props.bookmark.id) {
-				navigateTo = `/content/${props.bookmark.collection}`;
-			}
-
-			await presetsStore.delete([props.bookmark.id!]);
-			deleteActive.value = false;
-
-			if (navigateTo) {
-				router.replace(navigateTo);
-			}
-		} catch (err: any) {
-			unexpectedError(err);
-		} finally {
-			deleteSaving.value = false;
-		}
-	}
-}
-</script>
-
 <style lang="scss" scoped>
 .danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .v-list-item {
 	.ctx-toggle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		opacity: 0;
 		user-select: none;

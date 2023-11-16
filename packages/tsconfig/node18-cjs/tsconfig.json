@@ -1,0 +1,9 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "Node.js 18 CommonJS",
+	"extends": "../base/tsconfig.json",
+	"compilerOptions": {
+		"module": "CommonJS",
+		"target": "ES2022"
+	}
+}

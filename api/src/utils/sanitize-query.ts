@@ -1,14 +1,12 @@
 import type { Accountability, Aggregate, Filter, Query } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
-import { getEnv } from '../env.js';
+import env from '../env.js';
 import logger from '../logger.js';
 import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
-
-	const env = getEnv();
 
 	const hasMaxLimit =
 		'QUERY_LIMIT_MAX' in env &&
@@ -62,6 +60,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.search = rawQuery['search'];
 	}
 
+	if (rawQuery['version']) {
+		query.version = rawQuery['version'];
+	}
+
 	if (rawQuery['export']) {
 		query.export = rawQuery['export'] as 'json' | 'csv';
 	}
@@ -100,6 +102,8 @@ function sanitizeSort(rawSort: any) {
 
 	if (typeof rawSort === 'string') fields = rawSort.split(',');
 	else if (Array.isArray(rawSort)) fields = rawSort as string[];
+
+	fields = fields.map((field) => field.trim());
 
 	return fields;
 }
@@ -182,20 +186,26 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 	return result;
 
 	function parse(level: Record<string, any>, path: string[] = []) {
+		const subQuery: Record<string, any> = {};
 		const parsedLevel: Record<string, any> = {};
 
 		for (const [key, value] of Object.entries(level)) {
 			if (!key) break;
 
 			if (key.startsWith('_')) {
-				// Sanitize query only accepts non-underscore-prefixed query options
-				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, accountability);
-				// ...however we want to keep them for the nested structure of deep, otherwise there's no
-				// way of knowing when to keep nesting and when to stop
-				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0]!;
-				parsedLevel[`_${parsedKey}`] = parsedValue;
+				// Collect all sub query parameters without the leading underscore
+				subQuery[key.substring(1)] = value;
 			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);
+			}
+		}
+
+		if (Object.keys(subQuery).length > 0) {
+			// Sanitize the entire sub query
+			const parsedSubQuery = sanitizeQuery(subQuery, accountability);
+
+			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
+				parsedLevel[`_${parsedKey}`] = parsedValue;
 			}
 		}
 

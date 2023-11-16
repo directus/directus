@@ -22,8 +22,14 @@ export type Info = {
 		project_logo: string | null;
 		project_color: string | null;
 		default_language: string | null;
+		default_appearance: 'light' | 'dark' | 'auto';
+		default_theme_light: string | null;
+		default_theme_dark: string | null;
+		theme_light_overrides: Record<string, unknown> | null;
+		theme_dark_overrides: Record<string, unknown> | null;
 		public_foreground: string | null;
 		public_background: string | null;
+		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
 	};
@@ -33,9 +39,6 @@ export type Info = {
 				points: number;
 				duration: number;
 		  };
-	flows?: {
-		execAllowedModules: string[];
-	};
 	queryLimit?: {
 		default: number;
 		max: number;
@@ -51,7 +54,6 @@ export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
 		rateLimit: undefined,
-		flows: undefined,
 		queryLimit: undefined,
 	});
 
@@ -80,7 +82,6 @@ export const useServerStore = defineStore('serverStore', () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
 
 		info.project = serverInfoResponse.data.data?.project;
-		info.flows = serverInfoResponse.data.data?.flows;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
 		auth.providers = authResponse.data.data;

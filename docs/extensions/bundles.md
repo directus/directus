@@ -5,7 +5,9 @@ readTime: 5 min read
 
 # Extension Bundles
 
-> Extension bundles allow you to combine and share dependencies between one or more extensions.
+> Extension bundles can be used when an extension consists of a combination of several related sub-extensions which are
+> supposed to be installed together. They allow you to combine and share dependencies between one or more extensions and
+> are developed using JavaScript / Node.js.
 
 ## Create a Bundle
 
@@ -38,7 +40,7 @@ Entries in a bundle are located within a `src` directory in the bundle.
 
 This will scaffold a new blank extension for you to work on.
 
-:::tip
+::: tip
 
 The bundle extension type currently doesn't support the migration extension type.
 

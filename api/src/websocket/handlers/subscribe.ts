@@ -1,18 +1,16 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
 import emitter from '../../emitter.js';
-import { InvalidPayloadException } from '../../index.js';
-import { getMessenger } from '../../messenger.js';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Messenger } from '../../messenger.js';
-import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
+import { getMessenger } from '../../messenger.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { getService } from '../../utils/get-service.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { refreshAccountability } from '../authenticate.js';
-import { WebSocketException, handleWebSocketException } from '../exceptions.js';
+import { WebSocketError, handleWebSocketError } from '../errors.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
+import { getPayload } from '../utils/items.js';
 
 /**
  * Handler responsible for subscriptions
@@ -51,7 +49,7 @@ export class SubscribeHandler {
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
-				handleWebSocketException(client, error, 'subscribe');
+				handleWebSocketError(client, error, 'subscribe');
 			}
 		});
 
@@ -68,7 +66,7 @@ export class SubscribeHandler {
 		const { collection } = subscription;
 
 		if ('item' in subscription && ['directus_fields', 'directus_relations'].includes(collection)) {
-			throw new InvalidPayloadException(`Cannot subscribe to a specific item in the ${collection} collection.`);
+			throw new InvalidPayloadError({ reason: `Cannot subscribe to a specific item in the ${collection} collection.` });
 		}
 
 		if (!this.subscriptions[collection]) {
@@ -120,19 +118,21 @@ export class SubscribeHandler {
 				continue; // skip filtered events
 			}
 
+			if ('item' in subscription) {
+				if ('keys' in event && !event.keys.includes(subscription.item)) continue;
+				if ('key' in event && event.key !== subscription.item) continue;
+			}
+
 			try {
 				client.accountability = await refreshAccountability(client.accountability);
 
-				const result =
-					'item' in subscription
-						? await this.getSinglePayload(subscription, client.accountability, schema, event)
-						: await this.getMultiPayload(subscription, client.accountability, schema, event);
+				const result = await getPayload(subscription, client.accountability, schema, event);
 
-				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) return;
+				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				handleWebSocketException(client, err, 'subscribe');
+				handleWebSocketError(client, err, 'subscribe');
 			}
 		}
 	}
@@ -148,7 +148,7 @@ export class SubscribeHandler {
 				const schema = await getSchema();
 
 				if (!accountability?.admin && !schema.collections[collection]) {
-					throw new WebSocketException(
+					throw new WebSocketError(
 						'subscribe',
 						'INVALID_COLLECTION',
 						'The provided collection does not exists or is not accessible.',
@@ -177,16 +177,8 @@ export class SubscribeHandler {
 					this.unsubscribe(client, subscription.uid);
 				}
 
-				let data: Record<string, any>;
-
-				if (subscription.event === undefined) {
-					data =
-						'item' in subscription
-							? await this.getSinglePayload(subscription, accountability, schema)
-							: await this.getMultiPayload(subscription, accountability, schema);
-				} else {
-					data = { event: 'init' };
-				}
+				const data =
+					subscription.event === undefined ? await getPayload(subscription, accountability, schema) : { event: 'init' };
 
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);
@@ -194,7 +186,7 @@ export class SubscribeHandler {
 				// send an initial response
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
-				handleWebSocketException(client, err, 'subscribe');
+				handleWebSocketError(client, err, 'subscribe');
 			}
 		}
 
@@ -204,127 +196,8 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
 			} catch (err) {
-				handleWebSocketException(client, err, 'unsubscribe');
+				handleWebSocketError(client, err, 'unsubscribe');
 			}
-		}
-	}
-
-	private async getSinglePayload(
-		subscription: Subscription,
-		accountability: Accountability | null,
-		schema: SchemaOverview,
-		event?: WebSocketEvent
-	): Promise<Record<string, any>> {
-		const metaService = new MetaService({ schema, accountability });
-		const query = subscription.query ?? {};
-		const id = subscription.item!;
-
-		const result: Record<string, any> = {
-			event: event?.action ?? 'init',
-		};
-
-		if (subscription.collection === 'directus_collections') {
-			const service = new CollectionsService({ schema, accountability });
-			result['data'] = await service.readOne(String(id));
-		} else {
-			const service = getService(subscription.collection, { schema, accountability });
-			result['data'] = await service.readOne(id, query);
-		}
-
-		if ('meta' in query) {
-			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
-		}
-
-		return result;
-	}
-
-	private async getMultiPayload(
-		subscription: Subscription,
-		accountability: Accountability | null,
-		schema: SchemaOverview,
-		event?: WebSocketEvent
-	): Promise<Record<string, any>> {
-		const metaService = new MetaService({ schema, accountability });
-
-		const result: Record<string, any> = {
-			event: event?.action ?? 'init',
-		};
-
-		switch (subscription.collection) {
-			case 'directus_collections':
-				result['data'] = await this.getCollectionPayload(accountability, schema, event);
-				break;
-			case 'directus_fields':
-				result['data'] = await this.getFieldsPayload(accountability, schema, event);
-				break;
-			case 'directus_relations':
-				result['data'] = event?.payload;
-				break;
-			default:
-				result['data'] = await this.getItemsPayload(subscription, accountability, schema, event);
-				break;
-		}
-
-		const query = subscription.query ?? {};
-
-		if ('meta' in query) {
-			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
-		}
-
-		return result;
-	}
-
-	private async getCollectionPayload(
-		accountability: Accountability | null,
-		schema: SchemaOverview,
-		event?: WebSocketEvent
-	) {
-		const service = new CollectionsService({ schema, accountability });
-
-		if (!event?.action) {
-			return await service.readByQuery();
-		} else if (event.action === 'create') {
-			return await service.readMany([String(event.key)]);
-		} else if (event.action === 'delete') {
-			return event.keys;
-		} else {
-			return await service.readMany(event.keys.map((key: any) => String(key)));
-		}
-	}
-
-	private async getFieldsPayload(
-		accountability: Accountability | null,
-		schema: SchemaOverview,
-		event?: WebSocketEvent
-	) {
-		const service = new FieldsService({ schema, accountability });
-
-		if (!event?.action) {
-			return await service.readAll();
-		} else if (event.action === 'delete') {
-			return event.keys;
-		} else {
-			return await service.readOne(event.payload?.['collection'], event.payload?.['field']);
-		}
-	}
-
-	private async getItemsPayload(
-		subscription: Subscription,
-		accountability: Accountability | null,
-		schema: SchemaOverview,
-		event?: WebSocketEvent
-	) {
-		const query = subscription.query ?? {};
-		const service = getService(subscription.collection, { schema, accountability });
-
-		if (!event?.action) {
-			return await service.readByQuery(query);
-		} else if (event.action === 'create') {
-			return await service.readMany([event.key], query);
-		} else if (event.action === 'delete') {
-			return event.keys;
-		} else {
-			return await service.readMany(event.keys, query);
 		}
 	}
 

@@ -37,13 +37,15 @@ using the "Comment" section.
 
 ## Releasing New Translations
 
-As soon as a translation is edited on Crowdin, a pull request is created by Crowdin in our repo, which contains the corresponding changes.
+As soon as a translation is edited on Crowdin, a pull request is created by Crowdin in our repo, which contains the
+corresponding changes.
 
 This pull request is usually merged into main before publishing a new release.
 
-:::warning Translations on GitHub
+::: warning Translations on GitHub
 
-Editing translations directly in the GitHub repo is not recommended, as these changes will be overwritten by Crowdin again (unless we do a manual sync).
+Editing translations directly in the GitHub repo is not recommended, as these changes will be overwritten by Crowdin
+again (unless we do a manual sync).
 
 :::
 

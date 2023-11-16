@@ -45,6 +45,12 @@ full_width: Full Width
 group: Group
 and: And
 or: Or
+extension_interface: Interface
+extension_display: Display
+extension_layout: Layout
+extension_panel: Panel
+extension_modules: Modules
+enable: Enable
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -85,6 +91,7 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+promote_version_preview: Preview
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -97,13 +104,6 @@ public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
@@ -331,6 +331,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -372,7 +373,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -413,10 +413,8 @@ selecting_items: Selecting Items
 enable_select_button: Enable Select Button
 comments: Comments
 no_comments: No Comments Yet
-click_to_expand: Click to Expand
 select_item: Select Item
 no_items: No items
-search_items: Search items...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -514,7 +512,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
@@ -780,10 +777,10 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Roles & Permissions
-settings_project: Project Settings
+settings_project: Settings
 settings_webhooks: Webhooks
-settings_presets: Presets & Bookmarks
+settings_presets: Bookmarks
+settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 actions: Actions
@@ -818,7 +815,6 @@ page_help_files_collection: >-
   **File Library** — Lists all file assets uploaded to this project. Customise layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Project Settings** — Your project's global configuration options."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
@@ -934,10 +930,6 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
-    theme: Theme
-    theme_auto: Automatic (Based on System)
-    theme_light: Light Mode
-    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -974,7 +966,6 @@ fields:
     project_color: Project Colour
     project_logo: Project Logo
     default_language: Default Language
-    branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
@@ -1032,7 +1023,6 @@ field_options:
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -1086,6 +1076,7 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1143,6 +1134,8 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  new_window: Open in New Window
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1370,6 +1363,8 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1415,7 +1410,6 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
     description: Select a folder
     root_name: File Library Root
     system_default: System Defaults
@@ -1429,6 +1423,7 @@ interfaces:
     add_label: '"Create New" Label'
     sort: Sort
     field_note_placeholder: Enter field note...
+    interface_group: Interface Options
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -1496,6 +1491,16 @@ interfaces:
     custom_formats: Custom Formats
     options_override: Options Override
     folder_note: Folder for uploaded files. Does not affect existing files.
+  input-block-editor:
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      code: Code
+      image: Image
+      table: Table
+      underline: Underline
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
@@ -1690,11 +1695,15 @@ triggers:
   webhook:
     method: Method
 operations:
+  json-web-token:
+    token: Token
+    options: Options
   mail:
     template: Template
     data: Data
   notification:
     recipient: User
+    subject: Subject
   request:
     url: URL
     method: Method
@@ -1702,3 +1711,11 @@ operations:
     header: Header
   trigger:
     data: Data
+standard: Standard
+compact: Compact
+style: Style
+fonts:
+  normal: Normal
+  bold: Bold
+  italic: Italic
+  auto: Auto

@@ -4,8 +4,7 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -66,6 +65,9 @@ describe('Integration Tests', () => {
 
 		// mock notifications update query in deleteOne/deleteMany/deleteByQuery methods
 		tracker.on.update('directus_notifications').response({});
+
+		// mock versions update query in deleteOne/deleteMany/deleteByQuery methods
+		tracker.on.update('directus_versions').response({});
 	});
 
 	afterEach(() => {
@@ -239,7 +241,7 @@ describe('Integration Tests', () => {
 			});
 
 			it.each(['provider', 'external_identifier'])(
-				'should throw InvalidPayloadException for non-admin users when updating "%s" field',
+				'should throw InvalidPayloadError for non-admin users when updating "%s" field',
 				async (field) => {
 					const service = new UsersService({
 						knex: db,
@@ -255,16 +257,16 @@ describe('Integration Tests', () => {
 						await promise;
 					} catch (err: any) {
 						expect(err.message).toBe(`You don't have permission to access this.`);
-						expect(err).toBeInstanceOf(ForbiddenException);
+						expect(err).toBeInstanceOf(ForbiddenError);
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
-						`You can't change the "${field}" value manually.`
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
+						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
 				}
 			);
 
@@ -334,14 +336,14 @@ describe('Integration Tests', () => {
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
 			});
 
-			it('should throw RecordNotUniqueException for multiple keys with same email', async () => {
+			it('should throw RecordNotUniqueError for multiple keys with same email', async () => {
 				expect.assertions(2); // to ensure both assertions in the catch block are reached
 
 				try {
 					await service.updateMany([1, 2], { email: 'test@example.com' });
 				} catch (err: any) {
-					expect(err.message).toBe(`Field "email" has to be unique.`);
-					expect(err).toBeInstanceOf(RecordNotUniqueException);
+					expect(err.message).toBe(`Value for field "email" in collection "directus_users" has to be unique.`);
+					expect(err).toBeInstanceOf(RecordNotUniqueError);
 				}
 			});
 
@@ -356,7 +358,7 @@ describe('Integration Tests', () => {
 			});
 
 			it.each(['provider', 'external_identifier'])(
-				'should throw InvalidPayloadException for non-admin users when updating "%s" field',
+				'should throw InvalidPayloadError for non-admin users when updating "%s" field',
 				async (field) => {
 					const service = new UsersService({
 						knex: db,
@@ -372,16 +374,16 @@ describe('Integration Tests', () => {
 						await promise;
 					} catch (err: any) {
 						expect(err.message).toBe(`You don't have permission to access this.`);
-						expect(err).toBeInstanceOf(ForbiddenException);
+						expect(err).toBeInstanceOf(ForbiddenError);
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
-						`You can't change the "${field}" value manually.`
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
+						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
 				}
 			);
 
@@ -463,7 +465,7 @@ describe('Integration Tests', () => {
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
 			});
 
-			it('should throw RecordNotUniqueException for multiple keys with same email', async () => {
+			it('should throw RecordNotUniqueError for multiple keys with same email', async () => {
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1, 2]);
 
 				expect.assertions(2); // to ensure both assertions in the catch block are reached
@@ -471,8 +473,8 @@ describe('Integration Tests', () => {
 				try {
 					await service.updateByQuery({}, { email: 'test@example.com' });
 				} catch (err: any) {
-					expect(err.message).toBe(`Field "email" has to be unique.`);
-					expect(err).toBeInstanceOf(RecordNotUniqueException);
+					expect(err.message).toBe(`Value for field "email" in collection "directus_users" has to be unique.`);
+					expect(err).toBeInstanceOf(RecordNotUniqueError);
 				}
 			});
 
@@ -491,7 +493,7 @@ describe('Integration Tests', () => {
 			});
 
 			it.each(['provider', 'external_identifier'])(
-				'should throw InvalidPayloadException for non-admin users when updating "%s" field',
+				'should throw InvalidPayloadError for non-admin users when updating "%s" field',
 				async (field) => {
 					const service = new UsersService({
 						knex: db,
@@ -509,16 +511,16 @@ describe('Integration Tests', () => {
 						await promise;
 					} catch (err: any) {
 						expect(err.message).toBe(`You don't have permission to access this.`);
-						expect(err).toBeInstanceOf(ForbiddenException);
+						expect(err).toBeInstanceOf(ForbiddenError);
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
-						`You can't change the "${field}" value manually.`
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
+						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
 				}
 			);
 
@@ -571,7 +573,7 @@ describe('Integration Tests', () => {
 					await promise;
 				} catch (err: any) {
 					expect(err.message).toBe(`You don't have permission to access this.`);
-					expect(err).toBeInstanceOf(ForbiddenException);
+					expect(err).toBeInstanceOf(ForbiddenError);
 				}
 
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
@@ -594,7 +596,7 @@ describe('Integration Tests', () => {
 					await promise;
 				} catch (err: any) {
 					expect(err.message).toBe(`You don't have permission to access this.`);
-					expect(err).toBeInstanceOf(ForbiddenException);
+					expect(err).toBeInstanceOf(ForbiddenError);
 				}
 
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
@@ -620,7 +622,7 @@ describe('Integration Tests', () => {
 					await promise;
 				} catch (err: any) {
 					expect(err.message).toBe(`You don't have permission to access this.`);
-					expect(err).toBeInstanceOf(ForbiddenException);
+					expect(err).toBeInstanceOf(ForbiddenError);
 				}
 
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);

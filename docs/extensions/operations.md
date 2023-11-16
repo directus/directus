@@ -1,6 +1,6 @@
 # Custom Operations <small></small>
 
-> Custom Operations allow you to create new types of steps for flows.
+> Custom Operations allow you to create new types of steps for flows. They are developed using JavaScript / Node.js.
 > [Learn more about Operations](/app/flows/operations).
 
 ## Extension Entrypoints
@@ -45,8 +45,8 @@ export default {
 
 - `id` — The unique key for this operation. It is good practice to scope proprietary operations with an author prefix.
 - `name` — The human-readable name for this operation.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `description` — A short description (<80 characters) of this operation shown in the App.
 - `overview` — An overview that will be shown on the operation's tile. Can be either a function that receives the
   options of the operation and returns an array of objects containing `label` and `text` or a dedicated Vue component.
@@ -92,10 +92,19 @@ options as properties and their respective already interpolated values. `context
 properties:
 
 - `services` — All API internal services.
-- `exceptions` — API exception objects that can be used to throw "proper" errors.
 - `database` — Knex instance that is connected to the current database.
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables.
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
 - `data` — Object containing the raw data returned by the previous operations.
 - `accountability` — Information about the current user received by the trigger.
+
+## Guides
+
+Learn how to build operations with our official guides:
+
+<GuidesListExtensions type="Operations" />
+
+<script setup>
+import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+</script>

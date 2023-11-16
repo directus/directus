@@ -1,27 +1,3 @@
-<template>
-	<div class="v-progress-circular" :class="sizeClass">
-		<svg
-			class="circle"
-			viewBox="0 0 30 30"
-			:class="{ indeterminate }"
-			@animationiteration="$emit('animationiteration', $event)"
-		>
-			<path
-				class="circle-background"
-				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
-				transform="translate(2.5 2.5)"
-			/>
-			<path
-				class="circle-path"
-				:style="circleStyle"
-				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
-				transform="translate(2.5 2.5)"
-			/>
-		</svg>
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
@@ -55,25 +31,51 @@ const circleStyle = computed(() => ({
 }));
 </script>
 
-<style>
-body {
-	--v-progress-circular-color: var(--foreground-normal);
-	--v-progress-circular-background-color: var(--border-normal);
-	--v-progress-circular-transition: 400ms;
-	--v-progress-circular-speed: 2s;
-	--v-progress-circular-size: 28px;
-	--v-progress-circular-line-size: 3px;
-}
-</style>
+<template>
+	<div class="v-progress-circular" :class="sizeClass">
+		<svg
+			class="circle"
+			viewBox="0 0 30 30"
+			:class="{ indeterminate }"
+			@animationiteration="$emit('animationiteration', $event)"
+		>
+			<path
+				class="circle-background"
+				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
+				transform="translate(2.5 2.5)"
+			/>
+			<path
+				class="circle-path"
+				:style="circleStyle"
+				d="M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z"
+				transform="translate(2.5 2.5)"
+			/>
+		</svg>
+		<slot />
+	</div>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-progress-circular-color             [var(--theme--foreground)]
+		--v-progress-circular-background-color  [var(--theme--form--field--input--border-color)]
+		--v-progress-circular-transition        [400ms]
+		--v-progress-circular-speed             [2s]
+		--v-progress-circular-size              [28px]
+		--v-progress-circular-line-size         [3px]
+
+*/
+
 .v-progress-circular {
 	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: var(--v-progress-circular-size);
-	height: var(--v-progress-circular-size);
+	width: var(--v-progress-circular-size, 28px);
+	height: var(--v-progress-circular-size, 28px);
 
 	&.x-small {
 		--v-progress-circular-size: 12px;
@@ -101,28 +103,28 @@ body {
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: var(--v-progress-circular-size);
-		height: var(--v-progress-circular-size);
+		width: var(--v-progress-circular-size, 28px);
+		height: var(--v-progress-circular-size, 28px);
 
 		&-path {
-			transition: stroke-dasharray var(--v-progress-circular-transition) ease-in-out;
+			transition: stroke-dasharray var(--v-progress-circular-transition, 400ms) ease-in-out;
 			fill: transparent;
-			stroke: var(--v-progress-circular-color);
-			stroke-width: var(--v-progress-circular-line-size);
+			stroke: var(--v-progress-circular-color, var(--theme--foreground));
+			stroke-width: var(--v-progress-circular-line-size, 3px);
 		}
 
 		&.indeterminate {
-			animation: rotate var(--v-progress-circular-speed) infinite linear;
+			animation: rotate var(--v-progress-circular-speed, 2s) infinite linear;
 
 			.circle-path {
-				animation: stroke var(--v-progress-circular-speed) infinite linear;
+				animation: stroke var(--v-progress-circular-speed, 2s) infinite linear;
 			}
 		}
 
 		&-background {
 			fill: transparent;
-			stroke: var(--v-progress-circular-background-color);
-			stroke-width: var(--v-progress-circular-line-size);
+			stroke: var(--v-progress-circular-background-color, var(--theme--form--field--input--border-color));
+			stroke-width: var(--v-progress-circular-line-size, 3px);
 		}
 	}
 }

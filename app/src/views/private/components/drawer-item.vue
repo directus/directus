@@ -1,82 +1,3 @@
-<template>
-	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
-		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
-			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
-
-			<h1 v-else class="type-title">
-				<render-template :collection="templateCollection?.collection" :item="templateData" :template="template" />
-			</h1>
-		</template>
-
-		<template #subtitle>
-			<v-breadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
-		</template>
-
-		<template #actions>
-			<slot name="actions" />
-			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
-				<v-icon name="check" />
-			</v-button>
-		</template>
-
-		<div class="drawer-item-content">
-			<file-preview
-				v-if="junctionField && file"
-				:src="file.src"
-				:mime="file.type"
-				:width="file.width"
-				:height="file.height"
-				:title="file.title"
-				:in-modal="true"
-			/>
-			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
-				{{ t('no_visible_fields_copy') }}
-			</v-info>
-			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
-				<v-form
-					v-if="junctionField"
-					:disabled="disabled"
-					:loading="loading"
-					:show-no-visible-fields="false"
-					:initial-values="initialValues?.[junctionField]"
-					:primary-key="relatedPrimaryKey"
-					:model-value="internalEdits?.[junctionField]"
-					:fields="relatedCollectionFields"
-					:validation-errors="junctionField ? validationErrors : undefined"
-					:autofocus="!swapFormOrder"
-					:show-divider="!swapFormOrder"
-					@update:model-value="setRelationEdits"
-				/>
-
-				<v-form
-					v-model="internalEdits"
-					:disabled="disabled"
-					:loading="loading"
-					:show-no-visible-fields="false"
-					:initial-values="initialValues"
-					:autofocus="swapFormOrder"
-					:show-divider="swapFormOrder"
-					:primary-key="primaryKey"
-					:fields="fields"
-					:validation-errors="!junctionField ? validationErrors : undefined"
-				/>
-			</div>
-		</div>
-	</v-drawer>
-	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-		<v-card>
-			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-			<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-			<v-card-actions>
-				<v-button secondary @click="discardAndLeave">
-					{{ t('discard_changes') }}
-				</v-button>
-				<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -87,7 +8,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import FilePreview from '@/views/private/components/file-preview.vue';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -114,17 +35,17 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	active: undefined,
 	primaryKey: null,
-	edits: undefined,
 	junctionField: null,
-	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
 	junctionFieldLocation: 'bottom',
 });
 
-const emit = defineEmits(['update:active', 'input']);
+const emit = defineEmits<{
+	'update:active': [value: boolean];
+	input: [value: Record<string, any>];
+}>();
 
 const { t, te } = useI18n();
 
@@ -138,7 +59,7 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField } =
 	useRelation();
 
-const { internalEdits, loading, initialValues } = useItem();
+const { internalEdits, loading, initialValues, refresh } = useItem();
 const { save, cancel } = useActions();
 
 const { collection } = toRefs(props);
@@ -216,11 +137,13 @@ const fieldsWithoutCircular = computed(() => {
 	}
 });
 
-const emptyForm = computed(() => {
-	const visibleFieldsRelated = relatedCollectionFields.value.filter((field: Field) => !field.meta?.hidden);
-	const visibleFieldsJunction = fields.value.filter((field: Field) => !field.meta?.hidden);
-	return visibleFieldsRelated.length + visibleFieldsJunction.length === 0;
-});
+const hasVisibleFieldsRelated = computed(() =>
+	relatedCollectionFields.value.some((field: Field) => !field.meta?.hidden)
+);
+
+const hasVisibleFieldsJunction = computed(() => fields.value.some((field: Field) => !field.meta?.hidden));
+
+const emptyForm = computed(() => !hasVisibleFieldsRelated.value && !hasVisibleFieldsJunction.value);
 
 const templatePrimaryKey = computed(() =>
 	junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
@@ -237,16 +160,15 @@ const { file } = useFile();
 
 function useFile() {
 	const isDirectusFiles = computed(() => {
-		return relatedCollection.value === 'directus_files';
+		return props.collection === 'directus_files' || relatedCollection.value === 'directus_files';
 	});
 
 	const file = computed(() => {
-		if (isDirectusFiles.value === false || !initialValues.value || !props.junctionField) return null;
-		const fileData = initialValues.value?.[props.junctionField];
-		if (!fileData) return null;
+		if (isDirectusFiles.value === false || !initialValues.value) return null;
 
-		const src = `assets/${fileData.id}?key=system-large-contain`;
-		return { ...fileData, src };
+		const fileData = props.junctionField ? initialValues.value?.[props.junctionField] : initialValues.value;
+
+		return fileData || null;
 	});
 
 	return { file, isDirectusFiles };
@@ -289,7 +211,15 @@ function useItem() {
 		{ immediate: true }
 	);
 
-	return { internalEdits, loading, initialValues, fetchItem };
+	return { internalEdits, loading, initialValues, refresh };
+
+	async function refresh() {
+		if (props.active) {
+			loading.value = false;
+			if (props.primaryKey !== '+') fetchItem();
+			if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
+		}
+	}
 
 	async function fetchItem() {
 		if (!props.primaryKey) return;
@@ -312,8 +242,8 @@ function useItem() {
 			const response = await api.get(endpoint, { params: { fields } });
 
 			initialValues.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -339,8 +269,8 @@ function useItem() {
 				...(initialValues.value || {}),
 				[junctionFieldInfo.value.field]: response.data.data,
 			};
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -398,7 +328,7 @@ function useActions() {
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
 		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
 
-		let errors = validateItem(
+		const errors = validateItem(
 			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,
 			isNew.value
@@ -437,6 +367,85 @@ function useActions() {
 }
 </script>
 
+<template>
+	<v-drawer
+		v-model="internalActive"
+		:title="title"
+		:icon="collectionInfo?.meta?.icon ?? undefined"
+		persistent
+		@cancel="cancel"
+	>
+		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
+			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
+
+			<h1 v-else class="type-title">
+				<render-template :collection="templateCollection?.collection" :item="templateData" :template="template" />
+			</h1>
+		</template>
+
+		<template #subtitle>
+			<v-breadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
+		</template>
+
+		<template #actions>
+			<slot name="actions" />
+			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
+		<div class="drawer-item-content">
+			<file-preview-replace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
+
+			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
+				{{ t('no_visible_fields_copy') }}
+			</v-info>
+
+			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
+				<v-form
+					v-if="junctionField"
+					:disabled="disabled"
+					:loading="loading"
+					:show-no-visible-fields="false"
+					:initial-values="initialValues?.[junctionField]"
+					:primary-key="relatedPrimaryKey"
+					:model-value="internalEdits?.[junctionField]"
+					:fields="relatedCollectionFields"
+					:validation-errors="junctionField ? validationErrors : undefined"
+					:autofocus="!swapFormOrder"
+					:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
+					@update:model-value="setRelationEdits"
+				/>
+
+				<v-form
+					v-model="internalEdits"
+					:disabled="disabled"
+					:loading="loading"
+					:show-no-visible-fields="false"
+					:initial-values="initialValues"
+					:autofocus="swapFormOrder"
+					:show-divider="swapFormOrder && hasVisibleFieldsRelated"
+					:primary-key="primaryKey"
+					:fields="fields"
+					:validation-errors="!junctionField ? validationErrors : undefined"
+				/>
+			</div>
+		</div>
+	</v-drawer>
+	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-card>
+			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+			<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+			<v-card-actions>
+				<v-button secondary @click="discardAndLeave">
+					{{ t('discard_changes') }}
+				</v-button>
+				<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+</template>
+
 <style lang="scss" scoped>
 .v-divider {
 	margin: 52px 0;
@@ -446,9 +455,10 @@ function useActions() {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
 
-	.file-preview {
+	.preview {
 		margin-bottom: var(--form-vertical-gap);
 	}
+
 	.drawer-item-order {
 		&.swap {
 			display: flex;

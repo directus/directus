@@ -35,6 +35,7 @@ tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 location: Poloha
+collection_names_are_case_sensitive: Nazvý kolekcí jsou citlivé na malá a velká písmena
 condition_rules: Pravidla
 input: Vstup
 maps: Mapy
@@ -52,6 +53,13 @@ or: Nebo
 init: Init
 dataset_too_large_currently_showing_n_items: Datový soubor je příliš velký. V současné době se zobrazuje prvních {n} položek.
 modifier: Modifikátor
+extension_interface: Rozhraní
+extension_display: Zobrazení
+extension_layout: Rozvržení
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Moduly
+enable: Povolit
 custom: Vlastní
 hook: Hook
 fill_width: Celá šířka
@@ -80,14 +88,10 @@ create_user: Vytvořit uživatele
 message: Zpráva
 delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
-create_translation_string: Vytvořit překlad
-no_translation_string: Žádné překlady
-no_translation_string_copy: Zatím neexistují žádné překlady.
-translation_string_key_placeholder: Textový klíč k překladu...
-translation_string_translations_placeholder: Přidat nový překlad
-edit_translation_string: Upravit překlad
-delete_translation_string_copy: >-
-  Opravdu chcete odstranit překlad "{key}"? Tuto akci nelze vrátit zpět.
+create_custom_translation: Vytvořit Vlastní Překlad
+edit_custom_translation: Upravit Vlastní Překlad
+no_custom_translations: Žadné Vlastní Překlady
+no_custom_translations_copy: Zatím neexistují žádné vlastní překlady.
 invite_users: Pozvat uživatele
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
@@ -103,6 +107,7 @@ rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
 prefix: Prefix
 suffix: Přípona
+promote_version_preview: Náhled
 reset_bookmark: Obnovit záložku
 update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
@@ -118,19 +123,13 @@ public_label: Veřejný
 public_description: Určuje, která API data jsou dostupná bez ověřování.
 admin_description: Počáteční administrativní role s neomezeným přístupem k Aplikaci/API.
 not_allowed: Nepovoleno
-directus_version: Verze Directusu
-node_version: Node verze
-node_uptime: Doba provozu Node
-os_type: Typ OS
-os_version: Verze OS
-os_uptime: Dobra provozu operačního systému
-os_totalmem: Pamět OS
 archive: Archivovat
 archive_confirm: Skutečně chcete tuto položku archivovat?
 archive_confirm_count: >-
   Nevybrány žádné položky | Jste si jisti, že chcete archivovat tuto položku? | Jste si jisti, že chcete archivovat tyto {count} položky?
 reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
 reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
+the_following_are_minimum_permissions: Následující minimální oprávnění jsou automaticky aplikována když je "Přístup k aplikací" povolená. Můžete povolit další povolení potřeby, ale nemůžete snížit pod touto ůrovní.
 app_access_minimum: Minimální přístup k aplikaci
 recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu
@@ -155,6 +154,14 @@ validationError:
   required: Hodnota je povinná
   unique: Hodnota musí být unikátní
   regex: Hodnota nemá správný formát
+  starts_with: Hodnota musí začínat s {substring}
+  istarts_with: Hodnota musí začínat s {substring}
+  nstarts_with: Hodnota nemůže začínat s {substring}
+  nistarts_with: Hodnota nemůže začínat s {substring}
+  ends_with: Hodnota musí skončit s {substring}
+  iends_with: Hodnota musí skončit s {substring}
+  nends_with: Hodnota nemůže skončit s {substring}
+  niends_with: Hodnota nemůže skončit s {substring}
 all_access: Veškerý přístup
 no_access: Žádný přístup
 use_custom: Použít vlastní
@@ -181,11 +188,13 @@ permissions_for_role: 'Položky, které {role} role může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
 validation_for_role: 'Pole {action} praví, že role {role} musí uposlechnout.'
 presets_for_role: 'Výchozí hodnota pole pro roli {role}.'
+presets_field_warning: 'Relativní předvolby pro pole "{field}" by měly být nastaveny pomocí "podrobné" syntaxe.'
 presentation_and_aliases: Prezentace a aliasy
 revision_post_create: Zde je jak položka vypadala po jejím vytvoření.
 revision_post_update: Zde je jak položka vypadala po její aktualizaci.
 changes_made: Níže jsou uvedeny konkrétní změny provedené v této revizi.
 no_relational_data: Mějte na paměti, že údaje o vztazích zde nejsou zahrnuty.
+top: Nejlepší
 bottom: Dole
 hide_field: Skrýt pole
 hide_field_on_detail: Skrýt pole v detailu
@@ -234,6 +243,7 @@ bigInteger: Velké celé číslo
 boolean: Logická hodnota
 date: Datum
 date_range: Časový rozsah
+translation_key_placeholder: Zadejte něco...
 datetime: Datum a čas
 dateTime: Datum a čas
 precision: Přesnost
@@ -242,6 +252,7 @@ float: Plovoucí
 integer: Celé číslo
 json: JSON
 xml: XML
+yaml: YAML
 string: Text
 text: Text
 time: Čas
@@ -312,6 +323,7 @@ primary_key: Primární klíč
 foreign_key: Cizí klíč
 finish_setup: Dokončit nastavení
 dismiss: Odmítnout
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Surová hodnota
 copy_raw_value: Kopírovat surovou hodnotu
 copy_raw_value_success: Zkopírováno
@@ -343,7 +355,7 @@ revision_delta_reverted: Vrácena
 revision_delta_update_message: Toto pole bylo aktualizováno, ale jeho hodnota je skryta z bezpečnostních důvodů.
 revision_delta_other: Revize
 revision_delta_by: '{date} od {user}'
-presentation_text_values_cannot_be_reimported: "Používá text prezentace, hodnoty nelze znovu importovat."
+presentation_text_values_cannot_be_reimported: 'Používá text prezentace, hodnoty nelze znovu importovat.'
 download_page_as_csv: 'Stáhnout stránku jako CSV'
 private_user: Soukromý uživatel
 creation_preview: Náhled vytvoření
@@ -381,6 +393,7 @@ move: Přesunout
 system: Systém
 add_field_related: Přidat pole do související kolekce
 interface_label: Rozhraní
+display_label: Zobrazení
 today: Dnes
 yesterday: Včera
 delete_comment: Odstranit komentář
@@ -431,7 +444,6 @@ dimensions: Rozměry
 size: Velikost
 created: Vytvořena
 modified: Upraveno
-checksum: Kontrolní součet
 owner: Vlastník
 edited_by: Upravil/a
 folder: Složka
@@ -454,11 +466,6 @@ open_file_in_tab: Otevřít soubor v nové kartě
 start_export: Zahájit export
 not_available_for_local_downloads: Není k dispozici pro lokální stahování
 exporting_all_items_in_collection: Exportuji všech {total} položek z {collection}.
-exporting_limited_items_in_collection: Exportuji {limit} z {total} položek z {collection}.
-exporting_no_items_to_export: Žádné položky k exportu. Upravte nastavení exportu níže.
-exporting_download_hint: Po dokončení bude tento soubor {format} automaticky stažen do vašeho zařízení.
-exporting_batch_hint: Tento export bude zpracován v dávkách a po dokončení bude soubor {format} uložen do knihovny souborů.
-exporting_batch_hint_forced: Vzhledem k velkému počtu položek musí být tento vývoz zpracován v dávkách, a po dokončení bude soubor {format} uložen do knihovny souborů.
 collection_key: Klíč kolekce
 name: Jméno
 primary_key_field: Pole primárního klíče
@@ -483,10 +490,8 @@ enable_select_button: Povolit tlačítko Vybrat
 allow_duplicates: Povolit duplicity
 comments: Komentáře
 no_comments: Zatím bez komentářů
-click_to_expand: Kliknutím rozbalíte
 select_item: Vybrat položku
 no_items: Žádné položky
-search_items: Hledat položky...
 disabled: Zakázáno
 information: Informace
 report_bug: Nahlásit chybu
@@ -590,7 +595,6 @@ errors:
   RECORD_NOT_UNIQUE: Zjištěna duplicitní hodnota
   USER_SUSPENDED: Uživatel pozastaven
   CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
-  UNPROCESSABLE_ENTITY: Nezpracovatelná entita
   INTERNAL_SERVER_ERROR: Neočekávaná chyba
   NOT_NULL_VIOLATION: Hodnota nesmí být null
   ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je příliš velký pro náhled
@@ -922,12 +926,11 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položek'
 no_options_available: Žádné možnosti nejsou k dispozici
 settings_data_model: Datový model
-settings_permissions: Role a oprávnění
-settings_project: Nastavení projektu
+settings_project: Nastavení
 settings_webhooks: Webhooky
 settings_flows: Toky
-settings_presets: Předvolby a záložky
-settings_translation_strings: Překlady
+settings_presets: Záložky
+settings_translations: Překlady
 one_or_more_options_are_missing: Chybí jedna nebo více možností
 scope: Rozsah
 actions: Akce
@@ -962,7 +965,6 @@ page_help_files_collection: >-
   **Knihovna souborů** — Zobrazí všechny soubory nahrané do tohoto projektu. Přizpůsobte si rozvržení, filtry a třídění, abyste mohli přizpůsobit zobrazení a dokonce uložit záložky z těchto různých konfigurací pro rychlý přístup.
 page_help_files_item: >-
   **Detail souboru** – Formulář pro správu metadat souboru, úpravu původního aktiva a aktualizaci nastavení přístupu.
-page_help_settings_project: "**Nastavení projektu** – Možnosti globální konfigurace vašeho projektu."
 page_help_settings_datamodel_collections: >-
   **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
 page_help_settings_datamodel_fields: >-
@@ -977,7 +979,6 @@ page_help_settings_webhooks_collection: '**Procházet webhooky** — Zobrazuje v
 page_help_settings_webhooks_item: '**Detail webhooku** — Formulář pro tvorbu a správu webhooků projektu.'
 page_help_settings_flows_collection: '**Procházet toky** — Zobrazuje všechny toky v rámci projektu.'
 page_help_settings_flows_item: '**Detail toku** – Pracovní prostor pro správu jedné nebo více operací.'
-page_help_settings_translation_strings_collection: '**Procházet překlady** — Seznam všech překladů v rámci projektu.'
 page_help_users_collection: '**Uživatelé** — Zobrazuje všechny systémové uživatele v rámci tohoto projektu.'
 page_help_users_item: >-
   **Detaily uživatele** — Správa informací o Vašem účtu nebo zobrazení detailů ostatních uživatelů.
@@ -1084,10 +1085,6 @@ fields:
     tags: Štítky
     user_preferences: Nastavení uživatele
     language: Jazyk
-    theme: Téma
-    theme_auto: Automaticky (použít dle systému)
-    theme_light: Světlý režim
-    theme_dark: Tmavý režim
     tfa_secret: Dvoufázové ověření
     admin_options: Možnosti správce
     status: Stav
@@ -1125,7 +1122,6 @@ fields:
     project_color: Barva projektu
     project_logo: Logo projektu
     default_language: Výchozí jazyk
-    branding: Branding a styl
     public_foreground: Veřejné popředí
     public_background: Veřejné pozadí
     public_note: Veřejná poznámka
@@ -1183,7 +1179,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Můj projekt...
     project_color_note: Pozadí přihlášení a loga
-    project_logo_note: Bílé 40x40 SVG/PNG
     public_note_placeholder: Krátká, veřejná zpráva, která podporuje formátování markdown...
     security_divider_title: Zabezpečení
     auth_password_policy:
@@ -1237,6 +1232,7 @@ field_options:
     sort_field: Vyberte pole...
     accountability_divider: Odpovědnost
     duplication_divider: Duplikace
+    preview_divider: Náhled
   directus_files:
     title: Jedinečný název...
     description: Volitelný popis...
@@ -1294,6 +1290,8 @@ start_collapsed: Začít sbalený
 block: Blok
 inline: Řádek
 comment: Komentář
+live_preview:
+  new_window: Otevřít v novém okně
 shares: Sdílení
 unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
@@ -1543,6 +1541,8 @@ interfaces:
   system-interface-options:
     interface-options: Možnosti rozhraní
     description: Modal pro výběr možností rozhraní
+  system-display:
+    display: Zobrazení
   list-m2m:
     many-to-many: M:N
     description: Vyberte více souvisejících položek
@@ -1590,7 +1590,6 @@ interfaces:
     description: Vyberte více souvisejících položek
     no_collection: Kolekce nebyla nalezena
   system-folder:
-    folder: Složka
     description: Vyberte složku
     root_name: Kořenový adresář knihovny souborů
     system_default: Výchozí nastavení systému
@@ -1606,6 +1605,7 @@ interfaces:
     sort_placeholder: Manuálně
     field_note_placeholder: Zadejte poznámku k poli...
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
+    interface_group: Možnosti rozhraní
   slider:
     slider: Posuvník
     description: Vyberte číslo pomocí posuvníku
@@ -1645,7 +1645,6 @@ interfaces:
     input-translated-string: Překlady
     description: Vyberte nebo přidejte překlad
     search_placeholder: Hledat...
-    new_translation_string: Nový překlad
   boolean:
     toggle: Přepínač
     description: Přepínání mezi zapnutím a vypnutím
@@ -1681,6 +1680,16 @@ interfaces:
     folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     imageToken: Statický přístupový token
     imageToken_label: Statický přístupový token je připojen k URL aktiva
+  input-block-editor:
+    tools: Nástrojová lišta
+    tools_options:
+      header: Hlavička
+      nestedlist: Seznam
+      embed: Vložení
+      code: Kód
+      image: Obrázek
+      table: Tabulka
+      underline: Podtržení
   input-autocomplete-api:
     input-autocomplete-api: Vstup s našeptávačem (API)
     description: Vyhledávání typeahead pro externí hodnoty API.
@@ -1955,6 +1964,9 @@ operations:
     emit_events: Povolit události
     key: ID
     query: Dotaz
+  json-web-token:
+    token: Token
+    options: Možnosti
   log:
     description: Vypsat něco do konzole
     message: Zpráva
@@ -1971,9 +1983,10 @@ operations:
     name: Odeslat oznámení
     recipient: Uživatel
     message: Zpráva
+    subject: Předmět
   request:
     name: Webhook / Request URL
-    description: "Poslat žádost na adresu URL"
+    description: 'Poslat žádost na adresu URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Metoda
@@ -1988,3 +2001,12 @@ operations:
     flows: Toky
     flow: Tok
     data: Údaje
+standard: Standardní
+compact: Kompaktní
+style: Styl
+fonts:
+  normal: Normální
+  bold: Tučné
+  black: Černá
+  italic: Kurzíva
+  auto: Automatický

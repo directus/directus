@@ -1,26 +1,3 @@
-<template>
-	<v-notice v-if="!choices" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
-	<v-select
-		v-else
-		multiple
-		:model-value="value"
-		:items="choices"
-		:disabled="disabled"
-		:show-deselect="allowNone"
-		:placeholder="placeholder"
-		:allow-other="allowOther"
-		:close-on-content-click="false"
-		:multiple-preview-threshold="previewThreshold"
-		@update:model-value="updateValue($event)"
-	>
-		<template v-if="icon" #prepend>
-			<v-icon :name="icon" />
-		</template>
-	</v-select>
-</template>
-
 <script setup lang="ts">
 import { sortBy } from 'lodash';
 import { useI18n } from 'vue-i18n';
@@ -60,3 +37,26 @@ function updateValue(value: string[]) {
 	emit('input', sortedValue);
 }
 </script>
+
+<template>
+	<v-notice v-if="!choices" type="warning">
+		{{ t('choices_option_configured_incorrectly') }}
+	</v-notice>
+	<v-select
+		v-else
+		multiple
+		:model-value="value"
+		:items="choices"
+		:disabled="disabled"
+		:show-deselect="allowNone"
+		:placeholder="placeholder"
+		:allow-other="allowOther"
+		:close-on-content-click="false"
+		:multiple-preview-threshold="previewThreshold"
+		@update:model-value="updateValue($event)"
+	>
+		<template v-if="icon" #prepend>
+			<v-icon :name="icon" />
+		</template>
+	</v-select>
+</template>

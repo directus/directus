@@ -47,6 +47,13 @@ and: Kaj
 or: Aŭ
 dataset_too_large_currently_showing_n_items: La datumaro estas tro granda. Nur la unuaj {n} eroj estas nun montrataj.
 modifier: Ŝanĝilo
+extension_interface: Interfaco
+extension_display: Montri
+extension_layout: Aranĝo
+extension_panel: Panelo
+extension_hook: Hoko
+extension_modules: Moduloj
+enable: Ŝalti
 custom: Propra
 hook: Hoko
 enter_password_to_enable_tfa: Entajpu vian pasvorton por ŝalti dufaktoran kontroladon
@@ -71,7 +78,6 @@ create_user: Krei uzanton
 message: Mesaĝo
 delete_panel: Forigi la panelon
 create_webhook: Krei rethokon
-translation_string_translations_placeholder: Aldoni novan tradukon
 invite_users: Inviti uzantojn
 invite: Inviti
 email_already_invited: La retpoŝtadreso "{email}" jam estas invitita
@@ -95,13 +101,6 @@ logoutReason:
   SESSION_EXPIRED: Seanco eksvalidiĝinta
 public_label: Publika
 not_allowed: Ne permesita
-directus_version: Directus-versio
-node_version: Node-versio
-node_uptime: Node-funkcidaŭro
-os_type: Operaciuma tipo
-os_version: Operaciuma versio
-os_uptime: Operaciuma funkcidaŭro
-os_totalmem: Operaciuma memoro
 archive: Arĥivi
 archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
 archive_confirm_count: >-
@@ -262,6 +261,7 @@ move_to_folder: Movi al dosierujo
 move: Move
 system: Sistemo
 interface_label: Interfaco
+display_label: Montri
 today: Hodiaŭ
 yesterday: Hieraŭ
 delete_comment: Forigi la komenton
@@ -307,7 +307,6 @@ dimensions: Dimensioj
 size: Grando
 created: Kreita
 modified: Ŝanĝita
-checksum: Kontrolsumo
 owner: Posedanto
 edited_by: Redaktita de
 folder: Dosierujo
@@ -344,7 +343,6 @@ comments: Komentoj
 no_comments: Ankoraŭ neniu komento
 select_item: Elekti kampon
 no_items: Neniu ero
-search_items: Serĉi erojn...
 disabled: Malŝaltita
 information: Informoj
 report_bug: Raporti cimon
@@ -601,11 +599,11 @@ other: Alia...
 adding_user: Aldoni uzanton
 unknown_user: Nekonata uzanto
 settings_data_model: Datummodelo
-settings_permissions: Roloj kaj permesoj
-settings_project: Agordoj de la projekto
+settings_project: Agordoj
 settings_webhooks: Rethokoj
 settings_flows: Fluoj
-settings_presets: Antaŭagordoj kaj legosignoj
+settings_presets: Legosignoj
+settings_translations: Tradukoj
 actions: Agoj
 select: Elekti...
 layout: Aranĝo
@@ -683,10 +681,6 @@ fields:
     description: Priskribo
     tags: Etikedoj
     language: Lingvo
-    theme: Aspekto
-    theme_auto: Aŭtomata (bazita je la sistemo)
-    theme_light: Hela reĝimo
-    theme_dark: Malhela reĝimo
     tfa_secret: Dufaktora kontrolado
     admin_options: Opcioj por administrantoj
     status: Stato
@@ -753,7 +747,6 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mia projekto...
-    project_logo_note: Blanka 40x40 SVG/PNG
     security_divider_title: Sekureco
     auth_password_policy:
       none_text: Neniu – ne rekomendata
@@ -817,6 +810,8 @@ no_value: Neniu valoro
 do_nothing: Fari nenion
 generate_and_save_uuid: Generi kaj konservi UUID
 comment: Komento
+live_preview:
+  new_window: Malfermi en nova fenestro
 shares: Konigoj
 unlimited_usage: Senlima uzado
 new_share: Nova konigo
@@ -961,6 +956,8 @@ interfaces:
     interface: Interfaco
     description: Elekti ekzistantan interfacon
     placeholder: Elekti interfacon...
+  system-display:
+    display: Montri
   list-m2m:
     many-to-many: Pluraj-al-pluraj-rilato
   select-dropdown-m2o:
@@ -983,7 +980,6 @@ interfaces:
   list-o2m:
     one-to-many: Unu-al-pluraj-rilato
   system-folder:
-    folder: Dosierujo
     description: Elekti dosierujon
   list:
     repeater: Ripetilo
@@ -1026,6 +1022,15 @@ interfaces:
       dropdown: Falmenuo
   input-rich-text-html:
     toolbar: Ilobreto
+  input-block-editor:
+    tools: Ilobreto
+    tools_options:
+      nestedlist: Listo
+      embed: Enkorpigi
+      code: Kodo
+      image: Bildo
+      table: Tabelo
+      underline: Substrekita
   input-autocomplete-api:
     trigger: Ekagilo
   group-raw:
@@ -1223,6 +1228,10 @@ operations:
   item-update:
     key: Identigiloj
     payload: Enhavaj datumoj
+  json-web-token:
+    payload: Enhavaj datumoj
+    token: Ĵetono
+    options: Opcioj
   log:
     name: Protokoli al la konzolo
     message: Mesaĝo
@@ -1239,6 +1248,7 @@ operations:
     recipient_placeholder: Entajpu UUID...
     recipient_note: Aldoni UUID de la uzanto kaj premi Enter...
     message: Mesaĝo
+    subject: Temo
   request:
     url: URL
     url_placeholder: https://example.com/ekzemplo
@@ -1256,3 +1266,13 @@ operations:
     data: Datumoj
     serial: Seria
     parallel: Paralela
+compact: Kompakta
+style: Stilo
+fonts:
+  thin: Mallarĝa
+  normal: Normala
+  medium: Meza
+  bold: Grasa
+  black: Nigra
+  italic: Kursiva
+  auto: Aŭtomata

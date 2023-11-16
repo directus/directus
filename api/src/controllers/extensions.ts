@@ -1,33 +1,53 @@
-import { EXTENSION_TYPES } from '@directus/constants';
-import type { Plural } from '@directus/types';
-import { depluralize, isIn } from '@directus/utils';
-import { Router } from 'express';
+import { ForbiddenError, RouteNotFoundError } from '@directus/errors';
+import express from 'express';
 import env from '../env.js';
-import { RouteNotFoundException } from '../exceptions/index.js';
-import { getExtensionManager } from '../extensions.js';
+import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { ExtensionsService } from '../services/extensions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 
-const router = Router();
+const router = express.Router();
+
+router.use(useCollection('directus_extensions'));
 
 router.get(
-	'/:type',
+	'/',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params['type'] as Plural<string>);
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-		if (!isIn(type, EXTENSION_TYPES)) {
-			throw new RouteNotFoundException(req.path);
+		const extensions = await service.readAll();
+		res.locals['payload'] = { data: extensions || null };
+		return next();
+	}),
+	respond
+);
+
+router.patch(
+	'/:bundleOrName/:name?',
+	asyncHandler(async (req, res, next) => {
+		const service = new ExtensionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const bundle = req.params['name'] ? req.params['bundleOrName'] : null;
+		const name = req.params['name'] ? req.params['name'] : req.params['bundleOrName'];
+
+		if (bundle === undefined || !name) {
+			throw new ForbiddenError();
 		}
 
-		const extensionManager = getExtensionManager();
+		await service.updateOne(bundle, name, req.body);
 
-		const extensions = extensionManager.getExtensionsList(type);
+		const updated = await service.readOne(bundle, name);
 
-		res.locals['payload'] = {
-			data: extensions,
-		};
+		res.locals['payload'] = { data: updated || null };
 
 		return next();
 	}),
@@ -43,13 +63,13 @@ router.get(
 		let source: string | null;
 
 		if (chunk === 'index.js') {
-			source = extensionManager.getAppExtensions();
+			source = extensionManager.getAppExtensionsBundle();
 		} else {
 			source = extensionManager.getAppExtensionChunk(chunk);
 		}
 
 		if (source === null) {
-			throw new RouteNotFoundException(req.path);
+			throw new RouteNotFoundError({ path: req.path });
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');

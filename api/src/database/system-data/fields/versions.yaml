@@ -1,0 +1,38 @@
+table: directus_versions
+
+fields:
+  - field: id
+    special:
+      - uuid
+    readonly: true
+    hidden: true
+
+  - field: key
+
+  - field: name
+
+  - field: collection
+
+  - field: item
+
+  - field: hash
+    readonly: true
+    hidden: true
+
+  - field: date_created
+    special:
+      - date-created
+      - cast-timestamp
+
+  - field: date_updated
+    special:
+      - date-updated
+      - cast-timestamp
+
+  - field: user_created
+    special:
+      - user-created
+
+  - field: user_updated
+    special:
+      - user-updated

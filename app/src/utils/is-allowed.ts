@@ -1,6 +1,6 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { FieldFilter, Permission } from '@directus/types';
+import { Filter, FieldFilter, Permission } from '@directus/types';
 import { generateJoi } from '@directus/utils';
 
 export function isAllowed(
@@ -32,13 +32,30 @@ export function isAllowed(
 
 	if (!permissionInfo.permissions || Object.keys(permissionInfo.permissions).length === 0) return true;
 
-	const schema = generateJoi(permissionInfo.permissions as FieldFilter);
+	// Value is `null` while data is still loading, skip check in this case
+	if (value === null) return true;
 
-	const { error } = schema.validate(value);
+	return checkPermissions(permissionInfo.permissions);
 
-	if (!error) {
-		return true;
+	function checkPermissions(permissions: Filter): boolean {
+		if (Object.keys(permissions)[0] === '_and') {
+			const subPermissions = Object.values(permissions)[0] as FieldFilter[];
+			return subPermissions.every((permission) => checkPermissions(permission));
+		} else if (Object.keys(permissions)[0] === '_or') {
+			const subPermissions = Object.values(permissions)[0] as FieldFilter[];
+			return subPermissions.some((permission) => checkPermissions(permission));
+		} else {
+			const schema = generateJoi(permissions as FieldFilter);
+
+			const { error } = schema.validate(value);
+
+			// TODO: This is a temporary workaround, currently necessary for permission rules
+			//       containing relational fields because those values aren't received at this point
+			//		 and the check would always fail.
+			//       Therefore the check is instead always considered successful for now.
+			if (action === 'update' && error?.message.endsWith('must be of type object')) return true;
+
+			return error === undefined;
+		}
 	}
-
-	return false;
 }

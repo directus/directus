@@ -1,28 +1,3 @@
-<template>
-	<v-textarea
-		v-bind="{ placeholder, trim }"
-		:model-value="value"
-		:nullable="!clear"
-		:disabled="disabled"
-		:class="font"
-		:dir="direction"
-		@update:model-value="$emit('input', $event)"
-	>
-		<template v-if="(percentageRemaining && percentageRemaining <= 20) || softLength" #append>
-			<span
-				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
-				class="remaining"
-				:class="{
-					warning: percentageRemaining! < 10,
-					danger: percentageRemaining! < 5,
-				}"
-			>
-				{{ charsRemaining }}
-			</span>
-		</template>
-	</v-textarea>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -66,18 +41,43 @@ const percentageRemaining = computed(() => {
 });
 </script>
 
+<template>
+	<v-textarea
+		v-bind="{ placeholder, trim }"
+		:model-value="value"
+		:nullable="!clear"
+		:disabled="disabled"
+		:class="font"
+		:dir="direction"
+		@update:model-value="$emit('input', $event)"
+	>
+		<template v-if="(percentageRemaining && percentageRemaining <= 20) || softLength" #append>
+			<span
+				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
+				class="remaining"
+				:class="{
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
+				}"
+			>
+				{{ charsRemaining }}
+			</span>
+		</template>
+	</v-textarea>
+</template>
+
 <style lang="scss" scoped>
 .v-textarea {
 	&.monospace {
-		--v-textarea-font-family: var(--family-monospace);
+		--v-textarea-font-family: var(--theme--font-family-monospace);
 	}
 
 	&.serif {
-		--v-textarea-font-family: var(--family-serif);
+		--v-textarea-font-family: var(--theme--font-family-serif);
 	}
 
 	&.sans-serif {
-		--v-textarea-font-family: var(--family-sans-serif);
+		--v-textarea-font-family: var(--theme--font-family-sans-serif);
 	}
 }
 
@@ -85,7 +85,7 @@ const percentageRemaining = computed(() => {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -101,6 +101,6 @@ const percentageRemaining = computed(() => {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 </style>

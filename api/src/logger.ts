@@ -1,5 +1,4 @@
-import { REDACTED_TEXT } from '@directus/constants';
-import { toArray } from '@directus/utils';
+import { REDACTED_TEXT, toArray } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
 import { merge } from 'lodash-es';
 import type { LoggerOptions } from 'pino';

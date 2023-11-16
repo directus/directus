@@ -39,18 +39,13 @@ half_width: Пола ширине
 full_width: Пуна ширина
 group: Група
 or: Или
+extension_display: Pokazatelj
+extension_modules: Модули
 fill_width: Попуни ширину
 required: Захтјева се
 create_role: Креирајте улогу
 emails: Е-мејлови
 not_allowed: Није дозвољено
-directus_version: Верзија Директуса
-node_version: Верзија нода
-node_uptime: Вријеме рада нода
-os_type: Тип OS-а
-os_version: Верзија OS-а
-os_uptime: Вријеме рада OS-а
-os_totalmem: Меморија OS-а
 archive: Архивирај
 unarchive: Деархивирај
 unarchive_confirm: Да ли сте сигурни да желите да деархивирате овај итем?
@@ -146,7 +141,7 @@ revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrednost skrivena iz bezbednosnih razloga.
 revision_delta_other: Izmena
 revision_delta_by: 'datum, korisnik'
-presentation_text_values_cannot_be_reimported: "Koristi tekst prezentacije, vrednosti se ne mogu ponovo uvesti."
+presentation_text_values_cannot_be_reimported: 'Koristi tekst prezentacije, vrednosti se ne mogu ponovo uvesti.'
 download_page_as_csv: 'Preuzmi stranicu kao CSV'
 private_user: Privatni korisnik
 creation_preview: Pregled izrade
@@ -159,6 +154,7 @@ item_create_success: Kreirana stavka
 item_update_success: Postavka kreirana
 item_delete_success: Stavka je izbrisana
 this_collection: Ova zbirka
+display_label: Pokazatelj
 functions:
   count: Zbir
 months:
@@ -203,6 +199,7 @@ wysiwyg_options:
   table: Табела
 choices: Избори
 deselect: Поништи избор
+settings_presets: Сачуване странице
 discard_changes: Одбаци промене
 keep_editing: Наставите уређивање
 add_new: Додај нови
@@ -247,7 +244,6 @@ fields:
     description: Опис
     tags: Ознаке
     language: Језик
-    theme: Тема
     tfa_secret: Дво-факторска аутентификација
     status: Стање
     role: Рола
@@ -293,8 +289,15 @@ interfaces:
     files: Фајлови
   input-hash:
     hash: Isečak
+  system-display:
+    display: Pokazatelj
   tags:
     tags: Ознаке
+  input-block-editor:
+    tools_options:
+      embed: Угради
+      code: Код
+      table: Табела
 displays:
   boolean:
     boolean: Logički izraz
@@ -321,3 +324,4 @@ both: Оба
 operations:
   mail:
     template: Шаблон
+compact: Компактни

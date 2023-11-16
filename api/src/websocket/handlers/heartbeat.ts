@@ -6,6 +6,7 @@ import { WebSocketController, getWebSocketController } from '../controllers/inde
 import { WebSocketMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
+import { ServiceUnavailableError } from '@directus/errors';
 
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
 
@@ -14,7 +15,13 @@ export class HeartbeatHandler {
 	private controller: WebSocketController;
 
 	constructor(controller?: WebSocketController) {
-		this.controller = controller ?? getWebSocketController();
+		controller = controller ?? getWebSocketController();
+
+		if (!controller) {
+			throw new ServiceUnavailableError({ service: 'ws', reason: 'WebSocket server is not initialized' });
+		}
+
+		this.controller = controller;
 
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			try {

@@ -52,6 +52,13 @@ or: Или
 init: Инициализиране
 dataset_too_large_currently_showing_n_items: Данните са твърде много. В момента се показват само първите {n} записа.
 modifier: Модификатор
+extension_interface: Интерфейс
+extension_display: Изглед
+extension_layout: Оформление
+extension_panel: Панел
+extension_hook: Кука
+extension_modules: Модули
+enable: Включване
 custom: Персонализиран
 hook: Кука
 fill_width: Изпълване по ширина
@@ -80,14 +87,6 @@ create_user: Създаване на потребител
 message: Съобщение
 delete_panel: Изтриване на панела
 create_webhook: Създаване на уеб-кука
-create_translation_string: Създаване на нов превод на низ
-no_translation_string: Няма преводи на низове
-no_translation_string_copy: Все още няма низове за превод.
-translation_string_key_placeholder: Ключ на низа за превод...
-translation_string_translations_placeholder: Добавяне на нов превод
-edit_translation_string: Редакция на превода на низа
-delete_translation_string_copy: >-
-  Сигурни ли сте, че искате да изтриете превода на низа „{key}“? Действието не може да бъде отменено.
 invite_users: Покана до потребители
 invite: Поканване
 email_already_invited: Вече е изпратена покана в пощата на „{email}“
@@ -103,6 +102,7 @@ rename_folder: Преименуване на папката
 delete_folder: Изтриване на папката
 prefix: Представка
 suffix: Наставка
+promote_version_preview: Преглед
 reset_bookmark: Нулиране на отметки
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
@@ -118,13 +118,6 @@ public_label: Публичен
 public_description: Контрол на позволенията към API-то, без нужда от оторизиране.
 admin_description: Първоначална администраторска роля с неограничен достъп до API и приложението.
 not_allowed: Не е позволено
-directus_version: Версия на Directus
-node_version: Версия на Node
-node_uptime: Време от старт на Node
-os_type: Тип на ОС
-os_version: Версия на ОС
-os_uptime: Време от старт на ОС
-os_totalmem: Памет на ОС
 archive: Архивиране
 archive_confirm: Сигурни ли сте, че искате да архивирате записа?
 archive_confirm_count: >-
@@ -349,7 +342,7 @@ revision_delta_reverted: Възстановен
 revision_delta_update_message: Това поле бе обновено, но поради мерки за сигурност стойността му е прикрита.
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
-presentation_text_values_cannot_be_reimported: "Използват се презентационни текстове, стойностите не могат да бъдат импортирани наново."
+presentation_text_values_cannot_be_reimported: 'Използват се презентационни текстове, стойностите не могат да бъдат импортирани наново.'
 download_page_as_csv: 'Изтегляне като CSV'
 private_user: Частни потребители
 creation_preview: Първоначален вид
@@ -387,6 +380,7 @@ move: Преместване
 system: Система
 add_field_related: Добавяне на поле към релативната колекция
 interface_label: Интерфейс
+display_label: Изглед
 today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
@@ -437,7 +431,6 @@ dimensions: Размери
 size: Големина
 created: Създаден
 modified: Променен
-checksum: Контролна сума
 owner: Собственик
 edited_by: Променен от
 folder: Папка
@@ -460,11 +453,6 @@ open_file_in_tab: Отваряне в нов таб
 start_export: Започване на експорта
 not_available_for_local_downloads: Не е налично за локално изтегляне
 exporting_all_items_in_collection: Експортиране на всичките {total} записи от {collection}.
-exporting_limited_items_in_collection: Експортиране на {limit} от {total} записи от {collection}.
-exporting_no_items_to_export: Няма записи за експортиране. Променете следните настройки.
-exporting_download_hint: Веднъж приключил, {format}-ът ще бъде изтеглен автоматично на вашето устройство.
-exporting_batch_hint: Експортирането ще бъде извършено на части, след приключването, {format}-ът ще бъде запазен във файловата библиотека.
-exporting_batch_hint_forced: Поради наличието на големия брой записи, експортирането ще бъде извършено на части, при приключването, {format}-ът ще бъде запазен във файловата библиотека.
 collection_key: Ключ на колекция
 name: Име
 primary_key_field: Поле за първичния ключ
@@ -489,10 +477,8 @@ enable_select_button: Показване на бутон за избор
 allow_duplicates: Позволяване на дублирането
 comments: Коментари
 no_comments: Все още няма коментари
-click_to_expand: Натиснете за разширяване
 select_item: Избор на запис
 no_items: Няма записи
-search_items: Търсене в записите...
 disabled: Изключване
 information: Информация
 report_bug: Докладване за проблем
@@ -600,7 +586,6 @@ errors:
   RECORD_NOT_UNIQUE: Вече съществува такава стойност
   USER_SUSPENDED: Потребителя е деактивиран
   CONTAINS_NULL_VALUES: Полето съдържа null стойност
-  UNPROCESSABLE_ENTITY: Необработен обект
   INTERNAL_SERVER_ERROR: Неочаквана грешка
   NOT_NULL_VIOLATION: Стойността не трябва да е null
   ILLEGAL_ASSET_TRANSFORMATION: Изображението е твърде голямо за да бъде показано
@@ -942,12 +927,11 @@ editing_unit: 'Редактиране на {unit}'
 editing_in_batch: 'Множествено редактиране на {count} записи'
 no_options_available: Не са налични настройки
 settings_data_model: Модел на данните
-settings_permissions: Роли и позволения
-settings_project: Настройки на проекта
+settings_project: Настройки
 settings_webhooks: Уеб-куки
 settings_flows: Автоматизирани процеси
-settings_presets: Заготовки и отметки
-settings_translation_strings: Преводи на низове
+settings_presets: Отметки
+settings_translations: Преводи
 one_or_more_options_are_missing: Липсват една или повече настройки
 scope: Обхват
 actions: Действия
@@ -982,7 +966,6 @@ page_help_files_collection: >-
   **Файлова библиотека** — Показват се всички достъпни за вас файлове. Предоставена е възможност за персонализация на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори е възможно създаването на заготовка за бърз достъп от създадената конфигурация.
 page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
-page_help_settings_project: "**Настройки на проекта** — Глобална конфигурация и общи настройки за вашият проект."
 page_help_settings_datamodel_collections: >-
   **Модел на данните: Колекции** — Показват се всички налични колекции. Това включва всички видими, невидими, системни, както и все още не конфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
@@ -997,7 +980,6 @@ page_help_settings_webhooks_collection: '**Преглед на уеб-куки**
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
 page_help_settings_flows_collection: '**Преглед на автоматизираните процеси** — Показват се всички налични автоматизирани процеси в проекта.'
 page_help_settings_flows_item: '**Детайлен изглед на автоматизиран процес** — Работен плот за управление на един или множество операции.'
-page_help_settings_translation_strings_collection: '**Преглед на преводите на низовете** — Показват се всички преводни низове в проекта.'
 page_help_users_collection: '**Потребители** — Показват се всички потребители в системата на проекта.'
 page_help_users_item: >-
   **Детайли за потребител** — Управление на информацията на вашия потребителския профил, или детайлен преглед на друг потребител.
@@ -1105,10 +1087,6 @@ fields:
     tags: Етикети
     user_preferences: Потребителски настройки
     language: Език
-    theme: Тема
-    theme_auto: Автоматична (според системата)
-    theme_light: Светъл режим
-    theme_dark: Тъмен режим
     tfa_secret: Двуфакторна автентикация
     admin_options: Административни настройки
     status: Статус
@@ -1146,7 +1124,6 @@ fields:
     project_color: Цвят на проекта
     project_logo: Лого на проекта
     default_language: Език по подразбиране
-    branding: Стил и брандиране
     public_foreground: Публично изображение
     public_background: Публичен фон
     public_note: Публично съобщение
@@ -1206,7 +1183,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Моят проект...
     project_color_note: Фон на логото и вход-а
-    project_logo_note: Бяла 40x40, SVG или PNG картинка
     public_note_placeholder: Кратко публично съобщение, markdown форматирането е позволено...
     security_divider_title: Сигурност
     auth_password_policy:
@@ -1260,6 +1236,7 @@ field_options:
     sort_field: Избор на поле...
     accountability_divider: Профилиране
     duplication_divider: Дублиране
+    preview_divider: Преглед
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -1317,6 +1294,8 @@ start_collapsed: Затворена в началото
 block: Блок
 inline: Вложен
 comment: Коментиране
+live_preview:
+  new_window: Отваряне в нов прозорец
 shares: Споделяния
 unlimited_usage: Неограничено използване
 uses_left: Не е налична | Остава 1 използване | Остават {n} използвания
@@ -1576,6 +1555,8 @@ interfaces:
   system-interface-options:
     interface-options: Настройки на интерфейса
     description: Диалог за избор на настройки за интерфейс
+  system-display:
+    display: Изглед
   list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързващи записи
@@ -1624,7 +1605,6 @@ interfaces:
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена
   system-folder:
-    folder: Папка
     description: Избор на папка
     root_name: Главна папка
     system_default: По подразбиране
@@ -1640,6 +1620,7 @@ interfaces:
     sort_placeholder: Ръчно
     field_note_placeholder: Въвеждане бележка към полето...
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
+    interface_group: Настройки на интерфейса
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
@@ -1679,7 +1660,6 @@ interfaces:
     input-translated-string: Преведени низове
     description: Избор или добавяне на превод на низ
     search_placeholder: Търсене...
-    new_translation_string: Нов превод на низ
   boolean:
     toggle: Превключвател
     description: Превключване между активно и неактивно състояние
@@ -1716,6 +1696,16 @@ interfaces:
     folder_note: Папка за качване на файловете. Съществуващите файлове не се променят.
     imageToken: Статичен токен за достъп
     imageToken_label: Статичния токен за достъп се добавя след URL-a на файла
+  input-block-editor:
+    tools: Лента с инструменти
+    tools_options:
+      header: Хедър
+      nestedlist: Списък
+      embed: Вграждане
+      code: Код
+      image: Изображение
+      table: Таблица
+      underline: Подчертан
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
     description: Автоматично дописване на стойности чрез външно API.
@@ -2051,6 +2041,10 @@ operations:
     key: Ключови имена
     payload: Съдържание
     query: Заявка
+  json-web-token:
+    payload: Съдържание
+    token: Токен
+    options: Настройки
   log:
     name: Конзолен изход
     description: Извеждане на съобщение в конзолата
@@ -2069,9 +2063,10 @@ operations:
     description: Изпращане на известие в приложението до потребители
     recipient: Потребител
     message: Съобщение
+    subject: Относно
   request:
     name: Уеб-кука / URL заявка
-    description: "Изпълняване на HTTP заявка до URL адрес"
+    description: 'Изпълняване на HTTP заявка до URL адрес'
     url: URL
     url_placeholder: https://example.com/example
     method: Метод
@@ -2093,3 +2088,12 @@ operations:
     flows: Автоматизирани процеси
     flow: Процес
     data: Данни
+standard: Стандартно
+compact: Компактно
+style: Стил
+fonts:
+  normal: Нормален
+  bold: Удебеляване
+  black: Чер
+  italic: Курсив
+  auto: Автоматичен

@@ -1,4 +1,5 @@
-import { EXTENSION_LANGUAGES, JAVASCRIPT_FILE_EXTS } from '@directus/constants';
+import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
+import { EXTENSION_LANGUAGES } from '@directus/extensions';
 import { execa } from 'execa';
 import fse from 'fs-extra';
 import { resolve } from 'node:path';
@@ -68,5 +69,5 @@ test.each(
 		}
 	},
 	// Bump up timeout duration as the build process can take slightly longer to complete
-	20000
+	30_000
 );

@@ -1,0 +1,42 @@
+{
+	"name": "@directus/storage-driver-supabase",
+	"version": "1.0.5",
+	"description": "Supabase file storage abstraction for `@directus/storage`",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/storage-driver-supabase"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "BUSL-1.1",
+	"author": "Matthew Rollinson <matt@rolley.io>",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false"
+	},
+	"dependencies": {
+		"@directus/storage": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"@supabase/storage-js": "2.5.1",
+		"undici": "5.22.1"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@ngneat/falso": "6.4.0",
+		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
+		"vitest": "0.31.1"
+	}
+}

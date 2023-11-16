@@ -1,6 +1,6 @@
 import { parseJSON } from '@directus/utils';
 import { Redis } from 'ioredis';
-import { getEnv } from './env.js';
+import env from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 export type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;
@@ -42,11 +42,10 @@ export class MessengerRedis implements Messenger {
 	sub: Redis;
 
 	constructor() {
-		const config = getConfigFromEnv('MESSENGER_REDIS');
-		const env = getEnv();
-		this.pub = new Redis(env['MESSENGER_REDIS'] ?? config);
-		this.sub = new Redis(env['MESSENGER_REDIS'] ?? config);
-		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus';
+		const config = getConfigFromEnv('REDIS');
+		this.pub = new Redis(env['REDIS'] ?? config);
+		this.sub = new Redis(env['REDIS'] ?? config);
+		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus-messenger';
 	}
 
 	publish(channel: string, payload: Record<string, any>) {
@@ -74,7 +73,6 @@ let messenger: Messenger;
 
 export function getMessenger() {
 	if (messenger) return messenger;
-	const env = getEnv();
 
 	if (env['MESSENGER_STORE'] === 'redis') {
 		messenger = new MessengerRedis();

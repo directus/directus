@@ -52,6 +52,13 @@ or: Or
 init: Init
 dataset_too_large_currently_showing_n_items: Dataset is too large. Currently showing the first {n} items.
 modifier: Modifier
+extension_interface: Interface
+extension_display: Display
+extension_layout: Layout
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Modules
+enable: Enable
 custom: Custom
 hook: Hook
 fill_width: Fill Width
@@ -80,14 +87,6 @@ create_user: Create User
 message: Message
 delete_panel: Delete Panel
 create_webhook: Create Webhook
-create_translation_string: Create Translation String
-no_translation_string: No Translation Strings
-no_translation_string_copy: There are no translation strings yet.
-translation_string_key_placeholder: Translation string key...
-translation_string_translations_placeholder: Add a new translation
-edit_translation_string: Edit Translation String
-delete_translation_string_copy: >-
-  Are you sure you want to delete the translation string "{key}"? This action can not be undone.
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -103,6 +102,7 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+promote_version_preview: Preview
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -118,20 +118,13 @@ public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
   No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count} items?
 reset_system_permissions_to: 'Reset System Permissions to:'
 reset_system_permissions_copy: This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
-the_following_are_minimum_permissions: Welcome.
+the_following_are_minimum_permissions: The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional permissions if needed, but you cannot reduce permissions below this level.
 app_access_minimum: App Access Minimum
 recommended_defaults: Recommended Defaults
 unarchive: Unarchive
@@ -351,7 +344,7 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
@@ -389,6 +382,7 @@ move: Move
 system: System
 add_field_related: Add Field to Related Collection
 interface_label: Interface
+display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
@@ -439,7 +433,6 @@ dimensions: Dimensions
 size: Size
 created: Created
 modified: Modified
-checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
@@ -462,11 +455,6 @@ open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all {total} items within {collection}.
-exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
-exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
-exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
-exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
-exporting_batch_hint_forced: Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will be saved to the File Library.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -491,10 +479,8 @@ enable_select_button: Enable Select Button
 allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
-click_to_expand: Click to Expand
 select_item: Select Item
 no_items: No items
-search_items: Search items...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -602,7 +588,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
-  UNPROCESSABLE_ENTITY: Unprocessable entity
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
@@ -944,12 +929,11 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Roles & Permissions
-settings_project: Project Settings
+settings_project: Settings
 settings_webhooks: Webhooks
 settings_flows: Flows
-settings_presets: Presets & Bookmarks
-settings_translation_strings: Translation Strings
+settings_presets: Bookmarks
+settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 actions: Actions
@@ -984,7 +968,6 @@ page_help_files_collection: >-
   **File Library** — Lists all file assets uploaded to this project. Customise layout, filters, and sorting to tailor your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
   **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Project Settings** — Your project's global configuration options."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
@@ -999,7 +982,6 @@ page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webho
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
 page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
 page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_settings_translation_strings_collection: '**Browse Translation Strings** — Lists all translation strings within the project.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
@@ -1107,10 +1089,6 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
-    theme: Theme
-    theme_auto: Automatic (Based on System)
-    theme_light: Light Mode
-    theme_dark: Dark Mode
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -1149,7 +1127,6 @@ fields:
     project_color: Project Colour
     project_logo: Project Logo
     default_language: Default Language
-    branding: Branding & Style
     public_foreground: Public Foreground
     public_background: Public Background
     public_note: Public Note
@@ -1209,7 +1186,6 @@ field_options:
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background
-    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: A short, public message that supports markdown formatting...
     security_divider_title: Security
     auth_password_policy:
@@ -1263,6 +1239,7 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1320,6 +1297,8 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  new_window: Open in New Window
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1579,6 +1558,8 @@ interfaces:
   system-interface-options:
     interface-options: Interface Options
     description: A modal for selecting options of an interface
+  system-display:
+    display: Display
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1627,7 +1608,6 @@ interfaces:
     description: Select multiple related items
     no_collection: The collection could not be found
   system-folder:
-    folder: Folder
     description: Select a folder
     field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root
@@ -1644,6 +1624,7 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Enter field note...
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
+    interface_group: Interface Options
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -1683,7 +1664,6 @@ interfaces:
     input-translated-string: Translated Strings
     description: Select or add translation string
     search_placeholder: Search...
-    new_translation_string: New Translation String
   boolean:
     toggle: Toggle
     description: Switch between on and off
@@ -1720,6 +1700,16 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+  input-block-editor:
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      code: Code
+      image: Image
+      table: Table
+      underline: Underline
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
@@ -1994,6 +1984,7 @@ panels:
     smooth: Smooth
     straight: Straight
     step_line: Step Line
+    show_legend: Show Legend
   meter:
     name: Meter
     description: Meter for tracking values
@@ -2077,6 +2068,10 @@ operations:
     key: IDs
     payload: Payload
     query: Query
+  json-web-token:
+    payload: Payload
+    token: Token
+    options: Options
   log:
     name: Log to Console
     description: Output something to the console
@@ -2096,9 +2091,10 @@ operations:
     recipient: User
     recipient_placeholder: Enter a text...
     message: Message
+    subject: Subject
   request:
     name: Webhook / Request URL
-    description: "Make a request to a URL"
+    description: 'Make a request to a URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Method
@@ -2126,3 +2122,14 @@ operations:
     parallel: Parallel
     batch: Batch
     batch_size: Batch Size
+standard: Standard
+compact: Compact
+style: Style
+fonts:
+  thin: Thin
+  normal: Normal
+  medium: Medium
+  bold: Bold
+  black: Black
+  italic: Italic
+  auto: Auto

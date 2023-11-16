@@ -1,41 +1,14 @@
-<template>
-	<div>
-		<v-notice type="info">
-			{{
-				t('fields_for_role', {
-					role: role ? role.name : t('public_label'),
-					action: t(permission.action).toLowerCase(),
-				})
-			}}
-		</v-notice>
-
-		<p class="type-label">{{ t('field', 0) }}</p>
-		<interface-select-multiple-checkbox
-			:value="fields"
-			type="json"
-			:choices="fieldsInCollection"
-			@input="fields = $event"
-		/>
-
-		<div v-if="appMinimal" class="app-minimal">
-			<v-divider />
-			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
-			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useSync } from '@directus/composables';
-import { Field, Permission, Role } from '@directus/types';
+import type { Field, Permission, Role } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	permission: Permission;
 	role?: Role;
-	appMinimal?: Partial<Permission>;
+	appMinimal?: Permission['fields'];
 }>();
 
 const emit = defineEmits(['update:permission']);
@@ -51,7 +24,7 @@ const fieldsInCollection = computed(() => {
 
 	return fields.map((field: Field) => {
 		return {
-			text: field.name,
+			text: field.field,
 			value: field.field,
 		};
 	});
@@ -83,6 +56,33 @@ const fields = computed({
 });
 </script>
 
+<template>
+	<div>
+		<v-notice type="info">
+			{{
+				t('fields_for_role', {
+					role: role ? role.name : t('public_label'),
+					action: t(permission.action).toLowerCase(),
+				})
+			}}
+		</v-notice>
+
+		<p class="type-label">{{ t('field', 0) }}</p>
+		<interface-select-multiple-checkbox
+			:value="fields"
+			type="json"
+			:choices="fieldsInCollection"
+			@input="fields = $event"
+		/>
+
+		<div v-if="appMinimal" class="app-minimal">
+			<v-divider />
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
+			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .type-label {
 	margin-bottom: 8px;
@@ -90,6 +90,10 @@ const fields = computed({
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.checkboxes :deep(.v-checkbox .type-text) {
+	font-family: var(--theme--font-family-monospace);
 }
 
 .app-minimal {
@@ -103,9 +107,9 @@ const fields = computed({
 
 	.app-minimal-preview {
 		padding: 16px;
-		font-family: var(--family-monospace);
-		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		font-family: var(--theme--font-family-monospace);
+		background-color: var(--theme--background-subdued);
+		border-radius: var(--theme--border-radius);
 	}
 }
 </style>

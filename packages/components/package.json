@@ -1,0 +1,51 @@
+{
+	"name": "@directus/components",
+	"version": "0.0.3",
+	"description": "Component for Directus",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/components"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite build --watch",
+		"story:build": "histoire build",
+		"story:dev": "histoire dev",
+		"story:preview": "histoire preview",
+		"test": "vitest --watch=false"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@histoire/plugin-vue": "0.16.1",
+		"@histoire/shared": "0.16.1",
+		"@vitejs/plugin-vue": "4.2.3",
+		"@vitest/coverage-c8": "0.31.1",
+		"histoire": "0.16.1",
+		"rollup-plugin-node-externals": "6.1.1",
+		"typescript": "5.2.2",
+		"vite": "4.3.7",
+		"vite-plugin-dts": "2.3.0",
+		"vitest": "0.31.1"
+	},
+	"peerDependencies": {
+		"pinia": "2.1.1",
+		"vue": "3.3.4",
+		"vue-i18n": "9.2.2",
+		"vue-router": "4.2.0"
+	}
+}

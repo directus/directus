@@ -1,43 +1,3 @@
-<template>
-	<div
-		class="v-workspace"
-		:class="{ editing: editMode }"
-		:style="{ width: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
-	>
-		<div
-			class="workspace"
-			:style="{
-				transform: `scale(${zoomScale})`,
-				width: workspaceSize.width + 'px',
-				height: workspaceSize.height + 'px',
-			}"
-		>
-			<template v-if="!$slots.tile">
-				<v-workspace-tile
-					v-for="tile in tiles"
-					:key="tile.id"
-					v-bind="tile"
-					:edit-mode="editMode"
-					:resizable="resizable"
-					@preview="$emit('preview', tile)"
-					@edit="$emit('edit', tile)"
-					@update="$emit('update', { edits: $event, id: tile.id })"
-					@move="$emit('move', tile.id)"
-					@delete="$emit('delete', tile.id)"
-					@duplicate="$emit('duplicate', tile)"
-				>
-					<slot :tile="tile"></slot>
-				</v-workspace-tile>
-			</template>
-			<template v-else>
-				<template v-for="tile in tiles" :key="tile.id">
-					<slot name="tile" :tile="tile"></slot>
-				</template>
-			</template>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
 import { useElementSize } from '@directus/composables';
@@ -61,7 +21,14 @@ const props = withDefaults(defineProps<Props>(), {
 	resizable: true,
 });
 
-defineEmits(['update', 'move', 'delete', 'duplicate', 'edit', 'preview']);
+defineEmits<{
+	update: [value: { edits: Event; id: AppTile['id'] }];
+	move: [value: AppTile['id']];
+	delete: [value: AppTile['id']];
+	duplicate: [value: AppTile];
+	edit: [value: AppTile];
+	preview: [value: AppTile];
+}>();
 
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
@@ -125,6 +92,46 @@ const workspaceBoxSize = computed(() => {
 });
 </script>
 
+<template>
+	<div
+		class="v-workspace"
+		:class="{ editing: editMode }"
+		:style="{ width: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
+	>
+		<div
+			class="workspace"
+			:style="{
+				transform: `scale(${zoomScale})`,
+				width: workspaceSize.width + 'px',
+				height: workspaceSize.height + 'px',
+			}"
+		>
+			<template v-if="!$slots.tile">
+				<v-workspace-tile
+					v-for="tile in tiles"
+					:key="tile.id"
+					v-bind="tile"
+					:edit-mode="editMode"
+					:resizable="resizable"
+					@preview="$emit('preview', tile)"
+					@edit="$emit('edit', tile)"
+					@update="$emit('update', { edits: $event, id: tile.id })"
+					@move="$emit('move', tile.id)"
+					@delete="$emit('delete', tile.id)"
+					@duplicate="$emit('duplicate', tile)"
+				>
+					<slot :tile="tile"></slot>
+				</v-workspace-tile>
+			</template>
+			<template v-else>
+				<template v-for="tile in tiles" :key="tile.id">
+					<slot name="tile" :tile="tile"></slot>
+				</template>
+			</template>
+		</div>
+	</div>
+</template>
+
 <style scoped>
 .v-workspace {
 	position: relative;
@@ -157,7 +164,7 @@ const workspaceBoxSize = computed(() => {
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);
-	background-image: radial-gradient(var(--border-normal) 10%, transparent 10%);
+	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
 	opacity: 0;

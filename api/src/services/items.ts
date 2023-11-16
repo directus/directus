@@ -9,8 +9,9 @@ import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { translateDatabaseError } from '../exceptions/database/translate.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError } from '@directus/errors';
+import { translateDatabaseError } from '../database/errors/translate.js';
+import { InvalidPayloadError } from '@directus/errors';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -63,7 +64,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				mutationCount += count;
 
 				if (mutationCount > maxCount) {
-					throw new InvalidPayloadException(`Exceeded max batch mutation limit of ${maxCount}.`);
+					throw new InvalidPayloadError({ reason: `Exceeded max batch mutation limit of ${maxCount}` });
 				}
 			},
 			getCount() {
@@ -154,8 +155,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				? authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
-			if (opts.preMutationException) {
-				throw opts.preMutationException;
+			if (opts.preMutationError) {
+				throw opts.preMutationError;
 			}
 
 			const {
@@ -173,8 +174,25 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
-			// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
-			let primaryKey = payloadWithTypeCasting[primaryKeyField];
+			// The primary key can already exist in the payload.
+			// In case of manual string / UUID primary keys it's always provided at this point.
+			// In case of an integer primary key, it might be provided as the user can specify the value manually.
+			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
+
+			// If a PK of type number was provided, although the PK is set the auto_increment,
+			// depending on the database, the sequence might need to be reset to protect future PK collisions.
+			let autoIncrementSequenceNeedsToBeReset = false;
+
+			const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
+
+			if (
+				primaryKey &&
+				!opts.bypassAutoIncrementSequenceReset &&
+				pkField!.type === 'integer' &&
+				pkField!.defaultValue === 'AUTO_INCREMENT'
+			) {
+				autoIncrementSequenceNeedsToBeReset = true;
+			}
 
 			try {
 				const result = await trx
@@ -185,7 +203,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
 
-				if (this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === 'uuid') {
+				if (pkField!.type === 'uuid') {
 					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);
 				} else {
 					primaryKey = primaryKey ?? returnedKey;
@@ -205,6 +223,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				// to read from it
 				payload[primaryKeyField] = primaryKey;
 			}
+
+			// At this point, the primary key is guaranteed to be set.
+			primaryKey = primaryKey as PrimaryKey;
 
 			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
 				payloadWithPresets,
@@ -261,6 +282,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						opts.onRevisionCreate(revision);
 					}
 				}
+			}
+
+			if (autoIncrementSequenceNeedsToBeReset) {
+				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
 			}
 
 			return primaryKey;
@@ -322,12 +347,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
 
-			for (const payload of data) {
+			const pkField = this.schema.collections[this.collection]!.primary;
+
+			for (const [index, payload] of data.entries()) {
+				let bypassAutoIncrementSequenceReset = true;
+
+				// the auto_increment sequence needs to be reset if the current item contains a manual PK and
+				// if it's the last item of the batch or if the next item doesn't include a PK and hence one needs to be generated
+				if (payload[pkField] && (index === data.length - 1 || !data[index + 1]?.[pkField])) {
+					bypassAutoIncrementSequenceReset = false;
+				}
+
 				const primaryKey = await service.createOne(payload, {
 					...(opts || {}),
 					autoPurgeCache: false,
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
+					bypassAutoIncrementSequenceReset,
 				});
 
 				primaryKeys.push(primaryKey);
@@ -401,7 +437,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (records === null) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const filteredRecords =
@@ -453,7 +489,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const results = await this.readByQuery(queryWithKey, opts);
 
 		if (results.length === 0) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		return results[0]!;
@@ -507,7 +543,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!Array.isArray(data)) {
-			throw new InvalidPayloadException('Input should be an array of items.');
+			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
@@ -525,7 +561,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				});
 
 				for (const item of data) {
-					if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
+					if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
 					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
 				}
@@ -602,8 +638,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			? authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
 			: payloadAfterHooks;
 
-		if (opts.preMutationException) {
-			throw opts.preMutationException;
+		if (opts.preMutationError) {
+			throw opts.preMutationError;
 		}
 
 		await this.knex.transaction(async (trx) => {
@@ -865,8 +901,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 
-		if (opts.preMutationException) {
-			throw opts.preMutationException;
+		if (opts.preMutationError) {
+			throw opts.preMutationError;
 		}
 
 		if (opts.emitEvents !== false) {

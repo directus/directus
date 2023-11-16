@@ -149,6 +149,8 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 			}
 		}
 	}
+
+	return;
 };
 
 let trackTimeout: number | null = null;
@@ -166,7 +168,7 @@ export const onAfterEach: NavigationHookAfter = (to) => {
 		}
 
 		trackTimeout = window.setTimeout(() => {
-			userStore.trackPage(to.fullPath);
+			userStore.trackPage(to);
 		}, 500);
 	}
 };

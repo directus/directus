@@ -1,13 +1,15 @@
 import { useFieldsStore } from '@/stores/fields';
-import { definePanel } from '@directus/utils';
+import { definePanel } from '@directus/extensions';
 import { cssVar } from '@directus/utils/browser';
 import { computed } from 'vue';
 import PanelPieChart from './panel-pie-chart.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'pie-chart',
 	name: '$t:panels.piechart.name',
 	icon: 'pie_chart',
+	preview: PreviewSVG,
 	description: '$t:panels.piechart.description',
 	component: PanelPieChart,
 	query(options) {
@@ -235,8 +237,38 @@ export default definePanel({
 												disabled: !isNumberColumn.value,
 											},
 											{
+												text: '$t:operators.nstarts_with',
+												value: 'nstarts_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.istarts_with',
+												value: 'istarts_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.nistarts_with',
+												value: 'nistarts_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
 												text: '$t:operators.ends_with',
-												value: 'ncontains',
+												value: 'ends_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.nends_with',
+												value: 'nends_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.iends_with',
+												value: 'iends_with',
+												disabled: !isNumberColumn.value,
+											},
+											{
+												text: '$t:operators.niends_with',
+												value: 'niends_with',
 												disabled: !isNumberColumn.value,
 											},
 											{

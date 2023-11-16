@@ -7,6 +7,9 @@ duplicate_field: Eilañ ar vaezienn
 half_width: Hanter-vann
 full_width: Ledander ar bann
 group: Strollad
+extension_interface: Etrefas
+extension_display: Diskwel
+extension_layout: Pajennaozañ
 fill_width: Ledander leun
 field_name_translations: Troidigezhioù anv ar vaezienn
 enter_password_to_enable_tfa: Bizskrivit ho ker-tremen evit kaout an dilesa e div bazenn
@@ -50,13 +53,6 @@ logoutReason:
   SESSION_EXPIRED: N'eo ket mat ho sezenn ken
 public_description: Kontroll peseurt roadennoù API a zo hegerz hep dilesa.
 not_allowed: N'eo ket aotreet
-directus_version: Doare Directus
-node_version: Doare Node
-node_uptime: Amzer hegerzded an Node
-os_type: Seurt OS
-os_version: Doare OS
-os_uptime: Amzer hegerzded an OS
-os_totalmem: Memor an OS
 archive: Diellañ
 archive_confirm: Sur oc'h e fell deoc'h diellañ an elfenn-mañ ?
 archive_confirm_count: >-
@@ -244,6 +240,7 @@ move: Dilec'hiañ
 system: Sistem
 add_field_related: Ouzhpennañ ar vaezienn d'an dastumad liammet
 interface_label: Etrefas
+display_label: Diskwel
 today: Hiziv
 yesterday: Dec'h
 delete_comment: Dilemel an evezhiadenn
@@ -274,7 +271,6 @@ dimensions: Mentoù
 size: Ment
 created: Krouet
 modified: Kemmet
-checksum: Kod gwiriañ
 owner: Perc'henn
 edited_by: Kemmet gant
 folder: Teuliad
@@ -313,10 +309,8 @@ selecting_items: Dibab elfennoù
 enable_select_button: Aktivañ ar bouton dibab
 comments: Evezhiadennoù
 no_comments: N'eus evezhiadenn ebet evit poent
-click_to_expand: Klikañ evit brasaat
 select_item: Dibab un elfenn
 no_items: Elfenn ebet
-search_items: Klask elfennoù...
 disabled: Diaktivet
 information: Titouroù
 report_bug: Diskleriañ ur bug
@@ -609,10 +603,10 @@ editing_unit: 'Embann {unit}'
 editing_in_batch: 'Kemm a-stroll {count} elfenn'
 no_options_available: N'eus dibarzh ebet
 settings_data_model: Patrom roadennoù
-settings_permissions: Rolloù hag aotreoù
-settings_project: Arventennoù ar raktres
+settings_project: Arventennoù
 settings_webhooks: Webhookioù
-settings_presets: Rakreoliñ ha pennrolloù
+settings_presets: Pennrolloù
+settings_translations: Troidigezhioù
 one_or_more_options_are_missing: Mankout a ra un dibarzh pe meur a hini
 scope: Implijerien pe rolloù
 select: Dibab...
@@ -641,7 +635,6 @@ page_help_files_collection: >-
   **Teuliaoueg** — Roll an holl restroù treuzkaset d'ar raktres-mañ. Personelaat ar pajennaozañ, ar siloù hag ar rummañ hag enrollañ e pennroll meur a reoliañ evit adkavout pep tra buan.
 page_help_files_item: >-
   **Munudoù ar restr** — Feurmskrid evit merañ metaroadennoù ar restrooù, kemm ar restr orin ha hizivaat an arventennoù aotre.
-page_help_settings_project: "**Arventennoù ar raktres** — Dibarzhioù reoliñ hollek ho raktres."
 page_help_settings_datamodel_collections: >-
   **Patrom roadennoù : Dastumadoù** — Roll an holl dastumadoù hegerz. Da lâret eo an dastumadoù a c'heller gwelet, ar re kuzhet ha sistem, hag an taolennoù gant diazoù roadennoù nann meret a c'hell bezañ ouzhpennet.
 page_help_settings_datamodel_fields: >-
@@ -728,7 +721,6 @@ fields:
     description: Deskrivadur
     tags: Tikedennoù
     language: Yezh
-    theme: Tem
     tfa_secret: Dilesadur daou-faktor
     status: Stad
     status_active: Oberiat
@@ -812,6 +804,8 @@ save_current_datetime: Enrollañ devezh/eur a vremañ
 block: Bloc'h
 inline: En linenn
 comment: Evezhiadenn
+live_preview:
+  new_window: Digeriñ e-barzh ur prenestr nevez
 relational_triggers: Distegneroù darempred
 referential_action_field_label_m2o: Pa vez dilemet un {collection} ...
 referential_action_field_label_o2m: Pa vez diziuzet un {collection} ...
@@ -980,6 +974,8 @@ interfaces:
   system-interface-options:
     interface-options: Dibarzhioù an etrefas
     description: Ur popup evit dibab dibarzhioù an etrefas
+  system-display:
+    display: Diskwel
   list-m2m:
     description: Dibab meur a elfenn kej liammet
   select-dropdown-m2o:
@@ -1000,8 +996,6 @@ interfaces:
     one-to-many: Unan da meur a hini
     description: Dibab meur a elfenn liammet
     no_collection: N'eo ket bet kavet an dastumad
-  system-folder:
-    folder: Teuliad
   select-radio:
     radio-buttons: Boutonoù radio
     description: Dibab unan eus ar choazoù kinniget
@@ -1012,6 +1006,7 @@ interfaces:
     add_label: 'Skridennad "Krouiñ unan Nevez"'
     sort: Rummañ
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
+    interface_group: Dibarzhioù an etrefas
   slider:
     slider: Reti
     description: Dibab un niverenn gant ar reti
@@ -1072,6 +1067,14 @@ interfaces:
     toolbar: Barrenn ostilhoù
     custom_formats: Furmadoù personelaet
     options_override: Erlec'hiañ an dibarzhioù
+  input-block-editor:
+    tools: Barrenn ostilhoù
+    tools_options:
+      embed: Enklosennañ
+      code: Kod
+      image: Skeudenn
+      table: Taolenn
+      underline: Islinennañ
   input-autocomplete-api:
     input-autocomplete-api: Maezienn Emleuniet (API)
     description: Un doare klask evit an talvoudoù API diavaez.
@@ -1204,7 +1207,15 @@ panels:
   label:
     name: Tikedenn
 operations:
+  json-web-token:
+    options: Arventennoù
   mail:
     template: Patrom
   notification:
     recipient: Implijer
+compact: Krennet
+style: Stil
+fonts:
+  bold: Tev
+  italic: Italek
+  auto: Emgefreek

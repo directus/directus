@@ -1,3 +1,27 @@
+<script setup lang="ts">
+import { useServerStore } from '@/stores/server';
+import { getRootPath } from '@/utils/get-root-path';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+defineProps<{
+	title?: string;
+	inline?: boolean;
+}>();
+
+const serverStore = useServerStore();
+
+const { info: serverInfo } = storeToRefs(serverStore);
+
+const { t } = useI18n();
+
+const logoURL = computed<string | null>(() => {
+	if (!serverStore.info?.project?.project_logo) return null;
+	return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
+});
+</script>
+
 <template>
 	<div class="shared" :class="{ inline }">
 		<div class="inline-container">
@@ -37,33 +61,8 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-defineProps<{
-	title?: string;
-	inline?: boolean;
-}>();
-
-const serverStore = useServerStore();
-
-const { info: serverInfo } = storeToRefs(serverStore);
-
-const { t } = useI18n();
-
-const logoURL = computed<string | null>(() => {
-	if (!serverStore.info?.project?.project_logo) return null;
-	return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
-});
-</script>
-
 <style scoped lang="scss">
 .shared {
-	--border-radius: 6px;
 	--input-height: 60px;
 	--input-padding: 16px;
 
@@ -71,7 +70,7 @@ const logoURL = computed<string | null>(() => {
 	height: 100%;
 	padding-bottom: 64px;
 	overflow: auto;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .inline-container {
@@ -81,8 +80,8 @@ const logoURL = computed<string | null>(() => {
 header {
 	margin-bottom: 32px;
 	padding: 10px;
-	background-color: var(--background-page);
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	background-color: var(--theme--background);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .container {
@@ -102,7 +101,7 @@ header {
 		margin-left: 16px;
 
 		h1 {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 			font-weight: 700;
 			font-size: 24px;
 			line-height: 24px;
@@ -110,7 +109,7 @@ header {
 
 		.subtitle {
 			width: 100%;
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 }
@@ -121,8 +120,8 @@ header {
 	justify-content: center;
 	width: 60px;
 	height: 60px;
-	background-color: var(--brand);
-	border-radius: var(--border-radius);
+	background-color: var(--project-color);
+	border-radius: var(--theme--border-radius);
 
 	img {
 		width: 40px;
@@ -134,8 +133,8 @@ header {
 
 .content {
 	padding: 32px;
-	background-color: var(--background-page);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border-radius: var(--theme--border-radius);
 	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 }
 
@@ -149,8 +148,8 @@ header {
 		width: 100%;
 		max-width: 856px;
 		padding: 32px;
-		background-color: var(--background-page);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background);
+		border-radius: var(--theme--border-radius);
 		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
 
 		@media (min-width: 618px) {

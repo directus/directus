@@ -1,17 +1,17 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="21" width="120" height="54" rx="6" fill="var(--background-page)" />
-	<rect x="19" y="22" width="118" height="52" rx="5" stroke="var(--primary)" stroke-opacity=".25" stroke-width="2" />
-	<rect x="18" y="21" width="120" height="26" rx="6" fill="var(--background-page)" class="glow" />
-	<rect x="19" y="22" width="118" height="24" rx="5" stroke="var(--primary)" stroke-width="2" />
-	<rect x="46" y="31" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<circle cx="33" cy="34" r="7" fill="var(--primary)" />
-	<circle cx="33" cy="60" r="7" fill="var(--primary)" />
-	<circle cx="51" cy="60" r="7" fill="var(--primary)" fill-opacity=".75" />
-	<circle cx="69" cy="60" r="7" fill="var(--primary)" fill-opacity=".5" />
-	<circle cx="87" cy="60" r="7" fill="var(--primary)" fill-opacity=".25" />
-	<circle cx="105" cy="60" r="7" fill="var(--primary)" fill-opacity=".1" />
-	<circle cx="123" cy="60" r="6" stroke="var(--primary)" stroke-opacity=".1" stroke-width="2" />
+	<rect x="18" y="21" width="120" height="54" rx="6" fill="var(--theme--background)" />
+	<rect x="19" y="22" width="118" height="52" rx="5" stroke="var(--theme--primary)" stroke-opacity=".25" stroke-width="2" />
+	<rect x="18" y="21" width="120" height="26" rx="6" fill="var(--theme--background)" class="glow" />
+	<rect x="19" y="22" width="118" height="24" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
+	<rect x="46" y="31" width="50" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<circle cx="33" cy="34" r="7" fill="var(--theme--primary)" />
+	<circle cx="33" cy="60" r="7" fill="var(--theme--primary)" />
+	<circle cx="51" cy="60" r="7" fill="var(--theme--primary)" fill-opacity=".75" />
+	<circle cx="69" cy="60" r="7" fill="var(--theme--primary)" fill-opacity=".5" />
+	<circle cx="87" cy="60" r="7" fill="var(--theme--primary)" fill-opacity=".25" />
+	<circle cx="105" cy="60" r="7" fill="var(--theme--primary)" fill-opacity=".1" />
+	<circle cx="123" cy="60" r="6" stroke="var(--theme--primary)" stroke-opacity=".1" stroke-width="2" />
 	<path
 		d="M123 39.824A5.811 5.811 0 01117.176 34 5.811 5.811 0 01123 28.176c3.227 0 5.824 2.351 5.824 5.25 0 1.914-1.558 3.5-3.5 3.5h-1.012c-.164 0-.3.11-.3.273 0 .082.027.137.082.192.218.273.355.629.355.984 0 .793-.656 1.45-1.449 1.45zm0-10.5c-2.57 0-4.676 2.106-4.676 4.676 0 2.57 2.106 4.676 4.676 4.676a.304.304 0 00.301-.301.314.314 0 00-.082-.191 1.484 1.484 0 01-.383-.985c0-.793.656-1.449 1.476-1.449h1.012c1.285 0 2.352-1.04 2.352-2.324 0-2.27-2.106-4.102-4.676-4.102zm-4.074 4.375c0-.465.383-.875.875-.875a.9.9 0 01.875.875.88.88 0 01-.875.875.864.864 0 01-.875-.875zm1.75-2.324c0-.492.383-.875.875-.875a.88.88 0 01.875.875.88.88 0 01-.875.875.864.864 0 01-.875-.875zm2.898 0a.88.88 0 01.875-.875c.492 0 .875.383.875.875a.864.864 0 01-.875.875.88.88 0 01-.875-.875zm1.75 2.324a.9.9 0 01.875-.875c.492 0 .875.41.875.875a.864.864 0 01-.875.875.88.88 0 01-.875-.875z"
-		fill="var(--primary)" />
+		fill="var(--theme--primary)" />
 </svg>

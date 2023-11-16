@@ -1,34 +1,6 @@
-<template>
-	<v-notice v-if="!selectedInterface">
-		{{ t('select_interface') }}
-	</v-notice>
-
-	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ t('no_options_available') }}
-	</v-notice>
-
-	<div v-else class="inset">
-		<v-form
-			v-if="usesCustomComponent === false"
-			v-model="options"
-			class="extension-options"
-			:fields="optionsFields"
-			:disabled="disabled"
-			primary-key="+"
-		/>
-
-		<component
-			:is="`interface-options-${selectedInterface.id}`"
-			v-else
-			:value="value"
-			:collection="collection"
-			@input="$emit('input', $event)"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -39,6 +11,7 @@ const props = defineProps<{
 	interface?: string;
 	collection?: string;
 	disabled?: boolean;
+	context?: () => ExtensionOptionsContext;
 }>();
 
 const emit = defineEmits<{
@@ -73,32 +46,34 @@ const optionsFields = computed(() => {
 	let optionsObjectOrArray;
 
 	if (typeof selectedInterface.value.options === 'function') {
-		optionsObjectOrArray = selectedInterface.value.options({
-			field: {
-				type: 'unknown',
-			},
-			editing: '+',
-			collection: props.collection,
-			relations: {
-				o2m: undefined,
-				m2o: undefined,
-				m2a: undefined,
-			},
-			collections: {
-				related: undefined,
-				junction: undefined,
-			},
-			fields: {
-				corresponding: undefined,
-				junctionCurrent: undefined,
-				junctionRelated: undefined,
-				sort: undefined,
-			},
-			items: {},
-			localType: 'standard',
-			autoGenerateJunctionRelation: false,
-			saving: false,
-		});
+		optionsObjectOrArray = selectedInterface.value.options(
+			props.context?.() ?? {
+				field: {
+					type: 'unknown',
+				},
+				editing: '+',
+				collection: props.collection,
+				relations: {
+					o2m: undefined,
+					m2o: undefined,
+					m2a: undefined,
+				},
+				collections: {
+					related: undefined,
+					junction: undefined,
+				},
+				fields: {
+					corresponding: undefined,
+					junctionCurrent: undefined,
+					junctionRelated: undefined,
+					sort: undefined,
+				},
+				items: {},
+				localType: 'standard',
+				autoGenerateJunctionRelation: false,
+				saving: false,
+			}
+		);
 	} else {
 		optionsObjectOrArray = selectedInterface.value.options;
 	}
@@ -109,14 +84,43 @@ const optionsFields = computed(() => {
 });
 </script>
 
+<template>
+	<v-notice v-if="!selectedInterface">
+		{{ t('select_interface') }}
+	</v-notice>
+
+	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
+		{{ t('no_options_available') }}
+	</v-notice>
+
+	<div v-else class="inset">
+		<v-form
+			v-if="usesCustomComponent === false"
+			v-model="options"
+			class="extension-options"
+			:fields="optionsFields"
+			:disabled="disabled"
+			primary-key="+"
+		/>
+
+		<component
+			:is="`interface-options-${selectedInterface.id}`"
+			v-else
+			:value="value"
+			:collection="collection"
+			@input="$emit('input', $event)"
+		/>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .inset {
 	--form-horizontal-gap: 24px;
 	--form-vertical-gap: 24px;
 
 	padding: 12px;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	:deep(.type-label) {
 		font-size: 1rem;

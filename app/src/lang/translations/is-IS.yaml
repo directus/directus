@@ -42,6 +42,9 @@ group: Hópur
 export_items: Flytja út Hluti
 and: Og
 or: Eða
+extension_layout: Framsetning
+extension_hook: Krókur
+extension_modules: Einingar
 custom: Sérsniðið
 hook: Krókur
 fill_width: Fylla Breidd
@@ -57,9 +60,6 @@ create_role: Búa til Hlutverk
 create_user: Búa til Notanda
 message: Skilaboð
 create_webhook: Búa til Vefkrækju
-create_translation_string: Búa til Þýðingar Streng
-no_translation_string: Engir Þýðingar Strengir
-edit_translation_string: Breyta þýðingastreng
 invite_users: Bjóða notendum
 invite: Bjóða
 subject: Viðfangsefni
@@ -68,6 +68,7 @@ emails: Tölvupóstar
 primary: Aðal
 delete_folder: Eyða Möppu
 prefix: Forskeyti
+promote_version_preview: Forskoða
 reset_bookmark: Endursetja Bókamerki
 update_bookmark: Uppfæra bókamerki
 delete_bookmark: Eyða bókamerki
@@ -79,11 +80,6 @@ logoutReason:
   SESSION_EXPIRED: Lota útrunnin
 public_label: Almennt
 not_allowed: Ekki Leyft
-directus_version: Directus Útgáfa
-os_type: Gerð stýrikerfis
-os_version: Útgáfa stýrikerfis
-os_uptime: Uppitími stýrikerfis
-os_totalmem: OS Minni
 archive: Geymsla
 all_access: Allur Aðgangur
 no_access: Enginn Aðgangur
@@ -198,7 +194,6 @@ save_and_create_new: Vista og Búa til Nýtt
 save_as_copy: Vista sem Afrit
 comments: Athugasemdir
 no_items: Engir hlutir
-search_items: Leita að hlutum...
 disabled: Óvirkt
 information: Upplýsingar
 report_bug: Tilkynna Galla
@@ -316,7 +311,9 @@ choices: Val
 deselect_all: Afvelja Allt
 other: Annað...
 unknown_user: Óþekktur Notandi
+settings_project: Stillingar
 settings_flows: Flæðir
+settings_translations: Þýðingar
 select: Velja...
 layout: Framsetning
 tree_view: Tré Sýn
@@ -367,7 +364,6 @@ fields:
     tags: Merki
     user_preferences: Notandi Stillingar
     language: Tungumál
-    theme: Þema
     status: Staða
     status_draft: Drög
     status_invited: Boðið
@@ -407,6 +403,7 @@ field_options:
     collection_name: Safn Nafn
     archive_divider: Geymsla
     sort_divider: Flokka
+    preview_divider: Forskoða
   directus_roles:
     fields:
       icon_name: Íkon
@@ -428,6 +425,8 @@ field_options:
       header: Haus
 do_nothing: Gera Ekkert
 comment: Athugasemd
+live_preview:
+  new_window: Opna í Nýjum Glugga
 share_copy_link: Afrita Hlekk
 delete_label: Eyða
 description: Lýsing
@@ -478,8 +477,6 @@ interfaces:
     zoom: Aðdráttur
   presentation-notice:
     notice: Tilkynning
-  system-folder:
-    folder: Mappa
   list:
     sort: Flokka
   tags:
@@ -498,6 +495,13 @@ interfaces:
     modes:
       auto: Sjálfvirkt
       dropdown: Fellilisti
+  input-block-editor:
+    tools_options:
+      header: Haus
+      nestedlist: Listi
+      code: Kóði
+      image: Mynd
+      table: Tafla
 displays:
   translations:
     translations: Þýðingar
@@ -630,6 +634,7 @@ operations:
     name: Senda Tilkynningu
     recipient: Notandi
     message: Skilaboð
+    subject: Viðfangsefni
   request:
     url: URL
     method: Aðferð
@@ -645,3 +650,10 @@ operations:
     data: Gögn
     serial: Raðnúmer
     parallel: Samhliða
+standard: Staðlað
+fonts:
+  thin: Þunnt
+  medium: Meðal
+  bold: Feitletrað
+  italic: Skáletrað
+  auto: Sjálfvirkt

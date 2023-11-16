@@ -1,24 +1,3 @@
-<template>
-	<form @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
-		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
-
-		<transition-expand>
-			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
-		</transition-expand>
-
-		<v-notice v-if="error" type="warning">
-			{{ errorFormatted }}
-		</v-notice>
-		<div class="buttons">
-			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
-			<router-link to="/reset-password" class="forgot-password">
-				{{ t('forgot_password') }}
-			</router-link>
-		</div>
-	</form>
-</template>
-
 <script setup lang="ts">
 import { RequestError } from '@/api';
 import { login } from '@/auth';
@@ -77,7 +56,10 @@ const errorFormatted = computed(() => {
 });
 
 async function onSubmit() {
-	if (email.value === null || password.value === null) return;
+	if (email.value === null || password.value === null) {
+		error.value = 'INVALID_PAYLOAD';
+		return;
+	}
 
 	try {
 		loggingIn.value = true;
@@ -114,6 +96,27 @@ async function onSubmit() {
 }
 </script>
 
+<template>
+	<form @submit.prevent="onSubmit">
+		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
+
+		<transition-expand>
+			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
+		</transition-expand>
+
+		<v-notice v-if="error" type="warning">
+			{{ errorFormatted }}
+		</v-notice>
+		<div class="buttons">
+			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
+			<router-link to="/reset-password" class="forgot-password">
+				{{ t('forgot_password') }}
+			</router-link>
+		</div>
+	</form>
+</template>
+
 <style lang="scss" scoped>
 .v-input,
 .v-notice {
@@ -127,11 +130,11 @@ async function onSubmit() {
 }
 
 .forgot-password {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 </style>

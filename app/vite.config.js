@@ -3,15 +3,16 @@ import {
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/constants';
+} from '@directus/extensions';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackageExtensions,
-} from '@directus/utils/node';
+} from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -30,6 +31,7 @@ export default defineConfig({
 	plugins: [
 		directusExtensions(),
 		vue(),
+		UnheadVite(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;
@@ -76,7 +78,7 @@ function getExtensionsRealPaths() {
 				.readdirSync(EXTENSIONS_PATH)
 				.flatMap((typeDir) => {
 					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-					if (!fs.lstatSync(extensionTypeDir).isDirectory()) return;
+					if (!fs.statSync(extensionTypeDir).isDirectory()) return;
 					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
 				})
 				.filter((v) => v)

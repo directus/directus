@@ -52,6 +52,13 @@ or: 또는
 init: 초기화
 dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
 modifier: 추가 항목
+extension_interface: 인터페이스
+extension_display: 표시하다
+extension_layout: 표시 방법
+extension_panel: 패널
+extension_hook: 후크
+extension_modules: 모듈
+enable: 활성화
 custom: 사용자 정의
 hook: 후크
 fill_width: 전체 폭
@@ -80,14 +87,6 @@ create_user: 사용자 생성
 message: 메시지
 delete_panel: 판넬 삭제
 create_webhook: 웹훅 생성
-create_translation_string: 번역 문구 추가
-no_translation_string: 번역 문구 없음.
-no_translation_string_copy: 아직 등록된 번역 문구가 없습니다.
-translation_string_key_placeholder: 번역 문구 키(key)...
-translation_string_translations_placeholder: 새로운 번역 문구를 추가하세요.
-edit_translation_string: 번역 문구 수정
-delete_translation_string_copy: >-
-  번역 문구 "{key}"를 삭제하시겠습니까? 한번 삭제하면 복구되지 않습니다.
 invite_users: 사용자 초대
 invite: 초대
 email_already_invited: 이메일주소 "{email}" 로 이미 초대하였습니다.
@@ -103,6 +102,7 @@ rename_folder: 폴더 이름 변경
 delete_folder: 폴더 삭제
 prefix: 접두사
 suffix: 접미사
+promote_version_preview: 미리보기
 reset_bookmark: 북마크 초기화
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
@@ -118,13 +118,6 @@ public_label: 공개
 public_description: 인증 없이 사용할 수 있는 API 데이터를 제어합니다.
 admin_description: 제한 없는 앱/API 액세스 권한이 있는 초기 관리자 역할입니다.
 not_allowed: 허용되지 않음
-directus_version: Directus 버전
-node_version: 노드 버전
-node_uptime: 노드 가동 시간
-os_type: OS 유형
-os_version: OS 버전
-os_uptime: OS 가동 시간
-os_totalmem: OS 메모리
 archive: 보관
 archive_confirm: 이 항목을 사용하지 않고 보관하시겠습니까?
 archive_confirm_count: >-
@@ -357,7 +350,7 @@ revision_delta_reverted: 되돌림
 revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
 revision_delta_other: 리비전
 revision_delta_by: '{user}의 {date}'
-presentation_text_values_cannot_be_reimported: "프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다."
+presentation_text_values_cannot_be_reimported: '프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다.'
 download_page_as_csv: '페이지를 CSV로 다운로드'
 private_user: 비공개 사용자
 creation_preview: 생성 미리보기
@@ -395,6 +388,7 @@ move: 이동
 system: 시스템
 add_field_related: 관계형 컬렉션에 필드 추가
 interface_label: 인터페이스
+display_label: 표시하다
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
@@ -444,8 +438,7 @@ file_details: 파일 세부 정보
 dimensions: 규격
 size: 용량
 created: 작성됨
-modified: 수정됨 
-checksum: 체크섬
+modified: 수정됨
 owner: 소유자
 edited_by: 편집자
 folder: 폴더
@@ -468,11 +461,6 @@ open_file_in_tab: 새 탭에서 파일 열기
 start_export: 내보내기 시작
 not_available_for_local_downloads: 로컬 다운로드에 사용할 수 없음
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
-exporting_limited_items_in_collection: '{collection}의 전체 {total}개 중 {limit}개 항목 내보내기'
-exporting_no_items_to_export: 내보낼 데이터가 없습니다. 아래 설정을 확인 해보세요.
-exporting_download_hint: 완료되면 이 {format} 파일이 기기에 자동으로 다운로드됩니다.
-exporting_batch_hint: 이 내보내기는 일괄 처리되며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
-exporting_batch_hint_forced: 항목 수가 많기 때문에 이 내보내기는 일괄 처리해야 하며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
 collection_key: 컬렉션 키
 name: 이름
 primary_key_field: 기본키 필드
@@ -497,10 +485,8 @@ enable_select_button: 선택 버튼 활성화
 allow_duplicates: 중복 허용
 comments: 코멘트
 no_comments: 아직 코멘트가 없습니다
-click_to_expand: 확장하려면 클릭
 select_item: 항목 선택
 no_items: 항목 없음
-search_items: 검색
 disabled: 비활성화 됨
 information: 정보
 report_bug: 버그 제보
@@ -609,7 +595,6 @@ errors:
   RECORD_NOT_UNIQUE: 중복 값 감지됨
   USER_SUSPENDED: 사용자 일시중지됨
   CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
-  UNPROCESSABLE_ENTITY: 처리할 수 없는 엔터티
   INTERNAL_SERVER_ERROR: 예기치 않은 오류
   NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
   ILLEGAL_ASSET_TRANSFORMATION: 이미지 소스가 너무 커서 미리보기 불가
@@ -948,7 +933,7 @@ choices: 선택
 choices_option_configured_incorrectly: 잘못 구성된 선택 사항
 deselect: 선택 취소
 deselect_all: 모두 선택 취소
-other: 다른...
+other: 기타
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
 creating_in: '{collection} 데이터 추가'
@@ -959,12 +944,11 @@ editing_unit: '편집 {unit}'
 editing_in_batch: '일괄 편집 {count} 항목'
 no_options_available: 사용 가능한 옵션 없음
 settings_data_model: 데이터 모델
-settings_permissions: 역할 및 권한
-settings_project: 프로젝트 설정
+settings_project: 설정
 settings_webhooks: 웹후크
 settings_flows: 플로우
-settings_presets: 사전설정 및 북마크
-settings_translation_strings: 번역 문자열
+settings_presets: 북마크
+settings_translations: 번역
 one_or_more_options_are_missing: 하나 이상의 옵션이 없습니다.
 scope: 범위
 actions: 액션
@@ -999,7 +983,6 @@ page_help_files_collection: >-
   **파일 라이브러리** — 이 프로젝트에 업로드된 모든 파일 자산을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
 page_help_files_item: >-
   **파일 세부 정보** — 파일 메타데이터 관리, 원본 자산 편집 및 액세스 설정 업데이트를 위한 양식입니다.
-page_help_settings_project: "**프로젝트 설정** — 프로젝트의 전역 구성 옵션입니다."
 page_help_settings_datamodel_collections: >-
   **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
 page_help_settings_datamodel_fields: >-
@@ -1014,7 +997,6 @@ page_help_settings_webhooks_collection: '**웹훅 찾아보기** — 프로젝�
 page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
 page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
 page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
-page_help_settings_translation_strings_collection: '**번역 문자열 찾아보기** — 프로젝트 내의 모든 번역 문자열을 나열합니다.'
 page_help_users_collection: '**사용자 디렉터리** — 이 프로젝트 내의 모든 시스템 사용자를 나열합니다.'
 page_help_users_item: >-
   **사용자 세부 정보** — 계정 정보를 관리하거나 다른 사용자의 세부 정보를 봅니다.
@@ -1122,10 +1104,6 @@ fields:
     tags: 태그(Tags)
     user_preferences: 개인 설정
     language: 언어
-    theme: 화면테마
-    theme_auto: 자동(시스템 설정)
-    theme_light: 밝은 배경 테마
-    theme_dark: 어두운 배경 테마
     tfa_secret: 이중 인증
     admin_options: 관리 옵션
     status: 상태
@@ -1164,7 +1142,6 @@ fields:
     project_color: 테마컬러
     project_logo: 로고
     default_language: 기본 언어 설정
-    branding: 브랜딩 및 스타일
     public_foreground: 공개화면 전경(foreground)
     public_background: 공개화면 배경(background)
     public_note: 공개화면 표시글
@@ -1224,7 +1201,6 @@ field_options:
   directus_settings:
     project_name_placeholder: 내 프로젝트...
     project_color_note: 로그인/로고 화면 배경
-    project_logo_note: 흰색 40x40 SVG/PNG
     public_note_placeholder: 마크다운 서식을 지원하는 짧은 공개 메시지...
     security_divider_title: 보안
     auth_password_policy:
@@ -1278,6 +1254,7 @@ field_options:
     sort_field: 필드 선택...
     accountability_divider: 책임
     duplication_divider: 복사
+    preview_divider: 미리보기
   directus_files:
     title: 고유한 제목...
     description: 선택적 설명...
@@ -1335,6 +1312,8 @@ start_collapsed: 축소 시작
 block: 차단하다
 inline: 인라인
 comment: 코멘트
+live_preview:
+  new_window: 새 창에서 열기
 shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
@@ -1368,8 +1347,7 @@ referential_action_set_default: '{field}를 기본값으로 설정'
 choose_action: 액션 선택
 continue_label: 계속
 continue_as: >-
-  현재 {name}으로 인증되었습니다.
-  이 계정으로 계속하려면 계속을 누르세요.
+  현재 {name}으로 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
 editing_role: '{role} 역할'
 creating_webhook: 웹훅 만들기
 default_label: 기본
@@ -1596,6 +1574,8 @@ interfaces:
   system-interface-options:
     interface-options: 인터페이스 옵션
     description: 인터페이스 옵션을 선택하기 위한 모달
+  system-display:
+    display: 표시하다
   list-m2m:
     many-to-many: 다대다
     description: 여러 개의 관련 접합 항목 선택
@@ -1612,7 +1592,7 @@ interfaces:
     markdown: 마크다운
     description: 마크다운 입력 및 미리보기
     edit: 수정
-    preview: 미리보기 
+    preview: 미리보기
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
     customSyntax: 맞춤형 블록
@@ -1647,7 +1627,6 @@ interfaces:
     description: 여러 관련 항목 선택
     no_collection: 컬렉션을 찾을 수 없습니다.
   system-folder:
-    folder: 폴더
     description: 폴더 선택
     field_hint: 폴더를 지정하지 않고 업로드된 파일의 기본 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     root_name: 파일 라이브러리 루트
@@ -1664,6 +1643,7 @@ interfaces:
     sort_placeholder: 수동
     field_note_placeholder: 필드 메모 입력...
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
+    interface_group: 인터페이스 옵션
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택
@@ -1703,7 +1683,6 @@ interfaces:
     input-translated-string: 번역된 문자열
     description: 번역 문자열 선택 또는 추가
     search_placeholder: 검색...
-    new_translation_string: 새 번역 문자열
   boolean:
     toggle: 토글
     description: 켜기와 끄기 간 전환
@@ -1740,6 +1719,16 @@ interfaces:
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
+  input-block-editor:
+    tools: 툴바
+    tools_options:
+      header: 머리글
+      nestedlist: 목록
+      embed: 포함시키다
+      code: 코드
+      image: 이미지
+      table: 테이블
+      underline: 밑줄
   input-autocomplete-api:
     input-autocomplete-api: 자동 완성 입력(API)
     description: 외부 API 값에 대한 미리 검색.
@@ -2014,6 +2003,7 @@ panels:
     smooth: 매끄러운
     straight: 똑바로
     step_line: 스텝 라인
+    show_legend: 범례 표시
   meter:
     name: 미터
     description: 값 추적을 위한 미터
@@ -2097,6 +2087,10 @@ operations:
     key: ID
     payload: 유효 탑재량
     query: 질문
+  json-web-token:
+    payload: 유효 탑재량
+    token: 접속 인증 토큰
+    options: 옵션
   log:
     name: 콘솔에 로그인
     description: 콘솔에 출력
@@ -2117,9 +2111,10 @@ operations:
     recipient_placeholder: UUID를 입력하세요...
     recipient_note: 사용자 UUID를 추가하고 Enter 키를 누릅니다...
     message: 메시지
+    subject: 제목
   request:
     name: 웹훅 / 요청 URL
-    description: "URL에 요청하기"
+    description: 'URL에 요청하기'
     url: URL
     url_placeholder: https://example.com/example
     method: 방법
@@ -2148,3 +2143,14 @@ operations:
     batch: 일괄
     batch_size: 배치 크기
     cache: 캐시
+standard: 표준
+compact: 좁게
+style: 스타일
+fonts:
+  thin: 얇은
+  normal: 정상
+  medium: 중간
+  bold: 굵게
+  black: 검은색
+  italic: 이탤릭체
+  auto: 자동

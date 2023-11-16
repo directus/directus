@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/utils';
+import { defineDisplay } from '@directus/extensions';
 import DisplayUser from './user.vue';
 import { userName } from '@/utils/user-name';
 
@@ -6,7 +6,8 @@ export default defineDisplay({
 	id: 'user',
 	name: '$t:displays.user.user',
 	description: '$t:displays.user.description',
-	types: ['uuid'],
+	types: ['uuid', 'string'],
+	localTypes: ['m2o'],
 	icon: 'person',
 	component: DisplayUser,
 	handler: (value) => userName(value),

@@ -52,6 +52,13 @@ or: Eller
 init: Init
 dataset_too_large_currently_showing_n_items: Dataset är för stort. Visar för närvarande de första {n} objekten.
 modifier: Modifierare
+extension_interface: Gränssnitt
+extension_display: Visa
+extension_layout: Layout
+extension_panel: Panel
+extension_hook: Hook
+extension_modules: Moduler
+enable: Aktivera
 custom: Anpassad
 hook: Hook
 fill_width: Full bredd
@@ -80,14 +87,6 @@ create_user: Skapa användare
 message: Meddelande
 delete_panel: Ta bort panel
 create_webhook: Skapa webhook
-create_translation_string: Skapa översättnings-sträng
-no_translation_string: Inga översättningssträngar
-no_translation_string_copy: Det finns inga översättningssträngar ännu.
-translation_string_key_placeholder: Översättningsnyckel...
-translation_string_translations_placeholder: Lägg till en ny översättning
-edit_translation_string: Redigera översättnings-sträng
-delete_translation_string_copy: >-
-  Är du säker på att du vill radera översättnings-strängen "{key}"? Den här åtgärden kan inte ångras.
 invite_users: Bjud in användare
 invite: Bjud in
 email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
@@ -103,6 +102,7 @@ rename_folder: Döp om mapp
 delete_folder: Ta bort mapp
 prefix: Prefix
 suffix: Suffix
+promote_version_preview: Förhandsgranska
 reset_bookmark: Återställ bokmärke
 update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
@@ -118,13 +118,6 @@ public_label: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
 admin_description: Initial administrativ roll med obegränsad app/API-åtkomst.
 not_allowed: Inte tillåtet
-directus_version: Directus Version
-node_version: Node version
-node_uptime: Node upptid
-os_type: Operativsystem
-os_version: Operativsystemets version
-os_uptime: Operativsystemets upptid
-os_totalmem: Operativsystemets minne
 archive: Arkivera
 archive_confirm: Är du säker på att du vill arkivera detta objekt?
 archive_confirm_count: >-
@@ -348,7 +341,7 @@ revision_delta_reverted: Annullerad
 revision_delta_update_message: Detta fält har uppdaterats men dess värde döljs av säkerhetsskäl.
 revision_delta_other: Revision
 revision_delta_by: '{date} av {user}'
-presentation_text_values_cannot_be_reimported: "Använder presentationstext, värden kan inte återimporteras."
+presentation_text_values_cannot_be_reimported: 'Använder presentationstext, värden kan inte återimporteras.'
 download_page_as_csv: 'Ladda ned sida som CSV'
 private_user: Privat användare
 creation_preview: Förhandsgranskning av skapande
@@ -386,6 +379,7 @@ move: Flytta
 system: System
 add_field_related: Lägg till fält i relaterad kollektion
 interface_label: Gränssnitt
+display_label: Visa
 today: Idag
 yesterday: Igår
 delete_comment: Ta bort kommentar
@@ -436,7 +430,6 @@ dimensions: Dimensioner
 size: Storlek
 created: Skapad
 modified: Ändrad
-checksum: Kontrollsumma
 owner: Ägare
 edited_by: Redigerad av
 folder: Mapp
@@ -459,11 +452,6 @@ open_file_in_tab: Öppna fil i ny flik
 start_export: Påbörja exportering
 not_available_for_local_downloads: Inte tillgänglig för lokala nedladdningar
 exporting_all_items_in_collection: Exporterar alla {total} objekt inom {collection}.
-exporting_limited_items_in_collection: Exporterar {limit} av {total} objekt inom {collection}.
-exporting_no_items_to_export: Inga objekt att exportera. Justera exportkonfigurationen nedan.
-exporting_download_hint: När den är klar kommer den här {format}-filen att laddas ner till din enhet automatiskt.
-exporting_batch_hint: Denna export kommer att bearbetas i omgångar och när detta är slutfört kommer {format} -filen att sparas i filbiblioteket.
-exporting_batch_hint_forced: På grund av ett stort antal objekt kommer denna export att bearbetas i omgångar, och när detta är slutfört kommer {format} -filen att sparas i filbiblioteket.
 collection_key: Kollektionsnyckel
 name: Namn
 primary_key_field: Primär nyckelfält
@@ -487,10 +475,8 @@ enable_select_button: Aktivera markerings knapp
 allow_duplicates: Tillåt dubbletter
 comments: Kommentarer
 no_comments: Inga kommentarer ännu
-click_to_expand: Klicka för att expandera
 select_item: Välj objekt
 no_items: Inga objekt
-search_items: Sök objekt...
 disabled: Inaktiverad
 information: Information
 report_bug: Rapportera bugg
@@ -596,7 +582,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   USER_SUSPENDED: Användare avstängd
   CONTAINS_NULL_VALUES: Fältet innehåller nullvärden
-  UNPROCESSABLE_ENTITY: Kan inte processa data
   INTERNAL_SERVER_ERROR: Oväntat fel
   NOT_NULL_VIOLATION: Värdet kan inte vara null
   ILLEGAL_ASSET_TRANSFORMATION: Bildkälla för stor för att förhandsgranska
@@ -903,11 +888,11 @@ editing_unit: 'Redigerar {unit}'
 editing_in_batch: 'Massredigerar {count} objekt'
 no_options_available: Inga tillgängliga alternativ
 settings_data_model: Datamodell
-settings_permissions: Roller & behörigheter
-settings_project: Projektinställningar
+settings_project: Inställningar
 settings_webhooks: Webhooks
 settings_flows: Flöden
-settings_presets: Förinställningar & bokmärken
+settings_presets: Bokmärken
+settings_translations: Översättningar
 one_or_more_options_are_missing: Ett eller flera alternativ saknas
 scope: Omfattning
 actions: Åtgärder
@@ -942,7 +927,6 @@ page_help_files_collection: >-
   **Filbibliotek** — Visar alla filer uppladdade till detta projekt. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
 page_help_files_item: >-
   **Detaljvy fil** — Ett formulär för att hantera filens metadata, redigera den ursprungliga filen och uppdatera åtkomstinställningar.
-page_help_settings_project: "**Projektinställningar** — Projektets globala konfigurationsalternativ."
 page_help_settings_datamodel_collections: >-
   **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
 page_help_settings_datamodel_fields: >-
@@ -955,7 +939,6 @@ page_help_settings_presets_item: >-
   **Förinställda detaljer** — Ett formulär för att hantera bokmärken och förinställningar för standardinsamling.
 page_help_settings_webhooks_collection: '**Bläddra bland webhooks** — Listar alla webhooks i projektet.'
 page_help_settings_webhooks_item: '**Detaljvy webhook** — Ett formulär för att skapa och hantera projektets webhooks.'
-page_help_settings_translation_strings_collection: '**Bläddra översättningssträngar** — Listar alla översättningssträngar inom projektet.'
 page_help_users_collection: '**Användarkatalog** — Listar alla systemanvändare i detta projekt.'
 page_help_users_item: >-
   **Användarinformation** — Hantera din kontoinformation eller visa information om andra användare.
@@ -1049,10 +1032,6 @@ fields:
     tags: Etiketter
     user_preferences: Användarinställningar
     language: Språk
-    theme: Tema
-    theme_auto: Automatisk (baserat på system)
-    theme_light: Ljust läge
-    theme_dark: Mörkt läge
     tfa_secret: Tvåfaktorsautentisering
     admin_options: Admin-alternativ
     status: Status
@@ -1129,7 +1108,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mitt projekt...
     project_color_note: Inloggning & logotyp bakgrund
-    project_logo_note: Vit 40x40 SVG/PNG
     public_note_placeholder: Ett kort, offentligt meddelande som stödjer formatering av markdown...
     security_divider_title: Säkerhet
     auth_password_policy:
@@ -1175,6 +1153,7 @@ field_options:
     sort_field: Välj ett fält...
     accountability_divider: Ansvarsskyldighet
     duplication_divider: Duplicering
+    preview_divider: Förhandsgranska
   directus_files:
     title: En unik titel...
     description: En valfri beskrivning...
@@ -1230,6 +1209,8 @@ start_collapsed: Start ihopfälld
 block: Blockera
 inline: Infogad
 comment: Kommentera
+live_preview:
+  new_window: Öppna i nytt fönster
 expired: Upphört
 upcoming: Kommande
 share: Dela
@@ -1452,6 +1433,8 @@ interfaces:
   system-interface-options:
     interface-options: Alternativ för gränssnitt
     description: En popup för att välja alternativ för ett gränssnitt
+  system-display:
+    display: Visa
   list-m2m:
     many-to-many: Many to Many
     description: Välj flera relaterade kopplingsobjekt
@@ -1491,7 +1474,6 @@ interfaces:
     description: Välj flera relaterade objekt
     no_collection: Kollektionen kunde inte hittas
   system-folder:
-    folder: Mapp
     description: Välj en mapp
     root_name: Filbibliotek
     system_default: Systemstandard
@@ -1506,6 +1488,7 @@ interfaces:
     sort: Sortera
     sort_placeholder: Manuell
     field_note_placeholder: Ange fältanteckning...
+    interface_group: Alternativ för gränssnitt
   slider:
     slider: Reglage
     description: Välj ett nummer med ett reglage
@@ -1569,6 +1552,15 @@ interfaces:
     custom_formats: Anpassade format
     options_override: Skriv över alternativ
     folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
+  input-block-editor:
+    tools: Verktygsfält
+    tools_options:
+      nestedlist: Lista
+      embed: Bädda in
+      code: Kod
+      image: Bild
+      table: Tabell
+      underline: Understruken
   input-autocomplete-api:
     results_path: Sökväg för resultat
     trigger: Utlösare
@@ -1741,6 +1733,9 @@ triggers:
 operations:
   condition:
     name: Villkor
+  json-web-token:
+    token: Token
+    options: Alternativ
   log:
     message: Meddelande
   mail:
@@ -1751,6 +1746,7 @@ operations:
   notification:
     recipient: Användare
     message: Meddelande
+    subject: Ämne
   request:
     url: URL
     method: Metod
@@ -1759,3 +1755,12 @@ operations:
     flows: Flöden
     flow: Flöde
     data: Data
+standard: Standard
+compact: Kompakt
+style: Stil
+fonts:
+  normal: Normal
+  bold: Fet
+  black: Svart
+  italic: Kursiv
+  auto: Automatisk

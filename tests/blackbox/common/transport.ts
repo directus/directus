@@ -1,8 +1,8 @@
-import request, { Response } from 'supertest';
+import request, { type Response } from 'supertest';
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { WebSocket } from 'ws';
 import { createClient } from 'graphql-ws';
-import {
+import type {
 	WebSocketOptions,
 	WebSocketOptionsGql,
 	WebSocketResponse,
@@ -104,7 +104,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		options?: {
 			waitTimeout?: number;
 			targetState?: WebSocket['readyState'];
-			uid?: WebSocketUID;
+			uid?: WebSocketUID | undefined;
 			startIndex?: number;
 		}
 	): Promise<WebSocketResponse[] | undefined> => {
@@ -186,7 +186,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			error = err;
 		}
 
-		if (error || !response || response[0].status === 'error') {
+		if (error || !response || response[0]?.status === 'error') {
 			throw new Error(`Unable to subscribe to "${options.collection}"${options.uid ? ` for "${options.uid}"` : ''}`);
 		}
 
@@ -204,7 +204,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			error = err;
 		}
 
-		if (error || !response || response[0].status === 'error') {
+		if (error || !response || response[0]?.status === 'error') {
 			throw new Error(`Unable to unsubscribe${uid ? ` to "${uid}"` : ''}`);
 		}
 	};

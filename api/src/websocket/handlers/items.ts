@@ -2,7 +2,7 @@ import emitter from '../../emitter.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { WebSocketException, handleWebSocketException } from '../exceptions.js';
+import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketItemsMessage } from '../messages.js';
 import type { WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
@@ -17,10 +17,10 @@ export class ItemsHandler {
 
 				this.onMessage(client, parsedMessage).catch((err) => {
 					// this catch is required because the async onMessage function is not awaited
-					handleWebSocketException(client, err, 'items');
+					handleWebSocketError(client, err, 'items');
 				});
 			} catch (err) {
-				handleWebSocketException(client, err, 'items');
+				handleWebSocketError(client, err, 'items');
 			}
 		});
 	}
@@ -31,7 +31,7 @@ export class ItemsHandler {
 		const schema = await getSchema();
 
 		if (!schema.collections[message.collection] || message.collection.startsWith('directus_')) {
-			throw new WebSocketException(
+			throw new WebSocketError(
 				'items',
 				'INVALID_COLLECTION',
 				'The provided collection does not exists or is not accessible.',
@@ -103,7 +103,7 @@ export class ItemsHandler {
 				const query = sanitizeQuery(message.query, accountability);
 				result = await service.deleteByQuery(query);
 			} else {
-				throw new WebSocketException(
+				throw new WebSocketError(
 					'items',
 					'INVALID_PAYLOAD',
 					"Either 'ids', 'id' or 'query' is required for a DELETE request.",

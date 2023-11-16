@@ -1,3 +1,206 @@
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import CodeMirror from 'codemirror';
+import 'codemirror/addon/display/placeholder.js';
+import 'codemirror/mode/markdown/markdown';
+
+import { useShortcut } from '@/composables/use-shortcut';
+import { useWindowSize } from '@/composables/use-window-size';
+import { getPublicURL } from '@/utils/get-root-path';
+import { percentage } from '@/utils/percentage';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import { Alteration, CustomSyntax, applyEdit } from './edits';
+
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		placeholder?: string;
+		editorFont?: 'sans-serif' | 'serif' | 'monospace';
+		previewFont?: 'sans-serif' | 'serif' | 'monospace';
+		toolbar?: string[];
+		customSyntax?: CustomSyntax[];
+		imageToken?: string;
+		softLength?: number;
+		folder?: string;
+		direction?: string;
+	}>(),
+	{
+		editorFont: 'sans-serif',
+		previewFont: 'sans-serif',
+		toolbar: () => [
+			'heading',
+			'bold',
+			'italic',
+			'strikethrough',
+			'bullist',
+			'numlist',
+			'blockquote',
+			'code',
+			'link',
+			'table',
+			'image',
+			'link',
+			'empty',
+		],
+		customSyntax: () => [],
+	}
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const { width } = useWindowSize();
+
+const markdownInterface = ref<HTMLElement>();
+const codemirrorEl = ref<HTMLTextAreaElement>();
+let codemirror: CodeMirror.Editor | null = null;
+let previousContent: string | null = null;
+
+const view = ref(['editor']);
+
+const imageDialogOpen = ref(false);
+
+const count = ref(0);
+
+const readOnly = computed(() => {
+	if (width.value < 600) {
+		// mobile requires 'nocursor' to avoid bringing up the keyboard
+		return props.disabled ? 'nocursor' : false;
+	} else {
+		// desktop cannot use 'nocursor' as it prevents copy/paste
+		return props.disabled;
+	}
+});
+
+onMounted(async () => {
+	if (codemirrorEl.value) {
+		codemirror = CodeMirror(codemirrorEl.value, {
+			mode: 'markdown',
+			configureMouse: () => ({ addNew: false }),
+			lineWrapping: true,
+			readOnly: readOnly.value,
+			direction: props.direction === 'rtl' ? props.direction : 'ltr',
+			cursorBlinkRate: props.disabled ? -1 : 530,
+			placeholder: props.placeholder,
+			value: props.value || '',
+			spellcheck: true,
+			inputStyle: 'contenteditable',
+		});
+
+		codemirror.on('change', (cm, { origin }) => {
+			const content = cm.getValue();
+
+			// prevent duplicate emits with same content
+			if (content === previousContent) return;
+			previousContent = content;
+
+			if (origin === 'setValue') return;
+
+			emit('input', content);
+		});
+	}
+
+	if (markdownInterface.value) {
+		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+
+		const observer = new MutationObserver(() => {
+			count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
+		});
+
+		const config = { characterData: true, childList: true, subtree: true };
+
+		observer.observe(previewBox, config);
+	}
+});
+
+watch(
+	() => props.value,
+	(newValue) => {
+		if (!codemirror) return;
+
+		const existingValue = codemirror.getValue();
+
+		if (existingValue !== newValue) {
+			codemirror.setValue('');
+			codemirror.clearHistory();
+			codemirror.setValue(newValue ?? '');
+			codemirror.refresh();
+		}
+	}
+);
+
+watch(
+	() => props.disabled,
+	(disabled) => {
+		codemirror?.setOption('readOnly', readOnly.value);
+		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
+	},
+	{ immediate: true }
+);
+
+watch(
+	() => props.direction,
+	(direction) => {
+		codemirror?.setOption('direction', direction === 'rtl' ? direction : 'ltr');
+	}
+);
+
+const editFamily = computed(() => {
+	return `var(--family-${props.editorFont})`;
+});
+
+const previewFamily = computed(() => {
+	return `var(--family-${props.previewFont})`;
+});
+
+const markdownString = computed(() => {
+	return props.value || '';
+});
+
+const table = reactive({
+	rows: 4,
+	columns: 4,
+});
+
+const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
+useShortcut('meta+b', () => edit('bold'), markdownInterface);
+useShortcut('meta+i', () => edit('italic'), markdownInterface);
+useShortcut('meta+k', () => edit('link'), markdownInterface);
+useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
+useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
+useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
+useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
+useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
+useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
+useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
+useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
+useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
+
+function onImageUpload(image: any) {
+	if (!codemirror) return;
+
+	let url = getPublicURL() + `assets/` + image.id;
+
+	if (props.imageToken) {
+		url += '?access_token=' + props.imageToken;
+	}
+
+	codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
+
+	imageDialogOpen.value = false;
+}
+
+function edit(type: Alteration, options?: Record<string, any>) {
+	if (codemirror) {
+		applyEdit(codemirror, type, options);
+	}
+}
+</script>
+
 <template>
 	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view[0], { disabled }]">
 		<div class="toolbar">
@@ -187,7 +390,7 @@
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="view[0] === 'preview' ? 'display:block' : 'display:none'"
+			:style="{ display: view[0] === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
@@ -208,223 +411,42 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/display/placeholder.js';
-import 'codemirror/mode/markdown/markdown';
-
-import { useShortcut } from '@/composables/use-shortcut';
-import { useWindowSize } from '@/composables/use-window-size';
-import { getPublicURL } from '@/utils/get-root-path';
-import { percentage } from '@/utils/percentage';
-import { translateShortcut } from '@/utils/translate-shortcut';
-import { Alteration, CustomSyntax, applyEdit } from './edits';
-
-const props = withDefaults(
-	defineProps<{
-		value: string | null;
-		disabled?: boolean;
-		placeholder?: string;
-		editorFont?: 'sans-serif' | 'serif' | 'monospace';
-		previewFont?: 'sans-serif' | 'serif' | 'monospace';
-		toolbar?: string[];
-		customSyntax?: CustomSyntax[];
-		imageToken?: string;
-		softLength?: number;
-		folder?: string;
-	}>(),
-	{
-		editorFont: 'sans-serif',
-		previewFont: 'sans-serif',
-		toolbar: () => [
-			'heading',
-			'bold',
-			'italic',
-			'strikethrough',
-			'bullist',
-			'numlist',
-			'blockquote',
-			'code',
-			'link',
-			'table',
-			'image',
-			'link',
-			'empty',
-		],
-		customSyntax: () => [],
-	}
-);
-
-const emit = defineEmits(['input']);
-
-const { t } = useI18n();
-
-const { width } = useWindowSize();
-
-const markdownInterface = ref<HTMLElement>();
-const codemirrorEl = ref<HTMLTextAreaElement>();
-let codemirror: CodeMirror.Editor | null = null;
-let previousContent: string | null = null;
-
-const view = ref(['editor']);
-
-const imageDialogOpen = ref(false);
-
-let count = ref(0);
-
-const readOnly = computed(() => {
-	if (width.value < 600) {
-		// mobile requires 'nocursor' to avoid bringing up the keyboard
-		return props.disabled ? 'nocursor' : false;
-	} else {
-		// desktop cannot use 'nocursor' as it prevents copy/paste
-		return props.disabled;
-	}
-});
-
-onMounted(async () => {
-	if (codemirrorEl.value) {
-		codemirror = CodeMirror(codemirrorEl.value, {
-			mode: 'markdown',
-			configureMouse: () => ({ addNew: false }),
-			lineWrapping: true,
-			readOnly: readOnly.value,
-			cursorBlinkRate: props.disabled ? -1 : 530,
-			placeholder: props.placeholder,
-			value: props.value || '',
-			spellcheck: true,
-			inputStyle: 'contenteditable',
-		});
-
-		codemirror.on('change', (cm, { origin }) => {
-			const content = cm.getValue();
-
-			// prevent duplicate emits with same content
-			if (content === previousContent) return;
-			previousContent = content;
-
-			if (origin === 'setValue') return;
-
-			emit('input', content);
-		});
-	}
-
-	if (markdownInterface.value) {
-		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
-
-		const observer = new MutationObserver(() => {
-			count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
-		});
-
-		const config = { characterData: true, childList: true, subtree: true };
-
-		observer.observe(previewBox, config);
-	}
-});
-
-watch(
-	() => props.value,
-	(newValue) => {
-		if (!codemirror) return;
-
-		const existingValue = codemirror.getValue();
-
-		if (existingValue !== newValue) {
-			codemirror.setValue('');
-			codemirror.clearHistory();
-			codemirror.setValue(newValue ?? '');
-			codemirror.refresh();
-		}
-	}
-);
-
-watch(
-	() => props.disabled,
-	(disabled) => {
-		codemirror?.setOption('readOnly', readOnly.value);
-		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
-	},
-	{ immediate: true }
-);
-
-const editFamily = computed(() => {
-	return `var(--family-${props.editorFont})`;
-});
-
-const previewFamily = computed(() => {
-	return `var(--family-${props.previewFont})`;
-});
-
-const markdownString = computed(() => {
-	return props.value || '';
-});
-
-const table = reactive({
-	rows: 4,
-	columns: 4,
-});
-
-const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
-useShortcut('meta+b', () => edit('bold'), markdownInterface);
-useShortcut('meta+i', () => edit('italic'), markdownInterface);
-useShortcut('meta+k', () => edit('link'), markdownInterface);
-useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
-useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
-useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
-useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
-useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
-useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
-useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
-useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
-useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
-
-function onImageUpload(image: any) {
-	if (!codemirror) return;
-
-	let url = getPublicURL() + `assets/` + image.id;
-
-	if (props.imageToken) {
-		url += '?access_token=' + props.imageToken;
-	}
-
-	codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
-
-	imageDialogOpen.value = false;
-}
-
-function edit(type: Alteration, options?: Record<string, any>) {
-	if (codemirror) {
-		applyEdit(codemirror, type, options);
-	}
-}
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
-	--v-button-color: var(--foreground-normal);
-	--v-button-background-color-hover: var(--border-normal);
-	--v-button-color-hover: var(--foreground-normal);
+	--v-button-color: var(--theme--form--field--input--foreground);
+	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
+	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
 	min-height: 300px;
 	overflow: hidden;
-	font-family: var(--family-sans-serif);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	font-family: var(--theme--font-family-sans-serif);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	box-shadow: var(--theme--form--field--input--box-shadow);
+	transition-duration: var(--fast);
+	transition-timing-function: var(--transition);
+	transition-property: box-shadow, border-color;
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror-scroll) {
+	max-height: min(1000px, 80vh);
 }
 
 .interface-input-rich-text-md.disabled {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
+}
+
+.interface-input-rich-text-md:not(.disabled):hover {
+	border-color: var(--theme--form--field--input--border-color-hover);
+	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
 .interface-input-rich-text-md:not(.disabled):focus-within {
-	border-color: var(--primary);
-	box-shadow: 0 0 16px -8px var(--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
+	box-shadow: var(--theme--form--field--input--box-shadow-focus);
 }
 
 textarea {
@@ -434,95 +456,18 @@ textarea {
 .preview-box {
 	display: none;
 	padding: 20px;
-}
-
-.preview-box :deep(h1) {
-	margin-top: 1em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 36px;
 	font-family: v-bind(previewFamily), serif;
-	line-height: 46px;
-}
 
-.preview-box :deep(h2) {
-	margin-top: 1.25em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 24px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 34px;
-}
-
-.preview-box :deep(h3) {
-	margin-top: 1.25em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 19px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 29px;
-}
-
-.preview-box :deep(h4) {
-	margin-top: 1.5em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 16px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 26px;
-}
-
-.preview-box :deep(h5) {
-	margin-top: 2em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 14px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
-}
-
-.preview-box :deep(h6) {
-	margin-top: 2em;
-	margin-bottom: 0;
-	color: var(--foreground-normal-alt);
-	font-weight: 700;
-	font-size: 12px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 22px;
-}
-
-.preview-box :deep(p) {
-	margin: 1.5em 0;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
-}
-
-.preview-box :deep(a) {
-	color: var(--primary-125);
-	text-decoration: none;
-}
-
-.preview-box :deep(ul),
-.preview-box :deep(ol) {
-	margin: 1.5em 0;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
+	:deep() {
+		@import '@/styles/markdown';
+	}
 }
 
 .remaining {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -530,104 +475,15 @@ textarea {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .danger {
-	color: var(--danger);
-}
-
-.preview-box :deep(ul ul),
-.preview-box :deep(ol ol),
-.preview-box :deep(ul ol),
-.preview-box :deep(ol ul) {
-	margin: 0;
-}
-
-.preview-box :deep(b),
-.preview-box :deep(strong) {
-	font-weight: 700;
-}
-
-.preview-box :deep(code) {
-	padding: 2px 4px;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
-	line-height: 24px;
-	overflow-wrap: break-word;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
-}
-
-.preview-box :deep(pre) {
-	padding: 1em;
-	overflow: auto;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: var(--family-monospace), monospace;
-	line-height: 24px;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
-}
-
-.preview-box :deep(blockquote) {
-	margin-left: 0px;
-	padding-left: 1em;
-	font-weight: 500;
-	font-size: 15px;
-	font-family: v-bind(previewFamily), serif;
-	line-height: 24px;
-	border-left: 2px solid var(--border-normal);
-}
-
-.preview-box :deep(blockquote blockquote) {
-	margin-left: 10px;
-}
-
-.preview-box :deep(video),
-.preview-box :deep(iframe),
-.preview-box :deep(img) {
-	max-width: 100%;
-	height: auto;
-	border-radius: var(--border-radius);
-}
-
-.preview-box :deep(hr) {
-	height: 1px;
-	margin-top: 2em;
-	margin-bottom: 2em;
-	background-color: var(--border-normal);
-	border: none;
-}
-
-.preview-box :deep(table) {
-	font-weight: 500;
-	font-size: 15px;
-	line-height: 24px;
-	border-collapse: collapse;
-}
-
-.preview-box :deep(table th),
-.preview-box :deep(table td) {
-	padding: 0.4rem;
-	border: 1px solid var(--border-normal);
-}
-
-.preview-box :deep(figure) {
-	display: table;
-	margin: 1rem auto;
-}
-
-.preview-box :deep(figure figcaption) {
-	display: block;
-	margin-top: 0.25rem;
-	color: #999;
-	text-align: center;
+	color: var(--theme--danger);
 }
 
 .interface-input-rich-text-md.disabled .preview-box {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror) {
@@ -663,8 +519,8 @@ textarea {
 	align-items: center;
 	min-height: 40px;
 	padding: 0 4px;
-	background-color: var(--background-subdued);
-	border-bottom: 2px solid var(--border-normal);
+	background-color: var(--theme--form--field--input--background-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	.v-button + .v-button {
 		margin-left: 2px;
@@ -675,12 +531,12 @@ textarea {
 	}
 
 	.view {
-		--v-button-background-color: var(--border-subdued);
-		--v-button-color: var(--foreground-subdued);
-		--v-button-background-color-hover: var(--border-normal);
-		--v-button-color-hover: var(--foreground-normal);
-		--v-button-background-color-active: var(--border-normal);
-		--v-button-color-active: var(--foreground-normal);
+		--v-button-background-color: var(--theme--border-color-subdued);
+		--v-button-color: var(--theme--form--field--input--foreground-subdued);
+		--v-button-background-color-hover: var(--theme--form--field--input--border-color);
+		--v-button-color-hover: var(--theme--form--field--input--foreground);
+		--v-button-background-color-active: var(--theme--form--field--input--border-color);
+		--v-button-color-active: var(--theme--form--field--input--foreground);
 	}
 }
 

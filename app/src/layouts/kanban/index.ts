@@ -5,8 +5,9 @@ import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
 import { User } from '@directus/types';
-import { defineLayout, getEndpoint, getRelationType, moveInArray } from '@directus/utils';
+import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
@@ -279,7 +280,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					const before = group.items[event.added.newIndex - 1] as Item | undefined;
 					const after = group.items[event.added.newIndex] as Item | undefined;
 
-					if (item.sort !== undefined) {
+					if (item.sort !== undefined && sortField.value) {
 						if (after?.sort !== undefined && after.sort < item.sort) {
 							await changeManualSort({ item: item.id, to: after.id });
 						} else if (before?.sort !== undefined && before.sort > item.sort) {

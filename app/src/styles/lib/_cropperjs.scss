@@ -54,8 +54,8 @@
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	outline: 1px solid var(--primary);
-	outline-color: var(--primary-50);
+	outline: 1px solid var(--theme--primary);
+	outline-color: var(--theme--primary-subdued);
 }
 
 .cropper-dashed {
@@ -99,7 +99,7 @@
 .cropper-center::after {
 	position: absolute;
 	display: block;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	content: ' ';
 }
 
@@ -233,7 +233,7 @@
 	display: block;
 	width: 200%;
 	height: 200%;
-	background-color: var(--primary);
+	background-color: var(--theme--primary);
 	opacity: 0;
 	content: ' ';
 }

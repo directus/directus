@@ -7,6 +7,9 @@ duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
 full_width: Pilno pločio
 group: Grupė
+extension_interface: Sąsaja
+extension_display: Rodymas
+extension_layout: Išdėstymas
 fill_width: Užpildyti visą plotį
 field_name_translations: Laukų pavadinimų vertimai
 enter_password_to_enable_tfa: Norint įjungti dviejų veiksmų autentifikavimą, reikia įvesti savo slaptažodį
@@ -49,13 +52,6 @@ logoutReason:
   SESSION_EXPIRED: Sesijos laikas baigėsi
 public_description: Nustato kokie API duomenys yra prieinami neprisijungus.
 not_allowed: Neleidžiama
-directus_version: Directus versija
-node_version: Serverio versija
-node_uptime: Serverio veikimo laikas
-os_type: OS tipas
-os_version: OS versija
-os_uptime: OS veikimo laikas
-os_totalmem: OS atmintis
 archive: Archyvuoti
 archive_confirm: Ar tikrai norite archyvuoti šį elementą?
 archive_confirm_count: >-
@@ -242,6 +238,7 @@ move: Perkelti
 system: Sistema
 add_field_related: Pridėti lauką į susijusią kolekciją
 interface_label: Sąsaja
+display_label: Rodymas
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
@@ -273,7 +270,6 @@ dimensions: Matmenys
 size: Dydis
 created: Sukurta
 modified: Modifikuota
-checksum: Kontrolinė suma
 owner: Savininkas
 edited_by: Redaguota
 folder: Aplankas
@@ -309,10 +305,8 @@ save_as_copy: Išsaugoti kaip kopiją
 add_existing: Pridėti esamą
 comments: Komentarai
 no_comments: Dar nėra komentarų
-click_to_expand: Išskleiskite
 select_item: Pasirinkti elementą
 no_items: Nėra elementų
-search_items: Ieškoti elementų...
 disabled: Išjungta
 information: Informacija
 report_bug: Pranešti apie klaidą
@@ -565,10 +559,10 @@ editing_in: 'Redaguojamas elementas kolekcijoje: {collection}'
 editing_in_batch: 'Redaguojami {count} elementai'
 no_options_available: Nėra parinkčių
 settings_data_model: Duomenų modelis
-settings_permissions: Grupės ir leidimai
-settings_project: Projekto nustatymai
+settings_project: Nustatymai
 settings_webhooks: '„Webhook“''ai'
-settings_presets: Ruošiniai ir žymos
+settings_presets: Žymės
+settings_translations: Vertimai
 scope: Apimtis
 layout: Išdėstymas
 changes_are_permanent: Pakeitimai neatstatomi
@@ -591,7 +585,6 @@ page_help_files_collection: >-
   ***Failų biblioteka** — rodomi visi projekto failai. Koreguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_files_item: >-
   **Failo duomenys** — forma failo meta duomenų tvarkymui, originalaus failo redagavimui ir prieigos nustatymų atnaujinimui.
-page_help_settings_project: "**Projekto nustatymai** — globali projekto konfigūracija."
 page_help_settings_datamodel_collections: >-
   **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
 page_help_settings_datamodel_fields: >-
@@ -669,7 +662,6 @@ fields:
     description: Aprašymas
     tags: Žymos
     language: Kalba
-    theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
     status: Būsena
     status_active: Aktyvus
@@ -747,6 +739,8 @@ save_current_datetime: Išsaugoti dabartinį datą/laiką
 block: Blokas
 inline: Toje pačioje eilutėje
 comment: Komentaras
+live_preview:
+  new_window: Atversti naujame lange
 editing_role: '{role} grupė'
 creating_webhook: Kuriamas Webhook'ą
 delete_are_you_sure: >-
@@ -853,14 +847,14 @@ interfaces:
     image: Paveikslėlis
   system-interface:
     interface: Sąsaja
+  system-display:
+    display: Rodymas
   select-dropdown-m2o:
     display_template: Rodymo šablonas
   input-rich-text-md:
     edit: Redaguoti
   map:
     zoom: Padidinti
-  system-folder:
-    folder: Aplankas
   list:
     sort: Rūšiuoti
   tags:
@@ -891,6 +885,13 @@ interfaces:
       auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
+  input-block-editor:
+    tools_options:
+      embed: Įterptas
+      code: Kodas
+      image: Paveikslėlis
+      table: Lentelė
+      underline: Pabrauktas
 displays:
   translations:
     translations: Vertimai
@@ -984,9 +985,18 @@ panels:
   label:
     name: Žyma
 operations:
+  json-web-token:
+    options: Parinktys
   mail:
     template: Šablonas
   notification:
     recipient: Vartotojas
   request:
     url: URL
+standard: Standartinis
+compact: Kompaktiškas
+fonts:
+  normal: Normalus
+  bold: Paryškintas
+  italic: Pasviręs
+  auto: Automatiškai

@@ -12,17 +12,15 @@ import type {
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
+import { customAlphabet } from 'nanoid/non-secure';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
-import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import { InvalidQueryError } from '@directus/errors';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { stripFunction } from './strip-function.js';
-
-// @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -52,7 +50,7 @@ export default function applyQuery(
 	}
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
-		const sortResult = applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
+		const sortResult = applySort(knex, schema, dbQuery, query, collection, aliasMap);
 
 		if (!hasJoins) {
 			hasJoins = sortResult.hasJoins;
@@ -179,9 +177,9 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				const pathScope = pathParts[0]!.split(':')[1];
 
 				if (!pathScope) {
-					throw new InvalidQueryException(
-						`You have to provide a collection scope when sorting or filtering on a many-to-any item`
-					);
+					throw new InvalidQueryError({
+						reason: `You have to provide a collection scope when sorting or filtering on a many-to-any item`,
+					});
 				}
 
 				rootQuery.leftJoin({ [alias]: pathScope }, (joinClause) => {
@@ -240,9 +238,9 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 			const pathScope = pathParts[0]!.split(':')[1];
 
 			if (!pathScope) {
-				throw new InvalidQueryException(
-					`You have to provide a collection scope when sorting or filtering on a many-to-any item`
-				);
+				throw new InvalidQueryError({
+					reason: `You have to provide a collection scope when sorting or filtering on a many-to-any item`,
+				});
 			}
 
 			parent = pathScope;
@@ -262,11 +260,13 @@ export function applySort(
 	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
-	rootSort: string[],
+	query: Query,
 	collection: string,
 	aliasMap: AliasMap,
 	returnRecords = false
 ) {
+	const rootSort = query.sort!;
+	const aggregate = query?.aggregate;
 	const relations: Relation[] = schema.relations;
 	let hasJoins = false;
 	let hasMultiRelationalSort = false;
@@ -281,6 +281,37 @@ export function applySort(
 
 		if (column[0]!.startsWith('-')) {
 			column[0] = column[0]!.substring(1);
+		}
+
+		// Is the column name one of the aggregate functions used in the query if there is any?
+		if (Object.keys(aggregate ?? {}).includes(column[0]!)) {
+			// If so, return the column name without the order prefix
+			const operation = column[0]!;
+
+			// Get the field for the aggregate function
+			const field = column[1]!;
+
+			// If the operation is countAll there is no field.
+			if (operation === 'countAll') {
+				return {
+					order,
+					column: 'countAll',
+				};
+			}
+
+			// If the operation is a root count there is no field.
+			if (operation === 'count' && (field === '*' || !field)) {
+				return {
+					order,
+					column: 'count',
+				};
+			}
+
+			// Return the column name with the operation and field name
+			return {
+				order,
+				column: returnRecords ? column[0] : `${operation}->${field}`,
+			};
 		}
 
 		if (column.length === 1) {
@@ -488,11 +519,11 @@ export function applyFilter(
 				}
 
 				if (filterPath.includes('_none') || filterPath.includes('_some')) {
-					throw new InvalidQueryException(
-						`"${
+					throw new InvalidQueryError({
+						reason: `"${
 							filterPath.includes('_none') ? '_none' : '_some'
-						}" can only be used with top level relational alias field`
-					);
+						}" can only be used with top level relational alias field`,
+					});
 				}
 
 				const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
@@ -533,7 +564,7 @@ export function applyFilter(
 
 		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
 			if (fields[key] === undefined) {
-				throw new InvalidQueryException(`Invalid filter key "${key}" on "${collection}"`);
+				throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
 			}
 
 			return fields[key];
@@ -545,18 +576,18 @@ export function applyFilter(
 			}
 
 			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
-				throw new InvalidQueryException(
-					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
-				);
+				throw new InvalidQueryError({
+					reason: `"${type}" field type does not contain the "_${filterOperator}" filter operator`,
+				});
 			}
 
 			if (
 				special.includes('conceal') &&
 				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
 			) {
-				throw new InvalidQueryException(
-					`Field with "conceal" special does not allow the "_${filterOperator}" filter operator`
-				);
+				throw new InvalidQueryError({
+					reason: `Field with "conceal" special does not allow the "_${filterOperator}" filter operator`,
+				});
 			}
 		}
 
@@ -576,21 +607,21 @@ export function applyFilter(
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
-			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
+			if ((operator === '_null' && compareValue !== false) || (operator === '_nnull' && compareValue === false)) {
 				dbQuery[logical].whereNull(selectionRaw);
 			}
 
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+			if ((operator === '_nnull' && compareValue !== false) || (operator === '_null' && compareValue === false)) {
 				dbQuery[logical].whereNotNull(selectionRaw);
 			}
 
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+			if ((operator === '_empty' && compareValue !== false) || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNull(key).orWhere(key, '=', '');
 				});
 			}
 
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+			if ((operator === '_nempty' && compareValue !== false) || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNotNull(key).andWhere(key, '!=', '');
 				});

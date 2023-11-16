@@ -1,87 +1,3 @@
-<template>
-	<div class="repeater">
-		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
-			{{ placeholder }}
-		</v-notice>
-		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
-			<p>{{ t('interfaces.list.incompatible_data') }}</p>
-		</v-notice>
-
-		<v-list v-if="Array.isArray(internalValue) && internalValue.length > 0">
-			<draggable
-				:disabled="disabled"
-				:force-fallback="true"
-				:model-value="internalValue"
-				item-key="id"
-				handle=".drag-handle"
-				@update:model-value="$emit('input', $event)"
-			>
-				<template #item="{ element, index }">
-					<v-list-item :dense="internalValue.length > 4" block @click="openItem(index)">
-						<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-						<render-template
-							:fields="fields"
-							:item="{ ...defaults, ...element }"
-							:direction="direction"
-							:template="templateWithDefaults"
-						/>
-						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
-		<v-button v-if="showAddNew" class="add-new" @click="addNew">
-			{{ addLabel }}
-		</v-button>
-
-		<v-drawer
-			:model-value="drawerOpen"
-			:title="displayValue || headerPlaceholder"
-			persistent
-			@update:model-value="checkDiscard()"
-			@cancel="checkDiscard()"
-		>
-			<template #title>
-				<h1 class="type-title">
-					<render-template :fields="fields" :item="activeItem" :template="templateWithDefaults" />
-				</h1>
-			</template>
-
-			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-
-			<div class="drawer-item-content">
-				<v-form
-					:disabled="disabled"
-					:fields="fieldsWithNames"
-					:model-value="activeItem"
-					:direction="direction"
-					autofocus
-					primary-key="+"
-					@update:model-value="trackEdits($event)"
-				/>
-			</div>
-		</v-drawer>
-
-		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave()">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmDiscard = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -288,6 +204,90 @@ function closeDrawer() {
 	active.value = null;
 }
 </script>
+
+<template>
+	<div class="repeater">
+		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
+			{{ placeholder }}
+		</v-notice>
+		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
+			<p>{{ t('interfaces.list.incompatible_data') }}</p>
+		</v-notice>
+
+		<v-list v-if="Array.isArray(internalValue) && internalValue.length > 0">
+			<draggable
+				:disabled="disabled"
+				force-fallback
+				:model-value="internalValue"
+				item-key="id"
+				handle=".drag-handle"
+				@update:model-value="$emit('input', $event)"
+			>
+				<template #item="{ element, index }">
+					<v-list-item :dense="internalValue.length > 4" block @click="openItem(index)">
+						<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<render-template
+							:fields="fields"
+							:item="{ ...defaults, ...element }"
+							:direction="direction"
+							:template="templateWithDefaults"
+						/>
+						<div class="spacer" />
+						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
+		<v-button v-if="showAddNew" class="add-new" @click="addNew">
+			{{ addLabel }}
+		</v-button>
+
+		<v-drawer
+			:model-value="drawerOpen"
+			:title="displayValue || headerPlaceholder"
+			persistent
+			@update:model-value="checkDiscard()"
+			@cancel="checkDiscard()"
+		>
+			<template #title>
+				<h1 class="type-title">
+					<render-template :fields="fields" :item="activeItem" :template="templateWithDefaults" />
+				</h1>
+			</template>
+
+			<template #actions>
+				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<div class="drawer-item-content">
+				<v-form
+					:disabled="disabled"
+					:fields="fieldsWithNames"
+					:model-value="activeItem"
+					:direction="direction"
+					autofocus
+					primary-key="+"
+					@update:model-value="trackEdits($event)"
+				/>
+			</div>
+		</v-drawer>
+
+		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave()">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmDiscard = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-notice {

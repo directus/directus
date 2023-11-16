@@ -52,6 +52,9 @@ or: या
 init: इसमें
 dataset_too_large_currently_showing_n_items: डेटासेट बहुत बड़ा है। पहले {n} आइटम दिखा रहा है।
 modifier: संशोधक
+extension_display: दिखाएँ
+extension_hook: हुक
+extension_modules: मॉड्यूल
 custom: निजीकृत
 hook: हुक
 fill_width: संपूर्ण चौड़ाई
@@ -80,14 +83,6 @@ create_user: यूजर बनाएं
 message: संदेश
 delete_panel: पैनल हटाएं
 create_webhook: Webhook बनाएं
-create_translation_string: अनुवाद स्ट्रिंग बनाएं
-no_translation_string: कोई अनुवाद स्ट्रिंग नहीं
-no_translation_string_copy: अभी तक कोई अनुवाद स्ट्रिंग नहीं है।
-translation_string_key_placeholder: अनुवाद स्ट्रिंग कुंजी...
-translation_string_translations_placeholder: नया अनुवाद जोड़ें
-edit_translation_string: अनुवाद स्ट्रिंग संपादित करें
-delete_translation_string_copy: >-
-  क्या आप वाकई अनुवाद स्ट्रिंग "{key}" को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
@@ -118,13 +113,6 @@ public_label: सार्वजनिक
 public_description: यह नियंत्रित करता है कि authentication के बिना कौन सा API डेटा उपलब्ध है
 admin_description: अप्रतिबंधित ऐप/एपीआई एक्सेस के साथ प्रारंभिक प्रशासनिक भूमिका।
 not_allowed: अनुमति नहीं हैं
-directus_version: Directus वर्शन
-node_version: Node वर्शन
-node_uptime: Node उप टाइम
-os_type: OS टाइप
-os_version: OS वर्शन
-os_uptime: OS उप टाइम
-os_totalmem: OS मेमोरी
 archive: आर्काइव
 archive_confirm: क्या आप वाकई इस आइटम को आर्काइव करना चाहते हैं?
 archive_confirm_count: >-
@@ -303,7 +291,7 @@ revision_delta_reverted: पहले जैसा करें
 revision_delta_update_message: इस फ़ील्ड को अपडेट कर दिया गया है लेकिन सुरक्षा कारणों से इसके मूल्य को छुपाया जा रहा है।
 revision_delta_other: संशोधन
 revision_delta_by: '{user} द्वारा {date} '
-presentation_text_values_cannot_be_reimported: "प्रस्तुति पाठ का उपयोग करता है, मूल्यों को फिर से आयात नहीं किया जा सकता है।"
+presentation_text_values_cannot_be_reimported: 'प्रस्तुति पाठ का उपयोग करता है, मूल्यों को फिर से आयात नहीं किया जा सकता है।'
 download_page_as_csv: 'CSV के रूप में डाउनलोड करें'
 private_user: निजी उपयोगकर्ता
 creation_preview: निर्माण पूर्वावलोकन
@@ -314,6 +302,7 @@ format: प्रारूप
 submit: दर्ज करें
 system: प्रणाली
 interface_label: इंटरफ़ेस
+display_label: दिखाएँ
 today: आज
 yesterday: बीता कल
 delete_comment: टिप्पणी हटाएँ
@@ -356,7 +345,6 @@ dimensions: आयाम
 size: साइज़
 created: बनाया गया
 modified: संशोधन का समय
-checksum: चेकसम
 owner: मालिक
 edited_by: द्वारा संपादित
 folder: फ़ोल्डर
@@ -371,10 +359,8 @@ choose_from_library: पुस्तकालय से चुनें
 name: नाम
 comments: टिप्पणियाँ
 no_comments: अभी तक कोई टिप्पणी नहीं
-click_to_expand: फ़ैलाने के लिए यहाँ क्लिक करें
 select_item: आइटम का चयन करें
 no_items: कोई आइटम नहीं
-search_items: आइटम्स खोजें
 disabled: निष्क्रिय
 information: जानकारी
 report_bug: बग रिपोर्ट करें
@@ -430,6 +416,7 @@ wysiwyg_options:
   backcolor: पृष्ठभूमि रंग
   selectall: सभी चुनें
 settings_webhooks: Webhooks
+settings_presets: पृष्टस्मृतियाँ
 fields:
   directus_collections:
     note: ध्यान दें
@@ -470,6 +457,8 @@ field_options:
   directus_webhooks:
     actions_create: Create
     actions_update: Update
+live_preview:
+  new_window: नए विंडो में खोलें
 interfaces:
   presentation-links:
     primary: प्राइमरी
@@ -481,10 +470,10 @@ interfaces:
     choices_value_placeholder: एक मान दर्ज करें...
   input-hash:
     hash: Hash
+  system-display:
+    display: दिखाएँ
   map:
     zoom: छोटा-बड़ा करें
-  system-folder:
-    folder: फ़ोल्डर
   list:
     sort: सॉर्ट
   boolean:
@@ -524,5 +513,7 @@ operations:
   notification:
     recipient: यूज़र
     message: संदेश
+    subject: विषय
   request:
     url: URL
+standard: नार्मल फील्ड

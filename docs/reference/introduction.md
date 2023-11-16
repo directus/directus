@@ -37,10 +37,10 @@ Useful references:
 
 ## Relational Data
 
-Directus only retrieves the fields in your items that explicitly have been requested. Relational data can be retrieved
-nested by using [the `fields` parameter](/reference/query#fields) in REST, or regular nested queries in GraphQL. This
-allows you to retrieve the author of your article included in the articles data, or fetch related log entry points for
-your app's analytics data for example.
+By default, Directus only retrieves the reference value of a relational field in your items. To also retrieve _nested_
+data of a relational field [the `fields` parameter](/reference/query#fields) in REST can be used, or regular nested
+queries in GraphQL. This allows you to retrieve the author of your article included in the articles data, or fetch
+related log entry points for your app's analytics data for example.
 
 ### Creating / Updating / Deleting
 
@@ -223,7 +223,7 @@ GET /items/articles?filter[title][_eq]=Hello World
 
 **After:**
 
-```json
+```http
 SEARCH /items/articles
 
 {
@@ -280,7 +280,7 @@ Below are the global error codes used within Directus, and what they mean.
 | `REQUESTS_EXCEEDED`      | 429         | Hit the rate limit                                              |
 | `ROUTE_NOT_FOUND`        | 404         | Endpoint does not exist                                         |
 | `SERVICE_UNAVAILABLE`    | 503         | Could not use external service                                  |
-| `UNPROCESSABLE_ENTITY`   | 422         | You tried doing something illegal                               |
+| `UNPROCESSABLE_CONTENT`  | 422         | You tried doing something illegal                               |
 
 ::: warning Security
 

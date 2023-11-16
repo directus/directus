@@ -42,6 +42,8 @@ full_width: Full Breidd
 group: Bólkur
 and: Og
 or: Ella
+extension_interface: Takførisflati
+extension_modules: Modulir
 fill_width: Fyll Breiddina
 field_name_translations: Navna Teiga Umsetingar
 enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (2FA)
@@ -93,13 +95,6 @@ logoutReason:
 public_label: Alment
 public_description: Stýrir hvat API dáta til taks uttan samgildi.
 not_allowed: Ikki loyvt
-directus_version: Directus Útgáva
-node_version: Node Útgáva
-node_uptime: Node Nýtslutíð
-os_type: OS Slag
-os_version: OS Útgáva
-os_uptime: OS Nýtslutíð
-os_totalmem: OS Minni
 archive: Skjalasavna
 archive_confirm: Ert tú vísur í at tú vilt skjalasavna hendan lutin?
 archive_confirm_count: >-
@@ -123,8 +118,6 @@ directus_collection:
   directus_roles: Bólkar av loyvum fyri kervisbrúkarum
   directus_users: Kervisbrúkarir til verkætlanina
 fields:
-  directus_users:
-    theme_auto: Sjálvvirkin (Grunda á Kervi)
   directus_settings:
     module_bar: Modul Bjálki
   directus_fields:
@@ -160,10 +153,11 @@ interfaces:
   system-interface-options:
     interface-options: Takførisflatastillingar
   system-folder:
-    folder: Faldari
     description: Vel ein faldara
     root_name: Fílasavns Rót
     system_default: Grundkervi
+  list:
+    interface_group: Takførisflatastillingar
   input-rich-text-html:
     folder_note: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
 displays:
@@ -172,3 +166,6 @@ displays:
   formatted-value:
     prefix: Forskoyti
     suffix: Eftirskoyti
+operations:
+  notification:
+    subject: Evni

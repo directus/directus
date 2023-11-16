@@ -1,3 +1,37 @@
+<script setup lang="ts">
+import { useSync } from '@directus/composables';
+import type { Permission, Role } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	permission: Permission;
+	role?: Role;
+	appMinimal?: Permission['permissions'];
+}>();
+
+const emit = defineEmits(['update:permission']);
+
+const { t } = useI18n();
+
+const permissionSync = useSync(props, 'permission', emit);
+
+const fields = computed(() => [
+	{
+		field: 'permissions',
+		name: t('rule'),
+		type: 'json',
+		meta: {
+			interface: 'system-filter',
+			options: {
+				collectionName: permissionSync.value.collection,
+				rawFieldNames: true,
+			},
+		},
+	},
+]);
+</script>
+
 <template>
 	<div>
 		<v-notice type="info">
@@ -19,39 +53,6 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useSync } from '@directus/composables';
-import { Permission, Role } from '@directus/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const props = defineProps<{
-	permission: Permission;
-	role?: Role;
-	appMinimal?: Partial<Permission>;
-}>();
-
-const emit = defineEmits(['update:permission']);
-
-const { t } = useI18n();
-
-const permissionSync = useSync(props, 'permission', emit);
-
-const fields = computed(() => [
-	{
-		field: 'permissions',
-		name: t('rule'),
-		type: 'json',
-		meta: {
-			interface: 'system-filter',
-			options: {
-				collectionName: permissionSync.value.collection,
-			},
-		},
-	},
-]);
-</script>
-
 <style lang="scss" scoped>
 .v-notice {
 	margin-bottom: 36px;
@@ -68,9 +69,9 @@ const fields = computed(() => [
 
 	.app-minimal-preview {
 		padding: 16px;
-		font-family: var(--family-monospace);
-		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		font-family: var(--theme--font-family-monospace);
+		background-color: var(--theme--background-subdued);
+		border-radius: var(--theme--border-radius);
 	}
 }
 </style>

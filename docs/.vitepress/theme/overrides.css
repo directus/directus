@@ -1,32 +1,29 @@
 /**
- * Border thickness to 2px where appropriate
- * -------------------------------------------------------------------------- */
-.vp-doc h2,
-.vp-doc .custom-block,
-.VPSidebar .group + .group,
-.VPNavBarTitle.has-sidebar,
-.VPDocAside .VPDocAsideOutline .content {
-	border-width: 2px;
-}
-
-.VPDocAside .VPDocAsideOutline .outline-marker {
-	width: 2px;
-	left: -2px;
-}
-
-.menu + .translations::before,
-.menu + .appearance::before,
-.menu + .social-links::before,
-.translations + .appearance::before,
-.appearance + .social-links::before {
-	width: 2px !important;
+- * Make logo size of the sidebar
++ * Switch to mobile navbar earlier to prevent overlapping page
+  * -------------------------------------------------------------------------- */
+@media only screen and (min-width: 390px) {
+	.VPNav .VPNavBar .VPNavBarTitle .logo {
+		height: unset;
+	}
 }
 
 /**
- * Make logo size of the sidebar
+ * Switch to mobile navbar earlier to prevent overlapping page
  * -------------------------------------------------------------------------- */
-.VPNav .VPNavBar .VPNavBarTitle .logo {
-	height: unset;
+@media (max-width: 959px) {
+	.VPNav .VPNavBar .VPNavBarMenu,
+	.VPNav .VPNavBar .VPNavBarExtra {
+		display: none;
+	}
+
+	.VPNav .VPNavBar .VPNavBarHamburger {
+		display: flex;
+	}
+
+	.VPNav .VPNavScreen {
+		display: unset;
+	}
 }
 
 /**
@@ -35,8 +32,8 @@
 .vp-doc img,
 .vp-doc video {
 	border-radius: 8px;
-	border: 2px solid var(--vp-custom-block-tip-border);
 	width: 100%;
+	box-shadow: 0px 0px 6px 0px rgba(23, 41, 64, 0.2);
 }
 
 /**
@@ -56,4 +53,56 @@
  * -------------------------------------------------------------------------- */
 #hubspot-messages-iframe-container {
 	color-scheme: auto;
+}
+
+/**
+ * Fix spacing of lists in custom blocks
+ * -------------------------------------------------------------------------- */
+.vp-doc .custom-block li + li {
+	margin: 0;
+}
+
+/**
+ * Same font weight for links inside custom blocks as outside
+ * -------------------------------------------------------------------------- */
+.vp-doc .custom-block a {
+	font-weight: 500;
+}
+
+/**
+ * Remove padding on bottom of homepage
+ * -------------------------------------------------------------------------- */
+.VPHome {
+	padding-bottom: 0 !important;
+}
+
+/**
+ * Add spacing between h3 and snippet toggler for "API Reference" pages
+ * -------------------------------------------------------------------------- */
+.vp-doc h3 + .snippet-toggler {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+/**
+* Reduce spacing at bottom of sidebar section
+* -------------------------------------------------------------------------- */
+.VPSidebarItem.level-0 {
+	padding-bottom: 10px !important;
+}
+
+/**
+* Light theme for tabs component
+* -------------------------------------------------------------------------- */
+:root {
+	--vp-plugin-tabs-tab-bg: transparent;
+}
+.plugin-tabs {
+	border: 1px solid var(--vp-plugin-tabs-tab-divider);
+}
+.plugin-tabs--tab-list::after {
+	height: 1px;
+}
+.plugin-tabs--tab {
+	border-width: 1px;
 }

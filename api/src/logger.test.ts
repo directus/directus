@@ -1,25 +1,21 @@
-import { REDACTED_TEXT } from '@directus/constants';
+import { REDACTED_TEXT } from '@directus/utils';
 import { Writable } from 'node:stream';
 import { pino } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { doMockEnv } from './__utils__/mock-env.js';
 
 const REFRESH_TOKEN_COOKIE_NAME = 'directus_refresh_token';
 
-vi.doMock('./env', async () => {
-	const MOCK_ENV = {
-		AUTH_PROVIDERS: 'ranger,monospace',
-		AUTH_RANGER_DRIVER: 'oauth2',
-		AUTH_MONOSPACE_DRIVER: 'openid',
-		REFRESH_TOKEN_COOKIE_NAME,
-		LOG_LEVEL: 'info',
-		LOG_STYLE: 'raw',
-	};
+const MOCK_ENV = {
+	AUTH_PROVIDERS: 'ranger,monospace',
+	AUTH_RANGER_DRIVER: 'oauth2',
+	AUTH_MONOSPACE_DRIVER: 'openid',
+	REFRESH_TOKEN_COOKIE_NAME,
+	LOG_LEVEL: 'info',
+	LOG_STYLE: 'raw',
+};
 
-	return {
-		default: MOCK_ENV,
-		getEnv: () => MOCK_ENV,
-	};
-});
+doMockEnv({ env: MOCK_ENV });
 
 const { httpLoggerOptions } = await import('./logger.js');
 

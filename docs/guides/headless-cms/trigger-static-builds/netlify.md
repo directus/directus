@@ -2,26 +2,13 @@
 description:
   This recipe explains how to trigger a new build of your static website (hosted at Netlify) whenever a new article is
   published.
-tags: []
-skill_level:
 directus_version: 9.21.2
-author_override:
 author: Bryant Gillespie
 ---
 
 # Triggering Static Site Builds with Netlify
 
-> {{ $frontmatter.description }}
-
-:::tip Author: {{$frontmatter.author}}
-
-<!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
-
-**Directus Version:** {{$frontmatter.directus_version}}
-
-<!-- **Tags:** {{$frontmatter.tags.join(", ")}} -->
-
-:::
+<GuideMeta />
 
 ## Explanation
 
@@ -35,13 +22,9 @@ requested.
 This recipe will show you how to trigger a new deployment or build for your site when new content is published or when
 existing content changes.
 
-<!-- ## Video -->
-<!-- Todo -->
-<!-- Need access to upload videos first -->
-
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have already created a collection for your site content like `articles` or `posts` or `pages` with a
 field `status` that controls the published state. You'll also need to have a Netlify account and a site already hosted
@@ -100,7 +83,7 @@ with them.
 
 ### Configure Netlify Build Hook
 
-:::tip
+::: tip
 
 You can learn more about Netlify Build Hooks on their documentation.
 

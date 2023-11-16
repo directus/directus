@@ -1,5 +1,5 @@
-import { NOTICE_TYPE, REPO, VERSIONS_TITLE } from '../constants';
-import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types';
+import config from '../config.js';
+import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types.js';
 
 type Section = Type & { notices: Notice[] };
 
@@ -12,8 +12,10 @@ export function generateMarkdown(
 	// Generate sections out of types and include notices
 	let foundNoticeSection = false;
 
+	const noticeTypeTitle = config.typedTitles[config.noticeType];
+
 	let sections: Section[] = types.map((type) => {
-		if (type.title === NOTICE_TYPE) {
+		if (type.title === noticeTypeTitle) {
 			foundNoticeSection = true;
 			return { title: type.title, packages: type.packages, notices };
 		}
@@ -22,7 +24,7 @@ export function generateMarkdown(
 	});
 
 	if (notices.length > 0 && !foundNoticeSection) {
-		sections = [{ title: NOTICE_TYPE, packages: [], notices }, ...sections];
+		sections = [{ title: noticeTypeTitle, packages: [], notices }, ...sections];
 	}
 
 	const output = [];
@@ -64,7 +66,7 @@ function formatSections(sections: Section[]): string {
 
 function formatNotices(notices: Notice[]): string {
 	const output = notices.map((notice) => {
-		let lines = `**${formatChange(notice.change, false)}**\n`;
+		let lines = `**${formatChange(notice.change, true)}**\n`;
 		return (lines += `${notice.notice}`);
 	});
 
@@ -79,7 +81,12 @@ function formatPackages(packages: Package[]): string {
 			lines += `- **${name}**\n`;
 
 			lines += formatChanges(changes)
-				.map((change) => `  ${change}`)
+				.map((change) =>
+					change
+						.split('\n')
+						.map((line) => `  ${line}`)
+						.join('\n')
+				)
 				.join('\n');
 		}
 
@@ -107,10 +114,22 @@ function formatUntypedPackages(untypedPackages: UntypedPackage[]): string {
 }
 
 function formatChanges(changes: Change[]): string[] {
-	return changes.map((change) => `- ${formatChange(change)}`);
+	return changes.map((change) => {
+		const lines = [];
+
+		const [firstLine, ...remainingLines] = formatChange(change).split('\n');
+
+		lines.push(`- ${firstLine}`);
+
+		if (remainingLines.length > 0) {
+			lines.push(...remainingLines.map((line) => `  ${line}`));
+		}
+
+		return lines.join('\n');
+	});
 }
 
-function formatChange(change: Change, includeUser = true): string {
+function formatChange(change: Change, short?: boolean): string {
 	let refUser = '';
 	const refUserContent = [];
 
@@ -119,10 +138,10 @@ function formatChange(change: Change, includeUser = true): string {
 	} else if (change.githubInfo?.links.commit) {
 		refUserContent.push(change.githubInfo.links.commit);
 	} else if (change.commit) {
-		refUserContent.push(`[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`);
+		refUserContent.push(`[${change.commit}](https://github.com/${config.repo}/commit/${change.commit})`);
 	}
 
-	if (includeUser && change.githubInfo?.user) {
+	if (!short && change.githubInfo?.user) {
 		refUserContent.push(`by @${change.githubInfo.user}`);
 	}
 
@@ -132,14 +151,19 @@ function formatChange(change: Change, includeUser = true): string {
 		refUser += ')';
 	}
 
-	return `${change.summary}${refUser}`;
+	const [firstSummaryLine, ...remainingSummaryLines] = change.summary.split('\n');
+
+	const title = short && remainingSummaryLines.length > 0 ? `${firstSummaryLine}...` : firstSummaryLine;
+	const additionalLines = !short && remainingSummaryLines.length > 0 ? `\n${remainingSummaryLines.join('\n')}` : '';
+
+	return `${title}${refUser}${additionalLines}`;
 }
 
 function formatPackageVersions(packageVersions: PackageVersion[]): string {
 	let lines = '';
 
 	if (packageVersions.length > 0) {
-		lines += `### ${VERSIONS_TITLE}\n`;
+		lines += `### ${config.versionTitle}\n`;
 	}
 
 	for (const { name, version } of packageVersions) {

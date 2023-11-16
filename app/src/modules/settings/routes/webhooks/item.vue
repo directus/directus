@@ -1,93 +1,3 @@
-<template>
-	<private-view :title="title">
-		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_webhooks'), to: '/settings/webhooks' }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
-		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
-				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
-						<v-icon name="delete" />
-					</v-button>
-				</template>
-
-				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
-
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit">
-				<v-icon name="check" />
-
-				<template #append-outer>
-					<save-options
-						v-if="hasEdits === true"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
-						@save-as-copy="saveAsCopyAndNavigate"
-						@discard-and-stay="discardAndStay"
-					/>
-				</template>
-			</v-button>
-		</template>
-
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<v-form
-			v-model="edits"
-			:loading="loading"
-			:initial-values="item"
-			collection="directus_webhooks"
-			:batch-mode="isBatch"
-			:primary-key="primaryKey"
-			:validation-errors="validationErrors"
-		/>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
-			</sidebar-detail>
-			<revisions-drawer-detail
-				v-if="isNew === false"
-				ref="revisionsDrawerDetailRef"
-				collection="directus_webhooks"
-				:primary-key="primaryKey"
-			/>
-		</template>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
-</template>
-
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
@@ -111,8 +21,10 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, isBatch, validationErrors } =
-	useItem(ref('directus_webhooks'), primaryKey);
+const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, validationErrors } = useItem(
+	ref('directus_webhooks'),
+	primaryKey
+);
 
 const confirmDelete = ref(false);
 
@@ -171,12 +83,101 @@ function discardAndStay() {
 }
 </script>
 
+<template>
+	<private-view :title="title">
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings_webhooks'), to: '/settings/webhooks' }]" />
+		</template>
+
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
+				<v-icon name="arrow_back" />
+			</v-button>
+		</template>
+
+		<template #actions>
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+				<template #activator="{ on }">
+					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
+						<v-icon name="delete" />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
+							{{ t('delete_label') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
+
+			<v-button rounded icon :loading="saving" :disabled="hasEdits === false" @click="saveAndQuit">
+				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						v-if="hasEdits === true"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@save-as-copy="saveAsCopyAndNavigate"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
+			</v-button>
+		</template>
+
+		<template #navigation>
+			<settings-navigation />
+		</template>
+
+		<v-form
+			v-model="edits"
+			:loading="loading"
+			:initial-values="item"
+			collection="directus_webhooks"
+			:primary-key="primaryKey"
+			:validation-errors="validationErrors"
+		/>
+
+		<template #sidebar>
+			<sidebar-detail icon="info" :title="t('information')" close>
+				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
+			</sidebar-detail>
+			<revisions-drawer-detail
+				v-if="isNew === false"
+				ref="revisionsDrawerDetailRef"
+				collection="directus_webhooks"
+				:primary-key="primaryKey"
+			/>
+		</template>
+
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+			<v-card>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="discardAndLeave">
+						{{ t('discard_changes') }}
+					</v-button>
+					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</private-view>
+</template>
+
 <style lang="scss" scoped>
 .action-delete {
 	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
+	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-color-hover: var(--theme--danger);
 }
 
 .v-form {
@@ -185,9 +186,9 @@ function discardAndStay() {
 }
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 </style>

@@ -1,22 +1,14 @@
-import { Action, REDACTED_TEXT } from '@directus/constants';
-import * as sharedExceptions from '@directus/exceptions';
-import type {
-	Accountability,
-	ActionHandler,
-	FilterHandler,
-	Flow,
-	Operation,
-	OperationHandler,
-	SchemaOverview,
-} from '@directus/types';
-import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
+import { Action } from '@directus/constants';
+import type { OperationHandler } from '@directus/extensions';
+import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
+import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import * as exceptions from './exceptions/index.js';
+import { ForbiddenError } from '@directus/errors';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -28,7 +20,7 @@ import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
-import { redact } from './utils/redact.js';
+import { redactObject } from './utils/redact-object.js';
 import { sanitizeError } from './utils/sanitize-error.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -57,16 +49,18 @@ const ENV_KEY = '$env';
 class FlowManager {
 	private isLoaded = false;
 
-	private operations: Record<string, OperationHandler> = {};
+	private operations: Map<string, OperationHandler> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
 	private reloadQueue: JobQueue;
+	private envs: Record<string, any>;
 
 	constructor() {
 		this.reloadQueue = new JobQueue();
+		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'])) : {};
 
 		const messenger = getMessenger();
 
@@ -97,11 +91,11 @@ class FlowManager {
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
-		this.operations[id] = operation;
+		this.operations.set(id, operation);
 	}
 
-	public clearOperations(): void {
-		this.operations = {};
+	public removeOperation(id: string): void {
+		this.operations.delete(id);
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
@@ -122,7 +116,7 @@ class FlowManager {
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
-			throw new exceptions.ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const handler = this.webhookFlowHandlers[id];
@@ -246,17 +240,17 @@ class FlowManager {
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (enabledCollections.length === 0) {
 						logger.warn(`There is no collections configured for this manual trigger`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (!enabledCollections.includes(targetCollection)) {
 						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (flow.options['async']) {
@@ -309,7 +303,7 @@ class FlowManager {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
 			[ACCOUNTABILITY_KEY]: context?.['accountability'] ?? null,
-			[ENV_KEY]: pick(env, env['FLOWS_ENV_ALLOW_LIST'] ? toArray(env['FLOWS_ENV_ALLOW_LIST']) : []),
+			[ENV_KEY]: this.envs,
 		};
 
 		let nextOperation = flow.operation;
@@ -362,16 +356,19 @@ class FlowManager {
 					collection: 'directus_flows',
 					item: flow.id,
 					data: {
-						steps: steps,
-						data: redact(
+						steps: steps.map((step) => redactObject(step, { values: this.envs }, getRedactedString)),
+						data: redactObject(
 							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
-							[
-								['**', 'headers', 'authorization'],
-								['**', 'headers', 'cookie'],
-								['**', 'query', 'access_token'],
-								['**', 'payload', 'password'],
-							],
-							REDACTED_TEXT
+							{
+								keys: [
+									['**', 'headers', 'authorization'],
+									['**', 'headers', 'cookie'],
+									['**', 'query', 'access_token'],
+									['**', 'payload', 'password'],
+								],
+								values: this.envs,
+							},
+							getRedactedString
 						),
 					},
 				});
@@ -401,19 +398,19 @@ class FlowManager {
 		data: unknown;
 		options: Record<string, any> | null;
 	}> {
-		if (!(operation.type in this.operations)) {
+		if (!this.operations.has(operation.type)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
+
 			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
-		const handler = this.operations[operation.type]!;
+		const handler = this.operations.get(operation.type)!;
 
 		const options = applyOptionsData(operation.options, keyedData);
 
 		try {
 			let result = await handler(options, {
 				services,
-				exceptions: { ...exceptions, ...sharedExceptions },
 				env,
 				database: getDatabase(),
 				logger,
@@ -437,7 +434,7 @@ class FlowManager {
 			let data;
 
 			if (error instanceof Error) {
-				// make sure we dont expose the stack trace
+				// make sure we don't expose the stack trace
 				data = sanitizeError(error);
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data

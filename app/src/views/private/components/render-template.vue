@@ -1,30 +1,3 @@
-<template>
-	<div ref="templateEl" class="render-template">
-		<span class="vertical-aligner" />
-		<template v-for="(part, index) in parts" :key="index">
-			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
-			<v-error-boundary v-else-if="typeof part === 'object' && part.component" :name="`display-${part.component}`">
-				<component
-					:is="`display-${part.component}`"
-					v-bind="part.options"
-					:value="part.value"
-					:interface="part.interface"
-					:interface-options="part.interfaceOptions"
-					:type="part.type"
-					:collection="part.collection"
-					:field="part.field"
-				/>
-
-				<template #fallback>
-					<span>{{ part.value }}</span>
-				</template>
-			</v-error-boundary>
-			<span v-else-if="typeof part === 'string'" :dir="direction">{{ translate(part) }}</span>
-			<span v-else>{{ part }}</span>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
@@ -62,12 +35,12 @@ const parts = computed(() =>
 		.map((part) => {
 			if (part.startsWith('{{') === false) return part;
 
-			let fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-			let fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
-			let fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
+			const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+			const fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
+			const fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
 
 			// Try getting the value from the item, return some question marks if it doesn't exist
-			let value = get(props.item, fieldKeyBefore);
+			const value = get(props.item, fieldKeyBefore);
 
 			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
 		})
@@ -134,7 +107,7 @@ function handleObject(fieldKey: string) {
 			.join('.');
 	}
 
-	const value = get(props.item, fieldKey);
+	const value = fieldKey ? get(props.item, fieldKey) : props.item;
 
 	if (value === undefined) return null;
 
@@ -166,6 +139,33 @@ function handleObject(fieldKey: string) {
 }
 </script>
 
+<template>
+	<div ref="templateEl" class="render-template">
+		<span class="vertical-aligner" />
+		<template v-for="(part, index) in parts" :key="index">
+			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
+			<v-error-boundary v-else-if="typeof part === 'object' && part.component" :name="`display-${part.component}`">
+				<component
+					:is="`display-${part.component}`"
+					v-bind="part.options"
+					:value="part.value"
+					:interface="part.interface"
+					:interface-options="part.interfaceOptions"
+					:type="part.type"
+					:collection="part.collection"
+					:field="part.field"
+				/>
+
+				<template #fallback>
+					<span>{{ part.value }}</span>
+				</template>
+			</v-error-boundary>
+			<span v-else-if="typeof part === 'string'" :dir="direction">{{ translate(part) }}</span>
+			<span v-else>{{ part }}</span>
+		</template>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/no-wrap';
 
@@ -194,6 +194,6 @@ function handleObject(fieldKey: string) {
 }
 
 .subdued {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 </style>

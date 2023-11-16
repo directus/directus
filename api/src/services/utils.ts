@@ -1,10 +1,12 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { flushCaches, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -25,7 +27,7 @@ export class UtilsService {
 		const sortField = sortFieldResponse?.sort_field;
 
 		if (!sortField) {
-			throw new InvalidPayloadException(`Collection "${collection}" doesn't have a sort field.`);
+			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't have a sort field` });
 		}
 
 		if (this.accountability?.admin !== true) {
@@ -34,13 +36,13 @@ export class UtilsService {
 			});
 
 			if (!permissions) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			const allowedFields = permissions.fields ?? [];
 
 			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 		}
 
@@ -124,6 +126,13 @@ export class UtilsService {
 				.andWhereNot({ [primaryKeyField]: item });
 		}
 
+		// check if cache should be cleared
+		const { cache } = getCache();
+
+		if (shouldClearCache(cache, undefined, collection)) {
+			await cache.clear();
+		}
+
 		emitter.emitAction(
 			['items.sort', `${collection}.items.sort`],
 			{
@@ -137,5 +146,13 @@ export class UtilsService {
 				accountability: this.accountability,
 			}
 		);
+	}
+
+	async clearCache(): Promise<void> {
+		if (this.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		return flushCaches(true);
 	}
 }

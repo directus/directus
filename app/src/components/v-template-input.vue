@@ -1,15 +1,3 @@
-<template>
-	<div
-		ref="input"
-		class="v-template-input"
-		:class="{ multiline }"
-		contenteditable="true"
-		tabindex="1"
-		:placeholder="placeholder"
-		@input="processText"
-	/>
-</template>
-
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { position } from 'caret-pos';
@@ -247,7 +235,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 			let addSpaceBefore = '';
 			let addSpaceAfter = '';
 
-			let htmlMatchIndex = newHTML.indexOf(match, lastMatchIndex);
+			const htmlMatchIndex = newHTML.indexOf(match, lastMatchIndex);
 			const charCodeBefore = newHTML.charCodeAt(htmlMatchIndex - 1);
 			const charCodeAfter = newHTML.charCodeAt(htmlMatchIndex + match.length);
 
@@ -265,9 +253,9 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 				addSpaceAfter = '&nbsp;';
 			}
 
-			let searchString = replaceSpaceBefore + match + replaceSpaceAfter;
+			const searchString = replaceSpaceBefore + match + replaceSpaceAfter;
 
-			let replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
+			const replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
 				props.items[match.substring(props.triggerCharacter.length)]
 			}" contenteditable="false">${match}</mark>${addSpaceAfter}`;
 
@@ -292,7 +280,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	lastMatchIndex = 0;
 
 	for (const match of matches ?? []) {
-		let matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
+		const matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
 		matchedPositions.push(matchIndex, matchIndex + match.length);
 		lastMatchIndex = matchIndex + match.length;
 	}
@@ -302,6 +290,18 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 }
 </script>
 
+<template>
+	<div
+		ref="input"
+		class="v-template-input"
+		:class="{ multiline }"
+		contenteditable="true"
+		tabindex="1"
+		:placeholder="placeholder"
+		@input="processText"
+	/>
+</template>
+
 <style scoped lang="scss">
 .v-template-input {
 	position: relative;
@@ -309,18 +309,18 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	padding: var(--input-padding);
 	padding-bottom: 32px;
 	overflow: hidden;
-	color: var(--foreground-normal);
-	font-family: var(--family-sans-serif);
+	color: var(--theme--foreground);
+	font-family: var(--theme--font-family-sans-serif);
 	white-space: nowrap;
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	&:empty::before {
 		pointer-events: none;
 		content: attr(placeholder);
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	&.multiline {
@@ -330,23 +330,23 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0px;
 		padding: 2px 4px;
-		color: var(--primary);
+		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
 		vertical-align: -2px;
-		background: var(--primary-alt);
-		border-radius: var(--border-radius);
+		background: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
 		user-select: text;
 
 		&::before {

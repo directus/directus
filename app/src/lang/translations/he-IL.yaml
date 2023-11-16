@@ -51,6 +51,8 @@ and: ו
 or: או
 init: אתחל
 dataset_too_large_currently_showing_n_items: מערך הנתונים גדול מדי. מציג כעת את {n} הפריטים הראשונים.
+extension_hook: נקודת השחלה
+extension_modules: מודולים
 custom: מותאם אישית
 hook: נקודת השחלה
 fill_width: עמוד מלא
@@ -68,14 +70,13 @@ show_archived_items: הצג פריטי ארכיון
 show_all_items: הצג את כל הפריטים
 edited: ערך נערך
 required: שדה חובה
+required_for_app_access: נדרש עבור גישה לאפליקציה
 requires_value: דורש ערך
 create_preset: יצירת הגדרה מראש
 create_role: צור תפקיד
 create_user: צור משתמש
 message: הודעה
 create_webhook: צור Webhook
-translation_string_translations_placeholder: יצירת תרגום חדש
-edit_translation_string: אריכה של תרגום
 invite_users: הזמן משתמשים
 invite: הזמן
 subject: נושא
@@ -89,10 +90,6 @@ primary: ראשי
 rename_folder: שינוי שם תיקיה
 delete_folder: מחק תיקייה
 not_allowed: לא מורשה
-directus_version: גרסת דירקטוס
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
 validationError:
   eq: הערך צריך להיות {valid}
   neq: הערך אינו יכול להיות {invalid}
@@ -146,7 +143,6 @@ post_comment_success: תגובה פורסמה
 post_comment_updated: התגובה עודכנה
 functions:
   count: כמות
-checksum: מחרוזת בדיקה
 users: משתמשים
 activity: פעילות
 action: פעולה
@@ -158,6 +154,7 @@ errors:
 role: תפקיד
 width: רוחב
 height: גובה
+settings_translations: תרגומים
 collection: מאגר
 fields:
   directus_activity:
@@ -192,7 +189,6 @@ fields:
     description: תיאור
     tags: תגיות
     language: שפה
-    theme: ערכת נושא
     tfa_secret: אימות דו-שלבי
     status: סטטוס
     role: תפקיד
@@ -258,3 +254,4 @@ operations:
     message: הודעה
   notification:
     message: הודעה
+    subject: נושא

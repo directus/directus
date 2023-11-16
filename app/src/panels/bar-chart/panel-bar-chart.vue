@@ -1,9 +1,3 @@
-<template>
-	<div class="bar-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -120,8 +114,8 @@ function setUpChart() {
 			height: '100%',
 			width: '100%',
 			toolbar: { show: false },
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			fontFamily: 'var(--theme--font-family-sans-serif)',
+			foreColor: 'var(--theme--foreground-subdued)',
 			selection: { enabled: false },
 			zoom: { enabled: false },
 		},
@@ -136,7 +130,7 @@ function setUpChart() {
 			opacity: 1,
 		},
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top: props.showHeader ? -20 : -5,
 				bottom: 5,
@@ -168,9 +162,6 @@ function setUpChart() {
 		dataLabels: {
 			enabled: props.showDataLabel,
 			formatter: formatNumericValue,
-			// style: {
-			// 	colors: ['var(--foreground-normal-alt'],
-			// },
 		},
 		tooltip: {
 			marker: {
@@ -193,7 +184,7 @@ function setUpChart() {
 				show: !props.horizontal,
 				height: 0.5,
 				width: '1px',
-				color: 'var(--border-subdued)',
+				color: 'var(--theme--border-color-subdued)',
 			},
 			axisTicks: {
 				show: false,
@@ -203,8 +194,8 @@ function setUpChart() {
 				rotate: 0,
 				showDuplicates: true,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -224,7 +215,7 @@ function setUpChart() {
 				show: props.horizontal,
 				height: 0.5,
 				width: '1px',
-				color: 'var(--border-subdued)',
+				color: 'var(--theme--border-color-subdued)',
 			},
 			axisTicks: {
 				show: false,
@@ -233,8 +224,8 @@ function setUpChart() {
 				show: ['both', 'yOnly'].includes(props.showAxisLabels),
 				formatter: formatNumericValue,
 				style: {
-					fontFamily: 'var(--family-sans-serif)',
-					foreColor: 'var(--foreground-subdued)',
+					fontFamily: 'var(--theme--font-family-sans-serif)',
+					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
 				},
@@ -294,9 +285,33 @@ function setUpChart() {
 					return typeof compareValue === 'string' && typeof value === 'string'
 						? (compareValue as string).startsWith(value)
 						: false;
+				case 'nstarts_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).startsWith(value)
+						: false;
+				case 'istarts_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? (compareValue as string).toLocaleLowerCase().startsWith(value.toLocaleLowerCase())
+						: false;
+				case 'nistarts_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).toLocaleLowerCase().startsWith(value.toLocaleLowerCase())
+						: false;
 				case 'ends_with':
 					return typeof compareValue === 'string' && typeof value === 'string'
 						? (compareValue as string).endsWith(value)
+						: false;
+				case 'nends_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).endsWith(value)
+						: false;
+				case 'iends_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? (compareValue as string).toLocaleLowerCase().endsWith(value.toLocaleLowerCase())
+						: false;
+				case 'niends_with':
+					return typeof compareValue === 'string' && typeof value === 'string'
+						? !(compareValue as string).toLocaleLowerCase().endsWith(value.toLocaleLowerCase())
 						: false;
 				default:
 					return false;
@@ -305,6 +320,12 @@ function setUpChart() {
 	}
 }
 </script>
+
+<template>
+	<div class="bar-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
 
 <style scoped>
 .bar-chart {
@@ -316,20 +337,20 @@ function setUpChart() {
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 
@@ -344,6 +365,6 @@ function setUpChart() {
 
 .apexcharts-tooltip-text {
 	line-height: 1.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 </style>

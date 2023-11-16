@@ -1,13 +1,14 @@
-import { FailedValidationException } from '@directus/exceptions';
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
-import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
+import { ForbiddenError } from '@directus/errors';
+import { InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -36,10 +37,9 @@ export class UsersService extends ItemsService {
 		const duplicates = emails.filter((value, index, array) => array.indexOf(value) !== index);
 
 		if (duplicates.length) {
-			throw new RecordNotUniqueException('email', {
+			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
-				invalid: duplicates[0]!,
 			});
 		}
 
@@ -55,10 +55,9 @@ export class UsersService extends ItemsService {
 		const results = await query;
 
 		if (results.length) {
-			throw new RecordNotUniqueException('email', {
+			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
-				invalid: results[0].email,
 			});
 		}
 	}
@@ -86,14 +85,16 @@ export class UsersService extends ItemsService {
 
 		for (const password of passwords) {
 			if (!regex.test(password)) {
-				throw new FailedValidationException({
-					message: `Provided password doesn't match password policy`,
-					path: ['password'],
-					type: 'custom.pattern.base',
-					context: {
-						value: password,
-					},
-				});
+				throw new FailedValidationError(
+					joiValidationErrorItemToErrorExtensions({
+						message: `Provided password doesn't match password policy`,
+						path: ['password'],
+						type: 'custom.pattern.base',
+						context: {
+							value: password,
+						},
+					})
+				);
 			}
 		}
 	}
@@ -111,7 +112,7 @@ export class UsersService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't remove the last admin user from the role.`);
+			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the role` });
 		}
 	}
 
@@ -131,7 +132,7 @@ export class UsersService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
+			throw new UnprocessableContentError({ reason: `You can't change the active status of the last admin user` });
 		}
 	}
 
@@ -160,6 +161,26 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Validate array of emails. Intended to be used with create/update users
+	 */
+	private validateEmail(input: string | string[]) {
+		const emails = Array.isArray(input) ? input : [input];
+
+		const schema = Joi.string().email().required();
+
+		for (const email of emails) {
+			const { error } = schema.validate(email);
+
+			if (error) {
+				throw new FailedValidationError({
+					field: 'email',
+					type: 'email',
+				});
+			}
+		}
+	}
+
+	/**
 	 * Create a new user
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -176,6 +197,7 @@ export class UsersService extends ItemsService {
 
 		try {
 			if (emails.length) {
+				this.validateEmail(emails);
 				await this.checkUniqueEmails(emails);
 			}
 
@@ -183,7 +205,7 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return await super.createMany(data, opts);
@@ -220,7 +242,7 @@ export class UsersService extends ItemsService {
 			});
 
 			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadException(`User in update misses primary key.`);
+				if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `User in update misses primary key` });
 				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
 			}
 		});
@@ -250,13 +272,13 @@ export class UsersService extends ItemsService {
 
 			if (data['email']) {
 				if (keys.length > 1) {
-					throw new RecordNotUniqueException('email', {
+					throw new RecordNotUniqueError({
 						collection: 'directus_users',
 						field: 'email',
-						invalid: data['email'],
 					});
 				}
 
+				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 
@@ -265,12 +287,12 @@ export class UsersService extends ItemsService {
 			}
 
 			if (data['tfa_secret'] !== undefined) {
-				throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
+				throw new InvalidPayloadError({ reason: `You can't change the "tfa_secret" value manually` });
 			}
 
 			if (data['provider'] !== undefined) {
 				if (this.accountability && this.accountability.admin !== true) {
-					throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+					throw new InvalidPayloadError({ reason: `You can't change the "provider" value manually` });
 				}
 
 				data['auth_data'] = null;
@@ -278,13 +300,13 @@ export class UsersService extends ItemsService {
 
 			if (data['external_identifier'] !== undefined) {
 				if (this.accountability && this.accountability.admin !== true) {
-					throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+					throw new InvalidPayloadError({ reason: `You can't change the "external_identifier" value manually` });
 				}
 
 				data['auth_data'] = null;
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return await super.updateMany(keys, data, opts);
@@ -305,10 +327,12 @@ export class UsersService extends ItemsService {
 		try {
 			await this.checkRemainingAdminExistence(keys);
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
+		// Manual constraint, see https://github.com/directus/directus/pull/19912
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
+		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
 		await super.deleteMany(keys, opts);
 		return keys;
@@ -338,10 +362,10 @@ export class UsersService extends ItemsService {
 
 		try {
 			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST']) === false) {
-				throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+				throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to invite users` });
 			}
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		const emails = toArray(email);
@@ -389,12 +413,12 @@ export class UsersService extends ItemsService {
 			scope: string;
 		};
 
-		if (scope !== 'invite') throw new ForbiddenException();
+		if (scope !== 'invite') throw new ForbiddenError();
 
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
-			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
+			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
 		}
 
 		// Allow unauthenticated update
@@ -414,11 +438,11 @@ export class UsersService extends ItemsService {
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
+			throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to reset passwords` });
 		}
 
 		const mailService = new MailService({
@@ -458,20 +482,20 @@ export class UsersService extends ItemsService {
 			hash: string;
 		};
 
-		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
+		if (scope !== 'password-reset' || !hash) throw new ForbiddenError();
 
 		const opts: MutationOptions = {};
 
 		try {
 			await this.checkPasswordPolicy([password]);
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		// Allow unauthenticated update

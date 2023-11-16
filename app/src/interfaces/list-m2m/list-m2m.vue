@@ -1,205 +1,3 @@
-<template>
-	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
-	</v-notice>
-	<div v-else class="many-to-many">
-		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
-			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
-				<div class="spacer" />
-
-				<div v-if="totalItemCount" class="item-count">
-					{{ showingCount }}
-				</div>
-
-				<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
-					<search-input
-						v-model="search"
-						v-model:filter="searchFilter"
-						:collection="relationInfo.junctionCollection.collection"
-					/>
-				</div>
-
-				<v-button
-					v-if="!disabled && enableSelect && selectAllowed"
-					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
-					rounded
-					icon
-					:secondary="enableCreate"
-					@click="selectModalActive = true"
-				>
-					<v-icon name="playlist_add" />
-				</v-button>
-
-				<v-button
-					v-if="!disabled && enableCreate && createAllowed && selectAllowed"
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
-					rounded
-					icon
-					@click="createItem"
-				>
-					<v-icon name="add" />
-				</v-button>
-			</div>
-
-			<v-table
-				v-if="layout === LAYOUTS.TABLE"
-				v-model:sort="sort"
-				v-model:headers="headers"
-				:class="{ 'no-last-border': totalItemCount <= 10 }"
-				:loading="loading"
-				:items="displayItems"
-				:row-height="tableRowHeight"
-				:disabled="!updateAllowed"
-				:show-manual-sort="allowDrag"
-				:manual-sort-key="relationInfo?.sortField"
-				show-resize
-				@click:row="editRow"
-				@update:items="sortItems"
-			>
-				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
-					<render-template
-						:title="header.value"
-						:collection="relationInfo.junctionCollection.collection"
-						:item="item"
-						:template="`{{${header.value}}}`"
-					/>
-				</template>
-
-				<template #item-append="{ item }">
-					<router-link
-						v-if="enableLink"
-						v-tooltip="t('navigate_to_item')"
-						:to="getLinkForItem(item)!"
-						class="item-link"
-						:class="{ disabled: item.$type === 'created' }"
-					>
-						<v-icon name="launch" />
-					</router-link>
-
-					<v-icon
-						v-if="!disabled && (deleteAllowed || isLocalItem(item))"
-						v-tooltip="t(getDeselectTooltip(item))"
-						class="deselect"
-						:class="{ deleted: item.$type === 'deleted' }"
-						:name="getDeselectIcon(item)"
-						@click.stop="deleteItem(item)"
-					/>
-				</template>
-			</v-table>
-
-			<template v-else-if="loading">
-				<v-skeleton-loader
-					v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
-					:key="n"
-					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
-				/>
-			</template>
-
-			<v-notice v-else-if="displayItems.length === 0">
-				{{ t('no_items') }}
-			</v-notice>
-
-			<v-list v-else>
-				<draggable
-					:force-fallback="true"
-					:model-value="displayItems"
-					item-key="id"
-					handle=".drag-handle"
-					:disabled="!allowDrag"
-					@update:model-value="sortItems($event)"
-				>
-					<template #item="{ element }">
-						<v-list-item
-							block
-							clickable
-							:disabled="disabled"
-							:dense="totalItemCount > 4"
-							:class="{ deleted: element.$type === 'deleted' }"
-							@click="editItem(element)"
-						>
-							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-							<render-template
-								:collection="relationInfo.junctionCollection.collection"
-								:item="element"
-								:template="templateWithDefaults"
-							/>
-							<div class="spacer" />
-
-							<router-link
-								v-if="enableLink"
-								v-tooltip="t('navigate_to_item')"
-								:to="getLinkForItem(element)!"
-								class="item-link"
-								:class="{ disabled: element.$type === 'created' }"
-								@click.stop
-							>
-								<v-icon name="launch" />
-							</router-link>
-							<v-icon
-								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-								v-tooltip="t(getDeselectTooltip(element))"
-								class="deselect"
-								:name="getDeselectIcon(element)"
-								@click.stop="deleteItem(element)"
-							/>
-						</v-list-item>
-					</template>
-				</draggable>
-			</v-list>
-
-			<div class="actions" :class="layout">
-				<template v-if="layout === LAYOUTS.TABLE">
-					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
-
-						<div class="spacer" />
-
-						<div v-if="loading === false" class="per-page">
-							<span>{{ t('per_page') }}</span>
-							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
-						</div>
-					</template>
-				</template>
-				<template v-else>
-					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
-						{{ t('create_new') }}
-					</v-button>
-					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
-						{{ t('add_existing') }}
-					</v-button>
-					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
-				</template>
-			</div>
-		</div>
-
-		<drawer-item
-			v-model:active="editModalActive"
-			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
-			:collection="relationInfo.junctionCollection.collection"
-			:primary-key="currentlyEditing || '+'"
-			:related-primary-key="relatedPrimaryKey || '+'"
-			:junction-field="relationInfo.junctionField.field"
-			:edits="editsAtStart"
-			:circular-field="relationInfo.reverseJunctionField.field"
-			:junction-field-location="junctionFieldLocation"
-			@input="stageEdits"
-		/>
-
-		<drawer-collection
-			v-if="!disabled"
-			v-model:active="selectModalActive"
-			:collection="relationInfo.relatedCollection.collection"
-			:filter="customFilter"
-			multiple
-			@input="select"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { Sort } from '@/components/v-table/types';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
@@ -210,6 +8,7 @@ import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -602,7 +401,7 @@ function getLinkForItem(item: DisplayItem) {
 			relationInfo.value.relatedPrimaryKeyField.field,
 		]);
 
-		return `/content/${relationInfo.value.relatedCollection.collection}/${encodeURIComponent(primaryKey)}`;
+		return getItemRoute(relationInfo.value.relatedCollection.collection, primaryKey);
 	}
 
 	return null;
@@ -610,6 +409,208 @@ function getLinkForItem(item: DisplayItem) {
 
 const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 </script>
+
+<template>
+	<v-notice v-if="!relationInfo" type="warning">
+		{{ t('relationship_not_setup') }}
+	</v-notice>
+	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ t('no_singleton_relations') }}
+	</v-notice>
+	<div v-else class="many-to-many">
+		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
+			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
+				<div class="spacer" />
+
+				<div v-if="totalItemCount" class="item-count">
+					{{ showingCount }}
+				</div>
+
+				<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
+					<search-input
+						v-model="search"
+						v-model:filter="searchFilter"
+						:collection="relationInfo.junctionCollection.collection"
+					/>
+				</div>
+
+				<v-button
+					v-if="!disabled && enableSelect && selectAllowed"
+					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
+					rounded
+					icon
+					:secondary="enableCreate"
+					@click="selectModalActive = true"
+				>
+					<v-icon name="playlist_add" />
+				</v-button>
+
+				<v-button
+					v-if="!disabled && enableCreate && createAllowed && selectAllowed"
+					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					rounded
+					icon
+					@click="createItem"
+				>
+					<v-icon name="add" />
+				</v-button>
+			</div>
+
+			<v-table
+				v-if="layout === LAYOUTS.TABLE"
+				v-model:sort="sort"
+				v-model:headers="headers"
+				:class="{ 'no-last-border': totalItemCount <= 10 }"
+				:loading="loading"
+				:items="displayItems"
+				:row-height="tableRowHeight"
+				:disabled="!updateAllowed"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
+				show-resize
+				@click:row="editRow"
+				@update:items="sortItems"
+			>
+				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
+					<render-template
+						:title="header.value"
+						:collection="relationInfo.junctionCollection.collection"
+						:item="item"
+						:template="`{{${header.value}}}`"
+					/>
+				</template>
+
+				<template #item-append="{ item }">
+					<router-link
+						v-if="enableLink"
+						v-tooltip="t('navigate_to_item')"
+						:to="getLinkForItem(item)!"
+						class="item-link"
+						:class="{ disabled: item.$type === 'created' }"
+					>
+						<v-icon name="launch" />
+					</router-link>
+
+					<v-icon
+						v-if="!disabled && (deleteAllowed || isLocalItem(item))"
+						v-tooltip="t(getDeselectTooltip(item))"
+						class="deselect"
+						:class="{ deleted: item.$type === 'deleted' }"
+						:name="getDeselectIcon(item)"
+						@click.stop="deleteItem(item)"
+					/>
+				</template>
+			</v-table>
+
+			<template v-else-if="loading">
+				<v-skeleton-loader
+					v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
+					:key="n"
+					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
+				/>
+			</template>
+
+			<v-notice v-else-if="displayItems.length === 0">
+				{{ t('no_items') }}
+			</v-notice>
+
+			<v-list v-else>
+				<draggable
+					force-fallback
+					:model-value="displayItems"
+					item-key="id"
+					handle=".drag-handle"
+					:disabled="!allowDrag"
+					@update:model-value="sortItems($event)"
+				>
+					<template #item="{ element }">
+						<v-list-item
+							block
+							clickable
+							:disabled="disabled"
+							:dense="totalItemCount > 4"
+							:class="{ deleted: element.$type === 'deleted' }"
+							@click="editItem(element)"
+						>
+							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+							<render-template
+								:collection="relationInfo.junctionCollection.collection"
+								:item="element"
+								:template="templateWithDefaults"
+							/>
+							<div class="spacer" />
+
+							<router-link
+								v-if="enableLink"
+								v-tooltip="t('navigate_to_item')"
+								:to="getLinkForItem(element)!"
+								class="item-link"
+								:class="{ disabled: element.$type === 'created' }"
+								@click.stop
+							>
+								<v-icon name="launch" />
+							</router-link>
+							<v-icon
+								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+								v-tooltip="t(getDeselectTooltip(element))"
+								class="deselect"
+								:name="getDeselectIcon(element)"
+								@click.stop="deleteItem(element)"
+							/>
+						</v-list-item>
+					</template>
+				</draggable>
+			</v-list>
+
+			<div class="actions" :class="layout">
+				<template v-if="layout === LAYOUTS.TABLE">
+					<template v-if="pageCount > 1">
+						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+
+						<div class="spacer" />
+
+						<div v-if="loading === false" class="per-page">
+							<span>{{ t('per_page') }}</span>
+							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+						</div>
+					</template>
+				</template>
+				<template v-else>
+					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+						{{ t('create_new') }}
+					</v-button>
+					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+						{{ t('add_existing') }}
+					</v-button>
+					<div class="spacer" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+				</template>
+			</div>
+		</div>
+
+		<drawer-item
+			v-model:active="editModalActive"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
+			:collection="relationInfo.junctionCollection.collection"
+			:primary-key="currentlyEditing || '+'"
+			:related-primary-key="relatedPrimaryKey || '+'"
+			:junction-field="relationInfo.junctionField.field"
+			:edits="editsAtStart"
+			:circular-field="relationInfo.reverseJunctionField.field"
+			:junction-field-location="junctionFieldLocation"
+			@input="stageEdits"
+		/>
+
+		<drawer-collection
+			v-if="!disabled"
+			v-model:active="selectModalActive"
+			:collection="relationInfo.relatedCollection.collection"
+			:filter="customFilter"
+			multiple
+			@input="select"
+		/>
+	</div>
+</template>
 
 <style lang="scss">
 .many-to-many {
@@ -628,7 +629,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--border-width) solid var(--border-subdued);
+				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
@@ -637,9 +638,9 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 <style lang="scss" scoped>
 .bordered {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius-outline);
-	padding: var(--v-card-padding);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-list {
@@ -671,7 +672,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -680,7 +681,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
+		margin-top: 8px;
 	}
 
 	.spacer {
@@ -693,7 +694,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.item-count {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		white-space: nowrap;
 	}
 
@@ -718,12 +719,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 }
 
 .item-link {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	&.disabled {
@@ -733,13 +734,13 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 	cursor: pointer;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 
@@ -750,7 +751,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	width: 120px;
 	padding: 10px 0;
 	margin-right: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		width: auto;
@@ -758,7 +759,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

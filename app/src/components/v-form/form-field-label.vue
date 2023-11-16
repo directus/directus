@@ -1,38 +1,3 @@
-<template>
-	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<span class="field-name" @click="toggle">
-			<v-checkbox
-				v-if="batchMode"
-				:model-value="batchActive"
-				:value="field.field"
-				@update:model-value="$emit('toggle-batch', field)"
-			/>
-			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-			<v-text-overflow :text="field.name" />
-			<v-icon
-				v-if="field.meta?.required === true"
-				class="required"
-				:class="{ 'has-badge': badge }"
-				sup
-				name="star"
-				filled
-			/>
-			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-			<v-icon
-				v-if="!disabled && rawEditorEnabled"
-				v-tooltip="t('toggle_raw_editor')"
-				class="raw-editor-toggle"
-				:class="{ active: rawEditorActive }"
-				name="data_object"
-				:filled="!rawEditorActive"
-				small
-				@click.stop="$emit('toggle-raw', !rawEditorActive)"
-			/>
-			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-		</span>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
@@ -70,12 +35,48 @@ defineEmits(['toggle-batch', 'toggle-raw']);
 const { t } = useI18n();
 </script>
 
+<template>
+	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
+		<span class="field-name" @click="toggle">
+			<v-checkbox
+				v-if="batchMode"
+				:model-value="batchActive"
+				:value="field.field"
+				@update:model-value="$emit('toggle-batch', field)"
+			/>
+			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+			<v-text-overflow :text="field.name" />
+			<v-icon
+				v-if="field.meta?.required === true"
+				class="required"
+				:class="{ 'has-badge': badge }"
+				sup
+				name="star"
+				filled
+			/>
+			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+			<v-icon
+				v-if="!disabled && rawEditorEnabled"
+				v-tooltip="t('toggle_raw_editor')"
+				class="raw-editor-toggle"
+				:class="{ active: rawEditorActive }"
+				name="data_object"
+				:filled="!rawEditorActive"
+				small
+				@click.stop="$emit('toggle-raw', !rawEditorActive)"
+			/>
+			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+		</span>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .field-label {
 	position: relative;
 	display: flex;
 	margin-bottom: 8px;
 	cursor: pointer;
+	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {
 		display: inline;
@@ -98,7 +99,7 @@ const { t } = useI18n();
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		margin-left: 3px;
 
@@ -109,7 +110,7 @@ const { t } = useI18n();
 
 	.ctx-arrow {
 		margin-top: -3px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 
@@ -132,16 +133,16 @@ const { t } = useI18n();
 		width: 24px;
 		margin-top: -2px;
 		margin-left: 5px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.active {
-			color: var(--primary);
-			background-color: var(--primary-alt);
+			color: var(--theme--primary);
+			background-color: var(--theme--primary-background);
 			border-radius: 50%;
 		}
 	}
@@ -154,7 +155,7 @@ const { t } = useI18n();
 			display: block;
 			width: 4px;
 			height: 4px;
-			background-color: var(--foreground-subdued);
+			background-color: var(--theme--foreground-subdued);
 			border-radius: 4px;
 			content: '';
 		}
@@ -177,5 +178,9 @@ const { t } = useI18n();
 			display: flex;
 		}
 	}
+}
+
+.type-label {
+	font-family: var(--theme--form--field--label--font-family);
 }
 </style>

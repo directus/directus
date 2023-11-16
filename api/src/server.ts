@@ -12,6 +12,7 @@ import emitter from './emitter.js';
 import env from './env.js';
 import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { toBoolean } from './utils/to-boolean.js';
 import {
 	createSubscriptionController,
 	createWebSocketController,
@@ -19,7 +20,6 @@ import {
 	getWebSocketController,
 } from './websocket/controllers/index.js';
 import { startWebSocketHandlers } from './websocket/handlers/index.js';
-import { toBoolean } from './utils/to-boolean.js';
 
 export let SERVER_ONLINE = true;
 
@@ -122,6 +122,7 @@ export async function createServer(): Promise<http.Server> {
 	async function onSignal() {
 		getSubscriptionController()?.terminate();
 		getWebSocketController()?.terminate();
+
 		const database = getDatabase();
 		await database.destroy();
 
@@ -154,6 +155,8 @@ export async function startServer(): Promise<void> {
 	server
 		.listen(port, host, () => {
 			logger.info(`Server started at http://${host}:${port}`);
+
+			process.send?.('ready');
 
 			emitter.emitAction(
 				'server.start',

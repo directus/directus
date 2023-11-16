@@ -2,7 +2,7 @@ import type { Item, Query, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash-es';
-import { getHelpers } from '../database/helpers/index.js';
+import { getHelpers } from './helpers/index.js';
 import env from '../env.js';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
@@ -266,7 +266,7 @@ async function getDBQuery(
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
+		const sortResult = applySort(knex, schema, dbQuery, queryCopy, table, aliasMap, true);
 
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;

@@ -1,39 +1,3 @@
-<template>
-	<v-input
-		:autofocus="autofocus"
-		:model-value="value"
-		:nullable="!clear"
-		:placeholder="placeholder"
-		:disabled="disabled"
-		:trim="trim"
-		:type="inputType"
-		:class="font"
-		:db-safe="dbSafe"
-		:slug="slug"
-		:min="min"
-		:max="max"
-		:step="step"
-		:dir="direction"
-		:autocomplete="masked ? 'new-password' : 'off'"
-		@update:model-value="$emit('input', $event)"
-	>
-		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-		<template v-if="(percentageRemaining !== null && percentageRemaining <= 20) || iconRight || softLength" #append>
-			<span
-				v-if="(percentageRemaining !== null && percentageRemaining <= 20) || softLength"
-				class="remaining"
-				:class="{
-					warning: percentageRemaining! < 10,
-					danger: percentageRemaining! < 5,
-				}"
-			>
-				{{ charsRemaining }}
-			</span>
-			<v-icon v-if="iconRight" :class="{ hide: percentageRemaining && percentageRemaining <= 20 }" :name="iconRight" />
-		</template>
-	</v-input>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -97,25 +61,62 @@ const inputType = computed(() => {
 });
 </script>
 
+<template>
+	<v-input
+		:autofocus="autofocus"
+		:model-value="value"
+		:nullable="!clear"
+		:placeholder="placeholder"
+		:disabled="disabled"
+		:trim="trim"
+		:type="inputType"
+		:class="font"
+		:db-safe="dbSafe"
+		:slug="slug"
+		:min="min"
+		:max="max"
+		:max-length="length"
+		:step="step"
+		:dir="direction"
+		:autocomplete="masked ? 'new-password' : 'off'"
+		@update:model-value="$emit('input', $event)"
+	>
+		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
+		<template v-if="(percentageRemaining !== null && percentageRemaining <= 20) || iconRight || softLength" #append>
+			<span
+				v-if="(percentageRemaining !== null && percentageRemaining <= 20) || softLength"
+				class="remaining"
+				:class="{
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
+				}"
+			>
+				{{ charsRemaining }}
+			</span>
+			<v-icon v-if="iconRight" :class="{ hide: percentageRemaining && percentageRemaining <= 20 }" :name="iconRight" />
+		</template>
+	</v-input>
+</template>
+
 <style lang="scss" scoped>
 .v-input {
 	&.monospace {
-		--v-input-font-family: var(--family-monospace);
+		--v-input-font-family: var(--theme--font-family-monospace);
 	}
 
 	&.serif {
-		--v-input-font-family: var(--family-serif);
+		--v-input-font-family: var(--theme--font-family-serif);
 	}
 
 	&.sans-serif {
-		--v-input-font-family: var(--family-sans-serif);
+		--v-input-font-family: var(--theme--font-family-sans-serif);
 	}
 }
 
 .remaining {
 	display: none;
 	width: 24px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -131,10 +132,10 @@ const inputType = computed(() => {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 </style>

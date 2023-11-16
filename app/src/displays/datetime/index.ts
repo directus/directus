@@ -2,7 +2,7 @@ import { i18n } from '@/lang';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import type { DeepPartial, Field } from '@directus/types';
-import { defineDisplay } from '@directus/utils';
+import { defineDisplay } from '@directus/extensions';
 import { parse, parseISO } from 'date-fns';
 import DisplayDateTime from './datetime.vue';
 
@@ -35,16 +35,16 @@ export default defineDisplay({
 		} else {
 			let format;
 
-			if (options?.format === 'long') {
+			if (options?.format === undefined || options.format === 'long') {
 				format = `${i18n.global.t('date-fns_date')} ${i18n.global.t('date-fns_time')}`;
 				if (field?.type === 'date') format = String(i18n.global.t('date-fns_date'));
 				if (field?.type === 'time') format = String(i18n.global.t('date-fns_time'));
-			} else if (options?.format === 'short') {
+			} else if (options.format === 'short') {
 				format = `${i18n.global.t('date-fns_date_short')} ${i18n.global.t('date-fns_time_short')}`;
 				if (field?.type === 'date') format = String(i18n.global.t('date-fns_date_short'));
 				if (field?.type === 'time') format = String(i18n.global.t('date-fns_time_short'));
 			} else {
-				format = options?.format;
+				format = options.format;
 			}
 
 			return localizedFormat(value, format);

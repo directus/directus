@@ -27,6 +27,7 @@ method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
+extensions: Extensions
 modules: Modules
 module_bar: Barre de modules
 logs: Journaux
@@ -52,6 +53,14 @@ or: Ou
 init: Initialiser
 dataset_too_large_currently_showing_n_items: L'ensemble de données est trop grand. Il affiche actuellement les {n} premiers éléments.
 modifier: Modificateur
+extension_interface: Interface
+extension_display: Affichage
+extension_layout: Mise en page
+extension_panel: Panneau
+extension_hook: Crochet
+extension_modules: Modules
+enable: Activer
+disable: Désactiver
 custom: Personnalisé
 hook: Crochet
 fill_width: Remplir l'espace
@@ -80,14 +89,6 @@ create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
-create_translation_string: Créer une traduction
-no_translation_string: Aucune traduction
-no_translation_string_copy: Il n'y a pas encore de traduction.
-translation_string_key_placeholder: Traduction de la clé...
-translation_string_translations_placeholder: Ajouter une nouvelle traduction
-edit_translation_string: Modifier la traduction
-delete_translation_string_copy: >-
-  Êtes-vous sûr de vouloir supprimer la traduction "{key}" ? Cette action ne peut pas être annulée.
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
@@ -103,6 +104,9 @@ rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
+version: Version
+promote_version_changes: Changements
+promote_version_preview: Prévisualiser
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -118,13 +122,6 @@ public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
 not_allowed: Non autorisé
-directus_version: Version de Directus
-node_version: Version de Node
-node_uptime: Temps de disponibilité du nœud
-os_type: Type d'OS
-os_version: Version de l'OS
-os_uptime: Temps de disponibilité de l'OS
-os_totalmem: Mémoire de l'OS
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
@@ -342,6 +339,7 @@ clear_items: Effacer les éléments
 reset_to_default: Revenir à la valeur par défaut
 undo_changes: Annuler les modifications
 notifications: Notifications
+archive_all: Tout archiver
 show_all_activity: Afficher toute l'activité
 page_not_found: Page non trouvée
 page_not_found_body: La page que vous recherchez ne semble pas exister.
@@ -358,7 +356,7 @@ revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
-presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
+presentation_text_values_cannot_be_reimported: 'Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées.'
 download_page_as_csv: 'Télécharger la page au format CSV'
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
@@ -396,6 +394,7 @@ move: Déplacer
 system: Système
 add_field_related: Ajouter le champ à la collection associée
 interface_label: Interface
+display_label: Affichage
 today: Aujourd'hui
 yesterday: Hier
 delete_comment: Supprimer le commentaire
@@ -446,7 +445,6 @@ dimensions: Dimensions
 size: Taille
 created: Créé
 modified: Modifié
-checksum: Code de vérification
 owner: Propriétaire
 edited_by: Modifié par
 folder: Dossier
@@ -469,11 +467,6 @@ open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
 start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
 exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
-exporting_limited_items_in_collection: Exportat de {limit} éléments sur {total} dans la collection {collection}.
-exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export ci-dessous.
-exporting_download_hint: Une fois terminé, ce fichier {format} sera automatiquement téléchargé sur votre appareil.
-exporting_batch_hint: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
-exporting_batch_hint_forced: En raison du grand nombre d'éléments, cet export doit être traité par lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -489,6 +482,7 @@ generated_uuid: UUID généré
 manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
+save_and_quit: Enregistrer et quitter
 save_as_copy: Enregistrer une copie
 add_existing: Sélectionner
 creating_items: Création d'éléments
@@ -498,10 +492,8 @@ enable_select_button: Activer le bouton de sélection
 allow_duplicates: Autoriser les doublons
 comments: Commentaires
 no_comments: Pas encore de commentaires
-click_to_expand: Cliquer pour agrandir
 select_item: Sélectionner un élément
 no_items: Aucun élément
-search_items: Rechercher des éléments...
 disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
@@ -610,7 +602,6 @@ errors:
   RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   USER_SUSPENDED: Utilisateur suspendu
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
-  UNPROCESSABLE_ENTITY: Cette entité ne peut être traitée
   INTERNAL_SERVER_ERROR: Erreur inconnue
   NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
   ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
@@ -949,6 +940,10 @@ choices: Liste de choix
 choices_option_configured_incorrectly: Choix configurés incorrectement
 deselect: Dé-sélectionner
 deselect_all: Tout dé-sélectionner
+theme: Thème
+select_a_theme: Sélectionner un thème
+appearance_light: Clair
+appearance_dark: Sombre
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
@@ -960,12 +955,11 @@ editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
-settings_permissions: Rôles et autorisations
-settings_project: Paramètres du projet
+settings_project: Réglages
 settings_webhooks: Webhooks
 settings_flows: Flux
-settings_presets: Préréglages et favoris
-settings_translation_strings: Traductions
+settings_presets: Favoris
+settings_translations: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 actions: Actions
@@ -1000,7 +994,6 @@ page_help_files_collection: >-
   **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_files_item: >-
   **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
-page_help_settings_project: "**Paramètres du projet** — Les options de configuration globale de votre projet."
 page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
@@ -1015,7 +1008,6 @@ page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste to
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
 page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
-page_help_settings_translation_strings_collection: '**Parcourir les de traductions** — Liste toutes les traductions du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
@@ -1123,10 +1115,6 @@ fields:
     tags: Étiquettes
     user_preferences: Préférences utilisateur
     language: Langue
-    theme: Thème
-    theme_auto: Automatique (Basé sur le système)
-    theme_light: Mode Clair
-    theme_dark: Mode sombre
     tfa_secret: Authentification à deux facteurs
     admin_options: Options d'Administration
     status: État
@@ -1165,7 +1153,6 @@ fields:
     project_color: Couleur du projet
     project_logo: Logo du projet
     default_language: Langue par défaut
-    branding: Apparence et style
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
@@ -1225,7 +1212,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
     project_color_note: Fond de connexion et de logo
-    project_logo_note: Blanc 40x40 SVG/PNG
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -1279,6 +1265,7 @@ field_options:
     sort_field: Choisissez un champ...
     accountability_divider: Traçabilité
     duplication_divider: Duplication
+    preview_divider: Prévisualiser
   directus_files:
     title: Un titre unique...
     description: Une description optionnelle...
@@ -1336,6 +1323,8 @@ start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
 comment: Commentaire
+live_preview:
+  new_window: Ouvrir dans une nouvelle fenêtre
 shares: Partages
 unlimited_usage: Utilisation illimitée
 uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
@@ -1448,7 +1437,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -1597,6 +1585,8 @@ interfaces:
   system-interface-options:
     interface-options: Options d'interface
     description: Une popup pour sélectionner les options d'une interface
+  system-display:
+    display: Affichage
   list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
@@ -1648,7 +1638,6 @@ interfaces:
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
   system-folder:
-    folder: Dossier
     description: Sélectionner un dossier
     field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
@@ -1665,6 +1654,8 @@ interfaces:
     sort_placeholder: Manuel
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
+    interface_group: Options d'interface
+    display_group: Options d'affichage
   slider:
     slider: Curseur
     description: Sélectionner un nombre à l'aide d'un curseur
@@ -1704,7 +1695,6 @@ interfaces:
     input-translated-string: Chaînes traduites
     description: Sélectionner ou ajouter une traduction
     search_placeholder: Rechercher...
-    new_translation_string: Nouvelle traduction
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
@@ -1741,6 +1731,17 @@ interfaces:
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
     imageToken: Jeton d'accès statique
     imageToken_label: Le jeton d’accès statique est ajouté à l’URL des ressources
+  input-block-editor:
+    tools: Barre d’outils
+    tools_options:
+      header: En-tête
+      nestedlist: Liste
+      embed: Encapsulation
+      paragraph: Paragraphe
+      code: Code
+      image: Image
+      table: Tableau
+      underline: Souligner
   input-autocomplete-api:
     input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.
@@ -2015,6 +2016,7 @@ panels:
     smooth: Lisse
     straight: Droit
     step_line: Pas
+    show_legend: Afficher la légende
   meter:
     name: Compteur
     description: Compteur pour les valeurs de suivi
@@ -2098,6 +2100,10 @@ operations:
     key: IDs
     payload: Données utiles
     query: Requête
+  json-web-token:
+    payload: Données utiles
+    token: Token
+    options: Paramètres
   log:
     name: Log dans la console
     description: Afficher quelque chose sur la console
@@ -2118,9 +2124,10 @@ operations:
     recipient_placeholder: Saisir un UUID...
     recipient_note: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
+    subject: Sujet
   request:
     name: Webhook / URL de requête
-    description: "Envoyer une requête à une URL"
+    description: 'Envoyer une requête à une URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Méthode
@@ -2149,3 +2156,16 @@ operations:
     batch: Par lots
     batch_size: Taille de chaque lot
     cache: Cache
+standard: Standard
+compact: Compact
+style: Style
+fonts:
+  thin: Fin
+  normal: Normal
+  medium: Moyen
+  bold: Gras
+  black: Black
+  italic: Italique
+  small: Petit
+  auto: Auto
+justify: Justifier

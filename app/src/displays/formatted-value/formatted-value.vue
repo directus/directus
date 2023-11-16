@@ -1,24 +1,3 @@
-<template>
-	<value-null v-if="displayValue === null || displayValue === undefined" />
-
-	<div
-		v-else
-		class="display-formatted"
-		:class="[
-			{ bold, italic },
-			font,
-			{ 'has-background': computedFormat.background, 'has-border': computedStyle.borderWidth !== 0 },
-		]"
-		:style="computedStyle"
-	>
-		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
-
-		<span class="value">
-			{{ displayValue }}
-		</span>
-	</div>
-</template>
-
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
@@ -170,6 +149,27 @@ function matchNumber(left: number, right: number, operator: string) {
 }
 </script>
 
+<template>
+	<value-null v-if="displayValue === null || displayValue === undefined" />
+
+	<div
+		v-else
+		class="display-formatted"
+		:class="[
+			{ bold, italic },
+			font,
+			{ 'has-background': computedFormat.background, 'has-border': computedStyle.borderWidth !== 0 },
+		]"
+		:style="computedStyle"
+	>
+		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
+
+		<span class="value">
+			{{ displayValue }}
+		</span>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .display-formatted {
 	display: inline;
@@ -190,7 +190,7 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.bold {
-		color: var(--foreground-normal-alt);
+		color: var(--theme--foreground-accent);
 		font-weight: 700;
 	}
 
@@ -199,15 +199,15 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.sans-serif {
-		font-family: var(--family-sans-serif);
+		font-family: var(--theme--font-family-sans-serif);
 	}
 
 	&.serif {
-		font-family: var(--family-serif);
+		font-family: var(--theme--font-family-serif);
 	}
 
 	&.monospace {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--font-family-monospace);
 	}
 
 	.v-icon {

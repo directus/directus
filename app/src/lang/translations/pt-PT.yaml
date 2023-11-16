@@ -51,6 +51,10 @@ and: E
 or: Ou
 init: Init
 dataset_too_large_currently_showing_n_items: O conjunto de dados é muito grande. A mostrar os primeiros {n} itens.
+extension_interface: Interface
+extension_display: Visualização
+extension_hook: Gancho (hook)
+extension_modules: Módulos
 custom: Personalizado
 hook: Gancho (hook)
 fill_width: Ocupar a largura
@@ -79,14 +83,6 @@ create_user: Criar utilizador
 message: Mensagem
 delete_panel: Apagar painel
 create_webhook: Criar webhook
-create_translation_string: Criar tradução
-no_translation_string: Sem traduções
-no_translation_string_copy: Ainda não existem traduções.
-translation_string_key_placeholder: Chave da tradução...
-translation_string_translations_placeholder: Adicionar nova tradução
-edit_translation_string: Editar String de Tradução
-delete_translation_string_copy: >-
-  Tem a certeza que pretende eliminar o texto de tradução "{key}"? Esta ação não pode ser revertida.
 invite_users: Convidar utlizadores
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
@@ -115,13 +111,6 @@ logoutReason:
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 not_allowed: Não permitido
-directus_version: Versão do Directus
-node_version: Versão do Node.js
-node_uptime: Tempo de atividade do Node.js
-os_type: Tipo do Sistema Operativo
-os_version: Versão do Sistema Operativo
-os_uptime: Tempo de atividade do Sistema Operativo
-os_totalmem: Memória utilizada
 archive: Arquivar
 archive_confirm: Tem a certeza que pretende arquivar este documento?
 archive_confirm_count: >-
@@ -337,6 +326,7 @@ move: Mover
 system: Sistema
 add_field_related: Adicionar Campo à Coleção Relacionada
 interface_label: Interface
+display_label: Visualização
 today: Hoje
 yesterday: Ontem
 delete_comment: Remover comentário
@@ -385,7 +375,6 @@ dimensions: Dimensões
 size: Tamanho
 created: Criado
 modified: Modificado
-checksum: Soma de verificação
 owner: Proprietário
 edited_by: Editado por
 folder: Pasta
@@ -407,9 +396,6 @@ download_file: Descarregar Ficheiro
 open_file_in_tab: Abrir ficheiro num novo separador
 start_export: Iniciar exportação
 exporting_all_items_in_collection: A exportar todos os {total} itens dentro de {collection}.
-exporting_limited_items_in_collection: A exportar {limit} de {total} itens em {collection}.
-exporting_no_items_to_export: Sem itens para exportar. Verifique a configuração abaixo.
-exporting_download_hint: Uma vez concluído, este arquivo {format} será transferido automaticamente para o dispositivo.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -432,10 +418,8 @@ selecting_items: Selecionar itens
 enable_select_button: Ativar o botão Selecionar
 comments: Comentários
 no_comments: Ainda não há comentários
-click_to_expand: Clique para expandir
 select_item: Selecionar item
 no_items: Não existem documentos
-search_items: Procurar documentos...
 disabled: Desativado
 information: Informação
 report_bug: Reportar erro
@@ -530,7 +514,6 @@ errors:
   RECORD_NOT_UNIQUE: Valor duplicado detectado
   USER_SUSPENDED: Utilizador suspenso
   CONTAINS_NULL_VALUES: Campo contém valores nulos
-  UNPROCESSABLE_ENTITY: Entidade não processável
   INTERNAL_SERVER_ERROR: Erro Inesperado
   NOT_NULL_VIOLATION: O valor não pode ser nulo
   ILLEGAL_ASSET_TRANSFORMATION: A imagem é muito grande para visualizar
@@ -700,10 +683,10 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
-settings_permissions: Perfis & Permissões
-settings_project: Definições do projeto
+settings_project: Configurações
 settings_webhooks: Webhooks
-settings_presets: Predefinições & Marcadores
+settings_presets: Favoritos
+settings_translations: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão em falta
 select: Selecionar...
 changes_are_permanent: As alterações são permanentes
@@ -772,8 +755,6 @@ fields:
     description: Descrição
     tags: Etiquetas
     language: Idioma
-    theme: Tema
-    theme_auto: Automático (baseado no sistema)
     tfa_secret: Autenticação em dois passos
     status: Estado
     status_active: Ativar
@@ -849,6 +830,8 @@ save_current_datetime: Guardar data/hora atual
 block: Bloquear
 inline: Em linha
 comment: Comentário
+live_preview:
+  new_window: Abrir numa Nova Janela
 share_copy_link_error: Não foi possível copiar a hiperligação
 relational_triggers: Gatilhos Relacionais
 referential_action_field_label_m2o: Ao Eliminar de {collection}...
@@ -907,14 +890,14 @@ interfaces:
     hash: Hash
   system-interface:
     interface: Interface
+  system-display:
+    display: Visualização
   select-dropdown-m2o:
     display_template: Templates de Exibição
   input-rich-text-md:
     edit: Editar
   map:
     zoom: Zoom
-  system-folder:
-    folder: Pasta
   list:
     sort: Ordenar
   tags:
@@ -928,6 +911,9 @@ interfaces:
     default_language: Idioma Padrão
   user:
     user: Utilizador
+  input-block-editor:
+    tools_options:
+      table: Tabela
   system-token:
     system-token: Token
     value_securely_saved: Valor Guardado em Segurança
@@ -974,6 +960,8 @@ layouts:
     advanced: Avançado
 both: Ambos
 operations:
+  json-web-token:
+    token: Token
   log:
     message: Mensagem
   mail:
@@ -983,8 +971,10 @@ operations:
   notification:
     recipient: Utilizador
     message: Mensagem
+    subject: Assunto
   request:
     url: URL
     url_placeholder: https://exemplo.com/exemplo
   sleep:
     milliseconds: Milisegundos
+standard: Predefinido

@@ -36,6 +36,7 @@ import sharesRouter from './controllers/shares.js';
 import translationsRouter from './controllers/translations.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
+import versionsRouter from './controllers/versions.js';
 import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
@@ -45,9 +46,8 @@ import {
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { InvalidPayloadException } from './exceptions/invalid-payload.js';
-import { ServiceUnavailableException } from './exceptions/service-unavailable.js';
-import { getExtensionManager } from './extensions.js';
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
 import authenticate from './middleware/authenticate.js';
@@ -122,7 +122,7 @@ export default async function createApp(): Promise<express.Application> {
 				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'],
 				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'],
 				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'],
-				error: new ServiceUnavailableException('Under pressure', { service: 'api' }),
+				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
 				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'],
 			})
 		);
@@ -156,7 +156,7 @@ export default async function createApp(): Promise<express.Application> {
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
-				return next(new InvalidPayloadException(err.message));
+				return next(new InvalidPayloadError({ reason: err.message }));
 			}
 
 			return next();
@@ -192,8 +192,8 @@ export default async function createApp(): Promise<express.Application> {
 
 		const htmlWithVars = html
 			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
-			.replace(/<embed-head \/>/, embeds.head)
-			.replace(/<embed-body \/>/, embeds.body);
+			.replace('<!-- directus-embed-head -->', embeds.head)
+			.replace('<!-- directus-embed-body -->', embeds.body);
 
 		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
@@ -267,6 +267,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
+	app.use('/versions', versionsRouter);
 	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints

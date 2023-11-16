@@ -1,30 +1,3 @@
-<template>
-	<div class="list" :class="{ 'has-header': showHeader }">
-		<div>
-			<v-list>
-				<v-list-item
-					v-for="row in data"
-					:key="row[primaryKeyField]"
-					class="selectable"
-					:clickable="linkToItem === true"
-					@click="startEditing(row)"
-				>
-					<render-template :item="row" :collection="collection" :template="displayTemplate" />
-					<div class="spacer" />
-				</v-list-item>
-			</v-list>
-		</div>
-		<drawer-item
-			:active="!!currentlyEditing"
-			:collection="collection"
-			:primary-key="currentlyEditing ?? '+'"
-			:edits="editsAtStart"
-			@input="saveEdits"
-			@update:active="cancelEdit"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import api from '@/api';
@@ -72,13 +45,40 @@ function cancelEdit() {
 async function saveEdits(item: Record<string, any>) {
 	try {
 		await api.patch(`${getEndpoint(props.collection)}/${currentlyEditing.value}`, item);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 
 	await insightsStore.refresh(props.dashboard);
 }
 </script>
+
+<template>
+	<div class="list" :class="{ 'has-header': showHeader }">
+		<div>
+			<v-list>
+				<v-list-item
+					v-for="row in data"
+					:key="row[primaryKeyField]"
+					class="selectable"
+					:clickable="linkToItem === true"
+					@click="startEditing(row)"
+				>
+					<render-template :item="row" :collection="collection" :template="displayTemplate" />
+					<div class="spacer" />
+				</v-list-item>
+			</v-list>
+		</div>
+		<drawer-item
+			:active="!!currentlyEditing"
+			:collection="collection"
+			:primary-key="currentlyEditing ?? '+'"
+			:edits="editsAtStart"
+			@input="saveEdits"
+			@update:active="cancelEdit"
+		/>
+	</div>
+</template>
 
 <style scoped>
 .list {
@@ -95,10 +95,10 @@ async function saveEdits(item: Record<string, any>) {
 
 .v-list-item {
 	height: 48px;
-	border-top: var(--border-width) solid var(--border-subdued);
+	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .v-list-item:last-child {
-	border-bottom: var(--border-width) solid var(--border-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 </style>

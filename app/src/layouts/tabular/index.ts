@@ -4,14 +4,15 @@ import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { getItemRoute } from '@/utils/get-route';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { defineLayout } from '@directus/utils';
 import { debounce } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
@@ -21,7 +22,7 @@ import { LayoutOptions, LayoutQuery } from './types';
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
 	name: '$t:layouts.tabular.tabular',
-	icon: 'reorder',
+	icon: 'table_rows',
 	component: TabularLayout,
 	slots: {
 		options: TabularOptions,
@@ -166,7 +167,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					.sort();
 			});
 
-			const fields = syncRefProperty(layoutQuery, 'fields', fieldsDefaultValue);
+			const fields = computed({
+				get() {
+					if (layoutQuery.value?.fields) {
+						return layoutQuery.value.fields.filter((field) => fieldsStore.getField(collection.value!, field));
+					} else {
+						return unref(fieldsDefaultValue);
+					}
+				},
+				set(value) {
+					layoutQuery.value = Object.assign({}, layoutQuery.value, { fields: value });
+				},
+			});
 
 			const fieldsWithRelational = computed(() => {
 				if (!props.collection) return [];
@@ -218,7 +230,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
-						const description: string | null = null;
+						let description: string | null = null;
+
+						const fieldParts = field.key.split('.');
+
+						if (fieldParts.length > 1) {
+							const fieldNames = fieldParts.map((fieldKey, index) => {
+								const pathPrefix = fieldParts.slice(0, index);
+								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
+								return field?.name ?? fieldKey;
+							});
+
+							description = fieldNames.join(' -> ');
+						}
 
 						return {
 							text: field.name,
@@ -294,10 +318,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						selection.value = selection.value.filter((item) => item !== primaryKey);
 					}
 				} else {
-					const next = router.resolve(`/content/${collection.value}/${encodeURIComponent(primaryKey)}`);
+					const route = getItemRoute(unref(collection), primaryKey);
 
-					if (event.ctrlKey || event.metaKey) window.open(next.href, '_blank');
-					else router.push(next);
+					if (event.ctrlKey || event.metaKey) window.open(router.resolve(route).href, '_blank');
+					else router.push(route);
 				}
 			}
 

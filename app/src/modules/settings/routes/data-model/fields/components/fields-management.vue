@@ -1,54 +1,3 @@
-<template>
-	<div class="fields-management">
-		<div v-if="lockedFields.length > 0" class="field-grid">
-			<field-select v-for="field in lockedFields" :key="field.field" disabled :field="field" />
-		</div>
-
-		<draggable
-			class="field-grid"
-			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
-			:force-fallback="true"
-			handle=".drag-handle"
-			:group="{ name: 'fields' }"
-			:set-data="hideDragImage"
-			item-key="field"
-			:animation="150"
-			:fallback-on-body="true"
-			:invert-swap="true"
-			@update:model-value="setSort"
-		>
-			<template #item="{ element }">
-				<field-select :field="element" :fields="usableFields" @set-nested-sort="setNestedSort" />
-			</template>
-		</draggable>
-
-		<v-button full-width :to="`/settings/data-model/${collection}/+`">
-			{{ t('create_field') }}
-		</v-button>
-
-		<v-menu show-arrow>
-			<template #activator="{ toggle, active }">
-				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
-					{{ t('create_in_advanced_field_creation_mode') }}
-				</button>
-			</template>
-			<v-list>
-				<template v-for="(option, index) in addOptions" :key="index">
-					<v-divider v-if="option.divider === true" />
-					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
-						<v-list-item-icon>
-							<v-icon :name="option.icon" />
-						</v-list-item-icon>
-						<v-list-item-content>
-							{{ option.text }}
-						</v-list-item-content>
-					</v-list-item>
-				</template>
-			</v-list>
-		</v-menu>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -167,6 +116,57 @@ async function setNestedSort(updates?: Field[]) {
 }
 </script>
 
+<template>
+	<div class="fields-management">
+		<div v-if="lockedFields.length > 0" class="field-grid">
+			<field-select v-for="field in lockedFields" :key="field.field" disabled :field="field" />
+		</div>
+
+		<draggable
+			class="field-grid"
+			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
+			force-fallback
+			handle=".drag-handle"
+			:group="{ name: 'fields' }"
+			:set-data="hideDragImage"
+			item-key="field"
+			:animation="150"
+			fallback-on-body
+			invert-swap
+			@update:model-value="setSort"
+		>
+			<template #item="{ element }">
+				<field-select :field="element" :fields="usableFields" @set-nested-sort="setNestedSort" />
+			</template>
+		</draggable>
+
+		<v-button full-width :to="`/settings/data-model/${collection}/+`">
+			{{ t('create_field') }}
+		</v-button>
+
+		<v-menu show-arrow>
+			<template #activator="{ toggle, active }">
+				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
+					{{ t('create_in_advanced_field_creation_mode') }}
+				</button>
+			</template>
+			<v-list>
+				<template v-for="(option, index) in addOptions" :key="index">
+					<v-divider v-if="option.divider === true" />
+					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
+						<v-list-item-icon>
+							<v-icon :name="option.icon" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ option.text }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
+			</v-list>
+		</v-menu>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-divider {
 	margin: 32px 0;
@@ -201,8 +201,8 @@ async function setNestedSort(updates?: Field[]) {
 
 .add-field {
 	--v-button-font-size: 14px;
-	--v-button-background-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-125);
+	--v-button-background-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-accent);
 
 	margin-top: -12px;
 }
@@ -212,11 +212,11 @@ async function setNestedSort(updates?: Field[]) {
 	width: max-content;
 	margin: 0 auto;
 	margin-top: 8px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 

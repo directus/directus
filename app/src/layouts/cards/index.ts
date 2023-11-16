@@ -1,10 +1,12 @@
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { useCollection, useItems, useSync } from '@directus/composables';
-import { defineLayout, getFieldsFromTemplate } from '@directus/utils';
+import { defineLayout } from '@directus/extensions';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { clone } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import CardsActions from './actions.vue';
@@ -15,7 +17,7 @@ import { LayoutOptions, LayoutQuery } from './types';
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
 	name: '$t:layouts.cards.cards',
-	icon: 'grid_4',
+	icon: 'grid_view',
 	component: CardsLayout,
 	headerShadow: false,
 	slots: {
@@ -194,7 +196,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-			return `/content/${props.collection}/${encodeURIComponent(item[primaryKeyField.value.field])}`;
+
+			return getItemRoute(props.collection, item[primaryKeyField.value.field]);
 		}
 
 		function selectAll() {

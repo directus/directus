@@ -1,9 +1,10 @@
-import type { Accountability } from '@directus/types';
 import { Action } from '@directus/constants';
+import { isDirectusError } from '@directus/errors';
+import type { Accountability } from '@directus/types';
 import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
 import env from '../env.js';
-import { ForbiddenException } from '../exceptions/forbidden.js';
+import { ErrorCode } from '@directus/errors';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';
@@ -77,6 +78,10 @@ export class ActivityService extends ItemsService {
 
 					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
+					const href = new Url(env['PUBLIC_URL'])
+						.addPath('admin', 'content', data['collection'], data['item'])
+						.toString();
+
 					const message = `
 Hello ${userName(user)},
 
@@ -84,9 +89,7 @@ ${userName(sender)} has mentioned you in a comment:
 
 ${comment}
 
-<a href="${new Url(env['PUBLIC_URL'])
-						.addPath('admin', 'content', data['collection'], data['item'])
-						.toString()}">Click here to view.</a>
+<a href="${href}">Click here to view.</a>
 `;
 
 					await this.notificationsService.createOne({
@@ -98,7 +101,7 @@ ${comment}
 						item: data['item'],
 					});
 				} catch (err: any) {
-					if (err instanceof ForbiddenException) {
+					if (isDirectusError(err, ErrorCode.Forbidden)) {
 						logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
 					} else {
 						throw err;
