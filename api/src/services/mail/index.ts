@@ -105,7 +105,7 @@ export class MailService {
 
 		return {
 			projectName: projectInfo?.project_name || 'Directus',
-			projectColor: projectInfo?.project_color || '#546e7a',
+			projectColor: projectInfo?.project_color || '#171717',
 			projectLogo: getProjectLogoURL(projectInfo?.project_logo),
 			projectUrl: projectInfo?.project_url || '',
 		};
