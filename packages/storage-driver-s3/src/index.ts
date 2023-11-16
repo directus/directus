@@ -100,7 +100,11 @@ export class DriverS3 implements Driver {
 	}
 
 	private fullPath(filepath: string) {
-		return normalizePath(join(this.root, filepath));
+		const path = normalizePath(join(this.root, filepath));
+
+		if (path === '.') return '';
+
+		return path;
 	}
 
 	async read(filepath: string, range?: Range): Promise<Readable> {
