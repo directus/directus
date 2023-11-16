@@ -143,6 +143,7 @@ export default defineTheme({
 				label: {
 					foreground: 'var(--theme--foreground-accent)',
 					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontWeight: '600',
 				},
 				input: {
 					background: 'var(--theme--background)',

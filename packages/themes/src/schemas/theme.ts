@@ -24,6 +24,7 @@ const FormRules = Type.Optional(
 					Type.Object({
 						foreground: Type.Optional(Type.Ref(Color)),
 						fontFamily: Type.Optional(Type.Ref(FamilyName)),
+						fontWeight: Type.Optional(Type.Ref(FontWeight)),
 					})
 				),
 				input: Type.Optional(

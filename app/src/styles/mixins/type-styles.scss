@@ -13,16 +13,16 @@
 
 @mixin type-label {
 	color: var(--theme--foreground-accent);
-	font-weight: 600;
 	font-size: 16px;
-	font-family: var(--theme--fonts--sans--font-family);
+	font-weight: var(--theme--form--field--label--font-weight);
+	font-family: var(--theme--form--field--label--font-family);
 	font-style: normal;
 	line-height: 19px;
 }
 
 @mixin type-text {
 	color: var(--theme--foreground);
-	font-weight: 500;
+	font-weight: var(--theme--fonts--sans--font-weight);
 	font-size: 14px;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
@@ -31,7 +31,7 @@
 
 @mixin type-note {
 	color: var(--theme--foreground-subdued);
-	font-weight: 500;
+	font-weight: var(--theme--fonts--sans--font-weight);
 	font-size: 13px;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: italic;

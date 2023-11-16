@@ -146,7 +146,6 @@ const logoURL = computed<string | null>(() => {
 		transition: max-width var(--medium) var(--transition);
 
 		:slotted(.type-title) {
-			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
 			color: var(--theme--public--foreground-accent);
