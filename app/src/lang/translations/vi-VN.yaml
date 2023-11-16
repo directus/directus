@@ -127,7 +127,7 @@ version_key: Phiên bản mã
 version_name: Phiên bản tên
 main_version: Chính
 switch_version: Switch version
-switch_version_copy: Bạn có chắc chắn muốn chuyển sang phiên bản "{version}" không? 
+switch_version_copy: Bạn có chắc chắn muốn chuyển sang phiên bản "{version}" không?
 create_version: Tạo phiên bản
 rename_version: Đổi tên phiên bản
 compare_version: So sánh phiên bản
@@ -138,12 +138,12 @@ promote_version_drawer_title: Nâng cấp {version} lên Chính
 promote_version_changes: Thay đổi
 promote_version_preview: Xem trước
 outdated_notice: >-
-  Mục chính đã được cập nhật kể từ khi phiên bản này được tạo. 
+  Mục chính đã được cập nhật kể từ khi phiên bản này được tạo.
 promote_notice: >-
   Vui lòng xem lại tất cả các trường giá trị bên dưới và xác định phiên bản nào sẽ được sử dụng khi quảng bá phiên bản này vào chính mục.
 delete_version: Xóa phiên bản
 delete_version_copy: >-
-  Bạn có chắc chắn muốn xóa phiên bản "{version}" không? 
+  Bạn có chắc chắn muốn xóa phiên bản "{version}" không?
 delete_on_promote_copy: >-
   Bạn muốn xóa hoặc giữ lại phiên bản "{version}" sau khi quảng bá?
 reset_bookmark: Đặt lại Dấu trang
@@ -167,7 +167,7 @@ archive_confirm_count: >-
   Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
 reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống cho:'
 reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
-the_following_are_minimum_permissions: Các quyền tối thiểu sau đây sẽ được áp dụng khi "Truy cập ứng dụng" được bật. 
+the_following_are_minimum_permissions: Các quyền tối thiểu sau đây sẽ được áp dụng khi "Truy cập ứng dụng" được bật.
 app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
 recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
@@ -272,7 +272,7 @@ focal_length: Tiêu cự
 schema_setup_key: Cơ sở dữ liệu cột tên và API khóa của trường này
 create_field: Tạo thêm trường
 creating_new_field: 'Trường Mới ({collection})'
-field_in_collection: '{field} ({bộ sưu tập})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
 hidden_field: Trường Ẩn
 hidden_on_detail: Không hiển thị trong trang chi tiết
@@ -404,7 +404,7 @@ revision_delta_created: Đã tạo
 revision_delta_created_externally: Được tạo bên ngoài
 revision_delta_updated: 'Cập nhật 1 Trường | Cập nhật {count} Trường'
 revision_delta_deleted: Đã xóa
-revision_delta_version_saved: 'Lưu phiên bản (Đã cập nhật 1 trường) | '
+revision_delta_version_saved: 'Lưu phiên bản (Đã cập nhật 1 trường)'
 revision_delta_reverted: Phục hồi
 revision_delta_update_message: Trường này đã được cập nhật nhưng giá trị của nó đang bị ẩn vì lý do bảo mật.
 revision_delta_other: Phiên bản
@@ -523,7 +523,7 @@ start_export: Xuất dữ liệu
 not_available_for_local_downloads: Không có sẵn để tải xuống cục bộ
 exporting_all_items_in_collection: Xuất tất cả {total} bản ghi trong {collection}.
 exporting_limited_items_in_collection: '{count} trên {total} data line trong {collection} sẽ được xuất ra.'
-exporting_no_items_to_export: No data. 
+exporting_no_items_to_export: No data.
 exporting_download_hint: Khi file {fotmat} được tạo, quá trình tải về sẽ bắt đầu.
 exporting_library_hint: Khi hoàn tất xuất tệp {format}, bạn có thể tải xuống tệp tệp thư viện.
 exporting_library_hint_forced: Vì xuất nhiều dữ liệu nên sau khi hoàn tất, tệp {format} sẽ được lưu vào thư viện tệp.
@@ -574,8 +574,8 @@ file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
 no_users_copy: Không có người dùng nào thuộc quyền này.
-webhooks_count: 'Không có Webhook | '
-no_webhooks_copy: Không có webhook nào cả. 
+webhooks_count: 'Không có Webhook'
+no_webhooks_copy: Không có webhook nào cả.
 no_notifications: Không có thông báo
 no_notifications_copy: Chưa có thông báo mới!
 activity_log: Nhật ký hoạt động
@@ -726,9 +726,8 @@ start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 one_item: '1 sản phẩm'
 one_filtered_item: 'Đã lọc được 1 mục'
-delete_collection_are_you_sure: >-
-  Bạn có chắc chắn rằng bạn muốn xóa {bộ sưu tập} danh mục này không? 
-delete_folder_are_you_sure: Bạn có chắc chắn rằng bạn muốn xóa {folder} này? 
+delete_collection_are_you_sure: Bạn có chắc chắn rằng bạn muốn xóa {collection} danh mục này không?
+delete_folder_are_you_sure: Bạn có chắc chắn rằng bạn muốn xóa {folder} này?
 delete_collection_peer_dependencies: Các trường sau đây sẽ bị xóa kèm theo vì không liên quan đến bộ sưu tập này.
 collections_shown: Những Danh Mục Đang Hiển Thị
 visible_collections: Ứng dụng có thể nhìn thấy
@@ -815,7 +814,7 @@ create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
 language_display_template: Mẫu hiển thị ngôn ngữ
 translations_display_template: Mẫu hiển thị bản dịch
-n_items_selected: '0 record được chọn | '
+n_items_selected: '0 record được chọn'
 per_page: Mỗi trang
 all_files: Tất cả các tệp
 my_files: Tập tin của tôi
@@ -863,7 +862,7 @@ run_flow_confirm: Bạn có muốn thực hiện luồng này không?
 run_flow_on_current_collection: Chạy luồng trên hiện tại bộ sưu tập
 run_flow_on_current: Chạy quy trình trên hiện tại mục
 run_flow_on_current_edited_confirm: Mục này có thể được cập nhật theo quy trình này, bạn có chắc chắn muốn thực hiện nó không?
-run_flow_on_selected: Choose a or more item before | 
+run_flow_on_selected: Choose a or more item before
 run_flow: Chạy
 run_flow_success: Quy trình "{flow}" đã chạy thành công
 field_name_placeholder: Nhập trường tên...
@@ -874,7 +873,7 @@ view_trigger: Xem kích hoạt
 create_trigger: Tạo hoạt chất yếu tố
 trigger_setup: Kích hoạt cài đặt
 change_trigger: Thay đổi kích hoạt
-flow_delete_confirm: Bạn có chắc chắn muốn xóa quy trình "{flow}" không? 
+flow_delete_confirm: Bạn có chắc chắn muốn xóa quy trình "{flow}" không?
 set_flow_active: Đặt luồng thành kích hoạt
 set_flow_inactive: Đặt luồng thành không hoạt động
 edit_flow: Chỉnh sửa luồng
@@ -1023,7 +1022,7 @@ adding_user: Đã thêm người dùng
 unknown_user: Người dùng không xác định
 creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
 editing_in: 'Chỉnh sửa mục trong {collection}'
-viewing_in: 'Xem mục trong {bộ sưu tập}'
+viewing_in: 'Xem mục trong {collection}'
 creating_unit: 'Đang tạo {unit}'
 editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
@@ -1063,20 +1062,20 @@ page_help_collections_overview: '**Tổng quan về Bộ sưu tập** — Danh s
 page_help_collections_collection: >-
   ** Duyệt các mục ** - Liệt kê tất cả các mục trong {collection} mà bạn có quyền truy cập. Tùy chỉnh bố cục, bộ lọc và sắp xếp để điều chỉnh chế độ xem của bạn và thậm chí lưu dấu trang của các cấu hình khác nhau này để truy cập nhanh.
 page_help_collections_item: >-
-  **Chi tiết Mục** — Một biểu mẫu để xem và quản lý mục này. 
+  **Chi tiết Mục** — Một biểu mẫu để xem và quản lý mục này.
 page_help_activity_collection: >-
   **Duyệt hoạt động** — Danh sách toàn diện về tất cả nội dung hoạt động và hệ thống của người dùng.
 page_help_docs_global: >-
   **Tổng quan về tài liệu** — Tài liệu được thiết kế riêng cho phiên bản và sơ đồ của dự án này.
 page_help_files_collection: >-
-  **Thư viện tệp** — Liệt kê tất cả nội dung tệp được tải lên dự án này. 
+  **Thư viện tệp** — Liệt kê tất cả nội dung tệp được tải lên dự án này.
 page_help_files_item: >-
   **Chi tiết tệp** — Một biểu mẫu để quản lý tệp siêu dữ liệu, chỉnh sửa nội dung gốc và cập nhật quyền truy cập cài đặt.
 page_help_settings_project: "**Cài đặt** — Chung cấu hình tùy chọn cho dự án của bạn."
 page_help_settings_appearance: "**Giao diện** — Các tùy chọn về giao diện và chủ đề dự án của bạn."
 page_help_settings_extensions: '**Tiện ích mở rộng** — Tiện ích mở rộng tiện ích được cài đặt trong dự án của bạn.'
 page_help_settings_datamodel_collections: >-
-  **Mô hình dữ liệu: Bộ sưu tập** — Liệt kê tất cả các bộ sưu tập có sẵn. 
+  **Mô hình dữ liệu: Bộ sưu tập** — Liệt kê tất cả các bộ sưu tập có sẵn.
 page_help_settings_datamodel_fields: >-
   **Mô hình dữ liệu: Bộ sưu tập** — Một biểu mẫu để quản lý bộ sưu tập này và các trường của nó.
 page_help_settings_roles_collection: '**Duyệt vai trò** — Liệt kê các vai trò quản trị viên, công khai và người dùng tùy chỉnh.'
@@ -1236,7 +1235,7 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Ghi công
     attribution_placeholder: '© những người đóng góp cho OpenStreetMap'
-    transforms_note: Tên phương thức Sharp và các đối số của nó. 
+    transforms_note: Tên phương thức Sharp và các đối số của nó.
     additional_transforms: Các phép biến đổi bổ sung
     project_name: Tên Dự Án
     project_descriptor: Mô tả dự án
@@ -1324,7 +1323,7 @@ field_options:
         fit_text: Phù hợp bên trong
         outside_text: Vừa vặn bên ngoài
     additional_transforms: Các phép biến đổi bổ sung
-    transforms_note: Tên phương thức Sharp và các đối số của nó. 
+    transforms_note: Tên phương thức Sharp và các đối số của nó.
     mapbox_key: Mã thông báo truy cập hộp bản đồ
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Bản đồ nền
@@ -1432,7 +1431,7 @@ live_preview:
   toggle_3d: Chuyển đổi 3D
 shares: Chia sẻ
 unlimited_usage: Sử dụng không giới hạn
-uses_left: Không còn mục đích sử dụng | 
+uses_left: Không còn mục đích sử dụng
 no_shares: Không có lượt chia sẻ nào để hiển thị
 new_share: Chia sẻ mới
 expired: Đã hết hạn
@@ -1445,7 +1444,7 @@ shared_leave_blank_for_passwordless_access: Để trống để truy cập khôn
 shared_leave_blank_for_unlimited: Để trống không giới hạn
 shared_times_remaining: Liên kết này chỉ có thể được sử dụng {n} lần
 shared_last_remaining: Liên kết này chỉ có thể được sử dụng một lần
-shared_uses_left: Để tăng cường bảo mật, trang chia sẻ này đã được định cấu hình với số lượt xem hạn chế. 
+shared_uses_left: Để tăng cường bảo mật, trang chia sẻ này đã được định cấu hình với số lượt xem hạn chế.
 share_access_page: Truy cập trang được chia sẻ
 share_access_not_found: Trang chia sẻ này không tồn tại hoặc đã vượt quá số lần sử dụng tối đa được phép.
 share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.
@@ -1455,8 +1454,8 @@ share_copy_link_success: Đã sao chép liên kết
 share_copy_link_error: Không thể sao chép liên kết
 share_send_link: Gửi link
 relational_triggers: Trình kích hoạt quan hệ
-referential_action_field_label_m2o: Khi xóa {bộ sưu tập}...
-referential_action_field_label_o2m: Khi bỏ chọn {bộ sưu tập}...
+referential_action_field_label_m2o: Khi xóa {collection}...
+referential_action_field_label_o2m: Khi bỏ chọn {collection}...
 referential_action_no_action: Ngăn chặn việc xóa
 referential_action_cascade: Xóa mục {collection} (xếp tầng)
 referential_action_set_null: Vô hiệu hóa trường {field}
@@ -1465,12 +1464,12 @@ choose_action: Chọn hành động
 continue_label: Tiếp tục
 continue_as: >-
   Đang đăng nhập {name}. Nhấn tiếp tục để đăng nhập.
-editing_role: '{vai trò} Vai trò'
+editing_role: '{role} Vai trò'
 creating_webhook: Tạo Webhook
 default_label: Mặc định
 delete_label: Xóa bỏ
 delete_are_you_sure: >-
-  Hành động này là vĩnh viễn và không thể hoàn tác. 
+  Hành động này là vĩnh viễn và không thể hoàn tác.
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 description: Mô tả
@@ -1485,7 +1484,7 @@ file: Tệp
 file_library: Thư viện tệp
 forgot_password: Quên mật khẩu
 hidden: Ẩn
-hidden_in_group: Ẩn trong {nhóm}
+hidden_in_group: Ẩn trong {group}
 icon: Biểu tượng
 info: Thông tin
 normal: Bình thường
@@ -1534,7 +1533,7 @@ something_went_wrong: Đã xảy ra lỗi.
 sort_direction: Chiều sắp xếp
 export_location: Vị trí xuất
 export_started: Đã bắt đầu xuất
-export_started_copy: Quá trình xuất của bạn đã bắt đầu. 
+export_started_copy: Quá trình xuất của bạn đã bắt đầu.
 sort_asc: Sắp xếp tăng dần
 sort_desc: Sắp xếp giảm dần
 disable_sort: Tắt sắp xếp
@@ -1599,7 +1598,7 @@ interfaces:
     checkboxes: Hộp kiểm
     description: Chọn giữa nhiều tùy chọn thông qua các hộp kiểm
     allow_other: Cho phép khác
-    show_more: 'Hiển thị thêm {đếm}'
+    show_more: 'Hiển thị thêm {count}'
     items_shown: Các mặt hàng được hiển thị
   select-multiple-checkbox-tree:
     name: Hộp kiểm (Cây)
@@ -1735,14 +1734,14 @@ interfaces:
     default_view: Chế độ xem mặc định
     invalid_options: Tùy chọn không hợp lệ
     invalid_format: Định dạng không hợp lệ ({format})
-    unexpected_geometry: Đã mong đợi {mong đợi}, đã nhận được {có}.
+    unexpected_geometry: Đã mong đợi {expected}, đã nhận được {got}.
     fit_bounds: Chế độ xem phù hợp với dữ liệu
     native: Tự nhiên
     geojson: GeoJSON
     lnglat: Kinh độ vĩ độ
     wkt: WKT
     wkb: WKB
-    click_to_select: Bấm để chọn {hình học}
+    click_to_select: Bấm để chọn {geometry}
   presentation-notice:
     notice: Để ý
     description: Hiển thị thông báo ngắn
@@ -1755,7 +1754,7 @@ interfaces:
   system-folder:
     folder: Thư mục gốc
     description: Chọn một thư mục
-    field_hint: Thư mục mặc định cho các tệp được tải lên mà không chỉ định thư mục. 
+    field_hint: Thư mục mặc định cho các tệp được tải lên mà không chỉ định thư mục.
     root_name: Thư viện tệp gốc
     system_default: Mặc định hệ thống
   select-radio:
@@ -1845,7 +1844,7 @@ interfaces:
     toolbar: Thanh công cụ
     custom_formats: Định dạng tùy chỉnh
     options_override: Ghi đè tùy chọn
-    folder_note: Thư mục dành cho các tập tin được tải lên. 
+    folder_note: Thư mục dành cho các tập tin được tải lên.
     imageToken: Mã thông báo truy cập tĩnh
     imageToken_label: Mã thông báo truy cập tĩnh được thêm vào URL của nội dung
   input-block-editor:
@@ -1895,7 +1894,7 @@ interfaces:
     value_securely_saved: Giá trị được lưu an toàn
     generate: Tạo mã thông báo
     regenerate: Tạo lại mã thông báo
-    generate_success_copy: Đảm bảo sao lưu và sao chép mã thông báo ở trên. 
+    generate_success_copy: Đảm bảo sao lưu và sao chép mã thông báo ở trên.
     remove_token: Xóa mã thông báo
   system-raw-editor:
     system-raw-editor: Trình chỉnh sửa thô
@@ -2197,7 +2196,7 @@ triggers:
 a_flow_uuid: Chọn một Luồng để kích hoạt...
 any_string_or_json: Bất kỳ chuỗi hoặc JSON nào...
 item_payload_placeholder: Đây là JSON được sử dụng để cập nhật giá trị trường của mục...
-operation_variables_note: Bạn có thể truy cập dữ liệu luồng bằng các biến như **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger 
+operation_variables_note: Bạn có thể truy cập dữ liệu luồng bằng các biến như **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger
 operations:
   condition:
     name: Tình trạng
