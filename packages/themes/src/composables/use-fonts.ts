@@ -4,7 +4,7 @@ import { computed, unref } from 'vue';
 import type { Theme } from '../schemas/theme.js';
 import { ThemeSchema } from '../schemas/theme.js';
 
-export const useFonts = (rules: MaybeRef<Theme>) => {
+export const useFonts = (theme: MaybeRef<Theme>) => {
 	const paths: string[][] = [];
 
 	const find = (schema: Record<string, unknown>, path: string[] = []) => {
@@ -27,7 +27,11 @@ export const useFonts = (rules: MaybeRef<Theme>) => {
 		const defs: string[] = [];
 
 		for (const path of paths) {
-			defs.push(get(unref(rules).rules, path).trim());
+			const fontDefinition = get(unref(theme).rules, path);
+
+			if (fontDefinition) {
+				defs.push(fontDefinition.trim());
+			}
 		}
 
 		const fonts = new Set<string>();
