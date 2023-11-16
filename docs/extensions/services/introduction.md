@@ -14,7 +14,7 @@ use the services directly.
 
 ## Available Services
 
-Various services are available within Directus, such as `ItemsService`, `CollectionService`, `FilesService`, and others.
+Various services are available within Directus including `ItemsService`, `CollectionService`, `FilesService`.
 
 To get started to create endpoints with any service, extract it from `services`.
 
