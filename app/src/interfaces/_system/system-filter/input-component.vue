@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -23,7 +23,7 @@ const emit = defineEmits<{
 	(e: 'input', value: string | number | Record<string, unknown> | boolean | null): void;
 }>();
 
-const inputEl = ref<HTMLElement>();
+const inputEl = ref<HTMLInputElement>();
 const { t } = useI18n();
 
 const dateTimeMenu = ref();
@@ -37,10 +37,6 @@ const displayValue = computed(() => {
 	}
 
 	return props.value;
-});
-
-const width = computed(() => {
-	return (props.value?.toString().length || 2) + 1 + 'ch';
 });
 
 const inputPattern = computed(() => {
@@ -58,11 +54,23 @@ const inputPattern = computed(() => {
 	}
 });
 
-onMounted(() => {
-	if (props.focus) inputEl.value?.focus();
+function getInputWidth(input: string | null) {
+	// At minimum 3, at maximum 40
+	return Math.min(Math.max(input?.length ?? 2, 2) + 1, 40) + 'ch';
+}
+
+watch(inputEl, () => {
+	console.log('INPUT EL CHANGED');
+	if (inputEl.value) inputEl.value.style.width = getInputWidth(inputEl.value.value);
 });
 
-function emitValue(val: string) {
+onMounted(() => {
+	console.log('WE MOUNTED:', inputEl.value?.value);
+	if (props.focus) inputEl.value?.focus();
+	if (inputEl.value) inputEl.value.style.width = getInputWidth(inputEl.value.value);
+});
+
+function emitValue(val: string | null) {
 	if (val === '') {
 		return emit('input', null);
 	}
@@ -78,6 +86,16 @@ function emitValue(val: string) {
 	if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
 		return emit('input', val);
 	}
+}
+
+function onInput(val: string | null) {
+	console.log('ON INPUT::::', typeof val, val);
+
+	if (inputEl.value) {
+		inputEl.value.style.width = getInputWidth(val);
+	}
+
+	emitValue(val);
 }
 </script>
 
@@ -96,9 +114,8 @@ function emitValue(val: string) {
 		type="text"
 		:pattern="inputPattern"
 		:value="value"
-		:style="{ width }"
 		placeholder="--"
-		@input="emitValue(($event.target as HTMLInputElement).value)"
+		@input="onInput(($event.target as HTMLInputElement).value)"
 	/>
 	<v-select
 		v-else-if="is === 'select'"
@@ -116,9 +133,8 @@ function emitValue(val: string) {
 			type="text"
 			:pattern="inputPattern"
 			:value="value"
-			:style="{ width }"
 			placeholder="--"
-			@input="emitValue(($event.target as HTMLInputElement).value)"
+			@input="onInput(($event.target as HTMLInputElement).value)"
 		/>
 		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
@@ -128,7 +144,7 @@ function emitValue(val: string) {
 				<v-date-picker
 					:type="type"
 					:model-value="value"
-					@update:model-value="emitValue"
+					@update:model-value="onInput"
 					@close="dateTimeMenu?.deactivate"
 				/>
 			</div>
