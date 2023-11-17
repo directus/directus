@@ -35,7 +35,7 @@ Below is a list of commonly used services you would find handy:
 
 - **ItemsService:** Provides access to perform operations on items in a collection. 
 - **CollectionsService:** Provides access to perform operations on collections.
-- **FilesService:** Provides access to upload, import and perform other CRUD operations on files in Directus Files.
+- **FilesService:** Provides access to upload, import and perform other operations on files.
 - **UsersService:** Extends ItemsService and adds authentication methods for user login as well as retrieving profile
   details.
 - **FieldsService:** Provides access to perform CRUD operations to fields used in collections and item records.
