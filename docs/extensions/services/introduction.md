@@ -27,8 +27,7 @@ export default defineEndpoint((router, context) => {
 })
 ```
 
-With each endpoint implementation, you can create an instance of a service and use its methods to perform CRUD
-operations.
+With each endpoint implementation, you can create an instance of a service and use its methods to perform operations.
 
 ## Commonly Used Services
 
