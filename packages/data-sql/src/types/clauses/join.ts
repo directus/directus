@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryConditionNode } from './where/conditions.js';
+import type { AbstractSqlQueryConditionNode } from './where/condition.js';
 import type { AbstractSqlQueryLogicalNode } from './where/logical.js';
 
 /**
