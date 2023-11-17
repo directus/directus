@@ -110,7 +110,7 @@ export default defineTheme({
 				backgroundHover: 'var(--theme--navigation--background-accent)',
 				backgroundActive: 'var(--theme--navigation--background-accent)',
 
-				fontFamily: 'var(--theme--font-family-sans-serif)',
+				fontFamily: 'var(--theme--fonts--sans--font-family)',
 
 				divider: {
 					borderColor: 'var(--theme--border-color-accent)',
@@ -126,7 +126,7 @@ export default defineTheme({
 			boxShadow: '0 4px 7px -4px rgb(0 0 0 / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
-				fontFamily: 'var(--theme--font-family-sans-serif)',
+				fontFamily: 'var(--theme--fonts--sans--font-family)',
 			},
 			title: {
 				foreground: 'var(--theme--foreground-accent)',
@@ -142,7 +142,7 @@ export default defineTheme({
 			field: {
 				label: {
 					foreground: 'var(--theme--foreground-accent)',
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					fontWeight: '600',
 				},
 				input: {
@@ -169,7 +169,7 @@ export default defineTheme({
 		sidebar: {
 			background: 'var(--theme--background-normal)',
 			foreground: 'var(--theme--foreground-subdued)',
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			borderColor: 'transparent',
 			borderWidth: '0px',
 
@@ -189,7 +189,7 @@ export default defineTheme({
 					backgroundHover: 'var(--theme--sidebar--section--toggle--background)',
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
 
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 
 					borderColor: 'transparent',
 					borderWidth: '0px',
