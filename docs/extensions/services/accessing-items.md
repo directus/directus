@@ -3,66 +3,76 @@ description: Learn about the ItemsService in Directus and how to utilize them wh
 contributors: Esther Agbaje
 ---
 
-# Accessing Items in the Database
+# Accessing Items
 
-The `ItemsService` allows you to work with and retrieve items data by creating endpoints to items in a collection. It
-provides a way to perform CRUD operations on items in a database.
+The `ItemsService` provides access to perform operations on items in a collection. It requires a collection and a schema
+to operate.
 
-## Create an Item in a Specific Collection
+In the example below, we're desctructuring `services` and `getSchema` from context and in turn `ItemsService` from
+`services`.
 
 ```js
-  router.post('/items/:collection', async (req, res) => {
+export default defineEndpoint((router, context) => {
+  const { services, getSchema } = context;
+  const { ItemsService } = services;
+
+  router.get('/', async (req, res) => {
     const schema = await getSchema();
-    const { collection } = req.params;
-
-    const service = new ItemsService(collection, { schema });
-    const data = await service.createOne(req.body);
-
-    res.json(data);
+    const service = new ItemsService('collection_name', { schema });
   });
+});
 ```
 
-## Get an Item from a Specific Collection
+## Create an Item
+
+```js
+router.post('/items/:collection', async (req, res) => {
+  const schema = await getSchema();
+  const { collection } = req.params;
+
+  const service = new ItemsService(collection, { schema });
+  const data = await service.createOne(req.body);
+  res.json(data);
+});
+```
+
+## Get an Item
 
 ```js
 router.get('/items/:collection/:id', async (req, res) => {
-    const schema = await getSchema();
+  const schema = await getSchema();
+  const { collection, id } = req.params;
+  const service = new ItemsService(collection, { schema });
 
-    const { collection, id } = req.params;
-    const service = new ItemsService(collection, { schema });
-
-    const data = await service.readOne(id);
-    res.json(data);
-  });
+  const data = await service.readOne(id);
+  res.json(data);
+});
 ```
 
-## Update an Item in a Specific Collection
+## Update an Item
 
 ```js
- router.patch('/items/:collection/:id', async (req, res) => {
-    const schema = await getSchema();
+router.patch('/items/:collection/:id', async (req, res) => {
+  const schema = await getSchema();
+  const { collection, id } = req.params;
+  const service = new ItemsService(collection, { schema });
 
-    const { collection, id } = req.params;
-
-    const service = new ItemsService(collection, { schema });
-    const data = await service.updateOne(id, req.body);
-
-    res.json(data);
-  });
+  const data = await service.updateOne(id, req.body);
+  res.json(data);
+});
 ```
 
-## Delete an Item from a Specific Collection
+## Delete an Item
 
 ```js
-  router.delete('/items/:collection/:id', async (req, res) => {
-    const schema = await getSchema();
+router.delete('/items/:collection/:id', async (req, res) => {
+  const schema = await getSchema();
+  const { collection, id } = req.params;
+  const service = new ItemsService(collection, { schema });
 
-    const { collection, id } = req.params;
-    const service = new ItemsService(collection, { schema });
-
-    await service.deleteOne(id);
-    res.json();
-  });
+  await service.deleteOne(id);
+  res.json();
+});
 ```
 
 ::: tip Explore ItemsService In-depth
