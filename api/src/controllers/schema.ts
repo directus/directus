@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/utils';
-import { renderSchema } from '@directus/sdk-schema-generator';
+import { buildSchema, renderSchema } from '@directus/sdk-schema-generator';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
@@ -134,18 +134,23 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const fullSchema = await getSchema();
 		const accountability = req.accountability;
+		const schema = accountability?.admin === true ? fullSchema : reduceSchema(fullSchema, accountability?.permissions ?? []);
 
-		const schema = accountability.admin === true ? fullSchema : reduceSchema(fullSchema, accountability.permissions ?? []);
+		const schemaObject = await buildSchema(schema, {
+			nameTransform: String(req.query['naming']) ?? 'database',
+		});
 
-		// res.json(schema);
-		// return;
+		// const schemaName = typeof req.query['root_name'] === 'string' ? req.query['root_name'] : 'MySchema';
 
 		const schemaString = renderSchema(schemaObject, {
 			rootName: typeof req.query['root_name'] === 'string' ? req.query['root_name'] : 'MySchema',
-			nameTransform: String(req.query['naming']) ?? 'database',
+			// nameTransform: String(req.query['naming']) ?? 'database',
 			// TODO support indentation options
 			indent: { amount: 4, char: ' ' },
 		});
+
+		// res.setHeader('Content-Type', 'text/plain');
+		// res.send(schemaString);return;
 
 		if (req.query['download']) {
 			res.setHeader('Content-Disposition', `attachment; filename="${req.query['download']}"`);

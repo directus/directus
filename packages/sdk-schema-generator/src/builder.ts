@@ -1,8 +1,7 @@
 import type { BuilderOptions, FieldDefinition, SchemaDefinition } from './types.js';
 import { fieldTypeMap } from './constants.js';
 import { getNamingFn } from './naming.js';
-import type { Field } from '@directus/types';
-import type { SchemaOverview } from '@directus/schema';
+import type { FieldOverview, SchemaOverview } from '@directus/types';
 
 const defaultOptions: BuilderOptions = {
 	nameTransform: 'database',
@@ -13,92 +12,86 @@ export function buildSchema(data: SchemaOverview, options = defaultOptions) {
 	const result: SchemaDefinition = new Map();
 
 	// setup the collections
-	for (const collection of data.collections) {
+	for (const collection of Object.values(data.collections)) {
 		if (result.has(collection.collection)) {
 			continue;
 		}
 
-		const collectionName = collection.collection.startsWith('directus_')
+		const systemCollection = collection.collection.startsWith('directus_');
+
+		const collectionName = systemCollection
 			? collection.collection
 			: nameFn(collection.collection);
 
+
 		result.set(collection.collection, {
 			name: collectionName,
-			system: Boolean(collection.meta?.system),
-			singleton: Boolean(collection.meta?.singleton),
-			fields: [],
-		});
-	}
+			system: systemCollection,
+			singleton: Boolean(collection.singleton),
+			fields: Object.values(collection.fields).map((field) => {
+				let mappedType: string[] | string | undefined = fieldTypeMap[field.type];
+				let fieldRelation: FieldDefinition['relation'] = null;
 
-	// fill in the fields
-	for (const field of data.fields) {
-		const collection = result.get(field.collection);
-
-		if (collection === undefined || (collection.system && field.meta?.system)) {
-			continue;
-		}
-
-		let mappedType: string[] | string | undefined = fieldTypeMap[field.type];
-		let fieldRelation: FieldDefinition['relation'] = null;
-
-		// check many to any relations
-		if (isRelationAlias(field)) {
-			const relation = data.relations.find(
-				({ meta }) => meta?.one_collection === field.collection && meta?.one_field === field.field
-			);
-
-			const primaryKey = data.fields.find(
-				({ collection, schema }) => collection === field.collection && schema?.is_primary_key
-			);
-
-			if (relation && primaryKey) {
-				fieldRelation = { collection: relation.collection, mutliple: true };
-				mappedType = fieldTypeMap[primaryKey.type] + '[]';
-			}
-		}
-
-		if (mappedType === undefined) {
-			continue;
-		}
-
-		// check one to any relations
-		if (fieldRelation == null) {
-			const relation = data.relations.find((rel) => rel.field === field.field && rel.collection === field.collection);
-
-			if (relation) {
-				// m2o relations
-				if (relation.related_collection) {
-					fieldRelation = { collection: relation.related_collection, mutliple: false };
+				if (systemCollection && field.generated) {
+					return null;
 				}
 
-				// m2a relations
-				if (relation.meta?.one_allowed_collections) {
-					fieldRelation = relation.meta.one_allowed_collections.map((collectionName) => ({
-						collection: collectionName,
-						mutliple: false,
-					}));
+				// check many to any relations
+				if (isRelationAlias(field)) {
+					const relation = data.relations.find(
+						({ meta }) => meta?.one_collection === collection.collection && meta?.one_field === field.field
+					);
+
+					const primaryKey = collection.fields[collection.primary];
+
+					if (relation && primaryKey) {
+						fieldRelation = { collection: relation.collection, mutliple: true };
+						mappedType = fieldTypeMap[primaryKey.type] + '[]';
+					}
 				}
-			}
-		}
 
-		// check for m2a collection fields
-		if (field.field === 'collection') {
-			const rel = data.relations.find((r) => r.collection === field.collection && r.field === 'item');
+				if (mappedType === undefined) {
+					return null;
+				}
 
-			if (rel && rel.meta?.one_allowed_collections) {
-				mappedType = rel.meta.one_allowed_collections.map((c) => `'${c}'`);
-			}
-		}
+				// check one to any relations
+				if (fieldRelation == null) {
+					const relation = data.relations.find((rel) => rel.field === field.field && rel.collection === collection.collection);
 
-		collection.fields.push({
-			name: field.field,
-			type: mappedType!,
-			nullable: Boolean(field.schema?.is_nullable),
-			primary_key: Boolean(field.schema?.is_primary_key),
-			relation: fieldRelation,
+					if (relation) {
+						// m2o relations
+						if (relation.related_collection) {
+							fieldRelation = { collection: relation.related_collection, mutliple: false };
+						}
+
+						// m2a relations
+						if (relation.meta?.one_allowed_collections) {
+							fieldRelation = relation.meta.one_allowed_collections.map((collectionName) => ({
+								collection: collectionName,
+								mutliple: false,
+							}));
+						}
+					}
+				}
+
+				// check for m2a collection fields
+				if (field.field === 'collection') {
+					const rel = data.relations.find((r) => r.collection === collection.collection && r.field === 'item');
+
+					if (rel && rel.meta?.one_allowed_collections) {
+						mappedType = rel.meta.one_allowed_collections.map((c) => `'${c}'`);
+					}
+				}
+
+				return {
+					name: field.field,
+					type: mappedType!,
+					nullable: Boolean(field.nullable),
+					primary_key: collection.primary === field.field,
+					relation: fieldRelation,
+				};
+			}).filter(x => Boolean(x)) as FieldDefinition[],
 		});
-
-		result.set(field.collection, collection);
 	}
 
 	// clean up untouched system collections or those without fields
@@ -111,13 +104,12 @@ export function buildSchema(data: SchemaOverview, options = defaultOptions) {
 	return result;
 }
 
-function isRelationAlias(field: Field): boolean {
-	if (field.type !== 'alias' || !field.meta?.special) {
+function isRelationAlias(field: FieldOverview): boolean {
+	if (field.type !== 'alias' || !field.special) {
 		return false;
 	}
 
-	const fieldSpecial = field.meta.special;
-	const isRelationField = ['o2m', 'm2m', 'm2a'].some((type) => fieldSpecial.includes(type));
+	const isRelationField = ['o2m', 'm2m', 'm2a'].some((type) => field.special.includes(type));
 
 	return isRelationField;
 }

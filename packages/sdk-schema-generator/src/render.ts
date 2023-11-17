@@ -1,28 +1,24 @@
-import type { SchemaOverview } from '@directus/types';
-import { getNamingFn, pascalcase } from './naming.js';
-import type { Nullable, RenderOptions } from './types.js';
+import { pascalcase } from './naming.js';
+import type { Nullable, RenderOptions, SchemaDefinition } from './types.js';
 
 const defaultOptions: RenderOptions = {
 	rootName: 'MySchema',
-	nameTransform: 'database',
 	indent: {
 		amount: 4,
 		char: ' ',
 	},
 };
 
-export function renderSchema(schema: SchemaOverview, options = defaultOptions) {
+export function renderSchema(schema: SchemaDefinition, options = defaultOptions) {
+	const sortedNames = [...schema.keys()].sort();
 	let rootType = `export interface ${options.rootName} {\n`;
-
-	const nameFn = getNamingFn(options.nameTransform);
-	const sortedNames = Object.keys(schema.collections).sort();
 	const indentation = options.indent.char.repeat(options.indent.amount);
 
 	for (const name of sortedNames) {
-		const collection = schema.collections[name];
+		const collection = schema.get(name);
 		if (!collection) continue;
 
-		rootType += `${indentation}${name}: ${nameFn(collection.collection)}${fmtArray(!collection.singleton)};\n`;
+		rootType += `${indentation}${name}: ${collection.name}${fmtArray(!collection.singleton)};\n`;
 	}
 
 	rootType += '}\n\n';
@@ -31,27 +27,24 @@ export function renderSchema(schema: SchemaOverview, options = defaultOptions) {
 	const systemImports = new Set<string>();
 
 	for (const name of sortedNames) {
-		const collection = schema.collections[name];
+		const collection = schema.get(name);
 		if (!collection) continue;
 
-		let collectionType = `interface ${nameFn(collection.collection)} {\n`;
+		let collectionType = `interface ${collection.name} {\n`;
 
-		const pk = collection.fields[collection.primary];
-		const sortedFieldNames = Object.keys(collection.fields).sort();
+		const pk = collection.fields.find(({ primary_key }) => primary_key);
+		const sortedFields = collection.fields.sort((a, b) => (a.name > b.name ? 1 : -1));
 
 		if (pk) {
 			// pull the primary key to the top
-			collectionType += `${indentation}${pk.field}: ${makeArray(pk.type).join(' | ')};\n`;
+			collectionType += `${indentation}${pk.name}: ${makeArray(pk.type).join(' | ')};\n`;
 		}
 
-		for (const fieldName of sortedFieldNames) {
-			const field = collection.fields[fieldName];
-
-			if (fieldName === collection.primary || !field) continue;
+		for (const field of sortedFields) {
+			if (field.primary_key) continue;
 
 			const fieldTypes = makeArray(field.type);
 
-			// TODO fix relations
 			for (const relation of makeArray(field.relation)) {
 				let relationName = '';
 
@@ -70,7 +63,7 @@ export function renderSchema(schema: SchemaOverview, options = defaultOptions) {
 				fieldTypes.push('null');
 			}
 
-			collectionType += `${indentation}${field.field}: ${fieldTypes.join(' | ')};\n`;
+			collectionType += `${indentation}${field.name}: ${fieldTypes.join(' | ')};\n`;
 		}
 
 		collectionType += '}';
