@@ -34,7 +34,7 @@ CRUD operations.
 Below is a list of commonly used services you would find handy:
 
 - **ItemsService:** Provides access to perform operations on items in a collection. 
-- **CollectionsService:** Provides access to perform CRUD operations on database collections.
+- **CollectionsService:** Provides access to perform operations on collections.
 - **FilesService:** Provides access to upload, import and perform other CRUD operations on files in Directus Files.
 - **UsersService:** Extends ItemsService and adds authentication methods for user login as well as retrieving profile
   details.
