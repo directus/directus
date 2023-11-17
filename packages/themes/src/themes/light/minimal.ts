@@ -87,12 +87,11 @@ export default defineTheme({
 					field: {
 						input: {
 							height: '42px',
-						}
-					}
-				}
+						},
+					},
+				},
 			},
 		},
-		fontFamilyDisplay: 'system-ui',
 		public: {
 			art: {
 				background: 'color-mix(in srgb, #FFFFFF, var(--project-color) 10%)',
@@ -110,5 +109,10 @@ export default defineTheme({
 		secondaryAccent: '#E2E8F0',
 		secondaryBackground: '#F1F5F9',
 		secondarySubdued: '#F8FAFC',
+		fonts: {
+			display: {
+				fontFamily: 'system-ui',
+			},
+		},
 	},
 });

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { rulesToCssVars, useTheme } from '@directus/themes';
 import { computed } from 'vue';
 
@@ -7,7 +8,9 @@ const props = defineProps<{
 	theme: string | null;
 }>();
 
-const { theme } = useTheme(props.darkMode, props.theme, props.theme, {}, {});
+const { themeLightOverrides, themeDarkOverrides } = useThemeConfiguration();
+
+const { theme } = useTheme(props.darkMode, props.theme, props.theme, themeLightOverrides, themeDarkOverrides);
 
 const localVars = computed(() => {
 	return rulesToCssVars(theme.value.rules);

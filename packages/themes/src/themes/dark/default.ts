@@ -131,14 +131,19 @@ export default defineTheme({
 			title: {
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--fonts--display--font-family)',
+				fontWeight: 'var(--theme--fonts--display--font-weight)',
 			},
 		},
 
 		form: {
+			columnGap: '32px',
+			rowGap: '40px',
+
 			field: {
 				label: {
 					foreground: 'var(--theme--foreground-accent)',
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
+					fontWeight: '600',
 				},
 				input: {
 					background: 'var(--theme--background)',
@@ -156,6 +161,7 @@ export default defineTheme({
 					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 
 					height: '60px',
+					padding: '16px',
 				},
 			},
 		},
@@ -213,6 +219,7 @@ export default defineTheme({
 							boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
 							height: '52px',
+							padding: '12px',
 						},
 					},
 				},
@@ -255,6 +262,7 @@ export default defineTheme({
 						boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
 						height: 'var(--theme--form--field--input--height)',
+						padding: 'var(--theme--form--field--input--padding)',
 					},
 				},
 			},
