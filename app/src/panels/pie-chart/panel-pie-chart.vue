@@ -134,7 +134,7 @@ async function setupChart() {
 			},
 			type: props.donut ? 'donut' : 'pie',
 			height: size,
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			selection: {
 				enabled: false,
@@ -216,7 +216,7 @@ function getPercentage(value: number) {
 		: n(value);
 }
 
-function formatColor(color: string | number, value: string | number) {
+function formatColor(color: string | number, value?: string | number) {
 	if (isNil(value) || props.conditionalFill.length === 0) return color;
 	let formattedColor = color;
 
@@ -292,7 +292,7 @@ function checkMatchingConditionalFill(
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {

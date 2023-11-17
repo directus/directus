@@ -1,14 +1,12 @@
 import type { Accountability, Aggregate, Filter, Query } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
-import { getEnv } from '../env.js';
+import env from '../env.js';
 import logger from '../logger.js';
 import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
-
-	const env = getEnv();
 
 	const hasMaxLimit =
 		'QUERY_LIMIT_MAX' in env &&

@@ -242,8 +242,8 @@ function useItem() {
 			const response = await api.get(endpoint, { params: { fields } });
 
 			initialValues.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -269,8 +269,8 @@ function useItem() {
 				...(initialValues.value || {}),
 				[junctionFieldInfo.value.field]: response.data.data,
 			};
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -368,7 +368,13 @@ function useActions() {
 </script>
 
 <template>
-	<v-drawer v-model="internalActive" :title="title" persistent @cancel="cancel">
+	<v-drawer
+		v-model="internalActive"
+		:title="title"
+		:icon="collectionInfo?.meta?.icon ?? undefined"
+		persistent
+		@cancel="cancel"
+	>
 		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
 			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
 
@@ -450,7 +456,7 @@ function useActions() {
 	padding-bottom: var(--content-padding-bottom);
 
 	.preview {
-		margin-bottom: var(--form-vertical-gap);
+		margin-bottom: var(--theme--form--row-gap);
 	}
 
 	.drawer-item-order {

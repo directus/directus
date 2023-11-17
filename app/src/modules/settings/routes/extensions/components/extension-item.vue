@@ -49,10 +49,13 @@ const toggleEnabled = async () => {
 	<v-list-item block :class="{ disabled: !extension.meta.enabled }">
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content class="monospace">{{ extension.name }}</v-list-item-content>
+		<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
 
 		<template v-if="extension.schema?.type !== 'bundle'">
 			<v-progress-circular v-if="changingEnabledState" indeterminate />
-			<v-chip v-else small>{{ extension.meta.enabled ? t('enabled') : t('disabled') }}</v-chip>
+			<v-chip v-else class="state" :class="{ enabled: extension.meta.enabled }" small>
+				{{ extension.meta.enabled ? t('enabled') : t('disabled') }}
+			</v-chip>
 			<extension-item-options
 				class="options"
 				:name="extension.name"
@@ -75,7 +78,7 @@ const toggleEnabled = async () => {
 
 <style lang="scss" scoped>
 .monospace {
-	--v-list-item-content-font-family: var(--theme--font-family-monospace);
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .nested {
@@ -88,5 +91,19 @@ const toggleEnabled = async () => {
 
 .options {
 	margin-left: 12px;
+}
+
+.version {
+	margin-right: 8px;
+}
+
+.state {
+	--v-chip-color: var(--theme--danger);
+	--v-chip-background-color: var(--theme--danger-background);
+
+	&.enabled {
+		--v-chip-color: var(--theme--success);
+		--v-chip-background-color: var(--theme--success-background);
+	}
 }
 </style>

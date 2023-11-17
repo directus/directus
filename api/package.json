@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "14.0.2",
+	"version": "14.1.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -145,6 +145,7 @@
 		"openid-client": "5.4.2",
 		"ora": "6.3.1",
 		"otplib": "12.0.1",
+		"p-queue": "7.4.1",
 		"papaparse": "5.4.1",
 		"pino": "8.14.1",
 		"pino-http": "8.3.3",

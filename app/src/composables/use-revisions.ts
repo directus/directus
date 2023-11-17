@@ -1,15 +1,15 @@
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
+import type { Revision, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { Filter, ContentVersion } from '@directus/types';
-import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
+import type { ContentVersion, Filter } from '@directus/types';
+import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
-import { ref, Ref, unref, watch } from 'vue';
+import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Revision, RevisionsByDate } from '@/types/revisions';
 
 type UseRevisionsOptions = {
 	action?: Action;
@@ -74,7 +74,9 @@ export function useRevisions(
 				});
 			}
 
-			const response = await api.get(`/revisions`, {
+			type RevisionResponse = { data: Revision[]; meta: { filter_count: number } };
+
+			const response = await api.get<RevisionResponse>(`/revisions`, {
 				params: {
 					filter,
 					sort: '-id',
@@ -101,7 +103,7 @@ export function useRevisions(
 			});
 
 			if (!created.value) {
-				const createdResponse = await api.get(`/revisions`, {
+				const createdResponse = await api.get<RevisionResponse>(`/revisions`, {
 					params: {
 						filter: {
 							collection: {
@@ -143,8 +145,8 @@ export function useRevisions(
 			}
 
 			const revisionsGroupedByDate = groupBy(
-				response.data.data.filter((revision: any) => !!revision.activity),
-				(revision: Revision) => {
+				response.data.data.filter((revision) => !!revision.activity),
+				(revision) => {
 					// revision's timestamp date is in iso-8601
 					const date = new Date(new Date(revision.activity.timestamp).toDateString());
 					return date;
@@ -166,7 +168,7 @@ export function useRevisions(
 				else if (thisYear) dateFormatted = localizedFormat(date, String(t('date-fns_date_short_no_year')));
 				else dateFormatted = localizedFormat(date, String(t('date-fns_date_short')));
 
-				const revisions = [];
+				const revisions: RevisionWithTime[] = [];
 
 				for (const revision of value) {
 					revisions.push({
@@ -193,8 +195,8 @@ export function useRevisions(
 			revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
 			revisionsCount.value = response.data.meta.filter_count;
 			pagesCount.value = Math.ceil(revisionsCount.value / pageSize);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}

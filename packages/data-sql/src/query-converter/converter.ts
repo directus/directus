@@ -39,7 +39,8 @@ export const convertQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => 
 
 	try {
 		const convertedModifiers = convertModifiers(abstractQuery.modifiers, abstractQuery.collection, idGen);
-		clauses = Object.assign(clauses, convertedModifiers.clauses);
+		const joins = [...(clauses.joins ?? []), ...(convertedModifiers.clauses.joins ?? [])];
+		clauses = { ...clauses, ...convertedModifiers.clauses, joins };
 		parameters.push(...convertedModifiers.parameters);
 	} catch (error: any) {
 		throw new Error(`Failed to convert query modifiers: ${error.message}`);

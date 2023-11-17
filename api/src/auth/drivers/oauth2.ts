@@ -170,7 +170,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 			if (env['AUTH_SYNC_USER_INFO']) {
 				emitPayload = {
-					auth_data: userPayload.auth_data ?? null,
+					auth_data: userPayload.auth_data,
 					first_name: userPayload.first_name,
 					last_name: userPayload.last_name,
 					email: userPayload.email,
@@ -193,7 +193,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
-			await this.usersService.updateOne(userId, updatedUserPayload);
+			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
+				await this.usersService.updateOne(userId, updatedUserPayload);
+			}
 
 			return userId;
 		}

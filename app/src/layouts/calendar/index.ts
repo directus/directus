@@ -13,18 +13,18 @@ import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
+import { EventImpl } from '@fullcalendar/core/internal';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { format, formatISO, isValid, parse } from 'date-fns';
-import { Ref, computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
 import CalendarOptions from './options.vue';
 import { LayoutOptions } from './types';
-import { EventImpl } from '@fullcalendar/core/internal';
 
 export default defineLayout<LayoutOptions>({
 	id: 'calendar',
@@ -127,7 +127,7 @@ export default defineLayout<LayoutOptions>({
 			}
 		);
 
-		const events: Ref<EventInput> = computed(
+		const events = computed<EventInput>(
 			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || []
 		);
 
@@ -198,8 +198,8 @@ export default defineLayout<LayoutOptions>({
 
 					try {
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
-					} catch (err: any) {
-						unexpectedError(err);
+					} catch (error) {
+						unexpectedError(error);
 					}
 				},
 			};
@@ -280,6 +280,7 @@ export default defineLayout<LayoutOptions>({
 
 		function createCalendar(calendarElement: HTMLElement) {
 			calendar.value = new Calendar(calendarElement, fullFullCalendarOptions.value);
+			calendar.value.render();
 
 			calendar.value.on('datesSet', (args) => {
 				viewInfo.value = {
@@ -287,8 +288,6 @@ export default defineLayout<LayoutOptions>({
 					startDateStr: formatISO(args.view.currentStart),
 				};
 			});
-
-			calendar.value.render();
 		}
 
 		function destroyCalendar() {

@@ -1,5 +1,5 @@
 import formatTitle from '@directus/format-title';
-import type { File } from '@directus/types';
+import type { File, BusboyFileStream } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
@@ -18,7 +18,7 @@ import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -37,7 +37,7 @@ export class FilesService extends ItemsService {
 	 * Upload a single new file to the configured storage adapter
 	 */
 	async uploadOne(
-		stream: Readable,
+		stream: BusboyFileStream | Readable,
 		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
@@ -46,17 +46,23 @@ export class FilesService extends ItemsService {
 
 		let existingFile: Record<string, any> | null = null;
 
+		// If the payload contains a primary key, we'll check if the file already exists
 		if (primaryKey !== undefined) {
+			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download')
+					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata')
 					.from('directus_files')
 					.where({ id: primaryKey })
 					.first()) ?? null;
 		}
 
+		// Merge the existing file's folder and filename_download with the new payload
 		const payload = { ...(existingFile ?? {}), ...clone(data) };
 
+		const disk = storage.location(payload.storage);
+
+		// If no folder is specified, we'll use the default folder from the settings if it exists
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
 
@@ -65,38 +71,91 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (existingFile !== null && primaryKey !== undefined) {
-			await this.updateOne(primaryKey, payload, { emitEvents: false });
+		// Is this file a replacement? if the file data already exists and we have a primary key
+		const isReplacement = existingFile !== null && primaryKey !== undefined;
 
-			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
-			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			const disk = storage.location(payload.storage);
-
-			for await (const filepath of disk.list(String(primaryKey))) {
-				await disk.delete(filepath);
-			}
-		} else {
+		// If this is a new file upload, we need to generate a new primary key and DB record
+		if (isReplacement === false || primaryKey === undefined) {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
 		const fileExtension =
 			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
+		// The filename_disk is the FINAL filename on disk
 		payload.filename_disk = primaryKey + (fileExtension || '');
+
+		// Temp filename is used for replacements
+		const tempFilenameDisk = 'temp_' + payload.filename_disk;
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';
 		}
 
+		// Used to clean up if something goes wrong
+		const cleanUp = async () => {
+
+			try {
+				if (isReplacement === true ){
+					// If this is a replacement that failed, we need to delete the temp file
+					await disk.delete(tempFilenameDisk);
+				} else {
+					// If this is a new file that failed
+					// delete the DB record
+					await super.deleteMany([primaryKey!]);
+
+					// delete the final file
+					await disk.delete(payload.filename_disk!);
+				}
+
+			} catch (err: any) {
+				if (isReplacement === true ){
+					logger.warn(`Couldn't delete temp file ${tempFilenameDisk}`);
+				} else {
+					logger.warn(`Couldn't delete file ${payload.filename_disk}`);
+				}
+
+				logger.warn(err);
+			}
+		};
+
 		try {
-			await storage.location(data.storage).write(payload.filename_disk, stream, payload.type);
+			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
+			if (isReplacement === true) {
+				await disk.write(tempFilenameDisk, stream, payload.type);
+			} else {
+				// If this is a new file upload, we'll write the file to the final location
+				await disk.write(payload.filename_disk, stream, payload.type);
+			}
+
+			// Check if the file was truncated (if the stream ended early) and throw limit error if it was
+			if ('truncated' in stream && stream.truncated === true) {
+				throw new ContentTooLargeError();
+			}
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 
-			await this.deleteOne(primaryKey);
+			await cleanUp();
 
-			throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
+			if (err instanceof ContentTooLargeError) {
+				throw err;
+			} else {
+				throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
+			}
+		}
+
+		// If the file is a replacement, we need to update the DB record with the new payload, delete the old files, and upgrade the temp file
+		if (isReplacement === true) {
+			await this.updateOne(primaryKey, payload, { emitEvents: false });
+
+			// delete the previously saved file and thumbnails to ensure they're generated fresh
+			for await (const filepath of disk.list(String(primaryKey))) {
+				await disk.delete(filepath);
+			}
+
+			// Upgrade the temp file to the final filename
+			await disk.move(tempFilenameDisk, payload.filename_disk);
 		}
 
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
@@ -106,12 +165,31 @@ export class FilesService extends ItemsService {
 			const stream = await storage.location(data.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
-			payload.height ??= height ?? null;
-			payload.width ??= width ?? null;
-			payload.description ??= description ?? null;
-			payload.title ??= title ?? null;
-			payload.tags ??= tags ?? null;
-			payload.metadata ??= metadata ?? null;
+			if (!payload.height && height) {
+				payload.height = height;
+			}
+
+			if (!payload.width && width) {
+				payload.width = width;
+			}
+
+			if (!payload.metadata && metadata) {
+				payload.metadata = metadata;
+			}
+
+			// Note that if this is a replace file upload, the below properities are fetched and included in the payload above in the `existingFile` variable...so this will ONLY set the values if they're not already set
+
+			if (!payload.description && description) {
+				payload.description = description;
+			}
+
+			if (!payload.title && title) {
+				payload.title = title;
+			}
+
+			if (!payload.tags && tags) {
+				payload.tags = tags;
+			}
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -330,7 +408,7 @@ export class FilesService extends ItemsService {
 	 */
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
-		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
+		const files = await super.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
 
 		if (!files) {
 			throw new ForbiddenError();
@@ -340,9 +418,10 @@ export class FilesService extends ItemsService {
 
 		for (const file of files) {
 			const disk = storage.location(file['storage']);
+			const filePrefix = path.parse(file['filename_disk']).name;
 
 			// Delete file + thumbnails
-			for await (const filepath of disk.list(file['id'])) {
+			for await (const filepath of disk.list(filePrefix)) {
 				await disk.delete(filepath);
 			}
 		}

@@ -739,7 +739,6 @@ layout_options: تنظیمات چیدمان
 rows: ردیف ها
 columns: ستون ها
 collection_setup: راه اندازی مجموعه
-optional_system_fields: فیلدهای سیستم اختیاری
 value_unique: مقدار باید یکتا باشد
 all_activity: تمام فعالیت ها
 create_item: ساخت آیتم

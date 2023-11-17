@@ -14,9 +14,4 @@ export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn {
 	 * If a function is applied, than the tmp alias will be set to that node.
 	 */
 	as?: string;
-
-	/**
-	 * The final alias optionally provided by the user which will be returned within the response.
-	 */
-	alias?: string;
 }

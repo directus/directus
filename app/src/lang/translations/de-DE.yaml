@@ -759,7 +759,6 @@ layout_options: Ansichtsoptionen
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
-optional_system_fields: Optionale Systemfelder
 value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
 create_item: Element erstellen

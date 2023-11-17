@@ -135,7 +135,7 @@ watch(validationMessages, (newVal, oldVal) => {
 
 <style scoped>
 .v-form {
-	padding-top: calc(var(--form-vertical-gap) / 2);
+	padding-top: calc(var(--theme--form--row-gap) / 2);
 }
 
 .v-divider {

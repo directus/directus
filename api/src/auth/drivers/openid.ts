@@ -220,7 +220,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
-			await this.usersService.updateOne(userId, updatedUserPayload);
+			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
+				await this.usersService.updateOne(userId, updatedUserPayload);
+			}
 
 			return userId;
 		}

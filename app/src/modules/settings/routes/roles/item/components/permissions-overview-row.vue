@@ -86,11 +86,10 @@ function isLoading(action: string) {
 	align-items: center;
 	height: 48px;
 	padding: 0 12px;
-	background-color: var(--theme--form--field--input--background);
 
 	.name {
 		flex-grow: 1;
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 
 		.actions {
 			margin-left: 8px;

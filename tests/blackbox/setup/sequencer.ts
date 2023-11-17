@@ -12,7 +12,7 @@ export default class CustomSequencer extends BaseSequencer {
 
 				for (const sequentialTest of sequentialTestsList.only) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
-						return testFile.endsWith(sequentialTest.testFilePath);
+						return testFile.endsWith(sequentialTest);
 					});
 
 					if (testIndex !== -1) {
@@ -28,7 +28,7 @@ export default class CustomSequencer extends BaseSequencer {
 			} else {
 				for (const sequentialTest of sequentialTestsList.before.slice().reverse()) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
-						return testFile.endsWith(sequentialTest.testFilePath);
+						return testFile.endsWith(sequentialTest);
 					});
 
 					if (testIndex !== -1) {
@@ -42,7 +42,7 @@ export default class CustomSequencer extends BaseSequencer {
 
 				for (const sequentialTest of sequentialTestsList.after) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
-						return testFile.endsWith(sequentialTest.testFilePath);
+						return testFile.endsWith(sequentialTest);
 					});
 
 					if (testIndex !== -1) {

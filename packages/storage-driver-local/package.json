@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-local",
-	"version": "10.0.13",
+	"version": "10.0.14",
 	"description": "Local file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {

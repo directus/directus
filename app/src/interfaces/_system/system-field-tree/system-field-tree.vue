@@ -50,5 +50,6 @@ const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 .system-field-tree {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--form--field--input--background);
 }
 </style>

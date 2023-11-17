@@ -422,7 +422,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 	min-height: 300px;
 	overflow: hidden;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	box-shadow: var(--theme--form--field--input--box-shadow);
@@ -436,7 +436,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 }
 
 .interface-input-rich-text-md.disabled {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .interface-input-rich-text-md:not(.disabled):hover {
@@ -519,7 +519,7 @@ textarea {
 	align-items: center;
 	min-height: 40px;
 	padding: 0 4px;
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	.v-button + .v-button {
@@ -543,8 +543,8 @@ textarea {
 .table-options {
 	@include form-grid;
 
-	--form-vertical-gap: 12px;
-	--form-horizontal-gap: 12px;
+	--theme--form--row-gap: 12px;
+	--theme--form--column-gap: 12px;
 
 	padding: 12px;
 

@@ -85,22 +85,24 @@ function emitClick(event: MouseEvent) {
 	</span>
 </template>
 
-<style>
-body {
-	--v-icon-color: currentColor;
-	--v-icon-color-hover: currentColor;
-	--v-icon-size: 24px;
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-icon-color        [currentColor]
+		--v-icon-color-hover  [currentColor]
+		--v-icon-size         [24px]
+
+*/
+
 .v-icon {
 	position: relative;
 	display: inline-block;
-	width: var(--v-icon-size);
-	min-width: var(--v-icon-size);
-	height: var(--v-icon-size);
-	color: var(--v-icon-color);
+	width: var(--v-icon-size, 24px);
+	min-width: var(--v-icon-size, 24px);
+	height: var(--v-icon-size, 24px);
+	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
 
@@ -108,7 +110,7 @@ body {
 		display: block;
 		font-family: 'Material Symbols';
 		font-weight: normal;
-		font-size: var(--v-icon-size);
+		font-size: var(--v-icon-size, 24px);
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;
@@ -147,7 +149,7 @@ body {
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--v-icon-color-hover);
+			color: var(--v-icon-color-hover, currentColor);
 		}
 	}
 
