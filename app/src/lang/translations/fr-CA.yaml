@@ -27,6 +27,7 @@ method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
+extensions: Extensions
 modules: Modules
 module_bar: Barre de modules
 logs: Journaux
@@ -59,6 +60,7 @@ extension_panel: Panneau
 extension_hook: Crochet
 extension_modules: Modules
 enable: Activer
+disable: Désactiver
 custom: Personnalisé
 hook: Crochet
 fill_width: Remplir l'espace
@@ -102,6 +104,8 @@ rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
+version: Version
+promote_version_changes: Changements
 promote_version_preview: Prévisualiser
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
@@ -335,6 +339,7 @@ clear_items: Effacer les éléments
 reset_to_default: Revenir à la valeur par défaut
 undo_changes: Annuler les modifications
 notifications: Notifications
+archive_all: Tout archiver
 show_all_activity: Afficher toute l'activité
 page_not_found: Page non trouvée
 page_not_found_body: La page que vous recherchez ne semble pas exister.
@@ -477,6 +482,7 @@ generated_uuid: UUID généré
 manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
+save_and_quit: Enregistrer et quitter
 save_as_copy: Enregistrer une copie
 add_existing: Sélectionner
 creating_items: Création d'éléments
@@ -731,7 +737,6 @@ layout_options: Options d'affichage
 rows: Lignes
 columns: Colonnes
 collection_setup: Configuration de la collection
-optional_system_fields: Champs système optionnels
 value_unique: La valeur doit être unique
 all_activity: Toutes les activités
 create_item: Créer un élément
@@ -934,6 +939,10 @@ choices: Liste de choix
 choices_option_configured_incorrectly: Choix configurés incorrectement
 deselect: Désélectionner
 deselect_all: Tout désélectionner
+theme: Thème
+select_a_theme: Sélectionner un thème
+appearance_light: Clair
+appearance_dark: Sombre
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
@@ -1727,6 +1736,7 @@ interfaces:
       header: En-tête
       nestedlist: Liste
       embed: Encapsulation
+      paragraph: Paragraphe
       code: Code
       image: Image
       table: Tableau
@@ -2155,4 +2165,6 @@ fonts:
   bold: Gras
   black: Noir
   italic: Italique
+  small: Petit
   auto: Auto
+justify: Justifier

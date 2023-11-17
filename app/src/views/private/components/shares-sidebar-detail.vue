@@ -253,7 +253,7 @@ async function send() {
 }
 
 .grid {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	@include form-grid;
 }

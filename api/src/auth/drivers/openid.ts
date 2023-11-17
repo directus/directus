@@ -195,7 +195,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{ auth_data: userPayload.auth_data ?? null },
+				{ auth_data: userPayload.auth_data },
 				{
 					identifier,
 					provider: this.config['provider'],
@@ -205,7 +205,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
-			await this.usersService.updateOne(userId, updatedUserPayload);
+			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
+				await this.usersService.updateOne(userId, updatedUserPayload);
+			}
 
 			return userId;
 		}

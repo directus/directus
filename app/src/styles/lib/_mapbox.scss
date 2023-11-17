@@ -80,8 +80,9 @@
 	min-width: 24px;
 	min-height: 24px;
 	color: var(--theme--foreground);
-	background: var(--theme--form--field--input--background) !important;
-	box-shadow: var(--card-shadow);
+	background: var(--theme--popover--menu--background);
+	border-radius: var(--theme--popover--menu--border-radius);
+	box-shadow: var(--theme--popover--menu--box-shadow);
 
 	button {
 		opacity: 0.25;

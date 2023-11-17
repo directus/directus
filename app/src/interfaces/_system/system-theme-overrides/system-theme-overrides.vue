@@ -51,7 +51,7 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 <style scoped lang="scss">
 .theme-overrides {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 	border-radius: var(--theme--border-radius);
 	max-height: var(--input-height-max);
 	overflow-y: auto;

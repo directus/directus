@@ -494,7 +494,6 @@ function handleKeyDown(event: any) {
 		padding: 20px;
 		background-color: var(--theme--form--field--input--background);
 		border-radius: var(--theme--border-radius);
-		box-shadow: var(--card-shadow);
 	}
 
 	.basemap-select {

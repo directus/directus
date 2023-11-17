@@ -455,9 +455,9 @@ function revert(values: Record<string, any>) {
 
 	display: flex;
 	align-items: center;
-	max-width: calc(var(--form-column-max-width) * 2 + var(--form-horizontal-gap));
+	max-width: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	height: 112px;
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 	padding: 20px;
 	background-color: var(--theme--background-normal);
 	border-radius: calc(var(--theme--border-radius) + 4px);
@@ -476,7 +476,6 @@ function revert(values: Record<string, any>) {
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
 		border-radius: 100%;
-		box-shadow: var(--card-shadow);
 
 		.v-skeleton-loader {
 			width: 100%;

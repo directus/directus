@@ -223,7 +223,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .fields {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;
@@ -239,8 +239,8 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .confirm-form {
-	--form-horizontal-gap: 24px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	margin-top: var(--v-card-padding, 16px);
 

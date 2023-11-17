@@ -721,7 +721,6 @@ layout_options: Elrendezés beállításai
 rows: Sorok
 columns: Oszlopok
 collection_setup: Gyűjtemény beállítások
-optional_system_fields: Opcionális rendszer mezők
 value_unique: Egyedi érték szükséges
 all_activity: Minden Tevékenység
 create_item: Elem létrehozása

@@ -384,7 +384,7 @@ function getSystemRelations() {
 
 		<v-tabs-items v-model="currentTab" class="content">
 			<v-tab-item value="collection_setup">
-				<v-notice type="info">{{ t('creating_collection_info') }}</v-notice>
+				<v-notice>{{ t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
 					<div class="field half">
@@ -437,7 +437,7 @@ function getSystemRelations() {
 				</div>
 			</v-tab-item>
 			<v-tab-item value="optional_system_fields">
-				<v-notice type="info">{{ t('creating_collection_system') }}</v-notice>
+				<v-notice>{{ t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
 					<div
@@ -521,7 +521,7 @@ function getSystemRelations() {
 }
 
 .v-input.monospace {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .required {

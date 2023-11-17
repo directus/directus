@@ -382,6 +382,6 @@ function useMovetoFolder() {
 }
 
 .preview {
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 }
 </style>

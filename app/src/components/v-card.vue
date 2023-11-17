@@ -30,9 +30,7 @@ withDefaults(defineProps<Props>(), {
 */
 
 .v-card {
-	--input-height: 60px;
-	--input-padding: 16px; /* (60 - 4 - 24) / 2 */
-	--form-vertical-gap: 52px;
+	--theme--form--row-gap: 52px;
 
 	min-width: var(--v-card-min-width, none);
 	max-width: 400px;

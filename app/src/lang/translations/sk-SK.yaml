@@ -809,7 +809,6 @@ layout_options: Možnosti rozloženia
 rows: Riadky
 columns: Stĺpce
 collection_setup: Nastavenia zbierky
-optional_system_fields: Voliteľné systémové polia
 value_unique: Hodnota musí byť unikátna
 all_activity: Všetky aktivity
 create_item: Vytvoriť položku
@@ -1030,7 +1029,6 @@ no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
 settings_permissions: Riadenie prístupu
 settings_project: Nastavenia
-settings_theming: Témy
 settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Záložky
@@ -1072,7 +1070,6 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
 page_help_settings_project: "**Nastavenia** — Globálne nastavenia vášho projektu."
-page_help_settings_theming: "**Témy** - Nastavenia tém vášho projektu."
 page_help_settings_extensions: '**Rozšírenia** - Rozšírenia nainštalované vo vašom projekte.'
 page_help_settings_datamodel_collections: >-
   **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
