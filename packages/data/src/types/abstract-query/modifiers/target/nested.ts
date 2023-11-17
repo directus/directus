@@ -1,4 +1,7 @@
-import type { AbstractQueryFieldNodeNestedRelationalOne } from '../../common/nested/relational.js';
+import type {
+	AbstractQueryFieldNodeNestedRelationalMany,
+	AbstractQueryFieldNodeNestedRelationalOne,
+} from '../../common/nested/relational.js';
 import type { AbstractQueryTarget } from '../target.js';
 
 export interface AbstractQueryTargetNestedOne {
@@ -8,4 +11,10 @@ export interface AbstractQueryTargetNestedOne {
 	field: AbstractQueryTarget;
 
 	meta: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
+}
+
+export interface AbstractQueryTargetNestedMany {
+	type: 'nested-many-target';
+
+	meta: AbstractQueryFieldNodeNestedRelationalMany; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
 }

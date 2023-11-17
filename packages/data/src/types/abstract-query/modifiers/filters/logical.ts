@@ -1,6 +1,5 @@
 import type { AtLeastOneElement } from '../../../misc.js';
-import type { AbstractQueryConditionNode } from './conditions.js';
-import type { AbstractQueryNodeNegate } from './negate.js';
+import type { AbstractQueryFilterNode } from '../filters.js';
 
 /**
  * Used to create logical operations.
@@ -53,10 +52,10 @@ import type { AbstractQueryNodeNegate } from './negate.js';
  * }
  * ```
  */
-export interface AbstractQueryNodeLogical {
+export interface AbstractQueryNodeLogical<Target> {
 	type: 'logical';
 	operator: 'and' | 'or';
 
 	/** the values for the operation. */
-	childNodes: AtLeastOneElement<AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate>;
+	childNodes: AtLeastOneElement<AbstractQueryFilterNode<Target>>;
 }

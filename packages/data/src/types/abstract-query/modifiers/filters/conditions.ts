@@ -17,9 +17,9 @@ import type { ConditionStringNode } from './conditions/string-condition.js';
  * },
  * ```
  */
-export interface AbstractQueryConditionNode {
+export interface AbstractQueryConditionNode<Target> {
 	type: 'condition';
-	condition: ActualConditionNodes;
+	condition: ActualConditionNodes<Target>;
 }
 
 /**
@@ -28,10 +28,10 @@ export interface AbstractQueryConditionNode {
  * @todo The API should make sure, that the type of the targeting column has the correct type,
  * so that f.e. a condition-string will only be applied to a column of type string.
  */
-export type ActualConditionNodes =
-	| ConditionStringNode
-	| ConditionNumberNode
-	| ConditionGeoIntersectsNode
-	| ConditionGeoIntersectsBBoxNode
-	| ConditionSetNode
-	| ConditionFieldNode;
+export type ActualConditionNodes<Target> =
+	| ConditionStringNode<Target>
+	| ConditionNumberNode<Target>
+	| ConditionGeoIntersectsNode<Target>
+	| ConditionGeoIntersectsBBoxNode<Target>
+	| ConditionSetNode<Target>
+	| ConditionFieldNode<Target>;

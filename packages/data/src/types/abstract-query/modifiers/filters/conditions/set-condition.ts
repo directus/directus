@@ -1,5 +1,3 @@
-import type { AbstractQueryTarget } from '../../target.js';
-
 /**
  * Used to compare a number field with a number value.
  * @example
@@ -14,9 +12,9 @@ import type { AbstractQueryTarget } from '../../target.js';
  * 	compareTo: [1, 2, 3]
  * ```
  */
-export interface ConditionSetNode {
+export interface ConditionSetNode<Target> {
 	type: 'condition-set';
-	target: AbstractQueryTarget;
+	target: Target;
 	operation: 'in';
 	compareTo: (string | number)[]; // could also be an actual JS Set
 }

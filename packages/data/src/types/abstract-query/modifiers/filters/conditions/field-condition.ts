@@ -1,12 +1,10 @@
-import type { AbstractQueryTarget } from '../../target.js';
-
 /**
  * It's mainly used to compare two fields for relational queries.
  * That's why only the eq comparator is valid.
  */
-export interface ConditionFieldNode {
+export interface ConditionFieldNode<Target> {
 	type: 'condition-field';
-	target: AbstractQueryTarget;
+	target: Target;
 	operation: 'eq';
-	compareTo: AbstractQueryTarget;
+	compareTo: Target;
 }

@@ -1,13 +1,25 @@
-export interface AbstractQueryQuantifierNode {
+import type { AtLeastOneElement } from '../../../misc.js';
+import type { AbstractQueryFilterNode } from '../filters.js';
+import type { AbstractQueryTarget } from '../target.js';
+import type { AbstractQueryTargetNestedMany } from '../target/nested.js';
+
+interface AbstractQueryReference {
+	type: 'reference';
+
+	id: number;
+	target: AbstractQueryTarget;
+}
+
+export interface AbstractQueryNodeQuantifier<Target> {
 	type: 'quantifier';
 	operator: 'every' | 'some';
 
+	/** A reference to this o2m target */
+	reference: number;
+
 	/** The o2m field that the every/some should be applied on */
-	target: string;
+	target: AbstractQueryTargetNestedMany;
 
-	/** An alias to reference the o2m item */
-	alias: string;
-
-	/** the values for the the operation. */
-	// childNode: AbstractQueryConditionNode | AbstractQueryNodeLogical | AbstractQueryNodeNegate;
+	/** the values for the operation. */
+	childNodes: AtLeastOneElement<AbstractQueryFilterNode<Target | AbstractQueryReference>>;
 }

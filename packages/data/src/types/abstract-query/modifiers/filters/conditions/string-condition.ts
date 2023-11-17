@@ -1,5 +1,3 @@
-import type { AbstractQueryTarget } from '../../target.js';
-
 /**
  * Used to compare a string field with a string value.
  *
@@ -15,10 +13,10 @@ import type { AbstractQueryTarget } from '../../target.js';
  * 	compareTo: 'someString'
  * ```
  */
-export interface ConditionStringNode {
+export interface ConditionStringNode<Target> {
 	type: 'condition-string';
 
-	target: AbstractQueryTarget;
+	target: Target;
 
 	/** @TODO maybe also regex? */
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';

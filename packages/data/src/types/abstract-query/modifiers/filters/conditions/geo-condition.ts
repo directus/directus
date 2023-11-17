@@ -6,8 +6,6 @@ import type {
 	GeoJSONPoint,
 } from 'wellknown';
 
-import type { AbstractQueryTarget } from '../../target.js';
-
 /**
  * Checks if a non box geo object intersects with another.
  * @example
@@ -31,9 +29,9 @@ import type { AbstractQueryTarget } from '../../target.js';
  * }
  * ```
  */
-export interface ConditionGeoIntersectsNode {
+export interface ConditionGeoIntersectsNode<Target> {
 	type: 'condition-geo-intersects';
-	target: AbstractQueryTarget /** the type of the field needs to be a 'geometry' object */;
+	target: Target /** the type of the field needs to be a 'geometry' object */;
 	operation: 'intersects';
 	compareTo: GeoJSONPoint | GeoJSONMultiPoint | GeoJSONLineString | GeoJSONMultiLineString | GeoJSONGeometryCollection;
 }

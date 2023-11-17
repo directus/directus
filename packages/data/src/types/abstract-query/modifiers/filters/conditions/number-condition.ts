@@ -1,5 +1,3 @@
-import type { AbstractQueryTarget } from '../../target.js';
-
 /**
  * Used to compare a number or date time field with a number value.
  * @example
@@ -14,9 +12,9 @@ import type { AbstractQueryTarget } from '../../target.js';
  * 	compareTo: 5
  * ```
  */
-export interface ConditionNumberNode {
+export interface ConditionNumberNode<Target> {
 	type: 'condition-number';
-	target: AbstractQueryTarget;
+	target: Target;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: number;
 }
