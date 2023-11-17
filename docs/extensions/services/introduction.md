@@ -44,7 +44,7 @@ All system collections have a dedicated service which often extend the `ItemsSer
 
 ::: tip List of Available Services
 
-Directus provides a number of built-in services. Refer to the full list
-[here](https://github.com/directus/directus/tree/main/api/src/services).
+Directus provides a number of built-in services. [Refer to the full list of services
+in our codebase](https://github.com/directus/directus/tree/main/api/src/services).
 
 :::
