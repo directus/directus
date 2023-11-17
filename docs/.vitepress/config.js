@@ -618,15 +618,15 @@ function sidebar() {
 					link: '/extensions/services/introduction',
 					items: [
 						{
-							link: '/extensions/services/accessing-database',
+							link: '/extensions/services/accessing-items',
 							text: 'Accessing Items',
 						},
 						{
-							link: '/extensions/services/authoring-database',
+							link: '/extensions/services/configuring-collections',
 							text: 'Configuring Collections, Fields, and Relations',
 						},
 						{
-							link: '/extensions/services/interacting-with-files',
+							link: '/extensions/services/accessing-files',
 							text: 'Accessing Files',
 						},
 						{
