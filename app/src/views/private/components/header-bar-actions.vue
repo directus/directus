@@ -93,7 +93,7 @@ const active = ref(false);
 	height: 100%;
 	padding: inherit;
 	padding-left: 8px;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 }
 
 .actions.active .expand {

@@ -14,15 +14,15 @@ import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		refresh: () => void;
+		refresh: () => Promise<void>;
 		collection: string;
 		primaryKey: string | number;
 		existingComment?: Activity | null;
 		previews?: Record<string, string> | null;
 	}>(),
 	{
-		existingComment: () => null,
-		previews: () => null,
+		existingComment: null,
+		previews: null,
 	}
 );
 
@@ -73,7 +73,7 @@ const selectedKeyboardIndex = ref<number>(0);
 
 let cancelToken: CancelTokenSource | null = null;
 
-const loadUsers = throttle(async (name: string) => {
+const loadUsers = throttle(async (name: string): Promise<any> => {
 	if (cancelToken !== null) {
 		cancelToken.cancel();
 	}
@@ -128,8 +128,8 @@ const loadUsers = throttle(async (name: string) => {
 		userPreviews.value = newUsers;
 
 		searchResult.value = result.data.data;
-	} catch (e) {
-		return e;
+	} catch (error) {
+		return error;
 	}
 }, 200);
 
@@ -246,8 +246,8 @@ async function postComment() {
 		notify({
 			title: props.existingComment ? t('post_comment_updated') : t('post_comment_success'),
 		});
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}
@@ -266,7 +266,8 @@ function pressedDown() {
 }
 
 function pressedEnter() {
-	insertUser(searchResult.value[selectedKeyboardIndex.value]);
+	const user = searchResult.value[selectedKeyboardIndex.value];
+	if (user) insertUser(user);
 	showMentionDropDown.value = false;
 }
 </script>
@@ -358,7 +359,7 @@ function pressedEnter() {
 	flex-grow: 1;
 	width: 100%;
 	height: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	min-height: 100px;
 	padding: 5px;
 	overflow: scroll;

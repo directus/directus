@@ -1,16 +1,16 @@
 import type {
-	AbstractQueryFieldNodeNestedTarget,
 	AbstractQueryFieldNodePrimitive,
-	AbstractQueryFieldNodeTarget,
+	AbstractQueryTarget,
+	AbstractQueryTargetNestedOne,
 } from '@directus/data';
+import { createUniqueAlias } from '../../../../orm/create-unique-alias.js';
 import type {
 	AbstractSqlQueryFnNode,
-	AbstractSqlQuerySelectNode,
 	AbstractSqlQueryJoinNode,
+	AbstractSqlQuerySelectNode,
 } from '../../../../types/index.js';
-import { convertFn } from '../../../functions.js';
 import { createJoin } from '../../../fields/create-join.js';
-import { createUniqueAlias } from '../../../../orm/create-unique-alias.js';
+import { convertFn } from '../../../functions.js';
 
 /**
  * It adds the table name to the node.
@@ -35,7 +35,7 @@ export interface TargetConversionResult {
 }
 
 export function convertTarget(
-	target: AbstractQueryFieldNodeTarget,
+	target: AbstractQueryTarget,
 	collection: string,
 	idxGenerator: Generator<number, number, number>
 ): TargetConversionResult {
@@ -71,7 +71,7 @@ export function convertTarget(
  */
 export function convertNestedOneTarget(
 	currentCollection: string,
-	nestedTarget: AbstractQueryFieldNodeNestedTarget,
+	nestedTarget: AbstractQueryTargetNestedOne,
 	idxGenerator: Generator<number, number, number>
 ): TargetConversionResult {
 	if (nestedTarget.meta.type === 'a2o') throw new Error('Sorting by a2o not yet implemented!');

@@ -80,7 +80,7 @@ const injectValue = computed(() => {
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="collection === null" type="info">
+		<v-notice v-if="collection === null">
 			{{ t('interfaces.system-display-template.select_a_collection') }}
 		</v-notice>
 

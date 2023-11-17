@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
 import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './utils.js';
-import type { AbstractQueryFieldNodeNestedTarget, ConditionNumberNode, ConditionStringNode } from '@directus/data';
+import type { AbstractQueryTargetNestedOne, ConditionNumberNode, ConditionStringNode } from '@directus/data';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
@@ -84,7 +84,7 @@ test('convert nested target', () => {
 	const filterField = randomIdentifier();
 	const foreignCollection = randomIdentifier();
 
-	const sample: AbstractQueryFieldNodeNestedTarget = {
+	const sample: AbstractQueryTargetNestedOne = {
 		type: 'nested-one-target',
 		field: {
 			type: 'primitive',

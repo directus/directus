@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-supabase",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "Supabase file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {

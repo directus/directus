@@ -41,8 +41,8 @@ class Uploader {
 					files: [file],
 				},
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
 	}
 

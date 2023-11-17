@@ -1,4 +1,4 @@
-import type { AbstractQueryNodeSort } from '@directus/data';
+import type { AbstractQueryNodeSort, AtLeastOneElement } from '@directus/data';
 import type { AbstractSqlClauses, AbstractSqlQueryOrderNode } from '../../types/index.js';
 import { convertTarget } from './filter/conditions/utils.js';
 
@@ -11,7 +11,7 @@ export type SortConversionResult = {
  * @returns the converted sort nodes
  */
 export const convertSort = (
-	abstractSorts: AbstractQueryNodeSort[],
+	abstractSorts: AtLeastOneElement<AbstractQueryNodeSort>,
 	collection: string,
 	idxGenerator: Generator<number, number, number>
 ): SortConversionResult => {

@@ -122,7 +122,7 @@ function onInput(event: Event) {
 			width: 100%;
 			height: 4px;
 			padding: 8px 0;
-			background-color: var(--theme--background-page);
+			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
 			border-radius: 10px;
 			cursor: pointer;
@@ -150,7 +150,7 @@ function onInput(event: Event) {
 				width: 8px;
 				height: 8px;
 				margin-top: -2px;
-				background: var(--theme--background-page);
+				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;

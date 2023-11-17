@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { ShowSelect } from '@directus/extensions';
 import { computed } from 'vue';
-import { ShowSelect } from '@directus/types';
-import { Header, Item } from './types';
+import type { Header, Item } from './types';
 
 interface Props {
 	headers: Header[];
@@ -104,7 +104,7 @@ const cssHeight = computed(() => {
 	}
 
 	&.clickable:not(.subdued):hover .cell {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--background-subdued);
 		cursor: pointer;
 	}
 

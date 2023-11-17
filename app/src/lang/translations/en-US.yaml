@@ -822,7 +822,7 @@ layout_options: Layout Options
 rows: Rows
 columns: Columns
 collection_setup: Collection Setup
-optional_system_fields: Optional System Fields
+optional_system_fields: Optional Fields
 value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item
@@ -1029,7 +1029,7 @@ deselect: Deselect
 deselect_all: Deselect All
 theme: Theme
 select_a_theme: Select a Theme
-appearance_global: Project Default
+default_sync_with_project: Default (Sync with Project)
 appearance_auto: Automatic (Sync with System)
 appearance_light: Light
 appearance_dark: Dark

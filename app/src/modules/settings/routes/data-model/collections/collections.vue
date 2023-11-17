@@ -138,8 +138,8 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				};
 			})
 		);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 }
 </script>
@@ -150,7 +150,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="list_alt" />
+				<v-icon name="database" />
 			</v-button>
 		</template>
 

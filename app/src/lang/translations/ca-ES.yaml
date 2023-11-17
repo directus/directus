@@ -715,7 +715,6 @@ layout_options: Opcions de presentació
 rows: Files
 columns: Columnes
 collection_setup: Configuració de la col·lecció
-optional_system_fields: Camps del sistema opcionals
 value_unique: El valor ha de ser únic
 all_activity: Tota l'activitat
 create_item: Crea un element

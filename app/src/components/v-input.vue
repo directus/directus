@@ -283,7 +283,7 @@ function stepDown() {
 /**
 	Available component overrides:
 
-	--v-input-font-family         [--theme--font-family-sans-serif]
+	--v-input-font-family         [--theme--fonts--sans--font-family]
 	--v-input-placeholder-color   [--theme--foreground-subdued]
 	--v-input-color               [--theme--form--field--input--foreground]
 	--v-input-background-color    [--theme--form--field--input--background]
@@ -300,7 +300,7 @@ function stepDown() {
 	display: flex;
 	align-items: center;
 	width: max-content;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 
 	.prepend-outer {
 		margin-right: 8px;
@@ -312,11 +312,11 @@ function stepDown() {
 		flex-grow: 1;
 		align-items: center;
 		height: 100%;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 		padding-top: 0px;
 		padding-bottom: 0px;
 		color: var(--v-input-color, var(--theme--form--field--input--foreground));
-		font-family: var(--v-input-font-family, var(--theme--font-family-sans-serif));
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: var(--v-input-background-color, var(--theme--form--field--input--background));
 		border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--v-input-border-radius, var(--theme--border-radius));
@@ -380,7 +380,7 @@ function stepDown() {
 			--arrow-color: var(--v-input-border-color);
 
 			color: var(--theme--foreground-subdued);
-			background-color: var(--background-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 
@@ -399,10 +399,10 @@ function stepDown() {
 		flex-grow: 1;
 		width: 20px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 		padding-right: 0px;
 		padding-left: 0px;
-		font-family: var(--v-input-font-family, var(--theme--font-family-sans-serif));
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;
 		appearance: none;

@@ -38,6 +38,12 @@ const mockSettings: Settings = {
 	project_descriptor: null,
 	default_language: 'en-US',
 	custom_aspect_ratios: null,
+	public_favicon: null,
+	default_appearance: 'auto',
+	default_theme_light: null,
+	default_theme_dark: null,
+	theme_light_overrides: null,
+	theme_dark_overrides: null,
 };
 
 const mockUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec', role: { admin_access: false } } as any;

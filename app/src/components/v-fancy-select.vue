@@ -98,8 +98,8 @@ function toggle(item: Record<string, any>) {
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 12px;
-	background-color: var(--theme--background);
-	border: var(--theme--border-width) solid var(--theme--background);
+	background-color: var(--theme--background-normal);
+	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
 	cursor: pointer;
@@ -122,7 +122,7 @@ function toggle(item: Record<string, any>) {
 		width: 44px;
 		height: 44px;
 		margin-right: 12px;
-		background-color: var(--theme--background-page);
+		background-color: var(--theme--background);
 		border-radius: 50%;
 	}
 

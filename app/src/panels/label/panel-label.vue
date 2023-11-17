@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, onUpdated, ref } from 'vue';
+import { onMounted, onBeforeUnmount, onUpdated, ref, type CSSProperties, type Ref } from 'vue';
 import { useAutoFontFit } from '@/composables/use-auto-fit-text';
+
+defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		text?: string;
-		whiteSpace?: string | undefined;
+		whiteSpace?: CSSProperties['white-space'];
 		color?: string | undefined;
-		textAlign?: string | undefined;
+		textAlign?: CSSProperties['text-align'];
 		fontSize?: 'sm' | 'md' | 'lg' | 'auto';
 		fontWeight?: number | undefined;
 		fontStyle?: string | undefined;
 		font?: 'sans-serif' | 'serif' | 'monospace';
 	}>(),
 	{
-		showHeader: false,
 		text: '',
 		color: undefined,
 		whiteSpace: 'normal',
@@ -27,8 +28,8 @@ const props = withDefaults(
 	}
 );
 
-const labelContainer = ref<HTMLDivElement | null>(null);
-const labelText = ref<HTMLParagraphElement | null>(null);
+const labelContainer: Ref<HTMLDivElement | null> = ref(null);
+const labelText: Ref<HTMLParagraphElement | null> = ref(null);
 
 const { adjustFontSize } = useAutoFontFit(labelContainer, labelText);
 
@@ -97,14 +98,6 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	inheritAttrs: false,
-});
-</script>
-
 <template>
 	<div
 		ref="labelContainer"
@@ -138,15 +131,15 @@ export default defineComponent({
 	line-height: 1.2;
 
 	&.sans-serif {
-		font-family: var(--theme--font-family-sans-serif);
+		font-family: var(--theme--fonts--sans--font-family);
 	}
 
 	&.serif {
-		font-family: var(--theme--font-family-serif);
+		font-family: var(--theme--fonts--serif--font-family);
 	}
 
 	&.monospace {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 </style>

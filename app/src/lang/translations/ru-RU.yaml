@@ -771,7 +771,6 @@ layout_options: Параметры макета
 rows: Записи
 columns: Колонки
 collection_setup: Настройки коллекции
-optional_system_fields: Необязательные системные поля
 value_unique: Значение должно быть уникальным
 all_activity: История всех действий
 create_item: Создать элемент
