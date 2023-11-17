@@ -177,7 +177,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				};
 			} else {
 				emitPayload = {
-					auth_data: userPayload.auth_data ?? null,
+					auth_data: userPayload.auth_data,
 				};
 			}
 

@@ -197,14 +197,14 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 			if (env['AUTH_SYNC_USER_INFO']) {
 				emitPayload = {
-					auth_data: userPayload.auth_data ?? null,
+					auth_data: userPayload.auth_data,
 					first_name: userPayload.first_name,
 					last_name: userPayload.last_name,
 					email: userPayload.email,
 				};
 			} else {
 				emitPayload = {
-					auth_data: userPayload.auth_data ?? null,
+					auth_data: userPayload.auth_data,
 				};
 			}
 
