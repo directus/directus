@@ -320,7 +320,7 @@ class OASSpecsService implements SpecificationSubService {
 
 				components.schemas[name] = {
 					...cloneDeep(schema),
-					'x-collection': collection,
+					...(collection && { 'x-collection': collection }),
 				};
 			}
 		}
