@@ -77,6 +77,7 @@ router.delete('/items/:collection/:id', async (req, res) => {
 
 ::: tip Explore ItemsService In-depth
 
-Check out the full list [here](https://github.com/directus/directus/blob/main/api/src/services/items.ts).
+Check out the full list of methods
+[in our codebase](https://github.com/directus/directus/blob/main/api/src/services/items.ts).
 
 :::
