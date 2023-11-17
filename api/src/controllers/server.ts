@@ -16,7 +16,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		res.locals['payload'] = await service.oas.generate();
+		res.locals['payload'] = await service.oas.generate(req.headers.host);
 		return next();
 	}),
 	respond
