@@ -62,7 +62,7 @@ const mainElement = inject<Ref<Element | undefined>>('main-element');
 
 const layoutElement = ref<HTMLElement>();
 
-const { width } = useElementSize(layoutElement);
+const { width: innerWidth } = useElementSize(layoutElement);
 
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
@@ -79,8 +79,8 @@ watch(
 	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' })
 );
 
-watch(width, () => {
-	emit('update:width', width.value);
+watch(innerWidth, (value) => {
+	emit('update:width', value);
 });
 </script>
 
