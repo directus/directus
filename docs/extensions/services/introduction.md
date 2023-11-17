@@ -32,21 +32,19 @@ operations.
 
 ## Commonly Used Services
 
-- **ItemsService:** Provides access to perform CRUD operations on items in a database. Nearly all other services extend
-  from ItemsService.
-- **CollectionsService:** Provides access to perform CRUD operations on database collections.
-- **FilesService:** Provides access to upload, import and perform other CRUD operations on files in Directus Files.
-- **UsersService:** Extends ItemsService and adds authentication methods for user login as well as retrieving profile
-  details.
+- **ItemsService:** Provides access to perform operations on items in a collection.
+- **CollectionsService:** Provides access to perform operations on collections.
+- **FilesService:** Provides access to upload, import and perform other operations on files.
+- **UsersService:** Extends ItemsService and adds authentication methods for user login and retrieving profile details.
 - **FieldsService:** Provides access to perform CRUD operations to fields used in collections and item records.
 
-Majority of the services extend the `ItemsService`, providing a unified approach to manipulating data. However, there
-are also standalone services. It's important to use the matching service for core collections data type. For example,
-user passwords are only hashed when used with `UsersService` and not `ItemsService`.
+All system collections have a dedicated service which often extend the `ItemsService`. If you are working with system
+collections, use the dedicated service as they may implement additional functionality. For example, user passwords are
+hashed when used with the `UsersService`, but not with the `ItemsService`.
 
 ::: tip List of Available Services
 
-Directus provides a number of built-in services. Refer to the full list
-[here](https://github.com/directus/directus/tree/main/api/src/services).
+Directus provides a number of built-in services.
+[Refer to the full list of services in our codebase](https://github.com/directus/directus/tree/main/api/src/services).
 
 :::
