@@ -4,7 +4,7 @@ import { expect, test } from 'vitest';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertStringNode } from './string.js';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/index.js';
-import type { FilterResult } from '../filter.js';
+import type { FilterResult } from '../utils.js';
 
 test('convert string condition', () => {
 	const idGen = parameterIndexGenerator();

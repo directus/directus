@@ -1,10 +1,10 @@
 import { expect, test, vi } from 'vitest';
-import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './utils.js';
+import { convertNestedOneTarget, convertTarget, type TargetConversionResult } from './target.js';
 import type { AbstractQueryTargetNestedOne, ConditionNumberNode, ConditionStringNode } from '@directus/data';
-import { parameterIndexGenerator } from '../../../param-index-generator.js';
+import { parameterIndexGenerator } from '../param-index-generator.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
-vi.mock('../../../../orm/create-unique-alias.js', () => ({
+vi.mock('../../orm/create-unique-alias.js', () => ({
 	createUniqueAlias: vi.fn().mockImplementation((i) => `${i}_RANDOM`),
 }));
 
