@@ -39,7 +39,7 @@ const valueWithDefault = computed(() => {
 </script>
 
 <template>
-	<div class="interface-system-theme" :class="{ wrap: items.length > 2 }">
+	<div class="interface-system-theme">
 		<template v-if="includeNull">
 			<button :class="{ active: value === null }" class="theme" @click="$emit('input', null)">
 				<ThemePreview :dark-mode="appearance === 'dark'" :theme="systemTheme" />
@@ -72,11 +72,7 @@ const valueWithDefault = computed(() => {
 .interface-system-theme {
 	display: grid;
 	gap: 24px;
-	grid-template-columns: repeat(auto-fit, 180px);
-
-	&.wrap {
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-	}
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .theme {
