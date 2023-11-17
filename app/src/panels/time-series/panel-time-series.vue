@@ -149,7 +149,7 @@ function setupChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			animations: {
 				enabled: false,
@@ -241,7 +241,7 @@ function setupChart() {
 				show: props.showXAxis ?? true,
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -289,7 +289,7 @@ function setupChart() {
 								  } as any);
 						},
 						style: {
-							fontFamily: 'var(--theme--font-family-sans-serif)',
+							fontFamily: 'var(--theme--fonts--sans--font-family)',
 							foreColor: 'var(--theme--foreground-subdued)',
 							fontWeight: 600,
 							fontSize: '10px',

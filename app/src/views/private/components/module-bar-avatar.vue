@@ -133,7 +133,7 @@ const userFullName = userStore.fullName ?? undefined;
 			}
 
 			.v-icon {
-				--v-icon-color: var(--white);
+				--v-icon-color: var(--theme--navigation--modules--button--foreground-hover);
 			}
 		}
 	}
@@ -152,6 +152,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 	.sign-out {
 		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
 		--v-button-background-color: var(--theme--navigation--modules--background);
 		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 

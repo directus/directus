@@ -725,7 +725,6 @@ layout_options: Možnosti rozvržení
 rows: Řádky
 columns: Sloupce
 collection_setup: Nastavení kolekce
-optional_system_fields: Volitelná systémová pole
 value_unique: Hodnota musí být unikátní
 all_activity: Všechna aktivita
 create_item: Vytvořit položku

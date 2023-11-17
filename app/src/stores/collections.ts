@@ -67,7 +67,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	}
 
 	function prepareCollectionForApp(collection: CollectionRaw): Collection {
-		const icon = collection.meta?.icon || 'label';
+		const icon = collection.meta?.icon || 'database';
 		const color = collection.meta?.color;
 		let name = formatTitle(collection.collection);
 		const type = getCollectionType(collection);

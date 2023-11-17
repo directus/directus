@@ -55,7 +55,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 .rule {
 	display: flex;
 	align-items: center;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	transition: color var(--fast) var(--transition);
 
 	&.has-value {

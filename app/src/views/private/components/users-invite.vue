@@ -129,7 +129,7 @@ async function loadRoles() {
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	@include form-grid;
 }

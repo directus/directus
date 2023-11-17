@@ -87,7 +87,7 @@ const removeField = (field: string) => {
 
 <template>
 	<template v-if="!collectionName">
-		<v-notice type="info">
+		<v-notice>
 			{{ t('interfaces.system-fields.select_a_collection') }}
 		</v-notice>
 	</template>

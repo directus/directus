@@ -750,7 +750,6 @@ layout_options: Lay-out opties
 rows: Rijen
 columns: Kolommen
 collection_setup: Collectie setup
-optional_system_fields: Optionele systeemvelden
 value_unique: Waarde moet uniek zijn
 all_activity: Alle activiteiten
 create_item: Item aanmaken

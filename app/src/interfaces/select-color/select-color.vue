@@ -93,7 +93,7 @@ const lowContrast = computed(() => {
 const getPresetContrast = (hex: string) => {
 	if (hex.startsWith('--')) hex = cssVar(hex);
 	const color = Color(hex);
-	return color.contrast(Color(cssVar('--card-face-color'))) < 1.1;
+	return color.contrast(Color(cssVar('--theme--popover--menu--background'))) < 1.1;
 };
 
 const { hsl, rgb, hex, alpha, color } = useColor();
@@ -395,8 +395,8 @@ function useColor() {
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
-	width: calc(var(--input-height) - 20px);
-	max-height: calc(var(--input-height) - 20px);
+	width: calc(var(--theme--form--field--input--height) - 20px);
+	max-height: calc(var(--theme--form--field--input--height) - 20px);
 	overflow: hidden;
 	border-radius: calc(var(--theme--border-radius) + 2px);
 	cursor: pointer;
@@ -460,7 +460,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(.color-type) {
-	--input-padding: 12px 8px;
+	--theme--form--field--input--padding: 12px 8px;
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {

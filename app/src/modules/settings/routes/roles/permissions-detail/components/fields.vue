@@ -58,7 +58,7 @@ const fields = computed({
 
 <template>
 	<div>
-		<v-notice type="info">
+		<v-notice>
 			{{
 				t('fields_for_role', {
 					role: role ? role.name : t('public_label'),
@@ -93,7 +93,7 @@ const fields = computed({
 }
 
 .checkboxes :deep(.v-checkbox .type-text) {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .app-minimal {
@@ -107,7 +107,7 @@ const fields = computed({
 
 	.app-minimal-preview {
 		padding: 16px;
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 		background-color: var(--theme--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}

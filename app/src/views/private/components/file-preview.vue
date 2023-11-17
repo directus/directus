@@ -73,7 +73,7 @@ const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + src.value)
 <style lang="scss" scoped>
 .file-preview {
 	position: relative;
-	max-width: calc((var(--form-column-max-width) * 2) + var(--form-horizontal-gap));
+	max-width: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
 
 	img,
 	video {

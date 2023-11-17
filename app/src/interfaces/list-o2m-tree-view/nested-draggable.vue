@@ -288,9 +288,9 @@ function stageEdits(item: Record<string, any>) {
 .row {
 	.preview {
 		padding: 12px;
-		background-color: var(--card-face-color);
-		border-radius: var(--theme--border-radius);
-		box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2);
+		background-color: var(--theme--popover--menu--background);
+		border-radius: var(--theme--popover--menu--border-radius);
+		box-shadow: var(--theme--popover--menu--box-shadow);
 		cursor: grab;
 		transition: var(--fast) var(--transition);
 		transition-property: box-shadow, background-color;
