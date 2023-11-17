@@ -56,12 +56,15 @@ class OASSpecsService implements SpecificationSubService {
 			? schema : reduceSchema(schema, accountability?.permissions || null)
 	}
 
-	async generate() {
+	async generate(host?: string) {
 		const permissions = this.accountability?.permissions ?? [];
 
 		const tags = await this.generateTags();
 		const paths = await this.generatePaths(permissions, tags);
 		const components = await this.generateComponents(tags);
+
+		const isDefaultUrl = env['PUBLIC_URL'] === '/';
+		const url = isDefaultUrl && host ? host : env['PUBLIC_URL'];
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
@@ -73,7 +76,7 @@ class OASSpecsService implements SpecificationSubService {
 			},
 			servers: [
 				{
-					url: env['PUBLIC_URL'],
+					url,
 					description: 'Your current Directus instance.',
 				},
 			],
