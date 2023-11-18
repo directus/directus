@@ -81,6 +81,13 @@ The context object has the following properties:
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
+::: warning Breaking app/admin
+
+By modifying the expected read output, especially for system collections. It is very easy to accidentally brick the app
+or api response.
+
+:::
+
 ::: warning Performance
 
 Filters can impact performance when not carefully implemented, as they are executed in a blocking manner. This applies
@@ -191,7 +198,7 @@ export default ({ embed }, { env }) => {
 
 ### Filter Events
 
-| Event                          | Payload                              | Meta                                        |
+| Name                           | Payload                              | Meta                                        |
 | ------------------------------ | ------------------------------------ | ------------------------------------------- |
 | `websocket.message`            | The message send over the websocket  |                                             |
 | `request.not_found`            | `false`                              | `request`, `response`                       |
@@ -222,15 +229,16 @@ export default ({ embed }, { env }) => {
 
 ::: tip System Collections
 
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`,
-`dashboards`, `fields`, `files` (except create/update), `flows`, `folders`, `notifications`, `operations`, `panels`,
-`permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
+`<system-collection>` should be replaced with one of the system collection names `activity`,`collections` (except read),
+`dashboards`, `fields` (except read), `files` (default to upload, create/update will only be fired when filesService
+create/update are fired ), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
+`relations` (except delete), `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
 
 :::
 
 ### Action Events
 
-| Event                          | Meta                                                |
+| Name                           | Meta                                                |
 | ------------------------------ | --------------------------------------------------- |
 | `websocket.message`            | `message`, `client`                                 |
 | `websocket.error`              | `client`, `event`                                   |
@@ -256,9 +264,10 @@ export default ({ embed }, { env }) => {
 
 ::: tip System Collections
 
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`,
-`dashboards`, `fields`, `files` (except create/update), `flows`, `folders`, `notifications`, `operations`, `panels`,
-`permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
+`<system-collection>` should be replaced with one of the system collection names `activity`,`collections` (except read),
+`dashboards`, `fields` (except read), `files` (default to upload, create/update will only be fired when filesService
+create/update are fired ), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
+`relations` (except delete), `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
 
 :::
 
