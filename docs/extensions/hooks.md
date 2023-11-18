@@ -231,7 +231,7 @@ export default ({ embed }, { env }) => {
 
 `<system-collection>` should be replaced with one of the system collection names `activity`,`collections` (except read),
 `dashboards`, `fields` (except read), `files` (default to upload, create/update will only be fired when filesService
-create/update are fired ), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
+create/update are fired), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
 `relations` (except delete), `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
 
 :::
@@ -266,7 +266,7 @@ create/update are fired ), `flows`, `folders`, `notifications`, `operations`, `p
 
 `<system-collection>` should be replaced with one of the system collection names `activity`,`collections` (except read),
 `dashboards`, `fields` (except read), `files` (default to upload, create/update will only be fired when filesService
-create/update are fired ), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
+create/update are fired), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
 `relations` (except delete), `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
 
 :::
