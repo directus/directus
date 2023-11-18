@@ -27,6 +27,7 @@ method: 方法
 published: 已发布
 draft: 草稿
 archived: 已存档
+extensions: 扩展
 modules: 模块
 module_bar: 模块栏
 logs: 日志
@@ -56,11 +57,23 @@ modifier: 修改者
 extension_interface: 接口
 extension_display: 显示
 extension_layout: 布局
+extension_module: 模块
 extension_panel: 面板
 extension_hook: 钩子
+extension_endpoint: 端点
 extension_operation: 操作
+extension_bundle: 打包
+extension_interfaces: 接口
+extension_displays: 显示
+extension_layouts: 布局
 extension_modules: 模块
+extension_panels: 面板
+extension_hooks: 钩子
+extension_endpoints: 端点
+extension_operations: 操作
+extension_bundles: 包
 enable: 启用
+disable: 禁用
 custom: 自定义
 hook: 钩子
 fill_width: 全宽
@@ -108,7 +121,31 @@ rename_folder: 重命名文件夹
 delete_folder: 删除文件夹
 prefix: 前缀
 suffix: 后缀
+keep: 保持
+version: 版本
+version_key: 版本密钥
+version_name: 版本名称
+main_version: 主要
+switch_version: 切换版本
+switch_version_copy: 确定要切换到"{version}"版本？未保存的更改将会丢失。
+create_version: 创建新版本
+rename_version: 重命名版本
+compare_version: 对比版本
+save_version: 保存版本
+promote_version: 推广版本
+promote_version_disabled: 无变化
+promote_version_drawer_title: 将版本"{version}"推入主干
+promote_version_changes: 更改
 promote_version_preview: 预览
+outdated_notice: >-
+  自此版本创建以来，主条目已更新。 请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
+promote_notice: >-
+  请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
+delete_version: 删除版本
+delete_version_copy: >-
+  你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
+delete_on_promote_copy: >-
+  你想在并入之后删除还是保留 " {version} " 版本？
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
@@ -154,6 +191,7 @@ validationError:
   nnull: 值不能为null
   required: 值是必需的
   unique: 值必须唯一
+  email: 值必须是一个有效的电子邮件地址
   regex: 值格式不正确
   starts_with: 值必须以"{substring}"开头
   istarts_with: 值必须以"{substring}"开头
@@ -268,6 +306,9 @@ geometry.Polygon: 多边形
 geometry.MultiPoint: 多点要素
 geometry.MultiLineString: 多线要素
 geometry.MultiPolygon: 复杂多边型
+theme_auto: 自动(基于系统)
+theme_light: 亮色模式
+theme_dark: 暗色模式
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -350,6 +391,7 @@ clear_items: 清除条目
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
+archive_all: 全部存档
 show_all_activity: 显示所有活动
 page_not_found: 找不到页面
 page_not_found_body: 您正在寻找的页面似乎不存在。
