@@ -512,15 +512,34 @@ errors:
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
   CONTAINS_NULL_VALUES: Field contains null values
+  UNPROCESSABLE_CONTENT: Вміст, який не підлягає обробці
   INTERNAL_SERVER_ERROR: Unexpected Error
   NOT_NULL_VIOLATION: Value can't be null
   ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  VALUE_TOO_LONG: Значення занадто довге
+  VALUE_OUT_OF_RANGE: Значення знаходиться поза межами діапазону
+  INVALID_FOREIGN_KEY: Недійсний зовнішній ключ
   UNKNOWN: Unexpected Error
+  GRAPHQL_VALIDATION_EXCEPTION: Виняток валідації GraphQL
+  SERVICE_UNAVAILABLE: Послуга відсутня
+  UNSUPPORTED_MEDIA_TYPE: Непідтримуваний тип медіа
+  UNEXPECTED_RESPONSE: Неочікувана відповідь
+  TOKEN_EXPIRED: Термін дії токена минув
+  RANGE_NOT_SATISFIABLE: Неправильний діапазон
+  METHOD_NOT_ALLOWED: Метод не допускається
+  REQUESTS_EXCEEDED: Ліміт запитів вичерпано
+  CONTENT_TOO_LARGE: Надісланий елемент/файл завеликий за розміром
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
+create_default: Створити значення за замовчуванням
 edit_bookmark: Edit Bookmark
+edit_personal_bookmark: Редагувати персональну закладку
+edit_role_bookmark: Редагувати закладку ролі
+edit_global_bookmark: Редагувати загальну закладку
+cannot_edit_role_bookmarks: Не вдається редагувати закладки ролей
+cannot_edit_global_bookmarks: Не вдається редагувати глобальні закладки
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
@@ -528,9 +547,11 @@ unexpected_error_copy: An unexpected error has occurred. Please try again later.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
+password_reset_sent: Якщо у вас є обліковий запис, ми надіслали вам безпечне посилання для зміни пароля
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
+edit_image: Редагувати зображення
 editing_image: Editing Image
 square: Square
 free: Free
@@ -544,10 +565,17 @@ update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
 make_collection_hidden: Make Collection Hidden
+make_folder_visible: Зробити теку видимою
+make_folder_hidden: Зробити папку прихованою
+goto_collection_content: Переглянути зміст
 start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
 one_filtered_item: '1 filtered item'
+delete_collection_are_you_sure: >-
+  Ви впевнені, що хочете видалити колекцію "{collection}"? Це призведе до видалення колекції та всіх елементів у ній. Ця дія є безповоротною.
+delete_folder_are_you_sure: Ви впевнені, що хочете видалити папку "{folder}"? Вкладені теки і колекції буде переміщено на самий верхній рівень.
+delete_collection_peer_dependencies: Наступні поля також буде видалено, оскільки вони пов'язані з поточною колекцією.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -574,6 +602,7 @@ advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
 change_advanced_filter_operator: Change Operator
+advanced: Розширений
 operators:
   eq: Equals
   neq: Doesn't equal
@@ -587,10 +616,15 @@ operators:
   nnull: Isn't null
   contains: Contains
   ncontains: Doesn't contain
+  icontains: Містить (нечутливий)
   starts_with: Starts with
   nstarts_with: Doesn't start with
+  istarts_with: Починається з (нечутливий)
+  nistarts_with: Не починається з (нечутливого)
   ends_with: Ends with
   nends_with: Doesn't end with
+  iends_with: Закінчується на (нечутливий)
+  niends_with: Не закінчується на (нечутливий)
   between: Is between
   nbetween: Isn't between
   empty: Is empty
@@ -601,6 +635,8 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  regex: Збігається з Regexp
+custom_validation_message: Користувацьке повідомлення про перевірку
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item
@@ -614,10 +650,12 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 interface_options: Interface Options
+display_options: Параметри відображення
 layout_options: Layout Options
 rows: Rows
 columns: Columns
 collection_setup: Collection Setup
+optional_system_fields: Додаткові поля
 value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item
@@ -637,9 +675,12 @@ add_file: Add File
 replace_file: Replace File
 no_results: No Results
 no_results_copy: Adjust or clear search filters to see results.
+no_visible_fields: Порожня форма
+no_visible_fields_copy: Дана форма не має видимих полів.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
+edit_role: Редагування ролі
 rule: Rule
 user: User
 no_presets: No Presets
@@ -662,6 +703,11 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
+flows: Потоки
+flow: Потік
+select_a_flow: Виберіть потік
+run_flow_confirm: Ви впевнені, що хочете виконати цей потік?
+run_flow_on_current_collection: Запуск потоку на поточному зборі
 trigger: Trigger
 flow_name: Name
 flow_tracking_activity: Only Track Activity
@@ -778,6 +824,7 @@ no_options_available: No options available
 settings_data_model: Data Model
 settings_project: Settings
 settings_webhooks: Webhooks
+settings_flows: Потоки
 settings_presets: Bookmarks
 settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
@@ -1364,6 +1411,8 @@ interfaces:
     description: A modal for selecting options of an interface
   system-display:
     display: Display
+  system-display-options:
+    display-options: Параметри відображення
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
@@ -1423,6 +1472,7 @@ interfaces:
     sort: Sort
     field_note_placeholder: Enter field note...
     interface_group: Interface Options
+    display_group: Параметри відображення
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -1669,6 +1719,7 @@ layouts:
     no_compatible_fields: No compatible fields
   kanban:
     crop: Crop
+    advanced: Розширений
 both: Both
 panels:
   metric:
@@ -1709,6 +1760,8 @@ operations:
     data: Data
     header: Header
   trigger:
+    flows: Потоки
+    flow: Потік
     data: Data
 standard: Standard
 compact: Compact
