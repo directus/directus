@@ -32,8 +32,8 @@ export default defineEndpoint(async (router, context) => {
 router.get('/users/:email', async (req, res) => {
   const usersService = new UsersService({ schema });
   const { email } = req.params;
-
   const data = await usersService.getUserByEmail(email);
+
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -92,7 +92,7 @@ router.patch('/users/:id', async (req, res) => {
   const data = await usersService.updateOne(id, req.body);
   res.locals['payload'] = { data: data || null };
   res.json(data);
-  });
+});
 ```
 
 ### Delete User

@@ -10,17 +10,28 @@ Use the `CollectionsService`, `FieldsService` and `RelationsService` to configur
 ## CollectionsService
 
 The `CollectionsService` is responsible for managing and manipulating data in collections. Utilize it to perform CRUD
-endpoints to collections.
+operations on collection.
+
+```js
+export default defineEndpoint(async (router, context) => {
+  const { services, getSchema } = context;
+  const { CollectionsService } = services;
+  const schema = await getSchema();
+
+  router.get('/', async (req, res) => {
+    const collectionsService = new CollectionsService({ schema });
+  });
+});
+```
 
 ### Create Collection
 
 ```js
 router.post('/collections', async (req, res) => {
-  const schema = await getSchema();
-  const service = new CollectionsService({ schema });
-  const collectionKey = await service.createOne(req.body);
+  const collectionsService = new CollectionsService({ schema });
+  const collectionKey = await collectionsService.createOne(req.body);
 
-  const record = await service.readOne(collectionKey);
+  const record = await collectionsService.readOne(collectionKey);
   res.locals['payload'] = { data: record || null };
   res.json(record);
 });
@@ -30,11 +41,10 @@ router.post('/collections', async (req, res) => {
 
 ```js
 router.get('/collections/:collection', async (req, res) => {
-  const schema = await getSchema();
   const { collection } = req.params;
-  const service = new CollectionsService({ schema });
+  const collectionsService = new CollectionsService({ schema });
+  const data = await collectionsService.readOne(collection);
 
-  const data = await service.readOne(collection);
   res.locals['payload'] = { data: collection || null };
   res.json(data);
 });
@@ -44,11 +54,10 @@ router.get('/collections/:collection', async (req, res) => {
 
 ```js
 router.patch('/collections/:collection', async (req, res) => {
-  const schema = await getSchema();
   const { collection } = req.params;
-  const service = new CollectionsService({ schema });
+  const collectionsService = new CollectionsService({ schema });
 
-  const data = await service.updateOne(collection, req.body);
+  const data = await collectionsService.updateOne(collection, req.body);
   res.locals['payload'] = { data: collection || null };
   res.json(data);
 });
@@ -58,31 +67,41 @@ router.patch('/collections/:collection', async (req, res) => {
 
 ```js
 router.delete('/collections/:collection', async (req, res) => {
-  const schema = await getSchema();
   const { collection } = req.params;
-  const service = new CollectionsService({ schema });
+  const collectionsService = new CollectionsService({ schema });
 
-  await service.deleteOne(collection);
+  await collectionsService.deleteOne(collection);
   res.json();
   });
 ```
 
 ## FieldsService
 
-The `FieldsService` provides access to perform CRUD operations on fields used in collections and item records.
+The `FieldsService` provides access to perform CRUD operations on fields used in collections.
+
+```js
+export default defineEndpoint(async (router, context) => {
+  const { services, getSchema } = context;
+  const { FieldsService } = services;
+  const schema = await getSchema();
+
+  router.get('/', async (req, res) => {
+    const fieldsService = new FieldsService({ schema });
+  });
+});
+```
 
 ### Create Field
 
 ```js
 router.post('/fields/:collection', async (req, res) => {
-  const schema = await getSchema();
   const { collection } = req.params;
-  const service = new FieldsService({ schema });
+  const fieldsService = new FieldsService({ schema });
 
   const field = req.body;
-  await service.createField(collection, field);
+  await fieldsService.createField(collection, field);
 
-  const createdField = await service.readOne(collection, field.field);
+  const createdField = await fieldsService.readOne(collection, field.field);
   res.locals['payload'] = { data: createdField || null };
   res.json(createdField);
 });
@@ -92,11 +111,10 @@ router.post('/fields/:collection', async (req, res) => {
 
 ```js
 router.get('/fields/:collection', async (req, res) => {
-  const schema = await getSchema();
   const { collection } = req.params;
-  const service = new FieldsService({ schema });
+  const fieldsService = new FieldsService({ schema });
 
-  const data = await service.readAll(collection);
+  const data = await fieldsService.readAll(collection);
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -106,12 +124,11 @@ router.get('/fields/:collection', async (req, res) => {
 
 ```js
 router.patch('/fields/:collection/:field', async (req, res) => {
-  const schema = await getSchema();
   const { collection, field } = req.params;
-  const service = new FieldsService({ schema });
+  const fieldsService = new FieldsService({ schema });
 
-  await service.updateField(collection, { ...req.body, field });
-  const updatedField = await service.readOne(collection, field);
+  await fieldsService.updateField(collection, { ...req.body, field });
+  const updatedField = await fieldsService.readOne(collection, field);
 
   res.locals['payload'] = { data: updatedField || null };
   res.json(updatedField);
@@ -124,29 +141,39 @@ Updating the field name is not supported at this time.
 
 ```js
 router.delete('/fields/:collection/:field', async (req, res) => {
-  const schema = await getSchema();
   const { collection, field } = req.params;
-  const service = new FieldsService({ schema });
+  const fieldsService = new FieldsService({ schema });
 
-  await service.deleteField(collection, field);
+  await fieldsService.deleteField(collection, field);
   res.json();
 });
 ```
 
 ## RelationsService
 
-The `RelationsService` allows you to manage relationships and references between items in Directus. Utilize it to create
-endpoints that perform CRUD operations on relations.
+The `RelationsService` allows you to manage relationships and references between items in Directus. Utilize it to
+perform CRUD operations on relations.
+
+```js
+export default defineEndpoint(async (router, context) => {
+  const { services, getSchema } = context;
+  const { RelationsService } = services;
+  const schema = await getSchema();
+
+  router.get('/', async (req, res) => {
+    const relationsService = new RelationsService({ schema });
+  });
+});
+```
 
 ### Create Relation
 
 ```js
 router.post('/relations', async (req, res) => {
-  const schema = await getSchema();
-  const service = new RelationsService({ schema });
-  const data = await service.createOne(req.body);
+  const relationsService = new RelationsService({ schema });
+  const data = await relationsService.createOne(req.body);
 
-  const record = await service.readOne(data);
+  const record = await relationsService.readOne(data);
   res.locals['payload'] = { data: record || null };
   res.json(record);
 });
@@ -156,11 +183,35 @@ router.post('/relations', async (req, res) => {
 
 ```js
 router.get('/relations/:collection/:field', async (req, res) => {
-  const schema = await getSchema();
-  const service = new RelationsService({ schema });
+  const relationsService = new RelationsService({ schema });
   const { collection, field } = req.params;
 
-  const data = await service.readOne(collection, field);
+  const data = await relationsService.readOne(collection, field);
+
+  res.json(data);
+});
+```
+
+### Update Relation
+
+```js
+router.patch('/relations/:collection/:field', async (req, res) => {
+  const relationsService = new RelationsService({ schema });
+  const { collection, field } = req.params;
+
+  const data = await relationsService.updateOne(collection, field, req.body);
+
+  res.json(data);
+});
+```
+
+### Delete Relations
+
+```js
+router.delete('/relations/:collection/:field', async (req, res) => {
+  const relationsService = new RelationsService({ schema });
+  const { collection, field } = req.params;
+  const data = await relationsService.deleteOne(collection, field);
 
   res.json(data);
 });
