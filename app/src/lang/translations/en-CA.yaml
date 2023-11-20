@@ -144,6 +144,8 @@ promote_notice: >-
 delete_version: Вилучити версію
 delete_version_copy: >-
   Ви впевнені, що хочете видалити версію"{version}"? Ця дія не може бути скасована.
+delete_on_promote_copy: >-
+  Ви хочете видалити або зберегти версію"{version}"після просування?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -352,15 +354,20 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
+revision_delta_version_saved: 'Збереження версії (оновлено 1 поле) | Збереження версії (оновлено {count} полів)'
 revision_delta_reverted: Reverted
+revision_delta_update_message: Це поле було оновлено, але його значення приховується з міркувань безпеки.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
+presentation_text_values_cannot_be_reimported: 'Використовується текст презентації, значення не можуть бути повторно імпортовані.'
+download_page_as_csv: 'Завантажити сторінку в форматі CSV'
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
 updates_made: Updates Made
 leave_comment: Leave a comment...
 post_comment_success: Comment posted
+post_comment_updated: Оновлений коментар
 item_create_success: Item Created | Items Created
 item_update_success: Item Updated | Items Updated
 item_delete_success: Item Deleted | Items Deleted
@@ -369,7 +376,14 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
+import_data_input_placeholder: CSV або JSON...
+import_data_button: Розпочати імпорт
+import_data_indeterminate: Імпорт даних...
+import_data_success: Дані успішно імпортовано з {filename}
+import_data_error: Структура даних цього файлу не відповідає колекції.
 label_import: Import
+label_export: Експорт
+import_export: Імпорт / Експорт
 format: Format
 last_page: Last Page
 last_access: Last Access
@@ -387,13 +401,22 @@ display_label: Display
 today: Today
 yesterday: Yesterday
 delete_comment: Delete Comment
+delete_share: Видалити загальний доступ
 functions:
   year: Year
   month: Month
+  week: Тиждень
+  day: День
+  weekday: Будний день
+  hour: Година
+  minute: Хвилина
+  second: Другий
   count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -428,6 +451,7 @@ modified: Modified
 owner: Owner
 edited_by: Edited by
 folder: Folder
+folders: Теки
 zoom: Zoom
 download: Download
 open: Open
@@ -441,8 +465,18 @@ import_from_url: Import File from URL
 replace_from_device: Replace File from Device
 replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
+no_image_selected: Не вибрано жодного зображення
 no_file_selected: No File Selected
 download_file: Download File
+open_file_in_tab: Відкрити файл у новій вкладці
+start_export: Розпочати експорт
+not_available_for_local_downloads: Не доступний для локального завантаження
+exporting_all_items_in_collection: Експорт усіх елементів ({total}) у {collection}.
+exporting_limited_items_in_collection: 'Буде експортовано {count} з {total} елементів у {collection}.'
+exporting_no_items_to_export: Немає елементів для експорту. Налаштуйте конфігурацію експорту та/або додайте елементи до колекції.
+exporting_download_hint: Щойно файл{format} буде створено, його буде завантажено на ваш пристрій.
+exporting_library_hint: Щойно файл {format} буде створено, його буде збережено до бібліотеки файлів.
+exporting_library_hint_forced: Цей експорт має бути оброблений пакетами. Після завершення файл {format} буде збережено до бібліотеки файлів.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -453,25 +487,33 @@ created_on: Created On
 creating_collection_info: Name the collection and setup its unique “key” field...
 creating_collection_system: Enable and rename any of these optional fields.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Автоматично інкрементоване велике ціле число
 generated_uuid: Generated UUID
 manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
+save_and_quit: Зберегти та вийти з програми
 save_as_copy: Save as Copy
 add_existing: Add Existing
 creating_items: Creating Items
 enable_create_button: Enable Create Button
 selecting_items: Selecting Items
 enable_select_button: Enable Select Button
+allow_duplicates: Дозволити дублювання
 comments: Comments
 no_comments: No Comments Yet
+expand: Розгорнути
+collapse: Зникнення
 select_item: Select Item
 no_items: No items
+search_items: Елементи пошуку...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
 request_feature: Request Feature
+request_body: Орган подачі запиту
 interface_not_found: 'Interface "{interface}" not found.'
+operation_not_found: 'Операцію "{operation}" не знайдено.'
 reset_interface: Reset Interface
 display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
@@ -495,6 +537,7 @@ create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
 relationship_not_setup: The relationship hasn't been configured correctly
+no_singleton_relations: Зв'язки з одинаками не підтримуються
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
@@ -511,6 +554,7 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
+origin: Походження
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -542,8 +586,11 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
+edit_item: Редагування елемента
 enabled: Enabled
 disable_tfa: Disable 2FA
+admin_disable_tfa_text: Ви впевнені, що хочете вимкнути 2FA для цього користувача?
+tfa_setup: Встановлення 2FA
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
 create_account: Create Account
@@ -557,7 +604,12 @@ errors:
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PROVIDER: Користувач належить іншому постачальнику авторських прав
   INVALID_QUERY: Invalid query
+  INVALID_CONFIG: Невірна конфігурація
+  INVALID_TOKEN: Недійсний маркер
+  INVALID_IP: IP-адреса заборонена
+  INVALID_USER: Не вдалося автентифікувати користувача
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
@@ -927,6 +979,7 @@ fields:
     user: Action By
     comment: Comment
     user_agent: User Agent
+    origin: Походження
     ip: IP Address
     revisions: Revisions
   directus_collections:
