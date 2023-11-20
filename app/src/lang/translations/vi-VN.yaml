@@ -467,7 +467,7 @@ date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
-date-fns_date_short: 'MMM d, bạn'
+date-fns_date_short: "MMM d, 'bạn'"
 date-fns_time_short: 'h: mẹ ơi'
 date-fns_date_short_no_year: MM d
 minutes: Phút
