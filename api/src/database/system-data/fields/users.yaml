@@ -124,6 +124,8 @@ fields:
   - field: theme_light_overrides
     width: full
     interface: system-theme-overrides
+    options:
+      appearance: light
     special:
       - cast-json
 
@@ -137,6 +139,8 @@ fields:
   - field: theme_dark_overrides
     width: full
     interface: system-theme-overrides
+    options:
+      appearance: dark
     special:
       - cast-json
 

@@ -5,8 +5,7 @@
  * @module
  */
 import type { AbstractQuery } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery } from '../types/index.js';
-import type { ParameterTypes } from '../types/parameterized-statement.js';
+import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../types/index.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
 import { convertFieldNodes } from './fields/index.js';
 import { convertModifiers } from './modifiers/modifiers.js';

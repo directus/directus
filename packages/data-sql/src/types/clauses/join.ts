@@ -1,4 +1,5 @@
-import type { AbstractSqlQueryLogicalNode, AbstractSqlQueryConditionNode } from '../where/index.js';
+import type { AbstractSqlQueryConditionNode } from './where/condition.js';
+import type { AbstractSqlQueryLogicalNode } from './where/logical.js';
 
 /**
  * Used to join another table, regardless of the type of relation.
