@@ -62,8 +62,8 @@ const hasValue = computed(() => {
 						:rule="ruleKey"
 						type="color"
 						:set="set"
-						:default-value="ruleValue as string | number"
-						:value="value?.[ruleKey] as string | number | undefined"
+						:default-value="ruleValue"
+						:value="value?.[ruleKey]"
 						:path="[...path, ruleKey]"
 					/>
 				</template>
