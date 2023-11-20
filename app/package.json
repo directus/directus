@@ -152,7 +152,7 @@
 		"tinymce": "6.6.0",
 		"typescript": "5.2.2",
 		"vite": "4.3.7",
-		"vitest": "0.31.1",
+		"vitest": "0.34.6",
 		"vue": "3.3.4",
 		"vue-i18n": "9.5.0",
 		"vue-router": "4.2.0",

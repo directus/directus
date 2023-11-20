@@ -46,13 +46,13 @@
 		"@types/lodash-es": "4.17.9",
 		"@types/node": "18.16.12",
 		"@types/tmp": "0.2.3",
-		"@vitest/coverage-c8": "0.31.1",
+		"@vitest/coverage-v8": "0.34.6",
 		"concurrently": "8.2.1",
 		"knex": "2.4.2",
 		"pino": "8.14.1",
 		"tsup": "7.2.0",
 		"typescript": "5.2.2",
-		"vitest": "0.31.1",
+		"vitest": "0.34.6",
 		"vue": "3.3.4",
 		"vue-router": "4.2.0"
 	}
