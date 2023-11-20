@@ -20,10 +20,12 @@ Services are available as part of an extension's `context`. It is common to dest
 shown below in an example of an [endpoint extension](/extensions/endpoints).
 
 ```js
-export default defineEndpoint((router, context) => {
+export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
+  const schema = await getSchema();
   const { ItemsService } = services;
-   const service = new ItemsService();
+
+  const itemsService = new ItemsService({ schema });
 })
 ```
 

@@ -7,43 +7,65 @@ contributors: Esther Agbaje
 
 The `FilesService` provides access to upload, import, and perform other operations on files.
 
-### Import a File
+```js
+export default defineEndpoint(async (router, context) => {
+  const { services, getSchema } = context;
+  const { FilesService } = services;
+  const schema = await getSchema();
+
+  router.get('/', async (req, res) => {
+    const filesService = new FilesService({ schema });
+  });
+});
+```
+
+### Import File
 
 ```js
 router.post('/files', async (req, res) => {
-  const schema = await getSchema();
-  const service = new FilesService({ schema });
-  const assetKey = await service.importOne(req.body.url);
+  const filesService = new FilesService({ schema });
+  const assetKey = await filesService.importOne(req.body.url);
 
-  const data = await service.readOne(assetKey);
+  const data = await filesService.readOne(assetKey);
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
 ```
 
-### Read a File
+### Read File
 
 ```js
 router.get('/files/:id', async (req, res) => {
-  const schema = await getSchema();
-  const service = new FilesService({ schema });
+  const filesService = new FilesService({ schema });
   const { id } = req.params;
 
-  const data = await service.readOne(id);
+  const data = await filesService.readOne(id);
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
 ```
 
-### Delete a File
+### Update File
+
+```js
+router.patch('/files/:id', async (req, res) => {
+  const filesService = new FilesService({ schema });
+  const { id } = req.params;
+
+  const data = await filesService.updateOne(id, { title: 'Random' });
+  res.locals['payload'] = { data: data || null };
+  res.json(data);
+});
+```
+
+### Delete File
 
 ```js
  router.delete('/files/:id', async (req, res) => {
-  const schema = await getSchema();
-  const service = new FilesService({ schema });
+  const filesService = new FilesService({ schema });
   const { id } = req.params;
 
-  const data = await service.deleteOne(id);
+  const data = await filesService.deleteOne(id);
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });

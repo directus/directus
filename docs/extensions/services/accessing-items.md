@@ -8,17 +8,14 @@ contributors: Esther Agbaje
 The `ItemsService` provides access to perform operations on items in a collection. It requires a collection and a schema
 to operate.
 
-In the example below, we're desctructuring `services` and `getSchema` from context and in turn `ItemsService` from
-`services`.
-
 ```js
-export default defineEndpoint((router, context) => {
+export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { ItemsService } = services;
+  const schema = await getSchema();
 
   router.get('/', async (req, res) => {
-    const schema = await getSchema();
-    const service = new ItemsService('collection_name', { schema });
+    const itemsService = new ItemsService('collection_name', { schema });
   });
 });
 ```
@@ -27,11 +24,10 @@ export default defineEndpoint((router, context) => {
 
 ```js
 router.post('/items/:collection', async (req, res) => {
-  const schema = await getSchema();
   const { collection } = req.params;
+  const itemsService = new ItemsService(collection, { schema });
 
-  const service = new ItemsService(collection, { schema });
-  const data = await service.createOne(req.body);
+  const data = await itemsService.createOne(req.body);
   res.json(data);
 });
 ```
@@ -40,11 +36,10 @@ router.post('/items/:collection', async (req, res) => {
 
 ```js
 router.get('/items/:collection/:id', async (req, res) => {
-  const schema = await getSchema();
   const { collection, id } = req.params;
-  const service = new ItemsService(collection, { schema });
+  const itemsService = new ItemsService(collection, { schema });
 
-  const data = await service.readOne(id);
+  const data = await itemsService.readOne(id);
   res.json(data);
 });
 ```
@@ -53,11 +48,10 @@ router.get('/items/:collection/:id', async (req, res) => {
 
 ```js
 router.patch('/items/:collection/:id', async (req, res) => {
-  const schema = await getSchema();
   const { collection, id } = req.params;
-  const service = new ItemsService(collection, { schema });
+  const itemsService = new ItemsService(collection, { schema });
 
-  const data = await service.updateOne(id, req.body);
+  const data = await itemsService.updateOne(id, req.body);
   res.json(data);
 });
 ```
@@ -66,11 +60,10 @@ router.patch('/items/:collection/:id', async (req, res) => {
 
 ```js
 router.delete('/items/:collection/:id', async (req, res) => {
-  const schema = await getSchema();
   const { collection, id } = req.params;
-  const service = new ItemsService(collection, { schema });
+  const itemsService = new ItemsService(collection, { schema });
 
-  await service.deleteOne(id);
+  await itemsService.deleteOne(id);
   res.json();
 });
 ```
