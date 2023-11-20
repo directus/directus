@@ -14,15 +14,26 @@ There are various services related to users:
 All three of these services extend the [ItemsService](/docs/extensions/services/accessing-items.md) and are used in a
 very similar way.
 
-### Get a User
+```js
+export default defineEndpoint(async (router, context) => {
+  const { services, getSchema } = context;
+  const { UsersService, RolesService, PermissionsService } = services;
+  const schema = await getSchema();
+
+  router.get('/', async (req, res) => {
+    const usersService = new usersService({ schema });
+  });
+});
+```
+
+### Get User
 
 ```js
 router.get('/users/:email', async (req, res) => {
-  const schema = await getSchema();
-  const service = new UsersService({ schema });
+  const usersService = new UsersService({ schema });
   const { email } = req.params;
 
-  const data = await service.getUserByEmail(email);
+  const data = await usersService.getUserByEmail(email);
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -32,34 +43,65 @@ router.get('/users/:email', async (req, res) => {
 
 ```js
 router.post('/roles', async (req, res) => {
-  const schema = await getSchema();
-  const service = new RolesService({ schema });
-  const data = await service.createOne(req.body);
+  const rolesService = new RolesService({ schema });
+  const data = await rolesService.createOne(req.body);
 
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
 ```
 
-### Create and Assign User to a Role
+### Create a User and Assign a Role
 
 ```js
 router.post('/users/:role', async (req, res) => {
   const schema = await getSchema();
-  const userService = new UsersService({ schema });
-  const roleService = new RolesService({ schema });
+  const usersService = new UsersService({ schema });
+  const rolesService = new RolesService({ schema });
 
   const { role } = req.params;
-  const roles = await roleService.readByQuery({
+  const roles = await rolesService.readByQuery({
     fields: ['*'],
   });
 
   const foundRole = roles.find((item) => item.name == role);
 
-  const data = await userService.createOne({
+  const data = await usersService.createOne({
     ...req.body,
     role: foundRole.id,
   });
+
+  res.locals['payload'] = { data: data || null };
+  res.json(data);
+});
+```
+
+::: warning Creating a User
+
+A role is required when creating a user.
+
+:::
+
+### Update User
+
+```js
+router.patch('/users/:id', async (req, res) => {
+  const usersService = new UsersService({ schema });
+  const { id } = req.params;
+
+  const data = await usersService.updateOne(id, req.body);
+  res.locals['payload'] = { data: data || null };
+  res.json(data);
+  });
+```
+
+### Delete User
+
+```js
+router.delete('/users/:id', async (req, res) => {
+  const usersService = new UsersService({ schema });
+  const { id } = req.params;
+  const data = await usersService.deleteOne(id);
 
   res.locals['payload'] = { data: data || null };
   res.json(data);
@@ -71,17 +113,17 @@ router.post('/users/:role', async (req, res) => {
 ```js
 router.post('/permissions/:role', async (req, res) => {
   const schema = await getSchema();
-  const permissionService = new PermissionsService({ schema });
-  const roleService = new RolesService({ schema });
+  const permissionsService = new PermissionsService({ schema });
+  const rolesService = new RolesService({ schema });
 
   const { role } = req.params;
-  const roles = await roleService.readByQuery({
+  const roles = await rolesService.readByQuery({
       fields: ['*'],
     });
 
   const foundRole = roles.find((item) => item.name == role);
 
-  const data = await permissionService.createOne({
+  const data = await permissionsService.createOne({
     ...req.body,
     role: foundRole.id,
   });
