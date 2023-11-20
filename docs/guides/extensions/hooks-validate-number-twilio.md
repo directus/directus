@@ -159,6 +159,7 @@ const InvalidPayloadException = createError(
   (message) => message,
   500
 );
+
 export default ({ filter }, { env, exceptions }) => {
 	const { InvalidPayloadException } = exceptions;
 
