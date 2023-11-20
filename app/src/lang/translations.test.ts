@@ -37,7 +37,6 @@ describe.each(locales)('Locale %s', async (locale) => {
 	const datefnsLocale = (await importDateLocale(locale))?.default;
 
 	const { isImported, translations } = await importLanguageFile(locale);
-	i18n.global.locale = locale;
 	i18n.global.mergeLocaleMessage(locale, translations);
 	const messages = flatten((i18n.global.messages as Record<string, any>)[locale]);
 	const translationKeys = Object.keys(messages);
