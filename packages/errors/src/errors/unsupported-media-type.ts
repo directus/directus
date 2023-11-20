@@ -11,5 +11,5 @@ export const messageConstructor = (extensions: UnsupportedMediaTypeErrorExtensio
 export const UnsupportedMediaTypeError = createError<UnsupportedMediaTypeErrorExtensions>(
 	ErrorCode.UnsupportedMediaType,
 	messageConstructor,
-	415
+	415,
 );

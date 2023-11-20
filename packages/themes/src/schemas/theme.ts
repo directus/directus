@@ -25,7 +25,7 @@ const FormRules = Type.Optional(
 						foreground: Type.Optional(Type.Ref(Color)),
 						fontFamily: Type.Optional(Type.Ref(FamilyName)),
 						fontWeight: Type.Optional(Type.Ref(FontWeight)),
-					})
+					}),
 				),
 				input: Type.Optional(
 					Type.Object({
@@ -45,11 +45,11 @@ const FormRules = Type.Optional(
 
 						height: Type.Optional(Type.Ref(Size)),
 						padding: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
-					})
+					}),
 				),
-			})
+			}),
 		),
-	})
+	}),
 );
 
 const Rules = Type.Object({
@@ -107,27 +107,27 @@ const Rules = Type.Object({
 				Type.Object({
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				})
+				}),
 			),
 			sans: Type.Optional(
 				Type.Object({
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				})
+				}),
 			),
 			serif: Type.Optional(
 				Type.Object({
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				})
+				}),
 			),
 			monospace: Type.Optional(
 				Type.Object({
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				})
+				}),
 			),
-		})
+		}),
 	),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +147,7 @@ const Rules = Type.Object({
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 					borderWidth: Type.Optional(Type.Ref(LineWidth)),
 					borderColor: Type.Optional(Type.Ref(Color)),
-				})
+				}),
 			),
 
 			modules: Type.Optional(
@@ -165,9 +165,9 @@ const Rules = Type.Object({
 							background: Type.Optional(Type.Ref(Color)),
 							backgroundHover: Type.Optional(Type.Ref(Color)),
 							backgroundActive: Type.Optional(Type.Ref(Color)),
-						})
+						}),
 					),
-				})
+				}),
 			),
 
 			list: Type.Optional(
@@ -177,7 +177,7 @@ const Rules = Type.Object({
 							foreground: Type.Optional(Type.Ref(Color)),
 							foregroundHover: Type.Optional(Type.Ref(Color)),
 							foregroundActive: Type.Optional(Type.Ref(Color)),
-						})
+						}),
 					),
 
 					foreground: Type.Optional(Type.Ref(Color)),
@@ -194,9 +194,9 @@ const Rules = Type.Object({
 						borderColor: Type.Optional(Type.Ref(Color)),
 						borderWidth: Type.Optional(Type.Ref(LineWidth)),
 					}),
-				})
+				}),
 			),
-		})
+		}),
 	),
 
 	header: Type.Optional(
@@ -209,16 +209,16 @@ const Rules = Type.Object({
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-				})
+				}),
 			),
 			title: Type.Optional(
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				})
+				}),
 			),
-		})
+		}),
 	),
 
 	form: FormRules,
@@ -240,7 +240,7 @@ const Rules = Type.Object({
 									foreground: Type.Optional(Type.Ref(Color)),
 									foregroundHover: Type.Optional(Type.Ref(Color)),
 									foregroundActive: Type.Optional(Type.Ref(Color)),
-								})
+								}),
 							),
 
 							foreground: Type.Optional(Type.Ref(Color)),
@@ -255,13 +255,13 @@ const Rules = Type.Object({
 
 							borderWidth: Type.Optional(Type.Ref(LineWidth)),
 							borderColor: Type.Optional(Type.Ref(Color)),
-						})
+						}),
 					),
 
 					form: FormRules,
-				})
+				}),
 			),
-		})
+		}),
 	),
 
 	public: Type.Optional(
@@ -276,11 +276,11 @@ const Rules = Type.Object({
 					primary: Type.Optional(Type.Ref(Color)),
 					secondary: Type.Optional(Type.Ref(Color)),
 					speed: Type.Optional(Type.Ref(Number)),
-				})
+				}),
 			),
 
 			form: FormRules,
-		})
+		}),
 	),
 
 	popover: Type.Optional(
@@ -290,9 +290,9 @@ const Rules = Type.Object({
 					background: Type.Optional(Type.Ref(Color)),
 					borderRadius: Type.Optional(Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)]))),
 					boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-				})
+				}),
 			),
-		})
+		}),
 	),
 });
 

@@ -204,7 +204,7 @@ export default abstract class SocketController {
 					const error = new WebSocketError(
 						'server',
 						'REQUESTS_EXCEEDED',
-						`Too many messages, retry after ${timeout}ms.`
+						`Too many messages, retry after ${timeout}ms.`,
 					);
 
 					handleWebSocketError(client, error, 'server');

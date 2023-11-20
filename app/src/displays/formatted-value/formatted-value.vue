@@ -32,7 +32,7 @@ const props = withDefaults(
 	{
 		font: 'sans-serif',
 		conditionalFormatting: () => [],
-	}
+	},
 );
 
 const { t, n } = useI18n();
@@ -70,7 +70,7 @@ const computedFormat = computed(() => {
 			background,
 			icon,
 			text: '',
-		}
+		},
 	);
 });
 

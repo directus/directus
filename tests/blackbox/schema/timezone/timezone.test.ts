@@ -52,7 +52,7 @@ describe('schema', () => {
 				time: `${hour}:33:33`,
 				datetime: `2022-01-15T${hour}:33:33`,
 				timestamp: `2022-01-15T${hour}:33:33+02:00`,
-			}
+			},
 		);
 	}
 
@@ -188,7 +188,7 @@ describe('schema', () => {
 							break;
 					}
 				},
-				300000
+				300000,
 			);
 		});
 
@@ -233,7 +233,7 @@ describe('schema', () => {
 							expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 							expect(responseObj.timestamp.substring(0, 19)).toBe(
-								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 							);
 
 							const dateCreated = new Date(responseObj.date_created);
@@ -242,8 +242,8 @@ describe('schema', () => {
 								validateDateDifference(
 									insertionStartTimestamp,
 									dateCreated,
-									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
-								).toISOString()
+									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime(),
+								).toISOString(),
 							);
 
 							expect(responseObj.date_updated).toBeNull();
@@ -255,7 +255,7 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
@@ -264,14 +264,14 @@ describe('schema', () => {
 							validateDateDifference(
 								insertionStartTimestamp,
 								dateCreated,
-								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000
-							).toISOString()
+								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000,
+							).toISOString(),
 						);
 
 						expect(responseObj.date_updated).toBeNull();
 					}
 				},
-				10000
+				10000,
 			);
 		});
 
@@ -319,8 +319,8 @@ describe('schema', () => {
 					validateDateDifference(
 						updateStartTimestamp,
 						dateUpdated,
-						updateEndTimestamp.getTime() - updateStartTimestamp.getTime() + 1000
-					).toISOString()
+						updateEndTimestamp.getTime() - updateStartTimestamp.getTime() + 1000,
+					).toISOString(),
 				);
 			});
 		});

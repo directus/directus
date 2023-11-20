@@ -97,7 +97,7 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 }
 
 export function useLayout<Options = any, Query = any>(
-	layoutId: Ref<string | null>
+	layoutId: Ref<string | null>,
 ): { layoutWrapper: ComputedRef<Component> } {
 	const { layouts } = useExtensions();
 

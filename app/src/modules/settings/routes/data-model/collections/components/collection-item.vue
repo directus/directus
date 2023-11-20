@@ -24,7 +24,7 @@ const toggleCollapse = () => {
 };
 
 const nestedCollections = computed(() =>
-	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
+	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
 );
 
 function onGroupSortChange(collections: Collection[]) {

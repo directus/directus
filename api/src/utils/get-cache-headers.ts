@@ -14,7 +14,7 @@ export function getCacheControlHeader(
 	req: Request,
 	ttl: number | undefined,
 	globalCacheSettings: boolean,
-	personalized: boolean
+	personalized: boolean,
 ): string {
 	// When the user explicitly asked to skip the cache
 	if (shouldSkipCache(req)) return 'no-store';

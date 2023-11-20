@@ -67,7 +67,7 @@ watch(
 		if (props.layoutQuery?.fields) return;
 		exportSettings.fields = fields.value?.map((field) => field.field);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -87,7 +87,7 @@ watch(
 			}
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -96,7 +96,7 @@ watch(
 		exportSettings.filter = filter;
 		exportSettings.search = search;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const format = ref('csv');
@@ -161,7 +161,7 @@ watch(
 		) {
 			exportSettings.limit = Math.round(exportSettings.limit);
 		}
-	}
+	},
 );
 
 const exportCount = computed(() => {
@@ -186,7 +186,7 @@ watch(
 			lockedToFiles.value = null;
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(primaryKeyField, (newVal) => {

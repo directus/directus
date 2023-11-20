@@ -13,7 +13,7 @@ export type SortConversionResult = {
 export const convertSort = (
 	abstractSorts: AtLeastOneElement<AbstractQueryNodeSort>,
 	collection: string,
-	idxGenerator: Generator<number, number, number>
+	idxGenerator: Generator<number, number, number>,
 ): SortConversionResult => {
 	const result: SortConversionResult = {
 		clauses: {

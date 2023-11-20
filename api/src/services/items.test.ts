@@ -77,11 +77,11 @@ describe('Integration Tests', () => {
 				expect(tracker.history.insert[0]!.bindings).toStrictEqual([item.id, item.name]);
 
 				expect(tracker.history.insert[0]!.sql).toBe(
-					`insert into "${table}" (${sqlFieldList(schemas[schema].schema, table)}) values (?, ?)`
+					`insert into "${table}" (${sqlFieldList(schemas[schema].schema, table)}) values (?, ?)`,
 				);
 
 				expect(response).toBe(item.id);
-			}
+			},
 		);
 
 		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
@@ -188,7 +188,7 @@ describe('Integration Tests', () => {
 				await itemService.createOne(item, { emitEvents: false });
 
 				expect(historyIncludesResetStatement()).toBe(false);
-			}
+			},
 		);
 
 		it.each(DatabaseClients)(
@@ -203,7 +203,7 @@ describe('Integration Tests', () => {
 				await itemService.createOne(itemWithoutPk, { emitEvents: false });
 
 				expect(historyIncludesResetStatement()).toBe(false);
-			}
+			},
 		);
 	});
 
@@ -231,8 +231,8 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select ${sqlFieldFormatter(
 						schemas[schema].schema,
-						table
-					)} from "${table}" where "${table}"."id" = ? order by "${table}"."id" asc limit ?`
+						table,
+					)} from "${table}" where "${table}"."id" = ? order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(response).toStrictEqual(rawItems[0]!);
@@ -272,11 +272,11 @@ describe('Integration Tests', () => {
 					expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
 
 					expect(tracker.history.select[0]!.sql).toBe(
-						`select "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+						`select "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 					);
 
 					expect(response).toStrictEqual(rawItems[0]!.id);
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))('%s returns one item with filter from tables as admin', async (schema) => {
@@ -299,7 +299,7 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', rawItems[0]!.id, 100]);
 
 				expect(tracker.history.select[0]!.sql).toBe(
-					`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? and "${table}"."id" = ? order by "${table}"."id" asc limit ?`
+					`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? and "${table}"."id" = ? order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(response).toStrictEqual({ id: rawItems[0]!.id });
@@ -352,11 +352,11 @@ describe('Integration Tests', () => {
 					expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', rawItems[0]!.id, 100]);
 
 					expect(tracker.history.select[0]!.sql).toBe(
-						`select "${table}"."id", "${table}"."name" from "${table}" where ("${table}"."name" = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+						`select "${table}"."id", "${table}"."name" from "${table}" where ("${table}"."name" = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 					);
 
 					expect(response).toStrictEqual({ id: rawItems[0]!.id });
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))(
@@ -411,11 +411,11 @@ describe('Integration Tests', () => {
 					]);
 
 					expect(tracker.history.select[0]!.sql).toBe(
-						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 					);
 
 					expect(response).toStrictEqual({ id: rawItems[0]!.id });
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))(
@@ -490,11 +490,11 @@ describe('Integration Tests', () => {
 					]);
 
 					expect(tracker.history.select[0]!.sql).toBe(
-						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 					);
 
 					expect(response).toStrictEqual({ id: rawItems[0]!.id });
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))(
@@ -553,11 +553,11 @@ describe('Integration Tests', () => {
 					});
 
 					expect(() =>
-						itemsService.readOne(rawItems[0]!.id, { filter: { name: { _eq: 'something' } } })
+						itemsService.readOne(rawItems[0]!.id, { filter: { name: { _eq: 'something' } } }),
 					).rejects.toThrow("You don't have permission to access this.");
 
 					expect(tracker.history.select.length).toBe(0);
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))('%s returns one item with deep filter from tables as admin', async (schema) => {
@@ -592,7 +592,7 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
 
 				expect(tracker.history.select[0]!.sql).toBe(
-					`select "${table}"."id" from "${table}" where "${table}"."id" = ? order by "${table}"."id" asc limit ?`
+					`select "${table}"."id" from "${table}" where "${table}"."id" = ? order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(tracker.history.select[1]!.bindings).toStrictEqual([
@@ -602,7 +602,7 @@ describe('Integration Tests', () => {
 				]);
 
 				expect(tracker.history.select[1]!.sql).toBe(
-					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where "${childTable}"."title" = ? and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`
+					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where "${childTable}"."title" = ? and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`,
 				);
 
 				expect(response).toStrictEqual({ id: rawItems[0]!.id, items: childItems });
@@ -687,7 +687,7 @@ describe('Integration Tests', () => {
 					expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
 
 					expect(tracker.history.select[0]!.sql).toBe(
-						`select "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+						`select "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 					);
 
 					expect(tracker.history.select[1]!.bindings).toStrictEqual([
@@ -697,11 +697,11 @@ describe('Integration Tests', () => {
 					]);
 
 					expect(tracker.history.select[1]!.sql).toBe(
-						`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where ("${childTable}"."title" = ?) and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`
+						`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where ("${childTable}"."title" = ?) and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`,
 					);
 
 					expect(response).toStrictEqual({ id: rawItems[0]!.id, items: childItems });
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))(
@@ -778,11 +778,11 @@ describe('Integration Tests', () => {
 						itemsService.readOne(rawItems[0]!.id, {
 							fields: ['id', 'items.*'],
 							deep: { items: { _filter: { title: { _eq: childItems[0]!.title } } } as NestedDeepQuery },
-						})
+						}),
 					).rejects.toThrow("You don't have permission to access this.");
 
 					expect(tracker.history.select.length).toBe(0);
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))(
@@ -803,11 +803,11 @@ describe('Integration Tests', () => {
 					});
 
 					expect(() => itemsService.readOne(rawItems[0]!.id)).rejects.toThrow(
-						"You don't have permission to access this."
+						"You don't have permission to access this.",
 					);
 
 					expect(tracker.history.select.length).toBe(0);
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))(
@@ -837,11 +837,11 @@ describe('Integration Tests', () => {
 					});
 
 					expect(() => itemsService.readOne(rawItems[0]!.id)).rejects.toThrow(
-						"You don't have permission to access this."
+						"You don't have permission to access this.",
 					);
 
 					expect(tracker.history.select.length).toBe(0);
-				}
+				},
 			);
 
 			it.each(Object.keys(schemas))('%s returns count() that is processed without role permissions', async (schema) => {
@@ -897,7 +897,7 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
 
 				expect(tracker.history.select[0]!.sql).toBe(
-					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id") AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id") AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(response).toStrictEqual({ items_count: 1 });
@@ -956,7 +956,7 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
 
 				expect(tracker.history.select[0]!.sql).toBe(
-					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id" and (("${childTable}"."title" like '%child%'))) AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id" and (("${childTable}"."title" like '%child%'))) AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(response).toStrictEqual({ items_count: 1 });
@@ -989,8 +989,8 @@ describe('Integration Tests', () => {
 			expect(tracker.history.select[0]!.sql).toBe(
 				`select ${sqlFieldFormatter(
 					schemas[schema].schema,
-					table
-				)} from "${table}" where ("${table}"."id" in (?, ?)) order by "${table}"."id" asc limit ?`
+					table,
+				)} from "${table}" where ("${table}"."id" in (?, ?)) order by "${table}"."id" asc limit ?`,
 			);
 
 			expect(response).toStrictEqual(items);
@@ -1019,8 +1019,8 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select ${sqlFieldFormatter(
 						schemas[schema].schema,
-						table
-					)} from "${table}" where (1 = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
+						table,
+					)} from "${table}" where (1 = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(response).toStrictEqual([items[1]!]);
@@ -1048,8 +1048,8 @@ describe('Integration Tests', () => {
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select ${sqlFieldFormatter(
 						schemas[schema].schema,
-						table
-					)} from "${table}" where (1 = ? and ("${table}"."id" = ? or "${table}"."name" = ?)) order by "${table}"."id" asc limit ?`
+						table,
+					)} from "${table}" where (1 = ? and ("${table}"."id" = ? or "${table}"."name" = ?)) order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(response).toStrictEqual([items[1]!]);
@@ -1135,39 +1135,39 @@ describe('Integration Tests', () => {
 					{
 						items: [],
 					},
-					{ emitEvents: false }
+					{ emitEvents: false },
 				);
 
 				expect(tracker.history.select.length).toBe(4);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([item.id, 1]);
 
 				expect(tracker.history.select[0]!.sql).toBe(
-					`select "${table}"."id", "${table}"."name" from "${table}" where (("${table}"."id" in (?))) order by "${table}"."id" asc limit ?`
+					`select "${table}"."id", "${table}"."name" from "${table}" where (("${table}"."id" in (?))) order by "${table}"."id" asc limit ?`,
 				);
 
 				expect(tracker.history.select[1]!.bindings).toStrictEqual([item.id, 25000]);
 
 				expect(tracker.history.select[1]!.sql).toBe(
-					`select "${childTable}"."uploaded_by", "${childTable}"."id" from "${childTable}" where "${childTable}"."uploaded_by" in (?) order by "${childTable}"."id" asc limit ?`
+					`select "${childTable}"."uploaded_by", "${childTable}"."id" from "${childTable}" where "${childTable}"."uploaded_by" in (?) order by "${childTable}"."id" asc limit ?`,
 				);
 
 				expect(tracker.history.select[2]!.bindings).toStrictEqual([item.id, 1, 100]);
 
 				expect(tracker.history.select[2]!.sql).toBe(
-					`select "${childTable}"."id" from "${childTable}" where ("${childTable}"."uploaded_by" = ? and 1 = ?) order by "${childTable}"."id" asc limit ?`
+					`select "${childTable}"."id" from "${childTable}" where ("${childTable}"."uploaded_by" = ? and 1 = ?) order by "${childTable}"."id" asc limit ?`,
 				);
 
 				expect(tracker.history.select[3]!.bindings).toStrictEqual([childItem.id, 1]);
 
 				expect(tracker.history.select[3]!.sql).toBe(
-					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where (("${childTable}"."id" in (?))) order by "${childTable}"."id" asc limit ?`
+					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where (("${childTable}"."id" in (?))) order by "${childTable}"."id" asc limit ?`,
 				);
 
 				expect(tracker.history.update[0]!.bindings).toStrictEqual([null, childItem.id]);
 				expect(tracker.history.update[0]!.sql).toBe(`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`);
 
 				expect(response).toStrictEqual(item.id);
-			}
+			},
 		);
 	});
 
@@ -1227,7 +1227,7 @@ describe('Integration Tests', () => {
 					expect((err as Error).message).toBe(`Invalid payload. Input should be an array of items.`);
 					expect(err).toBeInstanceOf(InvalidPayloadError);
 				}
-			}
+			},
 		);
 	});
 
@@ -1254,7 +1254,7 @@ describe('Integration Tests', () => {
 			expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', 100]);
 
 			expect(tracker.history.select[0]!.sql).toBe(
-				`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? order by "${table}"."id" asc limit ?`
+				`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? order by "${table}"."id" asc limit ?`,
 			);
 		});
 
@@ -1282,8 +1282,8 @@ describe('Integration Tests', () => {
 				new RegExp(
 					`select "${otherTable}"."id", "${otherTable}"."title" from "${otherTable}" ` +
 						`left join "${table}" as ".{5}" on "${otherTable}"."uploaded_by" = ".{5}"."id" ` +
-						`where ".{5}"."name" = \\? order by "${otherTable}"."id" asc limit \\?`
-				)
+						`where ".{5}"."name" = \\? order by "${otherTable}"."id" asc limit \\?`,
+				),
 			);
 		});
 
@@ -1312,8 +1312,8 @@ describe('Integration Tests', () => {
 					`select "${table}"."id", "${table}"."name" from "${table}" inner join ` +
 						`\\(select distinct "${table}"."id", "${table}"."id" as "sort_.{5}" from "${table}" left join "${otherTable}" as ".{5}" ` +
 						`on "${table}"."id" = ".{5}"."uploaded_by" where ".{5}"."title" = \\? order by "${table}"."id" asc limit \\?\\) as "inner" ` +
-						`on "${table}"."id" = "inner"."id" order by "inner"."sort_.{5}" asc`
-				)
+						`on "${table}"."id" = "inner"."id" order by "inner"."sort_.{5}" asc`,
+				),
 			);
 		});
 	});
@@ -1341,7 +1341,7 @@ describe('Integration Tests', () => {
 			expect(tracker.history.select[0]!.bindings).toStrictEqual([100]);
 
 			expect(tracker.history.select[0]!.sql).toBe(
-				`select "${table}"."id", "${table}"."name" from "${table}" order by "${table}"."name" asc limit ?`
+				`select "${table}"."id", "${table}"."name" from "${table}" order by "${table}"."name" asc limit ?`,
 			);
 		});
 
@@ -1368,8 +1368,8 @@ describe('Integration Tests', () => {
 			expect(tracker.history.select[0]!.sql).toMatch(
 				new RegExp(
 					`select "${otherTable}"."id", "${otherTable}"."title" from "${otherTable}" ` +
-						`left join "${table}" as ".{5}" on "${otherTable}"."uploaded_by" = ".{5}"."id" order by ".{5}"."name" asc limit \\?`
-				)
+						`left join "${table}" as ".{5}" on "${otherTable}"."uploaded_by" = ".{5}"."id" order by ".{5}"."name" asc limit \\?`,
+				),
 			);
 		});
 
@@ -1400,8 +1400,8 @@ describe('Integration Tests', () => {
 						`row_number\\(\\) over \\(partition by "${table}"."id" order by ".{5}"."title" asc\\) as "directus_row_number" from "${table}" ` +
 						`left join "${otherTable}" as ".{5}" on "${table}"."id" = ".{5}"."uploaded_by" order by ".{5}"."title" asc limit \\?\\)` +
 						` as "inner" on "${table}"."id" = "inner"."id" ` +
-						`where "inner"."directus_row_number" = \\? order by "inner"."sort_.{5}" asc limit \\?`
-				)
+						`where "inner"."directus_row_number" = \\? order by "inner"."sort_.{5}" asc limit \\?`,
+				),
 			);
 		});
 	});

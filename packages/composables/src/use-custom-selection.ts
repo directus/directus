@@ -10,7 +10,7 @@ export type UsableCustomSelection = {
 export function useCustomSelection(
 	currentValue: Ref<string | null>,
 	items: Ref<any[]>,
-	emit: (event: string | null) => void
+	emit: (event: string | null) => void,
 ): UsableCustomSelection {
 	const localOtherValue = ref('');
 
@@ -56,7 +56,7 @@ type UsableCustomSelectionMultiple = {
 export function useCustomSelectionMultiple(
 	currentValues: Ref<string[] | null>,
 	items: Ref<any[]>,
-	emit: (event: string[] | null) => void
+	emit: (event: string[] | null) => void,
 ): UsableCustomSelectionMultiple {
 	const otherValues = ref<OtherValue[]>([]);
 
@@ -82,7 +82,7 @@ export function useCustomSelectionMultiple(
 				}
 			});
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	return { otherValues, addOtherValue, setOtherValue };
@@ -101,7 +101,7 @@ export function useCustomSelectionMultiple(
 		const previousValue = otherValues.value.find((o) => o.key === key);
 
 		const valueWithoutPrevious = ((currentValues.value || []) as string[]).filter(
-			(val) => val !== previousValue?.value
+			(val) => val !== previousValue?.value,
 		);
 
 		if (newValue === null) {

@@ -6,7 +6,7 @@ export function convertFieldCondition(
 	node: ConditionFieldNode,
 	collection: string,
 	generator: Generator<number, number, number>,
-	negate: boolean
+	negate: boolean,
 ): FilterResult {
 	const { value: value1, joins: joins1 } = convertTarget(node.target, collection, generator);
 	const { value: value2, joins: joins2 } = convertTarget(node.compareTo, collection, generator);

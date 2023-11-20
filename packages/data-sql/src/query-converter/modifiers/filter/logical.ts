@@ -5,10 +5,10 @@ import type { FilterResult } from './utils.js';
 export function convertLogical(
 	children: AtLeastOneElement<FilterResult>,
 	operator: 'and' | 'or',
-	negate: boolean
+	negate: boolean,
 ): FilterResult {
 	const childWhereClauses = children.map(
-		(child) => child.clauses.where
+		(child) => child.clauses.where,
 	) as AtLeastOneElement<AbstractSqlQueryWhereNode>;
 
 	const parameters = children.flatMap((child) => child.parameters);

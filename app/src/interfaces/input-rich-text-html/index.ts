@@ -297,7 +297,7 @@ export default defineInterface({
 								},
 							],
 							null,
-							4
+							4,
 						),
 					},
 				},

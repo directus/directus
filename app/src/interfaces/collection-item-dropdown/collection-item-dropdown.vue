@@ -27,7 +27,7 @@ const props = withDefaults(
 		value: () => ({ key: null, collection: '' }),
 		template: null,
 		filter: null,
-	}
+	},
 );
 
 const { t } = useI18n();

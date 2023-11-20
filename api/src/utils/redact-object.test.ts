@@ -53,7 +53,7 @@ test('should support single level path', () => {
 	expect(result).toEqual(
 		merge({}, input, {
 			$trigger: REDACTED_TEXT,
-		})
+		}),
 	);
 });
 
@@ -65,7 +65,7 @@ test('should support multi level path', () => {
 			$trigger: {
 				payload: { password: REDACTED_TEXT },
 			},
-		})
+		}),
 	);
 });
 
@@ -77,7 +77,7 @@ test('should support wildcard path', () => {
 			$trigger: {
 				payload: REDACTED_TEXT,
 			},
-		})
+		}),
 	);
 });
 
@@ -103,7 +103,7 @@ test('should support deep path', () => {
 					},
 				},
 			},
-		})
+		}),
 	);
 });
 
@@ -117,7 +117,7 @@ test('should support multiple paths', () => {
 				['**', 'password'],
 			],
 		},
-		getRedactedString
+		getRedactedString,
 	);
 
 	expect(result).toEqual(
@@ -141,7 +141,7 @@ test('should support multiple paths', () => {
 					},
 				},
 			},
-		})
+		}),
 	);
 });
 
@@ -294,8 +294,8 @@ describe('getReplacer tests', () => {
 					ERROR: 'Error',
 					cause: 'cause',
 					number: 123456,
-				})
-			)
+				}),
+			),
 		);
 
 		// Stack changes depending on env

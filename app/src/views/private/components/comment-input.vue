@@ -23,7 +23,7 @@ const props = withDefaults(
 	{
 		existingComment: null,
 		previews: null,
-	}
+	},
 );
 
 const emit = defineEmits(['cancel']);
@@ -46,7 +46,7 @@ watch(
 			newCommentContent.value = md(props.existingComment.comment);
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const saving = ref(false);
@@ -65,7 +65,7 @@ watch(
 			};
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 let triggerCaretPosition = 0;
@@ -346,7 +346,9 @@ function pressedEnter() {
 }
 
 .v-template-input {
-	transition: height var(--fast) var(--transition), padding var(--fast) var(--transition);
+	transition:
+		height var(--fast) var(--transition),
+		padding var(--fast) var(--transition);
 }
 
 .collapsed .v-template-input {

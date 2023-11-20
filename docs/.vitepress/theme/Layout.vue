@@ -11,17 +11,13 @@ const route = useRoute();
 const title = computed(() => page.value.title);
 const contributors = computed(() => page.value.frontmatter['contributors']);
 const path = computed(() => route.path);
-const isPackagePage = RegExp('^/packages/.+$').test(path.value)
+const isPackagePage = RegExp('^/packages/.+$').test(path.value);
 </script>
 
 <template>
 	<Layout>
 		<template #doc-before>
-			<div
-				v-if="isPackagePage"
-				class="warning custom-block"
-				style="padding-bottom: 16px; margin-bottom: 16px"
-			>
+			<div v-if="isPackagePage" class="warning custom-block" style="padding-bottom: 16px; margin-bottom: 16px">
 				<p>
 					This is an auto-generated document to support extension builders understand the internal packages they can
 					utilize. To find our written guides, tutorials, and API/SDK reference, check out our
@@ -46,7 +42,7 @@ const isPackagePage = RegExp('^/packages/.+$').test(path.value)
 
 <style scoped>
 .newsletter {
-	margin-top: 2em;	
+	margin-top: 2em;
 }
 
 #contributors {
@@ -56,5 +52,4 @@ const isPackagePage = RegExp('^/packages/.+$').test(path.value)
 .contributors {
 	font-weight: 700;
 }
-
 </style>

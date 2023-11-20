@@ -28,7 +28,7 @@ watch(
 	() => props.modelValue,
 	() => {
 		loadRoles();
-	}
+	},
 );
 
 async function inviteUsers() {
@@ -53,7 +53,7 @@ async function inviteUsers() {
 		});
 
 		const otherErrors = error?.response?.data?.errors?.filter(
-			(e: APIError) => e?.extensions?.code !== 'RECORD_NOT_UNIQUE'
+			(e: APIError) => e?.extensions?.code !== 'RECORD_NOT_UNIQUE',
 		);
 
 		if (otherErrors.length > 0) {

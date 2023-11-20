@@ -19,7 +19,7 @@ router.get(
 		res.locals['payload'] = await service.oas.generate(req.headers.host);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -45,7 +45,7 @@ router.get(
 
 		res.attachment(filename);
 		res.send(result);
-	})
+	}),
 );
 
 router.get(
@@ -60,7 +60,7 @@ router.get(
 		res.locals['payload'] = { data };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -80,7 +80,7 @@ router.get(
 		res.locals['cache'] = false;
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

@@ -6,7 +6,7 @@ export function convertNumberNode(
 	node: ConditionNumberNode,
 	collection: string,
 	generator: Generator<number, number, number>,
-	negate: boolean
+	negate: boolean,
 ): FilterResult {
 	const { value, joins } = convertTarget(node.target, collection, generator);
 

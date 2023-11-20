@@ -13,7 +13,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteField =
 	<Schema extends object>(
 		collection: DirectusField<Schema>['collection'],
-		field: DirectusField<Schema>['field']
+		field: DirectusField<Schema>['field'],
 	): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');

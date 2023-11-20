@@ -7,7 +7,7 @@ type Result<T> = T extends (...args: any) => infer Result ? Result : unknown;
 
 export async function callReference<T extends (...args: any[]) => unknown | Promise<unknown>>(
 	fn: Reference<T>,
-	args: Args<T>
+	args: Args<T>,
 ): Promise<Reference<Result<T>>> {
 	const sandboxTimeout = Number(env['EXTENSIONS_SANDBOX_TIMEOUT']);
 

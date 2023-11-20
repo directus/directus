@@ -13,7 +13,7 @@ import type { RestCommand } from '../../types.js';
 export const readAssetRaw =
 	<Schema extends object>(
 		key: DirectusFile<Schema>['id'],
-		query?: AssetsQuery
+		query?: AssetsQuery,
 	): RestCommand<ReadableStream<Uint8Array>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

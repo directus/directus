@@ -263,11 +263,11 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
-						`Invalid payload. You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`,
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
-				}
+				},
 			);
 
 			it.each(['provider', 'external_identifier'])('should allow admin users to update "%s" field', async (field) => {
@@ -295,7 +295,7 @@ describe('Integration Tests', () => {
 
 					await expect(promise).resolves.not.toThrow();
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
-				}
+				},
 			);
 		});
 
@@ -380,11 +380,11 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
-						`Invalid payload. You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`,
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
-				}
+				},
 			);
 
 			it.each(['provider', 'external_identifier'])('should allow admin users to update "%s" field', async (field) => {
@@ -412,7 +412,7 @@ describe('Integration Tests', () => {
 
 					await expect(promise).resolves.not.toThrow();
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
-				}
+				},
 			);
 		});
 
@@ -517,11 +517,11 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
-						`Invalid payload. You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`,
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
-				}
+				},
 			);
 
 			it.each(['provider', 'external_identifier'])('should allow admin users to update "%s" field', async (field) => {
@@ -553,7 +553,7 @@ describe('Integration Tests', () => {
 
 					await expect(promise).resolves.not.toThrow();
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
-				}
+				},
 			);
 		});
 
