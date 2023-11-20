@@ -809,6 +809,7 @@ layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
+optional_system_fields: Campi opzionali
 value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
@@ -1015,6 +1016,7 @@ deselect: Deseleziona
 deselect_all: Deseleziona Tutto
 theme: Tema
 select_a_theme: Seleziona un tema
+default_sync_with_project: Predefinito (Sincronizza con il progetto)
 appearance_auto: Automatico (Sincronizza con il Sistema)
 appearance_light: Chiaro
 appearance_dark: Tema scuro
@@ -1544,6 +1546,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
