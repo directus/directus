@@ -34,6 +34,8 @@ vi.mock('node:path');
 vi.mock('node:crypto');
 vi.mock('undici');
 
+const { join: joinActual } = await vi.importActual<typeof import('node:path')>('node:path');
+
 let sample: {
 	config: Required<DriverCloudinaryConfig>;
 	path: {
@@ -630,7 +632,7 @@ describe('#stat', () => {
 			status: 200,
 		};
 
-		vi.mocked(join).mockRestore();
+		vi.mocked(join).mockImplementation(joinActual);
 
 		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
 	});
@@ -1126,7 +1128,7 @@ describe('#uploadChunk', () => {
 
 describe('#delete', () => {
 	beforeEach(async () => {
-		vi.mocked(join).mockRestore();
+		vi.mocked(join).mockImplementation(joinActual);
 
 		await driver.delete(sample.path.input);
 	});
