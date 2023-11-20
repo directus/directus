@@ -864,6 +864,7 @@ wysiwyg_options:
   source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
+  lazy_loading_label: Увімкнути "ліниве" завантаження
 dropdown: Dropdown
 choices: Choices
 choices_option_configured_incorrectly: Choices configured incorrectly
