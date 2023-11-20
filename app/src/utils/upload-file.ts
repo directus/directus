@@ -12,7 +12,7 @@ export async function uploadFile(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		fileId?: string;
-	}
+	},
 ): Promise<any> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();

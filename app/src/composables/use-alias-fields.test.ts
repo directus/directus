@@ -61,8 +61,8 @@ describe('useAliasFields', () => {
 						url: 'https://example.com',
 					},
 				},
-				'image.url'
-			)
+				'image.url',
+			),
 		).toEqual('https://example.com');
 	});
 

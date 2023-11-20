@@ -37,7 +37,7 @@ const props = withDefaults(
 		tagsField: null,
 		userField: null,
 		showUngrouped: true,
-	}
+	},
 );
 
 const emit = defineEmits([

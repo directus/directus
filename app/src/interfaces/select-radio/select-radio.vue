@@ -25,7 +25,7 @@ const props = withDefaults(
 		iconOn: 'radio_button_checked',
 		iconOff: 'radio_button_unchecked',
 		color: 'var(--theme--primary)',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -54,7 +54,7 @@ const gridClass = computed(() => {
 });
 
 const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
-	emit('input', value)
+	emit('input', value),
 );
 
 const customIcon = computed(() => {

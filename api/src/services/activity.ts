@@ -62,10 +62,13 @@ export class ActivityService extends ItemsService {
 						filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
 					});
 
-					const userPreviews = templateData.reduce((acc, user) => {
-						acc[user['id']] = `<em>${userName(user)}</em>`;
-						return acc;
-					}, {} as Record<string, string>);
+					const userPreviews = templateData.reduce(
+						(acc, user) => {
+							acc[user['id']] = `<em>${userName(user)}</em>`;
+							return acc;
+						},
+						{} as Record<string, string>,
+					);
 
 					let comment = data['comment'];
 

@@ -33,7 +33,7 @@ export const convertFieldNodes = (
 	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
 	idxGenerator: Generator<number, number, number>,
-	currentPath: string[] = []
+	currentPath: string[] = [],
 ): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];

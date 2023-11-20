@@ -15,9 +15,9 @@
 		"@typescript-eslint/eslint-plugin": "6.11.0",
 		"@typescript-eslint/parser": "6.11.0",
 		"eslint": "8.54.0",
-		"eslint-config-prettier": "8.8.0",
+		"eslint-config-prettier": "9.0.0",
 		"eslint-plugin-vue": "9.18.1",
-		"prettier": "2.8.8"
+		"prettier": "3.1.0"
 	},
 	"packageManager": "pnpm@8.10.5",
 	"engines": {

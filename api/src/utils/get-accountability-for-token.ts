@@ -7,7 +7,7 @@ import { verifyAccessJWT } from './jwt.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
-	accountability?: Accountability
+	accountability?: Accountability,
 ): Promise<Accountability> {
 	if (!accountability) {
 		accountability = {

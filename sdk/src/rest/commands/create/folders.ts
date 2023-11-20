@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreateFolderOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusFolder<Schema>
+	Item extends object = DirectusFolder<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -19,7 +19,7 @@ export type CreateFolderOutput<
 export const createFolders =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		items: Partial<DirectusFolder<Schema>>[],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateFolderOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/folders`,
@@ -39,7 +39,7 @@ export const createFolders =
 export const createFolder =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		item: Partial<DirectusFolder<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateFolderOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/folders`,

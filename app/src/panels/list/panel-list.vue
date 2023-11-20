@@ -21,7 +21,7 @@ const props = withDefaults(
 		linkToItem: false,
 		sortDirection: 'desc',
 		data: () => ({}),
-	}
+	},
 );
 
 const currentlyEditing = ref<number | string>();

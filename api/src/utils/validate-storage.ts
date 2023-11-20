@@ -12,13 +12,13 @@ export async function validateStorage(): Promise<void> {
 			await access(path.dirname(env['DB_FILENAME']), constants.R_OK | constants.W_OK);
 		} catch {
 			logger.warn(
-				`Directory for SQLite database file (${path.resolve(path.dirname(env['DB_FILENAME']))}) is not read/writeable!`
+				`Directory for SQLite database file (${path.resolve(path.dirname(env['DB_FILENAME']))}) is not read/writeable!`,
 			);
 		}
 	}
 
 	const usedStorageDrivers = toArray(env['STORAGE_LOCATIONS']).map(
-		(location) => env[`STORAGE_${location.toUpperCase()}_DRIVER`]
+		(location) => env[`STORAGE_${location.toUpperCase()}_DRIVER`],
 	);
 
 	if (usedStorageDrivers.includes('local')) {

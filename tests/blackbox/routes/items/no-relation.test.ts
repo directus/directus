@@ -628,8 +628,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 												},
 											],
 										};
-									})
-								)
+									}),
+								),
 							);
 						}
 
@@ -817,8 +817,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											},
 										},
 									};
-								})
-							)
+								}),
+							),
 						);
 					}
 				});
@@ -1375,7 +1375,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponseAsc.body.data[localCollectionArtists].length).toEqual(limit);
 
 					expect(
-						gqlResponseAsc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
+						gqlResponseAsc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0])),
 					).toEqual(expectedResultAsc);
 
 					expect(responseDesc.statusCode).toBe(200);
@@ -1386,7 +1386,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponseDesc.body.data[localCollectionArtists].length).toEqual(limit);
 
 					expect(
-						gqlResponseDesc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
+						gqlResponseDesc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0])),
 					).toEqual(expectedResultDesc);
 				});
 			});
@@ -1614,7 +1614,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponseAsc.body.data[queryKey].length).toEqual(limit);
 
 					expect(gqlResponseAsc.body.data[queryKey].map((v: any) => parseInt(v.group.name.split('-')[0]))).toEqual(
-						expectedResultAsc
+						expectedResultAsc,
 					);
 
 					expect(responseDesc.statusCode).toBe(200);
@@ -1625,7 +1625,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponseDesc.body.data[queryKey].length).toEqual(limit);
 
 					expect(gqlResponseDesc.body.data[queryKey].map((v: any) => parseInt(v.group.name.split('-')[0]))).toEqual(
-						expectedResultDesc
+						expectedResultDesc,
 					);
 				});
 			});
@@ -1673,7 +1673,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -1715,17 +1715,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -1742,11 +1742,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								artists.push(
-									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) }),
 								);
 
 								artists2.push(
-									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) }),
 								);
 							}
 
@@ -1776,7 +1776,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -1791,11 +1791,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								artists.push(
-									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) }),
 								);
 
 								artists2.push(
-									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) }),
 								);
 							}
 
@@ -1823,17 +1823,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -1850,11 +1850,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								artistIDs.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs2.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 							}
 
@@ -1885,7 +1885,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -1900,11 +1900,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								artistIDs.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs2.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 							}
 
@@ -1933,17 +1933,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -1979,7 +1979,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.statusCode).toBe(200);
 							expect(response.body.data.length).toBe(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2014,10 +2014,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2036,19 +2036,19 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								artistIDs.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs2.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs3.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs4.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 							}
 
@@ -2098,7 +2098,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toBe(200);
 							expect(gqlResponse2.body.data[mutationKey].ids.length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2115,19 +2115,19 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								artistIDs.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs2.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs3.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 
 								artistIDs4.push(
-									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id,
 								);
 							}
 
@@ -2171,31 +2171,31 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(response2.statusCode).toBe(400);
 							expect(response2.body.errors).toBeDefined();
 
 							expect(response2.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse2.statusCode).toBe(200);
 							expect(gqlResponse2.body.errors).toBeDefined();
 
 							expect(gqlResponse2.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2229,7 +2229,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(204);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2263,10 +2263,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2342,7 +2342,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data.length).toBe(2);
 
 					expect(response.body.data.map((v: any) => v.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdArtist + index)
+						Array.from({ length: 2 }, (_, index) => largeIdArtist + index),
 					);
 				});
 			});

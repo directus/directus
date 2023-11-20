@@ -19,7 +19,7 @@ export function registerRouteGenerator(endpointName: string, endpointRouter: Rou
 				headers: IncomingHttpHeaders;
 				body: string;
 			}) => { status: number; body: string } | Promise<{ status: number; body: string }>
-		>
+		>,
 	) => {
 		if (path.typeof !== 'string') throw new TypeError('Route path has to be of type string');
 		if (method.typeof !== 'string') throw new TypeError('Route method has to be of type string');

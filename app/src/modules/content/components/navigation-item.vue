@@ -62,7 +62,7 @@ const hasContextMenu = computed(() => isAdmin && props.collection.type === 'tabl
 
 function getChildCollections(collection: Collection) {
 	let collections = collectionsStore.collections.filter(
-		(childCollection) => childCollection.meta?.group === collection.collection
+		(childCollection) => childCollection.meta?.group === collection.collection,
 	);
 
 	if (props.showHidden === false) {

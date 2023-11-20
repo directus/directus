@@ -12,7 +12,7 @@ import type { RestCommand } from '../../types.js';
 export const refresh =
 	<Schema extends object>(
 		mode: AuthenticationMode = 'cookie',
-		refresh_token?: string
+		refresh_token?: string,
 	): RestCommand<AuthenticationData, Schema> =>
 	() => ({
 		path: '/auth/refresh',

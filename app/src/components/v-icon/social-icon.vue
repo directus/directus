@@ -20,7 +20,7 @@ const render = () => {
 			{
 				...socialIcon.abstract[0].attributes,
 			},
-			h('path', { ...socialIcon.abstract![0].children![0].attributes })
+			h('path', { ...socialIcon.abstract![0].children![0].attributes }),
 		);
 	}
 

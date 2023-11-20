@@ -45,7 +45,7 @@ const workspaceSize = computed(() => {
 
 			return aggr;
 		},
-		{ x: 0, width: 0 }
+		{ x: 0, width: 0 },
 	);
 
 	const furthestTileY = props.tiles.reduce(
@@ -57,7 +57,7 @@ const workspaceSize = computed(() => {
 
 			return aggr;
 		},
-		{ y: 0, height: 0 }
+		{ y: 0, height: 0 },
 	);
 
 	if (props.editMode === true) {

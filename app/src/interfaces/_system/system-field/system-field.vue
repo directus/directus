@@ -19,7 +19,7 @@ const props = withDefaults(
 	{
 		typeAllowList: () => [],
 		allowForeignKeys: true,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -59,7 +59,7 @@ const selectItems = computed(() =>
 			value: field.field,
 			disabled,
 		};
-	})
+	}),
 );
 </script>
 

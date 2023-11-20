@@ -21,7 +21,7 @@ const props = withDefaults(
 	{
 		format: true,
 		choices: () => [],
-	}
+	},
 );
 
 const items = computed(() => {

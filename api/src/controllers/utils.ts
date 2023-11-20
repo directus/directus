@@ -29,7 +29,7 @@ router.get(
 		const string = nanoid(req.query?.['length'] ? Number(req.query['length']) : 32);
 
 		return res.json({ data: string });
-	})
+	}),
 );
 
 router.post(
@@ -42,7 +42,7 @@ router.post(
 		const hash = await generateHash(req.body.string);
 
 		return res.json({ data: hash });
-	})
+	}),
 );
 
 router.post(
@@ -59,7 +59,7 @@ router.post(
 		const result = await argon2.verify(req.body.hash, req.body.string);
 
 		return res.json({ data: result });
-	})
+	}),
 );
 
 const SortSchema = Joi.object({
@@ -82,7 +82,7 @@ router.post(
 		await service.sort(req.collection, req.body);
 
 		return res.status(200).end();
-	})
+	}),
 );
 
 router.post(
@@ -96,7 +96,7 @@ router.post(
 		await service.revert(req.params['revision']!);
 		next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -158,7 +158,7 @@ router.post(
 		busboy.on('error', (err: Error) => next(err));
 
 		req.pipe(busboy);
-	})
+	}),
 );
 
 router.post(
@@ -187,7 +187,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -201,7 +201,7 @@ router.post(
 		await service.clearCache();
 
 		res.status(200).end();
-	})
+	}),
 );
 
 export default router;

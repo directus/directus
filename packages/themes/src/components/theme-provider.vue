@@ -22,7 +22,7 @@ const props = withDefaults(
 		themeDark: themeDefaultDark.name,
 		themeLightOverrides: () => ({}),
 		themeDarkOverrides: () => ({}),
-	}
+	},
 );
 
 const { darkMode, themeLight, themeDark, themeLightOverrides, themeDarkOverrides } = toRefs(props);

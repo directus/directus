@@ -12,7 +12,7 @@ beforeEach(() => {
 		createTestingPinia({
 			createSpy: vi.fn,
 			stubActions: false,
-		})
+		}),
 	);
 });
 
@@ -147,7 +147,7 @@ test('Returns tree list with injected field', () => {
 				},
 			] as Field[],
 			relations: [] as Relation[],
-		})
+		}),
 	);
 
 	expect(unref(treeList)).toEqual([

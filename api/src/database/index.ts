@@ -265,7 +265,7 @@ export async function validateMigrations(): Promise<boolean> {
 			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
 		migrationFiles = migrationFiles.filter(
-			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
+			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false,
 		);
 
 		customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
@@ -275,7 +275,7 @@ export async function validateMigrations(): Promise<boolean> {
 		const requiredVersions = migrationFiles.map((filePath) => filePath.split('-')[0]);
 
 		const completedVersions = (await database.select('version').from('directus_migrations')).map(
-			({ version }) => version
+			({ version }) => version,
 		);
 
 		return requiredVersions.every((version) => completedVersions.includes(version));
@@ -341,7 +341,7 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 
 		if (inconsistencies) {
 			logger.warn(
-				`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`
+				`Some tables and columns do not match your database's default collation (${collation}):\n${inconsistencies}`,
 			);
 		}
 	}

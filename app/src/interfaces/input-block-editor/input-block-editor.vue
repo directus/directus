@@ -25,7 +25,7 @@ const props = withDefaults(
 		bordered: true,
 		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
 		font: 'sans-serif',
-	}
+	},
 );
 
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
@@ -53,7 +53,7 @@ const tools = getTools(
 		getUploadFieldElement: () => uploaderComponentElement,
 	},
 	props.tools,
-	haveFilesAccess
+	haveFilesAccess,
 );
 
 onMounted(async () => {
@@ -109,7 +109,7 @@ watch(
 		} catch (error) {
 			unexpectedError(error);
 		}
-	}
+	},
 );
 
 async function emitValue(context: EditorJS.API) {
@@ -198,7 +198,8 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .bordered {
-	padding: var(--theme--form--field--input--padding) 4px var(--theme--form--field--input--padding) calc(var(--theme--form--field--input--padding) + 8px) !important;
+	padding: var(--theme--form--field--input--padding) 4px var(--theme--form--field--input--padding)
+		calc(var(--theme--form--field--input--padding) + 8px) !important;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

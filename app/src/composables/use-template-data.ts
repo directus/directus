@@ -14,7 +14,7 @@ type UsableTemplateData = {
 export function useTemplateData(
 	collection: Ref<Collection | null>,
 	primaryKey: Ref<string>,
-	template?: Ref<string>
+	template?: Ref<string>,
 ): UsableTemplateData {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);

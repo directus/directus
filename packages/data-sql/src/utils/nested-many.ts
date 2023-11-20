@@ -17,7 +17,7 @@ type SteamResult = ReadableStreamDefaultReadResult<Record<string, unknown>>;
 export async function makeSubQueriesAndMergeWithRoot(
 	rootStream: ReadableStream<Record<string, unknown>>,
 	nestedManys: AbstractSqlNestedMany[],
-	queryDatabase: (query: AbstractSqlQuery) => Promise<ReadableStream<Record<string, unknown>>>
+	queryDatabase: (query: AbstractSqlQuery) => Promise<ReadableStream<Record<string, unknown>>>,
 ): Promise<ReadableStream<Record<string, unknown>>> {
 	return new ReadableStream({
 		start(controller) {
@@ -31,7 +31,7 @@ export async function makeSubQueriesAndMergeWithRoot(
 
 				for (const nestedMany of nestedManys) {
 					const subQuery = nestedMany.queryGenerator(
-						nestedMany.localJoinFields.map((field) => value[field]) as AtLeastOneElement<string | number>
+						nestedMany.localJoinFields.map((field) => value[field]) as AtLeastOneElement<string | number>,
 					);
 
 					const subStream = await queryDatabase(subQuery);

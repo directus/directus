@@ -421,7 +421,7 @@ async function processConfiguration() {
 		}
 
 		throw new Error(
-			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof config}"`
+			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof config}"`,
 		);
 	}
 
@@ -497,7 +497,7 @@ export function processValues(env: Record<string, any>) {
 			if (allowedEnvironmentVars.some((pattern) => pattern.test(newKey as string))) {
 				if (newKey in env && !(newKey in defaults && env[newKey] === defaults[newKey])) {
 					throw new Error(
-						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
+						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`,
 					);
 				}
 

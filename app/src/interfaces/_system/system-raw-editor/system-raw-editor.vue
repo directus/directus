@@ -24,7 +24,7 @@ const props = withDefaults(
 		type: undefined,
 		placeholder: undefined,
 		language: 'mustache',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -119,7 +119,7 @@ watch(
 		codemirror?.setOption('readOnly', readOnly.value);
 		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -130,7 +130,7 @@ watch(
 		if (currentValue !== newValue) {
 			codemirror?.setValue(getStringifiedValue(newValue, unref(isObjectLike)));
 		}
-	}
+	},
 );
 </script>
 

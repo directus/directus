@@ -28,7 +28,7 @@ watch(
 		if (!el.value) return;
 		hasEllipsis.value = el.value.offsetWidth < el.value.scrollWidth;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 </script>
 

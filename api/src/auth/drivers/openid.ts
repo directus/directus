@@ -51,7 +51,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const clientOptionsOverrides = getConfigFromEnv(
 			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
 			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore'
+			'underscore',
 		);
 
 		this.redirectUrl = redirectUrl.toString();
@@ -69,7 +69,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 						reject(
 							new InvalidProviderConfigError({
 								provider: additionalConfig['provider'],
-							})
+							}),
 						);
 					}
 
@@ -80,7 +80,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 							redirect_uris: [this.redirectUrl],
 							response_types: ['code'],
 							...clientOptionsOverrides,
-						})
+						}),
 					);
 				})
 				.catch((e) => {
@@ -149,7 +149,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			tokenSet = await client.callback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
-				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge }
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
 			);
 
 			userInfo = tokenSet.claims();
@@ -201,7 +201,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 					provider: this.config['provider'],
 					providerPayload: { accessToken: tokenSet.access_token, userInfo },
 				},
-				{ database: getDatabase(), schema: this.schema, accountability: null }
+				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
@@ -230,7 +230,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				provider: this.config['provider'],
 				providerPayload: { accessToken: tokenSet.access_token, userInfo },
 			},
-			{ database: getDatabase(), schema: this.schema, accountability: null }
+			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
 
 		try {
@@ -320,7 +320,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				{
 					expiresIn: '5m',
 					issuer: 'directus',
-				}
+				},
 			);
 
 			res.cookie(`openid.${providerName}`, token, {
@@ -330,7 +330,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
 		}),
-		respond
+		respond,
 	);
 
 	router.post(
@@ -339,7 +339,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		(req, res) => {
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
 		},
-		respond
+		respond,
 	);
 
 	router.get(
@@ -433,7 +433,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

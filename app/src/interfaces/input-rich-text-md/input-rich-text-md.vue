@@ -46,7 +46,7 @@ const props = withDefaults(
 			'empty',
 		],
 		customSyntax: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -130,7 +130,7 @@ watch(
 			codemirror.setValue(newValue ?? '');
 			codemirror.refresh();
 		}
-	}
+	},
 );
 
 watch(
@@ -139,14 +139,14 @@ watch(
 		codemirror?.setOption('readOnly', readOnly.value);
 		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
 	() => props.direction,
 	(direction) => {
 		codemirror?.setOption('direction', direction === 'rtl' ? direction : 'ltr');
-	}
+	},
 );
 
 const editFamily = computed(() => {

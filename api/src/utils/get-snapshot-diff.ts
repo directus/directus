@@ -10,7 +10,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 			[
 				...current.collections.map((currentCollection) => {
 					const afterCollection = after.collections.find(
-						(afterCollection) => afterCollection.collection === currentCollection.collection
+						(afterCollection) => afterCollection.collection === currentCollection.collection,
 					);
 
 					return {
@@ -21,7 +21,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 				...after.collections
 					.filter((afterCollection) => {
 						const currentCollection = current.collections.find(
-							(currentCollection) => currentCollection.collection === afterCollection.collection
+							(currentCollection) => currentCollection.collection === afterCollection.collection,
 						);
 
 						return !!currentCollection === false;
@@ -31,13 +31,14 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						diff: deepDiff.diff(undefined, sanitizeCollection(afterCollection)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['collections'],
-			'collection'
+			'collection',
 		),
 		fields: orderBy(
 			[
 				...current.fields.map((currentField) => {
 					const afterField = after.fields.find(
-						(afterField) => afterField.collection === currentField.collection && afterField.field === currentField.field
+						(afterField) =>
+							afterField.collection === currentField.collection && afterField.field === currentField.field,
 					);
 
 					const isAutoIncrementPrimaryKey =
@@ -48,7 +49,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						field: currentField.field,
 						diff: deepDiff.diff(
 							sanitizeField(currentField, isAutoIncrementPrimaryKey),
-							sanitizeField(afterField, isAutoIncrementPrimaryKey)
+							sanitizeField(afterField, isAutoIncrementPrimaryKey),
 						),
 					};
 				}),
@@ -56,7 +57,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					.filter((afterField) => {
 						const currentField = current.fields.find(
 							(currentField) =>
-								currentField.collection === afterField.collection && afterField.field === currentField.field
+								currentField.collection === afterField.collection && afterField.field === currentField.field,
 						);
 
 						return !!currentField === false;
@@ -67,14 +68,14 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						diff: deepDiff.diff(undefined, sanitizeField(afterField)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['fields'],
-			['collection']
+			['collection'],
 		),
 		relations: orderBy(
 			[
 				...current.relations.map((currentRelation) => {
 					const afterRelation = after.relations.find(
 						(afterRelation) =>
-							afterRelation.collection === currentRelation.collection && afterRelation.field === currentRelation.field
+							afterRelation.collection === currentRelation.collection && afterRelation.field === currentRelation.field,
 					);
 
 					return {
@@ -88,7 +89,8 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					.filter((afterRelation) => {
 						const currentRelation = current.relations.find(
 							(currentRelation) =>
-								currentRelation.collection === afterRelation.collection && afterRelation.field === currentRelation.field
+								currentRelation.collection === afterRelation.collection &&
+								afterRelation.field === currentRelation.field,
 						);
 
 						return !!currentRelation === false;
@@ -100,7 +102,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						diff: deepDiff.diff(undefined, sanitizeRelation(afterRelation)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['relations'],
-			['collection']
+			['collection'],
 		),
 	};
 
@@ -113,11 +115,11 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 		.map(({ collection }) => collection);
 
 	diffedSnapshot.fields = diffedSnapshot.fields.filter(
-		(field) => deletedCollections.includes(field.collection) === false
+		(field) => deletedCollections.includes(field.collection) === false,
 	);
 
 	diffedSnapshot.relations = diffedSnapshot.relations.filter(
-		(relation) => deletedCollections.includes(relation.collection) === false
+		(relation) => deletedCollections.includes(relation.collection) === false,
 	);
 
 	return diffedSnapshot;
