@@ -240,8 +240,8 @@ async function send() {
 	margin-bottom: 8px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	background-color: var(--theme--background);
-	box-shadow: 0 0 4px 2px var(--theme--background);
+	background-color: var(--theme--background-normal);
+	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 }
 
 .empty {
@@ -253,7 +253,7 @@ async function send() {
 }
 
 .grid {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	@include form-grid;
 }

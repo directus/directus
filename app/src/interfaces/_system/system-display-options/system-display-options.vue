@@ -115,8 +115,8 @@ const optionsFields = computed(() => {
 
 <style lang="scss" scoped>
 .inset {
-	--form-horizontal-gap: 24px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	padding: 12px;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

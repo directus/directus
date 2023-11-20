@@ -730,7 +730,6 @@ layout_options: 표시방법 선택
 rows: 행
 columns: 열
 collection_setup: 컬렉션 설정
-optional_system_fields: 선택적 시스템 필드
 value_unique: 생산Key는 유일해야만 합니다.
 all_activity: 전체 활동
 create_item: 추가

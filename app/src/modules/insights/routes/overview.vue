@@ -381,7 +381,7 @@ async function batchDelete() {
 			</template>
 		</v-table>
 
-		<v-info v-else icon="dashboard" :title="t('no_dashboards')" center>
+		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
 			{{ search ? t('no_dashboards_copy_search') : t('no_dashboards_copy') }}
 
 			<template v-if="createAllowed && !search" #append>

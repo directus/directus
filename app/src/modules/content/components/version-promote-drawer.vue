@@ -184,7 +184,7 @@ function useTab() {
 				<v-notice v-if="isOutdated" type="warning" class="field full">
 					{{ t('outdated_notice') }}
 				</v-notice>
-				<v-notice v-else type="info" class="field full">
+				<v-notice v-else class="field full">
 					{{ t('promote_notice') }}
 				</v-notice>
 				<div v-for="field in comparedFields" :key="field.field" class="field full">
@@ -271,7 +271,7 @@ function useTab() {
 	padding: 8px;
 	gap: 8px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	cursor: pointer;
 
 	.field-content {

@@ -106,18 +106,24 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	.container {
-		--input-height: 60px;
-		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
+		--theme--form--column-gap: var(--theme--public--form--column-gap);
+		--theme--form--row-gap: var(--theme--public--form--row-gap);
 
+		--theme--form--field--input--background-subdued: var(--theme--public--form--field--input--background);
 		--theme--form--field--input--background: var(--theme--public--form--field--input--background);
-		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
-		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
-		--theme--form--field--input--border-color: var(--theme--public--form--field--input--border-color);
-		--theme--form--field--input--border-color-hover: var(--theme--public--form--field--input--border-color-hover);
 		--theme--form--field--input--border-color-focus: var(--theme--public--form--field--input--border-color-focus);
-		--theme--form--field--input--box-shadow: var(--theme--public--form--field--input--box-shadow);
-		--theme--form--field--input--box-shadow-hover: var(--theme--public--form--field--input--box-shadow-hover);
+		--theme--form--field--input--border-color-hover: var(--theme--public--form--field--input--border-color-hover);
+		--theme--form--field--input--border-color: var(--theme--public--form--field--input--border-color);
 		--theme--form--field--input--box-shadow-focus: var(--theme--public--form--field--input--box-shadow-focus);
+		--theme--form--field--input--box-shadow-hover: var(--theme--public--form--field--input--box-shadow-hover);
+		--theme--form--field--input--box-shadow: var(--theme--public--form--field--input--box-shadow);
+		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
+		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
+		--theme--form--field--input--height: var(--theme--public--form--field--input--height);
+		--theme--form--field--input--padding: var(--theme--public--form--field--input--padding);
+
+		--theme--form--field--label--font-family: var(--theme--public--form--field--label--font-family);
+		--theme--form--field--label--foreground: var(--theme--public--form--field--label--foreground);
 
 		z-index: 2;
 		display: flex;
@@ -140,7 +146,6 @@ const logoURL = computed<string | null>(() => {
 		transition: max-width var(--medium) var(--transition);
 
 		:slotted(.type-title) {
-			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
 			color: var(--theme--public--foreground-accent);

@@ -69,6 +69,14 @@ export default defineConfig({
 	test: {
 		environment: 'happy-dom',
 		setupFiles: ['src/__setup__/mock-globals.ts'],
+		// See https://github.com/vitest-dev/vitest/issues/4074#issuecomment-1787934252
+		deps: {
+			optimizer: {
+				web: {
+					enabled: false,
+				},
+			},
+		},
 	},
 });
 

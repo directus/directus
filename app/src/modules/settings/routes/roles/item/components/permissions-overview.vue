@@ -148,7 +148,7 @@ function useReset() {
 				:refreshing="refreshing"
 			/>
 
-			<button class="system-toggle" @click="systemVisible = !systemVisible">
+			<button class="system-toggle" :class="{ active: systemVisible }" @click="systemVisible = !systemVisible">
 				{{ t('system_collections') }}
 				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
 			</button>
@@ -220,7 +220,14 @@ function useReset() {
 	width: 100%;
 	height: 48px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
+	border-bottom-left-radius: var(--theme--border-radius);
+	border-bottom-right-radius: var(--theme--border-radius);
+
+	&.active {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
 
 	.v-icon {
 		vertical-align: -7px;

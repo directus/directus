@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "14.0.2",
+	"version": "14.1.1",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -145,6 +145,7 @@
 		"openid-client": "5.4.2",
 		"ora": "6.3.1",
 		"otplib": "12.0.1",
+		"p-queue": "7.4.1",
 		"papaparse": "5.4.1",
 		"pino": "8.14.1",
 		"pino-http": "8.3.3",
@@ -210,13 +211,13 @@
 		"@types/uuid-validate": "0.0.1",
 		"@types/wellknown": "0.5.4",
 		"@types/ws": "8.5.8",
-		"@vitest/coverage-c8": "0.31.1",
+		"@vitest/coverage-v8": "0.34.6",
 		"copyfiles": "2.4.1",
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
 		"supertest": "6.3.3",
 		"typescript": "5.2.2",
-		"vitest": "0.31.1"
+		"vitest": "0.34.6"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.5.8",

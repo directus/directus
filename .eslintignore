@@ -11,3 +11,8 @@ dist/
 *.md
 *.txt
 *.json
+*.scss
+*.css
+*.svg
+*.liquid
+Dockerfile

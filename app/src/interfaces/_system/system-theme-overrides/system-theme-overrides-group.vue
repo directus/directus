@@ -83,7 +83,7 @@ const hasValue = computed(() => {
 }
 
 .group-toggle {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground);
 	width: calc(100% + 16px);
 	text-align: left;
@@ -107,7 +107,7 @@ const hasValue = computed(() => {
 	}
 
 	&:hover {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}
 

@@ -714,7 +714,6 @@ layout_options: Asetteluasetukset
 rows: Rivit
 columns: Sarakkeita
 collection_setup: Kokoelman asetukset
-optional_system_fields: Valinnainen järjestelmäkenttä
 value_unique: Arvon on oltava yksilöllinen
 all_activity: Kaikki toiminta
 create_item: Luo kohde

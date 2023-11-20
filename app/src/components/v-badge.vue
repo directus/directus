@@ -41,7 +41,7 @@ withDefaults(
 
 			--v-badge-color             [var(--white)]
 			--v-badge-background-color  [var(--red)]
-			--v-badge-border-color      [var(--theme--background-page)]
+			--v-badge-border-color      [var(--theme--background)]
 			--v-badge-offset-x          [0px]
 			--v-badge-offset-y          [0px]
 			--v-badge-size              [16px]
@@ -89,10 +89,10 @@ withDefaults(
 		}
 
 		&.bordered {
-			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background-page)))
-				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background-page)))
-				drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background-page)))
-				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background-page)));
+			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background)))
+				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background)))
+				drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color, var(--theme--background)))
+				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color, var(--theme--background)));
 		}
 
 		&.dot {

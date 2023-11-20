@@ -357,7 +357,7 @@ function getWidth(input: unknown, fallback: number): number {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;
@@ -431,10 +431,6 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#main-content {
-		--input-height: 60px;
-		--input-padding: 16px;
-		/* (60 - 4 - 24) / 2 */
-
 		position: relative;
 		flex-grow: 1;
 		width: 100%;
@@ -494,6 +490,25 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#sidebar {
+		--theme--form--column-gap: var(--theme--sidebar--section--form--column-gap);
+		--theme--form--row-gap: var(--theme--sidebar--section--form--row-gap);
+
+		--theme--form--field--input--background-subdued: var(--theme--sidebar--section--form--field--input--background);
+		--theme--form--field--input--background: var(--theme--sidebar--section--form--field--input--background);
+		--theme--form--field--input--border-color-focus: var(--theme--sidebar--section--form--field--input--border-color-focus);
+		--theme--form--field--input--border-color-hover: var(--theme--sidebar--section--form--field--input--border-color-hover);
+		--theme--form--field--input--border-color: var(--theme--sidebar--section--form--field--input--border-color);
+		--theme--form--field--input--box-shadow-focus: var(--theme--sidebar--section--form--field--input--box-shadow-focus);
+		--theme--form--field--input--box-shadow-hover: var(--theme--sidebar--section--form--field--input--box-shadow-hover);
+		--theme--form--field--input--box-shadow: var(--theme--sidebar--section--form--field--input--box-shadow);
+		--theme--form--field--input--foreground-subdued: var(--theme--sidebar--section--form--field--input--foreground-subdued);
+		--theme--form--field--input--foreground: var(--theme--sidebar--section--form--field--input--foreground);
+		--theme--form--field--input--height: var(--theme--sidebar--section--form--field--input--height);
+		--theme--form--field--input--padding: var(--theme--sidebar--section--form--field--input--padding);
+
+		--theme--form--field--label--foreground: var(--theme--sidebar--section--form--field--label--foreground);
+		--theme--form--field--label--font-family: var(--theme--sidebar--section--form--field--label--font-family);
+
 		position: fixed;
 		top: 0;
 		right: 0;

@@ -1,5 +1,5 @@
-import type { AbstractSqlQueryFnNode } from '../../selects/fn.js';
-import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
+import type { AbstractSqlQueryFnNode } from '../../select/fn.js';
+import type { AbstractSqlQuerySelectNode } from '../../select/primitive.js';
 
 /**
  * Condition to filter rows where two columns of different tables are equal.

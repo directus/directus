@@ -456,7 +456,7 @@ function useActions() {
 	padding-bottom: var(--content-padding-bottom);
 
 	.preview {
-		margin-bottom: var(--form-vertical-gap);
+		margin-bottom: var(--theme--form--row-gap);
 	}
 
 	.drawer-item-order {

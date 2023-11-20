@@ -121,7 +121,7 @@ function nudge() {
 .container :slotted(.v-card) {
 	--v-card-min-width: calc(100vw - 40px);
 	--v-card-padding: 28px;
-	--v-card-background-color: var(--theme--background-page);
+	--v-card-background-color: var(--theme--background);
 }
 
 .container :slotted(.v-card) .v-card-title {

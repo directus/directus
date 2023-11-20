@@ -305,14 +305,14 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 <style scoped lang="scss">
 .v-template-input {
 	position: relative;
-	height: var(--input-height);
-	padding: var(--input-padding);
+	height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	padding-bottom: 32px;
 	overflow: hidden;
 	color: var(--theme--foreground);
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	white-space: nowrap;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);

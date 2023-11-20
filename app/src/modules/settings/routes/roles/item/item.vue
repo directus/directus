@@ -183,7 +183,7 @@ function discardAndLeave() {
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
 		<div class="roles">
-			<v-notice v-if="adminEnabled" type="info">
+			<v-notice v-if="adminEnabled">
 				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 

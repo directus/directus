@@ -1,162 +1,407 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
+    <title>{{ projectName }} Email Service</title>
 
-<title>{{ projectName }} Email Service</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style type="text/css" id="hs-inline-css">
+      /*<![CDATA[*/
 
-<style type="text/css" id="hs-inline-css">
-/*<![CDATA[*/
+      /* CLIENT-SPECIFIC STYLES */
+      body, table, td, a {
+      	-webkit-text-size-adjust: 100%;
+      	-ms-text-size-adjust: 100%;
+      	-webkit-font-smoothing: antialiased;
+      	}
+      table,
+      td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      img {
+        -ms-interpolation-mode: bicubic;
+      }
+      s #content p {
+        margin: 0;
+      }
+      /* RESET STYLES */
+      img {
+        border: 0;
+        height: auto;
+        line-height: 100%;
+        outline: none;
+        text-decoration: none;
+      }
+      table {
+        border-collapse: collapse !important;
+      }
+      body {
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
 
-/* CLIENT-SPECIFIC STYLES */
-body, table, td, a {
-	-webkit-text-size-adjust: 100%;
-	-ms-text-size-adjust: 100%;
-	-webkit-font-smoothing: antialiased;
-	}
-table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-img { -ms-interpolation-mode: bicubic; }
+      /* iOS BLUE LINKS */
+      a[x-apple-data-detectors] {
+         color: inherit !important;
+         text-decoration: none !important;
+         font-size: inherit !important;
+         font-family: inherit !important;
+         font-weight: inherit !important;
+         line-height: inherit !important;
+      }
+      body a {
+          color: {{projectColor}};
+          text-decoration: underline;
+      }
+      body p {
+        color: #525252;
+      }
+      h1 {
+        font-size: 28px;
+        color: #171717;
+        font-weight: 700;
+        line-height: 32px;
+        margin: 0;
+        padding-bottom: 20px;
+      }
+      hr {
+        margin: 0;
+        width: 100%;
+        border-top: 1px solid #d3dae4;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+      }
+      div.im,
+      span.im {
+        color: inherit !important;
+      }
 
-/* RESET STYLES */
-img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
-table { border-collapse: collapse !important; }
-body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+      /* MOBILE STYLES */
+      @media screen and (max-width: 600px) {
+       .img-max {
+         width: 100% !important;
+         max-width: 100% !important;
+         height: auto !important;
+       }
 
-/* iOS BLUE LINKS */
-a[x-apple-data-detectors] {
-   color: inherit !important;
-   text-decoration: none !important;
-   font-size: inherit !important;
-   font-family: inherit !important;
-   font-weight: inherit !important;
-   line-height: inherit !important;
-}
-body a {
-    color: {{projectColor}};
-    text-decoration: none;
-}
-hr {
-    width:66%;
-    margin:40px auto;
-    border:1px solid #d3dae4;
-}
+       .max-width {
+         max-width: 100% !important;
+       }
 
-/* MOBILE STYLES */
-@media screen and (max-width: 600px) {
- .img-max {
-   width: 100% !important;
-   max-width: 100% !important;
-   height: auto !important;
- }
+       #content {
+          padding-top: 30px !important;
+          padding-bottom: 30px !important;
+        }
+      }
 
- .max-width {
-   max-width: 100% !important;
- }
+      /* DARK MODE */
+      /* @media (prefers-color-scheme: dark) {
+        #background {
+          background-color: #171717 !important;
+        }
+        #content {
+          background-color: #171717 !important;
+          color: #ffffff !important;
+        }
+        #footer {
+          background-color: #171717 !important;
+          color: #ffffff !important;
+        }
+        h1,
+        h2 {
+          color: #ffffff !important;
+        }
+        .link {
+          color: #ff99dd !important;
+        }
+        body a {
+          color: #ffffff !important;
+        }
+        body p {
+          color: #e7e5e4 !important;
+        }
+        .button {
+          background-color: #ffffff !important;
+          color: #171717 !important;
+          border-color: #171717 !important;
+        }
+        hr {
+          border-color: #334155 !important;
+        }
+      } */
 
- #content {
-   padding-left: 5% !important;
-   padding-right: 5% !important;
-   padding-top: 30px !important;
-   padding-bottom: 30px !important;
- }
-}
+      /* ANDROID CENTER FIX */
+      div[style*="margin: 16px 0;"] {
+      	margin: 0 !important;
+      }
 
-/* DARK MODE */
-@media (prefers-color-scheme: dark) {
-    #background {
-    	background-color: #172940 !important;
-    }
-    #content {
-    	background-color: #071930 !important;
-        color: #FFFFFF !important;
-    }
-    .link {
-    	color: {{projectColor}} !important;
-    }
-    .button {
-    	background-color:#0BA582 !important;
-    }
-    hr {
-      border:1px solid #172940 !important;
-    }
-}
+      blockquote {
+      	background: #f0f4f9 !important;
+      	border-radius: 4px !important;
+      	margin: 0 !important;
+      	padding: 24px !important;
+      }
 
-/* ANDROID CENTER FIX */
-div[style*="margin: 16px 0;"] {
-	margin: 0 !important;
-}
+      blockquote > p {
+      	margin: 0 !important;
+      }
+      /*]]>*/
+    </style>
 
-blockquote {
-	background: #f0f4f9 !important;
-	border-radius: 4px !important;
-	margin: 0 !important;
-	padding: 24px !important;
-}
+    <meta name="generator" content="Directus" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta name="robots" content="noindex,follow" />
+  </head>
+  <body
+    style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; height:100% !important; width:100% !important; margin:0 !important; padding:0; !important background-color:#f6f6f6"
+    bgcolor="#f6f6f6"
+  >
+    <!-- HIDDEN PREHEADER TEXT -->
+    <div
+      class="preview-text"
+      style="
+        display: none;
+        font-size: 1px;
+        color: #172940;
+        line-height: 1px;
+        max-height: 0px;
+        max-width: 0px;
+        opacity: 0;
+        overflow: hidden;
+      "
+    >
+      &nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌
+    </div>
 
-blockquote > p {
-	margin: 0 !important;
-}
-/*]]>*/
-</style>
-
-<meta name="generator" content="Directus">
-<meta name="x-apple-disable-message-reformatting">
-<meta name="robots" content="noindex,follow">
-
-</head>
-<body style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; height:100% !important; width:100% !important; margin:0 !important; padding:0; !important background-color:#f6f6f6" bgcolor="#f6f6f6">
-
-	<!-- HIDDEN PREHEADER TEXT -->
-	<div class="preview-text" style="display:none;font-size:1px;color:#172940;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">		&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌</div>
-
-	<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse !important">
-		<tbody>
-			<tr>
-				<td id="background" align="center" valign="top" width="100%" bgcolor="#172940" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; background-size:cover; padding:50px 15px 0 15px; background-color:#172940">
-					<!--[if (gte mso 9)|(IE)]>
+    <table
+      role="presentation"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+        border-collapse: collapse !important;
+      "
+    >
+      <tbody>
+        <tr>
+          <td
+            id="background"
+            align="center"
+            valign="top"
+            width="100%"
+            bgcolor="#ffffff"
+            style="
+              -webkit-text-size-adjust: 100%;
+              -ms-text-size-adjust: 100%;
+              mso-table-lspace: 0pt;
+              mso-table-rspace: 0pt;
+              background-size: cover;
+              padding: 30px 15px 0 15px;
+              background-color: #ffffff;
+            "
+          >
+            <!--[if (gte mso 9)|(IE)]>
 					<table role="presentation" align="center" border="0" cellspacing="0" cellpadding="0" width="600">
 					<tr>
 					<td align="center" valign="top" width="600">
 					<![endif]-->
-					<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; border-collapse:collapse !important; max-width:600px">
-						<tbody>
-							<tr>
-								<td align="left" valign="top" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; padding:0 0 30px 0">
-									<table><tbody><tr><td align="center" valign="middle" style="background-color:{{ projectColor }};max-width:48px;max-height:48px;border-radius:4px;padding:6px;">
-										<img id="logo" src="{{ projectLogo }}" alt="{{ projectName }} Logo" width="40" height="auto" border="0" style="-ms-interpolation-mode:bicubic; border:0; height:40px; line-height:100%; outline:none; text-decoration:none; display:block; width:40px; object-fit:contain;">
-									</td></tr></tbody></table>
-								</td>
-							</tr>
-							<tr>
-								<td id="content" align="left" valign="top" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; padding:40px 50px 50px 50px; font-family:Open Sans, Helvetica, Arial, sans-serif; border-radius:4px; box-shadow:0 4px 0 #15253A; background-color:#FFFFFE; color:#172940; font-size:15px; line-height:26px; margin:0" bgcolor="#FFFFFE">
-									<div style="color: inherit; font-size: inherit; line-height: inherit;">
+            <table
+              role="presentation"
+              align="center"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              width="100%"
+              style="
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+                border-collapse: collapse !important;
+                max-width: 600px;
+              "
+            >
+              <tbody>
+                <tr>
+                  <td
+                    align="left"
+                    valign="top"
+                    style="
+                      -webkit-text-size-adjust: 100%;
+                      -ms-text-size-adjust: 100%;
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      padding: 0 0 40px 0;
+                    "
+                  >
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td align="center" valign="middle">
+                            <img
+                              id="logo"
+                              src="{{ projectLogo }}"
+                              alt="{{ projectName }} Logo"
+                              width="40"
+                              height="40"
+                              border="0"
+                              style="
+                                -ms-interpolation-mode: bicubic;
+                                border: 1px solid white;
+                                border-radius: 8px;
+                                height: 40px;
+                                width: 40px;
+                                line-height: 100%;
+                                outline: none;
+                                text-decoration: none;
+                                display: block;
+                                object-fit: contain;
+                                padding: 10px;
+                                background: {{ projectColor }}
+                              "
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    id="content"
+                    align="left"
+                    valign="top"
+                    style="
+                      -webkit-text-size-adjust: 100%;
+                      -ms-text-size-adjust: 100%;
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      font-family: -apple-system, BlinkMacSystemFont,
+                        'HelveticaNeue-Light', 'Helvetica Neue Light',
+                        'Helvetica Neue', Helvetica, Arial, 'Lucida Grande',
+                        sans-serif;
+                      font-size: 16px;
+                      line-height: 26px;
+                      letter-spacing: 0.32px;
+                      margin: 0;
+                      color: #171717;
+                    "
+                  >
+                    <div
+                      style="
+                        color: inherit;
+                        font-size: inherit;
+                        line-height: inherit;
+                      "
+                    >
+                      {% block content %}{{ html }}{% endblock %}
+                    </div>
 
-										{% block content %}{{ html }}{% endblock %}
-
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td align="center" valign="middle" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; padding:25px 0; font-family:Open Sans, Helvetica, Arial, sans-serif; color:#FFFFFE">
-									<p style="margin-bottom: 1em; color: #A2B5CD;font-size: 12px; line-height: 16px;">
-										Sent by the team at {{ projectName }}{% if url %} — <a style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none; color:#A2B5CD" href="{{ url }}" target="_blank">Manage Your Account</a>{% endif %}<br>
-										{% block footer %}{% endblock %}
-									</p>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<!--[if (gte mso 9)|(IE)]>
+                    <p style="padding: 20px 0 10px 0">All the best,</p>
+                    <table border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" valign="middle" style="">
+                          <img
+                            id="logo"
+                            src="{{ projectLogo }}"
+                            alt=""
+                            width="22"
+                            height="22"
+                            border="0"
+                            style="
+                              -ms-interpolation-mode: bicubic;
+                              border: 0;
+                              height: 22px;
+                              width: 22px;
+                              outline: none;
+                              text-decoration: none;
+                              display: block;
+                              object-fit: contain;
+                              padding: 11px;
+                              border-radius: 100%;
+                              border: 1px solid #ffffff;
+                              background: {{ projectColor }};
+                            "
+                          />
+                        </td>
+                        <td>
+                          <p
+                            style="
+                              display: inline-block;
+                              line-height: 20px;
+                              padding-left: 8px;
+                              margin: 0;
+                            "
+                          >
+                            The {{ projectName }} Team<br /><span
+                              style="color: #737373"
+                              >Administrator</span
+                            >
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                    <hr style="margin: 40px 0 20px 0" width="100%" />
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    align="left"
+                    valign="middle"
+                    style="
+                      -webkit-text-size-adjust: 100%;
+                      -ms-text-size-adjust: 100%;
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      padding: 0 0 20px 0;
+                      font-family: Open Sans, Helvetica, Arial, sans-serif;
+                    "
+                  >
+                    <p
+                      style="
+                        margin: 10px 0;
+                        font-size: 13px;
+                        line-height: 16px;
+                        color: #171717;
+                      "
+                    >
+                      Sent by the team at {{ projectName }}{% if projectUrl != '' %} —
+                      <a
+                        style="
+                          -webkit-text-size-adjust: 100%;
+                          -ms-text-size-adjust: 100%;
+                          text-decoration: underline;
+                          color: #171717;
+                        "
+                        href="{{ projectUrl }}"
+                        target="_blank"
+                        >Manage Your Account</a
+                      >{% endif %}<br />
+                      {% block footer %}{% endblock %}
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
 					</td>
 					</tr>
 					</table>
 					<![endif]-->
-        </td>
-    	</tr>
-		</tbody>
-	</table>
-</body>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
 </html>

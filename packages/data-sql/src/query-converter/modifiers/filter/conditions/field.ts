@@ -1,6 +1,6 @@
 import type { ConditionFieldNode } from '@directus/data';
-import type { FilterResult } from '../filter.js';
-import { convertTarget } from './utils.js';
+import type { FilterResult } from '../utils.js';
+import { convertTarget } from '../../target.js';
 
 export function convertFieldCondition(
 	node: ConditionFieldNode,

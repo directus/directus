@@ -1,6 +1,6 @@
 import type { AtLeastOneElement } from '@directus/data';
-import type { AbstractSqlQueryWhereNode } from '../../../index.js';
-import type { FilterResult } from './filter.js';
+import type { AbstractSqlQueryWhereNode } from '../../../types/index.js';
+import type { FilterResult } from './utils.js';
 
 export function convertLogical(
 	children: AtLeastOneElement<FilterResult>,

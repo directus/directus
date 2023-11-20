@@ -228,8 +228,8 @@ const steps = computed(() => {
 }
 
 .json {
-	background-color: var(--background-subdued);
-	font-family: var(--theme--font-family-monospace);
+	background-color: var(--theme--background-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
 	border-radius: var(--theme--border-radius);
 	padding: 20px;
 	margin-top: 20px;
@@ -277,7 +277,7 @@ const steps = computed(() => {
 	}
 
 	.mono {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
 	}
 
@@ -289,7 +289,7 @@ const steps = computed(() => {
 		width: 12px;
 		height: 12px;
 		background-color: var(--theme--primary);
-		border: 2px solid var(--theme--background-page);
+		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: 8px;
 
 		&.resolve {

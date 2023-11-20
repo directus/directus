@@ -16,7 +16,7 @@ data:
     accountability: null
 
   - collection: directus_collections
-    icon: list_alt
+    icon: database
     note: $t:directus_collection.directus_collections
 
   - collection: directus_fields
