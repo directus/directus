@@ -513,7 +513,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   app:
     devDependencies:
@@ -752,8 +752,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3(vite@4.3.7)(vue@3.3.4)
       '@vue/test-utils':
-        specifier: 2.4.1
-        version: 2.4.1(vue@3.3.4)
+        specifier: 2.4.2
+        version: 2.4.2(vue@3.3.4)
       '@vueuse/core':
         specifier: 10.1.2
         version: 10.1.2(vue@3.3.4)
@@ -815,8 +815,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       happy-dom:
-        specifier: 9.18.3
-        version: 9.18.3
+        specifier: 12.10.3
+        version: 12.10.3
       html-entities:
         specifier: 2.3.3
         version: 2.3.3
@@ -888,7 +888,7 @@ importers:
         version: 4.3.7(sass@1.62.1)
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
       vue:
         specifier: 3.3.4
         version: 3.3.4
@@ -1034,7 +1034,7 @@ importers:
         version: 2.3.0(rollup@3.22.0)(vite@4.3.7)
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/composables:
     dependencies:
@@ -1083,7 +1083,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/constants:
     dependencies:
@@ -1165,7 +1165,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/data-driver-postgres:
     dependencies:
@@ -1214,7 +1214,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/data-sql:
     dependencies:
@@ -1257,7 +1257,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/errors:
     dependencies:
@@ -1291,7 +1291,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/extensions:
     dependencies:
@@ -1355,7 +1355,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
       vue:
         specifier: 3.3.4
         version: 3.3.4
@@ -1455,7 +1455,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/pressure:
     dependencies:
@@ -1483,7 +1483,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/random:
     devDependencies:
@@ -1504,7 +1504,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/release-notes-generator:
     dependencies:
@@ -1544,7 +1544,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/schema:
     dependencies:
@@ -1600,7 +1600,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1631,7 +1631,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1665,7 +1665,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1696,7 +1696,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/storage-driver-local:
     dependencies:
@@ -1727,7 +1727,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1767,7 +1767,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1801,7 +1801,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/stores:
     dependencies:
@@ -1975,7 +1975,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/utils:
     dependencies:
@@ -2036,7 +2036,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   packages/validation:
     dependencies:
@@ -2070,7 +2070,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   sdk:
     devDependencies:
@@ -2088,7 +2088,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
 
   tests/blackbox:
     devDependencies:
@@ -2166,7 +2166,7 @@ importers:
         version: 4.2.1(typescript@5.2.2)
       vitest:
         specifier: 0.34.6
-        version: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
       vitest-environment-blackbox:
         specifier: workspace:*
         version: link:vitest-environment-blackbox
@@ -9348,7 +9348,7 @@ packages:
       std-env: 3.4.3
       test-exclude: 6.0.0
       v8-to-istanbul: 9.1.3
-      vitest: 0.34.6(happy-dom@9.18.3)(sass@1.62.1)
+      vitest: 0.34.6(happy-dom@12.10.3)(sass@1.62.1)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -9630,8 +9630,8 @@ packages:
       '@vue/server-renderer': 3.3.6(vue@3.3.4)
     dev: true
 
-  /@vue/test-utils@2.4.1(vue@3.3.4):
-    resolution: {integrity: sha512-VO8nragneNzUZUah6kOjiFmD/gwRjUauG9DROh6oaOeFwX1cZRUNHhdeogE8635cISigXFTtGLUQWx5KCb0xeg==}
+  /@vue/test-utils@2.4.2(vue@3.3.4):
+    resolution: {integrity: sha512-07lLjpG1o9tEBoWQfVOFhDT7+WFCdDeECoeSdzOuVgIi6nxb2JDLGNNOV6+3crPpyg/jMlIocj96UROcgomiGg==}
     peerDependencies:
       '@vue/server-renderer': ^3.0.1
       vue: ^3.0.1
@@ -9641,7 +9641,7 @@ packages:
     dependencies:
       js-beautify: 1.14.9
       vue: 3.3.4
-      vue-component-type-helpers: 1.8.4
+      vue-component-type-helpers: 1.8.22
     dev: true
 
   /@vue/typescript@1.8.19(typescript@5.2.2):
@@ -14173,8 +14173,8 @@ packages:
       uglify-js: 3.17.4
     dev: true
 
-  /happy-dom@9.18.3:
-    resolution: {integrity: sha512-b7iMGYeIXvUryNultA0AHEVU0FPpb2djJ/xSVlMDfP7HG4z7FomdqkCEpWtSv1zDL+t1gRUoBbpqFCoUBvjYtg==}
+  /happy-dom@12.10.3:
+    resolution: {integrity: sha512-JzUXOh0wdNGY54oKng5hliuBkq/+aT1V3YpTM+lrN/GoLQTANZsMaIvmHiHe612rauHvPJnDZkZ+5GZR++1Abg==}
     dependencies:
       css.escape: 1.5.1
       entities: 4.5.0
@@ -22806,7 +22806,7 @@ packages:
       - universal-cookie
     dev: true
 
-  /vitest@0.34.6(happy-dom@9.18.3)(sass@1.62.1):
+  /vitest@0.34.6(happy-dom@12.10.3)(sass@1.62.1):
     resolution: {integrity: sha512-+5CALsOvbNKnS+ZHMXtuUC7nL8/7F1F2DnHGjSsszX8zCjWSSviphCb/NuS9Nzf4Q03KyyDRBAXhF/8lffME4Q==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -22850,7 +22850,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.10
       debug: 4.3.4
-      happy-dom: 9.18.3
+      happy-dom: 12.10.3
       local-pkg: 0.4.3
       magic-string: 0.30.5
       pathe: 1.1.1
@@ -22893,8 +22893,8 @@ packages:
       pbf: 3.2.1
     dev: true
 
-  /vue-component-type-helpers@1.8.4:
-    resolution: {integrity: sha512-6bnLkn8O0JJyiFSIF0EfCogzeqNXpnjJ0vW/SZzNHfe6sPx30lTtTXlE5TFs2qhJlAtDFybStVNpL73cPe3OMQ==}
+  /vue-component-type-helpers@1.8.22:
+    resolution: {integrity: sha512-LK3wJHs3vJxHG292C8cnsRusgyC5SEZDCzDCD01mdE/AoREFMl2tzLRuzwyuEsOIz13tqgBcnvysN3Lxsa14Fw==}
     dev: true
 
   /vue-demi@0.14.6(vue@3.3.4):
