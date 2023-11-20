@@ -137,6 +137,7 @@ export class GraphQLService {
 		let result: ExecutionResult;
 
 		try {
+			// console.log(JSON.stringify(document, null, 2));
 			result = await execute({
 				schema,
 				document,
@@ -201,6 +202,7 @@ export class GraphQLService {
 			},
 		});
 
+		// TODO readable types need to have the version relational type
 		const { ReadCollectionTypes } = getReadableTypes();
 
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
@@ -243,6 +245,11 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection]!.getResolver(
 							`${collection.collection}_by_id`
 						);
+
+						// TODO we'll need this version output type but is this the right place?
+						acc[`${collectionName}_by_version`] = ReadCollectionTypes[collection.collection]!.getResolver(
+							`${collection.collection}_by_version`
+						)
 
 						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection]!.getResolver(
 							`${collection.collection}_aggregated`
@@ -1079,6 +1086,20 @@ export class GraphQLService {
 						type: ReadCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
+						},
+						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+							const result = await self.resolveQuery(info);
+							context['data'] = result;
+							return result;
+						},
+					});
+
+					// TODO put the resolver on the right type
+					ReadCollectionTypes[collection.collection]!.addResolver({
+						name: `${collection.collection}_by_version`,
+						type: ReadCollectionTypes[collection.collection]!, // TODO must vary the type here somehow for versions
+						args: {
+							id: new GraphQLNonNull(GraphQLID),
 							version: GraphQLString,
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
@@ -1366,6 +1387,7 @@ export class GraphQLService {
 	 * Directus' query structure which is then executed by the services.
 	 */
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
+		// console.log('resolve?', info)
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
 		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
@@ -1410,13 +1432,17 @@ export class GraphQLService {
 			}
 		}
 
+		//console.log('read', collection, JSON.stringify(query, null, 2));
 		const result = await this.read(collection, query);
+
+		//console.log('result', result);
 
 		if (args['version']) {
 			const versionsService = new VersionsService({ accountability: this.accountability, schema: this.schema });
 
 			const saves = await versionsService.getVersionSaves(args['version'], collection, args['id']);
 
+			// console.log('saves?', saves)
 			if (saves) {
 				if (this.schema.collections[collection]!.singleton) {
 					return assign(result, ...saves);
