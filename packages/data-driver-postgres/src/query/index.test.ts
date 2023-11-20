@@ -31,7 +31,7 @@ beforeEach(() => {
 
 test('basic statement', () => {
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}";`
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}";`,
 	);
 });
 
@@ -39,7 +39,7 @@ test('statement with a limit', () => {
 	sample.clauses.limit = { type: 'value', parameterIndex: 0 };
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1;`
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1;`,
 	);
 });
 
@@ -48,7 +48,7 @@ test('statement with limit and offset', () => {
 	sample.clauses.offset = { type: 'value', parameterIndex: 1 };
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1 OFFSET $2;`
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" LIMIT $1 OFFSET $2;`,
 	);
 });
 
@@ -69,7 +69,7 @@ test('statement with order', () => {
 	];
 
 	expect(convertToActualStatement(sample.clauses)).toEqual(
-		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" ORDER BY "${table}"."${orderField}" ASC;`
+		`SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.clauses.from}" ORDER BY "${table}"."${orderField}" ASC;`,
 	);
 });
 
@@ -148,7 +148,7 @@ test('statement with all possible local modifiers', () => {
 			firstConditionParameterIndex + 1
 		} AND "${secondConditionTable}"."${secondConditionColumn}" < $${
 			secondConditionParameterIndex + 1
-		} ORDER BY "${sortTable}"."${orderField}" ASC LIMIT $1 OFFSET $2;`
+		} ORDER BY "${sortTable}"."${orderField}" ASC LIMIT $1 OFFSET $2;`,
 	);
 });
 
@@ -223,6 +223,6 @@ test('statement with all filter on foreign field', () => {
 	expect(convertToActualStatement(clauses)).toEqual(
 		`SELECT "${rootCollection}"."${firstField}", "${rootCollection}"."${secondField}" FROM "${rootCollection}" LEFT JOIN "${foreignCollection}" "${joinAlias}" ON "${foreignCollection}"."${targetField}" = "${rootCollection}"."${leftHandIdentifierField}" WHERE "${foreignCollection}"."${targetField}" LIKE $${
 			parameterIndex + 1
-		}||'%';`
+		}||'%';`,
 	);
 });

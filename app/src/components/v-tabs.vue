@@ -29,7 +29,7 @@ useGroupableParent(
 		multiple: ref(false),
 		mandatory: ref(true),
 	},
-	'v-tabs'
+	'v-tabs',
 );
 
 function update(newSelection: readonly (string | number)[]) {

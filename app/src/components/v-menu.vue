@@ -88,7 +88,7 @@ const {
 		arrow: props.showArrow,
 		offsetY: props.offsetY,
 		offsetX: props.offsetX,
-	}))
+	})),
 );
 
 const { isActive, activate, deactivate, toggle } = useActiveState();
@@ -133,7 +133,7 @@ function useActiveState() {
 				stop();
 			}
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	return { isActive, activate, deactivate, toggle };
@@ -190,7 +190,7 @@ function useEvents() {
 			} else {
 				deactivate();
 			}
-		}, props.delay)
+		}, props.delay),
 	);
 
 	return { onClick, onPointerLeave, onPointerEnter };
@@ -223,7 +223,7 @@ function usePopper(
 				offsetX: number;
 			}>
 		>
-	>
+	>,
 ): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
 	const styles = ref({});
@@ -244,7 +244,7 @@ function usePopper(
 				modifiers: getModifiers(),
 			});
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	const observer = new MutationObserver(() => {

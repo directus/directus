@@ -23,7 +23,7 @@ watch(
 			// Still allow the user to manually close it afterwards
 			mandatory.value = false;
 		}
-	}
+	},
 );
 </script>
 

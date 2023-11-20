@@ -19,15 +19,15 @@ beforeEach(() => {
 			{
 				type: 'primitive',
 				field: firstField,
-				alias: randomIdentifier()
+				alias: randomIdentifier(),
 			},
 			{
 				type: 'primitive',
 				field: secondField,
-				alias: randomIdentifier()
+				alias: randomIdentifier(),
 			},
 		],
-		modifiers: {}
+		modifiers: {},
 	};
 });
 
@@ -253,7 +253,7 @@ test('Convert a query with a function as field select', () => {
 			fn: 'count',
 		},
 		field: randomField,
-		alias: randomIdentifier()
+		alias: randomIdentifier(),
 	});
 
 	const res = convertQuery(sample);

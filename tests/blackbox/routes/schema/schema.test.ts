@@ -81,7 +81,7 @@ describe('Schema Snapshots', () => {
 
 					snapshotsCacheOriginal[vendor] = response.body.data;
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -100,7 +100,7 @@ describe('Schema Snapshots', () => {
 
 					snapshotsCacheOriginalYaml[vendor] = response.text;
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -116,7 +116,7 @@ describe('Schema Snapshots', () => {
 
 						await assertCollectionsDeleted(vendor, pkType);
 					},
-					1_200_000
+					1_200_000,
 				);
 			});
 		});
@@ -139,7 +139,7 @@ describe('Schema Snapshots', () => {
 
 				snapshotsCacheEmpty[vendor] = response.body.data;
 			},
-			300_000
+			300_000,
 		);
 	});
 
@@ -208,7 +208,7 @@ describe('Schema Snapshots', () => {
 
 					expect(response.statusCode).toEqual(204);
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -238,7 +238,7 @@ describe('Schema Snapshots', () => {
 					expect(response.body.data?.diff?.fields?.length).toBe(fieldsCount);
 					expect(response.body.data?.diff?.relations?.length).toBe(relationsCount);
 				},
-				300_000
+				300_000,
 			);
 		});
 	});
@@ -294,7 +294,7 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(204);
 				},
-				1_200_000
+				1_200_000,
 			);
 		});
 
@@ -319,7 +319,7 @@ describe('Schema Snapshots', () => {
 					expect(response.statusCode).toEqual(200);
 					expect(curSnapshot).toStrictEqual(oldSnapshot);
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -345,7 +345,7 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(204);
 				},
-				1_200_000
+				1_200_000,
 			);
 		});
 
@@ -356,7 +356,7 @@ describe('Schema Snapshots', () => {
 					async (vendor) => {
 						await assertCollectionsDeleted(vendor, pkType);
 					},
-					600_000
+					600_000,
 				);
 			});
 		});
@@ -381,7 +381,7 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(204);
 				},
-				1_200_000
+				1_200_000,
 			);
 		});
 
@@ -407,7 +407,7 @@ describe('Schema Snapshots', () => {
 					expect(response.statusCode).toEqual(200);
 					expect(curSnapshot).toStrictEqual(oldSnapshot);
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -442,7 +442,7 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(204);
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -510,7 +510,7 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(204);
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -583,7 +583,7 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(204);
 				},
-				300_000
+				300_000,
 			);
 		});
 
@@ -650,7 +650,7 @@ describe('Schema Snapshots', () => {
 						expect(item.o2m[0]).toBe(childrenIDs[pkType].o2m_id);
 					}
 				},
-				300_000
+				300_000,
 			);
 		});
 	});
@@ -687,7 +687,7 @@ describe('Schema Snapshots', () => {
 					expect(response.statusCode).toEqual(400);
 					expect(response.text).toContain('Please generate a new diff and try again.');
 				},
-				1_200_000
+				1_200_000,
 			);
 		});
 
@@ -731,7 +731,7 @@ describe('Schema Snapshots', () => {
 					expect(response.statusCode).toEqual(400);
 					expect(response.text).toContain('Please generate a new diff and try again.');
 				},
-				1_200_000
+				1_200_000,
 			);
 		});
 	});
@@ -749,7 +749,7 @@ function parseSnapshot(vendor: Vendor, snapshot: any) {
 				) {
 					field.schema.default_value = field.schema.default_value.replace(
 						/(_seq)\d*('::STRING::REGCLASS\))/,
-						`_seq'::STRING::REGCLASS)`
+						`_seq'::STRING::REGCLASS)`,
 					);
 				}
 			}
@@ -782,91 +782,91 @@ async function assertCollectionsDeleted(vendor: Vendor, pkType: PrimaryKeyType) 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionSelfM2M}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionSelf}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionO2M2}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionO2M}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionM2AM2A2}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionAllM2A}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2A2}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2A}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionM2MM2M2}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionAllM2M}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2M2}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2M}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionAll}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2O}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2O2}`)
-				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
 		);
 
 		// Assert

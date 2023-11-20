@@ -13,7 +13,7 @@ withDefaults(
 	{
 		primaryActionIcon: 'menu',
 		shadow: true,
-	}
+	},
 );
 
 defineEmits<{
@@ -29,7 +29,7 @@ const observer = new IntersectionObserver(
 	([e]) => {
 		collapsed.value = e.boundingClientRect.y === -1;
 	},
-	{ threshold: [1] }
+	{ threshold: [1] },
 );
 
 onMounted(() => {
@@ -96,7 +96,9 @@ onUnmounted(() => {
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
 	box-shadow: 0;
-	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
+	transition:
+		box-shadow var(--medium) var(--transition),
+		margin var(--fast) var(--transition);
 	border-bottom: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
 	.nav-toggle {

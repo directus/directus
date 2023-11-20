@@ -17,7 +17,7 @@ export default defineLoader({
 						status: { _eq: 'published' },
 					},
 					sort: '-date_published',
-				})
+				}),
 			)
 		).map((article) => ({
 			id: article.slug,
@@ -32,7 +32,7 @@ export default defineLoader({
 			readItems('docs_tags', {
 				// @ts-ignore
 				sort: '-count(developer_articles)',
-			})
+			}),
 		);
 
 		return {

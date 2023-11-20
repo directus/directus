@@ -20,7 +20,7 @@ withDefaults(
 		value: () => [],
 		choices: () => [],
 		valueCombining: 'all',
-	}
+	},
 );
 
 defineEmits(['input']);

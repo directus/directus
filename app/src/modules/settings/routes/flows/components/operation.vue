@@ -32,7 +32,7 @@ const props = withDefaults(
 		parent: undefined,
 		isHovered: false,
 		subdued: false,
-	}
+	},
 );
 
 const { panelsToBeDeleted } = toRefs(props);
@@ -105,7 +105,7 @@ const pointermove = (event: PointerEvent) => {
 						type: props.parent?.type as Target,
 						pos: new Vector2(
 							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
 						),
 				  }
 				: {
@@ -113,7 +113,7 @@ const pointermove = (event: PointerEvent) => {
 						type: down,
 						pos: new Vector2(
 							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
 						),
 				  };
 

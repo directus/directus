@@ -47,7 +47,7 @@ describe('getAccountabilityForToken', async () => {
 				app_access: 1,
 			},
 			env['SECRET'],
-			{ issuer: 'directus' }
+			{ issuer: 'directus' },
 		);
 
 		const result = await getAccountabilityForToken(token);

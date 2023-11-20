@@ -33,7 +33,7 @@ export const useRelationsStore = defineStore({
 
 					const updatedRelationResponse = await api.patch<{ data: Relation }>(
 						`/relations/${collection}/${field}`,
-						values
+						values,
 					);
 
 					this.relations = this.relations.map((relation) => {
@@ -121,7 +121,7 @@ export const useRelationsStore = defineStore({
 			const currentField = parts[0].includes(':') ? (parts[0].split(':')[0] as string) : parts[0];
 
 			const relation = this.getRelationsForField(collection, currentField).find(
-				(relation) => relation.collection === collection || relation.related_collection === collection
+				(relation) => relation.collection === collection || relation.related_collection === collection,
 			);
 
 			if (!relation) return [];

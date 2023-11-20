@@ -64,7 +64,7 @@ export function getNestedMany(field: AbstractQueryFieldNodeNestedMany): Abstract
 
 function getRelationConditions(
 	fieldMeta: AbstractQueryFieldNodeRelationalOneToMany,
-	idxGenerator: Generator<number, number, number>
+	idxGenerator: Generator<number, number, number>,
 ): AbstractSqlQueryWhereNode {
 	const table = fieldMeta.join.foreign.collection;
 
@@ -74,7 +74,7 @@ function getRelationConditions(
 			operator: 'and',
 			negate: false,
 			childNodes: fieldMeta.join.foreign.fields.map((field) =>
-				getRelationCondition(table, field, idxGenerator)
+				getRelationCondition(table, field, idxGenerator),
 			) as AtLeastOneElement<AbstractSqlQueryConditionNode>,
 		};
 	} else {
@@ -93,7 +93,7 @@ function getRelationConditions(
 function getRelationCondition(
 	table: string,
 	column: string,
-	idxGenerator: Generator<number, number, number>
+	idxGenerator: Generator<number, number, number>,
 ): AbstractSqlQueryConditionNode {
 	return {
 		type: 'condition',

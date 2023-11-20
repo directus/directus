@@ -229,11 +229,11 @@ export class ExtensionManager {
 				await this.load();
 
 				const added = this.extensions.filter(
-					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
+					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path),
 				);
 
 				const removed = prevExtensions.filter(
-					(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
+					(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path),
 				);
 
 				this.updateWatchedExtensions(added, removed);
@@ -317,7 +317,7 @@ export class ExtensionManager {
 			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json'), ...localExtensionUrls],
 			{
 				ignoreInitial: true,
-			}
+			},
 		);
 
 		this.watcher
@@ -352,7 +352,7 @@ export class ExtensionManager {
 									path.resolve(extension.path, extension.entrypoint.app),
 									path.resolve(extension.path, extension.entrypoint.api),
 							  ]
-							: path.resolve(extension.path, extension.entrypoint)
+							: path.resolve(extension.path, extension.entrypoint),
 					);
 
 			const addedPackageExtensionPaths = toPackageExtensionPaths(added);
@@ -410,7 +410,7 @@ export class ExtensionManager {
 
 		const entrypointPath = path.resolve(
 			extension.path,
-			isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.api : extension.entrypoint
+			isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.api : extension.entrypoint,
 		);
 
 		const extensionCode = await readFile(entrypointPath, 'utf-8');
@@ -446,7 +446,7 @@ export class ExtensionManager {
 		const { code, hostFunctions, unregisterFunction } = generateApiExtensionsSandboxEntrypoint(
 			extension.type,
 			extension.name,
-			this.endpointRouter
+			this.endpointRouter,
 		);
 
 		await context.evalClosure(code, [cb, ...hostFunctions.map((fn) => new ivm.Reference(fn))], {
@@ -523,7 +523,7 @@ export class ExtensionManager {
 						import.meta.url,
 						{
 							fresh: true,
-						}
+						},
 					);
 
 					const config = getModuleDefault(endpointInstance);
@@ -561,7 +561,7 @@ export class ExtensionManager {
 		}
 
 		const operations = this.extensions.filter(
-			(extension): extension is HybridExtension => extension.type === 'operation'
+			(extension): extension is HybridExtension => extension.type === 'operation',
 		);
 
 		for (const operation of operations) {
@@ -580,7 +580,7 @@ export class ExtensionManager {
 						import.meta.url,
 						{
 							fresh: true,
-						}
+						},
 					);
 
 					const config = getModuleDefault(operationInstance);
@@ -616,7 +616,7 @@ export class ExtensionManager {
 					import.meta.url,
 					{
 						fresh: true,
-					}
+					},
 				);
 
 				const configs = getModuleDefault(bundleInstances);

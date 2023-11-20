@@ -96,7 +96,7 @@ export const useFieldDetailStore = defineStore({
 
 				// o2m relation is the same regardless of type
 				this.relations.o2m = relations.find(
-					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
+					(relation) => relation.related_collection === collection && relation.meta?.one_field === field,
 				) as DeepPartial<Relation> | undefined;
 
 				if (['files', 'm2m', 'translations', 'm2a'].includes(this.localType)) {
@@ -106,7 +106,7 @@ export const useFieldDetailStore = defineStore({
 						| undefined;
 				} else {
 					this.relations.m2o = relations.find(
-						(relation) => relation.collection === collection && relation.field === field
+						(relation) => relation.collection === collection && relation.field === field,
 					) as DeepPartial<Relation> | undefined;
 				}
 
@@ -247,7 +247,7 @@ export const useFieldDetailStore = defineStore({
 					'relations.o2m.related_collection',
 					'relations.m2o.collection',
 					'relations.m2o.field',
-					'relations.m2o.related_collection'
+					'relations.m2o.related_collection',
 				);
 			}
 
@@ -267,7 +267,7 @@ export const useFieldDetailStore = defineStore({
 					'relations.m2o.collection',
 					'relations.m2o.field',
 					'relations.m2o.meta.one_allowed_collections',
-					'relations.m2o.meta.one_collection_field'
+					'relations.m2o.meta.one_collection_field',
 				);
 			}
 
@@ -293,7 +293,7 @@ export const useFieldDetailStore = defineStore({
 
 					return matchesType && matchesLocalType;
 				}),
-				['name']
+				['name'],
 			);
 		},
 		displaysForType(): DisplayConfig[] {
@@ -306,7 +306,7 @@ export const useFieldDetailStore = defineStore({
 
 					return matchesType && matchesLocalType;
 				}),
-				['name']
+				['name'],
 			);
 		},
 		generationInfo() {

@@ -18,7 +18,7 @@ declare module 'directus:api' {
 	}
 
 	export type SandboxEndpointRouteHandlerFn = (
-		request: SandboxEndpointRequest
+		request: SandboxEndpointRequest,
 	) => Promise<SandboxEndpointResponse> | SandboxEndpointResponse;
 
 	export type SandboxEndpointRegisterFn = (path: string, handler: SandboxEndpointRouteHandlerFn) => void;
@@ -69,7 +69,7 @@ declare module 'directus:api' {
 			method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 			body?: Record<string, any> | string;
 			headers?: Record<string, string>;
-		}
+		},
 	) => Promise<SandboxRequestResponse>;
 
 	export type SandboxSleepFn = (milliseconds: number) => Promise<void>;

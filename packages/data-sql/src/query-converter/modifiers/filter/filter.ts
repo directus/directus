@@ -18,7 +18,7 @@ export const convertFilter = (
 	filter: AbstractQueryFilterNode,
 	collection: string,
 	generator: Generator<number, number, number>,
-	negate = false
+	negate = false,
 ): FilterResult => {
 	if (filter.type === 'condition') {
 		return convertCondition(filter as AbstractQueryConditionNode, collection, generator, negate);
@@ -26,7 +26,7 @@ export const convertFilter = (
 		return convertFilter(filter.childNode, collection, generator, !negate);
 	} else if (filter.type === 'logical') {
 		const children = filter.childNodes.map((childNode) =>
-			convertFilter(childNode, collection, generator, false)
+			convertFilter(childNode, collection, generator, false),
 		) as AtLeastOneElement<FilterResult>;
 
 		return convertLogical(children, filter.operator, negate);

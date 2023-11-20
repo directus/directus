@@ -42,7 +42,7 @@ onMounted(async () => {
 				flatpickr?.clear();
 			}
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 });
 

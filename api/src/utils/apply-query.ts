@@ -33,7 +33,7 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined }
+	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined },
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasJoins = false;
@@ -167,7 +167,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				rootQuery.leftJoin(
 					{ [alias]: relation.related_collection! },
 					`${aliasedParentCollection}.${relation.field}`,
-					`${alias}.${schema.collections[relation.related_collection!]!.primary}`
+					`${alias}.${schema.collections[relation.related_collection!]!.primary}`,
 				);
 
 				aliasMap[aliasKey]!.collection = relation.related_collection!;
@@ -190,8 +190,8 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							'=',
 							knex.raw(
 								getHelpers(knex).schema.castA2oPrimaryKey(),
-								`${alias}.${schema.collections[pathScope]!.primary}`
-							)
+								`${alias}.${schema.collections[pathScope]!.primary}`,
+							),
 						);
 				});
 
@@ -207,8 +207,8 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							'=',
 							knex.raw(
 								getHelpers(knex).schema.castA2oPrimaryKey(),
-								`${aliasedParentCollection}.${schema.collections[parentCollection]!.primary}`
-							)
+								`${aliasedParentCollection}.${schema.collections[parentCollection]!.primary}`,
+							),
 						);
 				});
 
@@ -220,7 +220,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				rootQuery.leftJoin(
 					{ [alias]: relation.collection },
 					`${aliasedParentCollection}.${schema.collections[relation.related_collection!]!.primary}`,
-					`${alias}.${relation.field}`
+					`${alias}.${relation.field}`,
 				);
 
 				aliasMap[aliasKey]!.collection = relation.collection;
@@ -263,7 +263,7 @@ export function applySort(
 	query: Query,
 	collection: string,
 	aliasMap: AliasMap,
-	returnRecords = false
+	returnRecords = false,
 ) {
 	const rootSort = query.sort!;
 	const aggregate = query?.aggregate;
@@ -388,7 +388,7 @@ export function applyFilter(
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
 	collection: string,
-	aliasMap: AliasMap
+	aliasMap: AliasMap,
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
@@ -448,7 +448,7 @@ export function applyFilter(
 		dbQuery: Knex.QueryBuilder,
 		filter: Filter,
 		collection: string,
-		logical: 'and' | 'or' = 'and'
+		logical: 'and' | 'or' = 'and',
 	) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
@@ -543,7 +543,7 @@ export function applyFilter(
 				const { type, special } = validateFilterField(
 					schema.collections[targetCollection]!.fields,
 					stripFunction(filterPath[filterPath.length - 1]!),
-					targetCollection
+					targetCollection,
 				)!;
 
 				validateFilterOperator(type, filterOperator, special);
@@ -553,7 +553,7 @@ export function applyFilter(
 				const { type, special } = validateFilterField(
 					schema.collections[collection]!.fields,
 					stripFunction(filterPath[0]!),
-					collection
+					collection,
 				)!;
 
 				validateFilterOperator(type, filterOperator, special);
@@ -596,7 +596,7 @@ export function applyFilter(
 			operator: string,
 			compareValue: any,
 			logical: 'and' | 'or' = 'and',
-			originalCollectionName?: string
+			originalCollectionName?: string,
 		) {
 			const [table, column] = key.split('.');
 
@@ -808,7 +808,7 @@ export async function applySearch(
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
-	collection: string
+	collection: string,
 ): Promise<void> {
 	const fields = Object.entries(schema.collections[collection]!.fields);
 
@@ -842,7 +842,7 @@ export function applyAggregate(
 	dbQuery: Knex.QueryBuilder,
 	aggregate: Aggregate,
 	collection: string,
-	hasJoins: boolean
+	hasJoins: boolean,
 ): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
 		if (!fields) continue;

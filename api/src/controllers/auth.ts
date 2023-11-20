@@ -104,7 +104,7 @@ router.post(
 		res.locals['payload'] = payload;
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -145,7 +145,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -180,7 +180,7 @@ router.post(
 			}
 		}
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -209,7 +209,7 @@ router.post(
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -222,7 +222,7 @@ router.get(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

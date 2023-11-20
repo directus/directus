@@ -5,7 +5,7 @@ import env from '../env.js';
 export function getConfigFromEnv(
 	prefix: string,
 	omitPrefix?: string | string[],
-	type: 'camelcase' | 'underscore' = 'camelcase'
+	type: 'camelcase' | 'underscore' = 'camelcase',
 ): Record<string, any> {
 	const config: any = {};
 

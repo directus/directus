@@ -19,7 +19,7 @@ const props = withDefaults(
 		iconOff: 'close',
 		colorOn: 'var(--theme--primary)',
 		colorOff: 'var(--theme--foreground-subdued)',
-	}
+	},
 );
 
 const styles = computed(() => {

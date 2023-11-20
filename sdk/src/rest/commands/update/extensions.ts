@@ -13,7 +13,7 @@ export const updateExtension =
 	<Schema extends object>(
 		bundle: string | null,
 		name: string,
-		data: NestedPartial<ExtensionItem>
+		data: NestedPartial<ExtensionItem>,
 	): RestCommand<ExtensionItem, Schema> =>
 	() => {
 		if (bundle !== null) throwIfEmpty(bundle, 'Bundle cannot be an empty string');

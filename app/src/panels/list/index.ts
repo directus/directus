@@ -30,7 +30,7 @@ export default definePanel({
 
 		if (options.displayTemplate) {
 			displayFields.push(
-				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection)
+				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection),
 			);
 		}
 

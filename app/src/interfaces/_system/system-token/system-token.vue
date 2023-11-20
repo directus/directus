@@ -11,7 +11,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: null,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -41,7 +41,7 @@ watch(
 			isNewTokenGenerated.value = false;
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 async function generateToken() {

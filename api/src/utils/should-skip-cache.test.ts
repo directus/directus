@@ -35,7 +35,7 @@ test.each([
 		} as unknown as Request;
 
 		expect(shouldSkipCache(req)).toBe(true);
-	}
+	},
 );
 
 test.each([
@@ -65,7 +65,7 @@ test.each([
 		} as unknown as Request;
 
 		expect(shouldSkipCache(req)).toBe(false);
-	}
+	},
 );
 
 test.each([
@@ -95,7 +95,7 @@ test.each([
 		} as unknown as Request;
 
 		expect(shouldSkipCache(req)).toBe(true);
-	}
+	},
 );
 
 test('should not skip cache for requests coming outside of data studio', () => {
@@ -141,5 +141,5 @@ test.each([
 		} as unknown as Request;
 
 		expect(shouldSkipCache(req)).toBe(value);
-	}
+	},
 );

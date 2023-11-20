@@ -38,7 +38,7 @@ const props = withDefaults(
 		showLabels: false,
 		color: cssVar('--primary'),
 		conditionalFill: () => [],
-	}
+	},
 );
 
 const { n } = useI18n();
@@ -72,7 +72,7 @@ watch(
 		chart.value?.destroy();
 		setupChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onMounted(fetchData);
@@ -230,7 +230,7 @@ function formatColor(color: string | number, value?: string | number) {
 
 function checkMatchingConditionalFill(
 	value: string | number,
-	format: (typeof props)['conditionalFill'][number]
+	format: (typeof props)['conditionalFill'][number],
 ): boolean {
 	let baseValue: string | number = value;
 	let compareValue: string | number = format.value;

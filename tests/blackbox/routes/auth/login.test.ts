@@ -75,7 +75,7 @@ describe('/auth', () => {
 									type: 'auth',
 									status: 'ok',
 									refresh_token: expect.any(String),
-								})
+								}),
 							);
 						});
 					});

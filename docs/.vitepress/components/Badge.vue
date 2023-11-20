@@ -5,7 +5,7 @@ withDefaults(
 	}>(),
 	{
 		as: 'p',
-	}
+	},
 );
 </script>
 

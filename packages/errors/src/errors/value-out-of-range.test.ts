@@ -16,7 +16,7 @@ test('Constructs the message using the provided field name and collection', () =
 	const result = messageConstructor(sample);
 
 	expect(result).toBe(
-		`Numeric value for field "${sample.field}" in collection "${sample.collection}" is out of range.`
+		`Numeric value for field "${sample.field}" in collection "${sample.collection}" is out of range.`,
 	);
 });
 

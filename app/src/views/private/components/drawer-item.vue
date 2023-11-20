@@ -104,13 +104,13 @@ const title = computed(() => {
 const { fields: relatedCollectionFields } = usePermissions(
 	relatedCollection as any,
 	computed(() => initialValues.value && initialValues.value[props.junctionField as any]),
-	computed(() => props.primaryKey === '+')
+	computed(() => props.primaryKey === '+'),
 );
 
 const { fields: fieldsWithPermissions } = usePermissions(
 	collection,
 	initialValues,
-	computed(() => props.primaryKey === '+')
+	computed(() => props.primaryKey === '+'),
 );
 
 const fields = computed(() => {
@@ -138,7 +138,7 @@ const fieldsWithoutCircular = computed(() => {
 });
 
 const hasVisibleFieldsRelated = computed(() =>
-	relatedCollectionFields.value.some((field: Field) => !field.meta?.hidden)
+	relatedCollectionFields.value.some((field: Field) => !field.meta?.hidden),
 );
 
 const hasVisibleFieldsJunction = computed(() => fields.value.some((field: Field) => !field.meta?.hidden));
@@ -146,14 +146,14 @@ const hasVisibleFieldsJunction = computed(() => fields.value.some((field: Field)
 const emptyForm = computed(() => !hasVisibleFieldsRelated.value && !hasVisibleFieldsJunction.value);
 
 const templatePrimaryKey = computed(() =>
-	junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
+	junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey),
 );
 
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 const { templateData, loading: templateDataLoading } = useTemplateData(templateCollection, templatePrimaryKey);
 
 const template = computed(
-	() => relatedCollectionInfo.value?.meta?.display_template || collectionInfo.value?.meta?.display_template || null
+	() => relatedCollectionInfo.value?.meta?.display_template || collectionInfo.value?.meta?.display_template || null,
 );
 
 const { file } = useFile();
@@ -208,7 +208,7 @@ function useItem() {
 				internalEdits.value = {};
 			}
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	return { internalEdits, loading, initialValues, refresh };
@@ -331,7 +331,7 @@ function useActions() {
 		const errors = validateItem(
 			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,
-			isNew.value
+			isNew.value,
 		);
 
 		if (errors.length > 0) {

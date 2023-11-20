@@ -16,7 +16,7 @@ export interface TargetConversionResult {
 export function convertTarget(
 	target: AbstractQueryTarget,
 	collection: string,
-	idxGenerator: Generator<number, number, number>
+	idxGenerator: Generator<number, number, number>,
 ): TargetConversionResult {
 	if (target.type === 'primitive') {
 		return {
@@ -51,7 +51,7 @@ export function convertTarget(
 export function convertNestedOneTarget(
 	currentCollection: string,
 	nestedTarget: AbstractQueryTargetNestedOne,
-	idxGenerator: Generator<number, number, number>
+	idxGenerator: Generator<number, number, number>,
 ): TargetConversionResult {
 	if (nestedTarget.meta.type === 'a2o') throw new Error('Sorting by a2o not yet implemented!');
 

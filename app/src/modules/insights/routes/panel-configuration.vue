@@ -50,7 +50,7 @@ const panel = computed<Partial<Panel>>(() => {
 
 const currentTypeInfo = useExtension(
 	'panel',
-	computed(() => panel.value.type ?? null)
+	computed(() => panel.value.type ?? null),
 );
 
 const customOptionsFields = computed(() => {
