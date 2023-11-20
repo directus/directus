@@ -486,6 +486,7 @@ export class GraphQLService {
 											const funcFields = Object.keys(DateTimeFunctions.getFields()).map(
 												(key) => `${field.field}_${key}`,
 											);
+
 											return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 										},
 									};
