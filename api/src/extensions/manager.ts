@@ -176,12 +176,18 @@ export class ExtensionManager {
 	private async load(): Promise<void> {
 		try {
 			await syncExtensions();
+		} catch (error) {
+			logger.error(`Failed to sync extensions`);
+			logger.error(error);
+			process.exit(1);
+		}
 
+		try {
 			this.extensions = await getExtensions();
 			this.extensionsSettings = await getExtensionsSettings(this.extensions);
-		} catch (err: any) {
+		} catch (error) {
 			logger.warn(`Couldn't load extensions`);
-			logger.warn(err);
+			logger.warn(error);
 		}
 
 		await this.registerHooks();

@@ -8,7 +8,7 @@ import type {
 	AbstractSqlNestedMany,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryWhereNode,
-} from '../../index.js';
+} from '../../types/index.js';
 import { convertModifiers } from '../modifiers/modifiers.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import { convertFieldNodes } from './fields.js';

@@ -11,7 +11,7 @@ const { t } = useI18n();
 
 <template>
 	<div>
-		<v-notice type="info">
+		<v-notice>
 			{{ revision.activity.action === 'create' ? t('revision_post_create') : t('revision_post_update') }}
 			<br />
 			{{ t('no_relational_data') }}

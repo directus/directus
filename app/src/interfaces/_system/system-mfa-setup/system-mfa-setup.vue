@@ -194,7 +194,7 @@ function cancelAndClose() {
 	display: block;
 	margin: 0 auto 16px;
 	color: var(--theme--form--field--input--foreground-subdued);
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	letter-spacing: 2.6px;
 	text-align: center;
 }

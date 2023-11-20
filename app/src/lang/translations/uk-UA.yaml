@@ -722,7 +722,6 @@ layout_options: Налаштування зовнішнього вигляду
 rows: Рядки
 columns: Колонки
 collection_setup: Налаштування колекції
-optional_system_fields: Необов'язкові поля системи
 value_unique: Значення повинно бути унікальним
 all_activity: Уся діяльність
 create_item: Створити об'єкт

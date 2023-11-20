@@ -59,13 +59,6 @@ const modules = computed(() => {
 				:to="modulePart.to"
 				:href="modulePart.href"
 				tile
-				:style="
-					modulePart.color
-						? {
-								'--v-button-color-active': modulePart.color,
-						  }
-						: null
-				"
 			>
 				<v-icon :name="modulePart.icon" />
 			</v-button>

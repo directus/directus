@@ -1,40 +1,25 @@
 <script setup lang="ts">
-import { rulesToCssVars, useThemeStore } from '@directus/themes';
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
+import { rulesToCssVars, useTheme } from '@directus/themes';
 import { computed } from 'vue';
 
 const props = defineProps<{
 	darkMode: boolean;
-	theme: string;
+	theme: string | null;
 }>();
 
-const themeStore = useThemeStore();
+const { themeLightOverrides, themeDarkOverrides } = useThemeConfiguration();
 
-const theme = computed(() => {
-	const appearance = props.darkMode ? 'dark' : 'light';
-
-	const theme = themeStore.themes[appearance].find((theme) => theme.name === props.theme);
-
-	return theme ?? null;
-});
-
-const rules = computed(() => {
-	const rules = theme.value?.rules;
-
-	if (!rules) return null;
-
-	return rules;
-});
+const { theme } = useTheme(props.darkMode, props.theme, props.theme, themeLightOverrides, themeDarkOverrides);
 
 const localVars = computed(() => {
-	return rulesToCssVars(rules.value);
+	return rulesToCssVars(theme.value.rules);
 });
 </script>
 
 <template>
 	<div class="theme-preview" :style="localVars">
-		<v-icon v-if="!rules" name="warning" />
-
-		<svg v-else class="theme-preview" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<svg class="theme-preview" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<!-- Page Background -->
 			<rect width="208" height="140" rx="4" fill="var(--theme--background)" />
 

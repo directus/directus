@@ -760,7 +760,6 @@ layout_options: 布局选项
 rows: 行
 columns: 列
 collection_setup: 模型设置
-optional_system_fields: 可选系统字段
 value_unique: 值必须唯一
 all_activity: 所有活动的
 create_item: 创建条目

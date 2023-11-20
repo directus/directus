@@ -26,6 +26,7 @@ const allowedEnvironmentVars = [
 	'PUBLIC_URL',
 	'LOG_LEVEL',
 	'LOG_STYLE',
+	'LOG_HTTP_IGNORE_PATHS',
 	'MAX_PAYLOAD_SIZE',
 	'ROOT_REDIRECT',
 	'SERVE_APP',
@@ -370,6 +371,8 @@ const typeMap: Record<string, string> = {
 	MAX_BATCH_MUTATION: 'number',
 
 	SERVER_SHUTDOWN_TIMEOUT: 'number',
+
+	LOG_HTTP_IGNORE_PATHS: 'array',
 };
 
 let env: Record<string, any> = {

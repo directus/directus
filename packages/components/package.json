@@ -34,13 +34,13 @@
 		"@histoire/plugin-vue": "0.16.1",
 		"@histoire/shared": "0.16.1",
 		"@vitejs/plugin-vue": "4.2.3",
-		"@vitest/coverage-c8": "0.31.1",
+		"@vitest/coverage-v8": "0.34.6",
 		"histoire": "0.16.1",
 		"rollup-plugin-node-externals": "6.1.1",
 		"typescript": "5.2.2",
 		"vite": "4.3.7",
 		"vite-plugin-dts": "2.3.0",
-		"vitest": "0.31.1"
+		"vitest": "0.34.6"
 	},
 	"peerDependencies": {
 		"pinia": "2.1.1",

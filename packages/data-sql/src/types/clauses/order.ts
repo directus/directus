@@ -1,4 +1,5 @@
-import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from './index.js';
+import type { AbstractSqlQueryFnNode } from './select/fn.js';
+import type { AbstractSqlQuerySelectNode } from './select/primitive.js';
 
 export interface AbstractSqlQueryOrderNode {
 	type: 'order';

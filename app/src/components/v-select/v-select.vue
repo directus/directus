@@ -371,7 +371,7 @@ function useDisplayValue() {
 
 	Available Variables:
 
-		--v-select-font-family        [var(--theme--font-family-sans-serif)]
+		--v-select-font-family        [var(--theme--fonts--sans--font-family)]
 		--v-select-placeholder-color  [var(--theme--foreground-subdued)]
 
 */
@@ -381,7 +381,7 @@ function useDisplayValue() {
 }
 
 .v-input {
-	--v-input-font-family: var(--v-select-font-family, var(--theme--font-family-sans-serif));
+	--v-input-font-family: var(--v-select-font-family, var(--theme--fonts--sans--font-family));
 
 	cursor: pointer;
 }

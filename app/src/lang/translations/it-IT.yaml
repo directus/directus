@@ -809,7 +809,6 @@ layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
-optional_system_fields: Campi di Sistema Opzionali
 value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
@@ -1016,7 +1015,6 @@ deselect: Deseleziona
 deselect_all: Deseleziona Tutto
 theme: Tema
 select_a_theme: Seleziona un tema
-appearance_global: Progetto Predefinito
 appearance_auto: Automatico (Sincronizza con il Sistema)
 appearance_light: Chiaro
 appearance_dark: Tema scuro
@@ -1033,7 +1031,7 @@ no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
 settings_permissions: Controllo Accessi
 settings_project: Impostazioni
-settings_theming: Temi
+settings_appearance: Aspetto
 settings_webhooks: Webhooks
 settings_flows: Flussi
 settings_presets: Segnalibri
@@ -1075,7 +1073,7 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
 page_help_settings_project: "**Impostazioni** — Opzioni di configurazione globale del tuo progetto."
-page_help_settings_theming: "**Temi** — Opzioni del tema del tuo progetto."
+page_help_settings_appearance: "**Aspetto** — Opzioni relative ad aspetto e temi del progetto."
 page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
 page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
@@ -1546,7 +1544,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella

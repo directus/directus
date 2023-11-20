@@ -2,6 +2,7 @@
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { Theme, useTheme } from '@directus/themes';
 import { clone, get, isEmpty, setWith, unset } from 'lodash';
+import { computed } from 'vue';
 import SystemThemeOverridesGroup from './system-theme-overrides-group.vue';
 import type { SetValueFn } from './types.js';
 
@@ -11,6 +12,7 @@ defineOptions({
 
 const props = defineProps<{
 	value: Record<string, unknown> | null;
+	appearance: 'dark' | 'light';
 }>();
 
 const emit = defineEmits<{
@@ -37,7 +39,9 @@ const set: SetValueFn = (path: string[], value: string) => {
 	}
 };
 
-const { darkMode, themeDark, themeLight } = useThemeConfiguration();
+const { themeDark, themeLight } = useThemeConfiguration();
+
+const darkMode = computed(() => props.appearance === 'dark');
 
 const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 </script>
@@ -51,7 +55,7 @@ const { theme } = useTheme(darkMode, themeLight, themeDark, {}, {});
 <style scoped lang="scss">
 .theme-overrides {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 	border-radius: var(--theme--border-radius);
 	max-height: var(--input-height-max);
 	overflow-y: auto;

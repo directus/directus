@@ -86,18 +86,6 @@ fields:
     width: half
     group: theming_group
 
-  - field: default_appearance
-    interface: select-dropdown
-    options:
-      choices:
-        - value: auto
-          text: $t:appearance_auto
-        - value: light
-          text: $t:appearance_light
-        - value: dark
-          text: $t:appearance_dark
-    group: theming_group
-
   - field: theming_divider
     interface: presentation-divider
     options:
@@ -107,6 +95,19 @@ fields:
       - alias
       - no-data
     width: full
+    group: theming_group
+
+  - field: default_appearance
+    interface: select-dropdown
+    width: half
+    options:
+      choices:
+        - value: auto
+          text: $t:appearance_auto
+        - value: light
+          text: $t:appearance_light
+        - value: dark
+          text: $t:appearance_dark
     group: theming_group
 
   - field: default_theme_light
@@ -119,6 +120,8 @@ fields:
   - field: theme_light_overrides
     width: full
     interface: system-theme-overrides
+    options:
+      appearance: light
     group: theming_group
     special:
       - cast-json
@@ -133,6 +136,8 @@ fields:
   - field: theme_dark_overrides
     width: full
     interface: system-theme-overrides
+    options:
+      appearance: dark
     group: theming_group
     special:
       - cast-json

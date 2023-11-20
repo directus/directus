@@ -503,7 +503,6 @@ upload_files_indeterminate: 'Alŝutado de dosieroj {done}/{total}'
 upload_files_success: '{count} dosieroj alŝutitaj'
 rows: Vicoj
 columns: Kolumnoj
-optional_system_fields: Nedevigaj sistemaj valoroj
 value_unique: Valoro devas esti unika
 create_item: Krei eron
 all_files: Ĉiuj dosieroj

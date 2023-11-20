@@ -33,11 +33,11 @@
 		"@types/node": "18.16.12",
 		"@types/pg": "8.6.6",
 		"@types/wellknown": "0.5.4",
-		"@vitest/coverage-c8": "0.31.1",
+		"@vitest/coverage-v8": "0.34.6",
 		"dependency-cruiser": "13.1.4",
 		"tsup": "7.2.0",
 		"typescript": "5.2.2",
-		"vitest": "0.31.1"
+		"vitest": "0.34.6"
 	},
 	"dependencies": {
 		"@directus/data-sql": "workspace:*",

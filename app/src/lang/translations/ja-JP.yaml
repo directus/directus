@@ -696,7 +696,6 @@ layout_options: レイアウト設定
 rows: 行
 columns: 列
 collection_setup: コレクションの作成
-optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
 all_activity: すべてのアクティビティ
 create_item: アイテムの作成

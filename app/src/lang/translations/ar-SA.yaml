@@ -730,7 +730,6 @@ layout_options: خيارات التصميم
 rows: الصفوف
 columns: أعمدة
 collection_setup: لا توجد مجموعات الإعداد
-optional_system_fields: حقول النظام الاختيارية
 value_unique: القيمة يجب أن تكون
 all_activity: كل النشاط
 create_item: أنشئ عنصر

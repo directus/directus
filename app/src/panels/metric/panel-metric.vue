@@ -235,15 +235,15 @@ const color = computed(() => {
 	padding: 12px;
 
 	&.sans-serif {
-		font-family: var(--theme--font-family-sans-serif);
+		font-family: var(--theme--fonts--sans--font-family);
 	}
 
 	&.serif {
-		font-family: var(--theme--font-family-serif);
+		font-family: var(--theme--fonts--serif--font-family);
 	}
 
 	&.monospace {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 </style>

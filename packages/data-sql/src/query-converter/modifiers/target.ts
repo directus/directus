@@ -1,33 +1,12 @@
-import type {
-	AbstractQueryFieldNodePrimitive,
-	AbstractQueryTarget,
-	AbstractQueryTargetNestedOne,
-} from '@directus/data';
-import { createUniqueAlias } from '../../../../orm/create-unique-alias.js';
+import type { AbstractQueryTarget, AbstractQueryTargetNestedOne } from '@directus/data';
+import { createUniqueAlias } from '../../orm/create-unique-alias.js';
 import type {
 	AbstractSqlQueryFnNode,
 	AbstractSqlQueryJoinNode,
 	AbstractSqlQuerySelectNode,
-} from '../../../../types/index.js';
-import { createJoin } from '../../../fields/create-join.js';
-import { convertFn } from '../../../functions.js';
-
-/**
- * It adds the table name to the node.
- * @param collection
- * @param primitiveNode
- * @returns an unambitious column
- */
-export function convertPrimitive(
-	collection: string,
-	primitiveNode: AbstractQueryFieldNodePrimitive
-): AbstractSqlQuerySelectNode {
-	return {
-		type: 'primitive',
-		table: collection,
-		column: primitiveNode.field,
-	};
-}
+} from '../../types/index.js';
+import { createJoin } from '../fields/create-join.js';
+import { convertFn } from '../functions.js';
 
 export interface TargetConversionResult {
 	value: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;

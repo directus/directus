@@ -1,24 +1,5 @@
-import type { ValueNode } from '../parameterized-statement.js';
-import type { AbstractSqlQueryJoinNode } from './joins/join.js';
-import type { AbstractSqlQueryOrderNode } from './order.js';
-import type { AbstractSqlQueryFnNode } from './selects/fn.js';
-import type { AbstractSqlQuerySelectNode } from './selects/primitive.js';
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from './where/index.js';
-
-export interface AbstractSqlClauses {
-	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
-	from: string;
-	joins?: AbstractSqlQueryJoinNode[];
-	where?: AbstractSqlQueryWhereNode;
-	limit?: ValueNode;
-	offset?: ValueNode;
-	order?: AbstractSqlQueryOrderNode[];
-}
-
-export type AbstractSqlQueryWhereNode = AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
-
-export * from './selects/fn.js';
-export * from './selects/primitive.js';
-export * from './joins/join.js';
-export * from './where/index.js';
+export * from './join.js';
 export * from './order.js';
+export * from './select/index.js';
+export * from './where.js';
+export * from './where/index.js';

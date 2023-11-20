@@ -683,7 +683,6 @@ layout_options: Mogućnosti izgleda
 rows: Redovi
 columns: Kolone
 collection_setup: Postavljanje kolekcije
-optional_system_fields: Opcionalna sistemska polja
 value_unique: Vrijednost mora biti jedinstvena
 all_activity: Sve aktivnosti
 create_item: Dodaj novu stavku
