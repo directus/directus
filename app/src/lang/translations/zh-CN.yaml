@@ -1546,6 +1546,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -2324,3 +2325,19 @@ fonts:
   auto: 自动
 text_wrap: 文本换行
 center: 居中
+justify: 两端对齐
+text_align: 文本对齐
+font_weight: 字体粗细
+font_style: 字体样式
+font_size: 字体大小
+minimum_fraction_digits: 最小小数
+maximum_fraction_digits: 最大小数
+show_percentage: 显示百分比
+aggregation: 聚合
+series_grouping: 系列分组
+date_precision: 日期精度
+export_dashboard: 导出仪表盘
+duplicate_dashboard: 复制仪表板
+search_dashboard: 搜索仪表板...
+search_flow: 搜索流程...
+percent: 百分比
