@@ -903,7 +903,7 @@ const publicUrl = process.env.PUBLIC_URL;
 | Variable                               | Description                                             | Default Value  |
 | -------------------------------------- | ------------------------------------------------------- | -------------- |
 | `EXTENSIONS_PATH`<sup>[1]</sup>        | Path to your local extensions folder.                   | `./extensions` |
-| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any extension fails to load.       | `false`        |
+| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any API extension fails to load.   | `false`        |
 | `EXTENSIONS_AUTO_RELOAD`<sup>[2]</sup> | Automatically reload extensions when they have changed. | `false`        |
 | `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.  | --             |
 | `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions. | --             |
