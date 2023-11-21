@@ -1755,6 +1755,7 @@ interfaces:
     description: 选择多个相关项目
     no_collection: 找不到collection
   system-folder:
+    folder: 根文件夹
     description: 选择文件夹
     field_hint: 默认文件夹，用于未指定文件夹的上传文件。不影响现有文件。
     root_name: 文件管理
