@@ -398,7 +398,7 @@ export class ExtensionManager {
 			await bundle.close();
 
 			return output[0].code;
-		} catch (error: any) {
+		} catch (error) {
 			logger.warn(`Couldn't bundle App extensions`);
 			logger.warn(error);
 		}
@@ -419,9 +419,9 @@ export class ExtensionManager {
 
 		const isolate = new ivm.Isolate({
 			memoryLimit: sandboxMemory,
-			onCatastrophicError: (e) => {
+			onCatastrophicError: (error) => {
 				logger.error(`Error in API extension sandbox of ${extension.type} "${extension.name}"`);
-				logger.error(e);
+				logger.error(error);
 
 				process.abort();
 			},
@@ -495,7 +495,7 @@ export class ExtensionManager {
 						deleteFromRequireCache(hookPath);
 					});
 				}
-			} catch (error: any) {
+			} catch (error) {
 				this.handleExtensionError('hook', hook.name, error);
 			}
 		}
@@ -537,7 +537,7 @@ export class ExtensionManager {
 						deleteFromRequireCache(endpointPath);
 					});
 				}
-			} catch (error: any) {
+			} catch (error) {
 				this.handleExtensionError('endpoint', endpoint.name, error);
 			}
 		}
@@ -593,7 +593,7 @@ export class ExtensionManager {
 						deleteFromRequireCache(operationPath);
 					});
 				}
-			} catch (error: any) {
+			} catch (error) {
 				this.handleExtensionError('operation', operation.name, error);
 			}
 		}
@@ -645,7 +645,7 @@ export class ExtensionManager {
 
 					deleteFromRequireCache(bundlePath);
 				});
-			} catch (error: any) {
+			} catch (error) {
 				this.handleExtensionError('bundle', bundle.name, error);
 			}
 		}
@@ -687,7 +687,7 @@ export class ExtensionManager {
 						if (this.options.schedule) {
 							try {
 								await handler();
-							} catch (error: any) {
+							} catch (error) {
 								logger.error(error);
 							}
 						}
@@ -797,7 +797,7 @@ export class ExtensionManager {
 	 * If extensions must load successfully, any errors will cause the process to exit.
 	 * Otherwise, the error will only be logged as a warning.
 	 */
-	private handleExtensionError(type: ExtensionType, name: string, error: any): void {
+	private handleExtensionError(type: ExtensionType, name: string, error: unknown): void {
 		if (toBoolean(env['EXTENSIONS_MUST_LOAD'])) {
 			logger.error('EXTENSION_MUST_LOAD is enabled and an extension failed to load.');
 			logger.error(`Couldn't register ${type} "${name}"`);
