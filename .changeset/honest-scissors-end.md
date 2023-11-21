@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Removed unused translation strings
+Cleaned-up unused translation strings
