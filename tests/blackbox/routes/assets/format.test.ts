@@ -61,7 +61,8 @@ describe('/assets', () => {
 							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 							.set('Accept', requestHeaderAccept);
 
-						console.log(insertResponse.body);
+						console.log(response.statusCode);
+						console.log(response.body);
 
 						// Assert
 						expect(response.statusCode).toBe(200);
