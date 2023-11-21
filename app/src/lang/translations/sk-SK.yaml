@@ -687,7 +687,6 @@ security: Zabezpečenie
 value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
 create_bookmark: Vytvoriť záložku
-create_default: Vytvoriť predvolené
 edit_bookmark: Upraviť záložku
 edit_personal_bookmark: Upraviť osobnú záložku
 edit_role_bookmark: Upraviť záložku role
