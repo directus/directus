@@ -2117,6 +2117,9 @@ panels:
     name: 公制
     description: 基于查询显示单个值
     field: 字段
+  metric_list:
+    name: 公制度量列表
+    description: 将搜集的内容列表并可视化其合计指标
   time_series:
     name: 时间系列
     description: 根据一段时间的值渲染线形图
@@ -2296,14 +2299,28 @@ operations:
     batch: 批处理
     batch_size: 批量大小
     cache: 缓存
+unit: 单位
 standard: 基本设置
+scientific: 科学的
+engineering: 工程
 compact: 紧凑
+currency: 货币
+notation: 标记符号
 style: 样式
 fonts:
   thin: 细
+  extra_light: 高亮
+  light: 亮的
   normal: 标准
   medium: 中
+  semi_bold: 半黑体
   bold: 加粗
+  extra_bold: 大号黑体
   black: 黑色
   italic: 斜体
+  oblique: 斜体
+  small: 小字体
+  large: 大号
   auto: 自动
+text_wrap: 文本换行
+center: 居中
