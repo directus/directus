@@ -802,7 +802,7 @@ export class ExtensionManager {
 			logger.error('EXTENSION_MUST_LOAD is enabled and an extension failed to load.');
 			logger.error(`Couldn't register ${type} "${name}"`);
 			logger.error(error);
-			process.exit(0);
+			process.exit(1);
 		} else {
 			logger.warn(`Couldn't register ${type} "${name}"`);
 			logger.warn(error);
