@@ -56,6 +56,7 @@ describe('/assets', () => {
 						// Action
 						let retrieveResponse: Response | undefined;
 
+						// Retry if server is too busy
 						while (!retrieveResponse) {
 							const response = await request(getUrl(vendor))
 								.get(`/assets/${insertResponse.body.data.id}?format=auto`)
@@ -65,7 +66,7 @@ describe('/assets', () => {
 							if (response.statusCode !== 503) {
 								retrieveResponse = response;
 							} else {
-								await sleep(2_000);
+								await sleep(2_500);
 							}
 						}
 
