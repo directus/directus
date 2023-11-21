@@ -2239,7 +2239,12 @@ operations:
     secret_placeholder: Schlüssel eingeben...
     payload: Nutzdaten
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Optionen
+    options_placeholder: 'Siehe https://www.npmjs.com/package/jsonwebtoken#usage für die verfügbaren Optionen'
+    sign: Token signieren
+    verify: Token verifizieren
+    decode: Token dekodieren
   log:
     name: Konsolenausgabe
     description: Etwas in die Konsole ausgeben
@@ -2293,14 +2298,44 @@ operations:
     batch: Stapel
     batch_size: Stapelgröße
     cache: Cache
+unit: Einheit
 standard: Standard
+scientific: Wissenschaftlich
+engineering: Technisch
 compact: Kompakt
+currency: Währung
+notation: Notation
 style: Stil
 fonts:
   thin: Dünn
+  extra_light: Extra-Leicht
+  light: Leicht
   normal: Normal
   medium: Mittel
+  semi_bold: Halb-Fett
   bold: Fett
+  extra_bold: Extra-Fett
   black: Schwarz
   italic: Kursiv
+  oblique: Schräg
+  small: Klein
+  large: Groß
   auto: Auto
+text_wrap: Textumbruch
+center: Zentrieren
+justify: Blocksatz
+text_align: Textausrichtung
+font_weight: Schriftstärke
+font_style: Schriftstil
+font_size: Schriftgröße
+minimum_fraction_digits: Minimale Dezimalstellen
+maximum_fraction_digits: Maximale Dezimalstellen
+show_percentage: Prozentsatz anzeigen
+aggregation: Aggregation
+series_grouping: Serien-Gruppierung
+date_precision: Datumsgenauigkeit
+export_dashboard: Dashboard exportieren
+duplicate_dashboard: Dashboard duplizieren
+search_dashboard: Dashboard suchen...
+search_flow: Flow suchen...
+percent: Prozent
