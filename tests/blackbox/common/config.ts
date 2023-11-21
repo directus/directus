@@ -66,7 +66,7 @@ const directusStorageConfig = {
 	STORAGE_MINIO_SECRET: 'miniosecret',
 	STORAGE_MINIO_BUCKET: 'directus-blackbox-test',
 	STORAGE_MINIO_REGION: 'us-east-1',
-	STORAGE_MINIO_ENDPOINT: 'http://localhost:8881',
+	STORAGE_MINIO_ENDPOINT: 'http://127.0.0.1:8881',
 	STORAGE_MINIO_FORCE_PATH_STYLE: 'true',
 };
 
