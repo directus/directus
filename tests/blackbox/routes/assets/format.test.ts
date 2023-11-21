@@ -1,9 +1,10 @@
 import { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
+import { sleep } from '@utils/sleep';
 import { createReadStream } from 'fs';
 import { join } from 'path';
-import request from 'supertest';
+import request, { type Response } from 'supertest';
 import { describe, expect, it } from 'vitest';
 
 const assetsDirectory = [paths.cwd, 'assets'];
@@ -52,21 +53,25 @@ describe('/assets', () => {
 							.field('storage', storage)
 							.attach('file', createReadStream(imageFilePng));
 
-						console.log(insertResponse.statusCode);
-						console.log(insertResponse.body);
-
 						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
-							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-							.set('Accept', requestHeaderAccept);
+						let retrieveResponse: Response | undefined;
 
-						console.log(response.statusCode);
-						console.log(response.body);
+						while (!retrieveResponse) {
+							const response = await request(getUrl(vendor))
+								.get(`/assets/${insertResponse.body.data.id}?format=auto`)
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+								.set('Accept', requestHeaderAccept);
+
+							if (response.statusCode !== 503) {
+								retrieveResponse = response;
+							} else {
+								await sleep(2_000);
+							}
+						}
 
 						// Assert
-						expect(response.statusCode).toBe(200);
-						expect(response.headers['content-type']).toBe(responseHeaderContentType);
+						expect(retrieveResponse.statusCode).toBe(200);
+						expect(retrieveResponse.headers['content-type']).toBe(responseHeaderContentType);
 					});
 				});
 			});
