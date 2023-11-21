@@ -4,6 +4,7 @@ import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
 import { DEFAULT_DB_TABLES, PRIMARY_KEY_TYPES, TEST_USERS, USER } from '@common/variables';
 import type { FieldRaw } from '@directus/types';
+import { sleep } from '@utils/sleep';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { sortedUniq } from 'lodash-es';
@@ -490,7 +491,10 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 			});
 		});
 
-		describe('Verify schema action hook run', () => {
+		describe('Verify schema action hook run', async () => {
+			// Wait for a short period to allow hook to be completed
+			await sleep(1_000);
+
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
 				const response = await request(getUrl(vendor))
