@@ -7,7 +7,7 @@ contributors: Esther Agbaje
 
 There are various services related to users:
 
-- `UsersService`: Used to manage user accounts and perform CRUD operations on user profiles
+- `UsersService`: Used to manage user accounts and perform CRUD operations on user profiles.
 - `RolesServices`: Used to assign roles to users.
 - `PermissionsServices`: Used to manage the permissions associated with each role.
 
@@ -29,10 +29,10 @@ export default defineEndpoint(async (router, context) => {
 ### Get User
 
 ```js
-router.get('/users/:email', async (req, res) => {
+router.get('/', async (req, res) => {
   const usersService = new UsersService({ schema });
-  const { email } = req.params;
-  const data = await usersService.getUserByEmail(email);
+
+  const data = await usersService.getUserByEmail('email');
 
   res.locals['payload'] = { data: data || null };
   res.json(data);
@@ -42,9 +42,15 @@ router.get('/users/:email', async (req, res) => {
 ### Create a Role
 
 ```js
-router.post('/roles', async (req, res) => {
+router.post('/', async (req, res) => {
   const rolesService = new RolesService({ schema });
-  const data = await rolesService.createOne(req.body);
+  const data = await rolesService.createOne({
+    name: 'Interns',
+    icon: 'verified_user',
+    description: null,
+    admin_access: false,
+    app_access: true,
+  });
 
   res.locals['payload'] = { data: data || null };
   res.json(data);
@@ -54,20 +60,18 @@ router.post('/roles', async (req, res) => {
 ### Create a User and Assign a Role
 
 ```js
-router.post('/users/:role', async (req, res) => {
-  const schema = await getSchema();
+router.post('/', async (req, res) => {
   const usersService = new UsersService({ schema });
   const rolesService = new RolesService({ schema });
 
-  const { role } = req.params;
   const roles = await rolesService.readByQuery({
     fields: ['*'],
   });
 
-  const foundRole = roles.find((item) => item.name == role);
+  const foundRole = roles.find((item) => item.name == 'role');
 
   const data = await usersService.createOne({
-    ...req.body,
+    icon: 'attractions',
     role: foundRole.id,
   });
 
@@ -85,11 +89,12 @@ A role is required when creating a user.
 ### Update User
 
 ```js
-router.patch('/users/:id', async (req, res) => {
+router.patch('/', async (req, res) => {
   const usersService = new UsersService({ schema });
-  const { id } = req.params;
 
-  const data = await usersService.updateOne(id, req.body);
+  const data = await usersService.updateOne('user_id', {
+    title: 'CTO'
+  });
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -98,10 +103,9 @@ router.patch('/users/:id', async (req, res) => {
 ### Delete User
 
 ```js
-router.delete('/users/:id', async (req, res) => {
+router.delete('/', async (req, res) => {
   const usersService = new UsersService({ schema });
-  const { id } = req.params;
-  const data = await usersService.deleteOne(id);
+  const data = await usersService.deleteOne('user_id');
 
   res.locals['payload'] = { data: data || null };
   res.json(data);
@@ -111,30 +115,31 @@ router.delete('/users/:id', async (req, res) => {
 ### Assign Permission to a Role
 
 ```js
-router.post('/permissions/:role', async (req, res) => {
-  const schema = await getSchema();
-  const permissionsService = new PermissionsService({ schema });
-  const rolesService = new RolesService({ schema });
+router.post('/', async (req, res) => {
+	const permissionsService = new PermissionsService({ schema });
+	const rolesService = new RolesService({ schema });
 
-  const { role } = req.params;
-  const roles = await rolesService.readByQuery({
-      fields: ['*'],
-    });
+	const roles = await rolesService.readByQuery({
+		fields: ['*'],
+	});
 
-  const foundRole = roles.find((item) => item.name == role);
+	const foundRole = roles.find((item) => item.name == 'role');
 
-  const data = await permissionsService.createOne({
-    ...req.body,
-    role: foundRole.id,
-  });
+	const data = await permissionsService.createOne({
+		collection: 'pages',
+		action: 'read',
+		role: 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7',
+		fields: ['id', 'title'],
+		role: foundRole.id,
+	});
 
-  res.locals['payload'] = { data: data || null };
-  res.json(data);
+	res.locals['payload'] = { data: data || null };
+	res.json(data);
 });
 ```
 
 ::: tip Explore Services In-depth
 
-Check out the full list of methods [in our codebase](https://github.com/directus/directus/blob/main/api/src/services).
+Refer to the full list of methods [in our codebase](https://github.com/directus/directus/blob/main/api/src/services).
 
 :::

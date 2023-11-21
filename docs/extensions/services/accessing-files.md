@@ -5,7 +5,7 @@ contributors: Esther Agbaje
 
 # Accessing Files
 
-The `FilesService` provides access to upload, import, and perform other operations on files.
+The `FilesService` provides access to upload, import, and perform CRUD operations on files.
 
 ```js
 export default defineEndpoint(async (router, context) => {
@@ -22,9 +22,12 @@ export default defineEndpoint(async (router, context) => {
 ### Import File
 
 ```js
-router.post('/files', async (req, res) => {
+router.post('/', async (req, res) => {
   const filesService = new FilesService({ schema });
-  const assetKey = await filesService.importOne(req.body.url);
+  const assetKey = await filesService.importOne({
+    url: file_url,
+    data: file_object,
+  });
 
   const data = await filesService.readOne(assetKey);
   res.locals['payload'] = { data: data || null };
@@ -35,11 +38,10 @@ router.post('/files', async (req, res) => {
 ### Read File
 
 ```js
-router.get('/files/:id', async (req, res) => {
+router.get('/', async (req, res) => {
   const filesService = new FilesService({ schema });
-  const { id } = req.params;
 
-  const data = await filesService.readOne(id);
+  const data = await filesService.readOne('file_id');
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -48,11 +50,10 @@ router.get('/files/:id', async (req, res) => {
 ### Update File
 
 ```js
-router.patch('/files/:id', async (req, res) => {
+router.patch('/', async (req, res) => {
   const filesService = new FilesService({ schema });
-  const { id } = req.params;
 
-  const data = await filesService.updateOne(id, { title: 'Random' });
+  const data = await filesService.updateOne('file_id', { title: 'Random' });
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -61,11 +62,10 @@ router.patch('/files/:id', async (req, res) => {
 ### Delete File
 
 ```js
- router.delete('/files/:id', async (req, res) => {
+ router.delete('/', async (req, res) => {
   const filesService = new FilesService({ schema });
-  const { id } = req.params;
 
-  const data = await filesService.deleteOne(id);
+  const data = await filesService.deleteOne('file_id');
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -73,7 +73,7 @@ router.patch('/files/:id', async (req, res) => {
 
 ::: tip Explore FilesService In-depth
 
-Check out the full list of methods
+Refer to the full list of methods
 [in our codebase](https://github.com/directus/directus/blob/main/api/src/services/files.ts).
 
 :::

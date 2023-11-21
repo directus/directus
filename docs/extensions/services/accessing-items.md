@@ -24,7 +24,7 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const itemsService = new ItemsService('collection', { schema });
+  const itemsService = new ItemsService('collection_name', { schema });
 
   const data = await itemsService.createOne({
     title: 'Hello world!',
@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
 
 ```js
 router.get('/', async (req, res) => {
-  const itemsService = new ItemsService('collection', { schema });
+  const itemsService = new ItemsService('collection_name', { schema });
 
   const data = await itemsService.readOne('item_id');
 
@@ -51,7 +51,7 @@ router.get('/', async (req, res) => {
 
 ```js
 router.patch('/', async (req, res) => {
-  const itemsService = new ItemsService('collection', { schema });
+  const itemsService = new ItemsService('collection_name', { schema });
 
   const data = await itemsService.updateOne('item_id', {
     title: "An updated title"
@@ -65,7 +65,7 @@ router.patch('/', async (req, res) => {
 
 ```js
 router.delete('/', async (req, res) => {
-  const itemsService = new ItemsService('collection', { schema });
+  const itemsService = new ItemsService('collection_name', { schema });
 
   await itemsService.deleteOne('item_id');
 

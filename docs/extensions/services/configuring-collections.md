@@ -5,12 +5,12 @@ contributors: Esther Agbaje
 
 # Configuring Collections, Fields, and Relations
 
-Use the `CollectionsService`, `FieldsService` and `RelationsService` to configure and modify the data model.
+Use the `CollectionsService`, `FieldsService` and `RelationsService` to configure and modify the data model of a
+collection.
 
 ## CollectionsService
 
-The `CollectionsService` is responsible for managing and manipulating data in collections. Utilize it to perform CRUD
-operations on collection.
+The `CollectionsService` is used for manipulating data and performing CRUD operations on a collection.
 
 ```js
 export default defineEndpoint(async (router, context) => {
@@ -27,9 +27,14 @@ export default defineEndpoint(async (router, context) => {
 ### Create Collection
 
 ```js
-router.post('/collections', async (req, res) => {
+router.post('/', async (req, res) => {
   const collectionsService = new CollectionsService({ schema });
-  const collectionKey = await collectionsService.createOne(req.body);
+  const collectionKey = await collectionsService.createOne({
+    collection:'articles',
+    meta: {
+      note: 'Blog posts',
+    },
+  });
 
   const record = await collectionsService.readOne(collectionKey);
   res.locals['payload'] = { data: record || null };
@@ -40,10 +45,9 @@ router.post('/collections', async (req, res) => {
 ### Read Collection
 
 ```js
-router.get('/collections/:collection', async (req, res) => {
-  const { collection } = req.params;
+router.get('/', async (req, res) => {
   const collectionsService = new CollectionsService({ schema });
-  const data = await collectionsService.readOne(collection);
+  const data = await collectionsService.readOne('collection_name');
 
   res.locals['payload'] = { data: collection || null };
   res.json(data);
@@ -53,11 +57,14 @@ router.get('/collections/:collection', async (req, res) => {
 ### Update Collection
 
 ```js
-router.patch('/collections/:collection', async (req, res) => {
-  const { collection } = req.params;
+router.patch('/', async (req, res) => {
   const collectionsService = new CollectionsService({ schema });
 
-  const data = await collectionsService.updateOne(collection, req.body);
+  const data = await collectionsService.updateOne('collection_name', {
+    meta: {
+      note: 'Updated blog posts',
+    },
+  });
   res.locals['payload'] = { data: collection || null };
   res.json(data);
 });
@@ -66,11 +73,11 @@ router.patch('/collections/:collection', async (req, res) => {
 ### Delete Collection
 
 ```js
-router.delete('/collections/:collection', async (req, res) => {
-  const { collection } = req.params;
+router.delete('/', async (req, res) => {
   const collectionsService = new CollectionsService({ schema });
 
-  await collectionsService.deleteOne(collection);
+  await collectionsService.deleteOne('collection_name');
+
   res.json();
   });
 ```
@@ -94,14 +101,25 @@ export default defineEndpoint(async (router, context) => {
 ### Create Field
 
 ```js
-router.post('/fields/:collection', async (req, res) => {
-  const { collection } = req.params;
+router.post('/', async (req, res) => {
   const fieldsService = new FieldsService({ schema });
 
-  const field = req.body;
-  await fieldsService.createField(collection, field);
+  const field = {
+    field: 'title',
+    type: 'string',
+    meta: {
+      icon: 'title',
+    },
+    schema: {
+      default_value: 'Hello World',
+    },
+  };
+  await fieldsService.createField('collection_name', field);
 
-  const createdField = await fieldsService.readOne(collection, field.field);
+  const createdField = await fieldsService.readOne(
+    'collection_name',
+    field.field,
+  );
   res.locals['payload'] = { data: createdField || null };
   res.json(createdField);
 });
@@ -110,11 +128,10 @@ router.post('/fields/:collection', async (req, res) => {
 ### Read Field
 
 ```js
-router.get('/fields/:collection', async (req, res) => {
-  const { collection } = req.params;
+router.get('/', async (req, res) => {
   const fieldsService = new FieldsService({ schema });
 
-  const data = await fieldsService.readAll(collection);
+  const data = await fieldsService.readAll('collection_name');
   res.locals['payload'] = { data: data || null };
   res.json(data);
 });
@@ -123,36 +140,48 @@ router.get('/fields/:collection', async (req, res) => {
 ### Update Field
 
 ```js
-router.patch('/fields/:collection/:field', async (req, res) => {
-  const { collection, field } = req.params;
+router.patch('/', async (req, res) => {
   const fieldsService = new FieldsService({ schema });
 
-  await fieldsService.updateField(collection, { ...req.body, field });
-  const updatedField = await fieldsService.readOne(collection, field);
+  await fieldsService.updateField('collection_name', {
+    meta: {
+      note: 'Put the title here',
+    },
+    schema: {
+      default_value: 'Hello World!',
+    },
+    field: 'field_name',
+  });
+  const updatedField = await fieldsService.readOne(
+    'collection_name',
+    'field_name',
+  );
 
   res.locals['payload'] = { data: updatedField || null };
   res.json(updatedField);
 });
 ```
 
+::: warning Field Name
+
 Updating the field name is not supported at this time.
+
+:::
 
 ### Delete Field
 
 ```js
-router.delete('/fields/:collection/:field', async (req, res) => {
-  const { collection, field } = req.params;
+router.delete('/', async (req, res) => {
   const fieldsService = new FieldsService({ schema });
 
-  await fieldsService.deleteField(collection, field);
+  await fieldsService.deleteField('collection_name', 'field_name');
   res.json();
 });
 ```
 
 ## RelationsService
 
-The `RelationsService` allows you to manage relationships and references between items in Directus. Utilize it to
-perform CRUD operations on relations.
+The `RelationsService` allows you to perform CRUD operations on relations between items.
 
 ```js
 export default defineEndpoint(async (router, context) => {
@@ -169,9 +198,14 @@ export default defineEndpoint(async (router, context) => {
 ### Create Relation
 
 ```js
-router.post('/relations', async (req, res) => {
+router.post('/', async (req, res) => {
   const relationsService = new RelationsService({ schema });
-  const data = await relationsService.createOne(req.body);
+
+  const data = await relationsService.createOne({
+    collection: 'articles',
+    field: 'featured_image',
+    related_collection: 'directus_files',
+  });
 
   const record = await relationsService.readOne(data);
   res.locals['payload'] = { data: record || null };
@@ -182,11 +216,10 @@ router.post('/relations', async (req, res) => {
 ### Get Relation
 
 ```js
-router.get('/relations/:collection/:field', async (req, res) => {
+router.get('/', async (req, res) => {
   const relationsService = new RelationsService({ schema });
-  const { collection, field } = req.params;
 
-  const data = await relationsService.readOne(collection, field);
+  const data = await relationsService.readOne('collection_name', 'field_name');
 
   res.json(data);
 });
@@ -195,11 +228,18 @@ router.get('/relations/:collection/:field', async (req, res) => {
 ### Update Relation
 
 ```js
-router.patch('/relations/:collection/:field', async (req, res) => {
+router.patch('/', async (req, res) => {
   const relationsService = new RelationsService({ schema });
-  const { collection, field } = req.params;
 
-  const data = await relationsService.updateOne(collection, field, req.body);
+  const data = await relationsService.updateOne(
+    'collection_name',
+    'field_name',
+    {
+      meta: {
+        one_field: 'articles',
+      },
+    },
+  );
 
   res.json(data);
 });
@@ -208,10 +248,12 @@ router.patch('/relations/:collection/:field', async (req, res) => {
 ### Delete Relations
 
 ```js
-router.delete('/relations/:collection/:field', async (req, res) => {
+router.delete('/', async (req, res) => {
   const relationsService = new RelationsService({ schema });
-  const { collection, field } = req.params;
-  const data = await relationsService.deleteOne(collection, field);
+  const data = await relationsService.deleteOne(
+    'collection_name',
+    'field_name',
+  );
 
   res.json(data);
 });
@@ -219,6 +261,6 @@ router.delete('/relations/:collection/:field', async (req, res) => {
 
 ::: tip Explore Services In-depth
 
-Check out the full list of methods [in our codebase](https://github.com/directus/directus/blob/main/api/src/services).
+Refer to the full list of methods [in our codebase](https://github.com/directus/directus/blob/main/api/src/services).
 
 :::
