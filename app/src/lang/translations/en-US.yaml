@@ -696,7 +696,6 @@ security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
-create_default: Create Default
 edit_bookmark: Edit Bookmark
 edit_personal_bookmark: Edit Personal Bookmark
 edit_role_bookmark: Edit Role Bookmark
@@ -1571,7 +1570,6 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
-weeks: {}
 report_error: Report Error
 start: Start
 table: Table
