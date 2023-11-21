@@ -35,8 +35,8 @@ With each endpoint implementation, you can create an instance of a service and u
 
 - **ItemsService:** Provides access to perform operations on items in a collection.
 - **CollectionsService:** Provides access to perform operations on collections.
-- **FilesService:** Extends ItemsService and provides access to upload, import and perform other operations on files.
-- **UsersService:** Extends ItemsService and adds authentication methods for user login and retrieving profile details.
+- **FilesService:** Provides access to upload, import and perform other operations on files.
+- **UsersService:** Provides access to manage user accounts and perform operations on user profiles.
 - **FieldsService:** Provides access to perform operations on fields used in collections and items.
 
 All system collections have a dedicated service which often extend the `ItemsService`. If you are working with system
