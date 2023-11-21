@@ -5,6 +5,7 @@ import type {
 	EndpointConfig,
 	Extension,
 	ExtensionSettings,
+	ExtensionType,
 	HookConfig,
 	HybridExtension,
 	OperationApiConfig,
@@ -45,6 +46,7 @@ import { getSchema } from '../utils/get-schema.js';
 import { importFileUrl } from '../utils/import-file-url.js';
 import { JobQueue } from '../utils/job-queue.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { toBoolean } from '../utils/to-boolean.js';
 import { getExtensionsPath } from './lib/get-extensions-path.js';
 import { getExtensionsSettings } from './lib/get-extensions-settings.js';
 import { getExtensions } from './lib/get-extensions.js';
@@ -494,8 +496,7 @@ export class ExtensionManager {
 					});
 				}
 			} catch (error: any) {
-				logger.warn(`Couldn't register hook "${hook.name}"`);
-				logger.warn(error);
+				this.handleExtensionError('hook', hook.name, error);
 			}
 		}
 	}
@@ -537,8 +538,7 @@ export class ExtensionManager {
 					});
 				}
 			} catch (error: any) {
-				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
-				logger.warn(error);
+				this.handleExtensionError('endpoint', endpoint.name, error);
 			}
 		}
 	}
@@ -594,8 +594,7 @@ export class ExtensionManager {
 					});
 				}
 			} catch (error: any) {
-				logger.warn(`Couldn't register operation "${operation.name}"`);
-				logger.warn(error);
+				this.handleExtensionError('operation', operation.name, error);
 			}
 		}
 	}
@@ -647,8 +646,7 @@ export class ExtensionManager {
 					deleteFromRequireCache(bundlePath);
 				});
 			} catch (error: any) {
-				logger.warn(`Couldn't register bundle "${bundle.name}"`);
-				logger.warn(error);
+				this.handleExtensionError('bundle', bundle.name, error);
 			}
 		}
 	}
@@ -793,5 +791,21 @@ export class ExtensionManager {
 		const unregisterFunctions = Array.from(this.unregisterFunctionMap.values());
 
 		await Promise.all(unregisterFunctions.map((fn) => fn()));
+	}
+
+	/**
+	 * If extensions must load successfully, any errors will cause the process to exit.
+	 * Otherwise, the error will only be logged as a warning.
+	 */
+	private handleExtensionError(type: ExtensionType, name: string, error: any): void {
+		if (toBoolean(env['EXTENSIONS_MUST_LOAD'])) {
+			logger.error('EXTENSION_MUST_LOAD is enabled and an extension failed to load.');
+			logger.error(`Couldn't register ${type} "${name}"`);
+			logger.error(error);
+			process.exit(0);
+		} else {
+			logger.warn(`Couldn't register ${type} "${name}"`);
+			logger.warn(error);
+		}
 	}
 }
