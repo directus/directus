@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Removed the unused `weeks` translation string
+Removed unused translation strings
