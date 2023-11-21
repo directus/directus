@@ -23,11 +23,14 @@ export default defineEndpoint(async (router, context) => {
 ## Create an Item
 
 ```js
-router.post('/items/:collection', async (req, res) => {
-  const { collection } = req.params;
-  const itemsService = new ItemsService(collection, { schema });
+router.post('/', async (req, res) => {
+  const itemsService = new ItemsService('collection', { schema });
 
-  const data = await itemsService.createOne(req.body);
+  const data = await itemsService.createOne({
+    title: 'Hello world!',
+    body: 'This is our first article',
+  });
+
   res.json(data);
 });
 ```
@@ -35,11 +38,11 @@ router.post('/items/:collection', async (req, res) => {
 ## Get an Item
 
 ```js
-router.get('/items/:collection/:id', async (req, res) => {
-  const { collection, id } = req.params;
-  const itemsService = new ItemsService(collection, { schema });
+router.get('/', async (req, res) => {
+  const itemsService = new ItemsService('collection', { schema });
 
-  const data = await itemsService.readOne(id);
+  const data = await itemsService.readOne('item_id');
+
   res.json(data);
 });
 ```
@@ -47,11 +50,13 @@ router.get('/items/:collection/:id', async (req, res) => {
 ## Update an Item
 
 ```js
-router.patch('/items/:collection/:id', async (req, res) => {
-  const { collection, id } = req.params;
-  const itemsService = new ItemsService(collection, { schema });
+router.patch('/', async (req, res) => {
+  const itemsService = new ItemsService('collection', { schema });
 
-  const data = await itemsService.updateOne(id, req.body);
+  const data = await itemsService.updateOne('item_id', {
+    title: "An updated title"
+  });
+
   res.json(data);
 });
 ```
@@ -59,18 +64,18 @@ router.patch('/items/:collection/:id', async (req, res) => {
 ## Delete an Item
 
 ```js
-router.delete('/items/:collection/:id', async (req, res) => {
-  const { collection, id } = req.params;
-  const itemsService = new ItemsService(collection, { schema });
+router.delete('/', async (req, res) => {
+  const itemsService = new ItemsService('collection', { schema });
 
-  await itemsService.deleteOne(id);
+  await itemsService.deleteOne('item_id');
+
   res.json();
 });
 ```
 
 ::: tip Explore ItemsService In-depth
 
-Check out the full list of methods
+Refer to the full list of methods
 [in our codebase](https://github.com/directus/directus/blob/main/api/src/services/items.ts).
 
 :::
