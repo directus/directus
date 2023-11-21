@@ -19,7 +19,7 @@ export default defineEndpoint(async (router, context) => {
 });
 ```
 
-### Import File
+### Import a File
 
 ```js
 router.post('/', async (req, res) => {
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
 });
 ```
 
-### Read File
+### Read a File
 
 ```js
 router.get('/', async (req, res) => {
@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
 });
 ```
 
-### Update File
+### Update a File
 
 ```js
 router.patch('/', async (req, res) => {
@@ -59,7 +59,7 @@ router.patch('/', async (req, res) => {
 });
 ```
 
-### Delete File
+### Delete a File
 
 ```js
  router.delete('/', async (req, res) => {

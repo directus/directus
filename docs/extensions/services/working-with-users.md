@@ -26,7 +26,7 @@ export default defineEndpoint(async (router, context) => {
 });
 ```
 
-### Get User
+### Get a User
 
 ```js
 router.get('/', async (req, res) => {
@@ -86,7 +86,7 @@ A role is required when creating a user.
 
 :::
 
-### Update User
+### Update a User
 
 ```js
 router.patch('/', async (req, res) => {
@@ -100,7 +100,7 @@ router.patch('/', async (req, res) => {
 });
 ```
 
-### Delete User
+### Delete a User
 
 ```js
 router.delete('/', async (req, res) => {

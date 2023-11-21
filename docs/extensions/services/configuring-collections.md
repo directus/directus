@@ -24,7 +24,7 @@ export default defineEndpoint(async (router, context) => {
 });
 ```
 
-### Create Collection
+### Create a Collection
 
 ```js
 router.post('/', async (req, res) => {
@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
 });
 ```
 
-### Read Collection
+### Read a Collection
 
 ```js
 router.get('/', async (req, res) => {
@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
 });
 ```
 
-### Update Collection
+### Update a Collection
 
 ```js
 router.patch('/', async (req, res) => {
@@ -70,7 +70,7 @@ router.patch('/', async (req, res) => {
 });
 ```
 
-### Delete Collection
+### Delete a Collection
 
 ```js
 router.delete('/', async (req, res) => {
@@ -98,7 +98,7 @@ export default defineEndpoint(async (router, context) => {
 });
 ```
 
-### Create Field
+### Create a Field
 
 ```js
 router.post('/', async (req, res) => {
@@ -125,7 +125,7 @@ router.post('/', async (req, res) => {
 });
 ```
 
-### Read Field
+### Read a Field
 
 ```js
 router.get('/', async (req, res) => {
@@ -137,7 +137,7 @@ router.get('/', async (req, res) => {
 });
 ```
 
-### Update Field
+### Update a Field
 
 ```js
 router.patch('/', async (req, res) => {
@@ -168,7 +168,7 @@ Updating the field name is not supported at this time.
 
 :::
 
-### Delete Field
+### Delete a Field
 
 ```js
 router.delete('/', async (req, res) => {
@@ -195,7 +195,7 @@ export default defineEndpoint(async (router, context) => {
 });
 ```
 
-### Create Relation
+### Create a Relation
 
 ```js
 router.post('/', async (req, res) => {
@@ -213,7 +213,7 @@ router.post('/', async (req, res) => {
 });
 ```
 
-### Get Relation
+### Get a Relation
 
 ```js
 router.get('/', async (req, res) => {
@@ -225,7 +225,7 @@ router.get('/', async (req, res) => {
 });
 ```
 
-### Update Relation
+### Update a Relation
 
 ```js
 router.patch('/', async (req, res) => {
@@ -245,7 +245,7 @@ router.patch('/', async (req, res) => {
 });
 ```
 
-### Delete Relations
+### Delete a Relation
 
 ```js
 router.delete('/', async (req, res) => {
