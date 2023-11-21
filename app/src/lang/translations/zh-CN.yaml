@@ -687,7 +687,6 @@ security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称
 create_bookmark: 创建书签
-create_default: 创建默认
 edit_bookmark: 编辑书签
 edit_personal_bookmark: 编辑个人书签
 edit_role_bookmark: 编辑角色书签
@@ -1546,7 +1545,6 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
-weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
