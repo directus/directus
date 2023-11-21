@@ -33,7 +33,7 @@ function transformStringsOldFormat(newStrings: NewTranslationString[]): OldTrans
 		set(keyCache, [key, language], value);
 	}
 
-	return Object.entries(keyCache).map(([key, translations]) => ({ key, translations } as OldTranslationString));
+	return Object.entries(keyCache).map(([key, translations]) => ({ key, translations }) as OldTranslationString);
 }
 
 export async function up(knex: Knex): Promise<void> {

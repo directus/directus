@@ -41,7 +41,7 @@ const props = withDefaults(
 	{
 		headerShadow: true,
 		splitViewMinWidth: 0,
-	}
+	},
 );
 
 const emit = defineEmits(['update:splitView']);
@@ -125,7 +125,7 @@ watch(
 			...(localStorageModuleWidth.value ?? {}),
 			nav: value,
 		};
-	}, 300)
+	}, 300),
 );
 
 const mainWidth = ref(getWidth(localStorageModuleWidth.value?.main, SIZES.minContentWidth));
@@ -137,7 +137,7 @@ watch(
 			...(localStorageModuleWidth.value ?? {}),
 			main: value,
 		};
-	}, 300)
+	}, 300),
 );
 
 const isDraggingNav = ref(false);
@@ -495,13 +495,19 @@ function getWidth(input: unknown, fallback: number): number {
 
 		--theme--form--field--input--background-subdued: var(--theme--sidebar--section--form--field--input--background);
 		--theme--form--field--input--background: var(--theme--sidebar--section--form--field--input--background);
-		--theme--form--field--input--border-color-focus: var(--theme--sidebar--section--form--field--input--border-color-focus);
-		--theme--form--field--input--border-color-hover: var(--theme--sidebar--section--form--field--input--border-color-hover);
+		--theme--form--field--input--border-color-focus: var(
+			--theme--sidebar--section--form--field--input--border-color-focus
+		);
+		--theme--form--field--input--border-color-hover: var(
+			--theme--sidebar--section--form--field--input--border-color-hover
+		);
 		--theme--form--field--input--border-color: var(--theme--sidebar--section--form--field--input--border-color);
 		--theme--form--field--input--box-shadow-focus: var(--theme--sidebar--section--form--field--input--box-shadow-focus);
 		--theme--form--field--input--box-shadow-hover: var(--theme--sidebar--section--form--field--input--box-shadow-hover);
 		--theme--form--field--input--box-shadow: var(--theme--sidebar--section--form--field--input--box-shadow);
-		--theme--form--field--input--foreground-subdued: var(--theme--sidebar--section--form--field--input--foreground-subdued);
+		--theme--form--field--input--foreground-subdued: var(
+			--theme--sidebar--section--form--field--input--foreground-subdued
+		);
 		--theme--form--field--input--foreground: var(--theme--sidebar--section--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--sidebar--section--form--field--input--height);
 		--theme--form--field--input--padding: var(--theme--sidebar--section--form--field--input--padding);
@@ -551,7 +557,9 @@ function getWidth(input: unknown, fallback: number): number {
 			position: relative;
 			flex-basis: 60px;
 			flex-shrink: 0;
-			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
+			transition:
+				flex-basis var(--slow) var(--transition),
+				transform var(--slow) var(--transition);
 
 			&.is-open {
 				flex-basis: 280px;

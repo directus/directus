@@ -11,7 +11,7 @@ export function convertFn(
 	collection: string,
 	abstractFunction: AbstractQueryFunction,
 	idxGenerator: Generator,
-	generatedAlias?: string
+	generatedAlias?: string,
 ): { fn: AbstractSqlQueryFnNode; parameters: ParameterTypes[] } {
 	const fn: AbstractSqlQueryFnNode = {
 		type: 'fn',

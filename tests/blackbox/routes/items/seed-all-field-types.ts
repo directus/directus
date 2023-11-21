@@ -124,7 +124,7 @@ export const seedO2MAliasAllFieldTypesValues = async (
 	collection: string,
 	pkType: PrimaryKeyType,
 	aliasField: string,
-	possibleKeys: any[]
+	possibleKeys: any[],
 ) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
@@ -186,7 +186,7 @@ export const seedM2MAliasAllFieldTypesValues = async (
 	junctionField: string,
 	otherJunctionField: string,
 	possibleKeys: any[],
-	otherPossibleKeys: any[]
+	otherPossibleKeys: any[],
 ) => {
 	try {
 		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['*'] });
@@ -221,7 +221,7 @@ export const seedM2AAliasAllFieldTypesValues = async (
 	junctionCollection: string,
 	relatedCollection: string,
 	possibleKeys: any[],
-	otherPossibleKeys: any[]
+	otherPossibleKeys: any[],
 ) => {
 	try {
 		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['id'] });

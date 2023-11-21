@@ -75,7 +75,7 @@ export function registerExtensions(app: App): void {
 			extensions.panels.value = translate(panels);
 			extensions.operations.value = translate(operations);
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	const { registeredModules, onHydrateModules, onDehydrateModules } = registerModules(modules);
@@ -85,7 +85,7 @@ export function registerExtensions(app: App): void {
 		() => {
 			extensions.modules.value = translate(registeredModules.value);
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	onHydrateCallbacks.push(onHydrateModules);

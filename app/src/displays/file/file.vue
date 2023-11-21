@@ -14,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: null,
-	}
+	},
 );
 
 const previewEl = ref<Element>();

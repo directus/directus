@@ -226,7 +226,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		300000
+		300000,
 	);
 };
 
@@ -356,7 +356,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					junctionCollectionFoodsID,
 					junctionCollectionIngredientsID,
 					foodsIDs,
-					ingredientsIDs
+					ingredientsIDs,
 				);
 
 				await seedM2MAliasAllFieldTypesValues(
@@ -367,9 +367,9 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					junctionCollectionIngredientsID,
 					junctionCollectionSuppliersID,
 					ingredientsIDs,
-					suppliersIDs
+					suppliersIDs,
 				);
 			}
-		})
+		}),
 	);
 };

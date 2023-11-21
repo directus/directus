@@ -8,5 +8,5 @@ interface GraphQLExecutionErrorExtensions {
 export const GraphQLExecutionError = createError<GraphQLExecutionErrorExtensions>(
 	'GRAPHQL_EXECUTION',
 	'GraphQL execution error.',
-	400
+	400,
 );

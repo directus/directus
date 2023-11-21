@@ -11,7 +11,7 @@ export default {
 						{ author: ['first_name', 'last_name', 'avatar', 'title'] },
 						{ tags: [{ docs_tags_id: ['title', 'slug', 'type'] }] },
 					],
-				})
+				}),
 			)
 		).map((article) => ({
 			params: {

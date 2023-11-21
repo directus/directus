@@ -27,12 +27,17 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+extensions: Розширення
 modules: Modules
 module_bar: Module Bar
+logs: Лаги
+reset_width: Скинути ширину
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 location: Location
+collection_names_are_case_sensitive: Назви колекцій враховують регістр
+condition_rules: Умови Правила
 input: Input
 maps: Maps
 switch_user: Switch User
@@ -43,14 +48,34 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+export_items: Експорт елементів
 and: And
 or: Or
+init: Вмикання
+dataset_too_large_currently_showing_n_items: Набір даних занадто великий. Наразі показано перші {n} елементів.
+modifier: Модифікатор
 extension_interface: Interface
 extension_display: Display
 extension_layout: Layout
+extension_module: Модуль
 extension_panel: Panel
+extension_hook: Гак
+extension_endpoint: Кінцева точка
+extension_operation: Діяльність
+extension_bundle: Пакет
+extension_interfaces: Інтерфейси
+extension_displays: Відображення
+extension_layouts: Планування
 extension_modules: Modules
+extension_panels: Панелі
+extension_hooks: Гачки
+extension_endpoints: Кінцеві пункти
+extension_operations: Операційна діяльність
+extension_bundles: Пакети
 enable: Enable
+disable: Вимкнути
+custom: Користувацький
+hook: Гак
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -74,8 +99,13 @@ create_preset: Create Preset
 create_panel: Create Panel
 create_role: Create Role
 create_user: Create User
+message: Повідомлення
 delete_panel: Delete Panel
 create_webhook: Create Webhook
+create_custom_translation: Створити власний переклад
+edit_custom_translation: Редагування користувацького перекладу
+no_custom_translations: Немає індивідуальних перекладів
+no_custom_translations_copy: Перекладів на замовлення поки що не існує.
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -91,7 +121,29 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+keep: Тримайте
+version: Версія
+version_key: Ключ до версії
+version_name: Назва версії
+main_version: Головна сторінка
+switch_version: Переключити версію
+switch_version_copy: Ви впевнені, що хочете перейти на версію "{version}"? Незбережені зміни буде втрачено.
+create_version: Створити версію
+rename_version: Перейменувати версію
+compare_version: Порівняти версію
+save_version: Збережена версія
+promote_version: Просувати версію
+promote_version_disabled: Без змін
+promote_version_drawer_title: Просунути {version} на головну сторінку
+promote_version_changes: Зміни
 promote_version_preview: Preview
+outdated_notice: >-
+  З моменту створення цієї версії головну статтю було оновлено. Будь ласка, перегляньте всі значення полів нижче і підтвердіть, яку версію слід використовувати при просуванні цієї версії в головну статтю.
+promote_notice: >-
+  Будь ласка, перегляньте всі значення полів нижче і підтвердіть, яку версію слід використовувати при просуванні цієї версії на головну.
+delete_version: Вилучити версію
+delete_version_copy: >-
+  Ви впевнені, що хочете видалити версію"{version}"? Ця дія не може бути скасована.
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -618,7 +670,6 @@ layout_options: Layout Options
 rows: Rows
 columns: Columns
 collection_setup: Collection Setup
-optional_system_fields: Optional Fields
 value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item
@@ -1698,11 +1749,14 @@ operations:
   json-web-token:
     token: Token
     options: Options
+  log:
+    message: Повідомлення
   mail:
     template: Template
     data: Data
   notification:
     recipient: User
+    message: Повідомлення
     subject: Subject
   request:
     url: URL

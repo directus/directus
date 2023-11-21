@@ -64,7 +64,7 @@ watch(
 			key.value = null;
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const options = computed({

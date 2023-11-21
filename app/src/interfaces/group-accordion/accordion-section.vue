@@ -24,7 +24,7 @@ const props = withDefaults(
 	{
 		batchActiveFields: () => [],
 		validationErrors: () => [],
-	}
+	},
 );
 
 const emit = defineEmits<{

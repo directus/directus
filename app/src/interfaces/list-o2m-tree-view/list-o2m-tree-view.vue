@@ -30,7 +30,7 @@ const props = withDefaults(
 		enableSelect: true,
 		filter: () => null,
 		displayTemplate: undefined,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -65,7 +65,7 @@ const customFilter = computed(() => {
 			}
 
 			return val;
-		})
+		}),
 	);
 });
 
@@ -107,7 +107,7 @@ const fields = computed(() => {
 
 	const displayFields = adjustFieldsForDisplays(
 		getFieldsFromTemplate(template.value),
-		relationInfo.value.relatedCollection.collection
+		relationInfo.value.relatedCollection.collection,
 	);
 
 	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);

@@ -34,7 +34,7 @@ describe('#store', () => {
 
 	test("Throws error when retrieved store name hasn't been registered", () => {
 		expect(() => engine.store('unregistered')).toThrowErrorMatchingInlineSnapshot(
-			'"Store \\"unregistered\\" doesn\'t exist."'
+			'"Store \\"unregistered\\" doesn\'t exist."',
 		);
 	});
 });

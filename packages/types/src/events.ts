@@ -12,7 +12,7 @@ export type EventContext = {
 export type FilterHandler<T = unknown> = (
 	payload: T,
 	meta: Record<string, any>,
-	context: EventContext
+	context: EventContext,
 ) => T | Promise<T>;
 export type ActionHandler = (meta: Record<string, any>, context: EventContext) => void;
 export type InitHandler = (meta: Record<string, any>) => void;

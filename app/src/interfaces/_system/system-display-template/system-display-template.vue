@@ -31,7 +31,7 @@ const collection = computed(() => {
 	const collectionName = values.value[props.collectionField];
 
 	const collectionExists = !!collectionsStore.collections.find(
-		(collection) => collection.collection === collectionName
+		(collection) => collection.collection === collectionName,
 	);
 
 	if (collectionExists === false) return null;

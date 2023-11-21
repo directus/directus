@@ -41,7 +41,7 @@ const props = withDefaults(
 		showAxisLabels: 'both',
 		showDataLabel: true,
 		conditionalFill: () => [],
-	}
+	},
 );
 
 const { t, n } = useI18n();
@@ -73,7 +73,7 @@ watch(
 		chart.value?.destroy();
 		setUpChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onMounted(setUpChart);

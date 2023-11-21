@@ -7,5 +7,5 @@ test.each([Readable.from('test', { encoding: 'utf8' }), Readable.from(Buffer.fro
 	'Returns readable stream as string',
 	async (readableStream) => {
 		expect(readableStreamToString(readableStream)).resolves.toBe('test');
-	}
+	},
 );

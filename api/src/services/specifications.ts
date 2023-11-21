@@ -156,7 +156,7 @@ class OASSpecsService implements SpecificationSubService {
 								!!permissions.find(
 									(permission) =>
 										permission.collection === tag['x-collection'] &&
-										permission.action === this.getActionForMethod(method)
+										permission.action === this.getActionForMethod(method),
 								);
 
 							if (hasPermission) {
@@ -184,7 +184,7 @@ class OASSpecsService implements SpecificationSubService {
 						this.accountability?.admin === true ||
 						!!permissions.find(
 							(permission) =>
-								permission.collection === collection && permission.action === this.getActionForMethod(method)
+								permission.collection === collection && permission.action === this.getActionForMethod(method),
 						);
 
 					if (hasPermission) {
@@ -245,7 +245,7 @@ class OASSpecsService implements SpecificationSubService {
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
 									return undefined;
-								}
+								},
 							);
 						}
 
@@ -290,7 +290,7 @@ class OASSpecsService implements SpecificationSubService {
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
 									return undefined;
-								}
+								},
 							);
 						}
 					}
@@ -312,7 +312,7 @@ class OASSpecsService implements SpecificationSubService {
 
 		const tagSchemas = tags.reduce(
 			(schemas, tag) => [...schemas, ...(tag['x-schemas'] ? tag['x-schemas'] : [])],
-			[] as string[]
+			[] as string[],
 		);
 
 		const requiredSchemas = [...OAS_REQUIRED_SCHEMAS, ...tagSchemas];
@@ -348,7 +348,7 @@ class OASSpecsService implements SpecificationSubService {
 				for (const field of fieldsInCollection) {
 					schemaComponent.properties[field.field] =
 						(cloneDeep(
-							(spec.components!.schemas![tag.name] as SchemaObject).properties![field.field]
+							(spec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
 						) as SchemaObject) || this.generateField(collection.collection, field, tags);
 				}
 
@@ -372,7 +372,7 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private filterCollectionFromParams(
-		parameters: (ParameterObject | ReferenceObject)[]
+		parameters: (ParameterObject | ReferenceObject)[],
 	): (ParameterObject | ReferenceObject)[] {
 		return parameters.filter((param) => (param as ReferenceObject)?.$ref !== '#/components/parameters/Collection');
 	}
@@ -403,7 +403,7 @@ class OASSpecsService implements SpecificationSubService {
 		const relation = this.schema.relations.find(
 			(relation) =>
 				(relation.collection === collection && relation.field === field.field) ||
-				(relation.related_collection === collection && relation.meta?.one_field === field.field)
+				(relation.related_collection === collection && relation.meta?.one_field === field.field),
 		);
 
 		if (!relation) {

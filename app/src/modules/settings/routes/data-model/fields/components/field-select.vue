@@ -24,7 +24,7 @@ const props = withDefaults(
 	}>(),
 	{
 		fields: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['setNestedSort']);
@@ -40,7 +40,7 @@ const { duplicateActive, duplicateName, duplicateTo, saveDuplicate, duplicating 
 
 const inter = useExtension(
 	'interface',
-	computed(() => props.field.meta?.interface ?? null)
+	computed(() => props.field.meta?.interface ?? null),
 );
 
 const interfaceName = computed(() => inter.value?.name ?? null);
@@ -57,7 +57,7 @@ const showRelatedCollectionLink = computed(
 	() =>
 		unref(relatedCollectionInfo) !== null &&
 		props.field.collection !== unref(relatedCollectionInfo)?.relatedCollection &&
-		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
+		['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string),
 );
 
 function setWidth(width: Width) {

@@ -75,7 +75,7 @@ const table = ref<ComponentPublicInstance>();
 
 watch(
 	() => props.page,
-	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' }),
 );
 
 useShortcut(
@@ -83,7 +83,7 @@ useShortcut(
 	() => {
 		props.selectAll();
 	},
-	table
+	table,
 );
 
 const permissionsStore = usePermissionsStore();
@@ -92,7 +92,7 @@ const userStore = useUserStore();
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
 	(value) => String(value),
-	props.limit
+	props.limit,
 );
 
 if (limitWritable.value !== selectedSize) {

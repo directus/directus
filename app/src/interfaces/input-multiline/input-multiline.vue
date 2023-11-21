@@ -14,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		font: 'sans-serif',
-	}
+	},
 );
 
 defineEmits(['input']);

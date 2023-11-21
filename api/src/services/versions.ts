@@ -87,7 +87,7 @@ export class VersionsService extends ItemsService {
 	async verifyHash(
 		collection: string,
 		item: PrimaryKey,
-		hash: string
+		hash: string,
 	): Promise<{ outdated: boolean; mainHash: string }> {
 		const mainItem = await this.getMainItem(collection, item);
 
@@ -297,7 +297,7 @@ export class VersionsService extends ItemsService {
 				database: getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
@@ -314,7 +314,7 @@ export class VersionsService extends ItemsService {
 				database: getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		return updatedItemKey;

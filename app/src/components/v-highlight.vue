@@ -55,7 +55,7 @@ const parts = computed<HighlightPart[]>(() => {
 			acc.push(indices);
 
 			return acc;
-		}, [])
+		}, []),
 	);
 
 	matches.sort((a, b) => {

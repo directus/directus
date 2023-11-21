@@ -103,7 +103,7 @@ describe('applySearch', () => {
 			expect(db['andWhere']).toBeCalledTimes(1);
 			expect(db['orWhere']).toBeCalledTimes(0);
 			expect(db['orWhereRaw']).toBeCalledTimes(1);
-		}
+		},
 	);
 
 	test.each(['1234', '-128', '12.34'])('Casting number %s', async (number) => {
@@ -182,7 +182,7 @@ describe('applyFilter', () => {
 
 					const expectedSql = sqlWhereClause[filterValue === false ? 'false' : 'true'].replaceAll(
 						'$column',
-						`"${collection}"."${field}"`
+						`"${collection}"."${field}"`,
 					);
 
 					expect(sql).toEqual(expectedSql);

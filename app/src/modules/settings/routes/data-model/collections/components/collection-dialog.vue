@@ -36,7 +36,7 @@ watch(
 			values.color = props.collection?.color ?? null;
 			values.translations = props.collection?.meta?.translations ?? null;
 		}
-	}
+	},
 );
 
 const saving = ref(false);

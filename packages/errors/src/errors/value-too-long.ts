@@ -24,5 +24,5 @@ export const messageConstructor = ({ collection, field }: ValueTooLongErrorExten
 export const ValueTooLongError = createError<ValueTooLongErrorExtensions>(
 	ErrorCode.ValueTooLong,
 	messageConstructor,
-	400
+	400,
 );

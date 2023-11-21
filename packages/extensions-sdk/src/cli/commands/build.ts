@@ -128,9 +128,9 @@ export default async function build(options: BuildOptions): Promise<void> {
 		if (!isIn(type, EXTENSION_TYPES)) {
 			log(
 				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
-					chalk.bold.magenta(t)
+					chalk.bold.magenta(t),
 				).join(', ')}.`,
-				'error'
+				'error',
 			);
 
 			process.exit(1);
@@ -144,7 +144,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 		if (!output) {
 			log(
 				`Extension output file has to be specified using the ${chalk.blue('[-o, --output <file>]')} option.`,
-				'error'
+				'error',
 			);
 
 			process.exit(1);
@@ -157,9 +157,9 @@ export default async function build(options: BuildOptions): Promise<void> {
 			if (entries.success === false) {
 				log(
 					`Input option needs to be of the format ${chalk.blue(
-						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`
+						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`,
 					)}.`,
-					'error'
+					'error',
 				);
 
 				process.exit(1);
@@ -168,9 +168,9 @@ export default async function build(options: BuildOptions): Promise<void> {
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
-						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`,
 					)}.`,
-					'error'
+					'error',
 				);
 
 				process.exit(1);
@@ -192,9 +192,9 @@ export default async function build(options: BuildOptions): Promise<void> {
 			if (!validateSplitEntrypointOption(splitInput)) {
 				log(
 					`Input option needs to be of the format ${chalk.blue(
-						`[-i '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+						`[-i '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`,
 					)}.`,
-					'error'
+					'error',
 				);
 
 				process.exit(1);
@@ -203,9 +203,9 @@ export default async function build(options: BuildOptions): Promise<void> {
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
-						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`,
 					)}.`,
-					'error'
+					'error',
 				);
 
 				process.exit(1);
@@ -431,7 +431,7 @@ async function buildExtension(config: RollupConfig | RollupConfig[]) {
 			}
 
 			return null;
-		})
+		}),
 	);
 
 	const resultErrors = result.filter((r) => r !== null);

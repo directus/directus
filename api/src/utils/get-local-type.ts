@@ -109,7 +109,7 @@ export default function getLocalType(
 		numeric_scale?: null | number;
 		max_length?: null | number;
 	},
-	field?: { special?: FieldMeta['special'] }
+	field?: { special?: FieldMeta['special'] },
 ): Type | 'unknown' {
 	if (!column) return 'alias';
 

@@ -35,7 +35,7 @@ export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
-	itemId: Ref<string | number>
+	itemId: Ref<string | number>,
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
@@ -117,7 +117,7 @@ export function useRelationMultiple(
 
 		const items: DisplayItem[] = fetchedItems.value.map((item: Record<string, any>) => {
 			const editsIndex = _value.value.update.findIndex(
-				(edit) => typeof edit === 'object' && edit[targetPKField] === item[targetPKField]
+				(edit) => typeof edit === 'object' && edit[targetPKField] === item[targetPKField],
 			);
 
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
@@ -389,7 +389,7 @@ export function useRelationMultiple(
 
 			updateItemCount();
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	async function updateItemCount() {
@@ -447,12 +447,12 @@ export function useRelationMultiple(
 
 			if (relation.value?.type === 'o2m') {
 				return _value.value.update
-					.map((item, index) => ({ ...item, $index: index, $type: 'updated' } as DisplayItem))
+					.map((item, index) => ({ ...item, $index: index, $type: 'updated' }) as DisplayItem)
 					.filter(isItemSelected);
 			}
 
 			return _value.value.create
-				.map((item, index) => ({ ...item, $index: index, $type: 'created' } as DisplayItem))
+				.map((item, index) => ({ ...item, $index: index, $type: 'created' }) as DisplayItem)
 				.filter(isItemSelected);
 		});
 
@@ -468,7 +468,7 @@ export function useRelationMultiple(
 					loadSelectedDisplay();
 				}
 			},
-			{ immediate: true }
+			{ immediate: true },
 		);
 
 		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
@@ -540,7 +540,7 @@ export function useRelationMultiple(
 
 					if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
 					return acc;
-				}, [])
+				}, []),
 			);
 
 			fields.add(relation.relatedPrimaryKeyField.field);
@@ -571,13 +571,16 @@ export function useRelationMultiple(
 
 			const collectionField = relation.collectionField.field;
 
-			const selectGrouped = selectedOnPage.value.reduce((acc, item) => {
-				const collection = item[collectionField];
-				if (!(collection in acc)) acc[collection] = [];
-				acc[collection].push(item);
+			const selectGrouped = selectedOnPage.value.reduce(
+				(acc, item) => {
+					const collection = item[collectionField];
+					if (!(collection in acc)) acc[collection] = [];
+					acc[collection].push(item);
 
-				return acc;
-			}, {} as Record<string, DisplayItem[]>);
+					return acc;
+				},
+				{} as Record<string, DisplayItem[]>,
+			);
 
 			const responses = await Promise.all(
 				Object.entries(selectGrouped).map(([collection, items]) => {
@@ -589,7 +592,7 @@ export function useRelationMultiple(
 
 							if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
 							return acc;
-						}, [])
+						}, []),
 					);
 
 					fields.add(pkField);
@@ -604,19 +607,22 @@ export function useRelationMultiple(
 							},
 						},
 					});
-				})
+				}),
 			);
 
-			fetchedSelectItems.value = responses.reduce((acc, item, index) => {
-				acc.push(
-					...item.map((item: Record<string, any>) => ({
-						[relation.collectionField.field]: Object.keys(selectGrouped)[index],
-						[relation.junctionField.field]: item,
-					}))
-				);
+			fetchedSelectItems.value = responses.reduce(
+				(acc, item, index) => {
+					acc.push(
+						...item.map((item: Record<string, any>) => ({
+							[relation.collectionField.field]: Object.keys(selectGrouped)[index],
+							[relation.junctionField.field]: item,
+						})),
+					);
 
-				return acc;
-			}, [] as Record<string, any>[]);
+					return acc;
+				},
+				[] as Record<string, any>[],
+			);
 		}
 	}
 

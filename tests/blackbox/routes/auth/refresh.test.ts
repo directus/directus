@@ -151,7 +151,7 @@ describe('Authentication Refresh Tests', () => {
 										},
 									},
 								},
-								{ cookies: [`${cookieName}=${refreshToken2}`] }
+								{ cookies: [`${cookieName}=${refreshToken2}`] },
 							);
 
 							// Assert

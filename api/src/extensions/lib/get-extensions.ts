@@ -11,13 +11,13 @@ export const getExtensions = async () => {
 	const filterDuplicates = ({ name }: Extension) => loadedNames.includes(name) === false;
 
 	const localPackageExtensions = (await resolvePackageExtensions(getExtensionsPath())).filter((extension) =>
-		filterDuplicates(extension)
+		filterDuplicates(extension),
 	);
 
 	loadedNames.push(...localPackageExtensions.map(({ name }) => name));
 
 	const packageExtensions = (await getPackageExtensions(env['PACKAGE_FILE_LOCATION'])).filter((extension) =>
-		filterDuplicates(extension)
+		filterDuplicates(extension),
 	);
 
 	return [...packageExtensions, ...localPackageExtensions, ...localExtensions];

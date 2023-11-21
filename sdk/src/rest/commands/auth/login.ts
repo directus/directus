@@ -19,7 +19,7 @@ export const login =
 	<Schema extends object>(
 		email: string,
 		password: string,
-		options: LoginOptions = {}
+		options: LoginOptions = {},
 	): RestCommand<AuthenticationData, Schema> =>
 	() => {
 		const data: Record<string, string> = { email, password };

@@ -18,7 +18,7 @@ const props = withDefaults(
 	}>(),
 	{
 		clickHandler: () => () => undefined,
-	}
+	},
 );
 
 const { t } = useI18n();

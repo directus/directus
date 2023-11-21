@@ -25,7 +25,7 @@ const props = withDefaults(
 		fontWeight: 800,
 		fontStyle: undefined,
 		font: 'sans-serif',
-	}
+	},
 );
 
 const labelContainer: Ref<HTMLDivElement | null> = ref(null);

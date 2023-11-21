@@ -19,7 +19,7 @@ const props = withDefaults(
 	{
 		disabled: false,
 		open: false,
-	}
+	},
 );
 
 const { t } = useI18n();

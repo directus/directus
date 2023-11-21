@@ -53,8 +53,8 @@ export class PermissionsService extends ItemsService {
 						...permission,
 						role: this.accountability!.role,
 					})),
-					query.filter
-				)
+					query.filter,
+				),
 			);
 		}
 
@@ -71,8 +71,8 @@ export class PermissionsService extends ItemsService {
 						...permission,
 						role: this.accountability!.role,
 					})),
-					query.filter
-				)
+					query.filter,
+				),
 			);
 		}
 

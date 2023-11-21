@@ -35,7 +35,7 @@ const props = withDefaults(
 		enableSelect: true,
 		limit: 15,
 		allowDuplicates: false,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -74,7 +74,7 @@ const fields = computed(() => {
 	for (const collection of allowedCollections.value) {
 		const displayFields: string[] = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templates.value[collection.collection]),
-			collection.collection
+			collection.collection,
 		).map((field) => `${relationInfo.value?.junctionField.field}:${collection.collection}.${field}`);
 
 		fields.push(...addRelatedPrimaryKeyToFields(collection.collection, displayFields));
@@ -237,7 +237,7 @@ function hasAllowedCollection(item: DisplayItem) {
 	if (!info) return false;
 	return (
 		allowedCollections.value.findIndex(
-			(coll) => relationInfo && coll.collection === item[info.collectionField.field]
+			(coll) => relationInfo && coll.collection === item[info.collectionField.field],
 		) !== -1
 	);
 }
@@ -293,11 +293,14 @@ const customFilter = computed(() => {
 
 	const junctionField = info.junctionField.field;
 
-	const selectedPrimaryKeys = selected.value.reduce((acc, item) => {
-		const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.field]].field;
-		if (item[info.collectionField.field] === selectingFrom.value) acc.push(item[junctionField][relatedPKField]);
-		return acc;
-	}, [] as (string | number)[]);
+	const selectedPrimaryKeys = selected.value.reduce(
+		(acc, item) => {
+			const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.field]].field;
+			if (item[info.collectionField.field] === selectingFrom.value) acc.push(item[junctionField][relatedPKField]);
+			return acc;
+		},
+		[] as (string | number)[],
+	);
 
 	if (selectedPrimaryKeys.length > 0) {
 		filter._and.push({
@@ -328,7 +331,7 @@ const allowDrag = computed(
 		totalItemCount.value <= limit.value &&
 		relationInfo.value?.sortField !== undefined &&
 		!props.disabled &&
-		updateAllowed.value
+		updateAllowed.value,
 );
 </script>
 
