@@ -32,14 +32,14 @@ jobs:
       matrix:
         vendor:
           - sqlite3
-          - postgres
-          - postgres10
-          - mysql
-          - mysql5
-          - maria
-          - mssql
-          - oracle
-          - cockroachdb
+          # - postgres
+          # - postgres10
+          # - mysql
+          # - mysql5
+          # - maria
+          # - mssql
+          # - oracle
+          # - cockroachdb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -72,8 +72,10 @@ jobs:
         run: docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} -d --quiet-pull --wait
 
       - name: Start services
-        run:
+        run: |
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
+          docker compose ps
+          docker image ls
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox

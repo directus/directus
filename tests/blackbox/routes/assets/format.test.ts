@@ -25,10 +25,15 @@ describe('/assets', () => {
 							.field('storage', storage)
 							.attach('file', createReadStream(imageFileAvif));
 
+						console.log(insertResponse.statusCode);
+						console.log(insertResponse.body);
+
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
 							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+						console.log(insertResponse.body);
 
 						// Assert
 						expect(response.statusCode).toBe(200);
