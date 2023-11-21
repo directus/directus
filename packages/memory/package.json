@@ -1,0 +1,39 @@
+{
+	"name": "@directus/memory",
+	"version": "0.0.1",
+	"description": "Memory / Redis abstraction for Directus",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/memory"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@types/node": "18.16.12",
+		"@vitest/coverage-v8": "0.34.6",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
+		"vitest": "0.34.6"
+	},
+	"dependencies": {
+		"ioredis": "5.3.2"
+	}
+}
