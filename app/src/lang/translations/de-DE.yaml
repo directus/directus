@@ -227,7 +227,7 @@ permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
-presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der Syntax "detailed" konfiguriert werden.'
+presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der "detaillierten" Syntax konfiguriert werden.'
 presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
@@ -283,7 +283,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Zeitspanne
-translation_key_placeholder: Schlüssel eingeben ...
+translation_key_placeholder: Schlüssel eingeben...
 datetime: Datum mit Uhrzeit
 dateTime: Datum mit Uhrzeit
 precision: Präzision
@@ -521,11 +521,11 @@ download_file: Datei herunterladen
 open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
-exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
+exporting_all_items_in_collection: Alle Elemente ({total}) innerhalb {collection} exportieren.
 exporting_limited_items_in_collection: '{count} von {total} Elementen aus {collection} werden exportiert.'
 exporting_no_items_to_export: Keine zu exportierende Elemente. Passen Sie die Exportkonfiguration an und/oder fügen Sie Elemente zur Sammlung hinzu.
 exporting_download_hint: Sobald die {format} Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
-exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibibliothek gespeichert.
+exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibliothek gespeichert.
 exporting_library_hint_forced: Dieser Export muss in mehreren Durchgängen durchgeführt werden. Nach Abschluss wird die {format} Datei in der Datei-Bibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
@@ -542,7 +542,7 @@ generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
 save_and_create_new: Speichern und neues Element anlegen
 save_and_stay: Speichern und auf der Seite bleiben
-save_and_quit: Speichern und schliessen
+save_and_quit: Speichern und schließen
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
 creating_items: Elemente erstellen
@@ -940,7 +940,6 @@ media: Medien
 quality: Qualität
 width: Breite
 height: Höhe
-transformation_preset_key: Transformation Preset Key
 source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
@@ -1006,7 +1005,7 @@ wysiwyg_options:
   source_code: Quellcode bearbeiten
   fullscreen: Vollbild
   directionality: Richtung
-  lazy_loading: Bilderer nachladen
+  lazy_loading: Bilder nachladen
   lazy_loading_label: Lazy Loading aktivieren
 dropdown: Dropdown
 choices: Optionen
@@ -1112,7 +1111,7 @@ no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
-singleton: Einzelnes Element
+singleton: Singleton
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
 directus_collection:
@@ -1748,7 +1747,7 @@ interfaces:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...
-    no_text: Kein Text gesetzt ...
+    no_text: Kein Text gesetzt...
   list-o2m:
     one-to-many: 1:n
     description: Mehrere verwandte Elemente auswählen
@@ -1828,7 +1827,7 @@ interfaces:
     user_language: Aktuelle Benutzersprache verwenden
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
-    language_direction_field: Sprachverzeichnis Feld
+    language_direction_field: Schreibrichtung Feld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -2062,9 +2061,9 @@ layouts:
   kanban:
     name: Kanban
     group_field: Gruppieren nach
-    group_field_placeholder: Feld zum Gruppieren ...
+    group_field_placeholder: Feld zum Gruppieren...
     group_title: Gruppentitel
-    group_title_placeholder: Feld für Grupentitel ...
+    group_title_placeholder: Feld für Gruppentitel...
     title: Karten-Titel
     title_placeholder: Optionales Titelfeld...
     text: Karten-Text
@@ -2074,7 +2073,7 @@ layouts:
     tags: Karten-Tags
     tags_placeholder: Optionales Tag-Feld...
     user: Karten-Benutzer
-    user_placeholder: Optionales Benutzerfeld ...
+    user_placeholder: Optionales Benutzerfeld...
     image: Karten-Bild
     image_placeholder: Optionales Bildfeld...
     image_fit: Karten-Bild Füllmodus
@@ -2083,7 +2082,7 @@ layouts:
     edit_group: Gruppe bearbeiten
     delete_group: Gruppe löschen
     add_group: Gruppe hinzufügen
-    add_group_placeholder: Neuen Gruppentitel eingeben ...
+    add_group_placeholder: Neuen Gruppentitel eingeben...
     show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
