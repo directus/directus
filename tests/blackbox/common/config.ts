@@ -147,7 +147,7 @@ const config: Config = {
 				database: 'directus',
 				user: 'root',
 				password: 'secret',
-				host: 'localhost',
+				host: '127.0.0.1',
 				port: 6104,
 			},
 			...knexConfig,
@@ -264,7 +264,7 @@ const config: Config = {
 		maria: {
 			...directusConfig,
 			DB_CLIENT: 'mysql',
-			DB_HOST: `localhost`,
+			DB_HOST: `127.0.0.1`,
 			DB_PORT: '6104',
 			DB_USER: 'root',
 			DB_PASSWORD: 'secret',
