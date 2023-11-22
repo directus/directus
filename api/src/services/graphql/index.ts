@@ -203,7 +203,7 @@ export class GraphQLService {
 		});
 
 		// TODO readable types need to have the version relational type
-		const { ReadCollectionTypes } = getReadableTypes();
+		const { ReadCollectionTypes, VersionCollectionTypes } = getReadableTypes();
 
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
@@ -247,7 +247,7 @@ export class GraphQLService {
 						);
 
 						// TODO we'll need this version output type but is this the right place?
-						acc[`${collectionName}_by_version`] = ReadCollectionTypes[collection.collection]!.getResolver(
+						acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
 							`${collection.collection}_by_version`
 						)
 
@@ -356,6 +356,7 @@ export class GraphQLService {
 		 */
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
+			const VersionTypes: Record<string, ObjectTypeComposer> = {};
 
 			const CountFunctions = schemaComposer.createObjectTC({
 				name: 'count_functions',
@@ -494,6 +495,8 @@ export class GraphQLService {
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				});
+
+				VersionTypes[collection.collection] = CollectionTypes[collection.collection]!;
 			}
 
 			for (const relation of schema[action].relations) {
@@ -509,10 +512,40 @@ export class GraphQLService {
 						},
 					});
 
+					VersionTypes[relation.collection]?.addFields({
+						[relation.field]: {
+							type: CollectionTypes[relation.related_collection]!,
+							resolve: (obj: Record<string, any>, _, __, info) => {
+								return obj[info?.path?.key ?? relation.field];
+							},
+						},
+					});
+
 					if (relation.meta?.one_field) {
 						CollectionTypes[relation.related_collection]?.addFields({
 							[relation.meta.one_field]: {
 								type: [CollectionTypes[relation.collection]!],
+								resolve: (obj: Record<string, any>, _, __, info) => {
+									return obj[info?.path?.key ?? relation.meta!.one_field];
+								},
+							},
+						});
+
+						VersionTypes[relation.related_collection]?.addNestedFields({
+							[`${relation.meta.one_field}.create`]: {
+								type: CollectionTypes[relation.collection]!.List,
+								resolve: (obj: Record<string, any>, _, __, info) => {
+									return obj[info?.path?.key ?? relation.meta!.one_field];
+								},
+							},
+							[`${relation.meta.one_field}.update`]: {
+								type: CollectionTypes[relation.collection]!.List,
+								resolve: (obj: Record<string, any>, _, __, info) => {
+									return obj[info?.path?.key ?? relation.meta!.one_field];
+								},
+							},
+							[`${relation.meta.one_field}.delete`]: {
+								type: CollectionTypes[relation.collection]!.getFieldTC(schema[action].collections[relation.collection]!.primary).List,
 								resolve: (obj: Record<string, any>, _, __, info) => {
 									return obj[info?.path?.key ?? relation.meta!.one_field];
 								},
@@ -557,14 +590,14 @@ export class GraphQLService {
 				}
 			}
 
-			return { CollectionTypes };
+			return { CollectionTypes, VersionTypes };
 		}
 
 		/**
 		 * Create readable types and attach resolvers for each. Also prepares full filter argument structures
 		 */
 		function getReadableTypes() {
-			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
+			const { CollectionTypes: ReadCollectionTypes, VersionTypes: VersionCollectionTypes } = getTypes('read');
 
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
@@ -1094,13 +1127,15 @@ export class GraphQLService {
 						},
 					});
 
+					console.log(VersionCollectionTypes[collection.collection])
+
 					// TODO put the resolver on the right type
-					ReadCollectionTypes[collection.collection]!.addResolver({
+					VersionCollectionTypes[collection.collection]!.addResolver({
 						name: `${collection.collection}_by_version`,
-						type: ReadCollectionTypes[collection.collection]!, // TODO must vary the type here somehow for versions
+						type: VersionCollectionTypes[collection.collection]!, // TODO must vary the type here somehow for versions
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
-							version: GraphQLString,
+							version: new GraphQLNonNull(GraphQLString),
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
@@ -1196,7 +1231,7 @@ export class GraphQLService {
 				}
 			}
 
-			return { ReadCollectionTypes, ReadableCollectionFilterTypes };
+			return { ReadCollectionTypes, VersionCollectionTypes, ReadableCollectionFilterTypes };
 		}
 
 		function getWritableTypes() {
@@ -1407,6 +1442,10 @@ export class GraphQLService {
 
 			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 				collection = collection.slice(0, -6);
+			}
+
+			if (collection.endsWith('_by_version') && collection in this.schema.collections === false) {
+				collection = collection.slice(0, -11);
 			}
 		}
 
