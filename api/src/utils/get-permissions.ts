@@ -126,20 +126,14 @@ function parsePermissions(permissions: any[]) {
 
 		if (permission.permissions && typeof permission.permissions === 'string') {
 			permission.permissions = parseJSON(permission.permissions);
-		} else if (permission.permissions === null) {
-			permission.permissions = {};
 		}
 
 		if (permission.validation && typeof permission.validation === 'string') {
 			permission.validation = parseJSON(permission.validation);
-		} else if (permission.validation === null) {
-			permission.validation = {};
 		}
 
 		if (permission.presets && typeof permission.presets === 'string') {
 			permission.presets = parseJSON(permission.presets);
-		} else if (permission.presets === null) {
-			permission.presets = {};
 		}
 
 		if (permission.fields && typeof permission.fields === 'string') {
