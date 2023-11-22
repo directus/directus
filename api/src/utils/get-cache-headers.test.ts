@@ -202,7 +202,7 @@ describe('get cache headers', () => {
 			const { ttl, globalCacheSettings, personalized } = scenario.input;
 
 			expect(getCacheControlHeader(mockRequest as Request, ttl, globalCacheSettings, personalized)).toEqual(
-				scenario.output
+				scenario.output,
 			);
 		});
 	}

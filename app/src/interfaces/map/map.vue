@@ -52,7 +52,7 @@ const props = withDefaults(
 	{
 		loading: true,
 		defaultView: () => ({}),
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -415,7 +415,9 @@ function handleKeyDown(event: any) {
 		<div
 			v-if="location"
 			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
-			:style="`transform: translate(${projection!.x}px, ${projection!.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
+			:style="`transform: translate(${projection!.x}px, ${
+				projection!.y
+			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
 		></div>
 		<transition name="fade">
 			<div

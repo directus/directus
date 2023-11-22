@@ -15,7 +15,7 @@ withDefaults(
 	}>(),
 	{
 		logoutReason: null,
-	}
+	},
 );
 
 const { t, te } = useI18n();

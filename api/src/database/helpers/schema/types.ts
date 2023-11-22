@@ -26,7 +26,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		table: string,
 		column: string,
 		type: (typeof KNEX_TYPES)[number],
-		options: Options = {}
+		options: Options = {},
 	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
 			const b = type === 'string' ? builder.string(column, options.length) : builder[type](column);
@@ -51,7 +51,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		table: string,
 		column: string,
 		type: (typeof KNEX_TYPES)[number],
-		options: Options
+		options: Options,
 	): Promise<void> {
 		const tempName = `${column}__temp`;
 
@@ -126,11 +126,11 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		table: string,
 		primaryKey: string,
 		orderByString: string,
-		orderByFields: Knex.Raw[]
+		orderByFields: Knex.Raw[],
 	): Knex.QueryBuilder {
 		dbQuery.rowNumber(
 			knex.ref('directus_row_number').toQuery(),
-			knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+			knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]),
 		);
 
 		return dbQuery;

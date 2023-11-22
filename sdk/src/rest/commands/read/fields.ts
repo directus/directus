@@ -29,7 +29,7 @@ export const readFields =
  */
 export const readFieldsByCollection =
 	<Schema extends object>(
-		collection: DirectusField<Schema>['collection']
+		collection: DirectusField<Schema>['collection'],
 	): RestCommand<ReadFieldOutput<Schema>[], Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');
@@ -51,7 +51,7 @@ export const readFieldsByCollection =
 export const readField =
 	<Schema extends object>(
 		collection: DirectusField<Schema>['collection'],
-		field: DirectusField<Schema>['field']
+		field: DirectusField<Schema>['field'],
 	): RestCommand<ReadFieldOutput<Schema>, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');

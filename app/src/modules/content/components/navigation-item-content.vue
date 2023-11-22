@@ -8,7 +8,7 @@ withDefaults(
 	}>(),
 	{
 		color: 'var(--theme--foreground)',
-	}
+	},
 );
 </script>
 

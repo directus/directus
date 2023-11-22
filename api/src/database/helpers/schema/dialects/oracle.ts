@@ -8,7 +8,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 		table: string,
 		column: string,
 		type: (typeof KNEX_TYPES)[number],
-		options: Options = {}
+		options: Options = {},
 	): Promise<void> {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}

@@ -48,7 +48,7 @@ describe('/files', () => {
 						title: imageFile.title,
 						description: imageFile.description,
 						id: expect.any(String),
-					})
+					}),
 				);
 			});
 		});

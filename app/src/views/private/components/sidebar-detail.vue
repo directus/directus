@@ -115,7 +115,9 @@ const { sidebarOpen } = toRefs(appStore);
 		height: 60px;
 		color: var(--theme--foreground);
 		cursor: pointer;
-		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+		transition:
+			opacity var(--fast) var(--transition),
+			color var(--fast) var(--transition);
 
 		.v-icon {
 			pointer-events: none;

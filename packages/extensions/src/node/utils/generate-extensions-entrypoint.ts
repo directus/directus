@@ -5,13 +5,13 @@ import type { AppExtension, BundleExtension, Extension, HybridExtension } from '
 
 export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension =>
-		isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])
+		isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]),
 	);
 
 	const bundleExtensions = extensions.filter(
 		(extension): extension is BundleExtension =>
 			extension.type === 'bundle' &&
-			extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]))
+			extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])),
 	);
 
 	const appOrHybridExtensionImports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
@@ -22,10 +22,10 @@ export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 					`import ${type}${i} from './${pathToRelativeUrl(
 						path.resolve(
 							extension.path,
-							isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.app : extension.entrypoint
-						)
-					)}';`
-			)
+							isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.app : extension.entrypoint,
+						),
+					)}';`,
+			),
 	);
 
 	const bundleExtensionImports = bundleExtensions.map(
@@ -33,7 +33,7 @@ export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 			`import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
 				.filter((type) => extension.entries.some((entry) => entry.type === type))
 				.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
-				.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`
+				.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`,
 	);
 
 	const extensionExports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].map(
@@ -44,11 +44,11 @@ export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 				.concat(
 					bundleExtensions
 						.map((extension, i) =>
-							extension.entries.some((entry) => entry.type === type) ? `...${type}Bundle${i}` : null
+							extension.entries.some((entry) => entry.type === type) ? `...${type}Bundle${i}` : null,
 						)
-						.filter((e): e is string => e !== null)
+						.filter((e): e is string => e !== null),
 				)
-				.join(',')}];`
+				.join(',')}];`,
 	);
 
 	return `${appOrHybridExtensionImports.join('')}${bundleExtensionImports.join('')}${extensionExports.join('')}`;

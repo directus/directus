@@ -19,7 +19,7 @@ withDefaults(
 	{
 		value: null,
 		icon: null,
-	}
+	},
 );
 </script>
 

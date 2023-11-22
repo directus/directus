@@ -472,7 +472,7 @@ describe('test m2a relation', () => {
 		wrapper.vm.update(
 			{ id: 1, item: { id: 1 }, collection: 'text', sort: 2 },
 			{ id: 2, item: { id: 2 }, collection: 'text', sort: 3 },
-			{ id: 3, item: { id: 1 }, collection: 'code', sort: 1 }
+			{ id: 3, item: { id: 1 }, collection: 'code', sort: 1 },
 		);
 
 		await flushPromises();

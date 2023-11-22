@@ -13,7 +13,7 @@ export function convertCondition(
 	condition: AbstractQueryConditionNode,
 	collection: string,
 	generator: Generator<number, number, number>,
-	negate: boolean
+	negate: boolean,
 ): FilterResult {
 	switch (condition.condition.type) {
 		case 'condition-string':

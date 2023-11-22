@@ -13,7 +13,7 @@ export const useTheme = (
 	themeLight: MaybeRef<string | null>,
 	themeDark: MaybeRef<string | null>,
 	themeLightOverrides: MaybeRef<DeepPartial<Theme['rules']>>,
-	themeDarkOverrides: MaybeRef<DeepPartial<Theme['rules']>>
+	themeDarkOverrides: MaybeRef<DeepPartial<Theme['rules']>>,
 ) => {
 	const { themes } = storeToRefs(useThemeStore());
 

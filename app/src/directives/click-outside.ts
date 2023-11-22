@@ -31,7 +31,7 @@ const beforeMount = (el: HTMLElement, { value }: Partial<DirectiveBinding>): voi
 			if (JSON.stringify(newVal) !== JSON.stringify(value)) {
 				updated(el, { value: newVal, oldValue: null });
 			}
-		}
+		},
 	);
 
 	if (disabled === true) return;

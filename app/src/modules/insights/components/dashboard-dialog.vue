@@ -37,7 +37,7 @@ watch(
 			values.color = props.dashboard?.color ?? null;
 			values.note = props.dashboard?.note ?? null;
 		}
-	}
+	},
 );
 
 const saving = ref(false);

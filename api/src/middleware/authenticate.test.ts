@@ -102,7 +102,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share_scope: shareScope,
 		},
 		env['SECRET'],
-		{ issuer: 'directus' }
+		{ issuer: 'directus' },
 	);
 
 	const req = {
@@ -152,7 +152,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share_scope: shareScope,
 		},
 		env['SECRET'],
-		{ issuer: 'directus' }
+		{ issuer: 'directus' },
 	);
 
 	await handler(req, res, next);

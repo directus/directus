@@ -25,10 +25,10 @@ const collections = computed(() => {
 	return translate(
 		sortBy(
 			collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false && collection.meta
+				(collection) => collection.collection.startsWith('directus_') === false && collection.meta,
 			),
-			['meta.sort', 'collection']
-		)
+			['meta.sort', 'collection'],
+		),
 	);
 });
 
@@ -46,7 +46,7 @@ export type CollectionTree = {
 
 function findVisibilityChild(
 	collection: string,
-	tree: CollectionTree[] = visibilityTree.value
+	tree: CollectionTree[] = visibilityTree.value,
 ): CollectionTree | undefined {
 	return tree.find((child) => child.collection === collection);
 }
@@ -97,10 +97,10 @@ const tableCollections = computed(() => {
 		sortBy(
 			collectionsStore.collections.filter(
 				(collection) =>
-					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema
+					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema,
 			),
-			['meta.sort', 'collection']
-		)
+			['meta.sort', 'collection'],
+		),
 	);
 });
 
@@ -110,19 +110,19 @@ const systemCollections = computed(() => {
 			collectionsStore.collections
 				.filter((collection) => collection.collection.startsWith('directus_') === true)
 				.map((collection) => ({ ...collection, icon: 'settings' })),
-			'collection'
-		)
+			'collection',
+		),
 	);
 });
 
 async function onSort(updates: Collection[], removeGroup = false) {
 	const updatesWithSortValue = updates.map((collection, index) =>
-		merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } })
+		merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } }),
 	);
 
 	collectionsStore.collections = collectionsStore.collections.map((collection) => {
 		const updatedValues = updatesWithSortValue.find(
-			(updatedCollection) => updatedCollection.collection === collection.collection
+			(updatedCollection) => updatedCollection.collection === collection.collection,
 		);
 
 		return updatedValues ? merge({}, collection, updatedValues) : collection;
@@ -136,7 +136,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					collection: collection.collection,
 					meta: { sort: collection.meta.sort, group: collection.meta.group },
 				};
-			})
+			}),
 		);
 	} catch (error) {
 		unexpectedError(error);

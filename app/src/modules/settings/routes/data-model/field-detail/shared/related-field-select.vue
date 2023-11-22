@@ -19,7 +19,7 @@ const props = withDefaults(
 		disabledFields: () => [],
 		typeDenyList: () => [],
 		placeholder: () => i18n.global.t('foreign_key') + '...',
-	}
+	},
 );
 
 defineEmits(['update:modelValue']);

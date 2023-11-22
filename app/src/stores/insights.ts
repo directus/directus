@@ -205,7 +205,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 	}
 
 	async function loadPanelData(
-		panels: Pick<Panel, 'id' | 'options' | 'type'> | Pick<Panel, 'id' | 'options' | 'type'>[]
+		panels: Pick<Panel, 'id' | 'options' | 'type'> | Pick<Panel, 'id' | 'options' | 'type'>[],
 	) {
 		panels = toArray(panels);
 
@@ -234,7 +234,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				.filter(({ collection }) => {
 					return collection.startsWith('directus_') === false;
 				})
-				.map(({ key, ...rest }) => ({ key: `query_${key}`, ...rest }))
+				.map(({ key, ...rest }) => ({ key: `query_${key}`, ...rest })),
 		);
 
 		const systemGqlString = queryToGqlString(
@@ -245,7 +245,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				.map(({ key, ...rest }) => ({
 					key: `query_${key}`,
 					...rest,
-				}))
+				})),
 		);
 
 		try {
@@ -353,7 +353,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
 
 				oldQuery = panelType.query?.(
-					applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
+					applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys),
 				);
 			}
 		}
@@ -380,7 +380,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
 
 			const newQuery = panelType.query?.(
-				applyOptionsData(panelEdits.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
+				applyOptionsData(panelEdits.options ?? {}, unref(variables), panelType.skipUndefinedKeys),
 			);
 
 			if (JSON.stringify(oldQuery) !== JSON.stringify(newQuery)) loadPanelData(panel);
@@ -435,8 +435,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				requests.push(
 					api.post(
 						`/panels`,
-						edits.create.map((create) => omit(create, 'id'))
-					)
+						edits.create.map((create) => omit(create, 'id')),
+					),
 				);
 			}
 
@@ -487,11 +487,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			if (!panelType) return false;
 
 			const oldQuery = panelType.query?.(
-				applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
+				applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys),
 			);
 
 			const newQuery = panelType.query?.(
-				applyOptionsData(panel.options ?? {}, unref(newVariables), panelType.skipUndefinedKeys)
+				applyOptionsData(panel.options ?? {}, unref(newVariables), panelType.skipUndefinedKeys),
 			);
 
 			return JSON.stringify(oldQuery) !== JSON.stringify(newQuery);

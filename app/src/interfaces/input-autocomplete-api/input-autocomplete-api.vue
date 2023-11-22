@@ -26,7 +26,7 @@ const props = withDefaults(
 		trigger: 'throttle',
 		rate: 500,
 		font: 'sans-serif',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);

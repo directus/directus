@@ -124,7 +124,9 @@ async function handleSubmission(rating?: number) {
 	border: 1px solid var(--vp-c-divider);
 	background-color: var(--vp-c-bg);
 	border-radius: 8px;
-	transition: border-color 0.25s, background-color 0.25s;
+	transition:
+		border-color 0.25s,
+		background-color 0.25s;
 	display: inline-block;
 	font-size: 14px;
 	font-weight: 500;

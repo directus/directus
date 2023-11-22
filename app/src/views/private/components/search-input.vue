@@ -47,7 +47,7 @@ watch(
 
 		filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(active, (newActive: boolean) => {
@@ -159,7 +159,9 @@ function emitValue() {
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: calc((40px + var(--theme--border-width) * 2) / 2);
-	transition: width var(--slow) var(--transition), border-bottom-left-radius var(--fast) var(--transition),
+	transition:
+		width var(--slow) var(--transition),
+		border-bottom-left-radius var(--fast) var(--transition),
 		border-bottom-right-radius var(--fast) var(--transition);
 
 	.icon-empty {
@@ -256,7 +258,9 @@ function emitValue() {
 		border-bottom: none;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
-		transition: border-bottom-left-radius 0, border-bottom-right-radius 0;
+		transition:
+			border-bottom-left-radius 0,
+			border-bottom-right-radius 0;
 
 		&::after {
 			position: absolute;

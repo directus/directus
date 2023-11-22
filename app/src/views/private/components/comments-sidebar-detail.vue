@@ -72,7 +72,7 @@ function useActivity(collection: string, primaryKey: string | number) {
 			const activityWithUsersInComments = (response.data.data as Activity[]).map((comment) => {
 				const display = (comment.comment as string).replace(
 					regex,
-					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`
+					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`,
 				);
 
 				return {

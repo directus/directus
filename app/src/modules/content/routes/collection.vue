@@ -91,7 +91,7 @@ watch(
 			layout.value = 'tabular';
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
@@ -100,7 +100,7 @@ const hasArchive = computed(
 	() =>
 		currentCollection.value &&
 		currentCollection.value.meta?.archive_field &&
-		currentCollection.value.meta?.archive_app_filter
+		currentCollection.value.meta?.archive_app_filter,
 );
 
 const archiveFilter = computed<Filter | null>(() => {
@@ -162,7 +162,7 @@ function useSelection() {
 	// Whenever the collection we're working on changes, we have to clear the selection
 	watch(
 		() => props.collection,
-		() => (selection.value = [])
+		() => (selection.value = []),
 	);
 
 	return { selection };
@@ -284,7 +284,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value
+			(permission) => permission.action === 'update' && permission.collection === collection.value,
 		);
 
 		return !!updatePermissions;
@@ -296,7 +296,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value
+			(permission) => permission.action === 'update' && permission.collection === collection.value,
 		);
 
 		if (!updatePermissions) return false;
@@ -310,7 +310,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === collection.value
+			(permission) => permission.action === 'delete' && permission.collection === collection.value,
 		);
 
 		return !!deletePermissions;
@@ -321,7 +321,7 @@ function usePermissions() {
 		if (admin) return true;
 
 		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === collection.value
+			(permission) => permission.action === 'create' && permission.collection === collection.value,
 		);
 
 		return !!createPermissions;

@@ -37,7 +37,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 
 			const cachedFilterContext = await getCacheValue(
 				cache,
-				`filterContext-${hash({ user, role, permissions: cachedPermissions['permissions'] })}`
+				`filterContext-${hash({ user, role, permissions: cachedPermissions['permissions'] })}`,
 			);
 
 			if (cachedFilterContext) {
@@ -87,7 +87,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			permissions = mergePermissions(
 				'or',
 				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role })),
 			);
 		}
 
@@ -196,7 +196,7 @@ async function getFilterContext(schema: SchemaOverview, accountability: Accounta
 function processPermissions(
 	accountability: Accountability,
 	permissions: Permission[],
-	filterContext: Record<string, any>
+	filterContext: Record<string, any>,
 ) {
 	return permissions.map((permission) => {
 		permission.permissions = parseFilter(permission.permissions, accountability!, filterContext);

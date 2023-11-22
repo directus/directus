@@ -35,7 +35,7 @@ export function registerModules(modules: ModuleConfig[]): {
 					if (allowed) return module;
 
 					return null;
-				})
+				}),
 			)
 		).filter((module): module is ModuleConfig => module !== null);
 
