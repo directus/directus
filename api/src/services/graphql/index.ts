@@ -137,7 +137,6 @@ export class GraphQLService {
 		let result: ExecutionResult;
 
 		try {
-			// console.log(JSON.stringify(document, null, 2));
 			result = await execute({
 				schema,
 				document,
@@ -202,7 +201,7 @@ export class GraphQLService {
 			},
 		});
 
-		// TODO readable types need to have the version relational type
+		// TODO does this need to be a separate type?
 		const { ReadCollectionTypes, VersionCollectionTypes } = getReadableTypes();
 
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
@@ -246,7 +245,6 @@ export class GraphQLService {
 							`${collection.collection}_by_id`
 						);
 
-						// TODO we'll need this version output type but is this the right place?
 						acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
 							`${collection.collection}_by_version`
 						)
@@ -496,7 +494,7 @@ export class GraphQLService {
 					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				});
 
-				VersionTypes[collection.collection] = CollectionTypes[collection.collection]!;
+				VersionTypes[collection.collection] = CollectionTypes[collection.collection]!.clone(`version_${collection.collection}`);
 			}
 
 			for (const relation of schema[action].relations) {
@@ -504,15 +502,6 @@ export class GraphQLService {
 					if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
 
 					CollectionTypes[relation.collection]?.addFields({
-						[relation.field]: {
-							type: CollectionTypes[relation.related_collection]!,
-							resolve: (obj: Record<string, any>, _, __, info) => {
-								return obj[info?.path?.key ?? relation.field];
-							},
-						},
-					});
-
-					VersionTypes[relation.collection]?.addFields({
 						[relation.field]: {
 							type: CollectionTypes[relation.related_collection]!,
 							resolve: (obj: Record<string, any>, _, __, info) => {
@@ -531,21 +520,9 @@ export class GraphQLService {
 							},
 						});
 
-						VersionTypes[relation.related_collection]?.addNestedFields({
-							[`${relation.meta.one_field}.create`]: {
-								type: CollectionTypes[relation.collection]!.List,
-								resolve: (obj: Record<string, any>, _, __, info) => {
-									return obj[info?.path?.key ?? relation.meta!.one_field];
-								},
-							},
-							[`${relation.meta.one_field}.update`]: {
-								type: CollectionTypes[relation.collection]!.List,
-								resolve: (obj: Record<string, any>, _, __, info) => {
-									return obj[info?.path?.key ?? relation.meta!.one_field];
-								},
-							},
-							[`${relation.meta.one_field}.delete`]: {
-								type: CollectionTypes[relation.collection]!.getFieldTC(schema[action].collections[relation.collection]!.primary).List,
+						VersionTypes[relation.related_collection]?.addFields({
+							[relation.meta.one_field]: {
+								type: 'JSON',
 								resolve: (obj: Record<string, any>, _, __, info) => {
 									return obj[info?.path?.key ?? relation.meta!.one_field];
 								},
@@ -1127,12 +1104,10 @@ export class GraphQLService {
 						},
 					});
 
-					console.log(VersionCollectionTypes[collection.collection])
-
-					// TODO put the resolver on the right type
+					// TODO test the types
 					VersionCollectionTypes[collection.collection]!.addResolver({
 						name: `${collection.collection}_by_version`,
-						type: VersionCollectionTypes[collection.collection]!, // TODO must vary the type here somehow for versions
+						type: VersionCollectionTypes[collection.collection]!,
 						args: {
 							id: new GraphQLNonNull(GraphQLID),
 							version: new GraphQLNonNull(GraphQLString),
@@ -1422,7 +1397,6 @@ export class GraphQLService {
 	 * Directus' query structure which is then executed by the services.
 	 */
 	async resolveQuery(info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
-		// console.log('resolve?', info)
 		let collection = info.fieldName;
 		if (this.scope === 'system') collection = `directus_${collection}`;
 		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
@@ -1471,17 +1445,13 @@ export class GraphQLService {
 			}
 		}
 
-		//console.log('read', collection, JSON.stringify(query, null, 2));
 		const result = await this.read(collection, query);
-
-		//console.log('result', result);
 
 		if (args['version']) {
 			const versionsService = new VersionsService({ accountability: this.accountability, schema: this.schema });
 
 			const saves = await versionsService.getVersionSaves(args['version'], collection, args['id']);
 
-			// console.log('saves?', saves)
 			if (saves) {
 				if (this.schema.collections[collection]!.singleton) {
 					return assign(result, ...saves);
