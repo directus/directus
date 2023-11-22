@@ -31,6 +31,14 @@ describe('/assets', () => {
 						.field('storage', storage)
 						.attach('file', createReadStream(imageFilePath));
 
+					// TODO temporarily in place to find cause of flaky test
+					if (!insertResponse.body?.data?.id) {
+						/* eslint-disable no-console */
+						console.log(insertResponse.statusCode);
+						console.log(insertResponse.body);
+						/* eslint-enable no-console */
+					}
+
 					// Action
 					const response = await request(getUrl(vendor))
 						.get(`/assets/${insertResponse.body.data.id}`)
