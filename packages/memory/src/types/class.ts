@@ -1,3 +1,5 @@
+export type MessageHandler = <T = unknown>(payload: T) => void
+
 export interface Memory {
 	/**
 	 * Get the cached value by key. Returns undefined if the key doesn't exist in the cache
@@ -29,4 +31,28 @@ export interface Memory {
 	 * @param key Key to remove from the cache
 	 */
 	delete(key: string): Promise<void>;
+
+	/**
+	 * Publish a message to subscribed clients in the given channel
+	 *
+	 * @param channel Channel to publish to
+	 * @param payload Value to send to the subscribed clients
+	 */
+	publish<T = unknown>(channel: string, payload: T): Promise<void>;
+
+	/**
+	 * Subscribe to messages in the given channel
+	 *
+	 * @param channel Channel to subscribe to
+	 * @param payload Payload that was published to the given channel
+	 */
+	subscribe(channel: string, callback: MessageHandler): Promise<void>;
+
+	/**
+	 * Unsubscribe from a channel
+	 *
+	 * @param channel Channel to unsubscribe from
+	 * @param callback Callback to remove from the stack
+	 */
+	unsubscribe(channel: string, callback: MessageHandler): Promise<void>;
 }
