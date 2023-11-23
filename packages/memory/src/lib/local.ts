@@ -26,4 +26,16 @@ export class MemoryLocal implements Memory {
 		const serialized = serialize(value);
 		this.cache.set(key, serialized);
 	}
+
+	async increment(key: string, amount: number = 1) {
+		const currentVal = await this.get(key) || 0;
+
+		if (typeof currentVal !== 'number') {
+			throw new Error(`The value for cache key "${key}" is not a number.`);
+		}
+
+		const newVal = currentVal + amount;
+
+		await this.set(key, newVal);
+	}
 }

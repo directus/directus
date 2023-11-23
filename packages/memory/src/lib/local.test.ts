@@ -71,3 +71,52 @@ describe('set', () => {
 		expect(memory['cache'].set).toHaveBeenCalledWith(mockKey, mockSerialized);
 	});
 });
+
+describe('increment', () => {
+	test('Sets value to 1 if no value exists', async () => {
+		const mockKey = 'cache-key';
+
+		memory.get = vi.fn().mockReturnValue(undefined);
+		memory.set = vi.fn();
+
+		await memory.increment(mockKey);
+
+		expect(memory.set).toHaveBeenCalledWith(mockKey, 1);
+	});
+
+	test('Sets value to passed amount if no value exists', async () => {
+		const mockKey = 'cache-key';
+		const mockAmount = 15;
+
+		memory.get = vi.fn().mockReturnValue(undefined);
+		memory.set = vi.fn();
+
+		await memory.increment(mockKey, mockAmount);
+
+		expect(memory.set).toHaveBeenCalledWith(mockKey, mockAmount);
+	});
+
+	test('Sets value to existing + passed amount if no value exists', async () => {
+		const mockKey = 'cache-key';
+		const mockValue = 42;
+		const mockAmount = 15;
+
+		memory.get = vi.fn().mockReturnValue(mockValue);
+		memory.set = vi.fn();
+
+		await memory.increment(mockKey, mockAmount);
+
+		expect(memory.set).toHaveBeenCalledWith(mockKey, mockValue + mockAmount);
+	});
+
+	test('Errors if key does not contain number', async () => {
+		const mockKey = 'cache-key';
+		const mockCached = 'not-a-number';
+
+		memory.get = vi.fn().mockReturnValue(mockCached);
+
+		expect(memory.increment(mockKey)).rejects.toMatchInlineSnapshot(
+			'[Error: The value for cache key "cache-key" is not a number.]',
+		);
+	});
+});
