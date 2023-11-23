@@ -1,3 +1,5 @@
+import type { Redis } from 'ioredis';
+
 export interface MemoryConfigAbstract {
 	/**
 	 * Where the data is stored
@@ -48,17 +50,10 @@ export interface MemoryConfigRedis extends MemoryConfigAbstract {
 	 */
 	namespace: string;
 
-	connection: {
-		host: string;
-		port: number;
-
-		/**
-		 * Database index to use
-		 *
-		 * @default 0
-		 */
-		db?: number;
-	}
+	/**
+	 * Existing or new Redis connection to use with this memory class
+	 */
+	redis: Redis;
 }
 
 export interface MemoryConfigMulti extends MemoryConfigAbstract {
