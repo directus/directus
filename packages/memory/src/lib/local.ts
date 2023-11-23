@@ -1,16 +1,29 @@
-import type { Memory } from "../types/class.js";
+import { LRUCache } from 'lru-cache';
+import type { Memory } from '../types/class.js';
 import type { MemoryConfigLocal } from '../types/config.js';
+import { deserialize, serialize } from '../utils/serialize.js';
 
 export class MemoryLocal implements Memory {
-	constructor(config: MemoryConfigLocal) {
+	private cache: LRUCache<string, Uint8Array, unknown>;
 
+	constructor(config: Omit<MemoryConfigLocal, 'type'>) {
+		this.cache = new LRUCache({
+			max: config.maxKeys,
+		});
 	}
 
-	get<T = unknown>(key: string) {
-		return 'x' as T;
+	async get<T = unknown>(key: string) {
+		const cached = this.cache.get(key);
+
+		if (cached !== undefined) {
+			return deserialize<T>(cached);
+		}
+
+		return undefined;
 	}
 
-	set(key: string, value: unknown) {
-
+	async set(key: string, value: unknown) {
+		const serialized = serialize(value);
+		this.cache.set(key, serialized);
 	}
 }

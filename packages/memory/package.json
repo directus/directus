@@ -34,6 +34,7 @@
 		"vitest": "0.34.6"
 	},
 	"dependencies": {
-		"ioredis": "5.3.2"
+		"ioredis": "5.3.2",
+		"lru-cache": "10.1.0"
 	}
 }

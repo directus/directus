@@ -9,23 +9,6 @@ export interface MemoryConfigAbstract {
 	 * `multi` - Multi-stage cache. In-memory as L1, Redis as L2
 	 */
 	type: 'local' | 'redis' | 'multi';
-
-	/**
-	 * Enable Brotli compression
-	 *
-	 * @default true
-	 */
-	compression?: boolean;
-
-	/**
-	 * Maximum buffer size to attempt to store in the cache
-	 */
-	maxEntrySize?: number;
-
-	/**
-	 * Time to live in ms for the cached value
-	 */
-	ttl?: number;
 }
 
 export interface MemoryConfigLocal extends MemoryConfigAbstract {
@@ -35,11 +18,6 @@ export interface MemoryConfigLocal extends MemoryConfigAbstract {
 	 * Maximum number of keys to store in the cache
 	 */
 	maxKeys: number;
-
-	/**
-	 * Maximum memory usage of the cache
-	 */
-	maxSize: number;
 }
 
 export interface MemoryConfigRedis extends MemoryConfigAbstract {
@@ -49,6 +27,13 @@ export interface MemoryConfigRedis extends MemoryConfigAbstract {
 	 * Used to prefix the keys in Redis
 	 */
 	namespace: string;
+
+	/**
+	 * Enable Gzip compression
+	 *
+	 * @default true
+	 */
+	compression?: boolean;
 
 	/**
 	 * Existing or new Redis connection to use with this memory class
