@@ -5,7 +5,6 @@ import type {
 	EndpointConfig,
 	Extension,
 	ExtensionSettings,
-	ExtensionType,
 	HookConfig,
 	HybridExtension,
 	OperationApiConfig,
@@ -188,8 +187,7 @@ export class ExtensionManager {
 			this.extensions = await getExtensions();
 			this.extensionsSettings = await getExtensionsSettings(this.extensions);
 		} catch (error) {
-			logger.warn(`Couldn't load extensions`);
-			logger.warn(error);
+			this.handleExtensionError({ error, reason: `Couldn't load extensions` });
 		}
 
 		await this.registerHooks();
@@ -496,7 +494,7 @@ export class ExtensionManager {
 					});
 				}
 			} catch (error) {
-				this.handleExtensionError('hook', hook.name, error);
+				this.handleExtensionError({ error, reason: `Couldn't register hook "${hook.name}"` });
 			}
 		}
 	}
@@ -538,7 +536,7 @@ export class ExtensionManager {
 					});
 				}
 			} catch (error) {
-				this.handleExtensionError('endpoint', endpoint.name, error);
+				this.handleExtensionError({ error, reason: `Couldn't register endpoint "${endpoint.name}"` });
 			}
 		}
 	}
@@ -594,7 +592,7 @@ export class ExtensionManager {
 					});
 				}
 			} catch (error) {
-				this.handleExtensionError('operation', operation.name, error);
+				this.handleExtensionError({ error, reason: `Couldn't register operation "${operation.name}"` });
 			}
 		}
 	}
@@ -646,7 +644,7 @@ export class ExtensionManager {
 					deleteFromRequireCache(bundlePath);
 				});
 			} catch (error) {
-				this.handleExtensionError('bundle', bundle.name, error);
+				this.handleExtensionError({ error, reason: `Couldn't register bundle "${bundle.name}"` });
 			}
 		}
 	}
@@ -699,7 +697,7 @@ export class ExtensionManager {
 						await job.stop();
 					});
 				} else {
-					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
+					this.handleExtensionError({ reason: `Couldn't register cron hook. Provided cron is invalid: ${cron}` });
 				}
 			},
 			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
@@ -724,7 +722,7 @@ export class ExtensionManager {
 						});
 					}
 				} else {
-					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
+					this.handleExtensionError({ reason: `Couldn't register embed hook. Provided code is empty!` });
 				}
 			},
 		};
@@ -797,15 +795,15 @@ export class ExtensionManager {
 	 * If extensions must load successfully, any errors will cause the process to exit.
 	 * Otherwise, the error will only be logged as a warning.
 	 */
-	private handleExtensionError(type: ExtensionType, name: string, error: unknown): void {
+	private handleExtensionError({ error, reason }: { error?: unknown; reason: string }): void {
 		if (toBoolean(env['EXTENSIONS_MUST_LOAD'])) {
 			logger.error('EXTENSION_MUST_LOAD is enabled and an extension failed to load.');
-			logger.error(`Couldn't register ${type} "${name}"`);
-			logger.error(error);
+			logger.error(reason);
+			if (error) logger.error(error);
 			process.exit(1);
 		} else {
-			logger.warn(`Couldn't register ${type} "${name}"`);
-			logger.warn(error);
+			logger.warn(reason);
+			if (error) logger.warn(error);
 		}
 	}
 }
