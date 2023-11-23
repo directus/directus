@@ -19,7 +19,7 @@ const defaultGlobals: ClientGlobals = {
  */
 export const createDirectus = <Schema extends object = any>(
 	url: string,
-	options: ClientOptions = {}
+	options: ClientOptions = {},
 ): DirectusClient<Schema> => {
 	const globals = options.globals ? { ...defaultGlobals, ...options.globals } : defaultGlobals;
 	return {

@@ -12,6 +12,6 @@ test('Constructs message with given range', () => {
 	};
 
 	expect(messageConstructor({ range })).toBe(
-		`Range "${range.start}-${range.end}" is invalid or the file's size doesn't match the requested range.`
+		`Range "${range.start}-${range.end}" is invalid or the file's size doesn't match the requested range.`,
 	);
 });

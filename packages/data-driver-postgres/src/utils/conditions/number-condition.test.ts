@@ -30,7 +30,7 @@ beforeEach(() => {
 
 test('number condition', () => {
 	expect(numberCondition(sampleCondition, false)).toStrictEqual(
-		`"${randomTable}"."${aColumn}" > $${parameterIndex + 1}`
+		`"${randomTable}"."${aColumn}" > $${parameterIndex + 1}`,
 	);
 });
 
@@ -46,6 +46,6 @@ test('number condition with function', () => {
 	};
 
 	expect(numberCondition(sampleCondition, false)).toStrictEqual(
-		`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $${parameterIndex + 1}`
+		`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $${parameterIndex + 1}`,
 	);
 });

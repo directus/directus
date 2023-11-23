@@ -120,11 +120,14 @@ function parseFields(service: GraphQLService, request: GraphQLResolveInfo) {
 
 function parseArguments(request: GraphQLResolveInfo) {
 	const args = request.fieldNodes[0]?.arguments ?? [];
-	return args.reduce((result, current) => {
-		if ('value' in current.value && typeof current.value.value === 'string') {
-			result[current.name.value] = current.value.value;
-		}
+	return args.reduce(
+		(result, current) => {
+			if ('value' in current.value && typeof current.value.value === 'string') {
+				result[current.name.value] = current.value.value;
+			}
 
-		return result;
-	}, {} as Record<string, string>);
+			return result;
+		},
+		{} as Record<string, string>,
+	);
 }

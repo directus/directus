@@ -1,6 +1,6 @@
 import type { ValueNode } from '../../../parameterized-statement.js';
-import type { AbstractSqlQueryFnNode } from '../../selects/fn.js';
-import type { AbstractSqlQuerySelectNode } from '../../selects/primitive.js';
+import type { AbstractSqlQueryFnNode } from '../../select/fn.js';
+import type { AbstractSqlQuerySelectNode } from '../../select/primitive.js';
 
 /**
  * Condition to filter rows where a string column value contains, starts with, ends with, or is equal to another given string.

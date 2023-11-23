@@ -20,7 +20,7 @@ const props = withDefaults(
 	}>(),
 	{
 		selection: () => [],
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -94,7 +94,7 @@ function useSelection() {
 		() => props.active,
 		() => {
 			localSelection.value = null;
-		}
+		},
 	);
 
 	return { internalSelection, onSelect };

@@ -33,7 +33,7 @@ watch(
 	() => {
 		isHashed.value = !!(props.value && props.value.length > 0);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function emitValue(newValue: string) {

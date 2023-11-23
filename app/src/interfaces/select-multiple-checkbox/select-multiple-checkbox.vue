@@ -25,7 +25,7 @@ const props = withDefaults(
 		iconOff: 'check_box_outline_blank',
 		color: 'var(--theme--primary)',
 		itemsShown: 8,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -67,7 +67,7 @@ const gridClass = computed(() => {
 });
 
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
-	emit('input', value)
+	emit('input', value),
 );
 </script>
 

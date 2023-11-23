@@ -37,7 +37,7 @@ const props = withDefaults(
 		disabled: false,
 		showSelectionOnly: false,
 		parentValue: null,
-	}
+	},
 );
 
 const emit = defineEmits(['update:modelValue']);
@@ -54,7 +54,7 @@ const { visibleChildrenValues } = useVisibleChildren(
 	itemValue,
 	itemChildren,
 	parentValue,
-	value
+	value,
 );
 
 const groupShown = computed(() => {

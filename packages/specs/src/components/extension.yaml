@@ -1,5 +1,4 @@
 type: object
-x-collection: directus_extensions
 properties:
   bundle:
     description: Name of the bundle the extension is in.

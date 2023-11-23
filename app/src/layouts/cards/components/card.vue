@@ -27,7 +27,7 @@ const props = withDefaults(
 		icon: 'box',
 		modelValue: () => [],
 		to: '',
-	}
+	},
 );
 
 const emit = defineEmits(['update:modelValue']);
@@ -78,7 +78,7 @@ function toggleSelection() {
 	if (props.modelValue.includes(props.item[props.itemKey])) {
 		emit(
 			'update:modelValue',
-			props.modelValue.filter((key) => key !== props.item?.[props.itemKey])
+			props.modelValue.filter((key) => key !== props.item?.[props.itemKey]),
 		);
 	} else {
 		emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
@@ -237,7 +237,9 @@ function handleClick() {
 		z-index: 3;
 		margin: 4px;
 		opacity: 0;
-		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+		transition:
+			opacity var(--fast) var(--transition),
+			color var(--fast) var(--transition);
 
 		&:hover {
 			opacity: 1 !important;

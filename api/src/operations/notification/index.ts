@@ -18,7 +18,7 @@ export default defineOperationApi<Options>({
 
 	handler: async (
 		{ recipient, subject, message, permissions, collection, item },
-		{ accountability, database, getSchema }
+		{ accountability, database, getSchema },
 	) => {
 		const schema = await getSchema({ database });
 		let customAccountability: Accountability | null;

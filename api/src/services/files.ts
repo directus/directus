@@ -40,7 +40,7 @@ export class FilesService extends ItemsService {
 		stream: BusboyFileStream | Readable,
 		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
-		opts?: MutationOptions
+		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
@@ -94,9 +94,8 @@ export class FilesService extends ItemsService {
 
 		// Used to clean up if something goes wrong
 		const cleanUp = async () => {
-
 			try {
-				if (isReplacement === true ){
+				if (isReplacement === true) {
 					// If this is a replacement that failed, we need to delete the temp file
 					await disk.delete(tempFilenameDisk);
 				} else {
@@ -107,9 +106,8 @@ export class FilesService extends ItemsService {
 					// delete the final file
 					await disk.delete(payload.filename_disk!);
 				}
-
 			} catch (err: any) {
-				if (isReplacement === true ){
+				if (isReplacement === true) {
 					logger.warn(`Couldn't delete temp file ${tempFilenameDisk}`);
 				} else {
 					logger.warn(`Couldn't delete file ${payload.filename_disk}`);
@@ -213,7 +211,7 @@ export class FilesService extends ItemsService {
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
-				}
+				},
 			);
 		}
 
@@ -334,7 +332,7 @@ export class FilesService extends ItemsService {
 					}
 
 					resolve(metadata);
-				})
+				}),
 			);
 		});
 	}
@@ -344,7 +342,7 @@ export class FilesService extends ItemsService {
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
 		const fileCreatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
+			(permission) => permission.collection === 'directus_files' && permission.action === 'create',
 		);
 
 		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {

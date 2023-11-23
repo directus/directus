@@ -36,8 +36,8 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
 		"@types/semver": "7.5.0",
-		"@vitest/coverage-c8": "0.31.1",
+		"@vitest/coverage-v8": "0.34.6",
 		"typescript": "5.2.2",
-		"vitest": "0.31.1"
+		"vitest": "0.34.6"
 	}
 }

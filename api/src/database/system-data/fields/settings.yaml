@@ -120,6 +120,8 @@ fields:
   - field: theme_light_overrides
     width: full
     interface: system-theme-overrides
+    options:
+      appearance: light
     group: theming_group
     special:
       - cast-json
@@ -134,6 +136,8 @@ fields:
   - field: theme_dark_overrides
     width: full
     interface: system-theme-overrides
+    options:
+      appearance: dark
     group: theming_group
     special:
       - cast-json

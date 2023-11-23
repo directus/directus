@@ -111,7 +111,7 @@ export async function setup() {
 							},
 						};
 					}),
-					{ concurrent: true, rendererOptions: { collapseErrors: false } }
+					{ concurrent: true, rendererOptions: { collapseErrors: false } },
 				);
 			},
 		},
@@ -123,7 +123,7 @@ export async function setup() {
 						const serverUrl = getUrl(vendor);
 
 						const response = await axios.get(
-							`${serverUrl}/items/tests_flow_data?access_token=${USER.TESTS_FLOW.TOKEN}`
+							`${serverUrl}/items/tests_flow_data?access_token=${USER.TESTS_FLOW.TOKEN}`,
 						);
 
 						if (response.status === 200) {
@@ -182,7 +182,7 @@ export async function teardown() {
 								},
 							};
 						}),
-						{ concurrent: true, exitOnError: false }
+						{ concurrent: true, exitOnError: false },
 					);
 				},
 			},

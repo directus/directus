@@ -1,12 +1,12 @@
 import type { ConditionNumberNode } from '@directus/data';
-import { convertTarget } from './utils.js';
-import type { FilterResult } from '../filter.js';
+import { convertTarget } from '../../target.js';
+import type { FilterResult } from '../utils.js';
 
 export function convertNumberNode(
 	node: ConditionNumberNode,
 	collection: string,
 	generator: Generator<number, number, number>,
-	negate: boolean
+	negate: boolean,
 ): FilterResult {
 	const { value, joins } = convertTarget(node.target, collection, generator);
 

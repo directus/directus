@@ -649,7 +649,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-								gqlResponse2.body.data[localCollectionCountries].reverse()
+								gqlResponse2.body.data[localCollectionCountries].reverse(),
 							);
 						});
 					});
@@ -717,13 +717,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -731,19 +731,19 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
-								gqlResponse2.body.data[localCollectionCountries]
+								gqlResponse2.body.data[localCollectionCountries],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -857,7 +857,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-								gqlResponse2.body.data[localCollectionCountries].reverse()
+								gqlResponse2.body.data[localCollectionCountries].reverse(),
 							);
 						});
 					});
@@ -977,31 +977,31 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
-								gqlResponse2.body.data[localCollectionCountries]
+								gqlResponse2.body.data[localCollectionCountries],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1088,7 +1088,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-								gqlResponse2.body.data[localCollectionCountries].reverse()
+								gqlResponse2.body.data[localCollectionCountries].reverse(),
 							);
 						});
 					});
@@ -1162,13 +1162,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -1176,19 +1176,19 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
-								gqlResponse2.body.data[localCollectionCountries]
+								gqlResponse2.body.data[localCollectionCountries],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1307,7 +1307,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-								gqlResponse2.body.data[localCollectionCountries].reverse()
+								gqlResponse2.body.data[localCollectionCountries].reverse(),
 							);
 						});
 					});
@@ -1393,7 +1393,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.states[0].test_datetime_year.toString().slice(-1))
+											parseInt(item.states[0].test_datetime_year.toString().slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1414,7 +1414,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.states[0].test_datetime_func.year.toString().slice(-1))
+											parseInt(item.states[0].test_datetime_func.year.toString().slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1434,31 +1434,31 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.states[0].test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.states[0].test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
-								gqlResponse2.body.data[localCollectionCountries]
+								gqlResponse2.body.data[localCollectionCountries],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1473,7 +1473,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				},
 				localCollectionCountries,
 				cachedSchema[pkType][localCollectionCountries],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
@@ -1484,7 +1484,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				},
 				localCollectionStates,
 				cachedSchema[pkType][localCollectionStates],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
@@ -1495,7 +1495,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				},
 				localCollectionCities,
 				cachedSchema[pkType][localCollectionCities],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 		});
 
@@ -1871,7 +1871,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(responseAsc.body.data[0].states.length).toBe(limit);
 
 					expect(responseAsc.body.data[0].states.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(
-						expectedResultAsc
+						expectedResultAsc,
 					);
 
 					expect(gqlResponseAsc.statusCode).toBe(200);
@@ -1879,7 +1879,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponseAsc.body.data[localCollectionCountries][0].states.length).toEqual(limit);
 
 					expect(
-						gqlResponseAsc.body.data[localCollectionCountries][0].states.map((v: any) => parseInt(v.name.split('-')[0]))
+						gqlResponseAsc.body.data[localCollectionCountries][0].states.map((v: any) =>
+							parseInt(v.name.split('-')[0]),
+						),
 					).toEqual(expectedResultAsc);
 
 					expect(responseDesc.statusCode).toBe(200);
@@ -1887,7 +1889,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(responseDesc.body.data[0].states.length).toBe(limit);
 
 					expect(responseDesc.body.data[0].states.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(
-						expectedResultAsc
+						expectedResultAsc,
 					);
 
 					expect(gqlResponseDesc.statusCode).toBe(200);
@@ -1896,8 +1898,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(
 						gqlResponseDesc.body.data[localCollectionCountries][0].states.map((v: any) =>
-							parseInt(v.name.split('-')[0])
-						)
+							parseInt(v.name.split('-')[0]),
+						),
 					).toEqual(expectedResultDesc);
 				});
 			});
@@ -2073,7 +2075,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								});
 							}
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2168,14 +2170,14 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(ws.getMessageCount(localCollectionCountries)).toBe(1);
@@ -2183,7 +2185,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(wsGql.getMessageCount(localCollectionCountries)).toBe(0);
 							expect(wsGql.getMessageCount(localCollectionStates)).toBe(0);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2359,7 +2361,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 							}
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2458,14 +2460,14 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(ws.getMessageCount(localCollectionCountries)).toBe(1);
@@ -2473,7 +2475,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(wsGql.getMessageCount(localCollectionCountries)).toBe(0);
 							expect(wsGql.getMessageCount(localCollectionStates)).toBe(0);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2499,7 +2501,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.map(() => createState(pkType));
 
 								countriesID.push(
-									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id,
 								);
 
 								const country2: any = createCountry(pkType);
@@ -2509,7 +2511,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.map(() => createState(pkType));
 
 								countriesID2.push(
-									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id,
 								);
 							}
 
@@ -2578,7 +2580,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2608,7 +2610,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.map(() => createState(pkType));
 
 								countriesID.push(
-									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id,
 								);
 
 								const country2: any = createCountry(pkType);
@@ -2618,7 +2620,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.map(() => createState(pkType));
 
 								countriesID2.push(
-									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id,
 								);
 							}
 
@@ -2685,17 +2687,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2872,17 +2874,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data.length).toBe(2);
 
 					expect(response.body.data.map((country: any) => country.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdCountry + index)
+						Array.from({ length: 2 }, (_, index) => largeIdCountry + index),
 					);
 
 					expect(
-						response.body.data.flatMap((country: any) => country.states.flatMap((state: any) => state.id))
+						response.body.data.flatMap((country: any) => country.states.flatMap((state: any) => state.id)),
 					).toEqual(Array.from({ length: 4 }, (_, index) => largeIdState + index));
 
 					expect(
 						response.body.data.flatMap((country: any) =>
-							country.states.flatMap((state: any) => state.cities.map((city: any) => city.id))
-						)
+							country.states.flatMap((state: any) => state.cities.map((city: any) => city.id)),
+						),
 					).toEqual(Array.from({ length: 8 }, (_, index) => largeIdCity + index));
 				});
 			});

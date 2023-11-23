@@ -21,7 +21,7 @@ const props = withDefaults(
 	}>(),
 	{
 		previewThreshold: 3,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);

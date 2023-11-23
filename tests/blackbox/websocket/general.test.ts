@@ -179,7 +179,7 @@ describe('WebSocket General Tests', () => {
 					expect(messageList).toEqual(messageList2);
 					expect(messageListGql).toEqual(messageListGql2);
 				},
-				100_000
+				100_000,
 			);
 		});
 
@@ -261,7 +261,7 @@ describe('WebSocket General Tests', () => {
 						expect(wsGql2.getMessageCount(uid)).toBe(0);
 					}
 				},
-				100_000
+				100_000,
 			);
 		});
 
@@ -500,7 +500,7 @@ describe('WebSocket General Tests', () => {
 						}
 					}
 				},
-				100_000
+				100_000,
 			);
 		});
 	});

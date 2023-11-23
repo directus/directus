@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
+import { importDateLocale } from '@/utils/get-date-fns-locale';
+import { format } from 'date-fns';
 import { merge } from 'lodash';
 import { createI18n } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
@@ -32,6 +34,8 @@ async function importLanguageFile(locale: string): Promise<{ isImported: boolean
 
 describe.each(locales)('Locale %s', async (locale) => {
 	const i18n = createI18n({ locale: locale });
+	const datefnsLocale = (await importDateLocale(locale))?.default;
+
 	const { isImported, translations } = await importLanguageFile(locale);
 	i18n.global.mergeLocaleMessage(locale, translations);
 	const messages = flatten((i18n.global.messages as Record<string, any>)[locale]);
@@ -44,5 +48,10 @@ describe.each(locales)('Locale %s', async (locale) => {
 	test.each(translationKeys)('%s', (key) => {
 		i18n.global.t(key);
 		expect(consoleErrorSpy).not.toBeCalled();
+
+		if (key.startsWith('date-fns_')) {
+			const date = new Date();
+			expect(() => format(date, i18n.global.t(key), datefnsLocale ? { locale: datefnsLocale } : {})).not.toThrow();
+		}
 	});
 });

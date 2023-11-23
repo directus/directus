@@ -27,6 +27,7 @@ method: 方法
 published: 已发布
 draft: 草稿
 archived: 已存档
+extensions: 扩展
 modules: 模块
 module_bar: 模块栏
 logs: 日志
@@ -56,11 +57,23 @@ modifier: 修改者
 extension_interface: 接口
 extension_display: 显示
 extension_layout: 布局
+extension_module: 模块
 extension_panel: 面板
 extension_hook: 钩子
+extension_endpoint: 端点
 extension_operation: 操作
+extension_bundle: 打包
+extension_interfaces: 接口
+extension_displays: 显示
+extension_layouts: 布局
 extension_modules: 模块
+extension_panels: 面板
+extension_hooks: 钩子
+extension_endpoints: 端点
+extension_operations: 操作
+extension_bundles: 包
 enable: 启用
+disable: 禁用
 custom: 自定义
 hook: 钩子
 fill_width: 全宽
@@ -108,7 +121,31 @@ rename_folder: 重命名文件夹
 delete_folder: 删除文件夹
 prefix: 前缀
 suffix: 后缀
+keep: 保持
+version: 版本
+version_key: 版本密钥
+version_name: 版本名称
+main_version: 主要
+switch_version: 切换版本
+switch_version_copy: 确定要切换到"{version}"版本？未保存的更改将会丢失。
+create_version: 创建新版本
+rename_version: 重命名版本
+compare_version: 对比版本
+save_version: 保存版本
+promote_version: 推广版本
+promote_version_disabled: 无变化
+promote_version_drawer_title: 将版本"{version}"推入主干
+promote_version_changes: 更改
 promote_version_preview: 预览
+outdated_notice: >-
+  自此版本创建以来，主条目已更新。 请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
+promote_notice: >-
+  请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
+delete_version: 删除版本
+delete_version_copy: >-
+  你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
+delete_on_promote_copy: >-
+  你想在并入之后删除还是保留 " {version} " 版本？
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
@@ -154,6 +191,7 @@ validationError:
   nnull: 值不能为null
   required: 值是必需的
   unique: 值必须唯一
+  email: 值必须是一个有效的电子邮件地址
   regex: 值格式不正确
   starts_with: 值必须以"{substring}"开头
   istarts_with: 值必须以"{substring}"开头
@@ -268,6 +306,9 @@ geometry.Polygon: 多边形
 geometry.MultiPoint: 多点要素
 geometry.MultiLineString: 多线要素
 geometry.MultiPolygon: 复杂多边型
+theme_auto: 自动(基于系统)
+theme_light: 亮色模式
+theme_dark: 暗色模式
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_refresh: 自动刷新
@@ -350,6 +391,7 @@ clear_items: 清除条目
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
+archive_all: 全部存档
 show_all_activity: 显示所有活动
 page_not_found: 找不到页面
 page_not_found_body: 您正在寻找的页面似乎不存在。
@@ -362,6 +404,7 @@ revision_delta_created: 已创建
 revision_delta_created_externally: 外部创建
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
+revision_delta_version_saved: '版本保存（更新了1个字段）| 版本保存（更新了"{count}"个字段）'
 revision_delta_reverted: Reverted
 revision_delta_update_message: 此字段已更新，但由于安全原因，其值被隐藏。
 revision_delta_other: 修订版本
@@ -472,6 +515,7 @@ import_from_url: 从 URL 导入文件
 replace_from_device: 从设备中替换文件
 replace_from_library: 从库中替换文件
 replace_from_url: 从 URL 中替换文件
+no_image_selected: 未选择图像
 no_file_selected: 未选择文件
 download_file: 下载文件
 open_file_in_tab: 在新标签页中打开文件
@@ -498,6 +542,7 @@ generated_uuid: 生成的 UUID
 manual_string: 手动输入字符串
 save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
+save_and_quit: 保存并退出
 save_as_copy: 另存为
 add_existing: 添加现有
 creating_items: 创建条目
@@ -591,6 +636,7 @@ bookmark_doesnt_exist_copy: 找不到您试图打开的书签。
 bookmark_doesnt_exist_cta: 返回模型
 select_an_item: 选择一个条目...
 edit: 编辑
+edit_item: 编辑条目
 enabled: 已启用
 disable_tfa: 停用双重认证
 admin_disable_tfa_text: 您确定要为此用户禁用2FA吗？
@@ -620,6 +666,7 @@ errors:
   RECORD_NOT_UNIQUE: 检测到重复的值
   USER_SUSPENDED: 用户已禁用
   CONTAINS_NULL_VALUES: 字段包含空值
+  UNPROCESSABLE_CONTENT: 不可处理的内容
   INTERNAL_SERVER_ERROR: 未知错误
   NOT_NULL_VIOLATION: 值不能为null
   ILLEGAL_ASSET_TRANSFORMATION: 原图太大，无法预览
@@ -756,10 +803,12 @@ upload_pending: 上传等待中
 drag_file_here: 拖放文件到这里
 click_to_browse: 点击浏览
 interface_options: 接口选项
+display_options: 显示选项
 layout_options: 布局选项
 rows: 行
 columns: 列
 collection_setup: 模型设置
+optional_system_fields: 可选字段
 value_unique: 值必须唯一
 all_activity: 所有活动的
 create_item: 创建条目
@@ -964,6 +1013,12 @@ choices: 选择项
 choices_option_configured_incorrectly: 选择配置错误
 deselect: 取消选择
 deselect_all: 取消全选
+theme: 主题
+select_a_theme: 选择主题
+default_sync_with_project: 默认 (与项目同步)
+appearance_auto: 自动(系统同步)
+appearance_light: 亮色
+appearance_dark: 深色
 other: 其他...
 adding_user: 添加用户
 unknown_user: 未知用户
@@ -975,7 +1030,9 @@ editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
 no_options_available: 无可用的选项
 settings_data_model: 数据模型
+settings_permissions: 访问控制
 settings_project: 设置
+settings_appearance: 外观
 settings_webhooks: Webhook
 settings_flows: 流程
 settings_presets: 书签
@@ -994,6 +1051,7 @@ editing_preset: 编辑预设​​​​​​​
 layout_preview: 布局预览
 layout_setup: 布局设置
 data: 数据
+theme-overrides: 主题覆盖
 unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
@@ -1015,6 +1073,9 @@ page_help_files_collection: >-
   **文件库** - 列出上传到此项目的所有相关内容。自定义布局、过滤器、排序以及调整视图，还可以保存这些不同配置的书签以便快速访问。
 page_help_files_item: >-
   **文件详情** - 管理文件元数据、编辑原始资产和更新访问设置的表格。
+page_help_settings_project: "**设置** - 您项目的全局配置选项。"
+page_help_settings_appearance: "**外观** - 您的项目外观和主题选项。"
+page_help_settings_extensions: '**Extensions** — 在您的项目中安装的扩展。'
 page_help_settings_datamodel_collections: >-
   **数据模型: ** - 列出所有可用的模型。这包括可见、隐藏和系统模型，以及可以添加的数据库表（包括还未加入并管理的）。
 page_help_settings_datamodel_fields: >-
@@ -1046,6 +1107,8 @@ batch_delete_confirm: >-
   您还没有选择数据 | 您确定要删除此条数据吗? 此操作无法撤消。 | 您确定要删除这 {count} 条数据吗?  此操作无法撤消。
 cancel: 取消
 no_upscale: 不要放大图片
+no_extensions: 无扩展
+no_extensions_copy: 尚未安装扩展。
 collection: 数据模型
 collections: 数据模型
 content: 内容
@@ -1075,6 +1138,8 @@ directus_collection:
   directus_users: 平台系统用户
   directus_webhooks: 基于事件的 HTTP 请求配置
   directus_translations: 自定义翻译
+  directus_versions: 条目的内容版本
+  directus_extensions: 扩展配置
 fields:
   directus_activity:
     item: 条目主键
@@ -1101,6 +1166,7 @@ fields:
     unarchive_value: 取消归档值
     sort_field: 排序字段
     accountability: 活动和版本修订跟踪
+    versioning: 版本
     archive_field: 归档字段
     item_duplication_fields: 条目重复字段
   directus_files:
@@ -1154,6 +1220,8 @@ fields:
     last_page: 尾页
     last_access: 上次访问
     email_notifications: 电子邮件通知
+    theme_light_overrides: 亮色主题自定义
+    theme_dark_overrides: 暗色主题自定义
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1177,9 +1245,11 @@ fields:
     project_color: 项目颜色
     project_logo: 项目 Logo
     default_language: 默认语言
+    branding: 招牌
     public_foreground: 公共前景
     public_background: 公共背景
     public_note: 公共便笺
+    theming: 默认主题
     auth_password_policy: 认证密码策略
     auth_login_attempts: 尝试认证登录次数
     files_and_thumbnails: 文件和存储
@@ -1194,6 +1264,8 @@ fields:
     transformations_presets: 将转换限制为以下预设
     image_editor: 图像编辑器
     custom_aspect_ratios: 自定义长宽比
+    theme_light_overrides: 亮色主题自定义
+    theme_dark_overrides: 暗色主题自定义
   directus_shares:
     name: 名称
     role: 角色
@@ -1236,6 +1308,8 @@ field_options:
   directus_settings:
     project_name_placeholder: 我的项目
     project_color_note: 登录和标志背景
+    project_logo_note: 白色40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: 简短的公开消息（支持Markdown语法）...
     security_divider_title: 安全
     auth_password_policy:
@@ -1290,6 +1364,8 @@ field_options:
     accountability_divider: 访问控制
     duplication_divider: 复制
     preview_divider: 预览
+    content_versioning_divider: 内容版本
+    enable_versioning: 启用版本
   directus_files:
     title: 唯一的标题...
     description: 可选描述...
@@ -1450,6 +1526,7 @@ search: 搜索
 select_existing: 选择现有
 select_field_type: 选择字段类型
 select_interface: 选择接口
+select_display: 选择一个显示
 settings: 设置
 sign_in: 登录
 sign_out: 退出登录
@@ -1620,6 +1697,11 @@ interfaces:
     description: 选择接口选项的模式
   system-display:
     display: 显示
+    description: 选择一个已存在的显示
+    placeholder: 选择一个显示...
+  system-display-options:
+    display-options: 显示选项
+    description: 选择显示选项的模式
   list-m2m:
     many-to-many: 多对多
     description: 选择多个相关项目
@@ -1672,6 +1754,7 @@ interfaces:
     description: 选择多个相关项目
     no_collection: 找不到collection
   system-folder:
+    folder: 根文件夹
     description: 选择文件夹
     field_hint: 默认文件夹，用于未指定文件夹的上传文件。不影响现有文件。
     root_name: 文件管理
@@ -1689,6 +1772,7 @@ interfaces:
     field_note_placeholder: 输入字段备注...
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
     interface_group: 接口选项
+    display_group: 显示选项
   slider:
     slider: 滑块
     description: 使用滑块选择一个数字
@@ -2032,6 +2116,9 @@ panels:
     name: 公制
     description: 基于查询显示单个值
     field: 字段
+  metric_list:
+    name: 公制度量列表
+    description: 将搜集的内容列表并可视化其合计指标
   time_series:
     name: 时间系列
     description: 根据一段时间的值渲染线形图
@@ -2211,14 +2298,44 @@ operations:
     batch: 批处理
     batch_size: 批量大小
     cache: 缓存
+unit: 单位
 standard: 基本设置
+scientific: 科学的
+engineering: 工程
 compact: 紧凑
+currency: 货币
+notation: 标记符号
 style: 样式
 fonts:
   thin: 细
+  extra_light: 高亮
+  light: 亮的
   normal: 标准
   medium: 中
+  semi_bold: 半黑体
   bold: 加粗
+  extra_bold: 大号黑体
   black: 黑色
   italic: 斜体
+  oblique: 斜体
+  small: 小字体
+  large: 大号
   auto: 自动
+text_wrap: 文本换行
+center: 居中
+justify: 两端对齐
+text_align: 文本对齐
+font_weight: 字体粗细
+font_style: 字体样式
+font_size: 字体大小
+minimum_fraction_digits: 最小小数
+maximum_fraction_digits: 最大小数
+show_percentage: 显示百分比
+aggregation: 聚合
+series_grouping: 系列分组
+date_precision: 日期精度
+export_dashboard: 导出仪表盘
+duplicate_dashboard: 复制仪表板
+search_dashboard: 搜索仪表板...
+search_flow: 搜索流程...
+percent: 百分比

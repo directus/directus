@@ -56,7 +56,7 @@ const props = withDefaults(
 		maximumFractionDigits: 0,
 		conditionalFormatting: () => [],
 		data: () => [],
-	}
+	},
 );
 
 const sortedData = computed(() => {

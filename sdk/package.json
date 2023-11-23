@@ -51,7 +51,7 @@
 		"@types/node-fetch": "2.6.4",
 		"tsup": "7.2.0",
 		"typescript": "5.2.2",
-		"vitest": "0.31.1"
+		"vitest": "0.34.6"
 	},
 	"engines": {
 		"node": ">=18.0.0"

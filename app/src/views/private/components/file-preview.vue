@@ -21,7 +21,7 @@ const file = toRef(props, 'file');
 const imgError = ref(false);
 
 const src = computed(
-	() => `assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`
+	() => `assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`,
 );
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {

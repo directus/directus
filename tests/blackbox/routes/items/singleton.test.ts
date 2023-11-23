@@ -221,7 +221,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data.o2m.length).toBe(2);
 
 					expect(response.body.data.o2m.map((item: any) => item.name)).toEqual(
-						expect.arrayContaining([o2mNameNew, o2mNameUpdated])
+						expect.arrayContaining([o2mNameNew, o2mNameUpdated]),
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -229,7 +229,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[mutationKey].o2m.length).toBe(3);
 
 					expect(gqlResponse.body.data[mutationKey].o2m.map((item: any) => item.name)).toEqual(
-						expect.arrayContaining([o2mNameNew2, o2mNameUpdated2])
+						expect.arrayContaining([o2mNameNew2, o2mNameUpdated2]),
 					);
 				});
 			});

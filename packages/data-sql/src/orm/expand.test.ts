@@ -13,7 +13,7 @@ test('response with no relation', () => {
 		new Map([
 			['alias1', ['id']],
 			['alias2', ['title']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({
@@ -35,7 +35,7 @@ test('expand response with one nested table', () => {
 			['a2', ['users', 'id']],
 			['a3', ['users', 'first_name']],
 			['a4', ['users', 'last_name']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({
@@ -61,7 +61,7 @@ test('expand response with one nested table and a function on a nested field ', 
 			['a2', ['users', 'id']],
 			['a3', ['users', 'first_name']],
 			['a4', ['users', 'last_name']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({
@@ -89,7 +89,7 @@ test('expand response with multiple nested tables', () => {
 			['a3', ['users', 'first_name']],
 			['a4', ['users', 'last_name']],
 			['a5', ['users', 'cities', 'name']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({

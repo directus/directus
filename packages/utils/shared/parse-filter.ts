@@ -18,7 +18,7 @@ type ParseFilterContext = {
 export function parseFilter(
 	filter: Filter | null,
 	accountability: Accountability | null,
-	context: ParseFilterContext = {}
+	context: ParseFilterContext = {},
 ): Filter | null {
 	let parsedFilter = parseFilterRecursive(filter, accountability, context);
 
@@ -65,7 +65,7 @@ function shiftLogicalOperatorsUp(filter: any): any {
 function parseFilterRecursive(
 	filter: Filter | null,
 	accountability: Accountability | null,
-	context: ParseFilterContext = {}
+	context: ParseFilterContext = {},
 ): Filter | null {
 	if (filter === null || filter === undefined) {
 		return null;
@@ -89,7 +89,7 @@ function parseFilterRecursive(
 export function parsePreset(
 	preset: Record<string, any> | null,
 	accountability: Accountability | null,
-	context: ParseFilterContext
+	context: ParseFilterContext,
 ) {
 	if (!preset) return preset;
 	return deepMap(preset, (value) => parseFilterValue(value, accountability, context));
@@ -98,7 +98,7 @@ export function parsePreset(
 function parseFilterEntry(
 	[key, value]: [string, any],
 	accountability: Accountability | null,
-	context: ParseFilterContext
+	context: ParseFilterContext,
 ): Filter {
 	if (['_or', '_and'].includes(String(key))) {
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };

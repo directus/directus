@@ -10,5 +10,5 @@ const messageConstructor = (extensions: UnprocessableContentErrorExtensions) =>
 export const UnprocessableContentError = createError<UnprocessableContentErrorExtensions>(
 	ErrorCode.UnprocessableContent,
 	messageConstructor,
-	422
+	422,
 );

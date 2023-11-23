@@ -20,7 +20,7 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, permissions: conditionalFilter },
-			{ ...permissionTemplate, permissions: conditionalFilter2 }
+			{ ...permissionTemplate, permissions: conditionalFilter2 },
 		);
 
 		expect(mergedPermission).toStrictEqual({
@@ -35,7 +35,7 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, validation: conditionalFilter },
-			{ ...permissionTemplate, validation: conditionalFilter2 }
+			{ ...permissionTemplate, validation: conditionalFilter2 },
 		);
 
 		expect(mergedPermission).toStrictEqual({
@@ -50,7 +50,7 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'and',
 			{ ...permissionTemplate, permissions: conditionalFilter },
-			{ ...permissionTemplate, permissions: conditionalFilter2 }
+			{ ...permissionTemplate, permissions: conditionalFilter2 },
 		);
 
 		expect(mergedPermission).toStrictEqual({
@@ -65,7 +65,7 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'and',
 			{ ...permissionTemplate, validation: conditionalFilter },
-			{ ...permissionTemplate, validation: conditionalFilter2 }
+			{ ...permissionTemplate, validation: conditionalFilter2 },
 		);
 
 		expect(mergedPermission).toStrictEqual({
@@ -76,41 +76,31 @@ describe('merging permissions', () => {
 		});
 	});
 
-	test('{} is removed from conditional permissions in _or', () => {
+	test('{} supersedes conditional permissions in _or', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, permissions: fullFilter },
-			{ ...permissionTemplate, permissions: conditionalFilter }
+			{ ...permissionTemplate, permissions: conditionalFilter },
 		);
 
-		expect(mergedPermission).toStrictEqual({
-			...permissionTemplate,
-			permissions: {
-				_or: [conditionalFilter],
-			},
-		});
+		expect(mergedPermission).toStrictEqual({ ...permissionTemplate, permissions: fullFilter });
 	});
 
-	test('{} is removed from conditional validations in _or', () => {
+	test('{} supersedes conditional validations in _or', () => {
 		const mergedPermission = mergePermission(
 			'or',
 			{ ...permissionTemplate, validation: fullFilter },
-			{ ...permissionTemplate, validation: conditionalFilter }
+			{ ...permissionTemplate, validation: conditionalFilter },
 		);
 
-		expect(mergedPermission).toStrictEqual({
-			...permissionTemplate,
-			validation: {
-				_or: [conditionalFilter],
-			},
-		});
+		expect(mergedPermission).toStrictEqual({ ...permissionTemplate, validation: fullFilter });
 	});
 
 	test('{} does not supersede conditional permissions in _and', () => {
 		const mergedPermission = mergePermission(
 			'and',
 			{ ...permissionTemplate, permissions: fullFilter },
-			{ ...permissionTemplate, permissions: conditionalFilter }
+			{ ...permissionTemplate, permissions: conditionalFilter },
 		);
 
 		const expectedPermission = {
@@ -127,7 +117,7 @@ describe('merging permissions', () => {
 		const mergedPermission = mergePermission(
 			'and',
 			{ ...permissionTemplate, validation: fullFilter },
-			{ ...permissionTemplate, validation: conditionalFilter }
+			{ ...permissionTemplate, validation: conditionalFilter },
 		);
 
 		const expectedPermission = {

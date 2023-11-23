@@ -52,7 +52,7 @@ export const seedDBStructure = () => {
 				expect(error).toBeFalsy();
 			}
 		},
-		300_000
+		300_000,
 	);
 };
 
@@ -74,7 +74,7 @@ export const seedDBValues = async () => {
 					string_field: uuid(),
 				},
 			});
-		})
+		}),
 	)
 		.then(() => {
 			isSeeded = true;

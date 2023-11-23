@@ -687,7 +687,6 @@ security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
-create_default: Crea predefinito
 edit_bookmark: Modifica Segnalibro
 edit_personal_bookmark: Modifica segnalibro personale
 edit_role_bookmark: Modifica segnalibro del ruolo
@@ -809,6 +808,7 @@ layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
+optional_system_fields: Campi opzionali
 value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
@@ -1015,6 +1015,7 @@ deselect: Deseleziona
 deselect_all: Deseleziona Tutto
 theme: Tema
 select_a_theme: Seleziona un tema
+default_sync_with_project: Predefinito (Sincronizza con il progetto)
 appearance_auto: Automatico (Sincronizza con il Sistema)
 appearance_light: Chiaro
 appearance_dark: Tema scuro

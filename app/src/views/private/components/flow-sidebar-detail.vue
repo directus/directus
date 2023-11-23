@@ -22,7 +22,7 @@ const props = withDefaults(
 		primaryKey: undefined,
 		selection: () => [],
 		hasEdits: false,
-	}
+	},
 );
 
 const emit = defineEmits(['refresh']);
@@ -40,12 +40,12 @@ const manualFlows = computed(() =>
 		.getManualFlowsForCollection(collection.value)
 		.filter(
 			(flow) =>
-				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location
+				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location,
 		)
 		.map((flow) => ({
 			...flow,
 			options: flow.options ? translate(flow.options) : null,
-		}))
+		})),
 );
 
 const runningFlows = ref<string[]>([]);

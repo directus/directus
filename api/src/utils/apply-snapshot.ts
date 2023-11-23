@@ -10,7 +10,7 @@ import { getSnapshotDiff } from './get-snapshot-diff.js';
 
 export async function applySnapshot(
 	snapshot: Snapshot,
-	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff }
+	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff },
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));

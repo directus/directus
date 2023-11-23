@@ -24,7 +24,7 @@ const props = withDefaults(
 		active: boolean;
 		startTab?: string;
 	}>(),
-	{ primaryKey: '+', startTab: 'flow_setup' }
+	{ primaryKey: '+', startTab: 'flow_setup' },
 );
 
 const emit = defineEmits(['cancel', 'done']);
@@ -75,7 +75,7 @@ watch(
 			values.options = existing.options ?? {};
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -84,7 +84,7 @@ watch(
 		if (previousTrigger === undefined) return;
 
 		values.options = {};
-	}
+	},
 );
 
 watch(
@@ -95,7 +95,7 @@ watch(
 		values.options = {
 			type,
 		};
-	}
+	},
 );
 
 const { triggers } = getTriggers();

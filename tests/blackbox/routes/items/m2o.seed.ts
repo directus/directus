@@ -207,7 +207,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		600_000
+		600_000,
 	);
 };
 
@@ -305,6 +305,6 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				await seedRelationalFields(vendor, localCollectionStates, pkType, schema[localCollectionStates]);
 				await seedRelationalFields(vendor, localCollectionCities, pkType, schema[localCollectionCities]);
 			}
-		})
+		}),
 	);
 };

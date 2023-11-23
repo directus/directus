@@ -59,7 +59,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -82,7 +82,7 @@ const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
 				type: 'module',
 				id: module.id,
 				enabled: false,
-			})
+			}),
 		);
 });
 
@@ -95,7 +95,7 @@ const valuesWithData = computed<PreviewValue[]>({
 		return valueToPreview([
 			...(props.value ?? MODULE_BAR_DEFAULT),
 			...availableModulesAsBarModule.value.filter(
-				(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false
+				(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false,
 			),
 		]);
 	},
@@ -192,7 +192,7 @@ function save() {
 	} else {
 		emit(
 			'input',
-			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val))
+			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val)),
 		);
 	}
 
@@ -203,7 +203,7 @@ function save() {
 function remove(id: string) {
 	emit(
 		'input',
-		(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id)
+		(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id),
 	);
 }
 </script>

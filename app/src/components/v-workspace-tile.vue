@@ -395,7 +395,9 @@ function useDragDrop() {
 	border-top-left-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 	opacity: 0;
-	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+	transition:
+		opacity var(--fast) var(--transition),
+		color var(--fast) var(--transition);
 	pointer-events: none;
 }
 

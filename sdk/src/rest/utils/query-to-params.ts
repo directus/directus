@@ -13,7 +13,7 @@ type ExtendedQuery<Schema extends object, Item> = Query<Schema, Item> & {
  * @returns Flat query parameters
  */
 export const queryToParams = <Schema extends object, Item>(
-	query: ExtendedQuery<Schema, Item>
+	query: ExtendedQuery<Schema, Item>,
 ): Record<string, string> => {
 	const params: Record<string, string> = {};
 

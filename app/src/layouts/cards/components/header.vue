@@ -16,7 +16,7 @@ const props = withDefaults(
 	{
 		showSelect: 'multiple',
 		selection: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);

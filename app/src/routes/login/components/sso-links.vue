@@ -41,7 +41,7 @@ watch(
 				};
 			});
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const errorFormatted = computed(() => {

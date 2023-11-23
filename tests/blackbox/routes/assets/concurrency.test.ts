@@ -70,7 +70,7 @@ describe('/assets', () => {
 						// Assert
 						expect(hasErrors).toBe(false);
 					},
-					600_000
+					600_000,
 				);
 			});
 		});

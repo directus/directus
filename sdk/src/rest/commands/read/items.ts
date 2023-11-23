@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadItemOutput<
 	Schema extends object,
 	Collection extends RegularCollections<Schema>,
-	TQuery extends Query<Schema, CollectionType<Schema, Collection>>
+	TQuery extends Query<Schema, CollectionType<Schema, Collection>>,
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
 
 /**
@@ -22,10 +22,10 @@ export const readItems =
 	<
 		Schema extends object,
 		Collection extends RegularCollections<Schema>,
-		const TQuery extends Query<Schema, CollectionType<Schema, Collection>>
+		const TQuery extends Query<Schema, CollectionType<Schema, Collection>>,
 	>(
 		collection: Collection,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');
@@ -54,11 +54,11 @@ export const readItem =
 	<
 		Schema extends object,
 		Collection extends RegularCollections<Schema>,
-		const TQuery extends QueryItem<Schema, CollectionType<Schema, Collection>>
+		const TQuery extends QueryItem<Schema, CollectionType<Schema, Collection>>,
 	>(
 		collection: Collection,
 		key: string | number,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');

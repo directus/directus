@@ -26,8 +26,8 @@ const regularCollections = computed(() => collectionsStore.databaseCollections);
 const systemCollections = computed(() =>
 	orderBy(
 		collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
-		'name'
-	)
+		'name',
+	),
 );
 
 const systemVisible = ref(false);
@@ -113,7 +113,7 @@ function useReset() {
 					appRecommendedPermissions.map((permission) => ({
 						...permission,
 						role: props.role,
-					}))
+					})),
 				);
 			}
 

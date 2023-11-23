@@ -48,7 +48,7 @@ export default class DataDriverPostgres implements DataDriver {
 	 */
 	async getDataFromSource(
 		pool: pg.Pool,
-		sql: ParameterizedSqlStatement
+		sql: ParameterizedSqlStatement,
 	): Promise<ReadableStream<Record<string, unknown>>> | never {
 		try {
 			const poolClient = await pool.connect();
@@ -89,7 +89,7 @@ export default class DataDriverPostgres implements DataDriver {
 		}
 
 		return await makeSubQueriesAndMergeWithRoot(rootStream, abstractSql.nestedManys, (query) =>
-			this.queryDatabase(query)
+			this.queryDatabase(query),
 		);
 	}
 }

@@ -6,7 +6,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 export type ReadContentVersionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusVersion<Schema>
+	Item extends object = DirectusVersion<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type ReadContentVersionOutput<
  */
 export const readContentVersions =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadContentVersionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/versions`,
@@ -34,7 +34,7 @@ export const readContentVersions =
 export const readContentVersion =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
 		key: DirectusVersion<Schema>['id'],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadContentVersionOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

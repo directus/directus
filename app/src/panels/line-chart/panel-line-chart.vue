@@ -43,7 +43,7 @@ const props = withDefaults(
 		decimals: 2,
 		color: 'var(--theme--primary)',
 		fillType: 'gradient',
-	}
+	},
 );
 
 const { t, n } = useI18n();
@@ -76,7 +76,7 @@ watch(
 		chart.value?.destroy();
 		setUpChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onUnmounted(() => {
@@ -131,7 +131,7 @@ function setUpChart() {
 		props.color && props.color.startsWith('var(--')
 			? cssVar(props.color.substring(4, props.color.length - 1))
 			: props.color ?? 'var(--theme--primary)',
-		series.length
+		series.length,
 	);
 
 	const isSparkline = props.width < 12 || props.height < 10;

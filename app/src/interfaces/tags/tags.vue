@@ -20,7 +20,7 @@ const props = withDefaults(
 	{
 		iconRight: 'local_offer',
 		allowCustom: true,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -42,7 +42,7 @@ watch(
 		}
 
 		if (newVal === null) selectedValsLocal.value = [];
-	}
+	},
 );
 
 const selectedVals = computed<string[]>(() => {
