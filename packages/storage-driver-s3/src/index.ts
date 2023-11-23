@@ -127,7 +127,7 @@ export class DriverS3 implements Driver {
 			new HeadObjectCommand({
 				Key: this.fullPath(filepath),
 				Bucket: this.config.bucket,
-			})
+			}),
 		);
 
 		return {

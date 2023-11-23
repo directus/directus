@@ -19,11 +19,11 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const visibleCollections = computed(() =>
 		collections.value
 			.filter(({ collection }) => collection.startsWith('directus_') === false)
-			.filter((collection) => collection.meta && collection.meta?.hidden !== true)
+			.filter((collection) => collection.meta && collection.meta?.hidden !== true),
 	);
 
 	const allCollections = computed(() =>
-		collections.value.filter(({ collection }) => collection.startsWith('directus_') === false)
+		collections.value.filter(({ collection }) => collection.startsWith('directus_') === false),
 	);
 
 	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
@@ -34,8 +34,8 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 				return collection.collection.startsWith('directus_') === true;
 			}),
 			['collection'],
-			['asc']
-		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false)
+			['asc'],
+		).filter((collection) => COLLECTIONS_DENY_LIST.includes(collection.collection) === false),
 	);
 
 	return {
@@ -146,7 +146,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 
 				const updatedCollectionResponse = await api.patch<{ data: CollectionRaw }>(
 					`/collections/${collection}`,
-					rawValues
+					rawValues,
 				);
 
 				collections.value = collections.value.map((existingCollection: Collection) => {

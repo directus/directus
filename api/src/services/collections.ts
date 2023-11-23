@@ -156,14 +156,14 @@ export class CollectionsService {
 					if (sortedFieldPayloads.length < fieldPayloads.length) {
 						const fieldsWithGroups = groupBy(
 							fieldPayloads.filter((field) => field?.group),
-							(field) => field?.group
+							(field) => field?.group,
 						);
 
 						// The sort order is restarted from 1 for fields in each group and appended to sortedFieldPayloads.
 						// Lodash merge is used so that the "sort" can be overridden if defined.
 						for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
 							sortedFieldPayloads = sortedFieldPayloads.concat(
-								fields.map((field, index) => merge({ sort: index + 1 }, field))
+								fields.map((field, index) => merge({ sort: index + 1 }, field)),
 							);
 						}
 					}
@@ -190,7 +190,7 @@ export class CollectionsService {
 						{
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						}
+						},
 					);
 				}
 
@@ -292,7 +292,7 @@ export class CollectionsService {
 					...meta,
 					[item.collection]: item.group,
 				}),
-				{}
+				{},
 			);
 
 			let collectionsYouHavePermissionToRead: string[] = this.accountability
@@ -426,7 +426,7 @@ export class CollectionsService {
 						...opts,
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					}
+					},
 				);
 			}
 
@@ -619,7 +619,7 @@ export class CollectionsService {
 					if (revisionsToDelete.length > 0) {
 						const chunks = chunk(
 							revisionsToDelete.map((record) => record.id),
-							10000
+							10000,
 						);
 
 						for (const keys of chunks) {

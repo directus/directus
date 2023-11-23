@@ -70,7 +70,7 @@ test('Gets config for each location', async () => {
 	expect(getConfigFromEnv).toHaveBeenCalledTimes(sample.locations.length);
 
 	sample.locations.forEach((location) =>
-		expect(getConfigFromEnv).toHaveBeenCalledWith(`STORAGE_${location.toUpperCase()}_`)
+		expect(getConfigFromEnv).toHaveBeenCalledWith(`STORAGE_${location.toUpperCase()}_`),
 	);
 });
 

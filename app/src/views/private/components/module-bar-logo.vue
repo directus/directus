@@ -24,7 +24,7 @@ watch(
 	() => queueHasItems.value,
 	(hasItems) => {
 		if (hasItems) showLoader.value = true;
-	}
+	},
 );
 
 const url = computed(() => settingsStore.settings?.project_url);

@@ -20,7 +20,7 @@ const props = withDefaults(
 	{
 		value: null,
 		placeholder: null,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -88,7 +88,7 @@ const create = async (item: Translation) => {
 watch(
 	() => props.value,
 	(newVal) => setValue(newVal),
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const localValueWithoutPrefix = computed(() => (localValue.value ? getKeyWithoutPrefix(localValue.value) : null));

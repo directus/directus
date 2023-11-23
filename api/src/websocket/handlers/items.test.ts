@@ -58,7 +58,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: mockClient(),
 				message: { type: 'pong' },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		// expect nothing
@@ -76,14 +76,14 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'create', data: {} },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 
 		// expect error
 		expect(fakeClient.send).toBeCalledWith(
-			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"The provided collection does not exists or is not accessible."}}'
+			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"The provided collection does not exists or is not accessible."}}',
 		);
 	});
 
@@ -104,7 +104,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'create', data: {} },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
@@ -131,7 +131,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'create', data: [{}, {}] },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
@@ -157,7 +157,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'read', query: {} },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
@@ -184,7 +184,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'update', data: {}, id: '123' },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
@@ -213,7 +213,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'update', data: {}, ids: ['123', '456'] },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
@@ -238,7 +238,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'delete', id: '123' },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
@@ -261,7 +261,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'delete', ids: ['123', 456] },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
@@ -284,7 +284,7 @@ describe('WebSocket heartbeat handler', () => {
 				client: fakeClient,
 				message: { type: 'items', collection: 'test', action: 'delete', query: {} },
 			},
-			{} as EventContext
+			{} as EventContext,
 		);
 
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled

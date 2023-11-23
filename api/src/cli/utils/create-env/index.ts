@@ -22,7 +22,7 @@ const liquidEngine = new Liquid({
 export default async function createEnv(
 	client: keyof typeof drivers,
 	credentials: Credentials,
-	directory: string
+	directory: string,
 ): Promise<void> {
 	const { nanoid } = await import('nanoid');
 

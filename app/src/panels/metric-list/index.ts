@@ -59,7 +59,7 @@ export default definePanel({
 		});
 
 		const fieldIsNumber = computed(() =>
-			fieldType.value ? ['integer', 'bigInteger', 'float', 'decimal'].includes(fieldType.value) : false
+			fieldType.value ? ['integer', 'bigInteger', 'float', 'decimal'].includes(fieldType.value) : false,
 		);
 
 		return [

@@ -15,4 +15,5 @@ dist/
 *.css
 *.svg
 *.liquid
+*.html
 Dockerfile

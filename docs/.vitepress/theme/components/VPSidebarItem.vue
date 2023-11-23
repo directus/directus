@@ -22,7 +22,7 @@ const props = defineProps<{
 const { page } = useData();
 
 const activeMatch = computed(() =>
-	props.item.activeMatch ? RegExp(props.item.activeMatch).test(`^/${page.value.relativePath}$`) : false
+	props.item.activeMatch ? RegExp(props.item.activeMatch).test(`^/${page.value.relativePath}$`) : false,
 );
 
 const subItems =
@@ -31,7 +31,7 @@ const subItems =
 		: props.item.items;
 
 const { collapsed, collapsible, isLink, isActiveLink, hasActiveLink, hasChildren, toggle } = useSidebarControl(
-	computed(() => props.item)
+	computed(() => props.item),
 );
 
 const sectionTag = computed(() => (hasChildren.value ? 'section' : `div`));

@@ -22,7 +22,7 @@ const props = withDefaults(
 		primaryKey: string;
 		panelKey?: string | null;
 	}>(),
-	{ panelKey: null }
+	{ panelKey: null },
 );
 
 const { t } = useI18n();
@@ -127,7 +127,7 @@ watch(
 	() => props.primaryKey,
 	() => {
 		insightsStore.refresh(props.primaryKey);
-	}
+	},
 );
 
 const confirmCancel = ref(false);

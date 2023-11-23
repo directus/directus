@@ -1,8 +1,8 @@
-import { expect, test } from 'vitest';
-import { randomIdentifier } from '@directus/random';
 import type { AbstractQueryFieldNodeRelationalManyToOne } from '@directus/data';
+import { randomIdentifier } from '@directus/random';
+import { expect, test } from 'vitest';
+import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
 import { createJoin } from './create-join.js';
-import type { AbstractSqlQueryJoinNode } from '../../types/clauses/joins/join.js';
 
 test('Convert m2o relation on single field ', () => {
 	const randomCurrentCollection = randomIdentifier();

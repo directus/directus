@@ -44,7 +44,7 @@ const emit = defineEmits<{
 }>();
 
 const currentVersionDisplayName = computed(() =>
-	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name
+	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name,
 );
 
 const isOutdated = computed(() => comparedData.value?.outdated ?? false);
@@ -85,7 +85,7 @@ watch(
 	(value) => {
 		if (value) getComparison();
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function addField(field: string) {
@@ -130,7 +130,7 @@ function usePromoteDialog() {
 				`/versions/${unref(currentVersion).id}/promote`,
 				unref(selectedFields).length > 0
 					? { mainHash: unref(mainHash), fields: unref(selectedFields) }
-					: { mainHash: unref(mainHash) }
+					: { mainHash: unref(mainHash) },
 			);
 
 			confirmDeleteOnPromoteDialogActive.value = false;

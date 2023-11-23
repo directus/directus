@@ -8,7 +8,7 @@ const props = withDefaults(
 	}>(),
 	{
 		as: 'div',
-	}
+	},
 );
 
 const tagType = computed(() => (props.href ? 'a' : 'div'));

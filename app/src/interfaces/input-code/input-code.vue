@@ -34,7 +34,7 @@ const props = withDefaults(
 	{
 		lineNumber: true,
 		language: 'plaintext',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -100,7 +100,7 @@ watch(
 	() => props.language,
 	() => {
 		setLanguage();
-	}
+	},
 );
 
 watch(stringValue, () => {
@@ -235,7 +235,7 @@ const cmOptions = computed<Record<string, any>>(() => {
 			mode: props.language,
 			placeholder: props.placeholder,
 		},
-		props.altOptions ? props.altOptions : {}
+		props.altOptions ? props.altOptions : {},
 	);
 });
 
@@ -245,7 +245,7 @@ watch(
 		codemirror?.setOption('readOnly', readOnly.value);
 		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -257,14 +257,14 @@ watch(
 		for (const key in altOptions) {
 			codemirror?.setOption(key as any, altOptions[key]);
 		}
-	}
+	},
 );
 
 watch(
 	() => props.lineNumber,
 	(lineNumber) => {
 		codemirror?.setOption('lineNumbers', lineNumber);
-	}
+	},
 );
 
 function fillTemplate() {

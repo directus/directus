@@ -903,6 +903,7 @@ const publicUrl = process.env.PUBLIC_URL;
 | Variable                               | Description                                             | Default Value  |
 | -------------------------------------- | ------------------------------------------------------- | -------------- |
 | `EXTENSIONS_PATH`<sup>[1]</sup>        | Path to your local extensions folder.                   | `./extensions` |
+| `EXTENSIONS_MUST_LOAD`                 | Exit the server when any API extension fails to load.   | `false`        |
 | `EXTENSIONS_AUTO_RELOAD`<sup>[2]</sup> | Automatically reload extensions when they have changed. | `false`        |
 | `EXTENSIONS_CACHE_TTL`<sup>[3]</sup>   | How long custom app Extensions get cached by browsers.  | --             |
 | `EXTENSIONS_LOCATION`<sup>[4]</sup>    | What configured storage location to use for extensions. | --             |
@@ -1072,7 +1073,7 @@ For more information on what these options do, please refer to
 | `PM2_MIN_UPTIME`              | Min uptime of the app to be considered started                     | —           |
 | `PM2_LISTEN_TIMEOUT`          | Time in ms before forcing a reload if app not listening            | —           |
 | `PM2_KILL_TIMEOUT`            | Time in milliseconds before sending a final SIGKILL                | —           |
-| `PM2_MAX_RESTARTS`            | Number of failed restarts before the process is killed             |  —          |
+| `PM2_MAX_RESTARTS`            | Number of failed restarts before the process is killed             | —           |
 | `PM2_RESTART_DELAY`           | Time to wait before restarting a crashed app                       | `0`         |
 | `PM2_AUTO_RESTART`            | Automatically restart Directus if it crashes unexpectedly          | `false`     |
 

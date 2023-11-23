@@ -1,6 +1,6 @@
-import type { AbstractSqlQueryColumn } from './primitive.js';
+import type { ArrayFn, ExtractFn } from '@directus/data';
 import type { ValuesNode } from '../../parameterized-statement.js';
-import type { ExtractFn, ArrayFn } from '@directus/data';
+import type { AbstractSqlQueryColumn } from './column.js';
 
 /**
  * Used to apply a function to a column.

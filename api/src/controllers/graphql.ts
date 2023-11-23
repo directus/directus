@@ -24,7 +24,7 @@ router.use(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.use(
@@ -45,7 +45,7 @@ router.use(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

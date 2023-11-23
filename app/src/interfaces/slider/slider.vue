@@ -12,7 +12,7 @@ withDefaults(
 		minValue: 0,
 		maxValue: 100,
 		stepInterval: 1,
-	}
+	},
 );
 
 defineEmits(['input']);

@@ -21,7 +21,7 @@ export function redactObject(
 		keys?: Keys;
 		values?: Values;
 	},
-	replacement: Replacement
+	replacement: Replacement,
 ): UnknownObject {
 	const wildcardChars = ['*', '**'];
 

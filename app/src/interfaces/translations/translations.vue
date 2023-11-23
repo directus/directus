@@ -38,7 +38,7 @@ const props = withDefaults(
 		disabled: false,
 		defaultLanguage: null,
 		userLanguage: false,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -88,7 +88,7 @@ const { create, update, displayItems, loading, fetchedItems, getItemEdits } = us
 	value,
 	query,
 	relationInfo,
-	primaryKey
+	primaryKey,
 );
 
 const firstItem = computed(() => {
@@ -175,7 +175,7 @@ function useLanguages() {
 		if (!langField) return [];
 
 		const writableFields = fields.value.filter(
-			(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
+			(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false,
 		);
 
 		const totalFields = writableFields.length;
@@ -231,7 +231,7 @@ function useLanguages() {
 						fields: Array.from(fields),
 						sort: props.languageField ?? pkField,
 					},
-				}
+				},
 			);
 
 			if (!firstLang.value) {
@@ -257,11 +257,11 @@ const createAllowed = computed(() => junctionPerms.value.create);
 const updateAllowed = computed(() => junctionPerms.value.update);
 
 const firstItemNew = computed(
-	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
 );
 
 const secondItemNew = computed(
-	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined,
 );
 
 const firstChangesAllowed = computed(() => {
@@ -286,7 +286,7 @@ const firstFields = computed(() => {
 
 	const permissions = permissionsStore.getPermissionsForUser(
 		relationInfo.value.junctionCollection.collection,
-		firstItemNew.value ? 'create' : 'update'
+		firstItemNew.value ? 'create' : 'update',
 	);
 
 	if (!permissions) return fieldsWithPerms;
@@ -313,7 +313,7 @@ const secondFields = computed(() => {
 
 	const permissions = permissionsStore.getPermissionsForUser(
 		relationInfo.value.junctionCollection.collection,
-		secondItemNew.value ? 'create' : 'update'
+		secondItemNew.value ? 'create' : 'update',
 	);
 
 	if (!permissions) return fieldsWithPerms;

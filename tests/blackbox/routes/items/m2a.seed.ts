@@ -227,7 +227,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		300000
+		300000,
 	);
 };
 
@@ -332,7 +332,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 							[junctionFieldName]: shapesIDs[Math.floor(i / 2) % 2],
 							collection: localCollectionSquares,
 							item: squaresIDs[i].toString(),
-						}
+						},
 					);
 				}
 
@@ -351,7 +351,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					junctionCollectionName,
 					localCollectionCircles,
 					shapesIDs,
-					circlesIDs
+					circlesIDs,
 				);
 
 				await seedM2AAliasAllFieldTypesValues(
@@ -360,9 +360,9 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					junctionCollectionName,
 					localCollectionSquares,
 					shapesIDs,
-					squaresIDs
+					squaresIDs,
 				);
 			}
-		})
+		}),
 	);
 };

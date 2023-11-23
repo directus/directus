@@ -9,7 +9,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		table: string,
 		primaryKey: string,
 		orderByString: string,
-		orderByFields: Knex.Raw[]
+		orderByFields: Knex.Raw[],
 	): Knex.QueryBuilder {
 		if (getDatabaseVersion()?.startsWith('5.7')) {
 			dbQuery.orderByRaw(`?? asc, ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]);
@@ -18,8 +18,8 @@ export class SchemaHelperMySQL extends SchemaHelper {
 				.select(
 					knex.raw(
 						`??, ( @rank := IF ( @cur_id = deep.${primaryKey}, @rank + 1, 1 ) ) AS directus_row_number, ( @cur_id := deep.${primaryKey} ) AS current_id`,
-						'deep.*'
-					)
+						'deep.*',
+					),
 				)
 				.from(knex.raw('? as ??, (SELECT @rank := 0,  @cur_id := null) vars', [dbQuery, 'deep']));
 

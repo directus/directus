@@ -69,11 +69,11 @@ const canInviteUsers = computed(() => {
 	if (isAdmin) return true;
 
 	const usersCreatePermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+		(permission) => permission.collection === 'directus_users' && permission.action === 'create',
 	);
 
 	const rolesReadPermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+		(permission) => permission.collection === 'directus_roles' && permission.action === 'read',
 	);
 
 	return !!usersCreatePermission && !!rolesReadPermission;

@@ -1,5 +1,5 @@
 import type { AtLeastOneElement } from '@directus/data';
-import type { AbstractSqlQueryConditionNode } from './conditions/index.js';
+import type { AbstractSqlQueryConditionNode } from './condition.js';
 
 /**
  * A wrapper to add multiple conditions at once.

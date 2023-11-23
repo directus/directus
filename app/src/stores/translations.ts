@@ -53,7 +53,7 @@ export const useTranslationsStore = defineStore('translations', () => {
 				result[key] = getLiteralInterpolatedTranslation(value, true);
 				return result;
 			},
-			{} as Record<string, string>
+			{} as Record<string, string>,
 		);
 
 		if (localeMessages) {

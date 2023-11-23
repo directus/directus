@@ -11,7 +11,7 @@ export type ModifierConversionResult = {
 export const convertModifiers = (
 	modifiers: AbstractQueryModifiers,
 	collection: string,
-	idxGenerator: Generator<number, number, number>
+	idxGenerator: Generator<number, number, number>,
 ): ModifierConversionResult => {
 	const result: ModifierConversionResult = {
 		clauses: {},

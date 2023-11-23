@@ -34,7 +34,7 @@ const props = withDefaults(
 		itemChildren: 'children',
 		disabled: false,
 		showSelectionOnly: false,
-	}
+	},
 );
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
@@ -64,14 +64,14 @@ const { visibleChildrenValues } = useVisibleChildren(
 	itemValue,
 	itemChildren,
 	fakeParentValue,
-	fakeValue
+	fakeValue,
 );
 
 let showAllSelection: (string | number)[] = [];
 const manualOpenSelection = ref<(string | number)[]>([]);
 
 const searchOpenSelection = computed(() =>
-	normalizedSearch.value ? searchChoices(normalizedSearch.value, props.choices) : []
+	normalizedSearch.value ? searchChoices(normalizedSearch.value, props.choices) : [],
 );
 
 const openSelection = computed({

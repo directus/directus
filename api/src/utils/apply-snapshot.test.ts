@@ -420,7 +420,7 @@ describe('applySnapshot', () => {
 
 				expect(createOneCollectionSpy).toHaveBeenCalledOnce();
 				expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
-			}
+			},
 		);
 	});
 

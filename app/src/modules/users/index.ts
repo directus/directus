@@ -43,7 +43,7 @@ export default defineModule({
 		if (admin) return true;
 
 		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_users' && permission.action === 'read'
+			(permission) => permission.collection === 'directus_users' && permission.action === 'read',
 		);
 
 		return !!permission;

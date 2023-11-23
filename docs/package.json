@@ -20,22 +20,21 @@
 		"@directus/format-title": "10.1.0",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/marked": "5.0.1",
-		"@vueuse/core": "10.1.2",
+		"@vueuse/core": "10.6.1",
 		"eslint-parser-plain": "0.1.0",
 		"eslint-plugin-markdown": "3.0.1",
-		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@4.3.0-1",
+		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@5.0.1-1",
 		"eslint-plugin-react": "7.33.2",
-		"marked": "7.0.3",
+		"marked": "10.0.0",
 		"spellchecker-cli": "6.1.1",
-		"typedoc": "0.25.1",
+		"typedoc": "0.25.3",
 		"typedoc-plugin-frontmatter": "0.0.2",
-		"typedoc-plugin-markdown": "4.0.0-next.16",
+		"typedoc-plugin-markdown": "4.0.0-next.30",
 		"typedoc-plugin-zod": "1.1.0",
 		"typedoc-vitepress-theme": "1.0.0-next.3",
 		"typescript": "5.2.2",
 		"vitepress": "1.0.0-rc.4",
 		"vitepress-plugin-tabs": "0.3.0",
-		"vue": "3.3.4"
+		"vue": "3.3.8"
 	}
 }

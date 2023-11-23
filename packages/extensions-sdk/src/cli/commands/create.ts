@@ -36,9 +36,9 @@ export default async function create(type: string, name: string, options: Create
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
 			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
-				chalk.bold.magenta(t)
+				chalk.bold.magenta(t),
 			).join(', ')}.`,
-			'error'
+			'error',
 		);
 
 		process.exit(1);
@@ -121,9 +121,9 @@ async function createLocalExtension({
 	if (!isLanguage(language)) {
 		log(
 			`Language ${chalk.bold(language)} is not supported. Available languages: ${EXTENSION_LANGUAGES.map((t) =>
-				chalk.bold.magenta(t)
+				chalk.bold.magenta(t),
 			).join(', ')}.`,
-			'error'
+			'error',
 		);
 
 		process.exit(1);

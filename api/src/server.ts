@@ -137,7 +137,7 @@ export async function createServer(): Promise<http.Server> {
 				database: getDatabase(),
 				schema: null,
 				accountability: null,
-			}
+			},
 		);
 
 		if (env['NODE_ENV'] !== 'development') {
@@ -165,7 +165,7 @@ export async function startServer(): Promise<void> {
 					database: getDatabase(),
 					schema: null,
 					accountability: null,
-				}
+				},
 			);
 		})
 		.once('error', (err: any) => {

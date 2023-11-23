@@ -93,7 +93,7 @@ export class UsersService extends ItemsService {
 						context: {
 							value: password,
 						},
-					})
+					}),
 				);
 			}
 		}

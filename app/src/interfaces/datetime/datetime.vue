@@ -14,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		use24: true,
-	}
+	},
 );
 
 const emit = defineEmits<{

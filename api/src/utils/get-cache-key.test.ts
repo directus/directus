@@ -74,7 +74,7 @@ describe('get cache key', () => {
 			(path) => {
 				getCacheKey({ originalUrl: `${baseUrl}${path}` } as Request);
 				expect(getGraphqlQuerySpy).not.toHaveBeenCalled();
-			}
+			},
 		);
 
 		test.each(['/graphql', '/graphql/system'])('path "%s" should be interpreted as a graphql query', (path) => {

@@ -50,7 +50,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					(relation) =>
 						relation.meta?.one_collection === props.collection &&
 						relation.meta.one_field === field.field &&
-						relation.meta.junction_field !== null
+						relation.meta.junction_field !== null,
 				);
 
 				if (junction !== undefined) {
@@ -58,7 +58,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						(relation) =>
 							relation.collection === junction.collection &&
 							relation.field === junction.meta?.junction_field &&
-							relation.related_collection === 'directus_users'
+							relation.related_collection === 'directus_users',
 					);
 
 					return related !== undefined;
@@ -67,7 +67,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						(relation) =>
 							relation.collection === props.collection &&
 							relation.field === field.field &&
-							relation.related_collection === 'directus_users'
+							relation.related_collection === 'directus_users',
 					);
 
 					return related !== undefined;
@@ -83,7 +83,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 
 				const relation = relationsStore.relations.find(
-					(relation) => getRelationType({ relation, collection: collection.value, field: field.field }) === 'm2o'
+					(relation) => getRelationType({ relation, collection: collection.value, field: field.field }) === 'm2o',
 				);
 
 				return !!relation;
@@ -331,7 +331,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					(relation) =>
 						relation.meta?.one_collection === props.collection &&
 						relation.meta.one_field === userField.value &&
-						relation.meta.junction_field !== null
+						relation.meta.junction_field !== null,
 				);
 			});
 
@@ -381,7 +381,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (field === null) return null;
 
 					const relation = (relationsStore.relations as any[]).find(
-						(relation) => getRelationType({ relation, collection: collection.value, field }) === 'm2o'
+						(relation) => getRelationType({ relation, collection: collection.value, field }) === 'm2o',
 					);
 
 					if (relation === undefined || relation.related_collection === null) return null;
@@ -499,7 +499,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							}
 
 							return choice;
-						}
+						},
 					);
 
 					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
@@ -533,7 +533,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							return { text: item.title, value: item.id };
 						}),
 						currentIndex,
-						targetIndex
+						targetIndex,
 					);
 
 					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {

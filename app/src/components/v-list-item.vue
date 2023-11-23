@@ -166,10 +166,7 @@ function onClick(event: PointerEvent) {
 	min-height: var(--v-list-item-min-height, 32px);
 	max-height: auto;
 	margin: var(--v-list-item-margin, 2px 0);
-	padding: var(
-		--v-list-item-padding,
-		0 8px 0 calc(8px + var(--v-list-item-indent, 0px))
-	);
+	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
 	text-decoration: none;
@@ -211,7 +208,10 @@ function onClick(event: PointerEvent) {
 				);
 				background-color: var(
 					--v-list-item-background-color-active-hover,
-					var(--v-list-item-background-color-hover, var(--v-list-background-color-hover, var(--theme--background-normal)))
+					var(
+						--v-list-item-background-color-hover,
+						var(--v-list-background-color-hover, var(--theme--background-normal))
+					)
 				);
 			}
 		}
@@ -263,8 +263,12 @@ function onClick(event: PointerEvent) {
 		display: flex;
 		height: var(--theme--form--field--input--height);
 		margin: 0;
-		background-color: var(--v-list-item-background-color, var(--v-list-background-color, var(--theme--form--field--input--background)));
-		border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
+		background-color: var(
+			--v-list-item-background-color,
+			var(--v-list-background-color, var(--theme--form--field--input--background))
+		);
+		border: var(--theme--border-width) solid
+			var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--fast) var(--transition);
 

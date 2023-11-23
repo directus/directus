@@ -84,18 +84,21 @@ export function realtime(config: WebSocketConfig = {}) {
 			if (config.reconnect && !reconnecting && reconnectAttempts < config.reconnect.retries) {
 				reconnecting = true;
 
-				setTimeout(() => {
-					reconnectAttempts += 1;
+				setTimeout(
+					() => {
+						reconnectAttempts += 1;
 
-					this.connect()
-						.then(() => {
-							reconnectAttempts = 0;
-							reconnecting = false;
-						})
-						.catch(() => {
-							/* failed to connect */
-						});
-				}, Math.max(1, config.reconnect.delay));
+						this.connect()
+							.then(() => {
+								reconnectAttempts = 0;
+								reconnecting = false;
+							})
+							.catch(() => {
+								/* failed to connect */
+							});
+					},
+					Math.max(1, config.reconnect.delay),
+				);
 			} else {
 				reconnecting = false;
 			}
@@ -234,7 +237,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			},
 			async subscribe<Collection extends keyof Schema, const Options extends SubscribeOptions<Schema, Collection>>(
 				collection: Collection,
-				options = {} as Options
+				options = {} as Options,
 			) {
 				if (!socket || socket.readyState !== WebSocketState.OPEN) await this.connect();
 				if ('uid' in options === false) options.uid = uid.next().value;

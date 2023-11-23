@@ -31,7 +31,7 @@ describe('Integration Tests', () => {
 							knex: db,
 							schema: {
 								collections: {
-									"test_table": {
+									test_table: {
 										collection: 'test_table',
 										primary: 'id',
 										singleton: false,
@@ -39,7 +39,7 @@ describe('Integration Tests', () => {
 										accountability: 'all',
 										note: null,
 										fields: {
-											"id": {
+											id: {
 												field: 'id',
 												type: 'integer',
 												nullable: false,
@@ -51,9 +51,9 @@ describe('Integration Tests', () => {
 												special: [],
 												note: null,
 												validation: null,
-												alias: false
+												alias: false,
 											},
-											"blob": {
+											blob: {
 												field: 'blob',
 												type: 'json',
 												dbType: 'json',
@@ -66,13 +66,13 @@ describe('Integration Tests', () => {
 												note: null,
 												alias: false,
 												validation: null,
-											}
-										}
-									}
+											},
+										},
+									},
 								} as CollectionsOverview,
-								relations: []
+								relations: [],
 							},
-							accountability: { role: 'admin', admin: true, },
+							accountability: { role: 'admin', admin: true },
 						});
 
 						const spec = await service.oas.generate();
@@ -281,7 +281,7 @@ describe('Integration Tests', () => {
 							knex: db,
 							schema: {
 								collections: {
-									"test_table": {
+									test_table: {
 										collection: 'test_table',
 										primary: 'id',
 										singleton: false,
@@ -289,7 +289,7 @@ describe('Integration Tests', () => {
 										accountability: 'all',
 										note: null,
 										fields: {
-											"id": {
+											id: {
 												field: 'id',
 												type: 'integer',
 												nullable: false,
@@ -301,20 +301,19 @@ describe('Integration Tests', () => {
 												special: [],
 												note: null,
 												validation: null,
-												alias: false
+												alias: false,
 											},
-										}
-									}
+										},
+									},
 								} as CollectionsOverview,
-								relations: []
+								relations: [],
 							},
-							accountability: { role: 'admin', admin: true, },
+							accountability: { role: 'admin', admin: true },
 						});
 
 						const spec = await service.oas.generate();
 
-						const targetSchema =
-							spec.paths['/items/test_table']?.post?.requestBody?.content['application/json'].schema;
+						const targetSchema = spec.paths['/items/test_table']?.post?.requestBody?.content['application/json'].schema;
 
 						expect(targetSchema).toHaveProperty('oneOf');
 						expect(targetSchema).not.toHaveProperty('type');

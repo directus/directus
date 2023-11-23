@@ -6,7 +6,7 @@ import { Ref, computed, unref } from 'vue';
 
 export function useExtension<T extends AppExtensionType | HybridExtensionType>(
 	type: T | Ref<T>,
-	name: string | Ref<string | null>
+	name: string | Ref<string | null>,
 ): Ref<AppExtensionConfigs[Plural<T>][number] | null> {
 	const extensions = useExtensions();
 

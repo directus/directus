@@ -223,7 +223,9 @@ span.flatpickr-weekday {
 
 .flatpickr-day.inRange {
 	border-radius: 0;
-	box-shadow: -5px 0 0 var(--theme--foreground-accent), 5px 0 0 var(--theme--foreground-accent);
+	box-shadow:
+		-5px 0 0 var(--theme--foreground-accent),
+		5px 0 0 var(--theme--foreground-accent);
 }
 
 .flatpickr-day.flatpickr-disabled,
@@ -238,7 +240,9 @@ span.flatpickr-weekday {
 
 .flatpickr-day.week.selected {
 	border-radius: 0;
-	box-shadow: -5px 0 0 var(--theme--primary), 5px 0 0 var(--theme--primary);
+	box-shadow:
+		-5px 0 0 var(--theme--primary),
+		5px 0 0 var(--theme--primary);
 }
 
 .flatpickr-weekwrapper span.flatpickr-day,

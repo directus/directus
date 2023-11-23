@@ -56,7 +56,7 @@ export class AuthorizationService {
 						collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
 					);
 				}),
-				(curr, prev) => curr.collection === prev.collection && curr.action === prev.action && curr.role === prev.role
+				(curr, prev) => curr.collection === prev.collection && curr.action === prev.action && curr.role === prev.role,
 			) ?? [];
 
 		// If the permissions don't match the collections, you don't have permission to read all of them
@@ -123,7 +123,7 @@ export class AuthorizationService {
 			function checkFields(
 				collection: string,
 				children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-				aggregate?: Aggregate | null
+				aggregate?: Aggregate | null,
 			) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
@@ -161,7 +161,7 @@ export class AuthorizationService {
 			ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode,
 			schema: SchemaOverview,
 			action: PermissionsAction,
-			accountability: Accountability | null
+			accountability: Accountability | null,
 		) {
 			let requiredFieldPermissions: Record<string, Set<string>> = {};
 
@@ -170,7 +170,7 @@ export class AuthorizationService {
 					for (const collection of Object.keys(ast.children)) {
 						requiredFieldPermissions = mergeRequiredFieldPermissions(
 							requiredFieldPermissions,
-							extractRequiredFieldPermissions(collection, ast.query?.[collection]?.filter ?? {})
+							extractRequiredFieldPermissions(collection, ast.query?.[collection]?.filter ?? {}),
 						);
 
 						for (const child of ast.children[collection]!) {
@@ -180,7 +180,7 @@ export class AuthorizationService {
 								//Only add relational field if deep child has a filter
 								if (child.type !== 'field') {
 									(requiredFieldPermissions[collection] || (requiredFieldPermissions[collection] = new Set())).add(
-										child.fieldKey
+										child.fieldKey,
 									);
 								}
 
@@ -191,7 +191,7 @@ export class AuthorizationService {
 				} else {
 					requiredFieldPermissions = mergeRequiredFieldPermissions(
 						requiredFieldPermissions,
-						extractRequiredFieldPermissions(ast.name, ast.query?.filter ?? {})
+						extractRequiredFieldPermissions(ast.name, ast.query?.filter ?? {}),
 					);
 
 					for (const child of ast.children) {
@@ -201,7 +201,7 @@ export class AuthorizationService {
 							// Only add relational field if deep child has a filter
 							if (child.type !== 'field') {
 								(requiredFieldPermissions[ast.name] || (requiredFieldPermissions[ast.name] = new Set())).add(
-									child.fieldKey
+									child.fieldKey,
 								);
 							}
 
@@ -222,7 +222,7 @@ export class AuthorizationService {
 				collection: string,
 				filter: Filter,
 				parentCollection?: string,
-				parentField?: string
+				parentField?: string,
 			) {
 				return reduce(
 					filter,
@@ -235,7 +235,7 @@ export class AuthorizationService {
 											collection,
 											filter,
 											parentCollection,
-											parentField
+											parentField,
 										);
 
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
@@ -325,7 +325,7 @@ export class AuthorizationService {
 														'',
 														filter,
 														parentCollection,
-														filterKey
+														filterKey,
 													);
 
 													result = mergeRequiredFieldPermissions(result, requiredPermissions);
@@ -337,7 +337,7 @@ export class AuthorizationService {
 											'',
 											filterValue,
 											parentCollection,
-											filterKey
+											filterKey,
 										);
 
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
@@ -348,7 +348,7 @@ export class AuthorizationService {
 
 						return result;
 					},
-					{}
+					{},
 				);
 			}
 
@@ -369,13 +369,13 @@ export class AuthorizationService {
 				schema: SchemaOverview,
 				action: PermissionsAction,
 				requiredPermissions: Record<string, Set<string>>,
-				aliasMap?: Record<string, string> | null
+				aliasMap?: Record<string, string> | null,
 			) {
 				if (accountability?.admin === true) return;
 
 				for (const collection of Object.keys(requiredPermissions)) {
 					const permission = accountability?.permissions?.find(
-						(permission) => permission.collection === collection && permission.action === 'read'
+						(permission) => permission.collection === collection && permission.action === 'read',
 					);
 
 					let allowedFields: string[];
@@ -383,7 +383,7 @@ export class AuthorizationService {
 					// Allow the filtering of top level ID for actions such as update and delete
 					if (action !== 'read' && collection === rootCollection) {
 						const actionPermission = accountability?.permissions?.find(
-							(permission) => permission.collection === collection && permission.action === action
+							(permission) => permission.collection === collection && permission.action === action,
 						);
 
 						if (!actionPermission || !actionPermission.fields) {
@@ -422,7 +422,7 @@ export class AuthorizationService {
 
 		function applyFilters(
 			ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode,
-			accountability: Accountability | null
+			accountability: Accountability | null,
 		): AST | NestedCollectionNode | FieldNode | FunctionFieldNode {
 			if (ast.type === 'functionField') {
 				const collection = ast.relatedCollection;
@@ -579,9 +579,9 @@ export class AuthorizationService {
 		validationErrors.push(
 			...flatten(
 				validatePayload(permission.validation!, payloadWithPresets).map((error) =>
-					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)))
-				)
-			)
+					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details))),
+				),
+			),
 		);
 
 		if (validationErrors.length > 0) throw validationErrors;

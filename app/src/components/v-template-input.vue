@@ -34,7 +34,7 @@ watch(
 		if (newText !== input.value.innerText) {
 			parseHTML(newText, true);
 		}
-	}
+	},
 );
 
 onMounted(() => {
@@ -72,7 +72,7 @@ function checkKeyDown(event: any) {
 						? '\n\n'
 						: '\n') +
 					input.value!.innerText.substring(caretPos),
-				true
+				true,
 			);
 
 			position(input.value!, caretPos + 1);
@@ -116,9 +116,9 @@ function checkKeyDown(event: any) {
 			parseHTML(
 				(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
 					String.fromCharCode(160),
-					' '
+					' ',
 				),
-				true
+				true,
 			);
 
 			position(input.value!, newCaretPos);
@@ -135,7 +135,7 @@ function checkKeyDown(event: any) {
 					input.value!.innerText.substring(0, caretPos) +
 					input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
 				).replaceAll(String.fromCharCode(160), ' '),
-				true
+				true,
 			);
 
 			position(input.value!, caretPos);

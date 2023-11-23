@@ -39,7 +39,7 @@ export const CheckQueryFilters = (
 	requestOptions: RequestOptions,
 	collection: string,
 	testsFieldSchema: TestsFieldSchema,
-	vendorSchemaValues: TestsSchemaVendorValues
+	vendorSchemaValues: TestsSchemaVendorValues,
 ): SuiteCollector => {
 	return describe(`Global Query Filters (${requestOptions.method.toUpperCase()} ${requestOptions.path})`, () => {
 		for (const field in testsFieldSchema) {
@@ -53,7 +53,7 @@ const processSchemaFields = (
 	collection: string,
 	schema: TestsCollectionSchema,
 	vendorSchemaValues: TestsSchemaVendorValues,
-	parentField?: string
+	parentField?: string,
 ) => {
 	let filterOperatorList: ClientFilterOperator[] = [];
 
@@ -150,7 +150,7 @@ const processSchemaFields = (
 
 					const generatedFilters = targetSchema.generateFilterForDataType(
 						filterOperator,
-						possibleValues
+						possibleValues,
 					) as testsSchema.GeneratedFilter[];
 
 					for (const filter of generatedFilters) {
@@ -198,7 +198,7 @@ function processValidation(
 	key: string,
 	filter: testsSchema.GeneratedFilter,
 	possibleValues: any[],
-	assert = true
+	assert = true,
 ): boolean {
 	const keys = key.split('.');
 

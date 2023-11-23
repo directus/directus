@@ -43,8 +43,8 @@ describe('/assets', () => {
 									.map((_, index) =>
 										request(getUrl(vendor))
 											.get(`/assets/${uploadedFileID}?width=${4000 + index}&height=${4000 + index}`)
-											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-									)
+											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
+									),
 							);
 
 							// Assert
@@ -52,7 +52,7 @@ describe('/assets', () => {
 								expect(response.statusCode).toBe(200);
 							}
 						},
-						60_000
+						60_000,
 					);
 				});
 			});
@@ -80,8 +80,8 @@ describe('/assets', () => {
 									.map((_, index) =>
 										request(getUrl(vendor))
 											.get(`/assets/${uploadedFileID}?width=${4000 + index}&height=${4000 + index}`)
-											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-									)
+											.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`),
+									),
 							);
 
 							// Assert
@@ -89,10 +89,10 @@ describe('/assets', () => {
 							expect(unavailableCount).toBeGreaterThanOrEqual(1);
 
 							expect(responses.filter((response) => response.statusCode === 200).length).toBe(
-								attempts - unavailableCount
+								attempts - unavailableCount,
 							);
 						},
-						1_200_000
+						1_200_000,
 					);
 				});
 			});

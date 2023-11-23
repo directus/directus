@@ -13,5 +13,5 @@ export const messageConstructor = ({ range }: RangeNotSatisfiableErrorExtensions
 export const RangeNotSatisfiableError = createError<RangeNotSatisfiableErrorExtensions>(
 	ErrorCode.RangeNotSatisfiable,
 	messageConstructor,
-	416
+	416,
 );

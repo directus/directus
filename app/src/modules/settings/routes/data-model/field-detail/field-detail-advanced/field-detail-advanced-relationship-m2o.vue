@@ -21,7 +21,7 @@ const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailSt
 const isExisting = computed(() => editing.value !== '+');
 
 const relatedPrimaryKey = computed(
-	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id',
 );
 
 const currentField = computed(() => field.value.field);
@@ -76,7 +76,7 @@ const onDeleteOptions = computed(() =>
 			text: t('referential_action_no_action', { field: currentField.value }),
 			value: 'NO ACTION',
 		},
-	].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false))
+	].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false)),
 );
 </script>
 

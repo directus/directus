@@ -35,7 +35,7 @@ export class Emitter {
 		event: string | string[],
 		payload: T,
 		meta: Record<string, any>,
-		context: EventContext | null = null
+		context: EventContext | null = null,
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
 

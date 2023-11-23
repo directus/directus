@@ -51,7 +51,7 @@ const hasValue = computed(() => {
 					<system-theme-overrides-group
 						v-if="isPlainObject(ruleValue)"
 						:group="ruleKey === '$root' ? undefined : ruleKey"
-						:rules="(ruleValue as Record<string, unknown>)"
+						:rules="ruleValue as Record<string, unknown>"
 						:value="ruleKey === '$root' ? value : (value?.[ruleKey] as Record<string, unknown> | undefined)"
 						:set="set"
 						:path="ruleKey === '$root' ? path : [...path, ruleKey]"
@@ -62,8 +62,8 @@ const hasValue = computed(() => {
 						:rule="ruleKey"
 						type="color"
 						:set="set"
-						:default-value="(ruleValue as string | number)"
-						:value="(value?.[ruleKey] as string | number | undefined)"
+						:default-value="ruleValue"
+						:value="value?.[ruleKey]"
 						:path="[...path, ruleKey]"
 					/>
 				</template>

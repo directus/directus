@@ -13,9 +13,9 @@ export const ExtensionSandboxRequestedScopes = z.object({
 		z.object({
 			urls: z.array(z.string()),
 			methods: z.array(
-				z.union([z.literal('GET'), z.literal('POST'), z.literal('PATCH'), z.literal('PUT'), z.literal('DELETE')])
+				z.union([z.literal('GET'), z.literal('POST'), z.literal('PATCH'), z.literal('PUT'), z.literal('DELETE')]),
 			),
-		})
+		}),
 	),
 	log: z.optional(z.object({})),
 	sleep: z.optional(z.object({})),
@@ -25,7 +25,7 @@ export const ExtensionSandboxOptions = z.optional(
 	z.object({
 		enabled: z.boolean(),
 		requestedScopes: ExtensionSandboxRequestedScopes,
-	})
+	}),
 );
 
 export type ExtensionSandboxOptions = z.infer<typeof ExtensionSandboxOptions>;
@@ -87,7 +87,7 @@ export const ExtensionOptionsBundleEntries = z.array(ExtensionOptionsBundleEntry
 export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundleEntries>;
 
 export const ExtensionOptions = ExtensionOptionsBase.and(
-	z.union([ExtensionOptionsApp, ExtensionOptionsApi, ExtensionOptionsHybrid, ExtensionOptionsBundle])
+	z.union([ExtensionOptionsApp, ExtensionOptionsApi, ExtensionOptionsHybrid, ExtensionOptionsBundle]),
 );
 
 export type ExtensionOptions = z.infer<typeof ExtensionOptions>;
