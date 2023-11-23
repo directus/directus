@@ -687,7 +687,6 @@ security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称
 create_bookmark: 创建书签
-create_default: 创建默认
 edit_bookmark: 编辑书签
 edit_personal_bookmark: 编辑个人书签
 edit_role_bookmark: 编辑角色书签
@@ -1755,6 +1754,7 @@ interfaces:
     description: 选择多个相关项目
     no_collection: 找不到collection
   system-folder:
+    folder: 根文件夹
     description: 选择文件夹
     field_hint: 默认文件夹，用于未指定文件夹的上传文件。不影响现有文件。
     root_name: 文件管理
@@ -2116,6 +2116,9 @@ panels:
     name: 公制
     description: 基于查询显示单个值
     field: 字段
+  metric_list:
+    name: 公制度量列表
+    description: 将搜集的内容列表并可视化其合计指标
   time_series:
     name: 时间系列
     description: 根据一段时间的值渲染线形图
@@ -2295,14 +2298,44 @@ operations:
     batch: 批处理
     batch_size: 批量大小
     cache: 缓存
+unit: 单位
 standard: 基本设置
+scientific: 科学的
+engineering: 工程
 compact: 紧凑
+currency: 货币
+notation: 标记符号
 style: 样式
 fonts:
   thin: 细
+  extra_light: 高亮
+  light: 亮的
   normal: 标准
   medium: 中
+  semi_bold: 半黑体
   bold: 加粗
+  extra_bold: 大号黑体
   black: 黑色
   italic: 斜体
+  oblique: 斜体
+  small: 小字体
+  large: 大号
   auto: 自动
+text_wrap: 文本换行
+center: 居中
+justify: 两端对齐
+text_align: 文本对齐
+font_weight: 字体粗细
+font_style: 字体样式
+font_size: 字体大小
+minimum_fraction_digits: 最小小数
+maximum_fraction_digits: 最大小数
+show_percentage: 显示百分比
+aggregation: 聚合
+series_grouping: 系列分组
+date_precision: 日期精度
+export_dashboard: 导出仪表盘
+duplicate_dashboard: 复制仪表板
+search_dashboard: 搜索仪表板...
+search_flow: 搜索流程...
+percent: 百分比
