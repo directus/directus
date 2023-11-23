@@ -123,7 +123,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	private async fetchUserInfo(
 		baseDn: string,
 		filter?: ldap.EqualityFilter,
-		scope?: SearchScope
+		scope?: SearchScope,
 	): Promise<UserInfo | undefined> {
 		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
 
@@ -174,7 +174,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					res.on('end', () => {
 						resolve(undefined);
 					});
-				}
+				},
 			);
 		});
 	}
@@ -212,7 +212,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					res.on('end', () => {
 						resolve(userGroups);
 					});
-				}
+				},
 			);
 		});
 	}
@@ -242,7 +242,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				attribute: userAttribute ?? 'cn',
 				value: payload['identifier'],
 			}),
-			userScope ?? 'one'
+			userScope ?? 'one',
 		);
 
 		if (!userInfo?.dn) {
@@ -258,7 +258,7 @@ export class LDAPAuthDriver extends AuthDriver {
 					attribute: groupAttribute ?? 'member',
 					value: groupAttribute?.toLowerCase() === 'memberuid' && userInfo.uid ? userInfo.uid : userInfo.dn,
 				}),
-				groupScope ?? 'one'
+				groupScope ?? 'one',
 			);
 
 			if (userGroups.length) {
@@ -300,7 +300,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				`auth.update`,
 				emitPayload,
 				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-				{ database: getDatabase(), schema: this.schema, accountability: null }
+				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
 
 			// Update user to update properties that might have changed
@@ -328,7 +328,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			`auth.create`,
 			userPayload,
 			{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-			{ database: getDatabase(), schema: this.schema, accountability: null }
+			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
 
 		try {
@@ -449,7 +449,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,
 				req.body,
-				req.body?.otp
+				req.body?.otp,
 			);
 
 			const payload = {
@@ -474,7 +474,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 
 			return next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;
