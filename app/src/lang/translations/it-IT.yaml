@@ -687,7 +687,6 @@ security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
-create_default: Crea predefinito
 edit_bookmark: Modifica Segnalibro
 edit_personal_bookmark: Modifica segnalibro personale
 edit_role_bookmark: Modifica segnalibro del ruolo
@@ -1546,7 +1545,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
