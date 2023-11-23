@@ -62,7 +62,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const clientOptionsOverrides = getConfigFromEnv(
 			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
 			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore',
+			'underscore'
 		);
 
 		this.client = new issuer.Client({
@@ -129,7 +129,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			tokenSet = await this.client.oauthCallback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'] },
-				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge }
 			);
 
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
@@ -189,7 +189,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 					provider: this.config['provider'],
 					providerPayload: { accessToken: tokenSet.access_token, userInfo },
 				},
-				{ database: getDatabase(), schema: this.schema, accountability: null },
+				{ database: getDatabase(), schema: this.schema, accountability: null }
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
@@ -216,7 +216,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				provider: this.config['provider'],
 				providerPayload: { accessToken: tokenSet.access_token, userInfo },
 			},
-			{ database: getDatabase(), schema: this.schema, accountability: null },
+			{ database: getDatabase(), schema: this.schema, accountability: null }
 		);
 
 		try {
@@ -305,7 +305,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				{
 					expiresIn: '5m',
 					issuer: 'directus',
-				},
+				}
 			);
 
 			res.cookie(`oauth2.${providerName}`, token, {
@@ -315,7 +315,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt));
 		},
-		respond,
+		respond
 	);
 
 	router.post(
@@ -324,7 +324,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		(req, res) => {
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
 		},
-		respond,
+		respond
 	);
 
 	router.get(
@@ -415,7 +415,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			next();
 		}),
-		respond,
+		respond
 	);
 
 	return router;
