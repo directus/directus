@@ -28,7 +28,7 @@ export class MemoryLocal implements Memory {
 	}
 
 	async increment(key: string, amount: number = 1) {
-		const currentVal = await this.get(key) || 0;
+		const currentVal = (await this.get(key)) || 0;
 
 		if (typeof currentVal !== 'number') {
 			throw new Error(`The value for cache key "${key}" is not a number.`);
@@ -37,5 +37,9 @@ export class MemoryLocal implements Memory {
 		const newVal = currentVal + amount;
 
 		await this.set(key, newVal);
+	}
+
+	async delete(key: string) {
+		this.cache.delete(key);
 	}
 }

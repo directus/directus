@@ -14,6 +14,7 @@ beforeEach(() => {
 	memory['cache'] = {
 		get: vi.fn(),
 		set: vi.fn(),
+		delete: vi.fn(),
 	} as unknown as LRUCache<string, Uint8Array, unknown>;
 });
 
@@ -118,5 +119,15 @@ describe('increment', () => {
 		expect(memory.increment(mockKey)).rejects.toMatchInlineSnapshot(
 			'[Error: The value for cache key "cache-key" is not a number.]',
 		);
+	});
+});
+
+describe('delete', () => {
+	test('Deletes key from cache', async () => {
+		const mockKey = 'cache-key';
+
+		await memory.delete(mockKey);
+
+		expect(memory['cache'].delete).toHaveBeenCalledWith(mockKey);
 	});
 });
