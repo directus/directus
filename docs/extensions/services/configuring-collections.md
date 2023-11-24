@@ -46,7 +46,6 @@ router.post('/', async (req, res) => {
 
   const data = await collectionsService.readOne(collectionKey);
 
-  res.locals['payload'] = { data };
   res.json(record);
 });
 ```
@@ -62,7 +61,6 @@ router.get('/', async (req, res) => {
 
   const data = await collectionsService.readOne('collection_name');
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -82,7 +80,6 @@ router.patch('/', async (req, res) => {
     },
   });
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -149,7 +146,6 @@ router.post('/', async (req, res) => {
     field.field,
   );
 
-  res.locals['payload'] = { data };
   res.json(createdField);
 });
 ```
@@ -165,7 +161,6 @@ router.get('/', async (req, res) => {
 
   const data = await fieldsService.readAll('collection_name');
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -194,7 +189,6 @@ router.patch('/', async (req, res) => {
     'field_name',
   );
 
-  res.locals['payload'] = { data };
   res.json(updatedField);
 });
 ```
@@ -257,7 +251,6 @@ router.post('/', async (req, res) => {
 
   const data = await relationsService.readOne(data);
 
-  res.locals['payload'] = { data };
   res.json(record);
 });
 ```

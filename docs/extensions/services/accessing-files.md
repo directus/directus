@@ -39,7 +39,6 @@ router.post('/', async (req, res) => {
 
   const data = await filesService.readOne(assetKey);
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -55,7 +54,6 @@ router.get('/', async (req, res) => {
 
   const data = await filesService.readOne('file_id');
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -71,7 +69,6 @@ router.patch('/', async (req, res) => {
 
   const data = await filesService.updateOne('file_id', { title: 'Random' });
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -87,7 +84,6 @@ router.patch('/', async (req, res) => {
 
   const data = await filesService.deleteOne('file_id');
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```

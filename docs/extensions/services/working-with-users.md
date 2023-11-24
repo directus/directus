@@ -41,7 +41,6 @@ router.get('/', async (req, res) => {
 
   const data = await usersService.getUserByEmail('email');
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -63,7 +62,6 @@ router.post('/', async (req, res) => {
     app_access: true,
   });
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -88,7 +86,6 @@ router.post('/', async (req, res) => {
     role: foundRole.id,
   });
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -112,7 +109,6 @@ router.patch('/', async (req, res) => {
     title: 'CTO'
   });
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -128,7 +124,6 @@ router.delete('/', async (req, res) => {
 
   const data = await usersService.deleteOne('user_id');
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
@@ -160,7 +155,6 @@ router.post('/', async (req, res) => {
 	  role: foundRole.id,
   });
 
-  res.locals['payload'] = { data };
   res.json(data);
 });
 ```
