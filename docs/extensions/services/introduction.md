@@ -23,7 +23,7 @@ shown below in an example of an [endpoint extension](/extensions/endpoints).
 export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { ItemsService } = services;
-	
+
   const schema = await getSchema();
   const itemsService = new ItemsService({ schema });
 })

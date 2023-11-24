@@ -136,7 +136,7 @@ router.post('/', async (req, res) => {
       default_value: 'Hello World',
     },
   };
-	
+
   const fieldsService = new FieldsService({
     schema: await getSchema(),
     accountability: req.accountability
@@ -303,7 +303,7 @@ router.patch('/', async (req, res) => {
 ### Delete a Relation
 
 ```js
-router.delete('/', async (req, res) => { 
+router.delete('/', async (req, res) => {
   const relationsService = new RelationsService({
     schema: await getSchema(),
     accountability: req.accountability
