@@ -201,9 +201,7 @@ export class GraphQLService {
 			},
 		});
 
-		// TODO does this need to be a separate type?
 		const { ReadCollectionTypes, VersionCollectionTypes } = getReadableTypes();
-
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
@@ -462,16 +460,6 @@ export class GraphQLService {
 								} else {
 									type = new GraphQLNonNull(GraphQLID);
 								}
-							}
-
-							if (field.type === 'time') {
-								acc[`${field.field}_func`] = {
-									type: TimeFunctions,
-									resolve: (obj: Record<string, any>) => {
-										const funcFields = Object.keys(TimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
-										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
-									},
-								};
 							}
 
 							acc[field.field] = {
