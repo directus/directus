@@ -935,9 +935,6 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
-      '@vueuse/core':
-        specifier: 10.6.1
-        version: 10.6.1(vue@3.3.8)
       eslint-parser-plain:
         specifier: 0.1.0
         version: 0.1.0
@@ -946,7 +943,7 @@ importers:
         version: 3.0.1(eslint@8.54.0)
       eslint-plugin-prettier:
         specifier: npm:@paescuj/eslint-plugin-prettier@5.0.1-1
-        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.0.0)(eslint@8.54.0)(prettier@3.1.0)
+        version: /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint@8.54.0)(prettier@3.1.0)
       eslint-plugin-react:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.54.0)
@@ -6735,7 +6732,7 @@ packages:
       '@otplib/plugin-thirty-two': 12.0.1
     dev: false
 
-  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint-config-prettier@9.0.0)(eslint@8.54.0)(prettier@3.1.0):
+  /@paescuj/eslint-plugin-prettier@5.0.1-1(eslint@8.54.0)(prettier@3.1.0):
     resolution: {integrity: sha512-gc+FaHyaGEnlcjN9n/bjXxa8CRxmkZRZTHkclaePXNgHSMIqgucFukE+4N1PYnSza2CnRijLjpRo8Z6UiGmNUA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -6750,7 +6747,6 @@ packages:
         optional: true
     dependencies:
       eslint: 8.54.0
-      eslint-config-prettier: 9.0.0(eslint@8.54.0)
       prettier: 3.1.0
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.5
@@ -9342,7 +9338,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.11(@types/node@18.16.12)(sass@1.62.1)
+      vite: 4.4.11
       vue: 3.3.8(typescript@5.2.2)
     dev: true
 
@@ -22870,6 +22866,41 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
 
+  /vite@4.4.11:
+    resolution: {integrity: sha512-ksNZJlkcU9b0lBwAGZGGaZHCMqHsc8OpgtoYhsQ4/I2v5cnpmmmqe5pM4nv/4Hn6G/2GhTdj0DhZh2e+Er1q5A==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.18.20
+      postcss: 8.4.31
+      rollup: 3.29.4
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
   /vite@4.4.11(@types/node@18.16.12)(sass@1.62.1):
     resolution: {integrity: sha512-ksNZJlkcU9b0lBwAGZGGaZHCMqHsc8OpgtoYhsQ4/I2v5cnpmmmqe5pM4nv/4Hn6G/2GhTdj0DhZh2e+Er1q5A==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -22932,7 +22963,7 @@ packages:
       mark.js: 8.11.1
       minisearch: 6.1.0
       shiki: 0.14.5
-      vite: 4.4.11(@types/node@18.16.12)(sass@1.62.1)
+      vite: 4.4.11
       vue: 3.3.8(typescript@5.2.2)
     transitivePeerDependencies:
       - '@algolia/client-search'
