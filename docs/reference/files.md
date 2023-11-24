@@ -270,13 +270,16 @@ Who updated the file last. Many-to-one to [users](/reference/system/users).
 Size of the file in bytes.
 
 `width` **number**\
-If the file is a(n) image/video, it's the width in px.
+If the file is a(n) image/video, it's the width in px.\
+This property is only auto-extracted for images.
 
 `height` **number**\
-If the file is a(n) image/video, it's the height in px.
+If the file is a(n) image/video, it's the height in px.\
+This property is only auto-extracted for images.
 
 `duration` **number**\
-If the file contains audio/video, it's the duration in milliseconds.
+If the file contains audio/video, it's the duration in milliseconds.\
+This property is not auto-extracted.
 
 `description` **string**\
 Description of the file.
