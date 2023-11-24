@@ -14,7 +14,7 @@ use the services directly.
 
 ## Available Services
 
-Various services are available within Directus including `ItemsService`, `CollectionService`, `FilesService`.
+Various services are available within Directus including `ItemsService`, `CollectionsService`, `FilesService`.
 
 Services are available as part of an extension's `context`. It is common to destructure the specific service you need as
 shown below in an example of an [endpoint extension](/extensions/endpoints).
