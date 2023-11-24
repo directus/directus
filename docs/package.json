@@ -20,7 +20,6 @@
 		"@directus/format-title": "10.1.0",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@vueuse/core": "10.6.1",
 		"eslint-parser-plain": "0.1.0",
 		"eslint-plugin-markdown": "3.0.1",
 		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@5.0.1-1",
