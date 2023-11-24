@@ -13,9 +13,10 @@ export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { ItemsService } = services;
   const schema = await getSchema();
+  const itemsService = new ItemsService('collection_name', { schema });
 
   router.get('/', async (req, res) => {
-    const itemsService = new ItemsService('collection_name', { schema });
+    // Your route handler logic
   });
 });
 ```
@@ -24,8 +25,6 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const itemsService = new ItemsService('collection_name', { schema });
-
   const data = await itemsService.createOne({
     title: 'Hello world!',
     body: 'This is our first article',
@@ -39,8 +38,6 @@ router.post('/', async (req, res) => {
 
 ```js
 router.get('/', async (req, res) => {
-  const itemsService = new ItemsService('collection_name', { schema });
-
   const data = await itemsService.readOne('item_id');
 
   res.json(data);
@@ -51,8 +48,6 @@ router.get('/', async (req, res) => {
 
 ```js
 router.patch('/', async (req, res) => {
-  const itemsService = new ItemsService('collection_name', { schema });
-
   const data = await itemsService.updateOne('item_id', {
     title: "An updated title"
   });
@@ -65,8 +60,6 @@ router.patch('/', async (req, res) => {
 
 ```js
 router.delete('/', async (req, res) => {
-  const itemsService = new ItemsService('collection_name', { schema });
-
   await itemsService.deleteOne('item_id');
 
   res.json();

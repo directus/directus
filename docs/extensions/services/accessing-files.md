@@ -12,9 +12,10 @@ export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { FilesService } = services;
   const schema = await getSchema();
+  const filesService = new FilesService({ schema });
 
   router.get('/', async (req, res) => {
-    const filesService = new FilesService({ schema });
+    // Your route handler logic
   });
 });
 ```
@@ -23,7 +24,6 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const filesService = new FilesService({ schema });
   const assetKey = await filesService.importOne({
     url: file_url,
     data: file_object,
@@ -39,8 +39,6 @@ router.post('/', async (req, res) => {
 
 ```js
 router.get('/', async (req, res) => {
-  const filesService = new FilesService({ schema });
-
   const data = await filesService.readOne('file_id');
   res.locals['payload'] = { data: data || null };
   res.json(data);
@@ -51,8 +49,6 @@ router.get('/', async (req, res) => {
 
 ```js
 router.patch('/', async (req, res) => {
-  const filesService = new FilesService({ schema });
-
   const data = await filesService.updateOne('file_id', { title: 'Random' });
   res.locals['payload'] = { data: data || null };
   res.json(data);
@@ -63,8 +59,6 @@ router.patch('/', async (req, res) => {
 
 ```js
  router.delete('/', async (req, res) => {
-  const filesService = new FilesService({ schema });
-
   const data = await filesService.deleteOne('file_id');
   res.locals['payload'] = { data: data || null };
   res.json(data);

@@ -19,9 +19,12 @@ export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { UsersService, RolesService, PermissionsService } = services;
   const schema = await getSchema();
+  const usersService = new UsersService({ schema });
+  const rolesService = new RolesService({ schema });
+  const permissionsService = new PermissionsService({ schema });
 
   router.get('/', async (req, res) => {
-    const usersService = new usersService({ schema });
+    // Your route handler logic
   });
 });
 ```
@@ -30,8 +33,6 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.get('/', async (req, res) => {
-  const usersService = new UsersService({ schema });
-
   const data = await usersService.getUserByEmail('email');
 
   res.locals['payload'] = { data: data || null };
@@ -43,7 +44,6 @@ router.get('/', async (req, res) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const rolesService = new RolesService({ schema });
   const data = await rolesService.createOne({
     name: 'Interns',
     icon: 'verified_user',
@@ -61,9 +61,6 @@ router.post('/', async (req, res) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const usersService = new UsersService({ schema });
-  const rolesService = new RolesService({ schema });
-
   const roles = await rolesService.readByQuery({
     fields: ['*'],
   });
@@ -90,8 +87,6 @@ A role is required when creating a user.
 
 ```js
 router.patch('/', async (req, res) => {
-  const usersService = new UsersService({ schema });
-
   const data = await usersService.updateOne('user_id', {
     title: 'CTO'
   });
@@ -104,7 +99,6 @@ router.patch('/', async (req, res) => {
 
 ```js
 router.delete('/', async (req, res) => {
-  const usersService = new UsersService({ schema });
   const data = await usersService.deleteOne('user_id');
 
   res.locals['payload'] = { data: data || null };
@@ -116,9 +110,6 @@ router.delete('/', async (req, res) => {
 
 ```js
 router.post('/', async (req, res) => {
-	const permissionsService = new PermissionsService({ schema });
-	const rolesService = new RolesService({ schema });
-
 	const roles = await rolesService.readByQuery({
 		fields: ['*'],
 	});

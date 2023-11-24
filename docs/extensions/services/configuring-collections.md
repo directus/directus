@@ -17,9 +17,10 @@ export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { CollectionsService } = services;
   const schema = await getSchema();
+  const collectionsService = new CollectionsService({ schema });
 
   router.get('/', async (req, res) => {
-    const collectionsService = new CollectionsService({ schema });
+    // Your route handler logic
   });
 });
 ```
@@ -28,7 +29,6 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const collectionsService = new CollectionsService({ schema });
   const collectionKey = await collectionsService.createOne({
     collection:'articles',
     meta: {
@@ -46,7 +46,6 @@ router.post('/', async (req, res) => {
 
 ```js
 router.get('/', async (req, res) => {
-  const collectionsService = new CollectionsService({ schema });
   const data = await collectionsService.readOne('collection_name');
 
   res.locals['payload'] = { data: collection || null };
@@ -58,8 +57,6 @@ router.get('/', async (req, res) => {
 
 ```js
 router.patch('/', async (req, res) => {
-  const collectionsService = new CollectionsService({ schema });
-
   const data = await collectionsService.updateOne('collection_name', {
     meta: {
       note: 'Updated blog posts',
@@ -74,8 +71,6 @@ router.patch('/', async (req, res) => {
 
 ```js
 router.delete('/', async (req, res) => {
-  const collectionsService = new CollectionsService({ schema });
-
   await collectionsService.deleteOne('collection_name');
 
   res.json();
@@ -91,9 +86,10 @@ export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { FieldsService } = services;
   const schema = await getSchema();
+  const fieldsService = new FieldsService({ schema });
 
   router.get('/', async (req, res) => {
-    const fieldsService = new FieldsService({ schema });
+    // Your route handler logic
   });
 });
 ```
@@ -102,8 +98,6 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const fieldsService = new FieldsService({ schema });
-
   const field = {
     field: 'title',
     type: 'string',
@@ -129,8 +123,6 @@ router.post('/', async (req, res) => {
 
 ```js
 router.get('/', async (req, res) => {
-  const fieldsService = new FieldsService({ schema });
-
   const data = await fieldsService.readAll('collection_name');
   res.locals['payload'] = { data: data || null };
   res.json(data);
@@ -141,8 +133,6 @@ router.get('/', async (req, res) => {
 
 ```js
 router.patch('/', async (req, res) => {
-  const fieldsService = new FieldsService({ schema });
-
   await fieldsService.updateField('collection_name', {
     meta: {
       note: 'Put the title here',
@@ -172,8 +162,6 @@ Updating the field name is not supported at this time.
 
 ```js
 router.delete('/', async (req, res) => {
-  const fieldsService = new FieldsService({ schema });
-
   await fieldsService.deleteField('collection_name', 'field_name');
   res.json();
 });
@@ -188,9 +176,10 @@ export default defineEndpoint(async (router, context) => {
   const { services, getSchema } = context;
   const { RelationsService } = services;
   const schema = await getSchema();
+  const relationsService = new RelationsService({ schema });
 
   router.get('/', async (req, res) => {
-    const relationsService = new RelationsService({ schema });
+    // Your route handler logic
   });
 });
 ```
@@ -199,8 +188,6 @@ export default defineEndpoint(async (router, context) => {
 
 ```js
 router.post('/', async (req, res) => {
-  const relationsService = new RelationsService({ schema });
-
   const data = await relationsService.createOne({
     collection: 'articles',
     field: 'featured_image',
@@ -217,8 +204,6 @@ router.post('/', async (req, res) => {
 
 ```js
 router.get('/', async (req, res) => {
-  const relationsService = new RelationsService({ schema });
-
   const data = await relationsService.readOne('collection_name', 'field_name');
 
   res.json(data);
@@ -229,8 +214,6 @@ router.get('/', async (req, res) => {
 
 ```js
 router.patch('/', async (req, res) => {
-  const relationsService = new RelationsService({ schema });
-
   const data = await relationsService.updateOne(
     'collection_name',
     'field_name',
@@ -248,9 +231,7 @@ router.patch('/', async (req, res) => {
 ### Delete a Relation
 
 ```js
-router.delete('/', async (req, res) => {
-  const relationsService = new RelationsService({ schema });
-  const data = await relationsService.deleteOne(
+router.delete('/', async (req, res) => {  const data = await relationsService.deleteOne(
     'collection_name',
     'field_name',
   );
