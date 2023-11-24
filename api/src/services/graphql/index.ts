@@ -244,14 +244,14 @@ export class GraphQLService {
 								`${collection.collection}_by_id`,
 							);
 
-							if (this.scope === 'items') {
-								acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
-									`${collection.collection}_by_version`,
-								);
-							}
-
 							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection]!.getResolver(
 								`${collection.collection}_aggregated`,
+							);
+						}
+
+						if (this.scope === 'items') {
+							acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
+								`${collection.collection}_by_version`,
 							);
 						}
 
@@ -1136,22 +1136,24 @@ export class GraphQLService {
 							return result;
 						},
 					});
+				}
 
-					if (self.scope === 'items') {
-						VersionCollectionTypes[collection.collection]!.addResolver({
-							name: `${collection.collection}_by_version`,
-							type: VersionCollectionTypes[collection.collection]!,
-							args: {
-								version: new GraphQLNonNull(GraphQLString),
-								id: new GraphQLNonNull(GraphQLID),
-							},
-							resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-								const result = await self.resolveQuery(info);
-								context['data'] = result;
-								return result;
-							},
-						});
-					}
+				if (self.scope === 'items') {
+					VersionCollectionTypes[collection.collection]!.addResolver({
+						name: `${collection.collection}_by_version`,
+						type: VersionCollectionTypes[collection.collection]!,
+						args: collection.singleton
+							? { version: new GraphQLNonNull(GraphQLString) }
+							: {
+									version: new GraphQLNonNull(GraphQLString),
+									id: new GraphQLNonNull(GraphQLID),
+							  },
+						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+							const result = await self.resolveQuery(info);
+							context['data'] = result;
+							return result;
+						},
+					});
 				}
 
 				const eventName = `${collection.collection}_mutated`;
