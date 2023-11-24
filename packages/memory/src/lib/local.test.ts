@@ -15,6 +15,7 @@ beforeEach(() => {
 		get: vi.fn(),
 		set: vi.fn(),
 		delete: vi.fn(),
+		has: vi.fn(),
 	} as unknown as LRUCache<string, Uint8Array, unknown>;
 });
 
@@ -122,6 +123,61 @@ describe('increment', () => {
 	});
 });
 
+describe('setMax', () => {
+	test('Errors if key does not contain number', async () => {
+		const mockKey = 'cache-key';
+		const mockValue = 42;
+		const mockCached = 'not-a-number';
+
+		memory.get = vi.fn().mockReturnValue(mockCached);
+
+		expect(memory.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
+			'[Error: The value for cache key "cache-key" is not a number.]',
+		);
+	});
+
+	test('Defaults to 0 if current value does not exist', async () => {
+		const mockKey = 'cache-key';
+		const mockValue = 42;
+		const mockCached = undefined;
+
+		memory.get = vi.fn().mockReturnValue(mockCached);
+		memory.set = vi.fn();
+
+		await memory.setMax(mockKey, mockValue);
+
+		expect(memory.set).toHaveBeenCalledWith(mockKey, mockValue);
+	});
+
+	test('Returns false if existing value is bigger than passed value', async () => {
+		const mockKey = 'cache-key';
+		const mockValue = 42;
+		const mockCached = 500;
+
+		memory.get = vi.fn().mockReturnValue(mockCached);
+		memory.set = vi.fn();
+
+		const result = await memory.setMax(mockKey, mockValue);
+
+		expect(memory.set).not.toHaveBeenCalled();
+		expect(result).toBe(false);
+	});
+
+	test('Returns true if passed value is bigger than existing value', async () => {
+		const mockKey = 'cache-key';
+		const mockValue = 500;
+		const mockCached = 42;
+
+		memory.get = vi.fn().mockReturnValue(mockCached);
+		memory.set = vi.fn();
+
+		const result = await memory.setMax(mockKey, mockValue);
+
+		expect(memory.set).toHaveBeenCalledWith(mockKey, mockValue);
+		expect(result).toBe(true);
+	});
+});
+
 describe('delete', () => {
 	test('Deletes key from cache', async () => {
 		const mockKey = 'cache-key';
@@ -129,6 +185,26 @@ describe('delete', () => {
 		await memory.delete(mockKey);
 
 		expect(memory['cache'].delete).toHaveBeenCalledWith(mockKey);
+	});
+});
+
+describe('has', () => {
+	test('Returns result of lru has', async () => {
+		const mockKey = 'cache-key';
+
+		vi.mocked(memory['cache'].has).mockReturnValue(false);
+
+		const res1 = await memory.has(mockKey);
+
+		expect(memory['cache'].has).toHaveBeenCalledWith(mockKey);
+		expect(res1).toBe(false);
+
+		vi.mocked(memory['cache'].has).mockReturnValue(true);
+
+		const res2 = await memory.has(mockKey);
+
+		expect(memory['cache'].has).toHaveBeenCalledWith(mockKey);
+		expect(res2).toBe(true);
 	});
 });
 

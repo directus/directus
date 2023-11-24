@@ -42,8 +42,28 @@ export class MemoryLocal implements Memory {
 		await this.set(key, newVal);
 	}
 
+	async setMax(key: string, value: number) {
+		const currentVal = (await this.get(key)) ?? 0;
+
+		if (typeof currentVal !== 'number') {
+			throw new Error(`The value for cache key "${key}" is not a number.`);
+		}
+
+		if (currentVal > value) {
+			return false;
+		}
+
+		await this.set(key, value);
+
+		return true;
+	}
+
 	async delete(key: string) {
 		this.cache.delete(key);
+	}
+
+	async has(key: string) {
+		return this.cache.has(key);
 	}
 
 	async publish<T = unknown>(channel: string, payload: T) {

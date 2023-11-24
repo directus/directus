@@ -1,4 +1,4 @@
-export type MessageHandler = <T = unknown>(payload: T) => void
+export type MessageHandler = <T = unknown>(payload: T) => void;
 
 export interface Memory {
 	/**
@@ -18,6 +18,15 @@ export interface Memory {
 	set<T = unknown>(key: string, value: T): Promise<void>;
 
 	/**
+	 * Save the given value to the cache if the given value is larger than the existing value
+	 *
+	 * @param key Key to save in the cache
+	 * @param value Number to save to the cache if it's bigger than the current value
+	 * @returns Whether or not the given value was saved
+	 */
+	setMax(key: string, value: number): Promise<boolean>;
+
+	/**
 	 * Increment the given cached value by the given amount
 	 *
 	 * @param key Key to increment in the cache
@@ -31,6 +40,13 @@ export interface Memory {
 	 * @param key Key to remove from the cache
 	 */
 	delete(key: string): Promise<void>;
+
+	/**
+	 * Check if a given key exists in the cache
+	 *
+	 * @param key Key to check
+	 */
+	has(key: string): Promise<boolean>;
 
 	/**
 	 * Publish a message to subscribed clients in the given channel
