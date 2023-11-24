@@ -462,7 +462,7 @@ export class GraphQLService {
 								}
 							}
 
-              if (field.type === 'time') {
+							if (field.type === 'time') {
 								acc[`${field.field}_func`] = {
 									type: TimeFunctions,
 									resolve: (obj: Record<string, any>) => {
@@ -470,7 +470,7 @@ export class GraphQLService {
 										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 									},
 								};
-              }
+							}
 
 							acc[field.field] = {
 								type,
