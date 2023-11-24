@@ -615,8 +615,11 @@ function sidebar() {
 				{
 					text: 'Extension Services',
 					collapsed: true,
-					link: '/extensions/services/introduction',
 					items: [
+						{
+							link: '/extensions/services/introduction',
+							text: 'Introduction',
+						},
 						{
 							link: '/extensions/services/accessing-items',
 							text: 'Accessing Items',
