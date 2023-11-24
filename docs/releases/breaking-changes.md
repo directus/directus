@@ -17,7 +17,8 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### Updated GraphQL content version usage
 
-Content versioning was originally implemented as a GraphQL parameter however the output format for relational fields is different for stored versions resulting in a GraphQL error as this is unsupported.
+Content versioning was originally implemented as a GraphQL parameter however the output format for relational fields is
+different for stored versions resulting in a GraphQL error as this is unsupported.
 
 ```graphql [Before]
 // version by id
@@ -67,7 +68,6 @@ query {
     }
 }
 ```
-
 
 ## Version 10.6.2
 
