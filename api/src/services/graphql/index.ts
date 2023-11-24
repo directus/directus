@@ -459,7 +459,20 @@ export class GraphQLService {
 								};
 							}
 
-							if (field.type === 'time') {
+							if (collection.primary === field.field) {
+								// permissions IDs need to be nullable https://github.com/directus/directus/issues/20509
+								if (collection.collection === 'directus_permissions') {
+									type = GraphQLID;
+								} else if (!field.defaultValue && !field.special.includes('uuid') && action === 'create') {
+									type = new GraphQLNonNull(GraphQLID);
+								} else if (['create', 'update'].includes(action)) {
+									type = GraphQLID;
+								} else {
+									type = new GraphQLNonNull(GraphQLID);
+								}
+							}
+                
+              if (field.type === 'time') {
 								acc[`${field.field}_func`] = {
 									type: TimeFunctions,
 									resolve: (obj: Record<string, any>) => {
@@ -467,7 +480,7 @@ export class GraphQLService {
 										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 									},
 								};
-							}
+              }
 
 							if (field.type === 'dateTime' || field.type === 'timestamp') {
 								acc[`${field.field}_func`] = {
