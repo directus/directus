@@ -56,7 +56,7 @@ If using SEARCH you can provide a [query object](/reference/query) as the body o
 `POST /graphql`
 
 ```graphql
-query {
+type Query {
 	<collection>: [<collection>]
 }
 ```
@@ -151,10 +151,10 @@ Get an item that exists in Directus.
 `POST /graphql`
 
 ```graphql
-query {
+type Query {
 	<collection>_by_id(id: ID!): <collection>
 }
-query {
+type Query {
 	<collection>_by_version(id: ID!, version String!): <collection_version>
 }
 ```
@@ -276,7 +276,7 @@ List a singleton item in Directus.
 `POST /graphql`
 
 ```graphql
-query {
+type Query {
 	<collection>_by_version(version: String): <collection>
 }
 ```
@@ -409,7 +409,7 @@ Provide an [item object](#the-item-object) as the body of your request.
 `POST /graphql`
 
 ```graphql
-mutation {
+type Mutation {
 	create_<collection>_item(data: create_<collection>_input): <collection>
 }
 ```
@@ -513,7 +513,7 @@ Provide an array of [item object](#the-item-object) as the body of your reques
 `POST /graphql`
 
 ```graphql
-mutation {
+type Mutation {
 	create_<collection>_items(data: [create_<collection>_input]): [<collection>]
 }
 ```
@@ -627,7 +627,7 @@ Provide a partial [item object](#the-item-object) as the body of your request.
 `POST /graphql`
 
 ```graphql
-mutation {
+type Mutation {
 	update_<collection>_item(id: ID!, data: update_<collection>_input!): <collection>
 }
 ```
@@ -722,7 +722,7 @@ Provide a partial [item object](#the-item-object) as the body of your request.
 `POST /graphql`
 
 ```graphql
-mutation {
+type Mutation {
 	update_<collection>_items(data: [update_<collection>_input]): [<collection>]
 }
 ```
@@ -824,7 +824,7 @@ Provide a partial [item object](#the-item-object) as the body of your request.
 `POST /graphql`
 
 ```graphql
-mutation {
+type Mutation {
 	update_<collection>_items(ids: [ID!]!, data: [update_<collection>_input]): [<collection>]
 }
 ```
@@ -920,7 +920,7 @@ Delete an existing item.
 `POST /graphql`
 
 ```graphql
-mutation {
+type Mutation {
 	delete_<collection>_item(id: ID!): delete_one
 }
 ```
@@ -994,7 +994,7 @@ Provide an array of item primary keys or an object containing either `keys` or `
 `POST /graphql`
 
 ```graphql
-mutation {
+type Mutation {
 	delete_<collection>_items(ids: [ID!]!): delete_many
 }
 ```
