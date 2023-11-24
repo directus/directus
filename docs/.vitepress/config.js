@@ -613,6 +613,32 @@ function sidebar() {
 					],
 				},
 				{
+					text: 'Extension Services',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/services/introduction',
+							text: 'Introduction',
+						},
+						{
+							link: '/extensions/services/accessing-items',
+							text: 'Accessing Items',
+						},
+						{
+							link: '/extensions/services/configuring-collections',
+							text: 'Configuring Collections, Fields, and Relations',
+						},
+						{
+							link: '/extensions/services/accessing-files',
+							text: 'Accessing Files',
+						},
+						{
+							link: '/extensions/services/working-with-users',
+							text: 'Working with Users',
+						},
+					],
+				},
+				{
 					text: 'Internal Packages',
 					link: '/contributing/codebase-overview.html#packages-packages',
 				},
