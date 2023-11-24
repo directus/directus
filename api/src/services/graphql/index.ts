@@ -450,11 +450,27 @@ export class GraphQLService {
 							}
 
 							if (collection.primary === field.field) {
-								if (!field.defaultValue && !field.special.includes('uuid') && action === 'create') {
+								// permissions IDs need to be nullable https://github.com/directus/directus/issues/20509
+								if (collection.collection === 'directus_permissions') {
+									type = GraphQLID;
+								} else if (!field.defaultValue && !field.special.includes('uuid') && action === 'create') {
 									type = new GraphQLNonNull(GraphQLID);
-								} else if (['create', 'update'].includes(action)) type = GraphQLID;
-								else type = new GraphQLNonNull(GraphQLID);
+								} else if (['create', 'update'].includes(action)) {
+									type = GraphQLID;
+								} else {
+									type = new GraphQLNonNull(GraphQLID);
+								}
 							}
+
+              if (field.type === 'time') {
+								acc[`${field.field}_func`] = {
+									type: TimeFunctions,
+									resolve: (obj: Record<string, any>) => {
+										const funcFields = Object.keys(TimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
+										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+									},
+								};
+              }
 
 							acc[field.field] = {
 								type,
