@@ -246,9 +246,11 @@ export class GraphQLService {
 								`${collection.collection}_by_id`,
 							);
 
-							acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
-								`${collection.collection}_by_version`,
-							);
+							if (this.scope === 'items') {
+								acc[`${collectionName}_by_version`] = VersionCollectionTypes[collection.collection]!.getResolver(
+									`${collection.collection}_by_version`,
+								);
+							}
 
 							acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection]!.getResolver(
 								`${collection.collection}_aggregated`,
@@ -531,9 +533,11 @@ export class GraphQLService {
 					),
 				});
 
-				VersionTypes[collection.collection] = CollectionTypes[collection.collection]!.clone(
-					`version_${collection.collection}`,
-				);
+				if (self.scope === 'items') {
+					VersionTypes[collection.collection] = CollectionTypes[collection.collection]!.clone(
+						`version_${collection.collection}`,
+					);
+				}
 			}
 
 			for (const relation of schema[action].relations) {
@@ -559,14 +563,16 @@ export class GraphQLService {
 							},
 						});
 
-						VersionTypes[relation.related_collection]?.addFields({
-							[relation.meta.one_field]: {
-								type: 'JSON',
-								resolve: (obj: Record<string, any>, _, __, info) => {
-									return obj[info?.path?.key ?? relation.meta!.one_field];
+						if (self.scope === 'items') {
+							VersionTypes[relation.related_collection]?.addFields({
+								[relation.meta.one_field]: {
+									type: 'JSON',
+									resolve: (obj: Record<string, any>, _, __, info) => {
+										return obj[info?.path?.key ?? relation.meta!.one_field];
+									},
 								},
-							},
-						});
+							});
+						}
 					}
 				} else if (relation.meta?.one_allowed_collections && action === 'read') {
 					// NOTE: There are no union input types in GraphQL, so this only applies to Read actions
@@ -1093,12 +1099,6 @@ export class GraphQLService {
 							type: GraphQLString,
 						},
 					};
-				} else {
-					resolver.args = {
-						version: {
-							type: GraphQLString,
-						},
-					};
 				}
 
 				ReadCollectionTypes[collection.collection]!.addResolver(resolver);
@@ -1149,20 +1149,21 @@ export class GraphQLService {
 						},
 					});
 
-					// TODO test the types
-					VersionCollectionTypes[collection.collection]!.addResolver({
-						name: `${collection.collection}_by_version`,
-						type: VersionCollectionTypes[collection.collection]!,
-						args: {
-							id: new GraphQLNonNull(GraphQLID),
-							version: new GraphQLNonNull(GraphQLString),
-						},
-						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-							const result = await self.resolveQuery(info);
-							context['data'] = result;
-							return result;
-						},
-					});
+					if (self.scope === 'items') {
+						VersionCollectionTypes[collection.collection]!.addResolver({
+							name: `${collection.collection}_by_version`,
+							type: VersionCollectionTypes[collection.collection]!,
+							args: {
+								version: new GraphQLNonNull(GraphQLString),
+								id: new GraphQLNonNull(GraphQLID),
+							},
+							resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+								const result = await self.resolveQuery(info);
+								context['data'] = result;
+								return result;
+							},
+						});
+					}
 				}
 
 				const eventName = `${collection.collection}_mutated`;
