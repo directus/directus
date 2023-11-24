@@ -35,6 +35,7 @@ tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
 location: Lokasi
+collection_names_are_case_sensitive: Nama koleksi peka huruf besar-kecil
 condition_rules: Gaya Bersyarat
 input: Input
 maps: Peta
