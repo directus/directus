@@ -56,8 +56,10 @@ modifier: Modificateur
 extension_interface: Interface
 extension_display: Affichage
 extension_layout: Mise en page
+extension_module: Module
 extension_panel: Panneau
 extension_hook: Crochet
+extension_bundle: Pack
 extension_modules: Modules
 enable: Activer
 disable: Désactiver
@@ -448,6 +450,7 @@ modified: Modifié
 owner: Propriétaire
 edited_by: Modifié par
 folder: Dossier
+folders: Dossiers
 zoom: Zoom
 download: Télécharger
 open: Ouvrir
@@ -955,6 +958,7 @@ editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
 settings_project: Réglages
+settings_appearance: Apparence
 settings_webhooks: Webhooks
 settings_flows: Flux
 settings_presets: Favoris
@@ -2156,7 +2160,9 @@ operations:
     batch_size: Taille de chaque lot
     cache: Cache
 standard: Standard
+scientific: Scientifique
 compact: Compact
+currency: Devise
 style: Style
 fonts:
   thin: Fin
@@ -2165,6 +2171,9 @@ fonts:
   bold: Gras
   black: Black
   italic: Italique
+  oblique: Oblique
   small: Petit
   auto: Auto
 justify: Justifier
+aggregation: Agrégation
+percent: Pourcent
