@@ -1,6 +1,6 @@
 import type { Redis } from 'ioredis';
 
-export interface MemoryConfigAbstract {
+export interface CacheConfigAbstract {
 	/**
 	 * Where the data is stored
 	 *
@@ -11,7 +11,7 @@ export interface MemoryConfigAbstract {
 	type: 'local' | 'redis' | 'multi';
 }
 
-export interface MemoryConfigLocal extends MemoryConfigAbstract {
+export interface CacheConfigLocal extends CacheConfigAbstract {
 	type: 'local';
 
 	/**
@@ -20,7 +20,7 @@ export interface MemoryConfigLocal extends MemoryConfigAbstract {
 	maxKeys: number;
 }
 
-export interface MemoryConfigRedis extends MemoryConfigAbstract {
+export interface CacheConfigRedis extends CacheConfigAbstract {
 	type: 'redis';
 
 	/**
@@ -41,18 +41,18 @@ export interface MemoryConfigRedis extends MemoryConfigAbstract {
 	redis: Redis;
 }
 
-export interface MemoryConfigMulti extends MemoryConfigAbstract {
+export interface CacheConfigMulti extends CacheConfigAbstract {
 	type: 'multi';
 
 	/**
 	 * Configuration for the L1 cache
 	 */
-	local: Omit<MemoryConfigLocal, 'type'>;
+	local: Omit<CacheConfigLocal, 'type'>;
 
 	/**
 	 * Configuration for the L2 cache
 	 */
-	redis: Omit<MemoryConfigRedis, 'type'>;
+	redis: Omit<CacheConfigRedis, 'type'>;
 }
 
-export type MemoryConfig = MemoryConfigLocal | MemoryConfigRedis | MemoryConfigMulti;
+export type CacheConfig = CacheConfigLocal | CacheConfigRedis | CacheConfigMulti;

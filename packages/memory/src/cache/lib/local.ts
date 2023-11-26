@@ -1,18 +1,15 @@
 import { LRUCache } from 'lru-cache';
-import type { Memory, MessageHandler } from '../types/class.js';
-import type { MemoryConfigLocal } from '../types/config.js';
-import { deserialize, serialize } from '../utils/serialize.js';
+import { deserialize, serialize } from '../../utils/serialize.js';
+import type { Cache } from '../types/class.js';
+import type { CacheConfigLocal } from '../types/config.js';
 
-export class MemoryLocal implements Memory {
+export class CacheLocal implements Cache {
 	private cache: LRUCache<string, Uint8Array, unknown>;
-	private handlers: Record<string, Set<MessageHandler>>;
 
-	constructor(config: Omit<MemoryConfigLocal, 'type'>) {
+	constructor(config: Omit<CacheConfigLocal, 'type'>) {
 		this.cache = new LRUCache({
 			max: config.maxKeys,
 		});
-
-		this.handlers = {};
 	}
 
 	async get<T = unknown>(key: string) {
@@ -64,21 +61,5 @@ export class MemoryLocal implements Memory {
 
 	async has(key: string) {
 		return this.cache.has(key);
-	}
-
-	async publish<T = unknown>(channel: string, payload: T) {
-		this.handlers[channel]?.forEach((callback) => callback(payload));
-	}
-
-	async subscribe(channel: string, callback: MessageHandler) {
-		const set = this.handlers[channel] ?? new Set();
-
-		set.add(callback);
-
-		this.handlers[channel] = set;
-	}
-
-	async unsubscribe(channel: string, callback: MessageHandler) {
-		this.handlers[channel]?.delete(callback);
 	}
 }
