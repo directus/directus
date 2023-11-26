@@ -24,7 +24,7 @@ export interface CacheConfigRedis extends CacheConfigAbstract {
 	type: 'redis';
 
 	/**
-	 * Used to prefix the keys in Redis
+	 * Used to prefix the keys
 	 */
 	namespace: string;
 

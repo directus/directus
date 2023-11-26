@@ -27,6 +27,14 @@ export class CacheLocal implements Cache {
 		this.cache.set(key, serialized);
 	}
 
+	async delete(key: string) {
+		this.cache.delete(key);
+	}
+
+	async has(key: string) {
+		return this.cache.has(key);
+	}
+
 	async increment(key: string, amount: number = 1) {
 		const currentVal = (await this.get(key)) ?? 0;
 
@@ -53,13 +61,5 @@ export class CacheLocal implements Cache {
 		await this.set(key, value);
 
 		return true;
-	}
-
-	async delete(key: string) {
-		this.cache.delete(key);
-	}
-
-	async has(key: string) {
-		return this.cache.has(key);
 	}
 }

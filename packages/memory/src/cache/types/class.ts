@@ -30,6 +30,14 @@ export interface Cache {
 	has(key: string): Promise<boolean>;
 
 	/**
+	 * Increment the given cached value by the given amount
+	 *
+	 * @param key Key to increment in the cache
+	 * @param [amount=1] Amount to increment. Defaults to 1
+	 */
+	increment(key: string, amount: number): Promise<void>;
+
+	/**
 	 * Save the given value to the cache if the given value is larger than the existing value
 	 *
 	 * @param key Key to save in the cache
@@ -37,12 +45,4 @@ export interface Cache {
 	 * @returns Whether or not the given value was saved
 	 */
 	setMax(key: string, value: number): Promise<boolean>;
-
-	/**
-	 * Increment the given cached value by the given amount
-	 *
-	 * @param key Key to increment in the cache
-	 * @param [amount=1] Amount to increment. Defaults to 1
-	 */
-	increment(key: string, amount: number): Promise<void>;
 }
