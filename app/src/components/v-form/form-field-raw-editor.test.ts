@@ -18,7 +18,7 @@ test('should render', () => {
 			showModal: true,
 			field: {
 				field: 'collection',
-				name: 'Collection'
+				name: 'Collection',
 			},
 			disabled: false,
 			currentValue: '["id","new_content"]',
@@ -38,7 +38,7 @@ test('submitting', async () => {
 			showModal: true,
 			field: {
 				field: 'collection',
-				name: 'Collection'
+				name: 'Collection',
 			},
 			disabled: false,
 			currentValue: 'things',
@@ -58,7 +58,7 @@ it('should cancel with keydown', async () => {
 			showModal: true,
 			field: {
 				field: 'collection',
-				name: 'Collection'
+				name: 'Collection',
 			},
 			disabled: false,
 			currentValue: '["id","new_content"]',
@@ -77,7 +77,7 @@ it('should cancel with the cancel button', async () => {
 			showModal: true,
 			field: {
 				field: 'collection',
-				name: 'Collection'
+				name: 'Collection',
 			},
 			disabled: false,
 			currentValue: '["id","new_content"]',
