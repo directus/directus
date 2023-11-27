@@ -35,6 +35,7 @@ tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
 location: Locație
+collection_names_are_case_sensitive: Numele colecțiilor sunt sensibile la distincția dintre majuscule și minuscule
 condition_rules: Reguli
 input: Input
 maps: Hărți
