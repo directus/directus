@@ -661,7 +661,7 @@ formData.append('file', file, fileName);
 const result = await client.request(uploadFiles(formData));
 ```
 
-[Learn more about FormData ->](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
+[Learn more about `FormData` ->](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
 
 </template>
 </SnippetToggler>
