@@ -11,6 +11,23 @@ import {
 import type { CacheConfigRedis } from '../index.js';
 import type { Cache } from '../types/class.js';
 
+const SET_MAX_SCRIPT = `
+  local key = KEYS[1]
+  local value = tonumber(ARGV[1])
+
+  if redis.call("EXISTS", key) == 1 then
+    local oldValue = tonumber(redis.call('GET', key))
+
+    if value <= oldValue then
+      return false
+    end
+  end
+
+  redis.call('SET', key, value)
+
+  return true
+`;
+
 export class CacheRedis implements Cache {
 	private redis: Redis;
 	private namespace: string;
@@ -20,6 +37,11 @@ export class CacheRedis implements Cache {
 		this.redis = config.redis;
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
+
+		this.redis.defineCommand('setMax', {
+			numberOfKeys: 1,
+			lua: SET_MAX_SCRIPT,
+		});
 	}
 
 	async get<T = unknown>(key: string) {
@@ -61,5 +83,9 @@ export class CacheRedis implements Cache {
 		await this.redis.incrby(withNamespace(key, this.namespace), amount);
 	}
 
-	async setMax(key: string, value: number) {}
+	async setMax(key: string, value: number) {
+		const client = this.redis as Redis & { setMax(key: string, value: number): Promise<number> };
+		const wasSet = await client.setMax(withNamespace(key, this.namespace), value);
+		return wasSet !== 0;
+	}
 }
