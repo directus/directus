@@ -196,7 +196,7 @@ gtag('config', 'UA-24637628-7');
 		resolve: {
 			alias: [
 				{
-					find: '@/',
+					find: '@',
 					replacement: fileURLToPath(new URL('./', import.meta.url)),
 				},
 				{
