@@ -306,7 +306,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 
 	function getPrimaryKeyFieldForCollection(collection: string): Field | null {
 		const primaryKeyField = fields.value.find(
-			(field) => field.collection === collection && field.schema?.is_primary_key === true
+			(field) => field.collection === collection && field.schema?.is_primary_key === true,
 		);
 
 		return primaryKeyField ?? null;
@@ -316,7 +316,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		return orderBy(
 			fields.value.filter((field) => field.collection === collection),
 			[(field) => field.meta?.system === true, (field) => (field.meta?.sort ? Number(field.meta?.sort) : null)],
-			['desc', 'asc']
+			['desc', 'asc'],
 		);
 	}
 
@@ -335,7 +335,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	function getFieldsForCollectionSorted(collection: string): Field[] {
 		const fieldsSorted = orderBy(
 			fields.value.filter((field) => field.collection === collection),
-			'meta.sort'
+			'meta.sort',
 		);
 
 		const nonGroupFields = fieldsSorted.filter((field: Field) => !field.meta?.group);

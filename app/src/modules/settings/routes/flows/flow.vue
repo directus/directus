@@ -103,7 +103,7 @@ const hoveredPanelID = ref<string | null>(null);
 
 const panels = computed(() => {
 	const savedPanels = (flow.value?.operations || []).filter(
-		(panel) => panelsToBeDeleted.value.includes(panel.id) === false
+		(panel) => panelsToBeDeleted.value.includes(panel.id) === false,
 	);
 
 	const raw = [
@@ -180,7 +180,7 @@ const parentPanels = computed(() => {
 	return Object.fromEntries(
 		Object.entries(parents).map(([key, value]) => {
 			return [key, { ...value, loner: !connectedToTrigger(key) }];
-		})
+		}),
 	);
 
 	function connectedToTrigger(id: string) {
@@ -485,7 +485,7 @@ function getNearAttachment(pos: Vector2) {
 	for (const panel of panels.value) {
 		const attachmentPos = new Vector2(
 			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
-			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y
+			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y,
 		);
 
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;

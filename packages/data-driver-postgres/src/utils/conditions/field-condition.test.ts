@@ -23,7 +23,7 @@ test('field condition', () => {
 				column: column2,
 			},
 		},
-		false
+		false,
 	);
 
 	expect(res).toStrictEqual(`"${table1}"."${column1}" = "${table2}"."${column2}"`);

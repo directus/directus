@@ -96,7 +96,7 @@ export default defineOperationApp({
 								data: '{{ $last }}',
 							},
 							null,
-							2
+							2,
 						),
 						template: JSON.stringify(
 							{
@@ -104,7 +104,7 @@ export default defineOperationApp({
 								data: '{{ $last }}',
 							},
 							null,
-							2
+							2,
 						),
 					},
 				},

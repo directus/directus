@@ -112,7 +112,7 @@ class FlowManager {
 	public async runWebhookFlow(
 		id: string,
 		data: unknown,
-		context: Record<string, unknown>
+		context: Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
@@ -169,7 +169,7 @@ class FlowManager {
 								accountability: context['accountability'],
 								database: context['database'],
 								getSchema: context['schema'] ? () => context['schema'] : getSchema,
-							}
+							},
 						);
 
 					events.forEach((event) => emitter.onFilter(event, handler));
@@ -368,7 +368,7 @@ class FlowManager {
 								],
 								values: this.envs,
 							},
-							getRedactedString
+							getRedactedString,
 						),
 					},
 				});
@@ -391,7 +391,7 @@ class FlowManager {
 	private async executeOperation(
 		operation: Operation,
 		keyedData: Record<string, unknown>,
-		context: Record<string, unknown> = {}
+		context: Record<string, unknown> = {},
 	): Promise<{
 		successor: Operation | null;
 		status: 'resolve' | 'reject' | 'unknown';

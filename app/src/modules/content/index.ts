@@ -71,7 +71,7 @@ export default defineModule({
 					collectionsStore.visibleCollections.filter((collection) => {
 						return isNil(collection?.meta?.group);
 					}),
-					['meta.sort', 'collection']
+					['meta.sort', 'collection'],
 				);
 
 				const { data } = useLocalStorage('last-accessed-collection');
@@ -105,7 +105,7 @@ export default defineModule({
 							collectionsStore.visibleCollections.filter((childCollection) => {
 								return collection.collection === childCollection.meta?.group;
 							}),
-							['meta.sort', 'collection']
+							['meta.sort', 'collection'],
 						);
 
 						const first = findFirst(children);

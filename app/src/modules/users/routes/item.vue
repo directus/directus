@@ -66,7 +66,7 @@ const {
 		? {
 				fields: ['*', 'role.*'],
 		  }
-		: undefined
+		: undefined,
 );
 
 const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));

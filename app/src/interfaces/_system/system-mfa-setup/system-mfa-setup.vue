@@ -40,7 +40,7 @@ watch(
 	() => {
 		tfaEnabled.value = !!props.value;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 watch(
@@ -50,7 +50,7 @@ watch(
 			await nextTick();
 			(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 		}
-	}
+	},
 );
 
 async function enable() {

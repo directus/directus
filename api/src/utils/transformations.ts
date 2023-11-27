@@ -34,7 +34,7 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 function getFormat(
 	file: File,
 	format: TransformationSet['transformationParams']['format'],
-	acceptFormat: TransformationSet['acceptFormat']
+	acceptFormat: TransformationSet['acceptFormat'],
 ): TransformationFormat {
 	const fileType = file.type?.split('/')[1] as TransformationFormat | undefined;
 

@@ -12,7 +12,7 @@ withDefaults(
 	}>(),
 	{
 		width: 'half',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);

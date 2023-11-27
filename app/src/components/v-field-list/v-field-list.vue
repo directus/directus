@@ -56,7 +56,7 @@ const treeList = computed(() => {
 	return list;
 
 	function setDisabled(
-		field: (typeof treeListOriginal.value)[number]
+		field: (typeof treeListOriginal.value)[number],
 	): (typeof treeListOriginal.value)[number] & { disabled: boolean } {
 		let disabled = field.group || false;
 

@@ -4,7 +4,7 @@ description:
 ---
 
 <script setup lang="ts">
-import { data as directus } from '../.vitepress/data/directus.data.js';
+import { data as packages } from '@/data/packages.data.js';
 </script>
 
 # Self-Hosting Quickstart
@@ -39,7 +39,7 @@ Copy and paste the following and save the file as `docker-compose.yml`:
 version: "3"
 services:
   directus:
-    image: directus/directus:{{ directus.version.full }}
+    image: directus/directus:{{ packages.directus.version.full }}
     ports:
       - 8055:8055
     volumes:

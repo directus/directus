@@ -114,7 +114,7 @@ export default defineOperationApp({
 							},
 						},
 						null,
-						2
+						2,
 					),
 					template: JSON.stringify(
 						{
@@ -125,7 +125,7 @@ export default defineOperationApp({
 							},
 						},
 						null,
-						2
+						2,
 					),
 				},
 			},

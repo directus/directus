@@ -27,7 +27,7 @@ const props = withDefaults(
 		allowSelectAll: false,
 		parent: null,
 		rawFieldNames: false,
-	}
+	},
 );
 
 const emit = defineEmits(['add']);

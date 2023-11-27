@@ -20,7 +20,7 @@ withDefaults(
 	}>(),
 	{
 		placeholder: () => i18n.global.t('select_an_item'),
-	}
+	},
 );
 
 defineEmits(['input']);

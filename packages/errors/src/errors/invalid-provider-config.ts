@@ -8,5 +8,5 @@ export interface InvalidProviderConfigErrorExtensions {
 export const InvalidProviderConfigError = createError<InvalidProviderConfigErrorExtensions>(
 	ErrorCode.InvalidProviderConfig,
 	'Invalid config.',
-	503
+	503,
 );

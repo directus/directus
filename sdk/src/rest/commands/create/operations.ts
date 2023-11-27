@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreateOperationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusOperation<Schema>
+	Item extends object = DirectusOperation<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -19,7 +19,7 @@ export type CreateOperationOutput<
 export const createOperations =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
 		items: Partial<DirectusOperation<Schema>>[],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateOperationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/operations`,
@@ -39,7 +39,7 @@ export const createOperations =
 export const createOperation =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
 		item: Partial<DirectusOperation<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateOperationOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/operations`,

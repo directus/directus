@@ -22,7 +22,7 @@ const { collection, primaryKey, version } = toRefs(props);
 const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
 	collection,
 	primaryKey,
-	version
+	version,
 );
 
 const modalActive = ref(false);
@@ -33,7 +33,7 @@ watch(
 	() => page.value,
 	(newPage) => {
 		refresh(newPage);
-	}
+	},
 );
 
 function openModal(id: number) {

@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-identifier: شناسه
+identifier: شناساگر
 avatar: آواتار
 application: برنامه
 default_provider: پیش‌فرض
@@ -37,10 +37,10 @@ conditions: شرایط
 location: موقعیت
 condition_rules: استایل شرطی
 input: ورودی
-maps: نقشه ها
+maps: نقشه‌ها
 switch_user: تغییر کاربر
-item_creation: ساخت یک آیتم
-item_revision: نسخه های آیتم
+item_creation: ساخت آیتم
+item_revision: نگارش‌های آیتم
 enter_a_name: عنوانی را وارد نمایید...
 duplicate_field: فیلد تکراری
 half_width: نصف عرض

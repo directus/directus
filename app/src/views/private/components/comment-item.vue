@@ -20,7 +20,7 @@ const props = withDefaults(
 	}>(),
 	{
 		userPreviews: () => ({}),
-	}
+	},
 );
 
 const { editing, cancelEditing } = useEdits();
@@ -32,7 +32,7 @@ function useEdits() {
 
 	watch(
 		() => props.activity,
-		() => (edits.value = props.activity.comment)
+		() => (edits.value = props.activity.comment),
 	);
 
 	return { edits, editing, savingEdits, saveEdits, cancelEditing };
@@ -217,7 +217,9 @@ function useEdits() {
 	font-size: 12px;
 	background-color: var(--theme--background-normal);
 	border-radius: 12px;
-	transition: color var(--fast) var(--transition), background-color var(--fast) var(--transition);
+	transition:
+		color var(--fast) var(--transition),
+		background-color var(--fast) var(--transition);
 }
 
 .comment-item.expand .content .expand-text:hover span {

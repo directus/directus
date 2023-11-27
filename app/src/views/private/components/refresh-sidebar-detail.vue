@@ -37,7 +37,7 @@ watch(
 			}, newInterval * 1000);
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const items = computed(() => {

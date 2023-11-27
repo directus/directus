@@ -25,7 +25,7 @@ const props = withDefaults(
 	}>(),
 	{
 		crop: true,
-	}
+	},
 );
 
 const emit = defineEmits<{

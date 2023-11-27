@@ -60,7 +60,7 @@ const props = withDefaults(
 		filter: null,
 		root: false,
 		modelValue: undefined,
-	}
+	},
 );
 
 const { t } = useI18n();
@@ -94,7 +94,7 @@ const { displayItems, create, update, remove, select, cleanItem, isLocalItem, ge
 	value,
 	query,
 	relationInfo,
-	primaryKey
+	primaryKey,
 );
 
 function getDeselectIcon(item: DisplayItem) {
@@ -115,7 +115,7 @@ const dragOptions = {
 const filteredDisplayItems = computed(() => {
 	return displayItems.value.filter(
 		(item) =>
-			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined)
+			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined),
 	);
 });
 

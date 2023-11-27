@@ -40,7 +40,7 @@ function useSave() {
 					appRecommendedPermissions.map((permission) => ({
 						...permission,
 						role: roleResponse.data.data.id,
-					}))
+					})),
 				);
 			}
 

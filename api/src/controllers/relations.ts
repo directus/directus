@@ -24,7 +24,7 @@ router.get(
 		res.locals['payload'] = { data: relations || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -41,7 +41,7 @@ router.get(
 		res.locals['payload'] = { data: relations || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -58,7 +58,7 @@ router.get(
 		res.locals['payload'] = { data: relation || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const newRelationSchema = Joi.object({
@@ -102,7 +102,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const updateRelationSchema = Joi.object({
@@ -147,7 +147,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -162,7 +162,7 @@ router.delete(
 		await service.deleteOne(req.params['collection']!, req.params['field']!);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

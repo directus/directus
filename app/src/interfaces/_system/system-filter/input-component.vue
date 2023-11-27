@@ -16,7 +16,7 @@ const props = withDefaults(
 		focus?: boolean;
 		choices?: Choice[];
 	}>(),
-	{ focus: true, choices: () => [] }
+	{ focus: true, choices: () => [] },
 );
 
 const emit = defineEmits<{

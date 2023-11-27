@@ -72,7 +72,7 @@ const optionsFields = computed(() => {
 				localType: 'standard',
 				autoGenerateJunctionRelation: false,
 				saving: false,
-			}
+			},
 		);
 	} else {
 		optionsObjectOrArray = selectedInterface.value.options;

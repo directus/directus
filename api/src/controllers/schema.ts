@@ -21,7 +21,7 @@ router.get(
 		res.locals['payload'] = { data: currentSnapshot };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
@@ -111,7 +111,7 @@ router.post(
 		res.locals['payload'] = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -123,7 +123,7 @@ router.post(
 		await service.apply(diff);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

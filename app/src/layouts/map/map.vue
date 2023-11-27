@@ -42,7 +42,7 @@ const props = withDefaults(
 	}>(),
 	{
 		selection: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['update:cameraOptions', 'update:limit']);
@@ -55,7 +55,7 @@ const limitWritable = useSync(props, 'limit', emit);
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
 	[100, 1000, 10000, 100000],
 	(value) => ({ text: n(value), value }),
-	props.limit
+	props.limit,
 );
 
 limitWritable.value = selectedSize;

@@ -29,7 +29,7 @@ watch(
 			await nextTick();
 			(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 		}
-	}
+	},
 );
 
 async function enable() {

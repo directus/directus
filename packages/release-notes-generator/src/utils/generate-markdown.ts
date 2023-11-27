@@ -7,7 +7,7 @@ export function generateMarkdown(
 	notices: Notice[],
 	types: Type[],
 	untypedPackages: UntypedPackage[],
-	packageVersions: PackageVersion[]
+	packageVersions: PackageVersion[],
 ): string {
 	// Generate sections out of types and include notices
 	let foundNoticeSection = false;
@@ -85,7 +85,7 @@ function formatPackages(packages: Package[]): string {
 					change
 						.split('\n')
 						.map((line) => `  ${line}`)
-						.join('\n')
+						.join('\n'),
 				)
 				.join('\n');
 		}

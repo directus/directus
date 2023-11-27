@@ -10,18 +10,18 @@
 		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
 	},
 	"devDependencies": {
-		"@changesets/cli": "2.26.1",
+		"@changesets/cli": "2.26.2",
 		"@directus/release-notes-generator": "workspace:*",
-		"@typescript-eslint/eslint-plugin": "6.7.3",
-		"@typescript-eslint/parser": "6.7.3",
-		"eslint": "8.40.0",
-		"eslint-config-prettier": "8.8.0",
-		"eslint-plugin-vue": "9.13.0",
-		"prettier": "2.8.8"
+		"@typescript-eslint/eslint-plugin": "6.11.0",
+		"@typescript-eslint/parser": "6.11.0",
+		"eslint": "8.54.0",
+		"eslint-config-prettier": "9.0.0",
+		"eslint-plugin-vue": "9.18.1",
+		"prettier": "3.1.0"
 	},
-	"packageManager": "pnpm@8.9.0",
+	"packageManager": "pnpm@8.10.5",
 	"engines": {
 		"node": ">=18.0.0",
-		"pnpm": "~8.9.0"
+		"pnpm": "~8.10.5"
 	}
 }

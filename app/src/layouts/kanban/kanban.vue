@@ -46,7 +46,7 @@ const props = withDefaults(
 		sortField: null,
 		userField: null,
 		groupsSortField: null,
-	}
+	},
 );
 
 defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);

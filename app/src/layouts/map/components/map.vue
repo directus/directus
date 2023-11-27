@@ -36,10 +36,10 @@ const props = withDefaults(
 	}>(),
 	{
 		layers: () => [],
-		camera: () => ({} as any),
+		camera: () => ({}) as any,
 		selection: () => [],
 		showSelect: 'multiple',
-	}
+	},
 );
 
 const emit = defineEmits(['moveend', 'featureclick', 'featureselect', 'fitdata', 'updateitempopup']);
@@ -165,7 +165,7 @@ function setupMap() {
 		() => sidebarOpen.value,
 		(opened) => {
 			if (!opened) setTimeout(() => map.resize(), 300);
-		}
+		},
 	);
 
 	setTimeout(() => map.resize(), 300);
@@ -195,7 +195,7 @@ function startWatchers() {
 		watch(() => props.source, updateSource, { immediate: true }),
 		watch(() => props.selection, updateSelection, { immediate: true }),
 		watch(() => props.layers, updateLayers),
-		watch(() => props.data, updateData)
+		watch(() => props.data, updateData),
 	);
 }
 

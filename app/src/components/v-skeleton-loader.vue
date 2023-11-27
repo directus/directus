@@ -63,7 +63,8 @@ withDefaults(defineProps<Props>(), {
 .input-tall {
 	width: 100%;
 	height: var(--theme--form--field--input--height);
-	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
+	border: var(--theme--border-width) solid
+		var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	@include loader;

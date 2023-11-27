@@ -78,7 +78,7 @@ Subscribing to updates:
 const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
-	})
+	}),
 );
 
 const { subscription, unsubscribe } = await client.subscribe('test', {
@@ -98,7 +98,7 @@ Receive/Send messages:
 const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
-	})
+	}),
 );
 
 const stop = client.onWebSocket('message', (message) => {

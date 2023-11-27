@@ -57,7 +57,7 @@ const props = withDefaults(
 		filter: () => ({}),
 		showXAxis: true,
 		showYAxis: true,
-	}
+	},
 );
 
 const { d, t, n } = useI18n();
@@ -106,7 +106,7 @@ watch(
 		chart.value?.destroy();
 		setupChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onMounted(setupChart);
@@ -132,7 +132,7 @@ function setupChart() {
 			x: toIncludeTimezoneOffset(metric.group, isFieldTimestamp),
 			y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 		})),
-		'x'
+		'x',
 	);
 
 	chart.value = new ApexCharts(chartEl.value, {

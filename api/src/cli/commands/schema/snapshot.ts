@@ -8,7 +8,7 @@ import { dump as toYaml } from 'js-yaml';
 
 export async function snapshot(
 	snapshotPath?: string,
-	options?: { yes: boolean; format: 'json' | 'yaml' }
+	options?: { yes: boolean; format: 'json' | 'yaml' },
 ): Promise<void> {
 	const database = getDatabase();
 

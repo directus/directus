@@ -153,7 +153,7 @@ describe('Services / Schema', () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
 
 			expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).rejects.toThrowError(
-				ForbiddenError
+				ForbiddenError,
 			);
 		});
 
@@ -182,7 +182,7 @@ describe('Services / Schema', () => {
 				expect.objectContaining({
 					...testSnapshot,
 					hash: expect.any(String),
-				})
+				}),
 			);
 		});
 	});

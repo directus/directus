@@ -54,7 +54,7 @@ export class DriverCloudinary implements Driver {
 		const denylist = ['file', 'cloud_name', 'resource_type', 'api_key'];
 
 		const signaturePayload = Object.fromEntries(
-			Object.entries(payload).filter(([key]) => denylist.includes(key) === false)
+			Object.entries(payload).filter(([key]) => denylist.includes(key) === false),
 		);
 
 		const signaturePayloadString = this.toFormUrlEncoded(signaturePayload, { sort: true });
@@ -302,7 +302,7 @@ export class DriverCloudinary implements Driver {
 						signature,
 						...uploadParameters,
 					},
-				})
+				}),
 			)
 			.catch((err) => {
 				error = err;
@@ -396,7 +396,7 @@ export class DriverCloudinary implements Driver {
 					headers: {
 						Authorization: this.getBasicAuth(),
 					},
-				}
+				},
 			);
 
 			const json = (await response.json()) as {

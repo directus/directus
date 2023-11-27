@@ -15,10 +15,10 @@ export type Merge<A, B, TypeA = NeverToUnknown<A>, TypeB = NeverToUnknown<B>> = 
 	[K in keyof TypeA | keyof TypeB]: K extends keyof TypeA & keyof TypeB
 		? TypeA[K] | TypeB[K]
 		: K extends keyof TypeB
-		? TypeB[K]
-		: K extends keyof TypeA
-		? TypeA[K]
-		: never;
+		  ? TypeB[K]
+		  : K extends keyof TypeA
+		    ? TypeA[K]
+		    : never;
 };
 export type MergeOptional<A, B, TypeA = NeverToUnknown<A>, TypeB = NeverToUnknown<B>> = Partial<
 	Merge<A, B, TypeA, TypeB>
@@ -43,8 +43,8 @@ export type NestedPartial<Item extends object> = {
 		? NestedItem extends object[]
 			? NestedPartial<UnpackList<NestedItem>>[] | Exclude<Item[Key], NestedItem>
 			: NestedItem extends object
-				? NestedPartial<NestedItem> | Exclude<Item[Key], NestedItem>
-				: Item[Key]
+			  ? NestedPartial<NestedItem> | Exclude<Item[Key], NestedItem>
+			  : Item[Key]
 		: Item[Key];
 };
 

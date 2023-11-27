@@ -52,7 +52,7 @@ test('Convert filter with logical', () => {
 	};
 
 	expect(conditionString(where)).toStrictEqual(
-		`"${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" = $2`
+		`"${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" = $2`,
 	);
 });
 
@@ -148,6 +148,6 @@ test('Convert filter nested and with negation', () => {
 	};
 
 	expect(conditionString(where)).toStrictEqual(
-		`"${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" != $2 OR NOT ("${randomTable}"."${thirdColumn}" >= $3 AND "${randomTable}"."${fourthColumn}" = $4)`
+		`"${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" != $2 OR NOT ("${randomTable}"."${thirdColumn}" >= $3 AND "${randomTable}"."${fourthColumn}" = $4)`,
 	);
 });

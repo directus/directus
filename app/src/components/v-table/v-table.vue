@@ -106,7 +106,7 @@ const internalHeaders = computed({
 				});
 
 				return pick(header, keysThatAreNotAtDefaultValue);
-			})
+			}),
 		);
 	},
 });
@@ -118,7 +118,7 @@ const internalSort = computed<Sort>(
 		props.sort ?? {
 			by: null,
 			desc: false,
-		}
+		},
 );
 
 const reordering = ref<boolean>(false);
@@ -222,7 +222,7 @@ function onToggleSelectAll(value: boolean) {
 		if (props.selectionUseKeys) {
 			emit(
 				'update:modelValue',
-				clone(props.items).map((item) => item[props.itemKey])
+				clone(props.items).map((item) => item[props.itemKey]),
 			);
 		} else {
 			emit('update:modelValue', clone(props.items));

@@ -5,7 +5,7 @@ import type { GeoJSONGeometry } from 'wellknown';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertGeoCondition } from './geo.js';
-import type { FilterResult } from '../filter.js';
+import type { FilterResult } from '../utils.js';
 
 test('convert geo condition', () => {
 	const idGen = parameterIndexGenerator();

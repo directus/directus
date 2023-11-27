@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { data } from '../../data/guides.data.js';
+import { sections } from '@/data/guides.js';
 
 const props = defineProps<{
 	type: string;
 }>();
 
-const extensionsGuides = data.guides.sections.find((s) => s.indexPath == 'extensions');
+const extensionsGuides = sections.extensions;
 const section = extensionsGuides.blocks.find((b) => b.title == props.type);
-const guides = section.items;
+const guides = section?.items;
 </script>
 
 <template>

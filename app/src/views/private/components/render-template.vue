@@ -44,7 +44,7 @@ const parts = computed(() =>
 
 			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
 		})
-		.map((p) => p ?? null)
+		.map((p) => p ?? null),
 );
 
 function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
@@ -62,7 +62,7 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field?.meta?.display ?? null)
+		computed(() => field?.meta?.display ?? null),
 	);
 
 	let component = field.meta?.display;
@@ -120,7 +120,7 @@ function handleObject(fieldKey: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field?.meta?.display ?? null)
+		computed(() => field?.meta?.display ?? null),
 	);
 
 	// If used display doesn't exist in the current project, return raw value

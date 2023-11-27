@@ -618,7 +618,6 @@ layout_options: Layout Options
 rows: Rows
 columns: Columns
 collection_setup: Collection Setup
-optional_system_fields: Optional Fields
 value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item

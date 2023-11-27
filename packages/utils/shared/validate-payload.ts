@@ -16,7 +16,7 @@ import { injectFunctionResults } from './inject-function-results.js';
 export function validatePayload(
 	filter: Filter,
 	payload: Record<string, any>,
-	options?: JoiOptions
+	options?: JoiOptions,
 ): Joi.ValidationError[] {
 	const errors: Joi.ValidationError[] = [];
 
@@ -30,7 +30,7 @@ export function validatePayload(
 		const nestedErrors = flatten<Joi.ValidationError>(
 			subValidation.map((subObj: Record<string, any>) => {
 				return validatePayload(subObj, payload, options);
-			})
+			}),
 		).filter((err?: Joi.ValidationError) => err);
 
 		errors.push(...nestedErrors);

@@ -17,7 +17,7 @@ type UsableUpdatePermissions = {
 export default function useUpdatePermissions(
 	collection: Ref<Collection>,
 	permissions: Ref<Permission[]>,
-	role: Ref<string>
+	role: Ref<string>,
 ): UsableUpdatePermissions {
 	const saving = ref(false);
 	const refresh = inject<() => Promise<void>>('refresh-permissions');
@@ -135,7 +135,7 @@ export default function useUpdatePermissions(
 						unexpectedError(error);
 					}
 				}
-			})
+			}),
 		);
 
 		await refresh?.();

@@ -30,14 +30,14 @@ const { revisionsByDate, revisionsCount, loading, pagesCount, refresh } = useRev
 	ref(null),
 	{
 		action: Action.RUN,
-	}
+	},
 );
 
 watch(
 	() => page.value,
 	(newPage) => {
 		refresh(newPage);
-	}
+	},
 );
 
 const previewing = ref();
@@ -83,7 +83,7 @@ const steps = computed(() => {
 				key,
 				status,
 			};
-		}
+		},
 	);
 });
 </script>

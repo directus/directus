@@ -72,7 +72,7 @@ export async function registerAuthProviders(): Promise<void> {
 function getProviderInstance(
 	driver: string,
 	options: AuthDriverOptions,
-	config: Record<string, any> = {}
+	config: Record<string, any> = {},
 ): AuthDriver | undefined {
 	switch (driver) {
 		case 'local':
