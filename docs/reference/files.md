@@ -610,9 +610,9 @@ import { createDirectus, rest, uploadFiles } from 'https://unpkg.com/@directus/s
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const form = document.querySelector('#upload-file');
+const form = document.getElementById('upload-file');
 
-if (form && form instanceof HTMLFormElement) {
+if (form) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
