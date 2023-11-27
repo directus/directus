@@ -2,4 +2,4 @@
 "docs": patch
 ---
 
-Added explaination about where to generate static tokens in authentication reference
+Added explanation about where to generate static tokens in authentication reference
