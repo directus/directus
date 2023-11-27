@@ -646,12 +646,12 @@ if (form && form instanceof HTMLFormElement) {
 
 ```js
 import { createDirectus, rest, uploadFiles } from '@directus/sdk';
-import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const title = 'Example';
-const file = new Blob([await readFile('example.txt')], { type: 'text/plain' });
+const file = new Blob([readFileSync('example.txt')], { type: 'text/plain' });
 const fileName = 'example.txt';
 
 const formData = new FormData();
