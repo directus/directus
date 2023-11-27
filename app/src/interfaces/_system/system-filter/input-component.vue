@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -16,7 +16,7 @@ const props = withDefaults(
 		focus?: boolean;
 		choices?: Choice[];
 	}>(),
-	{ focus: true, choices: () => [] },
+	{ focus: true, choices: () => [] }
 );
 
 const emit = defineEmits<{
@@ -41,6 +41,13 @@ const displayValue = computed(() => {
 
 const inputLength = ref<number>();
 const width = computed(() => ((props.value?.toString().length || inputLength.value) ?? 2) + 1 + 'ch');
+
+watch(
+	() => props.value,
+	() => {
+		inputLength.value = props.value?.toString().length;
+	}
+);
 
 const inputPattern = computed(() => {
 	switch (props.type) {
@@ -80,10 +87,7 @@ function emitValue(val: string | null) {
 }
 
 function onInput(val: string | null) {
-	if (inputEl.value) {
-		inputLength.value = val?.length;
-	}
-
+	inputLength.value = val?.length;
 	emitValue(val);
 }
 </script>
