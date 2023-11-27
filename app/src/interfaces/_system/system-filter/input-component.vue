@@ -23,7 +23,7 @@ const emit = defineEmits<{
 	(e: 'input', value: string | number | Record<string, unknown> | boolean | null): void;
 }>();
 
-const inputEl = ref<HTMLInputElement>();
+const inputEl = ref<HTMLInputElement | null>(null);
 const { t } = useI18n();
 
 const dateTimeMenu = ref();
