@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -39,6 +39,9 @@ const displayValue = computed(() => {
 	return props.value;
 });
 
+const inputLength = ref<number>();
+const width = computed(() => ((props.value?.toString().length || inputLength.value) ?? 2) + 1 + 'ch');
+
 const inputPattern = computed(() => {
 	switch (props.type) {
 		case 'integer':
@@ -54,20 +57,8 @@ const inputPattern = computed(() => {
 	}
 });
 
-function getInputWidth(input: string | null) {
-	// At minimum 3, at maximum 40
-	return Math.min(Math.max(input?.length ?? 2, 2) + 1, 40) + 'ch';
-}
-
-watch(inputEl, () => {
-	console.log('INPUT EL CHANGED');
-	if (inputEl.value) inputEl.value.style.width = getInputWidth(inputEl.value.value);
-});
-
 onMounted(() => {
-	console.log('WE MOUNTED:', inputEl.value?.value);
 	if (props.focus) inputEl.value?.focus();
-	if (inputEl.value) inputEl.value.style.width = getInputWidth(inputEl.value.value);
 });
 
 function emitValue(val: string | null) {
@@ -89,10 +80,8 @@ function emitValue(val: string | null) {
 }
 
 function onInput(val: string | null) {
-	console.log('ON INPUT::::', typeof val, val);
-
 	if (inputEl.value) {
-		inputEl.value.style.width = getInputWidth(val);
+		inputLength.value = val?.length;
 	}
 
 	emitValue(val);
@@ -207,6 +196,7 @@ input {
 	line-height: 1em;
 	background-color: var(--theme--form--field--input--background);
 	border: none;
+	width: clamp(3ch, v-bind(width), 40ch);
 
 	&::placeholder {
 		color: var(--theme--form--field--input--foreground-subdued);
