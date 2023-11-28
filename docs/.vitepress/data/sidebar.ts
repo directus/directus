@@ -335,6 +335,10 @@ function sidebarDeveloperReference() {
 							text: 'Panels',
 						},
 						{
+							link: '/extensions/themes',
+							text: 'Themes',
+						},
+						{
 							link: '/extensions/bundles',
 							text: 'Bundles',
 						},
