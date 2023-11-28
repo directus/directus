@@ -28,6 +28,6 @@ export function md(str: string, options: Options = { target: '_self' }): string 
 			headerIds: false,
 			mangle: false,
 		}),
-		{ ADD_ATTR: ['target'] }
+		{ ADD_ATTR: ['target'] },
 	);
 }

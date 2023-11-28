@@ -56,6 +56,7 @@ const { basemap } = toRefs(appStore);
 
 const style = computed(() => {
 	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+	if (!source) return;
 	return getStyleFromBasemapSource(source);
 });
 
@@ -110,7 +111,7 @@ onUnmounted(() => {
 .map {
 	height: 400px;
 	overflow: hidden;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 </style>

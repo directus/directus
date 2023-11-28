@@ -710,7 +710,6 @@ layout_options: 頁面配置選項
 rows: 行
 columns: 欄位
 collection_setup: 集合設定
-optional_system_fields: 選用系統欄位
 value_unique: 值必須是唯一的
 all_activity: 所有活動
 create_item: 建立項目

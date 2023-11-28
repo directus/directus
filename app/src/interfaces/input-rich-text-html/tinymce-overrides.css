@@ -1,5 +1,5 @@
 .tox {
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 }
 
 .tox .tox-tbtn {
@@ -90,19 +90,21 @@
 .tox-tinymce {
 	min-height: 300px;
 	color: var(--theme--form--field--input--foreground);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color;
+	box-shadow: var(--theme--form--field--input--box-shadow);
 }
 
 .wysiwyg:not(.disabled) .tox-tinymce:hover {
-	border-color: var(--border-normal-alt);
+	border-color: var(--theme--form--field--input--border-color-hover);
+	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
 .wysiwyg:not(.disabled) .tox-tinymce.focus {
-	border-color: var(--theme--primary) !important;
-	box-shadow: 0 0 16px -8px var(--theme--primary) !important;
+	border-color: var(--theme--form--field--input--border-color-focus) !important;
+	box-shadow: var(--theme--form--field--input--box-shadow-focus) !important;
 }
 
 .tox .tox-toolbar,
@@ -110,8 +112,8 @@
 .tox .tox-toolbar__overflow {
 	min-height: 40px;
 	padding: 2px 0;
-	background: var(--background-subdued);
-	border-bottom: 2px solid var(--border-normal);
+	background: var(--theme--form--field--input--background-subdued);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-pop__dialog .tox-toolbar {
@@ -122,7 +124,7 @@ body.dark .tox .tox-toolbar,
 body.dark .tox .tox-toolbar__primary,
 body.dark .tox .tox-toolbar__overflow {
 	background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23455a64'/%3E%3C/svg%3E")
-		left 0 top 0 var(--background-subdued);
+		left 0 top 0 var(--theme--form--field--input--background-subdued);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -130,7 +132,7 @@ body.dark .tox .tox-toolbar__overflow {
 	body.auto .tox .tox-toolbar__primary,
 	body.auto .tox .tox-toolbar__overflow {
 		background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23455a64'/%3E%3C/svg%3E")
-			left 0 top 0 var(--background-subdued);
+			left 0 top 0 var(--theme--form--field--input--background-subdued);
 	}
 }
 
@@ -148,7 +150,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-tbtn:hover,
 .tox .tox-split-button:focus {
 	color: var(--theme--form--field--input--foreground);
-	background: var(--border-normal);
+	background: var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-tbtn--bespoke {
@@ -177,7 +179,7 @@ body.dark .tox .tox-toolbar__overflow {
 /* Modal */
 
 .tox .tox-dialog-wrap__backdrop {
-	background-color: var(--v-overlay-color);
+	background-color: var(--overlay-color);
 }
 
 .tox.tox-tinymce-aux {
@@ -230,15 +232,15 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	background-color: var(--theme--background);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 }
 
 .tox .tox-textarea {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .tox .tox-textfield:focus,
@@ -253,14 +255,14 @@ body.dark .tox .tox-toolbar__overflow {
 	box-sizing: border-box;
 	padding: 4px !important;
 	color: var(--theme--form--field--input--foreground);
-	font-family: var(--theme--font-family-sans-serif);
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	font-family: var(--theme--fonts--sans--font-family);
+	background-color: var(--theme--form--field--input--background-subdued);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 
 .tox .tox-collection__item {
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .tox .tox-collection--list .tox-collection__item {
@@ -270,7 +272,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-collection--list .tox-collection__item--enabled,
 .tox .tox-collection--list .tox-collection__item--active {
 	color: var(--theme--form--field--input--foreground) !important;
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 }
 
 .tox .tox-collection__item-label {
@@ -284,7 +286,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	border-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 }
 
 .tox .tox-button {
@@ -297,13 +299,13 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--white);
 	font-weight: 500;
 	font-size: 16px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	line-height: 19px;
 	background-color: var(--theme--primary);
-	border: 2px solid var(--theme--primary);
+	border: var(--theme--border-width) solid var(--theme--primary);
 	border: none;
 	border-color: var(--theme--primary);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	-webkit-transition: var(--fast) var(--transition);
 	transition: var(--fast) var(--transition);
@@ -317,14 +319,14 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-button--secondary {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--background-normal);
-	border-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
+	border-color: var(--theme--background-normal);
 }
 
 .tox .tox-button--secondary:hover:not(:disabled) {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--background-normal);
-	border-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
+	border-color: var(--theme--background-normal);
 }
 
 .tox .tox-button--naked {
@@ -362,27 +364,27 @@ body.dark .tox .tox-toolbar__overflow {
 	font-weight: 500;
 	font-size: 14px;
 	border-bottom: none;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;
 }
 
 .tox .tox-dialog__body-nav-item:hover {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .tox .tox-dialog__body-nav-item--active {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .tox .tox-dialog__body-nav-item--active:focus {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .tox .tox-pop__dialog,
 .tox:not([dir='rtl']) .tox-toolbar__group:not(:last-of-type),
 .tox .tox-collection--list .tox-collection__group {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-insert-table-picker__label {
@@ -390,7 +392,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-insert-table-picker > div {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-insert-table-picker .tox-insert-table-picker__selected {
@@ -398,11 +400,11 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-pop.tox-pop--top::after {
-	border-bottom-color: var(--background-subdued);
+	border-bottom-color: var(--theme--form--field--input--background-subdued);
 }
 
 .tox .tox-pop.tox-pop--top::before {
-	border-bottom-color: var(--border-normal);
+	border-bottom-color: var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-dialog-wrap__backdrop .tox-rgba-preview {

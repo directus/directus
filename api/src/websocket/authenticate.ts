@@ -10,7 +10,7 @@ import type { AuthenticationState } from './types.js';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
 
 export async function authenticateConnection(
-	message: BasicAuthMessage & Record<string, any>
+	message: BasicAuthMessage & Record<string, any>,
 ): Promise<AuthenticationState> {
 	let access_token: string | undefined, refresh_token: string | undefined;
 
@@ -43,7 +43,7 @@ export async function authenticateConnection(
 }
 
 export async function refreshAccountability(
-	accountability: Accountability | null | undefined
+	accountability: Accountability | null | undefined,
 ): Promise<Accountability> {
 	accountability = accountability ?? {
 		role: null,

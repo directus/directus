@@ -33,6 +33,6 @@ export const seedDBStructure = () => {
 				expect(error).toBeFalsy();
 			}
 		},
-		300_000
+		300_000,
 	);
 };

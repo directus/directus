@@ -1,7 +1,7 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { fetchAll } from '@/utils/fetch-all';
-import { FlowRaw } from '@directus/types';
+import type { FlowRaw } from '@directus/types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
@@ -38,7 +38,8 @@ export const useFlowsStore = defineStore('flowsStore', () => {
 
 	function getManualFlowsForCollection(collection: string): FlowRaw[] {
 		return flows.value.filter(
-			(flow) => flow.trigger === 'manual' && flow.status === 'active' && flow.options?.collections?.includes(collection)
+			(flow) =>
+				flow.trigger === 'manual' && flow.status === 'active' && flow.options?.collections?.includes(collection),
 		);
 	}
 });

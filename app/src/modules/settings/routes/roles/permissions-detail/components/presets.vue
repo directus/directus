@@ -61,7 +61,7 @@ const fieldWarnings = computed(() => {
 
 <template>
 	<div>
-		<v-notice type="info">
+		<v-notice>
 			{{
 				t('presets_for_role', {
 					action: t(permission.action).toLowerCase(),

@@ -64,7 +64,7 @@ export default async function copyTemplate(
 	type: ExtensionType,
 	extensionPath: string,
 	sourcePath?: string,
-	language?: Language
+	language?: Language,
 ): Promise<void> {
 	const templateFiles = await getTemplateFiles(type, language);
 

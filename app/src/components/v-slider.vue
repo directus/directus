@@ -86,15 +86,16 @@ function onInput(event: Event) {
 	</div>
 </template>
 
-<style>
-body {
-	--v-slider-color: var(--border-normal);
-	--v-slider-thumb-color: var(--theme--primary);
-	--v-slider-fill-color: var(--theme--primary);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-slider-color        [var(--theme--form--field--input--border-color)]
+		--v-slider-thumb-color  [var(--theme--primary)]
+		--v-slider-fill-color   [var(--theme--primary)]
+
+*/
 .v-slider {
 	display: flex;
 	align-items: center;
@@ -129,7 +130,7 @@ body {
 
 			&::-webkit-slider-runnable-track {
 				height: 4px;
-				background: var(--v-slider-color);
+				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
 				border-radius: 4px;
 				box-shadow: none;
@@ -137,7 +138,7 @@ body {
 
 			&::-moz-range-track {
 				height: 4px;
-				background: var(--v-slider-color);
+				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
 				border-radius: 4px;
 				box-shadow: none;
@@ -153,7 +154,7 @@ body {
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+				box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 				transition: all var(--fast) var(--transition);
 				appearance: none;
 			}
@@ -164,11 +165,11 @@ body {
 				width: 8px;
 				height: 8px;
 				margin-top: -2px;
-				background: var(--v-slider-thumb-color);
+				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+				box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 				transition: all var(--fast) var(--transition);
 				appearance: none;
 			}
@@ -182,7 +183,7 @@ body {
 			z-index: 2;
 			width: 100%;
 			height: 4px;
-			background-color: var(--v-slider-fill-color);
+			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: 4px;
 			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
@@ -208,7 +209,7 @@ body {
 				display: inline-block;
 				width: 4px;
 				height: 4px;
-				background-color: var(--v-slider-color);
+				background-color: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border-radius: 50%;
 			}
 		}
@@ -232,7 +233,7 @@ body {
 			color: var(--foreground-inverted);
 			font-weight: 600;
 			background-color: var(--theme--primary);
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -251,7 +252,7 @@ body {
 					width: 12px;
 					height: 12px;
 					margin-top: -4px;
-					box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 
@@ -259,7 +260,7 @@ body {
 					width: 12px;
 					height: 12px;
 					margin-top: -4px;
-					box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 			}

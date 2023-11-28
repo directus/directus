@@ -51,7 +51,7 @@ group: Ομάδα
 export_items: Εξαγωγή στοιχείων
 and: Και
 or: Ή
-init: '΄Εναρξη'
+init: Έναρξη
 dataset_too_large_currently_showing_n_items: Τα δεδομένα είναι πολλά. Αυτή τη στιγμή εμφανίζονται τα πρώτα {n} στοιχεία.
 modifier: Μετατροπέας
 extension_interface: Διεπαφή
@@ -62,7 +62,9 @@ extension_panel: Πίνακας Διαχείρισης
 extension_hook: Άγκιστρο
 extension_endpoint: Endpoint
 extension_operation: Λειτουργία
+extension_bundle: Δέσμη
 extension_interfaces: Διεπαφές
+extension_layouts: Διατάξεις
 extension_modules: Ενότητες
 extension_panels: Πίνακες Διαχείρισης
 extension_hooks: Hooks

@@ -299,10 +299,10 @@ function setContent() {
 	display: block;
 	flex-grow: 1;
 	height: 100%;
-	padding: var(--input-padding) 0;
+	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 
 	:deep(span) {
@@ -321,7 +321,7 @@ function setContent() {
 	padding: 2px 4px 0;
 	color: var(--theme--primary);
 	background-color: var(--theme--primary-background);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;
 	user-select: none;

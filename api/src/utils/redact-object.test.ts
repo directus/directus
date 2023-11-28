@@ -53,7 +53,7 @@ test('should support single level path', () => {
 	expect(result).toEqual(
 		merge({}, input, {
 			$trigger: REDACTED_TEXT,
-		})
+		}),
 	);
 });
 
@@ -65,7 +65,7 @@ test('should support multi level path', () => {
 			$trigger: {
 				payload: { password: REDACTED_TEXT },
 			},
-		})
+		}),
 	);
 });
 
@@ -77,7 +77,7 @@ test('should support wildcard path', () => {
 			$trigger: {
 				payload: REDACTED_TEXT,
 			},
-		})
+		}),
 	);
 });
 
@@ -103,7 +103,7 @@ test('should support deep path', () => {
 					},
 				},
 			},
-		})
+		}),
 	);
 });
 
@@ -117,7 +117,7 @@ test('should support multiple paths', () => {
 				['**', 'password'],
 			],
 		},
-		getRedactedString
+		getRedactedString,
 	);
 
 	expect(result).toEqual(
@@ -141,7 +141,7 @@ test('should support multiple paths', () => {
 					},
 				},
 			},
-		})
+		}),
 	);
 });
 
@@ -179,7 +179,7 @@ describe('getReplacer tests', () => {
 		const replacer = getReplacer(getRedactedString);
 
 		for (const value of values) {
-			expect(replacer('', value)).toBe(value);
+			expect(replacer('', value)).toEqual(value);
 		}
 	});
 
@@ -190,10 +190,31 @@ describe('getReplacer tests', () => {
 
 		obj['b'] = obj;
 		obj['c'] = { obj };
+		obj['d'] = [obj];
 
 		const expectedResult = {
 			a: 'foo',
-			c: {},
+			b: '[Circular]',
+			c: { obj: '[Circular]' },
+			d: ['[Circular]'],
+		};
+
+		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));
+
+		expect(result).toStrictEqual(expectedResult);
+	});
+
+	test('Correctly parses object with repeatedly occurring same refs', () => {
+		const ref = {};
+
+		const obj: Record<string, any> = {
+			a: ref,
+			b: ref,
+		};
+
+		const expectedResult = {
+			a: ref,
+			b: ref,
 		};
 
 		const result = JSON.parse(JSON.stringify(obj, getReplacer(getRedactedString)));
@@ -273,8 +294,8 @@ describe('getReplacer tests', () => {
 					ERROR: 'Error',
 					cause: 'cause',
 					number: 123456,
-				})
-			)
+				}),
+			),
 		);
 
 		// Stack changes depending on env

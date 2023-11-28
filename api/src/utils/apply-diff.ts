@@ -30,7 +30,7 @@ type CollectionDelta = {
 export async function applyDiff(
 	currentSnapshot: Snapshot,
 	snapshotDiff: SnapshotDiff,
-	options?: { database?: Knex; schema?: SchemaOverview }
+	options?: { database?: Knex; schema?: SchemaOverview },
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const helpers = getHelpers(database);
@@ -51,12 +51,12 @@ export async function applyDiff(
 
 		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
 			snapshotDiff.collections.filter(
-				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === currentLevelCollection
+				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === currentLevelCollection,
 			) as CollectionDelta[];
 
 		const getNestedCollectionsToDelete = (currentLevelCollection: string) =>
 			snapshotDiff.collections.filter(
-				({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === currentLevelCollection
+				({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === currentLevelCollection,
 			) as CollectionDelta[];
 
 		const createCollections = async (collections: CollectionDelta[]) => {
@@ -88,7 +88,7 @@ export async function applyDiff(
 								...diff[0].rhs,
 								fields,
 							},
-							mutationOptions
+							mutationOptions,
 						);
 					} catch (err: any) {
 						logger.error(`Failed to create collection "${collection}"`);
@@ -107,7 +107,7 @@ export async function applyDiff(
 			for (const { collection, diff } of collections) {
 				if (diff?.[0]?.kind === DiffKind.DELETE) {
 					const relations = schema.relations.filter(
-						(r) => r.related_collection === collection || r.collection === collection
+						(r) => r.related_collection === collection || r.collection === collection,
 					);
 
 					if (relations.length > 0) {
@@ -118,7 +118,7 @@ export async function applyDiff(
 								await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
 							} catch (err) {
 								logger.error(
-									`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
+									`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`,
 								);
 
 								throw err;
@@ -127,7 +127,7 @@ export async function applyDiff(
 
 						// clean up deleted relations from existing schema
 						schema.relations = schema.relations.filter(
-							(r) => r.related_collection !== collection && r.collection !== collection
+							(r) => r.related_collection !== collection && r.collection !== collection,
 						);
 					}
 
@@ -166,7 +166,7 @@ export async function applyDiff(
 			//			TheCurrentCollectionInIteration - I exist in snapshotDiff as a new collection but will be created as part of NestedCollection
 			const parentWillBeCreatedInThisApply =
 				snapshotDiff.collections.filter(
-					({ collection, diff }) => diff[0]?.kind === DiffKind.NEW && collection === groupName
+					({ collection, diff }) => diff[0]?.kind === DiffKind.NEW && collection === groupName,
 				).length > 0;
 
 			// Has group, but parent is not new, parent is also not being created in this snapshot apply
@@ -185,7 +185,7 @@ export async function applyDiff(
 				if (diff.length === 0 || diff[0] === undefined) return false;
 				const collectionDiff = diff[0] as DiffDeleted<Collection>;
 				return collectionDiff.kind === DiffKind.DELETE && collectionDiff.lhs?.meta?.group === null;
-			})
+			}),
 		);
 
 		for (const { collection, diff } of snapshotDiff.collections) {
@@ -256,7 +256,7 @@ export async function applyDiff(
 				// Field deletion also cleans up the relationship. We should ignore any relationship
 				// changes attached to this now non-existing field
 				snapshotDiff.relations = snapshotDiff.relations.filter(
-					(relation) => (relation.collection === collection && relation.field === field) === false
+					(relation) => (relation.collection === collection && relation.field === field) === false,
 				);
 			}
 		}
@@ -281,7 +281,7 @@ export async function applyDiff(
 							collection,
 							field,
 						},
-						mutationOptions
+						mutationOptions,
 					);
 				} catch (err) {
 					logger.error(`Failed to create relation "${collection}.${field}"`);

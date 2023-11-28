@@ -4,7 +4,7 @@ export type DirectusTranslation<Schema extends object> = MergeCoreCollection<
 	Schema,
 	'directus_translations',
 	{
-		id: number;
+		id: string; // uuid
 		language: string;
 		key: string;
 		value: string;

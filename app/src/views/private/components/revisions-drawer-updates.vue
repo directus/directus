@@ -36,7 +36,7 @@ const changes = computed(() => {
 			if (!name) return null;
 
 			const currentValue = props.revision.delta?.[fieldKey];
-			const previousValue = previousRevision.value.data?.[fieldKey];
+			const previousValue = previousRevision.value?.data?.[fieldKey];
 
 			let changes;
 			let updated = false;
@@ -87,7 +87,7 @@ const changes = computed(() => {
 
 <template>
 	<div class="updates">
-		<v-notice type="info">
+		<v-notice>
 			{{ t('changes_made') }}
 			<br />
 			{{ t('no_relational_data') }}

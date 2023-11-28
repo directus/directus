@@ -6,7 +6,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { flushCaches } from '../../cache.js';
-import env from '../../env.js';
+import { getExtensionsPath } from '../../extensions/lib/get-extensions-path.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
 import getModuleDefault from '../../utils/get-module-default.js';
@@ -16,7 +16,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
 
-	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
+	const customMigrationsPath = path.resolve(getExtensionsPath(), 'migrations');
 
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];

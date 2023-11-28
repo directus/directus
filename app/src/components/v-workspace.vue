@@ -21,7 +21,14 @@ const props = withDefaults(defineProps<Props>(), {
 	resizable: true,
 });
 
-defineEmits(['update', 'move', 'delete', 'duplicate', 'edit', 'preview']);
+defineEmits<{
+	update: [value: { edits: Event; id: AppTile['id'] }];
+	move: [value: AppTile['id']];
+	delete: [value: AppTile['id']];
+	duplicate: [value: AppTile];
+	edit: [value: AppTile];
+	preview: [value: AppTile];
+}>();
 
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
@@ -38,7 +45,7 @@ const workspaceSize = computed(() => {
 
 			return aggr;
 		},
-		{ x: 0, width: 0 }
+		{ x: 0, width: 0 },
 	);
 
 	const furthestTileY = props.tiles.reduce(
@@ -50,7 +57,7 @@ const workspaceSize = computed(() => {
 
 			return aggr;
 		},
-		{ y: 0, height: 0 }
+		{ y: 0, height: 0 },
 	);
 
 	if (props.editMode === true) {
@@ -157,7 +164,7 @@ const workspaceBoxSize = computed(() => {
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);
-	background-image: radial-gradient(var(--border-normal) 10%, transparent 10%);
+	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
 	opacity: 0;

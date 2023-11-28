@@ -21,8 +21,8 @@ tags:
     description: Image typed files can be dynamically resized and transformed to fit any need.
   - name: Authentication
     description:
-      All events that happen within Directus are tracked and stored in the activities collection. This gives you full
-      accountability over everything that happens.
+      All data within the platform is private by default. The public role can be configured to expose data without
+      authentication, or you can pass an access token to the API to access private data.
   - name: Presets
     description:
       Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
@@ -37,6 +37,7 @@ tags:
     description:
       Directus can easily be extended through the addition of several types of extensions, including layouts,
       interfaces, and modules.
+    x-collection: directus_extensions
   - name: Fields
     description: Fields are individual pieces of content within an item. They are mapped to columns in the database.
     x-collection: directus_fields
@@ -75,6 +76,10 @@ tags:
     x-collection: directus_roles
   - name: Schema
     description: Retrieve and update the schema of an instance.
+    x-authentication: admin
+    x-schemas:
+      - Schema
+      - Diff
   - name: Server
     description:
       Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and
@@ -87,6 +92,12 @@ tags:
     x-collection: directus_users
   - name: Utilities
     description: Directus comes with various utility endpoints you can use to simplify your development flow.
+    x-authentication: user
+    x-schemas:
+      - Files
+      - Folders
+      - Users
+      - Roles
   - name: Versions
     description:
       Enables users to create unpublished copies of an item, modify them independently from the main version, and
@@ -145,14 +156,12 @@ paths:
     $ref: './paths/collections/collection.yaml'
 
   # Extensions
-  /extensions/interfaces:
-    $ref: './paths/extensions/interfaces.yaml'
-  /extensions/layouts:
-    $ref: './paths/extensions/layouts.yaml'
-  /extensions/displays:
-    $ref: './paths/extensions/displays.yaml'
-  /extensions/modules:
-    $ref: './paths/extensions/modules.yaml'
+  /extensions:
+    $ref: './paths/extensions/list.yaml'
+  /extensions/{name}:
+    $ref: './paths/extensions/update.yaml'
+  /extensions/{bundle}/{name}:
+    $ref: './paths/extensions/update-bundle.yaml'
 
   # Fields
   /fields:
@@ -292,6 +301,8 @@ components:
       $ref: './components/collection.yaml'
     Diff:
       $ref: './components/diff.yaml'
+    Extensions:
+      $ref: './components/extension.yaml'
     Fields:
       $ref: './components/field.yaml'
     Files:

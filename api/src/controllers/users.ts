@@ -55,7 +55,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
@@ -119,7 +119,7 @@ router.get(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -137,7 +137,7 @@ router.get(
 		res.locals['payload'] = { data: items || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -158,7 +158,7 @@ router.patch(
 		res.locals['payload'] = { data: item || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -177,7 +177,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -213,7 +213,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -239,7 +239,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -262,7 +262,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -277,7 +277,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const inviteSchema = Joi.object({
@@ -300,7 +300,7 @@ router.post(
 		await service.inviteUser(req.body.email, req.body.role, req.body.invite_url || null);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const acceptInviteSchema = Joi.object({
@@ -322,7 +322,7 @@ router.post(
 		await service.acceptInvite(req.body.token, req.body.password);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -353,7 +353,7 @@ router.post(
 		res.locals['payload'] = { data: { secret, otpauth_url: url } };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -381,7 +381,7 @@ router.post(
 
 			if (role && role.enforce_tfa) {
 				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update'
+					(p) => p.collection === 'directus_users' && p.action === 'update',
 				);
 
 				if (existingPermission) {
@@ -412,7 +412,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -436,7 +436,7 @@ router.post(
 
 			if (role && role.enforce_tfa) {
 				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update'
+					(p) => p.collection === 'directus_users' && p.action === 'update',
 				);
 
 				if (existingPermission) {
@@ -472,7 +472,7 @@ router.post(
 		await service.disableTFA(req.accountability.user);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.post(
@@ -494,7 +494,7 @@ router.post(
 		await service.disableTFA(req.params['pk']);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

@@ -82,7 +82,7 @@ const unsortableJunctionFields = computed(() => {
 					:items="availableCollections"
 					item-value="collection"
 					item-text="collection"
-					item-label-font-family="var(--theme--font-family-monospace)"
+					item-label-font-family="var(--theme--fonts--monospace--font-family)"
 					item-disabled="meta.singleton"
 					multiple
 					:multiple-preview-threshold="0"
@@ -217,8 +217,8 @@ const unsortableJunctionFields = computed(() => {
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--theme--font-family-monospace);
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	position: relative;
 	display: grid;
@@ -259,7 +259,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--theme--font-family-monospace);
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-notice {
@@ -275,20 +275,20 @@ const unsortableJunctionFields = computed(() => {
 	}
 
 	.field-name {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 
 .related-collections-preview {
 	grid-row: 2 / span 2;
 	grid-column: 3;
-	padding: var(--input-padding);
+	padding: var(--theme--form--field--input--padding);
 	overflow: auto;
 	color: var(--theme--foreground-subdued);
-	font-family: var(--theme--font-family-monospace);
-	background-color: var(--background-subdued);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	font-family: var(--theme--fonts--monospace--font-family);
+	background-color: var(--theme--background-subdued);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 
 .one-collection-field {
@@ -296,7 +296,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .sort-field {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	.v-divider {
 		margin-top: 48px;
@@ -305,8 +305,8 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .relational-triggers {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 

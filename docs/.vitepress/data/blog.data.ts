@@ -12,12 +12,11 @@ export default defineLoader({
 						{ author: ['first_name', 'last_name', 'avatar', 'title'] },
 						{ tags: [{ directus_tags_id: ['title', 'slug', 'type'] }] },
 					],
-					// @ts-ignore
 					filter: {
 						status: { _eq: 'published' },
 					},
 					sort: '-date_published',
-				})
+				}),
 			)
 		).map((article) => ({
 			id: article.slug,
@@ -32,7 +31,7 @@ export default defineLoader({
 			readItems('docs_tags', {
 				// @ts-ignore
 				sort: '-count(developer_articles)',
-			})
+			}),
 		);
 
 		return {

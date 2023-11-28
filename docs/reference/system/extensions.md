@@ -134,7 +134,7 @@ Update an existing extension.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /extension/:bundleOrName/:name?`
@@ -180,7 +180,7 @@ Returns the [extension object](#the-extension-object) for the updated extension.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /extensions/my-bundle/draw-interface`

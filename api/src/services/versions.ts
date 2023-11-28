@@ -4,9 +4,11 @@ import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
+import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { ActivityService } from './activity.js';
 import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
@@ -85,7 +87,7 @@ export class VersionsService extends ItemsService {
 	async verifyHash(
 		collection: string,
 		item: PrimaryKey,
-		hash: string
+		hash: string,
 	): Promise<{ outdated: boolean; mainHash: string }> {
 		const mainItem = await this.getMainItem(collection, item);
 
@@ -249,6 +251,12 @@ export class VersionsService extends ItemsService {
 			delta: revisionDelta,
 		});
 
+		const { cache } = getCache();
+
+		if (shouldClearCache(cache, undefined, version['collection'])) {
+			cache.clear();
+		}
+
 		return data;
 	}
 
@@ -289,7 +297,7 @@ export class VersionsService extends ItemsService {
 				database: getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
@@ -306,7 +314,7 @@ export class VersionsService extends ItemsService {
 				database: getDatabase(),
 				schema: this.schema,
 				accountability: this.accountability,
-			}
+			},
 		);
 
 		return updatedItemKey;

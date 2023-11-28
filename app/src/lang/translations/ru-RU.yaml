@@ -771,7 +771,6 @@ layout_options: Параметры макета
 rows: Записи
 columns: Колонки
 collection_setup: Настройки коллекции
-optional_system_fields: Необязательные системные поля
 value_unique: Значение должно быть уникальным
 all_activity: История всех действий
 create_item: Создать элемент
@@ -974,8 +973,6 @@ choices: Варианты
 choices_option_configured_incorrectly: Варианты настроены неправильно
 deselect: Снять выделение
 deselect_all: Снять всё выделение
-appearance_light: Светлая тема
-appearance_dark: Тёмная тема
 other: Другой...
 adding_user: Добавление пользователя
 unknown_user: Неизвестный пользователь

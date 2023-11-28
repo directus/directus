@@ -24,5 +24,5 @@ export const messageConstructor = ({ collection, field }: ValueOutOfRangeErrorEx
 export const ValueOutOfRangeError = createError<ValueOutOfRangeErrorExtensions>(
 	ErrorCode.ValueOutOfRange,
 	messageConstructor,
-	400
+	400,
 );

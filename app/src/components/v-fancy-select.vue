@@ -98,8 +98,8 @@ function toggle(item: Record<string, any>) {
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 12px;
-	background-color: var(--background-normal);
-	border: 2px solid var(--background-normal);
+	background-color: var(--theme--background-normal);
+	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
 	cursor: pointer;
@@ -108,7 +108,7 @@ function toggle(item: Record<string, any>) {
 	transition-property: background-color, border-color;
 
 	&:not(.disabled):hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--theme--border-color-accent);
 	}
 
 	&.disabled {
@@ -138,14 +138,14 @@ function toggle(item: Record<string, any>) {
 		z-index: 2;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
-		border-color: var(--theme--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		.v-icon {
 			--v-icon-color: var(--theme--primary);
 		}
 
 		&:hover {
-			border-color: var(--theme--primary);
+			border-color: var(--theme--form--field--input--border-color-focus);
 		}
 	}
 }

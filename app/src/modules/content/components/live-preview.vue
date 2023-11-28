@@ -202,7 +202,7 @@ onMounted(() => {
 
 <style>
 #split-content {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 </style>
 
@@ -213,7 +213,7 @@ onMounted(() => {
 
 	.header {
 		.v-button.secondary {
-			--v-button-background-color: var(--background-subdued);
+			--v-button-background-color: var(--theme--background-subdued);
 		}
 
 		width: 100%;

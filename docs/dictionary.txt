@@ -12,6 +12,7 @@
 (B|b)ugfixes
 (C|)ancelling
 (C|c)ancelled
+(C|c)hangesets?
 (C|c)harset
 (C|c)heckboxes
 (C|c)loudinary
@@ -23,6 +24,7 @@
 (D|d)atacenter
 (D|d)atastores
 (D|d)atetimes?
+(D|d)ev
 (D|d)onut
 (D|d)ropdown
 (D|d)ropdowns
@@ -121,15 +123,13 @@ Base64
 Blackbox
 buildout
 Butterfield
+Butterfield
 camelCase
 Capterra
 Cardgroup
 cardinality
 CDNs?
 changelogs
-changeset
-changesets
-Changesets
 CLA
 CLI
 CloudFront
@@ -139,6 +139,7 @@ CloudSQL
 CMS
 CockroachDB
 CodeDeploy
+CollectionsService
 CommonJS
 composables
 config-options
@@ -165,9 +166,9 @@ customizations
 DateTime
 DDoS
 destructured
-Dev
 devs
 Devtools
+destructure
 DigitalOcean
 DigitalOcean's
 directus
@@ -197,7 +198,9 @@ EXIF
 fallbacks
 falsy
 FavIcon
+FieldsService
 filepath
+FilesService
 free-form
 frontend
 G2
@@ -235,6 +238,7 @@ intwined
 IoT
 ISO8601
 iss
+ItemsService
 iteratively
 Jamstack
 Javascript
@@ -318,6 +322,7 @@ Pinia-based
 pino
 Pino
 Plesk
+PM2
 PNG
 pnpm
 PokéAPI
@@ -351,6 +356,7 @@ reframe
 REKT
 relationally
 relationally-linked
+RelationsService
 repo
 repurpose
 S3
@@ -370,6 +376,7 @@ SEO
 SES
 sexualized
 SFC
+SIGKILL
 siloed
 slugification
 slugify

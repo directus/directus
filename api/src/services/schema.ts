@@ -46,7 +46,7 @@ export class SchemaService {
 
 	async diff(
 		snapshot: Snapshot,
-		options?: { currentSnapshot?: Snapshot; force?: boolean }
+		options?: { currentSnapshot?: Snapshot; force?: boolean },
 	): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 

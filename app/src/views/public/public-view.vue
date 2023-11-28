@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
-import { getAppearance } from '@/utils/get-appearance';
-import { cssVar } from '@directus/utils/browser';
-import Color from 'color';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -20,51 +17,6 @@ const { t } = useI18n();
 const serverStore = useServerStore();
 
 const { info } = storeToRefs(serverStore);
-
-const colors = computed(() => {
-	const primary = info.value?.project?.project_color || 'var(--theme--primary)';
-	const primaryHex = primary.startsWith('var(--') ? cssVar(primary.substring(4, primary.length - 1)) : primary;
-	const isDark = getAppearance() === 'dark';
-	const primaryColor = Color(primaryHex);
-
-	const primaryColorHSL = primaryColor.hsl() as unknown as {
-		model: 'hsl';
-		color: [number, number, number];
-		valpha: number;
-	};
-
-	/**
-	 * The default light mode secondary color is based on the standard difference between Directus purple and pink, which is:
-	 * primary = 250.9, 100, 63.3
-	 * secondary = 320, 100, 80
-	 * diff = +69.1, 0, +16.7
-	 *
-	 * For dark mode, we greatly reduce the lightness value to -50
-	 */
-
-	const secondaryColor = Color({
-		h: primaryColorHSL.color[0] + (isDark ? -69.1 : 69.1),
-		s: primaryColorHSL.color[1] + 0,
-		l: primaryColorHSL.color[2] + (isDark ? -50 : 16.7),
-	});
-
-	const shades = [];
-
-	for (let i = 1; i < 6; i++) {
-		const color = Color(primaryColor).mix(secondaryColor, i / 10);
-		shades.push(color.hex().toString());
-	}
-
-	return {
-		primary: primaryColor.hex().toString(),
-		secondary: secondaryColor.hex().toString(),
-		shades: shades,
-	};
-});
-
-const isBranded = computed(() => {
-	return info.value?.project?.project_color ? true : false;
-});
 
 const hasCustomBackground = computed(() => {
 	return !!info.value?.project?.public_background;
@@ -94,7 +46,7 @@ const logoURL = computed<string | null>(() => {
 </script>
 
 <template>
-	<div class="public-view" :class="{ branded: isBranded }">
+	<div class="public-view">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
@@ -125,29 +77,11 @@ const logoURL = computed<string | null>(() => {
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
-			<svg v-if="!hasCustomBackground" viewBox="0 0 1152 1152" preserveAspectRatio="none" fill="none" class="fallback">
-				<rect width="1152" height="1152" :fill="colors.primary" />
-				<path
-					d="M1152 409.138C1148.61 406.92 1146.7 405.765 1146.7 405.765L6.87761e-07 958.424L-7.3277e-07 1152L506.681 1152C558.985 1126.93 614.88 1101.25 672.113 1074.95C839.401 998.085 1018.12 915.967 1152 828.591L1152 409.138Z"
-					:fill="colors.shades[0]"
-				/>
-				<path
-					d="M1152 159.866C1130.19 146.319 1114.45 138.98 1114.45 138.98L-6.09246e-07 759.421L-3.66364e-07 1152L88.7501 1152C131.867 1108.8 194.289 1054.33 281.936 993.927C371.847 931.97 507.23 864.306 651.138 792.382C828.097 703.939 1017.95 609.052 1152 510.407L1152 159.866Z"
-					:fill="colors.shades[1]"
-				/>
-				<path
-					d="M772.894 -0.000472457L-4.49523e-07 457.782L-5.22658e-07 953.071C22.142 919.082 94.6279 821.1 262.854 696.786C351.427 631.334 485.624 558.338 628.272 480.744C816.642 378.28 1019.75 267.8 1152 156.087L1152 -0.000477328L772.894 -0.000472457Z"
-					:fill="colors.shades[2]"
-				/>
-				<path
-					d="M286.365 -0.000483108L-1.73191e-07 176.373L2.43255e-06 662.21C33.488 615.87 106.028 529.959 243.326 424.909C331.205 357.671 464.771 281.956 606.749 201.473C720.914 136.756 840.519 68.9554 946.182 -0.000479285L286.365 -0.000483108Z"
-					:fill="colors.shades[3]"
-				/>
-				<path
-					d="M0.00195277 363.139C37.1564 313.499 107.096 233.66 228.181 137.623C281.94 94.9838 353.09 48.7594 432.872 9.43526e-06L0.00195595 0L0.00195277 363.139Z"
-					:fill="colors.shades[4]"
-				/>
-			</svg>
+			<div v-if="!hasCustomBackground" class="fallback">
+				<div><div></div></div>
+				<div><div></div></div>
+				<div><div></div></div>
+			</div>
 
 			<transition name="scale">
 				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
@@ -172,9 +106,24 @@ const logoURL = computed<string | null>(() => {
 	}
 
 	.container {
-		--border-radius: 6px;
-		--input-height: 60px;
-		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
+		--theme--form--column-gap: var(--theme--public--form--column-gap);
+		--theme--form--row-gap: var(--theme--public--form--row-gap);
+
+		--theme--form--field--input--background-subdued: var(--theme--public--form--field--input--background);
+		--theme--form--field--input--background: var(--theme--public--form--field--input--background);
+		--theme--form--field--input--border-color-focus: var(--theme--public--form--field--input--border-color-focus);
+		--theme--form--field--input--border-color-hover: var(--theme--public--form--field--input--border-color-hover);
+		--theme--form--field--input--border-color: var(--theme--public--form--field--input--border-color);
+		--theme--form--field--input--box-shadow-focus: var(--theme--public--form--field--input--box-shadow-focus);
+		--theme--form--field--input--box-shadow-hover: var(--theme--public--form--field--input--box-shadow-hover);
+		--theme--form--field--input--box-shadow: var(--theme--public--form--field--input--box-shadow);
+		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
+		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
+		--theme--form--field--input--height: var(--theme--public--form--field--input--height);
+		--theme--form--field--input--padding: var(--theme--public--form--field--input--padding);
+
+		--theme--form--field--label--font-family: var(--theme--public--form--field--label--font-family);
+		--theme--form--field--label--foreground: var(--theme--public--form--field--label--foreground);
 
 		z-index: 2;
 		display: flex;
@@ -187,6 +136,8 @@ const logoURL = computed<string | null>(() => {
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
+		background: var(--theme--public--background);
+		color: var(--theme--public--foreground);
 
 		/* Page Content Spacing */
 		font-size: 15px;
@@ -195,9 +146,9 @@ const logoURL = computed<string | null>(() => {
 		transition: max-width var(--medium) var(--transition);
 
 		:slotted(.type-title) {
-			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
+			color: var(--theme--public--foreground-accent);
 		}
 
 		.content {
@@ -230,12 +181,157 @@ const logoURL = computed<string | null>(() => {
 		background-size: cover;
 
 		.fallback {
+			position: absolute;
+			background-color: var(--theme--public--art--background);
 			width: 100%;
 			height: 100%;
-			position: absolute;
 			left: 0;
 			top: 0;
 			z-index: -1;
+			overflow: hidden;
+
+			> div {
+				position: absolute;
+
+				> div {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					animation-iteration-count: infinite;
+					animation-timing-function: ease-in-out;
+					transform-origin: center center;
+				}
+			}
+
+			> div:nth-child(1) {
+				bottom: -25%;
+				left: -25%;
+				height: 50%;
+				width: 50%;
+				filter: blur(100px);
+				z-index: 3;
+
+				> div {
+					background-color: var(--theme--public--art--primary);
+					opacity: 0.5;
+					animation-name: floating1;
+					animation-duration: calc(33s / var(--theme--public--art--speed));
+				}
+			}
+
+			> div:nth-child(2) {
+				bottom: -25%;
+				left: 15%;
+				height: 40%;
+				width: 60%;
+				filter: blur(150px);
+				z-index: 2;
+
+				> div {
+					background: linear-gradient(
+						107.7deg,
+						var(--theme--public--art--primary) 0%,
+						var(--theme--public--art--secondary) 50%
+					);
+					opacity: 0.7;
+					animation-name: floating2;
+					animation-duration: calc(19s / var(--theme--public--art--speed));
+				}
+			}
+
+			> div:nth-child(3) {
+				bottom: -20%;
+				left: 75%;
+				height: 20%;
+				width: 40%;
+				filter: blur(50px);
+				z-index: 1;
+
+				> div {
+					background-color: var(--theme--public--art--primary);
+					opacity: 0.6;
+					animation-name: floating3;
+					animation-duration: calc(27s / var(--theme--public--art--speed));
+				}
+			}
+
+			@keyframes floating1 {
+				0% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+				10% {
+					transform: translate(25%, -20%) scale(1.5, 1) rotate(0deg);
+				}
+				20% {
+					transform: translate(10%, -25%) scale(1, 1.5) rotate(0deg);
+				}
+				30% {
+					transform: translate(00%, -20%) scale(1, 1.5) rotate(-45deg);
+				}
+				40% {
+					transform: translate(10%, -30%) scale(1, 2) rotate(0deg);
+				}
+				50% {
+					transform: translate(15%, -35%) scale(2, 0.5) rotate(45deg);
+				}
+				60% {
+					transform: translate(10%, -30%) scale(1, 2) rotate(90deg);
+				}
+				70% {
+					transform: translate(25%, -10%) scale(1, 1.5) rotate(45deg);
+				}
+				80% {
+					transform: translate(40%, 20%) scale(1.5, 0.5) rotate(-45deg);
+				}
+				90% {
+					transform: translate(15%, -20%) scale(2, 1.5) rotate(0deg);
+				}
+				100% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+			}
+
+			@keyframes floating2 {
+				0% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+				20% {
+					transform: translate(-10%, -05%) scale(1.5, 1.5) rotate(15deg);
+				}
+				40% {
+					transform: translate(00%, -15%) scale(2, 0.5) rotate(-45deg);
+				}
+				60% {
+					transform: translate(-15%, -10%) scale(1.5, 1) rotate(45deg);
+				}
+				80% {
+					transform: translate(-25%, -05%) scale(2.5, 0.5) rotate(180deg);
+				}
+				100% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+			}
+
+			@keyframes floating3 {
+				0% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+				25% {
+					transform: translate(-10%, -10%) scale(2, 1) rotate(-15deg);
+				}
+				50% {
+					transform: translate(-20%, -05%) scale(1, 0.5) rotate(45deg);
+				}
+				75% {
+					transform: translate(-15%, -15%) scale(2, 1.5) rotate(180deg);
+				}
+				100% {
+					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
+				}
+			}
 		}
 
 		.foreground {
@@ -308,7 +404,7 @@ const logoURL = computed<string | null>(() => {
 		width: 56px;
 		height: 56px;
 		background-color: var(--project-color);
-		border-radius: calc(var(--border-radius) - 2px);
+		border-radius: calc(var(--theme--border-radius) - 2px);
 
 		img {
 			width: 40px;
@@ -316,21 +412,6 @@ const logoURL = computed<string | null>(() => {
 			object-fit: contain;
 			object-position: center center;
 		}
-	}
-
-	&.branded :deep(.v-button) {
-		--v-button-background-color: var(--theme--foreground-accent);
-		--v-button-background-color-hover: var(--theme--foreground-accent);
-		--v-button-background-color-active: var(--theme--foreground-accent);
-	}
-
-	&.branded :deep(.v-input) {
-		--v-input-border-color-focus: var(--theme--foreground);
-		--v-input-box-shadow-color-focus: var(--theme--foreground);
-	}
-
-	&.branded :deep(.v-input.solid) {
-		--v-input-border-color-focus: var(--theme--foreground-subdued);
 	}
 }
 

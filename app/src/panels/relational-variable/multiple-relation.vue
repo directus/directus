@@ -24,7 +24,7 @@ function deleteItem(elem: Record<string, any>) {
 		'input',
 		displayItems.value
 			.filter((item) => item[primaryKey.value] !== elem[primaryKey.value])
-			.map((item) => item[primaryKey.value])
+			.map((item) => item[primaryKey.value]),
 	);
 }
 </script>
@@ -89,7 +89,7 @@ function deleteItem(elem: Record<string, any>) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	button {
 		color: var(--theme--primary);

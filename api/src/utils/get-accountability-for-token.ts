@@ -9,7 +9,7 @@ import { getMilliseconds } from './get-milliseconds.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
-	accountability?: Accountability
+	accountability?: Accountability,
 ): Promise<Accountability> {
 	if (!accountability) {
 		accountability = {

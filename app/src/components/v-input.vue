@@ -280,23 +280,27 @@ function stepDown() {
 </template>
 
 <style lang="scss" scoped>
-:global(body) {
-	--v-input-font-family: var(--theme--font-family-sans-serif);
-	--v-input-placeholder-color: var(--theme--foreground-subdued);
-	--v-input-box-shadow-color-focus: var(--theme--primary);
-	--v-input-color: var(--theme--foreground);
-	--v-input-background-color: var(--theme--form--field--input--background);
-	--v-input-border-color-focus: var(--theme--primary);
-}
+/**
+	Available component overrides:
+
+	--v-input-font-family         [--theme--fonts--sans--font-family]
+	--v-input-placeholder-color   [--theme--foreground-subdued]
+	--v-input-color               [--theme--form--field--input--foreground]
+	--v-input-background-color    [--theme--form--field--input--background]
+	--v-input-border-color        [--theme--form--field--input--border-color]
+	--v-input-border-color-hover  [--theme--form--field--input--border-color-hover]
+	--v-input-border-color-focus  [--theme--form--field--input--border-color-focus]
+	--v-input-border-radius       [--theme--border-radius]
+*/
 
 .v-input {
-	--arrow-color: var(--border-normal);
+	--arrow-color: var(--theme--form--field--input--border-color);
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	align-items: center;
 	width: max-content;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 
 	.prepend-outer {
 		margin-right: 8px;
@@ -308,15 +312,17 @@ function stepDown() {
 		flex-grow: 1;
 		align-items: center;
 		height: 100%;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 		padding-top: 0px;
 		padding-bottom: 0px;
-		color: var(--v-input-color);
-		font-family: var(--v-input-font-family);
-		background-color: var(--v-input-background-color);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
-		transition: border-color var(--fast) var(--transition);
+		color: var(--v-input-color, var(--theme--form--field--input--foreground));
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
+		background-color: var(--v-input-background-color, var(--theme--form--field--input--background));
+		border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
+		border-radius: var(--v-input-border-radius, var(--theme--border-radius));
+		transition: var(--fast) var(--transition);
+		transition-property: border-color, box-shadow;
+		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
 			margin-right: 8px;
@@ -345,36 +351,37 @@ function stepDown() {
 			}
 
 			&.disabled {
-				--arrow-color: var(--border-normal);
+				--arrow-color: var(--v-input-border-color);
 
 				cursor: auto;
 			}
 		}
 
 		&:hover {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
-			border-color: var(--border-normal-alt);
+			border-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
+			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
 		&:focus-within,
 		&.active {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
-			border-color: var(--v-input-border-color-focus);
-			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
+			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
+			box-shadow: var(--theme--form--field--input--box-shadow-focus);
 		}
 
 		&.disabled {
-			--arrow-color: var(--border-normal);
+			--arrow-color: var(--v-input-border-color);
 
 			color: var(--theme--foreground-subdued);
-			background-color: var(--background-subdued);
-			border-color: var(--border-normal);
+			background-color: var(--theme--form--field--input--background-subdued);
+			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 
 		.prefix,
@@ -392,16 +399,16 @@ function stepDown() {
 		flex-grow: 1;
 		width: 20px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 		padding-right: 0px;
 		padding-left: 0px;
-		font-family: var(--v-input-font-family);
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;
 		appearance: none;
 
 		&::placeholder {
-			color: var(--v-input-placeholder-color);
+			color: var(--v-input-placeholder-color, var(--theme--foreground-subdued));
 		}
 
 		&::-webkit-outer-spin-button,
@@ -411,7 +418,7 @@ function stepDown() {
 		}
 
 		&:focus {
-			border-color: var(--v-input-border-color-focus);
+			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		}
 
 		/* Firefox */

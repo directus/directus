@@ -32,12 +32,12 @@ test.each([
 ])('accountability for permissions "$permissions" should be $expected', async ({ permissions, expected }) => {
 	await config.handler(
 		{ collection: testCollection, permissions } as any,
-		{ accountability: testAccountability, getSchema } as any
+		{ accountability: testAccountability, getSchema } as any,
 	);
 
 	expect(vi.mocked(ItemsService)).toHaveBeenCalledWith(
 		testCollection,
-		expect.objectContaining({ schema: {}, accountability: expected, knex: undefined })
+		expect.objectContaining({ schema: {}, accountability: expected, knex: undefined }),
 	);
 });
 
@@ -47,7 +47,7 @@ test.each([
 ])('payload $payload should be passed as $expected', async ({ payload, expected }) => {
 	await config.handler(
 		{ collection: testCollection, payload } as any,
-		{ accountability: testAccountability, getSchema } as any
+		{ accountability: testAccountability, getSchema } as any,
 	);
 
 	if (expected) {
@@ -60,7 +60,7 @@ test.each([
 test('should emit events when true', async () => {
 	await config.handler(
 		{ collection: testCollection, payload: {}, emitEvents: true } as any,
-		{ accountability: testAccountability, getSchema } as any
+		{ accountability: testAccountability, getSchema } as any,
 	);
 
 	expect(vi.mocked(ItemsService).prototype.createMany).toHaveBeenCalledWith([{}], { emitEvents: true });
@@ -69,7 +69,7 @@ test('should emit events when true', async () => {
 test.each([undefined, false])('should not emit events when %s', async (emitEvents) => {
 	await config.handler(
 		{ collection: testCollection, payload: {}, emitEvents } as any,
-		{ accountability: testAccountability, getSchema } as any
+		{ accountability: testAccountability, getSchema } as any,
 	);
 
 	expect(vi.mocked(ItemsService).prototype.createMany).toHaveBeenCalledWith([{}], { emitEvents: false });

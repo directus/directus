@@ -11,73 +11,77 @@ describe('/auth', () => {
 			describe('returns an access_token, expires and a refresh_token', () => {
 				TEST_USERS.forEach((userKey) => {
 					describe(USER[userKey].NAME, () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Action
-							const response = await request(getUrl(vendor))
-								.post(`/auth/login`)
-								.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD })
-								.expect('Content-Type', /application\/json/);
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/auth/login`)
+									.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD })
+									.expect('Content-Type', /application\/json/);
 
-							const mutationKey = 'auth_login';
+								const mutationKey = 'auth_login';
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), true, null, {
-								mutation: {
-									[mutationKey]: {
-										__args: {
-											email: USER[userKey].EMAIL,
-											password: USER[userKey].PASSWORD,
+								const gqlResponse = await requestGraphQL(getUrl(vendor), true, null, {
+									mutation: {
+										[mutationKey]: {
+											__args: {
+												email: USER[userKey].EMAIL,
+												password: USER[userKey].PASSWORD,
+											},
+											access_token: true,
+											expires: true,
+											refresh_token: true,
 										},
-										access_token: true,
-										expires: true,
-										refresh_token: true,
 									},
-								},
-							});
+								});
 
-							const ws = createWebSocketConn(getUrl(vendor));
+								const ws = createWebSocketConn(getUrl(vendor));
 
-							await ws.sendMessage({
-								type: 'auth',
-								email: USER[userKey].EMAIL,
-								password: USER[userKey].PASSWORD,
-							});
+								await ws.sendMessage({
+									type: 'auth',
+									email: USER[userKey].EMAIL,
+									password: USER[userKey].PASSWORD,
+								});
 
-							const wsMessages = await ws.getMessages(1);
-							ws.conn.close();
+								const wsMessages = await ws.getMessages(1);
+								ws.conn.close();
 
-							// Assert
-							expect(response.statusCode).toBe(200);
+								// Assert
+								expect(response.statusCode).toBe(200);
 
-							expect(response.body).toMatchObject({
-								data: {
-									access_token: expect.any(String),
-									expires: expect.any(Number),
-									refresh_token: expect.any(String),
-								},
-							});
-
-							expect(gqlResponse.statusCode).toBe(200);
-
-							expect(gqlResponse.body).toMatchObject({
-								data: {
-									[mutationKey]: {
+								expect(response.body).toMatchObject({
+									data: {
 										access_token: expect.any(String),
-										expires: expect.any(String),
+										expires: expect.any(Number),
 										refresh_token: expect.any(String),
 									},
-								},
-							});
+								});
 
-							expect(wsMessages?.length).toBe(1);
+								expect(gqlResponse.statusCode).toBe(200);
 
-							expect(wsMessages![0]).toEqual(
-								expect.objectContaining({
-									type: 'auth',
-									status: 'ok',
-									refresh_token: expect.any(String),
-								})
-							);
-						});
+								expect(gqlResponse.body).toMatchObject({
+									data: {
+										[mutationKey]: {
+											access_token: expect.any(String),
+											expires: expect.any(String),
+											refresh_token: expect.any(String),
+										},
+									},
+								});
+
+								expect(wsMessages?.length).toBe(1);
+
+								expect(wsMessages![0]).toEqual(
+									expect.objectContaining({
+										type: 'auth',
+										status: 'ok',
+										refresh_token: expect.any(String),
+									}),
+								);
+							},
+							30_000,
+						);
 					});
 				});
 			});

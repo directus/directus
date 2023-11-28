@@ -8,7 +8,7 @@ const { t } = useI18n();
 
 const dataItems = [
 	{
-		icon: 'list_alt',
+		icon: 'database',
 		name: t('settings_data_model'),
 		to: `/settings/data-model`,
 	},
@@ -36,14 +36,14 @@ const dataItems = [
 
 const appItems = [
 	{
-		icon: 'settings',
+		icon: 'tune',
 		name: t('settings_project'),
 		to: `/settings/project`,
 	},
 	{
 		icon: 'palette',
-		name: t('settings_theming'),
-		to: `/settings/theming`,
+		name: t('settings_appearance'),
+		to: `/settings/appearance`,
 	},
 	{
 		icon: 'bookmark',
@@ -62,12 +62,12 @@ const externalItems = computed(() => {
 		{
 			icon: 'bug_report',
 			name: t('report_bug'),
-			href: 'https://github.com/directus/directus/issues/new',
+			href: 'https://github.com/directus/directus/issues/new?template=bug_report.yml',
 		},
 		{
 			icon: 'new_releases',
 			name: t('request_feature'),
-			href: 'https://github.com/directus/directus/discussions/new',
+			href: 'https://github.com/directus/directus/discussions/new?category=feature-requests',
 		},
 	];
 });

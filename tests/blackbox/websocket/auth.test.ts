@@ -354,7 +354,7 @@ describe('WebSocket Auth Tests', () => {
 								expect(wsMessages![0]).toEqual(
 									expect.objectContaining({
 										type: 'pong',
-									})
+									}),
 								);
 
 								break;
@@ -400,7 +400,7 @@ describe('WebSocket Auth Tests', () => {
 								expect(wsMessages![0]).toEqual(
 									expect.objectContaining({
 										type: 'pong',
-									})
+									}),
 								);
 
 								break;
@@ -445,7 +445,7 @@ describe('WebSocket Auth Tests', () => {
 								expect(wsMessages![0]).toEqual(
 									expect.objectContaining({
 										type: 'pong',
-									})
+									}),
 								);
 
 								break;

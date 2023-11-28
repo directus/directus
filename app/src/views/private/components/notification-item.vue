@@ -16,7 +16,7 @@ const props = withDefaults(
 	}>(),
 	{
 		type: 'info',
-	}
+	},
 );
 
 const notificationsStore = useNotificationsStore();
@@ -56,7 +56,7 @@ function close() {
 	margin-top: 4px;
 	padding: 12px;
 	color: var(--white);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 
 	.icon {
 		display: block;

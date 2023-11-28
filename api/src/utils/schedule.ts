@@ -19,7 +19,7 @@ export function validateCron(rule: string): boolean {
 export function scheduleSynchronizedJob(
 	id: string,
 	rule: string,
-	cb: (fireDate: Date) => void | Promise<void>
+	cb: (fireDate: Date) => void | Promise<void>,
 ): ScheduledJob {
 	const clock = new SynchronizedClock(`${id}:${rule}`);
 

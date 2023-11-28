@@ -128,7 +128,7 @@ describe('#constructor', () => {
 
 		expect(BlobServiceClient).toHaveBeenCalledWith(
 			`https://${sample.config.accountName}.blob.core.windows.net`,
-			mockSignedCredentials
+			mockSignedCredentials,
 		);
 
 		expect(mockBlobServiceClient.getContainerClient).toHaveBeenCalledWith(sample.config.containerName);

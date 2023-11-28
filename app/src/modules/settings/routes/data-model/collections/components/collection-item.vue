@@ -24,7 +24,7 @@ const toggleCollapse = () => {
 };
 
 const nestedCollections = computed(() =>
-	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
+	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
 );
 
 function onGroupSortChange(collections: Collection[]) {
@@ -125,7 +125,7 @@ function onGroupSortChange(collections: Collection[]) {
 	align-items: center;
 	height: 100%;
 	overflow: hidden;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	pointer-events: none;
 }
 

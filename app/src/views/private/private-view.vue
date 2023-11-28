@@ -9,7 +9,7 @@ import { useHead } from '@unhead/vue';
 import { useEventListener } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
-import { computed, provide, ref, toRefs, watch } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
@@ -31,7 +31,7 @@ const SIZES = {
 
 const props = withDefaults(
 	defineProps<{
-		title?: string | null;
+		title?: string;
 		smallHeader?: boolean;
 		headerShadow?: boolean;
 		splitView?: boolean;
@@ -39,10 +39,9 @@ const props = withDefaults(
 		sidebarShadow?: boolean;
 	}>(),
 	{
-		title: null,
 		headerShadow: true,
 		splitViewMinWidth: 0,
-	}
+	},
 );
 
 const emit = defineEmits(['update:splitView']);
@@ -50,7 +49,7 @@ const emit = defineEmits(['update:splitView']);
 const { t } = useI18n();
 
 const router = useRouter();
-const { title } = toRefs(props);
+const headTitle = computed(() => props.title ?? null);
 
 const splitViewWritable = useSync(props, 'splitView', emit);
 
@@ -126,7 +125,7 @@ watch(
 			...(localStorageModuleWidth.value ?? {}),
 			nav: value,
 		};
-	}, 300)
+	}, 300),
 );
 
 const mainWidth = ref(getWidth(localStorageModuleWidth.value?.main, SIZES.minContentWidth));
@@ -138,7 +137,7 @@ watch(
 			...(localStorageModuleWidth.value ?? {}),
 			main: value,
 		};
-	}, 300)
+	}, 300),
 );
 
 const isDraggingNav = ref(false);
@@ -237,7 +236,7 @@ router.afterEach(() => {
 });
 
 useHead({
-	title: title,
+	title: headTitle,
 });
 
 function openSidebar(event: MouseEvent) {
@@ -386,10 +385,13 @@ function getWidth(input: unknown, fallback: number): number {
 		font-size: 0;
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
+		font-family: var(--theme--navigation--list--font-family);
+		border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
 		&.is-open {
 			transform: translateX(0);
 		}
+
 		&.has-shadow {
 			box-shadow: var(--navigation-shadow);
 		}
@@ -413,6 +415,9 @@ function getWidth(input: unknown, fallback: number): number {
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
 
+				--v-divider-color: var(--theme--navigation--list--divider--border-color);
+				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
+
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
@@ -426,11 +431,6 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#main-content {
-		--border-radius: 6px;
-		--input-height: 60px;
-		--input-padding: 16px;
-		/* (60 - 4 - 24) / 2 */
-
 		position: relative;
 		flex-grow: 1;
 		width: 100%;
@@ -490,6 +490,31 @@ function getWidth(input: unknown, fallback: number): number {
 	}
 
 	#sidebar {
+		--theme--form--column-gap: var(--theme--sidebar--section--form--column-gap);
+		--theme--form--row-gap: var(--theme--sidebar--section--form--row-gap);
+
+		--theme--form--field--input--background-subdued: var(--theme--sidebar--section--form--field--input--background);
+		--theme--form--field--input--background: var(--theme--sidebar--section--form--field--input--background);
+		--theme--form--field--input--border-color-focus: var(
+			--theme--sidebar--section--form--field--input--border-color-focus
+		);
+		--theme--form--field--input--border-color-hover: var(
+			--theme--sidebar--section--form--field--input--border-color-hover
+		);
+		--theme--form--field--input--border-color: var(--theme--sidebar--section--form--field--input--border-color);
+		--theme--form--field--input--box-shadow-focus: var(--theme--sidebar--section--form--field--input--box-shadow-focus);
+		--theme--form--field--input--box-shadow-hover: var(--theme--sidebar--section--form--field--input--box-shadow-hover);
+		--theme--form--field--input--box-shadow: var(--theme--sidebar--section--form--field--input--box-shadow);
+		--theme--form--field--input--foreground-subdued: var(
+			--theme--sidebar--section--form--field--input--foreground-subdued
+		);
+		--theme--form--field--input--foreground: var(--theme--sidebar--section--form--field--input--foreground);
+		--theme--form--field--input--height: var(--theme--sidebar--section--form--field--input--height);
+		--theme--form--field--input--padding: var(--theme--sidebar--section--form--field--input--padding);
+
+		--theme--form--field--label--foreground: var(--theme--sidebar--section--form--field--label--foreground);
+		--theme--form--field--label--font-family: var(--theme--sidebar--section--form--field--label--font-family);
+
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -500,6 +525,11 @@ function getWidth(input: unknown, fallback: number): number {
 		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
+		font-family: var(--theme--sidebar--font-family);
+		border-left: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+
+		/* Explicitly render the border outside of the width of the bar itself */
+		box-sizing: content-box;
 
 		.spacer {
 			flex-grow: 1;
@@ -520,14 +550,16 @@ function getWidth(input: unknown, fallback: number): number {
 		}
 
 		@media (min-width: 960px) {
-			transform: translateX(calc(100% - 60px));
+			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
 		}
 
 		@media (min-width: 1260px) {
 			position: relative;
 			flex-basis: 60px;
 			flex-shrink: 0;
-			transition: flex-basis var(--slow) var(--transition), transform var(--slow) var(--transition);
+			transition:
+				flex-basis var(--slow) var(--transition),
+				transform var(--slow) var(--transition);
 
 			&.is-open {
 				flex-basis: 280px;

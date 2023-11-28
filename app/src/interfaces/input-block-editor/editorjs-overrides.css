@@ -1,19 +1,19 @@
 .codex-editor {
-	--bg-color: var(--background-normal) !important;
+	--bg-color: var(--theme--background-normal) !important;
 	--front-color: var(--theme--form--field--input--foreground) !important;
-	--border-color: var(--border-normal) !important;
+	--border-color: var(--theme--form--field--input--border-color) !important;
 }
 
 .codex-editor .ce-toolbar__plus,
 .codex-editor .ce-toolbar__settings-btn {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-toolbar__plus:hover,
 .codex-editor .ce-toolbar__settings-btn:hover {
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 }
 
 .codex-editor .ce-toolbar__plus svg,
@@ -36,21 +36,21 @@
 }
 
 .codex-editor .cdx-loader::before {
-	border: 3px solid var(--background-normal-alt);
+	border: 3px solid var(--theme--background-accent);
 	border-left-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-search-field {
-	border-radius: var(--border-radius) !important;
+	border-radius: var(--theme--border-radius) !important;
 	border: none;
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 }
 
 .codex-editor .ce-popover {
 	background: var(--theme--background);
-	border-color: var(--border-normal);
-	border-width: var(--border-width);
-	border-radius: var(--border-radius);
+	border-color: var(--theme--form--field--input--border-color);
+	border-width: var(--theme--border-width);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-popover-item__title {
@@ -87,7 +87,7 @@
 
 .codex-editor .ce-popover-item-icon {
 	background: var(--theme--background);
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	box-shadow: none;
 }
 
@@ -100,17 +100,17 @@
 }
 
 .codex-editor .ce-popover__items:not(:first-child) {
-	border-top: var(--border-width) solid var(--border-normal);
+	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	padding-top: 8px;
 }
 
 .codex-editor .image-tool--loading .image-tool__image,
 .codex-editor .ce-block--selected .ce-block__content {
-	background: var(--background-normal);
+	background: var(--theme--background-normal);
 }
 
 .codex-editor .image-tool--loading .image-tool__image {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .codex-editor .ce-inline-toolbar__toggler-and-button-wrapper {
@@ -119,7 +119,7 @@
 
 .codex-editor .ce-inline-toolbar__dropdown {
 	margin: 0;
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .codex-editor .ce-inline-tool {
@@ -156,7 +156,7 @@
 /* Button balloons */
 
 .codex-editor .ce-toolbox__button.ce-toolbox__button--active {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 .codex-editor .ce-toolbox__button.ce-toolbox__button--active svg {
@@ -166,10 +166,10 @@
 .codex-editor .ce-conversion-toolbar,
 .codex-editor .ce-inline-toolbar,
 .codex-editor .ce-settings {
-	background: var(--background-subdued);
-	border-color: var(--border-normal);
-	border-width: var(--border-width);
-	border-radius: var(--border-radius);
+	background: var(--theme--form--field--input--background-subdued);
+	border-color: var(--theme--form--field--input--border-color);
+	border-width: var(--theme--border-width);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .cdx-settings-button:hover,
@@ -177,22 +177,28 @@
 .codex-editor .ce-inline-toolbar__dropdown:hover,
 .codex-editor .ce-inline-toolbar .ce-inline-tool:hover,
 .codex-editor .ce-settings .ce-settings__button:hover {
-	background: var(--background-normal-alt);
+	background: var(--theme--background-accent);
 }
 
 .codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {
 	--webkit-box-shadow: unset;
 
 	color: var(--theme--primary);
-	background-color: var(--v-list-item-background-color-hover) !important;
+	background-color: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background-normal))
+	) !important;
 	box-shadow: unset;
 }
 
 .codex-editor .ce-conversion-tool:hover {
 	--webkit-box-shadow: unset;
 
-	color: var(--v-list-item-color-hover);
-	background-color: var(--v-list-item-background-color-hover) !important;
+	color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
+	background-color: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background-normal))
+	) !important;
 	box-shadow: unset;
 }
 
@@ -211,7 +217,7 @@
 }
 
 .codex-editor .ce-code__textarea {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .codex-editor .cdx-input,
@@ -219,25 +225,25 @@
 	color: var(--theme--form--field--input--foreground);
 	font-size: inherit;
 	background-color: var(--theme--background);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	box-shadow: unset;
 }
 
 .codex-editor .cdx-input:hover,
 .codex-editor .ce-code__textarea:hover {
-	border-color: var(--border-normal-alt);
+	border-color: var(--theme--form--field--input--border-color-hover);
 }
 
 .codex-editor .cdx-input:focus,
 .codex-editor .ce-code__textarea:focus {
-	border-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 }
 
 .codex-editor .ce-inline-tool-input {
 	color: var(--theme--primary);
-	background: var(--background-normal);
-	border-top-color: var(--border-normal);
+	background: var(--theme--background-normal);
+	border-top-color: var(--theme--form--field--input--border-color);
 }
 
 /* Buttons */
@@ -248,8 +254,8 @@
 	font-size: var(--v-button-font-size);
 	text-decoration: none;
 	background-color: var(--v-button-background-color);
-	border: var(--border-width) solid var(--v-button-background-color);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--v-button-background-color);
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 }
 
@@ -264,8 +270,8 @@
 .codex-editor .cdx-attaches,
 .codex-editor .cdx-personality {
 	color: var(--theme--form--field--input--foreground);
-	background: var(--background-normal);
-	border-color: var(--border-normal);
+	background: var(--theme--background-normal);
+	border-color: var(--theme--form--field--input--border-color);
 	box-shadow: unset;
 }
 
@@ -289,9 +295,9 @@
 /* Image Tool */
 
 .codex-editor .image-tool {
-	--bg-color: var(--background-normal-alt);
+	--bg-color: var(--theme--background-accent);
 	--front-color: var(--theme--primary);
-	--border-color: var(--border-normal);
+	--border-color: var(--theme--form--field--input--border-color);
 }
 
 /* Personality */
@@ -315,8 +321,8 @@
 
 .codex-editor .cdx-checklist__item-checkbox {
 	background: transparent;
-	border-color: var(--border-normal);
-	border-width: var(--border-width);
+	border-color: var(--theme--form--field--input--border-color);
+	border-width: var(--theme--border-width);
 	border-radius: 4px;
 }
 
@@ -355,13 +361,13 @@
 /* Attaches */
 
 .codex-editor .cdx-attaches--with-file {
-	border: var(--border-width) solid var(--border-normal);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon {
 	padding: 5px;
-	background: var(--background-normal-alt);
-	border-radius: var(--border-radius);
+	background: var(--theme--background-accent);
+	border-radius: var(--theme--border-radius);
 	margin-right: 12px;
 }
 
@@ -378,8 +384,8 @@
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
-	background: var(--background-subdued);
-	border: var(--border-width) solid var(--border-normal);
+	background: var(--theme--form--field--input--background-subdued);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button:hover {
@@ -398,24 +404,30 @@
 
 .codex-editor .ce-block .inline-code {
 	padding: 4px;
-	color: var(--v-chip-background-color);
+	color: var(--v-chip-background-color, var(--theme--background-normal));
 	font-family: monospace;
-	background-color: var(--v-chip-color);
+	background-color: var(--v-chip-color, var(--theme--foreground));
 	border-radius: 4px;
 }
 
 /* tc module */
 
 .codex-editor .tc-wrap {
-	--color-background: var(--v-list-item-background-color-active);
-	--color-border: var(--border-normal);
-	--color-background-hover: var(--v-list-item-background-color-hover);
+	--color-background: var(
+		--v-list-item-background-color-active,
+		var(--v-list-background-color-active, var(--theme--background-normal))
+	);
+	--color-border: var(--theme--form--field--input--border-color);
+	--color-background-hover: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background-normal))
+	);
 }
 
 .codex-editor .tc-popover {
-	--color-background: var(--background-normal);
-	--color-border: var(--background-normal);
-	--color-background-hover: var(--background-normal-alt);
+	--color-background: var(--theme--background-normal);
+	--color-border: var(--theme--background-normal);
+	--color-background-hover: var(--theme--background-accent);
 }
 
 .tc-cell--selected,
@@ -431,18 +443,18 @@
 }
 
 .tc-toolbox__toggler:hover {
-	fill: var(--background-normal-alt) !important;
+	fill: var(--theme--background-accent) !important;
 }
 
 .codex-editor .tc-toolbox__toggler svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
-	fill: var(--background-normal) !important;
-	border-radius: var(--border-radius);
+	fill: var(--theme--background-normal) !important;
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .tc-toolbox__toggler:hover svg rect:first-child {
 	/* This is very ugly, but there no other way to set background of the element */
-	fill: var(--background-normal-alt) !important;
+	fill: var(--theme--background-accent) !important;
 }
 
 .tc-add-column:hover,
@@ -451,7 +463,10 @@
 }
 
 .tc-add-row:hover::before {
-	background-color: var(--v-list-item-background-color-hover);
+	background-color: var(
+		--v-list-item-background-color-hover,
+		var(--v-list-background-color-hover, var(--theme--background-normal))
+	);
 }
 
 .interface.subdued .codex-editor {
@@ -569,7 +584,7 @@
 	overflow: auto;
 	font-size: 18px;
 	line-height: 24px;
-	background-color: var(--background-normal-alt);
+	background-color: var(--theme--background-accent);
 	border-radius: 4px;
 }
 
@@ -577,7 +592,7 @@
 	font-size: 18px;
 	font-style: italic;
 	line-height: 34px;
-	border-left: 2px dashed var(--border-normal);
+	border-left: 2px dashed var(--theme--form--field--input--border-color);
 }
 
 .codex-editor .ce-block video,
@@ -608,12 +623,12 @@
 
 .codex-editor .ce-block table th,
 .codex-editor .ce-block table td {
-	border: 1px solid var(--border-normal);
+	border: 1px solid var(--theme--form--field--input--border-color);
 }
 
 .codex-editor .ce-block .tc-table__wrap,
 .codex-editor .ce-block .tc-table__cell {
-	border-color: var(--border-normal);
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 .codex-editor .ce-block figure {
