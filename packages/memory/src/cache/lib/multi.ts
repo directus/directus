@@ -49,9 +49,6 @@ export class CacheMulti implements Cache {
 
 		if (wasSet) {
 			this.local.set(key, value);
-		} else {
-			const storedValue = await this.redis.get(key);
-			this.local.set(key, storedValue);
 		}
 
 		return wasSet;
