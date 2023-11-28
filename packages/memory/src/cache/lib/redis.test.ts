@@ -66,6 +66,16 @@ describe('constructor', () => {
 		expect(cache['compression']).toBe(false);
 	});
 
+	test('Defaults compression settings', () => {
+		const cache = new CacheRedis({
+			namespace: mockNamespace,
+			redis: mockRedis,
+		});
+
+		expect(cache['compression']).toBe(true);
+		expect(cache['compressionMinSize']).toBe(1000);
+	});
+
 	test('Defines redis setMax command', () => {
 		expect(cache['redis'].defineCommand).toHaveBeenCalledWith('setMax', {
 			numberOfKeys: 1,
