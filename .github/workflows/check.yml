@@ -37,6 +37,10 @@ jobs:
     name: Format
     runs-on: ubuntu-latest
     steps:
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -46,7 +50,7 @@ jobs:
           build: false
 
       - name: Run Formatter
-        run: pnpm exec prettier --check ${{ steps.changed-files.outputs.all_changed_files }}
+        run: pnpm exec prettier --check --ignore-unknown ${{ steps.changed-files.outputs.all_changed_files }}
 
   unit:
     name: Unit Tests

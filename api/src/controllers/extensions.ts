@@ -25,7 +25,7 @@ router.get(
 		res.locals['payload'] = { data: extensions || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -51,7 +51,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -76,12 +76,12 @@ router.get(
 
 		res.setHeader(
 			'Cache-Control',
-			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
+			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false),
 		);
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(source);
-	})
+	}),
 );
 
 export default router;

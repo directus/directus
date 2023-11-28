@@ -100,13 +100,13 @@ watch(
 		if (newTabs && oldTabs && newTabs.length === oldTabs.length) return;
 		currentTab.value = tabsValue.value?.[0]?.value;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const appMinimal = computed(() => {
 	if (!permission.value) return null;
 	return appMinimalPermissions.find(
-		(p: Partial<Permission>) => p.collection === permission.value!.collection && p.action === permission.value!.action
+		(p: Partial<Permission>) => p.collection === permission.value!.collection && p.action === permission.value!.action,
 	);
 });
 

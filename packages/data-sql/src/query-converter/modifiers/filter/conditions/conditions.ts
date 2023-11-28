@@ -4,7 +4,7 @@ import { convertGeoCondition } from './geo.js';
 import { convertStringNode } from './string.js';
 import { convertNumberNode } from './number.js';
 import { convertSetCondition } from './set.js';
-import type { FilterResult } from '../filter.js';
+import type { FilterResult } from '../utils.js';
 
 /**
  * Forward the condition to the correct converter.
@@ -13,7 +13,7 @@ export function convertCondition(
 	condition: AbstractQueryConditionNode,
 	collection: string,
 	generator: Generator<number, number, number>,
-	negate: boolean
+	negate: boolean,
 ): FilterResult {
 	switch (condition.condition.type) {
 		case 'condition-string':

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/themes",
-	"version": "0.2.0",
+	"version": "0.3.1",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -22,11 +22,11 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "vite build && npm run generate-json-schema",
-		"dev": "vite build --watch",
-		"generate-json-schema": "node generate-json-schema.js"
+		"build": "vite build",
+		"dev": "vite build --watch"
 	},
 	"dependencies": {
+		"@directus/utils": "workspace:*",
 		"@sinclair/typebox": "0.31.17",
 		"@unhead/vue": "1.1.30",
 		"decamelize": "6.0.0",

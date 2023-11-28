@@ -36,7 +36,7 @@ export interface WebSocketClient<Schema extends object> {
 	sendMessage(message: string | Record<string, any>): void;
 	subscribe<Collection extends keyof Schema, const Options extends SubscribeOptions<Schema, Collection>>(
 		collection: Collection,
-		options?: Options
+		options?: Options,
 	): Promise<{
 		subscription: AsyncGenerator<
 			SubscriptionOutput<
@@ -63,7 +63,7 @@ export type SubscriptionOutput<
 	Events extends SubscriptionEvents,
 	TItem = TQuery extends Query<Schema, Schema[Collection]>
 		? ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>
-		: Partial<Schema[Collection]>
+		: Partial<Schema[Collection]>,
 > = { type: 'subscription'; uid?: string } & (
 	| {
 			[Event in Events]: { event: Event; data: SubscriptionPayload<TItem>[Event] };

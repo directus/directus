@@ -19,7 +19,7 @@ import {
 export function generateApiExtensionsSandboxEntrypoint(
 	type: ApiExtensionType | HybridExtensionType,
 	name: string,
-	endpointRouter: Router
+	endpointRouter: Router,
 ) {
 	const index = numberGenerator();
 

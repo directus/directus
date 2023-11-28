@@ -9,33 +9,37 @@ export type ModifierConversionResult = {
 };
 
 export const convertModifiers = (
-	modifiers: AbstractQueryModifiers | undefined,
+	modifiers: AbstractQueryModifiers,
 	collection: string,
-	idxGenerator: Generator<number, number, number>
+	idxGenerator: Generator<number, number, number>,
 ): ModifierConversionResult => {
 	const result: ModifierConversionResult = {
 		clauses: {},
 		parameters: [],
 	};
 
-	if (modifiers?.filter) {
+	if (modifiers.filter) {
 		const convertedFilter = convertFilter(modifiers.filter, collection, idxGenerator);
 		result.clauses.where = convertedFilter.clauses.where;
-		result.clauses.joins = convertedFilter.clauses.joins;
+
+		if (convertedFilter.clauses.joins.length > 0) {
+			result.clauses.joins = convertedFilter.clauses.joins;
+		}
+
 		result.parameters.push(...convertedFilter.parameters);
 	}
 
-	if (modifiers?.limit) {
+	if (modifiers.limit) {
 		result.clauses.limit = { type: 'value', parameterIndex: idxGenerator.next().value };
 		result.parameters.push(modifiers.limit.value);
 	}
 
-	if (modifiers?.offset) {
+	if (modifiers.offset) {
 		result.clauses.offset = { type: 'value', parameterIndex: idxGenerator.next().value };
 		result.parameters.push(modifiers.offset.value);
 	}
 
-	if (modifiers?.sort) {
+	if (modifiers.sort) {
 		const sortConversionResult = convertSort(modifiers.sort, collection, idxGenerator);
 		result.clauses.order = sortConversionResult.clauses.order;
 

@@ -20,7 +20,7 @@ withDefaults(
 		value: () => [],
 		choices: () => [],
 		valueCombining: 'all',
-	}
+	},
 );
 
 defineEmits(['input']);
@@ -83,7 +83,7 @@ const searchDebounced = ref('');
 .select-multiple-checkbox-tree {
 	max-height: var(--input-height-max);
 	overflow: auto;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
@@ -97,7 +97,7 @@ const searchDebounced = ref('');
 }
 
 .search .v-input {
-	box-shadow: 0 0 4px 4px var(--theme--background-page);
+	box-shadow: 0 0 4px 4px var(--theme--background);
 }
 
 .footer {
@@ -109,7 +109,7 @@ const searchDebounced = ref('');
 	width: max-content;
 	padding: 4px 8px;
 	text-align: right;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border-top-left-radius: var(--theme--border-radius);
 }
 

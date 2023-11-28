@@ -5,7 +5,7 @@
 	height: auto;
 	color: var(--theme--foreground);
 	font-weight: inherit;
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	line-height: 22px;
 	direction: ltr;
 	background-color: var(--theme--form--field--input--background);
@@ -17,7 +17,7 @@
 
 .disabled .CodeMirror {
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .CodeMirror .CodeMirror-placeholder {
@@ -50,14 +50,14 @@
 
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-	background-color: var(--theme--background-page); /* The little square between H and V scrollbars */
+	background-color: var(--theme--background); /* The little square between H and V scrollbars */
 }
 
 /* GUTTER */
 
 .CodeMirror-gutters {
 	white-space: nowrap;
-	background-color: var(--theme--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-right: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
@@ -289,7 +289,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	color: var(--foreground-inverted);
 	background-color: var(--background-inverted);
 	border-radius: var(--theme--border-radius);
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: pre-wrap;
 	overflow: hidden;
 	opacity: 0;

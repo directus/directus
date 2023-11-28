@@ -18,7 +18,7 @@ export const graphql = (config: Partial<GraphqlConfig> = {}) => {
 			async query<Output extends object = Record<string, any>>(
 				query: string,
 				variables?: Record<string, unknown>,
-				scope: 'items' | 'system' = 'items'
+				scope: 'items' | 'system' = 'items',
 			): Promise<Output> {
 				const fetchOptions: RequestInit = {
 					method: 'POST',

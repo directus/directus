@@ -33,7 +33,7 @@ describe('Operations / Mail', () => {
 		await config.handler(options, mockOperationContext);
 
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(
-			expect.objectContaining({ to: options.to, subject: options.subject, template: { name: 'base', data: {} } })
+			expect.objectContaining({ to: options.to, subject: options.subject, template: { name: 'base', data: {} } }),
 		);
 
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
@@ -50,7 +50,7 @@ describe('Operations / Mail', () => {
 		await config.handler(options, mockOperationContext);
 
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(
-			expect.objectContaining({ to: options.to, subject: options.subject, template: { name: 'custom', data: {} } })
+			expect.objectContaining({ to: options.to, subject: options.subject, template: { name: 'custom', data: {} } }),
 		);
 
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
@@ -71,7 +71,7 @@ describe('Operations / Mail', () => {
 				to: options.to,
 				subject: options.subject,
 				template: { name: 'base', data: { key: 'value' } },
-			})
+			}),
 		);
 
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
@@ -93,7 +93,7 @@ describe('Operations / Mail', () => {
 				to: options.to,
 				subject: options.subject,
 				template: { name: 'custom', data: { key: 'value' } },
-			})
+			}),
 		);
 
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
@@ -114,7 +114,7 @@ describe('Operations / Mail', () => {
 				to: options.to,
 				subject: options.subject,
 				html: options.body,
-			})
+			}),
 		);
 
 		expect(mdSpy).not.toHaveBeenCalled();
@@ -135,7 +135,7 @@ describe('Operations / Mail', () => {
 				to: options.to,
 				subject: options.subject,
 				html: '<p>test body</p>\n',
-			})
+			}),
 		);
 
 		expect(mdSpy).toHaveBeenCalled();

@@ -10,8 +10,8 @@ describe('applyOptionsData', () => {
 		expect(
 			applyOptionsData(
 				{ str: 'num', arr: ['arr', { null: null }], obj: { str: 'obj', num: 42 } },
-				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } }
-			)
+				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } },
+			),
 		).toEqual({ str: 'num', arr: ['arr', { null: null }], obj: { str: 'obj', num: 42 } });
 	});
 
@@ -19,8 +19,8 @@ describe('applyOptionsData', () => {
 		expect(
 			applyOptionsData(
 				{ str: '{{ num }}', arr: ['{{ arr }}', { null: null }], obj: { str: '{{ obj }}', num: 42 } },
-				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } }
-			)
+				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } },
+			),
 		).toEqual({ str: 42, arr: [['foo', 'bar'], { null: null }], obj: { str: { foo: 'bar' }, num: 42 } });
 	});
 
@@ -28,8 +28,8 @@ describe('applyOptionsData', () => {
 		expect(
 			applyOptionsData(
 				{ str: 'num: {{ num }}', arr: ['arr: {{ arr }}', { null: null }], obj: { str: 'obj: {{ obj }}', num: 42 } },
-				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } }
-			)
+				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } },
+			),
 		).toEqual({
 			str: 'num: 42',
 			arr: ['arr: ["foo","bar"]', { null: null }],
@@ -46,7 +46,7 @@ describe('applyOptionsData', () => {
 
 	it('returns the options with non-raw templates which reference null or undefined scope values as literal null and undefined strings', () => {
 		expect(
-			applyOptionsData({ null: 'null: {{ null }}', undefined: 'undefined: {{ undefined }}' }, { null: null })
+			applyOptionsData({ null: 'null: {{ null }}', undefined: 'undefined: {{ undefined }}' }, { null: null }),
 		).toEqual({
 			null: 'null: null',
 			undefined: 'undefined: undefined',

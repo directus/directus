@@ -12,7 +12,7 @@ export type RelationQuerySingle = {
 export function useRelationSingle<T extends Record<string, any>>(
 	value: Ref<number | string | Record<string, any> | null>,
 	previewQuery: Ref<RelationQuerySingle>,
-	relation: Ref<RelationM2O | undefined>
+	relation: Ref<RelationM2O | undefined>,
 ) {
 	const displayItem: Ref<T | null> = ref(null);
 	const loading = ref(false);

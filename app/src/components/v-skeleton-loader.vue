@@ -23,7 +23,7 @@ withDefaults(defineProps<Props>(), {
 
 	Available Variables:
 
-		--v-skeleton-loader-background-color  [var(--background-subdued)]
+		--v-skeleton-loader-background-color  [var(--theme--form--field--input--background-subdued)]
 
 */
 
@@ -36,7 +36,7 @@ withDefaults(defineProps<Props>(), {
 @mixin loader {
 	position: relative;
 	overflow: hidden;
-	background-color: var(--v-skeleton-loader-background-color, var(--background-subdued));
+	background-color: var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 
 	&::after {
 		position: absolute;
@@ -45,7 +45,7 @@ withDefaults(defineProps<Props>(), {
 		left: 0;
 		z-index: 1;
 		height: 100%;
-		background: linear-gradient(90deg, transparent, var(--theme--background-page), transparent);
+		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
 		animation: loading 1.5s infinite;
@@ -62,8 +62,9 @@ withDefaults(defineProps<Props>(), {
 .input,
 .input-tall {
 	width: 100%;
-	height: var(--input-height);
-	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color, var(--background-subdued));
+	height: var(--theme--form--field--input--height);
+	border: var(--theme--border-width) solid
+		var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	@include loader;
@@ -75,7 +76,7 @@ withDefaults(defineProps<Props>(), {
 
 .block-list-item {
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	@include loader;

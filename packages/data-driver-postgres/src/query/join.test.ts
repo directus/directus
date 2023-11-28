@@ -57,7 +57,7 @@ beforeEach(() => {
 
 test('With an alias', () => {
 	expect(join(sample)).toStrictEqual(
-		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}"`
+		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}"`,
 	);
 });
 
@@ -119,6 +119,6 @@ test('With an alias', () => {
 	];
 
 	expect(join(sample)).toStrictEqual(
-		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}" AND "${targetTable2}"."${targetColumn2}" = "${compareToTable2}"."${compareToColumn2}"`
+		`LEFT JOIN "${targetTable}" "${alias}" ON "${targetTable}"."${targetColumn}" = "${compareToTable}"."${compareToColumn}" AND "${targetTable2}"."${targetColumn2}" = "${compareToTable2}"."${compareToColumn2}"`,
 	);
 });

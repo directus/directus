@@ -52,7 +52,7 @@ const props = withDefaults(
 	{
 		loading: true,
 		defaultView: () => ({}),
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -415,7 +415,9 @@ function handleKeyDown(event: any) {
 		<div
 			v-if="location"
 			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
-			:style="`transform: translate(${projection!.x}px, ${projection!.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
+			:style="`transform: translate(${projection!.x}px, ${
+				projection!.y
+			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
 		></div>
 		<transition name="fade">
 			<div
@@ -494,7 +496,6 @@ function handleKeyDown(event: any) {
 		padding: 20px;
 		background-color: var(--theme--form--field--input--background);
 		border-radius: var(--theme--border-radius);
-		box-shadow: var(--card-shadow);
 	}
 
 	.basemap-select {
@@ -507,8 +508,8 @@ function handleKeyDown(event: any) {
 		height: 36px;
 		padding: 10px;
 		color: var(--theme--form--field--input--foreground-subdued);
-		background-color: var(--theme--background-page);
-		border: var(--theme--border-width) solid var(--theme--background-page);
+		background-color: var(--theme--background);
+		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: var(--theme--border-radius);
 
 		span {

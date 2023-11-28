@@ -616,13 +616,13 @@ function discardAndLeave() {
 }
 
 .layout-sidebar {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	display: contents;
 }
 
 :deep(.layout-options) {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 }

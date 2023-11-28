@@ -41,7 +41,7 @@ type UsableItem<T extends Record<string, any>> = {
 export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
-	query: Ref<Query> | Query = {}
+	query: Ref<Query> | Query = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -127,7 +127,7 @@ export function useItem<T extends Record<string, any>>(
 				if (typeof to !== 'undefined') {
 					return to;
 				}
-			}
+			},
 		);
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
@@ -209,7 +209,7 @@ export function useItem<T extends Record<string, any>>(
 						newItem,
 						relation,
 						relatedPrimaryKeyField,
-						fieldsToFetch
+						fieldsToFetch,
 					);
 
 					newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
@@ -231,7 +231,7 @@ export function useItem<T extends Record<string, any>>(
 						item.value,
 						relation,
 						relatedPrimaryKeyField,
-						fieldsToFetch
+						fieldsToFetch,
 					);
 
 					existingItems = existingItems.filter((i) => {
@@ -285,7 +285,7 @@ export function useItem<T extends Record<string, any>>(
 			item: any,
 			relation: Relation,
 			relatedPrimaryKeyField: Field | null,
-			fieldsToFetch: string[]
+			fieldsToFetch: string[],
 		) {
 			const existingIds = item?.[relation.meta!.one_field!].filter((item: any) => typeof item !== 'object');
 			let existingItems: any[] = [];
@@ -308,7 +308,7 @@ export function useItem<T extends Record<string, any>>(
 			updatedRelatedItems: any,
 			item: any,
 			relatedPrimaryKeyField: Field | null,
-			relation: Relation
+			relation: Relation,
 		) {
 			for (const updatedItem of updatedRelatedItems) {
 				copyUserEditValuesToExistingItem(item, relatedPrimaryKeyField, updatedItem, relation);
@@ -319,7 +319,7 @@ export function useItem<T extends Record<string, any>>(
 			item: any,
 			relatedPrimaryKeyField: Field | null,
 			updatedItem: any,
-			relation: Relation
+			relation: Relation,
 		) {
 			if (item[relatedPrimaryKeyField!.field] === updatedItem[relatedPrimaryKeyField!.field]) {
 				const columns = fields.filter((s) => s.startsWith(relation.meta!.one_field!));
@@ -339,11 +339,11 @@ export function useItem<T extends Record<string, any>>(
 		relation: Relation,
 		existsJunctionRelated: Relation | undefined,
 		fieldsStore: any,
-		item: any
+		item: any,
 	) {
 		if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
 			const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
-				existsJunctionRelated.related_collection
+				existsJunctionRelated.related_collection,
 			);
 
 			if (relation.meta.junction_field in item && junctionRelatedPrimaryKeyField.schema!.is_generated) {
@@ -361,7 +361,7 @@ export function useItem<T extends Record<string, any>>(
 				});
 
 			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false,
 			);
 
 			if (otherErrors.length > 0) {

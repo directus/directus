@@ -16,7 +16,7 @@ const sanitizeQueryMiddleware: RequestHandler = (req, _res, next) => {
 			fields: req.query['fields'] || '*',
 			...req.query,
 		},
-		req.accountability || null
+		req.accountability || null,
 	);
 
 	Object.freeze(req.sanitizedQuery);

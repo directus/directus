@@ -22,7 +22,7 @@ const { collection, primaryKey, version } = toRefs(props);
 const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
 	collection,
 	primaryKey,
-	version
+	version,
 );
 
 const modalActive = ref(false);
@@ -33,7 +33,7 @@ watch(
 	() => page.value,
 	(newPage) => {
 		refresh(newPage);
-	}
+	},
 );
 
 function openModal(id: number) {
@@ -91,18 +91,8 @@ defineExpose({
 .v-divider {
 	--v-divider-color: var(--theme--background-accent);
 
-	position: sticky;
-	top: 0;
-	z-index: 3;
-	margin-top: 8px;
-	margin-right: -8px;
-	margin-bottom: 6px;
-	margin-left: -8px;
-	padding-top: 8px;
-	padding-right: 8px;
-	padding-left: 8px;
-	background-color: var(--theme--background);
-	box-shadow: 0 0 2px 2px var(--theme--background);
+	margin-top: 24px;
+	margin-bottom: 8px;
 
 	&:first-of-type {
 		margin-top: 0;

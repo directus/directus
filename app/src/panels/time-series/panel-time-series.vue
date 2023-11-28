@@ -57,7 +57,7 @@ const props = withDefaults(
 		filter: () => ({}),
 		showXAxis: true,
 		showYAxis: true,
-	}
+	},
 );
 
 const { d, t, n } = useI18n();
@@ -106,7 +106,7 @@ watch(
 		chart.value?.destroy();
 		setupChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onMounted(setupChart);
@@ -132,7 +132,7 @@ function setupChart() {
 			x: toIncludeTimezoneOffset(metric.group, isFieldTimestamp),
 			y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 		})),
-		'x'
+		'x',
 	);
 
 	chart.value = new ApexCharts(chartEl.value, {
@@ -149,7 +149,7 @@ function setupChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			animations: {
 				enabled: false,
@@ -241,7 +241,7 @@ function setupChart() {
 				show: props.showXAxis ?? true,
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -289,7 +289,7 @@ function setupChart() {
 								  } as any);
 						},
 						style: {
-							fontFamily: 'var(--theme--font-family-sans-serif)',
+							fontFamily: 'var(--theme--fonts--sans--font-family)',
 							foreColor: 'var(--theme--foreground-subdued)',
 							fontWeight: 600,
 							fontSize: '10px',
@@ -352,7 +352,7 @@ function setupChart() {
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
@@ -362,7 +362,7 @@ function setupChart() {
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--theme--background) !important;
+	background-color: var(--theme--background-normal) !important;
 	padding: 0;
 }
 

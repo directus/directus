@@ -718,7 +718,6 @@ layout_options: Layout indstillinger
 rows: Rækker
 columns: Kolonner
 collection_setup: Opsætning af samling
-optional_system_fields: Valgfrie systemfelter
 value_unique: Værdien skal være unik
 all_activity: Al aktivitet
 create_item: Opret element

@@ -117,6 +117,7 @@ To learn more about how to develop extensions of a specific type, refer to the i
 - [Displays](/extensions/displays)
 - [Panels](/extensions/panels)
 - [Modules](/extensions/modules)
+- [Themes](/extensions/themes)
 
 ### API Extensions
 

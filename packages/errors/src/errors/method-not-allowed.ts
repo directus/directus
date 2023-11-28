@@ -13,5 +13,5 @@ export const messageConstructor = (extensions: MethodNotAllowedErrorExtensions) 
 export const MethodNotAllowedError = createError<MethodNotAllowedErrorExtensions>(
 	ErrorCode.MethodNotAllowed,
 	messageConstructor,
-	405
+	405,
 );

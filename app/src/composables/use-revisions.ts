@@ -19,7 +19,7 @@ export function useRevisions(
 	collection: Ref<string>,
 	primaryKey: Ref<number | string>,
 	version: Ref<ContentVersion | null>,
-	options?: UseRevisionsOptions
+	options?: UseRevisionsOptions,
 ) {
 	const { t } = useI18n();
 	const { info } = useServerStore();
@@ -150,7 +150,7 @@ export function useRevisions(
 					// revision's timestamp date is in iso-8601
 					const date = new Date(new Date(revision.activity.timestamp).toDateString());
 					return date;
-				}
+				},
 			);
 
 			const revisionsGrouped: RevisionsByDate[] = [];
@@ -179,7 +179,7 @@ export function useRevisions(
 							new Date(),
 							{
 								addSuffix: true,
-							}
+							},
 						)})`,
 					});
 				}

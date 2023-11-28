@@ -40,7 +40,7 @@ function useSave() {
 					appRecommendedPermissions.map((permission) => ({
 						...permission,
 						role: roleResponse.data.data.id,
-					}))
+					})),
 				);
 			}
 
@@ -87,8 +87,8 @@ function useSave() {
 
 <style lang="scss" scoped>
 .form-grid {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;

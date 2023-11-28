@@ -87,7 +87,7 @@ const changes = computed(() => {
 
 <template>
 	<div class="updates">
-		<v-notice type="info">
+		<v-notice>
 			{{ t('changes_made') }}
 			<br />
 			{{ t('no_relational_data') }}

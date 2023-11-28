@@ -50,7 +50,7 @@ const panel = computed<Partial<Panel>>(() => {
 
 const currentTypeInfo = useExtension(
 	'panel',
-	computed(() => panel.value.type ?? null)
+	computed(() => panel.value.type ?? null),
 );
 
 const customOptionsFields = computed(() => {
@@ -143,7 +143,7 @@ const stageChanges = () => {
 					v-for="pan of panelTypes"
 					:key="pan.id"
 					class="interface"
-					:class="{ active: panel.type === pan.id, gray: panel.type && panel.type !== pan.id }"
+					:class="{ active: panel.type === pan.id, subdued: panel.type && panel.type !== pan.id }"
 					@click="togglePanel(pan.id)"
 				>
 					<div class="preview">
@@ -324,7 +324,7 @@ const stageChanges = () => {
 	display: block;
 	padding: 8px 16px;
 	background-color: var(--background-page);
-	border: 2px solid var(--theme--primary);
+	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 8px var(--theme--primary-75);
 }
@@ -338,20 +338,18 @@ const stageChanges = () => {
 	border-color: var(--theme--primary);
 }
 
-.interface.gray .preview {
-	filter: grayscale(1);
-
-	background-color: var(--background-subdued);
+.interface.subdued .preview {
+	background-color: var(--theme--background-subdued);
 }
 
-.interface.gray .preview .fallback {
+.interface.subdued .preview .fallback {
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 
 .field-configuration {
-	--v-button-background-color-disabled: var(--theme--background);
+	--v-button-background-color-disabled: var(--theme--background-normal);
 	--columns: 1;
 
 	@media (min-width: 400px) {
@@ -367,7 +365,7 @@ const stageChanges = () => {
 	}
 
 	grid-column: 1 / span var(--columns);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
@@ -381,7 +379,7 @@ const stageChanges = () => {
 }
 
 .setup {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 	margin: 34px;
 }
 </style>

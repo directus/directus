@@ -46,7 +46,7 @@ const props = withDefaults(
 	}>(),
 	{
 		showSelect: 'multiple',
-	}
+	},
 );
 
 const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
@@ -62,12 +62,12 @@ const mainElement = inject<Ref<Element | undefined>>('main-element');
 
 const layoutElement = ref<HTMLElement>();
 
-const { width } = useElementSize(layoutElement);
+const { width: innerWidth } = useElementSize(layoutElement);
 
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
 	(value) => String(value),
-	props.limit
+	props.limit,
 );
 
 if (limitWritable.value !== selectedSize) {
@@ -76,11 +76,11 @@ if (limitWritable.value !== selectedSize) {
 
 watch(
 	() => props.page,
-	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' })
+	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' }),
 );
 
-watch(width, () => {
-	emit('update:width', width.value);
+watch(innerWidth, (value) => {
+	emit('update:width', value);
 });
 </script>
 

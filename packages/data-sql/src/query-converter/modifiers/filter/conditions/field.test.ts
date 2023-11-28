@@ -2,7 +2,7 @@ import type { ConditionFieldNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
-import type { FilterResult } from '../filter.js';
+import type { FilterResult } from '../utils.js';
 import { convertFieldCondition } from './field.js';
 
 test('convert field condition', () => {

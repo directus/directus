@@ -82,13 +82,13 @@ const { displayValue } = useDisplayValue();
 const { modelValue } = toRefs(props);
 
 const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
-	emit('update:modelValue', value)
+	emit('update:modelValue', value),
 );
 
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
 	modelValue as Ref<string[]>,
 	internalItems,
-	(value) => emit('update:modelValue', value)
+	(value) => emit('update:modelValue', value),
 );
 
 const search = ref<string | null>(null);
@@ -97,7 +97,7 @@ watch(
 	search,
 	debounce((val: string | null) => {
 		internalSearch.value = val;
-	}, 250)
+	}, 250),
 );
 
 function useItems() {
@@ -127,7 +127,7 @@ function useItems() {
 				selectable: get(item, props.itemSelectable),
 				children: children
 					? children.filter((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
 					  )
 					: children,
 				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
@@ -137,7 +137,7 @@ function useItems() {
 		const filterItem = (
 			text: string | undefined,
 			value?: string | number | null,
-			children?: Record<string, any>[] | null
+			children?: Record<string, any>[] | null,
 		): boolean => {
 			if (!internalSearch.value) return true;
 
@@ -146,14 +146,14 @@ function useItems() {
 			return children
 				? isMatchingCurrentItem(text, value, searchValue) ||
 						children.some((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
 						)
 				: isMatchingCurrentItem(text, value, searchValue);
 
 			function isMatchingCurrentItem(
 				text: string | undefined,
 				value: string | number | null | undefined,
-				searchValue: string
+				searchValue: string,
 			): boolean {
 				return (
 					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
@@ -371,7 +371,7 @@ function useDisplayValue() {
 
 	Available Variables:
 
-		--v-select-font-family        [var(--theme--font-family-sans-serif)]
+		--v-select-font-family        [var(--theme--fonts--sans--font-family)]
 		--v-select-placeholder-color  [var(--theme--foreground-subdued)]
 
 */
@@ -381,7 +381,7 @@ function useDisplayValue() {
 }
 
 .v-input {
-	--v-input-font-family: var(--v-select-font-family, var(--theme--font-family-sans-serif));
+	--v-input-font-family: var(--v-select-font-family, var(--theme--fonts--sans--font-family));
 
 	cursor: pointer;
 }
@@ -421,7 +421,7 @@ function useDisplayValue() {
 	padding: 4px 8px;
 	padding-right: 26px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: color var(--fast) var(--transition);
 

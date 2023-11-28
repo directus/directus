@@ -106,7 +106,7 @@ const internalHeaders = computed({
 				});
 
 				return pick(header, keysThatAreNotAtDefaultValue);
-			})
+			}),
 		);
 	},
 });
@@ -118,7 +118,7 @@ const internalSort = computed<Sort>(
 		props.sort ?? {
 			by: null,
 			desc: false,
-		}
+		},
 );
 
 const reordering = ref<boolean>(false);
@@ -222,7 +222,7 @@ function onToggleSelectAll(value: boolean) {
 		if (props.selectionUseKeys) {
 			emit(
 				'update:modelValue',
-				clone(props.items).map((item) => item[props.itemKey])
+				clone(props.items).map((item) => item[props.itemKey]),
 			);
 		} else {
 			emit('update:modelValue', clone(props.items));
@@ -417,7 +417,7 @@ table :deep(.loading-indicator > th) {
 }
 
 table :deep(.sortable-ghost .cell) {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .loading table {
@@ -463,7 +463,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline {
-	border: 2px solid var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -473,6 +473,6 @@ table :deep(.sortable-ghost .cell) {
 
 .disabled {
 	--v-table-color: var(--theme--foreground-subdued);
-	--v-table-background-color: var(--background-subdued);
+	--v-table-background-color: var(--theme--background-subdued);
 }
 </style>

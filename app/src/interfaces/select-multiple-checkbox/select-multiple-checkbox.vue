@@ -25,7 +25,7 @@ const props = withDefaults(
 		iconOff: 'check_box_outline_blank',
 		color: 'var(--theme--primary)',
 		itemsShown: 8,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -67,7 +67,7 @@ const gridClass = computed(() => {
 });
 
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
-	emit('input', value)
+	emit('input', value),
 );
 </script>
 
@@ -192,9 +192,9 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	padding: 10px;
-	border: 2px dashed var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	input {
@@ -210,8 +210,8 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	}
 
 	&.has-value {
-		background-color: var(--background-subdued);
-		border: 2px solid var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 	}
 
 	&.active {
@@ -235,7 +235,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	}
 
 	&.disabled {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
 		cursor: not-allowed;
 

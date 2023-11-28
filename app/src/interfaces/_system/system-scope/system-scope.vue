@@ -21,7 +21,7 @@ const itemName = ref<string | null>(null);
 const loading = ref(false);
 
 const isItem = computed(
-	() => props.value !== null && (props.value.startsWith('role_') || props.value.startsWith('user_'))
+	() => props.value !== null && (props.value.startsWith('role_') || props.value.startsWith('user_')),
 );
 
 watch(() => props.value, loadItemName);

@@ -16,7 +16,7 @@ const props = withDefaults(
 	{
 		showSelect: 'multiple',
 		selection: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
@@ -127,10 +127,10 @@ function toggleDescending() {
 	height: 52px;
 	margin-bottom: 36px;
 	padding: 0 8px;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	box-shadow: 0 0 0 2px var(--theme--background-page);
+	box-shadow: 0 0 0 2px var(--theme--background);
 }
 
 .start {

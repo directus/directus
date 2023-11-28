@@ -32,7 +32,7 @@ const props = withDefaults(
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -82,8 +82,8 @@ const templateWithDefaults = computed(() => {
 const fields = computed(() =>
 	adjustFieldsForDisplays(
 		[...getFieldsFromTemplate(templateWithDefaults.value), `${relationInfo.value?.relation.field}.filename_download`],
-		relationInfo.value?.junctionCollection.collection ?? ''
-	)
+		relationInfo.value?.junctionCollection.collection ?? '',
+	),
 );
 
 const page = ref(1);
@@ -275,7 +275,7 @@ const allowDrag = computed(
 		totalItemCount.value <= limit.value &&
 		relationInfo.value?.sortField !== undefined &&
 		!props.disabled &&
-		updateAllowed.value
+		updateAllowed.value,
 );
 </script>
 

@@ -23,7 +23,7 @@ const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> 
 
 const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, validationErrors } = useItem(
 	ref('directus_webhooks'),
-	primaryKey
+	primaryKey,
 );
 
 const confirmDelete = ref(false);

@@ -8,11 +8,11 @@ export function getFlatpickrLocale() {
 	const firstDayOfWeekForDate = startOfWeek(now);
 
 	const weekdaysShorthand = [...Array(7).keys()].map((_, i) =>
-		localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'E')
+		localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'E'),
 	);
 
 	const weekdaysLonghand = [...Array(7).keys()].map((_, i) =>
-		localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE')
+		localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
 	);
 
 	const monthsShorthand = [...Array(12).keys()].map((_, i) => localizedFormat(set(now, { month: i }), 'LLL'));

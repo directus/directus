@@ -27,7 +27,7 @@ const props = withDefaults(
 		batchActiveFields: () => [],
 		validationErrors: () => [],
 		start: 'open',
-	}
+	},
 );
 
 defineEmits(['apply']);
@@ -42,7 +42,7 @@ watch(
 	() => props.loading,
 	(newVal) => {
 		if (!newVal) detailOpen.value = props.start === 'open';
-	}
+	},
 );
 
 const edited = computed(() => {
@@ -66,8 +66,8 @@ const validationMessages = computed(() => {
 			acc.push(
 				`${formatTitle(validationError.field)} ${t(
 					`validationError.${validationError.type}`,
-					validationError
-				).toLowerCase()}`
+					validationError,
+				).toLowerCase()}`,
 			);
 		}
 
@@ -135,7 +135,7 @@ watch(validationMessages, (newVal, oldVal) => {
 
 <style scoped>
 .v-form {
-	padding-top: calc(var(--form-vertical-gap) / 2);
+	padding-top: calc(var(--theme--form--row-gap) / 2);
 }
 
 .v-divider {

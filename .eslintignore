@@ -9,4 +9,11 @@ dist/
 *.yml
 *.yaml
 *.md
+*.txt
 *.json
+*.scss
+*.css
+*.svg
+*.liquid
+*.html
+Dockerfile

@@ -168,7 +168,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .fields {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;
@@ -176,8 +176,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .export-fields {
-	--folder-picker-background-color: var(--background-subdued);
-	--folder-picker-color: var(--theme--background);
+	--folder-picker-background-color: var(--theme--background-subdued);
+	--folder-picker-color: var(--theme--background-normal);
 
 	margin-top: 24px;
 	padding: var(--content-padding);
@@ -198,8 +198,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: var(--input-height);
-	padding: var(--input-padding);
+	height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	padding-top: 0px;
 	padding-bottom: 0px;
 	color: var(--white);
@@ -229,7 +229,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 
 	&.has-file {

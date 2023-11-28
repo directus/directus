@@ -41,7 +41,7 @@ const props = withDefaults(
 		showAxisLabels: 'both',
 		showDataLabel: true,
 		conditionalFill: () => [],
-	}
+	},
 );
 
 const { t, n } = useI18n();
@@ -73,7 +73,7 @@ watch(
 		chart.value?.destroy();
 		setUpChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onMounted(setUpChart);
@@ -114,7 +114,7 @@ function setUpChart() {
 			height: '100%',
 			width: '100%',
 			toolbar: { show: false },
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			selection: { enabled: false },
 			zoom: { enabled: false },
@@ -194,7 +194,7 @@ function setUpChart() {
 				rotate: 0,
 				showDuplicates: true,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -224,7 +224,7 @@ function setUpChart() {
 				show: ['both', 'yOnly'].includes(props.showAxisLabels),
 				formatter: formatNumericValue,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -346,7 +346,7 @@ function setUpChart() {
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-series-group {

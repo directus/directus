@@ -14,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		search: null,
-	}
+	},
 );
 
 defineEmits<{
@@ -34,7 +34,7 @@ const { interfaces } = useExtensions();
 const interfacesSorted = computed(() => {
 	return orderBy(
 		interfaces.value.filter((inter) => !inter.system),
-		['order']
+		['order'],
 	);
 });
 
@@ -81,7 +81,7 @@ const groups = computed(() => {
 		if (!search.value) return filteredInterfaces;
 		const searchValue = search.value!.toLowerCase();
 		return filteredInterfaces.filter(
-			(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue)
+			(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue),
 		);
 	}
 });
@@ -217,7 +217,7 @@ function toggleInterface(id: string) {
 }
 
 .preview {
-	--v-icon-color: var(--theme--background-page);
+	--v-icon-color: var(--theme--background);
 
 	display: flex;
 	align-items: center;
@@ -255,8 +255,8 @@ function toggleInterface(id: string) {
 
 	display: block;
 	padding: 8px 16px;
-	background-color: var(--theme--background-page);
-	border: 2px solid var(--theme--primary);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 8px var(--theme--primary-subdued);
 }
@@ -274,7 +274,7 @@ function toggleInterface(id: string) {
 	--primary: var(--theme--foreground-subdued);
 	--primary-50: var(--theme--foreground-subdued);
 
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 
 .interface.gray .preview .fallback {

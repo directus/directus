@@ -122,14 +122,22 @@ function emitClick(event: MouseEvent) {
 		-moz-osx-font-smoothing: grayscale;
 		text-rendering: optimizeLegibility;
 		font-feature-settings: 'liga';
-		font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+		font-variation-settings:
+			'FILL' 0,
+			'wght' 400,
+			'GRAD' 0,
+			'opsz' 24;
 
 		&::after {
 			content: attr(data-icon);
 		}
 
 		&.filled {
-			font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+			font-variation-settings:
+				'FILL' 1,
+				'wght' 400,
+				'GRAD' 0,
+				'opsz' 24;
 		}
 	}
 

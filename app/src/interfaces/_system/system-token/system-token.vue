@@ -11,7 +11,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: null,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -41,7 +41,7 @@ watch(
 			isNewTokenGenerated.value = false;
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 async function generateToken() {
@@ -96,7 +96,7 @@ function emitValue(newValue: string | null) {
 			</template>
 		</v-input>
 
-		<v-notice v-if="isNewTokenGenerated && value" type="info">
+		<v-notice v-if="isNewTokenGenerated && value">
 			{{ t('interfaces.system-token.generate_success_copy') }}
 		</v-notice>
 	</div>
@@ -104,7 +104,7 @@ function emitValue(newValue: string | null) {
 
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .saved {

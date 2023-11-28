@@ -28,7 +28,7 @@ watch(
 	() => props.modelValue,
 	() => {
 		loadRoles();
-	}
+	},
 );
 
 async function inviteUsers() {
@@ -53,7 +53,7 @@ async function inviteUsers() {
 		});
 
 		const otherErrors = error?.response?.data?.errors?.filter(
-			(e: APIError) => e?.extensions?.code !== 'RECORD_NOT_UNIQUE'
+			(e: APIError) => e?.extensions?.code !== 'RECORD_NOT_UNIQUE',
 		);
 
 		if (otherErrors.length > 0) {
@@ -129,7 +129,7 @@ async function loadRoles() {
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	@include form-grid;
 }

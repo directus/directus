@@ -8,7 +8,7 @@ const { t } = useI18n();
 
 const dataItems = [
 	{
-		icon: 'list_alt',
+		icon: 'database',
 		name: t('settings_data_model'),
 		to: `/settings/data-model`,
 	},

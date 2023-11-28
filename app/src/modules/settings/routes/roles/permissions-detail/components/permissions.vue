@@ -34,7 +34,7 @@ const fields = computed(() => [
 
 <template>
 	<div>
-		<v-notice type="info">
+		<v-notice>
 			{{
 				t('permissions_for_role', {
 					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
@@ -69,8 +69,8 @@ const fields = computed(() => [
 
 	.app-minimal-preview {
 		padding: 16px;
-		font-family: var(--theme--font-family-monospace);
-		background-color: var(--background-subdued);
+		font-family: var(--theme--fonts--monospace--font-family);
+		background-color: var(--theme--background-subdued);
 		border-radius: var(--theme--border-radius);
 	}
 }

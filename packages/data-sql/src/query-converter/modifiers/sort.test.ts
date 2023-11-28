@@ -1,12 +1,12 @@
-import type { AbstractQueryNodeSort } from '@directus/data';
+import type { AbstractQueryNodeSort, AtLeastOneElement } from '@directus/data';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { randomIdentifier } from '@directus/random';
 import { convertSort, type SortConversionResult } from './sort.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
-import { convertTarget, type TargetConversionResult } from './filter/conditions/utils.js';
+import { convertTarget, type TargetConversionResult } from './target.js';
 import type { AbstractSqlQuerySelectNode } from '../../index.js';
 
-vi.mock('./filter/conditions/utils.js', (importOriginal) => {
+vi.mock('./target.js', (importOriginal) => {
 	const original = importOriginal();
 	return {
 		...original,
@@ -14,7 +14,7 @@ vi.mock('./filter/conditions/utils.js', (importOriginal) => {
 	};
 });
 
-let sample: AbstractQueryNodeSort[];
+let sample: AtLeastOneElement<AbstractQueryNodeSort>;
 const localCollection = randomIdentifier();
 const targetField = randomIdentifier();
 

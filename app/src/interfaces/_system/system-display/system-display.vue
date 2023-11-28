@@ -28,7 +28,7 @@ watch(
 	() => values.value[props.typeField!],
 	() => {
 		emit('input', null);
-	}
+	},
 );
 
 const items = computed(() => {

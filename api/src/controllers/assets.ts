@@ -89,7 +89,7 @@ router.get(
 		const allKeys: string[] = [
 			...systemKeys,
 			...(assetSettings.storage_asset_presets || []).map(
-				(transformation: TransformationParams) => transformation['key']
+				(transformation: TransformationParams) => transformation['key'],
 			),
 		];
 
@@ -140,8 +140,8 @@ router.get(
 						defaultSrc: ['none'],
 					},
 				},
-				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
-			)
+				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY'),
+			),
 		)(req, res, next);
 	}),
 
@@ -158,7 +158,7 @@ router.get(
 
 		const transformationParams: TransformationParams = {
 			...(res.locals['shortcuts'] as TransformationParams[]).find(
-				(transformation) => transformation['key'] === res.locals['transformation']?.key
+				(transformation) => transformation['key'] === res.locals['transformation']?.key,
 			),
 			...res.locals['transformation'],
 		};
@@ -267,7 +267,7 @@ router.get(
 		});
 
 		return undefined;
-	})
+	}),
 );
 
 export default router;

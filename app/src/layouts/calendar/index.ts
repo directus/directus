@@ -54,7 +54,7 @@ export default defineLayout<LayoutOptions>({
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
 				return ['timestamp', 'dateTime', 'date'].includes(field.type);
-			})
+			}),
 		);
 
 		const calendarFilter = computed(() => {
@@ -124,11 +124,11 @@ export default defineLayout<LayoutOptions>({
 				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,
-			}
+			},
 		);
 
 		const events = computed<EventInput>(
-			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || []
+			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],
 		);
 
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
@@ -218,7 +218,7 @@ export default defineLayout<LayoutOptions>({
 		// sidebar being manipulated
 		watch(
 			() => appStore.sidebarOpen,
-			() => setTimeout(() => calendar.value?.updateSize(), 300)
+			() => setTimeout(() => calendar.value?.updateSize(), 300),
 		);
 
 		watch(fullFullCalendarOptions, () => updateCalendar(), { deep: true, immediate: true });
@@ -234,7 +234,7 @@ export default defineLayout<LayoutOptions>({
 					}
 				}
 			},
-			{ immediate: true }
+			{ immediate: true },
 		);
 
 		const showingCount = computed(() => {
@@ -324,7 +324,7 @@ export default defineLayout<LayoutOptions>({
 					renderDisplayStringTemplate(
 						collection.value!,
 						template.value || `{{ ${primaryKeyField.value.field} }}`,
-						item
+						item,
 					) || item[primaryKeyField.value.field],
 				start: item[startDateField.value],
 				end: endDate,

@@ -1,5 +1,5 @@
 .tox {
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 }
 
 .tox .tox-tbtn {
@@ -112,7 +112,7 @@
 .tox .tox-toolbar__overflow {
 	min-height: 40px;
 	padding: 2px 0;
-	background: var(--background-subdued);
+	background: var(--theme--form--field--input--background-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
@@ -124,7 +124,7 @@ body.dark .tox .tox-toolbar,
 body.dark .tox .tox-toolbar__primary,
 body.dark .tox .tox-toolbar__overflow {
 	background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23455a64'/%3E%3C/svg%3E")
-		left 0 top 0 var(--background-subdued);
+		left 0 top 0 var(--theme--form--field--input--background-subdued);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -132,7 +132,7 @@ body.dark .tox .tox-toolbar__overflow {
 	body.auto .tox .tox-toolbar__primary,
 	body.auto .tox .tox-toolbar__overflow {
 		background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23455a64'/%3E%3C/svg%3E")
-			left 0 top 0 var(--background-subdued);
+			left 0 top 0 var(--theme--form--field--input--background-subdued);
 	}
 }
 
@@ -192,7 +192,7 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border: none;
 	box-shadow: none;
 }
@@ -205,7 +205,7 @@ body.dark .tox .tox-toolbar__overflow {
 	padding: 20px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 16px;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 }
 
 .tox .tox-dialog__body {
@@ -219,7 +219,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-dialog__footer {
 	padding: 0 24px 24px;
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border-top: none;
 }
 
@@ -232,15 +232,15 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 14px;
-	font-family: var(--theme--font-family-sans-serif);
-	background-color: var(--theme--background-page);
-	border: 2px solid var(--theme--form--field--input--border-color);
+	font-family: var(--theme--fonts--sans--font-family);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 }
 
 .tox .tox-textarea {
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .tox .tox-textfield:focus,
@@ -248,16 +248,16 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-toolbar-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 }
 
 .tox .tox-menu {
 	box-sizing: border-box;
 	padding: 4px !important;
 	color: var(--theme--form--field--input--foreground);
-	font-family: var(--theme--font-family-sans-serif);
-	background-color: var(--background-subdued);
-	border: 2px solid var(--theme--form--field--input--border-color);
+	font-family: var(--theme--fonts--sans--font-family);
+	background-color: var(--theme--form--field--input--background-subdued);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 
@@ -299,10 +299,10 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--white);
 	font-weight: 500;
 	font-size: 16px;
-	font-family: var(--theme--font-family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	line-height: 19px;
 	background-color: var(--theme--primary);
-	border: 2px solid var(--theme--primary);
+	border: var(--theme--border-width) solid var(--theme--primary);
 	border: none;
 	border-color: var(--theme--primary);
 	border-radius: var(--theme--border-radius);
@@ -319,14 +319,14 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-button--secondary {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--theme--background);
-	border-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
+	border-color: var(--theme--background-normal);
 }
 
 .tox .tox-button--secondary:hover:not(:disabled) {
 	color: var(--theme--form--field--input--foreground);
-	background-color: var(--theme--background);
-	border-color: var(--theme--background);
+	background-color: var(--theme--background-normal);
+	border-color: var(--theme--background-normal);
 }
 
 .tox .tox-button--naked {
@@ -400,7 +400,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-pop.tox-pop--top::after {
-	border-bottom-color: var(--background-subdued);
+	border-bottom-color: var(--theme--form--field--input--background-subdued);
 }
 
 .tox .tox-pop.tox-pop--top::before {

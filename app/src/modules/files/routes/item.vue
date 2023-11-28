@@ -73,7 +73,7 @@ useShortcut('meta+s', saveAndStay, form);
 const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 	ref('directus_files'),
 	item,
-	isNew
+	isNew,
 );
 
 const fieldsFiltered = computed(() => {
@@ -188,7 +188,7 @@ function useMovetoFolder() {
 					params: {
 						fields: 'folder.name',
 					},
-				}
+				},
 			);
 
 			refresh();
@@ -373,7 +373,7 @@ function useMovetoFolder() {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--theme--background);
+	--v-button-background-color: var(--theme--background-normal);
 }
 
 .file-item {
@@ -382,6 +382,6 @@ function useMovetoFolder() {
 }
 
 .preview {
-	margin-bottom: var(--form-vertical-gap);
+	margin-bottom: var(--theme--form--row-gap);
 }
 </style>

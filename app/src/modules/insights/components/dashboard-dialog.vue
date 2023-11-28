@@ -33,11 +33,11 @@ watch(
 	(newValue, oldValue) => {
 		if (isEqual(newValue, oldValue) === false) {
 			values.name = props.dashboard?.name ?? null;
-			values.icon = props.dashboard?.icon ?? 'dashboard';
+			values.icon = props.dashboard?.icon ?? 'space_dashboard';
 			values.color = props.dashboard?.color ?? null;
 			values.note = props.dashboard?.note ?? null;
 		}
-	}
+	},
 );
 
 const saving = ref(false);

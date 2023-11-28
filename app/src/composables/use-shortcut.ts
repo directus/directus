@@ -28,8 +28,8 @@ export function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
 	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(
-		document.body
-	) as Ref<HTMLElement>
+		document.body,
+	) as Ref<HTMLElement>,
 ): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;

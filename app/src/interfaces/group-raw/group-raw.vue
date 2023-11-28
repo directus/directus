@@ -20,7 +20,7 @@ withDefaults(
 	{
 		batchActiveFields: () => [],
 		validationErrors: () => [],
-	}
+	},
 );
 
 defineEmits(['apply']);

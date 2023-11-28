@@ -22,7 +22,7 @@ const props = withDefaults(
 		primaryKey: undefined,
 		selection: () => [],
 		hasEdits: false,
-	}
+	},
 );
 
 const emit = defineEmits(['refresh']);
@@ -40,12 +40,12 @@ const manualFlows = computed(() =>
 		.getManualFlowsForCollection(collection.value)
 		.filter(
 			(flow) =>
-				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location
+				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location,
 		)
 		.map((flow) => ({
 			...flow,
 			options: flow.options ? translate(flow.options) : null,
-		}))
+		})),
 );
 
 const runningFlows = ref<string[]>([]);
@@ -223,7 +223,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .fields {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;
@@ -239,8 +239,8 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .confirm-form {
-	--form-horizontal-gap: 24px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	margin-top: var(--v-card-padding, 16px);
 

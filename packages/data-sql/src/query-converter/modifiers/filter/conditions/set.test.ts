@@ -4,7 +4,7 @@ import { expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/clauses/where/index.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertSetCondition } from './set.js';
-import type { FilterResult } from '../filter.js';
+import type { FilterResult } from '../utils.js';
 
 test('convert set condition', () => {
 	const idGen = parameterIndexGenerator();

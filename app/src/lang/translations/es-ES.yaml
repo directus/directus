@@ -734,7 +734,6 @@ layout_options: Opciones de Diseño
 rows: Filas
 columns: Columnas
 collection_setup: Configuración de Colección
-optional_system_fields: Campos Opcionales del Sistema
 value_unique: El Valor tiene que ser único
 all_activity: Toda la Actividad
 create_item: Crear Elemento
