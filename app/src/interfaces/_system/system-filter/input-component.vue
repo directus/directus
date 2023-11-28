@@ -16,17 +16,34 @@ const props = withDefaults(
 		focus?: boolean;
 		choices?: Choice[];
 	}>(),
-	{ focus: true, choices: () => [] },
+	{
+		focus: true,
+		choices: () => [],
+	},
 );
 
 const emit = defineEmits<{
-	(e: 'input', value: string | number | Record<string, unknown> | boolean | null): void;
+	input: [value: string | number | Record<string, unknown> | boolean | null];
 }>();
 
-const inputEl = ref<HTMLInputElement | null>(null);
 const { t } = useI18n();
-
+const inputEl = ref<HTMLInputElement | null>(null);
+const inputLength = ref<number>();
 const dateTimeMenu = ref();
+
+onMounted(() => {
+	if (props.focus) inputEl.value?.focus();
+});
+
+watch(
+	() => props.value,
+	(value) => {
+		inputLength.value = value?.toString().length;
+	},
+	{ immediate: true },
+);
+
+const inputWidth = computed(() => `${(inputLength.value ?? 0) + 1}ch`);
 
 const displayValue = computed(() => {
 	if (props.value === null) return null;
@@ -38,16 +55,6 @@ const displayValue = computed(() => {
 
 	return props.value;
 });
-
-const inputLength = ref<number>();
-const width = computed(() => ((props.value?.toString().length || inputLength.value) ?? 2) + 1 + 'ch');
-
-watch(
-	() => props.value,
-	() => {
-		inputLength.value = props.value?.toString().length;
-	},
-);
 
 const inputPattern = computed(() => {
 	switch (props.type) {
@@ -64,31 +71,27 @@ const inputPattern = computed(() => {
 	}
 });
 
-onMounted(() => {
-	if (props.focus) inputEl.value?.focus();
-});
-
-function emitValue(val: string | null) {
-	if (val === '') {
+function emitValue(value: string | null) {
+	if (value === '') {
 		return emit('input', null);
 	}
 
 	if (
-		typeof val === 'string' &&
-		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix)) ||
-			/^{{\s*?\S+?\s*?}}$/.test(val))
+		typeof value === 'string' &&
+		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => value.startsWith(prefix)) ||
+			/^{{\s*?\S+?\s*?}}$/.test(value))
 	) {
-		return emit('input', val);
+		return emit('input', value);
 	}
 
-	if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
-		return emit('input', val);
+	if (typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
+		return emit('input', value);
 	}
 }
 
-function onInput(val: string | null) {
-	inputLength.value = val?.length;
-	emitValue(val);
+function onInput(value: string | null) {
+	inputLength.value = value?.length;
+	emitValue(value);
 }
 </script>
 
@@ -200,7 +203,7 @@ input {
 	line-height: 1em;
 	background-color: var(--theme--form--field--input--background);
 	border: none;
-	width: clamp(3ch, v-bind(width), 40ch);
+	width: clamp(3ch, v-bind(inputWidth), 40ch);
 
 	&::placeholder {
 		color: var(--theme--form--field--input--foreground-subdued);
