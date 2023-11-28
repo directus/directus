@@ -23,7 +23,7 @@ export default defineEndpoint((router, context) => {
 });
 ```
 
-### Import a File
+## Import a File
 
 ```js
 router.post('/', async (req, res) => {
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
 });
 ```
 
-### Read a File
+## Read a File
 
 ```js
 router.get('/', async (req, res) => {
@@ -58,7 +58,7 @@ router.get('/', async (req, res) => {
 });
 ```
 
-### Update a File
+## Update a File
 
 ```js
 router.patch('/', async (req, res) => {
@@ -73,7 +73,7 @@ router.patch('/', async (req, res) => {
 });
 ```
 
-### Delete a File
+## Delete a File
 
 ```js
  router.delete('/', async (req, res) => {
@@ -88,7 +88,7 @@ router.patch('/', async (req, res) => {
 });
 ```
 
-::: tip Explore FilesService In-depth
+::: tip Explore FilesService In-Depth
 
 Refer to the full list of methods
 [in our codebase](https://github.com/directus/directus/blob/main/api/src/services/files.ts).
