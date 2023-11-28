@@ -1,4 +1,5 @@
 import { Focus } from '@/__utils__/focus';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test } from 'vitest';
 import { createI18n } from 'vue-i18n';
@@ -50,7 +51,7 @@ const VListItemContent = {
 	`,
 };
 
-const global = {
+const global: GlobalMountOptions = {
 	stubs: {
 		'v-menu': VMenu,
 		'v-input': true,

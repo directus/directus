@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreateRoleOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusRole<Schema>
+	Item extends object = DirectusRole<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -19,7 +19,7 @@ export type CreateRoleOutput<
 export const createRoles =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		items: Partial<DirectusRole<Schema>>[],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateRoleOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/roles`,
@@ -39,7 +39,7 @@ export const createRoles =
 export const createRole =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		item: Partial<DirectusRole<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<CreateRoleOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/roles`,

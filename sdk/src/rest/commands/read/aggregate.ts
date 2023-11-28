@@ -14,10 +14,10 @@ export const aggregate =
 	<
 		Schema extends object,
 		Collection extends AllCollections<Schema>,
-		Options extends AggregationOptions<Schema, Collection>
+		Options extends AggregationOptions<Schema, Collection>,
 	>(
 		collection: Collection,
-		options: Options
+		options: Options,
 	): RestCommand<AggregationOutput<Schema, Collection, Options>, Schema> =>
 	() => {
 		const collectionName = String(collection);

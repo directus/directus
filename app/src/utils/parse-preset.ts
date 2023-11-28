@@ -9,7 +9,7 @@ export function parsePreset(preset: Record<string, any> | null): Record<string, 
 	if (!('id' in currentUser)) return preset ?? {};
 
 	const accountability: Accountability = {
-		role: currentUser.role.id,
+		role: currentUser.role?.id ?? null,
 		user: currentUser.id,
 	};
 

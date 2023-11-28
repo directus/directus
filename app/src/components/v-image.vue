@@ -33,7 +33,7 @@ watch(
 	() => props.src,
 	() => {
 		loadImage();
-	}
+	},
 );
 
 async function loadImage() {

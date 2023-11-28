@@ -56,8 +56,7 @@ To share a single instance of the Directus JavaScript SDK between multiple pages
 file that can be imported later. Create a new directory called `lib` and a new file called `directus.js` inside of it.
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest } from '@directus/sdk/rest';
+import { createDirectus, rest } from '@directus/sdk';
 
 const directus = createDirectus('https://directus.example.com').with(rest());
 
@@ -87,7 +86,7 @@ Inside of the `app` directory, create a new file called `page.tsx`.
 
 ```jsx
 import directus from 'lib/directus';
-import { readItems } from '@directus/sdk/rest';
+import { readItems } from '@directus/sdk';
 
 async function getGlobals() {
 	return directus.request(readItems('global'));
@@ -123,7 +122,7 @@ single file can be used for all of the top-level pages.
 ```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
-import { readItem } from '@directus/sdk/rest';
+import { readItem } from '@directus/sdk';
 
 async function getPage(slug) {
 	try {
@@ -179,7 +178,7 @@ Inside of the `app` directory, create a new subdirectory called `blog` and a new
 
 ```jsx
 import directus from '@/lib/directus';
-import { readItems } from '@directus/sdk/rest';
+import { readItems } from '@directus/sdk';
 
 async function getPosts() {
 	return directus.request(
@@ -238,7 +237,7 @@ Each blog post links to a page that does not yet exist. In the `app/blog` direct
 ```jsx
 import directus from '@/lib/directus';
 import { notFound } from 'next/navigation';
-import { readItem } from '@directus/sdk/rest';
+import { readItem } from '@directus/sdk';
 
 async function getPost(slug) {
 	try {

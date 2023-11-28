@@ -44,7 +44,7 @@ const emit = defineEmits<{
 }>();
 
 const currentVersionDisplayName = computed(() =>
-	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name
+	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name,
 );
 
 const isOutdated = computed(() => comparedData.value?.outdated ?? false);
@@ -85,7 +85,7 @@ watch(
 	(value) => {
 		if (value) getComparison();
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function addField(field: string) {
@@ -109,8 +109,8 @@ async function getComparison() {
 		const comparedFieldsKeys = comparedFields.value.map((field) => field.field);
 
 		selectedFields.value = Object.keys(result.current).filter((fieldKey) => comparedFieldsKeys.includes(fieldKey));
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -130,14 +130,14 @@ function usePromoteDialog() {
 				`/versions/${unref(currentVersion).id}/promote`,
 				unref(selectedFields).length > 0
 					? { mainHash: unref(mainHash), fields: unref(selectedFields) }
-					: { mainHash: unref(mainHash) }
+					: { mainHash: unref(mainHash) },
 			);
 
 			confirmDeleteOnPromoteDialogActive.value = false;
 
 			emit('promote', deleteOnPromote);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			promoting.value = false;
 		}
@@ -184,7 +184,7 @@ function useTab() {
 				<v-notice v-if="isOutdated" type="warning" class="field full">
 					{{ t('outdated_notice') }}
 				</v-notice>
-				<v-notice v-else type="info" class="field full">
+				<v-notice v-else class="field full">
 					{{ t('promote_notice') }}
 				</v-notice>
 				<div v-for="field in comparedFields" :key="field.field" class="field full">
@@ -271,7 +271,7 @@ function useTab() {
 	padding: 8px;
 	gap: 8px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	cursor: pointer;
 
 	.field-content {

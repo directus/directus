@@ -11,7 +11,7 @@ import { uniq } from 'lodash-es';
 export function reduceSchema(
 	schema: SchemaOverview,
 	permissions: Permission[] | null,
-	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete']
+	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete'],
 ): SchemaOverview {
 	const reduced: SchemaOverview = {
 		collections: {},
@@ -21,22 +21,25 @@ export function reduceSchema(
 	const allowedFieldsInCollection =
 		permissions
 			?.filter((permission) => actions.includes(permission.action))
-			.reduce((acc, permission) => {
-				if (!acc[permission.collection]) {
-					acc[permission.collection] = [];
-				}
+			.reduce(
+				(acc, permission) => {
+					if (!acc[permission.collection]) {
+						acc[permission.collection] = [];
+					}
 
-				if (permission.fields) {
-					acc[permission.collection] = uniq([...acc[permission.collection]!, ...permission.fields]);
-				}
+					if (permission.fields) {
+						acc[permission.collection] = uniq([...acc[permission.collection]!, ...permission.fields]);
+					}
 
-				return acc;
-			}, {} as { [collection: string]: string[] }) ?? {};
+					return acc;
+				},
+				{} as { [collection: string]: string[] },
+			) ?? {};
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
 		if (
 			!permissions?.some(
-				(permission) => permission.collection === collectionName && actions.includes(permission.action)
+				(permission) => permission.collection === collectionName && actions.includes(permission.action),
 			)
 		) {
 			continue;
@@ -53,13 +56,13 @@ export function reduceSchema(
 			}
 
 			const o2mRelation = schema.relations.find(
-				(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName
+				(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName,
 			);
 
 			if (
 				o2mRelation &&
 				!permissions?.some(
-					(permission) => permission.collection === o2mRelation.collection && actions.includes(permission.action)
+					(permission) => permission.collection === o2mRelation.collection && actions.includes(permission.action),
 				)
 			) {
 				continue;
@@ -94,7 +97,7 @@ export function reduceSchema(
 		if (
 			relation.meta?.one_allowed_collections &&
 			relation.meta.one_allowed_collections.every((collection) =>
-				Object.keys(allowedFieldsInCollection).includes(collection)
+				Object.keys(allowedFieldsInCollection).includes(collection),
 			) === false
 		) {
 			collectionsAllowed = false;

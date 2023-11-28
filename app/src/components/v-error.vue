@@ -34,7 +34,7 @@ async function copyError() {
 	const error = props.error?.response?.data || props.error;
 
 	const isCopied = await copyToClipboard(
-		JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
+		JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2),
 	);
 
 	if (!isCopied) return;
@@ -63,7 +63,7 @@ async function copyError() {
 	padding: 6px 12px;
 	overflow: auto;
 	color: var(--theme--danger);
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);
 

@@ -37,7 +37,7 @@ const addNewLink = computed<string>(() => {
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset, refreshInterval } = usePreset(
 	ref('directus_translations'),
-	bookmarkID
+	bookmarkID,
 );
 
 const { layoutWrapper } = useLayout(layout);

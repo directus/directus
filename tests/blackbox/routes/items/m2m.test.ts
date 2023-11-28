@@ -693,7 +693,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -763,13 +763,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -777,19 +777,19 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -909,7 +909,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -997,7 +997,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1018,7 +1018,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1038,31 +1038,31 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1149,7 +1149,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -1223,13 +1223,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -1237,19 +1237,19 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1370,7 +1370,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
-								gqlResponse2.body.data[localCollectionIngredients].reverse()
+								gqlResponse2.body.data[localCollectionIngredients].reverse(),
 							);
 						});
 					});
@@ -1462,7 +1462,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1))
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1483,7 +1483,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1))
+											parseInt(
+												item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1),
+											),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1503,35 +1505,35 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
-								gqlResponse2.body.data[localCollectionIngredients]
+								gqlResponse2.body.data[localCollectionIngredients],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(
-										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1)
+										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1),
 									);
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(
-										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1)
+										item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1),
 									);
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1546,7 +1548,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				},
 				localCollectionFoods,
 				cachedSchema[pkType][localCollectionFoods],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
@@ -1557,7 +1559,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				},
 				localCollectionIngredients,
 				cachedSchema[pkType][localCollectionIngredients],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
@@ -1568,7 +1570,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				},
 				localCollectionSuppliers,
 				cachedSchema[pkType][localCollectionSuppliers],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 		});
 
@@ -1639,7 +1641,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -1663,7 +1665,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									]),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -1787,7 +1789,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -1928,7 +1930,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -1952,7 +1954,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									]),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -2111,7 +2113,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -2135,7 +2137,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									]),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -2251,7 +2253,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									}),
 								}),
 							]),
-						})
+						}),
 					);
 				});
 			});
@@ -2354,7 +2356,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].ingredients.length).toEqual(countNested);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2415,17 +2417,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2484,7 +2486,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2546,17 +2548,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2669,7 +2671,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 						},
-						120000
+						120000,
 					);
 				});
 
@@ -2784,17 +2786,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 							);
 						},
-						120000
+						120000,
 					);
 				});
 			});
@@ -2991,23 +2993,23 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data.length).toBe(2);
 
 					expect(response.body.data.map((food: any) => food.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdFood + index)
+						Array.from({ length: 2 }, (_, index) => largeIdFood + index),
 					);
 
 					expect(
 						response.body.data.flatMap((food: any) =>
-							food.ingredients.flatMap((ingredient: any) => ingredient[`${localCollectionIngredients}_id`].id)
-						)
+							food.ingredients.flatMap((ingredient: any) => ingredient[`${localCollectionIngredients}_id`].id),
+						),
 					).toEqual(Array.from({ length: 4 }, (_, index) => largeIdIngredient + index));
 
 					expect(
 						response.body.data.flatMap((food: any) =>
 							food.ingredients.flatMap((ingredient: any) =>
 								ingredient[`${localCollectionIngredients}_id`].suppliers.map(
-									(supplier: any) => supplier[`${localCollectionSuppliers}_id`].id
-								)
-							)
-						)
+									(supplier: any) => supplier[`${localCollectionSuppliers}_id`].id,
+								),
+							),
+						),
 					).toEqual(Array.from({ length: 8 }, (_, index) => largeIdSupplier + index));
 				});
 			});

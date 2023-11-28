@@ -8,7 +8,7 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit } from 'lodash';
-import { ComputedRef, computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
@@ -120,7 +120,7 @@ watch(
 		if (!props.showValidationErrors) return;
 		if (isEqual(newVal, oldVal)) return;
 		if (newVal?.length > 0) el?.value?.scrollIntoView({ behavior: 'smooth' });
-	}
+	},
 );
 
 provide('values', values);
@@ -137,7 +137,7 @@ function useForm() {
 			if (!isEqual(fields.value, newVal)) {
 				fields.value = newVal;
 			}
-		}
+		},
 	);
 
 	const defaultValues = getDefaultValuesFromFields(fields);
@@ -159,14 +159,14 @@ function useForm() {
 		return fields;
 	});
 
-	const fieldsMap: ComputedRef<Record<string, TFormField | undefined>> = computed(() => {
+	const fieldsMap = computed<Record<string, TFormField | undefined>>(() => {
 		return Object.fromEntries(fieldsWithConditions.value.map((field) => [field.field, field]));
 	});
 
 	const fieldsInGroup = computed(() =>
 		formFields.value.filter(
-			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
-		)
+			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group)),
+		),
 	);
 
 	const fieldNames = computed(() => {
@@ -350,10 +350,10 @@ function useRawEditor() {
 					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group')"
 					v-show="!fieldsMap[fieldName]!.meta?.hidden"
 					:ref="
-					(el: Element) => {
-						formFieldEls[fieldName] = el;
-					}
-				"
+						(el: Element) => {
+							formFieldEls[fieldName] = el;
+						}
+					"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
 						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
@@ -396,7 +396,7 @@ function useRawEditor() {
 						validationErrors.find(
 							(err) =>
 								err.collection === fieldsMap[fieldName]!.collection &&
-								(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
+								(err.field === fieldName || err.field.endsWith(`(${fieldName})`)),
 						)
 					"
 					:badge="badge"

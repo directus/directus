@@ -21,7 +21,7 @@ const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailSt
 const isExisting = computed(() => editing.value !== '+');
 
 const relatedPrimaryKey = computed(
-	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id',
 );
 
 const currentField = computed(() => field.value.field);
@@ -76,7 +76,7 @@ const onDeleteOptions = computed(() =>
 			text: t('referential_action_no_action', { field: currentField.value }),
 			value: 'NO ACTION',
 		},
-	].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false))
+	].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false)),
 );
 </script>
 
@@ -156,8 +156,8 @@ const onDeleteOptions = computed(() =>
 @import '@/styles/mixins/form-grid';
 
 .grid {
-	--v-select-font-family: var(--theme--font-family-monospace);
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	position: relative;
 	display: grid;
@@ -180,7 +180,7 @@ const onDeleteOptions = computed(() =>
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--theme--font-family-monospace);
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-divider {
@@ -204,13 +204,13 @@ const onDeleteOptions = computed(() =>
 	}
 
 	.field-name {
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 
 .relational-triggers {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 

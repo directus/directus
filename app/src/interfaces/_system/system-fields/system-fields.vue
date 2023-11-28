@@ -87,7 +87,7 @@ const removeField = (field: string) => {
 
 <template>
 	<template v-if="!collectionName">
-		<v-notice type="info">
+		<v-notice>
 			{{ t('interfaces.system-fields.select_a_collection') }}
 		</v-notice>
 	</template>
@@ -138,8 +138,8 @@ const removeField = (field: string) => {
 }
 
 .v-notice.no-fields {
-	background-color: var(--theme--background-page);
-	border: var(--theme--border-width) solid var(--v-list-item-border-color);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--v-list-item-border-color, var(--theme--border-color-subdued));
 
 	&::after {
 		display: none;

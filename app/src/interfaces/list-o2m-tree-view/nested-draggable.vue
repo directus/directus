@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'NestedDraggable',
-};
-</script>
-
 <script setup lang="ts">
 import {
 	ChangesItem,
@@ -63,10 +57,10 @@ const props = withDefaults(
 	}>(),
 	{
 		disabled: false,
-		filter: () => null,
+		filter: null,
 		root: false,
 		modelValue: undefined,
-	}
+	},
 );
 
 const { t } = useI18n();
@@ -100,7 +94,7 @@ const { displayItems, create, update, remove, select, cleanItem, isLocalItem, ge
 	value,
 	query,
 	relationInfo,
-	primaryKey
+	primaryKey,
 );
 
 function getDeselectIcon(item: DisplayItem) {
@@ -121,7 +115,7 @@ const dragOptions = {
 const filteredDisplayItems = computed(() => {
 	return displayItems.value.filter(
 		(item) =>
-			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined)
+			!(props.itemsMoved.includes(item[relationInfo.value.relatedPrimaryKeyField.field]) && item.$type === undefined),
 	);
 });
 
@@ -294,9 +288,9 @@ function stageEdits(item: Record<string, any>) {
 .row {
 	.preview {
 		padding: 12px;
-		background-color: var(--card-face-color);
-		border-radius: var(--theme--border-radius);
-		box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2);
+		background-color: var(--theme--popover--menu--background);
+		border-radius: var(--theme--popover--menu--border-radius);
+		box-shadow: var(--theme--popover--menu--box-shadow);
 		cursor: grab;
 		transition: var(--fast) var(--transition);
 		transition-property: box-shadow, background-color;

@@ -47,11 +47,11 @@ export class ImportService {
 		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenError();
 
 		const createPermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'create'
+			(permission) => permission.collection === collection && permission.action === 'create',
 		);
 
 		const updatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === collection && permission.action === 'update'
+			(permission) => permission.collection === collection && permission.action === 'update',
 		);
 
 		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
@@ -210,7 +210,7 @@ export class ExportService {
 		format: ExportFormat,
 		options?: {
 			file?: Partial<File>;
-		}
+		},
 	) {
 		const { createTmpFile } = await import('@directus/utils/node');
 		const tmpFile = await createTmpFile().catch(() => null);
@@ -280,7 +280,7 @@ export class ExportService {
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
-							})
+							}),
 						);
 					}
 				}
@@ -367,7 +367,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
-		}
+		},
 	): string {
 		if (format === 'json') {
 			let string = JSON.stringify(input || null, null, '\t');

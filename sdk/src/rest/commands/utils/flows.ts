@@ -13,7 +13,7 @@ export const triggerFlow =
 	<Schema extends object>(
 		method: 'GET' | 'POST',
 		id: string,
-		data?: Record<string, string>
+		data?: Record<string, string>,
 	): RestCommand<unknown, Schema> =>
 	() => {
 		if (method === 'GET') {

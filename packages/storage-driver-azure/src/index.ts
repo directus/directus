@@ -22,7 +22,7 @@ export class DriverAzure implements Driver {
 
 		const client = new BlobServiceClient(
 			config.endpoint ?? `https://${config.accountName}.blob.core.windows.net`,
-			this.signedCredentials
+			this.signedCredentials,
 		);
 
 		this.containerClient = client.getContainerClient(config.containerName);

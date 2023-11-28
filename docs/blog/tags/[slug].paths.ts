@@ -23,7 +23,7 @@ export default {
 							],
 						},
 					],
-				})
+				}),
 			)
 		).map((tag) => ({
 			params: {

@@ -26,7 +26,7 @@ const props = withDefaults(
 	{
 		font: 'sans-serif',
 		step: 1,
-	}
+	},
 );
 
 defineEmits(['input']);
@@ -101,15 +101,15 @@ const inputType = computed(() => {
 <style lang="scss" scoped>
 .v-input {
 	&.monospace {
-		--v-input-font-family: var(--theme--font-family-monospace);
+		--v-input-font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	&.serif {
-		--v-input-font-family: var(--theme--font-family-serif);
+		--v-input-font-family: var(--theme--fonts--serif--font-family);
 	}
 
 	&.sans-serif {
-		--v-input-font-family: var(--theme--font-family-sans-serif);
+		--v-input-font-family: var(--theme--fonts--sans--font-family);
 	}
 }
 

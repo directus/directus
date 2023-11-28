@@ -103,7 +103,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 			fetchItems();
 		},
-		{ deep: true, immediate: true }
+		{ deep: true, immediate: true },
 	);
 
 	return {

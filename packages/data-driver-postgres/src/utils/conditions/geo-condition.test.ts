@@ -30,7 +30,7 @@ beforeEach(() => {
 
 test('intersects', () => {
 	expect(geoCondition(sampleCondition)).toStrictEqual(
-		`ST_Intersects("${randomTable}"."${randomColumn}", ST_GeomFromText($${parameterIndex + 1}))`
+		`ST_Intersects("${randomTable}"."${randomColumn}", ST_GeomFromText($${parameterIndex + 1}))`,
 	);
 });
 
@@ -38,6 +38,6 @@ test('intersects_bbox', () => {
 	sampleCondition.operation = 'intersects_bbox';
 
 	expect(geoCondition(sampleCondition)).toStrictEqual(
-		`"${randomTable}"."${randomColumn}" && ST_GeomFromText($${parameterIndex + 1}))`
+		`"${randomTable}"."${randomColumn}" && ST_GeomFromText($${parameterIndex + 1}))`,
 	);
 });

@@ -1,8 +1,9 @@
 import { expect, test, vi, afterAll, beforeEach } from 'vitest';
-import { convertFieldNodes, type Result } from './fields.js';
+import { convertFieldNodes, type FieldConversionResult } from './fields.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
 import type { AbstractQueryFieldNode } from '@directus/data';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
+import type { AbstractSqlQuery } from '../../index.js';
 
 afterAll(() => {
 	vi.restoreAllMocks();
@@ -14,11 +15,15 @@ vi.mock('../../orm/create-unique-alias.js', () => ({
 
 let randomPrimitiveField1: string;
 let randomPrimitiveField2: string;
+let randomPrimitiveFieldAlias1: string;
+let randomPrimitiveFieldAlias2: string;
 let randomCollection: string;
 
 beforeEach(() => {
 	randomPrimitiveField1 = randomIdentifier();
 	randomPrimitiveField2 = randomIdentifier();
+	randomPrimitiveFieldAlias1 = randomIdentifier();
+	randomPrimitiveFieldAlias2 = randomIdentifier();
 	randomCollection = randomIdentifier();
 });
 
@@ -27,14 +32,16 @@ test('primitives only', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'primitive',
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveFieldAlias2,
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -54,8 +61,8 @@ test('primitives only', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]],
+			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveFieldAlias2]],
 		]),
 		nestedManys: [],
 	};
@@ -72,6 +79,7 @@ test('primitive and function', () => {
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'fn',
@@ -80,10 +88,11 @@ test('primitive and function', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveField2,
+			alias: randomPrimitiveFieldAlias2,
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -107,8 +116,8 @@ test('primitive and function', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveField2]],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]],
+			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveFieldAlias2]],
 		]),
 		nestedManys: [],
 	};
@@ -126,12 +135,16 @@ test('primitive, fn, m2o', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
 	const randomPrimitiveFieldFn = randomIdentifier();
+	const randomPrimitiveFieldFnAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'nested-one',
@@ -139,6 +152,7 @@ test('primitive, fn, m2o', () => {
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeFieldAlias,
 				},
 			],
 			meta: {
@@ -154,6 +168,7 @@ test('primitive, fn, m2o', () => {
 					},
 				},
 			},
+			alias: randomNestedAlias,
 		},
 		{
 			type: 'fn',
@@ -162,12 +177,11 @@ test('primitive, fn, m2o', () => {
 				fn: 'month',
 			},
 			field: randomPrimitiveFieldFn,
+			alias: randomPrimitiveFieldFnAlias,
 		},
 	];
 
-	const idGen = parameterIndexGenerator();
-
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -221,14 +235,14 @@ test('primitive, fn, m2o', () => {
 		},
 		parameters: [],
 		aliasMapping: new Map([
-			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]],
-			[`${randomJoinNodeField}_RANDOM`, [randomExternalCollection, randomJoinNodeField]],
-			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFn]],
+			[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]],
+			[`${randomJoinNodeField}_RANDOM`, [randomNestedAlias, randomJoinNodeFieldAlias]],
+			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFnAlias]],
 		]),
 		nestedManys: [],
 	};
 
-	const result = convertFieldNodes(randomCollection, fields, idGen);
+	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
 	expect(result.clauses).toMatchObject(expected.clauses);
 	expect(result.parameters).toMatchObject(expected.parameters);
 	expect(result.aliasMapping).toMatchObject(expected.aliasMapping);
@@ -240,11 +254,14 @@ test('primitive, o2m', () => {
 	const randomExternalStore = randomIdentifier();
 	const randomExternalField = randomIdentifier();
 	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
 
 	const fields: AbstractQueryFieldNode[] = [
 		{
 			type: 'primitive',
 			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
 		},
 		{
 			type: 'nested-many',
@@ -252,8 +269,10 @@ test('primitive, o2m', () => {
 				{
 					type: 'primitive',
 					field: randomJoinNodeField,
+					alias: randomJoinNodeFieldAlias,
 				},
 			],
+			alias: randomNestedAlias,
 			meta: {
 				type: 'o2m',
 				join: {
@@ -267,10 +286,11 @@ test('primitive, o2m', () => {
 					},
 				},
 			},
+			modifiers: {},
 		},
 	];
 
-	const expected: Result = {
+	const expected: FieldConversionResult = {
 		clauses: {
 			select: [
 				{
@@ -283,17 +303,217 @@ test('primitive, o2m', () => {
 			joins: [],
 		},
 		parameters: [],
-		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveField1]]]),
+		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]]]),
 		nestedManys: [
 			{
 				queryGenerator: expect.any(Function),
 				localJoinFields: [randomJoinCurrentField],
 				foreignJoinFields: [randomExternalField],
-				alias: randomExternalCollection,
+				alias: randomNestedAlias,
 			},
 		],
 	};
 
 	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
 	expect(result).toStrictEqual(expected);
+});
+
+test('primitive and o2m field with nested modifiers', () => {
+	const randomJoinCurrentField = randomIdentifier();
+	const randomExternalCollection = randomIdentifier();
+	const randomExternalStore = randomIdentifier();
+	const randomExternalField = randomIdentifier();
+	const randomJoinNodeField = randomIdentifier();
+	const randomJoinNodeFieldAlias = randomIdentifier();
+	const randomNestedAlias = randomIdentifier();
+	const nestedJoinCurrentField = randomIdentifier();
+	const nestedExternalStore = randomIdentifier();
+	const nestedExternalCollection = randomIdentifier();
+	const nestedForeignIdFields = randomIdentifier();
+	const randomLimit = randomInteger(1, 100);
+	const compareValue = randomIdentifier();
+	const nestedTargetField = randomIdentifier();
+
+	const fields: AbstractQueryFieldNode[] = [
+		{
+			type: 'primitive',
+			field: randomPrimitiveField1,
+			alias: randomPrimitiveFieldAlias1,
+		},
+		{
+			type: 'nested-many',
+			fields: [
+				{
+					type: 'primitive',
+					field: randomJoinNodeField,
+					alias: randomJoinNodeFieldAlias,
+				},
+			],
+			alias: randomNestedAlias,
+			meta: {
+				type: 'o2m',
+				join: {
+					local: {
+						fields: [randomJoinCurrentField],
+					},
+					foreign: {
+						store: randomExternalStore,
+						collection: randomExternalCollection,
+						fields: [randomExternalField],
+					},
+				},
+			},
+			modifiers: {
+				filter: {
+					type: 'condition',
+					condition: {
+						type: 'condition-string',
+						operation: 'starts_with',
+						target: {
+							type: 'nested-one-target',
+							field: {
+								type: 'primitive',
+								field: nestedTargetField,
+							},
+							meta: {
+								type: 'm2o',
+								join: {
+									local: {
+										fields: [nestedJoinCurrentField],
+									},
+									foreign: {
+										store: nestedExternalStore,
+										collection: nestedExternalCollection,
+										fields: [nestedForeignIdFields],
+									},
+								},
+							},
+						},
+						compareTo: compareValue,
+					},
+				},
+				limit: {
+					type: 'limit',
+					value: randomLimit,
+				},
+			},
+		},
+	];
+
+	const expected: FieldConversionResult = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: randomCollection,
+					column: randomPrimitiveField1,
+					as: `${randomPrimitiveField1}_RANDOM`,
+				},
+			],
+			joins: [],
+		},
+		parameters: [],
+		aliasMapping: new Map([[`${randomPrimitiveField1}_RANDOM`, [randomPrimitiveFieldAlias1]]]),
+		nestedManys: [
+			{
+				queryGenerator: expect.any(Function),
+				localJoinFields: [randomJoinCurrentField],
+				foreignJoinFields: [randomExternalField],
+				alias: randomNestedAlias,
+			},
+		],
+	};
+
+	const randomPkValue = randomIdentifier();
+
+	const expectedGeneratedQuery: AbstractSqlQuery = {
+		clauses: {
+			select: [
+				{
+					type: 'primitive',
+					table: randomExternalCollection,
+					column: randomJoinNodeField,
+					as: `${randomJoinNodeField}_RANDOM`,
+				},
+			],
+			from: randomExternalCollection,
+			joins: [
+				{
+					type: 'join',
+					table: nestedExternalCollection,
+					as: `${nestedExternalCollection}_RANDOM`,
+					on: {
+						type: 'condition',
+						condition: {
+							type: 'condition-field',
+							compareTo: {
+								type: 'primitive',
+								column: nestedForeignIdFields,
+								table: `${nestedExternalCollection}_RANDOM`,
+							},
+							operation: 'eq',
+							target: {
+								type: 'primitive',
+								column: nestedJoinCurrentField,
+								table: randomExternalCollection,
+							},
+						},
+						negate: false,
+					},
+				},
+			],
+			where: {
+				type: 'logical',
+				operator: 'and',
+				negate: false,
+				childNodes: [
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'starts_with',
+							target: {
+								type: 'primitive',
+								table: `${nestedExternalCollection}_RANDOM`,
+								column: nestedTargetField,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 0,
+							},
+						},
+						negate: false,
+					},
+					{
+						type: 'condition',
+						condition: {
+							type: 'condition-string',
+							operation: 'eq',
+							target: {
+								type: 'primitive',
+								table: randomExternalCollection,
+								column: randomExternalField,
+							},
+							compareTo: {
+								type: 'value',
+								parameterIndex: 2,
+							},
+						},
+						negate: false,
+					},
+				],
+			},
+			limit: {
+				type: 'value',
+				parameterIndex: 1,
+			},
+		},
+		parameters: [compareValue, randomLimit, randomPkValue],
+		aliasMapping: new Map([[`${randomJoinNodeField}_RANDOM`, [randomJoinNodeFieldAlias]]]),
+		nestedManys: [],
+	};
+
+	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
+	expect(result).toStrictEqual(expected);
+	expect(result.nestedManys[0]?.queryGenerator([randomPkValue])).toStrictEqual(expectedGeneratedQuery);
 });

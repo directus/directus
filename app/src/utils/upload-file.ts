@@ -12,7 +12,7 @@ export async function uploadFile(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		fileId?: string;
-	}
+	},
 ): Promise<any> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
@@ -47,8 +47,8 @@ export async function uploadFile(
 		emitter.emit(Events.upload);
 
 		return response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 
 	function onUploadProgress(progressEvent: AxiosProgressEvent) {

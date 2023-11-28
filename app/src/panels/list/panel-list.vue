@@ -21,7 +21,7 @@ const props = withDefaults(
 		linkToItem: false,
 		sortDirection: 'desc',
 		data: () => ({}),
-	}
+	},
 );
 
 const currentlyEditing = ref<number | string>();
@@ -45,8 +45,8 @@ function cancelEdit() {
 async function saveEdits(item: Record<string, any>) {
 	try {
 		await api.patch(`${getEndpoint(props.collection)}/${currentlyEditing.value}`, item);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 
 	await insightsStore.refresh(props.dashboard);

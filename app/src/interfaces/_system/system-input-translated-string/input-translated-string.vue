@@ -10,19 +10,18 @@ import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 
 const translationPrefix = '$t:';
 
-interface Props {
-	value?: string | null;
-	autofocus?: boolean;
-	disabled?: boolean;
-	placeholder?: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	value: null,
-	autofocus: false,
-	disabled: false,
-	placeholder: null,
-});
+const props = withDefaults(
+	defineProps<{
+		value?: string | null;
+		autofocus?: boolean;
+		disabled?: boolean;
+		placeholder?: string | null;
+	}>(),
+	{
+		value: null,
+		placeholder: null,
+	},
+);
 
 const emit = defineEmits(['input']);
 
@@ -51,8 +50,8 @@ const fetchTranslationsKeys = async () => {
 		});
 
 		translationsKeys.value = response.map((t) => t.key);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -89,7 +88,7 @@ const create = async (item: Translation) => {
 watch(
 	() => props.value,
 	(newVal) => setValue(newVal),
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const localValueWithoutPrefix = computed(() => (localValue.value ? getKeyWithoutPrefix(localValue.value) : null));
@@ -221,7 +220,7 @@ function openNewCustomTranslationDrawer() {
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
 		user-select: none;
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	:deep(button:not(:disabled):hover) {
@@ -242,7 +241,7 @@ function openNewCustomTranslationDrawer() {
 	padding: 12px 8px 6px 8px;
 
 	.search-input {
-		--input-height: 48px;
+		--input-height: 40px;
 	}
 
 	.search-icon {

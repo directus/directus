@@ -19,7 +19,8 @@ expiration time, and are thus the most secure option to use. The tokens are retu
 used to retrieve a new access token via the [refresh](#refresh) endpoint/mutation.
 
 **Static Tokens** can be set for each platform user, and never expire. They are less secure, but quite useful for
-server-to-server communication. They are saved as plain-text within `directus_users.token`.
+server-to-server communication. They are saved as plain-text within `directus_users.token`. Static Tokens are created in
+user settings inside of the Directus Data Studio User Module, or by updating the user's `token` value via API.
 
 Once you have your access token, there are two ways to pass it to the API, via the `access_token` query parameter, or in
 the request's Authorization Header.

@@ -65,7 +65,7 @@ router.get(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const createCommentSchema = Joi.object({
@@ -113,7 +113,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const updateCommentSchema = Joi.object({
@@ -152,7 +152,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -177,7 +177,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

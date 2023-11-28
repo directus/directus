@@ -13,13 +13,13 @@ export const stringCondition = (condition: SqlConditionStringNode, negate: boole
 
 	switch (condition.operation) {
 		case 'contains':
-			likeValue = `'%${compareValue}%'`;
+			likeValue = `'%'||${compareValue}||'%'`;
 			break;
 		case 'starts_with':
-			likeValue = `'${compareValue}%'`;
+			likeValue = `${compareValue}||'%'`;
 			break;
 		case 'ends_with':
-			likeValue = `'%${compareValue}'`;
+			likeValue = `'%'||${compareValue}`;
 			break;
 	}
 

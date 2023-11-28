@@ -35,7 +35,7 @@ describe('should require force option on version / vendor mismatch', () => {
 		const snapshot = { version: 1, directus: '9.26.0' } as Snapshot;
 
 		expect(() => validateSnapshot(snapshot)).toThrowError(
-			"Provided snapshot's directus version 9.26.0 does not match the current instance's version 10.0.0"
+			"Provided snapshot's directus version 9.26.0 does not match the current instance's version 10.0.0",
 		);
 	});
 
@@ -43,7 +43,7 @@ describe('should require force option on version / vendor mismatch', () => {
 		const snapshot = { version: 1, directus: '10.0.0', vendor: 'postgres' } as Snapshot;
 
 		expect(() => validateSnapshot(snapshot)).toThrowError(
-			"Provided snapshot's vendor postgres does not match the current instance's vendor sqlite."
+			"Provided snapshot's vendor postgres does not match the current instance's vendor sqlite.",
 		);
 	});
 });

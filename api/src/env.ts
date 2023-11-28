@@ -26,6 +26,7 @@ const allowedEnvironmentVars = [
 	'PUBLIC_URL',
 	'LOG_LEVEL',
 	'LOG_STYLE',
+	'LOG_HTTP_IGNORE_PATHS',
 	'MAX_PAYLOAD_SIZE',
 	'ROOT_REDIRECT',
 	'SERVE_APP',
@@ -35,6 +36,7 @@ const allowedEnvironmentVars = [
 	'QUERY_LIMIT_MAX',
 	'QUERY_LIMIT_DEFAULT',
 	'ROBOTS_TXT',
+	'TEMP_PATH',
 	// server
 	'SERVER_.+',
 	// database
@@ -163,7 +165,9 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_SP.+',
 	// extensions
 	'PACKAGE_FILE_LOCATION',
+	'EXTENSIONS_LOCATION',
 	'EXTENSIONS_PATH',
+	'EXTENSIONS_MUST_LOAD',
 	'EXTENSIONS_AUTO_RELOAD',
 	'EXTENSIONS_CACHE_TTL',
 	'EXTENSIONS_SANDBOX_MEMORY',
@@ -214,7 +218,7 @@ const allowedEnvironmentVars = [
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
 
-const defaults: Record<string, any> = {
+export const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 
 	HOST: '0.0.0.0',
@@ -225,6 +229,8 @@ const defaults: Record<string, any> = {
 	QUERY_LIMIT_DEFAULT: 100,
 	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+
+	TEMP_PATH: './node_modules/.directus',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
@@ -278,6 +284,7 @@ const defaults: Record<string, any> = {
 
 	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
+	EXTENSIONS_MUST_LOAD: false,
 	EXTENSIONS_AUTO_RELOAD: false,
 	EXTENSIONS_SANDBOX_MEMORY: 100,
 	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
@@ -340,8 +347,10 @@ const defaults: Record<string, any> = {
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 };
 
-// Allows us to force certain environment variable into a type, instead of relying
-// on the auto-parsed type in processValues. ref #3705
+/**
+ * Allows us to force certain environment variable into a type, instead of relying
+ * on the auto-parsed type in processValues.
+ */
 const typeMap: Record<string, string> = {
 	HOST: 'string',
 	PORT: 'string',
@@ -366,6 +375,8 @@ const typeMap: Record<string, string> = {
 	MAX_BATCH_MUTATION: 'number',
 
 	SERVER_SHUTDOWN_TIMEOUT: 'number',
+
+	LOG_HTTP_IGNORE_PATHS: 'array',
 };
 
 let env: Record<string, any> = {
@@ -379,11 +390,6 @@ process.env = env;
 env = processValues(env);
 
 export default env;
-
-/**
- * Small wrapper function that makes it easier to write unit tests against changing environments
- */
-export const getEnv = () => env;
 
 /**
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
@@ -419,7 +425,7 @@ async function processConfiguration() {
 		}
 
 		throw new Error(
-			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof config}"`
+			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof config}"`,
 		);
 	}
 
@@ -481,7 +487,7 @@ function isEnvSyntaxPrefixPresent(value: string): boolean {
 	return acceptedEnvTypes.some((envType) => value.includes(`${envType}:`));
 }
 
-function processValues(env: Record<string, any>) {
+export function processValues(env: Record<string, any>) {
 	env = clone(env);
 
 	for (let [key, value] of Object.entries(env)) {
@@ -495,7 +501,7 @@ function processValues(env: Record<string, any>) {
 			if (allowedEnvironmentVars.some((pattern) => pattern.test(newKey as string))) {
 				if (newKey in env && !(newKey in defaults && env[newKey] === defaults[newKey])) {
 					throw new Error(
-						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
+						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`,
 					);
 				}
 

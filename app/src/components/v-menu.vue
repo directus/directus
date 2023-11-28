@@ -88,7 +88,7 @@ const {
 		arrow: props.showArrow,
 		offsetY: props.offsetY,
 		offsetX: props.offsetX,
-	}))
+	})),
 );
 
 const { isActive, activate, deactivate, toggle } = useActiveState();
@@ -133,7 +133,7 @@ function useActiveState() {
 				stop();
 			}
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	return { isActive, activate, deactivate, toggle };
@@ -190,7 +190,7 @@ function useEvents() {
 			} else {
 				deactivate();
 			}
-		}, props.delay)
+		}, props.delay),
 	);
 
 	return { onClick, onPointerLeave, onPointerEnter };
@@ -223,7 +223,7 @@ function usePopper(
 				offsetX: number;
 			}>
 		>
-	>
+	>,
 ): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
 	const styles = ref({});
@@ -244,7 +244,7 @@ function usePopper(
 				modifiers: getModifiers(),
 			});
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	const observer = new MutationObserver(() => {
@@ -397,12 +397,6 @@ function usePopper(
 	</div>
 </template>
 
-<style>
-body {
-	--v-menu-min-width: 100px;
-}
-</style>
-
 <style lang="scss" scoped>
 .v-menu {
 	display: contents;
@@ -416,7 +410,7 @@ body {
 	position: fixed;
 	left: -999px;
 	z-index: 500;
-	min-width: var(--v-menu-min-width);
+	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
@@ -433,12 +427,11 @@ body {
 	height: 10px;
 	overflow: hidden;
 	border-radius: 2px;
-	box-shadow: none;
 }
 
 .arrow {
 	&::after {
-		background: var(--card-face-color);
+		background: var(--theme--popover--menu--background);
 		transform: rotate(45deg) scale(0);
 		transition: transform var(--fast) var(--transition-out);
 		transition-delay: 0;
@@ -456,7 +449,6 @@ body {
 
 	&::after {
 		bottom: 3px;
-		box-shadow: 2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -465,7 +457,6 @@ body {
 
 	&::after {
 		top: 3px;
-		box-shadow: -2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -473,8 +464,7 @@ body {
 	left: -6px;
 
 	&::after {
-		left: 2px;
-		box-shadow: -2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
+		left: 4px;
 	}
 }
 
@@ -482,8 +472,7 @@ body {
 	right: -6px;
 
 	&::after {
-		right: 2px;
-		box-shadow: 2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
+		right: 4px;
 	}
 }
 
@@ -492,10 +481,10 @@ body {
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	background-color: var(--card-face-color);
+	background-color: var(--theme--popover--menu--background);
 	border: none;
-	border-radius: var(--theme--border-radius);
-	box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgb(var(--card-shadow-color), 0.05);
+	border-radius: var(--theme--popover--menu--border-radius);
+	box-shadow: var(--theme--popover--menu--box-shadow);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;

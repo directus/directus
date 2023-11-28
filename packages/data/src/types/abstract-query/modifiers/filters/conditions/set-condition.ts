@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.js';
+import type { AbstractQueryTarget } from '../../target.js';
 
 /**
  * Used to compare a number field with a number value.
@@ -16,7 +16,7 @@ import type { AbstractQueryFieldNodePrimitive } from '../../../fields/primitive.
  */
 export interface ConditionSetNode {
 	type: 'condition-set';
-	target: AbstractQueryFieldNodePrimitive;
+	target: AbstractQueryTarget;
 	operation: 'in';
 	compareTo: (string | number)[]; // could also be an actual JS Set
 }

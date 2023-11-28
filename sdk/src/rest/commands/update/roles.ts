@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateRoleOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusRole<Schema>
+	Item extends object = DirectusRole<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -21,7 +21,7 @@ export const updateRoles =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		keys: DirectusRole<Schema>['id'][],
 		item: Partial<DirectusRole<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateRoleOutput<Schema, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
@@ -46,7 +46,7 @@ export const updateRole =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		key: DirectusRole<Schema>['id'],
 		item: Partial<DirectusRole<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateRoleOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');

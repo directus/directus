@@ -18,7 +18,7 @@ export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<F
 		formFields = orderBy(
 			formFields,
 			[(field) => !!field.meta?.system, 'meta.group', 'meta.sort', 'meta.id'],
-			['desc', 'desc', 'asc', 'asc']
+			['desc', 'desc', 'asc', 'asc'],
 		);
 
 		formFields = formFields.map((field, index) => {
