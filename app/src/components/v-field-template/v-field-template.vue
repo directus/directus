@@ -299,10 +299,10 @@ function setContent() {
 	display: block;
 	flex-grow: 1;
 	height: 100%;
-	padding: var(--input-padding) 0;
+	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;
-	font-family: var(--family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 
 	:deep(span) {
@@ -319,9 +319,9 @@ function setContent() {
 :deep(button) {
 	margin: -1px 4px 0;
 	padding: 2px 4px 0;
-	color: var(--primary);
-	background-color: var(--primary-alt);
-	border-radius: var(--border-radius);
+	color: var(--theme--primary);
+	background-color: var(--theme--primary-background);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, color;
 	user-select: none;
@@ -329,14 +329,14 @@ function setContent() {
 
 :deep(button:not(:disabled):hover) {
 	color: var(--white);
-	background-color: var(--danger);
+	background-color: var(--theme--danger);
 }
 
 .placeholder {
 	position: absolute;
 	top: 50%;
 	left: 14px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);
 	user-select: none;
 	pointer-events: none;

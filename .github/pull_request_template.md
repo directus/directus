@@ -23,7 +23,7 @@ What's changed:
 - Lorem ipsum dolor sit amet
 - Consectetur adipiscing elit
 
-## Review Questions
+## Review Notes / Questions
 
 - I would like to lorem ipsum
 - Special attention should be paid to dolor sit amet

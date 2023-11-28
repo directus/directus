@@ -39,6 +39,8 @@ half_width: Пола ширине
 full_width: Пуна ширина
 group: Група
 or: Или
+extension_display: Pokazatelj
+extension_modules: Модули
 fill_width: Попуни ширину
 required: Захтјева се
 create_role: Креирајте улогу
@@ -197,6 +199,7 @@ wysiwyg_options:
   table: Табела
 choices: Избори
 deselect: Поништи избор
+settings_presets: Сачуване странице
 discard_changes: Одбаци промене
 keep_editing: Наставите уређивање
 add_new: Додај нови
@@ -241,7 +244,6 @@ fields:
     description: Опис
     tags: Ознаке
     language: Језик
-    theme: Тема
     tfa_secret: Дво-факторска аутентификација
     status: Стање
     role: Рола
@@ -322,3 +324,4 @@ both: Оба
 operations:
   mail:
     template: Шаблон
+compact: Компактни

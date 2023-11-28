@@ -16,7 +16,7 @@ import {
 	IllegalAssetTransformationError,
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
-} from '../errors/index.js';
+} from '@directus/errors';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
@@ -38,12 +38,12 @@ export class AssetsService {
 	async getAsset(
 		id: string,
 		transformation?: TransformationSet,
-		range?: Range
+		range?: Range,
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
-			.select('project_logo', 'public_background', 'public_foreground')
+			.select('project_logo', 'public_background', 'public_foreground', 'public_favicon')
 			.from('directus_settings')
 			.first();
 

@@ -62,18 +62,18 @@ const fields = computed(() => [
 @import '@/styles/mixins/form-grid';
 
 .form {
-	--form-vertical-gap: 32px;
-	--form-horizontal-gap: 32px;
+	--theme--form--row-gap: 32px;
+	--theme--form--column-gap: 32px;
 	@include form-grid;
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
-	--v-select-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .required {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-notice {

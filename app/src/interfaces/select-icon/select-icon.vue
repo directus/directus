@@ -12,7 +12,7 @@ withDefaults(
 	}>(),
 	{
 		width: 'half',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -90,24 +90,24 @@ function setIcon(icon: string | null) {
 
 <style lang="scss" scoped>
 .v-input.has-value {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--theme--primary);
 
 	&:focus-within {
-		--v-input-placeholder-color: var(--foreground-subdued);
+		--v-input-placeholder-color: var(--theme--form--field--input--foreground-subdued);
 	}
 }
 
 .content {
 	padding: 8px;
 
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 
 	.v-icon.active {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	.v-divider {
-		--v-divider-color: var(--background-normal);
+		--v-divider-color: var(--theme--background-normal);
 
 		margin: 0 22px;
 	}
@@ -119,7 +119,7 @@ function setIcon(icon: string | null) {
 	grid-template-columns: repeat(auto-fit, 24px);
 	justify-content: center;
 	padding: 20px 0;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .open-indicator {

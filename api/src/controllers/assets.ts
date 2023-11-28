@@ -6,7 +6,7 @@ import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { InvalidQueryError, RangeNotSatisfiableError } from '../errors/index.js';
+import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
@@ -43,12 +43,6 @@ router.get(
 		const assetSettings = savedAssetSettings || defaults;
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
-
-		if ('key' in transformation && Object.keys(transformation).length > 1) {
-			throw new InvalidQueryError({
-				reason: `You can't combine the "key" query parameter with any other transformation`,
-			});
-		}
 
 		if ('transforms' in transformation) {
 			let transforms: unknown;
@@ -95,7 +89,7 @@ router.get(
 		const allKeys: string[] = [
 			...systemKeys,
 			...(assetSettings.storage_asset_presets || []).map(
-				(transformation: TransformationParams) => transformation['key']
+				(transformation: TransformationParams) => transformation['key'],
 			),
 		];
 
@@ -117,10 +111,20 @@ router.get(
 
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'presets') {
-			if (allKeys.includes(transformation['key'] as string)) return next();
+			if (allKeys.includes(transformation['key'] as string) && Object.keys(transformation).length === 1) {
+				return next();
+			}
+
 			throw new InvalidQueryError({ reason: `Only configured presets can be used in asset generation` });
 		} else {
-			if (transformation['key'] && systemKeys.includes(transformation['key'] as string)) return next();
+			if (
+				transformation['key'] &&
+				systemKeys.includes(transformation['key'] as string) &&
+				Object.keys(transformation).length === 1
+			) {
+				return next();
+			}
+
 			throw new InvalidQueryError({ reason: `Dynamic asset generation has been disabled for this project` });
 		}
 	}),
@@ -136,8 +140,8 @@ router.get(
 						defaultSrc: ['none'],
 					},
 				},
-				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
-			)
+				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY'),
+			),
 		)(req, res, next);
 	}),
 
@@ -152,11 +156,12 @@ router.get(
 
 		const vary = ['Origin', 'Cache-Control'];
 
-		const transformationParams: TransformationParams = res.locals['transformation'].key
-			? (res.locals['shortcuts'] as TransformationParams[]).find(
-					(transformation) => transformation['key'] === res.locals['transformation'].key
-			  )
-			: res.locals['transformation'];
+		const transformationParams: TransformationParams = {
+			...(res.locals['shortcuts'] as TransformationParams[]).find(
+				(transformation) => transformation['key'] === res.locals['transformation']?.key,
+			),
+			...res.locals['transformation'],
+		};
 
 		let acceptFormat: TransformationFormat | undefined;
 
@@ -172,7 +177,7 @@ router.get(
 
 		let range: Range | undefined = undefined;
 
-		if (req.headers.range) {
+		if (req.headers.range && Object.keys(transformationParams).length === 0) {
 			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
 			if (rangeParts && rangeParts.length > 1) {
@@ -262,7 +267,7 @@ router.get(
 		});
 
 		return undefined;
-	})
+	}),
 );
 
 export default router;

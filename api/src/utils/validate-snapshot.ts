@@ -2,7 +2,7 @@ import { TYPES } from '@directus/constants';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
 import { getDatabaseClient } from '../database/index.js';
-import { InvalidPayloadError } from '../errors/index.js';
+import { InvalidPayloadError } from '@directus/errors';
 import type { Snapshot } from '../types/index.js';
 import { DatabaseClients } from '../types/index.js';
 import { version as currentDirectusVersion } from './package.js';
@@ -20,7 +20,7 @@ const snapshotJoiSchema = Joi.object({
 			schema: Joi.object({
 				name: Joi.string(),
 			}),
-		})
+		}),
 	),
 	fields: Joi.array().items(
 		Joi.object({
@@ -37,7 +37,7 @@ const snapshotJoiSchema = Joi.object({
 			type: Joi.string()
 				.valid(...TYPES, ...ALIAS_TYPES)
 				.allow(null),
-		})
+		}),
 	),
 	relations: Joi.array().items(
 		Joi.object({
@@ -46,7 +46,7 @@ const snapshotJoiSchema = Joi.object({
 			meta: Joi.any(),
 			related_collection: Joi.any(),
 			schema: Joi.any(),
-		})
+		}),
 	),
 });
 

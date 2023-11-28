@@ -20,7 +20,7 @@ const props = withDefaults(
 	{
 		iconRight: 'local_offer',
 		allowCustom: true,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -42,7 +42,7 @@ watch(
 		}
 
 		if (newVal === null) selectedValsLocal.value = [];
-	}
+	},
 );
 
 const selectedVals = computed<string[]>(() => {
@@ -182,15 +182,15 @@ function emitValue() {
 
 	.presets {
 		.v-chip {
-			--v-chip-background-color: var(--primary);
+			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
-			--v-chip-background-color-hover: var(--danger);
+			--v-chip-background-color-hover: var(--theme--danger);
 			--v-chip-color-hover: var(--foreground-inverted);
 
 			&.inactive {
-				--v-chip-background-color: var(--background-subdued);
-				--v-chip-color: var(--foreground-subdued);
-				--v-chip-background-color-hover: var(--primary);
+				--v-chip-background-color: var(--theme--form--field--input--background-subdued);
+				--v-chip-color: var(--theme--form--field--input--foreground-subdued);
+				--v-chip-background-color-hover: var(--theme--primary);
 				--v-chip-color-hover: var(--foreground-inverted);
 			}
 		}
@@ -198,10 +198,10 @@ function emitValue() {
 
 	.custom {
 		.v-chip {
-			--v-chip-background-color: var(--primary);
+			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
-			--v-chip-background-color-hover: var(--danger);
-			--v-chip-close-color: var(--v-chip-background-color);
+			--v-chip-background-color-hover: var(--theme--danger);
+			--v-chip-close-color: var(--v-chip-background-color, var(--theme--background-normal));
 			--v-chip-close-color-hover: var(--white);
 
 			transition: all var(--fast) var(--transition);
@@ -210,7 +210,7 @@ function emitValue() {
 				--v-chip-close-color: var(--white);
 
 				:deep(.chip-content .close-outline .close:hover) {
-					--v-icon-color: var(--danger);
+					--v-icon-color: var(--theme--danger);
 				}
 			}
 		}

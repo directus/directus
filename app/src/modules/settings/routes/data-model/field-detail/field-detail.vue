@@ -23,7 +23,7 @@ const props = withDefaults(
 	}>(),
 	{
 		type: null,
-	}
+	},
 );
 
 const { collection, field, type } = toRefs(props);
@@ -41,7 +41,7 @@ watch(
 	() => {
 		fieldDetail.startEditing(collection.value, field.value, type.value ?? undefined);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const collectionsStore = useCollectionsStore();
@@ -80,8 +80,8 @@ async function cancel() {
 async function save() {
 	try {
 		await fieldDetail.save();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 		return;
 	}
 
@@ -132,11 +132,11 @@ async function save() {
 
 <style lang="scss" scoped>
 :deep(.required-mark) {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .v-input.search {
-	--border-radius: calc(44px / 2);
+	--v-input-border-radius: calc(44px / 2);
 	width: 200px;
 	margin-left: auto;
 

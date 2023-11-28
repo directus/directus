@@ -2,6 +2,6 @@
 	"extends": "@directus/tsconfig/node18-esm",
 	"include": ["src"],
 	"typedocOptions": {
-		"entryPoints": ["./src"]
+		"entryPoints": ["./src/index.ts", "./src/*/index.ts"]
 	}
 }

@@ -14,7 +14,7 @@ const props = withDefaults(
 	}>(),
 	{
 		font: 'sans-serif',
-	}
+	},
 );
 
 defineEmits(['input']);
@@ -69,15 +69,15 @@ const percentageRemaining = computed(() => {
 <style lang="scss" scoped>
 .v-textarea {
 	&.monospace {
-		--v-textarea-font-family: var(--family-monospace);
+		--v-textarea-font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	&.serif {
-		--v-textarea-font-family: var(--family-serif);
+		--v-textarea-font-family: var(--theme--fonts--serif--font-family);
 	}
 
 	&.sans-serif {
-		--v-textarea-font-family: var(--family-sans-serif);
+		--v-textarea-font-family: var(--theme--fonts--sans--font-family);
 	}
 }
 
@@ -85,7 +85,7 @@ const percentageRemaining = computed(() => {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -101,6 +101,6 @@ const percentageRemaining = computed(() => {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 </style>

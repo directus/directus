@@ -47,7 +47,7 @@ watch(
 
 		options.value = newOptions;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const selectedOption = computed(() => {
@@ -88,12 +88,12 @@ async function getFormattedDate(revision: Revision) {
 
 <style lang="scss" scoped>
 .picker {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 	}
 }
 
@@ -101,7 +101,7 @@ async function getFormattedDate(revision: Revision) {
 	.v-icon {
 		margin-right: 4px;
 		margin-left: -4px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 
 	.v-list-item-content {

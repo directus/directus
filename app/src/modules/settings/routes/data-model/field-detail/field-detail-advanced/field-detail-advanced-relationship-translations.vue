@@ -29,7 +29,7 @@ const isExisting = computed(() => editing.value !== '+');
 const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
 const relatedPrimaryKey = computed(
-	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id',
 );
 </script>
 
@@ -185,8 +185,8 @@ const relatedPrimaryKey = computed(
 @import '@/styles/mixins/no-wrap';
 
 .grid {
-	--v-select-font-family: var(--family-monospace);
-	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--theme--fonts--monospace--font-family);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	position: relative;
 	display: grid;
@@ -195,11 +195,11 @@ const relatedPrimaryKey = computed(
 	margin-top: 48px;
 
 	.v-input.matches {
-		--v-input-color: var(--primary);
+		--v-input-color: var(--theme--primary);
 	}
 
 	.v-icon.arrow {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
 		transform: translateX(-50%);
@@ -228,7 +228,7 @@ const relatedPrimaryKey = computed(
 }
 
 .v-list {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .v-notice {
@@ -236,8 +236,8 @@ const relatedPrimaryKey = computed(
 }
 
 .relational-triggers {
-	--form-horizontal-gap: 12px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 

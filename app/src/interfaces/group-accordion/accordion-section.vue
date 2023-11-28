@@ -24,7 +24,7 @@ const props = withDefaults(
 	{
 		batchActiveFields: () => [],
 		validationErrors: () => [],
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -128,10 +128,10 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 
 <style lang="scss" scoped>
 .accordion-section {
-	border-top: var(--border-width) solid var(--border-normal);
+	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	&:last-child {
-		border-bottom: var(--border-width) solid var(--border-normal);
+		border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 }
 
@@ -147,18 +147,18 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	&.active {
 		.field-name,
 		.icon {
-			color: var(--foreground-normal);
+			color: var(--theme--form--field--input--foreground);
 		}
 	}
 
 	.field-name,
 	.icon {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 	}
 
 	.required {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 
 		margin-top: -12px;
 		margin-left: 2px;
@@ -176,7 +176,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 		display: block;
 		width: 4px;
 		height: 4px;
-		background-color: var(--foreground-subdued);
+		background-color: var(--theme--form--field--input--foreground-subdued);
 		border-radius: 4px;
 		content: '';
 	}
@@ -194,10 +194,10 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 
 .warning {
 	margin-left: 8px;
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .fields {
-	margin: var(--form-vertical-gap) 0;
+	margin: var(--theme--form--row-gap) 0;
 }
 </style>

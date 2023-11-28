@@ -27,12 +27,13 @@ const styles = computed(() => {
 
 	if (value !== null) style['background-color'] = value;
 
-	const pageColorString = cssVar('--background-page');
+	const pageColorString = cssVar('--theme--background');
 
 	const pageColorRGB = Color(pageColorString);
 	const colorRGB = value === null ? Color(defaultColor) : Color(value);
 
-	if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--border-normal)';
+	if (colorRGB.contrast(pageColorRGB) < 1.1)
+		style['border'] = '1px solid var(--theme--form--field--input--border-color)';
 
 	return style;
 });

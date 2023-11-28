@@ -40,8 +40,8 @@ async function fetchUser() {
 
 		name.value = userName(response.data.data);
 		lastPage.value = response.data.data.last_page;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -87,11 +87,11 @@ async function hydrateAndLogin() {
 }
 
 .continue-as .sign-out {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 }
 
 .continue-as .sign-out:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 </style>

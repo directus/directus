@@ -29,7 +29,7 @@ watch(
 			await nextTick();
 			(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 		}
-	}
+	},
 );
 
 async function enable() {
@@ -110,8 +110,8 @@ h1 {
 .secret {
 	display: block;
 	margin: 0 auto 16px;
-	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
+	color: var(--theme--foreground-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
 	letter-spacing: 2.6px;
 	text-align: center;
 }

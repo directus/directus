@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
-import { ExtensionOptionsContext } from '@directus/types';
+import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -72,7 +72,7 @@ const optionsFields = computed(() => {
 				localType: 'standard',
 				autoGenerateJunctionRelation: false,
 				saving: false,
-			}
+			},
 		);
 	} else {
 		optionsObjectOrArray = selectedInterface.value.options;
@@ -115,12 +115,12 @@ const optionsFields = computed(() => {
 
 <style lang="scss" scoped>
 .inset {
-	--form-horizontal-gap: 24px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	padding: 12px;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	:deep(.type-label) {
 		font-size: 1rem;

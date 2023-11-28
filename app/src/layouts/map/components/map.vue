@@ -2,8 +2,8 @@
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
+import type { ShowSelect } from '@directus/extensions';
 import { useAppStore } from '@directus/stores';
-import { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import maplibre, {
@@ -36,10 +36,10 @@ const props = withDefaults(
 	}>(),
 	{
 		layers: () => [],
-		camera: () => ({} as any),
+		camera: () => ({}) as any,
 		selection: () => [],
 		showSelect: 'multiple',
-	}
+	},
 );
 
 const emit = defineEmits(['moveend', 'featureclick', 'featureselect', 'fitdata', 'updateitempopup']);
@@ -59,6 +59,7 @@ const basemaps = getBasemapSources();
 
 const style = computed(() => {
 	const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
+	if (!source) return;
 	return getStyleFromBasemapSource(source);
 });
 
@@ -164,7 +165,7 @@ function setupMap() {
 		() => sidebarOpen.value,
 		(opened) => {
 			if (!opened) setTimeout(() => map.resize(), 300);
-		}
+		},
 	);
 
 	setTimeout(() => map.resize(), 300);
@@ -194,7 +195,7 @@ function startWatchers() {
 		watch(() => props.source, updateSource, { immediate: true }),
 		watch(() => props.selection, updateSelection, { immediate: true }),
 		watch(() => props.layers, updateLayers),
-		watch(() => props.data, updateData)
+		watch(() => props.data, updateData),
 	);
 }
 

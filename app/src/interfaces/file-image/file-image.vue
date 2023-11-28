@@ -25,7 +25,7 @@ const props = withDefaults(
 	}>(),
 	{
 		crop: true,
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -135,8 +135,8 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="block">
-			{{ t('disabled') }}
+		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
+			{{ t('no_image_selected') }}
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
@@ -225,8 +225,8 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	width: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
-	background-color: var(--background-normal-alt);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
 }
 
 img {
@@ -251,8 +251,8 @@ img {
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	color: var(--foreground-subdued);
-	background-color: var(--background-normal);
+	color: var(--theme--form--field--input--foreground-subdued);
+	background-color: var(--theme--background-normal);
 	padding: 32px;
 
 	.v-icon {
@@ -283,9 +283,9 @@ img {
 	}
 
 	.actions {
-		--v-button-color: var(--foreground-subdued);
+		--v-button-color: var(--theme--form--field--input--foreground-subdued);
 		--v-button-background-color: var(--white);
-		--v-button-color-hover: var(--foreground-normal);
+		--v-button-color-hover: var(--theme--form--field--input--foreground);
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
@@ -378,11 +378,11 @@ img {
 }
 
 .fallback {
-	background-color: var(--background-normal);
+	background-color: var(--theme--background-normal);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: var(--input-height-tall);
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 </style>

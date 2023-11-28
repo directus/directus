@@ -55,8 +55,6 @@ interface Props {
 	multiplePreviewThreshold?: number;
 	/** The direction the menu should open */
 	placement?: Placement;
-	/** Should the menu be the same width as the select element */
-	isMenuSameWidth?: true;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -73,7 +71,6 @@ const props = withDefaults(defineProps<Props>(), {
 	closeOnContentClick: true,
 	multiplePreviewThreshold: 3,
 	placement: 'bottom',
-	isMenuSameWidth: true,
 });
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
@@ -85,13 +82,13 @@ const { displayValue } = useDisplayValue();
 const { modelValue } = toRefs(props);
 
 const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
-	emit('update:modelValue', value)
+	emit('update:modelValue', value),
 );
 
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
 	modelValue as Ref<string[]>,
 	internalItems,
-	(value) => emit('update:modelValue', value)
+	(value) => emit('update:modelValue', value),
 );
 
 const search = ref<string | null>(null);
@@ -100,7 +97,7 @@ watch(
 	search,
 	debounce((val: string | null) => {
 		internalSearch.value = val;
-	}, 250)
+	}, 250),
 );
 
 function useItems() {
@@ -130,7 +127,7 @@ function useItems() {
 				selectable: get(item, props.itemSelectable),
 				children: children
 					? children.filter((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
 					  )
 					: children,
 				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
@@ -140,7 +137,7 @@ function useItems() {
 		const filterItem = (
 			text: string | undefined,
 			value?: string | number | null,
-			children?: Record<string, any>[] | null
+			children?: Record<string, any>[] | null,
 		): boolean => {
 			if (!internalSearch.value) return true;
 
@@ -149,14 +146,14 @@ function useItems() {
 			return children
 				? isMatchingCurrentItem(text, value, searchValue) ||
 						children.some((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children)
+							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
 						)
 				: isMatchingCurrentItem(text, value, searchValue);
 
 			function isMatchingCurrentItem(
 				text: string | undefined,
 				value: string | number | null | undefined,
-				searchValue: string
+				searchValue: string,
 			): boolean {
 				return (
 					(text ? String(text).toLowerCase().includes(searchValue) : false) ||
@@ -238,7 +235,6 @@ function useDisplayValue() {
 		class="v-select"
 		:disabled="disabled"
 		:attached="inline === false"
-		:is-same-width="isMenuSameWidth"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
@@ -371,17 +367,21 @@ function useDisplayValue() {
 </template>
 
 <style scoped lang="scss">
-:global(body) {
-	--v-select-font-family: var(--family-sans-serif);
-	--v-select-placeholder-color: var(--foreground-subdued);
-}
+/*
+
+	Available Variables:
+
+		--v-select-font-family        [var(--theme--fonts--sans--font-family)]
+		--v-select-placeholder-color  [var(--theme--foreground-subdued)]
+
+*/
 
 .list {
 	--v-list-min-width: 0;
 }
 
 .v-input {
-	--v-input-font-family: var(--v-select-font-family);
+	--v-input-font-family: var(--v-select-font-family, var(--theme--fonts--sans--font-family));
 
 	cursor: pointer;
 }
@@ -420,9 +420,9 @@ function useDisplayValue() {
 .inline-display.label {
 	padding: 4px 8px;
 	padding-right: 26px;
-	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
+	color: var(--theme--foreground-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
+	border-radius: var(--theme--border-radius);
 	transition: color var(--fast) var(--transition);
 
 	&:hover,
@@ -436,6 +436,6 @@ function useDisplayValue() {
 }
 
 .inline-display.placeholder {
-	color: var(--v-select-placeholder-color);
+	color: var(--v-select-placeholder-color, var(--theme--foreground-subdued));
 }
 </style>

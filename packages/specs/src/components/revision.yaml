@@ -1,5 +1,4 @@
 type: object
-x-collection: directus_revisions
 properties:
   id:
     description: Unique identifier for the revision.
@@ -41,3 +40,9 @@ properties:
     example: null
     type: integer
     nullable: true
+  version:
+    description: Associated version of this revision.
+    example: draft
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Versions'

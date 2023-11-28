@@ -52,6 +52,10 @@ or: Eller
 init: Init
 dataset_too_large_currently_showing_n_items: Datasettet er for stort. For øyeblikket vises de {n} første elementene.
 modifier: Modifikator
+extension_interface: Grensesnitt
+extension_display: Visning
+extension_hook: Hook
+extension_modules: Moduler
 custom: Egendefinert
 hook: Hook
 fill_width: Fyll vidde
@@ -536,7 +540,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplikat verdi oppdaget
   USER_SUSPENDED: Bruker Suspendert
   CONTAINS_NULL_VALUES: Feltet inneholder nullverdier
-  UNPROCESSABLE_ENTITY: Ubehandlebar enhet
   INTERNAL_SERVER_ERROR: Uventet feil
   NOT_NULL_VIOLATION: Verdien kan ikke være null
   ILLEGAL_ASSET_TRANSFORMATION: Bildekilden er for stor til å forhåndsvise
@@ -635,9 +638,10 @@ wysiwyg_options:
   table: Tabell
 deselect: Velg bort
 editing_in_batch: 'Batch Editing {count} elementer'
-settings_permissions: Roller og tilganger
-settings_project: Prosjektinnstillinger
+settings_project: Innstillinger
 settings_webhooks: Webhooks
+settings_presets: Bokmerke
+settings_translations: Oversettelser
 discard_changes: Forkast endringer
 keep_editing: Fortsett å rediger
 add_new: Legg til ny
@@ -806,8 +810,6 @@ interfaces:
     edit: Rediger
   map:
     zoom: Zoom
-  system-folder:
-    folder: Mappe
   list:
     sort: Sorter
   tags:
@@ -872,3 +874,5 @@ operations:
     subject: Emne
   request:
     url: URL
+standard: Standard
+compact: Kompakt

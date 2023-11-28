@@ -7,15 +7,13 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 
-const { t } = useI18n();
-
-interface Props {
+const props = defineProps<{
 	flow: FlowRaw;
-}
-
-const props = defineProps<Props>();
+}>();
 
 const { flow } = toRefs(props);
+
+const { t } = useI18n();
 
 const { triggers } = getTriggers();
 const { operations } = useExtensions();
@@ -29,16 +27,17 @@ const page = ref<number>(1);
 const { revisionsByDate, revisionsCount, loading, pagesCount, refresh } = useRevisions(
 	ref('directus_flows'),
 	computed(() => unref(flow).id),
+	ref(null),
 	{
 		action: Action.RUN,
-	}
+	},
 );
 
 watch(
 	() => page.value,
 	(newPage) => {
 		refresh(newPage);
-	}
+	},
 );
 
 const previewing = ref();
@@ -84,7 +83,7 @@ const steps = computed(() => {
 				key,
 				status,
 			};
-		}
+		},
 	);
 });
 </script>
@@ -106,7 +105,7 @@ const steps = computed(() => {
 			<div class="scroll-container">
 				<div v-for="revision in group.revisions" :key="revision.id" class="log">
 					<button @click="previewing = revision">
-						<v-icon name="play_arrow" color="var(--primary)" small />
+						<v-icon name="play_arrow" color="var(--theme--primary)" small />
 						{{ revision.timeRelative }}
 					</button>
 				</div>
@@ -201,8 +200,8 @@ const steps = computed(() => {
 		z-index: 1;
 		width: calc(100% + 8px);
 		height: calc(100% + 8px);
-		background-color: var(--background-normal-alt);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background-accent);
+		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';
@@ -214,7 +213,7 @@ const steps = computed(() => {
 
 		.header {
 			.dot {
-				border-color: var(--background-normal-alt);
+				border-color: var(--theme--background-accent);
 			}
 		}
 
@@ -229,9 +228,9 @@ const steps = computed(() => {
 }
 
 .json {
-	background-color: var(--background-subdued);
-	font-family: var(--family-monospace);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
+	border-radius: var(--theme--border-radius);
 	padding: 20px;
 	margin-top: 20px;
 	white-space: pre-wrap;
@@ -247,10 +246,10 @@ const steps = computed(() => {
 		&::after {
 			content: '';
 			position: absolute;
-			width: var(--border-width);
+			width: var(--theme--border-width);
 			left: -11px;
 			top: 0;
-			background-color: var(--border-subdued);
+			background-color: var(--theme--border-color-subdued);
 			height: 100%;
 		}
 
@@ -273,13 +272,13 @@ const steps = computed(() => {
 		}
 
 		.subdued {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 	}
 
 	.mono {
-		font-family: var(--family-monospace);
-		color: var(--foreground-subdued);
+		font-family: var(--theme--fonts--monospace--font-family);
+		color: var(--theme--foreground-subdued);
 	}
 
 	.dot {
@@ -289,23 +288,23 @@ const steps = computed(() => {
 		z-index: 2;
 		width: 12px;
 		height: 12px;
-		background-color: var(--primary);
-		border: 2px solid var(--background-page);
+		background-color: var(--theme--primary);
+		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: 8px;
 
 		&.resolve {
-			background-color: var(--primary);
+			background-color: var(--theme--primary);
 		}
 
 		&.reject {
-			background-color: var(--secondary);
+			background-color: var(--theme--secondary);
 		}
 	}
 }
 
 .empty {
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 

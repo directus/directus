@@ -33,7 +33,7 @@ watch(
 	() => {
 		isHashed.value = !!(props.value && props.value.length > 0);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function emitValue(newValue: string) {
@@ -60,23 +60,23 @@ function emitValue(newValue: string) {
 
 <style lang="scss" scoped>
 .v-input {
-	--v-input-font-family: var(--family-monospace);
-	--v-icon-color: var(--warning);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
+	--v-icon-color: var(--theme--warning);
 
 	&.hashed {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 
 .lock {
-	--v-icon-color: var(--warning);
+	--v-icon-color: var(--theme--warning);
 }
 
 .hashed {
-	--v-input-placeholder-color: var(--primary);
+	--v-input-placeholder-color: var(--theme--primary);
 }
 
 .hashed .lock {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 </style>

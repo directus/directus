@@ -1,0 +1,76 @@
+name: Blackbox Tests
+
+on:
+  push:
+    branches:
+      - main
+      - next
+    paths:
+      - api/**
+      - tests/blackbox/**
+      - packages/**
+      - package.json
+      - pnpm-lock.yaml
+      - .github/workflows/blackbox-main.yml
+
+concurrency:
+  group: blackbox-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
+
+jobs:
+  test:
+    name: ${{ matrix.vendor }}
+    runs-on: ${{ matrix.vendor == 'mssql' && 'ubuntu-20.04' || 'ubuntu-latest' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        vendor:
+          - sqlite3
+          - postgres
+          - postgres10
+          - mysql
+          - mysql5
+          - maria
+          - mssql
+          - oracle
+          - cockroachdb
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Install Oracle client
+        if: matrix.vendor == 'oracle'
+        run: |
+          sudo apt update -y && sudo apt install -y alien libaio1 && \
+          wget https://download.oracle.com/otn_software/linux/instantclient/214000/$ORACLE_DL && \
+          sudo alien -i $ORACLE_DL && \
+          pnpm -w -D add oracledb@5
+        env:
+          ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
+
+      - name: Start mssql
+        if: matrix.vendor == 'mssql'
+        run: |
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
+          sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
+          sudo apt-get update
+          sudo apt-get install -y mssql-server
+          sudo /opt/mssql/bin/mssql-conf set network.tcpport 6105
+          sudo MSSQL_PID='express' MSSQL_SA_PASSWORD='Test@123' /opt/mssql/bin/mssql-conf -n setup accept-eula
+
+      - name: Start database
+        if: matrix.vendor != 'sqlite3' && matrix.vendor != 'mssql'
+        run: docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} -d --quiet-pull --wait
+
+      - name: Start services
+        run:
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
+
+      - name: Run tests
+        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox

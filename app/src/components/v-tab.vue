@@ -35,27 +35,18 @@ function onClick() {
 	</div>
 </template>
 
-<style>
-body {
-	--v-tab-color: var(--foreground-subdued);
-	--v-tab-background-color: var(--background-page);
-	--v-tab-color-active: var(--foreground-normal);
-	--v-tab-background-color-active: var(--background-page);
-}
-</style>
-
 <style lang="scss" scoped>
 .v-tab.horizontal {
-	color: var(--v-tab-color);
+	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 14px;
-	background-color: var(--v-tab-background-color);
+	background-color: var(--theme--background);
 	transition: color var(--fast) var(--transition);
 
 	&:hover,
 	&.active {
-		color: var(--v-tab-color-active);
-		background-color: var(--v-tab-background-color-active);
+		color: var(--theme--foreground);
+		background-color: var(--theme--background);
 	}
 
 	&.disabled {

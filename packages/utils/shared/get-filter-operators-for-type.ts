@@ -6,7 +6,7 @@ type GetFilterOperationsForTypeOptions = {
 
 export function getFilterOperatorsForType(
 	type: Type,
-	opts?: GetFilterOperationsForTypeOptions
+	opts?: GetFilterOperationsForTypeOptions,
 ): ClientFilterOperator[] {
 	const validationOnlyStringFilterOperators: ClientFilterOperator[] = opts?.includeValidation ? ['regex'] : [];
 

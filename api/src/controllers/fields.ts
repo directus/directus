@@ -4,7 +4,7 @@ import type { Field, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
-import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -28,7 +28,7 @@ router.get(
 		res.locals['payload'] = { data: fields || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -45,7 +45,7 @@ router.get(
 		res.locals['payload'] = { data: fields || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -62,7 +62,7 @@ router.get(
 		res.locals['payload'] = { data: field || null };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const newFieldSchema = Joi.object({
@@ -114,7 +114,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -152,7 +152,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const updateSchema = Joi.object({
@@ -207,7 +207,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -222,7 +222,7 @@ router.delete(
 		await service.deleteField(req.params['collection']!, req.params['field']!);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

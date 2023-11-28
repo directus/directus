@@ -13,7 +13,7 @@ const props = defineProps<{
 		display: string;
 		user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
 	};
-	refresh: () => void;
+	refresh: () => Promise<void>;
 }>();
 
 defineEmits(['edit']);
@@ -50,8 +50,8 @@ function useDelete() {
 			await api.delete(`/activity/comment/${props.activity.id}`);
 			await props.refresh();
 			confirmDelete.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			deleting.value = false;
 		}
@@ -128,13 +128,13 @@ function useDelete() {
 	margin-bottom: 8px;
 
 	.v-avatar {
-		--v-avatar-color: var(--background-normal-alt);
+		--v-avatar-color: var(--theme--background-accent);
 
 		flex-basis: 24px;
 		margin-right: 8px;
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
@@ -147,7 +147,7 @@ function useDelete() {
 	.header-right {
 		position: relative;
 		flex-basis: 24px;
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		.more {
 			cursor: pointer;
@@ -155,7 +155,7 @@ function useDelete() {
 			transition: all var(--slow) var(--transition);
 
 			&:hover {
-				color: var(--foreground-normal);
+				color: var(--theme--foreground);
 			}
 
 			&.active {
@@ -186,9 +186,9 @@ function useDelete() {
 
 .action-delete {
 	--v-button-background-color: var(--danger-25);
-	--v-button-color: var(--danger);
+	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-50);
-	--v-button-color-hover: var(--danger);
+	--v-button-color-hover: var(--theme--danger);
 }
 
 .dot {
@@ -197,7 +197,7 @@ function useDelete() {
 	height: 6px;
 	margin-right: 4px;
 	vertical-align: middle;
-	background-color: var(--warning);
+	background-color: var(--theme--warning);
 	border-radius: 3px;
 }
 </style>

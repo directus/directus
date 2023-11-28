@@ -47,7 +47,7 @@ export async function translateDatabaseError(error: SQLError): Promise<any> {
 			database: getDatabase(),
 			schema: null,
 			accountability: null,
-		}
+		},
 	);
 
 	return hookError;

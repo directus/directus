@@ -20,6 +20,13 @@ export interface Query<Schema extends object, Item> {
 }
 
 /**
+ * All query options with an additional version query option for readItem and readSingleton
+ */
+export interface QueryItem<Schema extends object, Item> extends Query<Schema, Item> {
+	readonly version?: string | undefined;
+}
+
+/**
  * Returns Item types that are available in the root Schema
  */
 export type ExtractItem<Schema extends object, Item> = Extract<UnpackList<Item>, ItemType<Schema>>;

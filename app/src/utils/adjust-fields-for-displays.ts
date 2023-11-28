@@ -15,7 +15,7 @@ export function adjustFieldsForDisplays(fields: readonly string[], parentCollect
 
 			const display = useExtension(
 				'display',
-				computed(() => field.meta?.display ?? null)
+				computed(() => field.meta?.display ?? null),
 			);
 
 			if (!display) return fieldKey;

@@ -32,7 +32,7 @@ const props = withDefaults(
 	{
 		font: 'sans-serif',
 		conditionalFormatting: () => [],
-	}
+	},
 );
 
 const { t, n } = useI18n();
@@ -70,7 +70,7 @@ const computedFormat = computed(() => {
 			background,
 			icon,
 			text: '',
-		}
+		},
 	);
 });
 
@@ -190,7 +190,7 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.bold {
-		color: var(--foreground-normal-alt);
+		color: var(--theme--foreground-accent);
 		font-weight: 700;
 	}
 
@@ -199,15 +199,15 @@ function matchNumber(left: number, right: number, operator: string) {
 	}
 
 	&.sans-serif {
-		font-family: var(--family-sans-serif);
+		font-family: var(--theme--fonts--sans--font-family);
 	}
 
 	&.serif {
-		font-family: var(--family-serif);
+		font-family: var(--theme--fonts--serif--font-family);
 	}
 
 	&.monospace {
-		font-family: var(--family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	.v-icon {

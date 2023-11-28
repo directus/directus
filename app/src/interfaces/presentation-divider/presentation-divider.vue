@@ -12,7 +12,7 @@ defineProps<{
 		:class="{ 'add-margin-top': icon || title }"
 		:style="{
 			'--v-divider-label-color': color,
-			'--v-divider-color': 'var(--border-subdued)',
+			'--v-divider-color': 'var(--theme--border-color-subdued)',
 		}"
 		large
 		:inline-title="inlineTitle"

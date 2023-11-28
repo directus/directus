@@ -124,8 +124,8 @@ function useURLImport() {
 			activeDialog.value = null;
 			url.value = '';
 			update(file.value?.id);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -280,7 +280,7 @@ function useURLImport() {
 
 <style lang="scss" scoped>
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -289,8 +289,8 @@ function useURLImport() {
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
 
 	img {
 		width: 100%;
@@ -299,12 +299,11 @@ function useURLImport() {
 	}
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 
 	&.is-svg {
 		padding: 4px;
-		background-color: var(--background-normal-alt);
 
 		img {
 			object-fit: contain;
@@ -314,21 +313,21 @@ function useURLImport() {
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;
 }
 
 .deselect:hover {
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 }
 
 .edit {
 	margin-right: 4px;
 
 	&:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

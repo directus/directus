@@ -16,7 +16,7 @@ const props = withDefaults(
 		focus?: boolean;
 		choices?: Choice[];
 	}>(),
-	{ focus: true, choices: () => [] }
+	{ focus: true, choices: () => [] },
 );
 
 const emit = defineEmits<{
@@ -47,10 +47,10 @@ const inputPattern = computed(() => {
 	switch (props.type) {
 		case 'integer':
 		case 'bigInteger':
-			return '[+-]?[0-9]+';
+			return '[+\\-]?[0-9]+';
 		case 'decimal':
 		case 'float':
-			return '[+-]?[0-9]+\\.?[0-9]*';
+			return '[+\\-]?[0-9]+\\.?[0-9]*';
 		case 'uuid':
 			return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
 		default:
@@ -120,14 +120,7 @@ function emitValue(val: string) {
 			placeholder="--"
 			@input="emitValue(($event.target as HTMLInputElement).value)"
 		/>
-		<v-menu
-			ref="dateTimeMenu"
-			:close-on-content-click="false"
-			:show-arrow="true"
-			placement="bottom-start"
-			seamless
-			full-height
-		>
+		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
 				<v-icon class="preview" name="event" small @click="toggle" />
 			</template>
@@ -141,7 +134,7 @@ function emitValue(val: string) {
 			</div>
 		</v-menu>
 	</template>
-	<v-menu v-else :close-on-content-click="false" :show-arrow="true" placement="bottom-start">
+	<v-menu v-else :close-on-content-click="false" show-arrow placement="bottom-start">
 		<template #activator="{ toggle }">
 			<v-icon
 				v-if="type.startsWith('geometry') || type === 'json'"
@@ -162,15 +155,15 @@ function emitValue(val: string) {
 .preview {
 	display: flex;
 	justify-content: center;
-	color: var(--primary);
-	font-family: var(--family-monospace);
+	color: var(--theme--primary);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	cursor: pointer;
 
 	&:empty {
 		&::after {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			content: '--';
 		}
 	}
@@ -193,16 +186,16 @@ function emitValue(val: string) {
 }
 
 input {
-	color: var(--primary);
-	font-family: var(--family-monospace);
+	color: var(--theme--primary);
+	font-family: var(--theme--fonts--monospace--font-family);
 	line-height: 1em;
-	background-color: var(--background-page);
+	background-color: var(--theme--form--field--input--background);
 	border: none;
 
 	&::placeholder {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		font-weight: 500;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Panel } from '@directus/types';
-import { computed, ref, reactive, StyleValue } from 'vue';
+import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
+import { StyleValue, computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export type AppTile = {
@@ -59,7 +59,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
 	name: undefined,
 	icon: 'space_dashboard',
-	color: 'var(--primary)',
+	color: 'var(--theme--primary)',
 	note: undefined,
 	showHeader: true,
 	minWidth: 8,
@@ -338,11 +338,12 @@ function useDragDrop() {
 	display: block;
 	grid-row: var(--pos-y) / span var(--height);
 	grid-column: var(--pos-x) / span var(--width);
-	background-color: var(--background-page);
-	border: 1px solid var(--border-subdued);
-	box-shadow: 0 0 0 1px var(--border-subdued);
+	background-color: var(--theme--background);
+	border: calc(var(--theme--border-width) / 2) solid var(--theme--border-color-subdued);
+	box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--border-color-subdued);
 	z-index: 1;
-	transition: border var(--fast) var(--transition);
+	transition: var(--fast) var(--transition);
+	transition-property: border, box-shadow;
 
 	&:hover {
 		z-index: 3;
@@ -350,20 +351,20 @@ function useDragDrop() {
 
 	&.editing {
 		&.draggable {
-			border-color: var(--border-normal);
-			box-shadow: 0 0 0 1px var(--border-normal);
+			border-color: var(--theme--form--field--input--border-color);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--form--field--input--border-color);
 			cursor: move;
 		}
 
 		&.draggable:hover {
-			border-color: var(--border-normal-alt);
-			box-shadow: 0 0 0 1px var(--border-normal-alt);
+			border-color: var(--theme--form--field--input--border-color-hover);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--form--field--input--border-color-hover);
 		}
 
 		&.dragging {
 			z-index: 3 !important;
-			border-color: var(--primary);
-			box-shadow: 0 0 0 1px var(--primary);
+			border-color: var(--theme--form--field--input--border-color-focus);
+			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
 		}
 
 		&.dragging .resize-details {
@@ -378,23 +379,28 @@ function useDragDrop() {
 
 .resize-details {
 	position: absolute;
-	top: 0;
+	bottom: 0;
 	right: 0;
 	z-index: 2;
-	padding: 17px 14px;
-	color: var(--foreground-subdued);
+	padding: 2px 11.5px 11.5px 2px;
+	color: var(--theme--foreground-subdued);
 	font-weight: 500;
-	font-size: 15px;
-	font-family: var(--family-monospace);
+	font-size: 12px;
+	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
-	background-color: var(--background-page);
-	border-top-right-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--theme--border-radius);
+	border-bottom-right-radius: var(--theme--border-radius);
+	border-top-left-radius: var(--theme--border-radius);
+	background-color: var(--theme--background);
 	opacity: 0;
-	transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+	transition:
+		opacity var(--fast) var(--transition),
+		color var(--fast) var(--transition);
 	pointer-events: none;
 }
+
 .tile-content {
 	position: relative;
 	display: flex;
@@ -417,22 +423,22 @@ function useDragDrop() {
 
 .footer {
 	padding: 0 12px;
-	border-top: 2px solid var(--border-subdued);
+	border-top: 2px solid var(--theme--border-color-subdued);
 	margin-top: auto;
 	padding-top: 8px;
 }
 
 .icon {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	margin-right: 4px;
 }
 
 .name {
-	color: var(--foreground-normal-alt);
+	color: var(--theme--foreground-accent);
 	font-weight: 600;
 	font-size: 16px;
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 }
 
@@ -443,14 +449,14 @@ function useDragDrop() {
 .more-icon,
 .edit-icon,
 .note {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--theme--foreground);
+	--v-icon-color-hover: var(--theme--foreground-accent);
 }
 
 .delete-action {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .edit-actions {
@@ -461,9 +467,11 @@ function useDragDrop() {
 	display: flex;
 	gap: 4px;
 	align-items: center;
-	padding: 12px 12px 8px;
-	background-color: var(--background-page);
-	border-top-right-radius: var(--border-radius-outline);
+	padding: 7px;
+	border-top-right-radius: var(--theme--border-radius);
+	border-bottom-right-radius: var(--theme--border-radius);
+	border-bottom-left-radius: var(--theme--border-radius);
+	background-color: var(--theme--background);
 }
 
 .resize-handlers div {
@@ -534,18 +542,18 @@ function useDragDrop() {
 }
 
 .br-tl {
-	border-top-left-radius: var(--border-radius-outline);
+	border-top-left-radius: var(--theme--border-radius);
 }
 
 .br-tr {
-	border-top-right-radius: var(--border-radius-outline);
+	border-top-right-radius: var(--theme--border-radius);
 }
 
 .br-br {
-	border-bottom-right-radius: var(--border-radius-outline);
+	border-bottom-right-radius: var(--theme--border-radius);
 }
 
 .br-bl {
-	border-bottom-left-radius: var(--border-radius-outline);
+	border-bottom-left-radius: var(--theme--border-radius);
 }
 </style>

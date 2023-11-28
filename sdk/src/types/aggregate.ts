@@ -46,7 +46,10 @@ export type AggregationTypes = {
  * Aggregation parameters
  */
 export type AggregateRecord<Fields = string> = {
-	[Func in keyof AggregationTypes]?: Fields | (AggregationTypes[Func]['wildcard'] extends never ? never : '*');
+	[Func in keyof AggregationTypes]?:
+		| Fields
+		| Fields[]
+		| (AggregationTypes[Func]['wildcard'] extends never ? never : '*');
 };
 
 /**
@@ -63,7 +66,7 @@ export type AggregationOptions<
 	Schema extends object,
 	Collection extends AllCollections<Schema>,
 	Fields = Collection extends keyof Schema ? keyof UnpackList<GetCollection<Schema, Collection>> : string,
-	Item = Collection extends keyof Schema ? UnpackList<GetCollection<Schema, Collection>> : object
+	Item = Collection extends keyof Schema ? UnpackList<GetCollection<Schema, Collection>> : object,
 > = {
 	aggregate: AggregateRecord<Fields>;
 	groupBy?: (Fields | GroupByFields<Schema, Item>)[];
@@ -76,7 +79,7 @@ export type AggregationOptions<
 export type AggregationOutput<
 	Schema extends object,
 	Collection extends AllCollections<Schema>,
-	Options extends AggregationOptions<Schema, Collection>
+	Options extends AggregationOptions<Schema, Collection>,
 > = ((Options['groupBy'] extends string[]
 	? UnpackList<GetCollection<Schema, Collection>> extends infer Item
 		? Item extends object
@@ -96,11 +99,17 @@ export type AggregationOutput<
 		: never
 	: object) & {
 	[Func in keyof Options['aggregate']]: Func extends keyof AggregationTypes
-		? Options['aggregate'][Func] extends string
-			? Options['aggregate'][Func] extends '*'
-				? AggregationTypes[Func]['output']
-				: { [Field in Options['aggregate'][Func]]: AggregationTypes[Func]['output'] }
-			: never
+		? Options['aggregate'][Func] extends string[]
+			? {
+					[Field in UnpackList<Options['aggregate'][Func]>]: Field extends '*'
+						? AggregationTypes[Func]['output']
+						: { [SubField in Field]: AggregationTypes[Func]['output'] }[Field];
+			  }
+			: Options['aggregate'][Func] extends string
+			  ? Options['aggregate'][Func] extends '*'
+					? AggregationTypes[Func]['output']
+					: { [SubField in Options['aggregate'][Func]]: AggregationTypes[Func]['output'] }[Options['aggregate'][Func]]
+			  : never
 		: never;
 })[];
 
@@ -121,5 +130,5 @@ type TranslateFunctionField<FieldMap, Field> = Field extends keyof FieldMap
 		? FieldMap[Field]
 		: never
 	: Field extends string
-	? Field
-	: never;
+	  ? Field
+	  : never;

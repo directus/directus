@@ -53,7 +53,7 @@ const props = withDefaults(
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -87,7 +87,7 @@ const fields = computed(() => {
 	} else {
 		displayFields = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templateWithDefaults.value),
-			relationInfo.value.relatedCollection.collection
+			relationInfo.value.relatedCollection.collection,
 		);
 	}
 
@@ -153,7 +153,7 @@ const showingCount = computed(() => {
 		totalItemCount.value,
 		page.value,
 		limit.value,
-		!!(search.value || searchFilter.value)
+		!!(search.value || searchFilter.value),
 	);
 });
 
@@ -199,7 +199,7 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const spacings = {
@@ -211,7 +211,7 @@ const spacings = {
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
 
 const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
+	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
 );
 
 function getDeselectIcon(item: DisplayItem) {
@@ -327,7 +327,7 @@ const customFilter = computed(() => {
 			}
 
 			return val;
-		})
+		}),
 	);
 
 	if (!isEmpty(customFilter)) filter._and.push(customFilter);
@@ -477,7 +477,7 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-list v-else>
 				<draggable
-					:force-fallback="true"
+					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
@@ -588,7 +588,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--border-width) solid var(--border-subdued);
+				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
@@ -597,9 +597,9 @@ function getLinkForItem(item: DisplayItem) {
 
 <style lang="scss" scoped>
 .bordered {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius-outline);
-	padding: var(--v-card-padding);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-list {
@@ -626,7 +626,7 @@ function getLinkForItem(item: DisplayItem) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -635,7 +635,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
+		margin-top: 8px;
 	}
 
 	.spacer {
@@ -648,7 +648,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.item-count {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		white-space: nowrap;
 	}
 
@@ -673,12 +673,12 @@ function getLinkForItem(item: DisplayItem) {
 }
 
 .item-link {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	&.disabled {
@@ -688,12 +688,12 @@ function getLinkForItem(item: DisplayItem) {
 }
 
 .deselect {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
-		--v-icon-color: var(--danger);
+		--v-icon-color: var(--theme--danger);
 	}
 }
 
@@ -704,7 +704,7 @@ function getLinkForItem(item: DisplayItem) {
 	width: 120px;
 	padding: 10px 0;
 	margin-right: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		width: auto;
@@ -712,7 +712,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.v-select {
-		color: var(--foreground-normal);
+		color: var(--theme--form--field--input--foreground);
 	}
 }
 </style>

@@ -28,6 +28,8 @@ const headerMessage = computed(() => {
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
+		case 'version_save':
+			return t('revision_delta_version_saved', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -88,20 +90,24 @@ const user = computed(() => {
 			z-index: 2;
 			width: 12px;
 			height: 12px;
-			background-color: var(--warning);
-			border: 2px solid var(--background-normal);
+			background-color: var(--theme--warning);
+			border: var(--theme--border-width) solid var(--theme--background-normal);
 			border-radius: 8px;
 
 			&.create {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
 			}
 
 			&.update {
-				background-color: var(--primary);
+				background-color: var(--theme--primary);
+			}
+
+			&.version_save {
+				background-color: var(--theme--primary);
 			}
 
 			&.delete {
-				background-color: var(--danger);
+				background-color: var(--theme--danger);
 			}
 		}
 	}
@@ -113,7 +119,7 @@ const user = computed(() => {
 		z-index: 1;
 		width: 2px;
 		height: calc(100% + 12px);
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 		content: '';
 	}
 
@@ -124,8 +130,8 @@ const user = computed(() => {
 		z-index: 1;
 		width: calc(100% + 32px);
 		height: calc(100% + 10px);
-		background-color: var(--background-normal-alt);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background-accent);
+		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';
@@ -137,7 +143,7 @@ const user = computed(() => {
 
 		.header {
 			.dot {
-				border-color: var(--background-normal-alt);
+				border-color: var(--theme--background-accent);
 			}
 		}
 
@@ -154,7 +160,7 @@ const user = computed(() => {
 .content {
 	position: relative;
 	z-index: 2;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	line-height: 16px;
 
 	.time {
@@ -169,7 +175,7 @@ const user = computed(() => {
 		}
 
 		&:hover {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 	}
 }

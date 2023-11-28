@@ -17,9 +17,9 @@ const props = withDefaults(
 		labelOff: null,
 		iconOn: 'check',
 		iconOff: 'close',
-		colorOn: 'var(--primary)',
-		colorOff: 'var(--foreground-subdued)',
-	}
+		colorOn: 'var(--theme--primary)',
+		colorOff: 'var(--theme--foreground-subdued)',
+	},
 );
 
 const styles = computed(() => {

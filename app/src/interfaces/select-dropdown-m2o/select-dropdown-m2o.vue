@@ -34,7 +34,7 @@ const props = withDefaults(
 		filter: () => null,
 		enableCreate: true,
 		enableSelect: true,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -51,7 +51,7 @@ const customFilter = computed(() => {
 			}
 
 			return val;
-		})
+		}),
 	);
 });
 
@@ -85,7 +85,7 @@ const requiredFields = computed(() => {
 
 	return adjustFieldsForDisplays(
 		getFieldsFromTemplate(displayTemplate.value),
-		relationInfo.value?.relatedCollection.collection
+		relationInfo.value?.relatedCollection.collection,
 	);
 });
 
@@ -264,15 +264,15 @@ function onSelection(selection: (number | string)[] | null) {
 	margin-right: 4px;
 
 	&:hover {
-		--v-icon-color: var(--foreground-normal);
+		--v-icon-color: var(--theme--form--field--input--foreground);
 	}
 }
 
 .add:hover {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 }
 
 .deselect:hover {
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 }
 </style>

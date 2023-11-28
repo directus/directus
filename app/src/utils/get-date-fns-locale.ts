@@ -9,7 +9,7 @@ export function getDateFNSLocale(): Locale | undefined {
 }
 
 export async function loadDateFNSLocale(lang: string) {
-	const localesToTry = [lang, lang.split('-')[0], 'en-US'];
+	const localesToTry = [lang, (lang.split('-') as [string, string])[0], 'en-US'];
 
 	let locale;
 

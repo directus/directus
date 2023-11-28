@@ -25,7 +25,7 @@ watch(
 			lastAccessDate.value = localizedFormat(new Date(props.user.last_access), String(t('date-fns_date_short')));
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 </script>
 
@@ -72,8 +72,8 @@ watch(
 	align-items: center;
 
 	.clipboard-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
+		--v-icon-color: var(--theme--foreground-subdued);
+		--v-icon-color-hover: var(--theme--foreground);
 
 		margin-left: 4px;
 	}

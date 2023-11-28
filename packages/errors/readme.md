@@ -37,7 +37,7 @@ interface ForbiddenErrorExtensions {
 const ForbiddenError = createError<ForbiddenErrorExtensions>(
 	'FORBIDDEN',
 	"You don't have permissions to see this.",
-	403
+	403,
 );
 
 throw new ForbiddenError({

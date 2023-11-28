@@ -133,8 +133,8 @@ function useSave() {
 			await presetsStore.hydrate();
 
 			edits.value = {};
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			saving.value = false;
 			router.push(`/settings/presets`);
@@ -155,8 +155,8 @@ function useDelete() {
 			await presetsStore.delete([Number(props.id)]);
 			edits.value = {};
 			router.replace(`/settings/presets`);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			deleting.value = false;
 		}
@@ -305,8 +305,8 @@ function usePreset() {
 			const response = await api.get(`/presets/${props.id}`);
 
 			preset.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -586,14 +586,14 @@ function discardAndLeave() {
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
@@ -616,16 +616,13 @@ function discardAndLeave() {
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--primary);
-	--sidebar-detail-color: var(--primary);
-	--sidebar-detail-color-active: var(--primary);
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	display: contents;
 }
 
 :deep(.layout-options) {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	@include form-grid;
 }
@@ -635,7 +632,7 @@ function discardAndLeave() {
 }
 
 .subdued {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 </style>

@@ -87,7 +87,7 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	set(newVal) {
 		emit(
 			'update:filter',
-			newVal.map((val) => val.node)
+			newVal.map((val) => val.node),
 		);
 	},
 });
@@ -279,7 +279,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		:group="{ name: 'g1' }"
 		:item-key="getIndex"
 		:swap-threshold="0.3"
-		:force-fallback="true"
+		force-fallback
 		@change="$emit('change')"
 	>
 		<template #item="{ element, index }">
@@ -343,7 +343,7 @@ function isExistingField(node: Record<string, any>): boolean {
 							<span class="text">
 								{{
 									`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
-										'interfaces.filter.of_the_following'
+										'interfaces.filter.of_the_following',
 									)}`
 								}}
 							</span>
@@ -384,31 +384,31 @@ function isExistingField(node: Record<string, any>): boolean {
 	margin-bottom: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-subdued);
+	background-color: var(--theme--form--field--input--background);
+	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: 100px;
 	transition: border-color var(--fast) var(--transition);
 
 	.logic-type {
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 
 		.key {
 			margin-right: 4px;
 			padding: 2px 6px;
-			color: var(--primary);
-			background-color: var(--primary-alt);
+			color: var(--theme--primary);
+			background-color: var(--theme--primary-background);
 			border-radius: 6px;
 			cursor: pointer;
 			transition: var(--fast) var(--transition);
 			transition-property: color, background-color;
 
 			&:hover {
-				background-color: var(--primary-25);
+				background-color: var(--theme--primary-subdued);
 			}
 		}
 
 		&.or .key {
-			color: var(--secondary);
+			color: var(--theme--secondary);
 			background-color: var(--secondary-alt);
 
 			&:hover {
@@ -437,7 +437,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	&.raw-field-names {
 		.plain-name,
 		.name {
-			font-family: var(--family-monospace);
+			font-family: var(--theme--fonts--monospace--font-family);
 		}
 	}
 
@@ -455,7 +455,7 @@ function isExistingField(node: Record<string, any>): boolean {
 			z-index: -1;
 			width: calc(100% + 8px);
 			height: 100%;
-			background-color: var(--background-normal);
+			background-color: var(--theme--background-normal);
 			border-radius: 6px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -477,8 +477,8 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	.delete {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--danger);
+		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+		--v-icon-color-hover: var(--theme--danger);
 
 		position: absolute;
 		top: 50%;
@@ -490,7 +490,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	&:hover {
-		border-color: var(--border-normal);
+		border-color: var(--theme--form--field--input--border-color);
 
 		.delete,
 		&:hover {
@@ -499,7 +499,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	.drag-handle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 		margin-right: 4px;
 		cursor: grab;
@@ -513,7 +513,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		.delete {
 			right: 8px;
 			left: unset;
-			background-color: var(--background-page);
+			background-color: var(--theme--background);
 		}
 	}
 }
@@ -531,8 +531,8 @@ function isExistingField(node: Record<string, any>): boolean {
 
 .group :deep(.sortable-ghost) {
 	.node .header {
-		background-color: var(--primary-alt);
-		border-color: var(--primary);
+		background-color: var(--theme--primary-background);
+		border-color: var(--theme--form--field--input--border-color-focus);
 
 		> * {
 			opacity: 0;

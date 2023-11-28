@@ -59,13 +59,6 @@ const modules = computed(() => {
 				:to="modulePart.to"
 				:href="modulePart.href"
 				tile
-				:style="
-					modulePart.color
-						? {
-								'--v-button-color-active': modulePart.color,
-						  }
-						: null
-				"
 			>
 				<v-icon :name="modulePart.icon" />
 			</v-button>
@@ -81,7 +74,11 @@ const modules = computed(() => {
 	flex-direction: column;
 	width: 60px;
 	height: 100%;
-	background-color: var(--module-background);
+	background-color: var(--theme--navigation--modules--background);
+	border-right: var(--theme--navigation--modules--border-width) solid var(--theme--navigation--modules--border-color);
+
+	/* Explicitly render the border outside of the width of the bar itself */
+	box-sizing: content-box;
 
 	.modules {
 		flex-grow: 1;
@@ -90,12 +87,12 @@ const modules = computed(() => {
 	}
 
 	.v-button {
-		--v-button-color: var(--module-icon);
-		--v-button-color-hover: var(--white);
-		--v-button-color-active: var(--module-icon-alt);
-		--v-button-background-color: var(--module-background);
-		--v-button-background-color-hover: var(--module-background);
-		--v-button-background-color-active: var(--module-background-alt);
+		--v-button-color: var(--theme--navigation--modules--button--foreground);
+		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
+		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
+		--v-button-background-color: var(--theme--navigation--modules--button--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
+		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 	}
 }
 </style>

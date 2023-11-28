@@ -64,7 +64,7 @@ watch(
 			key.value = null;
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const options = computed({
@@ -149,7 +149,7 @@ const options = computed({
 @import '@/styles/mixins/form-grid';
 
 .field-configuration {
-	--v-button-background-color-disabled: var(--background-normal);
+	--v-button-background-color-disabled: var(--theme--background-normal);
 	--columns: 1;
 
 	@media (min-width: 400px) {
@@ -165,13 +165,13 @@ const options = computed({
 	}
 
 	grid-column: 1 / span var(--columns);
-	background-color: var(--background-subdued);
-	border-top: var(--border-width) solid var(--border-normal);
-	border-bottom: var(--border-width) solid var(--border-normal);
+	background-color: var(--theme--background-subdued);
+	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .setup {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 
 	margin: 34px;
 }
@@ -182,7 +182,7 @@ const options = computed({
 }
 
 .monospace {
-	--v-input-font-family: var(--family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .save {
@@ -200,12 +200,12 @@ const options = computed({
 .toggle-advanced {
 	width: 100%;
 	margin-top: 20px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }
 </style>

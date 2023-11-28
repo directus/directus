@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
-import { Sort, Header } from '@/components/v-table/types';
+import { Header, Sort } from '@/components/v-table/types';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
-import { computed, ref, Ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
@@ -30,14 +30,14 @@ const conditionalFormatting = ref([
 		value: 'active',
 		text: t('active'),
 		color: 'var(--foreground-inverted)',
-		background: 'var(--primary)',
+		background: 'var(--theme--primary)',
 	},
 	{
 		operator: 'eq',
 		value: 'inactive',
 		text: t('inactive'),
-		color: 'var(--foreground-subdued)',
-		background: 'var(--background-normal)',
+		color: 'var(--theme--foreground-subdued)',
+		background: 'var(--theme--background-normal)',
 	},
 ]);
 
@@ -76,7 +76,7 @@ const tableHeaders = ref<Header[]>([
 	},
 ]);
 
-const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
+const internalSort = ref<Sort>({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
@@ -102,8 +102,8 @@ async function deleteFlow() {
 		await api.delete(`/flows/${confirmDelete.value.id}`);
 		await flowsStore.hydrate();
 		confirmDelete.value = null;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		deletingFlow.value = false;
 	}
@@ -117,7 +117,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 
 		await flowsStore.hydrate();
 	} catch (error) {
-		unexpectedError(error as Error);
+		unexpectedError(error);
 	}
 }
 
@@ -183,7 +183,7 @@ function onFlowDrawerCompletion(id: string) {
 			@update:sort="updateSort($event)"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--primary)'" />
+				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
 			</template>
 
 			<template #[`item.status`]="{ item }">
@@ -268,18 +268,18 @@ function onFlowDrawerCompletion(id: string) {
 }
 
 .ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
+	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
 }
 </style>

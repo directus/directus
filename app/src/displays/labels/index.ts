@@ -5,7 +5,7 @@ export default defineDisplay({
 	id: 'labels',
 	name: '$t:displays.labels.labels',
 	description: '$t:displays.labels.description',
-	types: ['string', 'json', 'csv'],
+	types: ['string', 'json', 'csv', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'flag',
 	component: DisplayLabels,
 	handler: (value, options, { interfaceOptions }) => {
@@ -15,10 +15,10 @@ export default defineDisplay({
 			return getConfiguredChoice(value);
 		}
 
-		function getConfiguredChoice(val: string) {
+		function getConfiguredChoice(val: string | number) {
 			const configuredChoice =
-				options?.choices?.find((choice: { value: string }) => choice.value === val) ??
-				interfaceOptions?.choices?.find((choice: { value: string }) => choice.value === val);
+				options?.choices?.find((choice: { value: string | number }) => choice.value === val) ??
+				interfaceOptions?.choices?.find((choice: { value: string | number }) => choice.value === val);
 
 			return configuredChoice?.text ? configuredChoice.text : val;
 		}

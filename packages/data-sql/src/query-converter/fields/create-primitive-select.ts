@@ -9,7 +9,7 @@ import type { AbstractSqlQuerySelectNode } from '../../types/index.js';
 export const createPrimitiveSelect = (
 	collection: string,
 	abstractPrimitive: AbstractQueryFieldNodePrimitive,
-	generatedAlias: string
+	generatedAlias: string,
 ): AbstractSqlQuerySelectNode => {
 	const primitive: AbstractSqlQuerySelectNode = {
 		type: 'primitive',
@@ -17,10 +17,6 @@ export const createPrimitiveSelect = (
 		column: abstractPrimitive.field,
 		as: generatedAlias,
 	};
-
-	if (abstractPrimitive.alias) {
-		primitive.alias = abstractPrimitive.alias;
-	}
 
 	return primitive;
 };

@@ -3,12 +3,14 @@ import { getGroups } from '@/utils/get-groups';
 import { definePanel } from '@directus/extensions';
 import { Filter } from '@directus/types';
 import PanelTimeSeries from './panel-time-series.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default definePanel({
 	id: 'time-series',
 	name: '$t:panels.time_series.name',
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
+	preview: PreviewSVG,
 	query(options) {
 		if (!options?.function || !options.valueField || !options.dateField) {
 			return;
@@ -35,7 +37,7 @@ export default definePanel({
 					[options.dateField]: {
 						_lte: `$NOW`,
 					},
-				}
+				},
 			);
 		}
 

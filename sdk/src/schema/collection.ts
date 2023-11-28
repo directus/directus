@@ -25,13 +25,15 @@ export type DirectusCollection<Schema extends object> = {
 			group: string | null;
 			collapse: string;
 			preview_url: string | null;
+			versioning: boolean;
 		}
 	>;
-	schema: {
-		schema: string;
-		name: string;
-		comment: string | null;
-	} | null;
+	schema:
+		| ({
+				name: string;
+				comment: string | null;
+		  } & Record<string, unknown>)
+		| null;
 	fields?: NestedPartial<DirectusField<Schema>>[];
 };
 

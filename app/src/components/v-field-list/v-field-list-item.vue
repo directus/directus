@@ -1,9 +1,3 @@
-<script lang="ts">
-export default {
-	name: 'VFieldListItem',
-};
-</script>
-
 <script setup lang="ts">
 import { FieldNode } from '@/composables/use-field-tree';
 import formatTitle from '@directus/format-title';
@@ -16,24 +10,25 @@ type FieldInfo = FieldNode & {
 	children?: FieldInfo[];
 };
 
-interface Props {
-	field: FieldInfo;
-	search?: string;
-	includeFunctions?: boolean;
-	relationalFieldSelectable?: boolean;
-	allowSelectAll?: boolean;
-	parent?: string | null;
-	rawFieldNames?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	search: undefined,
-	includeFunctions: false,
-	relationalFieldSelectable: true,
-	allowSelectAll: false,
-	parent: null,
-	rawFieldNames: false,
-});
+const props = withDefaults(
+	defineProps<{
+		field: FieldInfo;
+		search?: string;
+		includeFunctions?: boolean;
+		relationalFieldSelectable?: boolean;
+		allowSelectAll?: boolean;
+		parent?: string | null;
+		rawFieldNames?: boolean;
+	}>(),
+	{
+		search: undefined,
+		includeFunctions: false,
+		relationalFieldSelectable: true,
+		allowSelectAll: false,
+		parent: null,
+		rawFieldNames: false,
+	},
+);
 
 const emit = defineEmits(['add']);
 
@@ -49,15 +44,7 @@ const selectAllDisabled = computed(() => props.field.children?.every((field: Fie
 const addAll = () => {
 	if (!props.field.children) return;
 
-	const selectedFields = props.field.children.map((selectableField) => {
-		let res = `${props.field.field}.${selectableField.field}`;
-
-		if (props.parent) {
-			res = `${props.parent}.${res}`;
-		}
-
-		return res;
-	});
+	const selectedFields = props.field.children.map((selectableField) => selectableField.key);
 
 	emit('add', selectedFields);
 };
@@ -89,7 +76,7 @@ const addAll = () => {
 				@click="$emit('add', [`${fn}(${field.key})`])"
 			>
 				<v-list-item-icon>
-					<v-icon name="auto_awesome" small color="var(--primary)" />
+					<v-icon name="auto_awesome" small color="var(--theme--primary)" />
 				</v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow
@@ -142,11 +129,11 @@ const addAll = () => {
 
 <style lang="scss" scoped>
 .functions {
-	--v-icon-color: var(--primary);
-	--v-list-item-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
+	--v-list-item-color: var(--theme--primary);
 }
 
 .raw-field-names {
-	--v-list-item-content-font-family: var(--family-monospace);
+	--v-list-item-content-font-family: var(--theme--fonts--monospace--font-family);
 }
 </style>

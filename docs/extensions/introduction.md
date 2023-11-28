@@ -67,7 +67,7 @@ sources and custom workflows.
 ### Hooks
 
 [Hooks](/extensions/hooks) are similar to Flows, but do not have a UI in the Directus Data Studio. Hooks can be
-triggered during Directus' startup, when data is changes, or on schedules.
+triggered during Directus' startup, when data is changed, or on schedules.
 
 ## Hybrid Extensions
 

@@ -1,14 +1,29 @@
 <script setup lang="ts">
-import { useSync } from '@directus/composables';
+import { computed } from 'vue';
+
+type Tab = {
+	value: string;
+	text: string;
+	hasValue: boolean;
+};
 
 const props = defineProps<{
-	tabs: [];
-	currentTab?: [];
+	tabs: Tab[];
+	currentTab?: string;
 }>();
 
-const emit = defineEmits(['update:currentTab']);
+const emit = defineEmits<{
+	'update:currentTab': [value: string | undefined];
+}>();
 
-const internalCurrentTab = useSync(props, 'currentTab', emit);
+const internalCurrentTab = computed({
+	get() {
+		return props.currentTab ? [props.currentTab] : [];
+	},
+	set(value: string[]) {
+		emit('update:currentTab', value[0]);
+	},
+});
 </script>
 
 <template>
@@ -28,11 +43,11 @@ const internalCurrentTab = useSync(props, 'currentTab', emit);
 .dot {
 	width: 12px;
 	height: 12px;
-	background-color: var(--foreground-subdued);
+	background-color: var(--theme--foreground-subdued);
 	border-radius: 50%;
 
 	&.on {
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 	}
 }
 </style>

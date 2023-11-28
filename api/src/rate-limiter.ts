@@ -12,7 +12,7 @@ type IRateLimiterOptionsOverrides = Partial<IRateLimiterOptions> | Partial<IRate
 
 export function createRateLimiter(
 	configPrefix = 'RATE_LIMITER',
-	configOverrides?: IRateLimiterOptionsOverrides
+	configOverrides?: IRateLimiterOptionsOverrides,
 ): RateLimiterAbstract {
 	switch (env['RATE_LIMITER_STORE']) {
 		case 'redis':
@@ -26,17 +26,17 @@ export function createRateLimiter(
 function getConfig(
 	store: 'memory',
 	configPrefix: string,
-	overrides?: IRateLimiterOptionsOverrides
+	overrides?: IRateLimiterOptionsOverrides,
 ): IRateLimiterOptions;
 function getConfig(
 	store: 'redis',
 	configPrefix: string,
-	overrides?: IRateLimiterOptionsOverrides
+	overrides?: IRateLimiterOptionsOverrides,
 ): IRateLimiterStoreOptions;
 function getConfig(
 	store: 'memory' | 'redis' = 'memory',
 	configPrefix = 'RATE_LIMITER',
-	overrides?: IRateLimiterOptionsOverrides
+	overrides?: IRateLimiterOptionsOverrides,
 ): IRateLimiterOptions | IRateLimiterStoreOptions {
 	const config: any = getConfigFromEnv(`${configPrefix}_`, `${configPrefix}_${store}_`);
 

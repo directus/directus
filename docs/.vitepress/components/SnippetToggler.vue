@@ -1,37 +1,48 @@
 <script setup lang="ts">
-import { useLocalStorage, type RemovableRef } from '@vueuse/core';
-import { onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch, type Ref } from 'vue';
+import { useLocalStorage } from '../composables/useLocalStorage';
 
 const props = defineProps<{
 	choices: string[];
-	label?: string;
+	group?: string;
 	alwaysDark?: boolean;
+	maintainHeight?: boolean;
 }>();
 
 const selected = ref<string>();
-let localStorage: RemovableRef<string | undefined> | undefined;
+let storage: Ref<string | null> | undefined;
 
-// Get local storage on client side (preventing SSR <-> client mismatch & flash)
+// Get local storage on client side (preventing SSR <-> Client mismatch & initial flash)
 onMounted(() => {
-	localStorage = useLocalStorage('toggler-value', undefined);
+	const defaultValue = props.choices[0];
 
-	const initialValue = localStorage.value;
+	if (props.group) {
+		storage = useLocalStorage(`toggler-${props.group}`);
 
-	selected.value = initialValue && props.choices.includes(initialValue) ? initialValue : props.choices[0];
+		const initialValue = storage.value;
 
-	watch(localStorage, (value) => {
-		if (value && !props.choices.includes(value)) return;
+		selected.value = initialValue && props.choices.includes(initialValue) ? initialValue : defaultValue;
 
-		selected.value = value;
-	});
+		watch(storage, (value) => {
+			if (!value || !props.choices.includes(value)) return;
+
+			selected.value = value;
+		});
+	} else {
+		selected.value = defaultValue;
+	}
 });
 
-const changeSelected = (choice: string) => {
-	if (localStorage) {
-		localStorage.value = choice;
-	} else {
-		// Not expected but as fallback safety
-		selected.value = choice;
+const changeSelected = async (choice: string, el: HTMLElement) => {
+	const previousRelativeOffset = el.offsetTop - document.documentElement.scrollTop;
+
+	(storage ?? selected).value = choice;
+
+	if (props.group) {
+		await nextTick();
+
+		const newRelativeOffset = el.offsetTop - document.documentElement.scrollTop;
+		document.documentElement.scrollTop += newRelativeOffset - previousRelativeOffset;
 	}
 };
 </script>
@@ -45,7 +56,7 @@ const changeSelected = (choice: string) => {
 					:key="choice"
 					class="button"
 					:class="{ active: choice === selected }"
-					@click="changeSelected(choice)"
+					@click="changeSelected(choice, $el)"
 				>
 					{{ choice }}
 				</button>
@@ -54,7 +65,10 @@ const changeSelected = (choice: string) => {
 
 		<div class="content-area">
 			<template v-for="choice in choices" :key="choice">
-				<div class="content" :class="{ active: choice === selected }">
+				<div
+					v-if="maintainHeight || choice === selected"
+					:class="{ content: maintainHeight, active: maintainHeight && choice === selected }"
+				>
 					<slot :name="choice.toLowerCase()"></slot>
 				</div>
 			</template>

@@ -22,7 +22,7 @@ export class DriverAzure implements Driver {
 
 		const client = new BlobServiceClient(
 			config.endpoint ?? `https://${config.accountName}.blob.core.windows.net`,
-			this.signedCredentials
+			this.signedCredentials,
 		);
 
 		this.containerClient = client.getContainerClient(config.containerName);
@@ -36,7 +36,7 @@ export class DriverAzure implements Driver {
 	async read(filepath: string, range?: Range) {
 		const { readableStreamBody } = await this.containerClient
 			.getBlobClient(this.fullPath(filepath))
-			.download(range?.start, range?.end ? range.end - (range.start || 0) : undefined);
+			.download(range?.start, range?.end ? range.end - (range.start || 0) + 1 : undefined);
 
 		if (!readableStreamBody) {
 			throw new Error(`No stream returned for file "${filepath}"`);

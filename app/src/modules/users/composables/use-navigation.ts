@@ -36,7 +36,7 @@ export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loadi
 			});
 
 			roles.value = rolesResponse.data.data;
-		} catch (error: any) {
+		} catch (error) {
 			unexpectedError(error);
 		} finally {
 			loading.value = false;

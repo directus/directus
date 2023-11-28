@@ -32,13 +32,13 @@ export default defineDisplay({
 		const relations = relationsStore.getRelationsForField(collection, field.field);
 
 		const junction = relations.find(
-			(relation) => relation.related_collection === collection && relation.meta?.one_field === field.field
+			(relation) => relation.related_collection === collection && relation.meta?.one_field === field.field,
 		);
 
 		if (!junction) return values;
 
 		const relation = relations.find(
-			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field
+			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field,
 		);
 
 		if (!relatedCollection) return values;
@@ -168,7 +168,7 @@ export default defineDisplay({
 		const relations = relationsStore.getRelationsForField(collection, field);
 
 		const translationsRelation = relations.find(
-			(relation) => relation.related_collection === collection && relation.meta?.one_field === field
+			(relation) => relation.related_collection === collection && relation.meta?.one_field === field,
 		);
 
 		const languagesRelation = relations.find((relation) => relation !== translationsRelation);

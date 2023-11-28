@@ -71,7 +71,7 @@ const props = withDefaults(
 		],
 		font: 'sans-serif',
 		customFormats: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -98,7 +98,7 @@ const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveIm
 	{
 		storageAssetTransform,
 		storageAssetPresets,
-	}
+	},
 );
 
 const {
@@ -148,7 +148,7 @@ watch(
 				editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
 			}
 		}
-	}
+	},
 );
 
 const editorOptions = computed(() => {
@@ -164,7 +164,7 @@ const editorOptions = computed(() => {
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage')
+				.replace(/^image$/g, 'customImage'),
 		)
 		.join(' ');
 
@@ -362,7 +362,7 @@ function setFocus(val: boolean) {
 				<interface-input-code
 					:value="code"
 					language="htmlmixed"
-					:line-wrapping="true"
+					line-wrapping
 					@input="code = $event"
 				></interface-input-code>
 			</div>
@@ -406,7 +406,7 @@ function setFocus(val: boolean) {
 							<v-select
 								v-model="imageSelection.transformationKey"
 								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
-								:show-deselect="true"
+								show-deselect
 							/>
 						</div>
 					</div>
@@ -498,7 +498,7 @@ function setFocus(val: boolean) {
 	position: absolute;
 	right: 10px;
 	bottom: 5px;
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: right;
 	vertical-align: middle;
@@ -506,11 +506,11 @@ function setFocus(val: boolean) {
 }
 
 .warning {
-	color: var(--warning);
+	color: var(--theme--warning);
 }
 
 .danger {
-	color: var(--danger);
+	color: var(--theme--danger);
 }
 
 .image-preview,
@@ -519,7 +519,7 @@ function setFocus(val: boolean) {
 	height: var(--input-height-tall);
 	margin-bottom: 24px;
 	object-fit: cover;
-	border-radius: var(--border-radius);
+	border-radius: var(--theme--border-radius);
 }
 
 .content {

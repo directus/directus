@@ -125,7 +125,7 @@ type UsableGroupableParent = {
 export function useGroupableParent(
 	state: GroupableParentState = {},
 	options: GroupableParentOptions = {},
-	group = 'item-group'
+	group = 'item-group',
 ): UsableGroupableParent {
 	// References to the active state and value of the individual child items
 	const items = shallowRef<GroupableInstance[]>([]);
@@ -174,7 +174,7 @@ export function useGroupableParent(
 			if (!selection.value || (selection.value.length === 0 && options?.mandatory?.value === true)) {
 				if (items.value[0]) selection.value = [getValueForItem(items.value[0])];
 			}
-		}
+		},
 	);
 
 	// These aren't exported with any particular use in mind. It's mostly for testing purposes.

@@ -4,7 +4,7 @@ import { computed } from 'vue';
 
 export function useFilterFields<T extends string>(
 	fields: Ref<Field[]>,
-	filters: Record<T, (field: Field) => boolean>
+	filters: Record<T, (field: Field) => boolean>,
 ): { fieldGroups: ComputedRef<Record<Extract<T, string>, Field[]>> } {
 	const fieldGroups = computed(() => {
 		const acc = {} as Record<Extract<T, string>, Field[]>;

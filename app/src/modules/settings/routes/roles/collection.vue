@@ -9,9 +9,17 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
-type RoleItem = Partial<Role> & {
-	count?: number;
+type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
+
+type RoleResponse = Pick<Role, RoleBaseFields | 'admin_access'> & {
+	users: [{ count: { id: number } }];
 };
+
+type RoleItem = Pick<Role, RoleBaseFields> &
+	Partial<Pick<Role, 'admin_access'>> & {
+		public?: boolean;
+		count?: number;
+	};
 
 const { t } = useI18n();
 
@@ -22,7 +30,7 @@ const loading = ref(false);
 
 const lastAdminRoleId = computed(() => {
 	const adminRoles = roles.value.filter((role) => role.admin_access === true);
-	return adminRoles.length === 1 ? adminRoles[0].id : null;
+	return adminRoles.length === 1 ? (adminRoles[0] as RoleItem).id : null;
 });
 
 const tableHeaders = ref<TableHeader[]>([
@@ -70,7 +78,7 @@ async function fetchRoles() {
 	loading.value = true;
 
 	try {
-		const response = await fetchAll<any[]>(`/roles`, {
+		const response = await fetchAll<RoleResponse>(`/roles`, {
 			params: {
 				limit: -1,
 				fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
@@ -94,15 +102,15 @@ async function fetchRoles() {
 				description: t('public_description'),
 				id: 'public',
 			},
-			...response.map((role: any) => {
+			...response.map((role) => {
 				return {
 					...translate(role),
 					count: role.users[0]?.count.id || 0,
 				};
 			}),
 		];
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -179,10 +187,10 @@ function navigateToRole({ item }: { item: Role }) {
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .roles {
@@ -192,18 +200,18 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .system {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .description {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 
 .public {
-	--v-icon-color: var(--primary);
+	--v-icon-color: var(--theme--primary);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 </style>

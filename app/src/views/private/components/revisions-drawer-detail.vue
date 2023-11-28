@@ -1,27 +1,28 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
+import { ContentVersion } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
 
-interface Props {
+const props = defineProps<{
 	collection: string;
 	primaryKey: string | number;
-}
-
-const props = defineProps<Props>();
+	version: ContentVersion | null;
+}>();
 
 defineEmits(['revert']);
 
 const { t } = useI18n();
 
-const { collection, primaryKey } = toRefs(props);
+const { collection, primaryKey, version } = toRefs(props);
 
 const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount, created } = useRevisions(
 	collection,
-	primaryKey
+	primaryKey,
+	version,
 );
 
 const modalActive = ref(false);
@@ -32,7 +33,7 @@ watch(
 	() => page.value,
 	(newPage) => {
 		refresh(newPage);
-	}
+	},
 );
 
 function openModal(id: number) {
@@ -88,20 +89,10 @@ defineExpose({
 }
 
 .v-divider {
-	--v-divider-color: var(--background-normal-alt);
+	--v-divider-color: var(--theme--background-accent);
 
-	position: sticky;
-	top: 0;
-	z-index: 3;
-	margin-top: 8px;
-	margin-right: -8px;
-	margin-bottom: 6px;
-	margin-left: -8px;
-	padding-top: 8px;
-	padding-right: 8px;
-	padding-left: 8px;
-	background-color: var(--background-normal);
-	box-shadow: 0 0 2px 2px var(--background-normal);
+	margin-top: 24px;
+	margin-bottom: 8px;
 
 	&:first-of-type {
 		margin-top: 0;
@@ -112,18 +103,18 @@ defineExpose({
 	margin-top: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .external {
 	margin-left: 20px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .other {
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--theme--foreground-subdued);
 
 	font-style: italic;
 }

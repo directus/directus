@@ -1,14 +1,16 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
+import type { AbstractSqlClauses, AbstractSqlNestedMany, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
+import { getNestedMany } from './create-nested-manys.js';
 
-export type Result = {
-	clauses: Pick<AbstractSqlClauses, 'select' | 'joins'>;
+export type FieldConversionResult = {
+	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
+	nestedManys: AbstractSqlNestedMany[];
 };
 
 /**
@@ -31,18 +33,19 @@ export const convertFieldNodes = (
 	collection: string,
 	abstractFields: AbstractQueryFieldNode[],
 	idxGenerator: Generator<number, number, number>,
-	currentPath: string[] = []
-): Result => {
+	currentPath: string[] = [],
+): FieldConversionResult => {
 	const select: AbstractSqlClauses['select'] = [];
 	const joins: AbstractSqlClauses['joins'] = [];
 	const parameters: ParameterTypes[] = [];
 	const aliasRelationalMapping: Map<string, string[]> = new Map();
+	const nestedManys: AbstractSqlNestedMany[] = [];
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
 			// ORM aliasing and mapping
 			const generatedAlias = createUniqueAlias(abstractField.field);
-			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
+			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias]);
 
 			// query conversion
 			const selectNode = createPrimitiveSelect(collection, abstractField, generatedAlias);
@@ -50,7 +53,7 @@ export const convertFieldNodes = (
 			continue;
 		}
 
-		if (abstractField.type === 'm2o') {
+		if (abstractField.type === 'nested-one') {
 			/**
 			 * Always fetch the current context foreign key as well. We need it to check if the current
 			 * item has a related item so we don't expand `null` values in a nested object where every
@@ -59,18 +62,37 @@ export const convertFieldNodes = (
 			 * @TODO
 			 */
 
-			const m2oField = abstractField;
-			const externalCollectionAlias = createUniqueAlias(m2oField.join.external.collection);
-			const sqlJoinNode = createJoin(collection, m2oField, externalCollectionAlias);
+			if (abstractField.meta.type === 'm2o') {
+				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
+				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias);
 
-			const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
-				...currentPath,
-				abstractField.join.external.collection,
-			]);
+				const nestedOutput = convertFieldNodes(externalCollectionAlias, abstractField.fields, idxGenerator, [
+					...currentPath,
+					abstractField.alias,
+				]);
 
-			nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
-			joins.push(sqlJoinNode);
-			select.push(...nestedOutput.clauses.select);
+				nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
+				joins.push(sqlJoinNode);
+				select.push(...nestedOutput.clauses.select);
+			}
+
+			continue;
+		}
+
+		if (abstractField.type === 'nested-many') {
+			/*
+			 * nested many nodes are handled by the driver.
+			 * As a default behavior, we do separate queries for each o part result row.
+			 * The driver itself can use different technique if another technique is more performant,
+			 * like do a sub query in the statement or a join.
+			 */
+
+			// @TODO
+			// we need to make sure, that the identifier field is included as primitive field node
+			// so we can use the returning value as parameter for the sub queries
+
+			const nestedMany = getNestedMany(abstractField);
+			nestedManys.push(nestedMany);
 			continue;
 		}
 
@@ -79,7 +101,7 @@ export const convertFieldNodes = (
 
 			// ORM aliasing and mapping
 			const generatedAlias = createUniqueAlias(`${fnField.fn.fn}_${fnField.field}`);
-			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias ?? abstractField.field]);
+			aliasRelationalMapping.set(generatedAlias, [...currentPath, abstractField.alias]);
 
 			// query conversion
 			const fn = convertFn(collection, fnField, idxGenerator, generatedAlias);
@@ -89,5 +111,5 @@ export const convertFieldNodes = (
 		}
 	}
 
-	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping };
+	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping, nestedManys };
 };

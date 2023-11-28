@@ -52,6 +52,8 @@ or: Atau
 init: Init
 dataset_too_large_currently_showing_n_items: Set data terlalu besar. Paparan semasa menunjukkan item {n} yang pertama.
 modifier: Pengubah suai
+extension_hook: Cangkuk
+extension_modules: Modul
 custom: Suai langgan
 hook: Cangkuk
 fill_width: Isi lebar
@@ -112,7 +114,6 @@ title: Tajuk
 leave_comment: Tinggalkan komen...
 this_collection: Koleksi Ini
 related_collection: Koleksi Berkaitan
-checksum: Checksum
 name: Nama
 save_and_stay: Simpan dan Tetap Disini
 save_as_copy: Simpan sebagai Salinan
@@ -152,8 +153,8 @@ height: Tinggi
 wysiwyg_options:
   remove: Buang
 editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'
-settings_permissions: Peranan-peranan & Kebenaran
-settings_project: Tetapan Projek
+settings_project: Tetapan
+settings_presets: Penandabuku
 discard_changes: Buang Perubahan
 keep_editing: Terus Menyunting
 add_new: Tambah Baru
@@ -196,7 +197,6 @@ fields:
     title: Tajuk
     description: Penerangan
     tags: Tag
-    theme: Tema
     status: Status
     role: Peranan
   directus_settings:
@@ -306,3 +306,4 @@ operations:
     message: Mesej
   notification:
     message: Mesej
+compact: Padat

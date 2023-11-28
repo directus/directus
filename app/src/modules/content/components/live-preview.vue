@@ -202,7 +202,7 @@ onMounted(() => {
 
 <style>
 #split-content {
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 }
 </style>
 
@@ -213,7 +213,7 @@ onMounted(() => {
 
 	.header {
 		.v-button.secondary {
-			--v-button-background-color: var(--background-subdued);
+			--v-button-background-color: var(--theme--background-subdued);
 		}
 
 		width: 100%;
@@ -227,7 +227,7 @@ onMounted(() => {
 		padding: 0px 8px;
 
 		.url {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -241,7 +241,7 @@ onMounted(() => {
 			display: flex;
 			align-items: center;
 			&.disabled {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 

@@ -22,7 +22,7 @@ const props = withDefaults(
 	}>(),
 	{
 		firstDay: 0,
-	}
+	},
 );
 
 const emit = defineEmits(['update:template', 'update:startDateField', 'update:endDateField', 'update:firstDay']);

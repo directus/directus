@@ -5,7 +5,7 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useCollection } from '@directus/composables';
 import { clone } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -18,7 +18,11 @@ const router = useRouter();
 const settingsStore = useSettingsStore();
 const serverStore = useServerStore();
 
-const { fields } = useCollection('directus_settings');
+const { fields: allFields } = useCollection('directus_settings');
+
+const fields = computed(() =>
+	unref(allFields).filter((field) => field.meta?.group !== 'theming_group' && field.field !== 'theming_group'),
+);
 
 const initialValues = ref(clone(settingsStore.settings));
 
@@ -57,7 +61,7 @@ function discardAndLeave() {
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="public" />
+				<v-icon name="tune" />
 			</v-button>
 		</template>
 
@@ -101,9 +105,9 @@ function discardAndLeave() {
 }
 
 .header-icon {
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 </style>

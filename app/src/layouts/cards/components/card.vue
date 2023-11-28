@@ -27,7 +27,7 @@ const props = withDefaults(
 		icon: 'box',
 		modelValue: () => [],
 		to: '',
-	}
+	},
 );
 
 const emit = defineEmits(['update:modelValue']);
@@ -78,7 +78,7 @@ function toggleSelection() {
 	if (props.modelValue.includes(props.item[props.itemKey])) {
 		emit(
 			'update:modelValue',
-			props.modelValue.filter((key) => key !== props.item?.[props.itemKey])
+			props.modelValue.filter((key) => key !== props.item?.[props.itemKey]),
 		);
 	} else {
 		emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
@@ -145,11 +145,11 @@ function handleClick() {
 		justify-content: center;
 		width: 100%;
 		overflow: hidden;
-		background-color: var(--background-normal);
-		border-color: var(--primary-50);
+		background-color: var(--theme--background-normal);
+		border-color: var(--theme--primary-subdued);
 		border-style: solid;
 		border-width: 0px;
-		border-radius: var(--border-radius);
+		border-radius: var(--theme--border-radius);
 		transition: border-width var(--fast) var(--transition);
 
 		&::after {
@@ -175,12 +175,12 @@ function handleClick() {
 		}
 
 		.type {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 			text-transform: uppercase;
 		}
 
 		.v-icon {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 
 		.v-skeleton-loader {
@@ -220,7 +220,7 @@ function handleClick() {
 		z-index: 2;
 		width: 18px;
 		height: 18px;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		border-radius: 24px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -237,7 +237,9 @@ function handleClick() {
 		z-index: 3;
 		margin: 4px;
 		opacity: 0;
-		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+		transition:
+			opacity var(--fast) var(--transition),
+			color var(--fast) var(--transition);
 
 		&:hover {
 			opacity: 1 !important;
@@ -262,8 +264,8 @@ function handleClick() {
 		}
 
 		.selector {
-			--v-icon-color: var(--primary);
-			--v-icon-color-hover: var(--primary);
+			--v-icon-color: var(--theme--primary);
+			--v-icon-color-hover: var(--theme--primary);
 
 			opacity: 1;
 		}
@@ -314,6 +316,6 @@ function handleClick() {
 
 .subtitle {
 	margin-top: 0px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 }
 </style>

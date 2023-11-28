@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import { ForbiddenError } from '../errors/index.js';
+import { ForbiddenError } from '@directus/errors';
 import type { Collection } from '../types/collection.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot.js';
 import { applyDiff } from '../utils/apply-diff.js';
@@ -153,7 +153,7 @@ describe('Services / Schema', () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
 
 			expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).rejects.toThrowError(
-				ForbiddenError
+				ForbiddenError,
 			);
 		});
 
@@ -182,7 +182,7 @@ describe('Services / Schema', () => {
 				expect.objectContaining({
 					...testSnapshot,
 					hash: expect.any(String),
-				})
+				}),
 			);
 		});
 	});

@@ -69,11 +69,11 @@ const canInviteUsers = computed(() => {
 	if (isAdmin) return true;
 
 	const usersCreatePermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+		(permission) => permission.collection === 'directus_users' && permission.action === 'create',
 	);
 
 	const rolesReadPermission = permissionsStore.permissions.find(
-		(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+		(permission) => permission.collection === 'directus_roles' && permission.action === 'read',
 	);
 
 	return !!usersCreatePermission && !!rolesReadPermission;
@@ -183,7 +183,7 @@ function discardAndLeave() {
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
 		<div class="roles">
-			<v-notice v-if="adminEnabled" type="info">
+			<v-notice v-if="adminEnabled">
 				{{ t('admins_have_all_permissions') }}
 			</v-notice>
 
@@ -220,7 +220,7 @@ function discardAndLeave() {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
 }
 
@@ -235,10 +235,10 @@ function discardAndLeave() {
 }
 
 .header-icon {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color: var(--theme--primary-background);
+	--v-button-color: var(--theme--primary);
+	--v-button-background-color-hover: var(--theme--primary-subdued);
+	--v-button-color-hover: var(--theme--primary);
 }
 
 .permissions-overview,

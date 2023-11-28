@@ -17,7 +17,7 @@ import {
 	InvalidProviderConfigError,
 	InvalidTokenError,
 	ServiceUnavailableError,
-} from '../../errors/index.js';
+} from '@directus/errors';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -51,7 +51,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const clientOptionsOverrides = getConfigFromEnv(
 			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
 			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore'
+			'underscore',
 		);
 
 		this.redirectUrl = redirectUrl.toString();
@@ -69,7 +69,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 						reject(
 							new InvalidProviderConfigError({
 								provider: additionalConfig['provider'],
-							})
+							}),
 						);
 					}
 
@@ -80,7 +80,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 							redirect_uris: [this.redirectUrl],
 							response_types: ['code'],
 							...clientOptionsOverrides,
-						})
+						}),
 					);
 				})
 				.catch((e) => {
@@ -95,9 +95,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	async generateAuthUrl(codeVerifier: string, prompt = false): Promise<string> {
+		const { plainCodeChallenge } = this.config;
+
 		try {
 			const client = await this.client;
-			const codeChallenge = generators.codeChallenge(codeVerifier);
+			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
 			return client.authorizationUrl({
@@ -106,7 +108,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				prompt: prompt ? 'consent' : undefined,
 				...paramsConfig,
 				code_challenge: codeChallenge,
-				code_challenge_method: 'S256',
+				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 				nonce: codeChallenge,
@@ -132,17 +134,22 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
+		const { plainCodeChallenge } = this.config;
+
 		let tokenSet;
 		let userInfo;
 
 		try {
 			const client = await this.client;
-			const codeChallenge = generators.codeChallenge(payload['codeVerifier']);
+
+			const codeChallenge = plainCodeChallenge
+				? payload['codeVerifier']
+				: generators.codeChallenge(payload['codeVerifier']);
 
 			tokenSet = await client.callback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
-				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge }
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
 			);
 
 			userInfo = tokenSet.claims();
@@ -188,17 +195,19 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{ auth_data: userPayload.auth_data ?? null },
+				{ auth_data: userPayload.auth_data },
 				{
 					identifier,
 					provider: this.config['provider'],
 					providerPayload: { accessToken: tokenSet.access_token, userInfo },
 				},
-				{ database: getDatabase(), schema: this.schema, accountability: null }
+				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
-			await this.usersService.updateOne(userId, updatedUserPayload);
+			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
+				await this.usersService.updateOne(userId, updatedUserPayload);
+			}
 
 			return userId;
 		}
@@ -221,7 +230,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				provider: this.config['provider'],
 				providerPayload: { accessToken: tokenSet.access_token, userInfo },
 			},
-			{ database: getDatabase(), schema: this.schema, accountability: null }
+			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
 
 		try {
@@ -311,7 +320,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				{
 					expiresIn: '5m',
 					issuer: 'directus',
-				}
+				},
 			);
 
 			res.cookie(`openid.${providerName}`, token, {
@@ -321,7 +330,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
 		}),
-		respond
+		respond,
 	);
 
 	router.post(
@@ -330,7 +339,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		(req, res) => {
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
 		},
-		respond
+		respond,
 	);
 
 	router.get(
@@ -424,7 +433,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

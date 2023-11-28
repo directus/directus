@@ -24,7 +24,7 @@ watch(
 	() => queueHasItems.value,
 	(hasItems) => {
 		if (hasItems) showLoader.value = true;
-	}
+	},
 );
 
 const url = computed(() => settingsStore.settings?.project_url);
@@ -71,7 +71,7 @@ function stopSpinnerIfQueueIsEmpty() {
 	width: 60px;
 	height: 60px;
 	padding: 12px;
-	background-color: var(--brand);
+	background-color: var(--project-color);
 
 	.v-progress-linear {
 		position: absolute;

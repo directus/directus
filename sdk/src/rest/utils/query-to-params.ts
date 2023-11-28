@@ -13,7 +13,7 @@ type ExtendedQuery<Schema extends object, Item> = Query<Schema, Item> & {
  * @returns Flat query parameters
  */
 export const queryToParams = <Schema extends object, Item>(
-	query: ExtendedQuery<Schema, Item>
+	query: ExtendedQuery<Schema, Item>,
 ): Record<string, string> => {
 	const params: Record<string, string> = {};
 
@@ -93,6 +93,16 @@ export const queryToParams = <Schema extends object, Item>(
 
 	if (query.groupBy && query.groupBy.length > 0) {
 		params['groupBy'] = query.groupBy.join(',');
+	}
+
+	for (const [key, value] of Object.entries(query)) {
+		if (key in params) continue;
+
+		if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+			params[key] = String(value);
+		} else {
+			params[key] = JSON.stringify(value);
+		}
 	}
 
 	return params;

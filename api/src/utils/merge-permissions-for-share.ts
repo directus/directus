@@ -7,7 +7,7 @@ import { reduceSchema } from './reduce-schema.js';
 export function mergePermissionsForShare(
 	currentPermissions: Permission[],
 	accountability: Accountability,
-	schema: SchemaOverview
+	schema: SchemaOverview,
 ): Permission[] {
 	const defaults: Permission = {
 		action: 'read',
@@ -52,7 +52,7 @@ export function mergePermissionsForShare(
 	// the items of a collection if you entered that collection from multiple angles
 	for (const collection of allowedCollections) {
 		const permissionsForCollection = allGeneratedPermissions.filter(
-			(permission) => permission.collection === collection
+			(permission) => permission.collection === collection,
 		);
 
 		if (permissionsForCollection.length > 0) {
@@ -64,7 +64,7 @@ export function mergePermissionsForShare(
 
 	// Explicitly filter out permissions to collections unrelated to the root parent item.
 	const limitedPermissions = currentPermissions.filter(
-		({ action, collection }) => allowedCollections.includes(collection) && action === 'read'
+		({ action, collection }) => allowedCollections.includes(collection) && action === 'read',
 	);
 
 	return mergePermissions('and', limitedPermissions, generatedPermissions);
@@ -76,7 +76,7 @@ export function traverse(
 	rootItemPrimaryKey: string,
 	currentCollection: string,
 	parentCollections: string[] = [],
-	path: string[] = []
+	path: string[] = [],
 ): Partial<Permission>[] {
 	const permissions: Partial<Permission>[] = [];
 
@@ -115,8 +115,8 @@ export function traverse(
 					rootItemPrimaryKey,
 					relation.collection,
 					[...parentCollections, currentCollection],
-					[...path, relation.field]
-				)
+					[...path, relation.field],
+				),
 			);
 		}
 
@@ -128,7 +128,7 @@ export function traverse(
 						type,
 						[...path, `$FOLLOW(${relation.collection},${relation.field},${relation.meta.one_collection_field})`],
 						rootItemPrimaryKeyField,
-						rootItemPrimaryKey
+						rootItemPrimaryKey,
 					),
 				});
 			}
@@ -141,7 +141,7 @@ export function traverse(
 					type,
 					[...path, `$FOLLOW(${relation.collection},${relation.field})`],
 					rootItemPrimaryKeyField,
-					rootItemPrimaryKey
+					rootItemPrimaryKey,
 				),
 			});
 
@@ -153,8 +153,8 @@ export function traverse(
 						rootItemPrimaryKey,
 						relation.related_collection!,
 						[...parentCollections, currentCollection],
-						[...path, relation.meta?.one_field]
-					)
+						[...path, relation.meta?.one_field],
+					),
 				);
 			}
 		}
@@ -167,7 +167,7 @@ export function getFilterForPath(
 	type: 'o2m' | 'm2o' | 'a2o',
 	path: string[],
 	rootPrimaryKeyField: string,
-	rootPrimaryKey: string
+	rootPrimaryKey: string,
 ): Filter {
 	const filter: Filter = {};
 

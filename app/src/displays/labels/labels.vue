@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { computed } from 'vue';
 
 type Choice = {
-	value: string;
+	value: string | number;
 	text: string;
 	foreground: string | null;
 	background: string | null;
@@ -12,8 +12,8 @@ type Choice = {
 
 const props = withDefaults(
 	defineProps<{
-		value: string | string[];
-		type: 'text' | 'string' | 'json' | 'csv';
+		value: string | number | string[] | number[];
+		type: 'text' | 'string' | 'json' | 'csv' | 'integer' | 'bigInteger' | 'float' | 'decimal';
 		format?: boolean;
 		showAsDot?: boolean;
 		choices?: Choice[];
@@ -21,14 +21,15 @@ const props = withDefaults(
 	{
 		format: true,
 		choices: () => [],
-	}
+	},
 );
 
 const items = computed(() => {
-	let items: string[];
+	let items: string[] | number[];
 
-	if (isEmpty(props.value)) items = [];
+	if (isEmpty(props.value) && isNaN(props.value as number)) items = [];
 	else if (props.type === 'string') items = [props.value as string];
+	else if (['integer', 'bigInteger', 'float', 'decimal'].includes(props.type)) items = [props.value as number];
 	else items = props.value as string[];
 
 	return items.map((item) => {
@@ -39,10 +40,10 @@ const items = computed(() => {
 		if (typeof item === 'object') {
 			itemStringValue = JSON.stringify(item);
 		} else {
-			if (props.format) {
-				itemStringValue = formatTitle(item);
+			if (props.format && isNaN(item as any)) {
+				itemStringValue = formatTitle(item as string);
 			} else {
-				itemStringValue = item;
+				itemStringValue = item as string;
 			}
 		}
 
@@ -50,15 +51,15 @@ const items = computed(() => {
 			return {
 				value: item,
 				text: itemStringValue,
-				foreground: 'var(--foreground-normal)',
-				background: 'var(--background-normal)',
+				foreground: 'var(--theme--foreground)',
+				background: 'var(--theme--background-normal)',
 			};
 		} else {
 			return {
 				value: item,
 				text: choice.text || itemStringValue,
-				foreground: choice.foreground || 'var(--foreground-normal)',
-				background: choice.background || 'var(--background-normal)',
+				foreground: choice.foreground || 'var(--theme--foreground)',
+				background: choice.background || 'var(--theme--background-normal)',
 			};
 		}
 	});

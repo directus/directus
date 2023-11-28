@@ -122,7 +122,7 @@ function setListValue(index: number, newVal: any) {
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as (string | number)"
+			:value="value"
 			@input="value = $event"
 		/>
 	</template>
@@ -148,7 +148,7 @@ function setListValue(index: number, newVal: any) {
 			is="interface-input"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as (string | number)"
+			:value="value"
 			@input="value = $event"
 		/>
 	</template>
@@ -197,11 +197,11 @@ function setListValue(index: number, newVal: any) {
 	.v-icon {
 		margin-right: 8px;
 		margin-left: 12px;
-		color: var(--foreground-subdued);
+		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
 		&:hover {
-			color: var(--danger);
+			color: var(--theme--danger);
 		}
 	}
 }

@@ -13,7 +13,7 @@ export function useEventListener<T extends EventTarget, E extends Event>(
 	target: T | Ref<T>,
 	type: string,
 	handler: (this: T, evt: E) => void,
-	options?: AddEventListenerOptions
+	options?: AddEventListenerOptions,
 ): void {
 	onMounted(() => {
 		unref(target).addEventListener(type, handler as (evt: Event) => void, options);

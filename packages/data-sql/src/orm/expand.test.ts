@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
-import { transformChunk } from './expand.js';
+import { expandChunk } from './expand.js';
 import { randomAlpha } from '@directus/random';
 
 test('response with no relation', () => {
 	const randomTitle = randomAlpha(25);
 
-	const res = transformChunk(
+	const res = expandChunk(
 		{
 			alias1: 1, // id
 			alias2: randomTitle, // title
@@ -13,7 +13,7 @@ test('response with no relation', () => {
 		new Map([
 			['alias1', ['id']],
 			['alias2', ['title']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({
@@ -23,7 +23,7 @@ test('response with no relation', () => {
 });
 
 test('expand response with one nested table', () => {
-	const res = transformChunk(
+	const res = expandChunk(
 		{
 			a1: 1,
 			a2: 1,
@@ -35,7 +35,7 @@ test('expand response with one nested table', () => {
 			['a2', ['users', 'id']],
 			['a3', ['users', 'first_name']],
 			['a4', ['users', 'last_name']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({
@@ -49,7 +49,7 @@ test('expand response with one nested table', () => {
 });
 
 test('expand response with one nested table and a function on a nested field ', () => {
-	const res = transformChunk(
+	const res = expandChunk(
 		{
 			a1: 1,
 			a2: 1,
@@ -61,7 +61,7 @@ test('expand response with one nested table and a function on a nested field ', 
 			['a2', ['users', 'id']],
 			['a3', ['users', 'first_name']],
 			['a4', ['users', 'last_name']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({
@@ -75,7 +75,7 @@ test('expand response with one nested table and a function on a nested field ', 
 });
 
 test('expand response with multiple nested tables', () => {
-	const res = transformChunk(
+	const res = expandChunk(
 		{
 			a1: 1,
 			a2: 1,
@@ -89,7 +89,7 @@ test('expand response with multiple nested tables', () => {
 			['a3', ['users', 'first_name']],
 			['a4', ['users', 'last_name']],
 			['a5', ['users', 'cities', 'name']],
-		])
+		]),
 	);
 
 	expect(res).toEqual({

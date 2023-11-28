@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { Router } from 'express';
-import { RouteNotFoundError } from '../errors/index.js';
+import { RouteNotFoundError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
@@ -16,10 +16,10 @@ router.get(
 			schema: req.schema,
 		});
 
-		res.locals['payload'] = await service.oas.generate();
+		res.locals['payload'] = await service.oas.generate(req.headers.host);
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -45,7 +45,7 @@ router.get(
 
 		res.attachment(filename);
 		res.send(result);
-	})
+	}),
 );
 
 router.get(
@@ -60,7 +60,7 @@ router.get(
 		res.locals['payload'] = { data };
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.get(
@@ -80,7 +80,7 @@ router.get(
 		res.locals['cache'] = false;
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

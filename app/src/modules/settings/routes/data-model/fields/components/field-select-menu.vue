@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getLocalTypeForField } from '@/utils/get-local-type';
-import { Field } from '@directus/types';
+import type { Field, Width } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -9,7 +9,12 @@ const props = defineProps<{
 	noDelete?: boolean;
 }>();
 
-defineEmits(['toggleVisibility', 'duplicate', 'delete', 'setWidth']);
+defineEmits<{
+	toggleVisibility: [];
+	duplicate: [];
+	delete: [];
+	setWidth: [Width];
+}>();
 
 const { t } = useI18n();
 
@@ -99,8 +104,8 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 
 <style scoped>
 .v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-color-hover: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 </style>

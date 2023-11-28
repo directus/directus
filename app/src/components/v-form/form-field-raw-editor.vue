@@ -39,7 +39,7 @@ watch(
 
 			internalValue.value = getStringifiedValue(props.currentValue, type.value === 'object');
 		}
-	}
+	},
 );
 
 const setRawValue = () => {

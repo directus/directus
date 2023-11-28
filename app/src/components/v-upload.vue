@@ -80,7 +80,7 @@ function useUpload() {
 
 				uploadedFiles && emit('input', uploadedFiles);
 			} else {
-				const uploadedFile = await uploadFile(Array.from(files)[0], {
+				const uploadedFile = await uploadFile(Array.from(files)[0] as File, {
 					onProgressChange: (percentage) => {
 						progress.value = percentage;
 						done.value = percentage === 100 ? 1 : 0;
@@ -91,8 +91,8 @@ function useUpload() {
 
 				uploadedFile && emit('input', uploadedFile);
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 			emit('input', null);
 		} finally {
 			uploading.value = false;
@@ -215,8 +215,8 @@ function useURLImport() {
 
 			activeDialog.value = null;
 			url.value = '';
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -328,10 +328,10 @@ function openFileBrowser() {
 	justify-content: center;
 	min-height: var(--input-height-tall);
 	padding: 32px;
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
-	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: color, border-color, background-color;
 
@@ -340,7 +340,7 @@ function openFileBrowser() {
 	}
 
 	&:not(.uploading):hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 }
 
@@ -371,9 +371,9 @@ function openFileBrowser() {
 }
 
 .dragging {
-	color: var(--primary);
-	background-color: var(--primary-alt);
-	border-color: var(--primary);
+	color: var(--theme--primary);
+	background-color: var(--theme--primary-background);
+	border-color: var(--theme--form--field--input--border-color-focus);
 
 	* {
 		pointer-events: none;
@@ -391,8 +391,8 @@ function openFileBrowser() {
 	--v-progress-linear-height: 8px;
 
 	color: var(--white);
-	background-color: var(--primary);
-	border-color: var(--primary);
+	background-color: var(--theme--primary);
+	border-color: var(--theme--form--field--input--border-color-focus);
 	border-style: solid;
 
 	.v-progress-linear {

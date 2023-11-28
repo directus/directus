@@ -80,16 +80,20 @@ const isValidColor = computed<boolean>(() => rgb.value !== null && valueWithoutV
 const lowContrast = computed(() => {
 	if (color.value === null) return true;
 
-	const pageColorString = cssVar('--background-page');
-	const pageColor = Color(pageColorString);
+	const pageColorString = cssVar('--theme--form--field--input--background');
 
-	return color.value.contrast(pageColor) < 1.1;
+	try {
+		const pageColor = Color(pageColorString);
+		return color.value.contrast(pageColor) < 1.1;
+	} catch {
+		return true;
+	}
 });
 
 const getPresetContrast = (hex: string) => {
 	if (hex.startsWith('--')) hex = cssVar(hex);
 	const color = Color(hex);
-	return color.contrast(Color(cssVar('--card-face-color'))) < 1.1;
+	return color.contrast(Color(cssVar('--theme--popover--menu--background'))) < 1.1;
 };
 
 const { hsl, rgb, hex, alpha, color } = useColor();
@@ -141,7 +145,7 @@ function useColor() {
 		() => {
 			color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	const rgb = computed<number[]>({
@@ -243,10 +247,13 @@ function useColor() {
 					/>
 					<v-button
 						class="swatch"
-						:icon="true"
+						icon
 						:style="{
 							'--v-button-background-color': isValidColor ? hex : 'transparent',
-							border: lowContrast === false ? 'none' : 'var(--border-width) solid var(--border-normal)',
+							border:
+								lowContrast === false
+									? 'none'
+									: 'var(--theme--border-width) solid var(--theme--form--field--input--border-color)',
 						}"
 						@click="activateColorPicker"
 					>
@@ -267,8 +274,8 @@ function useColor() {
 						? 'repeat(4, 1fr)'
 						: 'repeat(6, 1fr)'
 					: width.startsWith('half')
-					? 'repeat(3, 1fr)'
-					: 'repeat(5, 1fr)',
+					  ? 'repeat(3, 1fr)'
+					  : 'repeat(5, 1fr)',
 			}"
 			:class="{ stacked: width.startsWith('half') }"
 		>
@@ -280,8 +287,8 @@ function useColor() {
 							? '1 / span 4'
 							: '1 / span 2'
 						: width.startsWith('half')
-						? '1 / span 3'
-						: '1 / span 2',
+						  ? '1 / span 3'
+						  : '1 / span 2',
 				}"
 			>
 				<v-select v-model="colorType" :items="colorTypes" />
@@ -351,9 +358,9 @@ function useColor() {
 					:step="1"
 					:style="{
 						'--v-slider-color': 'none',
-						'--background-page': 'none',
+						'--theme--background': 'none',
 						'--v-slider-fill-color': 'none',
-						'--v-slider-thumb-color': 'var(--foreground-normal)',
+						'--v-slider-thumb-color': 'var(--theme--form--field--input--foreground)',
 						'--v-slider-track-background-image':
 							'linear-gradient(to right, transparent,' +
 							(hex && hex.length === 9 ? hex.slice(0, -2) : hex ? hex : 'transparent') +
@@ -388,10 +395,10 @@ function useColor() {
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
-	width: calc(var(--input-height) - 20px);
-	max-height: calc(var(--input-height) - 20px);
+	width: calc(var(--theme--form--field--input--height) - 20px);
+	max-height: calc(var(--theme--form--field--input--height) - 20px);
 	overflow: hidden;
-	border-radius: calc(var(--border-radius) + 2px);
+	border-radius: calc(var(--theme--border-radius) + 2px);
 	cursor: pointer;
 }
 
@@ -413,7 +420,7 @@ function useColor() {
 	&.low-contrast {
 		--v-button-height: 18px;
 		--v-button-width: 18px;
-		border: 1px solid var(--border-normal-alt);
+		border: 1px solid var(--theme--form--field--input--border-color-hover);
 	}
 }
 
@@ -441,7 +448,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input {
-	--border-radius: 0px;
+	--v-input-border-radius: 0px;
 }
 
 .color-data-inputs .color-data-input :deep(.input:focus-within),
@@ -453,40 +460,40 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(.color-type) {
-	--input-padding: 12px 8px;
+	--theme--form--field--input--padding: 12px 8px;
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs .color-data-input:first-child {
-	--border-radius: 4px 0px 0px 4px;
+	--v-input-border-radius: var(--theme--border-radius) 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs .color-data-input:last-child {
-	--border-radius: 0px 4px 4px 0px;
+	--v-input-border-radius: 0px var(--theme--border-radius) var(--theme--border-radius) 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
-	margin-top: calc(-2 * var(--border-width));
+	margin-top: calc(-2 * var(--theme--border-width));
 	margin-left: initial;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
-	margin-left: calc(-1 * var(--border-width));
+	margin-left: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
-	--border-radius: 4px 4px 0px 0px;
+	--v-input-border-radius: var(--theme--border-radius) var(--theme--border-radius) 0px 0px;
 }
 
 .color-data-inputs.stacked .color-data-input:nth-child(2) {
-	--border-radius: 0px 0px 0px 4px;
+	--v-input-border-radius: 0px 0px 0px var(--theme--border-radius);
 }
 
 .color-data-inputs.stacked .color-data-input:last-child {
-	--border-radius: 0px 0px 4px 0px;
+	--v-input-border-radius: 0px 0px var(--theme--border-radius) 0px;
 }
 
 .color-data-alphas {

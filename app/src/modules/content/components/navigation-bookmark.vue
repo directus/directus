@@ -63,8 +63,8 @@ function useEditBookmark() {
 			});
 
 			editActive.value = false;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			editSaving.value = false;
 		}
@@ -100,8 +100,8 @@ function useDeleteBookmark() {
 			if (navigateTo) {
 				router.replace(navigateTo);
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			deleteSaving.value = false;
 		}
@@ -198,13 +198,13 @@ function useDeleteBookmark() {
 
 <style lang="scss" scoped>
 .danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-icon-color: var(--danger);
+	--v-list-item-color: var(--theme--danger);
+	--v-list-item-icon-color: var(--theme--danger);
 }
 
 .v-list-item {
 	.ctx-toggle {
-		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color: var(--theme--foreground-subdued);
 
 		opacity: 0;
 		user-select: none;

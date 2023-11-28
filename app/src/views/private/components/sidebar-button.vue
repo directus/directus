@@ -10,7 +10,7 @@ withDefaults(
 	}>(),
 	{
 		icon: 'box',
-	}
+	},
 );
 
 defineEmits<{
@@ -43,8 +43,8 @@ const { sidebarOpen } = toRefs(appStore);
 	flex-shrink: 0;
 	width: 100%;
 	height: 60px;
-	color: var(--foreground-normal-alt);
-	background-color: var(--background-normal-alt);
+	color: var(--theme--foreground-accent);
+	background-color: var(--theme--background-accent);
 
 	.icon {
 		display: flex;
@@ -64,7 +64,7 @@ const { sidebarOpen } = toRefs(appStore);
 	}
 
 	&.active {
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 	}
 }
 </style>

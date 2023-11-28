@@ -12,13 +12,13 @@ import {
 	resolvePackageExtensions,
 } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version } from '../directus/package.json';
-import UnheadVite from '@unhead/addons/vite';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
@@ -69,6 +69,14 @@ export default defineConfig({
 	test: {
 		environment: 'happy-dom',
 		setupFiles: ['src/__setup__/mock-globals.ts'],
+		// See https://github.com/vitest-dev/vitest/issues/4074#issuecomment-1787934252
+		deps: {
+			optimizer: {
+				web: {
+					enabled: false,
+				},
+			},
+		},
 	},
 });
 

@@ -12,7 +12,7 @@ import { extractData } from './extract-data.js';
 export const request = async <Output = any>(
 	url: string,
 	options: RequestInit,
-	fetcher: FetchInterface = globalThis.fetch
+	fetcher: FetchInterface = globalThis.fetch,
 ): Promise<Output> => {
 	options.headers =
 		typeof options.headers === 'object' && !Array.isArray(options.headers)

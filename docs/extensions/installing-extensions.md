@@ -3,6 +3,10 @@ contributors: Esther Agbaje
 description: Discover how to install extensions to your Directus instance.
 ---
 
+<script setup lang="ts">
+import { data as packages } from '@/data/packages.data.js';
+</script>
+
 # Installing Extensions
 
 There are two possible ways to install extensions to your Directus instance:
@@ -20,8 +24,8 @@ install an existing public extension as well as your own published extension. Be
 
 Open the `docker-compose.yml` file of your project and replace the `image` option with a `build` section:
 
-```yaml
-image: directus/directus:10.x.x // [!code --]
+```yaml-vue
+image: directus/directus:{{ packages.directus.version.major }}.x.y // [!code --]
 build: // [!code ++]
   context: ./ // [!code ++]
 ```
@@ -32,14 +36,13 @@ This allows you to build a customized Docker Image with the added extensions.
 
 At the root of your project, create a `Dockerfile` if one doesn't already exist and add the following:
 
-```Dockerfile
-FROM directus/directus:10.x.x
+```Dockerfile-vue
+FROM directus/directus:{{ packages.directus.version.major }}.x.y
 
 USER root
-RUN corepack enable \
- && corepack prepare pnpm@8.7.6 --activate
-
+RUN corepack enable
 USER node
+
 RUN pnpm install directus-extension-package-name
 ```
 

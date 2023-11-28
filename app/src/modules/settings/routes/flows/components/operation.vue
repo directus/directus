@@ -32,7 +32,7 @@ const props = withDefaults(
 		parent: undefined,
 		isHovered: false,
 		subdued: false,
-	}
+	},
 );
 
 const { panelsToBeDeleted } = toRefs(props);
@@ -105,7 +105,7 @@ const pointermove = (event: PointerEvent) => {
 						type: props.parent?.type as Target,
 						pos: new Vector2(
 							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
 						),
 				  }
 				: {
@@ -113,7 +113,7 @@ const pointermove = (event: PointerEvent) => {
 						type: down,
 						pos: new Vector2(
 							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20
+							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
 						),
 				  };
 
@@ -277,7 +277,7 @@ function pointerLeave() {
 				<display-color
 					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
 					class="status-dot"
-					:value="flowStatus === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+					:value="flowStatus === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 				/>
 
 				<v-select
@@ -307,7 +307,7 @@ function pointerLeave() {
 	padding: 4px;
 
 	:deep(.header .name) {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	.flow-status-select {
@@ -322,15 +322,15 @@ function pointerLeave() {
 		.name {
 			display: inline-block;
 			font-size: 20px;
-			color: var(--foreground-normal-alt);
+			color: var(--theme--foreground-accent);
 			font-weight: 600;
 			margin-bottom: 8px;
 		}
 	}
 
 	&.trigger {
-		border-color: var(--primary);
-		box-shadow: 0 0 0 1px var(--primary);
+		border-color: var(--theme--primary);
+		box-shadow: 0 0 0 1px var(--theme--primary);
 		transition: var(--fast) var(--transition);
 		transition-property: border-color, box-shadow;
 
@@ -345,7 +345,7 @@ function pointerLeave() {
 			border-radius: 4px;
 			z-index: -1;
 			opacity: 0.2;
-			box-shadow: 0 0 0 10px var(--primary);
+			box-shadow: 0 0 0 10px var(--theme--primary);
 
 			animation-name: floating;
 			animation-duration: 3s;
@@ -353,26 +353,26 @@ function pointerLeave() {
 			animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
 			@keyframes floating {
 				0% {
-					box-shadow: 0 0 0 10px var(--primary);
+					box-shadow: 0 0 0 10px var(--theme--primary);
 					opacity: 0.2;
 				}
 				50% {
-					box-shadow: 0 0 0 8px var(--primary);
+					box-shadow: 0 0 0 8px var(--theme--primary);
 					opacity: 0.3;
 				}
 				100% {
-					box-shadow: 0 0 0 10px var(--primary);
+					box-shadow: 0 0 0 10px var(--theme--primary);
 					opacity: 0.2;
 				}
 			}
 		}
 
 		&.subdued {
-			border-color: var(--border-subdued);
-			box-shadow: 0 0 0 1px var(--border-subdued);
+			border-color: var(--theme--border-color-subdued);
+			box-shadow: 0 0 0 1px var(--theme--border-color-subdued);
 
 			&::before {
-				box-shadow: 0 0 0 7px var(--background-subdued);
+				box-shadow: 0 0 0 7px var(--theme--background-subdued);
 				opacity: 1;
 			}
 		}
@@ -412,10 +412,10 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: var(--background-page);
+		background-color: var(--theme--background);
 		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
 
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 
 	.add-resolve,
@@ -424,7 +424,7 @@ function pointerLeave() {
 		left: var(--resolve-left);
 
 		.button-hint {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 
@@ -433,10 +433,10 @@ function pointerLeave() {
 		top: var(--reject-top);
 		left: var(--reject-left);
 
-		--v-icon-color: var(--secondary);
+		--v-icon-color: var(--theme--secondary);
 
 		.button-hint {
-			--v-icon-color: var(--secondary);
+			--v-icon-color: var(--theme--secondary);
 		}
 	}
 
@@ -448,42 +448,42 @@ function pointerLeave() {
 	&.reject {
 		:deep(.header) {
 			.v-icon {
-				color: var(--secondary);
+				color: var(--theme--secondary);
 			}
 
 			.name {
-				color: var(--secondary);
+				color: var(--theme--secondary);
 			}
 		}
 
 		.attachment {
-			--v-icon-color: var(--secondary);
+			--v-icon-color: var(--theme--secondary);
 		}
 	}
 
 	&.subdued {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 
 		:deep(.header) {
 			.v-icon {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 			.name {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 
 		.button {
-			border-color: var(--foreground-subdued);
-			--v-icon-color: var(--foreground-subdued);
+			border-color: var(--theme--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 
 			.dot {
-				background-color: var(--foreground-subdued);
+				background-color: var(--theme--foreground-subdued);
 			}
 		}
 
 		.button-hint {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 }
@@ -497,7 +497,7 @@ function pointerLeave() {
 	width: 100%;
 	height: 100%;
 
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 
 	.v-error {
 		margin-top: 8px;
