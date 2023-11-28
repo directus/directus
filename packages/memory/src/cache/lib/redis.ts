@@ -32,11 +32,13 @@ export class CacheRedis implements Cache {
 	private redis: Redis;
 	private namespace: string;
 	private compression: boolean;
+	private compressionMinSize: number;
 
 	constructor(config: Omit<CacheConfigRedis, 'type'>) {
 		this.redis = config.redis;
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
+		this.compressionMinSize = config.compressionMinSize ?? 1000;
 
 		this.redis.defineCommand('setMax', {
 			numberOfKeys: 1,
@@ -60,13 +62,10 @@ export class CacheRedis implements Cache {
 		return <T>deserialize(binaryArray);
 	}
 
-	/**
-	 * @TODO Don't compress integer values
-	 */
 	async set<T = unknown>(key: string, value: T) {
 		let binaryArray = serialize(value);
 
-		if (this.compression === true) {
+		if (this.compression === true && binaryArray.byteLength >= this.compressionMinSize) {
 			binaryArray = await compress(binaryArray);
 		}
 

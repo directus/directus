@@ -32,8 +32,8 @@ beforeEach(() => {
 
 	mockBuffer = Buffer.from('test');
 	mockUint8Array = new Uint8Array();
-	mockCompressedUint8Array = new Uint8Array();
-	mockDecompressedUint8Array = new Uint8Array();
+	mockCompressedUint8Array = new Uint8Array([1, 2, 3]);
+	mockDecompressedUint8Array = new Uint8Array([1, 2, 3]);
 
 	mockValue = 'test';
 
@@ -42,6 +42,7 @@ beforeEach(() => {
 	cache = new CacheRedis({
 		namespace: mockNamespace,
 		redis: mockRedis,
+		compression: false,
 	});
 
 	vi.mocked(withNamespace).mockReturnValue(mockNamespacedKey);
@@ -61,7 +62,7 @@ describe('constructor', () => {
 	test('Sets internal flags based on config', () => {
 		expect(cache['redis']).toBe(mockRedis);
 		expect(cache['namespace']).toBe(mockNamespace);
-		expect(cache['compression']).toBe(true);
+		expect(cache['compression']).toBe(false);
 	});
 
 	test('Defines redis setMax command', () => {
@@ -120,8 +121,9 @@ describe('set', () => {
 		expect(cache['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer);
 	});
 
-	test('Compresses the value before saving when compression is enabled', async () => {
+	test('Compresses the value before saving when compression is enabled and value is large enough', async () => {
 		cache['compression'] = true;
+		cache['compressionMinSize'] = 0;
 
 		await cache.set(mockKey, mockValue);
 
@@ -129,6 +131,19 @@ describe('set', () => {
 		expect(compress).toHaveBeenCalledWith(mockUint8Array);
 		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
 		expect(uint8ArrayToBuffer).toHaveBeenCalledWith(mockCompressedUint8Array);
+		expect(cache['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer);
+	});
+
+	test('Skips compression for values that are too small', async () => {
+		cache['compression'] = true;
+		cache['compressionMinSize'] = 5;
+
+		await cache.set(mockKey, mockValue);
+
+		expect(serialize).toHaveBeenCalledWith(mockValue);
+		expect(compress).not.toHaveBeenCalledWith(mockUint8Array);
+		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
+		expect(uint8ArrayToBuffer).toHaveBeenCalledWith(mockUint8Array);
 		expect(cache['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockBuffer);
 	});
 });
