@@ -93,3 +93,5 @@ fontFamily: 'Comic Sans MS, sans-serif'
 // Use the Google font "Yesteryear"
 fontFamily: '"Yesteryear", sans-serif'
 ```
+
+When using a Google Font, ensure the configured weight is available for the selected font.
