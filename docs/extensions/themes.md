@@ -29,7 +29,7 @@ export default defineTheme({
 ### Available Options
 
 - `name` - The displayed name for this theme. This must be unique within your Directus project.
-- `appearance` - The section where this theme is displayed. Options are `'light'` or `'dark'`.
+- `appearance` - To which appearance mode the theme belongs to, `light` or `dark`.
 - `rules` - A set of theming rules from the theme schema.
 
 ### Available Rules
