@@ -51,8 +51,8 @@ Any rules that are not defined will fallback to the default theme for it's appea
 ([`default dark theme`](https://github.com/directus/directus/blob/main/packages/themes/src/themes/dark/default.ts) and
 [`default light theme`](https://github.com/directus/directus/blob/main/packages/themes/src/themes/dark/default.ts)).
 
-We recommend using TypeScript for this extension type. The `defineTheme` function is typed to properly check and auto-complete all
-available rules.
+We recommend using TypeScript for this extension type. The `defineTheme` function is typed to properly check and
+auto-complete all available rules.
 
 Custom Themes include only the allowed rules, and do not include custom CSS.
 
