@@ -30,7 +30,7 @@ export default defineEndpoint((router, context) => {
 });
 ```
 
-### Get a User
+## Get a User
 
 ```js
 router.get('/', async (req, res) => {
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
 });
 ```
 
-### Create a Role
+## Create a Role
 
 ```js
 router.post('/', async (req, res) => {
@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
 });
 ```
 
-### Create a User and Assign a Role
+## Create a User and Assign a Role
 
 ```js
 router.post('/', async (req, res) => {
@@ -96,7 +96,7 @@ A role is required when creating a user.
 
 :::
 
-### Update a User
+## Update a User
 
 ```js
 router.patch('/', async (req, res) => {
@@ -113,7 +113,7 @@ router.patch('/', async (req, res) => {
 });
 ```
 
-### Delete a User
+## Delete a User
 
 ```js
 router.delete('/', async (req, res) => {
@@ -128,7 +128,7 @@ router.delete('/', async (req, res) => {
 });
 ```
 
-### Assign Permission to a Role
+## Assign Permission to a Role
 
 ```js
 router.post('/', async (req, res) => {
@@ -159,7 +159,7 @@ router.post('/', async (req, res) => {
 });
 ```
 
-::: tip Explore Services In-depth
+::: tip Explore Services In-Depth
 
 Refer to the full list of methods [in our codebase](https://github.com/directus/directus/blob/main/api/src/services).
 
