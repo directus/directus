@@ -1,3 +1,4 @@
+// import type { Navigation, Schema } from '../debug.js';
 import type { MergeObjects, Query } from './query.js';
 import type { ItemType, RelationalFields } from './schema.js';
 import type { UnpackList } from './utils.js';
@@ -18,10 +19,12 @@ export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends in
 								{
 									[Key in keyof Omit<TQuery, 'deep' | 'alias' | 'fields'> as `_${string & Key}`]: TQuery[Key];
 								}
-						  >
+							>
 						: never
 					: never;
 		  }
 	: never;
 
 type ExtractCollection<Schema extends object, Item> = Extract<Item, ItemType<Schema>>;
+
+
