@@ -19,12 +19,10 @@ export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends in
 								{
 									[Key in keyof Omit<TQuery, 'deep' | 'alias' | 'fields'> as `_${string & Key}`]: TQuery[Key];
 								}
-							>
+						  >
 						: never
 					: never;
 		  }
 	: never;
 
 type ExtractCollection<Schema extends object, Item> = Extract<Item, ItemType<Schema>>;
-
-
