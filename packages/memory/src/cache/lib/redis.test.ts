@@ -5,6 +5,7 @@ import {
 	compress,
 	decompress,
 	deserialize,
+	isCompressed,
 	serialize,
 	uint8ArrayToBuffer,
 	withNamespace,
@@ -99,8 +100,10 @@ describe('get', () => {
 		expect(result).toBe(mockValue);
 	});
 
-	test('Decompresses value when compress has been set', async () => {
+	test('Decompresses value when compress has been set and value is gzip compressed', async () => {
 		cache['compression'] = true;
+
+		vi.mocked(isCompressed).mockReturnValue(true);
 
 		const result = await cache.get(mockKey);
 
@@ -109,9 +112,31 @@ describe('get', () => {
 		expect(deserialize).toHaveBeenCalledWith(mockDecompressedUint8Array);
 		expect(result).toBe(mockValue);
 	});
+
+	test('Skips decompression if compression is enabled but value is not compressed', async () => {
+		cache['compression'] = true;
+
+		vi.mocked(isCompressed).mockReturnValue(false);
+
+		const result = await cache.get(mockKey);
+
+		expect(bufferToUint8Array).toHaveBeenCalledWith(mockBuffer);
+		expect(decompress).not.toHaveBeenCalledWith(mockUint8Array);
+		expect(deserialize).toHaveBeenCalledWith(mockUint8Array);
+		expect(result).toBe(mockValue);
+	});
 });
 
 describe('set', () => {
+	test('Saves numeric values as-is', async () => {
+		const mockValue = 15;
+
+		await cache.set(mockKey, mockValue);
+
+		expect(withNamespace).toHaveBeenCalledWith(mockKey, mockNamespace);
+		expect(cache['redis'].set).toHaveBeenCalledWith(mockNamespacedKey, mockValue);
+	});
+
 	test('Sets the serialized value as buffer on the namespaced key', async () => {
 		await cache.set(mockKey, mockValue);
 

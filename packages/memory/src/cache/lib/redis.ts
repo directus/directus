@@ -4,6 +4,7 @@ import {
 	compress,
 	decompress,
 	deserialize,
+	isCompressed,
 	serialize,
 	uint8ArrayToBuffer,
 	withNamespace,
@@ -55,7 +56,7 @@ export class CacheRedis implements Cache {
 
 		let binaryArray = bufferToUint8Array(value);
 
-		if (this.compression === true) {
+		if (this.compression === true && isCompressed(binaryArray)) {
 			binaryArray = await decompress(binaryArray);
 		}
 
@@ -63,13 +64,17 @@ export class CacheRedis implements Cache {
 	}
 
 	async set<T = unknown>(key: string, value: T) {
-		let binaryArray = serialize(value);
+		if (typeof value === 'number') {
+			await this.redis.set(withNamespace(key, this.namespace), value);
+		} else {
+			let binaryArray = serialize(value);
 
-		if (this.compression === true && binaryArray.byteLength >= this.compressionMinSize) {
-			binaryArray = await compress(binaryArray);
+			if (this.compression === true && binaryArray.byteLength >= this.compressionMinSize) {
+				binaryArray = await compress(binaryArray);
+			}
+
+			await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray));
 		}
-
-		await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray));
 	}
 
 	async delete(key: string) {
