@@ -67,6 +67,8 @@ export function useOnboarding() {
 						return err.extensions;
 					});
 			}
+		} finally {
+			isLoading.value = false;
 		}
 	}
 
