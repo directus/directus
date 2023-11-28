@@ -1,4 +1,3 @@
-// import type { Navigation, Schema } from '../debug.js';
 import type { MergeObjects, Query } from './query.js';
 import type { ItemType, RelationalFields } from './schema.js';
 import type { UnpackList } from './utils.js';
