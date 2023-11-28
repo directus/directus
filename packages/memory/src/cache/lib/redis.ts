@@ -11,7 +11,7 @@ import {
 import type { CacheConfigRedis } from '../index.js';
 import type { Cache } from '../types/class.js';
 
-const SET_MAX_SCRIPT = `
+export const SET_MAX_SCRIPT = `
   local key = KEYS[1]
   local value = tonumber(ARGV[1])
 
@@ -60,6 +60,9 @@ export class CacheRedis implements Cache {
 		return <T>deserialize(binaryArray);
 	}
 
+	/**
+	 * @TODO Don't compress integer values
+	 */
 	async set<T = unknown>(key: string, value: T) {
 		let binaryArray = serialize(value);
 

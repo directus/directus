@@ -1,5 +1,5 @@
 import { LRUCache } from 'lru-cache';
-import { deserialize, serialize } from '../../utils/serialize.js';
+import { deserialize, serialize } from '../../utils/index.js';
 import type { Cache } from '../types/class.js';
 import type { CacheConfigLocal } from '../types/config.js';
 
