@@ -1,3 +1,69 @@
+<script setup lang="ts">
+import { useCustomSelection } from '@directus/composables';
+import { computed, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+type Option = {
+	text: string;
+	value: string | number | boolean;
+};
+
+const props = withDefaults(
+	defineProps<{
+		value: string | number | null;
+		disabled?: boolean;
+		choices?: Option[];
+
+		allowOther?: boolean;
+		width?: string;
+
+		iconOn?: string;
+		iconOff?: string;
+		color?: string;
+	}>(),
+	{
+		iconOn: 'radio_button_checked',
+		iconOff: 'radio_button_unchecked',
+		color: 'var(--theme--primary)',
+	},
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const { choices, value } = toRefs(props);
+
+const gridClass = computed(() => {
+	if (choices?.value === undefined) return null;
+
+	const widestOptionLength = choices.value.reduce((acc, val) => {
+		if (val.text.length > acc.length) acc = val.text;
+		return acc;
+	}, '').length;
+
+	if (props.width?.startsWith('half')) {
+		if (widestOptionLength <= 10) return 'grid-2';
+		return 'grid-1';
+	}
+
+	if (widestOptionLength <= 10) return 'grid-4';
+	if (widestOptionLength > 10 && widestOptionLength <= 15) return 'grid-3';
+	if (widestOptionLength > 15 && widestOptionLength <= 25) return 'grid-2';
+	return 'grid-1';
+});
+
+const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
+	emit('input', value),
+);
+
+const customIcon = computed(() => {
+	if (!otherValue.value) return 'add';
+	if (otherValue.value && usesOtherValue.value === true) return props.iconOn;
+	return props.iconOff;
+});
+</script>
+
 <template>
 	<v-notice v-if="!choices" type="warning">
 		{{ t('choices_option_configured_incorrectly') }}
@@ -37,72 +103,6 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useCustomSelection } from '@directus/composables';
-import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-type Option = {
-	text: string;
-	value: string | number | boolean;
-};
-
-const props = withDefaults(
-	defineProps<{
-		value: string | number | null;
-		disabled?: boolean;
-		choices?: Option[];
-
-		allowOther?: boolean;
-		width?: string;
-
-		iconOn?: string;
-		iconOff?: string;
-		color?: string;
-	}>(),
-	{
-		iconOn: 'radio_button_checked',
-		iconOff: 'radio_button_unchecked',
-		color: 'var(--primary)',
-	}
-);
-
-const emit = defineEmits(['input']);
-
-const { t } = useI18n();
-
-const { choices, value } = toRefs(props);
-
-const gridClass = computed(() => {
-	if (choices?.value === undefined) return null;
-
-	const widestOptionLength = choices.value.reduce((acc, val) => {
-		if (val.text.length > acc.length) acc = val.text;
-		return acc;
-	}, '').length;
-
-	if (props.width?.startsWith('half')) {
-		if (widestOptionLength <= 10) return 'grid-2';
-		return 'grid-1';
-	}
-
-	if (widestOptionLength <= 10) return 'grid-4';
-	if (widestOptionLength > 10 && widestOptionLength <= 15) return 'grid-3';
-	if (widestOptionLength > 15 && widestOptionLength <= 25) return 'grid-2';
-	return 'grid-1';
-});
-
-const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
-	emit('input', value)
-);
-
-const customIcon = computed(() => {
-	if (!otherValue.value) return 'add';
-	if (otherValue.value && usesOtherValue.value === true) return props.iconOn;
-	return props.iconOff;
-});
-</script>
-
 <style lang="scss" scoped>
 .radio-buttons {
 	--columns: 1;
@@ -131,15 +131,15 @@ const customIcon = computed(() => {
 }
 
 .custom {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	padding: 10px;
-	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	input {
 		display: block;
@@ -153,21 +153,21 @@ const customIcon = computed(() => {
 		border-radius: 0;
 
 		&::placeholder {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 		}
 	}
 
 	&.has-value {
-		background-color: var(--background-subdued);
-		border: 2px solid var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 	}
 
 	&.active {
-		--v-icon-color: var(--v-radio-color);
+		--v-icon-color: var(--v-radio-color, var(--theme--primary));
 
 		position: relative;
 		background-color: transparent;
-		border-color: var(--v-radio-color);
+		border-color: var(--v-radio-color, var(--theme--primary));
 
 		&::before {
 			position: absolute;
@@ -175,7 +175,7 @@ const customIcon = computed(() => {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--v-radio-color);
+			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;
 			content: '';
 			pointer-events: none;
@@ -183,16 +183,16 @@ const customIcon = computed(() => {
 	}
 
 	&.disabled {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
 		cursor: not-allowed;
 
 		input {
-			color: var(--foreground-subdued);
+			color: var(--theme--form--field--input--foreground-subdued);
 			cursor: not-allowed;
 
 			&::placeholder {
-				color: var(--foreground-subdued);
+				color: var(--theme--form--field--input--foreground-subdued);
 			}
 		}
 	}

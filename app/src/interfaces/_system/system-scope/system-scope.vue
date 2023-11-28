@@ -1,17 +1,3 @@
-<template>
-	<div>
-		<v-skeleton-loader v-if="loading"></v-skeleton-loader>
-		<v-select v-else :model-value="value" :items="options" @update:model-value="onSelect" />
-		<drawer-collection
-			v-if="collection !== null"
-			:active="collection !== null"
-			:collection="collection"
-			@update:active="collection = null"
-			@input="onSelectItem"
-		/>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -35,7 +21,7 @@ const itemName = ref<string | null>(null);
 const loading = ref(false);
 
 const isItem = computed(
-	() => props.value !== null && (props.value.startsWith('role_') || props.value.startsWith('user_'))
+	() => props.value !== null && (props.value.startsWith('role_') || props.value.startsWith('user_')),
 );
 
 watch(() => props.value, loadItemName);
@@ -123,3 +109,17 @@ async function loadItemName() {
 	}
 }
 </script>
+
+<template>
+	<div>
+		<v-skeleton-loader v-if="loading"></v-skeleton-loader>
+		<v-select v-else :model-value="value" :items="options" @update:model-value="onSelect" />
+		<drawer-collection
+			v-if="collection !== null"
+			:active="collection !== null"
+			:collection="collection"
+			@update:active="collection = null"
+			@input="onSelectItem"
+		/>
+	</div>
+</template>

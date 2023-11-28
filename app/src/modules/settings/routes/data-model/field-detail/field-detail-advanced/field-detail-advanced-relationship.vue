@@ -1,11 +1,3 @@
-<template>
-	<relationship-m2o v-if="localType === 'm2o' || localType === 'file'" />
-	<relationship-o2m v-else-if="localType === 'o2m'" />
-	<relationship-m2m v-else-if="localType === 'm2m' || localType === 'files'" />
-	<relationship-m2a v-else-if="localType === 'm2a'" />
-	<relationship-translations v-else-if="localType === 'translations'" />
-</template>
-
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useFieldDetailStore } from '../store';
@@ -19,3 +11,11 @@ const fieldDetailStore = useFieldDetailStore();
 
 const { localType } = storeToRefs(fieldDetailStore);
 </script>
+
+<template>
+	<relationship-m2o v-if="localType === 'm2o' || localType === 'file'" />
+	<relationship-o2m v-else-if="localType === 'o2m'" />
+	<relationship-m2m v-else-if="localType === 'm2m' || localType === 'files'" />
+	<relationship-m2a v-else-if="localType === 'm2a'" />
+	<relationship-translations v-else-if="localType === 'translations'" />
+</template>

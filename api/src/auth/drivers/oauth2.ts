@@ -17,7 +17,7 @@ import {
 	InvalidProviderConfigError,
 	InvalidTokenError,
 	ServiceUnavailableError,
-} from '../../errors/index.js';
+} from '@directus/errors';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -62,7 +62,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const clientOptionsOverrides = getConfigFromEnv(
 			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
 			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore'
+			'underscore',
 		);
 
 		this.client = new issuer.Client({
@@ -79,8 +79,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	generateAuthUrl(codeVerifier: string, prompt = false): string {
+		const { plainCodeChallenge } = this.config;
+
 		try {
-			const codeChallenge = generators.codeChallenge(codeVerifier);
+			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
 			return this.client.authorizationUrl({
@@ -89,7 +91,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				prompt: prompt ? 'consent' : undefined,
 				...paramsConfig,
 				code_challenge: codeChallenge,
-				code_challenge_method: 'S256',
+				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 			});
@@ -114,14 +116,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
+		const { plainCodeChallenge } = this.config;
+
 		let tokenSet;
 		let userInfo;
 
 		try {
+			const codeChallenge = plainCodeChallenge
+				? payload['codeVerifier']
+				: generators.codeChallenge(payload['codeVerifier']);
+
 			tokenSet = await this.client.oauthCallback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'] },
-				{ code_verifier: payload['codeVerifier'], state: generators.codeChallenge(payload['codeVerifier']) }
+				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
 
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
@@ -160,17 +168,19 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{ auth_data: userPayload.auth_data ?? null },
+				{ auth_data: userPayload.auth_data },
 				{
 					identifier,
 					provider: this.config['provider'],
 					providerPayload: { accessToken: tokenSet.access_token, userInfo },
 				},
-				{ database: getDatabase(), schema: this.schema, accountability: null }
+				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
-			await this.usersService.updateOne(userId, updatedUserPayload);
+			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
+				await this.usersService.updateOne(userId, updatedUserPayload);
+			}
 
 			return userId;
 		}
@@ -191,7 +201,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				provider: this.config['provider'],
 				providerPayload: { accessToken: tokenSet.access_token, userInfo },
 			},
-			{ database: getDatabase(), schema: this.schema, accountability: null }
+			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
 
 		try {
@@ -280,7 +290,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				{
 					expiresIn: '5m',
 					issuer: 'directus',
-				}
+				},
 			);
 
 			res.cookie(`oauth2.${providerName}`, token, {
@@ -290,7 +300,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt));
 		},
-		respond
+		respond,
 	);
 
 	router.post(
@@ -299,7 +309,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		(req, res) => {
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
 		},
-		respond
+		respond,
 	);
 
 	router.get(
@@ -390,7 +400,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			next();
 		}),
-		respond
+		respond,
 	);
 
 	return router;

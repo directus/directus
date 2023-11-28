@@ -1,22 +1,17 @@
+import { CreateCollection, CreateField, CreateFieldM2A, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
+import { SeedFunctions } from '@common/seed-functions';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES } from '@common/variables';
+import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '@query/filter';
+import { set } from 'lodash-es';
+import { expect, it } from 'vitest';
 import {
-	CreateCollection,
-	CreateField,
-	CreateItem,
-	DeleteCollection,
-	SeedFunctions,
-	PrimaryKeyType,
-	PRIMARY_KEY_TYPES,
-	CreateFieldM2A,
-} from '@common/index';
-import { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '@query/filter';
-import {
+	getTestsAllTypesSchema,
 	seedAllFieldTypesStructure,
 	seedAllFieldTypesValues,
-	getTestsAllTypesSchema,
 	seedM2AAliasAllFieldTypesValues,
 } from './seed-all-field-types';
-import { set } from 'lodash';
 
 export const collectionShapes = 'test_items_m2a_shapes';
 export const collectionCircles = 'test_items_m2a_circles';
@@ -232,7 +227,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		300000
+		300000,
 	);
 };
 
@@ -337,7 +332,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 							[junctionFieldName]: shapesIDs[Math.floor(i / 2) % 2],
 							collection: localCollectionSquares,
 							item: squaresIDs[i].toString(),
-						}
+						},
 					);
 				}
 
@@ -356,7 +351,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					junctionCollectionName,
 					localCollectionCircles,
 					shapesIDs,
-					circlesIDs
+					circlesIDs,
 				);
 
 				await seedM2AAliasAllFieldTypesValues(
@@ -365,9 +360,9 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					junctionCollectionName,
 					localCollectionSquares,
 					shapesIDs,
-					squaresIDs
+					squaresIDs,
 				);
 			}
-		})
+		}),
 	);
 };

@@ -1,10 +1,10 @@
 <svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect x="18" y="25" width="120" height="46" rx="6" fill="var(--background-page)" class="glow" />
-	<rect x="46" y="35" width="50" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="46" y="45" width="74" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="46" y="55" width="30" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
-	<rect x="100" y="35" width="20" height="6" rx="2" fill="var(--primary)" fill-opacity=".25" />
+	<rect x="18" y="25" width="120" height="46" rx="6" fill="var(--theme--background)" class="glow" />
+	<rect x="46" y="35" width="50" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="46" y="45" width="74" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="46" y="55" width="30" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
+	<rect x="100" y="35" width="20" height="6" rx="2" fill="var(--theme--primary)" fill-opacity=".25" />
 	<path
 		d="M31.426 45.074h1.148v1.176h-1.148v-1.176zm0 2.352h1.148v3.5h-1.148v-3.5zm.574-5.25A5.811 5.811 0 0026.176 48 5.811 5.811 0 0032 53.824 5.811 5.811 0 0037.824 48 5.811 5.811 0 0032 42.176zm0 10.5A4.691 4.691 0 0127.324 48 4.691 4.691 0 0132 43.324 4.691 4.691 0 0136.676 48 4.691 4.691 0 0132 52.676z"
-		fill="var(--primary)" />
+		fill="var(--theme--primary)" />
 </svg>

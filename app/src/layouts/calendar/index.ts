@@ -8,16 +8,18 @@ import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout } from '@directus/extensions';
 import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
-import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
+import { EventImpl } from '@fullcalendar/core/internal';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { format, formatISO, isValid, parse } from 'date-fns';
-import { Ref, computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CalendarActions from './actions.vue';
 import CalendarLayout from './calendar.vue';
@@ -52,7 +54,7 @@ export default defineLayout<LayoutOptions>({
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
 				return ['timestamp', 'dateTime', 'date'].includes(field.type);
-			})
+			}),
 		);
 
 		const calendarFilter = computed(() => {
@@ -122,11 +124,11 @@ export default defineLayout<LayoutOptions>({
 				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,
-			}
+			},
 		);
 
-		const events: Ref<EventInput> = computed(
-			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || []
+		const events = computed<EventInput>(
+			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],
 		);
 
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
@@ -184,19 +186,20 @@ export default defineLayout<LayoutOptions>({
 					if (!collection.value || !startDateField.value || !startDateFieldInfo.value) return;
 
 					const itemChanges: Partial<Item> = {
-						[startDateField.value]: adjustForType(info.event.startStr, startDateFieldInfo.value.type),
+						[startDateField.value]: adjustDateTimeType(info.event.startStr, startDateFieldInfo.value.type),
 					};
 
 					if (endDateField.value && endDateFieldInfo.value && info.event.endStr) {
-						itemChanges[endDateField.value] = adjustForType(info.event.endStr, endDateFieldInfo.value.type);
+						const endDateStr = info.event.allDay ? adjustDateType(info.event) : info.event.endStr;
+						itemChanges[endDateField.value] = adjustDateTimeType(endDateStr, endDateFieldInfo.value.type);
 					}
 
 					const endpoint = getEndpoint(collection.value);
 
 					try {
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
-					} catch (err: any) {
-						unexpectedError(err);
+					} catch (error) {
+						unexpectedError(error);
 					}
 				},
 			};
@@ -215,7 +218,7 @@ export default defineLayout<LayoutOptions>({
 		// sidebar being manipulated
 		watch(
 			() => appStore.sidebarOpen,
-			() => setTimeout(() => calendar.value?.updateSize(), 300)
+			() => setTimeout(() => calendar.value?.updateSize(), 300),
 		);
 
 		watch(fullFullCalendarOptions, () => updateCalendar(), { deep: true, immediate: true });
@@ -225,10 +228,13 @@ export default defineLayout<LayoutOptions>({
 			async () => {
 				if (calendar.value) {
 					const calendarLocale = await getFullcalendarLocale(locale.value);
-					calendar.value.setOption('locale', calendarLocale);
+
+					if (calendarLocale) {
+						calendar.value.setOption('locale', calendarLocale);
+					}
 				}
 			},
-			{ immediate: true }
+			{ immediate: true },
 		);
 
 		const showingCount = computed(() => {
@@ -274,6 +280,7 @@ export default defineLayout<LayoutOptions>({
 
 		function createCalendar(calendarElement: HTMLElement) {
 			calendar.value = new Calendar(calendarElement, fullFullCalendarOptions.value);
+			calendar.value.render();
 
 			calendar.value.on('datesSet', (args) => {
 				viewInfo.value = {
@@ -281,8 +288,6 @@ export default defineLayout<LayoutOptions>({
 					startDateStr: formatISO(args.view.currentStart),
 				};
 			});
-
-			calendar.value.render();
 		}
 
 		function destroyCalendar() {
@@ -319,7 +324,7 @@ export default defineLayout<LayoutOptions>({
 					renderDisplayStringTemplate(
 						collection.value!,
 						template.value || `{{ ${primaryKeyField.value.field} }}`,
-						item
+						item,
 					) || item[primaryKeyField.value.field],
 				start: item[startDateField.value],
 				end: endDate,
@@ -328,12 +333,21 @@ export default defineLayout<LayoutOptions>({
 			};
 		}
 
-		function adjustForType(dateString: string, type: string) {
+		function adjustDateTimeType(dateString: string, type: string) {
 			if (type === 'dateTime') {
 				return dateString.substring(0, 19);
 			}
 
 			return dateString;
+		}
+
+		function adjustDateType(event: EventImpl) {
+			if (!event.end) return event.endStr;
+			// because we add a day for the "Date" type rendering we need to
+			// remove that extra day here before saving the updated value
+			const date = event.end;
+			date.setDate(date.getDate() - 1);
+			return format(date, 'yyyy-MM-dd');
 		}
 	},
 });

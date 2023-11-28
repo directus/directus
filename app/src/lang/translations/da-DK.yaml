@@ -52,6 +52,13 @@ or: eller
 init: Initaliser
 dataset_too_large_currently_showing_n_items: Datasættet er for stort. Viser i øjeblikket de første {n} elementer.
 modifier: Modifikator
+extension_interface: Grænseflade
+extension_display: Vis
+extension_layout: Sideopsætning
+extension_panel: Stykke
+extension_hook: Krog
+extension_modules: Moduler
+enable: Aktiver
 custom: Brugertilpasset
 hook: Krog
 fill_width: Fuld bredde
@@ -95,6 +102,7 @@ rename_folder: Omdøb mappe
 delete_folder: Slet mappe
 prefix: Præfiks
 suffix: Suffiks
+promote_version_preview: Eksempelvisning
 reset_bookmark: Nustil bogmærke
 update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
@@ -370,6 +378,7 @@ move: Flyt
 system: System
 add_field_related: Tilføj felt til relateret samling
 interface_label: Grænseflade
+display_label: Vis
 today: Idag
 yesterday: Igår
 delete_comment: Slet kommentar
@@ -420,7 +429,6 @@ dimensions: Dimensioner
 size: Størrelse
 created: Oprettet
 modified: Ændret
-checksum: Kontrolsum
 owner: Ejer
 edited_by: Redigeret af
 folder: Mappe
@@ -576,7 +584,6 @@ errors:
   RECORD_NOT_UNIQUE: Duplikeret værdi detekteret
   USER_SUSPENDED: Bruger Suspenderet
   CONTAINS_NULL_VALUES: Feltet indeholder null værdier
-  UNPROCESSABLE_ENTITY: Ubehandlelig enhed
   INTERNAL_SERVER_ERROR: Uventet Fejl
   NOT_NULL_VIOLATION: Værdien kan ikke være null
   ILLEGAL_ASSET_TRANSFORMATION: Billedkilde for stor til forhåndsvisning
@@ -711,7 +718,6 @@ layout_options: Layout indstillinger
 rows: Rækker
 columns: Kolonner
 collection_setup: Opsætning af samling
-optional_system_fields: Valgfrie systemfelter
 value_unique: Værdien skal være unik
 all_activity: Al aktivitet
 create_item: Opret element
@@ -914,10 +920,10 @@ editing_unit: 'Redigerer {unit}'
 editing_in_batch: 'Masseredigerer {count} elementer'
 no_options_available: Ingen tilgængelige valgmuligheder
 settings_data_model: Data model
-settings_permissions: Roller og tilladelser
-settings_project: Projektindstillinger
+settings_project: Indstillinger
 settings_webhooks: Webhooks
-settings_presets: Forudindstillinger og bogmærker
+settings_presets: Foretrukne
+settings_translations: Oversættelser
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 actions: Handlinger
@@ -952,7 +958,6 @@ page_help_files_collection: >-
   **Fil Bibliotek** — Viser alle filer uploadet til dette projekt. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
 page_help_files_item: >-
   **Fildetaljer** — En formular til håndtering af filmetadata, redigering af det oprindelige aktiv og opdatering af adgangsindstillinger.
-page_help_settings_project: "**Projektindstillinger** — Dit projekts globale konfigurationsmuligheder."
 page_help_settings_datamodel_collections: >-
   **Datamodel: Samlinger** — Viser alle tilgængelige samlinger. Dette omfatter synlige, skjulte og systemsamlinger, samt uhåndterede databasetabeller, der kan tilføjes.
 page_help_settings_datamodel_fields: >-
@@ -1074,10 +1079,6 @@ fields:
     tags: Tags
     user_preferences: Bruger præferencer
     language: Sprog
-    theme: Tema
-    theme_auto: Automatisk (Basseret på system)
-    theme_light: Lys Tilstand
-    theme_dark: Mørk Tilstand
     tfa_secret: Tofaktorgodkendelse
     admin_options: Admin indstillinger
     status: Status
@@ -1112,7 +1113,6 @@ fields:
     project_color: Projekt farve
     project_logo: Projekt logo
     default_language: Standard sprog
-    branding: Branding og stil
     public_foreground: Offentlig forgrund
     public_background: Offentlig baggrund
     public_note: Offentlig note
@@ -1172,7 +1172,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
     project_color_note: Login- & logo baggrund
-    project_logo_note: Hvid 40x40 SVG/PNG
     public_note_placeholder: En kort offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
@@ -1541,6 +1540,8 @@ interfaces:
   system-interface-options:
     interface-options: Grænsefladeindstillinger
     description: En modal til valg af indstillinger for en grænseflade
+  system-display:
+    display: Vis
   list-m2m:
     many-to-many: Mange til mange
     description: Vælg flere relaterede forbindelseselementer
@@ -1588,7 +1589,6 @@ interfaces:
     description: Vælg flere relaterede elementer
     no_collection: Samlingen kunne ikke findes
   system-folder:
-    folder: Mappe
     description: Vælg en mappe
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder
@@ -1604,6 +1604,7 @@ interfaces:
     sort_placeholder: Manuel
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
+    interface_group: Grænsefladeindstillinger
   slider:
     slider: Skyder
     description: Vælg et nummer ved hjælp af en skyder
@@ -1938,6 +1939,7 @@ panels:
     smooth: Glat
     straight: Lige
     step_line: Trin linje
+    show_legend: Vis legende
   meter:
     name: Måler
     description: Måler til sporingsværdier
@@ -2056,3 +2058,13 @@ operations:
     iteration_mode: Iterationstilstand
     iteration_mode_note: Mode til iteration over arrays.
     serial: Seriel
+standard: Standard
+compact: Kompakt
+style: Stil
+fonts:
+  thin: tynd
+  normal: Normal
+  bold: Fed
+  black: Sort
+  italic: Kursiv
+  auto: Automatisk

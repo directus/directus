@@ -1,0 +1,48 @@
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1280_129)">
+        <g filter="url(#filter0_d_1280_129)">
+            <rect x="18" y="10" width="120" height="76" rx="6" fill="var(--theme--background)" class="glow" />
+            <rect x="19" y="11" width="118" height="74" rx="5" stroke="var(--theme--primary)"
+                stroke-width="2" />
+        </g>
+        <rect x="26" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="38" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="50" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="62" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="74" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="86" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="98" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="110" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <rect x="122" y="74" width="6" height="4" rx="1" fill="var(--theme--primary-subdued)" />
+        <path opacity="0.45"
+            d="M32.797 55.6666L26 69H129L123.772 66.4603L117.497 49.9523L111.746 41.0634L109.655 34.0793L100.244 49.9524L90.3096 32.1746L79.8528 43.6031L75.67 35.9841L67.8274 47.4127L66.2589 43.6031H58.9391L55.802 59.5L47.9594 41.0634L41.6853 51.2222L38.5482 60.746L32.797 55.6666Z"
+            fill="url(#paint0_linear_1280_129)" />
+        <path opacity="0.45"
+            d="M32.797 62.1207L26 69H129L123.772 67.6897L117.497 59.1724L111.746 54.5862L109.655 50.9828L100.244 59.1724L90.3096 50L79.8528 55.8966L75.67 51.9655L67.8274 57.8621L66.2589 55.8966H58.9391L55.802 64.0985L47.9594 54.5862L41.6853 59.8276L38.5482 64.7414L32.797 62.1207Z"
+            fill="url(#paint1_linear_1280_129)" />
+        <path
+            d="M26 69L32.2957 62.2926C32.5941 61.9747 33.0642 61.8868 33.4573 62.0754L37.7308 64.1252C38.1946 64.3476 38.7516 64.1819 39.0183 63.7421L41.6058 59.4759C41.6585 59.389 41.7241 59.3107 41.8004 59.2436L47.1751 54.5173C47.6026 54.1413 48.2573 54.1977 48.6144 54.6411L54.7026 62.2034C55.1883 62.8066 56.1458 62.6526 56.4178 61.9275L58.6957 55.8556C58.8421 55.4654 59.2152 55.2069 59.632 55.2069H65.7621C66.0751 55.2069 66.3699 55.3534 66.559 55.6028L67.2242 56.4802C67.5575 56.9198 68.1839 57.0065 68.624 56.6739L75.0034 51.8529C75.3893 51.5613 75.9287 51.5877 76.2843 51.9157L79.3051 54.7018C79.6301 55.0015 80.1133 55.0523 80.4935 54.8266L89.6599 49.3857C90.0444 49.1575 90.5336 49.2122 90.8581 49.5197L99.8143 58.0055C100.199 58.3702 100.802 58.3711 101.188 58.0076L108.716 50.9184C109.192 50.4706 109.962 50.5916 110.277 51.1636L111.656 53.6643C111.716 53.7722 111.795 53.8682 111.889 53.9474L117.397 58.5705C117.464 58.6267 117.523 58.6915 117.573 58.7631L123.562 67.3206C123.697 67.5144 123.897 67.6538 124.126 67.7141L129 69"
+            stroke="color-mix(in srgb, var(--theme--background), var(--theme--primary) 75%)" stroke-width="1.5" stroke-linecap="round" />
+        <path
+            d="M26 69L32.211 56.816C32.5078 56.2338 33.2741 56.088 33.7639 56.5206L37.4111 59.7417C37.9493 60.217 38.7982 59.9871 39.0229 59.305L41.6483 51.3343C41.6729 51.2598 41.7061 51.1885 41.7473 51.1217L46.9568 42.6869C47.3806 42.0006 48.4007 42.0727 48.7238 42.8117L54.5366 56.1058C54.9277 57.0004 56.2377 56.8616 56.4327 55.9048L58.776 44.4035C58.8709 43.9377 59.2806 43.6031 59.7559 43.6031H65.5892C65.9944 43.6031 66.3596 43.8477 66.5139 44.2224L67.1417 45.7473C67.4405 46.473 68.4205 46.5874 68.8785 45.9502L74.7747 37.7458C75.1964 37.1591 76.0819 37.1994 76.4485 37.8219L79.1664 42.4375C79.5076 43.017 80.312 43.1013 80.7659 42.6052L89.3853 33.1848C89.8425 32.6851 90.6538 32.7749 90.9906 33.3626L99.6351 48.4435C100.019 49.1127 100.984 49.114 101.369 48.4458L108.496 36.0886C108.934 35.3288 110.069 35.4611 110.32 36.3013L111.705 40.9268C111.732 41.0174 111.772 41.1038 111.824 41.1832L117.44 49.8634C117.478 49.9225 117.51 49.9855 117.535 50.0514L123.631 66.0894C123.721 66.3276 123.899 66.5223 124.128 66.6336L129 69"
+            stroke="var(--theme--primary)" stroke-width="1.5" stroke-linecap="round" />
+        <line x1="89" y1="73" x2="89" y2="22" stroke="var(--theme--primary-subdued)" stroke-width="2"
+            stroke-linecap="round" stroke-dasharray="1 4" />
+        <rect x="82" y="18" width="14" height="8" rx="1" fill="var(--theme--primary-subdued)" />
+    </g>
+    <defs>
+        <linearGradient id="paint0_linear_1280_129" x1="77.5" y1="29" x2="77.5" y2="69"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="var(--theme--primary)" stop-opacity="0.3" />
+            <stop offset="1" stop-color="var(--theme--background)" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="paint1_linear_1280_129" x1="77.5" y1="48.3621" x2="77.5" y2="69"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="var(--theme--primary)" stop-opacity="0.3" />
+            <stop offset="1" stop-color="var(--theme--background)" stop-opacity="0" />
+        </linearGradient>
+        <clipPath id="clip0_1280_129">
+            <rect width="156" height="96" fill="var(--background-page)" class="glow" />
+        </clipPath>
+    </defs>
+</svg>

@@ -5,8 +5,8 @@ readTime: 4 min read
 
 # Custom Interfaces <small></small>
 
-> Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page.
-> [Learn more about Interfaces](/user-guide/overview/glossary#interfaces).
+> Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page. They
+> are developed using Vue.js. [Learn more about Interfaces](/user-guide/overview/glossary#interfaces).
 
 ## Extension Entrypoint
 

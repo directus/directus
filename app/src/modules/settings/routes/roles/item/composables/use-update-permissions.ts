@@ -1,7 +1,7 @@
 import api from '@/api';
-import { Permission, Collection } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { inject, ref, Ref } from 'vue';
+import { Collection, Permission } from '@directus/types';
+import { inject, ref, type Ref } from 'vue';
 
 const ACTIONS = ['create', 'read', 'update', 'delete', 'share'] as const;
 type Action = (typeof ACTIONS)[number];
@@ -17,7 +17,7 @@ type UsableUpdatePermissions = {
 export default function useUpdatePermissions(
 	collection: Ref<Collection>,
 	permissions: Ref<Permission[]>,
-	role: Ref<string>
+	role: Ref<string>,
 ): UsableUpdatePermissions {
 	const saving = ref(false);
 	const refresh = inject<() => Promise<void>>('refresh-permissions');
@@ -50,8 +50,8 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err: any) {
-				unexpectedError(err);
+			} catch (error) {
+				unexpectedError(error);
 			} finally {
 				await refresh?.();
 				saving.value = false;
@@ -66,8 +66,8 @@ export default function useUpdatePermissions(
 					permissions: {},
 					validation: {},
 				});
-			} catch (err: any) {
-				unexpectedError(err);
+			} catch (error) {
+				unexpectedError(error);
 			} finally {
 				await refresh?.();
 				saving.value = false;
@@ -86,8 +86,8 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete(`/permissions/${permission.id}`);
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			await refresh?.();
 			saving.value = false;
@@ -118,8 +118,8 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err: any) {
-						unexpectedError(err);
+					} catch (error) {
+						unexpectedError(error);
 					}
 				} else {
 					try {
@@ -131,11 +131,11 @@ export default function useUpdatePermissions(
 							permissions: {},
 							validation: {},
 						});
-					} catch (err: any) {
-						unexpectedError(err);
+					} catch (error) {
+						unexpectedError(error);
 					}
 				}
-			})
+			}),
 		);
 
 		await refresh?.();
@@ -149,8 +149,8 @@ export default function useUpdatePermissions(
 
 		try {
 			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			await refresh?.();
 			saving.value = false;

@@ -1,5 +1,5 @@
 import { DeepPartial, Field } from '@directus/types';
-import { defineInterface } from '@directus/utils';
+import { defineInterface } from '@directus/extensions';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
 import InterfaceCode from './input-code.vue';

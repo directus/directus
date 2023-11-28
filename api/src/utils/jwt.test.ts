@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { expect, test, vi } from 'vitest';
-import type { DirectusTokenPayload } from '../../src/types/index.js';
-import { verifyAccessJWT, verifyJWT } from '../../src/utils/jwt.js';
-import { TokenExpiredError, InvalidTokenError } from '../errors/index.js';
-import { ServiceUnavailableError } from '../errors/index.js';
+import type { DirectusTokenPayload } from '../types/index.js';
+import { verifyAccessJWT, verifyJWT } from './jwt.js';
+import { TokenExpiredError, InvalidTokenError } from '@directus/errors';
+import { ServiceUnavailableError } from '@directus/errors';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';
@@ -34,7 +34,7 @@ const InvalidTokenCases = {
 Object.entries(InvalidTokenCases).forEach(([title, token]) =>
 	test(`Throws InvalidTokenError - ${title}`, () => {
 		expect(() => verifyJWT(token, secret)).toThrow(InvalidTokenError);
-	})
+	}),
 );
 
 test(`Throws ServiceUnavailableError for unexpected error from jsonwebtoken`, () => {

@@ -1,11 +1,3 @@
-<template>
-	<div class="actions">
-		<v-button v-tooltip.bottom="t('save')" :loading="loading" icon rounded @click="save">
-			<v-icon name="check" />
-		</v-button>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
@@ -40,13 +32,21 @@ async function save() {
 
 		emit('refresh');
 		router.push(`/settings/roles/${props.roleKey || 'public'}`);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
 }
 </script>
+
+<template>
+	<div class="actions">
+		<v-button v-tooltip.bottom="t('save')" :loading="loading" icon rounded @click="save">
+			<v-icon name="check" />
+		</v-button>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .actions {

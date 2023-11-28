@@ -1,66 +1,3 @@
-<template>
-	<div class="interface-map">
-		<div
-			class="map"
-			:class="{
-				loading: mapLoading,
-				error: geometryParsingError || geometryOptionsError,
-				'has-selection': selection.length > 0,
-			}"
-		>
-			<div ref="container" />
-		</div>
-		<div
-			v-if="location"
-			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
-			:style="`transform: translate(${projection!.x}px, ${projection!.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
-		></div>
-		<transition name="fade">
-			<div
-				v-if="tooltipVisible"
-				class="tooltip top"
-				:style="`display: block; transform: translate(${tooltipPosition.x}px, ${tooltipPosition.y}px) translate(-50%, -150%) rotateX(0deg) rotateZ(0deg)`"
-			>
-				{{ tooltipMessage }}
-			</div>
-		</transition>
-		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
-			<v-icon name="map" />
-			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
-		</div>
-		<transition name="fade">
-			<v-info
-				v-if="geometryOptionsError"
-				icon="error"
-				center
-				type="danger"
-				:title="t('interfaces.map.invalid_options')"
-			>
-				<v-notice type="danger" :icon="false">
-					{{ geometryOptionsError }}
-				</v-notice>
-			</v-info>
-			<v-info
-				v-else-if="geometryParsingError"
-				icon="error"
-				center
-				type="warning"
-				:title="t('layouts.map.invalid_geometry')"
-			>
-				<v-notice type="warning" :icon="false">
-					{{ geometryParsingError }}
-				</v-notice>
-				<template #append>
-					<v-card-actions>
-						<v-button small secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
-						<v-button small kind="danger" @click="resetValue(true)">{{ t('reset') }}</v-button>
-					</v-card-actions>
-				</template>
-			</v-info>
-		</transition>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/settings';
 import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
@@ -115,7 +52,7 @@ const props = withDefaults(
 	{
 		loading: true,
 		defaultView: () => ({}),
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -143,6 +80,7 @@ const { basemap } = toRefs(appStore);
 
 const style = computed(() => {
 	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+	if (!source) return;
 	return basemap.value, getStyleFromBasemapSource(source);
 });
 
@@ -306,7 +244,7 @@ function updateValue(value: any) {
 
 function updateStyle() {
 	map.removeControl(controls.draw as any);
-	map.setStyle(style.value, { diff: false });
+	if (style.value) map.setStyle(style.value, { diff: false });
 	controls.draw = new MapboxDraw(getDrawOptions(geometryType));
 	map.addControl(controls.draw as any, 'top-left');
 	loadValueFromProps();
@@ -411,13 +349,13 @@ function getCurrentGeometry(): Geometry | null {
 	const geometries = features.map((f) => f.geometry) as (SimpleGeometry | MultiGeometry)[];
 	let result: Geometry;
 
-	if (geometries.length == 0) {
+	if (geometries.length === 0) {
 		return null;
 	} else if (!geometryType) {
 		if (geometries.length > 1) {
 			result = { type: 'GeometryCollection', geometries };
 		} else {
-			result = geometries[0];
+			result = geometries[0] as Geometry;
 		}
 	} else if (geometryType.startsWith('Multi')) {
 		const coordinates = geometries
@@ -426,7 +364,7 @@ function getCurrentGeometry(): Geometry | null {
 
 		result = { type: geometryType, coordinates } as Geometry;
 	} else {
-		result = geometries[geometries.length - 1];
+		result = geometries[geometries.length - 1] as Geometry;
 	}
 
 	return result;
@@ -462,12 +400,77 @@ function handleKeyDown(event: any) {
 }
 </script>
 
+<template>
+	<div class="interface-map">
+		<div
+			class="map"
+			:class="{
+				loading: mapLoading,
+				error: geometryParsingError || geometryOptionsError,
+				'has-selection': selection.length > 0,
+			}"
+		>
+			<div ref="container" />
+		</div>
+		<div
+			v-if="location"
+			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
+			:style="`transform: translate(${projection!.x}px, ${
+				projection!.y
+			}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
+		></div>
+		<transition name="fade">
+			<div
+				v-if="tooltipVisible"
+				class="tooltip top"
+				:style="`display: block; transform: translate(${tooltipPosition.x}px, ${tooltipPosition.y}px) translate(-50%, -150%) rotateX(0deg) rotateZ(0deg)`"
+			>
+				{{ tooltipMessage }}
+			</div>
+		</transition>
+		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
+			<v-icon name="map" />
+			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+		</div>
+		<transition name="fade">
+			<v-info
+				v-if="geometryOptionsError"
+				icon="error"
+				center
+				type="danger"
+				:title="t('interfaces.map.invalid_options')"
+			>
+				<v-notice type="danger" :icon="false">
+					{{ geometryOptionsError }}
+				</v-notice>
+			</v-info>
+			<v-info
+				v-else-if="geometryParsingError"
+				icon="error"
+				center
+				type="warning"
+				:title="t('layouts.map.invalid_geometry')"
+			>
+				<v-notice type="warning" :icon="false">
+					{{ geometryParsingError }}
+				</v-notice>
+				<template #append>
+					<v-card-actions>
+						<v-button small secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
+						<v-button small kind="danger" @click="resetValue(true)">{{ t('reset') }}</v-button>
+					</v-card-actions>
+				</template>
+			</v-info>
+		</transition>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .interface-map {
 	position: relative;
 	overflow: hidden;
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	.map {
 		position: relative;
@@ -491,9 +494,8 @@ function handleKeyDown(event: any) {
 
 	.v-info {
 		padding: 20px;
-		background-color: var(--background-input);
-		border-radius: var(--border-radius);
-		box-shadow: var(--card-shadow);
+		background-color: var(--theme--form--field--input--background);
+		border-radius: var(--theme--border-radius);
 	}
 
 	.basemap-select {
@@ -505,10 +507,10 @@ function handleKeyDown(event: any) {
 		justify-content: space-between;
 		height: 36px;
 		padding: 10px;
-		color: var(--foreground-subdued);
-		background-color: var(--background-page);
-		border: var(--border-width) solid var(--background-page);
-		border-radius: var(--border-radius);
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--background);
+		border: var(--theme--border-width) solid var(--theme--background);
+		border-radius: var(--theme--border-radius);
 
 		span {
 			width: auto;
@@ -516,7 +518,7 @@ function handleKeyDown(event: any) {
 		}
 
 		.v-select {
-			color: var(--foreground-normal);
+			color: var(--theme--form--field--input--foreground);
 		}
 	}
 

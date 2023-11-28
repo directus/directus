@@ -1,7 +1,8 @@
 import { escapeIdentifier } from './escape-identifier.js';
 
 /**
- * Gets a primitive field value.
+ * Adds the table name to the column and escapes the identifiers.
+ *
  * @param table
  * @param column
  * @param as

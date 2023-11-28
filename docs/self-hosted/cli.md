@@ -13,7 +13,7 @@ readTime: 7 min read
 
 ## Requirements
 
-- Node.js [Active LTS](https://nodejs.dev/en/about/releases/)
+- Node.js [Active LTS](https://github.com/nodejs/release#release-schedule)
 
 ## Server
 

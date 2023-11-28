@@ -1,20 +1,3 @@
-<template>
-	<div class="continue-as">
-		<v-progress-circular v-if="loading" indeterminate />
-		<template v-else>
-			<i18n-t keypath="continue_as" scope="global" tag="p">
-				<template #name>
-					<b>{{ name }}</b>
-				</template>
-			</i18n-t>
-			<div class="actions">
-				<router-link to="/logout" class="sign-out">{{ t('sign_out') }}</router-link>
-				<v-button autofocus large @click="hydrateAndLogin">{{ t('continue_label') }}</v-button>
-			</div>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { logout } from '@/auth';
@@ -57,8 +40,8 @@ async function fetchUser() {
 
 		name.value = userName(response.data.data);
 		lastPage.value = response.data.data.last_page;
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		loading.value = false;
 	}
@@ -70,6 +53,23 @@ async function hydrateAndLogin() {
 	router.push(redirectQuery || lastPage.value || `/content`);
 }
 </script>
+
+<template>
+	<div class="continue-as">
+		<v-progress-circular v-if="loading" indeterminate />
+		<template v-else>
+			<i18n-t keypath="continue_as" scope="global" tag="p">
+				<template #name>
+					<b>{{ name }}</b>
+				</template>
+			</i18n-t>
+			<div class="actions">
+				<router-link to="/logout" class="sign-out">{{ t('sign_out') }}</router-link>
+				<v-button autofocus large @click="hydrateAndLogin">{{ t('continue_label') }}</v-button>
+			</div>
+		</template>
+	</div>
+</template>
 
 <style scoped>
 .continue-as p {
@@ -87,11 +87,11 @@ async function hydrateAndLogin() {
 }
 
 .continue-as .sign-out {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 }
 
 .continue-as .sign-out:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 </style>

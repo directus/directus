@@ -2,7 +2,7 @@ import { i18n } from '@/lang';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import type { DeepPartial, Field } from '@directus/types';
-import { defineDisplay } from '@directus/utils';
+import { defineDisplay } from '@directus/extensions';
 import { parse, parseISO } from 'date-fns';
 import DisplayDateTime from './datetime.vue';
 
@@ -145,7 +145,7 @@ export default defineDisplay({
 					schema: {
 						default_value: 'round',
 					},
-				}
+				},
 			);
 		}
 

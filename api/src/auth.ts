@@ -10,7 +10,7 @@ import {
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
 import env from './env.js';
-import { InvalidProviderConfigError } from './errors/index.js';
+import { InvalidProviderConfigError } from '@directus/errors';
 import logger from './logger.js';
 import type { AuthDriverOptions } from './types/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
@@ -72,7 +72,7 @@ export async function registerAuthProviders(): Promise<void> {
 function getProviderInstance(
 	driver: string,
 	options: AuthDriverOptions,
-	config: Record<string, any> = {}
+	config: Record<string, any> = {},
 ): AuthDriver | undefined {
 	switch (driver) {
 		case 'local':

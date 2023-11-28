@@ -1,24 +1,3 @@
-<template>
-	<div class="updates">
-		<v-notice type="info">
-			{{ t('changes_made') }}
-			<br />
-			{{ t('no_relational_data') }}
-		</v-notice>
-
-		<div v-for="change in changes" :key="change!.name" class="change">
-			<div class="type-label">{{ change!.name }}</div>
-			<template v-if="change!.updated">
-				<revisions-drawer-updates-change updated :changes="change!.changes" />
-			</template>
-			<template v-else>
-				<revisions-drawer-updates-change deleted :changes="change!.changes" />
-				<revisions-drawer-updates-change added :changes="change!.changes" />
-			</template>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
@@ -57,7 +36,7 @@ const changes = computed(() => {
 			if (!name) return null;
 
 			const currentValue = props.revision.delta?.[fieldKey];
-			const previousValue = previousRevision.value.data?.[fieldKey];
+			const previousValue = previousRevision.value?.data?.[fieldKey];
 
 			let changes;
 			let updated = false;
@@ -105,6 +84,27 @@ const changes = computed(() => {
 		.filter((change) => change);
 });
 </script>
+
+<template>
+	<div class="updates">
+		<v-notice>
+			{{ t('changes_made') }}
+			<br />
+			{{ t('no_relational_data') }}
+		</v-notice>
+
+		<div v-for="change in changes" :key="change!.name" class="change">
+			<div class="type-label">{{ change!.name }}</div>
+			<template v-if="change!.updated">
+				<revisions-drawer-updates-change updated :changes="change!.changes" />
+			</template>
+			<template v-else>
+				<revisions-drawer-updates-change deleted :changes="change!.changes" />
+				<revisions-drawer-updates-change added :changes="change!.changes" />
+			</template>
+		</div>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .change {

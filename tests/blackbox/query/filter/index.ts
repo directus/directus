@@ -1,9 +1,10 @@
-import { PrepareRequest, RequestOptions } from '@utils/prepare-request';
 import vendors from '@common/get-dbs-to-test';
-import * as testsSchema from '@schema/index';
+import type { PrimaryKeyType } from '@common/types';
 import type { ClientFilterOperator } from '@directus/types';
-import { get, set } from 'lodash';
-import { PrimaryKeyType } from '@common/types';
+import * as testsSchema from '@schema/index';
+import { PrepareRequest, type RequestOptions } from '@utils/prepare-request';
+import { get, set } from 'lodash-es';
+import { describe, expect, it, type SuiteCollector } from 'vitest';
 
 export type FilterValidator = (inputValue: any, possibleValues: any) => boolean;
 export type FilterEmptyValidator = (inputValue: any, possibleValues: any) => boolean;
@@ -38,11 +39,11 @@ export const CheckQueryFilters = (
 	requestOptions: RequestOptions,
 	collection: string,
 	testsFieldSchema: TestsFieldSchema,
-	vendorSchemaValues: TestsSchemaVendorValues
-) => {
+	vendorSchemaValues: TestsSchemaVendorValues,
+): SuiteCollector => {
 	return describe(`Global Query Filters (${requestOptions.method.toUpperCase()} ${requestOptions.path})`, () => {
 		for (const field in testsFieldSchema) {
-			processSchemaFields(requestOptions, collection, testsFieldSchema[field], vendorSchemaValues);
+			processSchemaFields(requestOptions, collection, testsFieldSchema[field]!, vendorSchemaValues);
 		}
 	});
 };
@@ -52,7 +53,7 @@ const processSchemaFields = (
 	collection: string,
 	schema: TestsCollectionSchema,
 	vendorSchemaValues: TestsSchemaVendorValues,
-	parentField?: string
+	parentField?: string,
 ) => {
 	let filterOperatorList: ClientFilterOperator[] = [];
 
@@ -149,7 +150,7 @@ const processSchemaFields = (
 
 					const generatedFilters = targetSchema.generateFilterForDataType(
 						filterOperator,
-						possibleValues
+						possibleValues,
 					) as testsSchema.GeneratedFilter[];
 
 					for (const filter of generatedFilters) {
@@ -187,7 +188,7 @@ const processSchemaFields = (
 	if (schema.children) {
 		for (const child of Object.keys(schema.children)) {
 			const newParentField = parentField ? `${parentField}.${schema.field}` : schema.field;
-			processSchemaFields(requestOptions, collection, schema.children[child], vendorSchemaValues, newParentField);
+			processSchemaFields(requestOptions, collection, schema.children[child]!, vendorSchemaValues, newParentField);
 		}
 	}
 };
@@ -197,11 +198,11 @@ function processValidation(
 	key: string,
 	filter: testsSchema.GeneratedFilter,
 	possibleValues: any[],
-	assert = true
+	assert = true,
 ): boolean {
 	const keys = key.split('.');
 
-	if (keys.length === 1) {
+	if (keys.length === 1 && keys[0]) {
 		if (Array.isArray(data)) {
 			let found = false;
 
@@ -249,7 +250,7 @@ function processValidation(
 			}
 		}
 	} else {
-		const currentKey = keys[0];
+		const currentKey = keys[0]!;
 		keys.shift();
 
 		if (Array.isArray(data)) {

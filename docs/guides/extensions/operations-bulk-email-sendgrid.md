@@ -17,8 +17,8 @@ To follow this guide, you will need a SendGrid API Key and access to SendGrid Dy
 Open a console to your preferred working directory and initialize a new extension, which will create the boilerplate
 code for your operation.
 
-```
-npx create-directus-extension
+```shell
+npx create-directus-extension@latest
 ```
 
 A list of options will appear (choose operation), and type a name for your extension (for example,
@@ -27,7 +27,7 @@ A list of options will appear (choose operation), and type a name for your exten
 Now the boilerplate has been created, install the `@sendgrid/mail` package, and then open the directory in your code
 editor.
 
-```
+```shell
 cd directus-operation-bulk-sendgrid
 npm install @sendgrid/mail
 ```

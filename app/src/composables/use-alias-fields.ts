@@ -33,7 +33,7 @@ type UsableAliasFields = {
  */
 export function useAliasFields(
 	fields: Ref<string[]> | string[],
-	collection: Ref<string | null> | string | null
+	collection: Ref<string | null> | string | null,
 ): UsableAliasFields {
 	const aliasedFields = computed(() => {
 		const aliasedFields: Record<string, AliasFields> = {};

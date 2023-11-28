@@ -1,7 +1,8 @@
-import { defineOperationApi, isValidJSON } from '@directus/utils';
+import { defineOperationApi } from '@directus/extensions';
+import { isValidJSON } from '@directus/utils';
+import { isAxiosError } from 'axios';
 import encodeUrl from 'encodeurl';
 import { getAxios } from '../../request/index.js';
-import { isAxiosError } from 'axios';
 
 type Options = {
 	url: string;
@@ -15,10 +16,13 @@ export default defineOperationApi<Options>({
 
 	handler: async ({ url, method, body, headers }) => {
 		const customHeaders =
-			headers?.reduce((acc, { header, value }) => {
-				acc[header] = value;
-				return acc;
-			}, {} as Record<string, string>) ?? {};
+			headers?.reduce(
+				(acc, { header, value }) => {
+					acc[header] = value;
+					return acc;
+				},
+				{} as Record<string, string>,
+			) ?? {};
 
 		if (!customHeaders['Content-Type'] && (typeof body === 'object' || isValidJSON(body))) {
 			customHeaders['Content-Type'] = 'application/json';

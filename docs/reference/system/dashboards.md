@@ -40,7 +40,7 @@ Panels that are in this dashboard. One-to-may to [panels](/reference/system/pane
 {
 	"id": "a79bd1b2-beb2-49fc-8a26-0b3eec0e2697",
 	"name": "My Dashboard",
-	"icon": "dashboard",
+	"icon": "space_dashboard",
 	"note": "Test",
 	"date_created": "2023-01-05T19:03:15.051Z",
 	"user_created": "fd066644-c8e5-499d-947b-fe6c6e1a1473",
@@ -55,7 +55,7 @@ List all dashboards that exist in Directus.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /dashboards`
@@ -102,7 +102,7 @@ data will be an empty array.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /dashboards`
@@ -147,7 +147,7 @@ List an existing dashboard by primary key.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /dashboards/:id`
@@ -187,7 +187,7 @@ Returns the requested [dashboard object](#the-dashboard-object).
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -228,7 +228,7 @@ Create a new dashboard.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /dashboards`
@@ -274,7 +274,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /dashboards`
@@ -282,7 +282,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 ```json
 {
 	"name": "My Dashboard",
-	"icon": "dashboard"
+	"icon": "space_dashboard"
 }
 ```
 
@@ -325,7 +325,7 @@ Create multiple new dashboards.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /dashboards`
@@ -371,7 +371,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `POST /dashboards`
@@ -380,7 +380,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 [
 	{
 		"name": "My Dashboard",
-		"icon": "dashboard"
+		"icon": "space_dashboard"
 	},
 	{
 		"name": "Another Dashboard",
@@ -436,7 +436,7 @@ Update an existing dashboard.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /dashboards/:id`
@@ -482,7 +482,7 @@ Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -531,7 +531,7 @@ Update multiple existing dashboards.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /dashboards`
@@ -586,7 +586,7 @@ Returns the [dashboard objects](#the-dashboard-object) for the updated dashboard
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `PATCH /dashboards`
@@ -641,7 +641,7 @@ Delete an existing dashboard.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /dashboards/:id`
@@ -677,7 +677,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /dashboards/12204ee2-2c82-4d9a-b044-2f4842a11dba`
@@ -715,7 +715,7 @@ Delete multiple existing dashboards.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /dashboards`
@@ -757,7 +757,7 @@ Empty body.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
 `DELETE /dashboards`
@@ -789,8 +789,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboards } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteDashboards } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 

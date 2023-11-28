@@ -1,9 +1,8 @@
-import { test, expect } from 'vitest';
+import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
-import VNotice from './v-notice.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { zip } from 'lodash';
+import { expect, test } from 'vitest';
+import VNotice from './v-notice.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
@@ -20,7 +19,7 @@ test('Mount component', () => {
 });
 
 test('type prop', async () => {
-	const types = ['normal', 'info', 'success', 'warning', 'danger'];
+	const types = ['info', 'success', 'warning', 'danger'];
 
 	for (const type of types) {
 		const wrapper = mount(VNotice, {
@@ -35,8 +34,8 @@ test('type prop', async () => {
 });
 
 test('icon prop', async () => {
-	const types = ['normal', 'info', 'success', 'warning', 'danger'];
-	const icons = ['info', 'info', 'check_circle', 'warning', 'error'];
+	const types = ['info', 'success', 'warning', 'danger'];
+	const icons = ['info', 'check_circle', 'warning', 'error'];
 
 	for (const [type, icon] of zip(types, icons)) {
 		const wrapper = mount(VNotice, {

@@ -1,10 +1,156 @@
+<script setup lang="ts">
+import api from '@/api';
+import { useCollectionsStore } from '@/stores/collections';
+import { Collection } from '@/types/collections';
+import { translate } from '@/utils/translate-object-values';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { merge, sortBy } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import SettingsNavigation from '../../../components/navigation.vue';
+import CollectionDialog from './components/collection-dialog.vue';
+import CollectionItem from './components/collection-item.vue';
+import CollectionOptions from './components/collection-options.vue';
+
+const { t } = useI18n();
+
+const search = ref<string | null>(null);
+const collectionDialogActive = ref(false);
+const editCollection = ref<Collection | null>();
+
+const collectionsStore = useCollectionsStore();
+
+const collections = computed(() => {
+	return translate(
+		sortBy(
+			collectionsStore.collections.filter(
+				(collection) => collection.collection.startsWith('directus_') === false && collection.meta,
+			),
+			['meta.sort', 'collection'],
+		),
+	);
+});
+
+const rootCollections = computed(() => {
+	return collections.value.filter((collection) => !collection.meta?.group);
+});
+
+export type CollectionTree = {
+	collection: string;
+	visible: boolean;
+	children: CollectionTree[];
+	search: string | null;
+	findChild(collection: string): CollectionTree | undefined;
+};
+
+function findVisibilityChild(
+	collection: string,
+	tree: CollectionTree[] = visibilityTree.value,
+): CollectionTree | undefined {
+	return tree.find((child) => child.collection === collection);
+}
+
+const visibilityTree = computed(() => {
+	const tree: CollectionTree[] = makeTree();
+	const propagateBackwards: CollectionTree[] = [];
+
+	function makeTree(parent: string | null = null): CollectionTree[] {
+		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
+
+		const normalizedSearch = search.value?.toLowerCase();
+
+		return children.map((collection) => ({
+			collection: collection.collection,
+			visible: normalizedSearch ? collection.collection.toLowerCase().includes(normalizedSearch) : true,
+			search: search.value,
+			children: makeTree(collection.collection),
+			findChild(collection: string) {
+				return findVisibilityChild(collection, this.children);
+			},
+		}));
+	}
+
+	breadthSearch(tree);
+
+	function breadthSearch(tree: CollectionTree[]) {
+		for (const collection of tree) {
+			if (collection.children.length === 0) continue;
+
+			propagateBackwards.unshift(collection);
+		}
+
+		for (const collection of tree) {
+			breadthSearch(collection.children);
+		}
+	}
+
+	for (const child of propagateBackwards) {
+		child.visible = child.visible || child.children.some((child) => child.visible);
+	}
+
+	return tree;
+});
+
+const tableCollections = computed(() => {
+	return translate(
+		sortBy(
+			collectionsStore.collections.filter(
+				(collection) =>
+					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema,
+			),
+			['meta.sort', 'collection'],
+		),
+	);
+});
+
+const systemCollections = computed(() => {
+	return translate(
+		sortBy(
+			collectionsStore.collections
+				.filter((collection) => collection.collection.startsWith('directus_') === true)
+				.map((collection) => ({ ...collection, icon: 'settings' })),
+			'collection',
+		),
+	);
+});
+
+async function onSort(updates: Collection[], removeGroup = false) {
+	const updatesWithSortValue = updates.map((collection, index) =>
+		merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } }),
+	);
+
+	collectionsStore.collections = collectionsStore.collections.map((collection) => {
+		const updatedValues = updatesWithSortValue.find(
+			(updatedCollection) => updatedCollection.collection === collection.collection,
+		);
+
+		return updatedValues ? merge({}, collection, updatedValues) : collection;
+	});
+
+	try {
+		api.patch(
+			`/collections`,
+			updatesWithSortValue.map((collection) => {
+				return {
+					collection: collection.collection,
+					meta: { sort: collection.meta.sort, group: collection.meta.group },
+				};
+			}),
+		);
+	} catch (error) {
+		unexpectedError(error);
+	}
+}
+</script>
+
 <template>
 	<private-view :title="t('settings_data_model')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="list_alt" />
+				<v-icon name="database" />
 			</v-button>
 		</template>
 
@@ -53,7 +199,7 @@
 
 			<v-list v-else class="draggable-list">
 				<draggable
-					:force-fallback="true"
+					force-fallback
 					:model-value="rootCollections"
 					:group="{ name: 'collections' }"
 					:swap-threshold="0.3"
@@ -94,7 +240,7 @@
 						<span class="collection-name">{{ collection.name }}</span>
 					</router-link>
 
-					<collection-options :collection="collection" />
+					<collection-options :collection="collection" :has-nested-collections="false" />
 				</v-list-item>
 			</v-list>
 
@@ -129,154 +275,10 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
-import api from '@/api';
-import { useCollectionsStore } from '@/stores/collections';
-import { Collection } from '@/types/collections';
-import { translate } from '@/utils/translate-object-values';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { merge, sortBy } from 'lodash';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
-import SettingsNavigation from '../../../components/navigation.vue';
-import CollectionDialog from './components/collection-dialog.vue';
-import CollectionItem from './components/collection-item.vue';
-import CollectionOptions from './components/collection-options.vue';
-
-const { t } = useI18n();
-
-const search = ref<string | null>(null);
-const collectionDialogActive = ref(false);
-const editCollection = ref<Collection | null>();
-
-const collectionsStore = useCollectionsStore();
-
-const collections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false && collection.meta
-			),
-			['meta.sort', 'collection']
-		)
-	);
-});
-
-const rootCollections = computed(() => {
-	return collections.value.filter((collection) => !collection.meta?.group);
-});
-
-export type CollectionTree = {
-	collection: string;
-	visible: boolean;
-	children: CollectionTree[];
-	search: string | null;
-	findChild(collection: string): CollectionTree | undefined;
-};
-
-function findVisibilityChild(
-	collection: string,
-	tree: CollectionTree[] = visibilityTree.value
-): CollectionTree | undefined {
-	return tree.find((child) => child.collection === collection);
-}
-
-const visibilityTree = computed(() => {
-	const tree: CollectionTree[] = makeTree();
-	const propagateBackwards: CollectionTree[] = [];
-
-	function makeTree(parent: string | null = null): CollectionTree[] {
-		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
-
-		return children.map((collection) => ({
-			collection: collection.collection,
-			visible: collection.collection.includes(search.value ?? ''),
-			search: search.value,
-			children: makeTree(collection.collection),
-			findChild(collection: string) {
-				return findVisibilityChild(collection, this.children);
-			},
-		}));
-	}
-
-	breadthSearch(tree);
-
-	function breadthSearch(tree: CollectionTree[]) {
-		for (const collection of tree) {
-			if (collection.children.length === 0) continue;
-
-			propagateBackwards.unshift(collection);
-		}
-
-		for (const collection of tree) {
-			breadthSearch(collection.children);
-		}
-	}
-
-	for (const child of propagateBackwards) {
-		child.visible = child.visible || child.children.some((child) => child.visible);
-	}
-
-	return tree;
-});
-
-const tableCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) =>
-					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema
-			),
-			['meta.sort', 'collection']
-		)
-	);
-});
-
-const systemCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections
-				.filter((collection) => collection.collection.startsWith('directus_') === true)
-				.map((collection) => ({ ...collection, icon: 'settings' })),
-			'collection'
-		)
-	);
-});
-
-async function onSort(updates: Collection[], removeGroup = false) {
-	const updatesWithSortValue = updates.map((collection, index) =>
-		merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } })
-	);
-
-	collectionsStore.collections = collectionsStore.collections.map((collection) => {
-		const updatedValues = updatesWithSortValue.find(
-			(updatedCollection) => updatedCollection.collection === collection.collection
-		);
-
-		return updatedValues ? merge({}, collection, updatedValues) : collection;
-	});
-
-	try {
-		api.patch(
-			`/collections`,
-			updatesWithSortValue.map((collection) => {
-				return {
-					collection: collection.collection,
-					meta: { sort: collection.meta.sort, group: collection.meta.group },
-				};
-			})
-		);
-	} catch (err: any) {
-		unexpectedError(err);
-	}
-}
-</script>
-
 <style scoped lang="scss">
 .v-input.search {
-	height: var(--v-button-height);
-	--border-radius: calc(44px / 2);
+	--v-input-border-radius: calc(44px / 2);
+	height: 44px;
 	width: 200px;
 	margin-left: auto;
 
@@ -301,14 +303,14 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .header-icon {
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
+	--v-button-background-color-disabled: var(--theme--primary-background);
+	--v-button-color-disabled: var(--theme--primary);
+	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
+	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
 .collection-item.hidden {
-	--v-list-item-color: var(--foreground-subdued);
+	--v-list-item-color: var(--theme--foreground-subdued);
 }
 
 .collection-icon {
@@ -316,16 +318,16 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .hidden .collection-name {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	flex-grow: 1;
 }
 
 .draggable-list :deep(.sortable-ghost) {
 	.v-list-item {
-		--v-list-item-background-color: var(--primary-alt);
-		--v-list-item-border-color: var(--primary);
-		--v-list-item-background-color-hover: var(--primary-alt);
-		--v-list-item-border-color-hover: var(--primary);
+		--v-list-item-background-color: var(--theme--primary-background);
+		--v-list-item-border-color: var(--theme--primary);
+		--v-list-item-background-color-hover: var(--theme--primary-background);
+		--v-list-item-border-color-hover: var(--theme--primary);
 
 		> * {
 			opacity: 0;

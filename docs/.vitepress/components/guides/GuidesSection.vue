@@ -1,10 +1,19 @@
+<script setup lang="ts">
+import { sections } from '@/data/guides';
+
+type Keys = keyof typeof sections;
+type Sections = (typeof sections)[Keys];
+
+defineProps<{ section: Sections }>();
+</script>
+
 <template>
 	<div class="boxes" :style="`column-count: ${section.cols}`">
 		<div v-for="block of section.blocks" :key="block.title" class="box">
 			<h3>{{ block.title }}</h3>
 			<ul>
-				<li v-for="item in block.items" :key="item.path">
-					<a v-if="item.path" :href="item.path">{{ item.display }}</a>
+				<li v-for="item in block.items" :key="item.display">
+					<a v-if="'path' in item" :href="item.path">{{ item.display }}</a>
 					<span v-else>
 						<span>{{ item.display }}:</span>
 						<a v-for="variant of item.paths" :key="variant.path" :href="variant.path">{{ variant.label }}</a>
@@ -14,16 +23,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup>
-import { toRaw } from 'vue';
-
-const props = defineProps({
-	section: Object,
-});
-
-const { section } = toRaw(props);
-</script>
 
 <style scoped>
 .boxes {

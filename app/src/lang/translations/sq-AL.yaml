@@ -27,6 +27,7 @@ method: Metodë
 published: Publikuar
 draft: Draft
 archived: Arkivuar
+extensions: Zgjerime
 modules: Module
 module_bar: Shiriti i Moduleve
 logs: Regjistrime
@@ -35,6 +36,7 @@ tile_size: Madhësia e Mozaikut
 edit_field: Modifiko Fushën
 conditions: Kushte
 location: Vendndodhja
+collection_names_are_case_sensitive: Emrat e koleksioneve janë të ndjeshëm ndaj madhësisë së shkronjave
 condition_rules: Rregullat e Kushteve
 input: Input
 maps: Harta
@@ -52,8 +54,16 @@ or: Ose
 init: Init
 dataset_too_large_currently_showing_n_items: Seti i të dhënave është shumë i madh. Tani po shfaqen {n} artikujt e parë.
 modifier: Modifikues
+extension_interface: Ndërfaqe
+extension_display: Shfaq
+extension_layout: Struktura
+extension_panel: Paneli
+extension_hook: Hook
+extension_operation: Operacion
+extension_modules: Module
+enable: Parashikoni përkthimet
 custom: Personalizuar
-hook: Kancë
+hook: Hook
 fill_width: Plotëso Gjerësinë
 field_name_translations: Përkthimet e Emrit të Fushës
 enter_password_to_enable_tfa: Shkruaj fjalëkalimin për të aktivizuar Autentikimin me dy Faktorë
@@ -99,6 +109,7 @@ rename_folder: Riemërto Dosjen
 delete_folder: Fshi Dosjen
 prefix: Prefiks
 suffix: Sufiks
+promote_version_preview: Parashiko
 reset_bookmark: Rikthe Shënuesin
 update_bookmark: Përditëso Shënuesin
 delete_bookmark: Fshi Shënuesin
@@ -144,8 +155,16 @@ validationError:
   nnull: Vlera nuk mund të jetë null
   required: Vlera është e nevojshme
   unique: Vlera duhet të jetë unike
+  email: Vlera duhet të jetë një adresë email e vlefshme
   regex: Vlera nuk ka formatin e duhur
+  starts_with: Vlera duhet të fillojë me {substring}
   istarts_with: Value has to start with {substring}
+  nstarts_with: Vlera nuk mund të fillojë me {substring}
+  nistarts_with: Vlera nuk mund të fillojë me {substring}
+  ends_with: Vlera duhet të mbarojë me {substring}
+  iends_with: Vlera duhet të mbarojë me {substring}
+  nends_with: Vlera nuk mund të mbarojë me {substring}
+  niends_with: Vlera nuk mund të mbarojë me {substring}
 all_access: Qasje e Plote
 no_access: Pa Qasje
 use_custom: Përdor të personalizuar
@@ -333,6 +352,7 @@ clear_items: Artikujt
 reset_to_default: Kthehu në Parametrat e Paracaktuar
 undo_changes: Anulo Ndryshimet
 notifications: Njoftimet
+archive_all: Arkivo të gjitha
 show_all_activity: Shfaq të Gjithë Aktivitetin
 page_not_found: Faqe nuk u Gjet
 page_not_found_body: Faqja që kërkoni nuk duket të ekzistojë.
@@ -387,6 +407,7 @@ move: Zhvendos
 system: Sistemi
 add_field_related: Shto Fushë në Koleksionin e Lidhur
 interface_label: Ndërfaqe
+display_label: Shfaq
 today: Sot
 yesterday: Dje
 delete_comment: Fshi Komentin
@@ -437,7 +458,6 @@ dimensions: Dimensionet
 size: Madhësia
 created: U krijua
 modified: Modifikuar
-checksum: Checksum
 owner: Pronari
 edited_by: Redaktuar nga
 folder: Dosje
@@ -455,12 +475,18 @@ import_from_url: Importo Skedar nga URL
 replace_from_device: Zëvendëso Skedarin nga Pajisja
 replace_from_library: Zëvendëso Skedarin nga Biblioteka
 replace_from_url: Zëvendëso Skedarin nga URL
+no_image_selected: Asnjë imazh nuk është zgjedhur
 no_file_selected: Asnjë Skedar i Zgjedhur
 download_file: Shkarko Skedarin
 open_file_in_tab: Hap skedarin në skedë të re
 start_export: Filloni Eksportimin
 not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
 exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
+exporting_limited_items_in_collection: '{count} prej {total} artikujve brenda {collection} do të eksportohen.'
+exporting_no_items_to_export: Nuk ka artikuj për të eksportuar. Rregullo konfigurimin e eksportimit dhe/ose shto artikuj në koleksion.
+exporting_download_hint: Pasi skedari {format} të jetë krijuar, ai do të shkarkohet në pajisjen tuaj.
+exporting_library_hint: Pasi skedari {format} të jetë krijuar, ai do të ruhet në Bibliotekën e Skedareve.
+exporting_library_hint_forced: Ky eksport duhet të përpunohet në seritë. Pasi të jetë përfunduar, skedari {format} do të ruhet në Bibliotekën e Skedareve.
 collection_key: Kyçi i Koleksionit
 name: Emri
 primary_key_field: Fusha e Kyçit Primar
@@ -489,6 +515,7 @@ expand: Zgjero
 collapse: Tkurre
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
+search_items: Kërko artikuj...
 disabled: I Çaktivizuar
 information: Informacion
 report_bug: Raporto Defekt
@@ -568,6 +595,7 @@ bookmark_doesnt_exist_copy: Faqerojtësi që po përpiqeni të hapni nuk mund t�
 bookmark_doesnt_exist_cta: Kthehu te koleksioni
 select_an_item: Zgjidh një artikull...
 edit: Modifiko
+edit_item: Redakto artikullin
 enabled: Aktivizuar
 disable_tfa: Çaktivizo 2FA
 admin_disable_tfa_text: Jeni i sigurt që doni të çaktivizoni 2FA për këtë përdorues?
@@ -597,7 +625,6 @@ errors:
   RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
   USER_SUSPENDED: Përdoruesi është pezulluar
   CONTAINS_NULL_VALUES: Fusha përmban vlera null
-  UNPROCESSABLE_ENTITY: Entitet i papërpunueshëm
   INTERNAL_SERVER_ERROR: Gabim i papritur
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
   ILLEGAL_ASSET_TRANSFORMATION: Burimi i imazhit është shumë i madh për të paraparë
@@ -703,8 +730,12 @@ operators:
   icontains: Përmban (insensitive)
   starts_with: Fillon me
   nstarts_with: Nuk fillon me
+  istarts_with: Fillon me (pa ndjeshmëri)
+  nistarts_with: Nuk fillon me (pa ndjeshmëri)
   ends_with: Mbaron me
   nends_with: Nuk mbaron me
+  iends_with: Mbaron me (pa ndjeshmëri)
+  niends_with: Nuk mbaron me (pa ndjeshmëri)
   between: Është midis
   nbetween: Nuk është midis
   empty: Është bosh
@@ -730,11 +761,11 @@ upload_pending: Ngarkimi në Pritje
 drag_file_here: Tërhiqe dhe Lësho Skedarin Këtu
 click_to_browse: Kliko për të Shfletuar
 interface_options: Opsionet e Ndërfaqes
+display_options: Opsionet e Shfaqjes
 layout_options: Opsionet e Faqosjes
 rows: Rreshta
 columns: Kolona
 collection_setup: Setup i Koleksionit
-optional_system_fields: Fushat Opsionale të Sistemit
 value_unique: Vlera duhet të jetë unike
 all_activity: Të Gjitha Aktivitetet
 create_item: Krijo Artikull
@@ -932,6 +963,8 @@ wysiwyg_options:
   source_code: Kodi Burimor
   fullscreen: Kodi Burimor
   directionality: Drejtimi
+  lazy_loading: Ngarkim të Përtypur të Imazhit
+  lazy_loading_label: Aktivizo Ngarkimin e Përtypur
 dropdown: Zbritëse
 choices: Zgjedhje
 choices_option_configured_incorrectly: Opsionet e zgjedhjeve janë konfiguruar gabim
@@ -948,13 +981,13 @@ editing_unit: 'Po modifikohet {unit}'
 editing_in_batch: 'Modifikim në masë i {count} artikujve'
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
-settings_permissions: Role dhe Leje
-settings_project: Cilësimet e Projektit
+settings_project: Parametra
 settings_webhooks: Webhooks
 settings_flows: Rrjedha
-settings_presets: Cilësimet e Paracaktuara dhe Faqerojtësit
-settings_translations: Përkthimet e Personalizuara
+settings_presets: Faqerojtësit
+settings_translations: Përkthimet
 one_or_more_options_are_missing: Mungon një ose më shumë opsione
+configure_field_key_to_continue: Konfiguro çelësin e fushës për të vazhduar
 scope: Shtrirje
 actions: Veprimet
 select: Zgjidh...
@@ -988,7 +1021,7 @@ page_help_files_collection: >-
   **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
 page_help_files_item: >-
   **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
-page_help_settings_project: "**Cilësimet e Projektit** — Opsionet globale të konfigurimit të projektit tënd."
+page_help_settings_extensions: '**Zgjerime** — Zgjerimet e instaluara në projektin tuaj.'
 page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
 page_help_settings_datamodel_fields: >-
@@ -1113,10 +1146,6 @@ fields:
     tags: Etiketa
     user_preferences: Preferencat e Përdoruesit
     language: Gjuha
-    theme: Tema
-    theme_auto: Automatike (Bazuar në Sistemin)
-    theme_light: Mënyrë e Ndritshme
-    theme_dark: Mënyrë e Errët
     tfa_secret: Autentikimi me Dy Faktorë
     admin_options: Opsionet e Adminit
     status: Statusi
@@ -1155,7 +1184,6 @@ fields:
     project_color: Ngjyra e Projektit
     project_logo: Logoja e Projektit
     default_language: Gjuha e Parazgjedhur
-    branding: Branding & Stil
     public_foreground: Sfondi i Jashtëm
     public_background: Sfondi Publik
     public_note: Shënim Publik
@@ -1215,7 +1243,6 @@ field_options:
   directus_settings:
     project_name_placeholder: Projekti im...
     project_color_note: Login & Mjedis i Logos
-    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: Një mesazh i shkurtër, publik që mbështet formatimin e markdown...
     security_divider_title: Siguria
     auth_password_policy:
@@ -1291,9 +1318,6 @@ field_options:
     collections_addLabel: Shto Koleksion...
   directus_users:
     preferences_divider: Preferencat e Përdoruesit
-    dropdown_auto: Automatike (Bazuar në Sistemin)
-    dropdown_light: Mënyrë e Ndritshme
-    dropdown_dark: Mënyrë e Errët
     admin_divider: Opsionet e Adminit
     status_dropdown_draft: Draft
     status_dropdown_invited: I Ftuar
@@ -1346,6 +1370,7 @@ share: Ndaj
 share_item: Ndaj Artikull
 shared_with_you: Një artikull është ndarë me ju
 shared_enter_passcode: Shkruani kodin tuaj për të vazhduar...
+shared_leave_blank_for_passwordless_access: Lini të zbrazët për qasje pa fjalëkalim
 shared_leave_blank_for_unlimited: Lëreni bosh për të pakufizuar
 shared_times_remaining: Ky link mund të përdoret vetëm {n} herë
 shared_last_remaining: Ky link mund të përdoret vetëm një herë
@@ -1429,6 +1454,7 @@ search: Kërko
 select_existing: Zgjidh Ekzistuesin
 select_field_type: Zgjidh llojin e fushës
 select_interface: Zgjidh ndërfaqen
+select_display: Zgjidh një shfaqje
 settings: Parametra
 sign_in: Hyni
 sign_out: Dil
@@ -1460,6 +1486,8 @@ undo_removed_item: Zhbëj Hiqjen e Artikullit
 remove_item: Hiq Artikullin
 delete_item: Fshi Artikullin
 interfaces:
+  list-m2a:
+    prefix_note: Përdor emrin e koleksionit të artikullit të lidhur si parazgjedhje.
   filter:
     name: Filtri
     description: Konfiguro një objekt filtrues.
@@ -1595,6 +1623,13 @@ interfaces:
   system-interface-options:
     interface-options: Opsionet e Ndërfaqes
     description: Një modal për zgjedhjen e opsioneve të një ndërfaqeje
+  system-display:
+    display: Shfaq
+    description: Zgjidh një shfaqje ekzistuese
+    placeholder: Zgjidh një shfaqje...
+  system-display-options:
+    display-options: Opsionet e Shfaqjes
+    description: Një modal për zgjedhjen e opsioneve të një shfaqjeje
   list-m2m:
     many-to-many: Shumë me Shumë
     description: Zgjidh artikuj të shumtë të lidhur në një udhëkryq
@@ -1647,7 +1682,7 @@ interfaces:
     description: Zgjidh artikuj të shumtë të lidhur
     no_collection: Koleksioni nuk mund të gjendet
   system-folder:
-    folder: Dosje
+    folder: Dosja kryesore
     description: Zgjidh një dosje
     field_hint: Dosja e paracaktuar për skedarët e ngarkuar pa një dosje të specifikuar. Nuk ndikon në skedarët ekzistues.
     root_name: Rrënja e Bibliotekës së Skedarëve
@@ -1664,6 +1699,8 @@ interfaces:
     sort_placeholder: Manual
     field_note_placeholder: Fut shënim fushe...
     incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
+    interface_group: Opsionet e Ndërfaqes
+    display_group: Opsionet e Shfaqjes
   slider:
     slider: Rrëshqitës
     description: Zgjidh një numër përmes një rrëshqitësi
@@ -2035,6 +2072,7 @@ panels:
     smooth: I butë
     straight: I drejtë
     step_line: Vijë Hapësire
+    show_legend: Shfaq legjendën
   meter:
     name: Metër
     description: Metër për gjurmimin e vlerave
@@ -2119,9 +2157,19 @@ operations:
     payload: Ngarkesa
     query: Query
   json-web-token:
+    name: Shenja e Uebit JSON (JWT)
+    description: Nënshkruaj dhe verifiko Shenjat e Uebit JSON
+    operation: Operacion
+    secret: Sekret
+    secret_placeholder: Fut një sekret...
     payload: Ngarkesa
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opsione
+    options_placeholder: 'Referohu te https://www.npmjs.com/package/jsonwebtoken#usage për opsionet e disponueshme'
+    sign: Nënshkruaj Shenjën
+    verify: Verifiko Shenjën
+    decode: Dekodo Shenjën
   log:
     name: Regjistro në Konsolë
     description: Shfaq diçka në konsolë
@@ -2141,6 +2189,7 @@ operations:
     recipient: Përdorues
     recipient_placeholder: Shkruaj një UUID...
     recipient_note: Shto UUID të përdoruesit dhe shtyp enter...
+    item_note: Çelësi i Artikullit ose URL e Lidhur
     message: Mesazh
     subject: Subjekt
   request:
@@ -2174,3 +2223,14 @@ operations:
     batch: Grup
     batch_size: Madhësia e Grupit
     cache: Cache
+standard: Standarde
+compact: E kompakt
+style: Stil
+fonts:
+  thin: I hollë
+  normal: Normal
+  medium: Mesatar
+  bold: Trashë
+  black: Zi
+  italic: Italik
+  auto: Automatik

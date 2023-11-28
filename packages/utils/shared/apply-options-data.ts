@@ -6,18 +6,18 @@ import { parseJSON } from './parse-json.js';
 type Mustache<T> = T extends string
 	? JsonValue
 	: T extends Array<infer U>
-	? Array<Mustache<U>>
-	: T extends Record<any, any>
-	? { [K in keyof T]: Mustache<T[K]> }
-	: T;
+	  ? Array<Mustache<U>>
+	  : T extends Record<any, any>
+	    ? { [K in keyof T]: Mustache<T[K]> }
+	    : T;
 
 export function applyOptionsData(
 	options: Record<string, any>,
 	data: Record<string, any>,
-	skipUndefinedKeys: string[] = []
+	skipUndefinedKeys: string[] = [],
 ): Record<string, any> {
 	return Object.fromEntries(
-		Object.entries(options).map(([key, value]) => [key, renderMustache(value, data, skipUndefinedKeys.includes(key))])
+		Object.entries(options).map(([key, value]) => [key, renderMustache(value, data, skipUndefinedKeys.includes(key))]),
 	);
 }
 
@@ -50,7 +50,7 @@ function renderMustache<T extends JsonValue>(item: T, scope: Scope, skipUndefine
 		return item.map((element) => renderMustache(element, scope, skipUndefined)) as Mustache<T>;
 	} else if (typeof item === 'object' && item !== null) {
 		return Object.fromEntries(
-			Object.entries(item).map(([key, value]) => [key, renderMustache(value, scope, skipUndefined)])
+			Object.entries(item).map(([key, value]) => [key, renderMustache(value, scope, skipUndefined)]),
 		) as Mustache<T>;
 	} else {
 		return item as Mustache<T>;

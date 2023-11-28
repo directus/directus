@@ -1,60 +1,3 @@
-<template>
-	<div class="v-input" :class="classes" @click="$emit('click', $event)">
-		<div v-if="$slots['prepend-outer']" class="prepend-outer">
-			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
-		</div>
-		<div class="input" :class="{ disabled, active }">
-			<div v-if="$slots.prepend" class="prepend">
-				<slot name="prepend" :value="modelValue" :disabled="disabled" />
-			</div>
-			<span v-if="prefix" class="prefix">{{ prefix }}</span>
-			<slot name="input">
-				<input
-					ref="input"
-					v-focus="autofocus"
-					v-bind="attributes"
-					:placeholder="placeholder ? String(placeholder) : undefined"
-					:autocomplete="autocomplete"
-					:type="type"
-					:min="min"
-					:max="max"
-					:step="step"
-					:disabled="disabled"
-					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
-					v-on="listeners"
-				/>
-			</slot>
-			<span v-if="suffix" class="suffix">{{ suffix }}</span>
-			<span v-if="type === 'number' && !hideArrows">
-				<v-icon
-					:class="{ disabled: !isStepUpAllowed }"
-					name="keyboard_arrow_up"
-					class="step-up"
-					tabindex="-1"
-					clickable
-					:disabled="!isStepUpAllowed"
-					@click="stepUp"
-				/>
-				<v-icon
-					:class="{ disabled: !isStepDownAllowed }"
-					name="keyboard_arrow_down"
-					class="step-down"
-					tabindex="-1"
-					clickable
-					:disabled="!isStepDownAllowed"
-					@click="stepDown"
-				/>
-			</span>
-			<div v-if="$slots.append" class="append">
-				<slot name="append" :value="modelValue" :disabled="disabled" />
-			</div>
-		</div>
-		<div v-if="$slots['append-outer']" class="append-outer">
-			<slot name="append-outer" :value="modelValue" :disabled="disabled" />
-		</div>
-	</div>
-</template>
-
 <script lang="ts">
 export default {
 	inheritAttrs: false,
@@ -94,6 +37,8 @@ interface Props {
 	type?: string;
 	/** Hide the arrows that are used to increase or decrease a number */
 	hideArrows?: boolean;
+	/** The maximum amount of characters that can be entered */
+	maxLength?: number;
 	/** The maximum number that can be entered */
 	max?: number;
 	/** The minimum number that can be entered */
@@ -276,24 +221,86 @@ function stepDown() {
 }
 </script>
 
+<template>
+	<div class="v-input" :class="classes" @click="$emit('click', $event)">
+		<div v-if="$slots['prepend-outer']" class="prepend-outer">
+			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
+		</div>
+		<div class="input" :class="{ disabled, active }">
+			<div v-if="$slots.prepend" class="prepend">
+				<slot name="prepend" :value="modelValue" :disabled="disabled" />
+			</div>
+			<span v-if="prefix" class="prefix">{{ prefix }}</span>
+			<slot name="input">
+				<input
+					ref="input"
+					v-focus="autofocus"
+					v-bind="attributes"
+					:placeholder="placeholder ? String(placeholder) : undefined"
+					:autocomplete="autocomplete"
+					:type="type"
+					:maxlength="maxLength"
+					:min="min"
+					:max="max"
+					:step="step"
+					:disabled="disabled"
+					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+					v-on="listeners"
+				/>
+			</slot>
+			<span v-if="suffix" class="suffix">{{ suffix }}</span>
+			<span v-if="type === 'number' && !hideArrows">
+				<v-icon
+					:class="{ disabled: !isStepUpAllowed }"
+					name="keyboard_arrow_up"
+					class="step-up"
+					tabindex="-1"
+					clickable
+					:disabled="!isStepUpAllowed"
+					@click="stepUp"
+				/>
+				<v-icon
+					:class="{ disabled: !isStepDownAllowed }"
+					name="keyboard_arrow_down"
+					class="step-down"
+					tabindex="-1"
+					clickable
+					:disabled="!isStepDownAllowed"
+					@click="stepDown"
+				/>
+			</span>
+			<div v-if="$slots.append" class="append">
+				<slot name="append" :value="modelValue" :disabled="disabled" />
+			</div>
+		</div>
+		<div v-if="$slots['append-outer']" class="append-outer">
+			<slot name="append-outer" :value="modelValue" :disabled="disabled" />
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
-:global(body) {
-	--v-input-font-family: var(--family-sans-serif);
-	--v-input-placeholder-color: var(--foreground-subdued);
-	--v-input-box-shadow-color-focus: var(--primary);
-	--v-input-color: var(--foreground-normal);
-	--v-input-background-color: var(--background-input);
-	--v-input-border-color-focus: var(--primary);
-}
+/**
+	Available component overrides:
+
+	--v-input-font-family         [--theme--fonts--sans--font-family]
+	--v-input-placeholder-color   [--theme--foreground-subdued]
+	--v-input-color               [--theme--form--field--input--foreground]
+	--v-input-background-color    [--theme--form--field--input--background]
+	--v-input-border-color        [--theme--form--field--input--border-color]
+	--v-input-border-color-hover  [--theme--form--field--input--border-color-hover]
+	--v-input-border-color-focus  [--theme--form--field--input--border-color-focus]
+	--v-input-border-radius       [--theme--border-radius]
+*/
 
 .v-input {
-	--arrow-color: var(--border-normal);
-	--v-icon-color: var(--foreground-subdued);
+	--arrow-color: var(--theme--form--field--input--border-color);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	align-items: center;
 	width: max-content;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 
 	.prepend-outer {
 		margin-right: 8px;
@@ -305,15 +312,17 @@ function stepDown() {
 		flex-grow: 1;
 		align-items: center;
 		height: 100%;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 		padding-top: 0px;
 		padding-bottom: 0px;
-		color: var(--v-input-color);
-		font-family: var(--v-input-font-family);
-		background-color: var(--v-input-background-color);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
-		transition: border-color var(--fast) var(--transition);
+		color: var(--v-input-color, var(--theme--form--field--input--foreground));
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
+		background-color: var(--v-input-background-color, var(--theme--form--field--input--background));
+		border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
+		border-radius: var(--v-input-border-radius, var(--theme--border-radius));
+		transition: var(--fast) var(--transition);
+		transition-property: border-color, box-shadow;
+		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
 			margin-right: 8px;
@@ -334,7 +343,7 @@ function stepDown() {
 			display: block;
 
 			&:hover:not(.disabled) {
-				--arrow-color: var(--primary);
+				--arrow-color: var(--theme--primary);
 			}
 
 			&:active:not(.disabled) {
@@ -342,41 +351,42 @@ function stepDown() {
 			}
 
 			&.disabled {
-				--arrow-color: var(--border-normal);
+				--arrow-color: var(--v-input-border-color);
 
 				cursor: auto;
 			}
 		}
 
 		&:hover {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
-			background-color: var(--background-input);
-			border-color: var(--border-normal-alt);
+			background-color: var(--theme--form--field--input--background);
+			border-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
+			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
 		&:focus-within,
 		&.active {
-			--arrow-color: var(--border-normal-alt);
+			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
-			background-color: var(--background-input);
-			border-color: var(--v-input-border-color-focus);
-			box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus);
+			background-color: var(--theme--form--field--input--background);
+			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
+			box-shadow: var(--theme--form--field--input--box-shadow-focus);
 		}
 
 		&.disabled {
-			--arrow-color: var(--border-normal);
+			--arrow-color: var(--v-input-border-color);
 
-			color: var(--foreground-subdued);
-			background-color: var(--background-subdued);
-			border-color: var(--border-normal);
+			color: var(--theme--foreground-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
+			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 
 		.prefix,
 		.suffix {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.append {
@@ -389,16 +399,16 @@ function stepDown() {
 		flex-grow: 1;
 		width: 20px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
-		padding: var(--input-padding);
+		padding: var(--theme--form--field--input--padding);
 		padding-right: 0px;
 		padding-left: 0px;
-		font-family: var(--v-input-font-family);
+		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;
 		appearance: none;
 
 		&::placeholder {
-			color: var(--v-input-placeholder-color);
+			color: var(--v-input-placeholder-color, var(--theme--foreground-subdued));
 		}
 
 		&::-webkit-outer-spin-button,
@@ -408,7 +418,7 @@ function stepDown() {
 		}
 
 		&:focus {
-			border-color: var(--v-input-border-color-focus);
+			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		}
 
 		/* Firefox */
@@ -446,7 +456,7 @@ function stepDown() {
 
 			.prefix,
 			.suffix {
-				color: var(--foreground-subdued);
+				color: var(--theme--foreground-subdued);
 			}
 		}
 

@@ -1,6 +1,6 @@
-import { Query } from '@directus/types';
-import { ClientOptions } from 'ws';
-import { ClientOptions as ClientOptionsGql } from 'graphql-ws';
+import type { Query } from '@directus/types';
+import type { ClientOptions } from 'ws';
+import type { ClientOptions as ClientOptionsGql } from 'graphql-ws';
 
 export type PrimaryKeyType = 'integer' | 'uuid' | 'string';
 export type WebSocketAuthMethod = 'public' | 'handshake' | 'strict';

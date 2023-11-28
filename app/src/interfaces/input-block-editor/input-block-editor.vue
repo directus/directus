@@ -1,33 +1,3 @@
-<template>
-	<div class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
-
-		<v-drawer
-			v-if="haveFilesAccess && !disabled"
-			:model-value="fileHandler !== null"
-			icon="image"
-			:title="t('upload_from_device')"
-			:cancelable="true"
-			@update:model-value="unsetFileHandler"
-			@cancel="unsetFileHandler"
-		>
-			<div class="uploader-drawer-content">
-				<div v-if="currentPreview" class="uploader-preview-image">
-					<img :src="currentPreview" />
-				</div>
-				<v-upload
-					:ref="uploaderComponentElement"
-					:multiple="false"
-					:folder="folder"
-					from-library
-					from-url
-					@input="handleFile"
-				/>
-			</div>
-		</v-drawer>
-	</div>
-</template>
-
 <script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
@@ -51,13 +21,11 @@ const props = withDefaults(
 		font?: 'sans-serif' | 'monospace' | 'serif';
 	}>(),
 	{
-		disabled: false,
-		autofocus: false,
 		value: null,
 		bordered: true,
 		tools: () => ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
 		font: 'sans-serif',
-	}
+	},
 );
 
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
@@ -85,7 +53,7 @@ const tools = getTools(
 		getUploadFieldElement: () => uploaderComponentElement,
 	},
 	props.tools,
-	haveFilesAccess
+	haveFilesAccess,
 );
 
 onMounted(async () => {
@@ -138,10 +106,10 @@ watch(
 			} else {
 				editorjsRef.value.clear();
 			}
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		}
-	}
+	},
 );
 
 async function emitValue(context: EditorJS.API) {
@@ -160,8 +128,8 @@ async function emitValue(context: EditorJS.API) {
 		if (isEqual(result.blocks, props.value?.blocks)) return;
 
 		emit('input', result);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	}
 }
 
@@ -175,6 +143,36 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	});
 }
 </script>
+
+<template>
+	<div class="input-block-editor">
+		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+
+		<v-drawer
+			v-if="haveFilesAccess && !disabled"
+			:model-value="fileHandler !== null"
+			icon="image"
+			:title="t('upload_from_device')"
+			cancelable
+			@update:model-value="unsetFileHandler"
+			@cancel="unsetFileHandler"
+		>
+			<div class="uploader-drawer-content">
+				<div v-if="currentPreview" class="uploader-preview-image">
+					<img :src="currentPreview" />
+				</div>
+				<v-upload
+					:ref="uploaderComponentElement"
+					:multiple="false"
+					:folder="folder"
+					from-library
+					from-url
+					@input="handleFile"
+				/>
+			</div>
+		</v-drawer>
+	</div>
+</template>
 
 <style lang="scss">
 @import './editorjs-overrides.css';
@@ -193,37 +191,38 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .disabled {
-	color: var(--foreground-subdued);
-	background-color: var(--background-subdued);
-	border-color: var(--border-normal);
+	color: var(--theme--form--field--input--foreground-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
+	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
 }
 
 .bordered {
-	padding: var(--input-padding) 4px var(--input-padding) calc(var(--input-padding) + 8px) !important;
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	padding: var(--theme--form--field--input--padding) 4px var(--theme--form--field--input--padding)
+		calc(var(--theme--form--field--input--padding) + 8px) !important;
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 
 	&:hover {
-		border-color: var(--border-normal-alt);
+		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&:focus-within {
-		border-color: var(--primary);
+		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 }
 
 .monospace {
-	font-family: var(--family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .serif {
-	font-family: var(--family-serif);
+	font-family: var(--theme--fonts--serif--font-family);
 }
 
 .sans-serif {
-	font-family: var(--family-sans-serif);
+	font-family: var(--theme--fonts--sans--font-family);
 }
 
 .uploader-drawer-content {
@@ -233,9 +232,9 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .uploader-preview-image {
-	margin-bottom: var(--form-vertical-gap);
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	margin-bottom: var(--theme--form--row-gap);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
 }
 
 .uploader-preview-image img {

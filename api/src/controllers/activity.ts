@@ -2,7 +2,7 @@ import { Action } from '@directus/constants';
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -65,7 +65,7 @@ router.get(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const createCommentSchema = Joi.object({
@@ -113,7 +113,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const updateCommentSchema = Joi.object({
@@ -152,7 +152,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -177,7 +177,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

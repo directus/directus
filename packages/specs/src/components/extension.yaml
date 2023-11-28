@@ -1,0 +1,32 @@
+type: object
+properties:
+  bundle:
+    description: Name of the bundle the extension is in.
+    example: directus-extension-my-bundle
+    type: string
+    nullable: true
+  name:
+    description: Unique name of the extension.
+    example: my-bundle-operation
+    type: string
+  meta:
+    description:
+      Directus metadata for the extension. Where the configuration for the extension in the current project is stored.
+    type: object
+    properties:
+      enabled:
+        description: Whether or not the extension is enabled.
+        example: true
+        type: boolean
+  schema:
+    description: Information about the installed extension. Can't be changed.
+    type: object
+    properties:
+      type:
+        description: Type of the extension.
+        example: operation
+        type: string
+      local:
+        description: Whether the extension exists in the local extensions folder or is loaded from `node_modules``.
+        example: true
+        type: boolean

@@ -1,18 +1,3 @@
-<template>
-	<span
-		class="v-icon"
-		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
-		:role="clickable ? 'button' : undefined"
-		:tabindex="clickable ? 0 : undefined"
-		:style="{ '--v-icon-color': color }"
-		@click="emitClick"
-	>
-		<component :is="customIconName" v-if="customIconName" />
-		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else :class="{ filled }" :data-icon="name"></i>
-	</span>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
@@ -85,22 +70,39 @@ function emitClick(event: MouseEvent) {
 }
 </script>
 
-<style>
-body {
-	--v-icon-color: currentColor;
-	--v-icon-color-hover: currentColor;
-	--v-icon-size: 24px;
-}
-</style>
+<template>
+	<span
+		class="v-icon"
+		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
+		:role="clickable ? 'button' : undefined"
+		:tabindex="clickable ? 0 : undefined"
+		:style="{ '--v-icon-color': color }"
+		@click="emitClick"
+	>
+		<component :is="customIconName" v-if="customIconName" />
+		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
+		<i v-else :class="{ filled }" :data-icon="name"></i>
+	</span>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-icon-color        [currentColor]
+		--v-icon-color-hover  [currentColor]
+		--v-icon-size         [24px]
+
+*/
+
 .v-icon {
 	position: relative;
 	display: inline-block;
-	width: var(--v-icon-size);
-	min-width: var(--v-icon-size);
-	height: var(--v-icon-size);
-	color: var(--v-icon-color);
+	width: var(--v-icon-size, 24px);
+	min-width: var(--v-icon-size, 24px);
+	height: var(--v-icon-size, 24px);
+	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
 
@@ -108,7 +110,7 @@ body {
 		display: block;
 		font-family: 'Material Symbols';
 		font-weight: normal;
-		font-size: var(--v-icon-size);
+		font-size: var(--v-icon-size, 24px);
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;
@@ -120,14 +122,22 @@ body {
 		-moz-osx-font-smoothing: grayscale;
 		text-rendering: optimizeLegibility;
 		font-feature-settings: 'liga';
-		font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+		font-variation-settings:
+			'FILL' 0,
+			'wght' 400,
+			'GRAD' 0,
+			'opsz' 24;
 
 		&::after {
 			content: attr(data-icon);
 		}
 
 		&.filled {
-			font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+			font-variation-settings:
+				'FILL' 1,
+				'wght' 400,
+				'GRAD' 0,
+				'opsz' 24;
 		}
 	}
 
@@ -147,7 +157,7 @@ body {
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
-			color: var(--v-icon-color-hover);
+			color: var(--v-icon-color-hover, currentColor);
 		}
 	}
 

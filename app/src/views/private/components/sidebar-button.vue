@@ -1,3 +1,26 @@
+<script setup lang="ts">
+import { useAppStore } from '@directus/stores';
+import { toRefs } from 'vue';
+
+withDefaults(
+	defineProps<{
+		to?: string;
+		icon?: string;
+		active?: boolean;
+	}>(),
+	{
+		icon: 'box',
+	},
+);
+
+defineEmits<{
+	(e: 'click', event: MouseEvent): void;
+}>();
+
+const appStore = useAppStore();
+const { sidebarOpen } = toRefs(appStore);
+</script>
+
 <template>
 	<component
 		:is="to ? 'router-link' : 'button'"
@@ -14,37 +37,14 @@
 	</component>
 </template>
 
-<script setup lang="ts">
-import { useAppStore } from '@directus/stores';
-import { toRefs } from 'vue';
-
-withDefaults(
-	defineProps<{
-		to?: string;
-		icon?: string;
-		active?: boolean;
-	}>(),
-	{
-		icon: 'box',
-	}
-);
-
-defineEmits<{
-	(e: 'click', event: MouseEvent): void;
-}>();
-
-const appStore = useAppStore();
-const { sidebarOpen } = toRefs(appStore);
-</script>
-
 <style lang="scss" scoped>
 .sidebar-button {
 	position: relative;
 	flex-shrink: 0;
 	width: 100%;
 	height: 60px;
-	color: var(--foreground-normal-alt);
-	background-color: var(--background-normal-alt);
+	color: var(--theme--foreground-accent);
+	background-color: var(--theme--background-accent);
 
 	.icon {
 		display: flex;
@@ -64,7 +64,7 @@ const { sidebarOpen } = toRefs(appStore);
 	}
 
 	&.active {
-		background-color: var(--background-normal-alt);
+		background-color: var(--theme--background-accent);
 	}
 }
 </style>

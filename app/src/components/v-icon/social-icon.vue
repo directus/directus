@@ -1,7 +1,3 @@
-<template>
-	<render />
-</template>
-
 <script setup lang="ts">
 import { h } from 'vue';
 import { findIconDefinition, icon, IconName, library } from '@fortawesome/fontawesome-svg-core';
@@ -24,10 +20,14 @@ const render = () => {
 			{
 				...socialIcon.abstract[0].attributes,
 			},
-			h('path', { ...socialIcon.abstract![0].children![0].attributes })
+			h('path', { ...socialIcon.abstract![0].children![0].attributes }),
 		);
 	}
 
 	return null;
 };
 </script>
+
+<template>
+	<render />
+</template>

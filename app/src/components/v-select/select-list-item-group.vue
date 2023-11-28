@@ -1,3 +1,45 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { Option } from './types';
+import SelectListItem from './select-list-item.vue';
+
+interface Props {
+	item: Option;
+	itemLabelFontFamily?: string;
+	modelValue?: string | number | (string | number)[] | null;
+	multiple?: boolean;
+	allowOther?: boolean;
+	groupSelectable?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	multiple: true,
+	allowOther: true,
+	groupSelectable: false,
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const isActive = computed(() => {
+	if (props.multiple) {
+		if (!Array.isArray(props.modelValue) || !props.item.value) {
+			return false;
+		}
+
+		return props.modelValue.includes(props.item.value);
+	} else {
+		return props.modelValue === props.item.value;
+	}
+});
+
+function onGroupClick(item: Option) {
+	if (!props.groupSelectable) return;
+
+	emit('update:modelValue', item.value);
+}
+</script>
+
 <template>
 	<v-list-group
 		v-show="!item.hidden"
@@ -46,45 +88,3 @@
 		</template>
 	</v-list-group>
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue';
-import { Option } from './types';
-import SelectListItem from './select-list-item.vue';
-
-interface Props {
-	item: Option;
-	itemLabelFontFamily?: string;
-	modelValue?: string | number | (string | number)[] | null;
-	multiple?: boolean;
-	allowOther?: boolean;
-	groupSelectable?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: null,
-	multiple: true,
-	allowOther: true,
-	groupSelectable: false,
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const isActive = computed(() => {
-	if (props.multiple) {
-		if (!Array.isArray(props.modelValue) || !props.item.value) {
-			return false;
-		}
-
-		return props.modelValue.includes(props.item.value);
-	} else {
-		return props.modelValue === props.item.value;
-	}
-});
-
-function onGroupClick(item: Option) {
-	if (!props.groupSelectable) return;
-
-	emit('update:modelValue', item.value);
-}
-</script>

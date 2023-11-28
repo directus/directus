@@ -16,6 +16,7 @@ import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 
 type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
@@ -40,7 +41,7 @@ type UsableItem<T extends Record<string, any>> = {
 export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
-	query: Ref<Query> | Query = {}
+	query: Ref<Query> | Query = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -126,10 +127,12 @@ export function useItem<T extends Record<string, any>>(
 				if (typeof to !== 'undefined') {
 					return to;
 				}
-			}
+			},
 		);
 
-		const errors = validateItem(payloadToValidate, fieldsWithPermissions.value, isNew.value);
+		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
+
+		const errors = validateItem(payloadToValidate, fields, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -206,7 +209,7 @@ export function useItem<T extends Record<string, any>>(
 						newItem,
 						relation,
 						relatedPrimaryKeyField,
-						fieldsToFetch
+						fieldsToFetch,
 					);
 
 					newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
@@ -228,7 +231,7 @@ export function useItem<T extends Record<string, any>>(
 						item.value,
 						relation,
 						relatedPrimaryKeyField,
-						fieldsToFetch
+						fieldsToFetch,
 					);
 
 					existingItems = existingItems.filter((i) => {
@@ -282,7 +285,7 @@ export function useItem<T extends Record<string, any>>(
 			item: any,
 			relation: Relation,
 			relatedPrimaryKeyField: Field | null,
-			fieldsToFetch: string[]
+			fieldsToFetch: string[],
 		) {
 			const existingIds = item?.[relation.meta!.one_field!].filter((item: any) => typeof item !== 'object');
 			let existingItems: any[] = [];
@@ -305,7 +308,7 @@ export function useItem<T extends Record<string, any>>(
 			updatedRelatedItems: any,
 			item: any,
 			relatedPrimaryKeyField: Field | null,
-			relation: Relation
+			relation: Relation,
 		) {
 			for (const updatedItem of updatedRelatedItems) {
 				copyUserEditValuesToExistingItem(item, relatedPrimaryKeyField, updatedItem, relation);
@@ -316,7 +319,7 @@ export function useItem<T extends Record<string, any>>(
 			item: any,
 			relatedPrimaryKeyField: Field | null,
 			updatedItem: any,
-			relation: Relation
+			relation: Relation,
 		) {
 			if (item[relatedPrimaryKeyField!.field] === updatedItem[relatedPrimaryKeyField!.field]) {
 				const columns = fields.filter((s) => s.startsWith(relation.meta!.one_field!));
@@ -336,11 +339,11 @@ export function useItem<T extends Record<string, any>>(
 		relation: Relation,
 		existsJunctionRelated: Relation | undefined,
 		fieldsStore: any,
-		item: any
+		item: any,
 	) {
 		if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
 			const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
-				existsJunctionRelated.related_collection
+				existsJunctionRelated.related_collection,
 			);
 
 			if (relation.meta.junction_field in item && junctionRelatedPrimaryKeyField.schema!.is_generated) {
@@ -349,26 +352,26 @@ export function useItem<T extends Record<string, any>>(
 		}
 	}
 
-	function saveErrorHandler(err: any) {
-		if (err?.response?.data?.errors) {
-			validationErrors.value = err.response.data.errors
+	function saveErrorHandler(error: any) {
+		if (error?.response?.data?.errors) {
+			validationErrors.value = error.response.data.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 				.map((err: APIError) => {
 					return err.extensions;
 				});
 
-			const otherErrors = err.response.data.errors.filter(
-				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+			const otherErrors = error.response.data.errors.filter(
+				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false,
 			);
 
 			if (otherErrors.length > 0) {
 				otherErrors.forEach(unexpectedError);
 			}
 		} else {
-			unexpectedError(err);
+			unexpectedError(error);
 		}
 
-		throw err;
+		throw error;
 	}
 
 	async function archive() {
@@ -405,9 +408,9 @@ export function useItem<T extends Record<string, any>>(
 				title:
 					value === archiveValue ? i18n.global.t('item_delete_success', 1) : i18n.global.t('item_update_success', 1),
 			});
-		} catch (err: any) {
-			unexpectedError(err);
-			throw err;
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
 		} finally {
 			archiving.value = false;
 		}
@@ -424,9 +427,9 @@ export function useItem<T extends Record<string, any>>(
 			notify({
 				title: i18n.global.t('item_delete_success', 1),
 			});
-		} catch (err: any) {
-			unexpectedError(err);
-			throw err;
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
 		} finally {
 			deleting.value = false;
 		}

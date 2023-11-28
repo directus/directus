@@ -42,6 +42,8 @@ full_width: Full Breidd
 group: Bólkur
 and: Og
 or: Ella
+extension_interface: Takførisflati
+extension_modules: Modulir
 fill_width: Fyll Breiddina
 field_name_translations: Navna Teiga Umsetingar
 enter_password_to_enable_tfa: Skriva títt loyniorð fyri at virkja Tvey-Stigs Samgildi (2FA)
@@ -105,7 +107,6 @@ creating_collection_system: Virkjan og nýnevnan av øllum hesum valfríðu Teig
 no_collections_copy: Tú hevur eingi Søvn enn. Set teg vinarliga í samband við kervisfyrisitarin.
 system_collections: Kervissøvnini
 interface_options: Takførisflatastillingar
-optional_system_fields: Valfrí Kervisteigar
 page_help_activity_collection: >-
   **Kaga Virksemi** — Ein drúvur listi av øllum tínum kervisbrúkarum innan kervisvirksemi og innihaldsvirksemi.
 page_help_settings_datamodel_collections: >-
@@ -116,8 +117,6 @@ directus_collection:
   directus_roles: Bólkar av loyvum fyri kervisbrúkarum
   directus_users: Kervisbrúkarir til verkætlanina
 fields:
-  directus_users:
-    theme_auto: Sjálvvirkin (Grunda á Kervi)
   directus_settings:
     module_bar: Modul Bjálki
   directus_fields:
@@ -153,10 +152,11 @@ interfaces:
   system-interface-options:
     interface-options: Takførisflatastillingar
   system-folder:
-    folder: Faldari
     description: Vel ein faldara
     root_name: Fílasavns Rót
     system_default: Grundkervi
+  list:
+    interface_group: Takførisflatastillingar
   input-rich-text-html:
     folder_note: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
 displays:

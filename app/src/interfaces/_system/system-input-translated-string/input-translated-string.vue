@@ -1,3 +1,129 @@
+<script setup lang="ts">
+import type { Translation } from '@/stores/translations';
+import { useTranslationsStore } from '@/stores/translations';
+import { fetchAll } from '@/utils/fetch-all';
+import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { computed, ref, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
+
+const translationPrefix = '$t:';
+
+const props = withDefaults(
+	defineProps<{
+		value?: string | null;
+		autofocus?: boolean;
+		disabled?: boolean;
+		placeholder?: string | null;
+	}>(),
+	{
+		value: null,
+		placeholder: null,
+	},
+);
+
+const emit = defineEmits(['input']);
+
+const { t } = useI18n();
+
+const menuEl = ref();
+const hasValidKey = ref<boolean>(false);
+const isFocused = ref<boolean>(false);
+const searchValue = ref<string | null>(null);
+
+const loading = ref(false);
+const translationsKeys = ref<string[]>([]);
+const translationsStore = useTranslationsStore();
+
+const isCustomTranslationDrawerOpen = ref<boolean>(false);
+
+const fetchTranslationsKeys = async () => {
+	loading.value = true;
+
+	try {
+		const response: { key: string }[] = await fetchAll(`/translations`, {
+			params: {
+				fields: ['key'],
+				groupBy: ['key'],
+			},
+		});
+
+		translationsKeys.value = response.map((t) => t.key);
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		loading.value = false;
+	}
+};
+
+fetchTranslationsKeys();
+
+const filteredTranslationKeys = computed(() => {
+	const keys = unref(translationsKeys);
+	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
+
+	if (filteredKeys.length > 100) {
+		return filteredKeys.slice(0, 100);
+	}
+
+	return filteredKeys;
+});
+
+const localValue = computed<string | null>({
+	get() {
+		return props.value;
+	},
+	set(val) {
+		if (props.value === val) return;
+		emit('input', val);
+	},
+});
+
+const create = async (item: Translation) => {
+	await translationsStore.create(item);
+	await fetchTranslationsKeys();
+};
+
+watch(
+	() => props.value,
+	(newVal) => setValue(newVal),
+	{ immediate: true },
+);
+
+const localValueWithoutPrefix = computed(() => (localValue.value ? getKeyWithoutPrefix(localValue.value) : null));
+
+function getKeyWithoutPrefix(val: string) {
+	return val.substring(translationPrefix.length);
+}
+
+function selectKey(key: string) {
+	setValue(`${translationPrefix}${key}`);
+	menuEl.value.deactivate();
+	searchValue.value = null;
+}
+
+function setValue(newValue: string | null) {
+	if (newValue?.startsWith(translationPrefix)) newValue = newValue.replace(/\s/g, '_');
+	localValue.value = newValue;
+	if (!isFocused.value) checkKeyValidity();
+}
+
+function blur() {
+	isFocused.value = false;
+	checkKeyValidity();
+}
+
+function checkKeyValidity() {
+	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
+}
+
+function openNewCustomTranslationDrawer() {
+	menuEl.value.deactivate();
+	isCustomTranslationDrawerOpen.value = true;
+}
+</script>
+
 <template>
 	<div class="input-translated-string">
 		<v-menu ref="menuEl" :disabled="disabled" :close-on-content-click="false" attached>
@@ -83,157 +209,30 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import type { Translation } from '@/stores/translations';
-import { useTranslationsStore } from '@/stores/translations';
-import { fetchAll } from '@/utils/fetch-all';
-import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { computed, ref, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
-
-const translationPrefix = '$t:';
-
-interface Props {
-	value?: string | null;
-	autofocus?: boolean;
-	disabled?: boolean;
-	placeholder?: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	value: null,
-	autofocus: false,
-	disabled: false,
-	placeholder: null,
-});
-
-const emit = defineEmits(['input']);
-
-const { t } = useI18n();
-
-const menuEl = ref();
-const hasValidKey = ref<boolean>(false);
-const isFocused = ref<boolean>(false);
-const searchValue = ref<string | null>(null);
-
-const loading = ref(false);
-const translationsKeys = ref<string[]>([]);
-const translationsStore = useTranslationsStore();
-
-const isCustomTranslationDrawerOpen = ref<boolean>(false);
-
-const fetchTranslationsKeys = async () => {
-	loading.value = true;
-
-	try {
-		const response: { key: string }[] = await fetchAll(`/translations`, {
-			params: {
-				fields: ['key'],
-				groupBy: ['key'],
-			},
-		});
-
-		translationsKeys.value = response.map((t) => t.key);
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
-};
-
-fetchTranslationsKeys();
-
-const filteredTranslationKeys = computed(() => {
-	const keys = unref(translationsKeys);
-	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
-
-	if (filteredKeys.length > 100) {
-		return filteredKeys.slice(0, 100);
-	}
-
-	return filteredKeys;
-});
-
-const localValue = computed<string | null>({
-	get() {
-		return props.value;
-	},
-	set(val) {
-		if (props.value === val) return;
-		emit('input', val);
-	},
-});
-
-const create = async (item: Translation) => {
-	await translationsStore.create(item);
-	await fetchTranslationsKeys();
-};
-
-watch(
-	() => props.value,
-	(newVal) => setValue(newVal),
-	{ immediate: true }
-);
-
-const localValueWithoutPrefix = computed(() => (localValue.value ? getKeyWithoutPrefix(localValue.value) : null));
-
-function getKeyWithoutPrefix(val: string) {
-	return val.substring(translationPrefix.length);
-}
-
-function selectKey(key: string) {
-	setValue(`${translationPrefix}${key}`);
-	menuEl.value.deactivate();
-	searchValue.value = null;
-}
-
-function setValue(newValue: string | null) {
-	if (newValue?.startsWith(translationPrefix)) newValue = newValue.replace(/\s/g, '_');
-	localValue.value = newValue;
-	if (!isFocused.value) checkKeyValidity();
-}
-
-function blur() {
-	isFocused.value = false;
-	checkKeyValidity();
-}
-
-function checkKeyValidity() {
-	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
-}
-
-function openNewCustomTranslationDrawer() {
-	menuEl.value.deactivate();
-	isCustomTranslationDrawerOpen.value = true;
-}
-</script>
-
 <style lang="scss" scoped>
 .translation-input {
 	:deep(button) {
 		margin-right: auto;
 		padding: 2px 8px 0;
-		color: var(--primary);
-		background-color: var(--primary-alt);
-		border-radius: var(--border-radius);
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
 		user-select: none;
-		font-family: var(--family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 
 	:deep(button:not(:disabled):hover) {
 		color: var(--white);
-		background-color: var(--danger);
+		background-color: var(--theme--danger);
 	}
 
 	.translate-icon {
 		&:hover,
 		&.active {
-			--v-icon-color-hover: var(--primary);
-			--v-icon-color: var(--primary);
+			--v-icon-color-hover: var(--theme--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 	}
 }
@@ -242,7 +241,7 @@ function openNewCustomTranslationDrawer() {
 	padding: 12px 8px 6px 8px;
 
 	.search-input {
-		--input-height: 48px;
+		--input-height: 40px;
 	}
 
 	.search-icon {
@@ -266,16 +265,16 @@ function openNewCustomTranslationDrawer() {
 		flex-basis: auto;
 		flex-grow: 0;
 		flex-shrink: 1;
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 
 	&.selected {
 		--v-list-item-color-active: var(--foreground-inverted);
-		--v-list-item-background-color-active: var(--primary);
+		--v-list-item-background-color-active: var(--theme--primary);
 		--v-list-item-color-hover: var(--foreground-inverted);
-		--v-list-item-background-color-hover: var(--primary);
+		--v-list-item-background-color-hover: var(--theme--primary);
 
-		background-color: var(--primary);
+		background-color: var(--theme--primary);
 		color: var(--foreground-inverted);
 
 		.v-list-item-icon {
@@ -290,12 +289,12 @@ function openNewCustomTranslationDrawer() {
 }
 
 .new-custom-translation {
-	--v-list-item-color-hover: var(--primary-125);
+	--v-list-item-color-hover: var(--theme--primary-accent);
 
-	color: var(--primary);
+	color: var(--theme--primary);
 
 	.v-list-item-icon {
-		--v-icon-color: var(--primary);
+		--v-icon-color: var(--theme--primary);
 	}
 }
 </style>

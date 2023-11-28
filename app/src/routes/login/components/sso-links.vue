@@ -1,24 +1,3 @@
-<template>
-	<div class="sso-links">
-		<template v-if="ssoProviders.length > 0">
-			<v-divider />
-
-			<v-notice v-if="errorFormatted" type="warning">
-				{{ errorFormatted }}
-			</v-notice>
-
-			<a v-for="provider in ssoProviders" :key="provider.name" class="sso-link" :href="provider.link">
-				<div class="sso-icon">
-					<v-icon :name="provider.icon" />
-				</div>
-				<div class="sso-title">
-					{{ t('log_in_with', { provider: provider.label }) }}
-				</div>
-			</a>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
@@ -62,7 +41,7 @@ watch(
 				};
 			});
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const errorFormatted = computed(() => {
@@ -78,6 +57,27 @@ const errorFormatted = computed(() => {
 });
 </script>
 
+<template>
+	<div class="sso-links">
+		<template v-if="ssoProviders.length > 0">
+			<v-divider />
+
+			<v-notice v-if="errorFormatted" type="warning">
+				{{ errorFormatted }}
+			</v-notice>
+
+			<a v-for="provider in ssoProviders" :key="provider.name" class="sso-link" :href="provider.link">
+				<div class="sso-icon">
+					<v-icon :name="provider.icon" />
+				</div>
+				<div class="sso-title">
+					{{ t('log_in_with', { provider: provider.label }) }}
+				</div>
+			</a>
+		</template>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-divider {
 	margin: 24px 0;
@@ -92,20 +92,20 @@ const errorFormatted = computed(() => {
 
 	display: flex;
 	width: 100%;
-	height: var(--input-height);
-	background-color: var(--background-normal);
-	border: $sso-link-border-width var(--background-normal) solid;
-	border-radius: var(--border-radius);
+	height: var(--theme--form--field--input--height);
+	background-color: var(--theme--background-normal);
+	border: $sso-link-border-width var(--theme--background-normal) solid;
+	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 
 	.sso-icon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: var(--input-height);
+		width: var(--theme--form--field--input--height);
 		margin: -$sso-link-border-width;
-		background-color: var(--background-normal-alt);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--background-accent);
+		border-radius: var(--theme--border-radius);
 
 		span {
 			--v-icon-size: 28px;
@@ -120,7 +120,7 @@ const errorFormatted = computed(() => {
 	}
 
 	&:hover {
-		border-color: var(--background-normal-alt);
+		border-color: var(--theme--background-accent);
 	}
 
 	& + & {

@@ -82,7 +82,7 @@ To create a collection, follow these steps.
    - **Primary Key Field** — Sets the name of the primary key field, defaults to `id`.
    - **Type** — Sets the [type of ID](/app/data-model#keys-and-ids) to use for this collection.
 4. Click <span mi btn>arrow_forward</span> to confirm.
-5. Enable and rename the other Optional System Fields as desired:
+5. Enable and rename the other Optional Fields as desired:
    - **Status** — Stores item status.
    - **Sort** — Adds a field which enables drag-and-drop sorting of items.
    - **Created On** — Logs the date an item was created.
@@ -191,9 +191,10 @@ To configure a collection, follow these steps.
 
 1. Navigate to **Settings > Data Model** and click the desired collection.\
    The collection's configuration page will open.
-2. Make configurations as desired. Configuration options are broken into six categories.
+2. Make configurations as desired. Configuration options are broken into seven categories.
    - [Fields and Layout](#fields-layout)
    - [Collection Setup](#collection-setup)
+   - [Content Versioning](#content-versioning)
    - [Archive](#archive)
    - [Sort](#sort-field)
    - [Accountability](#accountability)
@@ -246,6 +247,12 @@ keys as human readable names, but you can also use translations to explicitly re
 A collection that only contains one single item. For example, a website's **About Us** page.
 
 :::
+
+### Content Versioning
+
+This feature allows users to create multiple versions of each collection item or singleton.
+
+- **Versioning** — Toggles whether versioning is enabled for the collection.
 
 ### Archive
 

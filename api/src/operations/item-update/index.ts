@@ -1,5 +1,6 @@
+import { defineOperationApi } from '@directus/extensions';
 import type { Accountability, PrimaryKey } from '@directus/types';
-import { defineOperationApi, optionToObject, toArray } from '@directus/utils';
+import { optionToObject, toArray } from '@directus/utils';
 import { ItemsService } from '../../services/items.js';
 import type { Item } from '../../types/index.js';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
@@ -19,7 +20,7 @@ export default defineOperationApi<Options>({
 
 	handler: async (
 		{ collection, key, payload, query, emitEvents, permissions },
-		{ accountability, database, getSchema }
+		{ accountability, database, getSchema },
 	) => {
 		const schema = await getSchema({ database });
 		let customAccountability: Accountability | null;

@@ -1,24 +1,3 @@
-<template>
-	<component
-		:is="customValue ? 'div' : 'button'"
-		class="v-checkbox"
-		type="button"
-		role="checkbox"
-		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled="disabled"
-		:class="{ checked: isChecked, indeterminate, block }"
-		@click.stop="toggleInput"
-	>
-		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
-		<span class="label type-text">
-			<slot v-if="!customValue">{{ label }}</slot>
-			<input v-else v-model="internalValue" class="custom-input" @click.stop="" />
-		</span>
-		<div v-if="$slots.append" class="append"><slot name="append" /></div>
-	</component>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useSync } from '@directus/composables';
@@ -110,19 +89,42 @@ function toggleInput(): void {
 }
 </script>
 
-<style>
-body {
-	--v-checkbox-color: var(--primary);
-	--v-checkbox-unchecked-color: var(--foreground-subdued);
-}
-</style>
+<template>
+	<component
+		:is="customValue ? 'div' : 'button'"
+		class="v-checkbox"
+		type="button"
+		role="checkbox"
+		:aria-pressed="isChecked ? 'true' : 'false'"
+		:disabled="disabled"
+		:class="{ checked: isChecked, indeterminate, block }"
+		@click.stop="toggleInput"
+	>
+		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
+		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
+		<span class="label type-text">
+			<slot v-if="!customValue">{{ label }}</slot>
+			<input v-else v-model="internalValue" class="custom-input" @click.stop="" />
+		</span>
+		<div v-if="$slots.append" class="append"><slot name="append" /></div>
+	</component>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/no-wrap';
 
+/*
+
+	Available Variables:
+
+		--v-checkbox-color            [var(--theme--primary)]
+		--v-checkbox-unchecked-color  [var(--theme--foreground-subdued)]
+
+*/
+
 .v-checkbox {
-	--v-icon-color: var(--v-checkbox-unchecked-color);
-	--v-icon-color-hover: var(--primary);
+	--v-icon-color: var(--v-checkbox-unchecked-color, var(--theme--foreground-subdued));
+	--v-icon-color-hover: var(--theme--primary);
 
 	position: relative;
 	display: flex;
@@ -143,7 +145,7 @@ body {
 			width: 100%;
 			background-color: transparent;
 			border: none;
-			border-bottom: 2px solid var(--border-normal);
+			border-bottom: 2px solid var(--theme--form--field--input--border-color);
 			border-radius: 0;
 		}
 
@@ -151,7 +153,7 @@ body {
 	}
 
 	& .checkbox {
-		--v-icon-color: var(--v-checkbox-unchecked-color);
+		--v-icon-color: var(--v-checkbox-unchecked-color, var(--theme--foreground-subdued));
 
 		transition: color var(--fast) var(--transition);
 	}
@@ -160,26 +162,26 @@ body {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--foreground-subdued);
+			color: var(--theme--foreground-subdued);
 		}
 
 		.checkbox {
-			--v-icon-color: var(--foreground-subdued);
+			--v-icon-color: var(--theme--foreground-subdued);
 		}
 	}
 
 	&.block {
 		position: relative;
 		width: 100%;
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		padding: 10px; // 14 - 4 (border)
-		background-color: var(--background-page);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius);
+		background-color: var(--theme--form--field--input--background);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
 
 		&:disabled {
-			background-color: var(--background-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 		}
 
 		&::before {
@@ -189,7 +191,7 @@ body {
 			z-index: 0;
 			width: 100%;
 			height: 100%;
-			border-radius: var(--border-radius);
+			border-radius: var(--theme--border-radius);
 			content: '';
 		}
 
@@ -200,18 +202,17 @@ body {
 
 	&:not(:disabled):hover {
 		.checkbox {
-			--v-icon-color: var(--primary);
+			--v-icon-color: var(--theme--primary);
 		}
 
 		&.block {
-			background-color: var(--background-subdued);
-			border-color: var(--border-normal-alt);
+			border-color: var(--theme--form--field--input--border-color-hover);
 		}
 	}
 
 	&:not(:disabled):not(.indeterminate) {
 		.label {
-			color: var(--foreground-normal);
+			color: var(--theme--foreground);
 		}
 
 		&.block {
@@ -223,12 +224,12 @@ body {
 
 	&:not(:disabled):not(.indeterminate).checked {
 		.checkbox {
-			--v-icon-color: var(--v-checkbox-color);
+			--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
 		}
 
 		&.block {
 			.label {
-				color: var(--v-checkbox-color);
+				color: var(--v-checkbox-color, var(--theme--primary));
 			}
 		}
 	}

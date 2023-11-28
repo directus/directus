@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { useGroupable } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
+import { toRefs } from 'vue';
+
+const props = defineProps<{
+	icon: string;
+	title: string;
+	badge?: boolean | string | number;
+	close?: boolean;
+}>();
+
+const { active, toggle } = useGroupable({
+	value: props.title,
+	group: 'sidebar-detail',
+});
+
+const appStore = useAppStore();
+const { sidebarOpen } = toRefs(appStore);
+</script>
+
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
 		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="toggle">
@@ -26,42 +47,13 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { useGroupable } from '@directus/composables';
-import { useAppStore } from '@directus/stores';
-import { toRefs } from 'vue';
-
-const props = defineProps<{
-	icon: string;
-	title: string;
-	badge?: boolean | string | number;
-	close?: boolean;
-}>();
-
-const { active, toggle } = useGroupable({
-	value: props.title,
-	group: 'sidebar-detail',
-});
-
-const appStore = useAppStore();
-const { sidebarOpen } = toRefs(appStore);
-</script>
-
-<style>
-body {
-	--sidebar-detail-icon-color: var(--foreground-normal-alt);
-	--sidebar-detail-color: var(--foreground-normal-alt);
-	--sidebar-detail-color-active: var(--primary);
-}
-</style>
-
 <style lang="scss" scoped>
 .sidebar-detail {
 	--v-badge-offset-x: 3px;
 	--v-badge-offset-y: 4px;
-	--v-badge-border-color: var(--background-normal-alt);
-	--v-badge-background-color: var(--primary);
-	--v-badge-color: var(--background-normal);
+	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
+	--v-badge-background-color: var(--theme--primary);
+	--v-badge-color: var(--theme--background-normal);
 
 	display: contents;
 
@@ -76,12 +68,14 @@ body {
 		flex-shrink: 0;
 		justify-content: space-between;
 		width: 100%;
-		height: 60px;
-		color: var(--sidebar-detail-color);
-		background-color: var(--background-normal-alt);
+		height: calc(60px + var(--theme--sidebar--section--toggle--border-width));
+		color: var(--theme--sidebar--section--toggle--foreground);
+		background-color: var(--theme--sidebar--section--toggle--background);
+		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+			var(--theme--sidebar--section--toggle--border-color);
 
 		.icon {
-			--v-icon-color: var(--sidebar-detail-icon-color);
+			--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
 
 			display: flex;
 			align-items: center;
@@ -90,12 +84,21 @@ body {
 			height: 100%;
 		}
 
-		&.open,
 		&:hover {
-			color: var(--sidebar-detail-color-active);
+			color: var(--theme--sidebar--section--toggle--foreground-hover);
+			background-color: var(--theme--sidebar--section--toggle--background-hover);
 
 			.icon {
-				--v-icon-color: var(--sidebar-detail-color-active);
+				--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground-hover);
+			}
+		}
+
+		&.open {
+			color: var(--theme--sidebar--section--toggle--foreground-active);
+			background-color: var(--theme--sidebar--section--toggle--background-active);
+
+			.icon {
+				--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground-active);
 			}
 		}
 	}
@@ -110,9 +113,11 @@ body {
 		justify-content: center;
 		width: 60px;
 		height: 60px;
-		color: var(--foreground-normal);
+		color: var(--theme--foreground);
 		cursor: pointer;
-		transition: opacity var(--fast) var(--transition), color var(--fast) var(--transition);
+		transition:
+			opacity var(--fast) var(--transition),
+			color var(--fast) var(--transition);
 
 		.v-icon {
 			pointer-events: none;
@@ -139,6 +144,7 @@ body {
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);
+		font-family: var(--theme--sidebar--section--toggle--font-family);
 	}
 
 	.scroll-container {
@@ -148,19 +154,21 @@ body {
 
 	.content {
 		padding: 16px;
+		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+			var(--theme--sidebar--section--toggle--border-color);
 
 		:deep(.page-description) {
 			margin-bottom: 8px;
-			color: var(--foreground-subdued);
+			color: var(--theme--sidebar--foreground);
 		}
 
 		:deep(.page-description a) {
-			color: var(--primary);
+			color: var(--theme--primary);
 		}
 	}
 
 	.expand-icon {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 </style>

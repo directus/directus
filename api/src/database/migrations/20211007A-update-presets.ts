@@ -18,7 +18,7 @@ export async function up(knex: Knex): Promise<void> {
 		.select<{ id: number; filters: string | OldFilter[]; layout_query: string | Record<string, any> }[]>(
 			'id',
 			'filters',
-			'layout_query'
+			'layout_query',
 		)
 		.from('directus_presets');
 
@@ -84,7 +84,7 @@ export async function down(knex: Knex): Promise<void> {
 		.select<{ id: number; filter: string | OldFilter[]; layout_query: string | Record<string, any> }[]>(
 			'id',
 			'filter',
-			'layout_query'
+			'layout_query',
 		)
 		.from('directus_presets');
 

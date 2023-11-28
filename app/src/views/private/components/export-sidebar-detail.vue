@@ -1,3 +1,369 @@
+<script setup lang="ts">
+import api from '@/api';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
+import { getPublicURL } from '@/utils/get-root-path';
+import { notify } from '@/utils/notify';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import { unexpectedError } from '@/utils/unexpected-error';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import { useCollection } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import type { AxiosProgressEvent } from 'axios';
+import { debounce, pick } from 'lodash';
+import { computed, reactive, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+type LayoutQuery = {
+	fields?: string[];
+	sort?: string;
+	limit?: number;
+};
+
+const props = defineProps<{
+	collection: string;
+	layoutQuery?: LayoutQuery;
+	filter?: Filter;
+	search?: string;
+}>();
+
+const emit = defineEmits(['refresh', 'download']);
+
+const { t, n, te } = useI18n();
+
+const { collection } = toRefs(props);
+
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const file = ref<File | null>(null);
+const { uploading, progress, importing, uploadFile } = useUpload();
+
+const exportDialogActive = ref(false);
+
+const fileExtension = computed(() => {
+	if (file.value === null) return null;
+	return readableMimeType(file.value.type, true);
+});
+
+const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
+
+const { info } = useServerStore();
+
+const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
+const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
+
+const exportSettings = reactive({
+	limit: props.layoutQuery?.limit ?? defaultLimit,
+	filter: props.filter,
+	search: props.search,
+	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
+	sort: `${primaryKeyField.value?.field ?? ''}`,
+});
+
+watch(
+	fields,
+	() => {
+		if (props.layoutQuery?.fields) return;
+		exportSettings.fields = fields.value?.map((field) => field.field);
+	},
+	{ immediate: true },
+);
+
+watch(
+	() => props.layoutQuery,
+	() => {
+		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
+
+		if (props.layoutQuery?.fields) {
+			exportSettings.fields = props.layoutQuery?.fields;
+		}
+
+		if (props.layoutQuery?.sort) {
+			if (Array.isArray(props.layoutQuery.sort)) {
+				exportSettings.sort = props.layoutQuery.sort[0];
+			} else {
+				exportSettings.sort = props.layoutQuery.sort;
+			}
+		}
+	},
+	{ immediate: true },
+);
+
+watch(
+	[() => props.filter, () => props.search],
+	([filter, search]) => {
+		exportSettings.filter = filter;
+		exportSettings.search = search;
+	},
+	{ immediate: true },
+);
+
+const format = ref('csv');
+const location = ref('download');
+const folder = ref<string | null>(null);
+
+const lockedToFiles = ref<{ previousLocation: string } | null>(null);
+
+const itemCountTotal = ref<number>();
+const itemCount = ref<number>();
+const itemCountLoading = ref(false);
+
+const getItemCount = async () => {
+	itemCountLoading.value = true;
+
+	try {
+		const aggregate = primaryKeyField.value?.field
+			? {
+					countDistinct: [primaryKeyField.value.field],
+			  }
+			: {
+					count: ['*'],
+			  };
+
+		const response = await api.get(getEndpoint(collection.value), {
+			params: {
+				...pick(exportSettings, ['search', 'filter']),
+				aggregate,
+			},
+		});
+
+		let count;
+
+		if (response.data.data?.[0]?.count) {
+			count = Number(response.data.data[0].count);
+		}
+
+		if (response.data.data?.[0]?.countDistinct) {
+			count = Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
+		}
+
+		itemCount.value = count;
+		return count;
+	} finally {
+		itemCountLoading.value = false;
+	}
+};
+
+watch([() => exportSettings.search, () => exportSettings.filter], debounce(getItemCount, 250));
+
+watch(
+	() => exportSettings.limit,
+	() => {
+		if (exportSettings.limit < -1) {
+			exportSettings.limit = -1;
+		}
+
+		if (
+			exportSettings.limit !== null &&
+			!Number.isNaN(exportSettings.limit) &&
+			!Number.isInteger(exportSettings.limit)
+		) {
+			exportSettings.limit = Math.round(exportSettings.limit);
+		}
+	},
+);
+
+const exportCount = computed(() => {
+	const limit = exportSettings.limit === null || exportSettings.limit === -1 ? Infinity : exportSettings.limit;
+	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
+});
+
+watch(
+	exportCount,
+	() => {
+		const queryLimitThreshold = exportCount.value > queryLimitMax;
+		const batchThreshold = exportCount.value >= 2500;
+
+		if (queryLimitThreshold || batchThreshold) {
+			lockedToFiles.value = {
+				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
+			};
+
+			location.value = 'files';
+		} else if (lockedToFiles.value) {
+			location.value = lockedToFiles.value.previousLocation;
+			lockedToFiles.value = null;
+		}
+	},
+	{ immediate: true },
+);
+
+watch(primaryKeyField, (newVal) => {
+	exportSettings.sort = newVal?.field ?? '';
+});
+
+const sortDirection = computed({
+	get() {
+		return exportSettings.sort.startsWith('-') ? 'DESC' : 'ASC';
+	},
+	set(newDirection: 'ASC' | 'DESC') {
+		if (newDirection === 'ASC') {
+			if (exportSettings.sort.startsWith('-')) {
+				exportSettings.sort = exportSettings.sort.substring(1);
+			}
+		} else {
+			if (exportSettings.sort.startsWith('-') === false) {
+				exportSettings.sort = `-${exportSettings.sort}`;
+			}
+		}
+	},
+});
+
+const sortField = computed({
+	get() {
+		if (exportSettings.sort.startsWith('-')) return exportSettings.sort.substring(1);
+		return exportSettings.sort;
+	},
+	set(newSortField: string) {
+		exportSettings.sort = newSortField;
+	},
+});
+
+const exporting = ref(false);
+
+async function openExportDialog() {
+	itemCountTotal.value = await getItemCount();
+	exportDialogActive.value = true;
+}
+
+function onChange(event: Event) {
+	const files = (event.target as HTMLInputElement)?.files;
+
+	if (files && files.length > 0) {
+		file.value = files.item(0)!;
+	}
+}
+
+function clearFileInput() {
+	if (fileInput.value) fileInput.value.value = '';
+	file.value = null;
+}
+
+function importData() {
+	uploadFile(file.value!);
+}
+
+function useUpload() {
+	const uploading = ref(false);
+	const importing = ref(false);
+	const progress = ref(0);
+
+	return { uploading, progress, importing, uploadFile };
+
+	async function uploadFile(file: File) {
+		uploading.value = true;
+		importing.value = false;
+		progress.value = 0;
+
+		const formData = new FormData();
+		formData.append('file', file);
+
+		try {
+			await api.post(`/utils/import/${collection.value}`, formData, {
+				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
+					progress.value = percentCompleted;
+					importing.value = percentCompleted === 100 ? true : false;
+				},
+			});
+
+			clearFileInput();
+
+			emit('refresh');
+
+			notify({
+				title: t('import_data_success', { filename: file.name }),
+			});
+		} catch (error: any) {
+			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+
+			notify({
+				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
+				type: 'error',
+			});
+
+			if (code === 'INTERNAL_SERVER_ERROR') {
+				unexpectedError(error);
+			}
+		} finally {
+			uploading.value = false;
+			importing.value = false;
+			progress.value = 0;
+		}
+	}
+}
+
+function startExport() {
+	if (location.value === 'download') {
+		exportDataLocal();
+	} else {
+		exportDataFiles();
+	}
+}
+
+function exportDataLocal() {
+	const endpoint = getEndpoint(collection.value);
+
+	// usually getEndpoint contains leading slash, but here we need to remove it
+	const url = getPublicURL() + endpoint.substring(1);
+
+	const params: Record<string, unknown> = {
+		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
+		export: format.value,
+	};
+
+	if (exportSettings.sort && exportSettings.sort !== '') params.sort = exportSettings.sort;
+	if (exportSettings.fields) params.fields = exportSettings.fields;
+	if (exportSettings.search) params.search = exportSettings.search;
+	if (exportSettings.filter) params.filter = exportSettings.filter;
+	if (exportSettings.search) params.search = exportSettings.search;
+
+	params.limit = exportSettings.limit ? Math.min(exportSettings.limit, queryLimitMax) : -1;
+
+	const exportUrl = api.getUri({
+		url,
+		params,
+	});
+
+	window.open(exportUrl);
+}
+
+async function exportDataFiles() {
+	exporting.value = true;
+
+	try {
+		await api.post(`/utils/export/${collection.value}`, {
+			query: {
+				...exportSettings,
+				...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
+			},
+			format: format.value,
+			file: {
+				folder: folder.value,
+			},
+		});
+
+		exportDialogActive.value = false;
+
+		notify({
+			title: t('export_started'),
+			text: t('export_started_copy'),
+			type: 'success',
+			icon: 'file_download',
+		});
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		exporting.value = false;
+	}
+}
+
+const { hasPermission } = usePermissionsStore();
+
+const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
+</script>
+
 <template>
 	<sidebar-detail icon="import_export" :title="t('import_export')">
 		<div class="fields">
@@ -226,372 +592,6 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
-import api from '@/api';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useServerStore } from '@/stores/server';
-import { getPublicURL } from '@/utils/get-root-path';
-import { notify } from '@/utils/notify';
-import { readableMimeType } from '@/utils/readable-mime-type';
-import { unexpectedError } from '@/utils/unexpected-error';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import { useCollection } from '@directus/composables';
-import { Filter } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import type { AxiosProgressEvent } from 'axios';
-import { debounce, pick } from 'lodash';
-import { computed, reactive, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-type LayoutQuery = {
-	fields?: string[];
-	sort?: string;
-	limit?: number;
-};
-
-const props = defineProps<{
-	collection: string;
-	layoutQuery?: LayoutQuery;
-	filter?: Filter;
-	search?: string;
-}>();
-
-const emit = defineEmits(['refresh', 'download']);
-
-const { t, n, te } = useI18n();
-
-const { collection } = toRefs(props);
-
-const fileInput = ref<HTMLInputElement | null>(null);
-
-const file = ref<File | null>(null);
-const { uploading, progress, importing, uploadFile } = useUpload();
-
-const exportDialogActive = ref(false);
-
-const fileExtension = computed(() => {
-	if (file.value === null) return null;
-	return readableMimeType(file.value.type, true);
-});
-
-const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
-
-const { info } = useServerStore();
-
-const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
-const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
-
-const exportSettings = reactive({
-	limit: props.layoutQuery?.limit ?? defaultLimit,
-	filter: props.filter,
-	search: props.search,
-	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
-	sort: `${primaryKeyField.value?.field ?? ''}`,
-});
-
-watch(
-	fields,
-	() => {
-		if (props.layoutQuery?.fields) return;
-		exportSettings.fields = fields.value?.map((field) => field.field);
-	},
-	{ immediate: true }
-);
-
-watch(
-	() => props.layoutQuery,
-	() => {
-		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
-
-		if (props.layoutQuery?.fields) {
-			exportSettings.fields = props.layoutQuery?.fields;
-		}
-
-		if (props.layoutQuery?.sort) {
-			if (Array.isArray(props.layoutQuery.sort)) {
-				exportSettings.sort = props.layoutQuery.sort[0];
-			} else {
-				exportSettings.sort = props.layoutQuery.sort;
-			}
-		}
-	},
-	{ immediate: true }
-);
-
-watch(
-	[() => props.filter, () => props.search],
-	([filter, search]) => {
-		exportSettings.filter = filter;
-		exportSettings.search = search;
-	},
-	{ immediate: true }
-);
-
-const format = ref('csv');
-const location = ref('download');
-const folder = ref<string | null>(null);
-
-const lockedToFiles = ref<{ previousLocation: string } | null>(null);
-
-const itemCountTotal = ref<number>();
-const itemCount = ref<number>();
-const itemCountLoading = ref(false);
-
-const getItemCount = async () => {
-	itemCountLoading.value = true;
-
-	try {
-		const aggregate = primaryKeyField.value?.field
-			? {
-					countDistinct: [primaryKeyField.value.field],
-			  }
-			: {
-					count: ['*'],
-			  };
-
-		const response = await api.get(getEndpoint(collection.value), {
-			params: {
-				...pick(exportSettings, ['search', 'filter']),
-				aggregate,
-			},
-		});
-
-		let count;
-
-		if (response.data.data?.[0]?.count) {
-			count = Number(response.data.data[0].count);
-		}
-
-		if (response.data.data?.[0]?.countDistinct) {
-			count = Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
-		}
-
-		itemCount.value = count;
-		return count;
-	} finally {
-		itemCountLoading.value = false;
-	}
-};
-
-watch([() => exportSettings.search, () => exportSettings.filter], debounce(getItemCount, 250));
-
-watch(
-	() => exportSettings.limit,
-	() => {
-		if (exportSettings.limit < -1) {
-			exportSettings.limit = -1;
-		}
-
-		if (
-			exportSettings.limit !== null &&
-			!Number.isNaN(exportSettings.limit) &&
-			!Number.isInteger(exportSettings.limit)
-		) {
-			exportSettings.limit = Math.round(exportSettings.limit);
-		}
-	}
-);
-
-const exportCount = computed(() => {
-	const limit = exportSettings.limit === null || exportSettings.limit === -1 ? Infinity : exportSettings.limit;
-	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
-});
-
-watch(
-	exportCount,
-	() => {
-		const queryLimitThreshold = exportCount.value > queryLimitMax;
-		const batchThreshold = exportCount.value >= 2500;
-
-		if (queryLimitThreshold || batchThreshold) {
-			lockedToFiles.value = {
-				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
-			};
-
-			location.value = 'files';
-		} else if (lockedToFiles.value) {
-			location.value = lockedToFiles.value.previousLocation;
-			lockedToFiles.value = null;
-		}
-	},
-	{ immediate: true }
-);
-
-watch(primaryKeyField, (newVal) => {
-	exportSettings.sort = newVal?.field ?? '';
-});
-
-const sortDirection = computed({
-	get() {
-		return exportSettings.sort.startsWith('-') ? 'DESC' : 'ASC';
-	},
-	set(newDirection: 'ASC' | 'DESC') {
-		if (newDirection === 'ASC') {
-			if (exportSettings.sort.startsWith('-')) {
-				exportSettings.sort = exportSettings.sort.substring(1);
-			}
-		} else {
-			if (exportSettings.sort.startsWith('-') === false) {
-				exportSettings.sort = `-${exportSettings.sort}`;
-			}
-		}
-	},
-});
-
-const sortField = computed({
-	get() {
-		if (exportSettings.sort.startsWith('-')) return exportSettings.sort.substring(1);
-		return exportSettings.sort;
-	},
-	set(newSortField: string) {
-		exportSettings.sort = newSortField;
-	},
-});
-
-const exporting = ref(false);
-
-async function openExportDialog() {
-	itemCountTotal.value = await getItemCount();
-	exportDialogActive.value = true;
-}
-
-function onChange(event: Event) {
-	const files = (event.target as HTMLInputElement)?.files;
-
-	if (files && files.length > 0) {
-		file.value = files.item(0)!;
-	}
-}
-
-function clearFileInput() {
-	if (fileInput.value) fileInput.value.value = '';
-	file.value = null;
-}
-
-function importData() {
-	uploadFile(file.value!);
-}
-
-function useUpload() {
-	const uploading = ref(false);
-	const importing = ref(false);
-	const progress = ref(0);
-
-	return { uploading, progress, importing, uploadFile };
-
-	async function uploadFile(file: File) {
-		uploading.value = true;
-		importing.value = false;
-		progress.value = 0;
-
-		const formData = new FormData();
-		formData.append('file', file);
-
-		try {
-			await api.post(`/utils/import/${collection.value}`, formData, {
-				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
-					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
-					progress.value = percentCompleted;
-					importing.value = percentCompleted === 100 ? true : false;
-				},
-			});
-
-			clearFileInput();
-
-			emit('refresh');
-
-			notify({
-				title: t('import_data_success', { filename: file.name }),
-			});
-		} catch (err: any) {
-			const code = err?.response?.data?.errors?.[0]?.extensions?.code;
-
-			notify({
-				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-				type: 'error',
-			});
-
-			if (code === 'INTERNAL_SERVER_ERROR') {
-				unexpectedError(err);
-			}
-		} finally {
-			uploading.value = false;
-			importing.value = false;
-			progress.value = 0;
-		}
-	}
-}
-
-function startExport() {
-	if (location.value === 'download') {
-		exportDataLocal();
-	} else {
-		exportDataFiles();
-	}
-}
-
-function exportDataLocal() {
-	const endpoint = getEndpoint(collection.value);
-
-	// usually getEndpoint contains leading slash, but here we need to remove it
-	const url = getPublicURL() + endpoint.substring(1);
-
-	const params: Record<string, unknown> = {
-		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
-		export: format.value,
-	};
-
-	if (exportSettings.sort && exportSettings.sort !== '') params.sort = exportSettings.sort;
-	if (exportSettings.fields) params.fields = exportSettings.fields;
-	if (exportSettings.search) params.search = exportSettings.search;
-	if (exportSettings.filter) params.filter = exportSettings.filter;
-	if (exportSettings.search) params.search = exportSettings.search;
-
-	params.limit = exportSettings.limit ? Math.min(exportSettings.limit, queryLimitMax) : -1;
-
-	const exportUrl = api.getUri({
-		url,
-		params,
-	});
-
-	window.open(exportUrl);
-}
-
-async function exportDataFiles() {
-	exporting.value = true;
-
-	try {
-		await api.post(`/utils/export/${collection.value}`, {
-			query: {
-				...exportSettings,
-				...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
-			},
-			format: format.value,
-			file: {
-				folder: folder.value,
-			},
-		});
-
-		exportDialogActive.value = false;
-
-		notify({
-			title: t('export_started'),
-			text: t('export_started_copy'),
-			type: 'success',
-			icon: 'file_download',
-		});
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		exporting.value = false;
-	}
-}
-
-const { hasPermission } = usePermissionsStore();
-
-const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'create'));
-</script>
-
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
@@ -605,7 +605,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .fields {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;
@@ -613,8 +613,8 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .export-fields {
-	--folder-picker-background-color: var(--background-subdued);
-	--folder-picker-color: var(--background-normal);
+	--folder-picker-background-color: var(--theme--background-subdued);
+	--folder-picker-color: var(--theme--background-normal);
 
 	margin-top: 24px;
 	padding: var(--content-padding);
@@ -635,14 +635,14 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: var(--input-height);
-	padding: var(--input-padding);
+	height: var(--theme--form--field--input--height);
+	padding: var(--theme--form--field--input--padding);
 	padding-top: 0px;
 	padding-bottom: 0px;
 	color: var(--white);
-	background-color: var(--primary);
-	border: var(--border-width) solid var(--primary);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--primary);
+	border: var(--theme--border-width) solid var(--theme--primary);
+	border-radius: var(--theme--border-radius);
 
 	.type-text {
 		display: flex;
@@ -657,7 +657,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 }
 
 .preview {
-	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color: var(--theme--foreground-subdued);
 
 	display: flex;
 	align-items: center;
@@ -666,16 +666,16 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	height: 40px;
 	margin-left: -8px;
 	overflow: hidden;
-	background-color: var(--background-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
 
 	&.has-file {
-		background-color: var(--primary-alt);
+		background-color: var(--theme--primary-background);
 	}
 }
 
 .extension {
-	color: var(--primary);
+	color: var(--theme--primary);
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;
@@ -701,16 +701,16 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	text-overflow: ellipsis;
 
 	&.no-file {
-		color: var(--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 	}
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .download-local {
-	color: var(--foreground-subdued);
+	color: var(--theme--foreground-subdued);
 	text-align: center;
 	display: block;
 	width: 100%;
@@ -718,7 +718,7 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	transition: color var(--fast) var(--transition);
 
 	&:hover {
-		color: var(--primary);
+		color: var(--theme--primary);
 	}
 }
 </style>

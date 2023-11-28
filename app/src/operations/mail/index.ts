@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/utils';
+import { defineOperationApp } from '@directus/extensions';
 
 export default defineOperationApp({
 	id: 'mail',
@@ -112,14 +112,14 @@ export default defineOperationApp({
 								url: 'example.com',
 							},
 							null,
-							2
+							2,
 						),
 						template: JSON.stringify(
 							{
 								url: 'example.com',
 							},
 							null,
-							2
+							2,
 						),
 					},
 				},

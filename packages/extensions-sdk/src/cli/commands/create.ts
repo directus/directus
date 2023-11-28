@@ -1,11 +1,3 @@
-import {
-	BUNDLE_EXTENSION_TYPES,
-	EXTENSION_LANGUAGES,
-	EXTENSION_NAME_REGEX,
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
 import type {
 	ApiExtensionType,
 	AppExtensionType,
@@ -13,7 +5,15 @@ import type {
 	ExtensionOptions,
 	ExtensionType,
 	HybridExtensionType,
-} from '@directus/types';
+} from '@directus/extensions';
+import {
+	BUNDLE_EXTENSION_TYPES,
+	EXTENSION_LANGUAGES,
+	EXTENSION_NAME_REGEX,
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/extensions';
 import { isIn } from '@directus/utils';
 import chalk from 'chalk';
 import { execa } from 'execa';
@@ -36,9 +36,9 @@ export default async function create(type: string, name: string, options: Create
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
 			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
-				chalk.bold.magenta(t)
+				chalk.bold.magenta(t),
 			).join(', ')}.`,
-			'error'
+			'error',
 		);
 
 		process.exit(1);
@@ -121,9 +121,9 @@ async function createLocalExtension({
 	if (!isLanguage(language)) {
 		log(
 			`Language ${chalk.bold(language)} is not supported. Available languages: ${EXTENSION_LANGUAGES.map((t) =>
-				chalk.bold.magenta(t)
+				chalk.bold.magenta(t),
 			).join(', ')}.`,
-			'error'
+			'error',
 		);
 
 		process.exit(1);

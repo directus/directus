@@ -1,3 +1,201 @@
+<script setup lang="ts">
+import { AppTile } from '@/components/v-workspace-tile.vue';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useExtensions } from '@/extensions';
+import { router } from '@/router';
+import { useInsightsStore } from '@/stores/insights';
+import { usePermissionsStore } from '@/stores/permissions';
+import { pointOnLine } from '@/utils/point-on-line';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
+import { useAppStore } from '@directus/stores';
+import { applyOptionsData } from '@directus/utils';
+import { assign, isEmpty } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import InsightsNavigation from '../components/navigation.vue';
+import InsightsNotFound from './not-found.vue';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+
+const props = withDefaults(
+	defineProps<{
+		primaryKey: string;
+		panelKey?: string | null;
+	}>(),
+	{ panelKey: null },
+);
+
+const { t } = useI18n();
+
+const { panels: panelsInfo } = useExtensions();
+
+const insightsStore = useInsightsStore();
+const appStore = useAppStore();
+const permissionsStore = usePermissionsStore();
+
+const { fullScreen } = toRefs(appStore);
+const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } = toRefs(insightsStore);
+
+const zoomToFit = ref(false);
+
+const updateAllowed = computed<boolean>(() => {
+	return permissionsStore.hasPermission('directus_panels', 'update');
+});
+
+const now = new Date();
+
+const editMode = ref(false);
+
+const tiles = computed<AppTile[]>(() => {
+	const panels = insightsStore.getPanelsForDashboard(props.primaryKey);
+
+	const panelsWithCoordinates = panels.map((panel) => ({
+		...panel,
+		coordinates: [
+			[panel.position_x!, panel.position_y!],
+			[panel.position_x! + panel.width!, panel.position_y!],
+			[panel.position_x! + panel.width!, panel.position_y! + panel.height!],
+			[panel.position_x!, panel.position_y! + panel.height!],
+		] as [number, number][],
+	}));
+
+	const tiles: AppTile[] = panelsWithCoordinates
+		.map((panel) => {
+			let topLeftIntersects = false;
+			let topRightIntersects = false;
+			let bottomRightIntersects = false;
+			let bottomLeftIntersects = false;
+
+			for (const otherPanel of panelsWithCoordinates) {
+				if (otherPanel.id === panel.id) continue;
+
+				const borders = [
+					[otherPanel.coordinates[0], otherPanel.coordinates[1]],
+					[otherPanel.coordinates[1], otherPanel.coordinates[2]],
+					[otherPanel.coordinates[2], otherPanel.coordinates[3]],
+					[otherPanel.coordinates[3], otherPanel.coordinates[0]],
+				];
+
+				if (topLeftIntersects === false) {
+					topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[0], p1, p2));
+				}
+
+				if (topRightIntersects === false) {
+					topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[1], p1, p2));
+				}
+
+				if (bottomRightIntersects === false) {
+					bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[2], p1, p2));
+				}
+
+				if (bottomLeftIntersects === false) {
+					bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[3], p1, p2));
+				}
+			}
+
+			const panelType = unref(panelsInfo).find((panelType) => panelType.id === panel.type);
+
+			const tile: AppTile = {
+				id: panel.id,
+				x: panel.position_x,
+				y: panel.position_y,
+				width: panel.width,
+				height: panel.height,
+				name: panel.name,
+				icon: panel.icon ?? panelType?.icon,
+				color: panel.color,
+				note: panel.note,
+				showHeader: panel.show_header === true,
+				minWidth: panelType?.minWidth,
+				minHeight: panelType?.minHeight,
+				draggable: true,
+				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
+				data: {
+					options: applyOptionsData(panel.options ?? {}, unref(variables), panelType?.skipUndefinedKeys),
+					type: panel.type,
+				},
+			};
+
+			return tile;
+		})
+		.filter((t) => t);
+
+	return tiles;
+});
+
+watch(
+	() => props.primaryKey,
+	() => {
+		insightsStore.refresh(props.primaryKey);
+	},
+);
+
+const confirmCancel = ref(false);
+
+const cancelChanges = (force = false) => {
+	if (unref(hasEdits) && force !== true) {
+		confirmCancel.value = true;
+	} else {
+		insightsStore.clearEdits();
+		editMode.value = false;
+		confirmCancel.value = false;
+		insightsStore.refresh(props.primaryKey);
+	}
+};
+
+const copyPanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
+const copyPanelID = ref<string | null>();
+
+const copyPanel = () => {
+	insightsStore.stagePanelDuplicate(unref(copyPanelID)!, { dashboard: unref(copyPanelTo) });
+	copyPanelID.value = null;
+};
+
+useShortcut('meta+s', () => {
+	saveChanges();
+});
+
+async function saveChanges() {
+	await insightsStore.saveChanges();
+	editMode.value = false;
+}
+
+watch(editMode, (editModeEnabled) => {
+	if (editModeEnabled) {
+		zoomToFit.value = false;
+	}
+});
+
+const currentDashboard = computed(() => insightsStore.getDashboard(props.primaryKey));
+
+const copyPanelChoices = computed(() => {
+	return insightsStore.dashboards.filter((dashboard) => dashboard.id !== props.primaryKey);
+});
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, {
+	ignorePrefix: computed(() => `/insights/${props.primaryKey}`),
+});
+
+const discardAndLeave = () => {
+	if (!unref(leaveTo)) return;
+	cancelChanges(true);
+	confirmLeave.value = false;
+	router.push(unref(leaveTo)!);
+};
+
+const toggleFullScreen = () => (fullScreen.value = !fullScreen.value);
+const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
+
+const refreshInterval = computed({
+	get() {
+		return unref(refreshIntervals)[props.primaryKey] ?? null;
+	},
+	set(val) {
+		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });
+	},
+});
+</script>
+
 <template>
 	<insights-not-found v-if="!currentDashboard" />
 	<private-view v-else :title="currentDashboard.name">
@@ -83,6 +281,8 @@
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
+
+			<comments-sidebar-detail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
 
 			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
 		</template>
@@ -199,216 +399,20 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
-import { AppTile } from '@/components/v-workspace-tile.vue';
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useExtensions } from '@/extensions';
-import { router } from '@/router';
-import { useInsightsStore } from '@/stores/insights';
-import { usePermissionsStore } from '@/stores/permissions';
-import { pointOnLine } from '@/utils/point-on-line';
-import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import { useAppStore } from '@directus/stores';
-import { applyOptionsData } from '@directus/utils';
-import { assign, isEmpty } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import InsightsNavigation from '../components/navigation.vue';
-import InsightsNotFound from './not-found.vue';
-
-interface Props {
-	primaryKey: string;
-	panelKey?: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), { panelKey: null });
-
-const { t } = useI18n();
-
-const { panels: panelsInfo } = useExtensions();
-
-const insightsStore = useInsightsStore();
-const appStore = useAppStore();
-const permissionsStore = usePermissionsStore();
-
-const { fullScreen } = toRefs(appStore);
-const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } = toRefs(insightsStore);
-
-const zoomToFit = ref(false);
-
-const updateAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_panels', 'update');
-});
-
-const now = new Date();
-
-const editMode = ref(false);
-
-const tiles = computed<AppTile[]>(() => {
-	const panels = insightsStore.getPanelsForDashboard(props.primaryKey);
-
-	const panelsWithCoordinates = panels.map((panel) => ({
-		...panel,
-		coordinates: [
-			[panel.position_x!, panel.position_y!],
-			[panel.position_x! + panel.width!, panel.position_y!],
-			[panel.position_x! + panel.width!, panel.position_y! + panel.height!],
-			[panel.position_x!, panel.position_y! + panel.height!],
-		] as [number, number][],
-	}));
-
-	const tiles: AppTile[] = panelsWithCoordinates
-		.map((panel) => {
-			let topLeftIntersects = false;
-			let topRightIntersects = false;
-			let bottomRightIntersects = false;
-			let bottomLeftIntersects = false;
-
-			for (const otherPanel of panelsWithCoordinates) {
-				if (otherPanel.id === panel.id) continue;
-
-				const borders = [
-					[otherPanel.coordinates[0], otherPanel.coordinates[1]],
-					[otherPanel.coordinates[1], otherPanel.coordinates[2]],
-					[otherPanel.coordinates[2], otherPanel.coordinates[3]],
-					[otherPanel.coordinates[3], otherPanel.coordinates[0]],
-				];
-
-				if (topLeftIntersects === false) {
-					topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[0], p1, p2));
-				}
-
-				if (topRightIntersects === false) {
-					topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[1], p1, p2));
-				}
-
-				if (bottomRightIntersects === false) {
-					bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[2], p1, p2));
-				}
-
-				if (bottomLeftIntersects === false) {
-					bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[3], p1, p2));
-				}
-			}
-
-			const panelType = unref(panelsInfo).find((panelType) => panelType.id === panel.type);
-
-			const tile: AppTile = {
-				id: panel.id,
-				x: panel.position_x,
-				y: panel.position_y,
-				width: panel.width,
-				height: panel.height,
-				name: panel.name,
-				icon: panel.icon ?? panelType?.icon,
-				color: panel.color,
-				note: panel.note,
-				showHeader: panel.show_header === true,
-				minWidth: panelType?.minWidth,
-				minHeight: panelType?.minHeight,
-				draggable: true,
-				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
-				data: {
-					options: applyOptionsData(panel.options ?? {}, unref(variables), panelType?.skipUndefinedKeys),
-					type: panel.type,
-				},
-			};
-
-			return tile;
-		})
-		.filter((t) => t);
-
-	return tiles;
-});
-
-watch(
-	() => props.primaryKey,
-	() => {
-		insightsStore.refresh(props.primaryKey);
-	}
-);
-
-const confirmCancel = ref(false);
-
-const cancelChanges = (force = false) => {
-	if (unref(hasEdits) && force !== true) {
-		confirmCancel.value = true;
-	} else {
-		insightsStore.clearEdits();
-		editMode.value = false;
-		confirmCancel.value = false;
-		insightsStore.refresh(props.primaryKey);
-	}
-};
-
-const copyPanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
-const copyPanelID = ref<string | null>();
-
-const copyPanel = () => {
-	insightsStore.stagePanelDuplicate(unref(copyPanelID)!, { dashboard: unref(copyPanelTo) });
-	copyPanelID.value = null;
-};
-
-useShortcut('meta+s', () => {
-	saveChanges();
-});
-
-async function saveChanges() {
-	await insightsStore.saveChanges();
-	editMode.value = false;
-}
-
-watch(editMode, (editModeEnabled) => {
-	if (editModeEnabled) {
-		zoomToFit.value = false;
-	}
-});
-
-const currentDashboard = computed(() => insightsStore.getDashboard(props.primaryKey));
-
-const copyPanelChoices = computed(() => {
-	return insightsStore.dashboards.filter((dashboard) => dashboard.id !== props.primaryKey);
-});
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, {
-	ignorePrefix: computed(() => `/insights/${props.primaryKey}`),
-});
-
-const discardAndLeave = () => {
-	if (!unref(leaveTo)) return;
-	cancelChanges(true);
-	confirmLeave.value = false;
-	router.push(unref(leaveTo)!);
-};
-
-const toggleFullScreen = () => (fullScreen.value = !fullScreen.value);
-const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
-
-const refreshInterval = computed({
-	get() {
-		return unref(refreshIntervals)[props.primaryKey] ?? null;
-	},
-	set(val) {
-		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });
-	},
-});
-</script>
-
 <style scoped lang="scss">
 .fullscreen,
 .zoom-to-fit,
 .clear-changes {
-	--v-button-color: var(--foreground-normal);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-background-color: var(--theme--foreground-subdued);
+	--v-button-background-color-hover: var(--theme--foreground);
 	--v-button-color-active: var(--foreground-inverted);
-	--v-button-background-color-active: var(--primary);
+	--v-button-background-color-active: var(--theme--primary);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--foreground-normal);
+	--v-button-color-disabled: var(--theme--foreground);
 }
 
 .panel-container {
@@ -442,7 +446,7 @@ const refreshInterval = computed({
 	width: 100%;
 	height: 100%;
 
-	--v-icon-color: var(--danger);
+	--v-icon-color: var(--theme--danger);
 
 	.v-error {
 		margin-top: 8px;

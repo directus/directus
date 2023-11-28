@@ -1,56 +1,3 @@
-<template>
-	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="t('flows')">
-		<div class="fields">
-			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
-				<v-button
-					v-tooltip="getFlowTooltip(manualFlow)"
-					small
-					full-width
-					:loading="runningFlows.includes(manualFlow.id)"
-					:disabled="isFlowDisabled(manualFlow)"
-					@click="onFlowClick(manualFlow.id)"
-				>
-					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
-					{{ manualFlow.name }}
-				</v-button>
-			</div>
-		</div>
-
-		<v-dialog :model-value="!!confirmRunFlow" @esc="resetConfirm">
-			<v-card>
-				<template v-if="confirmDetails">
-					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
-
-					<v-card-text class="confirm-form">
-						<v-form
-							v-if="confirmDetails.fields && confirmDetails.fields.length > 0"
-							:fields="confirmDetails.fields"
-							:model-value="confirmValues"
-							autofocus
-							primary-key="+"
-							@update:model-value="confirmValues = $event"
-						/>
-					</v-card-text>
-				</template>
-
-				<template v-else>
-					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-					<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
-				</template>
-
-				<v-card-actions>
-					<v-button secondary @click="resetConfirm">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button :disabled="isConfirmButtonDisabled" @click="runManualFlow(confirmRunFlow!)">
-						{{ confirmButtonCTA }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</sidebar-detail>
-</template>
-
 <script setup lang="ts">
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
@@ -63,19 +10,20 @@ import { useI18n } from 'vue-i18n';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';
 
-interface Props {
-	collection: string;
-	primaryKey?: string | number;
-	selection?: (number | string)[];
-	location: 'collection' | 'item';
-	hasEdits?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	primaryKey: undefined,
-	selection: () => [],
-	hasEdits: false,
-});
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		primaryKey?: string | number;
+		selection?: (number | string)[];
+		location: 'collection' | 'item';
+		hasEdits?: boolean;
+	}>(),
+	{
+		primaryKey: undefined,
+		selection: () => [],
+		hasEdits: false,
+	},
+);
 
 const emit = defineEmits(['refresh']);
 
@@ -92,12 +40,12 @@ const manualFlows = computed(() =>
 		.getManualFlowsForCollection(collection.value)
 		.filter(
 			(flow) =>
-				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location
+				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location,
 		)
 		.map((flow) => ({
 			...flow,
 			options: flow.options ? translate(flow.options) : null,
-		}))
+		})),
 );
 
 const runningFlows = ref<string[]>([]);
@@ -206,13 +154,66 @@ const runManualFlow = async (flowId: string) => {
 		});
 
 		resetConfirm();
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 	}
 };
 </script>
+
+<template>
+	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="t('flows')">
+		<div class="fields">
+			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
+				<v-button
+					v-tooltip="getFlowTooltip(manualFlow)"
+					small
+					full-width
+					:loading="runningFlows.includes(manualFlow.id)"
+					:disabled="isFlowDisabled(manualFlow)"
+					@click="onFlowClick(manualFlow.id)"
+				>
+					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
+					{{ manualFlow.name }}
+				</v-button>
+			</div>
+		</div>
+
+		<v-dialog :model-value="!!confirmRunFlow" @esc="resetConfirm">
+			<v-card>
+				<template v-if="confirmDetails">
+					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
+
+					<v-card-text class="confirm-form">
+						<v-form
+							v-if="confirmDetails.fields && confirmDetails.fields.length > 0"
+							:fields="confirmDetails.fields"
+							:model-value="confirmValues"
+							autofocus
+							primary-key="+"
+							@update:model-value="confirmValues = $event"
+						/>
+					</v-card-text>
+				</template>
+
+				<template v-else>
+					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+					<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
+				</template>
+
+				<v-card-actions>
+					<v-button secondary @click="resetConfirm">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button :disabled="isConfirmButtonDisabled" @click="runManualFlow(confirmRunFlow!)">
+						{{ confirmButtonCTA }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</sidebar-detail>
+</template>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
@@ -222,7 +223,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .fields {
-	--form-vertical-gap: 24px;
+	--theme--form--row-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;
@@ -230,7 +231,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 :deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--background-normal-alt);
+	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .v-icon {
@@ -238,10 +239,10 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .confirm-form {
-	--form-horizontal-gap: 24px;
-	--form-vertical-gap: 24px;
+	--theme--form--column-gap: 24px;
+	--theme--form--row-gap: 24px;
 
-	margin-top: var(--v-card-padding);
+	margin-top: var(--v-card-padding, 16px);
 
 	:deep(.type-label) {
 		font-size: 1rem;

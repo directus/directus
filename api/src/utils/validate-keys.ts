@@ -1,4 +1,4 @@
-import { ForbiddenError } from '../errors/index.js';
+import { ForbiddenError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import validateUUID from 'uuid-validate';
 import type { PrimaryKey } from '../types/index.js';
@@ -10,7 +10,7 @@ export function validateKeys(
 	schema: SchemaOverview,
 	collection: string,
 	keyField: string,
-	keys: PrimaryKey | PrimaryKey[]
+	keys: PrimaryKey | PrimaryKey[],
 ) {
 	if (Array.isArray(keys)) {
 		for (const key of keys) {

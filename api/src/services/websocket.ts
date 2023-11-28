@@ -3,13 +3,26 @@ import { getWebSocketController } from '../websocket/controllers/index.js';
 import type { WebSocketController } from '../websocket/controllers/rest.js';
 import type { WebSocketClient } from '../websocket/types.js';
 import type { WebSocketMessage } from '../websocket/messages.js';
+import { ServiceUnavailableError } from '@directus/errors';
+import { toBoolean } from '../utils/to-boolean.js';
 import emitter from '../emitter.js';
+import env from '../env.js';
 
 export class WebSocketService {
 	private controller: WebSocketController;
 
 	constructor() {
-		this.controller = getWebSocketController();
+		if (!toBoolean(env['WEBSOCKETS_ENABLED']) || !toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
+			throw new ServiceUnavailableError({ service: 'ws', reason: 'WebSocket server is disabled' });
+		}
+
+		const controller = getWebSocketController();
+
+		if (!controller) {
+			throw new ServiceUnavailableError({ service: 'ws', reason: 'WebSocket server is not initialized' });
+		}
+
+		this.controller = controller;
 	}
 
 	on(event: 'connect' | 'message' | 'error' | 'close', callback: ActionHandler) {

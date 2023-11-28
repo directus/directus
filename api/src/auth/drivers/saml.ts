@@ -7,7 +7,7 @@ import { COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { ErrorCode, InvalidCredentialsError, InvalidProviderError } from '../../errors/index.js';
+import { ErrorCode, InvalidCredentialsError, InvalidProviderError } from '@directus/errors';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -79,7 +79,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 			`auth.create`,
 			userPayload,
 			{ identifier: identifier.toLowerCase(), provider: this.config['provider'], providerPayload: { ...payload } },
-			{ database: getDatabase(), schema: this.schema, accountability: null }
+			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
 
 		try {
@@ -108,7 +108,7 @@ export function createSAMLAuthRouter(providerName: string) {
 		asyncHandler(async (_req, res) => {
 			const { sp } = getAuthProvider(providerName) as SAMLAuthDriver;
 			return res.header('Content-Type', 'text/xml').send(sp.getMetadata());
-		})
+		}),
 	);
 
 	router.get(
@@ -123,7 +123,7 @@ export function createSAMLAuthRouter(providerName: string) {
 			}
 
 			return res.redirect(parsedUrl.toString());
-		})
+		}),
 	);
 
 	router.post(
@@ -144,7 +144,7 @@ export function createSAMLAuthRouter(providerName: string) {
 			}
 
 			return res.redirect(context);
-		})
+		}),
 	);
 
 	router.post(
@@ -191,7 +191,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				throw error;
 			}
 		}),
-		respond
+		respond,
 	);
 
 	return router;

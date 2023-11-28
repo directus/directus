@@ -1,6 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import { Router } from 'express';
-import { ErrorCode } from '../errors/index.js';
+import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { CollectionsService } from '../services/collections.js';
@@ -30,7 +30,7 @@ router.post(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
@@ -74,7 +74,7 @@ router.get(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -100,7 +100,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.patch(
@@ -126,7 +126,7 @@ router.patch(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 router.delete(
@@ -141,7 +141,7 @@ router.delete(
 
 		return next();
 	}),
-	respond
+	respond,
 );
 
 export default router;

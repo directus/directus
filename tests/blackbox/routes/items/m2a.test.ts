@@ -1,24 +1,27 @@
 import config, { getUrl } from '@common/config';
 import { CreateItem, ReadItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import * as common from '@common/index';
-import { requestGraphQL } from '@common/index';
-import { CachedTestsSchema, CheckQueryFilters, TestsSchemaVendorValues } from '@query/filter';
-import { findIndex } from 'lodash';
+import { SeedFunctions } from '@common/seed-functions';
+import { requestGraphQL } from '@common/transport';
+import type { PrimaryKeyType } from '@common/types';
+import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
+import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '@query/filter';
+import { findIndex, without } from 'lodash-es';
 import request from 'supertest';
 import { v4 as uuid } from 'uuid';
+import { beforeAll, describe, expect, it, test } from 'vitest';
 import {
-	Circle,
-	Shape,
-	Square,
 	collectionCircles,
 	collectionShapes,
 	collectionSquares,
 	getTestsSchema,
 	seedDBValues,
+	type Circle,
+	type Shape,
+	type Square,
 } from './m2a.seed';
 
-function createShape(pkType: common.PrimaryKeyType) {
+function createShape(pkType: PrimaryKeyType) {
 	const item: Shape = {
 		name: 'shape-' + uuid(),
 	};
@@ -30,10 +33,10 @@ function createShape(pkType: common.PrimaryKeyType) {
 	return item;
 }
 
-function createCircle(pkType: common.PrimaryKeyType) {
+function createCircle(pkType: PrimaryKeyType) {
 	const item: Circle = {
 		name: 'circle-' + uuid(),
-		radius: common.SeedFunctions.generateValues.float({ quantity: 1 })[0],
+		radius: SeedFunctions.generateValues.float({ quantity: 1 })[0],
 	};
 
 	if (pkType === 'string') {
@@ -43,10 +46,10 @@ function createCircle(pkType: common.PrimaryKeyType) {
 	return item;
 }
 
-function createSquare(pkType: common.PrimaryKeyType) {
+function createSquare(pkType: PrimaryKeyType) {
 	const item: Square = {
 		name: 'square-' + uuid(),
-		width: common.SeedFunctions.generateValues.float({ quantity: 1 })[0],
+		width: SeedFunctions.generateValues.float({ quantity: 1 })[0],
 	};
 
 	if (pkType === 'string') {
@@ -56,7 +59,7 @@ function createSquare(pkType: common.PrimaryKeyType) {
 	return item;
 }
 
-const cachedSchema = common.PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
+const cachedSchema = PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
 	acc[pkType] = getTestsSchema(pkType);
 	return acc;
 }, {} as CachedTestsSchema);
@@ -74,7 +77,7 @@ describe('Seed Database Values', () => {
 	});
 });
 
-describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
+describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 	const localCollectionShapes = `${collectionShapes}_${pkType}`;
 	const localCollectionCircles = `${collectionCircles}_${pkType}`;
 	const localCollectionSquares = `${collectionSquares}_${pkType}`;
@@ -101,9 +104,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionShapes]: {
 								__args: {
@@ -167,9 +170,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.query({
 							fields: `children.item:${localCollectionCircles}.radius`,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionShapes]: {
 								__args: {
@@ -203,7 +206,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(child.item).toEqual(
 								expect.objectContaining({
 									radius: expect.any(Number),
-								})
+								}),
 							);
 						}
 					}
@@ -217,13 +220,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect.objectContaining({
 									radius: expect.any(Number),
 									__typename: localCollectionCircles,
-								})
+								}),
 							);
 						} else {
 							expect(child.item).toEqual(
 								expect.objectContaining({
 									__typename: localCollectionSquares,
-								})
+								}),
 							);
 						}
 					}
@@ -258,9 +261,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.query({
 							fields: `children.item:${localCollectionCircles}.*`,
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 						query: {
 							[localCollectionShapes]: {
 								__args: {
@@ -298,7 +301,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									id: expect.anything(),
 									name: expect.any(String),
 									radius: expect.any(Number),
-								})
+								}),
 							);
 						}
 					}
@@ -314,13 +317,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									name: expect.any(String),
 									radius: expect.any(Number),
 									__typename: localCollectionCircles,
-								})
+								}),
 							);
 						} else {
 							expect(child.item).toEqual(
 								expect.objectContaining({
 									__typename: localCollectionSquares,
-								})
+								}),
 							);
 						}
 					}
@@ -347,16 +350,16 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.query({
 								filter: { id: { _eq: insertedShape.id } },
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: { name: { _eq: insertedShape.name } },
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -371,7 +374,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -443,7 +446,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionShapes}`)
@@ -457,9 +460,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -477,7 +480,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -564,7 +567,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									_and: [{ name: { _starts_with: 'shape-m2a-top-fn-' } }, { 'count(children)': { _eq: 1 } }],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionShapes}`)
@@ -573,9 +576,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									_and: [{ name: { _starts_with: 'shape-m2a-top-fn-' } }, { 'count(children)': { _eq: 2 } }],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -596,7 +599,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -699,7 +702,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionShapes}`)
@@ -719,9 +722,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									],
 								}),
 							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -747,7 +750,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							},
 						});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 							query: {
 								[localCollectionShapes]: {
 									__args: {
@@ -828,7 +831,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: 'name',
 									filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -836,9 +839,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: '-name',
 									filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -850,7 +853,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -873,7 +876,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-								gqlResponse2.body.data[localCollectionShapes].reverse()
+								gqlResponse2.body.data[localCollectionShapes].reverse(),
 							);
 						});
 					});
@@ -894,7 +897,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'name',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -904,9 +907,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'name',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -920,7 +923,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -943,13 +946,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -957,23 +960,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
-								gqlResponse2.body.data[localCollectionShapes]
+								gqlResponse2.body.data[localCollectionShapes],
 							);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
-								gqlResponse2.body.data[localCollectionShapes]
+								gqlResponse2.body.data[localCollectionShapes],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1016,7 +1019,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									filter: { name: { _starts_with: 'shape-m2a-sort-' } },
 									fields: '*.*.*',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -1025,9 +1028,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									filter: { name: { _starts_with: 'shape-m2a-sort-' } },
 									fields: '*.*.*',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1039,7 +1042,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1095,7 +1098,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-								gqlResponse2.body.data[localCollectionShapes].reverse()
+								gqlResponse2.body.data[localCollectionShapes].reverse(),
 							);
 						});
 					});
@@ -1116,7 +1119,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: '*.*.*',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -1126,9 +1129,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: '*.*.*',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1150,7 +1153,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1228,31 +1231,31 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
-								gqlResponse2.body.data[localCollectionShapes]
+								gqlResponse2.body.data[localCollectionShapes],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1294,7 +1297,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: 'year(test_datetime)',
 									filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -1302,9 +1305,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: '-year(test_datetime)',
 									filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1316,7 +1319,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1339,7 +1342,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-								gqlResponse2.body.data[localCollectionShapes].reverse()
+								gqlResponse2.body.data[localCollectionShapes].reverse(),
 							);
 						});
 					});
@@ -1360,7 +1363,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'year(test_datetime)',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -1370,9 +1373,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: 'year(test_datetime)',
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1388,7 +1391,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1413,13 +1416,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
@@ -1427,19 +1430,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse2.statusCode).toEqual(200);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
-								gqlResponse2.body.data[localCollectionShapes]
+								gqlResponse2.body.data[localCollectionShapes],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1486,7 +1489,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
 									filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -1494,9 +1497,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
 									filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1508,7 +1511,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1564,7 +1567,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-								gqlResponse2.body.data[localCollectionShapes].reverse()
+								gqlResponse2.body.data[localCollectionShapes].reverse(),
 							);
 						});
 					});
@@ -1585,7 +1588,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: `children.item:${localCollectionCircles}.year(test_datetime)`,
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const response2 = await request(getUrl(vendor))
 								.get(`/items/${localCollectionShapes}`)
@@ -1595,9 +1598,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									limit,
 									fields: `children.item:${localCollectionCircles}.year(test_datetime)`,
 								})
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1621,7 +1624,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
 								query: {
 									[localCollectionShapes]: {
 										__args: {
@@ -1664,7 +1667,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.children[0].item.test_datetime_year.toString().slice(-1))
+											parseInt(item.children[0].item.test_datetime_year.toString().slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1685,7 +1688,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
-											parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1))
+											parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1)),
 										);
 
 										expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -1705,31 +1708,31 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
 
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
-								gqlResponse2.body.data[localCollectionShapes]
+								gqlResponse2.body.data[localCollectionShapes],
 							);
 
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedAsc);
 
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1));
-								})
+								}),
 							).toEqual(expectedDesc);
 						});
 					});
@@ -1749,7 +1752,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								// Setup
-								const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
+								const countNested = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 2 - 1;
 								const shape: any = createShape(pkType);
 
 								shape.children = Array(countNested)
@@ -1766,13 +1769,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const response = await request(getUrl(vendor))
 									.post(`/items/${localCollectionShapes}`)
 									.send(shape)
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 								// Assert
 								expect(response.statusCode).toBe(200);
 								expect(response.body.data.children.length).toBe(countNested);
 							},
-							120000
+							120000,
 						);
 					});
 
@@ -1787,7 +1790,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								// Setup
-								const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+								const countNested = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 2;
 								const shape: any = createShape(pkType);
 
 								shape.children = Array(countNested)
@@ -1804,17 +1807,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const response = await request(getUrl(vendor))
 									.post(`/items/${localCollectionShapes}`)
 									.send(shape)
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
 
 								expect(response.body.errors[0].message).toBe(
-									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 								);
 							},
-							120000
+							120000,
 						);
 					});
 				});
@@ -1825,7 +1828,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							'%s',
 							async (vendor) => {
 								// Setup
-								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 								const countNested = 4;
 								const shapes: any[] = [];
 
@@ -1847,13 +1850,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const response = await request(getUrl(vendor))
 									.post(`/items/${localCollectionShapes}`)
 									.send(shapes)
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 								// Assert
 								expect(response.statusCode).toBe(200);
 								expect(response.body.data.length).toBe(count);
 							},
-							120000
+							120000,
 						);
 					});
 
@@ -1868,7 +1871,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								// Setup
-								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 								const countNested = 5;
 								const shapes: any[] = [];
 
@@ -1890,17 +1893,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const response = await request(getUrl(vendor))
 									.post(`/items/${localCollectionShapes}`)
 									.send(shapes)
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
 
 								expect(response.body.errors[0].message).toBe(
-									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 								);
 							},
-							120000
+							120000,
 						);
 					});
 				});
@@ -1911,7 +1914,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							'%s',
 							async (vendor) => {
 								// Setup
-								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 								const countCreate = 2;
 								const countUpdate = 2;
 								const countDelete = 1;
@@ -1961,13 +1964,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const response = await request(getUrl(vendor))
 									.patch(`/items/${localCollectionShapes}`)
 									.send(shapes)
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 								// Assert
 								expect(response.statusCode).toBe(200);
 								expect(response.body.data.length).toBe(count);
 							},
-							120000
+							120000,
 						);
 					});
 
@@ -1982,7 +1985,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								// Setup
-								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const count = Number(config.envs[vendor]['MAX_BATCH_MUTATION']) / 10;
 								const countCreate = 2;
 								const countUpdate = 2;
 								const countDelete = 2;
@@ -2032,17 +2035,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const response = await request(getUrl(vendor))
 									.patch(`/items/${localCollectionShapes}`)
 									.send(shapes)
-									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
 
 								expect(response.body.errors[0].message).toBe(
-									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+									`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor]['MAX_BATCH_MUTATION']}.`,
 								);
 							},
-							120000
+							120000,
 						);
 					});
 				});
@@ -2052,33 +2055,33 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				{
 					method: 'get',
 					path: `/items/${localCollectionShapes}`,
-					token: common.USER.ADMIN.TOKEN,
+					token: USER.ADMIN.TOKEN,
 				},
 				localCollectionShapes,
 				cachedSchema[pkType][localCollectionShapes],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
 				{
 					method: 'get',
 					path: `/items/${localCollectionCircles}`,
-					token: common.USER.ADMIN.TOKEN,
+					token: USER.ADMIN.TOKEN,
 				},
 				localCollectionCircles,
 				cachedSchema[pkType][localCollectionCircles],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 
 			CheckQueryFilters(
 				{
 					method: 'get',
 					path: `/items/${localCollectionSquares}`,
-					token: common.USER.ADMIN.TOKEN,
+					token: USER.ADMIN.TOKEN,
 				},
 				localCollectionSquares,
 				cachedSchema[pkType][localCollectionSquares],
-				vendorSchemaValues
+				vendorSchemaValues,
 			);
 		});
 
@@ -2151,7 +2154,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 							meta: '*',
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);
@@ -2165,13 +2168,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe('Auto Increment Tests', () => {
-			if (pkType !== 'integer') return;
+		test('Auto Increment Tests', (ctx) => {
+			if (pkType !== 'integer') ctx.skip();
 
 			describe('updates the auto increment value correctly', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					if (['cockroachdb', 'mssql', 'oracle'].includes(vendor)) return;
-
+				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
 					// Setup
 					const name = 'test-auto-increment-m2a';
 					const largeIdShape = 112222;
@@ -2243,30 +2244,30 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								`children.collection`,
 							],
 						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toBe(200);
 					expect(response.body.data.length).toBe(2);
 
 					expect(response.body.data.map((shape: any) => shape.id)).toEqual(
-						Array.from({ length: 2 }, (_, index) => largeIdShape + index)
+						Array.from({ length: 2 }, (_, index) => largeIdShape + index),
 					);
 
 					expect(
 						response.body.data.flatMap((shape: any) =>
 							shape.children
 								.filter((child: any) => child.collection === localCollectionCircles)
-								.map((circle: any) => circle.item.id)
-						)
+								.map((circle: any) => circle.item.id),
+						),
 					).toEqual(Array.from({ length: 2 }, (_, index) => largeIdCircle + index));
 
 					expect(
 						response.body.data.flatMap((shape: any) =>
 							shape.children
 								.filter((child: any) => child.collection === localCollectionSquares)
-								.map((circle: any) => circle.item.id)
-						)
+								.map((circle: any) => circle.item.id),
+						),
 					).toEqual(Array.from({ length: 2 }, (_, index) => largeIdSquare + index));
 				});
 			});

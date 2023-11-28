@@ -1,6 +1,6 @@
 {
 	"name": "@directus/pressure",
-	"version": "1.0.9",
+	"version": "1.0.13",
 	"description": "Pressure based rate limiter",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -21,8 +21,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -32,8 +32,9 @@
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/express": "4.17.17",
-		"@vitest/coverage-c8": "0.31.1",
-		"typescript": "5.0.4",
-		"vitest": "0.31.1"
+		"@vitest/coverage-v8": "0.34.6",
+		"tsup": "7.2.0",
+		"typescript": "5.2.2",
+		"vitest": "0.34.6"
 	}
 }

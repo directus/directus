@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import { debounce } from 'lodash';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+export type Choice = {
+	text: string;
+	value: string | number;
+	children?: Choice[];
+};
+
+withDefaults(
+	defineProps<{
+		value: string[] | null;
+		disabled?: boolean;
+		choices?: Choice[];
+		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
+	}>(),
+	{
+		value: () => [],
+		choices: () => [],
+		valueCombining: 'all',
+	},
+);
+
+defineEmits(['input']);
+
+const { t } = useI18n();
+const search = ref('');
+
+const showSelectionOnly = ref(false);
+
+const setSearchDebounced = debounce((val: string) => {
+	searchDebounced.value = val;
+}, 250);
+
+watch(search, setSearchDebounced);
+
+const searchDebounced = ref('');
+</script>
+
 <template>
 	<div class="select-multiple-checkbox-tree">
 		<div v-if="choices.length > 10" class="search">
@@ -38,54 +79,13 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { debounce } from 'lodash';
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-export type Choice = {
-	text: string;
-	value: string | number;
-	children?: Choice[];
-};
-
-withDefaults(
-	defineProps<{
-		value: string[] | null;
-		disabled?: boolean;
-		choices?: Choice[];
-		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
-	}>(),
-	{
-		value: () => [],
-		choices: () => [],
-		valueCombining: 'all',
-	}
-);
-
-defineEmits(['input']);
-
-const { t } = useI18n();
-const search = ref('');
-
-const showSelectionOnly = ref(false);
-
-const setSearchDebounced = debounce((val: string) => {
-	searchDebounced.value = val;
-}, 250);
-
-watch(search, setSearchDebounced);
-
-const searchDebounced = ref('');
-</script>
-
 <style scoped>
 .select-multiple-checkbox-tree {
 	max-height: var(--input-height-max);
 	overflow: auto;
-	background-color: var(--background-page);
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
 }
 
 .search {
@@ -97,7 +97,7 @@ const searchDebounced = ref('');
 }
 
 .search .v-input {
-	box-shadow: 0 0 4px 4px var(--background-page);
+	box-shadow: 0 0 4px 4px var(--theme--background);
 }
 
 .footer {
@@ -109,26 +109,26 @@ const searchDebounced = ref('');
 	width: max-content;
 	padding: 4px 8px;
 	text-align: right;
-	background-color: var(--background-page);
-	border-top-left-radius: var(--border-radius);
+	background-color: var(--theme--background);
+	border-top-left-radius: var(--theme--border-radius);
 }
 
 .footer > button {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
 
 .footer > button:hover {
-	color: var(--foreground-normal);
+	color: var(--theme--form--field--input--foreground);
 }
 
 .footer > button.active {
-	color: var(--primary);
+	color: var(--theme--primary);
 }
 
 .footer > button:disabled {
-	color: var(--foreground-subdued);
+	color: var(--theme--form--field--input--foreground-subdued);
 	cursor: not-allowed;
 }
 </style>

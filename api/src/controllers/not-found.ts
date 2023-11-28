@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { RouteNotFoundError } from '../errors/index.js';
+import { RouteNotFoundError } from '@directus/errors';
 
 /**
  * Handles not found routes.
@@ -24,7 +24,7 @@ const notFound: RequestHandler = async (req, res, next) => {
 				database: getDatabase(),
 				schema: req.schema,
 				accountability: req.accountability ?? null,
-			}
+			},
 		);
 
 		if (hooksResult) {

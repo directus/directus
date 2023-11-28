@@ -1,3 +1,343 @@
+<script setup lang="ts">
+import { Instance, Modifier, Placement } from '@popperjs/core';
+import arrow from '@popperjs/core/lib/modifiers/arrow';
+import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
+import eventListeners from '@popperjs/core/lib/modifiers/eventListeners';
+import flip from '@popperjs/core/lib/modifiers/flip';
+import offset from '@popperjs/core/lib/modifiers/offset';
+import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
+import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
+import { createPopper } from '@popperjs/core/lib/popper-lite';
+import { debounce } from 'lodash';
+import { nanoid } from 'nanoid/non-secure';
+import { computed, nextTick, onUnmounted, ref, Ref, watch } from 'vue';
+
+interface Props {
+	/** Where to position the popper */
+	placement?: Placement;
+	/** Model the open state */
+	modelValue?: boolean;
+	/** Close the menu when clicking outside of the menu */
+	closeOnClick?: boolean;
+	/** Close the menu when clicking the content of the menu */
+	closeOnContentClick?: boolean;
+	/** Attach the menu to an input */
+	attached?: boolean;
+	/** Show an arrow pointer */
+	showArrow?: boolean;
+	/** Menu does not appear */
+	disabled?: boolean;
+	/** Activate the menu on a trigger */
+	trigger?: 'hover' | 'click' | 'keyDown' | null;
+	/** Time in ms before menu activates after trigger */
+	delay?: number;
+	/** Offset from the top */
+	offsetY?: number;
+	/** Offset from the left */
+	offsetX?: number;
+	/** Removes the scrollbar */
+	fullHeight?: boolean;
+	/** Removes any styling from the menu */
+	seamless?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	placement: 'bottom',
+	modelValue: undefined,
+	closeOnClick: true,
+	closeOnContentClick: true,
+	trigger: null,
+	delay: 0,
+	offsetY: 8,
+	offsetX: 0,
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const activator = ref<HTMLElement | null>(null);
+const reference = ref<HTMLElement | null>(null);
+
+const virtualReference = ref({
+	getBoundingClientRect() {
+		return {
+			top: 0,
+			left: 0,
+			bottom: 0,
+			right: 0,
+			width: 0,
+			height: 0,
+		};
+	},
+});
+
+const id = computed(() => nanoid());
+const popper = ref<HTMLElement | null>(null);
+
+const {
+	start,
+	stop,
+	styles,
+	arrowStyles,
+	placement: popperPlacement,
+} = usePopper(
+	reference,
+	popper,
+	computed(() => ({
+		placement: props.placement,
+		attached: props.attached,
+		arrow: props.showArrow,
+		offsetY: props.offsetY,
+		offsetX: props.offsetX,
+	})),
+);
+
+const { isActive, activate, deactivate, toggle } = useActiveState();
+
+defineExpose({ activator, id, activate, deactivate });
+
+watch(isActive, (newActive) => {
+	if (newActive === true) {
+		reference.value = (activator.value?.children[0] as HTMLElement) || virtualReference.value;
+
+		nextTick(() => {
+			popper.value = document.getElementById(id.value);
+		});
+	}
+});
+
+const { onClick, onPointerEnter, onPointerLeave } = useEvents();
+
+function useActiveState() {
+	const localIsActive = ref(false);
+
+	const isActive = computed<boolean>({
+		get() {
+			if (props.modelValue !== undefined) {
+				return props.modelValue;
+			}
+
+			return localIsActive.value;
+		},
+		async set(newActive) {
+			localIsActive.value = newActive;
+			emit('update:modelValue', newActive);
+		},
+	});
+
+	watch(
+		popper,
+		async () => {
+			if (popper.value !== null) {
+				await start();
+			} else {
+				stop();
+			}
+		},
+		{ immediate: true },
+	);
+
+	return { isActive, activate, deactivate, toggle };
+
+	function activate(event?: MouseEvent) {
+		if (event) {
+			virtualReference.value = {
+				getBoundingClientRect() {
+					return {
+						top: event.clientY,
+						left: event.clientX,
+						bottom: 0,
+						right: 0,
+						width: 0,
+						height: 0,
+					};
+				},
+			};
+		}
+
+		isActive.value = true;
+	}
+
+	function deactivate() {
+		isActive.value = false;
+	}
+
+	function toggle() {
+		if (props.disabled === true) return;
+		isActive.value = !isActive.value;
+	}
+}
+
+function onClickOutsideMiddleware(e: Event) {
+	return !activator.value?.contains(e.target as Node);
+}
+
+function onContentClick(e: Event) {
+	e.stopPropagation();
+
+	if (e.target !== e.currentTarget) {
+		deactivate();
+	}
+}
+
+function useEvents() {
+	const isHovered = ref(false);
+
+	watch(
+		isHovered,
+		debounce((newHoveredState) => {
+			if (newHoveredState) {
+				if (!isActive.value) activate();
+			} else {
+				deactivate();
+			}
+		}, props.delay),
+	);
+
+	return { onClick, onPointerLeave, onPointerEnter };
+
+	function onClick() {
+		toggle();
+	}
+
+	function onPointerEnter(event: Event) {
+		event.stopPropagation();
+		isHovered.value = true;
+	}
+
+	function onPointerLeave(event: Event) {
+		event.stopPropagation();
+		isHovered.value = false;
+	}
+}
+
+function usePopper(
+	reference: Ref<HTMLElement | null>,
+	popper: Ref<HTMLElement | null>,
+	options: Readonly<
+		Ref<
+			Readonly<{
+				placement: Placement;
+				attached: boolean;
+				arrow: boolean;
+				offsetY: number;
+				offsetX: number;
+			}>
+		>
+	>,
+): Record<string, any> {
+	const popperInstance = ref<Instance | null>(null);
+	const styles = ref({});
+	const arrowStyles = ref({});
+
+	// The internal placement can change based on the flip / overflow modifiers
+	const placement = ref(options.value.placement);
+
+	onUnmounted(() => {
+		stop();
+	});
+
+	watch(
+		options,
+		() => {
+			popperInstance.value?.setOptions({
+				placement: options.value.attached ? 'bottom-start' : options.value.placement,
+				modifiers: getModifiers(),
+			});
+		},
+		{ immediate: true },
+	);
+
+	const observer = new MutationObserver(() => {
+		popperInstance.value?.forceUpdate();
+	});
+
+	return { popperInstance, placement, start, stop, styles, arrowStyles };
+
+	function start() {
+		return new Promise((resolve) => {
+			popperInstance.value = createPopper(reference.value!, popper.value!, {
+				placement: options.value.attached ? 'bottom-start' : options.value.placement,
+				modifiers: getModifiers(resolve),
+				strategy: 'fixed',
+			});
+
+			popperInstance.value.forceUpdate();
+
+			observer.observe(popper.value!, {
+				attributes: false,
+				childList: true,
+				characterData: true,
+				subtree: true,
+			});
+		});
+	}
+
+	function stop() {
+		popperInstance.value?.destroy();
+		observer.disconnect();
+	}
+
+	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
+		const modifiers: Modifier<string, any>[] = [
+			popperOffsets,
+			{
+				...offset,
+				options: {
+					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? 8],
+				},
+			},
+			{
+				...preventOverflow,
+				options: {
+					padding: 8,
+				},
+			},
+			computeStyles,
+			flip,
+			eventListeners,
+			{
+				...arrow,
+				enabled: options.value.arrow === true,
+				options: {
+					padding: 6,
+				},
+			},
+			{
+				name: 'minWidth',
+				enabled: options.value.attached === true,
+				fn: ({ state }) => {
+					if (state.styles.popper) state.styles.popper.minWidth = `${state.rects.reference.width}px`;
+				},
+				phase: 'beforeWrite',
+				requires: ['computeStyles'],
+			},
+			{
+				name: 'applyStyles',
+				enabled: true,
+				phase: 'write',
+				fn({ state }) {
+					if (state.styles.popper) styles.value = state.styles.popper;
+
+					if (state.styles.arrow) arrowStyles.value = state.styles.arrow;
+
+					callback();
+				},
+			},
+			{
+				name: 'placementUpdater',
+				enabled: true,
+				phase: 'afterWrite',
+				fn({ state }) {
+					placement.value = state.placement;
+				},
+			},
+		];
+
+		return modifiers;
+	}
+}
+</script>
+
 <template>
 	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
 		<div
@@ -57,373 +397,6 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { Instance, Modifier, Placement } from '@popperjs/core';
-import arrow from '@popperjs/core/lib/modifiers/arrow';
-import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
-import eventListeners from '@popperjs/core/lib/modifiers/eventListeners';
-import flip from '@popperjs/core/lib/modifiers/flip';
-import offset from '@popperjs/core/lib/modifiers/offset';
-import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
-import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
-import { createPopper } from '@popperjs/core/lib/popper-lite';
-import { debounce } from 'lodash';
-import { nanoid } from 'nanoid/non-secure';
-import { computed, nextTick, onUnmounted, ref, Ref, watch } from 'vue';
-
-interface Props {
-	/** Where to position the popper */
-	placement?: Placement;
-	/** Model the open state */
-	modelValue?: boolean;
-	/** Close the menu when clicking outside of the menu */
-	closeOnClick?: boolean;
-	/** Close the menu when clicking the content of the menu */
-	closeOnContentClick?: boolean;
-	/** Attach the menu to an input */
-	attached?: boolean;
-	/** Should the menu have the same width as the input when attached */
-	isSameWidth?: boolean;
-	/** Show an arrow pointer */
-	showArrow?: boolean;
-	/** Menu does not appear */
-	disabled?: boolean;
-	/** Activate the menu on a trigger */
-	trigger?: 'hover' | 'click' | 'keyDown' | null;
-	/** Time in ms before menu activates after trigger */
-	delay?: number;
-	/** Offset from the top */
-	offsetY?: number;
-	/** Offset from the left */
-	offsetX?: number;
-	/** Removes the scrollbar */
-	fullHeight?: boolean;
-	/** Removes any styling from the menu */
-	seamless?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	placement: 'bottom',
-	modelValue: undefined,
-	closeOnClick: true,
-	closeOnContentClick: true,
-	attached: false,
-	isSameWidth: true,
-	showArrow: false,
-	disabled: false,
-	trigger: null,
-	delay: 0,
-	offsetY: 8,
-	offsetX: 0,
-	fullHeight: false,
-	seamless: false,
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const activator = ref<HTMLElement | null>(null);
-const reference = ref<HTMLElement | null>(null);
-
-const virtualReference = ref({
-	getBoundingClientRect() {
-		return {
-			top: 0,
-			left: 0,
-			bottom: 0,
-			right: 0,
-			width: 0,
-			height: 0,
-		};
-	},
-});
-
-const id = computed(() => nanoid());
-const popper = ref<HTMLElement | null>(null);
-
-const {
-	start,
-	stop,
-	styles,
-	arrowStyles,
-	placement: popperPlacement,
-} = usePopper(
-	reference as any, // Fix as TS thinks Ref<HTMLElement | null> !== Ref<HTMLElement | null> 🙃
-	popper as any,
-	computed(() => ({
-		placement: props.placement,
-		attached: props.attached,
-		isSameWidth: props.isSameWidth,
-		arrow: props.showArrow,
-		offsetY: props.offsetY,
-		offsetX: props.offsetX,
-	}))
-);
-
-const { isActive, activate, deactivate, toggle } = useActiveState();
-
-defineExpose({ activator, id, activate, deactivate });
-
-watch(isActive, (newActive) => {
-	if (newActive === true) {
-		reference.value = (activator.value?.children[0] as HTMLElement) || virtualReference.value;
-
-		nextTick(() => {
-			popper.value = document.getElementById(id.value);
-		});
-	}
-});
-
-const { onClick, onPointerEnter, onPointerLeave } = useEvents();
-
-function useActiveState() {
-	const localIsActive = ref(false);
-
-	const isActive = computed<boolean>({
-		get() {
-			if (props.modelValue !== undefined) {
-				return props.modelValue;
-			}
-
-			return localIsActive.value;
-		},
-		async set(newActive) {
-			localIsActive.value = newActive;
-			emit('update:modelValue', newActive);
-		},
-	});
-
-	watch(
-		popper,
-		async () => {
-			if (popper.value !== null) {
-				await start();
-			} else {
-				stop();
-			}
-		},
-		{ immediate: true }
-	);
-
-	return { isActive, activate, deactivate, toggle };
-
-	function activate(event?: MouseEvent) {
-		if (event) {
-			virtualReference.value = {
-				getBoundingClientRect() {
-					return {
-						top: event.clientY,
-						left: event.clientX,
-						bottom: 0,
-						right: 0,
-						width: 0,
-						height: 0,
-					};
-				},
-			};
-		}
-
-		isActive.value = true;
-	}
-
-	function deactivate() {
-		isActive.value = false;
-	}
-
-	function toggle() {
-		if (props.disabled === true) return;
-		isActive.value = !isActive.value;
-	}
-}
-
-function onClickOutsideMiddleware(e: Event) {
-	return !activator.value?.contains(e.target as Node);
-}
-
-function onContentClick(e: Event) {
-	e.stopPropagation();
-
-	if (e.target !== e.currentTarget) {
-		deactivate();
-	}
-}
-
-function useEvents() {
-	const isHovered = ref(false);
-
-	watch(
-		isHovered,
-		debounce((newHoveredState) => {
-			if (newHoveredState) {
-				if (!isActive.value) activate();
-			} else {
-				deactivate();
-			}
-		}, props.delay)
-	);
-
-	return { onClick, onPointerLeave, onPointerEnter };
-
-	function onClick() {
-		toggle();
-	}
-
-	function onPointerEnter(event: Event) {
-		event.stopPropagation();
-		isHovered.value = true;
-	}
-
-	function onPointerLeave(event: Event) {
-		event.stopPropagation();
-		isHovered.value = false;
-	}
-}
-
-function usePopper(
-	reference: Ref<HTMLElement | null>,
-	popper: Ref<HTMLElement | null>,
-	options: Readonly<
-		Ref<
-			Readonly<{
-				placement: Placement;
-				attached: boolean;
-				isSameWidth: boolean;
-				arrow: boolean;
-				offsetY: number;
-				offsetX: number;
-			}>
-		>
-	>
-): Record<string, any> {
-	const popperInstance = ref<Instance | null>(null);
-	const styles = ref({});
-	const arrowStyles = ref({});
-
-	// The internal placement can change based on the flip / overflow modifiers
-	const placement = ref(options.value.placement);
-
-	onUnmounted(() => {
-		stop();
-	});
-
-	watch(
-		options,
-		() => {
-			popperInstance.value?.setOptions({
-				placement: options.value.attached ? 'bottom-start' : options.value.placement,
-				modifiers: getModifiers(),
-			});
-		},
-		{ immediate: true }
-	);
-
-	const observer = new MutationObserver(() => {
-		popperInstance.value?.forceUpdate();
-	});
-
-	return { popperInstance, placement, start, stop, styles, arrowStyles };
-
-	function start() {
-		return new Promise((resolve) => {
-			popperInstance.value = createPopper(reference.value!, popper.value!, {
-				placement: options.value.attached ? 'bottom-start' : options.value.placement,
-				modifiers: getModifiers(resolve),
-				strategy: 'fixed',
-			});
-
-			popperInstance.value.forceUpdate();
-
-			observer.observe(popper.value!, {
-				attributes: false,
-				childList: true,
-				characterData: true,
-				subtree: true,
-			});
-		});
-	}
-
-	function stop() {
-		popperInstance.value?.destroy();
-		observer.disconnect();
-	}
-
-	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
-		const modifiers: Modifier<string, any>[] = [
-			popperOffsets,
-			{
-				...offset,
-				options: {
-					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? 8],
-				},
-			},
-			{
-				...preventOverflow,
-				options: {
-					padding: 8,
-				},
-			},
-			computeStyles,
-			flip,
-			eventListeners,
-			{
-				name: 'placementUpdater',
-				enabled: true,
-				phase: 'afterWrite',
-				fn({ state }) {
-					placement.value = state.placement;
-				},
-			},
-			{
-				name: 'applyStyles',
-				enabled: true,
-				phase: 'write',
-				fn({ state }) {
-					styles.value = state.styles.popper;
-					arrowStyles.value = state.styles.arrow;
-					callback();
-				},
-			},
-			{
-				name: 'minWidth',
-				enabled: true,
-				phase: 'beforeWrite',
-				fn({ state }) {
-					state.styles.popper.minWidth = `${state.rects.reference.width}px`;
-				},
-			},
-		];
-
-		if (options.value.arrow === true) {
-			modifiers.push({
-				...arrow,
-				options: {
-					padding: 6,
-				},
-			});
-		}
-
-		if (options.value.attached === true) {
-			modifiers.push({
-				name: 'sameWidth',
-				enabled: options.value.isSameWidth,
-				fn: ({ state }) => {
-					state.styles.popper.width = `${state.rects.reference.width}px`;
-				},
-				phase: 'beforeWrite',
-				requires: ['computeStyles'],
-			});
-		}
-
-		return modifiers;
-	}
-}
-</script>
-
-<style>
-body {
-	--v-menu-min-width: 100px;
-}
-</style>
-
 <style lang="scss" scoped>
 .v-menu {
 	display: contents;
@@ -437,7 +410,7 @@ body {
 	position: fixed;
 	left: -999px;
 	z-index: 500;
-	min-width: var(--v-menu-min-width);
+	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
@@ -454,12 +427,11 @@ body {
 	height: 10px;
 	overflow: hidden;
 	border-radius: 2px;
-	box-shadow: none;
 }
 
 .arrow {
 	&::after {
-		background: var(--card-face-color);
+		background: var(--theme--popover--menu--background);
 		transform: rotate(45deg) scale(0);
 		transition: transform var(--fast) var(--transition-out);
 		transition-delay: 0;
@@ -477,7 +449,6 @@ body {
 
 	&::after {
 		bottom: 3px;
-		box-shadow: 2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -486,7 +457,6 @@ body {
 
 	&::after {
 		top: 3px;
-		box-shadow: -2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -494,8 +464,7 @@ body {
 	left: -6px;
 
 	&::after {
-		left: 2px;
-		box-shadow: -2px 2px 4px -2px rgba(var(--card-shadow-color), 0.2);
+		left: 4px;
 	}
 }
 
@@ -503,8 +472,7 @@ body {
 	right: -6px;
 
 	&::after {
-		right: 2px;
-		box-shadow: 2px -2px 4px -2px rgba(var(--card-shadow-color), 0.2);
+		right: 4px;
 	}
 }
 
@@ -513,10 +481,10 @@ body {
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	background-color: var(--card-face-color);
+	background-color: var(--theme--popover--menu--background);
 	border: none;
-	border-radius: var(--border-radius);
-	box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgb(var(--card-shadow-color), 0.05);
+	border-radius: var(--theme--popover--menu--border-radius);
+	box-shadow: var(--theme--popover--menu--box-shadow);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;

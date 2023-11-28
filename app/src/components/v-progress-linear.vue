@@ -1,30 +1,3 @@
-<template>
-	<div
-		class="v-progress-linear"
-		:class="[
-			{
-				absolute,
-				bottom,
-				fixed,
-				indeterminate,
-				rounded,
-				top,
-				colorful,
-			},
-			color,
-		]"
-		@animationiteration="$emit('animationiteration', $event)"
-	>
-		<div
-			class="inner"
-			:style="{
-				width: value + '%',
-			}"
-		/>
-		<slot :value="value" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
@@ -67,33 +40,61 @@ const color = computed(() => {
 });
 </script>
 
-<style>
-body {
-	--v-progress-linear-height: 4px;
-	--v-progress-linear-color: var(--foreground-normal);
-	--v-progress-linear-background-color: var(--border-normal);
-	--v-progress-linear-transition: 400ms;
-}
-</style>
+<template>
+	<div
+		class="v-progress-linear"
+		:class="[
+			{
+				absolute,
+				bottom,
+				fixed,
+				indeterminate,
+				rounded,
+				top,
+				colorful,
+			},
+			color,
+		]"
+		@animationiteration="$emit('animationiteration', $event)"
+	>
+		<div
+			class="inner"
+			:style="{
+				width: value + '%',
+			}"
+		/>
+		<slot :value="value" />
+	</div>
+</template>
 
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+	--v-progress-linear-height            [4px]
+	--v-progress-linear-color             [var(--theme--foreground)]
+	--v-progress-linear-background-color  [var(--theme--form--field--input--border-color)]
+
+*/
+
 .v-progress-linear {
 	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	height: var(--v-progress-linear-height);
+	height: var(--v-progress-linear-height, 4px);
 	overflow: hidden;
-	background-color: var(--v-progress-linear-background-color);
+	background-color: var(--v-progress-linear-background-color, var(--theme--form--field--input--border-color));
 
 	.inner {
 		position: absolute;
 		top: 0;
 		left: 0;
 		height: 100%;
-		background-color: var(--v-progress-linear-color);
-		transition: width var(--v-progress-linear-transition) ease-in-out;
+		background-color: var(--v-progress-linear-color, var(--theme--foreground));
+		transition: width 400ms ease-in-out;
 	}
 
 	&.absolute {
@@ -118,7 +119,7 @@ body {
 
 	&.rounded,
 	&.rounded .inner {
-		border-radius: calc(var(--v-progress-linear-height) / 2);
+		border-radius: calc(var(--v-progress-linear-height, 4px) / 2);
 	}
 
 	&.top {
@@ -127,15 +128,15 @@ body {
 
 	&.colorful {
 		&.danger .inner {
-			background-color: var(--danger);
+			background-color: var(--theme--danger);
 		}
 
 		&.warning .inner {
-			background-color: var(--warning);
+			background-color: var(--theme--warning);
 		}
 
 		&.success .inner {
-			background-color: var(--success);
+			background-color: var(--theme--success);
 		}
 	}
 }

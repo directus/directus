@@ -1,10 +1,3 @@
-<template>
-	<div ref="el" v-tooltip:[placement]="hasEllipsis && text" class="v-text-overflow">
-		<v-highlight v-if="highlight" :query="highlight" :text="text" />
-		<template v-else>{{ text }}</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useElementSize } from '@directus/composables';
@@ -35,9 +28,16 @@ watch(
 		if (!el.value) return;
 		hasEllipsis.value = el.value.offsetWidth < el.value.scrollWidth;
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 </script>
+
+<template>
+	<div ref="el" v-tooltip:[placement]="hasEllipsis && text" class="v-text-overflow">
+		<v-highlight v-if="highlight" :query="highlight" :text="text" />
+		<template v-else>{{ text }}</template>
+	</div>
+</template>
 
 <style lang="scss" scoped>
 .v-text-overflow {

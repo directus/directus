@@ -3,9 +3,9 @@ import knex from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Helpers } from '../../src/database/helpers/index.js';
-import { getHelpers } from '../../src/database/helpers/index.js';
-import { PayloadService } from '../../src/services/index.js';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
+import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -199,7 +199,7 @@ describe('Integration Tests', () => {
 								[timestampFieldId]: '0000-00-00 00:00:00.000',
 							},
 						],
-						'read'
+						'read',
 					);
 
 					expect(result).toMatchObject([
@@ -220,7 +220,7 @@ describe('Integration Tests', () => {
 								[timestampFieldId]: '1980-12-08 00:11:22.333',
 							},
 						],
-						'read'
+						'read',
 					);
 
 					expect(result).toMatchObject([
@@ -241,7 +241,7 @@ describe('Integration Tests', () => {
 								[timestampFieldId]: new Date(1666555444333),
 							},
 						],
-						'read'
+						'read',
 					);
 
 					expect(result).toMatchObject([

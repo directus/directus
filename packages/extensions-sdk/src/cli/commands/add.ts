@@ -1,3 +1,9 @@
+import type {
+	ExtensionOptions,
+	ExtensionOptionsBundleEntry,
+	NestedExtensionType,
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/extensions';
 import {
 	EXTENSION_LANGUAGES,
 	EXTENSION_NAME_REGEX,
@@ -5,13 +11,7 @@ import {
 	EXTENSION_TYPES,
 	ExtensionManifest,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
-import type {
-	ExtensionOptions,
-	ExtensionOptionsBundleEntry,
-	NestedExtensionType,
-	ExtensionManifest as TExtensionManifest,
-} from '@directus/types';
+} from '@directus/extensions';
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
@@ -120,7 +120,7 @@ export default async function add(): Promise<void> {
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: await getExtensionDevDeps(
 				newEntries.map((entry) => entry.type),
-				getLanguageFromEntries(newEntries)
+				getLanguageFromEntries(newEntries),
 			),
 		};
 
@@ -205,7 +205,7 @@ export default async function add(): Promise<void> {
 		const convertFiles = await fse.readdir(source);
 
 		await Promise.all(
-			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file)))
+			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file))),
 		);
 
 		await fse.ensureDir(entrySourcePath);
@@ -260,7 +260,7 @@ export default async function add(): Promise<void> {
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: await getExtensionDevDeps(
 				entries.map((entry) => entry.type),
-				getLanguageFromEntries(entries)
+				getLanguageFromEntries(entries),
 			),
 		};
 

@@ -1,6 +1,6 @@
 import { v5 as uuid } from 'uuid';
-import * as seedrandom from 'seedrandom';
-import { PrimaryKeyType } from '@common/types';
+import seedrandom from 'seedrandom';
+import type { PrimaryKeyType } from '@common/types';
 
 const SEED_UUID_NAMESPACE = 'e81a0012-568b-415c-96fa-66508f594067';
 const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
@@ -150,7 +150,7 @@ function generateFloat(options: OptionsSeedGenerateFloat) {
 	for (let i = 0; i < options.quantity; i++) {
 		if (options.startsAt && options.endsAt) {
 			values.push(
-				Number((options.startsAt + random() * (options.endsAt - options.startsAt + 1)).toFixed(options.precision ?? 3))
+				Number((options.startsAt + random() * (options.endsAt - options.startsAt + 1)).toFixed(options.precision ?? 3)),
 			);
 		} else if (options.startsAt) {
 			values.push(Number((options.startsAt + random() * (options.amount ?? 100)).toFixed(options.precision ?? 3)));
@@ -242,11 +242,11 @@ function generateDate(options: OptionsSeedGenerateDate) {
 			values.push(
 				new Date(
 					Math.floor(
-						random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime()
-					)
+						random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime(),
+					),
 				)
 					.toISOString()
-					.substring(0, 10)
+					.substring(0, 10),
 			);
 		}
 	} else if (options.startsFrom) {
@@ -254,7 +254,7 @@ function generateDate(options: OptionsSeedGenerateDate) {
 			values.push(
 				new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS + options.startsFrom.getTime()))
 					.toISOString()
-					.substring(0, 10)
+					.substring(0, 10),
 			);
 		}
 	} else if (options.endsOn) {
@@ -268,15 +268,16 @@ function generateDate(options: OptionsSeedGenerateDate) {
 	}
 
 	if (options.isDefaultValue && options.vendor === 'oracle') {
-		for (let i = 0; i < values.length; i++) {
-			values[i] = new Date(values[i])
-				.toLocaleDateString('en-GB', {
-					day: 'numeric',
-					month: 'short',
-					year: 'numeric',
-				})
-				.replace(/ /g, '-');
-		}
+		values.forEach(
+			(value, index) =>
+				(values[index] = new Date(value)
+					.toLocaleDateString('en-GB', {
+						day: 'numeric',
+						month: 'short',
+						year: 'numeric',
+					})
+					.replace(/ /g, '-')),
+		);
 	}
 
 	return values;
@@ -285,9 +286,7 @@ function generateDate(options: OptionsSeedGenerateDate) {
 function generateDateTime(options: OptionsSeedGenerateDateTime) {
 	const values = generateTimestamp(options);
 
-	for (let i = 0; i < values.length; i++) {
-		values[i] = values[i].slice(0, -5);
-	}
+	values.forEach((value, index) => (values[index] = value.slice(0, -5)));
 
 	if (options.isDefaultValue && options.vendor === 'oracle') {
 		for (let index = 0; index < values.length; index++) {
@@ -317,7 +316,7 @@ function generateTime(options: OptionsSeedGenerateTime) {
 			values.push(
 				new Date(Math.floor(random() * (timeEnd.getTime() - timeStart.getTime() + 1) + timeStart.getTime()))
 					.toISOString()
-					.slice(11, 19)
+					.slice(11, 19),
 			);
 		}
 	} else if (timeStart) {
@@ -325,7 +324,7 @@ function generateTime(options: OptionsSeedGenerateTime) {
 			values.push(
 				new Date(Math.floor(random() * (86400000 /* 24h */ - timeStart.getTime()) + timeStart.getTime()))
 					.toISOString()
-					.slice(11, 19)
+					.slice(11, 19),
 			);
 		}
 	} else if (timeEnd) {
@@ -356,15 +355,15 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 			values.push(
 				new Date(
 					Math.floor(
-						random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime()
-					)
-				).toISOString()
+						random() * (options.endsOn.getTime() - options.startsFrom.getTime() + 1) + options.startsFrom.getTime(),
+					),
+				).toISOString(),
 			);
 		}
 	} else if (options.startsFrom) {
 		for (let i = 0; i < options.quantity; i++) {
 			values.push(
-				new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS + options.startsFrom.getTime())).toISOString()
+				new Date(Math.floor(random() * FIVE_YEARS_IN_MILLISECONDS + options.startsFrom.getTime())).toISOString(),
 			);
 		}
 	} else if (options.endsOn) {
@@ -379,19 +378,15 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 
 	// Overcome MySQL / Maria created without decimal accuracy
 	// Overcome MSSQL specific accuracy up to 1/300th of a second
-	for (let index = 0; index < values.length; index++) {
-		values[index] = values[index].slice(0, 20) + '000Z';
-	}
+	values.forEach((value, index) => (values[index] = value.slice(0, 20) + '000Z'));
 
 	if (options.isDefaultValue && options.vendor) {
 		if (['mysql', 'mysql5', 'maria'].includes(options.vendor)) {
-			for (let index = 0; index < values.length; index++) {
-				values[index] = new Date(values[index]).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2');
-			}
+			values.forEach(
+				(value, index) => (values[index] = new Date(value).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2')),
+			);
 		} else if (options.vendor === 'oracle') {
-			for (let index = 0; index < values.length; index++) {
-				values[index] = 'CURRENT_TIMESTAMP';
-			}
+			values.forEach((_, index) => (values[index] = 'CURRENT_TIMESTAMP'));
 		}
 	}
 

@@ -3,61 +3,70 @@ description: A guide on how to build custom Themes in Directus.
 readTime: 2 min read
 ---
 
-# Themes & Styling
+# Custom Themes <small></small>
 
-> **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily
-> tailored to your brand. [Learn more about the App](/user-guide/overview/data-studio-app).
+> Custom Themes allow you to create a new app design that's tailored to your brand or aesthetic.
 
-## App Themes
+## Extension Entrypoint
 
-The Directus App has been developed with customization and extensibility in mind. Colors and styles referenced within
-the codebase all use CSS variables, and therefore it is easy to make comprehensive changes to the App styling.
+The entrypoint of your theme is the `index` file inside the `src/` folder of your extension package. It exports the
+theme configuration and its' rules. When loading your theme, this rule set is imported by the Directus host app.
 
-There are two themes included by default: Light and Dark. You can duplicate these files to create your own themes — with
-no limit to customization. Below are several code resources for key SCSS files.
+Example of a theme:
 
-- **Themes** — See the [Light Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_light.scss)
-  or [Dark Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_dark.scss)
-- **Typography** — See the [Fonts](https://github.com/directus/directus/blob/main/app/src/styles/_type-styles.scss) and
-  [Type Styles](https://github.com/directus/directus/blob/main/app/src/styles/mixins/type-styles.scss)
-- **Variables** — See the
-  [Global Variables](https://github.com/directus/directus/blob/main/app/src/styles/_variables.scss)
+```js
+import { defineTheme } from '@directus/extensions-sdk';
 
-## Project Styling
-
-See [Project Settings - Branding & Style](/user-guide/settings/project-settings#branding-style).
-
-## Custom CSS
-
-You can also override any core CSS directly within the App through Project Settings. This makes it easy to edit the CSS
-variables listed in the themes above.
-
-1. Navigate to **Settings Module > Project Settings**
-2. Scroll to the **Custom CSS** field
-3. Enter any **valid CSS**
-4. Click the **Save** action button in the header
-
-### Example
-
-Since App styles are inserted/removed whenever a component is rendered, you'll need to be aware of CSS priority. Using
-`:root` or `body` likely isn't scoped enough, you'll need to define a more specific scope, such as `#app`, or use
-`!important`.
-
-```css
-body {
-	--family-sans-serif: 'Comic Sans MS';
-	--primary: MediumSlateBlue !important;
-}
+export default defineTheme({
+	name: 'My Custom Theme',
+	appearance: 'dark',
+	rules: {
+		background: 'tomato',
+	}
+});
 ```
 
-::: warning Action Styling
+### Available Rules
 
-The `--primary` variable (and its shades) control call-to-actions and all other elements within the App using the
-"Directus Purple". While it may be tempting to override this variable with your brand's color, please first review the
-following warnings:
+Rules that are configured in the `rules` property have to adhere to the rules defined in the theme schema:
 
-- Avoid using yellow, orange, or red hues that give a sense of "danger"
-- Avoid low-contrast colors like yellows, grays, etc, that might not be easily visible
-- Avoid low-saturation colors like black, which might not properly highlight CTAs
+https://github.com/directus/directus/blob/main/packages/themes/src/schemas/theme.ts
 
-:::
+We recommend using TypeScript for this extension type. The `defineTheme` function is typed to properly auto-complete all
+available rules.
+
+Any rules that are not defined will fallback to the default theme for it's appearance.
+([dark](https://github.com/directus/directus/blob/main/packages/themes/src/themes/dark/default.ts) |
+[light](https://github.com/directus/directus/blob/main/packages/themes/src/themes/dark/default.ts))
+
+Every rule is automatically inserted in the app's root element as a CSS variable which are used across the app's
+components. For example, the JSON path `navigation.modules.button.foregroundActive` will be available as
+`var(--theme--navigation--modules--button--foreground-active)`. Note that nested objects are separated by `--`, and
+camelCase values are transformed to hyphen-case (so `foregroundActive` -> `foreground-active`).
+
+Because each rule is used as a CSS variable, each rule value should be valid CSS. This also means you can use any CSS
+functions in the rules. For example, CSS'
+[`color-mix`](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color-mix) is a great way to theme palette
+alternatives.
+
+## Using "Overrides" as a dev tool
+
+The Theme Overrides interface found in Settings > Appearance or on the user detail page uses the same rules available to
+the theme extensions. For easier extension development, you can use that interface to configure your ideal theme, and
+then save the output to your theme extension by using the "Copy Raw Value" option.
+
+## Google Fonts
+
+The `fontFamily` rules take any standard CSS `font-family` value. To load in a font from Google Fonts, simply wrap the
+font-name in a set of quotes `""`. This is still valid CSS, but if the font-name is wrapped in quotes, Directus will
+automatically try downloading it through Google Fonts.
+
+For example:
+
+```
+// Use the locally installed font called "Comic Sans MS"
+fontFamily: 'Comic Sans MS, sans-serif'
+
+// Use the Google font "Yesteryear"
+fontFamily: '"Yesteryear", sans-serif'
+```

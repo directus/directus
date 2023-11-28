@@ -1,63 +1,3 @@
-<template>
-	<div class="system-modules">
-		<v-list class="list">
-			<draggable
-				v-model="valuesWithData"
-				:force-fallback="true"
-				:set-data="hideDragImage"
-				item-key="id"
-				handle=".drag-handle"
-				:animation="150"
-			>
-				<template #item="{ element }">
-					<v-list-item
-						block
-						:class="{ enabled: element.enabled }"
-						:clickable="element.type === 'link'"
-						@click="element.type === 'link' ? edit(element.id) : undefined"
-					>
-						<v-icon class="drag-handle" name="drag_handle" />
-						<v-icon class="icon" :name="element.icon" />
-						<div class="info">
-							<div class="name">{{ element.name }}</div>
-							<div class="to">{{ element.to }}</div>
-						</div>
-						<div class="spacer" />
-						<v-icon v-if="element.locked === true" name="lock" />
-						<v-icon v-else-if="element.type === 'link'" name="clear" @click.stop="remove(element.id)" />
-						<v-icon
-							v-else
-							:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"
-							clickable
-							@click.stop="updateItem(element, { enabled: !element.enabled })"
-						/>
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
-
-		<v-button @click="edit('+')">{{ t('add_link') }}</v-button>
-
-		<v-drawer
-			:title="t('custom_link')"
-			:model-value="!!editing"
-			icon="link"
-			@update:model-value="editing = null"
-			@cancel="editing = null"
-		>
-			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-
-			<div class="drawer-content">
-				<v-form v-model="values" :initial-values="initialValues" :fields="linkFields" />
-			</div>
-		</v-drawer>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
@@ -119,7 +59,7 @@ const props = withDefaults(
 	}>(),
 	{
 		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
-	}
+	},
 );
 
 const emit = defineEmits<{
@@ -142,7 +82,7 @@ const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
 				type: 'module',
 				id: module.id,
 				enabled: false,
-			})
+			}),
 		);
 });
 
@@ -155,7 +95,7 @@ const valuesWithData = computed<PreviewValue[]>({
 		return valueToPreview([
 			...(props.value ?? MODULE_BAR_DEFAULT),
 			...availableModulesAsBarModule.value.filter(
-				(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false
+				(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false,
 			),
 		]);
 	},
@@ -252,7 +192,7 @@ function save() {
 	} else {
 		emit(
 			'input',
-			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val))
+			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val)),
 		);
 	}
 
@@ -263,34 +203,90 @@ function save() {
 function remove(id: string) {
 	emit(
 		'input',
-		(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id)
+		(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id),
 	);
 }
 </script>
 
-<style scoped>
+<template>
+	<div class="system-modules">
+		<v-list class="list">
+			<draggable
+				v-model="valuesWithData"
+				force-fallback
+				:set-data="hideDragImage"
+				item-key="id"
+				handle=".drag-handle"
+				:animation="150"
+			>
+				<template #item="{ element }">
+					<v-list-item
+						block
+						:class="{ enabled: element.enabled }"
+						:clickable="element.type === 'link'"
+						@click="element.type === 'link' ? edit(element.id) : undefined"
+					>
+						<v-icon class="drag-handle" name="drag_handle" />
+						<v-icon class="icon" :name="element.icon" />
+						<div class="info">
+							<div class="name">{{ element.name }}</div>
+							<div class="to">{{ element.to }}</div>
+						</div>
+						<div class="spacer" />
+						<v-icon v-if="element.locked === true" name="lock" />
+						<v-icon v-else-if="element.type === 'link'" name="clear" @click.stop="remove(element.id)" />
+						<v-icon
+							v-else
+							:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"
+							clickable
+							@click.stop="updateItem(element, { enabled: !element.enabled })"
+						/>
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
+
+		<v-button @click="edit('+')">{{ t('add_link') }}</v-button>
+
+		<v-drawer
+			:title="t('custom_link')"
+			:model-value="!!editing"
+			icon="link"
+			@update:model-value="editing = null"
+			@cancel="editing = null"
+		>
+			<template #actions>
+				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<div class="drawer-content">
+				<v-form v-model="values" :initial-values="initialValues" :fields="linkFields" />
+			</div>
+		</v-drawer>
+	</div>
+</template>
+
+<style scoped lang="scss">
 .icon {
 	margin: 0 12px;
 }
 
-.v-list-item.enabled {
-	--v-list-item-border-color: var(--primary);
-	--v-list-item-color: var(--primary-125);
-	--v-list-item-background-color: var(--primary-10);
-	--v-list-item-border-color-hover: var(--primary-150);
-	--v-list-item-color-hover: var(--primary-125);
-	--v-list-item-background-color-hover: var(--primary-10);
-	--v-icon-color: var(--primary);
-	--v-icon-color-hover: var(--foreground-normal);
+.system-modules {
+	--v-list-item-color: var(--theme--form--field--input--foreground-subdued);
+
+	.enabled {
+		--v-list-item-color: var(--theme--form--field--input--foreground);
+	}
+}
+
+.drag-handle {
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 }
 
 .to {
-	color: var(--foreground-subdued);
-	font-family: var(--family-monospace);
-}
-
-.enabled .to {
-	color: var(--primary-50);
+	font-family: var(--theme--fonts--monospace--font-family);
 }
 
 .drawer-content {

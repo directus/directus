@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadRoleOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusRole<Schema>
+	Item extends object = DirectusRole<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type ReadRoleOutput<
  */
 export const readRoles =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadRoleOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/roles`,
@@ -34,7 +34,7 @@ export const readRoles =
 export const readRole =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		key: DirectusRole<Schema>['id'],
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<ReadRoleOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');

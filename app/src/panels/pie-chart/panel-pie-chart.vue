@@ -1,9 +1,3 @@
-<template>
-	<div class="pie-chart">
-		<div ref="chartEl" />
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
@@ -44,7 +38,7 @@ const props = withDefaults(
 		showLabels: false,
 		color: cssVar('--primary'),
 		conditionalFill: () => [],
-	}
+	},
 );
 
 const { n } = useI18n();
@@ -78,7 +72,7 @@ watch(
 		chart.value?.destroy();
 		setupChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onMounted(fetchData);
@@ -140,8 +134,8 @@ async function setupChart() {
 			},
 			type: props.donut ? 'donut' : 'pie',
 			height: size,
-			fontFamily: 'var(--family-sans-serif)',
-			foreColor: 'var(--foreground-subdued)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
+			foreColor: 'var(--theme--foreground-subdued)',
 			selection: {
 				enabled: false,
 			},
@@ -153,7 +147,7 @@ async function setupChart() {
 		labels,
 		colors,
 		grid: {
-			borderColor: 'var(--border-subdued)',
+			borderColor: 'var(--theme--border-color-subdued)',
 			padding: {
 				top,
 				bottom,
@@ -222,7 +216,7 @@ function getPercentage(value: number) {
 		: n(value);
 }
 
-function formatColor(color: string | number, value: string | number) {
+function formatColor(color: string | number, value?: string | number) {
 	if (isNil(value) || props.conditionalFill.length === 0) return color;
 	let formattedColor = color;
 
@@ -236,7 +230,7 @@ function formatColor(color: string | number, value: string | number) {
 
 function checkMatchingConditionalFill(
 	value: string | number,
-	format: (typeof props)['conditionalFill'][number]
+	format: (typeof props)['conditionalFill'][number],
 ): boolean {
 	let baseValue: string | number = value;
 	let compareValue: string | number = format.value;
@@ -274,6 +268,12 @@ function checkMatchingConditionalFill(
 }
 </script>
 
+<template>
+	<div class="pie-chart">
+		<div ref="chartEl" />
+	</div>
+</template>
+
 <style scoped>
 .pie-chart {
 	height: 100%;
@@ -283,16 +283,16 @@ function checkMatchingConditionalFill(
 
 <style>
 .apexcharts-tooltip.apexcharts-theme-light {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 }
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-	border-color: var(--border-normal) !important;
+	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-bottom: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
@@ -302,7 +302,7 @@ function checkMatchingConditionalFill(
 }
 
 .apexcharts-tooltip-series-group {
-	background-color: var(--background-normal-alt) !important;
+	background-color: var(--theme--background-accent) !important;
 	padding: 0;
 }
 
@@ -317,7 +317,7 @@ function checkMatchingConditionalFill(
 
 .apexcharts-tooltip-text {
 	line-height: 1.5 !important;
-	color: var(--foreground-normal);
+	color: var(--theme--foreground);
 }
 
 .apexcharts-yaxistooltip {

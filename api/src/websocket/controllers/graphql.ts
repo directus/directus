@@ -85,7 +85,7 @@ export class GraphQLSubscriptionController extends SocketController {
 					});
 				},
 			},
-			{ client }
+			{ client },
 		);
 
 		// notify server that the socket closed

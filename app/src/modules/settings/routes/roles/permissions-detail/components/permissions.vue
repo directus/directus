@@ -1,34 +1,13 @@
-<template>
-	<div>
-		<v-notice type="info">
-			{{
-				t('permissions_for_role', {
-					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
-					role: role ? role.name : t('public_label'),
-				})
-			}}
-		</v-notice>
-
-		<v-form v-model="permissionSync" :fields="fields" />
-
-		<div v-if="appMinimal" class="app-minimal">
-			<v-divider />
-			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
-			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
-import { Permission, Role } from '@directus/types';
+import type { Permission, Role } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	permission: Permission;
 	role?: Role;
-	appMinimal?: Partial<Permission>;
+	appMinimal?: Permission['permissions'];
 }>();
 
 const emit = defineEmits(['update:permission']);
@@ -53,6 +32,27 @@ const fields = computed(() => [
 ]);
 </script>
 
+<template>
+	<div>
+		<v-notice>
+			{{
+				t('permissions_for_role', {
+					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
+					role: role ? role.name : t('public_label'),
+				})
+			}}
+		</v-notice>
+
+		<v-form v-model="permissionSync" :fields="fields" />
+
+		<div v-if="appMinimal" class="app-minimal">
+			<v-divider />
+			<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
+			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
+		</div>
+	</div>
+</template>
+
 <style lang="scss" scoped>
 .v-notice {
 	margin-bottom: 36px;
@@ -69,9 +69,9 @@ const fields = computed(() => [
 
 	.app-minimal-preview {
 		padding: 16px;
-		font-family: var(--family-monospace);
-		background-color: var(--background-subdued);
-		border-radius: var(--border-radius);
+		font-family: var(--theme--fonts--monospace--font-family);
+		background-color: var(--theme--background-subdued);
+		border-radius: var(--theme--border-radius);
 	}
 }
 </style>

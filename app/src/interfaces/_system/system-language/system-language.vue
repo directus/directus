@@ -1,13 +1,3 @@
-<template>
-	<v-select
-		:model-value="value"
-		:items="languages"
-		:disabled="disabled"
-		:placeholder="t('language_placeholder')"
-		@update:model-value="$emit('input', $event)"
-	/>
-</template>
-
 <script setup lang="ts">
 import availableLanguages from '@/lang/available-languages.yaml';
 import { useI18n } from 'vue-i18n';
@@ -33,3 +23,13 @@ if (props.includeProjectDefault) {
 	languages.splice(0, 0, { text: t('fields.directus_settings.default_language'), value: null });
 }
 </script>
+
+<template>
+	<v-select
+		:model-value="value"
+		:items="languages"
+		:disabled="disabled"
+		:placeholder="t('language_placeholder')"
+		@update:model-value="$emit('input', $event)"
+	/>
+</template>
