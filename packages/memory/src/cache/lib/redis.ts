@@ -80,7 +80,7 @@ export class CacheRedis implements Cache {
 	}
 
 	async increment(key: string, amount = 1) {
-		await this.redis.incrby(withNamespace(key, this.namespace), amount);
+		return await this.redis.incrby(withNamespace(key, this.namespace), amount);
 	}
 
 	async setMax(key: string, value: number) {

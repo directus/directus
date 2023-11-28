@@ -1,6 +1,6 @@
 import type { CacheConfig } from '../types/config.js';
 import { CacheLocal } from './local.js';
-// import { CacheMulti } from "./multi.js"
+import { CacheMulti } from "./multi.js"
 import { CacheRedis } from "./redis.js"
 
 export const createCache = (config: CacheConfig) => {
@@ -12,9 +12,9 @@ export const createCache = (config: CacheConfig) => {
 		return new CacheRedis(config);
 	}
 
-	// if (config.type === 'multi') {
-	// 	return new CacheMulti(config);
-	// }
+	if (config.type === 'multi') {
+		return new CacheMulti(config);
+	}
 
 	throw new Error(`Invalid configuration: Type does not exist.`);
 };

@@ -45,6 +45,8 @@ export class CacheLocal implements Cache {
 		const newVal = currentVal + amount;
 
 		await this.set(key, newVal);
+
+		return newVal;
 	}
 
 	async setMax(key: string, value: number) {

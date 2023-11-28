@@ -34,8 +34,9 @@ export interface Cache {
 	 *
 	 * @param key Key to increment in the cache
 	 * @param [amount=1] Amount to increment. Defaults to 1
+	 * @returns Updated value
 	 */
-	increment(key: string, amount: number): Promise<void>;
+	increment(key: string, amount: number): Promise<number>;
 
 	/**
 	 * Save the given value to the cache if the given value is larger than the existing value
