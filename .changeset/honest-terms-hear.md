@@ -2,4 +2,4 @@
 "docs": patch
 ---
 
-Expanded the docs on hook events
+Added missing hook events for WebSockets and system collection read/query
