@@ -42,10 +42,14 @@ export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<F
 			if (index !== 0 && field.meta!.width === 'half' && field.meta!.hidden !== true) {
 				const previousFields = [...formFields].slice(0, index).reverse();
 				const prevNonHiddenFields = previousFields.filter((field) => field.meta?.hidden !== true);
-				const prevNonHiddenField = prevNonHiddenFields[0]
-				const secondNonHiddenField = prevNonHiddenFields[1]
+				const prevNonHiddenField = prevNonHiddenFields[0];
+				const secondNonHiddenField = prevNonHiddenFields[1];
 
-				if (prevNonHiddenField && prevNonHiddenField.meta?.width === 'half'  && (secondNonHiddenField?.meta?.width === 'half-right' || !secondNonHiddenField)) {
+				if (
+					prevNonHiddenField &&
+					prevNonHiddenField.meta?.width === 'half' &&
+					(secondNonHiddenField?.meta?.width === 'half-right' || !secondNonHiddenField)
+				) {
 					field.meta.width = 'half-right';
 				}
 			}
