@@ -10,3 +10,4 @@ pnpm-lock.yaml
 storybook-static/
 /api/uploads/
 /api/extensions/
+*.txt
