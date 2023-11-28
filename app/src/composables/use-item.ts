@@ -107,6 +107,7 @@ export function useItem<T extends Record<string, any>>(
 		try {
 			const response = await api.get(itemEndpoint.value, { params: unref(query) });
 			setItemValueToResponse(response);
+			edits.value = {};
 		} catch (err: any) {
 			error.value = err;
 		} finally {

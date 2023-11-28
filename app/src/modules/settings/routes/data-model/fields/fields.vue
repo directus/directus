@@ -32,7 +32,9 @@ const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('di
 
 const hasEdits = computed<boolean>(() => {
 	if (!edits.value.meta) return false;
-	return Object.keys(edits.value.meta).length > 0;
+	return Object.keys(edits.value.meta)
+		.filter((key) => edits.value.meta[key] !== item.value?.meta[key])
+		.length > 0;
 });
 
 useShortcut('meta+s', () => {
