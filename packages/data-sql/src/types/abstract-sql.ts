@@ -58,3 +58,10 @@ export interface AbstractSqlNestedMany {
 	foreignJoinFields: AtLeastOneElement<string>;
 	alias: string;
 }
+
+export interface AbstractSqlNestedOneFromAny {
+	queryGenerator: (joinFieldValues: AtLeastOneElement<string | number>, collection: string) => AbstractSqlQuery;
+	localJoinFields: AtLeastOneElement<string>;
+	foreignJoinFields: AtLeastOneElement<string>;
+	alias: string;
+}

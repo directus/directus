@@ -76,6 +76,10 @@ export const convertFieldNodes = (
 				select.push(...nestedOutput.clauses.select);
 			}
 
+			if (abstractField.meta.type === 'a2o') {
+				// convert node to multiple queries in form of of a function with collection and identifier as parameters
+			}
+
 			continue;
 		}
 
