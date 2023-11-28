@@ -57,7 +57,8 @@ new modules are added, they appear as new icons in the main module side bar.
 
 ### Themes
 
-[Themes](/extensions/themes) allow you to create a new app design that's tailored to your brand or aesthetic. They allow configuration of colors, typography, forms, and more.
+[Themes](/extensions/themes) allow you to create a new app design that's tailored to your brand or aesthetic. They allow
+configuration of colors, typography, forms, and more.
 
 ## API Extensions
 

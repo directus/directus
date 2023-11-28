@@ -34,7 +34,9 @@ export default defineTheme({
 
 ### Available Rules
 
-Rules that are configured in the `rules` property have to adhere to the properties defined in the Rules section of the [theme schema](https://github.com/directus/directus/blob/main/packages/themes/src/schemas/theme.ts). This includes matching how properties are nested in the JavaScript object, for example:
+Rules that are configured in the `rules` property have to adhere to the properties defined in the Rules section of the
+[theme schema](https://github.com/directus/directus/blob/main/packages/themes/src/schemas/theme.ts). This includes
+matching how properties are nested in the JavaScript object, for example:
 
 ```js{3-5}
 rules: {
@@ -62,8 +64,8 @@ components. For example, the JSON path `navigation.modules.button.foregroundActi
 
 :::info Property Names
 
-Nested objects are separated by `--`, and
-camelCase values are transformed to hyphen-case (for example, `foregroundActive` becomes `foreground-active`).
+Nested objects are separated by `--`, and camelCase values are transformed to hyphen-case (for example,
+`foregroundActive` becomes `foreground-active`).
 
 :::
 
@@ -74,14 +76,15 @@ alternatives.
 
 ## Using User Theming Options as a Development Tool
 
-The Theming Options customization interface found in the global appearance settings and user detail page uses theming rules. For easier extension development, you can use this interface to configure your theme, and
-then save the output to your theme extension by using the "Copy Raw Value" option above the interface.
+The Theming Options customization interface found in the global appearance settings and user detail page uses theming
+rules. For easier extension development, you can use this interface to configure your theme, and then save the output to
+your theme extension by using the "Copy Raw Value" option above the interface.
 
 ## Google Fonts
 
-The `fontFamily` rules take any valid CSS `font-family` value. To load a Google Font, wrap the
-font name in a set of quotes `""`. This is still valid CSS, but if the font-name is wrapped in quotes, Directus will
-automatically try downloading it through Google Fonts. For example:
+The `fontFamily` rules take any valid CSS `font-family` value. To load a Google Font, wrap the font name in a set of
+quotes `""`. This is still valid CSS, but if the font-name is wrapped in quotes, Directus will automatically try
+downloading it through Google Fonts. For example:
 
 ```
 // Use the locally installed font called "Comic Sans MS"
