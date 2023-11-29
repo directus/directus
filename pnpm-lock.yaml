@@ -1267,9 +1267,6 @@ importers:
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
-      tmp:
-        specifier: 0.2.1
-        version: 0.2.1
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -1310,6 +1307,9 @@ importers:
       pino:
         specifier: 8.14.1
         version: 8.14.1
+      tmp:
+        specifier: 0.2.1
+        version: 0.2.1
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.2)
@@ -1936,9 +1936,6 @@ importers:
       micromustache:
         specifier: 8.0.3
         version: 8.0.3
-      tmp:
-        specifier: 0.2.1
-        version: 0.2.1
       vue:
         specifier: 3.3.4
         version: 3.3.4
@@ -1967,6 +1964,9 @@ importers:
       concurrently:
         specifier: 8.2.1
         version: 8.2.1
+      tmp:
+        specifier: 0.2.1
+        version: 0.2.1
       tsup:
         specifier: 8.0.1
         version: 8.0.1(typescript@5.3.2)
@@ -21973,7 +21973,7 @@ packages:
     engines: {node: '>=8.17.0'}
     dependencies:
       rimraf: 3.0.2
-    dev: false
+    dev: true
 
   /tmpl@1.0.5:
     resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
