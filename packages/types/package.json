@@ -27,13 +27,22 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@types/geojson": "7946.0.10",
-		"geojson": "0.5.0",
-		"knex": "2.4.2",
-		"vue": "3.3.4"
+		"@types/geojson": "7946.0.10"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"typescript": "5.3.2"
+	},
+	"peerDependencies": {
+		"knex": "2.4.2",
+		"vue": "3.3.4"
+	},
+	"peerDependenciesMeta": {
+		"knex": {
+			"optional": true
+		},
+		"vue": {
+			"optional": true
+		}
 	}
 }
