@@ -64,10 +64,19 @@ export interface AbstractSqlNestedOneFromAny {
 	alias: string;
 }
 
+/**
+ * This is the relational information which is stored in the database.
+ * The sub query is generated based on the relation.
+ */
 export type A2ORelation = {
 	fk: {
+		/** The primary key column */
 		column: string;
+
+		/** The value of the foreign primary key, so basically the "foreign key" */
 		value: string;
 	}[]; // @TODO make use of AtLeastOneElement
+
+	/** The related table */
 	table: string;
 };
