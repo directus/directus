@@ -88,7 +88,7 @@ AUTH_TWITCH_CLIENT_ID="..."
 AUTH_TWITCH_CLIENT_SECRET="..."
 AUTH_TWITCH_ISSUER_URL="https://id.twitch.tv/oauth2/.well-known/openid-configuration"
 AUTH_TWITCH_SCOPE="openid user:read:email"
-AUTH_TWITCH_PARAMS__CLAIMS="string:{"id_token":{"email":null}}"
+AUTH_TWITCH_PARAMS_CLAIMS="string:{"id_token":{"email":null}}"
 AUTH_TWITCH_IDENTIFIER_KEY="email"
 ```
 
