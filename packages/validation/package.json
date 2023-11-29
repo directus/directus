@@ -31,7 +31,7 @@
 		"@directus/types": "workspace:*",
 		"@vitest/coverage-v8": "0.34.6",
 		"tsup": "7.2.0",
-		"typescript": "5.2.2",
+		"typescript": "5.3.2",
 		"vitest": "0.34.6"
 	},
 	"dependencies": {
