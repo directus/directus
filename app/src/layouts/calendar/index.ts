@@ -78,12 +78,13 @@ export default defineLayout<LayoutOptions>({
 		});
 
 		const filterWithCalendarView = computed(() => {
-			if (!calendarFilter.value) return filter.value;
-			if (!filter.value) return null;
+			// If both the user filter and calendar filter are set, combine them.
+			if (filter?.value && calendarFilter.value) {
+				return { _and: [filter.value, calendarFilter.value] };
+			}
 
-			return {
-				_and: [filter.value, calendarFilter.value],
-			};
+			// Otherwise, return whichever one is set, or null.
+			return filter?.value || calendarFilter.value || null;
 		});
 
 		const template = syncRefProperty(layoutOptions, 'template', undefined);
