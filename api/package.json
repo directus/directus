@@ -161,7 +161,7 @@
 		"stream-json": "1.7.5",
 		"strip-bom-stream": "5.0.0",
 		"tinypool": "0.8.1",
-		"tsx": "4.1.4",
+		"tsx": "4.6.0",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
 		"wellknown": "0.5.0",
