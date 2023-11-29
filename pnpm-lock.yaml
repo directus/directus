@@ -1374,6 +1374,9 @@ importers:
       '@directus/extensions':
         specifier: workspace:*
         version: link:../extensions
+      '@directus/themes':
+        specifier: workspace:*
+        version: link:../themes
       '@directus/types':
         specifier: workspace:*
         version: link:../types
