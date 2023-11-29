@@ -2377,10 +2377,6 @@ onboarding:
     title: Let's setup your project theme
     text: |
       The Directus Theming Engine contains two customizable themes - Light Theme and Dark Theme. Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
-  theming-user:
-    title: Let's setup your personalized theme
-    text: |
-      The Directus Theming Engine contains two customizable themes - Light Theme and Dark Theme. Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
   loading:
     title: Setting up your project...
     text: |
