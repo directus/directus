@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
-import { Field, ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/extensions';
+import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -15,7 +16,7 @@ const props = withDefaults(
 	{
 		showSelect: 'multiple',
 		selection: () => [],
-	}
+	},
 );
 
 const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
@@ -26,9 +27,9 @@ const sizeSync = useSync(props, 'size', emit);
 const sortSync = useSync(props, 'sort', emit);
 const selectionSync = useSync(props, 'selection', emit);
 
-const descending = computed(() => props.sort[0].startsWith('-'));
+const descending = computed(() => props.sort[0]?.startsWith('-'));
 
-const sortKey = computed(() => (props.sort[0].startsWith('-') ? props.sort[0].substring(1) : props.sort[0]));
+const sortKey = computed(() => (props.sort[0]?.startsWith('-') ? props.sort[0].substring(1) : props.sort[0]));
 
 const sortField = computed(() => {
 	return props.fields.find((field) => field.field === sortKey.value);
@@ -126,10 +127,10 @@ function toggleDescending() {
 	height: 52px;
 	margin-bottom: 36px;
 	padding: 0 8px;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--background);
 	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	box-shadow: 0 0 0 2px var(--theme--background-page);
+	box-shadow: 0 0 0 2px var(--theme--background);
 }
 
 .start {

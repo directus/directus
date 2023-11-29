@@ -1,5 +1,4 @@
 type: object
-x-collection: directus_presets
 properties:
   id:
     description: Unique identifier for this single collection preset.

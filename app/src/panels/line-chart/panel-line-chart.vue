@@ -43,7 +43,7 @@ const props = withDefaults(
 		decimals: 2,
 		color: 'var(--theme--primary)',
 		fillType: 'gradient',
-	}
+	},
 );
 
 const { t, n } = useI18n();
@@ -76,7 +76,7 @@ watch(
 		chart.value?.destroy();
 		setUpChart();
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 onUnmounted(() => {
@@ -131,7 +131,7 @@ function setUpChart() {
 		props.color && props.color.startsWith('var(--')
 			? cssVar(props.color.substring(4, props.color.length - 1))
 			: props.color ?? 'var(--theme--primary)',
-		series.length
+		series.length,
 	);
 
 	const isSparkline = props.width < 12 || props.height < 10;
@@ -157,7 +157,7 @@ function setUpChart() {
 			zoom: {
 				enabled: false,
 			},
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground-subdued)',
 			sparkline: {
 				enabled: isSparkline,
@@ -252,7 +252,7 @@ function setUpChart() {
 				show: ['both', 'xAxis'].includes(props.showAxisLabels),
 				offsetY: -4,
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -287,7 +287,7 @@ function setUpChart() {
 						  } as any);
 				},
 				style: {
-					fontFamily: 'var(--theme--font-family-sans-serif)',
+					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
 					fontSize: '10px',
@@ -302,7 +302,7 @@ function setUpChart() {
 				width: 8,
 				height: 8,
 			},
-			fontFamily: 'var(--theme--font-family-sans-serif)',
+			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
 			fontSize: '10px',
@@ -338,7 +338,7 @@ function setUpChart() {
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
-	background-color: var(--background-subdued) !important;
+	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {

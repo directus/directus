@@ -46,7 +46,7 @@ const props = withDefaults(
 		sortField: null,
 		userField: null,
 		groupsSortField: null,
-	}
+	},
 );
 
 defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
@@ -219,7 +219,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			flex-direction: column;
 			width: 320px;
 			padding: 8px 0;
-			background-color: var(--theme--background);
+			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
 			margin-right: 20px;
@@ -287,9 +287,8 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					display: block;
 					margin: 2px 16px 6px 16px;
 					padding: 12px 16px;
-					background-color: var(--theme--background-page);
+					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
-					box-shadow: 0px 2px 4px 0px rgba(var(--card-shadow-color), 0.1);
 
 					&:hover .title {
 						// color: var(--theme--primary);
@@ -329,7 +328,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 					:deep(.v-chip) {
 						border: none;
-						background-color: var(--theme--background);
+						background-color: var(--theme--background-normal);
 						font-size: 12px;
 						font-weight: 600;
 						margin-top: 4px;
@@ -364,7 +363,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 						.avatar {
 							margin-left: calc(var(--user-spacing) * -1);
 							border-radius: 24px;
-							border: 4px solid var(--theme--background-page);
+							border: 4px solid var(--theme--background);
 							height: 32px;
 							width: 32px;
 							margin-bottom: -4px;

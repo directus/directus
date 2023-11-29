@@ -53,7 +53,7 @@ const props = withDefaults(
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -87,7 +87,7 @@ const fields = computed(() => {
 	} else {
 		displayFields = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templateWithDefaults.value),
-			relationInfo.value.relatedCollection.collection
+			relationInfo.value.relatedCollection.collection,
 		);
 	}
 
@@ -153,7 +153,7 @@ const showingCount = computed(() => {
 		totalItemCount.value,
 		page.value,
 		limit.value,
-		!!(search.value || searchFilter.value)
+		!!(search.value || searchFilter.value),
 	);
 });
 
@@ -199,7 +199,7 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const spacings = {
@@ -211,7 +211,7 @@ const spacings = {
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
 
 const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
+	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
 );
 
 function getDeselectIcon(item: DisplayItem) {
@@ -327,7 +327,7 @@ const customFilter = computed(() => {
 			}
 
 			return val;
-		})
+		}),
 	);
 
 	if (!isEmpty(customFilter)) filter._and.push(customFilter);
@@ -599,7 +599,7 @@ function getLinkForItem(item: DisplayItem) {
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	padding: var(--v-card-padding);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-list {
@@ -626,7 +626,7 @@ function getLinkForItem(item: DisplayItem) {
 .actions {
 	display: flex;
 	align-items: center;
-	gap: var(--v-sheet-padding);
+	gap: 8px;
 
 	.v-pagination {
 		:deep(.v-button) {
@@ -635,7 +635,7 @@ function getLinkForItem(item: DisplayItem) {
 	}
 
 	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
+		margin-top: 8px;
 	}
 
 	.spacer {

@@ -1,5 +1,4 @@
-import type { AbstractQueryFieldNodeFn } from '../fields/function.js';
-import type { AbstractQueryFieldNodePrimitive } from '../fields/primitive.js';
+import type { AbstractQueryTarget } from './target.js';
 
 /**
  * Specifies the order of the result, f.e. for a primitive field.
@@ -37,10 +36,5 @@ export interface AbstractQueryNodeSort {
 	direction: 'ascending' | 'descending';
 
 	/** the node on which the sorting should be applied */
-	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
+	target: AbstractQueryTarget;
 }
-
-export type AbstractQueryNodeSortTargets = AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
-/**  @TODO support when working on relations */
-// | AbstractQueryFieldNodeRelatedManyToOne
-// | AbstractQueryFieldNodeRelatedAnyToOne;

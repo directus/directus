@@ -1,19 +1,38 @@
-{% layout "base" %}
-{% block content %}
+{% layout "base" %} {% block content %}
 
-<p>
-    You have been invited to join <i>{{ projectName }}</i>. Please click the button below to accept this invitation and join the project:
+<h1>You've been invited to {{ projectName }}</h1>
+
+<p style="padding-bottom: 30px">
+  You have been invited to join <i>{{ projectName }}</i>. Please click the
+  button below to accept this invitation and join the project:
 </p>
 
-<p style="text-align: center; padding: 20px 0;">
-    <a href="{{ url }}">
-        <b>Join {{ projectName }}</b>
-    </a>
-</p>
-
-<p>
-    Thank you,<br>
-    The {{ projectName }} Team
-</p>
+<a
+  class="button"
+  rel="noopener"
+  target="_blank"
+  href="{{url}}"
+  style="
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-block;
+    padding: 11px 24px;
+    border-radius: 8px;
+    background: #171717;
+    border: 1px solid #ffffff;
+  "
+>
+  <!--[if mso]>
+    <i style="letter-spacing: 25px; mso-font-width: -100%; mso-text-raise: 30pt"
+      >&nbsp;</i
+    >
+  <![endif]-->
+  <span style="mso-text-raise: 15pt">Join {{ projectName }}</span>
+  <!--[if mso]>
+    <i style="letter-spacing: 25px; mso-font-width: -100%">&nbsp;</i>
+  <![endif]-->
+</a>
 
 {% endblock %}

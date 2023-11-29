@@ -18,14 +18,15 @@ withDefaults(defineProps<Props>(), {
 	</div>
 </template>
 
-<style>
-body {
-	--v-skeleton-loader-color: var(--theme--background-page);
-	--v-skeleton-loader-background-color: var(--background-subdued);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-skeleton-loader-background-color  [var(--theme--form--field--input--background-subdued)]
+
+*/
+
 .v-skeleton-loader {
 	position: relative;
 	overflow: hidden;
@@ -35,7 +36,7 @@ body {
 @mixin loader {
 	position: relative;
 	overflow: hidden;
-	background-color: var(--v-skeleton-loader-background-color);
+	background-color: var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 
 	&::after {
 		position: absolute;
@@ -44,7 +45,7 @@ body {
 		left: 0;
 		z-index: 1;
 		height: 100%;
-		background: linear-gradient(90deg, transparent, var(--v-skeleton-loader-color), transparent);
+		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
 		animation: loading 1.5s infinite;
@@ -61,8 +62,9 @@ body {
 .input,
 .input-tall {
 	width: 100%;
-	height: var(--input-height);
-	border: var(--theme--border-width) solid var(--v-skeleton-loader-background-color);
+	height: var(--theme--form--field--input--height);
+	border: var(--theme--border-width) solid
+		var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	@include loader;
@@ -74,7 +76,7 @@ body {
 
 .block-list-item {
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	@include loader;

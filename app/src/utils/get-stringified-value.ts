@@ -9,7 +9,7 @@ import { isValidJSON, parseJSON } from '@directus/utils';
  */
 export function getStringifiedValue(
 	value: string | object | number | boolean | unknown | undefined,
-	isObjectLike: boolean
+	isObjectLike: boolean,
 ): string {
 	if (!value) return '';
 

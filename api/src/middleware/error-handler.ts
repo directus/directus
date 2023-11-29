@@ -89,7 +89,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				database: getDatabase(),
 				schema: req.schema,
 				accountability: req.accountability ?? null,
-			}
+			},
 		)
 		.then((updatedErrors) => {
 			return res.json({ ...payload, errors: updatedErrors });

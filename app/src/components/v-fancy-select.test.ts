@@ -1,8 +1,7 @@
-import { test, expect } from 'vitest';
+import { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
-
+import { expect, test } from 'vitest';
 import VFancySelect from './v-fancy-select.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon', 'v-divider'],

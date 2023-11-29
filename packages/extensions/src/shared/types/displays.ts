@@ -8,7 +8,7 @@ export type DisplayFieldsFunction = (
 		collection: string;
 		field: string;
 		type: string;
-	}
+	},
 ) => string[];
 
 export interface DisplayConfig {
@@ -21,13 +21,13 @@ export interface DisplayConfig {
 	handler?: (
 		value: any,
 		options: Record<string, any>,
-		ctx: { interfaceOptions?: Record<string, any>; field?: Field; collection?: string }
+		ctx: { interfaceOptions?: Record<string, any>; field?: Field; collection?: string },
 	) => string | null;
 	options:
 		| DeepPartial<Field>[]
 		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
 		| ((
-				ctx: ExtensionOptionsContext
+				ctx: ExtensionOptionsContext,
 		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
 		| ComponentOptions
 		| null;

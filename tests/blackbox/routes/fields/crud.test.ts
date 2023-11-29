@@ -4,6 +4,7 @@ import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
 import { DEFAULT_DB_TABLES, PRIMARY_KEY_TYPES, TEST_USERS, USER } from '@common/variables';
 import type { FieldRaw } from '@directus/types';
+import { sleep } from '@utils/sleep';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { sortedUniq } from 'lodash-es';
@@ -58,7 +59,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								const tableNames = sortedUniq(responseData.data.map((field: FieldRaw) => field.collection));
 
 								const tableNames2 = sortedUniq(
-									gqlResponse.body.data['fields'].map((field: FieldRaw) => field.collection)
+									gqlResponse.body.data['fields'].map((field: FieldRaw) => field.collection),
 								);
 
 								expect(response.statusCode).toBe(200);
@@ -67,7 +68,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								expect(
 									DEFAULT_DB_TABLES.every((name: string) => {
 										return tableNames.indexOf(name) !== -1;
-									})
+									}),
 								).toEqual(true);
 
 								expect(gqlResponse.statusCode).toBe(200);
@@ -76,14 +77,14 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								expect(
 									DEFAULT_DB_TABLES.every((name: string) => {
 										return tableNames2.indexOf(name) !== -1;
-									})
+									}),
 								).toEqual(true);
 							} else if (userKey === USER.APP_ACCESS.KEY) {
 								const responseData = JSON.parse(response.text);
 								const tableNames = sortedUniq(responseData.data.map((field: FieldRaw) => field.collection));
 
 								const tableNames2 = sortedUniq(
-									gqlResponse.body.data['fields'].map((field: FieldRaw) => field.collection)
+									gqlResponse.body.data['fields'].map((field: FieldRaw) => field.collection),
 								);
 
 								const appAccessPermissions = [
@@ -106,7 +107,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								expect(
 									appAccessPermissions.every((name: string) => {
 										return tableNames.indexOf(name) !== -1;
-									})
+									}),
 								).toEqual(true);
 
 								expect(gqlResponse.statusCode).toBe(200);
@@ -115,7 +116,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								expect(
 									appAccessPermissions.every((name: string) => {
 										return tableNames2.indexOf(name) !== -1;
-									})
+									}),
 								).toEqual(true);
 							} else {
 								expect(response.statusCode).toBe(403);
@@ -490,7 +491,10 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 			});
 		});
 
-		describe('Verify schema action hook run', () => {
+		describe('Verify schema action hook run', async () => {
+			// Wait for a short period to allow hook to be completed
+			await sleep(1_000);
+
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
 				const response = await request(getUrl(vendor))

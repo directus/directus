@@ -120,7 +120,7 @@ export default async function add(): Promise<void> {
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: await getExtensionDevDeps(
 				newEntries.map((entry) => entry.type),
-				getLanguageFromEntries(newEntries)
+				getLanguageFromEntries(newEntries),
 			),
 		};
 
@@ -205,7 +205,7 @@ export default async function add(): Promise<void> {
 		const convertFiles = await fse.readdir(source);
 
 		await Promise.all(
-			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file)))
+			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file))),
 		);
 
 		await fse.ensureDir(entrySourcePath);
@@ -260,7 +260,7 @@ export default async function add(): Promise<void> {
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
 			devDependencies: await getExtensionDevDeps(
 				entries.map((entry) => entry.type),
-				getLanguageFromEntries(entries)
+				getLanguageFromEntries(entries),
 			),
 		};
 

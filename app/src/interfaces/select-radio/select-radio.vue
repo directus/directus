@@ -25,7 +25,7 @@ const props = withDefaults(
 		iconOn: 'radio_button_checked',
 		iconOff: 'radio_button_unchecked',
 		color: 'var(--theme--primary)',
-	}
+	},
 );
 
 const emit = defineEmits(['input']);
@@ -54,7 +54,7 @@ const gridClass = computed(() => {
 });
 
 const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
-	emit('input', value)
+	emit('input', value),
 );
 
 const customIcon = computed(() => {
@@ -136,9 +136,9 @@ const customIcon = computed(() => {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: var(--input-height);
+	height: var(--theme--form--field--input--height);
 	padding: 10px;
-	border: 2px dashed var(--theme--form--field--input--border-color);
+	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	input {
@@ -158,16 +158,16 @@ const customIcon = computed(() => {
 	}
 
 	&.has-value {
-		background-color: var(--background-subdued);
-		border: 2px solid var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 	}
 
 	&.active {
-		--v-icon-color: var(--v-radio-color);
+		--v-icon-color: var(--v-radio-color, var(--theme--primary));
 
 		position: relative;
 		background-color: transparent;
-		border-color: var(--v-radio-color);
+		border-color: var(--v-radio-color, var(--theme--primary));
 
 		&::before {
 			position: absolute;
@@ -175,7 +175,7 @@ const customIcon = computed(() => {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--v-radio-color);
+			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;
 			content: '';
 			pointer-events: none;
@@ -183,7 +183,7 @@ const customIcon = computed(() => {
 	}
 
 	&.disabled {
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
 		cursor: not-allowed;
 

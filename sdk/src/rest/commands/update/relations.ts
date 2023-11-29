@@ -6,7 +6,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateRelationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusRelation<Schema>
+	Item extends object = DirectusRelation<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -22,7 +22,7 @@ export const updateRelation =
 		collection: DirectusRelation<Schema>['collection'],
 		field: DirectusRelation<Schema>['field'],
 		item: NestedPartial<DirectusRelation<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateRelationOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');

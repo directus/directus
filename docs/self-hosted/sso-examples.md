@@ -157,10 +157,9 @@ Twitter does not provide "email" so we define "username" as the identifier.
 ### AWS
 
 ```
-AUTH_SSO_DRIVER="saml"
-AUTH_PROVIDERS="AWS"
-AUTH_AWS_idp_metadata="{Your IAM Identity Center SAML metadata file}""
-AUTH_AWS_sp_metadata=""
+AUTH_AWS_DRIVER="saml"
+AUTH_AWS_IDP_metadata="{Your IAM Identity Center SAML metadata file}""
+AUTH_AWS_SP_metadata=""
 AUTH_AWS_ALLOW_PUBLIC_REGISTRATION="true"
 AUTH_AWS_DEFAULT_ROLE_ID="{Needs to be a valid role on the instance}"
 AUTH_AWS_IDENTIFIER_KEY="email"
@@ -169,7 +168,7 @@ AUTH_AWS_EMAIL_KEY="email"
 
 ::: tip Metadata
 
-- AWS IAM Docs are not that verbose. Users have found that the `sp_metadata` environment variable can be supplied empty.
+- AWS IAM Docs are not that verbose. Users have found that the `SP_metadata` environment variable can be supplied empty.
 - Users have found that replacing
   `<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://your-soo-portal-url"/>`
   in the IAM Identity Center SAML metadata file with your AWS Portal URL is a fix for getting the 'Login With SSO'
@@ -195,10 +194,9 @@ Maps the email address into Directus as `external_identifier`:
 ### Google
 
 ```
-AUTH_SSO_DRIVER="saml"
-AUTH_PROVIDERS="GOOGLE"
-AUTH_GOOGLE_idp_metadata="{Your SAML metadata file from Google}""
-AUTH_GOOGLE_sp_metadata="{Create your own SAML metadata file, see example below}""
+AUTH_GOOGLE_DRIVER="saml"
+AUTH_GOOGLE_IDP_metadata="{Your SAML metadata file from Google}""
+AUTH_GOOGLE_SP_metadata="{Create your own SAML metadata file, see example below}""
 AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION="true"
 AUTH_GOOGLE_DEFAULT_ROLE_ID="{Needs to be a valid role on the instance}"
 AUTH_GOOGLE_IDENTIFIER_KEY="email"

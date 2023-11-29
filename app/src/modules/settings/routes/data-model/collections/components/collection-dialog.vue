@@ -36,7 +36,7 @@ watch(
 			values.color = props.collection?.color ?? null;
 			values.translations = props.collection?.meta?.translations ?? null;
 		}
-	}
+	},
 );
 
 const saving = ref(false);
@@ -58,8 +58,8 @@ async function save() {
 		}
 
 		emit('update:modelValue', false);
-	} catch (err: any) {
-		unexpectedError(err);
+	} catch (error) {
+		unexpectedError(error);
 	} finally {
 		saving.value = false;
 	}
@@ -150,6 +150,6 @@ async function save() {
 }
 
 .collection-key {
-	--v-input-font-family: var(--theme--font-family-monospace);
+	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 </style>

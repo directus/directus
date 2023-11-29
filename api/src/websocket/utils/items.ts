@@ -19,7 +19,7 @@ export async function getPayload(
 	subscription: PSubscription,
 	accountability: Accountability | null,
 	schema: SchemaOverview,
-	event?: WebSocketEvent
+	event?: WebSocketEvent,
 ): Promise<Record<string, any>> {
 	const metaService = new MetaService({ schema, accountability });
 
@@ -63,7 +63,7 @@ export async function getCollectionPayload(
 	subscription: PSubscription,
 	accountability: Accountability | null,
 	schema: SchemaOverview,
-	event?: WebSocketEvent
+	event?: WebSocketEvent,
 ) {
 	const service = new CollectionsService({ schema, accountability });
 
@@ -101,7 +101,7 @@ export async function getFieldsPayload(
 	subscription: PSubscription,
 	accountability: Accountability | null,
 	schema: SchemaOverview,
-	event?: WebSocketEvent
+	event?: WebSocketEvent,
 ) {
 	const service = new FieldsService({ schema, accountability });
 
@@ -137,7 +137,7 @@ export async function getItemsPayload(
 	subscription: PSubscription,
 	accountability: Accountability | null,
 	schema: SchemaOverview,
-	event?: WebSocketEvent
+	event?: WebSocketEvent,
 ) {
 	const query = subscription.query ?? {};
 	const service = getService(subscription.collection, { schema, accountability });

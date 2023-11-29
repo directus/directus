@@ -1,0 +1,20 @@
+get:
+  summary: List Extensions
+  description: List the installed extensions and their configuration in the project.
+  operationId: listExtensions
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Extensions'
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Extensions

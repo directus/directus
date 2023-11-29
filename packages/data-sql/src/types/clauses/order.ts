@@ -1,7 +1,8 @@
-import type { AbstractQueryNodeSortTargets } from '@directus/data';
+import type { AbstractSqlQueryFnNode } from './select/fn.js';
+import type { AbstractSqlQuerySelectNode } from './select/primitive.js';
 
 export interface AbstractSqlQueryOrderNode {
 	type: 'order';
-	orderBy: AbstractQueryNodeSortTargets;
+	orderBy: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	direction: 'ASC' | 'DESC';
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -16,17 +16,34 @@ const props = withDefaults(
 		focus?: boolean;
 		choices?: Choice[];
 	}>(),
-	{ focus: true, choices: () => [] }
+	{
+		focus: true,
+		choices: () => [],
+	},
 );
 
 const emit = defineEmits<{
-	(e: 'input', value: string | number | Record<string, unknown> | boolean | null): void;
+	input: [value: string | number | Record<string, unknown> | boolean | null];
 }>();
 
-const inputEl = ref<HTMLElement>();
 const { t } = useI18n();
-
+const inputEl = ref<HTMLInputElement | null>(null);
+const inputLength = ref<number>();
 const dateTimeMenu = ref();
+
+onMounted(() => {
+	if (props.focus) inputEl.value?.focus();
+});
+
+watch(
+	() => props.value,
+	(value) => {
+		inputLength.value = value?.toString().length;
+	},
+	{ immediate: true },
+);
+
+const inputWidth = computed(() => `${(inputLength.value ?? 0) + 1}ch`);
 
 const displayValue = computed(() => {
 	if (props.value === null) return null;
@@ -37,10 +54,6 @@ const displayValue = computed(() => {
 	}
 
 	return props.value;
-});
-
-const width = computed(() => {
-	return (props.value?.toString().length || 2) + 1 + 'ch';
 });
 
 const inputPattern = computed(() => {
@@ -58,26 +71,27 @@ const inputPattern = computed(() => {
 	}
 });
 
-onMounted(() => {
-	if (props.focus) inputEl.value?.focus();
-});
-
-function emitValue(val: string) {
-	if (val === '') {
+function emitValue(value: string | null) {
+	if (value === '') {
 		return emit('input', null);
 	}
 
 	if (
-		typeof val === 'string' &&
-		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix)) ||
-			/^{{\s*?\S+?\s*?}}$/.test(val))
+		typeof value === 'string' &&
+		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => value.startsWith(prefix)) ||
+			/^{{\s*?\S+?\s*?}}$/.test(value))
 	) {
-		return emit('input', val);
+		return emit('input', value);
 	}
 
-	if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
-		return emit('input', val);
+	if (typeof value !== 'string' || new RegExp(inputPattern.value).test(value)) {
+		return emit('input', value);
 	}
+}
+
+function onInput(value: string | null) {
+	inputLength.value = value?.length;
+	emitValue(value);
 }
 </script>
 
@@ -96,9 +110,8 @@ function emitValue(val: string) {
 		type="text"
 		:pattern="inputPattern"
 		:value="value"
-		:style="{ width }"
 		placeholder="--"
-		@input="emitValue(($event.target as HTMLInputElement).value)"
+		@input="onInput(($event.target as HTMLInputElement).value)"
 	/>
 	<v-select
 		v-else-if="is === 'select'"
@@ -116,9 +129,8 @@ function emitValue(val: string) {
 			type="text"
 			:pattern="inputPattern"
 			:value="value"
-			:style="{ width }"
 			placeholder="--"
-			@input="emitValue(($event.target as HTMLInputElement).value)"
+			@input="onInput(($event.target as HTMLInputElement).value)"
 		/>
 		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
@@ -128,7 +140,7 @@ function emitValue(val: string) {
 				<v-date-picker
 					:type="type"
 					:model-value="value"
-					@update:model-value="emitValue"
+					@update:model-value="onInput"
 					@close="dateTimeMenu?.deactivate"
 				/>
 			</div>
@@ -156,7 +168,7 @@ function emitValue(val: string) {
 	display: flex;
 	justify-content: center;
 	color: var(--theme--primary);
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	cursor: pointer;
@@ -187,15 +199,16 @@ function emitValue(val: string) {
 
 input {
 	color: var(--theme--primary);
-	font-family: var(--theme--font-family-monospace);
+	font-family: var(--theme--fonts--monospace--font-family);
 	line-height: 1em;
-	background-color: var(--theme--background-page);
+	background-color: var(--theme--form--field--input--background);
 	border: none;
+	width: clamp(3ch, v-bind(inputWidth), 40ch);
 
 	&::placeholder {
 		color: var(--theme--form--field--input--foreground-subdued);
 		font-weight: 500;
-		font-family: var(--theme--font-family-monospace);
+		font-family: var(--theme--fonts--monospace--font-family);
 	}
 }
 

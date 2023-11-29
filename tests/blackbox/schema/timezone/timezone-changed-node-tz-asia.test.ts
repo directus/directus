@@ -66,7 +66,7 @@ describe('schema', () => {
 				time: `${hour}:33:33`,
 				datetime: `2022-01-15T${hour}:33:33`,
 				timestamp: `2022-01-15T${hour}:33:33+02:00`,
-			}
+			},
 		);
 	}
 
@@ -127,11 +127,11 @@ describe('schema', () => {
 					if (vendor === 'sqlite3') {
 						// Dates are saved in milliseconds at 00:00:00
 						const newDateString = new Date(
-							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() - newTzOffset * 60 * 1000
+							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() - newTzOffset * 60 * 1000,
 						).toISOString();
 
 						const newDateTimeString = new Date(
-							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000
+							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000,
 						).toISOString();
 
 						expect(responseObj.date).toBe(newDateString.substring(0, 10));
@@ -139,13 +139,13 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
 
 						expect(dateCreated.toISOString()).toBe(
-							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString()
+							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString(),
 						);
 
 						continue;
@@ -154,13 +154,13 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
 
 						expect(dateCreated.toISOString()).toBe(
-							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString()
+							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString(),
 						);
 
 						continue;
@@ -171,13 +171,13 @@ describe('schema', () => {
 					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
-						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 					);
 
 					const dateCreated = new Date(responseObj.date_created);
 
 					expect(dateCreated.toISOString()).toBe(
-						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString(),
 					);
 				}
 
@@ -198,11 +198,12 @@ describe('schema', () => {
 						// Dates are saved in milliseconds at 00:00:00
 						const newDateString = new Date(
 							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() -
-								(newTzOffset - americanTzOffset) * 60 * 1000
+								(newTzOffset - americanTzOffset) * 60 * 1000,
 						).toISOString();
 
 						const newDateTimeString = new Date(
-							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - (newTzOffset - americanTzOffset) * 60 * 1000
+							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() -
+								(newTzOffset - americanTzOffset) * 60 * 1000,
 						).toISOString();
 
 						expect(responseObj.date).toBe(newDateString.substring(0, 10));
@@ -210,13 +211,13 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
 
 						expect(dateCreated.toISOString()).toBe(
-							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString(),
 						);
 
 						continue;
@@ -225,13 +226,13 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
 
 						expect(dateCreated.toISOString()).toBe(
-							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString(),
 						);
 
 						continue;
@@ -242,13 +243,13 @@ describe('schema', () => {
 					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
-						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 					);
 
 					const dateCreated = new Date(responseObj.date_created);
 
 					expect(dateCreated.toISOString()).toBe(
-						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString(),
 					);
 				}
 			});
@@ -293,7 +294,7 @@ describe('schema', () => {
 							expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 							expect(responseObj.timestamp.substring(0, 19)).toBe(
-								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 							);
 
 							const dateCreated = new Date(responseObj.date_created);
@@ -302,8 +303,8 @@ describe('schema', () => {
 								validateDateDifference(
 									insertionStartTimestamp,
 									dateCreated,
-									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
-								).toISOString()
+									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime(),
+								).toISOString(),
 							);
 
 							expect(responseObj.date_updated).toBeNull();
@@ -315,7 +316,7 @@ describe('schema', () => {
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
 
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
-							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19),
 						);
 
 						const dateCreated = new Date(responseObj.date_created);
@@ -324,14 +325,14 @@ describe('schema', () => {
 							validateDateDifference(
 								insertionStartTimestamp,
 								dateCreated,
-								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000
-							).toISOString()
+								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000,
+							).toISOString(),
 						);
 
 						expect(responseObj.date_updated).toBeNull();
 					}
 				},
-				10000
+				10000,
 			);
 		});
 
@@ -379,8 +380,8 @@ describe('schema', () => {
 					validateDateDifference(
 						updateStartTimestamp,
 						dateUpdated,
-						updateEndTimestamp.getTime() - updateStartTimestamp.getTime() + 1000
-					).toISOString()
+						updateEndTimestamp.getTime() - updateStartTimestamp.getTime() + 1000,
+					).toISOString(),
 				);
 			});
 		});

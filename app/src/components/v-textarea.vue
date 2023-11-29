@@ -80,24 +80,21 @@ function trimIfEnabled() {
 	</div>
 </template>
 
-<style>
-body {
-	--v-textarea-min-height: none;
-	--v-textarea-max-height: var(--input-height-tall);
-	--v-textarea-height: var(--input-height-tall);
-	--v-textarea-font-family: var(--theme--font-family-sans-serif);
-}
-</style>
-
 <style lang="scss" scoped>
+/*
+
+	Available Variables:
+
+		--v-textarea-font-family  [var(--theme--fonts--sans--font-family)]
+
+*/
+
 .v-textarea {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	width: max-content;
-	height: var(--v-textarea-height);
-	min-height: var(--v-textarea-min-height);
-	max-height: var(--v-textarea-max-height);
+	height: var(--input-height-tall);
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -111,7 +108,7 @@ body {
 	}
 
 	&.expand-on-focus {
-		height: var(--input-height);
+		height: var(--theme--form--field--input--height);
 		transition: height var(--medium) var(--transition);
 
 		.append,
@@ -154,10 +151,10 @@ body {
 		display: block;
 		flex-grow: 1;
 		width: 100%;
-		height: var(--input-height);
-		padding: var(--input-padding);
+		height: var(--theme--form--field--input--height);
+		padding: var(--theme--form--field--input--padding);
 		color: var(--theme--foreground);
-		font-family: var(--v-textarea-font-family);
+		font-family: var(--v-textarea-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: 0;
 		resize: none;
@@ -169,7 +166,7 @@ body {
 
 	&.disabled textarea {
 		color: var(--theme--foreground-subdued);
-		background-color: var(--background-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
 	}
 }
 </style>

@@ -12,7 +12,7 @@ export const seedRelationalFields = async (
 	vendor: Vendor,
 	collection: string,
 	pkType: PrimaryKeyType,
-	testsSchema: TestsFieldSchema
+	testsSchema: TestsFieldSchema,
 ) => {
 	try {
 		// Create items

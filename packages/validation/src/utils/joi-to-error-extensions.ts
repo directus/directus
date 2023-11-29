@@ -2,7 +2,7 @@ import type { ValidationErrorItem } from 'joi';
 import type { FailedValidationErrorExtensions } from '../errors/failed-validation.js';
 
 export const joiValidationErrorItemToErrorExtensions = (
-	validationErrorItem: ValidationErrorItem
+	validationErrorItem: ValidationErrorItem,
 ): FailedValidationErrorExtensions => {
 	const extensions: Partial<FailedValidationErrorExtensions> = {
 		field: validationErrorItem.path[0] as string,

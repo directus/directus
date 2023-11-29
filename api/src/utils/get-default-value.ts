@@ -7,7 +7,7 @@ import getLocalType from './get-local-type.js';
 
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column,
-	field?: { special?: FieldMeta['special'] }
+	field?: { special?: FieldMeta['special'] },
 ): string | boolean | number | Record<string, any> | any[] | null {
 	const type = getLocalType(column, field);
 

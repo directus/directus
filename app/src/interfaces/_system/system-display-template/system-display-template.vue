@@ -31,7 +31,7 @@ const collection = computed(() => {
 	const collectionName = values.value[props.collectionField];
 
 	const collectionExists = !!collectionsStore.collections.find(
-		(collection) => collection.collection === collectionName
+		(collection) => collection.collection === collectionName,
 	);
 
 	if (collectionExists === false) return null;
@@ -80,7 +80,7 @@ const injectValue = computed(() => {
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="collection === null" type="info">
+		<v-notice v-if="collection === null">
 			{{ t('interfaces.system-display-template.select_a_collection') }}
 		</v-notice>
 

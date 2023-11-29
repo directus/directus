@@ -58,7 +58,7 @@ pnpm --filter tests-blackbox exec docker compose down --volumes
 # Start the containers required for the tests
 pnpm --filter tests-blackbox exec docker compose up --detach --wait
 
-# Run the tests
+# Deploy Directus and run the tests
 pnpm --workspace-root test:blackbox
 ```
 
@@ -81,6 +81,16 @@ TEST_DB=cockroachdb,postgres pnpm --workspace-root test:blackbox
 TEST_DB=sqlite3 pnpm --workspace-root test:blackbox
 ```
 
+If tests are only run against a subset of databases, it also makes sense to only start the corresponding containers:
+
+```bash
+# Start the containers that are always required
+pnpm --filter tests-blackbox exec docker compose up auth-saml redis minio minio-mc --detach --wait
+
+# Start the specific database container (for example 'postgres')
+pnpm --filter tests-blackbox exec docker compose up postgres --detach --wait
+```
+
 ### Using an Existing Directus Instance
 
 Normally, the test suite will spin up a fresh copy of the Directus API built from the current state of the codebase. To
@@ -91,7 +101,18 @@ TEST_DB=cockroachdb TEST_LOCAL=true pnpm --workspace-root test:blackbox
 ```
 
 Note: The tests expect the instance running at `localhost:8055`. Make sure to connect the instance to the test database
-container found in the `tests-blackbox/docker-compose.yml` file.
+container found in the `tests/blackbox/docker-compose.yml` file.
+
+### Server Logs
+
+For debugging purposes, server logs can be enabled by specifying a log level using the `TEST_SAVE_LOGS` flag, for
+example:
+
+```bash
+TEST_SAVE_LOGS=info pnpm --workspace-root test:blackbox
+```
+
+The log files will be available under `tests/blackbox/server-logs-*`.
 
 ## Writing Unit Tests
 

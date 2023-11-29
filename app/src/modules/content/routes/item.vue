@@ -147,7 +147,7 @@ useShortcut(
 			saveVersionAction('stay');
 		}
 	},
-	form
+	form,
 );
 
 useShortcut(
@@ -159,7 +159,7 @@ useShortcut(
 			saveVersionAction('quit');
 		}
 	},
-	form
+	form,
 );
 
 const {
@@ -236,7 +236,7 @@ watch(
 		popupWindow = window.open(
 			targetUrl,
 			'live-preview',
-			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
+			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes',
 		);
 
 		if (popupWindow) {
@@ -250,7 +250,7 @@ watch(
 			}, 1000);
 		}
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 function toggleSplitView() {
@@ -735,7 +735,7 @@ function revert(values: Record<string, any>) {
 }
 
 .header-icon.secondary {
-	--v-button-background-color: var(--theme--background);
+	--v-button-background-color: var(--theme--background-normal);
 	--v-button-color-disabled: var(--theme--foreground);
 	--v-button-color-active: var(--theme--foreground);
 }

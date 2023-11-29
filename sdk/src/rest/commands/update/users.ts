@@ -6,7 +6,7 @@ import type { DirectusUser } from '../../../schema/user.js';
 export type UpdateUserOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item extends object = DirectusUser<Schema>
+	Item extends object = DirectusUser<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -23,7 +23,7 @@ export const updateUsers =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		keys: DirectusUser<Schema>['id'][],
 		item: Partial<DirectusUser<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
@@ -50,7 +50,7 @@ export const updateUser =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		key: DirectusUser<Schema>['id'],
 		item: Partial<DirectusUser<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');
@@ -74,7 +74,7 @@ export const updateUser =
 export const updateMe =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		item: Partial<DirectusUser<Schema>>,
-		query?: TQuery
+		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users/me`,

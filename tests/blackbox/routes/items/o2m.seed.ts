@@ -209,7 +209,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		600000
+		600000,
 	);
 };
 
@@ -301,6 +301,6 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				await seedO2MAliasAllFieldTypesValues(vendor, localCollectionStates, pkType, 'country_id', countriesIDs);
 				await seedO2MAliasAllFieldTypesValues(vendor, localCollectionCities, pkType, 'state_id', statesIDs);
 			}
-		})
+		}),
 	);
 };

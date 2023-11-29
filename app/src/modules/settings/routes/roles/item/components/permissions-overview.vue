@@ -12,7 +12,7 @@ import PermissionsOverviewRow from './permissions-overview-row.vue';
 
 const props = defineProps<{
 	role?: string;
-	// the permission row primary key in case we're on the permission detail modal view
+	/** the permission row primary key in case we're on the permission detail modal view */
 	permission?: string;
 	appAccess?: boolean;
 }>();
@@ -26,8 +26,8 @@ const regularCollections = computed(() => collectionsStore.databaseCollections);
 const systemCollections = computed(() =>
 	orderBy(
 		collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
-		'name'
-	)
+		'name',
+	),
 );
 
 const systemVisible = ref(false);
@@ -61,8 +61,8 @@ function usePermissions() {
 
 			const response = await api.get('/permissions', { params });
 			permissions.value = response.data.data;
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			loading.value = false;
 		}
@@ -80,8 +80,8 @@ function usePermissions() {
 				if (permission.id === id) return response.data.data;
 				return permission;
 			});
-		} catch (err: any) {
-			unexpectedError(err);
+		} catch (error) {
+			unexpectedError(error);
 		} finally {
 			refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 		}
@@ -113,7 +113,7 @@ function useReset() {
 					appRecommendedPermissions.map((permission) => ({
 						...permission,
 						role: props.role,
-					}))
+					})),
 				);
 			}
 
@@ -148,7 +148,7 @@ function useReset() {
 				:refreshing="refreshing"
 			/>
 
-			<button class="system-toggle" @click="systemVisible = !systemVisible">
+			<button class="system-toggle" :class="{ active: systemVisible }" @click="systemVisible = !systemVisible">
 				{{ t('system_collections') }}
 				<v-icon :name="systemVisible ? 'expand_less' : 'expand_more'" />
 			</button>
@@ -162,7 +162,9 @@ function useReset() {
 						:role="role"
 						:permissions="permissions.filter((p) => p.collection === collection.collection)"
 						:refreshing="refreshing"
-						:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
+						:app-minimal="
+							appAccess ? appMinimalPermissions.filter((p) => p.collection === collection.collection) : undefined
+						"
 					/>
 				</div>
 			</transition-expand>
@@ -218,7 +220,14 @@ function useReset() {
 	width: 100%;
 	height: 48px;
 	color: var(--theme--foreground-subdued);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
+	border-bottom-left-radius: var(--theme--border-radius);
+	border-bottom-right-radius: var(--theme--border-radius);
+
+	&.active {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
 
 	.v-icon {
 		vertical-align: -7px;

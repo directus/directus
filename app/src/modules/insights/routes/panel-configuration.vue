@@ -3,7 +3,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import { CreatePanel, useInsightsStore } from '@/stores/insights';
-import { Panel } from '@directus/types';
+import type { Panel } from '@directus/extensions';
 import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
@@ -12,12 +12,10 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 
-interface Props {
+const props = defineProps<{
 	dashboardKey: string;
 	panelKey: string;
-}
-
-const props = defineProps<Props>();
+}>();
 
 const { t } = useI18n();
 
@@ -52,15 +50,15 @@ const panel = computed<Partial<Panel>>(() => {
 
 const currentTypeInfo = useExtension(
 	'panel',
-	computed(() => panel.value.type ?? null)
+	computed(() => panel.value.type ?? null),
 );
 
 const customOptionsFields = computed(() => {
 	if (typeof currentTypeInfo.value?.options === 'function') {
-		return currentTypeInfo.value?.options(unref(panel)) ?? null;
+		return currentTypeInfo.value.options(unref(panel)) ?? undefined;
 	}
 
-	return null;
+	return undefined;
 });
 
 function isSVG(path: string) {
@@ -145,7 +143,7 @@ const stageChanges = () => {
 					v-for="pan of panelTypes"
 					:key="pan.id"
 					class="interface"
-					:class="{ active: panel.type === pan.id, gray: panel.type && panel.type !== pan.id }"
+					:class="{ active: panel.type === pan.id, subdued: panel.type && panel.type !== pan.id }"
 					@click="togglePanel(pan.id)"
 				>
 					<div class="preview">
@@ -326,7 +324,7 @@ const stageChanges = () => {
 	display: block;
 	padding: 8px 16px;
 	background-color: var(--background-page);
-	border: 2px solid var(--theme--primary);
+	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 	box-shadow: 0 0 8px var(--theme--primary-75);
 }
@@ -340,20 +338,18 @@ const stageChanges = () => {
 	border-color: var(--theme--primary);
 }
 
-.interface.gray .preview {
-	filter: grayscale(1);
-
-	background-color: var(--background-subdued);
+.interface.subdued .preview {
+	background-color: var(--theme--background-subdued);
 }
 
-.interface.gray .preview .fallback {
+.interface.subdued .preview .fallback {
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	box-shadow: 0 0 8px var(--theme--foreground-subdued);
 }
 
 .field-configuration {
-	--v-button-background-color-disabled: var(--theme--background);
+	--v-button-background-color-disabled: var(--theme--background-normal);
 	--columns: 1;
 
 	@media (min-width: 400px) {
@@ -369,7 +365,7 @@ const stageChanges = () => {
 	}
 
 	grid-column: 1 / span var(--columns);
-	background-color: var(--background-subdued);
+	background-color: var(--theme--background-subdued);
 	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
@@ -383,7 +379,7 @@ const stageChanges = () => {
 }
 
 .setup {
-	--form-vertical-gap: 20px;
+	--theme--form--row-gap: 20px;
 	margin: 34px;
 }
 </style>

@@ -6,7 +6,7 @@
 .v-card-actions {
 	display: flex;
 	justify-content: flex-end;
-	padding: var(--v-card-padding);
+	padding: var(--v-card-padding, 16px);
 }
 
 .v-card-actions > :slotted(.v-button + .v-button) {

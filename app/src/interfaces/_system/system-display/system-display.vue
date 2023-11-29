@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtensions } from '@/extensions';
-import { DisplayConfig } from '@directus/types';
+import type { DisplayConfig } from '@directus/extensions';
 import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -28,7 +28,7 @@ watch(
 	() => values.value[props.typeField!],
 	() => {
 		emit('input', null);
-	}
+	},
 );
 
 const items = computed(() => {

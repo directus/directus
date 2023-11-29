@@ -73,7 +73,7 @@ export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyG
 		case 'wkt':
 			return (geom) => wktToGeoJSON(geom) as AnyGeometry;
 		case 'lnglat':
-			return (geom) => ({ type: 'Point', coordinates: [Number(geom[0]), Number(geom[1])] } as AnyGeometry);
+			return (geom) => ({ type: 'Point', coordinates: [Number(geom[0]), Number(geom[1])] }) as AnyGeometry;
 		default:
 			throw new Error(i18n.global.t('interfaces.map.invalid_format', { format: geometryFormat }) as string);
 	}
@@ -127,7 +127,7 @@ export function flatten(geometry?: AnyGeometry): SimpleGeometry[] {
 
 	if (geometry.type.startsWith('Multi')) {
 		const type = geometry.type.replace('Multi', '');
-		return (geometry.coordinates as any).map((coordinates: any) => ({ type, coordinates } as SimpleGeometry));
+		return (geometry.coordinates as any).map((coordinates: any) => ({ type, coordinates }) as SimpleGeometry);
 	}
 
 	return [geometry as SimpleGeometry];

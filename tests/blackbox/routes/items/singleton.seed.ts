@@ -78,7 +78,7 @@ export const seedDBStructure = () => {
 				}
 			}
 		},
-		600_000
+		600_000,
 	);
 };
 
@@ -114,7 +114,7 @@ export const seedDBValues = async () => {
 					},
 				});
 			}
-		})
+		}),
 	)
 		.then(() => {
 			isSeeded = true;

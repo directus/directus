@@ -46,7 +46,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 
 			const display = useExtension(
 				'display',
-				computed(() => fieldsUsed[key]?.meta?.display ?? null)
+				computed(() => fieldsUsed[key]?.meta?.display ?? null),
 			);
 
 			if (value !== undefined && value !== null) {

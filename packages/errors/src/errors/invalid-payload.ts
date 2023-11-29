@@ -9,5 +9,5 @@ export const messageConstructor = ({ reason }: InvalidPayloadErrorExtensions) =>
 export const InvalidPayloadError = createError<InvalidPayloadErrorExtensions>(
 	ErrorCode.InvalidPayload,
 	messageConstructor,
-	400
+	400,
 );

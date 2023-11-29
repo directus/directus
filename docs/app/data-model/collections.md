@@ -82,7 +82,7 @@ To create a collection, follow these steps.
    - **Primary Key Field** — Sets the name of the primary key field, defaults to `id`.
    - **Type** — Sets the [type of ID](/app/data-model#keys-and-ids) to use for this collection.
 4. Click <span mi btn>arrow_forward</span> to confirm.
-5. Enable and rename the other Optional System Fields as desired:
+5. Enable and rename the other Optional Fields as desired:
    - **Status** — Stores item status.
    - **Sort** — Adds a field which enables drag-and-drop sorting of items.
    - **Created On** — Logs the date an item was created.

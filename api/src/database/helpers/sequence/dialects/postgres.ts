@@ -12,7 +12,7 @@ export class AutoIncrementHelperPostgres extends AutoSequenceHelper {
 	override async resetAutoIncrementSequence(table: string, column: string): Promise<Knex.Raw | void> {
 		return await this.knex.raw(
 			`WITH sequence_infos AS (SELECT pg_get_serial_sequence(?, ?) AS seq_name, MAX(??) as max_val FROM ??) SELECT SETVAL(seq_name, max_val) FROM sequence_infos;`,
-			[`"${table}"`, column, column, table]
+			[`"${table}"`, column, column, table],
 		);
 	}
 }
