@@ -159,7 +159,6 @@
 		"sharp": "0.32.6",
 		"snappy": "7.2.2",
 		"stream-json": "1.7.5",
-		"strip-bom-stream": "5.0.0",
 		"tinypool": "0.8.1",
 		"tsx": "4.6.0",
 		"uuid": "9.0.0",
@@ -170,7 +169,6 @@
 		"zod-validation-error": "1.0.1"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
