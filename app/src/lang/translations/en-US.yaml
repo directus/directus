@@ -2341,7 +2341,7 @@ onboarding:
   action:
     skip: Skip
     first: Start Setup
-    saveAndContinue: Save and Continue
+    save_and_continue: Save and Continue
   welcome:
     title: Welcome to Directus!
     text: |
@@ -2373,8 +2373,12 @@ onboarding:
     db_admin: Database Administrator
     data_scientist: Data Scientist
     nontechnical: Non-Technical User
-  theming:
-    title: Let's setup your theme
+  theming-project:
+    title: Let's setup your project theme
+    text: |
+      The Directus Theming Engine contains two customizable themes - Light Theme and Dark Theme. Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
+  theming-user:
+    title: Let's setup your personalized theme
     text: |
       The Directus Theming Engine contains two customizable themes - Light Theme and Dark Theme. Both themes can be updated for all users (in the Settings Module), or for specific users (in the Users Module).
   loading:

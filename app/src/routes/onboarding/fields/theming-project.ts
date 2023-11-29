@@ -1,6 +1,6 @@
 import { DeepPartial, Field } from '@directus/types';
 
-export const themingFields: DeepPartial<Field>[] = [
+export const themingProjectFields: DeepPartial<Field>[] = [
 	{
 		collection: 'directus_settings',
 		name: 'Theming Group',

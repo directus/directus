@@ -9,7 +9,8 @@ import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { projectFields } from './fields/project';
-import { themingFields } from './fields/theming';
+import { themingProjectFields } from './fields/theming-project';
+import { themingUserFields } from './fields/theming-user';
 import { userFields } from './fields/user';
 
 type OnboardingSlide = {
@@ -38,7 +39,7 @@ export function getSlides() {
 		project_use_case: settingsStore.settings?.onboarding?.project_use_case,
 	});
 
-	const themingModel = ref({
+	const themingProjectModel = ref({
 		default_appearance: settingsStore.settings?.default_appearance,
 		default_theme_light: settingsStore.settings?.default_theme_light,
 		default_theme_dark: settingsStore.settings?.default_theme_dark,
@@ -52,6 +53,12 @@ export function getSlides() {
 		email: currentUser.email,
 		wants_emails: currentUser.onboarding?.wants_emails ?? false,
 		primary_skillset: currentUser.onboarding?.primary_skillset,
+	});
+
+	const themingUserModel = ref({
+		appearance: currentUser.appearance,
+		theme_light: currentUser.theme_light,
+		theme_dark: currentUser.theme_dark,
 	});
 
 	const requiresProjectOnboarding = !settingsStore.settings?.onboarding;
@@ -84,6 +91,24 @@ export function getSlides() {
 					await Promise.all([settingsStore.hydrate(), serverStore.hydrate({ isLanguageUpdated: false })]);
 				},
 			},
+			themingProject: {
+				title: t('onboarding.theming-project.title'),
+				text: t('onboarding.theming-project.text'),
+				form: {
+					model: themingProjectModel,
+					fields: translate(themingProjectFields),
+					initialValues: themingProjectModel.value,
+				},
+				next: async function () {
+					await settingsStore.updateSettings({
+						default_appearance: themingProjectModel.value.default_appearance,
+						default_theme_light: themingProjectModel.value.default_theme_light,
+						default_theme_dark: themingProjectModel.value.default_theme_dark,
+					});
+
+					await Promise.all([settingsStore.hydrate(), serverStore.hydrate({ isLanguageUpdated: false })]);
+				},
+			},
 		}),
 		user: {
 			title: t('onboarding.user.title'),
@@ -108,22 +133,22 @@ export function getSlides() {
 				await userStore.hydrate();
 			},
 		},
-		theming: {
-			title: t('onboarding.theming.title'),
-			text: t('onboarding.theming.text'),
+		themingUser: {
+			title: t('onboarding.theming-user.title'),
+			text: t('onboarding.theming-user.text'),
 			form: {
-				model: themingModel,
-				fields: translate(themingFields),
-				initialValues: themingModel.value,
+				model: themingUserModel,
+				fields: translate(themingUserFields),
+				initialValues: themingUserModel.value,
 			},
 			next: async function () {
-				await settingsStore.updateSettings({
-					default_appearance: themingModel.value.default_appearance,
-					default_theme_light: themingModel.value.default_theme_light,
-					default_theme_dark: themingModel.value.default_theme_dark,
-				});
+				await api.patch(`/users/${currentUser.id}`, {
+					appearance: themingUserModel.value.appearance,
+					theme_light: themingUserModel.value.theme_light,
+					theme_dark: themingUserModel.value.theme_dark,
+				} satisfies Partial<User>);
 
-				await Promise.all([settingsStore.hydrate(), serverStore.hydrate({ isLanguageUpdated: false })]);
+				await userStore.hydrate();
 
 				// Proceed immediately and swallow any errors for seamless user experience
 				api.post(`/onboarding/${currentUser.id}/send`).catch(() => {});
@@ -131,6 +156,7 @@ export function getSlides() {
 				router.replace('/content');
 			},
 		},
+
 		finish: {
 			title: t('onboarding.loading.title'),
 			text: t('onboarding.loading.text'),

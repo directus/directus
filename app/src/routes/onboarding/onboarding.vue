@@ -62,7 +62,7 @@ const {
 				<!-- Right Actions -->
 				<div>
 					<v-button v-if="!isLoading && !isLastSlide" :disabled="nextButtonDisabled" @click="nextSlide">
-						{{ isFirstSlide ? t('onboarding.action.first') : t('onboarding.action.saveAndContinue') }}
+						{{ isFirstSlide ? t('onboarding.action.first') : t('onboarding.action.save_and_continue') }}
 					</v-button>
 				</div>
 			</div>
