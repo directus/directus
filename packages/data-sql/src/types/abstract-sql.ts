@@ -60,8 +60,14 @@ export interface AbstractSqlNestedMany {
 }
 
 export interface AbstractSqlNestedOneFromAny {
-	queryGenerator: (joinFieldValues: AtLeastOneElement<string | number>, collection: string) => AbstractSqlQuery;
-	localJoinFields: AtLeastOneElement<string>;
-	foreignJoinFields: AtLeastOneElement<string>;
+	queryGenerator: (relation: A2ORelation) => AbstractSqlQuery;
 	alias: string;
 }
+
+export type A2ORelation = {
+	fk: {
+		column: string;
+		value: string;
+	}[]; // @TODO make use of AtLeastOneElement
+	table: string;
+};
