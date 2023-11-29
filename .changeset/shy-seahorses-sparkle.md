@@ -2,4 +2,4 @@
 "docs": patch
 ---
 
-Fixed the SSO SAML examples
+Made some corrections to the SSO SAML examples
