@@ -81,6 +81,16 @@ TEST_DB=cockroachdb,postgres pnpm --workspace-root test:blackbox
 TEST_DB=sqlite3 pnpm --workspace-root test:blackbox
 ```
 
+If tests are only run against a subset of databases, it also makes sense to only start the corresponding containers:
+
+```bash
+# Start the containers that are always required
+pnpm --filter tests-blackbox exec docker compose up auth-saml redis minio minio-mc --detach --wait
+
+# Start the specific database container (for example 'postgres')
+pnpm --filter tests-blackbox exec docker compose up postgres --detach --wait
+```
+
 ### Using an Existing Directus Instance
 
 Normally, the test suite will spin up a fresh copy of the Directus API built from the current state of the codebase. To

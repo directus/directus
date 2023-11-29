@@ -39,11 +39,16 @@ export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<F
 				(field as FormField).hideLoader = true;
 			}
 
-			if (index !== 0 && field.meta!.width === 'half' && field.meta!.hidden !== true) {
-				const previousFields = [...formFields].slice(0, index).reverse();
-				const prevNonHiddenField = previousFields.find((field) => field.meta?.hidden !== true);
+			if (index !== 0 && field.meta.width === 'half' && field.meta.hidden !== true) {
+				let prevNonHiddenField;
 
-				if (prevNonHiddenField && prevNonHiddenField.meta?.width === 'half') {
+				for (const formField of formFields) {
+					if (formField.meta?.group !== field.meta?.group || formField.meta?.hidden) continue;
+					if (formField === field) break;
+					prevNonHiddenField = formField;
+				}
+
+				if (prevNonHiddenField?.meta?.width === 'half') {
 					field.meta.width = 'half-right';
 				}
 			}

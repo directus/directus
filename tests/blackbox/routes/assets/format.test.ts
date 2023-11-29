@@ -45,35 +45,39 @@ describe('/assets', () => {
 				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/png' }, // Expect to return png as original image is png
 			])('with "$requestHeaderAccept" Accept request header', ({ requestHeaderAccept, responseHeaderContentType }) => {
 				describe.each(storages)('Storage: %s', (storage) => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const insertResponse = await request(getUrl(vendor))
-							.post('/files')
-							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-							.field('storage', storage)
-							.attach('file', createReadStream(imageFilePng));
-
-						// Action
-						let retrieveResponse: Response | undefined;
-
-						// Retry if server is too busy
-						while (!retrieveResponse) {
-							const response = await request(getUrl(vendor))
-								.get(`/assets/${insertResponse.body.data.id}?format=auto`)
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const insertResponse = await request(getUrl(vendor))
+								.post('/files')
 								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-								.set('Accept', requestHeaderAccept);
+								.field('storage', storage)
+								.attach('file', createReadStream(imageFilePng));
 
-							if (response.statusCode !== 503) {
-								retrieveResponse = response;
-							} else {
-								await sleep(2_500);
+							// Action
+							let retrieveResponse: Response | undefined;
+
+							// Retry if server is too busy
+							while (!retrieveResponse) {
+								const response = await request(getUrl(vendor))
+									.get(`/assets/${insertResponse.body.data.id}?format=auto`)
+									.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+									.set('Accept', requestHeaderAccept);
+
+								if (response.statusCode !== 503) {
+									retrieveResponse = response;
+								} else {
+									await sleep(2_000);
+								}
 							}
-						}
 
-						// Assert
-						expect(retrieveResponse.statusCode).toBe(200);
-						expect(retrieveResponse.headers['content-type']).toBe(responseHeaderContentType);
-					});
+							// Assert
+							expect(retrieveResponse.statusCode).toBe(200);
+							expect(retrieveResponse.headers['content-type']).toBe(responseHeaderContentType);
+						},
+						30_000,
+					);
 				});
 			});
 		});

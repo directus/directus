@@ -27,6 +27,7 @@ method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+extensions: Erweiterungen
 modules: Module
 module_bar: Modulleiste
 logs: Logs
@@ -56,10 +57,23 @@ modifier: Geändert von
 extension_interface: Benutzeroberfläche
 extension_display: Anzeige
 extension_layout: Ansicht
+extension_module: Modul
 extension_panel: Panel
 extension_hook: Hook
+extension_endpoint: Endpunkt
+extension_operation: Operation
+extension_bundle: Paket
+extension_interfaces: Schnittstellen
+extension_displays: Darstellungen
+extension_layouts: Layouts
 extension_modules: Module
+extension_panels: Panels
+extension_hooks: Hooks
+extension_endpoints: Endpunkte
+extension_operations: Operationen
+extension_bundles: Pakete
 enable: Aktivieren
+disable: Deaktivieren
 custom: Eigene
 hook: Hook
 fill_width: Breite füllen
@@ -107,7 +121,31 @@ rename_folder: Ordner umbenennen
 delete_folder: Ordner löschen
 prefix: Präfix
 suffix: Suffix
+keep: Behalten
+version: Version
+version_key: Versionsschlüssel
+version_name: Versionsname
+main_version: Main
+switch_version: Version wechseln
+switch_version_copy: Sind Sie sicher, dass Sie zur "{version}" Version wechseln möchten? Ungespeicherte Änderungen gehen verloren.
+create_version: Version erstellen
+rename_version: Version umbenennen
+compare_version: Version vergleichen
+save_version: Version speichern
+promote_version: Version überführen
+promote_version_disabled: Keine Änderungen
+promote_version_drawer_title: Version {version} in Main überführen
+promote_version_changes: Änderungen
 promote_version_preview: Vorschau
+outdated_notice: >-
+  Das Main-Element wurde seit der Erstellung dieser Version abgeändert. Bitte überprüfen Sie alle untenstehenden Feldwerte und bestätigen Sie, welche Version verwendet werden soll, wenn diese Version in Main überführt wird.
+promote_notice: >-
+  Bitte überprüfen Sie alle untenstehenden Feldwerte und bestätigen Sie, welche Version verwendet werden soll, wenn diese Version in Main überführt wird.
+delete_version: Version löschen
+delete_version_copy: >-
+  Möchten Sie die "{version}" Version wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+delete_on_promote_copy: >-
+  Möchten Sie die "{version}" Version nach der Überführung löschen oder beibehalten?
 reset_bookmark: Lesezeichen zurücksetzen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
@@ -153,6 +191,7 @@ validationError:
   nnull: Der Wert darf nicht leer sein
   required: Wert erforderlich
   unique: Wert muss eindeutig sein
+  email: Muss eine gültige E-Mail-Adresse sein
   regex: Wert hat nicht das richtige Format
   starts_with: Wert muss mit {substring} beginnen
   istarts_with: Wert muss mit {substring} beginnen
@@ -188,7 +227,7 @@ permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
-presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der Syntax "detailed" konfiguriert werden.'
+presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der "detaillierten" Syntax konfiguriert werden.'
 presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
@@ -244,7 +283,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Zeitspanne
-translation_key_placeholder: Schlüssel eingeben ...
+translation_key_placeholder: Schlüssel eingeben...
 datetime: Datum mit Uhrzeit
 dateTime: Datum mit Uhrzeit
 precision: Präzision
@@ -267,6 +306,9 @@ geometry.Polygon: Polygon
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: MultiPolygon
+theme_auto: Automatisch (Systemeinstellung folgen)
+theme_light: Heller Modus
+theme_dark: Dunkler Modus
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -349,6 +391,7 @@ clear_items: Element entfernen
 reset_to_default: Auf Standardwert zurücksetzen
 undo_changes: Änderungen rückgängig machen
 notifications: Benachrichtigungen
+archive_all: Alle archivieren
 show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
 page_not_found_body: Die Seite scheint nicht zu existieren.
@@ -361,6 +404,7 @@ revision_delta_created: Erstellt
 revision_delta_created_externally: Extern erstellt
 revision_delta_updated: '1 Feld aktualisiert | {count} Felder aktualisiert'
 revision_delta_deleted: Gelöscht
+revision_delta_version_saved: 'Version (1 Feld aktualisiert) | Version ({count} Felder aktualisiert)'
 revision_delta_reverted: Zurückgesetzt
 revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
@@ -471,16 +515,17 @@ import_from_url: Datei von URL importieren
 replace_from_device: Mit Datei vom Gerät ersetzen
 replace_from_library: Mit Datei aus der Bibliothek ersetzen
 replace_from_url: Mit Datei von URL ersetzen
+no_image_selected: Kein Bild ausgewählt
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
 open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
-exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
+exporting_all_items_in_collection: Alle Elemente ({total}) innerhalb {collection} exportieren.
 exporting_limited_items_in_collection: '{count} von {total} Elementen aus {collection} werden exportiert.'
 exporting_no_items_to_export: Keine zu exportierende Elemente. Passen Sie die Exportkonfiguration an und/oder fügen Sie Elemente zur Sammlung hinzu.
 exporting_download_hint: Sobald die {format} Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
-exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibibliothek gespeichert.
+exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibliothek gespeichert.
 exporting_library_hint_forced: Dieser Export muss in mehreren Durchgängen durchgeführt werden. Nach Abschluss wird die {format} Datei in der Datei-Bibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
@@ -497,6 +542,7 @@ generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
 save_and_create_new: Speichern und neues Element anlegen
 save_and_stay: Speichern und auf der Seite bleiben
+save_and_quit: Speichern und schließen
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
 creating_items: Elemente erstellen
@@ -590,6 +636,7 @@ bookmark_doesnt_exist_copy: Das zu öffnende Lesezeichen konnte nicht gefunden w
 bookmark_doesnt_exist_cta: Zurück zur Sammlung
 select_an_item: Element auswählen...
 edit: Bearbeiten
+edit_item: Element bearbeiten
 enabled: Aktiviert
 disable_tfa: 2FA deaktivieren
 admin_disable_tfa_text: Bist du dir sicher, dass du 2FA für diesen Nutzer deaktivieren möchtest?
@@ -619,6 +666,7 @@ errors:
   RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   USER_SUSPENDED: Benutzer gesperrt
   CONTAINS_NULL_VALUES: Feld enthält NULL-Werte
+  UNPROCESSABLE_CONTENT: Nicht verarbeitbarer Inhalt
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
@@ -755,10 +803,12 @@ upload_pending: Upload ausstehend
 drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
 interface_options: Schnittstellenoptionen
+display_options: Anzeige-Optionen
 layout_options: Ansichtsoptionen
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
+optional_system_fields: Optionale Felder
 value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
 create_item: Element erstellen
@@ -890,7 +940,6 @@ media: Medien
 quality: Qualität
 width: Breite
 height: Höhe
-transformation_preset_key: Transformation Preset Key
 source: Quelle
 url_placeholder: URL eingeben...
 display_text: Text anzeigen
@@ -956,12 +1005,19 @@ wysiwyg_options:
   source_code: Quellcode bearbeiten
   fullscreen: Vollbild
   directionality: Richtung
-  lazy_loading: Bilderer nachladen
+  lazy_loading: Bilder nachladen
+  lazy_loading_label: Lazy Loading aktivieren
 dropdown: Dropdown
 choices: Optionen
 choices_option_configured_incorrectly: Auswahl falsch konfiguriert
 deselect: Abwählen
 deselect_all: Alle abwählen
+theme: Design
+select_a_theme: Design auswählen
+default_sync_with_project: Standard (Projekt folgen)
+appearance_auto: Automatisch (System folgen)
+appearance_light: Hell
+appearance_dark: Dunkel
 other: Andere...
 adding_user: Benutzer hinzufügen
 unknown_user: Unbekannter Benutzer
@@ -973,7 +1029,9 @@ editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
+settings_permissions: Zugriffssteuerung
 settings_project: Einstellungen
+settings_appearance: Erscheinung
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Lesezeichen
@@ -992,6 +1050,7 @@ editing_preset: Vorlage bearbeiten
 layout_preview: Vorschau der Ansicht
 layout_setup: Einrichtung Ansicht
 data: Daten
+theme-overrides: Design-Überschreibungen
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
@@ -1013,6 +1072,9 @@ page_help_files_collection: >-
   **Datei-Bibliothek** — Auflistung aller Dateien, welche in dieses Projekt hochgeladen wurden. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfigurationen bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_files_item: >-
   **Datei-Details** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
+page_help_settings_project: "**Einstellungen** — Die globalen Konfigurationsoptionen Ihres Projekts."
+page_help_settings_appearance: "**Erscheinung** — Aussehen und Design-Optionen des Projekts."
+page_help_settings_extensions: '**Erweiterungen** — Die Erweiterungen, welche in dem Projekt installiert sind.'
 page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
@@ -1044,10 +1106,12 @@ batch_delete_confirm: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
+no_extensions: Keine Erweiterungen
+no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
-singleton: Einzelnes Element
+singleton: Singleton
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
 directus_collection:
@@ -1073,6 +1137,8 @@ directus_collection:
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
   directus_translations: Benutzerdefinierte Übersetzungen
+  directus_versions: Versionierung für Elemente
+  directus_extensions: Konfiguration der Erweiterungen
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -1099,6 +1165,7 @@ fields:
     unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
     accountability: Aktivitäts- und Änderungsverfolgung
+    versioning: Versionierung
     archive_field: Archivfeld
     item_duplication_fields: Vervielfältigungsfelder
   directus_files:
@@ -1152,6 +1219,8 @@ fields:
     last_page: Letzte Seite
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
+    theme_light_overrides: Anpassung des hellen Designs
+    theme_dark_overrides: Anpassung des dunklen Designs
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1175,9 +1244,11 @@ fields:
     project_color: Projektfarbe
     project_logo: Projektlogo
     default_language: Standardsprache
+    branding: Branding
     public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
     public_note: Öffentliche Anmerkung
+    theming: Design-Standardwerte
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Speicher
@@ -1192,6 +1263,8 @@ fields:
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
     image_editor: Bildeditor
     custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
+    theme_light_overrides: Anpassung des hellen Designs
+    theme_dark_overrides: Anpassung des dunklen Designs
   directus_shares:
     name: Name
     role: Rolle
@@ -1234,6 +1307,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Mein Projekt...
     project_color_note: Login & Logo Hintergrund
+    project_logo_note: Weiß 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Eine kurze, öffentliche Nachricht, welche die Formatierung mittels Markdown unterstützt...
     security_divider_title: Sicherheit
     auth_password_policy:
@@ -1288,6 +1363,8 @@ field_options:
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
     preview_divider: Vorschau
+    content_versioning_divider: Content Versioning
+    enable_versioning: Versionierung aktivieren
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1348,7 +1425,7 @@ comment: Kommentar
 live_preview:
   enable: Vorschau aktivieren
   disable: Vorschau deaktivieren
-  change_size: Display-Auflösung ändern
+  change_size: Dimensionen ändern
   refresh: Vorschau aktualisieren
   new_window: In neuem Fenster öffnen
   close_window: In geteilter Ansicht öffnen
@@ -1448,6 +1525,7 @@ search: Suche
 select_existing: Bitte auswählen
 select_field_type: Feldtyp wählen
 select_interface: Wähle eine Schnittstelle
+select_display: Anzeige auswählen
 settings: Einstellungen
 sign_in: Login
 sign_out: Ausloggen
@@ -1479,6 +1557,8 @@ undo_removed_item: Entferntes Item rückgängig
 remove_item: Item entfernen
 delete_item: Item löschen
 interfaces:
+  list-m2a:
+    prefix_note: Verwendet standardmäßig den Namen der Sammlung des zugehörigen Elements.
   filter:
     name: Filter
     description: Ein Filterobjekt konfigurieren.
@@ -1616,6 +1696,11 @@ interfaces:
     description: Ein Popup zum Auswählen der Schnittstellenoptionen
   system-display:
     display: Anzeige
+    description: Vorhandene Anzeige auswählen
+    placeholder: Anzeige auswählen...
+  system-display-options:
+    display-options: Anzeige-Optionen
+    description: Ein Dialog zum Auswählen der Anzeige-Optionen
   list-m2m:
     many-to-many: n:n
     description: Mehrere verwandte Elemente auswählen
@@ -1662,12 +1747,13 @@ interfaces:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...
-    no_text: Kein Text gesetzt ...
+    no_text: Kein Text gesetzt...
   list-o2m:
     one-to-many: 1:n
     description: Mehrere verwandte Elemente auswählen
     no_collection: Die Sammlung konnte nicht gefunden werden
   system-folder:
+    folder: Stammordner
     description: Ordner auswählen
     field_hint: Standardordner für hochgeladene Dateien ohne Angabe eines Ordners. Vorhandene Dateien sind davon nicht betroffen.
     root_name: Stammordner für Dateien
@@ -1685,6 +1771,7 @@ interfaces:
     field_note_placeholder: Feldnotiz eingeben...
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
     interface_group: Schnittstellenoptionen
+    display_group: Anzeige-Optionen
   slider:
     slider: Slider
     description: Nummer mit Schieberegler auswählen
@@ -1740,7 +1827,7 @@ interfaces:
     user_language: Aktuelle Benutzersprache verwenden
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
-    language_direction_field: Sprachverzeichnis Feld
+    language_direction_field: Schreibrichtung Feld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1974,28 +2061,28 @@ layouts:
   kanban:
     name: Kanban
     group_field: Gruppieren nach
-    group_field_placeholder: Feld zum Gruppieren ...
+    group_field_placeholder: Feld zum Gruppieren...
     group_title: Gruppentitel
-    group_title_placeholder: Feld für Grupentitel ...
-    title: Kartentitel
+    group_title_placeholder: Feld für Gruppentitel...
+    title: Karten-Titel
     title_placeholder: Optionales Titelfeld...
-    text: Kartentext
+    text: Karten-Text
     text_placeholder: Optionales Textfeld...
-    date: Kartendatum
+    date: Karten-Datum
     date_placeholder: Optionales Datumsfeld...
     tags: Karten-Tags
     tags_placeholder: Optionales Tag-Feld...
-    user: Kartenbenutzer
-    user_placeholder: Optionales Benutzerfeld ...
-    image: Kartenbild
+    user: Karten-Benutzer
+    user_placeholder: Optionales Benutzerfeld...
+    image: Karten-Bild
     image_placeholder: Optionales Bildfeld...
-    image_fit: Kartenbild passen
+    image_fit: Karten-Bild Füllmodus
     crop: Zuschneiden
     advanced: Erweitert
     edit_group: Gruppe bearbeiten
     delete_group: Gruppe löschen
     add_group: Gruppe hinzufügen
-    add_group_placeholder: Neuen Gruppentitel eingeben ...
+    add_group_placeholder: Neuen Gruppentitel eingeben...
     show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
@@ -2028,6 +2115,9 @@ panels:
     name: Metrik
     description: Zeige einen einzelnen Wert basierend auf einer Abfrage
     field: Feld
+  metric_list:
+    name: Metrische Liste
+    description: Auflistung und Visualisieren aggregierter Metriken aus einer Sammlung
   time_series:
     name: Zeitreihen
     description: Liniendiagramm anhand von Werten im Laufe der Zeit anzeigen
@@ -2141,9 +2231,19 @@ operations:
     payload: Nutzdaten
     query: Abfrage
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Signieren und Überprüfen von JSON-Web-Tokens
+    operation: Operation
+    secret: Schlüssel
+    secret_placeholder: Schlüssel eingeben...
     payload: Nutzdaten
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Optionen
+    options_placeholder: 'Siehe https://www.npmjs.com/package/jsonwebtoken#usage für die verfügbaren Optionen'
+    sign: Token signieren
+    verify: Token verifizieren
+    decode: Token dekodieren
   log:
     name: Konsolenausgabe
     description: Etwas in die Konsole ausgeben
@@ -2197,14 +2297,44 @@ operations:
     batch: Stapel
     batch_size: Stapelgröße
     cache: Cache
+unit: Einheit
 standard: Standard
+scientific: Wissenschaftlich
+engineering: Technisch
 compact: Kompakt
+currency: Währung
+notation: Notation
 style: Stil
 fonts:
   thin: Dünn
+  extra_light: Extra-Leicht
+  light: Leicht
   normal: Normal
   medium: Mittel
+  semi_bold: Halb-Fett
   bold: Fett
+  extra_bold: Extra-Fett
   black: Schwarz
   italic: Kursiv
+  oblique: Schräg
+  small: Klein
+  large: Groß
   auto: Auto
+text_wrap: Textumbruch
+center: Zentrieren
+justify: Blocksatz
+text_align: Textausrichtung
+font_weight: Schriftstärke
+font_style: Schriftstil
+font_size: Schriftgröße
+minimum_fraction_digits: Minimale Dezimalstellen
+maximum_fraction_digits: Maximale Dezimalstellen
+show_percentage: Prozentsatz anzeigen
+aggregation: Aggregation
+series_grouping: Serien-Gruppierung
+date_precision: Datumsgenauigkeit
+export_dashboard: Dashboard exportieren
+duplicate_dashboard: Dashboard duplizieren
+search_dashboard: Dashboard suchen...
+search_flow: Flow suchen...
+percent: Prozent

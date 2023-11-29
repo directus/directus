@@ -661,7 +661,6 @@ security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
 create_bookmark: Yer İşareti Oluştur
-create_default: Varsayılan Oluştur
 edit_bookmark: Yer İşaretini Düzenle
 edit_personal_bookmark: Kişisel Yer İşaretini Düzenle
 edit_role_bookmark: Rol Yer İmini Düzenle

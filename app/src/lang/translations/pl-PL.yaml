@@ -686,7 +686,6 @@ security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
 create_bookmark: Utwórz zakładkę
-create_default: Utwórz domyślne
 edit_bookmark: Edytuj zakładkę
 edit_personal_bookmark: Edytuj Osobistą Zakładkę
 edit_role_bookmark: Edytuj zakładkę roli

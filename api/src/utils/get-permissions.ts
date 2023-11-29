@@ -126,8 +126,6 @@ function parsePermissions(permissions: any[]) {
 
 		if (permission.permissions && typeof permission.permissions === 'string') {
 			permission.permissions = parseJSON(permission.permissions);
-		} else if (permission.permissions === null) {
-			permission.permissions = {};
 		}
 
 		if (permission.validation && typeof permission.validation === 'string') {

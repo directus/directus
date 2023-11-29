@@ -103,6 +103,7 @@ function validateFilter(filter: Query['filter']) {
 		} else if (Array.isArray(nested) === false) {
 			validateFilterPrimitive(nested, '_eq');
 		} else {
+			// @ts-ignore TODO Check which case this is supposed to cover
 			validateFilter(nested);
 		}
 	}
