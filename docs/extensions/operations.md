@@ -1,4 +1,4 @@
-# Custom Operations <small></small>
+# Custom Operations
 
 > Custom Operations allow you to create new types of steps for flows. They are developed using JavaScript / Node.js.
 > [Learn more about Operations](/app/flows/operations).
