@@ -24,10 +24,10 @@
 		"api.d.ts"
 	],
 	"scripts": {
-		"build": "concurrently --group 'pnpm:build:*'",
+		"build": "pnpm run '/^build:.*/'",
 		"build:node": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm --dts",
 		"build:shared": "tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm --dts",
-		"dev": "concurrently 'pnpm:build:* --watch'",
+		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -46,7 +46,6 @@
 		"@types/node": "18.16.12",
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-v8": "0.34.6",
-		"concurrently": "8.2.1",
 		"tmp": "0.2.1",
 		"tsup": "8.0.1",
 		"typescript": "5.3.2",
