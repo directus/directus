@@ -13,7 +13,8 @@ export interface AbstractQueryFieldNodeNestedOne {
 
 	alias: string;
 
-	meta: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
+	meta?: AbstractQueryFieldNodeNestedRelationalOne; // AbstractQueryFieldNodeNestedObjectOne | AbstractQueryFieldNodeNestedJsonOne
+	isA2O: boolean;
 }
 
 export interface AbstractQueryFieldNodeNestedMany {

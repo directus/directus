@@ -62,7 +62,11 @@ export const convertFieldNodes = (
 			 * @TODO
 			 */
 
-			if (abstractField.meta.type === 'm2o') {
+			if (abstractField.isA2O) {
+				// convert node into a root query and a query in form of of a function which has the collection relation as parameters
+			}
+
+			if (abstractField.meta?.type === 'm2o') {
 				const externalCollectionAlias = createUniqueAlias(abstractField.meta.join.foreign.collection);
 				const sqlJoinNode = createJoin(collection, abstractField.meta, externalCollectionAlias);
 
@@ -74,10 +78,6 @@ export const convertFieldNodes = (
 				nestedOutput.aliasMapping.forEach((value, key) => aliasRelationalMapping.set(key, value));
 				joins.push(sqlJoinNode);
 				select.push(...nestedOutput.clauses.select);
-			}
-
-			if (abstractField.meta.type === 'a2o') {
-				// convert node to multiple queries in form of of a function with collection and identifier as parameters
 			}
 
 			continue;
