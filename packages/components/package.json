@@ -32,7 +32,6 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@histoire/plugin-vue": "0.16.1",
-		"@histoire/shared": "0.16.1",
 		"@vitejs/plugin-vue": "4.2.3",
 		"@vitest/coverage-v8": "0.34.6",
 		"histoire": "0.16.1",

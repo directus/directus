@@ -25,9 +25,6 @@
 		"build": "tsup src/index.ts --format=esm --dts",
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
-	"dependencies": {
-		"zod": "3.22.4"
-	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"tsup": "8.0.1",

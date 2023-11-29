@@ -30,7 +30,6 @@
 		"@directus/data": "workspace:*",
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.7",
 		"@types/node": "18.16.12",
 		"@types/wellknown": "0.5.4",
