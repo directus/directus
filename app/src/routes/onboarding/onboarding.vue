@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useOnboarding } from './use-onboarding';
 
@@ -15,6 +16,20 @@ const {
 	nextSlide,
 	skipOnboarding,
 } = useOnboarding();
+
+const introTextBox = ref<HTMLDivElement | null>(null);
+
+/**
+ * Scroll to the intro-box upon slide changes, because on smaller screens
+ * we might be too far down the page after switching slides
+ */
+watchEffect(() => {
+	if (!introTextBox.value) {
+		return;
+	}
+
+	introTextBox.value.scrollIntoView({ behavior: 'smooth' });
+});
 </script>
 
 <template>
@@ -37,7 +52,7 @@ const {
 			<div class="onboarding-slides">
 				<Transition name="dialog" mode="out-in">
 					<div :key="currentSlide.key" class="slide">
-						<div class="intro-text">
+						<div ref="introTextBox" class="intro-text">
 							<h2 class="type-title">{{ currentSlide.title }}</h2>
 							<div v-md="{ value: currentSlide.text, target: '_blank' }" class="text-content" />
 						</div>
