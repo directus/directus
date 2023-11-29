@@ -10,7 +10,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { projectFields } from './fields/project';
 import { themingProjectFields } from './fields/theming-project';
-import { themingUserFields } from './fields/theming-user';
 import { userFields } from './fields/user';
 
 type OnboardingSlide = {
@@ -53,12 +52,6 @@ export function getSlides() {
 		email: currentUser.email,
 		wants_emails: currentUser.onboarding?.wants_emails ?? false,
 		primary_skillset: currentUser.onboarding?.primary_skillset,
-	});
-
-	const themingUserModel = ref({
-		appearance: currentUser.appearance,
-		theme_light: currentUser.theme_light,
-		theme_dark: currentUser.theme_dark,
 	});
 
 	const requiresProjectOnboarding = !settingsStore.settings?.onboarding;
@@ -129,24 +122,6 @@ export function getSlides() {
 						retry_transmission: true,
 					} satisfies UserOnboarding),
 				});
-
-				await userStore.hydrate();
-			},
-		},
-		themingUser: {
-			title: t('onboarding.theming-user.title'),
-			text: t('onboarding.theming-user.text'),
-			form: {
-				model: themingUserModel,
-				fields: translate(themingUserFields),
-				initialValues: themingUserModel.value,
-			},
-			next: async function () {
-				await api.patch(`/users/${currentUser.id}`, {
-					appearance: themingUserModel.value.appearance,
-					theme_light: themingUserModel.value.theme_light,
-					theme_dark: themingUserModel.value.theme_dark,
-				} satisfies Partial<User>);
 
 				await userStore.hydrate();
 
