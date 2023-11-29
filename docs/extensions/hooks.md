@@ -81,13 +81,6 @@ The context object has the following properties:
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
-::: warning Breaking app/admin
-
-By modifying the expected read output, especially for system collections. It is very easy to accidentally brick the app
-or api response.
-
-:::
-
 ::: warning Performance
 
 Filters can impact performance when not carefully implemented, as they are executed in a blocking manner. This applies
@@ -196,7 +189,9 @@ export default ({ embed }, { env }) => {
 
 ## Available Events
 
-### Filter Events
+::: tabs
+
+== Filter Events
 
 | Name                           | Payload                              | Meta                                        |
 | ------------------------------ | ------------------------------------ | ------------------------------------------- |
@@ -227,16 +222,7 @@ export default ({ embed }, { env }) => {
 
 <sup>[3]</sup> Available for `oauth2` and `openid` driver, only if set by provider.
 
-::: tip System Collections
-
-`<system-collection>` should be replaced with one of the system collection names `activity`,`collections` (except read),
-`dashboards`, `fields` (except read), `files` (default to upload, create/update will only be fired when filesService
-create/update are fired), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
-`relations` (except delete), `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
-
-:::
-
-### Action Events
+== Action Events
 
 | Name                           | Meta                                                |
 | ------------------------------ | --------------------------------------------------- |
@@ -262,16 +248,7 @@ create/update are fired), `flows`, `folders`, `notifications`, `operations`, `pa
 | `<system-collection>.update`   | `payload`, `keys`, `collection`                     |
 | `<system-collection>.delete`   | `keys`, `collection`                                |
 
-::: tip System Collections
-
-`<system-collection>` should be replaced with one of the system collection names `activity`,`collections` (except read),
-`dashboards`, `fields` (except read), `files` (default to upload, create/update will only be fired when filesService
-create/update are fired), `flows`, `folders`, `notifications`, `operations`, `panels`, `permissions`, `presets`,
-`relations` (except delete), `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
-
-:::
-
-### Init Events
+== Init Events
 
 | Name                   | Meta      |
 | ---------------------- | --------- |
@@ -285,6 +262,34 @@ create/update are fired), `flows`, `folders`, `notifications`, `operations`, `pa
 | `routes.custom.after`  | `app`     |
 | `middlewares.before`   | `app`     |
 | `middlewares.after`    | `app`     |
+
+:::
+
+::: tip System Collections
+
+---
+
+`<system-collection>` should be replaced with one of the
+[system collection](/app/data-model/collections#system-collections) names.
+
+---
+
+⚠️ Directus reads system collection data to perform correctly, both in the Data Studio and the generated APIs. Be
+careful when modifying the output of system collection read/query events, as this can cause Directus core functionality
+to break.
+
+---
+
+<u>Exceptions:</u>
+
+| System Collection | Exception                                                                                     |
+| ----------------- | --------------------------------------------------------------------------------------------- |
+| `collections`     | No `read` action event                                                                        |
+| `fields`          | No `read` action event                                                                        |
+| `files`           | Default to upload, create/update will only be fired when filesService create/update are fired |
+| `relations`       | No `delete` event                                                                             |
+
+:::
 
 ## Register Function
 
