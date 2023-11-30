@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
@@ -13,6 +12,8 @@ import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
 import type { FormField as TFormField } from './types';
+import { getFormFields } from './utils/get-form-fields';
+import { updateFieldWidths } from './utils/update-field-widths';
 import ValidationErrors from './validation-errors.vue';
 
 type FieldValues = {
@@ -146,19 +147,15 @@ function useForm() {
 
 	const defaultValues = getDefaultValuesFromFields(fields);
 
-	const { formFields } = useFormFields(fields);
+	const formFields = getFormFields(fields);
 
 	const fieldsWithConditions = computed(() => {
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-		let fields = formFields.value.reduce((result, field) => {
-			const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
-
-			if (newField.field) result.push(newField);
-			return result;
-		}, [] as Field[]);
+		let fields = formFields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
 
 		fields = pushGroupOptionsDown(fields);
+		updateFieldWidths(fields);
 
 		return fields;
 	});
@@ -167,18 +164,16 @@ function useForm() {
 		return Object.fromEntries(fieldsWithConditions.value.map((field) => [field.field, field]));
 	});
 
-	const fieldsInGroup = computed(() =>
-		formFields.value.filter(
-			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group)),
-		),
-	);
-
 	const fieldNames = computed(() => {
-		return fieldsInGroup.value.map((f) => f.field);
+		const fieldsInGroup = formFields.value.filter(
+			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group)),
+		);
+
+		return fieldsInGroup.map((field) => field.field);
 	});
 
 	const fieldsForGroup = computed(() => {
-		return fieldNames.value.map((name: string) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
+		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
 	return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
