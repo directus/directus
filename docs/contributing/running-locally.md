@@ -13,7 +13,7 @@ readTime: 4 min read
 
 ::: tip Minimum Requirements
 
-You will need to have the [latest LTS version of Node.js](https://nodejs.org/en/download) for the Development
+You will need to have [version 18 of Node.js](https://nodejs.org/en/download) for the Development
 environment of Directus.
 
 You will also need to have the package manager [pnpm](https://pnpm.io) installed. It's recommended to install
