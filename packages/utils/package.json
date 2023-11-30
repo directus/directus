@@ -24,11 +24,11 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "concurrently --group 'pnpm:build:*'",
+		"build": "pnpm run '/^build:.*/'",
 		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
 		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
 		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
-		"dev": "concurrently 'pnpm:build:* --watch'",
+		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -37,8 +37,7 @@
 		"fs-extra": "11.1.1",
 		"joi": "17.9.2",
 		"lodash-es": "4.17.21",
-		"micromustache": "8.0.3",
-		"tmp": "0.2.1"
+		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
@@ -48,9 +47,9 @@
 		"@types/node": "18.16.12",
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-v8": "0.34.6",
-		"concurrently": "8.2.1",
-		"tsup": "7.2.0",
-		"typescript": "5.2.2",
+		"tmp": "0.2.1",
+		"tsup": "8.0.1",
+		"typescript": "5.3.2",
 		"vitest": "0.34.6"
 	},
 	"peerDependencies": {

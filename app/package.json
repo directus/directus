@@ -29,8 +29,6 @@
 		"typecheck": "vue-tsc --noEmit"
 	},
 	"devDependencies": {
-		"@babel/core": "7.21.8",
-		"@babel/preset-env": "7.21.5",
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/extensions": "workspace:*",
@@ -71,7 +69,6 @@
 		"@pinia/testing": "0.1.1",
 		"@popperjs/core": "2.11.7",
 		"@rollup/plugin-yaml": "4.1.0",
-		"@sinclair/typebox": "0.31.17",
 		"@sindresorhus/slugify": "2.2.1",
 		"@storybook/addon-actions": "7.0.12",
 		"@storybook/addon-backgrounds": "7.0.12",
@@ -111,9 +108,7 @@
 		"@vueuse/core": "10.1.2",
 		"apexcharts": "3.40.0",
 		"axios": "1.4.0",
-		"babel-loader": "9",
 		"base-64": "1.0.0",
-		"c8": "7.13.0",
 		"caret-pos": "2.0.0",
 		"chroma-js": "2.4.2",
 		"codemirror": "5.65.13",
@@ -150,7 +145,7 @@
 		"sass": "1.62.1",
 		"storybook": "7.0.12",
 		"tinymce": "6.6.0",
-		"typescript": "5.2.2",
+		"typescript": "5.3.2",
 		"vite": "4.3.7",
 		"vitest": "0.34.6",
 		"vue": "3.3.4",
@@ -158,7 +153,6 @@
 		"vue-router": "4.2.0",
 		"vue-tsc": "1.6.5",
 		"vuedraggable": "4.1.0",
-		"webpack": "5.83.1",
 		"wellknown": "0.5.0"
 	}
 }

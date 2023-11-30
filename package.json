@@ -12,16 +12,16 @@
 	"devDependencies": {
 		"@changesets/cli": "2.26.2",
 		"@directus/release-notes-generator": "workspace:*",
-		"@typescript-eslint/eslint-plugin": "6.11.0",
-		"@typescript-eslint/parser": "6.11.0",
+		"@typescript-eslint/eslint-plugin": "6.13.1",
+		"@typescript-eslint/parser": "6.13.1",
 		"eslint": "8.54.0",
 		"eslint-config-prettier": "9.0.0",
 		"eslint-plugin-vue": "9.18.1",
 		"prettier": "3.1.0"
 	},
-	"packageManager": "pnpm@8.10.5",
+	"packageManager": "pnpm@8.11.0",
 	"engines": {
 		"node": ">=18.0.0",
-		"pnpm": "~8.10.5"
+		"pnpm": "~8.11.0"
 	}
 }

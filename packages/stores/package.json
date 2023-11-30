@@ -30,8 +30,8 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@vueuse/shared": "10.1.2",
-		"tsup": "7.2.0",
-		"typescript": "5.2.2"
+		"tsup": "8.0.1",
+		"typescript": "5.3.2"
 	},
 	"peerDependencies": {
 		"pinia": "2.1.7",

@@ -139,6 +139,7 @@ CloudSQL
 CMS
 CockroachDB
 CodeDeploy
+CollectionsService
 CommonJS
 composables
 config-options
@@ -167,6 +168,7 @@ DDoS
 destructured
 devs
 Devtools
+destructure
 DigitalOcean
 DigitalOcean's
 directus
@@ -196,7 +198,9 @@ EXIF
 fallbacks
 falsy
 FavIcon
+FieldsService
 filepath
+FilesService
 free-form
 frontend
 G2
@@ -234,6 +238,7 @@ intwined
 IoT
 ISO8601
 iss
+ItemsService
 iteratively
 Jamstack
 Javascript
@@ -351,6 +356,7 @@ reframe
 REKT
 relationally
 relationally-linked
+RelationsService
 repo
 repurpose
 S3
@@ -396,7 +402,7 @@ SVGs?
 TablePlus
 tfa
 TFA
-Theming
+(T|t)heming
 TileJSON
 TinyMCE
 TLS
