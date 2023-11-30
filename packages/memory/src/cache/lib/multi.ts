@@ -6,6 +6,9 @@ import { CacheRedis } from './redis.js';
 /**
  * Redis is considered the shared source of truth. For methods like has, increment, or setMax, the
  * Redis value is used, and the local value is synced to the Redis value if needed
+ *
+ * @TODO Use bus to listen for changes to to redis keys from other handlers and clear local cache on
+ * message
  */
 export class CacheMulti implements Cache {
 	local: CacheLocal;

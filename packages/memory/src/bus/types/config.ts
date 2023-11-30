@@ -30,6 +30,16 @@ export interface BusConfigRedis extends BusConfigAbstract {
 	compression?: boolean;
 
 	/**
+	 * Minimum byte size of the value before compression is enabled.
+	 *
+	 * There's a trade-off in size versus time spent compressing values with Gzip. For values lower
+	 * than ~1k in byte size, the juice isn't worth the squeeze
+	 *
+	 * @default 1000
+	 */
+	compressionMinSize?: number;
+
+	/**
 	 * Existing or new Redis connection to use with this memory class
 	 */
 	redis: Redis;
