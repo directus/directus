@@ -10,7 +10,7 @@ import RevisionsDrawer from './revisions-drawer.vue';
 const props = defineProps<{
 	collection: string;
 	primaryKey: string | number;
-	version: ContentVersion | null;
+	version?: ContentVersion | null;
 }>();
 
 defineEmits(['revert']);
