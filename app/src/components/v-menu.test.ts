@@ -5,9 +5,9 @@ import TransitionBounce from './transition/bounce.vue';
 import VMenu from './v-menu.vue';
 
 vi.mock('lodash', async () => {
-	const mod = await vi.importActual<typeof import('lodash')>('lodash');
+	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
 	return {
-		...mod,
+		...mod.default,
 		debounce: (fn: any) => fn,
 	};
 });
