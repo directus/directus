@@ -54,8 +54,8 @@
 	"peerDependencies": {
 		"knex": "2.4.2",
 		"pino": "8.14.1",
-		"vue": "3.3.4",
-		"vue-router": "4.2.0"
+		"vue": "3.3.9",
+		"vue-router": "4.2.5"
 	},
 	"peerDependenciesMeta": {
 		"knex": {
