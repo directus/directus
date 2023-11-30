@@ -10,7 +10,7 @@ const decoder = new TextDecoder();
 export const serialize = (val: unknown) => {
 	const valueString = JSON.stringify(val);
 	return encoder.encode(valueString);
-}
+};
 
 /**
  * Deserialize a given Uint8Array into a JavaScript value
@@ -21,4 +21,4 @@ export const serialize = (val: unknown) => {
 export const deserialize = <T = unknown>(val: Uint8Array) => {
 	const valueString = decoder.decode(val);
 	return <T>JSON.parse(valueString);
-}
+};

@@ -1,4 +1,4 @@
-import { uint8ArrayToBuffer } from "./uint8array-to-buffer.js";
+import { uint8ArrayToBuffer } from './uint8array-to-buffer.js';
 import { test, expect } from 'vitest';
 
 test('Converts uint8array to buffer equivalent', () => {

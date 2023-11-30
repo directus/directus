@@ -37,4 +37,4 @@ test('Throws an error for unknown types', () => {
 	const config = { type: 'WRONG' } as unknown as CacheConfig;
 
 	expect(() => createCache(config)).toThrowError();
-})
+});
