@@ -11,7 +11,9 @@ vi.mock('@/utils/get-default-interface-for-type', () => ({
 it('should not mutate', () => {
 	const fields: Field[] = [];
 
-	expect(getFormFields(ref(fields))).not.toBe(fields);
+	const formFields = getFormFields(ref(fields));
+
+	expect(formFields).not.toBe(fields);
 });
 
 it('should filter out fake fields', () => {
