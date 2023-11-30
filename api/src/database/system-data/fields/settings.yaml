@@ -323,6 +323,8 @@ fields:
                   text: Tiff
                 - value: avif
                   text: AVIF
+                - value: heif
+                  text: HEIF
             width: half
         - field: transforms
           name: $t:field_options.directus_settings.additional_transforms
