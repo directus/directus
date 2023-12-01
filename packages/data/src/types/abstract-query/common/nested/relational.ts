@@ -1,47 +1,5 @@
 import type { AtLeastOneElement } from '../../../misc.js';
-
-/**
- * Used to build a relational query for m2o and a2o relations.
- */
-export type AbstractQueryFieldNodeNestedRelationalOne =
-	| AbstractQueryFieldNodeRelationalManyToOne
-	| AbstractQueryFieldNodeRelationalAnyToOne;
-
-/**
- * Used to build a relational query for o2m and o2a relations.
- */
-export type AbstractQueryFieldNodeNestedRelationalMany =
-	| AbstractQueryFieldNodeRelationalOneToMany
-	| AbstractQueryFieldNodeRelationalOneToAny;
-
-export interface AbstractQueryFieldNodeRelationalManyToOne {
-	type: 'm2o';
-
-	join: AbstractQueryFieldNodeRelationalJoinMany;
-}
-
-export interface AbstractQueryFieldNodeRelationalOneToMany {
-	type: 'o2m';
-
-	/*
-	 * as a reminder: the o2m relational type does noy have anything stored on the o side,
-	 * the relational keys live in the related collection
-	 */
-
-	join: AbstractQueryFieldNodeRelationalJoinMany;
-}
-
-export interface AbstractQueryFieldNodeRelationalAnyToOne {
-	type: 'a2o';
-
-	join: AbstractQueryFieldNodeRelationalJoinAny;
-}
-
-export interface AbstractQueryFieldNodeRelationalOneToAny {
-	type: 'o2a';
-
-	join: AbstractQueryFieldNodeRelationalJoinAny;
-}
+import type { AbstractQueryFieldNode } from '../../fields.js';
 
 /**
  * Used to build a relational query for m2o and o2m relations.
@@ -63,7 +21,9 @@ export interface AbstractQueryFieldNodeRelationalOneToAny {
  * };
  * ```
  */
-export interface AbstractQueryFieldNodeRelationalJoinMany {
+export interface AbstractQueryFieldNodeNestedRelationalMany {
+	type: 'relational-many';
+
 	/**
 	 * The field names which identify an item in the...
 	 *
@@ -94,14 +54,26 @@ export interface AbstractQueryFieldNodeRelationalJoinMany {
 	};
 }
 
-export interface AbstractQueryFieldNodeRelationalJoinAny {
-	local: {
-		collectionField: string;
-		fields: AtLeastOneElement<string>;
-	};
+/**
+ * Used to build a relational query for a2o and o2a relations.
+ */
+export interface AbstractQueryFieldNodeNestedRelationalAny {
+	type: 'relational-any';
 
-	foreign: {
+	fieldName: string;
+
+	collections: AbstractQueryFieldNodeNestedRelationalAnyCollection[];
+}
+
+interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
+	fields: AbstractQueryFieldNode[];
+
+	relational: {
 		store: string;
-		fields: AtLeastOneElement<string>;
+
+		collectionName: string;
+		collectionIdentifier: string;
+
+		fieldNames: AtLeastOneElement<string>;
 	};
 }
