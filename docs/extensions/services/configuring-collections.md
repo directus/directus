@@ -311,7 +311,7 @@ router.delete('/', async (req, res) => {
 });
 ```
 
-::: tip Explore Services In-depth
+::: tip Explore Services In-Depth
 
 Refer to the full list of methods [in our codebase](https://github.com/directus/directus/blob/main/api/src/services).
 

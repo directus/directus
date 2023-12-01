@@ -39,12 +39,12 @@
 		"@types/lodash-es": "4.17.9",
 		"@vitejs/plugin-vue": "4.4.0",
 		"rollup-plugin-node-externals": "6.1.2",
-		"typescript": "5.2.2",
+		"typescript": "5.3.2",
 		"vite": "4.4.11",
 		"vite-plugin-dts": "3.6.0"
 	},
 	"peerDependencies": {
 		"pinia": "2.1.7",
-		"vue": "3.3.4"
+		"vue": "3.3.9"
 	}
 }
