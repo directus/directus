@@ -195,7 +195,7 @@ export default ({ embed }, { env }) => {
 
 | Name                           | Payload                              | Meta                                        |
 | ------------------------------ | ------------------------------------ | ------------------------------------------- |
-| `websocket.message`            | The message send over the websocket  |                                             |
+| `websocket.message`            | The message send over the WebSocket  |                                             |
 | `request.not_found`            | `false`                              | `request`, `response`                       |
 | `request.error`                | The request errors                   | --                                          |
 | `database.error`               | The database error                   | `client`                                    |
@@ -274,20 +274,20 @@ export default ({ embed }, { env }) => {
 
 ---
 
-⚠️ Directus reads system collection data to perform correctly, both in the Data Studio and the generated APIs. Be
-careful when modifying the output of system collection read/query events, as this can cause Directus core functionality
-to break.
+Directus reads system collection data to perform correctly, both in the Data Studio and the generated APIs. Be careful
+when modifying the output of system collection read/query events, as this can cause Directus core functionality to
+break.
 
 ---
 
-<u>Exceptions:</u>
+**Event Exceptions**
 
-| System Collection | Exception                                                                                     |
-| ----------------- | --------------------------------------------------------------------------------------------- |
-| `collections`     | No `read` action event                                                                        |
-| `fields`          | No `read` action event                                                                        |
-| `files`           | Default to upload, create/update will only be fired when filesService create/update are fired |
-| `relations`       | No `delete` event                                                                             |
+| Collection    | Detail                                                                                          |
+| ------------- | ----------------------------------------------------------------------------------------------- |
+| `collections` | No `read` action event                                                                          |
+| `fields`      | No `read` action event                                                                          |
+| `files`       | Default to upload, create/update will only be fired when `filesService` create/update are fired |
+| `relations`   | No `delete` event                                                                               |
 
 :::
 
