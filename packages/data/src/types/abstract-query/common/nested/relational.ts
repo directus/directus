@@ -70,7 +70,7 @@ interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
 	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 
-	/** The meta data which defines how the two collection are related. */
+	/** The relational data which defines how the two collection are related. */
 	relational: {
 		store: string;
 
