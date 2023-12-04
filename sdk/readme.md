@@ -81,6 +81,8 @@ const client = createDirectus<Schema>('https://api.directus.io').with(
 	}),
 );
 
+await client.connect();
+
 const { subscription, unsubscribe } = await client.subscribe('test', {
 	query: { fields: ['*'] },
 });
@@ -100,6 +102,8 @@ const client = createDirectus<Schema>('https://api.directus.io').with(
 		authMode: 'public',
 	}),
 );
+
+await client.connect();
 
 const stop = client.onWebSocket('message', (message) => {
 	if ('type' in message && message['type'] === 'pong') {

@@ -228,9 +228,9 @@ export function realtime(config: WebSocketConfig = {}) {
 				return () => eventHandlers[event].delete(callback);
 			},
 			sendMessage(message: string | Record<string, any>) {
-				if (!socket || socket?.readyState !== WebSocketState.OPEN) {
+				if (!socket || !isConnected) {
 					// TODO use directus error
-					throw new Error('websocket connection not OPEN');
+					throw new Error('Cannot send messages without an open connection. Make sure you are calling "await client.connect()".');
 				}
 
 				if (typeof message === 'string') {
@@ -249,7 +249,7 @@ export function realtime(config: WebSocketConfig = {}) {
 				options = {} as Options,
 			) {
 				if (!socket || !isConnected) {
-					throw new Error('Cannot subscribe without an open connection. Make sure you are calling "await client.connect()" before subscribing.');
+					throw new Error('Cannot subscribe without an open connection. Make sure you are calling "await client.connect()".');
 				}
 
 				if ('uid' in options === false) options.uid = uid.next().value;
