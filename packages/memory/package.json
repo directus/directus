@@ -25,6 +25,12 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest --watch=false"
 	},
+	"dependencies": {
+		"@directus/errors": "workspace:*",
+		"ioredis": "5.3.2",
+		"lru-cache": "10.1.0",
+		"rate-limiter-flexible": "2.4.1"
+	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
@@ -32,11 +38,5 @@
 		"tsup": "8.0.1",
 		"typescript": "5.3.2",
 		"vitest": "0.34.6"
-	},
-	"dependencies": {
-		"@directus/errors": "workspace:*",
-		"ioredis": "5.3.2",
-		"lru-cache": "10.1.0",
-		"rate-limiter-flexible": "2.4.1"
 	}
 }
