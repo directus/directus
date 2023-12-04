@@ -246,6 +246,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
 | `TEMP_PATH`                | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
+| `MIGRATIONS_PATH`          | Where custom migrations are located                                                                                         | `./migrations`               |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
