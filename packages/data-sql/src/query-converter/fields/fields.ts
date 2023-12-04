@@ -1,16 +1,24 @@
 import type { AbstractQueryFieldNode } from '@directus/data';
-import type { AbstractSqlClauses, AbstractSqlNestedMany, AbstractSqlQuery, ParameterTypes } from '../../types/index.js';
+import type {
+	AbstractSqlClauses,
+	AbstractSqlNestedMany,
+	AbstractSqlNestedOneFromAny,
+	AbstractSqlQuery,
+	ParameterTypes,
+} from '../../types/index.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
 import { convertFn } from '../functions.js';
 import { createUniqueAlias } from '../../orm/create-unique-alias.js';
 import { getNestedMany } from './create-nested-manys.js';
+import { getNestedOneFromAny } from './create-nested-one-from-any.js';
 
 export type FieldConversionResult = {
 	clauses: Required<Pick<AbstractSqlClauses, 'select' | 'joins'>>;
 	parameters: AbstractSqlQuery['parameters'];
 	aliasMapping: AbstractSqlQuery['aliasMapping'];
 	nestedManys: AbstractSqlNestedMany[];
+	nestedOneFromAny: AbstractSqlNestedOneFromAny[];
 };
 
 /**
@@ -40,6 +48,7 @@ export const convertFieldNodes = (
 	const parameters: ParameterTypes[] = [];
 	const aliasRelationalMapping: Map<string, string[]> = new Map();
 	const nestedManys: AbstractSqlNestedMany[] = [];
+	const nestedOneFromAny: AbstractSqlNestedOneFromAny[] = [];
 
 	for (const abstractField of abstractFields) {
 		if (abstractField.type === 'primitive') {
@@ -81,6 +90,9 @@ export const convertFieldNodes = (
 
 		if (abstractField.type === 'nested-union-one') {
 			// convert node into a root query and a query in form of of a function which has the collection relation as parameters
+			const res = getNestedOneFromAny(abstractField);
+			nestedOneFromAny.push(res);
+			continue;
 		}
 
 		if (abstractField.type === 'nested-single-many') {
@@ -115,5 +127,11 @@ export const convertFieldNodes = (
 		}
 	}
 
-	return { clauses: { select, joins }, parameters, aliasMapping: aliasRelationalMapping, nestedManys };
+	return {
+		clauses: { select, joins },
+		parameters,
+		aliasMapping: aliasRelationalMapping,
+		nestedManys,
+		nestedOneFromAny,
+	};
 };

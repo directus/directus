@@ -65,6 +65,7 @@ test('primitives only', () => {
 			[`${randomPrimitiveField2}_RANDOM`, [randomPrimitiveFieldAlias2]],
 		]),
 		nestedManys: [],
+		nestedOneFromAny: [],
 	};
 
 	const idGen = parameterIndexGenerator();
@@ -120,6 +121,7 @@ test('primitive and function', () => {
 			[`month_${randomPrimitiveField2}_RANDOM`, [randomPrimitiveFieldAlias2]],
 		]),
 		nestedManys: [],
+		nestedOneFromAny: [],
 	};
 
 	const idGen = parameterIndexGenerator();
@@ -239,6 +241,7 @@ test('primitive, fn, m2o', () => {
 			[`month_${randomPrimitiveFieldFn}_RANDOM`, [randomPrimitiveFieldFnAlias]],
 		]),
 		nestedManys: [],
+		nestedOneFromAny: [],
 	};
 
 	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
@@ -310,6 +313,7 @@ test('primitive, o2m', () => {
 				alias: randomNestedAlias,
 			},
 		],
+		nestedOneFromAny: [],
 	};
 
 	const result = convertFieldNodes(randomCollection, fields, parameterIndexGenerator());
@@ -417,6 +421,7 @@ test('primitive and o2m field with nested modifiers', () => {
 				alias: randomNestedAlias,
 			},
 		],
+		nestedOneFromAny: [],
 	};
 
 	const randomPkValue = randomIdentifier();
