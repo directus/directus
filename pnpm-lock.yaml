@@ -1422,12 +1422,18 @@ importers:
 
   packages/memory:
     dependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
       ioredis:
         specifier: 5.3.2
         version: 5.3.2
       lru-cache:
         specifier: 10.1.0
         version: 10.1.0
+      rate-limiter-flexible:
+        specifier: 2.4.1
+        version: 2.4.1
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*

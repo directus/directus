@@ -34,7 +34,9 @@
 		"vitest": "0.34.6"
 	},
 	"dependencies": {
+		"@directus/errors": "workspace:*",
 		"ioredis": "5.3.2",
-		"lru-cache": "10.1.0"
+		"lru-cache": "10.1.0",
+		"rate-limiter-flexible": "2.4.1"
 	}
 }
