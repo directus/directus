@@ -132,7 +132,7 @@ watchEffect(() => {
 }
 
 .intro-text {
-	max-width: 600px;
+	max-width: 512px;
 	margin-bottom: 64px;
 
 	.type-title {
