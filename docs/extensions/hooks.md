@@ -29,7 +29,7 @@ export default ({ filter, action }) => {
 
 ## Events
 
-Your hook can trigger on a variety of different events. An event is defined by its type and its name.
+Your hook can emit on a variety of different events. An event is defined by its type and its name.
 
 There are five event types to choose from:
 
@@ -39,12 +39,13 @@ There are five event types to choose from:
 - [Schedule](#schedule)
 - [Embed](#embed)
 
-Use filter hooks when you want the hook to fire before the event. Use action hooks when you want the hook to fire after
+Use filter hooks when you want the hook to run before the event. Use action hooks when you want the hook to run after
 the event.
 
 ### Filter
 
-Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
+Filter hooks act on the event's payload before the event is emitted. They allow you to check, modify, or cancel an
+event.
 
 Below is an example of canceling a `create` event by throwing a Directus error.
 
@@ -67,7 +68,7 @@ export default ({ filter }) => {
 The filter register function receives two parameters:
 
 - The event name
-- A callback function that is executed whenever the event fires.
+- A callback function that is executed whenever the event is emitted.
 
 The callback function itself receives three parameters:
 
@@ -96,7 +97,7 @@ automate responses to CRUD events on items or server actions.
 The action register function receives two parameters:
 
 - The event name
-- A callback function that is executed whenever the event fires.
+- A callback function that is executed whenever the event is emitted.
 
 The callback function itself receives two parameters:
 
@@ -117,7 +118,7 @@ internal services.
 The init register function receives two parameters:
 
 - The event name
-- A callback function that is executed whenever the event fires.
+- A callback function that is executed whenever the event is emitted.
 
 The callback function itself receives one parameter:
 
@@ -282,12 +283,12 @@ break.
 
 **Event Exceptions**
 
-| Collection    | Detail                                                                                          |
-| ------------- | ----------------------------------------------------------------------------------------------- |
-| `collections` | No `read` action event                                                                          |
-| `fields`      | No `read` action event                                                                          |
-| `files`       | Default to upload, create/update will only be fired when `filesService` create/update are fired |
-| `relations`   | No `delete` event                                                                               |
+| Collection    | Detail                                                                   |
+| ------------- | ------------------------------------------------------------------------ |
+| `collections` | No `read` action event                                                   |
+| `fields`      | No `read` action event                                                   |
+| `files`       | `create` and `update` events need to be emitted manually on file upload. |
+| `relations`   | No `delete` event                                                        |
 
 :::
 
@@ -309,7 +310,7 @@ The second parameter is a context object with the following properties:
 - `env` — Parsed environment variables
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
 - `emitter` — [Event emitter](https://github.com/directus/directus/blob/main/api/src/emitter.ts) instance that can be
-  used to trigger custom events for other extensions.
+  used to emit custom events for other extensions.
 
 ::: warning Event loop
 
