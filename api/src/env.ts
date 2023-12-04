@@ -37,10 +37,13 @@ const allowedEnvironmentVars = [
 	'QUERY_LIMIT_DEFAULT',
 	'ROBOTS_TXT',
 	'TEMP_PATH',
+
 	// server
 	'SERVER_.+',
+
 	// database
 	'DB_.+',
+
 	// security
 	'KEY',
 	'SECRET',
@@ -67,8 +70,10 @@ const allowedEnvironmentVars = [
 	'IMPORT_IP_DENY_LIST',
 	'CONTENT_SECURITY_POLICY_.+',
 	'HSTS_.+',
+
 	// hashing
 	'HASH_.+',
+
 	// cors
 	'CORS_ENABLED',
 	'CORS_ORIGIN',
@@ -77,9 +82,11 @@ const allowedEnvironmentVars = [
 	'CORS_EXPOSED_HEADERS',
 	'CORS_CREDENTIALS',
 	'CORS_MAX_AGE',
+
 	// rate limiting
 	'RATE_LIMITER_GLOBAL_.+',
 	'RATE_LIMITER_.+',
+
 	// cache
 	'CACHE_ENABLED',
 	'CACHE_TTL',
@@ -95,6 +102,7 @@ const allowedEnvironmentVars = [
 	'CACHE_VALUE_MAX_SIZE',
 	'CACHE_SKIP_ALLOWED',
 	'CACHE_HEALTHCHECK_THRESHOLD',
+
 	// storage
 	'STORAGE_LOCATIONS',
 	'STORAGE_.+_DRIVER',
@@ -128,6 +136,7 @@ const allowedEnvironmentVars = [
 	'ASSETS_TRANSFORM_TIMEOUT',
 	'ASSETS_CONTENT_SECURITY_POLICY',
 	'ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL',
+
 	// auth
 	'AUTH_PROVIDERS',
 	'AUTH_DISABLE_DEFAULT',
@@ -163,6 +172,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_GROUP_SCOPE',
 	'AUTH_.+_IDP.+',
 	'AUTH_.+_SP.+',
+
 	// extensions
 	'PACKAGE_FILE_LOCATION',
 	'EXTENSIONS_LOCATION',
@@ -172,12 +182,18 @@ const allowedEnvironmentVars = [
 	'EXTENSIONS_CACHE_TTL',
 	'EXTENSIONS_SANDBOX_MEMORY',
 	'EXTENSIONS_SANDBOX_TIMEOUT',
+
+	// migrations
+	'MIGRATIONS_PATH',
+
 	// messenger
 	'MESSENGER_STORE',
 	'MESSENGER_NAMESPACE',
+
 	// synchronization
 	'SYNCHRONIZATION_STORE',
 	'SYNCHRONIZATION_NAMESPACE',
+
 	// emails
 	'EMAIL_FROM',
 	'EMAIL_TRANSPORT',
@@ -199,18 +215,23 @@ const allowedEnvironmentVars = [
 	'EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID',
 	'EMAIL_SES_CREDENTIALS__SECRET_ACCESS_KEY',
 	'EMAIL_SES_REGION',
+
 	// admin account
 	'ADMIN_EMAIL',
 	'ADMIN_PASSWORD',
+
 	// telemetry
 	'TELEMETRY',
+
 	// limits & optimization
 	'RELATIONAL_BATCH_SIZE',
 	'EXPORT_BATCH_SIZE',
+
 	// flows
 	'FLOWS_ENV_ALLOW_LIST',
 	'FLOWS_RUN_SCRIPT_MAX_MEMORY',
 	'FLOWS_RUN_SCRIPT_TIMEOUT',
+
 	// websockets
 	'WEBSOCKETS_.+',
 ].map((name) => new RegExp(`^${name}$`));
@@ -287,6 +308,8 @@ export const defaults: Record<string, any> = {
 	EXTENSIONS_AUTO_RELOAD: false,
 	EXTENSIONS_SANDBOX_MEMORY: 100,
 	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
+
+	MIGRATIONS_PATH: './migrations',
 
 	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
