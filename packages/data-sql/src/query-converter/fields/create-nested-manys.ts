@@ -5,9 +5,9 @@ import type {
 } from '@directus/data';
 import type {
 	AbstractSqlClauses,
-	AbstractSqlNestedMany,
 	AbstractSqlQueryConditionNode,
 	AbstractSqlQueryWhereNode,
+	SubQuery,
 } from '../../types/index.js';
 import { convertModifiers } from '../modifiers/modifiers.js';
 import { parameterIndexGenerator } from '../param-index-generator.js';
@@ -20,7 +20,7 @@ import { convertFieldNodes } from './fields.js';
  * @param field - the nested field data from the abstract query
  * @returns A function to create a query with and information about the relation
  */
-export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany): AbstractSqlNestedMany {
+export function getNestedMany(field: AbstractQueryFieldNodeNestedSingleMany): SubQuery[] {
 	if (field.nesting.type !== 'relational-many') throw new Error('Nested o2a not yet implemented!');
 
 	const index = parameterIndexGenerator();
