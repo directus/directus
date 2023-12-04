@@ -66,15 +66,15 @@ export default async function create(type: string, name: string, options: Create
 	}
 
 	if (isIn(type, BUNDLE_EXTENSION_TYPES)) {
-		await createPackageExtension({ type, name, targetDir, targetPath });
+		await createBundleExtension({ type, name, targetDir, targetPath });
 	} else {
 		const language = options.language ?? 'javascript';
 
-		await createLocalExtension({ type, name, targetDir, targetPath, language });
+		await createExtension({ type, name, targetDir, targetPath, language });
 	}
 }
 
-async function createPackageExtension({
+async function createBundleExtension({
 	type,
 	name,
 	targetDir,
@@ -105,7 +105,7 @@ async function createPackageExtension({
 	log(getDoneMessage(type, targetDir, targetPath, packageManager));
 }
 
-async function createLocalExtension({
+async function createExtension({
 	type,
 	name,
 	targetDir,
