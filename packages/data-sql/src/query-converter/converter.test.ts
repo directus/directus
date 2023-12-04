@@ -64,17 +64,15 @@ test('Convert a query with a foreign/right string filter', () => {
 							type: 'primitive',
 							field: targetField,
 						},
-						meta: {
-							type: 'm2o',
-							join: {
-								local: {
-									fields: [leftHandIdentifierField],
-								},
-								foreign: {
-									store: rootStore,
-									fields: [rightHandIdentifierField],
-									collection: foreignCollection,
-								},
+						nesting: {
+							type: 'relational-many',
+							local: {
+								fields: [leftHandIdentifierField],
+							},
+							foreign: {
+								store: rootStore,
+								fields: [rightHandIdentifierField],
+								collection: foreignCollection,
 							},
 						},
 					},
@@ -245,7 +243,7 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 				alias: randomIdentifier(),
 			},
 			{
-				type: 'nested-one',
+				type: 'nested-single-one',
 				fields: [
 					{
 						type: 'primitive',
@@ -254,17 +252,15 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 					},
 				],
 				alias: randomIdentifier(),
-				meta: {
-					type: 'm2o',
-					join: {
-						local: {
-							fields: [leftHandIdentifierField],
-						},
-						foreign: {
-							store: rootStore,
-							fields: [rightHandIdentifierField],
-							collection: foreignCollection,
-						},
+				nesting: {
+					type: 'relational-many',
+					local: {
+						fields: [leftHandIdentifierField],
+					},
+					foreign: {
+						store: rootStore,
+						fields: [rightHandIdentifierField],
+						collection: foreignCollection,
 					},
 				},
 			},
@@ -280,17 +276,15 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 							type: 'primitive',
 							field: targetField,
 						},
-						meta: {
-							type: 'm2o',
-							join: {
-								local: {
-									fields: [leftHandIdentifierField],
-								},
-								foreign: {
-									store: rootStore,
-									fields: [rightHandIdentifierField],
-									collection: foreignCollection,
-								},
+						nesting: {
+							type: 'relational-many',
+							local: {
+								fields: [leftHandIdentifierField],
+							},
+							foreign: {
+								store: rootStore,
+								fields: [rightHandIdentifierField],
+								collection: foreignCollection,
 							},
 						},
 					},

@@ -58,3 +58,20 @@ export interface AbstractSqlNestedMany {
 	foreignJoinFields: AtLeastOneElement<string>;
 	alias: string;
 }
+
+export interface AbstractSqlNestedOneFromAny {
+	queryGenerator: (relation: A2ORelation) => AbstractSqlQuery;
+	alias: string;
+}
+
+/**
+ * This is the relational information which is stored in the database.
+ * The sub query will be generated based on this.
+ */
+export type A2ORelation = {
+	/** One or multiple foreign key relations */
+	foreignKey: AtLeastOneElement<string | number>;
+
+	/** The related table */
+	table: string;
+};
