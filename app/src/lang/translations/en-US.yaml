@@ -2336,8 +2336,7 @@ operations:
     cache: Cache
 onboarding:
   privacy_note:
-    We take user privacy very seriously. We'll never sell or share your information with anyone outside of our
-    organization.
+    We take privacy very seriously. We never sell or share your information with anyone outside our organization.
   action:
     skip: Skip
     first: Start Setup
@@ -2365,7 +2364,7 @@ onboarding:
     text: |
       Each user has a unique identity within Directus, and this information is used to tailor the app to you. Don't worry if you need to change values later on, these are fully editable inside of your user settings.
     mailinglist_name: Product Updates
-    mailinglist_label: Receive once-a-month updates
+    mailinglist_label: Receive monthly updates
     primary_skillset: What is your primary skillset?
     frontend: Front-end Developer
     backend: Back-end Developer
