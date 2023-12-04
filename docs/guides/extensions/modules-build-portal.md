@@ -5,7 +5,9 @@ contributors: Tim Butterfield
 
 # Create a Custom Portal Module
 
-Modules are an empty canvas in Directus with an empty navigation panel on the left, page header at the top and the sidebar on the right. This guide will help you set up a multi-page module with navigation in the navigation bar and link breadcrumbs.
+Modules are an empty canvas in Directus with an empty navigation panel on the left, page header at the top and the
+sidebar on the right. This guide will help you set up a multi-page module with navigation in the navigation bar and link
+breadcrumbs.
 
 ![A custom module has three items in the navigation - Home, Hello World, and Contact Us. The homepage displays an image, three navigation tiles, and some copy.](https://marketing.directus.app/assets/e1d33578-4ebc-4294-9b7c-2cc9ee3a1bfb.png)
 
@@ -25,15 +27,17 @@ Now that the boilerplate has been created, open the directory in your code edito
 
 ## Build the Index
 
-Open the extension directory that was created in the previous steps then open the directory called `src`. This is where the source code is located - `index.js` and `module.vue`. Any new files that are required must go in this directory.
+Open the extension directory that was created in the previous steps then open the directory called `src`. This is where
+the source code is located - `index.js` and `module.vue`. Any new files that are required must go in this directory.
 
 As it stands, this module will load an empty page wrapped by the Directus UI:
 
 ![An empty module.](https://marketing.directus.app/assets/976ebe2d-4d62-4136-a238-ae2107a8e417.png)
 
-
 Open `index.js` and make the following changes:
-- Update the `id` to the root URI of this landing page. Make sure the `id` is unique between all extensions including ones created by 3rd parties.
+
+- Update the `id` to the root URI of this landing page. Make sure the `id` is unique between all extensions including
+  ones created by 3rd parties.
 - Update the `name` to the name of your module. This appears in the page settings where you can enable/disable modules.
 - Update the `icon`. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
@@ -60,9 +64,11 @@ export default {
 };
 ```
 
-The `routes` give you the ability to use different vue files to render the page and receive props from the URI path. The path will match anything after `/admin/landing-page/*`. For this reason, the default route will be our home page.
+The `routes` give you the ability to use different vue files to render the page and receive props from the URI path. The
+path will match anything after `/admin/landing-page/*`. For this reason, the default route will be our home page.
 
-Create a second route with the path as `:page` to catch anything like `/admin/landing-page/some-page` and use the same component. The value `some-page` will be available in `props.page` in this example.
+Create a second route with the path as `:page` to catch anything like `/admin/landing-page/some-page` and use the same
+component. The value `some-page` will be available in `props.page` in this example.
 
 ### Build the Page
 
@@ -78,7 +84,8 @@ export default {};
 </script>
 ```
 
-Now you need to build your page inside the `private-view`. Import `ref` and `watch` from `vue` and `useApi` from the `extensions-sdk` above the export:
+Now you need to build your page inside the `private-view`. Import `ref` and `watch` from `vue` and `useApi` from the
+`extensions-sdk` above the export:
 
 ```js
 import { ref, watch } from 'vue';
@@ -96,7 +103,9 @@ props: {
 },
 ```
 
-Create a `setup()` section with props and call a function called `render_page` that will be created shortly. Add the `watch` function to monitor the page property for changes and call the `render_page` function again when a change is detected. At the bottom, include the return to utilize later.
+Create a `setup()` section with props and call a function called `render_page` that will be created shortly. Add the
+`watch` function to monitor the page property for changes and call the `render_page` function again when a change is
+detected. At the bottom, include the return to utilize later.
 
 ```js
 setup(props) {
@@ -113,9 +122,11 @@ setup(props) {
 },
 ```
 
-Directus has a header element at the top of the module that uses the title attribute of the private view as the page title. This will need to be converted to a variable so it changes when the page changes. It also has a breadcrumb which will help with page navigation. Create a variable inside the setup called `page_title` and breadcrumb using `ref`.
+Directus has a header element at the top of the module that uses the title attribute of the private view as the page
+title. This will need to be converted to a variable so it changes when the page changes. It also has a breadcrumb which
+will help with page navigation. Create a variable inside the setup called `page_title` and breadcrumb using `ref`.
 
-```js
+````js
 setup(props) {
 	const api = useApi();
 	const page_title = ref('');
@@ -168,9 +179,11 @@ function render_page(page){
 
 	console.log(`Title: ${page_title.value}`);
 };
-```
+````
 
-Ideally this would be an API query instead of the switch case. The `page` variable contains the current URI, use this to fetch the page details through the API and return the page title. If no result is found in the API, respond with a 404 page. Here is an example:
+Ideally this would be an API query instead of the switch case. The `page` variable contains the current URI, use this to
+fetch the page details through the API and return the page title. If no result is found in the API, respond with a 404
+page. Here is an example:
 
 ```js
 api.get(`/items/pages?fields=title&filter[uri][_eq]=${page}`).then((rsp) => {
@@ -186,7 +199,9 @@ api.get(`/items/pages?fields=title&filter[uri][_eq]=${page}`).then((rsp) => {
 });
 ```
 
-To tie all this together, update the `private-view` `title` attribute to the `page_title` variable, include the `breadcrumb` using the `#headline` template slot and add the `router-view` element at the bottom. Note that the router view is linked to the `page` property from the URI.
+To tie all this together, update the `private-view` `title` attribute to the `page_title` variable, include the
+`breadcrumb` using the `#headline` template slot and add the `router-view` element at the bottom. Note that the router
+view is linked to the `page` property from the URI.
 
 ```vue
 <private-view :title="page_title">
@@ -229,7 +244,8 @@ return { page_title, breadcrumb }; // [!code --]
 return { page_title, breadcrumb, all_pages };  // [!code ++]
 ```
 
-Create a function called `fetch_all_pages` underneath the `render_pages` function that will output the required object for a built-in Directus component called `v-list`. Ideally this function will use an API to fetch this information:
+Create a function called `fetch_all_pages` underneath the `render_pages` function that will output the required object
+for a built-in Directus component called `v-list`. Ideally this function will use an API to fetch this information:
 
 ```js
 function fetch_all_pages(){
@@ -287,9 +303,11 @@ render_page(props.page);
 fetch_all_pages();
 ```
 
-If you need to update the navigation whenever the page changes, you can include this function in the watch callback, however this can impact performance.
+If you need to update the navigation whenever the page changes, you can include this function in the watch callback,
+however this can impact performance.
 
-Create a new folder called `components` and create a new vue file called `navigation.vue`. Copy and paste the following code inside this file:
+Create a new folder called `components` and create a new vue file called `navigation.vue`. Copy and paste the following
+code inside this file:
 
 ```vue
 <template>
@@ -322,11 +340,12 @@ export default{
 </script>
 ```
 
-This uses the built-in `v-list` and `v-list-item` to render the navigation from the pages property. The current property is used to set the `v-list-item` to active when the current page matches the navigation item.
+This uses the built-in `v-list` and `v-list-item` to render the navigation from the pages property. The current property
+is used to set the `v-list-item` to active when the current page matches the navigation item.
 
 :::info Export Names
 
-The export names the component PageNavigation. This must match the component import in the module.vue.
+The export names the component `PageNavigation`. This must match the component import in the module.vue.
 
 :::
 
@@ -362,7 +381,9 @@ The navigation panel now shows the available pages and will change the page when
 
 ## Add Content and Styling
 
-Now that the framework is in place, you can start creating your own template and populate with content. This could be static content placed within the code or dynamic code from an API. Here is an example to help you get started that will create a page banner, clickable cards and some paragraphs.
+Now that the framework is in place, you can start creating your own template and populate with content. This could be
+static content placed within the code or dynamic code from an API. Here is an example to help you get started that will
+create a page banner, clickable cards and some paragraphs.
 
 In the template, create the HTML structure after the navigation and some new variables that will contain the content.
 
@@ -395,7 +416,8 @@ setup(props) {
 }
 ```
 
-Add a new function to change the page called `change_page`. Import the vue-router package under the existing vue import:
+Add a new function to change the page called `change_page`. Import the `vue-router` package under the existing vue
+import:
 
 ```js
 import { ref, watch } from 'vue';
@@ -416,7 +438,8 @@ setup(props) {
 }
 ```
 
-Create the function before the return and add the three new variables and the new function to the list of returned items. This will allow them to be used in the template.
+Create the function before the return and add the three new variables and the new function to the list of returned
+items. This will allow them to be used in the template.
 
 ```js
 function change_page(to){
@@ -454,7 +477,8 @@ switch(page) {
 }
 ```
 
-Or from the internal API providing you have a table with the fields `title`, `banner` (image field) and `content` (WYSIWYG field):
+Or from the internal API providing you have a table with the fields `title`, `banner` (image field) and `content`
+(WYSIWYG field):
 
 ```js
 api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).then((rsp) => {
@@ -474,7 +498,8 @@ api.get(`/items/pages?fields=title,banner,content&filter[uri][_eq]=${page}`).the
 
 ### Work With Images
 
-To use internal images, an access token needs to be included in the request. Create a new file called `use-directus-token.js` and copy the following code:
+To use internal images, an access token needs to be included in the request. Create a new file called
+`use-directus-token.js` and copy the following code:
 
 ```js
 export default function useDirectusToken(directusApi) {
@@ -512,7 +537,8 @@ export default function useDirectusToken(directusApi) {
 };
 ```
 
-This will use the access token of the current user to render the images. Alternatively, you can enable Read permissions on the Public role for the image ID or images with a specific folder ID to remove the need for an access token.
+This will use the access token of the current user to render the images. Alternatively, you can enable Read permissions
+on the Public role for the image ID or images with a specific folder ID to remove the need for an access token.
 
 Import the function into the `module.vue` file to make it available in your script:
 
@@ -540,13 +566,16 @@ page_banner.value = addTokenToURL(`/assets/${item.banner}?width=2000&height=563&
 
 :::info External Images
 
-If you are using images from external sources, the host must be added to the Content Security Policy (CSP) inside the environment or config file.
+If you are using images from external sources, the host must be added to the Content Security Policy (CSP) inside the
+environment or config file.
 
 :::
 
 ## Style the Module
 
-Add some SCSS at the bottom of the `module.vue` file. When dealing with multiple vue files, don’t scope the SCSS, instead prefix each class with a unique reference to prevent changing other components in Directus. In this example, use the following SCSS:
+Add some SCSS at the bottom of the `module.vue` file. When dealing with multiple vue files, don’t scope the SCSS,
+instead prefix each class with a unique reference to prevent changing other components in Directus. In this example, use
+the following SCSS:
 
 ```html
 <style lang="scss">
@@ -617,7 +646,8 @@ Add some SCSS at the bottom of the `module.vue` file. When dealing with multiple
 </style>
 ```
 
-This will format the banner, cards and the container. It’s a good idea to make use of the native css of Directus as much as possible so your module appears part of Directus.
+This will format the banner, cards and the container. It’s a good idea to make use of the native CSS of Directus as much
+as possible so your module appears part of Directus.
 
 Now the page will look like this:
 
@@ -658,7 +688,10 @@ To use your new module in Directus, you need to enable it in the Project Setting
 
 ## Summary
 
-You have created a new module from the extension SDK boilerplate template and extended it to multiple pages that make use of the vue-router and utilize the left navigation panel. You can also use the internal API to fetch content and images from within Directus to surface on the page. From here you can create content rich modules driven by the features of the Directus platform.
+You have created a new module from the extension SDK boilerplate template and extended it to multiple pages that make
+use of the `vue-router` and utilize the left navigation panel. You can also use the internal API to fetch content and
+images from within Directus to surface on the page. From here you can create content rich modules driven by the features
+of the Directus platform.
 
 `index.js`
 

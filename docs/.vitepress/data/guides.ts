@@ -219,6 +219,10 @@ export const sections = {
 						display: 'Create a Custom Portal Module',
 						path: '/guides/extensions/modules-build-portal',
 					},
+					{
+						display: 'Use Native Layout Features In Your Modules',
+						path: '/guides/extensions/modules-native-layout-features',
+					},
 				],
 			},
 		],
