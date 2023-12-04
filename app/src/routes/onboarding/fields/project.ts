@@ -54,6 +54,17 @@ export const projectFields: DeepPartial<Field>[] = [
 	},
 	{
 		collection: 'onboarding',
+		name: '$t:fields.directus_settings.project_descriptor',
+		field: 'project_descriptor',
+		type: 'string',
+		meta: {
+			interface: 'input',
+			options: { placeholder: '$t:field_options.directus_settings.project_name_placeholder', trim: true },
+			width: 'half',
+		},
+	},
+	{
+		collection: 'onboarding',
 		name: '$t:onboarding.project.use_case',
 		field: 'project_use_case',
 		type: 'string',

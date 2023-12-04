@@ -36,6 +36,7 @@ export function getSlides() {
 		project_logo: settingsStore.settings?.project_logo,
 		project_color: settingsStore.settings?.project_color,
 		project_use_case: settingsStore.settings?.onboarding?.project_use_case,
+		project_descriptor: settingsStore.settings?.project_descriptor,
 	});
 
 	const themingProjectModel = ref({
@@ -76,6 +77,7 @@ export function getSlides() {
 						project_url: projectModel.value.project_url,
 						project_logo: projectModel.value.project_logo,
 						project_color: projectModel.value.project_color,
+						project_descriptor: projectModel.value.project_descriptor,
 						onboarding: JSON.stringify({
 							project_use_case: projectModel.value.project_use_case ?? null,
 						} satisfies SettingsOnboarding),
