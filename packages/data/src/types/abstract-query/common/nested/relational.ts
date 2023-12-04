@@ -66,12 +66,20 @@ export interface AbstractQueryFieldNodeNestedRelationalAny {
 }
 
 interface AbstractQueryFieldNodeNestedRelationalAnyCollection {
+	/** The desired fields which should be returned. */
 	fields: AbstractQueryFieldNode[];
 
+	/** The meta data which defines how the two collection are related. */
 	relational: {
 		store: string;
+
+		/** The name of the foreign collection */
 		collectionName: string;
+
+		/** The UUID of the foreign collection */
 		collectionIdentifier: string;
+
+		/** The column(s) of the foreign collection which store the primary key(s) */
 		field: AtLeastOneElement<string>;
 	};
 }
