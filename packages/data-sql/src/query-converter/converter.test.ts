@@ -64,7 +64,7 @@ test('Convert a query with a foreign/right string filter', () => {
 							type: 'primitive',
 							field: targetField,
 						},
-						meta: {
+						nesting: {
 							type: 'relational-many',
 							local: {
 								fields: [leftHandIdentifierField],
@@ -276,7 +276,7 @@ test('Convert a query with a nested field and filtering on that nested field.', 
 							type: 'primitive',
 							field: targetField,
 						},
-						meta: {
+						nesting: {
 							type: 'relational-many',
 							local: {
 								fields: [leftHandIdentifierField],

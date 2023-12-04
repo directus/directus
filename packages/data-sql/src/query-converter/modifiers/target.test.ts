@@ -90,7 +90,7 @@ test('convert nested target', () => {
 			type: 'primitive',
 			field: filterField,
 		},
-		meta: {
+		nesting: {
 			type: 'relational-many',
 			local: {
 				fields: [leftIdentifierField],

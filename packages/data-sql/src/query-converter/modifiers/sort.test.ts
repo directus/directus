@@ -158,7 +158,7 @@ test('convert sort on nested item', () => {
 				type: 'primitive',
 				field: randomIdentifier(),
 			},
-			meta: {
+			nesting: {
 				type: 'relational-many',
 				local: {
 					fields: [randomIdentifier()],
