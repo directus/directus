@@ -2,7 +2,7 @@ import { isTypeIn, listFolders, resolvePackage } from '@directus/utils/node';
 import fse from 'fs-extra';
 import { pick } from 'lodash-es';
 import path from 'path';
-import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
+import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { ExtensionManifest } from '../../shared/schemas/index.js';
 import type { Extension } from '../../shared/types/index.js';
 
@@ -19,7 +19,6 @@ export async function resolveExtensions(root: string, extensionNames?: string[])
 
 	if (extensionNames === undefined) {
 		extensionNames = await listFolders(root);
-		extensionNames = extensionNames.filter((name) => EXTENSION_NAME_REGEX.test(name));
 	}
 
 	for (const extensionName of extensionNames) {
@@ -101,7 +100,12 @@ export async function resolveDependencyExtensions(root: string): Promise<Extensi
 		throw new Error('Current folder does not contain a package.json file');
 	}
 
-	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
+	/**
+	 * @TODO drop regex check here in favor of reading the package.json manifest for the dependencies
+	 */
+	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) =>
+		/^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-)(.+)$/.test(dep),
+	);
 
 	return resolveExtensions(root, extensionNames);
 }
