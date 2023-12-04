@@ -1,21 +1,27 @@
-import { RateLimiterMemory } from 'rate-limiter-flexible';
+import { Redis } from 'ioredis';
+import { RateLimiterRedis } from 'rate-limiter-flexible';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { consume } from '../utils/consume.js';
-import { LimiterLocal } from './local.js';
+import { LimiterRedis } from './redis.js';
 
+vi.mock('ioredis');
 vi.mock('rate-limiter-flexible');
 vi.mock('../utils/consume.js');
 
-let limiter: LimiterLocal;
+let redis: Redis;
+let namespace: string;
+let limiter: LimiterRedis;
 let points: number;
 let duration: number;
 let key: string;
 
 beforeEach(() => {
+	redis = new Redis();
+	namespace = 'rate-limiter-namespace';
 	points = 5;
 	duration = 10;
 	key = 'rate-limiter-key';
-	limiter = new LimiterLocal({ points, duration });
+	limiter = new LimiterRedis({ redis, namespace, points, duration });
 
 	vi.useFakeTimers();
 });
@@ -27,8 +33,8 @@ afterEach(() => {
 
 describe('constructor', () => {
 	test('Creates rate-limiter with correct config', () => {
-		expect(limiter['limiter']).toBeInstanceOf(RateLimiterMemory);
-		expect(RateLimiterMemory).toHaveBeenCalledWith({ points, duration });
+		expect(limiter['limiter']).toBeInstanceOf(RateLimiterRedis);
+		expect(RateLimiterRedis).toHaveBeenCalledWith({ storeClient: redis, keyPrefix: namespace, points, duration });
 	});
 });
 
