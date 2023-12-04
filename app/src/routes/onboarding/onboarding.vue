@@ -141,6 +141,10 @@ watchEffect(() => {
 
 	:deep() {
 		@import '@/styles/markdown';
+
+		a {
+			text-decoration: underline;
+		}
 	}
 }
 </style>
