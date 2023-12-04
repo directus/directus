@@ -91,6 +91,12 @@ export async function resolveExtensions(root: string, extensionNames?: string[])
 	return extensions;
 }
 
+const isExtension = async (pkgName: string) => {
+	const pkgPath = resolvePackage(pkgName);
+	const extensionManifest: Record<string, any> = await fse.readJSON(path.join(pkgPath, 'package.json'));
+	return EXTENSION_PKG_KEY in extensionManifest;
+};
+
 export async function resolveDependencyExtensions(root: string): Promise<Extension[]> {
 	let pkg: { dependencies?: Record<string, string> };
 
@@ -100,12 +106,11 @@ export async function resolveDependencyExtensions(root: string): Promise<Extensi
 		throw new Error('Current folder does not contain a package.json file');
 	}
 
-	/**
-	 * @TODO drop regex check here in favor of reading the package.json manifest for the dependencies
-	 */
-	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) =>
-		/^(?:(?:@[^/]+\/)?directus-extension-|@directus\/extension-)(.+)$/.test(dep),
-	);
+	const dependencyNames = Object.keys(pkg.dependencies ?? {});
+
+	const dependencyIsExtensionArray = await Promise.all(dependencyNames.map(isExtension));
+
+	const extensionNames = dependencyNames.filter((_name, index) => dependencyIsExtensionArray[index]);
 
 	return resolveExtensions(root, extensionNames);
 }
