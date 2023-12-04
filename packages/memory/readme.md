@@ -10,7 +10,7 @@ ephemeral storage:
 
 ## Cache
 
-The cache class is a LRU-based key value store
+The cache class is a LRU-based key-value store.
 
 ### Basic Usage
 
