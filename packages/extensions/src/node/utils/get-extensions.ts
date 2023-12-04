@@ -1,15 +1,10 @@
-import { isIn, isTypeIn, listFolders, pluralize, resolvePackage } from '@directus/utils/node';
+import { isTypeIn, listFolders, resolvePackage } from '@directus/utils/node';
 import fse from 'fs-extra';
 import { pick } from 'lodash-es';
 import path from 'path';
-import {
-	EXTENSION_NAME_REGEX,
-	EXTENSION_PKG_KEY,
-	HYBRID_EXTENSION_TYPES,
-	NESTED_EXTENSION_TYPES,
-} from '../../shared/constants/index.js';
+import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { ExtensionManifest } from '../../shared/schemas/index.js';
-import type { ApiExtensionType, AppExtensionType, Extension } from '../../shared/types/index.js';
+import type { Extension } from '../../shared/types/index.js';
 
 export const findExtension = async (folder: string, filename: string) => {
 	if (await fse.exists(path.join(folder, `${filename}.cjs`))) return `${filename}.cjs`;
@@ -17,7 +12,7 @@ export const findExtension = async (folder: string, filename: string) => {
 	return `${filename}.js`;
 };
 
-export async function resolvePackageExtensions(root: string, extensionNames?: string[]): Promise<Extension[]> {
+export async function resolveExtensions(root: string, extensionNames?: string[]): Promise<Extension[]> {
 	const extensions: Extension[] = [];
 
 	const local = extensionNames === undefined;
@@ -97,7 +92,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 	return extensions;
 }
 
-export async function getPackageExtensions(root: string): Promise<Extension[]> {
+export async function resolveDependencyExtensions(root: string): Promise<Extension[]> {
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
@@ -108,47 +103,5 @@ export async function getPackageExtensions(root: string): Promise<Extension[]> {
 
 	const extensionNames = Object.keys(pkg.dependencies ?? {}).filter((dep) => EXTENSION_NAME_REGEX.test(dep));
 
-	return resolvePackageExtensions(root, extensionNames);
-}
-
-export async function getLocalExtensions(root: string): Promise<Extension[]> {
-	const extensions: Extension[] = [];
-
-	for (const extensionType of NESTED_EXTENSION_TYPES) {
-		const typeDir = pluralize(extensionType);
-		const typePath = path.resolve(root, typeDir);
-
-		try {
-			const extensionNames = await listFolders(typePath);
-
-			for (const extensionName of extensionNames) {
-				const extensionPath = path.join(typePath, extensionName);
-
-				if (isIn(extensionType, HYBRID_EXTENSION_TYPES)) {
-					extensions.push({
-						path: extensionPath,
-						name: `${extensionName}:${extensionType}`,
-						type: extensionType,
-						entrypoint: {
-							app: await findExtension(extensionPath, 'app'),
-							api: await findExtension(extensionPath, 'api'),
-						},
-						local: true,
-					});
-				} else {
-					extensions.push({
-						path: extensionPath,
-						name: `${extensionName}:${extensionType}`,
-						type: extensionType as AppExtensionType | ApiExtensionType,
-						entrypoint: await findExtension(extensionPath, 'index'),
-						local: true,
-					});
-				}
-			}
-		} catch (e) {
-			throw new Error(`Extension folder "${typePath}" couldn't be opened`);
-		}
-	}
-
-	return extensions;
+	return resolveExtensions(root, extensionNames);
 }
